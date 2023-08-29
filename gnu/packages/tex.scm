@@ -82139,6 +82139,28 @@ interested in FiNK's functionality are invited to use a package named
 @code{currfile} instead.")
     (license license:lppl)))
 
+(define-public texlive-finstrut
+  (package
+    (name "texlive-finstrut")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/finstrut/"
+                   "source/latex/finstrut/"
+                   "tex/latex/finstrut/")
+             (base32
+              "1zpyn492xq5h50jh6wwdlj10xwvnkdhxnljqjfkiw429lgaw7qfi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/finstrut")
+    (synopsis "Adjust behaviour of the ends of footnotes")
+    (description
+     "The LaTeX internal command @code{\\@@finalstrut} is used automatically used
+at the end of footnote texts to insert a strut to avoid mis-spacing of
+multiple footnotes.  Unfortunately the command can cause a blank line at the
+end of a footnote.  The package provides a solution to this problem.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
