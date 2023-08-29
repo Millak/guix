@@ -73317,6 +73317,31 @@ and LNI for the Lecture Notes in Informatics, published by the GI ENTCS for
 the Elsevier ENTCS layout")
     (license (list license:lppl1.3c license:bsd-2))))
 
+(define-public texlive-authorindex
+  (package
+    (name "texlive-authorindex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/authorindex/"
+                   "scripts/authorindex/"
+                   "tex/latex/authorindex/")
+             (base32
+              "0hadz4qwaks604mp9zb2cklx77v626vbjri7h0gs847mch35mrnw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "authorindex")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/authorindex")
+    (synopsis "Index citations by author names")
+    (description
+     "This package allows the user to create an index of all authors cited in
+a LaTeX document.  Each author entry in the index contains the pages where
+these citations occur.  Alternatively, the package can list the labels of the
+citations that appear in the references rather than the text pages.  The
+package relies on BibTeX being used to handle citations.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
