@@ -92198,6 +92198,29 @@ content on its own page, with the corresponding caption reading for example
 @samp{Figure 3 (on next page): <caption>}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-phfnote
+  (package
+    (name "texlive-phfnote")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/phfnote/" "doc/latex/phfnote/"
+                   "source/latex/phfnote/" "tex/latex/phfnote/")
+             (base32
+              "1fx5lpd4wfnjj441xm6d539kfvq88b2gkw8i8k28c2gksjs4hdgx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/phfnote")
+    (synopsis "Basic formatting for short documents")
+    (description
+     "This package provides basic formatting for short documents such as notes on
+a specific topic, short documentation, or quick memos.  It aims to cover all
+basic needs for such purposes: include a standard set of relevant packages,
+a nice title which doesn't take up too much space, better page margin sizes,
+and some basic styling to make the note look nicer.  At the same time, it is
+highly flexible and customizable.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
