@@ -88237,6 +88237,27 @@ need not do so.  There are other features that should make LaTeX easy for
 introductory physics students.")
     (license license:lppl1.3+)))
 
+(define-public texlive-manuscript
+  (package
+    (name "texlive-manuscript")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/manuscript/"
+                   "source/latex/manuscript/"
+                   "tex/latex/manuscript/")
+             (base32
+              "1idb43b4c74mdyzypvq5izfv2jf91b33d8qhva12bd7njz3wnpg9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/manuscript")
+    (synopsis "Emulate look of a document typed on a typewriter")
+    (description
+     "This package is designed for those who have to submit dissertations, etc., to
+institutions that still maintain the typewriter is the summit of
+non-professional printing.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
