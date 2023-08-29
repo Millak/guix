@@ -97442,6 +97442,26 @@ a new one --- it is an experiment to find out whether the new problem is less ba
 previous work).")
     (license license:lppl1.3+)))
 
+(define-public texlive-tasks
+  (package
+    (name "texlive-tasks")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tasks/" "tex/latex/tasks/")
+             (base32
+              "1sfgnwzpyfyvilyz7j12d6wql54rlcami682b32rf6xphxjs0z3b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tasks")
+    (synopsis "Horizontally columned lists")
+    (description
+     "The reason for the creation of the @code{tasks} environment was an unwritten
+agreement in German maths textbooks (especially (junior) high school
+textbooks) to organize exercises in columns counting horizontally rather than
+vertically.  This is what the @code{tasks} package helps to achieve.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
