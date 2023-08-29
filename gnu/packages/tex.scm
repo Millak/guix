@@ -100544,6 +100544,25 @@ all alphanumerical characters, as well as @samp{=}, @samp{/}, @samp{.},
 are valid for @code{url} can be used and will be passed on to this package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-xwatermark
+  (package
+    (name "texlive-xwatermark")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xwatermark/"
+                   "tex/latex/xwatermark/")
+             (base32
+              "1xisq0xg5jl7id4ajl0ywjz8d8s8bzl4qy8sxg0rya3p013p5990")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xwatermark")
+    (synopsis "Graphics and text watermarks on selected pages")
+    (description
+     "The package extends @code{draftmark} and the @code{watermark} packages.  It
+is currently unmaintained and does not work with modern LaTeX releases.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
