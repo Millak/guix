@@ -99140,6 +99140,40 @@ more readable.  The @code{utf8hax} package is using UTF-8 characters for
 easier access to math in LaTeX, however making the LaTeX input less readable.")
     (license license:gpl3+)))
 
+(define-public texlive-uwmslide
+  (package
+    (name "texlive-uwmslide")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/uwmslide/" "tex/latex/uwmslide/")
+             (base32
+              "1mwm4j9gsq8kmqx1wrh9ri7w9hlhqa5721a77rlpyxz18kzwv366")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uwmslide")
+    (synopsis "Slides with a simple PowerPoint-like appearance")
+    (description
+     "This package provides a slide format which produces slides with a simple
+PowerPoint-like appearance.  Several useful features include:
+
+@itemize
+
+@item use of standard titlepage to produce title slide;
+
+@item several slide environments including plain (page with a title), double
+slide (two column page with slide title), item slide (item list with title),
+left item slide, and right item slide;
+
+@item Logos are placed in the upper left corner of each slide if the logo file
+@file{logo.eps} is present.
+
+@end itemize
+
+The output is pre-configured in landscape mode and uses Times Roman by
+default.")
+    (license license:artistic2.0)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
