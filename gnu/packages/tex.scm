@@ -92703,6 +92703,53 @@ When @code{hyperref} is loaded, postnotes provides hyperlinked notes,
 including back links.")
     (license license:lppl1.3c)))
 
+(define-public texlive-powerdot
+  (package
+    (name "texlive-powerdot")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/powerdot/"
+                   "source/latex/powerdot/"
+                   "tex/latex/powerdot/")
+             (base32
+              "1b5fmrzaif2d7rwbwlpd9xdykpw1r5p5cpjqiw3gs1f3241p43f4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/powerdot")
+    (arguments
+     (list
+      #:tex-format "latex"
+      #:phases #~(modify-phases %standard-phases
+                   ;; Building documentation, automatic when
+                   ;; generating runfiles, fails.  Skip building it.
+                   (add-after 'unpack 'skip-documentation
+                     (lambda _
+                       (substitute* "source/latex/powerdot/powerdot.dtx"
+                         (("\\\\DocInput\\{powerdot\\.dtx\\}") "")))))))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-enumitem
+                  texlive-fourier
+                  texlive-hypdoc
+                  texlive-listings
+                  texlive-pgf
+                  texlive-placeins
+                  texlive-pst-node
+                  texlive-pst-text
+                  texlive-pstricks
+                  texlive-xcolor
+                  texlive-xkeyval))))
+    (synopsis "Presentation class")
+    (description
+     "Powerdot is a presentation class for LaTeX that allows for the quick and easy
+development of professional presentations.  It comes with many tools that
+enhance presentations and aid the presenter.  Examples are automatic overlays,
+personal notes and a handout mode.  To view a presentation, DVI, PS or PDF
+output can be used.  A powerful template system is available to easily develop
+new styles.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
