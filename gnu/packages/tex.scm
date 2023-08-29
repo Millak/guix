@@ -80471,6 +80471,26 @@ arguments.")
 pages.")
     (license license:lppl1.2+)))
 
+(define-public texlive-emulateapj
+  (package
+    (name "texlive-emulateapj")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/emulateapj/"
+                   "tex/latex/emulateapj/")
+             (base32
+              "13d84pxy67qwdb9wnma05ivk9iv7ky8pfmi8801cw8sc2c2sfz9j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/emulateapj")
+    (synopsis "Produce output similar to that of APJ")
+    (description
+     "This package provides a LaTeX class (based on current RevTeX) to produce
+preprints with the page layout similar to that of the @emph{Astrophysical
+Journal}.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
