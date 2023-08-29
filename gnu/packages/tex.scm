@@ -75933,6 +75933,29 @@ included by @code{\\include} to individual files.")
      "The package checks for floats that are placed too far from their origin.")
     (license license:lppl1.3+)))
 
+(define-public texlive-chletter
+  (package
+    (name "texlive-chletter")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/chletter/"
+                   "source/latex/chletter/"
+                   "tex/latex/chletter/")
+             (base32
+              "0i54z0241r29ibrizcqi8wsg7q08b24igb2c1fa452z1hajl8hfm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chletter")
+    (synopsis "Class for typesetting letters to Swiss rules")
+    (description
+     "The class enables composition of letters fitting into Swiss C5 & C6/5
+windowed envelopes.  No assumption is made about the language used.  The class
+is based on the standard LaTeX classes and is compatible with the LaTeX
+@code{letter} class.  It is not limited to letters and may be used as
+a generic document class; it is used with the @code{chextras} package.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
