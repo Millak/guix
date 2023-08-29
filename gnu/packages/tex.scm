@@ -98630,6 +98630,26 @@ entries.  It tends to produce a somewhat long and quite detailed document but
 may also be suitable to support a shorter resume.")
     (license license:cc-by-sa3.0)))
 
+(define-public texlive-turnthepage
+  (package
+    (name "texlive-turnthepage")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/turnthepage/"
+                   "tex/latex/turnthepage/")
+             (base32
+              "0cm62cykmf7h6piazaa44fkhbkxds1ik6idpvg4f296y7jz6mjjh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/turnthepage")
+    (synopsis "Provide ``turn page'' instructions")
+    (description
+     "The package prints a turn instruction at the bottom of odd-numbered
+pages (except the last).  This is a common convention for examination papers
+and the like.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
