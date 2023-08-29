@@ -74680,6 +74680,27 @@ two pages per side.  The resulting sheets will, when folded in half, assemble
 into a booklet.")
     (license license:lppl1.3+)))
 
+(define-public texlive-bookshelf
+  (package
+    (name "texlive-bookshelf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bookshelf/"
+                   "source/latex/bookshelf/"
+                   "tex/latex/bookshelf/")
+             (base32
+              "1md1mlm2yc64nmrjcpn754k5akc25273yvi68pgxj9gc86v5167a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bookshelf")
+    (synopsis "Create a nice image from a BibTeX file")
+    (description
+     "This package turns a BibTeX bibliography file into a randomly-coloured,
+randomly-sized shelf of books, with the title and author in a randomly-chosen
+typeface.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
