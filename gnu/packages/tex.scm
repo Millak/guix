@@ -98241,6 +98241,26 @@ the text.  It allows a list of predesignated words to be protected as
 lower-cased, and also allows for titling exceptions of various sorts.")
     (license license:lppl1.3+)))
 
+(define-public texlive-titlefoot
+  (package
+    (name "texlive-titlefoot")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/latex/titlefoot/")
+             (base32
+              "0c0nhhxhb3hmvg3a64lr5npbqsmrmprqqj9pic91j007k4s1in4y")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/titlefoot")
+    (synopsis "Add special material to footer of title page")
+    (description
+     "This package provides the capability of adding keywords (with
+a @code{\\keywords} command), a running title (@code{\\runningtitle}), AMS
+subject classifications (@code{\\amssubj}), and an author's footnote as
+footnotes to the title or first page of a document.  It works with any class
+for which the @code{\\thanks} macro works (e.g., @code{article}).")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
