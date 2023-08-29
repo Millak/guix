@@ -73736,6 +73736,29 @@ background.  Cormorant stands for green, Frigatebird for red and Magpie for
 blue.")
     (license (list license:lppl1.3+ license:cc-by4.0))))
 
+(define-public texlive-beamerposter
+  (package
+    (name "texlive-beamerposter")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamerposter/"
+                   "tex/latex/beamerposter/")
+             (base32
+              "1xp8a6d82n1kgagdc7mm7hjihdzn1k7y4lijy924hjdvnvdmqa2i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamerposter")
+    (synopsis "Extend Beamer and @code{a0poster} for custom sized posters")
+    (description
+     "The package enables the user to use Beamer style operations on a canvas of
+the sizes provided by @code{a0poster}; font scaling is available (using
+packages such as @code{type1cm} if necessary).  In addition, the package
+allows the user to benefit from the nice colour box handling and alignment
+provided by the Beamer class (for example, with rounded corners and shadows).
+Good looking posters may be created very rapidly.")
+    (license (list license:lppl license:gpl3+))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
