@@ -79233,6 +79233,25 @@ Currently, only Creative Commons is supported, but this package is designed to
 handle all kinds of licenses.")
     (license (list license:cc0 license:lppl1.3c))))
 
+(define-public texlive-docmfp
+  (package
+    (name "texlive-docmfp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/docmfp/" "source/latex/docmfp/"
+                   "tex/latex/docmfp/")
+             (base32
+              "0bqjgd7pj14bxxi37mlqvwp30zmslg019h9bihh3kjp26iz813yr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/docmfp")
+    (synopsis "Document non-LaTeX code")
+    (description
+     "This package extends the @code{doc} package to cater for documenting
+non-LaTeX code, such as Metafont or MetaPost, or other programming languages.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
