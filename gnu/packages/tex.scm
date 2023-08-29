@@ -91992,6 +91992,24 @@ geometrical information to permit references back and forth between source and
 PDF, assuming a conforming editor and PDF viewer.")
     (license license:lppl)))
 
+(define-public texlive-pdfwin
+  (package
+    (name "texlive-pdfwin")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pdfwin/" "tex/latex/pdfwin/")
+             (base32
+              "0n89nl0layrjhz79jr7zsnbz5kzik1b2ha71npw3c5qpc2mvrrhk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pdfwin")
+    (synopsis "Customizable windows for screen viewing of TeX documents")
+    (description
+     "This package provides customizable windows for screen viewing of TeX
+documents.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
