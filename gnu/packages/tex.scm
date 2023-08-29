@@ -98446,6 +98446,22 @@ searching and splitting; controlled expansion; redefinition of macros; and
 concatenated macro names; macros for text replacement.")
     (license license:lppl)))
 
+(define-public texlive-topfloat
+  (package
+    (name "texlive-topfloat")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/topfloat/" "tex/latex/topfloat/")
+             (base32
+              "04m5avwr7v713k6ygbs23bvpk761c2m7cvmq677zwfq6983abrrf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/topfloat")
+    (synopsis "Move floats to the top of the page")
+    (description "This package moves floats to the top of the page.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
