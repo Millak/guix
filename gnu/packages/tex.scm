@@ -89633,6 +89633,26 @@ with the @code{multicol} package, hence its name, but also supports the
 classes (and related classes such as the KOMA-Script equivalents).")
     (license license:lppl1.3c)))
 
+(define-public texlive-multidef
+  (package
+    (name "texlive-multidef")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/multidef/"
+                   "source/latex/multidef/"
+                   "tex/latex/multidef/")
+             (base32
+              "0cicj54nkl6b4f10j3zr5n1hjakrb8nq7lah4cf4l6qy68d11ias")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/multidef")
+    (synopsis "Quickly define several similar macros")
+    (description
+     "@code{multidef} provides a simple way of defining several macros having
+similar definitions.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
