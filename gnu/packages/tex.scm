@@ -90791,6 +90791,30 @@ encourage their users to use the environments provided by the @code{amsmath}
 package.")
     (license license:lppl)))
 
+(define-public texlive-opcit
+  (package
+    (name "texlive-opcit")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/opcit/" "doc/latex/opcit/"
+                   "source/latex/opcit/" "tex/latex/opcit/")
+             (base32
+              "1x6jjhg5z33kxkrs1fc5snvvzaiz95dgpdbzfmw81v565l84ppyc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/opcit")
+    (synopsis "Footnote-style bibliographical references")
+    (description
+     "This package addresses the problem of expressing citations in a style that is
+natural for humanities studies, yet does not interfere with the flow of
+text (as author-year styles do).  The package differs from @code{footbib} in
+that it uses real footnotes, potentially in the same series as any of the
+document's other footnotes.  @code{opcit} also, as its name implies, avoids
+repetition of full citations, achieving this, to a large extent,
+automatically.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
