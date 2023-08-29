@@ -84132,6 +84132,26 @@ character as a shorthand as in the @code{\\MakeShortVerb} command of the
 into a box and executes the code afterwards.")
     (license license:lppl1.3c)))
 
+(define-public texlive-gradient-text
+  (package
+    (name "texlive-gradient-text")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gradient-text/"
+                   "tex/latex/gradient-text/")
+             (base32
+              "00gnv7gbs583mwviajlfpr0m748s1ysc9h7aig8bwhn8v1rrjxqw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gradient-text")
+    (synopsis "Decorate text with linear gradient colors")
+    (description
+     "This package enables writers to conveniently decorate text with linear
+gradient colors.  The RGB values of the first and the last character are
+specified as parameters while the rest of the text is colored automatically.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
