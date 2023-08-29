@@ -85299,6 +85299,27 @@ enhanced back-referencing system.")
 @command{xdvi}.  The package is now largely superseded by @code{hyperref}.")
     (license license:lppl)))
 
+(define-public texlive-hyperbar
+  (package
+    (name "texlive-hyperbar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hyperbar/"
+                   "source/latex/hyperbar/"
+                   "tex/latex/hyperbar/")
+             (base32
+              "1v059dqmjfp0bv4b3w7bd99z7b5cip4zrr2qll4fw9fq4w36gxzy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hyperbar")
+    (synopsis "Add interactive barcode fields to PDF forms")
+    (description
+     "The package extends the hyperref functionality for creating interactive forms
+to allow adding Barcode form fields supported by some modern PDF readers.
+Currently, only pdfTeX is supported.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
