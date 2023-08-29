@@ -75896,6 +75896,26 @@ the @code{chletter} document class, it is not tied to it and may be used as
 a general purpose package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-childdoc
+  (package
+    (name "texlive-childdoc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/childdoc/"
+                   "source/latex/childdoc/"
+                   "tex/latex/childdoc/")
+             (base32
+              "15l1jv13c8lprhlqw698zkzz1h54h4nyqvvlhgafkfzrh6jrf6cq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/childdoc")
+    (synopsis "Directly compile @code{\\include}'d child documents")
+    (description
+     "This LaTeX2e package enables the direct compilation of document sections
+included by @code{\\include} to individual files.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
