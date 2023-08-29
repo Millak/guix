@@ -93580,6 +93580,27 @@ digits and decimal separators aligned.  Furthermore, rounding to the desired
 precision is possible.")
     (license license:lppl1.2+)))
 
+(define-public texlive-rcs-multi
+  (package
+    (name "texlive-rcs-multi")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/rcs-multi/"
+                   "source/latex/rcs-multi/"
+                   "tex/latex/rcs-multi/")
+             (base32
+              "13wa428acrycfrqva5agdq7mhnxr2cya5jzlprrs5k4bn01g40lj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/rcs-multi")
+    (synopsis "Typeset RCS version control in multiple-file documents")
+    (description
+     "The package enables the user to typeset version control information provided
+by RCS keywords (e.g., @samp{$ID: ... $}) in LaTeX documents that contain
+multiple TeX files.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
