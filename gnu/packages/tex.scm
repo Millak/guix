@@ -84470,6 +84470,25 @@ provided which compiles each slide separately, this way avoiding long compile
 times.")
     (license (list license:lppl1.3+ license:gpl2))))
 
+(define-public texlive-gs1
+  (package
+    (name "texlive-gs1")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gs1/" "source/latex/gs1/"
+                   "tex/latex/gs1/")
+             (base32
+              "0r8lqj5gd349b1blgqq6c5v9mm7s9h6jb131fij1mmm7vrnr1vrc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gs1")
+    (synopsis "Typeset EAN barcodes using TeX rules, only")
+    (description
+     "The (LaTeX3) package typesets EAN-8 and EAN-13 barcodes, using the facilities
+of the @code{rule-D} package.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
