@@ -85904,6 +85904,27 @@ a space.  Package @code{isopt} provides a macro @code{\\ISO} which inserts
 a user defined space between number and unit.")
     (license license:lppl)))
 
+(define-public texlive-isorot
+  (package
+    (name "texlive-isorot")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/isorot/" "source/latex/isorot/"
+                   "tex/latex/isorot/")
+             (base32
+              "1mpph7pvcw6l65zkq641gc0c0j0vq593mqsqhbb6zq3cmvc00dkr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/isorot")
+    (synopsis "Rotation of document elements")
+    (description
+     "The package is for rotation of document elements.  It is a combination of the
+@code{lscape} package and an extension of the @code{rotating} package.  The
+package is designed for use with the @code{iso} class but may be used with any
+normal class.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
