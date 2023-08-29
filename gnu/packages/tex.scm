@@ -100601,6 +100601,27 @@ to support hopefully sufficient functionalities, that the linguist may need.")
 footnotes double-columned.")
     (license license:lppl)))
 
+(define-public texlive-yagusylo
+  (package
+    (name "texlive-yagusylo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/yagusylo/"
+                   "source/latex/yagusylo/"
+                   "tex/latex/yagusylo/")
+             (base32
+              "0y2fgfj21m15n44xc6i996rgyf4wpg7wjk0db6cyc5wb7q012270")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/yagusylo")
+    (synopsis "Symbol loader")
+    (description
+     "The package allows the user to access a symbol without loading the package
+that usually provides it; this has the advantage of avoiding the name clashes
+that so commonly trouble those who load symbol-packages.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
