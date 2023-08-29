@@ -72683,6 +72683,25 @@ address books or included into letter classes like @code{akletter} or
 output provides files in various formats for address books or time planners.")
     (license license:lppl1.3+)))
 
+(define-public texlive-advdate
+  (package
+    (name "texlive-advdate")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/advdate/" "tex/latex/advdate/")
+             (base32
+              "0ixgswmsiy81d9dsrk1w36qlwrsgqmcs2kkvlymgb73n8jfh8n02")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/advdate")
+    (synopsis "Print a date relative to today")
+    (description
+     "This package provides macros which can add a specified number of days to the
+current date (as specified in @code{\\today}), to save, set and restore the
+current date and to print it.  The package has only been tested with Czech
+dates.")
+    (license license:lppl1.3+)))
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
