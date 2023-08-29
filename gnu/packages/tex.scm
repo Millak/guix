@@ -98027,6 +98027,23 @@ the theorem number).  The scheme is particularly valuable if the author
 decides to change a lemma to a proposition or a theorem (or whatever).")
     (license (list license:lppl license:gpl2))))
 
+(define-public texlive-thinsp
+  (package
+    (name "texlive-thinsp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/thinsp/" "tex/latex/thinsp/")
+             (base32
+              "1brnqvzj9z74dalymnk3yrmagqrlrbq8zq0whcxg3bi33gx4b76f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/thinsp")
+    (synopsis "Stretchable @code{\\thinspace} for LaTeX")
+    (description
+     "The package redefines @code{\\thinspace} to have a stretch component.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
