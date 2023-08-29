@@ -98078,6 +98078,31 @@ The features of the bundle include: a key-value interface to
 a single macro call.")
     (license license:lppl1.3c)))
 
+(define-public texlive-threadcol
+  (package
+    (name "texlive-threadcol")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/threadcol/"
+                   "source/latex/threadcol/"
+                   "tex/latex/threadcol/")
+             (base32
+              "0mkwcxhiajak2xhq52x3bn134sgylqk6bi3fswg4nvvz66511xc9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/threadcol")
+    (synopsis "Organize document columns into PDF \"article thread\"")
+    (description
+     "The package combines a document's columns into a PDF ``article thread''.
+PDF readers that support this mechanism can be instructed to scroll
+automatically from column to column, which facilitates on-screen reading of
+two-column documents.  Even for single-column documents, threadcol supports
+the creation of multiple article threads, which help organize discontiguous
+but logically related regions of text into a form that the user can scroll
+through as if its contents were contiguous.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
