@@ -83962,6 +83962,26 @@ package.")
 package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-glossaries-slovene
+  (package
+    (name "texlive-glossaries-slovene")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/glossaries-slovene/"
+                   "source/latex/glossaries-slovene/"
+                   "tex/latex/glossaries-slovene/")
+             (base32
+              "16lp6vgkdz49kjc2axzzpa43iv20xlnm1fg1jafyx8d600ys4szw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/glossaries-slovene")
+    (synopsis "Slovene language module for @code{glossaries} package")
+    (description
+     "This package provides a Slovene language module for @code{glossaries}
+package.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
