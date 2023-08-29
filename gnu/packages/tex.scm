@@ -80536,6 +80536,28 @@ anchors")
 @code{\\endnote} command.")
     (license license:lppl1.2+)))
 
+(define-public texlive-engpron
+  (package
+    (name "texlive-engpron")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/engpron/" "source/latex/engpron/"
+                   "tex/latex/engpron/")
+             (base32
+              "1gj67i6snlfhkycmrjkn16qw664qi59z5wgmrr22m44hv495yf47")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/engpron")
+    (synopsis "Helps to type the pronunciation of English words")
+    (description
+     "This package provides macros beginning with the PS character, made active,
+which enable us to write the British or American English pronunciation as one
+can find it in the @emph{English Pronouncing Dictionary} by Daniel Jones.
+There is an option to typeset the pronunciation in the style of Harrap's
+dictionary.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
