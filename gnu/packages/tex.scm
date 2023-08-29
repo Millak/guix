@@ -73081,6 +73081,26 @@ algorithmic graphics programmed in the TeX language.  The package supersedes
 the @code{arrayjob} package.")
     (license license:lppl)))
 
+(define-public texlive-arraysort
+  (package
+    (name "texlive-arraysort")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/arraysort/"
+                   "source/latex/arraysort/"
+                   "tex/latex/arraysort/")
+             (base32
+              "1nbxpny8vhc7kdhbbbv43xkf8iy23j90bz25aapgz7q3k2865hl0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/arraysort")
+    (synopsis "Sort arrays (or portions of them)")
+    (description
+     "The package provides a mechanism for sorting arrays (or portions of them);
+the arrays should have been created using the @code{arrayjobx} package.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
