@@ -91213,6 +91213,30 @@ number of pages, so the package also provides labels @code{pagesLTS.<numbering
 scheme>}, where the numbering scheme is @code{arabic}, @code{roman}, etc.")
     (license license:lppl1.3+)))
 
+(define-public texlive-palette
+  (package
+    (name "texlive-palette")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/palette/" "source/latex/palette/"
+                   "tex/latex/palette/")
+             (base32
+              "1sb4jfrp2g1nf0a9ihzcfwsfc2b7mdx3knfdzzw3m6hfkhgplv4f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/palette")
+    (synopsis "Create palettes for colors and symbols that can be swapped in")
+    (description
+     "The package @code{palette} contains two files: @file{colorpalette.sty} and
+@file{symbolpalette}.  One deals with colors and the other deals with symbols;
+the implementation is quite similar.  With this package you can create themes.
+Each of these themes have a set of colors, and you can create palettes based
+on this theme with specific color values for each of the theme's color slots.
+The active palette for each theme can be swapped in to make experimenting with
+colors easier or give users choices as to which theme they pick.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
