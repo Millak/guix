@@ -87663,6 +87663,28 @@ Code family of fonts.")
 using the experimental LaTeX 3 syntax.")
     (license license:lppl1.3+)))
 
+(define-public texlive-lt3rawobjects
+  (package
+    (name "texlive-lt3rawobjects")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lt3rawobjects/"
+                   "source/latex/lt3rawobjects/"
+                   "tex/latex/lt3rawobjects/")
+             (base32
+              "01hmipqcrgfqs35k8yzxir6vjnydvc65r1hhg8lfh2dycvqg9cki")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lt3rawobjects")
+    (synopsis "Objects and proxies in LaTeX3")
+    (description
+     "This package introduces a new mechanism to create objects like the well known
+C structures.  The functions exported by this package are quite low level, and
+many important mechanisms like member protection and name resolution aren't
+already defined and should be introduced by intermediate packages.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
