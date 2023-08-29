@@ -84090,6 +84090,29 @@ override redefinitions; @code{\\afterfi} and friends; commands from
 environment is defined).")
     (license license:lppl)))
 
+(define-public texlive-gmverb
+  (package
+    (name "texlive-gmverb")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gmverb/" "tex/latex/gmverb/")
+             (base32
+              "00paaf5s919bfr3g3znv9baa0lswm5aaxdzmp1fl2kr4rcgk8d3v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gmverb")
+    (synopsis
+     "Variant of LaTeX @code{\\verb}, @code{verbatim} and @code{shortvrb}")
+    (description
+     "This package provides a redefinition of @code{\\verb} and @code{verbatim} so
+that long lines are breakable before @samp{\\} and after @samp{@{} with
+@samp{%} as hyphen.  It allows you to define your own @code{verbatim}-like
+environments (subject to a size limit) and allows you to declare any single
+character as a shorthand as in the @code{\\MakeShortVerb} command of the
+@code{shortvrb} package.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
