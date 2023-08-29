@@ -81690,6 +81690,31 @@ tree, or a femaleline/matrilineal tree.  For Japanese, the @file{jlreq.cls}
 vertical option (@emph{tate}) is supported.")
     (license license:gpl2+)))
 
+(define-public texlive-fancyhandout
+  (package
+    (name "texlive-fancyhandout")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fancyhandout/"
+                   "tex/latex/fancyhandout/")
+             (base32
+              "1y59v6kivaqbzc2zms1bzjvkz6xz13rmiqzsm6w9diw5wbfd2q9m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fancyhandout")
+    (synopsis "LaTeX class for producing nice-looking handouts")
+    (description
+     "This package breaks with some of LaTeX's principles and redefines basic LaTeX
+commands with the aim of producing well-designed and clearly structured
+handouts: a sans-serif font is used by default; sections are not numbered, but
+highlighted by underlining; head- and footline display document information;
+and in order to avoid too much whitespace around the text the margin sizes are
+adjusted to smaller values.  All in all, @code{fancyhandout} provides a means
+of typesetting documents not exclusively consisting of running text in
+a beautiful way.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
