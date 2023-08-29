@@ -73171,6 +73171,25 @@ command.  There is provision for answering ``same as last time'' or ``all
 files''.")
     (license license:lppl1.3+)))
 
+(define-public texlive-assignment
+  (package
+    (name "texlive-assignment")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/assignment/"
+                   "tex/latex/assignment/")
+             (base32
+              "182q447ng23vhw3d27dr3dnpqfrp3y8jl7j2l2l6angg9fslp0g0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/assignment")
+    (synopsis "Class file for typesetting homework and lab assignments")
+    (description
+     "This package provides a class file for typesetting homework and lab
+assignments.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
