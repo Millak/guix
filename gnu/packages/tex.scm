@@ -83013,6 +83013,30 @@ a frame around a box of text.  The macros also provide for typesetting an
 empty box of given dimensions.")
     (license license:lppl)))
 
+(define-public texlive-frege
+  (package
+    (name "texlive-frege")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/frege/" "tex/latex/frege/")
+             (base32
+              "090qsdimmgkmq9xba1kjaxy941y1bkbxlirkx5sn117kfl3v98mq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/frege")
+    (synopsis "Typeset fregean @emph{Begriffsschrift}")
+    (description
+     "The package defines a number of new commands for typesetting fregean
+@emph{Begriffsschrift} in LaTeX.  It is loosely based on the package
+@code{begriff}, and offers a number of improvements including better relative
+lengths of the content stroke with respect to other strokes, content strokes
+that point at the middle of lines rather than the bottom, a greater width for
+the assertion stroke as compared to the content stroke, a more intuitive
+structure for the conditional, greater care taken to allow for the line width
+in the spacing of formulas.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
