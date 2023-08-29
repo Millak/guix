@@ -83098,6 +83098,26 @@ The package should also work with a non-standard table environment.")
 and @code{\\chapter} and other @code{\\section}-like commands.")
     (license license:lppl)))
 
+(define-public texlive-fullblck
+  (package
+    (name "texlive-fullblck")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fullblck/"
+                   "source/latex/fullblck/"
+                   "tex/latex/fullblck/")
+             (base32
+              "1prr2arwxx6bdzbl9pyhcw25d5jillq1jy6mnyag23rzp2izywrl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fullblck")
+    (synopsis "Left-blocking for @code{letter} class")
+    (description
+     "This package can be used with the @code{letter} document class to set the
+letter in a fullblock style (everything at the left margin).")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
