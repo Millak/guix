@@ -76686,6 +76686,26 @@ available within @code{xcolor}.")
     ;; LGPL." Assume the latest one.
     (license license:lgpl3+)))
 
+(define-public texlive-colorweb
+  (package
+    (name "texlive-colorweb")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/colorweb/"
+                   "source/latex/colorweb/"
+                   "tex/latex/colorweb/")
+             (base32
+              "1hm2xwnyl3ycnmc8lq28cw79pwm7h5dj0f5z0569mc21p4dgmcg8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/colorweb")
+    (synopsis "Extend the @code{color} package colour space")
+    (description
+     "The package makes the 216 ``web-safe colours'' available to the standard
+@code{color} package.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
