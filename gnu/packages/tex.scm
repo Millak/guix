@@ -82325,6 +82325,26 @@ notes, with links to the pages on which they appear.")
      "The package provides several page layouts, selectable by package options.")
     (license license:gpl3+)))
 
+(define-public texlive-flabels
+  (package
+    (name "texlive-flabels")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/flabels/" "source/latex/flabels/"
+                   "tex/latex/flabels/")
+             (base32
+              "1s2yggjvbsbbzryxqy8kdy6yw38q0wnzr82hjwfcpip83f4mm123")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/flabels")
+    (synopsis "Labels for files and folders")
+    (description
+     "This package provides macros for typesetting pretty labels (optionally
+colored) for the back of files or binders (currently only the special A4
+@emph{Leitz-Ordner} ring binder is supported).")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
