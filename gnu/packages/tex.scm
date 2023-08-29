@@ -92290,6 +92290,27 @@ that it displays its content as normal paragraph content, ignoring any white
 space preformatting.")
     (license license:lppl1.3+)))
 
+(define-public texlive-phfsvnwatermark
+  (package
+    (name "texlive-phfsvnwatermark")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/phfsvnwatermark/"
+                   "source/latex/phfsvnwatermark/"
+                   "tex/latex/phfsvnwatermark/")
+             (base32
+              "0q8ylfraz8c20x665aacgjzz1sx7ykp7wg0ygxv2q3z2cniqgr3z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/phfsvnwatermark")
+    (synopsis "Watermarks with version control information from SVN")
+    (description
+     "This package allows you to add version control information as a gray
+watermark on each page of your document.  The SVN info is read from keyword
+tags such as @code{$Id$}, via the @code{svn} or @code{svn-multi} packages.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
