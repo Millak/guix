@@ -91742,6 +91742,27 @@ files.  It also supports LaTeX, Dvips, @command{ps2pdf}, LaTeX,
 annotations by PDF viewers may vary.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pdfcprot
+  (package
+    (name "texlive-pdfcprot")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pdfcprot/"
+                   "source/latex/pdfcprot/"
+                   "tex/latex/pdfcprot/")
+             (base32
+              "12ijgxy2ki3ygi3kfzi2z6shys9wb32gra8qdmksnp5zn3rv5spf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pdfcprot")
+    (synopsis "Activating and setting of character protruding using pdfLaTeX")
+    (description
+     "This package provides an easy interface to adjust the character protrusion
+for different fonts and choosing the right adjustment automatically depending
+on the font.  The package is largely superseded by @code{microtype}.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
