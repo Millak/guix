@@ -74956,6 +74956,28 @@ generator (e.g., as part of e-pTeX).  The package does not define any user
 commands.")
     (license license:expat)))
 
+(define-public texlive-bxdvidriver
+  (package
+    (name "texlive-bxdvidriver")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bxdvidriver/"
+                   "tex/latex/bxdvidriver/")
+             (base32
+              "1x5ah28mlimw9923xm5sz03vzzhharjw0hgbp63fvbj45ihmbxnm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bxdvidriver")
+    (synopsis
+     "Enables specifying a driver option effective only in DVI output")
+    (description
+     "This single-function package enables authors to specify a global driver option
+(dvips, dvipdfmx, etc) which is applied only when the engine outputs a DVI
+file.  It is useful to create special document- templates that can be compiled
+in both PDF-mode and DVI-mode.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
