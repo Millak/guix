@@ -94773,6 +94773,27 @@ styles of package @code{fancyhdr}.  This allows the combination of features of
 @code{fancyhdr} with features of @code{scrlayer}.")
     (license license:lppl1.3c)))
 
+(define-public texlive-scrlttr2copy
+  (package
+    (name "texlive-scrlttr2copy")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/scrlttr2copy/"
+                   "tex/latex/scrlttr2copy/")
+             (base32
+              "05wgvw2fqaf5fnrxx1viscic4c3hmncmkbji9kljwx8mpl2s2zcs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/scrlttr2copy")
+    (synopsis
+     "Letter class option file for the automatic creation of copies")
+    (description
+     "The file @file{copy.lco} provides the new class option @code{copy} to the
+KOMA-Script letter class @code{scrlttr2}.  If this option is given, all pages
+of a specific letter are duplicated with background text marking as copies.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
