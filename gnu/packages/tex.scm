@@ -86428,6 +86428,29 @@ in @code{koma-scripts} classes.  Moreover, it is possible to use BibLaTeX,
 while the original @code{moderncv} class is incompatible with it.")
     (license license:lppl1.3+)))
 
+(define-public texlive-koma-script-sfs
+  (package
+    (name "texlive-koma-script-sfs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/koma-script-sfs/"
+                   "tex/latex/koma-script-sfs/")
+             (base32
+              "1awzff92bmc0gh5sycs5646cn15kzk7v2l79zjm27f2mpahd65l8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/koma-script-sfs")
+    (synopsis "@code{koma-script} letter class option for Finnish")
+    (description
+     "This package provides a @code{koma-script} parameter set for letters on A4
+paper, complying with Finnish standards SFS 2486, 2487 and 2488; suitable for
+window envelopes with window on the left size in the sizes C5, C65, E5 and E65
+(although, because the address window is smaller, for sizes E5 and E65 the
+address may not fit within the window, but ordinary 3-line address should
+fit).")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
