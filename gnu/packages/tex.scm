@@ -90309,6 +90309,26 @@ using KOMA-Script.  This class is provided as is solely for the benefit of
 anyone who wants to compile the documentation of those packages.")
     (license license:lppl)))
 
+(define-public texlive-noconflict
+  (package
+    (name "texlive-noconflict")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/noconflict/"
+                   "tex/latex/noconflict/")
+             (base32
+              "0bsn56qy21j8iqrk0cz522ad7x9sn67gfrk5xzjf6y9yhyach44p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/noconflict")
+    (synopsis "Resolve macro name conflict between packages")
+    (description
+     "The package provides several commands to prefix (and hence obscure) a macro's
+(or a sequence of macros') name, and to restore the original macro(s) at places
+in a document where they are needed.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
