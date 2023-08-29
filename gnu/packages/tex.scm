@@ -86501,6 +86501,29 @@ provisioning of CVs in multiple languages and the selection of a language via
 Babel or Polyglossia.")
     (license license:lppl1.2+)))
 
+(define-public texlive-ktv-texdata
+  (package
+    (name "texlive-ktv-texdata")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ktv-texdata/"
+                   "source/latex/ktv-texdata/"
+                   "tex/latex/ktv-texdata/")
+             (base32
+              "1flmshqyjjh5m6s51rym9rn92pgqlkjvsxlvifgxj5blc4p8gmhi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ktv-texdata")
+    (synopsis "Extract subsets of documents")
+    (description
+     "The package defines an exercice environment which numbers every exercise, and
+a command @code{\\get} to extract a collection whose argument is
+a comma-separated set of exercise index numbers.  While the package was
+designed for teachers constructing tables of exercises, it plainly has more
+general application.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
