@@ -91304,6 +91304,27 @@ commands for revisions.")
 folding paper CD cases.")
     (license license:lppl)))
 
+(define-public texlive-papermas
+  (package
+    (name "texlive-papermas")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/papermas/"
+                   "source/latex/papermas/"
+                   "tex/latex/papermas/")
+             (base32
+              "0cyw6lrhh6nh8rhwky6assda80rvgcc5djmdd9zl68svp373vxd2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/papermas")
+    (synopsis "Compute the mass of a printed version of a document")
+    (description
+     "The package computes the number of sheets of paper used by, and hence the
+mass of a document.  This is useful (for example) when calculating postal
+charges.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
