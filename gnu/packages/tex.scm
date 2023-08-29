@@ -90370,6 +90370,28 @@ macro or environment.")
 impose italics correction at the end.")
     (license license:lppl)))
 
+(define-public texlive-nolbreaks
+  (package
+    (name "texlive-nolbreaks")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/nolbreaks/"
+                   "tex/latex/nolbreaks/")
+             (base32
+              "00hpb5zzr3v342a7vgx3cgwhzsiywqp4w8qrj3w042h0ix17q7ja")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nolbreaks")
+    (synopsis "No line breaks in text")
+    (description
+     "Using this package, @samp{\\nolbreaks@{some text@}} to prevent line breaks in
+@samp{some text}.  This has the advantage over @code{\\mbox} that glue (rubber
+space) remains flexible.  Most common cases are handled
+here (@code{\\linebreak} is disabled, for example) but spaces hidden in macros
+or @samp{@{} and @samp{@}} can still create break-points.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
