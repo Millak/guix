@@ -99809,6 +99809,29 @@ substitution.  It also allows you to carefully control argument expansion
 using a LaTeX3-style argument specification.")
     (license license:lppl1.3+)))
 
+(define-public texlive-wordcount
+  (package
+    (name "texlive-wordcount")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/wordcount/" "scripts/wordcount/"
+                   "tex/latex/wordcount/")
+             (base32
+              "1x4qx3skvlndinligp0k2j8dpgpkim6374vc4fxfjrsd2bhw2fnm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "wordcount.sh")))
+    (home-page "https://ctan.org/pkg/wordcount")
+    (synopsis "Estimate the number of words in a LaTeX document")
+    (description
+     "The package provides a relatively easy way of estimating the number of words
+in a LaTeX document.  It requires something like Unix @samp{grep -c} that can
+search a file for a particular string and report the number of matching lines.
+An accompanying shell script @file{wordcount.sh} contains more information in
+its comments.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
