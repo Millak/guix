@@ -88761,6 +88761,25 @@ displaying document license information; facilitate basic internationalisation
 and localisation.")
     (license license:lppl1.3+)))
 
+(define-public texlive-method
+  (package
+    (name "texlive-method")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/method/" "source/latex/method/"
+                   "tex/latex/method/")
+             (base32
+              "0x8lqdj245jpkqywjwql34l0qvhvbx38qk02kcf03icdy1szfdlr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/method")
+    (synopsis "Typeset method and variable declarations")
+    (description
+     "The package supports typesetting of programming language method and variable
+declarations.  It supports declarations in German, French and English.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
