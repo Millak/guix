@@ -75855,6 +75855,25 @@ environments (in reverse order) were not closed.  There are no user macros:
 just use the package.")
     (license license:expat)))
 
+(define-public texlive-chet
+  (package
+    (name "texlive-chet")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/chet/" "doc/latex/chet/"
+                   "tex/latex/chet/")
+             (base32
+              "1gkpp94l6843hxgana60rgs08qifdj7j68dv834p132hc3n08cbn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chet")
+    (synopsis "LaTeX layout inspired by @code{harvmac}")
+    (description
+     "The package aims to streamline the work of typesetting, and to provide the
+look and feel of @code{harvmac} for readers.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
