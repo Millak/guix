@@ -98190,6 +98190,34 @@ a ticket definition file and the two commands @code{\\ticketdefault} and
 @code{\\ticket}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tipauni
+  (package
+    (name "texlive-tipauni")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tipauni/" "source/latex/tipauni/"
+                   "tex/latex/tipauni/")
+             (base32
+              "1wwanhv28azbmx7wsx4xwxr1mbpzxz34kxin8dyl3ds816w0m6ar")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tipauni")
+    (synopsis "Producing Unicode characters with TIPA commands")
+    (description
+     "Package TIPA uses the T3 encoding for producing IPA characters.  The package
+is widely used in the field of linguistics, but because of the old encoding,
+the output documents are less productive than Unicode-based documents.  This
+package redefines most of the TIPA-commands for outputting Unicode characters.
+Users can now use their beloved TIPA shortcuts with the benefits of Unicode,
+i.e., searchability, copy-pasting, changing the font and many more.
+
+As this package needs the @code{fontspec} package for loading an IPA font, it
+needs to be compiled with XeLaTeX or LuaLaTeX.  This package can also be
+viewed as an ASCII-based input method for producing IPA characters in Unicode.
+It needs the New Computer Modern font for printing IPA characters.")
+    (license (list license:gpl3+ license:fdl1.3+))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
