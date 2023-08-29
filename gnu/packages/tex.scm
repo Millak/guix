@@ -90499,6 +90499,26 @@ as the command @code{\\color}.  However, @code{\\setnormalcolor} will not
 change the current colour but the normal or default color.")
     (license license:lppl1.3+)))
 
+(define-public texlive-notes
+  (package
+    (name "texlive-notes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/notes/" "source/latex/notes/"
+                   "tex/latex/notes/")
+             (base32
+              "0sbkksm3zgp2fd8lzay7mszhzs6n201qzy4a652j972yzy5bs1j7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/notes")
+    (synopsis "Mark sections of a document")
+    (description
+     "The package provides environments to highlight significant portions of text
+within a document, by putting the text in a box and adding an icon in the
+margin.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
