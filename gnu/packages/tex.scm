@@ -96000,6 +96000,32 @@ package aims to provide an automatic and customizable approach for math symbol
 styling which eliminates the need to enter style commands repeatedly.")
     (license license:lppl1.3c)))
 
+(define-public texlive-smartref
+  (package
+    (name "texlive-smartref")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/smartref/" "tex/latex/smartref/")
+             (base32
+              "11fvmy3173spkg8y8l9nfjwlfnhyqhz4mp8h32234x72ybjhkmhl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/smartref")
+    (synopsis "Extend LaTeX's @code{\\ref} capability")
+    (description
+     "The package extends the LaTeX labelling system: whenever a label is set,
+the values of counters (selected by the user) are recorded, along with the
+label.  The value of these counters can be recalled with a command similar to
+@code{\\pageref}.
+
+The package also adds commands @code{\\s@var{NAME}ref} (for each counter
+@var{NAME} that the user has selected); these commands display something only
+if the value of the @var{NAME} counter is changed from when the label was set.
+Many commands are provided to serve as a macro programming environment for
+using the extended labels.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
