@@ -100084,6 +100084,28 @@ a definition of the Google Material Color Palette for its use in document
 writing with LaTeX and friends.")
     (license license:lppl1.3+)))
 
+(define-public texlive-xcolor-solarized
+  (package
+    (name "texlive-xcolor-solarized")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xcolor-solarized/"
+                   "source/latex/xcolor-solarized/"
+                   "tex/latex/xcolor-solarized/")
+             (base32
+              "1jcq23p50syr16hz1hskkwf55whb68sdyyh45y8q3zvh7q7y1qr7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xcolor-solarized")
+    (synopsis
+     "Defines the 16 colors from Ethan Schoonover's Solarized palette")
+    (description
+     "Built on top of the @code{xcolor} package, this package defines the sixteen
+colors of Ethan Schoonover's popular color palette, Solarized, for use in
+documents typeset with LaTeX and friends.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
