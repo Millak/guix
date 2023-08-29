@@ -88954,6 +88954,28 @@ places.  In addition, the package provides a stack-based programming
 environment.")
     (license license:lppl1.3+)))
 
+(define-public texlive-minipage-marginpar
+  (package
+    (name "texlive-minipage-marginpar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/minipage-marginpar/"
+                   "source/latex/minipage-marginpar/"
+                   "tex/latex/minipage-marginpar/")
+             (base32
+              "0k6ygpbb8ym45z7r4zk6wbywaamxk5kclk01i7pryg9wk1j6kwwi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/minipage-marginpar")
+    (synopsis "Minipages with marginal notes")
+    (description
+     "This package allows @code{\\marginpar}-commands inside of minipages and other
+boxes.  The package defines an environment @code{minipagewithmarginpars} (to
+be used like minipage) --- and the internal commands may be used by other
+packages to define similar environments or commands.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
