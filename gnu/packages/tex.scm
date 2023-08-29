@@ -77192,6 +77192,28 @@ data.")
     ;; "This package is released under the GNU LGPL."  Assume latest.
     (license license:lgpl3+)))
 
+(define-public texlive-coolthms
+  (package
+    (name "texlive-coolthms")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/coolthms/"
+                   "source/latex/coolthms/"
+                   "tex/latex/coolthms/")
+             (base32
+              "1274lmvwq0mhmk0kdnnvivzkrrly2b43jdrmvjh28hpms299bc42")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/coolthms")
+    (synopsis "Reference items in a theorem environment")
+    (description
+     "The package provides the means to directly reference items of lists nested in
+@code{theorem}-like environments (e.g., as @samp{Theorem 1 a}).  The package
+extends the @code{ntheorem} and @code{cleveref} packages.  The package also
+provides other theorem markup commands.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
