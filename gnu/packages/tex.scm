@@ -73640,6 +73640,27 @@ content on a separate Beamer frame shown by the command
 forth between the two frames.")
     (license license:lppl1.3c)))
 
+(define-public texlive-beameraudience
+  (package
+    (name "texlive-beameraudience")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beameraudience/"
+                   "tex/latex/beameraudience/")
+             (base32
+              "0rv01005p9x247ra1kmky8ifxjs2q9jgqc82hn7v2wn9v1a60qla")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beameraudience")
+    (synopsis "Assembling Beamer frames according to audience")
+    (description
+     "The Beamer Audience package provides macros to easily assemble frames
+according to different audiences.  It enables to pick up the frames for
+a specific audience while leaving their order according to a logical structure
+in the LaTeX source.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
