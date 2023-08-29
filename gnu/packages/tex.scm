@@ -88092,6 +88092,35 @@ MakeCirc is completely integrated with LaTeX documents and with other MetaPost
 drawing/graphic.  Its output is a PostScript file.")
     (license license:lppl)))
 
+(define-public texlive-makecookbook
+  (package
+    (name "texlive-makecookbook")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/makecookbook/")
+             (base32
+              "1abzwzsm2jh11qj2qr31bznfc344ynjrdagqayrcgifg4725fa0f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/makecookbook")
+    (synopsis "Make a cookbook")
+    (description
+     "The @code{makecookbook} bundle contains the files needed to create a nice
+quality family cookbook in a form ready to submit to most print-on-demand
+companies.  Modifiable choices have been made regarding standard book features
+such as trim size, margins, headers/footers, chapter heading formatting, front
+matter (copyright page, table of contents, etc.) and back matter (index).
+Commands and environments have been created to format the food stories and
+recipes.  The user will need to: supply their own food stories and recipes(!),
+and install the needed fonts.  We assume a LuaTeX compile.
+
+Please note that no new document class or package is included here.  Rather,
+we provide a modifiable preamble and a small number of other files that,
+together, fully support creation of all of the internal pages of
+a cookbook (i.e., everything except the cover art).")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
