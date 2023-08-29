@@ -94680,6 +94680,29 @@ have a box 1/30th longer than a 30-minute appointment.  A number of features
 are included to allow the user to customize the output.")
     (license license:lppl1.3c)))
 
+(define-public texlive-schooldocs
+  (package
+    (name "texlive-schooldocs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/schooldocs/"
+                   "source/latex/schooldocs/"
+                   "tex/latex/schooldocs/")
+             (base32
+              "0rfdxsfgi6d4q755fcp7kzc4lxfkvwwp82j3z7sfhp6xgqx11hm6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/schooldocs")
+    (synopsis "Various layout styles for school documents")
+    (description
+     "The purpose of this package is to provide several layout styles for school
+documents.  It is useful for exercise sheets, exams, course materials.  The
+package sets the page geometry (dimensions of text and margins) and the title
+typesetting; the various styles define the header, footer and title formatting.
+Many features are freely configurable.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
