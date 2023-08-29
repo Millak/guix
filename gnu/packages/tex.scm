@@ -74025,6 +74025,26 @@ be attractive.")
 colours and fonts.  It is suitable for both presentations and posters.")
     (license license:lppl1.3c)))
 
+(define-public texlive-beamertheme-simpledarkblue
+  (package
+    (name "texlive-beamertheme-simpledarkblue")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamertheme-simpledarkblue/"
+                   "tex/latex/beamertheme-simpledarkblue/")
+             (base32
+              "0kp3grbjgkgqqx01lca5afn5s30xi7r04ij9436w97gv15jva2ap")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamertheme-simpledarkblue")
+    (synopsis "Template for a simple presentation")
+    (description
+     "This is a simple but nice theme for Beamer.  Its features are: a simple
+structure, with page numbers in footer, no side bar, and simple colors, using
+only several foreground and background colors.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
