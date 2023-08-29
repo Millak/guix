@@ -81715,6 +81715,26 @@ of typesetting documents not exclusively consisting of running text in
 a beautiful way.")
     (license license:lppl1.3c)))
 
+(define-public texlive-fancylabel
+  (package
+    (name "texlive-fancylabel")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fancylabel/"
+                   "source/latex/fancylabel/"
+                   "tex/latex/fancylabel/")
+             (base32
+              "0haf3jjdrfxqnrzahq073j3sv9h7q4wmrxg30xay5w1dq6pkvp4r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fancylabel")
+    (synopsis "Complex labelling with LaTeX")
+    (description
+     "The package provides a complex labelling scheme.  It is designed to support
+the needs of the @code{chemschemex} package")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
