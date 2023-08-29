@@ -99857,6 +99857,38 @@ LaTeX's standard layout settings because they need a layout that resembles the
 usual ``wordlike'' output.")
     (license license:lppl)))
 
+(define-public texlive-worksheet
+  (package
+    (name "texlive-worksheet")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/worksheet/"
+                   "tex/latex/worksheet/")
+             (base32
+              "0bciww1nnjgh7z7w3b5fwh0dr2hbsqw6ymdsx9xxm2ycrxx0lbxk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/worksheet")
+    (synopsis "Easy creation of worksheets")
+    (description
+     "This package provides macros and an environment for easy worksheet creation:
+
+@itemize
+
+@item use the @code{exercise} environment for formating exercises in a simple,
+efficient design;
+
+@item typeset customized and automatically numbered worksheet titles in the
+same way as standard LaTeX titles (using @code{\\maketitle});
+
+@item provide course and author information with
+a @code{scrlayer}-@code{scrpage} based automated header; @end itemize
+
+This package conforms to different Babel languages. (Currently English,
+French, and German are supported.)")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
