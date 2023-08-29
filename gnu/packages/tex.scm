@@ -76489,6 +76489,32 @@ work in the last column of a table, but do not support verbatim material
 inside the cells.")
     (license license:lppl1.3+)))
 
+(define-public texlive-colophon
+  (package
+    (name "texlive-colophon")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/colophon/"
+                   "source/latex/colophon/"
+                   "tex/latex/colophon/")
+             (base32
+              "0sxj99ifah1gv4f84m4i48849npips0ypl997cdaq7k7ycidq41r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/colophon")
+    (synopsis "Provides commands for producing a colophon")
+    (description
+     "Colophons are a once-common design device by which a book (or document)
+designer gave some information to his readers about the design and makeup of
+the text.  It typically includes the publisher (if not included elsewhere in
+the document), font size, leading size, measure, and of course font face
+identification.  Sometimes it includes information about the tools used, as
+well.  This package provides some highly configurable macros, with sensible
+defaults, for producing colophons without having to muck around with a lot of
+manual code.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
