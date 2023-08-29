@@ -80272,6 +80272,28 @@ isotope number.  Properties are defined for the elements up to the atomic
 number 112.")
     (license license:lppl1.3c)))
 
+(define-public texlive-ellipsis
+  (package
+    (name "texlive-ellipsis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ellipsis/"
+                   "source/latex/ellipsis/"
+                   "tex/latex/ellipsis/")
+             (base32
+              "0saxqs2g911w7fqz8k1vs54wg61pjaqivryx9nvy5ik8p2pb30bs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ellipsis")
+    (synopsis "Fix uneven spacing around ellipses in LaTeX text mode")
+    (description
+     "This is a simple package that fixes a problem in the way LaTeX handles
+ellipses: it always puts a tiny bit more space after @code{\\dots} in text
+mode than before it, which results in the ellipsis being off-center when used
+between two words.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
