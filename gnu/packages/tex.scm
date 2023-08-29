@@ -85399,6 +85399,31 @@ package is responsive to the index-related options and commands of the
 KOMA-Script and @code{memoir} classes.")
     (license license:lppl)))
 
+(define-public texlive-ifallfalse
+  (package
+    (name "texlive-ifallfalse")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ifallfalse/"
+                   "source/latex/ifallfalse/"
+                   "tex/latex/ifallfalse/")
+             (base32
+              "0alv6y4pphbsz04hqj51gsh99xnn38srx6hz9y96gvkq0v66bx1d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ifallfalse")
+    (synopsis "Compare a string against a set of other strings")
+    (description
+     "This package allows you to check whether a string is contained within another
+set of strings, and perform an action if it is not.  This is done by using the
+@code{allfalse} environment and passing in a string and an action to be
+performed if the string is not contained in the set.  Then, passing in
+a string to the @code{\\orcheck} macro inside the respective @code{allfalse}
+environment adds that to the set of strings.  This package does not work with
+the LuaTeX engine.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
