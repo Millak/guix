@@ -81272,6 +81272,24 @@ matching, true/false, multiple-choice, fill-in-the-blank, and short
 answer/essay questions.")
     (license license:gpl3+)))
 
+(define-public texlive-example
+  (package
+    (name "texlive-example")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/latex/example/")
+             (base32
+              "06ld0b9gi8s7y6igijylfvj2qvj3d45z2ml9wd1zfzkpf32pghmy")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/example")
+    (synopsis "Typeset examples for TeX courses")
+    (description
+     "The package makes it easier to produce examples for TeX course.  It provides
+an example environment, which typesets its contents on the left of the page,
+and prints it verbatim on the right.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
