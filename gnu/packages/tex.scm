@@ -86848,6 +86848,27 @@ slightly increase their spacing;
 input in its internal verbatim-style environment.")
     (license license:lppl)))
 
+(define-public texlive-lcg
+  (package
+    (name "texlive-lcg")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lcg/" "source/latex/lcg/"
+                   "tex/latex/lcg/")
+             (base32
+              "0gj2bpw7fpa47dbs7myx6ch5lk2yc59qp3f6wv1b69gi0kg873cv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lcg")
+    (synopsis "Generate random integers")
+    (description
+     "The @code{lcg} package generates random numbers (integers) via a linear
+congruential generator (Schrage's method).  The random numbers are written to
+a counter.  The @code{keyval} package is used for the user to provide values
+for the range and a seed, and for the name of the counter to be used.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
