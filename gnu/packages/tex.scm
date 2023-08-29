@@ -97165,6 +97165,28 @@ optional arguments of item numbering similar to the @code{enumerate} or
 @code{paralist} packages.")
     (license license:lppl)))
 
+(define-public texlive-tabls
+  (package
+    (name "texlive-tabls")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tabls/" "tex/latex/tabls/")
+             (base32
+              "1rc8h2704ca5v7l3lxdm0mmnqc52bci216n6kylwl3770mgwivqw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tabls")
+    (synopsis "Better vertical spacing in tables and arrays")
+    (description
+     "This package modifies LaTeX's @code{array} and @code{tabular} environments to
+keep text from touching other text or hlines above or below.  Several new
+parameters are defined and some standard macros are re-defined.  The package
+slows down compilation of tables, since each entry is boxed twice.")
+    ;; These macros may be freely used, transmitted, reproduced, or modified
+    ;; provided that this notice is left intact.
+    (license (license:fsf-free "file://tex/latex/tabls/tabls.sty"))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
