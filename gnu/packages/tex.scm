@@ -77911,6 +77911,28 @@ in some script.  Analogous to how one might generate graphics in a script and
 import those graphics into a LaTeX document.")
     (license license:lppl1.3+)))
 
+(define-public texlive-dateiliste
+  (package
+    (name "texlive-dateiliste")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dateiliste/"
+                   "source/latex/dateiliste/"
+                   "tex/latex/dateiliste/")
+             (base32
+              "15dc7dm9jbcaia29v1sxxb83sgr937pmrzwnx6gkbcmmjvwc0ii0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dateiliste")
+    (synopsis "Extensions of the @code{\\listfiles} concept")
+    (description
+     "The package provides a file list (similar to that offered by
+@code{\\listfiles}), neatly laid out as a table.  The main document can be
+included in the list, and a command is available for providing RCS-maintained
+data for printing in the file list.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
