@@ -77428,6 +77428,35 @@ in a uniform design to ease the task of marking.")
      (license:non-copyleft
       "file://tex/latex/coursepaper/coursepaper.cls"))))
 
+(define-public texlive-coverpage
+  (package
+    (name "texlive-coverpage")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/coverpage/"
+                   "source/latex/coverpage/"
+                   "tex/latex/coverpage/")
+             (base32
+              "0m7a9dm5a8wvch096g5wfjmw9p435jvpnbxn2qxv5bvnihxigdh7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/coverpage")
+    (synopsis "Automatic cover page creation for scientific papers")
+    (description
+     "The package CoverPage was created to supplement scientific papers with
+a cover page containing bibliographical information, a copyright notice,
+and/or some logos of the author's institution.  The cover page is
+created (almost) automatically; this is done by parsing BibTeX information
+corresponding to the main document and reading a configuration file in which
+the author can set information like the affiliation he or she is associated
+with.  The cover page consists of header, body and footer; all three are
+macros which can be redefined using @code{\\renewcommand}, thus allowing easy
+customization of the package.  Additionally, it should be stressed that the
+cover page layout is totally independent of the main document and its page
+layout.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
