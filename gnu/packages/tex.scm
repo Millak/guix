@@ -99102,6 +99102,23 @@ usual @code{\\underline} is too long.  This package provides a generic command
 for creating underlines of various sizes and types.")
     (license license:lppl)))
 
+(define-public texlive-uspace
+  (package
+    (name "texlive-uspace")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/uspace/" "tex/latex/uspace/")
+             (base32
+              "0998pxjsjrbziy0pib2gbg6695nl9klz9f9i3qsczrby6zhihrgd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uspace")
+    (synopsis "Giving meaning to various Unicode space characters")
+    (description
+     "This LaTeX package gives meaning to various Unicode space characters.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
