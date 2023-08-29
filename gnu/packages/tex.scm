@@ -80666,6 +80666,26 @@ a chapter.  Both single epigraphs and lists of epigraphs are catered for.
 Various aspects are easily configurable.")
     (license license:lppl1.3c)))
 
+(define-public texlive-epigraph-keys
+  (package
+    (name "texlive-epigraph-keys")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/epigraph-keys/"
+                   "tex/latex/epigraph-keys/")
+             (base32
+              "0agba7zsi2yafihbwfk40k4rbdalq945n3c6racg4gvi6a5wk2kh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/epigraph-keys")
+    (synopsis "Epigraphs using key values")
+    (description
+     "This package lays out epigraphs: quotations across a page, usually to open or
+close a chapter.  It is intended as a simple replacement for the more
+sophisticated @code{epigraph} package.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
