@@ -81387,6 +81387,29 @@ can be used to make sets, and you can cherry-pick or exclude certain part
 problems as you see fit.")
     (license license:lppl1.3c)))
 
+(define-public texlive-exercisepoints
+  (package
+    (name "texlive-exercisepoints")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/exercisepoints/"
+                   "tex/latex/exercisepoints/")
+             (base32
+              "1309j3aafkkzxpn2sy109xp7vgwn5hrsa35xxcq203lgh58x12ff")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/exercisepoints")
+    (synopsis "A LaTeX package to count exercises and points")
+    (description
+     "The package can be used to facilitate exercise counting and exercise point
+counting in a LaTeX document.  It counts the number of exercises and it sums
+all the points of the exercises in a document.  Especially for exams it is
+also common to have an overview of all exercises and their maximal points.
+This is also supported by this package by providing a macro to retrieve the
+points of each exercise.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
