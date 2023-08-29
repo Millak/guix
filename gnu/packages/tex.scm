@@ -96291,6 +96291,26 @@ and the generated PDF files.  Predefined templates for PANTONE and HKS colour
 spaces are included but new ones can easily be defined.")
     (license license:lppl)))
 
+(define-public texlive-spreadtab
+  (package
+    (name "texlive-spreadtab")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/spreadtab/"
+                   "tex/latex/spreadtab/")
+             (base32
+              "052is9kyikixfga67ab3fl8rk8whmvpwgzy02z75awhn164fk2zq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/spreadtab")
+    (synopsis "Spreadsheet features for LaTeX tabular environments")
+    (description
+     "The package allows the user to construct tables in a manner similar to
+a spreadsheet.  The cells of a table have row and column indices and these can
+be used in formulas to generate values in other cells.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
