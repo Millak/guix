@@ -94183,6 +94183,26 @@ Arabic numerals if necessary).  The package also provides a predicate
 @code{\\ifnumeric}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-romanbarpagenumber
+  (package
+    (name "texlive-romanbarpagenumber")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/romanbarpagenumber/"
+                   "source/latex/romanbarpagenumber/"
+                   "tex/latex/romanbarpagenumber/")
+             (base32
+              "179n10ij40zfbnfqh44598c7amz45829i7lh155afl5hx40g72xm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/romanbarpagenumber")
+    (synopsis "Typesetting roman page numbers")
+    (description
+     "The package romanbar allows to typeset roman numbers with bars.  This package
+allows you to use those roman numbers as page number.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
