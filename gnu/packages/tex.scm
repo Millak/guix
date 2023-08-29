@@ -82045,6 +82045,30 @@ ability to @code{\\FSUnshift} and @code{\\FSShift} from the bottom (front) of
 the FIFO/Stack.")
     (license license:lppl)))
 
+(define-public texlive-figsize
+  (package
+    (name "texlive-figsize")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/figsize/" "tex/latex/figsize/")
+             (base32
+              "10gy0r3dcrl3ghc7rxwfvklanygv2qg6wqh6m96nybnzibgcirxw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/figsize")
+    (synopsis "Auto-size graphics")
+    (description
+     "The FigSize package enables automatic sizing of graphics, especially when
+including graphics with the @code{graphicx} package.  The user only has to
+specify the number of graphics that should fit to a page or fraction there of
+and the package will dynamically calculate the correct graphics sizes relative
+to the page size.  Thus, graphics can be auto-sized to fill a whole page or
+fraction and manual changes of graphic sizes are never needed when changing
+document layouts.  Finally, the package's dynamic lengths can be used to allow
+other document element sizes to be dynamic.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
