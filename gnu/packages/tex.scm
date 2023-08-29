@@ -77499,6 +77499,24 @@ the behavior of fragile environments.  Moving arguments, and corresponding
 verbatim-like commands inside arbitrary parameters.")
     (license license:lppl1.3c)))
 
+(define-public texlive-crbox
+  (package
+    (name "texlive-crbox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/crbox/" "tex/latex/crbox/")
+             (base32
+              "1zw0dzmnzn42xsy8c2as4gnssj74s4ilivwrc1phvsfvlinjah9n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/crbox")
+    (synopsis "Boxes with crossed corners")
+    (description
+     "The package implements a @code{\\crbox} command which produces boxes with
+crossing lines at the corners.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
