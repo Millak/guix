@@ -98607,6 +98607,29 @@ commands for the symbols use in mathematics.")
 offered to permit breaks within words.")
     (license license:public-domain)))
 
+(define-public texlive-tucv
+  (package
+    (name "texlive-tucv")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tucv/" "source/latex/tucv/"
+                   "tex/latex/tucv/")
+             (base32
+              "127cqbyprmm5mh3nl0y3088105qv40qghq70prrd50269h89cyrl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tucv")
+    (synopsis "Support for typesetting a CV or resumee")
+    (description
+     "The package provides commands for typesetting a CV or resume.  It provides
+commands for general-purpose headings, entries, and item/description pairs, as
+well as more specific commands for formatting sections, with explicit
+inclusion of school, degree, employer, job, conference, and publications
+entries.  It tends to produce a somewhat long and quite detailed document but
+may also be suitable to support a shorter resume.")
+    (license license:cc-by-sa3.0)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
