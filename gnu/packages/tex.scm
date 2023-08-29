@@ -77740,6 +77740,26 @@ are provided.  The class comes with no documentation, but a worked example
 offers some guidance.")
     (license license:expat)))
 
+(define-public texlive-cweb-latex
+  (package
+    (name "texlive-cweb-latex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cweb-latex/"
+                   "tex/latex/cweb-latex/")
+             (base32
+              "0f3fxjl92qh1q5d3lc04lrgxlbgrj8gkxvsdwcqfskax8zkmqrcr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cweb-latex")
+    (synopsis "LaTeX version of CWEB")
+    (description
+     "This bundle allows marking-up of CWEB code in LaTeX. The distribution
+includes the ``Counting Words'' program distributed with CWEB, edited to run
+with LaTeX.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
