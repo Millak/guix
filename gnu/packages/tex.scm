@@ -94415,6 +94415,29 @@ server-mode together with the Python @command{talk2stat} package.  Currently,
 this server-mode supports Julia, MatLab, Python, and R.")
     (license license:lppl1.3c)))
 
+(define-public texlive-rvwrite
+  (package
+    (name "texlive-rvwrite")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/rvwrite/" "tex/latex/rvwrite/")
+             (base32
+              "0m3arw9ccm32y07w6ryvkyhyywgccc58pmyc8w46rlzzjq1bns13")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/rvwrite")
+    (synopsis "Increase the number of available output streams in LaTeX")
+    (description
+     "The package addresses, for LaTeX documents, the severe limitation on the
+number of output streams that TeX provides.  The package uses a single TeX
+output stream, and writes marked-up output to this stream.  The user may then
+post-process the marked-up output file, using LaTeX, and the document's output
+appears as separate files, according to the calls made to the package.  The
+output to be post-processed uses macros from the widely-available ProTeX
+package.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
