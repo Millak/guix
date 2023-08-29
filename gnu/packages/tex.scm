@@ -82685,6 +82685,27 @@ package, while those for German are generated using the package
 @code{zahl2string}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-foilhtml
+  (package
+    (name "texlive-foilhtml")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/foilhtml/"
+                   "source/latex/foilhtml/"
+                   "tex/latex/foilhtml/")
+             (base32
+              "1zrz5jgqm0wwii8bbi8z4pmvs4qk23lw3yklzhrbw1q5wkzdc0ng")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/foilhtml")
+    (synopsis "Interface between FoilTeX and LaTeX2HTML")
+    (description
+     "This package provides integration between FoilTeX and LaTeX2HTML,
+adding sectioning commands and elements of logical formatting to FoilTeX and
+providing support for FoilTeX commands in LaTeX2HTML.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
