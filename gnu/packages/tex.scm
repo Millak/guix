@@ -73342,6 +73342,26 @@ citations that appear in the references rather than the text pages.  The
 package relies on BibTeX being used to handle citations.")
     (license license:lppl)))
 
+(define-public texlive-autofancyhdr
+  (package
+    (name "texlive-autofancyhdr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/autofancyhdr/"
+                   "tex/latex/autofancyhdr/")
+             (base32
+              "1vm2gcacdr5pjz80kfbzkg72sdmrdj94siks9sgr83r82710k9c5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/autofancyhdr")
+    (synopsis
+     "Automatically compute @samp{headlength} for @code{fancyhdr} package")
+    (description
+     "The package automatically computes @samp{headlength} for the @code{fancyhdr}
+package.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
