@@ -83516,6 +83516,30 @@ in small files and want to show within the document who had edited what.  This
 package gives you the opportunity to do so.")
     (license license:lppl1.3+)))
 
+(define-public texlive-gitinfo
+  (package
+    (name "texlive-gitinfo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gitinfo/" "tex/latex/gitinfo/")
+             (base32
+              "0lchsz3800wzz9f4mxy60n2f5qnn78ia9z1hldhh59j5a18h2p1h")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gitinfo")
+    (synopsis
+     "Access metadata from the Git distributed version control system")
+    (description
+     "The package makes it possible to incorporate git version control metadata
+into documents.  For @code{memoir} users, the package provides the means to
+tailor page headers and footers to use the metadata.
+
+Note this version is now deprecated, but is kept on the archive, pro tem, for
+continuity for existing users.  All new repositories should use
+@code{gitinfo2}.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
