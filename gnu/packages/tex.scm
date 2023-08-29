@@ -98768,6 +98768,25 @@ configurations (as a single command) and to borrow configurations that other
 users have developed.")
     (license license:lppl1.3+)))
 
+(define-public texlive-typoaid
+  (package
+    (name "texlive-typoaid")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/typoaid/" "tex/latex/typoaid/")
+             (base32
+              "1qf84xagz2lcfygfs2k7pgml85d6nf7k5psf274a1hq1djn19rdf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/typoaid")
+    (synopsis "Macros for font diagnostics")
+    (description
+     "This package provides macros for measuring alphabet lengths (i.e., the length
+occupied by the characters @samp{abcd...xyz}), em-widths and ex-heights, which
+may help in making typesetting decisions.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
