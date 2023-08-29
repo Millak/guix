@@ -80753,6 +80753,25 @@ the student's effort on that quiz.")
 @samp{!}, @samp{?}, @samp{!?} or @samp{?!}.")
     (license license:gpl3+)))
 
+(define-public texlive-eqlist
+  (package
+    (name "texlive-eqlist")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/eqlist/" "source/latex/eqlist/"
+                   "tex/latex/eqlist/")
+             (base32
+              "13gsz9ixw55mq2i43d80pn967jl3j86l5gkarzqliwc5ni6yn71c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/eqlist")
+    (synopsis "@code{description} lists with equal indentation")
+    (description
+     "This package provides a list environment which sets a @code{description}-like
+list in which the indentation corresponds to the longest item of the list.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
