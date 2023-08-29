@@ -94497,6 +94497,27 @@ catcodes.")
 works for all values of @code{\\endlinechar}.")
     (license license:lppl1.3c)))
 
+(define-public texlive-savefnmark
+  (package
+    (name "texlive-savefnmark")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/savefnmark/"
+                   "source/latex/savefnmark/"
+                   "tex/latex/savefnmark/")
+             (base32
+              "06gcknhf2hm924l8zzbp4bxpcs69kchd3nqgy7n3fjaz8k8gwz0i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/savefnmark")
+    (synopsis "Save name of the footnote mark for reuse")
+    (description
+     "Sometimes the same footnote applies to more than one location in a table.
+With this package the mark of a footnote can be saved into a name, and re-used
+subsequently without creating another footnote at the bottom.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
