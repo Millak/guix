@@ -80336,6 +80336,29 @@ a 4:3 (width:height) aspect ratio.  Other aspect ratios for widescreen
 monitors (16:9, 16:10) may be selected.")
     (license license:lppl)))
 
+(define-public texlive-elzcards
+  (package
+    (name "texlive-elzcards")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/elzcards/"
+                   "source/latex/elzcards/"
+                   "tex/latex/elzcards/")
+             (base32
+              "0r0n3l55wsf8zmdzxwljh13np8y9sigrn051yijnhxrn2y83mj4v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/elzcards")
+    (synopsis "Typeset business cards, index cards and flash cards easily")
+    (description
+     "This package provides a LaTeX package for typesetting business cards,
+index cards, and flash cards in an easy and flexible way, optionally also the
+reverse side.  You will have to furnish the paper size, the desired size of
+your card, the printable area of your printer, and the design of the card.
+Everything else is taken care of by @code{elzcards}.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
