@@ -75286,6 +75286,27 @@ package uses @code{\\DeclareCaption} to define @code{\\figcaption} and
 environments.")
     (license license:lppl)))
 
+(define-public texlive-carbohydrates
+  (package
+    (name "texlive-carbohydrates")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/carbohydrates/"
+                   "tex/latex/carbohydrates/")
+             (base32
+              "0bczdi2wykragsl4ncy955wi7fdn8y4ppk51jprlvx9bg67g4wjv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/carbohydrates")
+    (synopsis "Carbohydrate molecules with @code{chemfig}")
+    (description
+     "This package offers macros that make the preparation of exercise sheets for
+teaching carbohydrate chemistry a lot less tedious.  It uses @code{chemfig}
+for drawing the formulas.  Different representation models (Fischer, Haworth,
+chair...) are supported as well as alpha, beta, and chain isomers.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
