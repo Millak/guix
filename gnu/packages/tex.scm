@@ -97599,6 +97599,27 @@ mechanism for specifing class and non-class days.  Text may be inserted into
 consecutive days so that it automatically flows around non-class days.")
     (license license:lppl1.0+)))
 
+(define-public texlive-termlist
+  (package
+    (name "texlive-termlist")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/termlist/"
+                   "source/latex/termlist/"
+                   "tex/latex/termlist/")
+             (base32
+              "1qj5b8n8b4g7asc010cpk265fx2zaxlb7l52q5l77pmqzg8p3k56")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/termlist")
+    (synopsis "Label any kind of term with a continuous counter")
+    (description
+     "The @code{termlist} package provides environments to indent and label any
+kind of terms with a continuous number.  Candidate terms may appear inside an
+@code{equation} or @code{eqnarray} environment.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
