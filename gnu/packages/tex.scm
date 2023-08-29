@@ -96137,6 +96137,28 @@ PSTricks, etc.).  Unlike @code{soul} underlines, which are built by repeating
 small elements, here each chunk of text to be underlined is a single element.")
     (license license:expat)))
 
+(define-public texlive-spacingtricks
+  (package
+    (name "texlive-spacingtricks")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/spacingtricks/"
+                   "source/latex/spacingtricks/"
+                   "tex/latex/spacingtricks/")
+             (base32
+              "1c9qhraa8nlxlydia4ymqwgc751hldnzyknlkwy30gyfjwyv4s80")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/spacingtricks")
+    (synopsis "Dealing with some spacing issues")
+    (description
+     "This package provides macros for dealing with some spacing issues, e.g.,
+centering a single line, making a variable strut, indenting a block,
+typesetting a compact list, placing two boxes side by side with vertical
+adjustment.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
