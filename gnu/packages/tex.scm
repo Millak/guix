@@ -92873,6 +92873,28 @@ with PowerPoint, but more precise, uniform, and visually strict.")
 reports.")
     (license license:lppl1.3c)))
 
+(define-public texlive-prelim2e
+  (package
+    (name "texlive-prelim2e")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/prelim2e/"
+                   "source/latex/prelim2e/"
+                   "tex/latex/prelim2e/")
+             (base32
+              "0p86dh95rdddrakwdr6rf6adnfpg5pppqkgqvhzp8q028xz0xdbi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (home-page "https://ctan.org/pkg/prelim2e")
+    (synopsis "Allows the marking of preliminary versions of a document")
+    (description
+     "This package puts text below the normal page content (the default text marks
+the document as draft and puts a timestamp on it).  It Can be used together
+with e.g., the @code{vrsion}, @code{rcs} and @code{rcsinfo} packages.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
