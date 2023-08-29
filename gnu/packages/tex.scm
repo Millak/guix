@@ -100399,6 +100399,49 @@ a similar procedure to that of @code{\\xspace}, and insert punctuation if and
 only if it is necessary.")
     (license license:lppl1.2+)))
 
+(define-public texlive-xpeek
+  (package
+    (name "texlive-xpeek")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xpeek/" "source/latex/xpeek/"
+                   "tex/latex/xpeek/")
+             (base32
+              "01khzfgkvsfs8vs64wym07k5hnaa0rmcgpgajp1q06g5f9shcsjc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:tex-format "latex"
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; Building documentation, automatic when generating
+               ;; runfiles, fails.  Skip building it.
+               (add-after 'unpack 'skip-documentation
+                 (lambda _
+                   (substitute* "source/latex/xpeek/xpeek.dtx"
+                     (("\\\\DocInput\\{\\\\jobname\\.dtx\\}") "")))))))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-alphalph
+                  texlive-booktabs
+                  texlive-csquotes
+                  texlive-enumitem
+                  texlive-fancyvrb
+                  texlive-foreign
+                  texlive-hologo
+                  texlive-hypdoc
+                  texlive-qstest
+                  texlive-underscore
+                  texlive-xpunctuate))))
+    (home-page "https://ctan.org/pkg/xpeek")
+    (synopsis "Define commands that peek ahead in the input stream")
+    (description
+     "The package provides tools to help define commands that, like
+@code{\\xspace} and the LaTeX command @code{\\textit}, peek at what
+follows them in the command stream and choose appropriate behaviour.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
