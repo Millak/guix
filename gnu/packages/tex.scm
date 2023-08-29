@@ -86721,6 +86721,27 @@ inside a conditional sequence; thus one may suppress printing if the code
 would not compile.")
     (license license:lppl1.3+)))
 
+(define-public texlive-latexgit
+  (package
+    (name "texlive-latexgit")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/latexgit/"
+                   "source/latex/latexgit/"
+                   "tex/latex/latexgit/")
+             (base32
+              "0c2407abynq00hllpiyg5m6dbbmy8rz9s4jgr227l6ynfnjd8mir")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/latexgit")
+    (synopsis "A LaTeX git wrapper")
+    (description
+     "This package provides several macros to fetch git information and typeset it.
+The macros defined by LaTeXgit can be helpful to documentation authors and
+others to whom clear document versioning is important.")
+    (license license:gpl3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
