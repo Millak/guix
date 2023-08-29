@@ -81244,6 +81244,34 @@ answer key table typesetter and has a command for writing the answer keys to
 an external file.")
     (license license:lppl1.3+)))
 
+(define-public texlive-examdesign
+  (package
+    (name "texlive-examdesign")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/examdesign/"
+                   "source/latex/examdesign/"
+                   "tex/latex/examdesign/")
+             (base32
+              "1xj1n67rnlfwila22bbx1wbv1ffawln7ncnmrr35j92wxykd6vw4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/examdesign")
+    (synopsis "LaTeX class for typesetting exams")
+    (description
+     "This bundle provides a class @code{examdesign}.  The class provides several
+features useful for designing tests or question sets: it allows for explicit
+markup of questions and answers; the class will, at the user's request,
+automatically generate answer keys; multiple versions of the same test can be
+generated automatically, with the ordering of questions within each section
+randomly permuted so as to minimize cheating; the generated answer keys can be
+constructed either with or without the questions included; environments are
+provided to assist in constructing the most common types of test question:
+matching, true/false, multiple-choice, fill-in-the-blank, and short
+answer/essay questions.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
