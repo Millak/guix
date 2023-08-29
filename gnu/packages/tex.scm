@@ -88529,6 +88529,26 @@ intermediate DVI to SVG.  By default, media files are embedded into the SVG
 output to make self-sufficient SVG files.")
     (license license:lppl)))
 
+(define-public texlive-medstarbeamer
+  (package
+    (name "texlive-medstarbeamer")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/medstarbeamer/"
+                   "tex/latex/medstarbeamer/")
+             (base32
+              "08psazzrskzf1wspzjxfl9wlsafm0v5cjmfyn8wwmmwngzz87bwj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/medstarbeamer")
+    (synopsis "Beamer document class for MedStar Health Research Institute")
+    (description
+     "This is a Beamer template for MedStar Health presentations.  It includes
+sample presentations using both @file{.tex} files and @file{.rnw} files.  The
+document class is obviously compatible with both.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
