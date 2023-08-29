@@ -91387,6 +91387,27 @@ with support of space above, space below and tabulators.  The system imposes
 the galley approach on the document.")
     (license license:lppl1.3+)))
 
+(define-public texlive-paresse
+  (package
+    (name "texlive-paresse")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/paresse/" "source/latex/paresse/"
+                   "tex/latex/paresse/")
+             (base32
+              "03rk67lc2rg5v3d3rs9kn2gvmavsjls1xywi4q78jjnak4dr2kb6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/paresse")
+    (synopsis "Define simple macros for Greek letters")
+    (description
+     "The package defines macros using SS to type Greek letters so that the user
+may type @samp{SSa} to get the effect of @code{$\\alpha$}.  However, it takes
+care only of letters which have a macro name like @code{\\alpha} or
+@code{\\Omega}.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
