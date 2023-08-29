@@ -77872,6 +77872,25 @@ underline (of whatever form) can serve for a fill-in block for student
 evaluation sheets.")
     (license license:lppl1.3c)))
 
+(define-public texlive-dataref
+  (package
+    (name "texlive-dataref")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dataref/" "tex/latex/dataref/")
+             (base32
+              "0xnj6b2amf5nm8llyf1nwnbv8akv4zv0c7fsnj1lv5fqm6p8kys1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dataref")
+    (synopsis "Manage references to experimental data")
+    (description
+     "The package provides a mechanism that maintains a fixed symbolic reference to
+numerical results; such results may vary as the project proceeds (and hence
+the project report develops).")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
