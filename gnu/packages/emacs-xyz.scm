@@ -14171,6 +14171,12 @@ completion, interactive development and more.")
                     (url "https://github.com/Fanael/rainbow-delimiters")
                     (commit version)))
               (file-name (git-file-name name version))
+              ;; Fix tests for Emacs 29
+              ;; https://github.com/Fanael/rainbow-delimiters/pull/78
+              (modules '((guix build utils)))
+              (snippet '(substitute* "rainbow-delimiters-test.el"
+                          (("category c-type " all)
+                           (string-append all "c-<>-c-types-set "))))
               (sha256
                (base32
                 "179mzsd8nvlr0ym9zf9fgdngsgxj3kdgbjblynliirsyk05ssrwc"))))
