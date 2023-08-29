@@ -97576,6 +97576,29 @@ creation of a LaTeX template if conditional paths for code execution are
 required.  All the commands work both in the preamble and in the document.")
     (license license:lppl1.3+)))
 
+(define-public texlive-termcal
+  (package
+    (name "texlive-termcal")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/termcal/" "source/latex/termcal/"
+                   "tex/latex/termcal/")
+             (base32
+              "0ikqi79g3vlcl7aqm4fdszz9172mgv8sd0b6gpx20pr74r6431p7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/termcal")
+    (synopsis "Print a class calendar")
+    (description
+     "This package is intended to print a term calendar for use in planning a class.
+It has a flexible mechanism for specifying which days of the week are to be
+included and for inserting text either regularly on the same day each week, or
+on selected days, or for a series of consecutive days.  It also has a flexible
+mechanism for specifing class and non-class days.  Text may be inserted into
+consecutive days so that it automatically flows around non-class days.")
+    (license license:lppl1.0+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
