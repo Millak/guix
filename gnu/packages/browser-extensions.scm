@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -17,6 +18,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages browser-extensions)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix git-download)
   #:use-module (guix build-system copy)
@@ -48,57 +50,88 @@ supported content to the Kodi media center.")
 (define-public play-to-kodi/chromium
   (make-chromium-extension play-to-kodi))
 
+(define ublock-main-assets
+  ;; Arbitrary commit of branch master,
+  ;; Update when updating uBlockOrigin.
+  (let* ((name "ublock-main-assets")
+         (commit "c8783488f377723165e3661062bd124ae6d57165")
+         (revision "0")
+         (version (git-version "0" revision commit)))
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/uBlockOrigin/uAssets")
+            (commit commit)))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "1b6a1m6s060r49vg563f32rsy057af6i4jcyprym4sdci3z90nls")))))
+
+(define ublock-prod-assets
+  ;; Arbitrary commit of branch gh-pages,
+  ;; Update when updating uBlockOrigin.
+  (let* ((name "ublock-prod-assets")
+         (commit "fbcfe9229ab6b865ef349c01a4eac73943be8418")
+         (revision "0")
+         (version (git-version "0" revision commit)))
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/uBlockOrigin/uAssets")
+            (commit commit)))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32 "0s5rvaz8lc9lk44yfc8463vah8yppy1ybmag0dpd4m1hyj6165h0")))))
+
 (define ublock-origin
   (package
     (name "ublock-origin")
-    (version "1.45.2")
+    (version "1.51.0")
     (home-page "https://github.com/gorhill/uBlock")
     (source (origin
               (method git-fetch)
-              (uri (git-reference (url home-page) (commit version)
-                                  ;; Also fetch the tightly coupled
-                                  ;; "uAssets" submodule.
-                                  (recursive? #t)))
+              (uri (git-reference
+                    (url home-page)
+                    (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0dz1rcphm8cbc2qdd41ahbsqskmqcf2ja6zx0vq0dswnakpc3lyd"))))
+                "1i8rnij3sbwg6vj6znprrsca0n5xjzhmhppaa8v6jyxg6wrrfch1"))))
     (build-system gnu-build-system)
     (outputs '("xpi" "firefox" "chromium"))
     (arguments
-     '(#:tests? #f                      ;no tests
-       #:allowed-references ()
-       #:phases
-       (modify-phases (map (lambda (phase)
-                             (assq phase %standard-phases))
-                           '(set-paths unpack patch-source-shebangs))
-         (add-after 'unpack 'do-not-depend-on-git
-           (lambda _
-             ;; The script attempts to checkout the uAssets submodule,
-             ;; but we already did so with git-fetch.
-             (substitute* "tools/make-assets.sh"
-               (("^git submodule update.*")
-                ""))))
-         (add-after 'unpack 'make-files-writable
-           (lambda _
-             ;; The build system copies some files and later tries
-             ;; modifying them.
-             (for-each make-file-writable (find-files "."))))
-         (add-after 'patch-source-shebangs 'build-xpi
-           (lambda _
-             (invoke "./tools/make-firefox.sh" "all")))
-         (add-after 'build-xpi 'build-chromium
-           (lambda _
-             (invoke "./tools/make-chromium.sh")))
-         (add-after 'build-chromium 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((firefox (assoc-ref outputs "firefox"))
-                   (xpi (assoc-ref outputs "xpi"))
-                   (chromium (assoc-ref outputs "chromium")))
-               (install-file "dist/build/uBlock0.firefox.xpi"
-                             (string-append xpi "/lib/mozilla/extensions"))
-               (copy-recursively "dist/build/uBlock0.firefox" firefox)
-               (copy-recursively "dist/build/uBlock0.chromium" chromium)))))))
+     (list
+      #:tests? #f                      ;no tests
+      #:allowed-references '()
+      #:phases
+      #~(modify-phases (map (lambda (phase)
+                              (assq phase %standard-phases))
+                            '(set-paths unpack patch-source-shebangs))
+          (add-after 'unpack 'do-not-depend-on-git
+            (lambda _
+              (mkdir-p "dist/build/uAssets/main")
+              (copy-recursively #$ublock-main-assets "dist/build/uAssets/main")
+              (mkdir-p "dist/build/uAssets/prod")
+              (copy-recursively #$ublock-prod-assets "dist/build/uAssets/prod")))
+          (add-after 'unpack 'make-files-writable
+            (lambda _
+              ;; The build system copies some files and later tries
+              ;; modifying them.
+              (for-each make-file-writable (find-files "."))))
+          (add-after 'patch-source-shebangs 'build-xpi
+            (lambda _
+              (invoke "./tools/make-firefox.sh" "all")))
+          (add-after 'build-xpi 'build-chromium
+            (lambda _
+              (invoke "./tools/make-chromium.sh")))
+          (add-after 'build-chromium 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((firefox (assoc-ref outputs "firefox"))
+                    (xpi (assoc-ref outputs "xpi"))
+                    (chromium (assoc-ref outputs "chromium")))
+                (install-file "dist/build/uBlock0.firefox.xpi"
+                              (string-append xpi "/lib/mozilla/extensions"))
+                (copy-recursively "dist/build/uBlock0.firefox" firefox)
+                (copy-recursively "dist/build/uBlock0.chromium" chromium)))))))
     (native-inputs
      (list python-wrapper zip))
     (synopsis "Block unwanted content from web sites")
