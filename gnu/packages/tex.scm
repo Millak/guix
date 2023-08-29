@@ -79433,6 +79433,27 @@ equation number, the package operates much like the @code{fleqn} class
 option (no leaders).")
     (license license:knuth)))
 
+(define-public texlive-download
+  (package
+    (name "texlive-download")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/download/"
+                   "source/latex/download/"
+                   "tex/latex/download/")
+             (base32
+              "08zkmj9n9k6d2nx4b3q8579f1jgz6mqyxvzx81hi6l3qi4f01phs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/download")
+    (synopsis "Allow LaTeX to download files using an external process")
+    (description
+     "The package allows the user to download files, from within a document.  To
+run the external commands, LaTeX (or whatever) needs to be run with the
+@code{--shell-escape} flag.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
