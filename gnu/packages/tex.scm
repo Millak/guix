@@ -85424,6 +85424,25 @@ environment adds that to the set of strings.  This package does not work with
 the LuaTeX engine.")
     (license license:lppl1.3+)))
 
+(define-public texlive-iffont
+  (package
+    (name "texlive-iffont")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/iffont/" "source/latex/iffont/"
+                   "tex/latex/iffont/")
+             (base32
+              "1l18ggmcp87r22d99vnnpfb5iaahplylm0gm70hschr71nkl7bgz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/iffont")
+    (synopsis "Conditionally load fonts with @code{fontspec}")
+    (description
+     "This package provides a macro to select the first font XeLaTeX or LuaTeX can
+find in a comma separated list and, additionally, a number of macro tests.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
