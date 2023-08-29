@@ -97880,6 +97880,28 @@ styles, labels, legends; it even allows the user to define completely new
 shading modes.")
     (license license:gpl2)))
 
+(define-public texlive-texsurgery
+  (package
+    (name "texlive-texsurgery")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/texsurgery/"
+                   "tex/latex/texsurgery/")
+             (base32
+              "042jafcsvsjijmmmi8vz417178rbb02vk7vwd16b4laxxpzd5b2a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/texsurgery")
+    (synopsis "LaTeX companion to the @code{texsurgery} Python project")
+    (description
+     "This LaTeX library is a companion to the @code{texsurgery} Python project.
+It will make sure that @samp{pdflatex document.tex} will work, with reasonable
+defaults, for a document that is intended to work with @code{texsurgery}, and
+also has other uses, always in tandem with the @code{texsurgery} Pypi
+package.")
+    (license license:bsd-3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
