@@ -97501,6 +97501,26 @@ package is a bit like the @code{doc} package is for LaTeX, whereas the
 documents, for example in presentations.")
     (license license:gpl2)))
 
+(define-public texlive-technics
+  (package
+    (name "texlive-technics")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/technics/" "tex/latex/technics/")
+             (base32
+              "1nhh5zkm3w3n6bxxk7ysnwkff1bxkhzbc91aplz4d03j5yvy76l6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/technics")
+    (synopsis "Format technical documents")
+    (description
+     "The package provides a very simple LaTeX document template, in the hope that
+this use of LaTeX will become attractive to typical word processor
+users. (Presentation is as if it were a class; users are expected to start
+from a template document.)")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
