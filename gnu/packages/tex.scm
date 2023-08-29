@@ -97109,6 +97109,31 @@ will not work (and when using @code{\\footnotemark} and @code{\\footnotetext},
 and adjusting the counter as necessary, is too much work).")
     (license license:lppl1.3+)))
 
+(define-public texlive-tableof
+  (package
+    (name "texlive-tableof")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tableof/" "source/latex/tableof/"
+                   "tex/latex/tableof/")
+             (base32
+              "05dj51js7nvks16k7wmdjmxf771bnmfjfrv3ilpkyaj6ahadkav9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tableof")
+    (synopsis "Tagging tables of contents")
+    (description
+     "The package provides the commands to flag chapters or sections (or anything
+else destined to become a TOC line).  The command
+@code{\\nexttocwithtags@{req1,req2,...@}@{excl1,excl2,...@}} specifies which
+tags are to be required and which ones are to be excluded by the next
+@code{\\tableofcontents} (or equivalent) command.  In a document that uses
+a class where @code{\\tableofcontents} may only be used once, the command
+@code{\\tableoftaggedcontents@{req1,req2,...@}@{excl1,excl2,...@}} may be used
+to provide several tables.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
