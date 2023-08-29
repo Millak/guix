@@ -88739,6 +88739,28 @@ a @code{latexmlpost} stylesheet which allow you to write a LaTeX document and
 transcode it into Metanorma's ADOC format.")
     (license license:expat)))
 
+(define-public texlive-metastr
+  (package
+    (name "texlive-metastr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/metastr/" "source/latex/metastr/"
+                   "tex/latex/metastr/")
+             (base32
+              "1ljsprddbdfqp9iy6dahlf8nym7x66l2yjx4x3yhdqx0ir8562jl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/metastr")
+    (synopsis "Store and compose strings")
+    (description
+     "This is a package to store and compose strings in a structured way.
+This can serve various purposes, for example: manage and write document
+metadata; use templates for formatting document data; assist in assembling and
+displaying document license information; facilitate basic internationalisation
+and localisation.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
