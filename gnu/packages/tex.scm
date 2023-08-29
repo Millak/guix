@@ -74935,6 +74935,27 @@ In addition, this bundle provides the @code{bxcalc} package, which simply
 loads the above-mentioned packages internally.")
     (license license:expat)))
 
+(define-public texlive-bxdpx-beamer
+  (package
+    (name "texlive-bxdpx-beamer")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bxdpx-beamer/"
+                   "tex/latex/bxdpx-beamer/")
+             (base32
+              "067s7qvz5hzq6kvwkc00na0myhgwws111mhx8xsgkpcl5a2ja7cz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bxdpx-beamer")
+    (synopsis "Dvipdfmx extras for use with Beamer")
+    (description
+     "The package is a driver to support Beamer navigation symbols and
+@code{\\framezoomed} regions when using @command{dvipdfmx} as PDF
+generator (e.g., as part of e-pTeX).  The package does not define any user
+commands.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
