@@ -84152,6 +84152,28 @@ gradient colors.  The RGB values of the first and the last character are
 specified as parameters while the rest of the text is colored automatically.")
     (license license:lppl1.3c)))
 
+(define-public texlive-grading-scheme
+  (package
+    (name "texlive-grading-scheme")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/grading-scheme/"
+                   "source/latex/grading-scheme/"
+                   "tex/latex/grading-scheme/")
+             (base32
+              "1drxrhkqwg5pz1macxqs11jx06w0myiynqkamrvfzpww0jfij36i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/grading-scheme")
+    (synopsis "Typeset grading schemes in tabular format")
+    (description
+     "This package aims at an easy-to-use interface to typeset grading schemes in
+tabular format, in particular grading-schemes of exercises of mathematical
+olympiads where multiple solutions have to be graded and might offer mutual
+exclusive ways of receiving points.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
