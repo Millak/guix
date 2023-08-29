@@ -93277,6 +93277,24 @@ syntax highlighter for general use in all kinds of software such as forum
 systems, wikis or other applications that need to prettify source code.")
     (license license:lppl1.3+)))
 
+(define-public texlive-python
+  (package
+    (name "texlive-python")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/python/" "tex/latex/python/")
+             (base32
+              "0b6r510m4a9iy6nk8r5id6265kvxljir8y6v06gp7r841cj5sy9z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/python")
+    (synopsis "Embed Python code in LaTeX")
+    (description
+     "The package enables you to embed Python code in LaTeX, and insert the
+script's output in the document.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
