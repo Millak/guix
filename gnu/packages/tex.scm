@@ -74640,6 +74640,25 @@ This package is designed to work with the Sabon font, but it is not necessary
 to run the macros.")
     (license license:lppl1.3c)))
 
+(define-public texlive-bookest
+  (package
+    (name "texlive-bookest")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bookest/" "tex/latex/bookest/")
+             (base32
+              "0izmdkyi3laiaapksd81imk6hfqc6b0f6m70bx2xl9mcc592adw4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bookest")
+    (synopsis "Extended @code{book} class")
+    (description
+     "The class extends the standard @code{book} class, in the areas of colour
+scheme management, document layout, headings and footers, front page layout,
+and other minor items.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
