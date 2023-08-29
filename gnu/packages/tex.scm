@@ -95238,6 +95238,24 @@ Sffms now includes several options for specific publishers as well as
 extensive documentation aimed at new LaTeX users.")
     (license license:lppl)))
 
+(define-public texlive-sfmath
+  (package
+    (name "texlive-sfmath")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/latex/sfmath/")
+             (base32
+              "05m3whw5xkml48yx93j9h46qmspnr5hwsfszb59l4wy4jfj66zk4")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sfmath")
+    (synopsis "Sans-serif mathematics")
+    (description
+     "@code{sfmath} is a simple package for sans serif maths in documents.  After
+including the package, all maths of the current document is displayed with
+sans serif fonts.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
