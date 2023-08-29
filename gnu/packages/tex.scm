@@ -82706,6 +82706,28 @@ adding sectioning commands and elements of logical formatting to FoilTeX and
 providing support for FoilTeX commands in LaTeX2HTML.")
     (license license:lppl)))
 
+(define-public texlive-foliono
+  (package
+    (name "texlive-foliono")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/foliono/" "tex/latex/foliono/")
+             (base32
+              "1ldp7cp3s75yyzn5wkdp5rw8q5aii6rnpflw13xj0h5hvv0a6h0y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/foliono")
+    (synopsis "Use folio numbers to replace page numbers")
+    (description
+     "This package adds functionality to create several styles of folio numbers.
+Folio numbering preceded the modern page numbering convention and was in
+common use until the 18th century.  In folio numbering the numbers are placed
+only on odd (right-side) pages and the numbers typically comprise of two
+parts: quire and folio numbers.  The intended use for this package is to help
+creating old-style books.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
