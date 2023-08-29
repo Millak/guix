@@ -90551,6 +90551,26 @@ of pages (so far) is a multiple of a given number.  A third command can be
 used to fill half empty pages with a notes area.")
     (license license:lppl1.3+)))
 
+(define-public texlive-notestex
+  (package
+    (name "texlive-notestex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/notestex/" "tex/latex/notestex/")
+             (base32
+              "0qdgqmiq94k758h68gphir4y50pmggmd3h2jlxjw411l15fgnyvx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/notestex")
+    (synopsis "All-in-one LaTeX notes package for students")
+    (description
+     "This is a modification of the original Jhep journal format in order to suit
+the needs of students in university.  The goal of this package was to make
+notetaking easier for students and offer easy support for marginnotes along
+with a reliable and legible formatting structure.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
