@@ -80294,6 +80294,26 @@ mode than before it, which results in the ellipsis being off-center when used
 between two words.")
     (license license:lppl1.3c)))
 
+(define-public texlive-elmath
+  (package
+    (name "texlive-elmath")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/elmath/" "source/latex/elmath/"
+                   "tex/latex/elmath/")
+             (base32
+              "1jrykbfpi1iq6zdfq5263676szj9xv6gqh94qfg22jhga7ckgpma")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/elmath")
+    (synopsis "Mathematics in Greek texts")
+    (description
+     "This package has been designed to facilitate the use of Greek letters in
+mathematical mode.  The package allows one to directly type in Greek letters (in
+ISO 8859-7 encoding) in math mode.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
