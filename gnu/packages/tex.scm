@@ -92676,6 +92676,33 @@ page.  This is true of most printers, including laser printers and PostScript
 printers.")
     (license license:lppl)))
 
+(define-public texlive-postnotes
+  (package
+    (name "texlive-postnotes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/postnotes/"
+                   "source/latex/postnotes/"
+                   "tex/latex/postnotes/")
+             (base32
+              "1gavhhvma0n0sq64jxp5d0xz4xdlcqbddxx9c6csrw65pq28g2xn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/postnotes")
+    (synopsis "Endnotes for LaTeX")
+    (description
+     "This is an endnotes package for LaTeX.  Its user interface provides means to
+print multiple sections of notes along the document, and to subdivide them
+either automatically --- by chapter, by section --- or at manually specified
+places, thus being able to easily handle both numbered and unnumbered
+headings.  The package also provides infrastructure for setting up contextual
+running headers for printed notes.  The default is a simple but useful one, in
+the form @samp{Notes to pages N-M}, but more elaborate ones can be built.
+When @code{hyperref} is loaded, postnotes provides hyperlinked notes,
+including back links.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
