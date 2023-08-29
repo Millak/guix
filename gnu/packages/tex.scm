@@ -76292,6 +76292,29 @@ did.  You do not need any new fonts; the package just changes the way LaTeX
 makes use of the current ones.")
     (license license:lppl)))
 
+(define-public texlive-cnltx
+  (package
+    (name "texlive-cnltx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bib/cnltx/" "doc/latex/cnltx/"
+                   "makeindex/cnltx/" "tex/latex/cnltx/")
+             (base32
+              "0g4i658pflc3ak9vi12gkg68ijq6r4cnahhw06j6nqcx7rnc33gd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cnltx")
+    (synopsis "LaTeX tools and documenting facilities")
+    (description
+     "This is a versatile bundle of packages and classes for consistent formatting
+of control sequences, package options, source code examples, and writing
+a package manual (including an index containing the explained control
+sequences, options, ldots).  The bundle also provides several other small
+ideas of mine such as a mechansim for providing abbreviations etc.  Not at
+least it provides a number of programming tools.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
