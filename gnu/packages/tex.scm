@@ -87112,6 +87112,24 @@ has facilities for the paragraph text's left edge to follow the outline of
 capitals that have a regular shape (such as @samp{A} and @samp{V}).")
     (license license:lppl1.3+)))
 
+(define-public texlive-lewis
+  (package
+    (name "texlive-lewis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lewis/" "tex/latex/lewis/")
+             (base32
+              "13w585adasl0ss9mfvpnx8f55iy18748zv66x038nw2i25yrs0ly")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lewis")
+    (synopsis "Draw Lewis structures")
+    (description
+     "The package provides rudimentary support for drawing Lewis Structures.
+Support is limited to elements that support the octet rule.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
