@@ -93295,6 +93295,39 @@ systems, wikis or other applications that need to prettify source code.")
 script's output in the document.")
     (license license:gpl3+)))
 
+(define-public texlive-pythonimmediate
+  (package
+    (name "texlive-pythonimmediate")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pythonimmediate/"
+                   "tex/latex/pythonimmediate/")
+             (base32
+              "0qdmb155k34g5mml04a8rwwgq9m4s984cjd732zx34hbbqd5rvzr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-currfile texlive-l3packages
+                             texlive-precattl texlive-saveenv))
+    (home-page "https://ctan.org/pkg/pythonimmediate")
+    (synopsis "Library to run Python code")
+    (description
+     "This is a library to run Python code.  Just like PerlTeX or PyLuaTeX,
+this only requires a single run, and variables are persistent throughout the
+run.  Unlike PerlTeX or PyLuaTeX, there is no restriction on compiler or
+script required to run the code.
+
+There are also debugging functionalities: TeX errors result in Python
+traceback, and Python errors result in TeX traceback.  Errors in code executed
+with the @code{pycode} environment give the correct traceback point to the
+Python line of code in the TeX file.  For advanced users, this package allows
+the user to manipulate the TeX state directly from within Python, so you don't
+need to write a single line of TeX code.
+
+In addition to this LaTeX package you need the Python
+@code{pythonimmediate-tex} package.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
