@@ -509,8 +509,17 @@ library for SIMD (Single Instruction, Multiple Data) with runtime dispatch.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0i1c88rn1wwz8nf3dpapcdkk4w623m3nksfy5yjai10k9irkzy3c"))))
+        (base32 "0i1c88rn1wwz8nf3dpapcdkk4w623m3nksfy5yjai10k9irkzy3c"))
+       (modules '((guix build utils)))
+       ;; It's bundled catch2 fails to build.
+       (snippet '(begin
+                   (delete-file "unittests/catch.hpp")
+                   (substitute* "unittests/compiled_tests.cpp"
+                     (("catch[.]hpp") "catch2/catch.hpp"))
+                   (substitute* "unittests/type_info_test.cpp"
+                     (("catch[.]hpp") "catch2/catch.hpp"))))))
     (build-system cmake-build-system)
+    (inputs (list catch2))
     (home-page "https://chaiscript.com/")
     (synopsis "Embedded scripting language designed for C++")
     (description
