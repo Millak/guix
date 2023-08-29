@@ -91325,6 +91325,28 @@ mass of a document.  This is useful (for example) when calculating postal
 charges.")
     (license license:lppl1.3+)))
 
+(define-public texlive-papertex
+  (package
+    (name "texlive-papertex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/papertex/"
+                   "source/latex/papertex/"
+                   "tex/latex/papertex/")
+             (base32
+              "0d6dps2pj03mc2g7yzwi998x0rqml2afnnh6kh2mqrl1b64l3zvd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/papertex")
+    (synopsis "Class for newspapers, etc")
+    (description
+     "This class allows LaTeX users to create a paperTeX newspaper.  The final
+document has a front page and as many inner pages as desired.  News items
+appear one after another and the user can choose the number of columns, style
+and so on.  The class allows users to create newsletters too.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
