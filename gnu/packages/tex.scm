@@ -80686,6 +80686,29 @@ close a chapter.  It is intended as a simple replacement for the more
 sophisticated @code{epigraph} package.")
     (license license:lppl1.3c)))
 
+(define-public texlive-epiolmec
+  (package
+    (name "texlive-epiolmec")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/epiolmec/"
+                   "fonts/map/dvips/epiolmec/"
+                   "fonts/tfm/public/epiolmec/"
+                   "fonts/type1/public/epiolmec/"
+                   "source/latex/epiolmec/"
+                   "tex/latex/epiolmec/")
+             (base32
+              "1vz61v5hdkwsdcjcbq7z7gzszxd3liib52sndyas10fqk675hs60")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/epiolmec")
+    (synopsis "Typesetting the Epi-Olmec language")
+    (description
+     "The package contains all the necessary files to typeset Epi-Olmec documents,
+in a script used in Southern Middle America until about 500 AD.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
