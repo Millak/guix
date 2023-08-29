@@ -87270,6 +87270,29 @@ provided as a LaTeX package.  The interpreter static scoping, dynamic typing,
 and eager evaluation.")
     (license license:bsd-2)))
 
+(define-public texlive-listing
+  (package
+    (name "texlive-listing")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/listing/" "tex/latex/listing/")
+             (base32
+              "0f74bff3dk9v316hznjqnlfljkbbdshqj3s8b4arvf2jipg96npd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/listing")
+    (synopsis "Produce formatted program listings")
+    (description
+     "The @code{listing} environment is provided and is similar to figure and
+table, although it is not a floating environment.  Includes support for
+@code{\\caption}, @code{\\label}, @code{\\ref}, and introduces
+@code{\\listoflistings}, @code{\\listingname}, @code{\\listlistingname}.  It
+produces a @file{.lol} file.  It does not change
+@code{\\@@makecaption} (unless the option @code{bigcaptions} is used), so
+packages that change the layout of @code{\\caption} still work.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
