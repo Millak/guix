@@ -95155,6 +95155,27 @@ you will be able to replace the macros it provides by macros from other
 packages.")
     (license license:lppl1.3c)))
 
+(define-public texlive-sepfootnotes
+  (package
+    (name "texlive-sepfootnotes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sepfootnotes/"
+                   "tex/latex/sepfootnotes/")
+             (base32
+              "1k9hi6vffn10j75gw5pjxjqila2dyvlv6s1b8r4m4s0mad24498f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sepfootnotes")
+    (synopsis "Support footnotes and endnotes from separate files")
+    (description
+     "The package supports footnotes and endnotes from separate files.  This is
+achieved with commands @code{\\sepfootnotecontent} and @code{\\sepfootnote};
+the former defines the content of a note, while the latter typesets that
+note.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
