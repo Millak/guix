@@ -75417,6 +75417,34 @@ which will be used by @code{\\documentclass} if the package has already been
 loaded).  The package also provides a range of other TeX programming tools.")
     (license license:lppl1.3+)))
 
+(define-public texlive-cbcoptic
+  (package
+    (name "texlive-cbcoptic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cbcoptic/"
+                   "fonts/source/public/cbcoptic/"
+                   "fonts/tfm/public/cbcoptic/"
+                   "fonts/type1/public/cbcoptic/"
+                   "tex/latex/cbcoptic/")
+             (base32
+              "0d5g6qxvjm7qzkg0i4xqr674nbs4hvw06582mdv7qc9gsf1m4wl4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/cbcoptic")
+    (synopsis
+     "Coptic fonts and LaTeX macros for general usage and for philology")
+    (description
+     "CBcoptic is a bundle of files for typesetting Coptic philological text with
+the proper fonts and hyphenation.  The fonts are based on, but much extend,
+the fonts of the original @code{coptic} bundle.  The CBcoptic bundle includes
+font description files, Metafont sources and equivalent Adobe Type 1 fonts in
+PFB format.  The bundle also includes a package that provides some macros of
+philological interest.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
