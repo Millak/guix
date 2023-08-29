@@ -88639,6 +88639,25 @@ and uses one (A6 sized) page per day.  Supported localizations are
 English (GB/US) and German.")
     (license license:lppl1.3c)))
 
+(define-public texlive-menu
+  (package
+    (name "texlive-menu")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/menu/" "source/latex/menu/"
+                   "tex/latex/menu/")
+             (base32
+              "0qlwrkqnj59s9c5qqp65xagv834wh6ak4aafc7hk97m29jyndygr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/menu")
+    (synopsis "Typesetting menus")
+    (description
+     "The package defines command @code{\\menu} which assists typesetting of a path
+through a program's menu.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
