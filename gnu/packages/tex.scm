@@ -94987,6 +94987,31 @@ of pages to be output.  With the command present in the header, only those
 pages are output.")
     (license license:public-domain)))
 
+(define-public texlive-semantex
+  (package
+    (name "texlive-semantex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/semantex/" "tex/latex/semantex/")
+             (base32
+              "0pjx6ff628bwa027vrcjx1x9vg967mh22vb7sy3pdxdk1mx0idhn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-semtex))
+    (home-page "https://ctan.org/pkg/semantex")
+    (synopsis "Semantic, keyval-based mathematics")
+    (description
+     "The SemanTeX package for LaTeX delivers a more semantic,
+systematized way of writing mathematics, compared to the classical math syntax
+in LaTeX.  The system uses keyval syntax, and the user can define their own
+keys and customize the system down to the last detail.  At the same time, care
+has been taken to make the syntax as simple, natural, practical, and
+lightweight as possible.  Furthermore, the package has a companion package,
+called @code{stripsemantex}, which allows you to completely strip your
+documents of SemanTeX markup to prepare them e.g., for publication.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
