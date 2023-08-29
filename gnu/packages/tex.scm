@@ -75171,6 +75171,27 @@ headers and footers, with cells spanned over rows and columns.  Decorations are
 supported: padding, background color, width of separation rules.")
     (license license:lppl1.3+)))
 
+(define-public texlive-calxxxx-yyyy
+  (package
+    (name "texlive-calxxxx-yyyy")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/calxxxx-yyyy/"
+                   "tex/latex/calxxxx-yyyy/")
+             (base32
+              "1hxi0rd8ry9j094vbw5jskcp9yvhafh9k39lvggh9fmhib2ngnh0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/calxxxx-yyyy")
+    (synopsis "Print a calendar for a group of years")
+    (description
+     "The package prints a calendar for two or more years, according to a language
+selection.  The package is also culture dependent in the sense that it will
+start weeks according to local rules: e.g., weeks conventionally start on
+Monday in the English-speaking world.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
