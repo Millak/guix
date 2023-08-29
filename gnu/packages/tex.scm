@@ -92354,6 +92354,31 @@ contents of the environment.  Philex builds on the facilities of the
 @code{linguex} package.")
     (license license:lppl)))
 
+(define-public texlive-phonenumbers
+  (package
+    (name "texlive-phonenumbers")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/phonenumbers/"
+                   "tex/latex/phonenumbers/")
+             (base32
+              "18886ag4j8n6p9p00qsv7jjbfk75z59lfmrmawgsjpf2a435jg3d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/phonenumbers")
+    (synopsis "Typesetting telephone numbers with LaTeX")
+    (description
+     "The @code{phonenumbers} package makes it possible to typeset telephone
+numbers according to different national conventions.  German, Austrian,
+French, British and North American phone numbers are supported.  Phone numbers
+from other countries are supported rudimentarily.  The user can select from
+various formatting options, including the additional output of the country
+calling code.  The package is able to check if a phone number is valid
+according to the national rules.  It also allows to link phone numbers using
+the @code{hyperref} package.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
