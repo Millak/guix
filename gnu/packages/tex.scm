@@ -97665,6 +97665,30 @@ file.  It also works with XeLaTeX, where @code{\\showhyphens} requires
 a workaround.")
     (license license:lppl1.3+)))
 
+(define-public texlive-testidx
+  (package
+    (name "texlive-testidx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bib/testidx/" "doc/latex/testidx/"
+                   "source/latex/testidx/" "tex/latex/testidx/")
+             (base32
+              "18wj5gv0zn014i29da74p2ac0qlzvbs12ys4vplqc9ryn8nkf1fs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/testidx")
+    (synopsis "Dummy text for testing index styles and indexing applications")
+    (description
+     "This is a LaTeX package that provides a command to produce dummy text
+interspersed with @code{\\index} commands to test an index style or indexing
+application.  The dummy text is mostly in English, but includes extended Latin
+characters provided either through LaTeX accent commands or directly with
+UTF-8 characters, depending on the setup, to allow for testing extended Latin
+alphabets.  The supplementary package @file{testidx-glossaries.sty} uses the
+indexing interface provided by the @code{glossaries} package.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
