@@ -90988,6 +90988,26 @@ dvips/Ghostscript (@command{ps2pdf}).")
 similar to @code{enumerate}, but up to 6 levels deep.")
     (license license:lppl)))
 
+(define-public texlive-outliner
+  (package
+    (name "texlive-outliner")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/outliner/" "tex/latex/outliner/")
+             (base32
+              "0qgvg1807vqfbcdkg74jmqjlbjc63vvfi9dhds79jzygjwm1carq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/outliner")
+    (synopsis "Change section levels easily")
+    (description
+     "This package allows you to write @code{\\Level 2 @{Some heading@}} instead of
+the usual @code{\\section} stuff; the definitions of the levels can then
+easily be changed.  There is a mechanism for shifting all levels.  This makes
+it easy to bundle existing articles into a compilation.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
