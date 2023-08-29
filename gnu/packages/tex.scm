@@ -80252,6 +80252,26 @@ document source itself.")
 token, which allows to create lines with arbitrary LaTeX commands.")
     (license license:expat)))
 
+(define-public texlive-elements
+  (package
+    (name "texlive-elements")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/elements/" "tex/latex/elements/")
+             (base32
+              "1z08kqxgdnqwdpzrnixy4rdb0jmyvzy7kvxsm1d6whc0nraiza0j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/elements")
+    (synopsis "Provides properties of chemical elements")
+    (description
+     "The package provides means for retrieving properties of chemical elements
+like atomic number, element symbol, element name, electron distribution or
+isotope number.  Properties are defined for the elements up to the atomic
+number 112.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
