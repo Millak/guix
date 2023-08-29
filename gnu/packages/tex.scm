@@ -83185,6 +83185,26 @@ outside, which is the same as other programming languages such as Lua.  In
 this way, it is rather easy to debug code too.")
     (license license:lppl1.3c)))
 
+(define-public texlive-fundus-calligra
+  (package
+    (name "texlive-fundus-calligra")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fundus-calligra/"
+                   "source/latex/fundus-calligra/"
+                   "tex/latex/fundus-calligra/")
+             (base32
+              "1575ag7z1ydcpi8bpda5lhn4gil5vdcb442vn50acpdml9zdf1a7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fundus-calligra")
+    (synopsis "Support for the Calligra font in LaTeX documents")
+    (description
+     "The package offers support for the Calligra handwriting font, in LaTeX
+documents.  The package is part of the @code{fundus} bundle.")
+    (license license:lppl1.3c+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
