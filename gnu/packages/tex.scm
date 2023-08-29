@@ -96769,6 +96769,29 @@ sub-figures (or tables or text).  The sub-figures are placed left-to-right,
 top-to-bottom.")
     (license license:lppl)))
 
+(define-public texlive-subfloat
+  (package
+    (name "texlive-subfloat")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/subfloat/"
+                   "source/latex/subfloat/"
+                   "tex/latex/subfloat/")
+             (base32
+              "119p6vf8ai1sfhma3aplkyldiypjnfc6qj08xnij69szk6yq6gdv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/subfloat")
+    (synopsis "Sub-numbering for figures and tables")
+    (description
+     "This package enables sub-numbering of floats (figures and tables) similar to
+the @code{subequations} environment of the @code{amsmath} package.  The
+@code{subfloat} package is not to be confused with the @code{subfig} package
+which generates sub-figures within one normal figure, and manages their
+placement; @code{subfloat} only affects captions and numbering.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
