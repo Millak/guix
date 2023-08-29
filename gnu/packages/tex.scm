@@ -85029,6 +85029,25 @@ source.")
 requirements were to use A5 paper and 10pt type.")
     (license license:gpl3+)))
 
+(define-public texlive-href-ul
+  (package
+    (name "texlive-href-ul")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/href-ul/" "source/latex/href-ul/"
+                   "tex/latex/href-ul/")
+             (base32
+              "02kgmibwvj5kc9snmxr55hma3qhbsskjl8w72yb3rh5vyd56j8xl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-hyperref texlive-ulem))
+    (home-page "https://ctan.org/pkg/href-ul")
+    (synopsis "Underscored LaTeX hyperlinks")
+    (description
+     "This LaTeX package makes hyperlinks underscored, just like on the web.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
