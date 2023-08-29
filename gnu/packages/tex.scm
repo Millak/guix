@@ -89742,6 +89742,25 @@ a translation then is as simple as choosing the document's language via Babel
 or Polyglossia.")
     (license license:lppl1.2+)))
 
+(define-public texlive-multiple-choice
+  (package
+    (name "texlive-multiple-choice")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/multiple-choice/"
+                   "tex/latex/multiple-choice/")
+             (base32
+              "1g99ggspnab763jil1xdapnpi6bzwdpa4f9qdxm9iy5vvwhdzc1i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/multiple-choice")
+    (synopsis "LaTeX package for multiple-choice questions")
+    (description
+     "This package adjusts the choices of the multiple-choice question
+automatically.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
