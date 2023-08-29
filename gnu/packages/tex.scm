@@ -97800,6 +97800,35 @@ inside LaTeX documents.  Pygments supports syntax colouring of over 50 types
 of files, and ships with multiple colour schemes.")
     (license license:lppl)))
 
+(define-public texlive-tpslifonts
+  (package
+    (name "texlive-tpslifonts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tpslifonts/"
+                   "source/latex/tpslifonts/"
+                   "tex/latex/tpslifonts/")
+             (base32
+              "1i713qbhbv6yhax667igabfal1p2f8r6w0hgvs4y4pbpv4ffyqf6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tpslifonts")
+    (synopsis "LaTeX package for configuring presentation fonts")
+    (description
+     "This package aims to improve of font readability in presentations, especially
+with maths.  The standard CM maths fonts at large design sizes are difficult
+to read from far away, especially at low resolutions and low contrast color
+choice.  Using this package leads to much better overall readability of some
+font combinations.  The package offers a couple of harmonising combinations of
+text and maths fonts from the (distant) relatives of computer modern fonts,
+with a couple of extras for optimising readability.  Text fonts from Computer
+Modern roman, Computer Modern sans serif, SliTeX Computer Modern sans serif,
+Computer Modern bright, or Concrete roman are available, in addition to maths
+fonts from Computer Modern maths, Computer Modern bright maths, or Euler
+fonts.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
