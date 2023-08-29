@@ -89715,6 +89715,33 @@ call.")
 numbers (resp., marks).")
     (license license:lppl1.3c)))
 
+(define-public texlive-multilang
+  (package
+    (name "texlive-multilang")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/multilang/"
+                   "source/latex/multilang/"
+                   "tex/latex/multilang/")
+             (base32
+              "1ssh6c0hsdbghy56pxv8wnjlpan5f9wn5748ahwnjr8vnkrq3ixp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/multilang")
+    (synopsis
+     "LaTeX package for maintaining multiple translations of a document")
+    (description
+     "Maintaining a LaTeX document with translations for multiple languages can be
+cumbersome and error-prone.  This package provides a set of macros for
+defining macros and environments as wrappers around existing macros and
+environments.  These wrappers allow one to clearly specify multiple
+translations for the arguments to the wrapped macros and environments while
+only the translation of the document's language is actually shown.  Choosing
+a translation then is as simple as choosing the document's language via Babel
+or Polyglossia.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
