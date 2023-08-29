@@ -98566,6 +98566,29 @@ LaTeX kernel @code{figure} and @code{table} float types.  The package works
 with @code{memoir} as well as the standard classes.")
     (license license:lppl)))
 
+(define-public texlive-trsym
+  (package
+    (name "texlive-trsym")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/trsym/"
+                   "fonts/source/public/trsym/"
+                   "fonts/tfm/public/trsym/"
+                   "source/latex/trsym/" "tex/latex/trsym/")
+             (base32
+              "1njz8i5p98f9msnn9x1806jaifwm2h3ffjyn2wx7cyca9f628gx6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/trsym")
+    (synopsis "Symbols for transformations")
+    (description
+     "The bundle provides Metafont source for a small font used for, e.g., Laplace
+transformations, together with a LaTeX @file{.fd} file and a package providing
+commands for the symbols use in mathematics.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
