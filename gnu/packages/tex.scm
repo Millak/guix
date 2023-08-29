@@ -86280,6 +86280,28 @@ replacement rules.  It can be used to parse the argument specification of
 a document command.")
     (license license:lppl1.3c)))
 
+(define-public texlive-keyreader
+  (package
+    (name "texlive-keyreader")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/keyreader/"
+                   "tex/latex/keyreader/")
+             (base32
+              "0zw0qkg4lbqk260fmdsdz0j3044dph7f1ypx81yflwj2hvinsr3z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/keyreader")
+    (synopsis "Robust interface to @code{xkeyval}")
+    (description
+     "The package provides a robust interface to controlling keys in @code{xkeyval},
+removing some of that package's restrictions.  The package also addresses some
+of the issues now covered by @code{ltxkeys} package, which was assumed to be
+a replacement for @code{keyreader}.  Since @code{keyreader} has remained
+a favourite with users, it has been reinstated.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
