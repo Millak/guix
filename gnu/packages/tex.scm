@@ -74490,6 +74490,30 @@ and master theses.")
 normal US card size, 76.2mm x 50.8mm.")
     (license license:gpl3+)))
 
+(define-public texlive-blkarray
+  (package
+    (name "texlive-blkarray")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/blkarray/" "tex/latex/blkarray/")
+             (base32
+              "1ra2incawl5909lvwdiq08rhpcppv2hcwsaswqmhf8m1q4p1i57r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/blkarray")
+    (synopsis "Extended @code{array} and @code{tabular}")
+    (description
+     "This is an experimental package which implements an environment,
+@code{blockarray}, that may be used in the same way as the @code{array} or
+@code{tabular} environments of standard LaTeX, or their extended versions
+defined in @code{array}.  If used in math-mode, @code{blockarray} acts like
+@code{array}, otherwise it acts like @code{tabular}.  The package implements
+a new method of defining column types, and also @code{block} and @code{block*}
+environments, for specifying sub-arrays of the main array.  What's more, the
+@code{\\footnote} command works inside a @code{blockarray}.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
