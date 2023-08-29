@@ -75086,6 +75086,27 @@ popular mainly in Japan.  These logos can be imported in the same way as those
 provided by the @code{\\hologo} command.")
     (license license:expat)))
 
+(define-public texlive-calcage
+  (package
+    (name "texlive-calcage")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/calcage/" "source/latex/calcage/"
+                   "tex/latex/calcage/")
+             (base32
+              "0zk85kmgh7rkmgib6pqccdf4wpr3kpwkszcx5dni2g9np4ggpijs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/calcage")
+    (synopsis "Calculate the age of something, in years")
+    (description
+     "The package calculates the age of someone or something in years.  Internally
+it uses the @code{datenumber} package to calculate the age in days; conversion
+from days to years is then performed, taking care of leap years and such odd
+things.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
