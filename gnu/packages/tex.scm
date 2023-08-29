@@ -76999,6 +76999,26 @@ pages, but all pages can be marked and the marking can be stopped or started
 at any point.")
     (license license:lppl1.3+)))
 
+(define-public texlive-contour
+  (package
+    (name "texlive-contour")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/contour/" "source/latex/contour/"
+                   "tex/latex/contour/")
+             (base32
+              "026pz6nrrls53srs4qch9nmpzx62ii9airnbcdi3yq1ly2hqay4y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/contour")
+    (synopsis "Print a coloured contour around text")
+    (description
+     "This package generates a coloured contour around a given text in order to
+enable printing text over a background without the need of a coloured box
+around the text.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
