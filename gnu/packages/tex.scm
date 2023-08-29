@@ -89280,6 +89280,26 @@ get things right when composing a document modularly from multiple parts.
 This package provides the missing piece.")
     (license license:lppl1.3+)))
 
+(define-public texlive-monofill
+  (package
+    (name "texlive-monofill")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/monofill/"
+                   "source/latex/monofill/"
+                   "tex/latex/monofill/")
+             (base32
+              "1v6inr7q7bx7x2asyky7qx6ccrvyminr1sbb97xkxy2z064j11n7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/monofill")
+    (synopsis "Alignment of plain text")
+    (description
+     "The package provides horizontal alignment, as in the LaTeX command
+@code{\\listfiles}.  Uses may include in-text tables, or even code listings.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
