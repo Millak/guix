@@ -94478,6 +94478,25 @@ MakeIndex and pdfLaTeX.")
 catcodes.")
     (license license:lppl1.3c)))
 
+(define-public texlive-saveenv
+  (package
+    (name "texlive-saveenv")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/saveenv/" "tex/latex/saveenv/")
+             (base32
+              "0m3pmzmqpksymlqn71d5p98d10yg3nqz7a5pqcylpb4a8w0g63r7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-precattl))
+    (home-page "https://ctan.org/pkg/saveenv")
+    (synopsis "Save environment content verbatim")
+    (description
+     "This package provides tools to create your own verbatim environments, and
+works for all values of @code{\\endlinechar}.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
