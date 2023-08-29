@@ -98883,6 +98883,26 @@ at one point only.
 arguments.")
     (license license:lppl)))
 
+(define-public texlive-underlin
+  (package
+    (name "texlive-underlin")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/underlin/"
+                   "source/latex/underlin/"
+                   "tex/latex/underlin/")
+             (base32
+              "0537jv5m1xbib1db64skxs46qfjj7x00l89xn0rjr9w2mxksii5g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/underlin")
+    (synopsis "Underlined running heads")
+    (description
+     "This package defines two pagestyles that provide underlined page heads in
+LaTeX.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
