@@ -85717,6 +85717,25 @@ hyperlink.")
 for example, when writing an auxiliary file to a different directory.")
     (license license:lppl1.3+)))
 
+(define-public texlive-invoice
+  (package
+    (name "texlive-invoice")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/invoice/" "tex/latex/invoice/")
+             (base32
+              "12c7kqnra2mv98xjqb0rba8xqnhvvqfd2712y8j2y47zf0r7a26k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/invoice")
+    (synopsis "Generate invoices")
+    (description
+     "The package may be used for generating invoices.  The package can deal with
+invisible expense items and deductions; output may be presented in any of 10
+different languages.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
