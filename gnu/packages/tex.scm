@@ -75790,6 +75790,30 @@ page numbering.  Provision is made for front- and backmatter in @code{book}
 class.")
     (license license:lppl)))
 
+(define-public texlive-chapterfolder
+  (package
+    (name "texlive-chapterfolder")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/chapterfolder/"
+                   "source/latex/chapterfolder/"
+                   "tex/latex/chapterfolder/")
+             (base32
+              "08xbv40s637synfl7qajl1imj93kh2l0r3r0fncx55p9x4b75037")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chapterfolder")
+    (synopsis "Package for working with complicated folder structures")
+    (description
+     "This package simplifies working with folder structures that match the
+chapter/section/subsection structure.  It provides macros to define a folder
+that contains the file for a chapter/section/subsection, and provides macros
+that allow inclusion without using the full path, rather the path relative to
+the current folder of the chapter/section/subsection.  It makes easy changing
+the name of a folder, for example.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
