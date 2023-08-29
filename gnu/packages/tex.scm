@@ -93176,6 +93176,39 @@ to generate useful hypertext output (either PDF, or HTML using TeX4ht).")
 vote results and action items.")
     (license license:lppl1.3+)))
 
+(define-public texlive-psfragx
+  (package
+    (name "texlive-psfragx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/psfragx/" "source/latex/psfragx/"
+                   "tex/latex/psfragx/")
+             (base32
+              "1d6rsdjdjjr4m3b18hakzhzrscxw2kf07kh5p9pnb26771ikvndz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:tex-format "latex"
+           #:build-targets #~(list "psfragx.dtx")))
+    (native-inputs (list (texlive-updmap.cfg)))
+    (home-page "https://ctan.org/pkg/psfragx")
+    (synopsis "@code{psfrag} extension")
+    (description
+     "PSfragX offers a mechanism to embed @code{\\psfrag} commands, as provided by
+the @code{psfrag} package, into the EPS file itself.  Each time a graphic is
+included, the EPS file is scanned.  If some tagged lines are found, they are
+used to define the psfrag replacements that should be performed automatically.
+In addition, a similar mechanism holds for overpic objects.  These are picture
+objects superimposed on the included graphic.  For example, if Babel is used,
+it is possible to define different replacements corresponding to different
+languages.  The replacements to take into account will be selected on the
+basis of the current language of the document.
+
+A Matlab script (LaPrint) is provided, to export an EPS file with
+@code{psfragx} annotations ready embedded.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
