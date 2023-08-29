@@ -80834,6 +80834,25 @@ document (with all errors corrected) and to automatically generate an errata
 document highlighting the difference to the published version.")
     (license license:lppl1.0+)))
 
+(define-public texlive-erw-l3
+  (package
+    (name "texlive-erw-l3")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/erw-l3/" "source/latex/erw-l3/"
+                   "tex/latex/erw-l3/")
+             (base32
+              "0m1bynihwzrwzs2mxa3w1rg6b8f9lb17p7j6j9a0g9g0f117hrlp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/erw-l3")
+    (synopsis "Utilities based on LaTeX3")
+    (description
+     "This package provides utilities based on LaTeX3, in particular
+@code{\\erw_merge_sort}.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
