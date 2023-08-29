@@ -94568,6 +94568,27 @@ typesetting rules, but there are also options subtle, moderate and extreme
 options for the broad brush approach.")
     (license license:lppl1.3+)))
 
+(define-public texlive-scale
+  (package
+    (name "texlive-scale")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/scale/" "source/latex/scale/"
+                   "tex/latex/scale/")
+             (base32
+              "150dm7w2nlqfrhi71xnnmi92mrhdn7lbpnnsz22r0z71wk95qb26")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/scale")
+    (synopsis "Scale document by sqrt(2) or magstep(2)")
+    (description
+     "This package provides a package to scale a document by sqrt(2) (or by
+@code{\\magstep@{2@}}).  This is useful if you are preparing a document on,
+for example, A5 paper and want to print on A4 paper to achieve a better
+resolution.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
