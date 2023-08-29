@@ -77849,6 +77849,29 @@ light mode if it has a dark font with a light background.")
 of) vertical stacks of boxes.")
     (license license:lppl)))
 
+(define-public texlive-dashundergaps
+  (package
+    (name "texlive-dashundergaps")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dashundergaps/"
+                   "source/latex/dashundergaps/"
+                   "tex/latex/dashundergaps/")
+             (base32
+              "0xwidvm2n1bbsv13apkd0q6sydpfkqsphc63gn0vvddh1rm63x82")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dashundergaps")
+    (synopsis "Produce gaps that are underlined, dotted or dashed")
+    (description
+     "The package provides commands (@code{\\underline}, @code{\\dotuline} and
+@code{\\dashuline}) each of which underlines its argument with one of the
+styles the package is capable of.  A phantom mode is provided, where the
+underline (of whatever form) can serve for a fill-in block for student
+evaluation sheets.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
