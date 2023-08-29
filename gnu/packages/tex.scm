@@ -77517,6 +77517,26 @@ verbatim-like commands inside arbitrary parameters.")
 crossing lines at the corners.")
     (license license:lppl)))
 
+(define-public texlive-crossreference
+  (package
+    (name "texlive-crossreference")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/crossreference/"
+                   "source/latex/crossreference/"
+                   "tex/latex/crossreference/")
+             (base32
+              "0wxf4iz6mz7jm24dzbxnr3rhrlnfxs80dzd2avqyis1a9ln91cby")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/crossreference")
+    (synopsis "Crossreferences within documents")
+    (description
+     "The package defines cross-references (essentially grand label references),
+which may be listed in a table of cross-references.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
