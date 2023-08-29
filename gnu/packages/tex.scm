@@ -98424,6 +98424,28 @@ be removed from each token; with this option, the @code{\\TrimSpaces} command
 is defined, which removes leading and trailing spaces from its argument.")
     (license license:lppl)))
 
+(define-public texlive-toolbox
+  (package
+    (name "texlive-toolbox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/toolbox/" "source/latex/toolbox/"
+                   "tex/latex/toolbox/")
+             (base32
+              "08l1hn7ag065lmjlnap1kpa6xqppk24k81y0vm1ka45idwxi08ih")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/toolbox")
+    (synopsis "Tool macros")
+    (description
+     "This package provides some macros convenient for writing indexes,
+glossaries, or other macros.  It contains macros which support: implicit
+macros; fancy optional arguments; loops over tokenlists and itemlists;
+searching and splitting; controlled expansion; redefinition of macros; and
+concatenated macro names; macros for text replacement.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
