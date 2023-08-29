@@ -83824,6 +83824,25 @@ package.")
 package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-glossaries-irish
+  (package
+    (name "texlive-glossaries-irish")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/glossaries-irish/"
+                   "source/latex/glossaries-irish/"
+                   "tex/latex/glossaries-irish/")
+             (base32
+              "1ks91d428h48kwqhqcflz4z1qx61fn85hi0sm8z35dwxg308h8jw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/glossaries-irish")
+    (synopsis "Irish language module for @code{glossaries} package")
+    (description
+     "This package provides an Irish language module for @code{glossaries} package.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
