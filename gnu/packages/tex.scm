@@ -74618,6 +74618,28 @@ than one bold tt-family font set, the version required is selected by
 a package option.")
     (license license:lppl)))
 
+(define-public texlive-book-of-common-prayer
+  (package
+    (name "texlive-book-of-common-prayer")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/book-of-common-prayer/"
+                   "tex/latex/book-of-common-prayer/")
+             (base32
+              "1b2wbvyh2z9yy9gj5wp553dgfm6zq9l7x8bxr8cippcplcmnz6rr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/book-of-common-prayer")
+    (synopsis "Typeset in the style of @emph{Book of Common Prayer}")
+    (description
+     "This a package for the typesetting of liturgical documents in the style of
+the 1979 @emph{Book of Common Prayer}.  It provides macros for common
+liturgical situations (e.g., versicle and response, longer prayers, etc.).
+This package is designed to work with the Sabon font, but it is not necessary
+to run the macros.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
