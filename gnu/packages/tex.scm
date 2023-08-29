@@ -89079,6 +89079,27 @@ effort on their part.")
 difficulties in sub-formulas.")
     (license license:lppl1.3+)))
 
+(define-public texlive-mlist
+  (package
+    (name "texlive-mlist")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mlist/" "source/latex/mlist/"
+                   "tex/latex/mlist/")
+             (base32
+              "1r5pi557f75k4z3f4dfs52hid98g2ly5nqgg8jpya0qrxcfgj1mp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mlist")
+    (synopsis "Logical markup for lists")
+    (description
+     "The package defines commands that create macros for typesetting vectors,
+matrices and functions, in a logical way.  For example, logical indexing can
+then be used to refer to elements or arguments without hard-coding the symbols
+in the document.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
