@@ -93328,6 +93328,34 @@ In addition to this LaTeX package you need the Python
 @code{pythonimmediate-tex} package.")
     (license license:lppl1.3c)))
 
+(define-public texlive-qcm
+  (package
+    (name "texlive-qcm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/qcm/" "source/latex/qcm/"
+                   "tex/latex/qcm/")
+             (base32
+              "0ck1q695z1j5vjb528k10cq000kswrw524caia3amw8ibxxvqzdi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (home-page "https://ctan.org/pkg/qcm")
+    (synopsis "LaTeX2e class for making multiple choice questionnaires")
+    (description
+     "QCM is a package for making multiple choices questionnaires under LaTeX2e
+(@emph{QCM} is the French acronym for this style of test).  A special
+environment allows you to define questions and possible answers.  You can
+specify which answers are correct and which are not.  QCM not only formats the
+questions for you, but also generates a form (a grid that your students will
+have to fill in), and a mask (the same grid, only with correct answers
+properly checked in).  You can then print the mask on a slide and correct the
+questionnaires more easily by superimposing the mask on top of students forms.
+QCM can also typeset exam corrections automatically, and comes with support
+for AUC-TeX.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
