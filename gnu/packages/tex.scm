@@ -97366,6 +97366,30 @@ and tagged lines, intended to be used in particular for word-by-word glosses,
 translations, and bibliographic attributions, respectively.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tagpdf
+  (package
+    (name "texlive-tagpdf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tagpdf/" "source/latex/tagpdf/"
+                   "tex/latex/tagpdf/")
+             (base32
+              "1kw3i9ks2qh9y912vldj9nvlmmy77dwajcnl4yrh5ig5byhwwgnr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tagpdf")
+    (synopsis
+     "Tools for experimenting with tagging using pdfLaTeX and LuaLaTeX")
+    (description
+     "The package offers tools to experiment with tagging and accessibility using
+pdfLaTeX and LuaTeX.  It isn't meant for production but allows the user to try
+out how difficult it is to tag some structures; to try out how much tagging is
+really needed; to test what else is needed so that a PDF works e.g., with
+a screen reader.  Its goal is to get a feeling for what has to be done, which
+kernel changes are needed, how packages should be adapted.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
