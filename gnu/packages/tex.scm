@@ -72381,6 +72381,29 @@ new constructions of the traditional @code{\\overbrace} and
 @code{\\underbrace} pairs in an asymmetric or arbitrary way.")
     (license license:lppl1.3+)))
 
+(define-public texlive-abspos
+  (package
+    (name "texlive-abspos")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/abspos/" "source/latex/abspos/"
+                   "tex/latex/abspos/")
+             (base32
+              "1ixcvfn13yqbpi082rgi6zwlmyyz6s61jizh0ym6skg2bx036w2y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/abspos")
+    (synopsis "Absolute placement with coffins")
+    (description
+     "This package lets you place contents at an absolute position,
+anchored at some specified part of the contents, similar to how TikZ
+nodes work, though without using the two-pass strategy of TikZ.  It
+also avoids messing with the order of Beamer overlays, which is what
+happens when one uses the @code{textpos} package with the
+@code{overlay} option.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
