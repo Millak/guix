@@ -85010,6 +85010,25 @@ included packages via @code{\\RequirePackage} rather than copying their
 source.")
     (license license:lppl1.3c)))
 
+(define-public texlive-hpsdiss
+  (package
+    (name "texlive-hpsdiss")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hpsdiss/" "source/latex/hpsdiss/"
+                   "tex/latex/hpsdiss/")
+             (base32
+              "15md2rk5bimgy7fjsiq9jvgg18i4ajnrljpzyvy0cc7rfla1myks")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hpsdiss")
+    (synopsis "Dissertation class")
+    (description
+     "The class was developed to typeset a dissertation at ETH Zurich.  The
+requirements were to use A5 paper and 10pt type.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
