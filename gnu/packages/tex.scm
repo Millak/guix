@@ -74251,6 +74251,31 @@ nothing more than style file needed for preparing presentations.")
 package.")
     (license license:lppl1.3c)))
 
+(define-public texlive-beaulivre
+  (package
+    (name "texlive-beaulivre")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beaulivre/"
+                   "tex/latex/beaulivre/")
+             (base32
+              "1rnxkhmgqbqvbqnma49mvgx9x1mzj40b5rgappmb786bffi0v5nk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-colorist))
+    (home-page "https://ctan.org/pkg/beaulivre")
+    (synopsis "Write your books in a colorful way")
+    (description
+     "This package provides a LaTeX class for typesetting books with a colorful
+design.  Currently, it has native support for Chinese (both simplified and
+traditional), English, French, German, Italian, Japanese, Portuguese (European
+and Brazilian), Russian and Spanish typesetting.  It compiles with either
+@code{XeLaTeX} or @code{LuaLaTeX.} This is part of the colorist class series and
+depends on colorist.sty from the colorist package.  The package name \"beaulivre\"
+is taken from the French words \"beau\" (= \"beautiful\") and \"livre\" (= \"book\").")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
