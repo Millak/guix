@@ -91486,6 +91486,26 @@ environment is given.")
 mathematics.  Those are useful in preparing teaching material.")
     (license license:lppl)))
 
+(define-public texlive-pas-cv
+  (package
+    (name "texlive-pas-cv")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pas-cv/" "tex/latex/pas-cv/")
+             (base32
+              "1bd3i240fj90fawvcjk78r53nmdmjdcmcv85as7v13r6b1h2f6fs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pas-cv")
+    (synopsis "Flexible typesetting of Curricula Vitae")
+    (description
+     "The package provides the framework for typesetting a Curriculum
+Vitae (composed in French), together with a number of themes that may be used
+with the package.  Conversion for use with other languages (than French)
+should be possible.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
