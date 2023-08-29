@@ -91568,6 +91568,24 @@ macro.  It works for macros with any number of normal arguments, including
 those that were defined with @code{\\DeclareRobustCommand}.")
     (license license:lppl)))
 
+(define-public texlive-pauldoc
+  (package
+    (name "texlive-pauldoc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pauldoc/" "source/latex/pauldoc/"
+                   "tex/latex/pauldoc/")
+             (base32
+              "1kml8vqxxypddipf4vinhj1kxb0qxb7c8yhanx7nll08z668cdwp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pauldoc")
+    (synopsis "German LaTeX package documentation")
+    (description
+     "The package provides helpers for German language package documentation.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
