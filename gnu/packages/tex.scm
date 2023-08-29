@@ -82001,6 +82001,26 @@ rigid and less complex than some of the popular presentation-making options.
 It is essentially a small set of macros added to the @code{article} class.")
     (license license:lppl1.3+)))
 
+(define-public texlive-fgruler
+  (package
+    (name "texlive-fgruler")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fgruler/" "source/latex/fgruler/"
+                   "tex/latex/fgruler/")
+             (base32
+              "1drp8s7hlfbyy5ndam5jqhn8ihy7pm64zz40q8vv2v9a1h0z0p8k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fgruler")
+    (synopsis "Draw rulers on the foreground or in the text")
+    (description
+     "This package draws horizontal and vertical rulers on the foreground of
+every (or the current) page at absolute positions.  In this way, you can check
+the page layout dimensions.  You can also draw various rulers in the text.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
