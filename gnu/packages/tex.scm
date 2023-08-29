@@ -94906,6 +94906,27 @@ with other sectioning commands.")
 intuitively.")
     (license license:lppl1.3c)))
 
+(define-public texlive-sectionbox
+  (package
+    (name "texlive-sectionbox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sectionbox/"
+                   "tex/latex/sectionbox/")
+             (base32
+              "0lhjf0pmp9i0ka24flfpn88z4k66mxid0vrhvwxfq01bcr695wcf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sectionbox")
+    (synopsis "Create fancy boxed ((sub)sub)sections")
+    (description
+     "@code{sectionbox} is a LaTeX package for putting fancy colored boxes around
+sections, subsections, and subsubsections, especially for use in posters, etc.
+It was designed with the @code{sciposter} class in mind, and certainly works
+with that class and with derived classes.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
