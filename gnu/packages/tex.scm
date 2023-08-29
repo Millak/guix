@@ -77384,6 +77384,28 @@ in an external file.  To print the count, can use the macro
 @code{\\thecounttexruns}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-courseoutline
+  (package
+    (name "texlive-courseoutline")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/courseoutline/"
+                   "tex/latex/courseoutline/")
+             (base32
+              "0xp3cdvpbldn86a8zmsck223m4120r5qr408097jnq01wrycij98")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/courseoutline")
+    (synopsis "Prepare university course outlines")
+    (description
+     "Courseoutline is a class designed to minimise markup in a tedious task that
+needs to be repeated often.")
+    ;; "Feel free to copy, modify, and distribute."
+    (license
+     (license:non-copyleft
+      "file://tex/latex/courseoutline/courseoutline.cls"))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
