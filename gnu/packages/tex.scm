@@ -99535,6 +99535,28 @@ job done.  If you are looking for something more elaborate try the
 @code{geometry} package.")
     (license license:lppl)))
 
+(define-public texlive-volumes
+  (package
+    (name "texlive-volumes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/volumes/" "source/latex/volumes/"
+                   "tex/latex/volumes/")
+             (base32
+              "06q6p31m11p3iavksrs7hrbgbsmxhfsq0qh3h96jch0xf46dyy4c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/volumes")
+    (synopsis "Typeset only parts of a document, with complete indexes etc")
+    (description
+     "This package helps you if you want to produce separate printed volumes from
+one LaTeX document, as well as one comprehensive, all-inclusive version.  It
+suppresses the part of the table of contents that are not typeset, while
+counters, definitions, index entries etc., are kept consistent throughout the
+input file.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
