@@ -28816,6 +28816,29 @@ conventions for alternatives, etc.  The charts are drawn using the
 @code{picture} environment (using @code{pict2e} for preference).")
     (license license:lppl1.2+)))
 
+(define-public texlive-subfiles
+  (package
+    (name "texlive-subfiles")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/subfiles/"
+                   "source/latex/subfiles/"
+                   "tex/latex/subfiles/")
+             (base32
+              "1lwbpf852qi0gmibwgd3i63mlwi2p8zb1ps0fis21r69hnisym8j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-import))
+    (home-page "https://ctan.org/pkg/subfiles")
+    (synopsis "Individual typesetting of sub-files of a main document")
+    (description
+     "Using this package one can handle multi-file projects more comfortably,
+making it possible to both process the subsidiary files by themselves and to
+process the main file that includes them, without making any changes to
+either.")
+    (license license:lppl1.3+)))
+
 (define-public texlive-substances
   (package
     (name "texlive-substances")
