@@ -80234,6 +80234,24 @@ source file, so that a document's figures are maintained in parallel with the
 document source itself.")
     (license license:gpl3+)))
 
+(define-public texlive-ehhline
+  (package
+    (name "texlive-ehhline")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ehhline/" "tex/latex/ehhline/")
+             (base32
+              "11xyd7qj0k9rvggslpx762x0g2x2y5y3rw36580ih5mj8z9n217n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ehhline")
+    (synopsis "Extend the @code{\\hhline} command")
+    (description
+     "This package extends the @code{\\hhline} command with a @samp{!@{...@}}
+token, which allows to create lines with arbitrary LaTeX commands.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
