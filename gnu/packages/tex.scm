@@ -99345,6 +99345,26 @@ since the defined command is robust, it doesn't matter if the argument is
 moving.")
     (license license:lppl)))
 
+(define-public texlive-verbments
+  (package
+    (name "texlive-verbments")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/verbments/"
+                   "tex/latex/verbments/")
+             (base32
+              "0lsxr6mibc8v8wfabdph5mnf8zf77yk6s0qnz5p85g9z2fdvpgvf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/verbments")
+    (synopsis "Syntax highlighting of source code in LaTeX documents")
+    (description
+     "The package provides an environment for syntax highlighting source code in
+LaTeX documents.  The highlighted source code output is formatted via Pygments
+library of the Python language.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
