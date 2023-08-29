@@ -85546,6 +85546,31 @@ or from other sources.  It is possible to adjust the size of the pictures and
 all the margins.")
     (license license:lppl)))
 
+(define-public texlive-indextools
+  (package
+    (name "texlive-indextools")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/indextools/"
+                   "source/latex/indextools/"
+                   "tex/latex/indextools/")
+             (base32
+              "12nbvmfaf7c5fa3cb21ygraq94lmirv2ycj4c79i2i6pqlm84hpj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/indextools")
+    (synopsis "Producing multiple indices")
+    (description
+     "This package enables the user to produce and typeset one or more indices
+simultaneously.  The package is known to work in LaTeX documents processed
+with pdfLaTeX, XeLaTeX and LuaLaTeX. If @command{makeindex} is used for
+processing the index entries, no particular setup is needed.  Using
+@command{xindy} or other programs, it is necessary to enable shell escape.
+Shell escape is also needed if @command{splitindex} is used.  This is a fork
+of @code{imakeidx}, with new features and fixed bugs.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
