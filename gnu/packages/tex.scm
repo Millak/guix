@@ -86954,6 +86954,26 @@ and Brazilian), Russian and Spanish typesetting.  It compiles with either
 XeLaTeX or LuaLaTeX.")
     (license license:lppl1.3c)))
 
+(define-public texlive-lectures
+  (package
+    (name "texlive-lectures")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lectures/" "tex/latex/lectures/")
+             (base32
+              "05x3dc40n83v7faw789iw5nzwn43zx6vjl58iqwdsqchkmd8alrv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lectures")
+    (synopsis
+     "Document class for quickly drafting nice looking lecture notes")
+    (description
+     "This LaTeX document class provides a number of gimmicks to draft nice looking
+lecture notes, such as a number of theorem environments, automatic spacing and
+alignment of figures and much more.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
