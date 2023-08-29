@@ -88616,6 +88616,29 @@ in the fullness of time be adopted into the main @code{memoir} release.")
      "The package allows the user to declare single object or array containers.")
     (license license:lppl1.3+)))
 
+(define-public texlive-mensa-tex
+  (package
+    (name "texlive-mensa-tex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mensa-tex/"
+                   "tex/latex/mensa-tex/")
+             (base32
+              "09g0dafp3xfsndvff9mrapsy35zg9jax04jwwslyd7rvh2cl37fg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mensa-tex")
+    (synopsis "Typeset simple school cafeteria menus")
+    (description
+     "This package provides a flexible LaTeX2e class for typesetting school
+cafeteria menus consisting of two lunches (with dessert), and dinner.  It
+supports two different layouts.  The first layout is optimized for printing
+the menu on A4 paper.  The second layout is optimized for smartphone screens
+and uses one (A6 sized) page per day.  Supported localizations are
+English (GB/US) and German.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
