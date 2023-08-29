@@ -100461,6 +100461,31 @@ follows them in the command stream and choose appropriate behaviour.")
 a variety of units.  It can handle all units supported by TeX.")
     (license license:lppl1.3+)))
 
+(define-public texlive-xsavebox
+  (package
+    (name "texlive-xsavebox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xsavebox/"
+                   "source/latex/xsavebox/"
+                   "tex/latex/xsavebox/")
+             (base32
+              "1k055jv83yk17f7l8bvg8mvm7cw7afry7sykli4fbz8w0yjq3yci")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xsavebox")
+    (synopsis "Saveboxes for repeating content without code replication")
+    (description
+     "The package defines commands for saving content that can be repeatedly placed
+into the document without replicating DVI/PDF code in the output file,
+allowing for smaller file size of the final PDF and improved content caching
+for faster display in certain PDF viewers.  The method makes use of Form
+XObjects defined in the PDF specification.  The user commands are modelled
+after the standard LaTeX commands @code{\\savebox}, @code{\\sbox},
+@code{\\usebox} and the @code{lrbox} environment.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
