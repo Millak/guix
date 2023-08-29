@@ -77721,6 +77721,25 @@ is just a package: you choose the overall formatting by deciding which class
 to use, while the package provides the detailed formatting.")
     (license license:gpl3+)))
 
+(define-public texlive-cv4tw
+  (package
+    (name "texlive-cv4tw")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cv4tw/" "tex/latex/cv4tw/")
+             (base32
+              "1xd9r0ywx90f7iwk4955gm957jlays56d1n7i3mkvh6incs78asj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cv4tw")
+    (synopsis "LaTeX CV class, with extended details")
+    (description
+     "The class offers entries for assets and social networks; customizable styles
+are provided.  The class comes with no documentation, but a worked example
+offers some guidance.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
