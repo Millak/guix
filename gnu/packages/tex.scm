@@ -95527,6 +95527,26 @@ any.  The @code{\\showcs} variant helps with macros with exotic names.")
 is, and displaying width, height, and depth information of the character.")
     (license license:lppl1.3+)))
 
+(define-public texlive-showdim
+  (package
+    (name "texlive-showdim")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/showdim/" "tex/latex/showdim/")
+             (base32
+              "1hr2hfrvgqyfqaj9jgwiikcpf1pnslg8v0zw5qbj1ii6r7l8vrrd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/showdim")
+    (synopsis "Variants on printing dimensions")
+    (description
+     "This LaTeX package provides a number of commands for printing the value of
+a TeX dimension.  For example, @code{\\tenthpt@{\\baselineskip@}} yields the
+current value of @code{\\baselineskip} rounded to the nearest tenth of
+a point.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
