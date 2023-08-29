@@ -89696,6 +89696,25 @@ and one that does multiple @code{\\expandafter} operations, in a single macro
 call.")
     (license license:lppl1.3c)))
 
+(define-public texlive-multifootnote
+  (package
+    (name "texlive-multifootnote")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/multifootnote/"
+                   "tex/latex/multifootnote/")
+             (base32
+              "0d4xn8ks3wdl59qyx2hlnljkxa7d5k22xlqqlrizmmlyb743inbl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/multifootnote")
+    (synopsis "Multiple numbers for the same footnote")
+    (description
+     "This package provides several commands for generating footnotes with multiple
+numbers (resp., marks).")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
