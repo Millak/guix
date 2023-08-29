@@ -97779,6 +97779,27 @@ current position automatically.  For chess fonts, the package uses the
 @code{chessfss} system.")
     (license license:lppl)))
 
+(define-public texlive-texments
+  (package
+    (name "texlive-texments")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/texments/"
+                   "source/latex/texments/"
+                   "tex/latex/texments/")
+             (base32
+              "06k1nfxdnl811sw4n9blp863a903ryh7b4m79rjj367kzs2zkbca")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/texments")
+    (synopsis "Using the Pygments highlighter in LaTeX")
+    (description
+     "This package provides a package which allows to use the Pygments highlighter
+inside LaTeX documents.  Pygments supports syntax colouring of over 50 types
+of files, and ships with multiple colour schemes.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
