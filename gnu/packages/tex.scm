@@ -83468,6 +83468,28 @@ environments which structure their data in the same way that @code{itemize} or
 within LaTeX.")
     (license license:expat)))
 
+(define-public texlive-ginpenc
+  (package
+    (name "texlive-ginpenc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ginpenc/" "source/latex/ginpenc/"
+                   "tex/latex/ginpenc/")
+             (base32
+              "15kqbgdngw19pnkl9vh94sbdq261lnbi522gxb5h4djsih9pp14p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ginpenc")
+    (synopsis "Modification of @code{inputenc} for German")
+    (description
+     "If @code{inputenc} is used and German umlauts are input directly, they are
+converted to the LICR representation such as @samp{\\\"a}.  This breaks the
+sort algorithm of MakeIndex, for instance.  Ginpenc converts umlauts and the
+sharp-s to the short forms defined by Babel, e.g., @samp{\"a} instead, if the
+text is typeset in German.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
