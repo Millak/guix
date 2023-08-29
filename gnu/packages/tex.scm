@@ -80214,6 +80214,26 @@ a (possibly partial) frame around the box, and allows setting the box
 background colour.")
     (license license:lppl1.3+)))
 
+(define-public texlive-egplot
+  (package
+    (name "texlive-egplot")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/egplot/" "source/latex/egplot/"
+                   "tex/latex/egplot/")
+             (base32
+              "1i6wqnskp55i6gfkiz6gj4flq4mcah9vyqxvf2knrwly6s362pwj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/egplot")
+    (synopsis "Encapsulate Gnuplot sources in LaTeX documents")
+    (description
+     "This package provides a package to encapsulate Gnuplot commands in a LaTeX
+source file, so that a document's figures are maintained in parallel with the
+document source itself.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
