@@ -73920,6 +73920,26 @@ directly on the content.")
 Beamer style by redefining colors and fonts.")
     (license license:gpl3)))
 
+(define-public texlive-beamertheme-metropolis
+  (package
+    (name "texlive-beamertheme-metropolis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamertheme-metropolis/"
+                   "source/latex/beamertheme-metropolis/"
+                   "tex/latex/beamertheme-metropolis/")
+             (base32
+              "1vx9w44d5vjb6nr1ic14hknm1j38i02v0nbawwa3xn1z3i4xs8cj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamertheme-metropolis")
+    (synopsis "Modern LaTeX beamer theme")
+    (description
+     "The package provides a simple, modern Beamer theme for anyone to use.  It
+tries to minimize noise and maximize space for content.")
+    (license license:cc-by-sa4.0)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
