@@ -95870,6 +95870,27 @@ combinations of parameters and keys.  All the facilities of the @code{ltxkeys}
 and @code{skeyval} packages are available to the user of @code{skeycommand}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-skeyval
+  (package
+    (name "texlive-skeyval")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/skeyval/" "tex/latex/skeyval/")
+             (base32
+              "09647p16f50wa9yz9jfypwckginvlv0897x4gb7m69pbvgnsdf4i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/skeyval")
+    (synopsis
+     "Key-value parsing combining features of @code{xkeyval} and @code{pgfkeys}")
+    (description
+     "The package integrates the features of @code{xkeyval} and of @code{pgfkeys}
+by introducing a new type of handlers.  Style keys, links, changing key
+callbacks and values on the fly, and other features of @code{pgfkeys} are
+introduced in a new context.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
