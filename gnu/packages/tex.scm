@@ -76599,6 +76599,26 @@ environments of the @code{framed} package.")
      "This package retrieves colour model and values for defined colours.")
     (license license:lppl)))
 
+(define-public texlive-coloring
+  (package
+    (name "texlive-coloring")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/coloring/" "tex/latex/coloring/")
+             (base32
+              "0d98jvf9p1j4brjsj4g7jfnw6dnh7js906advipmlcvdnp8wzqbk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/coloring")
+    (synopsis "Define missing colors by their names")
+    (description
+     "This package makes it possible to define colors automatically by their names.
+This can be useful in drawing TikZ pictures and designing Beamer themes.
+Using the package, you don't need to write @code{\\definecolor} before using
+a color.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
