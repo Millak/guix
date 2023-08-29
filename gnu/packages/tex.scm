@@ -85375,6 +85375,30 @@ compressed to @samp{[1-3]}, where the @samp{1} and the @samp{3} are
      "The package provides commands for adding formatted index entries.")
     (license license:lppl1.3+)))
 
+(define-public texlive-idxlayout
+  (package
+    (name "texlive-idxlayout")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/idxlayout/"
+                   "source/latex/idxlayout/"
+                   "tex/latex/idxlayout/")
+             (base32
+              "1d3ir3rqyr62db82mad09z2xpyyczflrgkjgnkgj45ahd0mhdplr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/idxlayout")
+    (synopsis
+     "Configurable index layout, responsive to KOMA-Script and @code{memoir}")
+    (description
+     "The @code{idxlayout} package offers a key-value interface to configure index
+layout parameters, e.g. allowing for three-column indexes or for parent items
+and their affiliated subitems being typeset as a single paragraph.  The
+package is responsive to the index-related options and commands of the
+KOMA-Script and @code{memoir} classes.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
