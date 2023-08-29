@@ -87012,6 +87012,26 @@ large PDF file.")
 automatically raised for better fitting to the symbol they belong to.")
     (license license:lppl)))
 
+(define-public texlive-leftindex
+  (package
+    (name "texlive-leftindex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/leftindex/"
+                   "tex/latex/leftindex/")
+             (base32
+              "1dn57nvrkgmf96vnswrj0pwkdl276bi79yvl4hv4r5c8z6p5dqq6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/leftindex")
+    (synopsis "Left indices with better spacing")
+    (description
+     "This package provides commands for typesetting left indices.  Unlike other
+similar packages, @code{leftindex} also indents the left superscript,
+providing much better spacing in general.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
