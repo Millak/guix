@@ -84002,6 +84002,29 @@ package.")
 package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-gmdoc
+  (package
+    (name "texlive-gmdoc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gmdoc/" "makeindex/gmdoc/"
+                   "tex/latex/gmdoc/")
+             (base32
+              "09rjn4jn217l0y84jvp8j66nkw1f0bhd7by6m9v5f5v2m7vv9wz5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gmdoc")
+    (synopsis "Documentation of LaTeX packages")
+    (description
+     "This package provides a LaTeX package and an example class for
+documenting (La)TeX packages, document classes, @file{.dtx} etc., providing
+hyperlinks.  The package is believed to be compatible with @code{doc} and
+permits minimal markup of code.  The package provides automatic detection of
+definitions (detecting such things as @code{\\def}, @code{\\newcommand},
+@code{\\DeclareOption} etc.).")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
