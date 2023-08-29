@@ -90628,6 +90628,27 @@ is confusing.  This package suppresses the effect.")
 be formatted into a array which may be split.")
     (license license:lppl)))
 
+(define-public texlive-numberedblock
+  (package
+    (name "texlive-numberedblock")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/numberedblock/"
+                   "tex/latex/numberedblock/")
+             (base32
+              "006vgcs8x00knp0a7rmnjh3fbjhwc212iy6ixi97s0awkkhmb1j6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/numberedblock")
+    (synopsis "Print a block of code, with unique index number")
+    (description
+     "The package has been created for the convenience of the report writer; it
+provides the means to number, and label, code-block snippets in your document.
+In this way, you can (unambiguously) refer to each snippet elsewhere in your
+document.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
