@@ -86451,6 +86451,25 @@ address may not fit within the window, but ordinary 3-line address should
 fit).")
     (license license:lppl)))
 
+(define-public texlive-komacv
+  (package
+    (name "texlive-komacv")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/komacv/" "source/latex/komacv/"
+                   "tex/latex/komacv/")
+             (base32
+              "17830drzdsk3nhd1n9fcmc4dbcm2lwia3jp2asi3g73yvzkjx7sz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/komacv")
+    (synopsis "Typesetting a beautiful CV with various style options")
+    (description
+     "The class simplifies the creation of beautiful CV. The user may choose
+between different styles, and may adjust settings to tune the output.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
