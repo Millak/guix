@@ -89653,6 +89653,28 @@ classes (and related classes such as the KOMA-Script equivalents).")
 similar definitions.")
     (license license:lppl1.3+)))
 
+(define-public texlive-multienv
+  (package
+    (name "texlive-multienv")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/multienv/"
+                   "source/latex/multienv/"
+                   "tex/latex/multienv/")
+             (base32
+              "0m3p6ql3mqipay9caif3n92687jwnrnhbvwdwa5y5ibrqqpnxi59")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-ydoc))
+    (home-page "https://ctan.org/pkg/multienv")
+    (synopsis "Multiple environments using a @samp{key=value} syntax")
+    (description
+     "The package provides a @code{multienv} environment which permits easy
+addition of multiple environments using a @samp{key=value} syntax.
+Macros to define environments using this syntax are also provided.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
