@@ -73788,6 +73788,27 @@ reordering the source.  Its principal use is to embed or append frames with
 details on some subject.")
     (license license:lppl)))
 
+(define-public texlive-beamertheme-arguelles
+  (package
+    (name "texlive-beamertheme-arguelles")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamertheme-arguelles/"
+                   "tex/latex/beamertheme-arguelles/")
+             (base32
+              "1kdh445csxsw415b3yvplp5w67hm36g7m0m2bmrx7ds4f9pzvmb0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamertheme-arguelles")
+    (synopsis "Simple, typographic Beamer theme")
+    (description
+     "Arguelles is a Beamer theme that helps you create beautiful presentations.
+It aims for simplicity and readability by following best practices of graphic
+design.  The layout is elegant but subtle, so as to keep the audience's
+attention on your content.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
