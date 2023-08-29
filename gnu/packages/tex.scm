@@ -84647,6 +84647,25 @@ scaled slides.")
 addition, it defines environments for labeled paragraphs and list items.")
     (license license:lppl1.3+)))
 
+(define-public texlive-harnon-cv
+  (package
+    (name "texlive-harnon-cv")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/harnon-cv/"
+                   "tex/latex/harnon-cv/")
+             (base32
+              "142f1rzj4nfplpag7rcphyd7wlvmav01n516z458gdiby9vxm390")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/harnon-cv")
+    (synopsis "CV document class with a vertical timeline for experience")
+    (description
+     "The class offers another modern, neat, design, and provides a simple means of
+adding an experience timeline'.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
