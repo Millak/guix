@@ -94242,6 +94242,31 @@ with roman numerals instead of Arabic digits.  Users of the @code{bookhands}
 fonts may find this package useful.")
     (license license:lppl)))
 
+(define-public texlive-rotfloat
+  (package
+    (name "texlive-rotfloat")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/rotfloat/"
+                   "source/latex/rotfloat/"
+                   "tex/latex/rotfloat/")
+             (base32
+              "1m0xmy3yip4j62rby0fqri2dk4jl75cph1y27r3x129l4kzyblvw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/rotfloat")
+    (synopsis "Rotate floats")
+    (description
+     "The @code{float} package provides commands to define new floats of various styles
+(plain, boxed, ruled, and userdefined ones); the @code{rotating} package
+provides new environments (@code{sidewaysfigure} and @code{sidewaystable})
+which are rotated by 90 or 270 degrees.  But what about new rotated floats,
+e.g., a rotated ruled one? This package makes this possible; it builds
+a bridge between the two packages and extends the commands from the float
+package to define rotated versions of the new floats, too.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
