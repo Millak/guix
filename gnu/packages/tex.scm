@@ -100669,6 +100669,31 @@ economic in space than the most common LaTeX classes, while keeping a clear
 appearance and a smooth flow.")
     (license license:lppl1.3c)))
 
+(define-public texlive-yplan
+  (package
+    (name "texlive-yplan")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/yplan/" "scripts/yplan/"
+                   "tex/latex/yplan/")
+             (base32
+              "0cwd7yzmsp3jxb9190cqy05mbp40kw5qx1fjc7f8rbf5m2dfcbb7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "yplan")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/yplan")
+    (synopsis "Daily planner type calendar")
+    (description
+     "This package prints two six-monthly vertical-type daily planner (i.e.,
+months along the top, days downwards), with each 6-month period fitting onto
+a single A4 (or US letter) sheet.  The package offers support for English,
+French, German, Spanish and Portuguese.  The previous scheme of annual updates
+has now been abandoned, in favour of a Perl script @command{yplan} that
+generates a year's planner automatically.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
