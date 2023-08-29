@@ -91467,6 +91467,25 @@ line of an environment with a macro.  An example of shading the lines of an
 environment is given.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pas-cours
+  (package
+    (name "texlive-pas-cours")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pas-cours/"
+                   "tex/latex/pas-cours/")
+             (base32
+              "02rqs5r345n64313h64mmszm7s8c0q8pwxaz9rjijzgs499jyzmn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pas-cours")
+    (synopsis "Macros useful in preparing teaching material")
+    (description
+     "This package provides several groups of macros cover different branches of
+mathematics.  Those are useful in preparing teaching material.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
