@@ -90138,6 +90138,25 @@ an optional argument whose content will be placed on any empty page
 generated.")
     (license license:lppl)))
 
+(define-public texlive-nfssext-cfr
+  (package
+    (name "texlive-nfssext-cfr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/nfssext-cfr/"
+                   "tex/latex/nfssext-cfr/")
+             (base32
+              "1jbxqkcn84ldap7j6ln64763wy73z3acp52a3zjgadx9m3rfp27r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nfssext-cfr")
+    (synopsis "Extensions to the LaTeX NFSS")
+    (description
+     "The package is a development of @file{nfssext.sty}, distributed with the
+examples for the font installation guide.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
