@@ -90329,6 +90329,27 @@ anyone who wants to compile the documentation of those packages.")
 in a document where they are needed.")
     (license license:lppl1.3+)))
 
+(define-public texlive-noindentafter
+  (package
+    (name "texlive-noindentafter")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/noindentafter/"
+                   "source/latex/noindentafter/"
+                   "tex/latex/noindentafter/")
+             (base32
+              "16kg9x8s1kk9spa91vdnkgc4v69919w4n378kyyxy33pd64cyzzx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/noindentafter")
+    (synopsis "Prevent paragraph indentation after environments or macros")
+    (description
+     "The package, as the name suggests, supplies tools to automatically suppress
+indentations in following paragraphs, specifically those following a particular
+macro or environment.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
