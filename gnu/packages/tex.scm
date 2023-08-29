@@ -91632,6 +91632,28 @@ the scheme: if a PDF file is included, the package looks for the file with the
 annotation data, reads them and puts the annotations in the right place.")
     (license (list license:lppl license:gpl3+))))
 
+(define-public texlive-pbalance
+  (package
+    (name "texlive-pbalance")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pbalance/"
+                   "source/latex/pbalance/"
+                   "tex/latex/pbalance/")
+             (base32
+              "1r3xqdmcx3k5labiwm3swy7lp530b02yyiw3skfjc8ysy01p8rfv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pbalance")
+    (synopsis "Balance last page in two-column mode")
+    (description
+     "This package balances the columns on the last page of a two-column document.
+If the page is simple (no footnotes, floats, or marginpars), it uses the
+balance package; otherwise, it uses @code{\\enlargethispage} to make the left
+column shorter, balancing the columns.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
