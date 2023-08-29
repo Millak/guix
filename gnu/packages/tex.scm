@@ -76880,6 +76880,28 @@ a number of points to be earned.  At the end of the text, a table set
 summarizes the skills assessed, and in what proportions.")
     (license license:lppl1.3+)))
 
+(define-public texlive-concepts
+  (package
+    (name "texlive-concepts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/concepts/" "tex/latex/concepts/")
+             (base32
+              "1r6dals4iqmp0r79gck81dw6fdympnpjmz6n23la376dpxwj15lx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/concepts")
+    (synopsis "Keeping track of formal concepts for a particular field")
+    (description
+     "The package helps to keep track of formal concepts for a specific field or
+document.  This is particularly useful for scientific papers (for example, in
+physics, mathematics or computer science), which may introduce several concepts
+(with their own symbols).  The package's commands allow the user to define
+a concept (typically, near its first use), and will ensure consistent use
+throughout the document.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
