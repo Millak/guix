@@ -438,17 +438,15 @@ an interpreter, a compiler, a debugger, and much more.")
 (define-public sbcl
   (package
     (name "sbcl")
-    (version "2.3.5")
+    (version "2.3.8")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/sbcl/sbcl/" version "/sbcl-"
                            version "-source.tar.bz2"))
        (sha256
-        (base32 "11ji5n65l31249r0v7hm0wc0yk2ila0y746nj36xn1cxrwh0gjc9"))
+        (base32 "0a8dranh15gsbq51ssnvccl91mzqmgs5xsmwisz5hvlimjr725a2"))
        (modules '((guix build utils)))
-       ;; backport from upstream.
-       (patches (search-patches "sbcl-riscv-Make-contribs-build-again.patch"))
        (snippet
         '(begin
            ;; Don't force ARMv5.
