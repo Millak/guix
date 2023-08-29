@@ -84423,6 +84423,30 @@ options.  There are several preset color palletes, and colors can be
 overridden.")
     (license license:lppl1.3+)))
 
+(define-public texlive-gridset
+  (package
+    (name "texlive-gridset")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gridset/" "source/latex/gridset/"
+                   "tex/latex/gridset/")
+             (base32
+              "0r1hkkgr0f4r2j1h68ljnlza1zag4jm3jzkb5zk6ga393xcn056c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gridset")
+    (synopsis "Grid, a.k.a.@: in-register, setting")
+    (description
+     "Grid setting --- also known as strict in-register setting --- is something,
+that should be done for a lot of documents but is not easy using LaTeX.  The
+package helps to get the information needed for grid setting.  It does not
+implement auto grid setting, but there is a command @code{\\vskipnextgrid},
+that moves to the next grid position.  This may be enough under some
+circumstances, but in other circumstances it may fail.  Thus gridset is only
+one more step for grid setting, not a complete solution.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
