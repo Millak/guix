@@ -85219,6 +85219,25 @@ pygmentize to create the code snippets.")
 two-sided document.")
     (license license:lppl1.3+)))
 
+(define-public texlive-hwemoji
+  (package
+    (name "texlive-hwemoji")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hwemoji/" "tex/latex/hwemoji/")
+             (base32
+              "0k0w0y2qm8a4pflsyv5fmw9yrm19zgic041w6si7aaz6k6mvjcvh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hwemoji")
+    (synopsis "Unicode emoji support for pdfLaTeX with sequences")
+    (description
+     "This package provides direct support for Unicode emoji in pdfLaTeX, with full
+access to emoji sequences including but not limited to flag sequences,
+diversity modifier sequences, and tag sequences.")
+    (license (list license:lppl1.3c license:cc-by4.0))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
