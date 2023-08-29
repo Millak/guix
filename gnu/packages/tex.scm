@@ -95975,6 +95975,31 @@ a chapter named List that contains separate sections for each list of figures,
 tables, etc.")
     (license license:lppl)))
 
+(define-public texlive-smart-eqn
+  (package
+    (name "texlive-smart-eqn")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/smart-eqn/"
+                   "source/latex/smart-eqn/"
+                   "tex/latex/smart-eqn/")
+             (base32
+              "1w98b1m1i43rk12392vqbw92133ijf5af0xwd85a0bjixjfrjdwb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/smart-eqn")
+    (synopsis "Automatic math symbol styling for LaTeX documents")
+    (description
+     "In LaTeX typesetting, one usually needs to use different variants of a math
+symbol to clarify the meanings.  For example, in linear algebra literature, it
+is common to use boldfaced symbols to represent vectors, and normal symbols to
+represent scalars.  However, applying these variants by typing
+@code{\\mathbf}, @code{\\mathrm} commands manually can be daunting.  This
+package aims to provide an automatic and customizable approach for math symbol
+styling which eliminates the need to enter style commands repeatedly.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
