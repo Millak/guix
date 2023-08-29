@@ -73124,6 +73124,32 @@ preamble using @samp{:}.  The shape of dash-lines may be controlled through
 style parameters or optional arguments.")
     (license license:lppl1.0+)))
 
+(define-public texlive-asciilist
+  (package
+    (name "texlive-asciilist")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/asciilist/"
+                   "source/latex/asciilist/"
+                   "tex/latex/asciilist/")
+             (base32
+              "07jygmvm5jjzj4mxcxj60q73ihc7zgi9g1v7w99xh458x6a0nsys")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/asciilist")
+    (synopsis
+     "Environments @code{AsciiList} and @code{AsciiDocList} for prototyping nested
+lists in LaTeX")
+    (description
+     "The @code{asciilist} package provides the environments @code{AsciiList} and
+@code{AsciiDocList}, which enable quickly typesetting nested lists in LaTeX
+without having to type individual item macros or opening/closing list
+environments.  The package provides auxiliary functionality for loading such
+lists from files and provides macros for configuring the use of the list
+environments and the appearance of the typeset results.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
