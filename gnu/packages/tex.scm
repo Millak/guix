@@ -85798,6 +85798,27 @@ International Standard documents.  Several standard documents have been
 printed by ISO from camera-ready copy prepared using LaTeX and these files.")
     (license license:lppl)))
 
+(define-public texlive-iso10303
+  (package
+    (name "texlive-iso10303")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/iso10303/"
+                   "source/latex/iso10303/"
+                   "tex/latex/iso10303/")
+             (base32
+              "04yackrrjba2ddgl8ps3ka6mmh09cw5b9rz69vczvgfdc9cr6krx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/iso10303")
+    (synopsis "Typesetting the STEP standards")
+    (description
+     "This package provides class and package files building on @code{iso} for
+typesetting the ISO 10303 (STEP) standards.  Standard documents prepared using
+these packages have been published by ISO.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
