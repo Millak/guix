@@ -76184,6 +76184,27 @@ desires.  The clock faces (appearances of the dial) are easily expandable; the
 default uses a custom Metafont font.")
     (license license:gpl2)))
 
+(define-public texlive-clrdblpg
+  (package
+    (name "texlive-clrdblpg")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/clrdblpg/"
+                   "source/latex/clrdblpg/"
+                   "tex/latex/clrdblpg/")
+             (base32
+              "1wsrfp7ahyzk3v52b6miv5vk4w37bfy9pywlknldmh5h5f5d9ip8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/clrdblpg")
+    (synopsis "Control page style of pages left blank by @code{\\cleardoublepage}")
+    (description
+     "This tiny package allows easy manipulation of the headers and footers on
+pages left blank by @code{\\cleardoublepage}.  By default, LaTeX has no easy
+facilities for this.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
