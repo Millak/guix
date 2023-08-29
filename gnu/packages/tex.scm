@@ -87746,6 +87746,30 @@ package).  The package also provides functions for defining and managing
 keys.")
     (license license:lppl)))
 
+(define-public texlive-ltxnew
+  (package
+    (name "texlive-ltxnew")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ltxnew/" "source/latex/ltxnew/"
+                   "tex/latex/ltxnew/")
+             (base32
+              "0c60x0qmjxxi3l8zbc12xv4hyj3apr9m3knjl0vsj8dyl9iyan0s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ltxnew")
+    (synopsis "Simple means of creating commands")
+    (description
+     "The package @code{ltxnew} provides @code{\\new}, @code{\\renew} and
+@code{\\provide} prefixes for checking definitions.  It is designed to work
+with e-TeX distributions of LaTeX and relies on the LaTeX internal macro
+@code{\\@@ifdefinable}.  Local allocation of counters, dimensions, skips,
+muskips, boxes, tokens and marks are provided by the etex package.
+@code{\\new} and @code{\\renew} as well as @code{\\provide} may be used for
+all kind of control sequences.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
