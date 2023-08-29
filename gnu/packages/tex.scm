@@ -92608,6 +92608,28 @@ functions.  It defines two commands, one for polynomials
 of coefficients as arguments, and offer limited optional behaviour.")
     (license license:lppl)))
 
+(define-public texlive-polytable
+  (package
+    (name "texlive-polytable")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/polytable/"
+                   "source/latex/polytable/"
+                   "tex/latex/polytable/")
+             (base32
+              "16hr99p6mx14px3jrwhgw5pqpp80prkb9l2647gmfk59df9zjl6m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/polytable")
+    (synopsis "Tabular-like environments with named columns")
+    (description
+     "This package implements a variant of tabular-like environments where columns
+can be given a name and entries can flexibly be placed between arbitrary
+columns.  Complex alignment-based layouts, for example for program code, are
+possible.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
