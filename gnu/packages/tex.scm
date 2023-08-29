@@ -76356,6 +76356,27 @@ sections etc., there are lying ahead and to react to these counter values, if
 needed.")
     (license license:lppl1.3+)))
 
+(define-public texlive-codebox
+  (package
+    (name "texlive-codebox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/codebox/" "tex/latex/codebox/")
+             (base32
+              "0w79im9qssaz1bnnkhm2a1sn5cabnsfzk9f3r65fmxxn7wagj7a8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/codebox")
+    (synopsis "Highlighted source code in a fancy box")
+    (description
+     "This LaTeX3 package provides environments @code{codebox} and @code{codeview}
+to typset with an environment body, and macros @code{\\codefile} and
+@code{\\cvfile} to typeset programming source code from a file in a fancy box.
+Starred versions of these environments and macros are provided to add
+a comment at the bottom of the fancy box.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
