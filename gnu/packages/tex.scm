@@ -96311,6 +96311,30 @@ a spreadsheet.  The cells of a table have row and column indices and these can
 be used in formulas to generate values in other cells.")
     (license license:lppl1.3c)))
 
+(define-public texlive-spverbatim
+  (package
+    (name "texlive-spverbatim")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/spverbatim/"
+                   "source/latex/spverbatim/"
+                   "tex/latex/spverbatim/")
+             (base32
+              "0nxnq5naphz9kj4a6d3yv8x9xamqi4lnhrmd9jbw4saknwc77n7p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/spverbatim")
+    (synopsis "Allow line breaks within @code{\\verb} and verbatim output")
+    (description
+     "LaTeX's @code{\\verb} macro treats its argument as an unbreakable unit of
+text.  This can lead to poor typesetting, especially when the argument is
+long.  The @code{spverbatim} package provides an @code{\\spverb} macro that is
+analogous to @code{\\verb} and an @code{spverbatim} environment that is
+analogous to verbatim with the difference being that @code{\\spverb} and
+spverbatim allow LaTeX to break lines at space characters.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
