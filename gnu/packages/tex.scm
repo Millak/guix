@@ -74087,6 +74087,38 @@ corners, shadows and colours) will automatically adapt to which other themes
 are loaded.")
     (license license:lppl1.3c)))
 
+(define-public texlive-beamertheme-trigon
+  (package
+    (name "texlive-beamertheme-trigon")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamertheme-trigon/"
+                   "source/latex/beamertheme-trigon/"
+                   "tex/latex/beamertheme-trigon/")
+             (base32
+              "0djzmf35prnba81k376cj49xmy3scnjbml9aggm31x3crz438f4v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamertheme-trigon")
+    (synopsis "Modern, elegant, and versatile theme for Beamer")
+    (description
+     "This package provides a modern, elegant and versatile theme for Beamer, with
+a high degree of customization.  Trigon found its origin and inspiration in
+the graphical guidelines resulting from the visual identity overhaul of the
+University of Liege.  Although directly inspired from these guidelines, the
+theme was stripped out of any mention or specificities related to the
+University and its faculties.  This makes the Trigon theme perfectly suitable
+for many different contexts.
+
+The main design focuses on triangular shapes for major layout elements and
+noise minimization for the main body of the work.  The theme's implementation
+is heavily inspired from the Metropolis theme.  Most options from Metropolis
+have been ported to Trigon in order to improve customization and ease-of-use.
+Trigon also includes different styles and layouts for the main title page, the
+section page and the default slide background.")
+    (license license:cc-by-sa4.0)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
