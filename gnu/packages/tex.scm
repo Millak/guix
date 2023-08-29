@@ -86524,6 +86524,28 @@ designed for teachers constructing tables of exercises, it plainly has more
 general application.")
     (license license:gpl3+)))
 
+(define-public texlive-labbook
+  (package
+    (name "texlive-labbook")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/labbook/" "source/latex/labbook/"
+                   "tex/latex/labbook/")
+             (base32
+              "1zc1mlfyjxwrq60ch6inwkryygcg5fmj90bc6w6wfzrvb0gm2yw8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/labbook")
+    (synopsis "Typeset laboratory journals")
+    (description
+     "This class is designed to typeset laboratory journals that contain
+chronologically ordered records about experiments.  From the sectioning
+commands, an experiment index is generated.  The class is based on the
+KOMA-Script class @file{scrbook.cls}.  There can be several index entries for
+one experiment.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
