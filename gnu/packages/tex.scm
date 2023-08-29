@@ -83645,6 +83645,25 @@ date of compilation.")
 anywhere else in a document, including before it was declared.")
     (license license:lppl1.3c)))
 
+(define-public texlive-gloss
+  (package
+    (name "texlive-gloss")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bib/gloss/" "bibtex/bst/gloss/"
+                   "doc/latex/gloss/" "tex/latex/gloss/")
+             (base32
+              "1yma5l861lrl31v435mhmlbkvsp47bfyy8sg5wrf3s2bad89qix5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gloss")
+    (synopsis "Create glossaries using BibTeX")
+    (description
+     "This package provides a glossary package using BibTeX with @code{\\cite}
+replaced by @code{\\gloss}.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
