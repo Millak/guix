@@ -80062,6 +80062,27 @@ set accents on all vowels, including y and the diphthongs @samp{ae} and
 @samp{oe}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-econlipsum
+  (package
+    (name "texlive-econlipsum")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/econlipsum/"
+                   "source/latex/econlipsum/"
+                   "tex/latex/econlipsum/")
+             (base32
+              "14ijwmfvxcf9lnd1g8ywyn49jl074fsvj5nzfpyb37k3392qhhs8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/econlipsum")
+    (synopsis "Generate sentences from economic articles")
+    (description
+     "This package is a blind text generator that ouputs sentences inferred from
+abstracts of economic articles.  All the paragraphs are taken with permission
+from @url{https://ipsum.mwt.me/}.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
