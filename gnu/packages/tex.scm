@@ -72661,6 +72661,28 @@ margins for multicolumn and unicolumn layout.  The package understands the
 difference between the even and odd margins for two side printing.")
     (license license:lppl1.3+)))
 
+(define-public texlive-adrconv
+  (package
+    (name "texlive-adrconv")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/adrconv/" "doc/latex/adrconv/"
+                   "source/latex/adrconv/" "tex/latex/adrconv/")
+             (base32
+              "0ssjws7rvmv97s13qnx3xiakgrr1wyndv7d6zfji73cqck27q2kf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/adrconv")
+    (synopsis "BibTeX styles to implement an address database")
+    (description
+     "The bundle provides a collection of BibTeX style files to turn an address
+database stored in the @file{.bib} format into files suitable for printing as
+address books or included into letter classes like @code{akletter} or
+@code{scrletter2}.  The data may be sorted either by name or birthday and
+output provides files in various formats for address books or time planners.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
