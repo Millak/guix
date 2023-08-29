@@ -91926,6 +91926,28 @@ that this package does not produce the usual PDF sticky notes that must be
 opened by clicking on them; instead, the notes are simply shown as text.")
     (license license:lppl)))
 
+(define-public texlive-pdfscreen
+  (package
+    (name "texlive-pdfscreen")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pdfscreen/"
+                   "tex/latex/pdfscreen/")
+             (base32
+              "0g6jydzd4zs4qpz3v53fiagca24vzn3slqd3fsw5kghx3zysq145")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pdfscreen")
+    (synopsis "Support screen-based document design")
+    (description
+     "This package is an extension of the @code{hyperref} package that provides
+a screen-based document design.  This package helps to generate PDF documents
+that are readable on screen and will fit the screen's aspect ratio.  Also it
+can be used with various options to produce regular print versions of the same
+document without any extra effort.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
