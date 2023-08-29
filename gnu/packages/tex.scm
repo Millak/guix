@@ -95628,6 +95628,29 @@ figures, tables and text are provided.  The text environment can be partially
 widened, suitable if that extra space for an equation is required.")
     (license license:lppl1.3c)))
 
+(define-public texlive-silence
+  (package
+    (name "texlive-silence")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/silence/" "source/latex/silence/"
+                   "tex/latex/silence/")
+             (base32
+              "1pavby09may2z85r94hb4881knlssx7alvnrp523j6k4s2wqsxyq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/silence")
+    (synopsis "Selective filtering of error messages and warnings")
+    (description
+     "The package allows the user to filter out unwanted warnings and error
+messages issued by LaTeX, packages and classes, so they won't pop out when
+there's nothing one can do about them.  Filtering goes from the very
+broad (``avoid all messages by such and such'') to the fine-grained (``avoid
+messages that begin with...'').  Messages may be saved to an external file for
+later reference.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
