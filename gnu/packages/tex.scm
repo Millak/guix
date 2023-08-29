@@ -87579,6 +87579,28 @@ names have more than 8 characters.  The package can be combined with the
 have associated parsers may be processed with the tools of the package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-lsc
+  (package
+    (name "texlive-lsc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bib/lsc/" "doc/latex/lsc/"
+                   "tex/latex/lsc/")
+             (base32
+              "0jxxcngaqxcgm1q4z2zq88xlsa9h3ij61icqpjk0gp7w5r0qcbpm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lsc")
+    (synopsis "Typesetting @acronym{LSC, Live Sequence Charts}")
+    (description
+     "This package is similar to the @code{msc} package in that it provides macros
+for typesetting a variant of sequence diagrams, in this case the Live Sequence
+Charts of Damm and Harel.  The package supports the full LSC language of the
+original LSC paper, the Klose-extensions for formal verification and some of
+the Harel-extensions for the Play-In/Play-Out approach.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
