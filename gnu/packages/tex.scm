@@ -90970,6 +90970,24 @@ orientation of pages in a PDF created with
 dvips/Ghostscript (@command{ps2pdf}).")
     (license license:cc0)))
 
+(define-public texlive-outline
+  (package
+    (name "texlive-outline")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/outline/" "tex/latex/outline/")
+             (base32
+              "1nnv02xf0w821spaxhvv2qb54d23a5dv33js4hdil60lnn6893fw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/outline")
+    (synopsis "List environment for making outlines")
+    (description
+     "The package defines an @code{outline} environment, which provides facilities
+similar to @code{enumerate}, but up to 6 levels deep.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
