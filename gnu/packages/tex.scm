@@ -90013,6 +90013,27 @@ a natural style; the script then generates macros to define the command.")
      "The package offers tools for collecting and executing an environment's body.")
     (license license:lppl1.3+)))
 
+(define-public texlive-newfile
+  (package
+    (name "texlive-newfile")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/newfile/" "source/latex/newfile/"
+                   "tex/latex/newfile/")
+             (base32
+              "1sqn7yylhzi6q2bvnbcvh79ljk7afqn99hjnqk3l6ys48vq2cgkc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/newfile")
+    (synopsis "User level management of LaTeX input and output")
+    (description
+     "This package defines commands to manage the limited pool of input and output
+handles provided by TeX.  The streams so provided are mapped to various of the
+LaTeX input and output mechanisms.  Some facilities of the @code{verbatim}
+package are also mapped.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
