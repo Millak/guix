@@ -72427,6 +72427,28 @@ document classes.  However, according to its author using the package
 in its current implementation is discouraged.")
     (license license:lppl1.3c)))
 
+(define-public texlive-achemso
+  (package
+    (name "texlive-achemso")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/achemso/" "doc/latex/achemso/"
+                   "source/latex/achemso/" "tex/latex/achemso/")
+             (base32
+              "02s9ykgshnn5pffsy9j2fimflkj80kyk1kqfvn6yzvmwddp6rsgd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/achemso")
+    (synopsis "Support for American Chemical Society journal submissions")
+    (description
+     "The bundle provides the official macros (@file{achemso.cls}) and
+BibTeX styles (@file{achemso.bst} and @file{biochem.bst}) for
+submission to the journals of the American Chemical Society.  The
+@code{natmove} package, which moves citations relative to punctuation,
+is distributed as part of the bundle.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
