@@ -96612,6 +96612,31 @@ argument, at the bottom of the page; these stubs may be used (for example) for
 contact information.")
     (license license:gpl3+)))
 
+(define-public texlive-studenthandouts
+  (package
+    (name "texlive-studenthandouts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/studenthandouts/"
+                   "tex/latex/studenthandouts/")
+             (base32
+              "1n6h1dl6lyipaxngrlxqf8if2mv0fihvsz0kvgcn1nv002sjw9wi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/studenthandouts")
+    (synopsis "Management and styling of student handout projects")
+    (description
+     "This package can be used to generate a single master document that contains
+a set of individual student handouts.  The package has two main functions.
+First, it provides a simple framework for organizing handout source code, and
+supplies a set of import management tools for selectively importing a subset
+of the handouts into the master document.  Selective import is convenient when
+compilation of all of the handouts is unnecessary, for example when working on
+a new handout.  As a secondary feature, the package defines a basic visual
+style for handouts.  This style can be easily changed.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
