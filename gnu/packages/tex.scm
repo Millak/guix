@@ -76082,6 +76082,25 @@ mark up and maintain LaTeX classes and packages.  XSLT 2 styleheets generate
 the @file{.dtx} and @file{.ins} distribution files expected by end users.")
     (license license:lppl1.3+)))
 
+(define-public texlive-clefval
+  (package
+    (name "texlive-clefval")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/clefval/" "source/latex/clefval/"
+                   "tex/latex/clefval/")
+             (base32
+              "0kvj80c3kw5zyhqgrwjb9p362635gw553dkj0wfk4ylyksvrjqqj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/clefval")
+    (synopsis "Key/value support with a hash")
+    (description
+     "This package provides only two macros, @code{\\TheKey} and @code{\\TheValue},
+to define then use pairs of key/value and gives a semblance of a hash.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
