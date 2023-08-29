@@ -86058,6 +86058,32 @@ comes after the first @samp{-} character.  This allows one to have one source
 file and multiple links to this source file that each compile differently.")
     (license license:lppl1.3+)))
 
+(define-public texlive-jslectureplanner
+  (package
+    (name "texlive-jslectureplanner")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/jslectureplanner/"
+                   "tex/latex/jslectureplanner/")
+             (base32
+              "0q0ni5kqrp56lly3dakn0g73pxram3d2s82b6k9g85ps2vsn96mk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/jslectureplanner")
+    (synopsis "Creation and management of university course material")
+    (description
+     "The @code{jslectureplanner} package facilitates the generation and management
+of university course material.  It provides an interface to set up and access
+centralized course data that can be reused in all course documents.
+Furthermore, the package is able to calculate the session dates of a whole
+semester and generate course programs, if the course is held weekly and the
+date of the first lecture is specified.  Moreover, the package can be used to
+generate a sectioned course bibliography via BibLaTeX.  The bundle also
+includes a package @file{jsmembertable.sty} that helps in generating course
+member and presence lists.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
