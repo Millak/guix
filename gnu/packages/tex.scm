@@ -96115,6 +96115,28 @@ body of the document.  These sidenotes are numbered (both in the text, and on
 the notes themselves).")
     (license license:lppl1.3c)))
 
+(define-public texlive-soulpos
+  (package
+    (name "texlive-soulpos")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/soulpos/" "tex/latex/soulpos/")
+             (base32
+              "11z7h0rawvvlghi5rgcr0hhvk203sp0yvs1k5r62czvsacby0qzk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-oberdiek texlive-soul))
+    (home-page "https://ctan.org/pkg/soulpos")
+    (synopsis "Fancy means of underlining")
+    (description
+     "The package combines the use of @code{soul} with the @code{savepos} mechanism
+of current pdfTeX so that the user can create (almost) arbitrary underlining
+and similar decorations, including rules, leaders and even pictures (PGF,
+PSTricks, etc.).  Unlike @code{soul} underlines, which are built by repeating
+small elements, here each chunk of text to be underlined is a single element.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
