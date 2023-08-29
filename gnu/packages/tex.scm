@@ -76401,6 +76401,28 @@ which provide the author with separate commands to typeset the material and/or
 to execute it.")
     (license license:lppl)))
 
+(define-public texlive-codehigh
+  (package
+    (name "texlive-codehigh")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/codehigh/" "tex/latex/codehigh/")
+             (base32
+              "1dcfppnav8zf3zlmdjhq5hl54vgg6whsh2apbsxw9sy55j0yxabb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/codehigh")
+    (synopsis "Highlight code and demos with @code{l3regex} and @code{lpeg}")
+    (description
+     "This package uses the @code{l3regex} package from the LaTeX3 programming
+layer to parse and highlight source code and demos.  It is more powerful than
+the @code{listings} package, and more easy to use than @code{minted}.  But it
+is slower than both of them.  Therefore in LuaTeX the package provides another
+way to highlight code: using LPeg (Parsing Expression Grammars for Lua).  LPeg
+is much more powerful and faster than @code{l3regex}.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
