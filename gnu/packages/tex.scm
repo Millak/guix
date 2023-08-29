@@ -88908,6 +88908,27 @@ break their text over lines automatically, but do allow manual line breaks.
 The boxes shrink to the natural width of the longest line they contain.")
     (license license:lppl)))
 
+(define-public texlive-minidocument
+  (package
+    (name "texlive-minidocument")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/minidocument/"
+                   "source/latex/minidocument/"
+                   "tex/latex/minidocument/")
+             (base32
+              "04nz6c7prm2icbkcjzxxd53wqaqxbc52damnny13b1jlcj7c9kn9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/minidocument")
+    (synopsis "Creates miniature documents inside other LaTeX documents")
+    (description
+     "This package can be used to create miniature documents inside other LaTeX
+documents.  Inside the minidocument all features of the outer vertical mode like
+page breaking, floats, marginpars, etc., are available.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
