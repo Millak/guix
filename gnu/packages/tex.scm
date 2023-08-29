@@ -86653,6 +86653,31 @@ with compatible arguments.  Optionally, it can be used recursively.")
 executed.")
     (license license:lppl1.3+)))
 
+(define-public texlive-latex-uni8
+  (package
+    (name "texlive-latex-uni8")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/latex-uni8/"
+                   "tex/latex/latex-uni8/")
+             (base32
+              "0c5x8v40gvw9q35xjmpndmklkc37ry4idld0657h0xrw0b5ljnh6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/latex-uni8")
+    (synopsis
+     "Universal @code{inputenc}, @code{fontenc}, and @code{babel} for pdfLaTeX and
+LuaLaTeX")
+    (description
+     "This package provides a LaTeX style file which makes it easy to use input
+encoding (UTF-8 by default, can be changed), @file{fontspec.sty} (optional),
+font encoding (T1 if @file{fontspec.sty} is not used), @code{babel} (English
+language by default), hyphenation, underline (with @file{soul.sty}), default
+text and math fonts (Computer Modern or Times), and paper sizes correctly with
+both pdfLaTeX and LuaLaTeX.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
