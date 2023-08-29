@@ -77760,6 +77760,28 @@ includes the ``Counting Words'' program distributed with CWEB, edited to run
 with LaTeX.")
     (license license:gpl3+)))
 
+(define-public texlive-cyber
+  (package
+    (name "texlive-cyber")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cyber/" "source/latex/cyber/"
+                   "tex/latex/cyber/")
+             (base32
+              "0xh3bs6rf2mf8nrh3cjqqlgcpcjwr2zjxhid94vgbsli9r6alfbq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cyber")
+    (synopsis "Annotate compliance with cybersecurity requirements")
+    (description
+     "This LaTeX package helps you write documents indicating your compliance with
+cybersecurity requirements.  It also helps you format your document in a form
+suitable inside the U.S. Department of Defense, by attaching distribution
+statements, destruction notices, organization logos, and security labels to
+it.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
