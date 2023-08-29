@@ -73274,6 +73274,26 @@ package provides the correct hyperlinks for those URLs.  The 1000 most common
 prefixes are predefined and more can be added.")
     (license license:public-domain)))
 
+(define-public texlive-authoraftertitle
+  (package
+    (name "texlive-authoraftertitle")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/authoraftertitle/"
+                   "tex/latex/authoraftertitle/")
+             (base32
+              "1x5b17a8xx0wv2zzsgzq5f3farpil4hwyhw070f5rhdzp2h7xcl1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/authoraftertitle")
+    (synopsis "Make author, etc., available after @code{\\maketitle}")
+    (description
+     "This package makes the author, title and date of the package available to the
+user (as @code{\\MyAuthor}, etc) after the @code{\\maketitle} command has been
+executed.")
+    (license license:cc0)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
