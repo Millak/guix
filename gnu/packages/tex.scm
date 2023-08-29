@@ -93601,6 +93601,26 @@ by RCS keywords (e.g., @samp{$ID: ... $}) in LaTeX documents that contain
 multiple TeX files.")
     (license license:lppl)))
 
+(define-public texlive-rcsinfo
+  (package
+    (name "texlive-rcsinfo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/rcsinfo/" "source/latex/rcsinfo/"
+                   "tex/latex/rcsinfo/")
+             (base32
+              "0q0d961vqj7kmzmf07zssq6wwwj7zjdhl3a9yi53slhfjar4y8zz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/rcsinfo")
+    (synopsis "Support for the revision control system")
+    (description
+     "This package provides a package to extract @acronym{RCS, Revision Control
+System} information and use it in a LaTeX document.  For users of LaTeX2HTML,
+@file{rcsinfo.perl} is included.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
