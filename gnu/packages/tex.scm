@@ -87090,6 +87090,28 @@ selection of units.")
      "This class is for writing letters and faxes in French.")
     (license license:lppl1.3+)))
 
+(define-public texlive-lettrine
+  (package
+    (name "texlive-lettrine")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lettrine/"
+                   "source/latex/lettrine/"
+                   "tex/latex/lettrine/")
+             (base32
+              "1s46gpgc7v336r5ksi20r6k892j8ys7inl9jqndx2wn9ikzwibb8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lettrine")
+    (synopsis "Typeset dropped capitals")
+    (description
+     "The @code{lettrine} package supports various dropped capitals styles,
+typically those described in the French typographic books.  In particular, it
+has facilities for the paragraph text's left edge to follow the outline of
+capitals that have a regular shape (such as @samp{A} and @samp{V}).")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
