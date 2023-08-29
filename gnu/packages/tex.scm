@@ -95914,6 +95914,27 @@ summarize the evaluated competencies and to allow for writing down the
 resulting proficiency level.")
     (license license:lppl1.3+)))
 
+(define-public texlive-skrapport
+  (package
+    (name "texlive-skrapport")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/skrapport/"
+                   "source/latex/skrapport/"
+                   "tex/latex/skrapport/")
+             (base32
+              "1bln56w1dfd36qg07b98d9271dhszca7l8w7x4vxwfq1n4yxm1rd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/skrapport")
+    (synopsis "Simple class for reports, etc.")
+    (description
+     "The class is intended for simple documents (e.g., reports handed in as
+coursework and the like).  The class is small and straightforward; its design
+was inspired by that of the PracTeX journal style.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
