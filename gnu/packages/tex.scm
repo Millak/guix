@@ -87685,6 +87685,24 @@ many important mechanisms like member protection and name resolution aren't
 already defined and should be introduced by intermediate packages.")
     (license license:gpl3+)))
 
+(define-public texlive-ltabptch
+  (package
+    (name "texlive-ltabptch")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ltabptch/" "tex/latex/ltabptch/")
+             (base32
+              "1jk16qkgvpi1jjw82gcn34p4wqry8sl5ybjv5vfhc820871fwfbl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ltabptch")
+    (synopsis "Bug fix for longtable")
+    (description
+     "This package provides a patch for LaTeX bugs tools/3180 and tools/3480.
+The patch applies to version 4.11 of @code{longtable}.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
