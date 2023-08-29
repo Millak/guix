@@ -87985,6 +87985,29 @@ specifies the text of the letters, possibly using macros defined in the
 @code{\\addressfile}.")
     (license license:lppl)))
 
+(define-public texlive-mailmerge
+  (package
+    (name "texlive-mailmerge")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mailmerge/"
+                   "source/latex/mailmerge/"
+                   "tex/latex/mailmerge/")
+             (base32
+              "0b2kixzf42ylyicibdzfqw0d8fwsqllfpa90xs9xxvaiz13pfiyj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mailmerge")
+    (synopsis "Repeating text field substitution")
+    (description
+     "The package @code{mailmerge} provides an interface to produce text from
+a template, where fields are replaced by actual data, as in a database.  The
+package may be used to produce several letters from a template, certificates
+or other such documents.  It allows access to the entry number, number of
+entries and so on.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
