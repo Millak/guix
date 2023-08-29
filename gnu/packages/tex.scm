@@ -92750,6 +92750,26 @@ output can be used.  A powerful template system is available to easily develop
 new styles.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ppr-prv
+  (package
+    (name "texlive-ppr-prv")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ppr-prv/" "source/latex/ppr-prv/"
+                   "tex/latex/ppr-prv/")
+             (base32
+              "13fyjhym5idskszlrxajr7aglrn7y44xm5adh9l32xjvf3lnsmgh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ppr-prv")
+    (synopsis "Prosper preview")
+    (description
+     "This class is used with LaTeX presentations using the @code{prosper} class.
+The aim of this class is to produce a printable version of the slides written
+with Prosper, with two slides per page.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
