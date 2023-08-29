@@ -94847,6 +94847,27 @@ questions, range questions,
 @end itemize")
     (license license:lppl1.3c)))
 
+(define-public texlive-sdrt
+  (package
+    (name "texlive-sdrt")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sdrt/" "tex/latex/sdrt/")
+             (base32
+              "1lv0fv3af0z5r7ca422dymimf6lkc55ylqhaq8hpq8ynz0qh7zl0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sdrt")
+    (synopsis
+     "Macros for @acronym{SDRT, Segmented Discourse Representation Theory}")
+    (description
+     "The package provides macros to produce the Box notation of SDRT (and DRT), to
+draw trees representing discourse relations, and finally to have an easy access
+to various mathematical symbols used in that theory, mostly with automatic
+mathematics mode, so they work the same in formulae and in text.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
