@@ -85571,6 +85571,26 @@ Shell escape is also needed if @command{splitindex} is used.  This is a fork
 of @code{imakeidx}, with new features and fixed bugs.")
     (license license:lppl1.3+)))
 
+(define-public texlive-inline-images
+  (package
+    (name "texlive-inline-images")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/inline-images/"
+                   "tex/latex/inline-images/")
+             (base32
+              "00bmn7fi72wyk202lii51r0gflqsrnxjlddpd0hq7j1j06rkpyvg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/inline-images")
+    (synopsis "Inline images in base64 encoding")
+    (description
+     "The package provides a command @code{\\inlineimg} to dynamically create
+a file containing the inline image in base64 format, which is decoded and
+included in the source file.")
+    (license license:lgpl3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
