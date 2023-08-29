@@ -100357,6 +100357,25 @@ definitions, X-column specifier, and with possible pagebreaks.")
 @code{\\newcommand}.")
    (license license:lppl)))
 
+(define-public texlive-xoptarg
+  (package
+    (name "texlive-xoptarg")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xoptarg/" "tex/latex/xoptarg/")
+             (base32
+              "13fifaq7c64rpqaaqj9zlq280ckmzdlqrs4p1gzs1h269p9z8mbf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xoptarg")
+    (synopsis "Expandable macros that take an optional argument")
+    (description
+     "Commands that take an optional argument are not ordinarily expandable; this
+package allows such commands to be expandable provided that they have at least
+one mandatory argument.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
