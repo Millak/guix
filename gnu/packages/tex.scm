@@ -84746,6 +84746,26 @@ versions that reflect the current gender choice.")
 @code{glossaries} package.")
     (license license:lppl1.3c)))
 
+(define-public texlive-hep-float
+  (package
+    (name "texlive-hep-float")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hep-float/"
+                   "source/latex/hep-float/"
+                   "tex/latex/hep-float/")
+             (base32
+              "0m229vcavj1m1v7yzzb8b1msganjfabr1wbg0x6p80mjbxap9s2d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hep-float")
+    (synopsis "Convenience package for float placement")
+    (description
+     "The @code{hep-float} package redefines some LaTeX float placement defaults
+and defines convenience wrappers for floats.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
