@@ -92010,6 +92010,26 @@ PDF, assuming a conforming editor and PDF viewer.")
 documents.")
     (license license:lppl1.2+)))
 
+(define-public texlive-pecha
+  (package
+    (name "texlive-pecha")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pecha/" "tex/latex/pecha/")
+             (base32
+              "0a7j556dnc59a4r88g037ssr8ggsfvycyfcsdk2rbs8x16ljdvjh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pecha")
+    (synopsis "Print Tibetan text in the classic pecha layout style")
+    (description
+     "The @code{pecha} class provides an environment for writing Tibetan on LaTeX2e
+in the traditional Tibetan Pecha layout used for spiritual or philosophical
+texts, using the cTib4TeX package.  It provides features like headers in
+different languages, page numbering in Tibetan and more.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
