@@ -95736,6 +95736,29 @@ commands, and an invoice is generated automatically with the
 @code{\\makeinvoice} command.")
     (license license:gpl3)))
 
+(define-public texlive-simplivre
+  (package
+    (name "texlive-simplivre")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/simplivre/"
+                   "tex/latex/simplivre/")
+             (base32
+              "0hi0rdzlsvqw7m0z1qz6cm8zcz0r29rnd5w7d5624ihqnjscn6j5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-minimalist))
+    (home-page "https://ctan.org/pkg/simplivre")
+    (synopsis "Write your books in a simple and clear way")
+    (description
+     "This package provides a LaTeX class for typesetting books with a simple and
+clear design.  Currently, it has native support for Chinese (simplified and
+traditional), English, French, German, Italian, Japanese, Portuguese (European
+and Brazilian), Russian and Spanish typesetting.  It compiles with either
+XeLaTeX or LuaLaTeX.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
