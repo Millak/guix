@@ -92914,6 +92914,30 @@ with e.g., the @code{vrsion}, @code{rcs} and @code{rcsinfo} packages.")
      "This package provides a configurable class for writing press releases.")
     (license license:lppl1.3+)))
 
+(define-public texlive-prettyref
+  (package
+    (name "texlive-prettyref")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/prettyref/"
+                   "source/latex/prettyref/"
+                   "tex/latex/prettyref/")
+             (base32
+              "1kp50ipij9n32w5ri7qir5qqnxkm08d3rrq3ngc0k1lpnibc8xwn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/prettyref")
+    (synopsis "Make label references self-identify")
+    (description
+     "@code{prettyref} provides a command @code{\\newrefformat}, which specifies
+the way in which a reference is typeset, according to a label identification.
+The identification is set in the @code{\\label} command, by using prefixed
+label names; so instead of @code{\\label@{mysection@}}, one uses
+@code{\\label@{sec:mysection@}}, and @code{prettyref} interprets the
+@samp{sec:} part.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
