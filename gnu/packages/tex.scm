@@ -94948,6 +94948,26 @@ etc.  It supports the asterism symbol, text content, or custom macros as the
 section break mark symbol.")
     (license license:lppl1.3+)))
 
+(define-public texlive-seealso
+  (package
+    (name "texlive-seealso")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/seealso/" "source/latex/seealso/"
+                   "tex/latex/seealso/")
+             (base32
+              "0ibgrrmbdmdbkzahkwgi726zaqz06q9da2102lkyy6r11x7dnvbf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/seealso")
+    (synopsis "Improve the performance of @code{\\see} macros with MakeIndex")
+    (description
+     "The package amends the @code{\\see} and @code{\\seealso} macros that are used
+in building indexes with MakeIndex, to deal with repetitions, and to ensure
+page numbers are present in the actual index entries.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
