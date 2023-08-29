@@ -77600,6 +77600,28 @@ There is one macro to set things up, one to extract the data, and one to tell
 if the field is empty or not.")
     (license license:lppl1.3+)))
 
+(define-public texlive-csvsimple
+  (package
+    (name "texlive-csvsimple")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/csvsimple/"
+                   "tex/latex/csvsimple/")
+             (base32
+              "1ayks1wrjg0561ckiyx6l61xhz0nxqalfr18g06pjiw3cf2lx36f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/csvsimple")
+    (synopsis "Simple CSV file processing")
+    (description
+     "The package provides a simple LaTeX interface for the processing of files
+with comma separated values (CSV); it relies on the key value syntax supported
+by @code{pgfkeys} to simplify usage.  Filtering and table generation are
+especially supported; however, this lightweight tool offers no support for
+data sorting or data base storage.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
