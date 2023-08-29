@@ -100817,6 +100817,31 @@ a means to easily set label targets to arbitrary places in the text which can
 be referred to by @code{\\zcheck}.")
     (license license:lppl1.3c)))
 
+(define-public texlive-zref-clever
+  (package
+    (name "texlive-zref-clever")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/zref-clever/"
+                   "source/latex/zref-clever/"
+                   "tex/latex/zref-clever/")
+             (base32
+              "0vz1w70j9lmx14s5fbznwansqmv2rn8dkqp8y5wr8jixr5wbwil3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/zref-clever")
+    (synopsis "Clever LaTeX cross-references based on @code{zref}")
+    (description
+     "This package provides a user interface for making LaTeX cross-references
+which automates some of their typical features, thus easing their input in the
+document and improving the consistency of typeset results.  A reference made
+with @code{\\zcref} includes a name according to its type, and lists of
+multiple labels can be automatically sorted and compressed into ranges when
+due.  The reference format is highly and easily customizable, both globally
+and locally.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
