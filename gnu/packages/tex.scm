@@ -75550,6 +75550,46 @@ cases, or an entire paper cover, or a label for a plastic slip-cover.")
 conditional commands.")
     (license license:lppl1.3c)))
 
+(define-public texlive-cdpbundl
+  (package
+    (name "texlive-cdpbundl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cdpbundl/"
+                   "source/latex/cdpbundl/"
+                   "tex/latex/cdpbundl/")
+             (base32
+              "1rqrfpmwjw1vri6lcqm01jhnfhwxs6p8w9x3998calrffiiglasv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'non-interactive-build
+            ;; When it realizes it cannot employ the usedir directive,
+            ;; the build process stops and waits for an input before
+            ;; inserting generated files in the working directory.  Do
+            ;; not ask for an input.
+            (lambda _
+              (substitute* "source/latex/cdpbundl/cdpbundl.ins"
+                (("\\Ask.*") "")
+                (("\\(your .*? will be ignored\\).*") "")))))))
+    (home-page "https://ctan.org/pkg/cdpbundl")
+    (synopsis "Business letters in the Italian style")
+    (description
+     "The C.D.P. Bundle can be used to typeset high-quality business letters
+formatted according to Italian style conventions.  It is highly configurable,
+and its modular structure provides you with building blocks of increasing
+level, by means of which you can compose a large variety of letters.  It is
+also possible to write letters divided into sections and paragraphs, to
+include floating figures and tables, and to have the relevant indexes compiled
+automatically.  A single input file can contain several letters, and each
+letter will have its own table of contents, etc., independent from the other
+ones.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
