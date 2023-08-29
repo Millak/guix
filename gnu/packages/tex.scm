@@ -98544,6 +98544,28 @@ used by lawyers in the UK and the Commonwealth).")
 for Laplace transforms, Fourier transforms and others.")
     (license license:gpl3+)))
 
+(define-public texlive-trivfloat
+  (package
+    (name "texlive-trivfloat")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/trivfloat/"
+                   "source/latex/trivfloat/"
+                   "tex/latex/trivfloat/")
+             (base32
+              "0kf431k8fvg69a2v5xp37q274bs0834ychc3cybwsjhisq0nzsmn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/trivfloat")
+    (synopsis "Quick float definitions in LaTeX")
+    (description
+     "The @code{trivfloat} package provides a quick method for defining new float
+types in LaTeX.  A single command sets up a new float in the same style as the
+LaTeX kernel @code{figure} and @code{table} float types.  The package works
+with @code{memoir} as well as the standard classes.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
