@@ -78608,6 +78608,27 @@ currently unmaintained.")
 @code{\\DTMsetstyle} provided by @file{datetime2.sty}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-datetime2-russian
+  (package
+    (name "texlive-datetime2-russian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/datetime2-russian/"
+                   "source/latex/datetime2-russian/"
+                   "tex/latex/datetime2-russian/")
+             (base32
+              "044fw83nr0izxdnyjyk46g8p2m2xq7gwvars4srvbrxr6ra79828")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/datetime2-russian")
+    (synopsis "Russian language module for the @code{datetime2} package")
+    (description
+     "This module provides the @code{russian} style that can be set using
+@code{\\DTMsetstyle} provided by @file{datetime2.sty}.  This package is
+currently unmaintained.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
