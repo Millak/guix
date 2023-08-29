@@ -90909,6 +90909,27 @@ against ill-behaved text.  In particular, verbatim text may not be directly
 included in optional sections (whether they're included or not).")
     (license license:lppl)))
 
+(define-public texlive-options
+  (package
+    (name "texlive-options")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/options/" "tex/latex/options/")
+             (base32
+              "06qbmf3z0wxjgr2zrmymk271nxssvwlig6x2i283fvl2m73sw683")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/options")
+    (synopsis
+     "Provides convenient key-value options for LaTeX package writers")
+    (description
+     "The options package provides easy to use key-value options for LaTeX package
+writers.  It has a similar interface as pgfkeys with path options but comes
+with more built-in data types and more convenient support for families and
+searching.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
