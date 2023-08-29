@@ -100023,6 +100023,26 @@ package.  However, some features of @code{assoccnt} are not (yet) contained in
 obsolete.")
     (license license:lppl1.3+)))
 
+(define-public texlive-xbmks
+  (package
+    (name "texlive-xbmks")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xbmks/" "source/latex/xbmks/"
+                   "tex/latex/xbmks/")
+             (base32
+              "0sgbd4083kiinhy7wq1fh6apx1ln1pyfkvl6k0822na9cxd2z560")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xbmks")
+    (synopsis "Create a cross-document bookmark tree")
+    (description
+     "The package defines the concept of a document bundle, which is a collection
+of documents that are to be built separately, but have a common bookmark
+tree.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
