@@ -99789,6 +99789,26 @@ annotated node trees, and @code{toklist}, which is an implementation of
 Knuth's token list macros, to be found on pp.378--379 of the @emph{TeXbook}.")
     (license license:lppl)))
 
+(define-public texlive-withargs
+  (package
+    (name "texlive-withargs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/withargs/" "tex/latex/withargs/")
+             (base32
+              "06zyvaldbwf80hijp3526qyyrfrbj6zc03fw5pan38gxhin270hg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/withargs")
+    (synopsis "In-place argument substitution")
+    (description
+     "The @code{\\withargs} command provides a clean way to populate
+a template (containing @samp{#1}, @samp{#2}, etc.) using LaTeX argument
+substitution.  It also allows you to carefully control argument expansion
+using a LaTeX3-style argument specification.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
