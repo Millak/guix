@@ -76121,6 +76121,26 @@ to define then use pairs of key/value and gives a semblance of a hash.")
 making it look similar to what PowerPoint can do.")
     (license license:expat)))
 
+(define-public texlive-clipboard
+  (package
+    (name "texlive-clipboard")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/clipboard/"
+                   "tex/latex/clipboard/")
+             (base32
+              "1rmbhb82n6lbp4iq40dr7xcwm91j0za1s7cd1n6l80a5klrcj1xw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/clipboard")
+    (synopsis "Copy and paste into and across documents")
+    (description
+     "The clipboard package provides a basic framework for copying and pasting text
+and commands into and across multiple documents.  It replaces the
+@code{copypaste} package.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
