@@ -94094,6 +94094,30 @@ coordinates).  You can, if you so choose, use the facilities of the
 @code{labelfig} package in place of using @code{\\extralabel}.")
     (license license:lppl)))
 
+(define-public texlive-rmpage
+  (package
+    (name "texlive-rmpage")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/rmpage/" "tex/latex/rmpage/")
+             (base32
+              "0wv0nv514a8017vgbfbsykzn92lzpp7ma5hckn6fwhpvh9y8h9r7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/rmpage")
+    (synopsis "Change page layout parameters in LaTeX")
+    (description
+     "The package lets you change page layout parameters in small steps over
+a range of values using options.  It can set @code{\\textwidth} appropriately
+for the main fount, and ensure that the text fits inside the printable area of
+a printer.  An rmpage-formatted document can be typeset identically without
+@code{rmpage} after a single cut and paste operation.  Local configuration can
+set defaults: for all documents; and by class, by printer, and by paper size.
+The @code{geometry} package is better if you want to set page layout
+parameters to particular measurements.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
