@@ -82069,6 +82069,28 @@ document layouts.  Finally, the package's dynamic lengths can be used to allow
 other document element sizes to be dynamic.")
     (license license:lppl)))
 
+(define-public texlive-filedate
+  (package
+    (name "texlive-filedate")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/filedate/"
+                   "source/latex/filedate/"
+                   "tex/latex/filedate/")
+             (base32
+              "0j7ccirlpda8rqzjpfqlgj6r72z0693y02anaf1izvhyk339fxg2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/filedate")
+    (synopsis "Access and compare info and modification dates")
+    (description
+     "The package provides basic access to the date of a LaTeX source file
+according to its @code{\\Provides}...  entry (the ``info date'') as well as to
+its modification date according to @code{\\pdffilemoddate} if the latter is
+available.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
