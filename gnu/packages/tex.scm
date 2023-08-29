@@ -77293,6 +77293,39 @@ examples of drawing graphs (coordinate tables created by Maple), using the
 @code{eepic} package's drawing capabilities.")
     (license license:lppl)))
 
+(define-public texlive-copyedit
+  (package
+    (name "texlive-copyedit")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/copyedit/"
+                   "source/latex/copyedit/"
+                   "tex/latex/copyedit/")
+             (base32
+              "0irvq05mk4hf2m04hvg4viryhp1b7zn3qnqcss342vhcdrrf87ih")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/copyedit")
+    (synopsis "Copyediting support for LaTeX documents")
+    (description
+     "This package implements copyediting support for LaTeX documents.  Authors
+can enjoy the freedom of using, for example, words with US or UK or Canadian or
+Australian spelling in a mixed way, yet, they can choose any one of the usage
+forms for their entire document irrespective of kinds of spelling they have
+adopted.  In the same fashion, the users can have the benefit of the following
+features available in the package:
+@itemize
+@item localization --- British-American-Australian-Canadian,
+@item close-up, hyphenation, and spaced words,
+@item Latin abbreviations,
+@item acronyms and abbreviations,
+@item itemization, nonlocal lists and labels,
+@item parenthetical and serial commas,
+@item non-local tokenization in language through abbreviations and pronouns.
+@end itemize")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
