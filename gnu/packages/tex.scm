@@ -86204,6 +86204,38 @@ with optional keys.  The package provides @code{\\newkeycommand},
 @code{\\keycmd} for a more advanced interface.")
     (license license:lppl)))
 
+(define-public texlive-keyfloat
+  (package
+    (name "texlive-keyfloat")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/keyfloat/"
+                   "source/latex/keyfloat/"
+                   "tex/latex/keyfloat/")
+             (base32
+              "1d7qlxyypbixagppag829ay46z6idgpr5dq9z5r74ly0gggmcwah")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/keyfloat")
+    (synopsis "Provides a key/value interface for generating floats")
+    (description
+     "The @code{keyfloat} package provides a key/value user interface for quickly
+creating figures with a single image each, figures with arbitrary contents,
+tables, subfloats, rows of floats, floats located ``here'', floats in the
+margin, and floats with text wrapped around them.  Key/value combinations may
+specify a caption and label, a width proportional to @code{\\linewidth},
+a fixed width and/or height, rotation, scaling, a tight or loose frame, an
+@code{\\arraystretch}, a continued float, additional supplemental text, and an
+artist/author's name with automatic index entry.  When used with the
+@code{tocdata} package, the name also appears in the list of figures.  Floats
+may be placed into a @code{row} environment, and are typeset to fit within the
+given number of columns, continuing to the next row if necessary.  Nested
+sub-rows may be used to generate layouts such as two small figures placed
+vertically next to one larger figure.  Subfloats are supported by two
+environments.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
