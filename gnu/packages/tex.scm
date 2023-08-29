@@ -79053,6 +79053,26 @@ a TeX installation (i.e., what extensions it supports).  An example document
 that examines the installation is available.")
     (license license:gpl3+)))
 
+(define-public texlive-dialogl
+  (package
+    (name "texlive-dialogl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dialogl/" "source/latex/dialogl/"
+                   "tex/latex/dialogl/")
+             (base32
+              "0vhv7jkc1ll9f4rzg8db83ksbispy7lqvjfywplpx7k1va1qp816")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (home-page "https://ctan.org/pkg/dialogl")
+    (synopsis "Macros for constructing interactive LaTeX scripts")
+    (description
+     "This package gathers together a bunch of code and examples about how
+to write macros to carry on a dialogue with the user.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
