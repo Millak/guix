@@ -82641,6 +82641,25 @@ comprehensive footnote package @code{footmisc}, and superior versions are also
 available in the @code{manyfoot} and @code{bigfoot} packages.")
     (license license:lppl1.3+)))
 
+(define-public texlive-fnpct
+  (package
+    (name "texlive-fnpct")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fnpct/" "tex/latex/fnpct/")
+             (base32
+              "1z1r5q6j5gb4x6sw579irasymk52wr4fdjh4rbgz118h0z4izivk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fnpct")
+    (synopsis "Manage footnote marks interaction with punctuation")
+    (description
+     "The package moves footnote marks after following punctuation (comma or full
+stop), and adjusts kerning as appropriate.  As a side effect, a change to the
+handling of multiple footnotes is provided.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
