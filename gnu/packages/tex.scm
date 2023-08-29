@@ -93640,6 +93640,33 @@ System} information and use it in a LaTeX document.  For users of LaTeX2HTML,
 lead to your CV being read rather than disgarded.")
     (license license:lppl1.3+)))
 
+(define-public texlive-realboxes
+  (package
+    (name "texlive-realboxes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/realboxes/"
+                   "source/latex/realboxes/"
+                   "tex/latex/realboxes/")
+             (base32
+              "1bvd1apjdw8x1rhp8g09p7mhy7v1hqbx27vhc18lfg3izz79gkr3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/realboxes")
+    (synopsis
+     "Variants of common box-commands reading their content as real box")
+    (description
+     "The package uses @code{collectbox} to define variants of common box related
+macros which read the content as real box and not as macro argument.  This
+enables the use of verbatim or other special material as part of this content.
+The provided macros have the same names as the original versions but start
+with an upper-case letter instead.  The long-form macros, like
+@code{\\Makebox}, can also be used as environments, but not the short-form
+macros, like @code{\\Mbox}.  However, normally the long form uses the short
+form anyway when no optional arguments are used.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
