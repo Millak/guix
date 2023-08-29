@@ -81952,6 +81952,33 @@ while making sure that floats nevertheless stay close to their call-outs.
 Several aspects of the algorithm behavior are adjustable.")
     (license license:lppl1.3c)))
 
+(define-public texlive-ffcode
+  (package
+    (name "texlive-ffcode")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ffcode/" "source/latex/ffcode/"
+                   "tex/latex/ffcode/")
+             (base32
+              "063dfx1xk25i7sjcwa832x6wilhg54scs7qg53dzfbypp2xndxqx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-environ
+           texlive-microtype
+           texlive-minted
+           texlive-pgf
+           texlive-tcolorbox
+           texlive-xkeyval))
+    (home-page "https://ctan.org/pkg/ffcode")
+    (synopsis "Fixed-font code blocks formatted nicely")
+    (description
+     "This LaTeX package helps you write source code in your academic papers and
+make it looks neat.  It uses @code{minted} and @code{tcolorbox}, configuring
+them the right way, to ensure that code fragments and code blocks look nicer.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
