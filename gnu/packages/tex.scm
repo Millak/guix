@@ -86764,6 +86764,27 @@ are provided for a document designer to experiment with the layout
 parameters.")
     (license license:lppl1.3+)))
 
+(define-public texlive-lazylist
+  (package
+    (name "texlive-lazylist")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lazylist/" "tex/latex/lazylist/")
+             (base32
+              "1pyz8p3m25ccna6w8bahg29nqivryzygq62mzl1ybls90h9pls1p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lazylist")
+    (synopsis "Lists in TeX's mouth")
+    (description
+     "The package was developed to provide flexible lists, whose ordering can be
+altered on the fly.  The implementation involves a pile of lambda-calculus and
+list-handling macros of an incredibly obtuse nature.  The TUGboat paper serves
+as a manual for the macros.  Having said all of which, confidence is enhanced
+by the knowledge that the TeX code was formally verified.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
