@@ -80193,6 +80193,27 @@ pairs, such as mother/father, daughter/son, and so on.  Gender may be defined
 once per document, as an environment, or may be flipped on the fly.")
     (license license:lppl)))
 
+(define-public texlive-efbox
+  (package
+    (name "texlive-efbox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/efbox/" "source/latex/efbox/"
+                   "tex/latex/efbox/")
+             (base32
+              "1qjm824njz81fp0v91vgid8zlgaj9r4cx2z0i44rlall31z26vpm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/efbox")
+    (synopsis "Extension of @code{\\fbox}, with controllable frames and colours")
+    (description
+     "The package defines the @code{\\efbox} command, which creates a box just wide
+enough to hold the text created by its argument.  The command optionally puts
+a (possibly partial) frame around the box, and allows setting the box
+background colour.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
