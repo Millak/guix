@@ -73832,6 +73832,25 @@ rectangles.  Besides that the rest of the graphic elements in the slides are
 scarce to keep it clean.")
     (license license:lppl1.3+)))
 
+(define-public texlive-beamertheme-detlevcm
+  (package
+    (name "texlive-beamertheme-detlevcm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamertheme-detlevcm/"
+                   "tex/latex/beamertheme-detlevcm/")
+             (base32
+              "1069xkzznmx0nyi9wk1qj7c2l932fg6s2mvxh9hjhxxdk3dds1l5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamertheme-detlevcm")
+    (synopsis "Beamer theme designed for use in the University of Leeds")
+    (description
+     "The bundle provides a simple theme that has been used in the author's
+department.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
