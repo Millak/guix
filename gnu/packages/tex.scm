@@ -77556,6 +77556,26 @@ which may be listed in a table of cross-references.")
 those from @code{cleveref}, in an expandable manner.")
     (license license:lppl1.3+)))
 
+(define-public texlive-css-colors
+  (package
+    (name "texlive-css-colors")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/css-colors/"
+                   "tex/latex/css-colors/")
+             (base32
+              "141bsypli8ibaqwwmip6rynikk6kx8gi12jfap6hy5sjylq93ndj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/css-colors")
+    (synopsis "Named colors for web-safe design")
+    (description
+     "This package defines web-safe colors for use with @code{color} package.
+It is intended for both authors and package writers (e.g., to create Beamer
+color themes).")
+    (license (list license:lppl license:gpl3+))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
