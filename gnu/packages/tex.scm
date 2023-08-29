@@ -87601,6 +87601,30 @@ original LSC paper, the Klose-extensions for formal verification and some of
 the Harel-extensions for the Play-In/Play-Out approach.")
     (license license:lppl)))
 
+(define-public texlive-lstaddons
+  (package
+    (name "texlive-lstaddons")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lstaddons/"
+                   "source/latex/lstaddons/"
+                   "tex/latex/lstaddons/")
+             (base32
+              "0frav8hr2xwpdpkb0qlz3sdiy3vhpln36rk58grvzqdiissa1azg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-ydoc))
+    (home-page "https://ctan.org/pkg/lstaddons")
+    (synopsis "Add-on packages for @code{listings}")
+    (description
+     "The bundle contains a small collection of add-on packages for the
+@code{listings} package.  Current packages are: @code{lstlinebgrd}: colour the
+background of some or all lines of a listing; and @code{lstautogobble}: set
+the standard @code{gobble} option to the indent of the first line of the
+code.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
