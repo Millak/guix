@@ -99948,6 +99948,25 @@ package.  It is backwards compatible with the original environments.")
 Ruled) and commands to write texts right on the lines.")
     (license license:lppl1.3c)))
 
+(define-public texlive-wtref
+  (package
+    (name "texlive-wtref")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/wtref/" "tex/latex/wtref/")
+             (base32
+              "12agpx710fdf7y1gy0pj592xkg61miscjnx3rnjm5zszlrwd83f7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/wtref")
+    (synopsis "Extend LaTeX's cross-reference system")
+    (description
+     "This package extends the cross-reference system of LaTeX2e and introduces
+concepts of namespace and scope.  It also allows users to customize reference
+formats.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
