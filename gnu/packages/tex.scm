@@ -79295,6 +79295,26 @@ snapshots, in two-column formatting.  You can use it either in @file{.dtx}
 documentation or in @file{.tex} files.")
     (license license:expat)))
 
+(define-public texlive-doctools
+  (package
+    (name "texlive-doctools")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/doctools/"
+                   "source/latex/doctools/"
+                   "tex/latex/doctools/")
+             (base32
+              "0zsw9cj27lmjjsqibskfxizbsbcqwrdbd87s283j8pkdsqda8fc4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/doctools")
+    (synopsis "Tools for the documentation of LaTeX code")
+    (description
+     "The package provides a collection of tools for use either in an ordinary
+LaTeX document, or within a @file{.dtx} file.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
