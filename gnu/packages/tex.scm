@@ -93685,6 +93685,29 @@ form anyway when no optional arguments are used.")
 BrushScript-Italic fonts.")
     (license license:public-domain)))
 
+(define-public texlive-recipebook
+  (package
+    (name "texlive-recipebook")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/recipebook/"
+                   "tex/latex/recipebook/")
+             (base32
+              "058hrxnj3zhp4yjcq1xbbyg1rp7jxycpp6nac2gn9v1admcdami0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/recipebook")
+    (synopsis "Typeset 5.5\" x 8\" recipes for browsing or printing")
+    (description
+     "This is a LaTeX2e class for typesetting recipes.  It is designed for
+typesetting one or two recipes per page, with dimensions of 5.5 x 8.5.  The
+hyperlinked table of contents and page numbers make browsing recipes
+convenient, and the pages can be joined together or printed two per sheet to
+normal letterpaper easily.  The size was chosen to work in half-page 3-ring
+binder cover sheets.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
