@@ -82363,6 +82363,28 @@ colored) for the back of files or binders (currently only the special A4
 It will print several cards per page, on both sides of the paper.")
     (license license:gpl3+)))
 
+(define-public texlive-flagderiv
+  (package
+    (name "texlive-flagderiv")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/flagderiv/"
+                   "source/latex/flagderiv/"
+                   "tex/latex/flagderiv/")
+             (base32
+              "1gzcanvbpz8scnlkchs2fyw3mphzmswp8p723kwifncvab41i9nk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/flagderiv")
+    (synopsis "Flag style derivation package")
+    (description
+     "The @code{flagderiv} package is used to create mathematical derivations using
+the flag/flagpole notation.  The package features an intuitive command syntax,
+opening and closing multiple flagpoles, different comment styles, customizable
+symbols and label namespaces.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
