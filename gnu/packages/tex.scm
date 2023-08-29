@@ -84985,6 +84985,31 @@ include a footer and the letter provides commands to include a scanned
 signature and two signees.")
     (license license:lppl1.2+)))
 
+(define-public texlive-hobsub
+  (package
+    (name "texlive-hobsub")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hobsub/" "tex/latex/hobsub/")
+             (base32
+              "0cc5m4kqlx3m0qyjgxrbhgib2qza7a25vrp9rb8b8mpc5n5ycpn8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hobsub")
+    (synopsis "Construct package bundles")
+    (description
+     "Heiko Oberdiek's @code{hobsub} package (and @code{hobsub-hyperref} and
+@code{hobsub-generic} packages) defined a mechanism for concatenating multiple
+files into a single file for faster loading.  The disadvantage is that it
+introduces hard dependencies between the source files that are included and
+complicates distribution and updates.  It was principally used with
+@code{hyperref} but is not currently used in any standard packages in TeX
+Live.  The packages are still distributed as simple stubs that reference the
+included packages via @code{\\RequirePackage} rather than copying their
+source.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
