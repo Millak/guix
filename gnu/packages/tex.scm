@@ -100292,6 +100292,29 @@ continued fractions).
 All computations are compatible with expansion-only context.")
     (license license:lppl1.3c)))
 
+(define-public texlive-xkcdcolors
+  (package
+    (name "texlive-xkcdcolors")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xkcdcolors/"
+                   "tex/latex/xkcdcolors/")
+             (base32
+              "0fm8ipmx6nflm4mbjdcz1c3jqqbv9rca5myahgksjpis5w3mvsfd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xkcdcolors")
+    (synopsis "XKCD names of colors")
+    (description
+     "In the year 2010, Randall Munroe on posted a really funny and nice article on
+XKCD.  He made a very curious experiment: showing colors to a lot of people
+and asking to name each one.  Afterward, he processed the data and sorted the
+names for each color by popularity --- that means, how many people gave the
+same name to the same color.  This package makes the collected color names
+usable with LaTeX.")
+    (license (list license:lppl1.3c license:cc0))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
