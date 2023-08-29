@@ -95032,6 +95032,34 @@ documents of SemanTeX markup to prepare them e.g., for publication.")
 It includes T-diagrams, various derivation symbols and inference trees.")
     (license license:lppl)))
 
+(define-public texlive-semantic-markup
+  (package
+    (name "texlive-semantic-markup")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/semantic-markup/"
+                   "tex/latex/semantic-markup/")
+             (base32
+              "0c7n0rwz8lm5qs67rln2qky9bjkffkwlrx9xaw6c1z7xsgwbm6n1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/semantic-markup")
+    (synopsis
+     "Meaningful semantic markup in the spirit of the Text Encoding Initiative")
+    (description
+     "The package provides simple commands to allow authors (especially scholars in
+the humanities) to write with a focus on content rather than presentation.
+The commands are inspired by the XML elements of the Text Encoding Initiative.
+Commands like @code{\\term} and @code{\\foreign} are aliases for
+@code{\\emph}.  @code{\\quoted} and @code{\\soCalled} are aliases for quoting
+commands.  These commands could be easily redefined for different formats.
+The package also provides a @code{footnote} environment so that long footnotes
+can be more cleanly separated from the main text.  Eventually, the package
+also includes some macros for musical symbols and other basic notations for
+musical analysis.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
