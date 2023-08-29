@@ -76769,6 +76769,24 @@ commands into the main document's table of contents.  The package cooperates
 with the @code{abstract} and @code{titling} packages.")
     (license license:lppl1.3+)))
 
+(define-public texlive-comma
+  (package
+    (name "texlive-comma")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/comma/" "tex/latex/comma/")
+             (base32
+              "16rbqna7jngahi9crnv74jkvlnmfr3rz7gbrz24ginh19bax7pi1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/comma")
+    (synopsis "Formats a number by inserting commas")
+    (description
+     "This package provides a flexible package that allows commas (or anything
+else) to be inserted every three digits in a number, as in @samp{1,234}.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
