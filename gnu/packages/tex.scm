@@ -98787,6 +98787,26 @@ occupied by the characters @samp{abcd...xyz}), em-widths and ex-heights, which
 may help in making typesetting decisions.")
     (license license:lppl1.3c)))
 
+(define-public texlive-typogrid
+  (package
+    (name "texlive-typogrid")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/typogrid/"
+                   "source/latex/typogrid/"
+                   "tex/latex/typogrid/")
+             (base32
+              "08hq2zcr2xd73qfh0f05d33sn1zvwnizrsr8r82mb3vsnbyczn0b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/typogrid")
+    (synopsis "Print a typographic grid")
+    (description
+     "This package draws a grid on every page of the document; the grid divides the
+page into columns, and may be used for fixing measurements of layout.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
