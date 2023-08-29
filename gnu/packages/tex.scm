@@ -77807,6 +77807,28 @@ makes your document more brittle in unexpected ways: for example, when you use
 formatting in your section titles.  So don't use cybercic unless you need to.")
     (license license:expat)))
 
+(define-public texlive-darkmode
+  (package
+    (name "texlive-darkmode")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/darkmode/"
+                   "source/latex/darkmode/"
+                   "tex/latex/darkmode/")
+             (base32
+              "1n21gyqkwmz4hd77v27ziyiqlr2wh4c9br8wnswrkznzkp1lmgky")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/darkmode")
+    (synopsis "General dark mode support for LaTeX documents")
+    (description
+     "This package provides an API for template and package developers to create
+dynamic color schemes for light- and dark modes.  For those unaware: we refer
+to dark mode when a document has a dark background with a light font and to
+light mode if it has a dark font with a light background.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
