@@ -77933,6 +77933,27 @@ included in the list, and a command is available for providing RCS-maintained
 data for printing in the file list.")
     (license license:lppl)))
 
+(define-public texlive-datenumber
+  (package
+    (name "texlive-datenumber")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/datenumber/"
+                   "source/latex/datenumber/"
+                   "tex/latex/datenumber/")
+             (base32
+              "0626lnhy8gv3a703kfg8w267zs50hv5hhwsjmppyfq8g01j2542s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/datenumber")
+    (synopsis "Convert a date into a number and vice versa")
+    (description
+     "This package provides commands to convert a date into a number and vice versa.
+Additionally there are commands for incrementing and decrementing a date.
+Leap years and the Gregorian calendar reform are considered.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
