@@ -7761,7 +7761,7 @@ to display dialog boxes from the commandline and shell scripts.")
 (define-public mutter
   (package
     (name "mutter")
-    (version "42.4")
+    (version "44.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -7769,7 +7769,7 @@ to display dialog boxes from the commandline and shell scripts.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0h1ak3201mdc2qbf67fhcn801ddp33hm0f0c52zis1l7s6ipyb62"))
+                "0l85qyn6x5hyaaclzcbqd44xpd582gdindqfam8f9lsh46zvwp0q"))
               ;; TODO: Remove on update as this was merged upstream.  See
               ;; <https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/3047>.
               (patches (search-patches "mutter-fix-inverted-test.patch"))))
@@ -7792,7 +7792,7 @@ to display dialog boxes from the commandline and shell scripts.")
          ;; Otherwise, the RUNPATH will lack the final path component.
          (string-append "-Dc_link_args=-Wl,-rpath="
                         #$output "/lib,-rpath="
-                        #$output "/lib/mutter-10")
+                        #$output "/lib/mutter-12")
          ;; Disable systemd support.
          "-Dsystemd=false"
          ;; Don't install tests.
@@ -7939,7 +7939,8 @@ to display dialog boxes from the commandline and shell scripts.")
            pango
            xinput))
     (inputs
-     (list egl-wayland                  ;for wayland-eglstream-protocols
+     (list colord
+           egl-wayland                  ;for wayland-eglstream-protocols
            elogind
            gnome-desktop
            gnome-settings-daemon
