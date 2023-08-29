@@ -99082,6 +99082,26 @@ provides commands @code{\\citeurl}, @code{\\mailto}, @code{\\ukoeln}, and
 @code{\\uref}.")
     (license license:lppl1.3c)))
 
+(define-public texlive-ushort
+  (package
+    (name "texlive-ushort")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ushort/" "source/latex/ushort/"
+                   "tex/latex/ushort/")
+             (base32
+              "16pkrlb1v67ydjis2w3gz20i9rkmjnaidh47sxwpn62gpjgy01gw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ushort")
+    (synopsis "Shorter (and longer) underlines and underbars")
+    (description
+     "Some engineers need underlined or twice underlined variables for which the
+usual @code{\\underline} is too long.  This package provides a generic command
+for creating underlines of various sizes and types.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
