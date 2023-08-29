@@ -92585,6 +92585,29 @@ application is the polynomial ring in one variable with rational
 coefficients.")
     (license license:lppl1.3+)))
 
+(define-public texlive-polynomial
+  (package
+    (name "texlive-polynomial")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/polynomial/"
+                   "source/latex/polynomial/"
+                   "tex/latex/polynomial/")
+             (base32
+              "1jxiv64368n7my0qc52gdbh510ys106lq9vfx0y9i9w88alm7js6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/polynomial")
+    (synopsis "Typeset (univariate) polynomials")
+    (description
+     "The package offers an easy way to write (univariate) polynomials and rational
+functions.  It defines two commands, one for polynomials
+@code{\\polynomial@{coeffs@}} and one for rational functions
+@code{\\polynomialfrac@{Numerator@}@{Denominator@}}.  Both commands take lists
+of coefficients as arguments, and offer limited optional behaviour.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
