@@ -94324,6 +94324,34 @@ for producing boxes, framed with rounded corners.")
 R's parameters, and provides code to read R output.")
     (license license:lppl1.2+)))
 
+(define-public texlive-rtkinenc
+  (package
+    (name "texlive-rtkinenc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/rtkinenc/"
+                   "source/latex/rtkinenc/"
+                   "tex/latex/rtkinenc/")
+             (base32
+              "0921b6c5k168nbs32vlqxg8jznzw51dd02w5g1q6ld4dw8c78zxc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/rtkinenc")
+    (synopsis "Input encoding with fallback procedures")
+    (description
+     "The @code{rtkinenc} package is functionally similar to the standard LaTeX
+package @code{inputenc}: both set up active characters so that an input
+character outside the range of 7-bit visible ASCII is converted into one or
+more corresponding LaTeX commands.  The main difference lies in that
+@code{rtkinenc} allows the user to specify a fallback procedure to use when
+the text command corresponding to some input character isn't available.  Names
+of commands in @code{rtkinenc} have been selected so that it can read
+@code{inputenc} encoding definition files, and the aim is that @code{rtkinenc}
+should be backwards compatible with @code{inputenc}.  @code{rtkinenc} is not
+a new version of @code{inputenc} though, nor is it part of standard LaTeX.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
