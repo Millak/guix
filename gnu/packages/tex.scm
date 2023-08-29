@@ -81979,6 +81979,28 @@ make it looks neat.  It uses @code{minted} and @code{tcolorbox}, configuring
 them the right way, to ensure that code fragments and code blocks look nicer.")
     (license license:expat)))
 
+(define-public texlive-ffslides
+  (package
+    (name "texlive-ffslides")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ffslides/" "tex/latex/ffslides/")
+             (base32
+              "0yd6hy15gr1la5wdxl726xdp0nbnh1agf1w0nrixjfr95qidapxf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ffslides")
+    (synopsis "Freeform slides based on the @code{article} class")
+    (description
+     "The @code{ffslides} (``freeform slides'') class is intended to make it easier
+to place various types of content freely on the page, and therefore easier to
+design documents with a strong visual component: presentations, posters,
+research or lecture notes, and so on.  The goal of the class is to be less
+rigid and less complex than some of the popular presentation-making options.
+It is essentially a small set of macros added to the @code{article} class.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
