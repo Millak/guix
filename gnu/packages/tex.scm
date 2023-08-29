@@ -85756,6 +85756,28 @@ Invoices can span multiple pages.  The class is configurable for different
 shipping addresses.")
     (license license:lppl1.3+)))
 
+(define-public texlive-invoice2
+  (package
+    (name "texlive-invoice2")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/invoice2/"
+                   "source/latex/invoice2/"
+                   "tex/latex/invoice2/")
+             (base32
+              "133v3jk4lhbp17i1435jf4n3gnb7r892qiylzpd65pxdwivi3k0n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/invoice2")
+    (synopsis "Intelligent invoices with LaTeX3")
+    (description
+     "This package typesets invoices with automatic VAT and calculation of totals.
+It supports internationalization, invoices are typeset with @code{booktabs}
+for readability.  It does not support separate projects per invoice.  It can
+be used as a replacement for @code{invoice} in most cases.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
