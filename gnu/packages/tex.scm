@@ -91050,6 +91050,25 @@ presentation slides.")
 package adds simple macros for your LaTeX document.")
     (license license:lppl1.3+)))
 
+(define-public texlive-overlays
+  (package
+    (name "texlive-overlays")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/overlays/" "tex/latex/overlays/")
+             (base32
+              "15lhbpja1rjjqn15c1b0pcqzv8lhacka63m1d80jnzfj16jkmvdc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/overlays")
+    (synopsis "Incremental slides")
+    (description
+     "This package allows to write presentations with incremental slides.  It does
+not presuppose any specific document class.  Rather, it is a lightweight
+alternative to full-fledged presentation classes like @code{beamer}.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
