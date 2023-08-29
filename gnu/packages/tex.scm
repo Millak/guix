@@ -88865,6 +88865,27 @@ created by either the @code{exerquiz} or @code{eqexam} package.")
 @code{\\clearpage}.")
     (license license:lppl)))
 
+(define-public texlive-mindflow
+  (package
+    (name "texlive-mindflow")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mindflow/"
+                   "source/latex/mindflow/"
+                   "tex/latex/mindflow/")
+             (base32
+              "1js0w4xgw7485c78cdakckg7jkl9q86m17xw2iqzq21ip97pr03q")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mindflow")
+    (synopsis "Write your ideas in a clear way")
+    (description
+     "This package provides an environment that has its own line numbers or markers
+and can be well distinguished from the main text, for writing your ideas or
+annotations.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
