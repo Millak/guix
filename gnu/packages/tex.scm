@@ -89849,6 +89849,27 @@ directives, the class uses a set of lists, provided by the package
 a set of package files (and/or other macros) that you regularly use.")
     (license license:lppl)))
 
+(define-public texlive-mylatexformat
+  (package
+    (name "texlive-mylatexformat")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mylatexformat/"
+                   "source/latex/mylatexformat/"
+                   "tex/latex/mylatexformat/")
+             (base32
+              "0kas0rgpim2dw3ym3wxslvmi8y08wmxp0ypl2zx3r4agb2fcy1jn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mylatexformat")
+    (synopsis "Build a format based on the preamble of a LaTeX file")
+    (description
+     "The use of formats helps to speed up compilations: packages which have been
+dumped in the format are loaded at very high speed.  This is useful when
+a document loads many packages.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
