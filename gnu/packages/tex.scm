@@ -88826,6 +88826,27 @@ document.  In addition, @code{mftinc} provides routines for improved comment
 formatting and for typesetting font tables.")
     (license license:lppl)))
 
+(define-public texlive-mi-solns
+  (package
+    (name "texlive-mi-solns")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mi-solns/"
+                   "source/latex/mi-solns/"
+                   "tex/latex/mi-solns/")
+             (base32
+              "1s8p7cibai4mc0pw9cqz87v3frq556wjh3kvvrxqs216s6wg9n53")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mi-solns")
+    (synopsis "Extract solutions from exercises and quizzes")
+    (description
+     "This package is designed to mark a solution environment of an exercise or
+quiz and insert it into the same or a different document.  Solutions are ones
+created by either the @code{exerquiz} or @code{eqexam} package.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
