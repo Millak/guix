@@ -33365,6 +33365,7 @@ Filters are also provided for checking the LaTeX parts of CWEB documents.")
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments (list #:link-scripts #~(list "pamphletangler")))
+    (inputs (list perl))
     (home-page "https://ctan.org/pkg/clojure-pamphlet")
     (synopsis "Literate programming tool based on Clojure's Pamphlet system")
     (description
