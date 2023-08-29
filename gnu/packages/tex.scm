@@ -79211,6 +79211,28 @@ a more vanilla-flavoured way of typesetting base sequences, the user might
 consider the @code{seqsplit} package.")
     (license license:lppl)))
 
+(define-public texlive-doclicense
+  (package
+    (name "texlive-doclicense")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/doclicense/"
+                   "source/latex/doclicense/"
+                   "tex/latex/doclicense/")
+             (base32
+              "0glx7cfhncns0kkz08i9w1kprn6xynbsw7155vkmhfwkxa4xb1an")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/doclicense")
+    (synopsis "Support for putting documents under a license")
+    (description
+     "This package allows you to put your document under a license and include
+a link to read about the license or include an icon or image of the license.
+Currently, only Creative Commons is supported, but this package is designed to
+handle all kinds of licenses.")
+    (license (list license:cc0 license:lppl1.3c))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
