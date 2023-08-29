@@ -84046,6 +84046,27 @@ formatting for multiple line inline comments, an ability to comment out some
 code, and a macro to input other files in ``normal'' LaTeX mode.")
     (license license:lppl)))
 
+(define-public texlive-gmiflink
+  (package
+    (name "texlive-gmiflink")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gmiflink/" "tex/latex/gmiflink/")
+             (base32
+              "1c84gnb946z45gn7vswp1fyjxzs1fm15g2w64qi7g257y7ycxi5q")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gmiflink")
+    (synopsis "Simplify usage of @code{\\hypertarget} and @code{\\hyperlink}")
+    (description
+     "This package provides three @code{hyperref}-based macros that simplify usage
+of @code{\\hypertarget} and @code{\\hyperlink}, calling them with one argument
+instead of the same one twice.  Also @code{\\gmiflink} and @code{\\gmifref}
+typeset plain text instead of generating an error or printing @samp{??}  if
+there is no respective hypertarget or label.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
