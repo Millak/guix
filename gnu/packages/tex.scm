@@ -96851,6 +96851,26 @@ He does not recommend using them in formal work.")
 names for use with both the @code{color} and PSTricks packages.")
     (license license:lppl)))
 
+(define-public texlive-svn
+  (package
+    (name "texlive-svn")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/svn/" "source/latex/svn/"
+                   "tex/latex/svn/")
+             (base32
+              "1q4l4vhvkzkv5bsbp11vfmqxf407l4y4s8840qva7nc7cwvc3n7b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/svn")
+    (synopsis "Typeset Subversion keywords")
+    (description
+     "The @code{svn} package lets you typeset (in LaTeX) the value of Subversion
+keywords.  It is approximately an equivalent to the @code{rcs} package, but
+for Subversion rather than CVS.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
