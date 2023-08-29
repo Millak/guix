@@ -96477,6 +96477,32 @@ characters per line.  This package produces pages with n lines of at most
 m characters each.")
     (license license:lppl1.2+)))
 
+(define-public texlive-stealcaps
+  (package
+    (name "texlive-stealcaps")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/stealcaps/"
+                   "source/latex/stealcaps/"
+                   "tex/latex/stealcaps/")
+             (base32
+              "05lskyv9k4mgkzw08cknbcgbx6d64my7qjc2jljhqgmjsxd4yh07")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (home-page "https://ctan.org/pkg/stealcaps")
+    (synopsis "``Steal'' small capitals")
+    (description
+     "This little package is mainly meant to be used when there is a (TrueType or
+OpenType) font that does not provide real small capitals.  As a workaround,
+this package helps to borrow, or steal, the small capitals from another font.
+This might also be useful in the rare case that someone does not like the
+present small capitals, and wants to change them, or likes those from another
+font better.  To achieve the borrowing, one only needs to load the package and
+specify the name of the target font via the from option.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
