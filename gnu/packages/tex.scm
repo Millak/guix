@@ -97067,6 +97067,26 @@ proportional figures may still be aligned in tabular style (for example, in
 the table of contents).")
     (license license:lppl1.3+)))
 
+(define-public texlive-tableaux
+  (package
+    (name "texlive-tableaux")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tableaux/" "tex/latex/tableaux/")
+             (base32
+              "021qins7h014pjg297iih071n45mqabx8sf0vr78ln9k984h7v8l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tableaux")
+    (synopsis "Construct tables of signs and variations")
+    (description
+     "The package uses PSTricks; the user may define the width of the table, the
+number of lines and the height of each line.  Placement of labels within the
+boxes may be absolute, or as a percentage of the width; various other controls
+are available.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
