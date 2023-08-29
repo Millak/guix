@@ -79454,6 +79454,28 @@ run the external commands, LaTeX (or whatever) needs to be run with the
 @code{--shell-escape} flag.")
     (license license:lppl1.3+)))
 
+(define-public texlive-dox
+  (package
+    (name "texlive-dox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dox/" "source/latex/dox/"
+                   "tex/latex/dox/")
+             (base32
+              "1vzvrr45npkl86bwqc216b0wcsj8rm9dz4ms1b8ydqpg8nv6594d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (home-page "https://ctan.org/pkg/dox")
+    (synopsis "Extend the doc package")
+    (description
+     "The @code{doc} package provides LaTeX developers with means to describe the
+usage and the definition of new macros and environments.  However, there is no
+simple way to extend this functionality to other items (options or counters,
+for instance).  The DoX package is designed to circumvent this limitation.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
