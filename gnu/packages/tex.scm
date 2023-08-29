@@ -95104,6 +95104,32 @@ a one-sided documents --- and only special contents are output on left-hand
 pages on user request, e.g., floating objects.")
     (license license:lppl)))
 
+(define-public texlive-semproc
+  (package
+    (name "texlive-semproc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/semproc/" "source/latex/semproc/"
+                   "tex/latex/semproc/")
+             (base32
+              "1ymixf3wggka9n7888wnaylkh2hzlylsdnzlk6chy9llnfy4wr7d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/semproc")
+    (synopsis "Seminar proceedings")
+    (description
+     "The package provides functionality for typesetting seminar proceedings based
+on KOMA-Script's @code{scrreprt} class and @code{etoc}.  It offers an
+alternative to @code{\\chapter} that typesets the speaker and if necessary the
+typist of the notes for the talk in question.
+
+Moreover, the class provides two types of table of contents.  A global table
+of contents showing only the talks of the seminar and the respective speakers
+and a local table of contents for each talk showing the sections and
+subsections of the respective talk.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
