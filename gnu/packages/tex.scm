@@ -74159,6 +74159,21 @@ presentation theme Warsaw.")
 mathematics research.")
     (license license:lppl1.3+)))
 
+(define-public texlive-beamerthemejltree
+  (package
+    (name "texlive-beamerthemejltree")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/latex/beamerthemejltree/")
+             (base32
+              "02ccd8qqyjkvqqyxr94p1gc6qjryl83vpa72wcm5ywr8gmxci0pi")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamerthemejltree")
+    (synopsis "Contributed Beamer theme")
+    (description "This package provides a theme for Beamer presentations.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
