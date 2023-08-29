@@ -76101,6 +76101,26 @@ the @file{.dtx} and @file{.ins} distribution files expected by end users.")
 to define then use pairs of key/value and gives a semblance of a hash.")
     (license license:lppl1.3c)))
 
+(define-public texlive-clicks
+  (package
+    (name "texlive-clicks")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/clicks/" "source/latex/clicks/"
+                   "tex/latex/clicks/")
+             (base32
+              "1dpx6xb68rfr6mmqzzm2rx98k6l0s6z53brrds62sm5bqn1rl550")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-etoolbox texlive-xkeyval))
+    (home-page "https://ctan.org/pkg/clicks")
+    (synopsis "Slide deck animation")
+    (description
+     "With the help of this package you can simulate animation in your slide deck,
+making it look similar to what PowerPoint can do.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
