@@ -82021,6 +82021,30 @@ every (or the current) page at absolute positions.  In this way, you can check
 the page layout dimensions.  You can also draw various rulers in the text.")
     (license license:lppl1.3+)))
 
+(define-public texlive-fifo-stack
+  (package
+    (name "texlive-fifo-stack")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fifo-stack/"
+                   "source/latex/fifo-stack/"
+                   "tex/latex/fifo-stack/")
+             (base32
+              "0h0s0dfw0p94n2rf5bng2i79cv76vkz0xjwb5pm2gzwimshm0anw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fifo-stack")
+    (synopsis "FIFO and stack implementation for package writers")
+    (description
+     "This package provides a LaTeX implementation of a combined FIFO Stack
+modified from the existing @code{stack} package.  The package renames the
+original's @code{\\Push} and @code{\\Pop} commands @code{\\FSPush} and
+@code{\\FSPop} (which work on the top/end of the FIFO/Stack), and adds the
+ability to @code{\\FSUnshift} and @code{\\FSShift} from the bottom (front) of
+the FIFO/Stack.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
