@@ -93621,6 +93621,25 @@ System} information and use it in a LaTeX document.  For users of LaTeX2HTML,
 @file{rcsinfo.perl} is included.")
     (license license:lppl)))
 
+(define-public texlive-readablecv
+  (package
+    (name "texlive-readablecv")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/readablecv/"
+                   "tex/latex/readablecv/")
+             (base32
+              "12gjcwmli04pj2cgsj2g0xw2m0vczqs7kq9zirqakbkk7nb7w4g2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/readablecv")
+    (synopsis "Readable and good looking CV and letter class")
+    (description
+     "This class provides an attractive and highly readable CV which will hopefully
+lead to your CV being read rather than disgarded.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
