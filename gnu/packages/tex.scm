@@ -84447,6 +84447,29 @@ circumstances, but in other circumstances it may fail.  Thus gridset is only
 one more step for grid setting, not a complete solution.")
     (license license:lppl1.3c)))
 
+(define-public texlive-gridslides
+  (package
+    (name "texlive-gridslides")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gridslides/"
+                   "tex/latex/gridslides/")
+             (base32
+              "0bnv9sgl7gxa8j92b04x30v3wkwgfg7nz9f8jkr1qk7rk215igmn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gridslides")
+    (synopsis "Free form slides with blocks placed on a grid")
+    (description
+     "This package allows creating free form slides with blocks placed on a grid.
+The blocks can be filled with text, equations, figures etc.  The resulting
+slides are similar to the ones produced with LaTeX beamer, but more flexible.
+Sequential unconvering of elements is supported.  A compiler script is
+provided which compiles each slide separately, this way avoiding long compile
+times.")
+    (license (list license:lppl1.3+ license:gpl2))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
