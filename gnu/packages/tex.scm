@@ -93380,6 +93380,28 @@ packages make extensive use of in their package documentation, providing
 illustrated examples that are automatically verified to work as expected.")
     (license license:lppl)))
 
+(define-public texlive-qsymbols
+  (package
+    (name "texlive-qsymbols")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/qsymbols/"
+                   "source/latex/qsymbols/"
+                   "tex/latex/qsymbols/")
+             (base32
+              "02hb4d193dqsm2190alr4mh49rdx7wyy51281amz8pnfnkhlqifc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/qsymbols")
+    (synopsis "Maths symbol abbreviations")
+    (description
+     "This package provides macros for defining systematic mnemonic abbreviations,
+starting with @samp{`} for math symbols and @samp{\\\"} for arrows, using
+standard symbols as well as those from the @code{amsfonts} bundle and the
+@code{stmaryrd} package.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
