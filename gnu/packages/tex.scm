@@ -86131,6 +86131,30 @@ source, and; @code{listing} environments may easily be customised and
 extended.")
     (license license:lppl)))
 
+(define-public texlive-kalendarium
+  (package
+    (name "texlive-kalendarium")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/kalendarium/"
+                   "source/latex/kalendarium/"
+                   "tex/latex/kalendarium/")
+             (base32
+              "08cj503m0v69a3fz5n2i6y8ga3xkp79nxp3cnc5g2bk4fqq1mv7l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/kalendarium")
+    (synopsis "Print dates according to the classical Latin calendar")
+    (description
+     "@code{kalendarium} is a LaTeX3 package that provides several macros with
+which to print dates in classical Latin given days on the Julian or Gregorian
+calendars, using the same syntax used by ancient Roman authors.  The format of
+these dates may be customised either in the package options or on
+a per-command basis; these options also allow for the generation of date
+strings according to different eras of the Classical period.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
