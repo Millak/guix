@@ -82430,6 +82430,30 @@ it removes all platform dependencies; however, the user is required to use
 Acrobat 9.")
     (license license:lppl1.3+)))
 
+(define-public texlive-flexipage
+  (package
+    (name "texlive-flexipage")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/flexipage/"
+                   "source/latex/flexipage/"
+                   "tex/latex/flexipage/")
+             (base32
+              "0dil3rlparyhw61jkggvnzxv96zfbcp8zvazs9nn3wak4yyiii2r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/flexipage")
+    (synopsis "Flexible page geometry with marginalia")
+    (description
+     "The package @code{flexipage} allows easy page layout if marginalia is
+required.  Mid document changes are possible such as: new marginal width, full
+width text, and landscape text without marginal.  It partners well with the
+package @code{sidenotesplus}.  The package also aids the layout for book
+printing, allowing for binding corrections and adding page bleed, if
+required.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
