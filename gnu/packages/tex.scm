@@ -94611,6 +94611,29 @@ showing a scalebar in kilometres for topographic maps to a scalebar in
 micrometres for an electron microscope image.")
     (license license:lppl)))
 
+(define-public texlive-scalerel
+  (package
+    (name "texlive-scalerel")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/scalerel/" "tex/latex/scalerel/")
+             (base32
+              "1l2miwqhgrcv74iy3zwi656bs89hsag1pyfs9ycbcbxs6rcp270h")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/scalerel")
+    (synopsis "Constrained scaling and stretching of objects")
+    (description
+     "The package provides four commands for vertically scaling and stretching
+objects.  Its primary function is the ability to scale/stretch and shift one
+object to conform to the size of a specified second object.  This feature can
+be useful in both equations and schematic diagrams.  Additionally, the scaling
+and stretching commands offer constraints on maximum width and/or minimum
+aspect ratio, which are often used to preserve legibility or for the sake of
+general appearance.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
