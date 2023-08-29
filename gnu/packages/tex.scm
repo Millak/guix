@@ -77702,6 +77702,25 @@ typeset text or other material in the window.  The window may be rectangular,
 or may have other sorts of shape.")
     (license license:lppl1.3+)))
 
+(define-public texlive-cv
+  (package
+    (name "texlive-cv")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cv/" "tex/latex/cv/")
+             (base32
+              "129akrpdlggi8xmg06ans9csdyv95wrj72lhciis209j698m8scs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cv")
+    (synopsis "Package for creating a curriculum vitae")
+    (description
+     "The package can be used for creating a curriculum vitae.  Note that @code{cv}
+is just a package: you choose the overall formatting by deciding which class
+to use, while the package provides the detailed formatting.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
