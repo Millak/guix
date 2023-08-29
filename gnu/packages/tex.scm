@@ -99279,6 +99279,28 @@ VDM with a mathematical syntax instead of the ASCII syntax used here, one
 should use the @code{vdm} pacakge instead.")
     (license license:lppl1.3+)))
 
+(define-public texlive-verbasef
+  (package
+    (name "texlive-verbasef")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/verbasef/" "tex/latex/verbasef/")
+             (base32
+              "0qs4142zgygcp7yl69mz1i92plnkkp61qb1icjzpw8g7myxyhn9a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/verbasef")
+    (synopsis "VERBatim Automatic Splitting of External Files")
+    (description
+     "The package allows you to input (subsections of a) file, print them in
+verbatim mode, while automatically breaking up the input lines into pieces of
+a given length, which are output as figures.  These figures are posted using
+the @samp{[H]} specification, which forces LaTeX to place the figure at the
+spot of invocation, rather than floating the figures to the top of the next
+page.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
