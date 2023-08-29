@@ -89761,6 +89761,29 @@ or Polyglossia.")
 automatically.")
     (license license:lppl1.3c)))
 
+(define-public texlive-mversion
+  (package
+    (name "texlive-mversion")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mversion/"
+                   "source/latex/mversion/"
+                   "tex/latex/mversion/")
+             (base32
+              "04s7lhqs3hznjai9by61p4i2kycxypc8rs02zay14cl1glhwh21a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mversion")
+    (synopsis "Keeping track of document versions")
+    (description
+     "The package enables the user to keep track of different versions of a LaTeX
+document.  The command @code{\\version} prints the version and build numbers;
+each time you compile your document, the build number is increased by one.  By
+placing @code{\\version} in the header or footer, each page can be marked with
+the unique build number describing the progress of your document.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
