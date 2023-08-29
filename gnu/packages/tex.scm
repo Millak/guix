@@ -82495,6 +82495,30 @@ on transparent film (to be viewed from the ``wrong'' side).  The package only
 works with pdfLaTeX or LuaLaTeX in PDF output mode.")
     (license license:lppl1.3c)))
 
+(define-public texlive-floatrow
+  (package
+    (name "texlive-floatrow")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/floatrow/"
+                   "source/latex/floatrow/"
+                   "tex/latex/floatrow/")
+             (base32
+              "0wqg4qikbrmf2q1f4nxv3lfqg6w03n06v3gzxm7xdda4nj7ppc07")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/floatrow")
+    (synopsis "Modifying the layout of floats")
+    (description
+     "The @code{floatrow} package provides many ways to customize layouts of
+floating environments and has code to cooperate with the @code{caption}
+package.  The package offers mechanisms to put floats side by side, and to put
+the caption beside its float.  The @code{floatrow} settings could be expanded
+to the floats created by packages @code{rotating}, @code{wrapfig},
+@code{subfig} (in the case of rows of subfloats), and @code{longtable}.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
