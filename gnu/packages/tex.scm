@@ -97940,6 +97940,28 @@ and pasting from a PDF).")
      "This package fits text to a given width or height by scaling the font.")
     (license license:lppl1.3+)))
 
+(define-public texlive-textmerg
+  (package
+    (name "texlive-textmerg")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/textmerg/"
+                   "source/generic/textmerg/"
+                   "tex/generic/textmerg/")
+             (base32
+              "1fr34cr1r2f5g72acx33jx74lxgf37c2f2gyjw8frfljmw3fdqc2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (home-page "https://ctan.org/pkg/textmerg")
+    (synopsis "Merge text in TeX and LaTeX")
+    (description
+     "This package repetetively produce documents from a fixed part and a variable
+part.  Such an operation is commonly used as ``mail merge'' to produce mail
+shots.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
