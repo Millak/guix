@@ -80387,6 +80387,28 @@ registers.  The package requires an e-TeX enabled engine, and the @code{etex}
 package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-embedall
+  (package
+    (name "texlive-embedall")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/embedall/"
+                   "source/latex/embedall/"
+                   "tex/latex/embedall/")
+             (base32
+              "03q3qkgbl3yqnk84gpnp9421vbxrjk6fvnvhaxqn8wqz6v3wijk0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/embedall")
+    (synopsis "Embed source files into the generated PDF")
+    (description
+     "The package provides a means of storing a project, without losing anything.
+It uses the @code{embedfile} package to attach to the generated PDF all files
+used in creating your project.  In particular, it can embed images, external
+TeX files, and external codes.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
