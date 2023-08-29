@@ -83316,6 +83316,27 @@ constant number per line;
 column operations on matrices (a.k.a.@: Gaussian operations).")
     (license license:lppl)))
 
+(define-public texlive-gcard
+  (package
+    (name "texlive-gcard")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gcard/" "tex/latex/gcard/")
+             (base32
+              "0ps2iiwzcgka7h75mvpw1g0c63qw6x440bl31dlgnzcwczhk64h3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gcard")
+    (synopsis "Arrange text on a sheet to fold into a greeting card")
+    (description
+     "The package provides a simple means of producing greeting cards.
+It arranges four panels onto a single sheet so that when the sheet is folded
+twice the four panels are arranged as front cover, inside left and right
+pages, and back cover.  The four panels are set in minipages for formatting by
+the user.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
