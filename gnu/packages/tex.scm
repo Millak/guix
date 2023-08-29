@@ -74763,6 +74763,31 @@ page makeup commands to be executed on every page (e.g., depending on the page
 style).")
     (license license:lppl)))
 
+(define-public texlive-boxedminipage
+  (package
+    (name "texlive-boxedminipage")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/boxedminipage/"
+                   "source/latex/boxedminipage/"
+                   "tex/latex/boxedminipage/")
+             (base32
+              "1jbgvacs81wvd3f9k969r3rj2z6lfsimqzpyp4j3h4db4qhc0w8d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/boxedminipage")
+    (synopsis
+     "Framed minipages of a specified total width (text and frame combined)")
+    (description
+     "The package essentially just wraps a @code{minipage} within an @code{\\fbox}.
+However, while
+@samp{\\fbox@{\\begin@{minipage@}@{\\linewidth@}...\\end@{minipage@}@}} juts
+out into the margin, @samp{\\begin@{boxedminipage@}...\\end@{boxedminipage@}}
+does not.  Instead, it subtracts the frame's dimensions from the specified
+dimensions of the @code{minipage} before typesetting the @code{minipage}.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
