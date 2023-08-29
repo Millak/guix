@@ -94656,6 +94656,30 @@ general appearance.")
 pre-TeX-era material that is available as scanned pages, only.")
     (license license:lppl1.3+)))
 
+(define-public texlive-schedule
+  (package
+    (name "texlive-schedule")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/schedule/"
+                   "source/latex/schedule/"
+                   "tex/latex/schedule/")
+             (base32
+              "08k092d0vy1s45180bgh4476r0h22lg3ngizh8ncy5mkgh5fyznl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/schedule")
+    (synopsis "Weekly schedules")
+    (description
+     "This package automatically formats weekly schedules using LaTeX's
+@code{picture} environment.  Its main feature is the accuracy with which
+appointments are represented: boxes drawn to represent a particular
+appointment are accurate to the minute --- i.e., a 31-minute appointment will
+have a box 1/30th longer than a 30-minute appointment.  A number of features
+are included to allow the user to customize the output.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
