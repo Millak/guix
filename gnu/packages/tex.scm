@@ -84025,6 +84025,27 @@ definitions (detecting such things as @code{\\def}, @code{\\newcommand},
 @code{\\DeclareOption} etc.).")
     (license license:lppl)))
 
+(define-public texlive-gmdoc-enhance
+  (package
+    (name "texlive-gmdoc-enhance")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gmdoc-enhance/"
+                   "source/latex/gmdoc-enhance/"
+                   "tex/latex/gmdoc-enhance/")
+             (base32
+              "1yw7nzadhq6175z69fss9y7ivjjinhffd197lpivdryxyc27kpwm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gmdoc-enhance")
+    (synopsis "Some enhancements to the @code{gmdoc} package")
+    (description
+     "This package provides some enhancements for the @code{gmdoc} package: nicer
+formatting for multiple line inline comments, an ability to comment out some
+code, and a macro to input other files in ``normal'' LaTeX mode.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
