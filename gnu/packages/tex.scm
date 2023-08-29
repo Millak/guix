@@ -74450,6 +74450,27 @@ include:
 @end itemize")
     (license (list license:lppl license:gpl3+))))
 
+(define-public texlive-bithesis
+  (package
+    (name "texlive-bithesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bithesis/"
+                   "source/latex/bithesis/"
+                   "tex/latex/bithesis/")
+             (base32
+              "0s6j62cb5qa6vkpiq82i9wcahvj5ykrf9fl4hjghlww5jqiyd08h")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bithesis")
+    (synopsis "Templates for the Beijing Institute of Technology")
+    (description
+     "This package establishes a simple and easy-to-use LaTeX template for Beijing
+Institute of Technology dissertations, including general undergraduate theses
+and master theses.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
