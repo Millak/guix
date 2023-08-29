@@ -82542,6 +82542,24 @@ or magazines, indeed any form of document that does not conform to the
 standard one or two column layout.")
     (license license:lppl1.3+)))
 
+(define-public texlive-fmp
+  (package
+    (name "texlive-fmp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fmp/" "source/latex/fmp/"
+                   "tex/latex/fmp/")
+             (base32
+              "0sccyi1bnz882qyvxjrzl988fgkip5dv64fn3ns377vq4sydcx2m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:build-targets #~(list "fmp.sty")))
+    (home-page "https://ctan.org/pkg/fmp")
+    (synopsis "Include functional MetaPost in LaTeX")
+    (description "This package allows including functional MetaPost in LaTeX.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
