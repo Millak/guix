@@ -94438,6 +94438,28 @@ output to be post-processed uses macros from the widely-available ProTeX
 package.")
     (license license:lppl)))
 
+(define-public texlive-sanitize-umlaut
+  (package
+    (name "texlive-sanitize-umlaut")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sanitize-umlaut/"
+                   "tex/latex/sanitize-umlaut/")
+             (base32
+              "14hi35xzs2kmv5bk4h9yw8xqm1h08w9aqm6yhd8y3lx9jcggxmqf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sanitize-umlaut")
+    (synopsis "Sanitize umlauts for MakeIndex and pdfLaTeX")
+    (description
+     "This package sanitizes umlauts to be used directly in index entries for
+MakeIndex and friends with pdfLaTeX.  This means that inside @code{\\index} an
+umlaut can be used as @samp{\"U} or as @samp{U}.  In both cases, the letter is
+written as @samp{\"U} into the raw index file for correct processing with
+MakeIndex and pdfLaTeX.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
