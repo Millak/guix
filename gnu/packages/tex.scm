@@ -95477,6 +95477,36 @@ a shorter one, giving only a general overview of the main topics in the
 document.")
     (license license:lppl)))
 
+(define-public texlive-show2e
+  (package
+    (name "texlive-show2e")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/show2e/" "source/latex/show2e/"
+                   "tex/latex/show2e/")
+             (base32
+              "1j1cb5qy25qni8wq1kaf6p6c0whzrbymhm00g4jjajaizagm4ki2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-babel
+                  texlive-etoolbox
+                  texlive-hypdoc
+                  texlive-lm
+                  texlive-microtype))))
+    (home-page "https://ctan.org/pkg/show2e")
+    (synopsis "Variants of @code{\\show} for LaTeX2e")
+    (description
+     "This small package aims at making debugging (especially in an interactive
+way) easier, by providing @code{\\show} variants suited to LaTeX2e
+commands (whether with optional arguments or robust) and environments.  The
+variant commands also display the internal macros used by such commands, if
+any.  The @code{\\showcs} variant helps with macros with exotic names.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
