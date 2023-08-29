@@ -81106,6 +81106,52 @@ class has localisations for all the official languages of the EU (plus
 Catalan), as well as options permitting input in UTF-8 and koi8-r.")
     (license license:lppl)))
 
+(define-public texlive-exam
+  (package
+    (name "texlive-exam")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/exam/" "tex/latex/exam/")
+             (base32
+              "0b3zh8mi3gx1934l42q902mi5jf81x5g1awa6zr9ry427qzvkrg8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/exam")
+    (synopsis "Typeset exam scripts")
+    (description
+     "This package provides a class @file{exam.cls}, which eases production of
+exams.  Simple commands are provided to:
+
+@itemize
+
+@item create questions, parts of questions, subparts of parts, and subsubparts
+of subparts, all with optional point values;
+
+@item create a grading table, indexed either by question number (listing each
+question and the total possible points for that question) or by page
+number (listing each page with points and the total possible points for that
+page);
+
+@item create headers and footers that are each specified in three parts: one
+part to be left justified, one part to be centered, and one part to be right
+justified, in the manner of @code{fancyhdr}.
+
+@end itemize
+
+Headers and/or footers can be different on the first page of the exam, can be
+different on the last page of the exam, and can vary depending on whether the
+page number is odd or even, or on whether the current page continues
+a question from a previous page, or on whether the last question on the
+current page continues onto the following page.
+
+Multiple line headers and/or footers are allowed, and it's easy to increase
+the part of the page devoted to headers and/or footers to allow for this.
+
+Note that the bundle @code{exams} also provides a file @file{exam.cls}; the
+two bundles therefore clash, and should not be installed on the same system.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
