@@ -75040,6 +75040,26 @@ class options is not automatically applied to output paper size.  This package
 enables LaTeX authors to synchronize both kinds of paper sizes.")
     (license license:expat)))
 
+(define-public texlive-bxpdfver
+  (package
+    (name "texlive-bxpdfver")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bxpdfver/" "tex/latex/bxpdfver/")
+             (base32
+              "0l5hzmr3agpvwnnifqhrb8381gdkryr88r639f890gdiz1qdizad")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bxpdfver")
+    (synopsis "Specify version and compression level of output PDF files")
+    (description
+     "This package enables users to specify in their sources the following settings
+on the PDF document to output: PDF version (1.4, 1.5 etc.); whether or not to
+compress streams; whether or not to use object streams.  This package supports
+all major PDF-output engines and @command{dvipdfmx}.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
