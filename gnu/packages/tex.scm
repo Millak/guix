@@ -88216,6 +88216,27 @@ alias for @code{\\MakeRobust}.  This package should not be used in any new
 documents.")
     (license license:lppl1.3c)))
 
+(define-public texlive-mandi
+  (package
+    (name "texlive-mandi")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mandi/" "source/latex/mandi/"
+                   "tex/latex/mandi/")
+             (base32
+              "0q5m0g5g6vd3rz9svc0c67yscgwk18hdp946bz145217y56gbbc8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mandi")
+    (synopsis "Macros for introductory physics and astronomy")
+    (description
+     "The package contains commands for students and teachers of introductory physics.
+Commands for physical quantities intelligently handle SI units so the user
+need not do so.  There are other features that should make LaTeX easy for
+introductory physics students.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
