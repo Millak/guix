@@ -86383,6 +86383,28 @@ rows can be produced in a key-value fashion.")
 addressing. (Royal Mail 4 State Code.)")
     (license license:lppl1.0+)))
 
+(define-public texlive-knowledge
+  (package
+    (name "texlive-knowledge")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/knowledge/"
+                   "source/latex/knowledge/"
+                   "tex/latex/knowledge/")
+             (base32
+              "04xf0vc987qhasyl40bjf5av01s84vf5y5h27bds89xj22i4g4in")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/knowledge")
+    (synopsis "Displaying, hyperlinking, and indexing notions in a document")
+    (description
+     "The package offers a systematic way to handle notions/concepts/terms
+throughout a document.  It helps building an index.  In combination with
+@code{hyperref} it makes it easy to have every reference of a concept linked
+to its introduction.  It also offers simple notations.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
