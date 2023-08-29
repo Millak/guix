@@ -90706,6 +90706,29 @@ document, replacing the @code{file.sty} distributed with Asymptote.  Nested
 OCGs are supported.  The package may be used with pdfLaTeX and XeLaTeX.")
     (license license:lppl)))
 
+(define-public texlive-ocgx
+  (package
+    (name "texlive-ocgx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ocgx/" "source/latex/ocgx/"
+                   "tex/latex/ocgx/")
+             (base32
+              "19m54qp1s3gxiys4lh5dha3x2vci85i3sk0sszsbbvwf0ivsryhc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ocgx")
+    (synopsis "Use OCGs within a PDF document without JavaScript")
+    (description
+     "The package extends the @code{ocg} package, which allows you to create
+OCGs (Optional Content Groups) in PDF documents.  Every OCG includes TeX
+material into a layer of the PDF file.  Each of these layers can be displayed
+or not.  Links can enable or disable the display of OCGs.  The @code{ocgx}
+package does not use Javascript embedded in the PDF document to enable (to
+show) or disable (to hide) OCGs.")
+    (license (list license:lppl license:lppl))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
