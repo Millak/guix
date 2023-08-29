@@ -81735,6 +81735,26 @@ a beautiful way.")
 the needs of the @code{chemschemex} package")
     (license license:lppl1.2+)))
 
+(define-public texlive-fancynum
+  (package
+    (name "texlive-fancynum")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fancynum/"
+                   "source/latex/fancynum/"
+                   "tex/latex/fancynum/")
+             (base32
+              "15l6sq848pppcp67gg36y0aa2z7vhgxs59ggcpkgfck21g73i28a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fancynum")
+    (synopsis "Typeset numbers")
+    (description
+     "This package provides a LaTeX package for typesetting numbers, in particular
+floating point numbers, such as you find in program output.")
+    (license license:lppl1.0+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
