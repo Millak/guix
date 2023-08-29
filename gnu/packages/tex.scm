@@ -80039,6 +80039,29 @@ connection with higher level circle drawing commands.  Additionally some
 macros for the calculation of curve lenghts are part of this package.")
     (license license:lppl)))
 
+(define-public texlive-ecclesiastic
+  (package
+    (name "texlive-ecclesiastic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ecclesiastic/"
+                   "source/latex/ecclesiastic/"
+                   "tex/latex/ecclesiastic/")
+             (base32
+              "14kd3f3adf5c5x2aw38rq95m9cbsy675jq4dmpaqhzz9mxy3f1wh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ecclesiastic")
+    (synopsis "Typesetting ecclesiastic Latin")
+    (description
+     "The package modifies the way the @code{latin} option to Babel operates when
+typesetting Latin.  The style is somewhat frenchified in respect of
+punctuation spacings and footnote style; shortcuts are available in order to
+set accents on all vowels, including y and the diphthongs @samp{ae} and
+@samp{oe}.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
