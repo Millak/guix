@@ -89343,6 +89343,38 @@ Each of these works with @code{enumitem}'s starred variant feature.  So
 list.")
     (license license:lppl1.3+)))
 
+(define-public texlive-morehype
+  (package
+    (name "texlive-morehype")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/morehype/"
+                   "source/latex/morehype/"
+                   "tex/latex/morehype/")
+             (base32
+              "0h7pp2j43b3ks78js3dcs9213piazscc44ylwjsd1vsm0yg7xscd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/morehype")
+    (synopsis "Hypertext tools for use with LaTeX")
+    (description
+     "The bundle provides three packages:
+
+@itemize
+
+@item @code{texlinks}: shorthand macros for TeX-related external hyperlinks
+with @code{hyperref}, the @code{blog} package in the present bundle, etc;
+
+@item @code{hypertoc}: adjust the presentation of coloured frames in
+@code{hyperref} tables of contents (@code{article} class only);
+
+@item @code{blog}: fast generation of simple HTML by expanding LaTeX macros,
+using the @code{fifinddo} package.
+
+@end itemize")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
