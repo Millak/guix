@@ -91256,6 +91256,34 @@ colors easier or give users choices as to which theme they pick.")
 fonts in different sizes without much input.")
     (license license:lppl1.3c)))
 
+(define-public texlive-paper
+  (package
+    (name "texlive-paper")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/paper/" "source/latex/paper/"
+                   "tex/latex/paper/")
+             (base32
+              "1clhnncan253k88gxhqg2wjqp95w483skydk0f6imfz89jbpyixs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:tex-format "latex"
+           ;; FIXME: I couldn't find how to re-generate package from
+           ;; source.
+           #:phases #~(modify-phases %standard-phases (delete 'build))))
+    (home-page "https://ctan.org/pkg/paper")
+    (synopsis
+     "Versions of @code{article} class, tuned for scholarly publications")
+    (description
+     "This package provides a pair of classes derived from @code{article},
+tuned for producing papers for journals.  The classes introduce new layout
+options and font commands for sections and parts, and define a new keywords
+environment, subtitle and institution commands for the title section and new
+commands for revisions.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
