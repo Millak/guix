@@ -75737,6 +75737,39 @@ a @code{version} environment) to represent a change log.  The package supports
 multiple authors, unreleased changes, and yanked (revoked) releases.")
     (license license:lppl1.3c)))
 
+(define-public texlive-changes
+  (package
+    (name "texlive-changes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/changes/" "scripts/changes/"
+                   "source/latex/changes/" "tex/latex/changes/")
+             (base32
+              "1vi8fjvnchz6711fb1knh6yy3p7yhjphc32rpga1jbrmj33ycg43")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:phases
+           ;; "changes.ins" writes files to "./examples" and "./regression".
+           ;; Create these directories first to prevent an error.
+           #~(modify-phases %standard-phases
+               (add-before 'build 'fix-build
+                 (lambda _
+                   (for-each mkdir-p
+                             '("build/examples/" "build/regression")))))))
+    (home-page "https://ctan.org/pkg/changes")
+    (synopsis "Manual change markup")
+    (description
+     "The package allows the user to manually markup changes of text, such as
+additions, deletions, or replacements.  Changed text is shown in a different
+color; deleted text is striked out.  Additionally, text can be highlighted
+and/or commented.  The package allows free definition of additional authors
+and their associated color.  It also allows you to change the markup of
+changes, authors, highlights or comments.  A Python script is provided for
+removing the changes.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
