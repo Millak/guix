@@ -91030,6 +91030,26 @@ cases where nested lists are used a lot, such as for to-do lists or
 presentation slides.")
     (license license:lppl)))
 
+(define-public texlive-outlining
+  (package
+    (name "texlive-outlining")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/outlining/"
+                   "source/latex/outlining/"
+                   "tex/latex/outlining/")
+             (base32
+              "0s4lhxiv4dzakjbd2x2z5x8bhphw5pn4d5fzrw18y42fql544b2p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/outlining")
+    (synopsis "Create outlines for scientific documents")
+    (description
+     "Every scientifc document requires outlining before it is written.  This
+package adds simple macros for your LaTeX document.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
