@@ -73232,6 +73232,26 @@ a table that shows in the cells with a blip (*) where the association was
 added.")
     (license license:lppl1.3c)))
 
+(define-public texlive-atendofenv
+  (package
+    (name "texlive-atendofenv")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/atendofenv/"
+                   "source/latex/atendofenv/"
+                   "tex/latex/atendofenv/")
+             (base32
+              "07djyllkw3fdwcmvs23j31msm2n18k6b8wbqhan93m1kfwcyyyfx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/atendofenv")
+    (synopsis "Add a custom symbol at the end of an environment")
+    (description
+     "This package allows adding a custom symbol at the end of an environment (e.g.
+theorems, definitions, remarks).")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
