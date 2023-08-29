@@ -74514,6 +74514,27 @@ environments, for specifying sub-arrays of the main array.  What's more, the
 @code{\\footnote} command works inside a @code{blockarray}.")
     (license license:lppl)))
 
+(define-public texlive-block
+  (package
+    (name "texlive-block")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/block/" "tex/latex/block/")
+             (base32
+              "02pvrxjds8qwqjq3ncqf1s9z96pmci98v3nj6dc9xy98gvc6r1h9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/block")
+    (synopsis "Block letter style for the @code{letter} class")
+    (description
+     "This package provides a style file for use with the @code{letter} class that
+overwrites the @code{\\opening} and @code{\\closing} macros so that letters
+can be styled with the block letter style instead of the default style.  Thus,
+the return address, the closing, and the signature appear flushed on the left
+margin.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
