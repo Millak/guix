@@ -77019,6 +77019,27 @@ enable printing text over a background without the need of a coloured box
 around the text.")
     (license license:lppl)))
 
+(define-public texlive-contracard
+  (package
+    (name "texlive-contracard")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/contracard/"
+                   "source/latex/contracard/"
+                   "tex/latex/contracard/")
+             (base32
+              "07f3wq4zqc8l0mm1i0p6i225313haw9ccnha0jl937yqrzhsk5cl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/contracard")
+    (synopsis "Generate calling cards for dances")
+    (description
+     "This package provides a package and a class used to typeset traditional
+country dances, such as contra and square dances, and to create calling cards
+for the same.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
