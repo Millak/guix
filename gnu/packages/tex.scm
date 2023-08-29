@@ -76041,6 +76041,26 @@ text) to mark steps in procedures, exercises, and so on.")
 text.  Its starred version can produce an inverted version.")
     (license license:lppl1.3c)))
 
+(define-public texlive-classics
+  (package
+    (name "texlive-classics")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/classics/" "tex/latex/classics/")
+             (base32
+              "1wgpa5l9s28kvihwvgprhnh5vcp2bn98bzwhrcdwjv9n1inxwinm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/classics")
+    (synopsis "Cite classic works")
+    (description
+     "The package provides a basic framework to cite classic works (specially from
+authors such as Homer, Plato, Aristotle, Descartes, Hume, and Kant) in
+accordance with traditional pagination systems.  It may be used in conjunction
+with other citation packages.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
