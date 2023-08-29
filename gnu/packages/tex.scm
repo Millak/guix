@@ -94589,6 +94589,28 @@ for example, A5 paper and want to print on A4 paper to achieve a better
 resolution.")
     (license license:gpl3+)))
 
+(define-public texlive-scalebar
+  (package
+    (name "texlive-scalebar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/scalebar/"
+                   "source/latex/scalebar/"
+                   "tex/latex/scalebar/")
+             (base32
+              "09s698gnw8qh30srff40yd8f2dl7ja0vgh8djh20i5xyzb74c0xg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/scalebar")
+    (synopsis "Create scalebars for maps, diagrams or photos")
+    (description
+     "This is a small package to create scalebars for maps, diagrams or photos.
+It was designed for use with cave maps but can be used for anything from
+showing a scalebar in kilometres for topographic maps to a scalebar in
+micrometres for an electron microscope image.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
