@@ -74140,6 +74140,25 @@ Pennsylvania, USA, and Boston College, USA.  Both were tested for the
 presentation theme Warsaw.")
     (license license:lppl)))
 
+(define-public texlive-beamerthemeamurmaple
+  (package
+    (name "texlive-beamerthemeamurmaple")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamerthemeamurmaple/"
+                   "tex/latex/beamerthemeamurmaple/")
+             (base32
+              "1mjw8nx23fvmjf87p54dpfcfjlhcham3hwh3b2r3dll68af3grbg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamerthemeamurmaple")
+    (synopsis "Modern Beamer theme")
+    (description
+     "This Beamer theme is a suitable theme for presentations in applied
+mathematics research.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
