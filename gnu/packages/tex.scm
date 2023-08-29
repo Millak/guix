@@ -90350,6 +90350,26 @@ indentations in following paragraphs, specifically those following a particular
 macro or environment.")
     (license license:lppl1.3c)))
 
+(define-public texlive-noitcrul
+  (package
+    (name "texlive-noitcrul")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/noitcrul/"
+                   "source/latex/noitcrul/"
+                   "tex/latex/noitcrul/")
+             (base32
+              "1c06ziixcmfmfqq23gi71vingk3f6c19ggbsj1zm5l78nyk2s48v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/noitcrul")
+    (synopsis "Improved underlines in mathematics")
+    (description
+     "The package provides a (maths mode) @code{\\underline} variant which doesn't
+impose italics correction at the end.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
