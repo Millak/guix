@@ -96871,6 +96871,34 @@ keywords.  It is approximately an equivalent to the @code{rcs} package, but
 for Subversion rather than CVS.")
     (license license:lppl1.3+)))
 
+(define-public texlive-svn-multi
+  (package
+    (name "texlive-svn-multi")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/svn-multi/"
+                   "doc/support/svn-multi/"
+                   "scripts/svn-multi/"
+                   "source/latex/svn-multi/"
+                   "tex/latex/svn-multi/")
+             (base32
+              "1sfvp00c7bcql1hdmsmvc28jhngc553g8ldrjglvjp8gvcfpjww5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "svn-multi.pl")))
+    (native-inputs (list texlive-ydoc))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/svn-multi")
+    (synopsis "Subversion keywords in multi-file LaTeX documents")
+    (description
+     "This package lets you typeset keywords of the version control system
+Subversion inside your LaTeX files anywhere you like.  Unlike the otherwise
+similar package @code{svn}, the use of multiple files for one LaTeX document
+is well supported.  The package interacts with an external Perl script, to
+retrieve information necessary for the required output.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
