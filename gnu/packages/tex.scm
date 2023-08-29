@@ -77237,6 +77237,39 @@ used by the Visual LaTeX FAQ to indicate the question that each hyperlink
 answers.")
     (license license:lppl)))
 
+(define-public texlive-coop-writing
+  (package
+    (name "texlive-coop-writing")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/coop-writing/"
+                   "source/latex/coop-writing/"
+                   "tex/latex/coop-writing/")
+             (base32
+              "0gv4sjhipfiq0h8ygy5ynfarzy4cn6sa240xbh0r1377hrn3mhy2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/coop-writing")
+    (synopsis "Support for cooperative writing and editorial comments")
+    (description
+     "This package for cooperative writing supports editorial comments and gives
+some extra support for writing and submitting papers, such as anonymization
+commands for any document that involves more than one author or editor.  The
+general behavior of this package is to provide different ways of marking your
+text, for example with comments or to-do-notes, suggestions to add, remove or
+change text that can be totally supressed from the output when desired.
+Mostly, this can be easily done using one of the three main option states:
+@code{editing}, @code{submit}, and @code{publish}.  Users should use the
+@code{editing} state most of the time.  In this state, all markings will
+appear and anonymization will be off.  When submitting, the @code{submit}
+state will provide a clean article, without any markings, but anonymized.  It
+is possible to use the options @code{submit} and @code{noanonymize} together.
+@code{Publish} will never anonymize.  The goal is to make the submit and
+publish documents states minimally invasive, to avoid any clash with
+publishers styles.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
