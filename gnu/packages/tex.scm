@@ -96833,6 +96833,24 @@ commands when the immediately succeeding strings are mathematical in nature.
 He does not recommend using them in formal work.")
     (license license:lppl1.3c)))
 
+(define-public texlive-svgcolor
+  (package
+    (name "texlive-svgcolor")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/svgcolor/" "tex/latex/svgcolor/")
+             (base32
+              "1fhgxms95j65mn3q9bj2xckp7gsjza2swwqkvlhzszk5kc2lq0l4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/svgcolor")
+    (synopsis "Define SVG named colours")
+    (description
+     "The package defines the W3C @acronym{SVG, Scalable Vector Graphics} colour
+names for use with both the @code{color} and PSTricks packages.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
