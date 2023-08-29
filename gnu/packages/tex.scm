@@ -90290,6 +90290,25 @@ colors in the above list, which differ in level by at least 5, as foreground and
 background colors, you will get proper WCAG Color Contrast.")
     (license license:lppl1.3+)))
 
+(define-public texlive-nlctdoc
+  (package
+    (name "texlive-nlctdoc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/nlctdoc/" "tex/latex/nlctdoc/")
+             (base32
+              "0s4l6g178jh8qx1sinjcfg5jq5xy0djxmzrc2dwywwfci4kdi9vx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nlctdoc")
+    (synopsis "Package documentation class")
+    (description
+     "The class provides support for the documentation of the author's packages,
+using KOMA-Script.  This class is provided as is solely for the benefit of
+anyone who wants to compile the documentation of those packages.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
