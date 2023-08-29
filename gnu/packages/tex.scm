@@ -92267,6 +92267,29 @@ information theory (smooth min- and max-entropy, smooth relative entropies,
 etc.) are also provided.")
     (license license:lppl1.3+)))
 
+(define-public texlive-phfquotetext
+  (package
+    (name "texlive-phfquotetext")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/phfquotetext/"
+                   "source/latex/phfquotetext/"
+                   "tex/latex/phfquotetext/")
+             (base32
+              "0zhbxcdsg1250yn9m31w1zbqz1pcp2znif3r3fc1az4pfgcd8hyy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/phfquotetext")
+    (synopsis "Quote verbatim text without white space formatting")
+    (description
+     "This package provides an environment for displaying block text with special
+characters, such as verbatim quotes from a referee report which may contain
+pseudo-(La)TeX code.  This behaves like a @code{verbatim} environment, except
+that it displays its content as normal paragraph content, ignoring any white
+space preformatting.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
