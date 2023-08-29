@@ -94071,6 +94071,29 @@ not actually calculate shapes in the way that the @code{shapepar} package
 does.")
     (license license:lppl1.2+)))
 
+(define-public texlive-rlepsf
+  (package
+    (name "texlive-rlepsf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/rlepsf/" "tex/generic/rlepsf/")
+             (base32
+              "0q3apjplxx9z1ff5cpg5ysjbybdfz8fj0av9h3kvrgvy0b4pqdg5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/rlepsf")
+    (synopsis "Rewrite labels in EPS graphics")
+    (description
+     "This package provides a macro package for use with @file{epsf.tex} which
+allows PostScript labels in an Encapsulated PostScript file to be replaced by
+TeX labels.  The package provides commands @code{\\relabel} (simply replace
+a PostScript string), @code{\\adjustrelabel} (replace a PostScript string,
+with position adjustment), and @code{\\extralabel} (add a label at given
+coordinates).  You can, if you so choose, use the facilities of the
+@code{labelfig} package in place of using @code{\\extralabel}.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
