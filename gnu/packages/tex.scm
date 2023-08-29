@@ -80513,6 +80513,29 @@ a line marking the chapter change in the endnotes, at the beginning of every
 chapter.")
     (license license:lppl)))
 
+(define-public texlive-endnotes-hy
+  (package
+    (name "texlive-endnotes-hy")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/endnotes-hy/"
+                   "source/latex/endnotes-hy/"
+                   "tex/latex/endnotes-hy/")
+             (base32
+              "05mr1i91znfvgv94rma445s497663qbapv2fx9399kr0kp5zmxyx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/endnotes-hy")
+    (synopsis
+     "Patches the @code{endnotes} package to create hypertext links to the correct
+anchors")
+    (description
+     "The package supports the creation of hypertext links in support of the
+@code{endnotes} package.  The package modifies the syntax of the
+@code{\\endnote} command.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
