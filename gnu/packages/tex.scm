@@ -96335,6 +96335,25 @@ analogous to verbatim with the difference being that @code{\\spverb} and
 spverbatim allow LaTeX to break lines at space characters.")
     (license license:lppl)))
 
+(define-public texlive-srbook-mem
+  (package
+    (name "texlive-srbook-mem")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/srbook-mem/"
+                   "tex/latex/srbook-mem/")
+             (base32
+              "1v6wwxr5hkda98wqccvfm3clch6w27lwkh3z01lgn652v6q110yj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/serbian-book")
+    (synopsis "Support for use of @code{memoir} in Serbian")
+    (description
+     "The package provides a number of commands for adjusting @code{memoir} output
+to Serbian style.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
