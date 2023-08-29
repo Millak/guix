@@ -82224,6 +82224,29 @@ Masaryk University (Brno, Czech Republic).  The class has been designed for
 easy extensibility by style and locale files of other academic institutions.")
     (license license:lppl1.3+)))
 
+(define-public texlive-fixcmex
+  (package
+    (name "texlive-fixcmex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fixcmex/" "source/latex/fixcmex/"
+                   "tex/latex/fixcmex/")
+             (base32
+              "00wrjvy0n8181a5ki644z40l8i4f2vlhbwkg0zc9yqsby17dl43r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fixcmex")
+    (synopsis "Fully scalable version of Computer Modern Math Extension font")
+    (description
+     "This package provides a fully scalable version of the Computer Modern Math
+Extension font for curing sizing problems mainly with @code{lmodern}.  It can
+be used when the main font of the document is Computer Modern (or European
+Modern, if T1 encoding is selected), or Latin Modern.  It redefines the math
+extension font so that it becomes arbitrarily scalable, using the optical size
+fonts provided by the AMS together with the original @code{cmex10} font.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
