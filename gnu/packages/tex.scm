@@ -90610,6 +90610,24 @@ is confusing.  This package suppresses the effect.")
     (description "This package provides a useful macro to manage widow lines.")
     (license license:lppl1.3+)))
 
+(define-public texlive-nox
+  (package
+    (name "texlive-nox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/nox/" "tex/latex/nox/")
+             (base32
+              "1bp6p9485myn5w9nn9l8mjyqm6f7j678xpc04g9q1wfc5yi7zm4p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nox")
+    (synopsis "Adaptable tables")
+    (description
+     "The package allows data, text (including (La)TeX commands or environments) to
+be formatted into a array which may be split.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
