@@ -87560,6 +87560,25 @@ names have more than 8 characters.  The package can be combined with the
 @code{myfilist} package as explained in the documentation.")
     (license license:lppl1.3+)))
 
+(define-public texlive-loops
+  (package
+    (name "texlive-loops")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/loops/" "tex/latex/loops/")
+             (base32
+              "09r744s5v87a18h51idy59slhjqqal85wh8xl9axjkwky9ar6dk7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/loops")
+    (synopsis "General looping macros for use with LaTeX")
+    (description
+     "The package provides efficient looping macros for processing both CSV
+(separated-values) and NSV/TSV (non-separated values) lists.  CSV lists which
+have associated parsers may be processed with the tools of the package.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
