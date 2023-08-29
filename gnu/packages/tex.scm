@@ -80935,6 +80935,32 @@ alphabetized in the index.  This release of @code{esindex} works with accented
 characters in any encoding, and without Babel.")
     (license license:expat)))
 
+(define-public texlive-esint
+  (package
+    (name "texlive-esint")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/esint/"
+                   "fonts/source/public/esint/"
+                   "fonts/tfm/public/esint/"
+                   "source/latex/esint/" "tex/latex/esint/")
+             (base32
+              "172c4ggjkpysfvg0kgcx77lr8md58nvppv0pj6fnrx3lnrvpzvzk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/esint")
+    (synopsis "Extended set of integrals for Computer Modern")
+    (description
+     "The esint package permits access to alternate integral symbols when you are
+using the Computer Modern fonts.  In the original set, several integral
+symbols are missing, such as @code{\\oiint}.  Many of these symbols are
+available in other font sets (@code{pxfonts}, @code{txfonts}, etc.), but there
+is no good solution if you want to use Computer Modern.  The package provides
+Metafont source and LaTeX macro support.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
