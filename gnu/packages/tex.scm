@@ -92243,6 +92243,30 @@ switching of brace sizes.  For example, the syntax @samp{\\big( a + b )} can
 be used to replace @samp{\\bigl( a + b \\bigr)}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-phfqit
+  (package
+    (name "texlive-phfqit")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/phfqit/" "source/latex/phfqit/"
+                   "tex/latex/phfqit/")
+             (base32
+              "1n9waig83pq0s6wgnbaxh3p1b1pj85j77pqsbvjsnmffffaiaqg8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/phfqit")
+    (synopsis "Macros for typesetting quantum information theory")
+    (description
+     "This package provides macros to typeset some general mathematical operators
+(identity operator, trace, diagonal, rank, ...), a powerful implementation of
+the bra-ket notation (kets, bras, brakets, matrix elements etc.  which can be
+sized as required), delimited expressions such as averages and norms, and some
+basic Lie algebra/group names.  Macros for entropy measures for quantum
+information theory (smooth min- and max-entropy, smooth relative entropies,
+etc.) are also provided.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
