@@ -83298,6 +83298,24 @@ constant number per line;
 @end itemize")
     (license license:gpl3+)))
 
+(define-public texlive-gauss
+  (package
+    (name "texlive-gauss")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gauss/" "tex/latex/gauss/")
+             (base32
+              "0y36dywlf2i13im8msqgwdg41p5pf8c5k7cch4z3cvl5kzgsfpm6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gauss")
+    (synopsis "Package for Gaussian operations")
+    (description
+     "The @code{gauss} package provides configurable tools for producing row and
+column operations on matrices (a.k.a.@: Gaussian operations).")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
