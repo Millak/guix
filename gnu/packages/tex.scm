@@ -88698,6 +88698,27 @@ shortcuts automatically.  There are several predefined styles and one can
 define one's own styles in a flexible way.")
     (license license:lppl1.3c)))
 
+(define-public texlive-metalogox
+  (package
+    (name "texlive-metalogox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/metalogox/"
+                   "source/latex/metalogox/"
+                   "tex/latex/metalogox/")
+             (base32
+              "097a5zmx7fpspz23qrnk5dikjlkpxq42z8p0haw2y9krhg56s045")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/metalogox")
+    (synopsis "Adjust TeX logos, with font detection")
+    (description
+     "This package extends the @code{metalogo} package to automatically adjust the
+appearance of the logos TeX, LaTeX, LaTeX2e, XeLaTeX, and LuaLaTeX, depending
+on the font detected or the option given to @code{metalogox}.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
