@@ -100221,6 +100221,24 @@ font to get bold characters.  It works only for vectorfonts where the glyphs
 are defined by their outline.")
     (license license:lppl1.3c)))
 
+(define-public texlive-xhfill
+  (package
+    (name "texlive-xhfill")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xhfill/" "tex/latex/xhfill/")
+             (base32
+              "0a69ri107qpzzhclja1jn01nb33wlzs5g6x8c8k0iz9qzwbrm3by")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xhfill")
+    (synopsis "Extending @code{\\hrulefill}")
+    (description
+     "The package provides extended macros for the default @code{\\hrulefill} command.  It
+allows modification of the width and the colour of the line.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
