@@ -92311,6 +92311,27 @@ watermark on each page of your document.  The SVN info is read from keyword
 tags such as @code{$Id$}, via the @code{svn} or @code{svn-multi} packages.")
     (license license:lppl1.3+)))
 
+(define-public texlive-phfthm
+  (package
+    (name "texlive-phfthm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/phfthm/" "source/latex/phfthm/"
+                   "tex/latex/phfthm/")
+             (base32
+              "0m6xavj8wiyx9z6agy8z6sm7kskjrmhfvi9idd0qwyvjgsnfb3v8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/phfthm")
+    (synopsis "Goodies for theorems and proofs")
+    (description
+     "This package provides enhanced theorem and proof environments based on the
+amsthm original versions.  It allows for hooks to be placed, adds some default
+goodies and is highly customizable.  In particular, it can connect theorems to
+proofs, automatically producing text such as @samp{See proof on page X}.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
