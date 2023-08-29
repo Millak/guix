@@ -88780,6 +88780,31 @@ and localisation.")
 declarations.  It supports declarations in German, French and English.")
     (license license:lppl)))
 
+(define-public texlive-metre
+  (package
+    (name "texlive-metre")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/metre/" "source/latex/metre/"
+                   "tex/latex/metre/")
+             (base32
+              "033q7ikg7fcvfqjy8p3xhnmgr0gxvs2qgw7nmpzs1wcd8xvp2qmh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/metre")
+    (synopsis "Support for the work of classicists")
+    (description
+     "The package provides classicists with some of the tools that are needed for
+typesetting scholarly publications dealing with Greek and Latin texts, with
+special emphasis on Greek verse.  As the package's name suggests, its core is
+a comprehensive set of commands for generating metrical schemes and for
+placing prosodical marks on text set in the Latin or the Greek alphabet.  The
+rest of the package provides a miscellany of commands for symbols (most of
+them not directly related to metre) that are often used in critical editions
+of classical texts.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
