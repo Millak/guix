@@ -74741,6 +74741,28 @@ The @code{\\switch} command (which is also expandable) has the form:
 expression>@} ...  ... \\otherwise ... \\endswitch}.")
     (license license:lppl)))
 
+(define-public texlive-bophook
+  (package
+    (name "texlive-bophook")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bophook/" "source/latex/bophook/"
+                   "tex/latex/bophook/")
+             (base32
+              "1zxaxrgjs4rpdsb2mbk4zslhy64md2m7ngc5p7w8cyjf1f7swb2h")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (home-page "https://ctan.org/pkg/bophook")
+    (synopsis "Provides an @code{\\AtBeginPage} hook")
+    (description
+     "Using the @code{\\AtBeginPage} hook provided by this package, you can add
+material in the background of a page.  @code{\\PageLayout} can be used to give
+page makeup commands to be executed on every page (e.g., depending on the page
+style).")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
