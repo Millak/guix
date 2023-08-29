@@ -85885,6 +85885,25 @@ according to ISO 31-0, regardless of input format (European $1.235,7$ or
 Anglo-American $1,235.7$).")
     (license license:lppl)))
 
+(define-public texlive-isopt
+  (package
+    (name "texlive-isopt")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/isopt/" "tex/latex/isopt/")
+             (base32
+              "1i4zhjqknx74ki7hq55j2qn02kw17fnagb49p59bk3ifs03z4w9s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/isopt")
+    (synopsis "Writing a TeX length with a space between number and unit")
+    (description
+     "Writing a TeX length with @code{\\the} writes the value and the unit without
+a space.  Package @code{isopt} provides a macro @code{\\ISO} which inserts
+a user defined space between number and unit.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
