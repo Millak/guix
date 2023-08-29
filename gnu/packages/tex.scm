@@ -94634,6 +94634,28 @@ aspect ratio, which are often used to preserve legibility or for the sake of
 general appearance.")
     (license license:lppl1.3+)))
 
+(define-public texlive-scanpages
+  (package
+    (name "texlive-scanpages")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/scanpages/"
+                   "fonts/map/dvips/scanpages/"
+                   "fonts/tfm/public/scanpages/"
+                   "fonts/type1/public/scanpages/"
+                   "tex/latex/scanpages/")
+             (base32
+              "1a94fvacp5hqkz5f0wkshhjlnv97b2nqvm49fc93hylkgvi9pqym")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/scanpages")
+    (synopsis "Support importing and embellishing scanned documents")
+    (description
+     "The bundle provides support for the process of creating documents based on
+pre-TeX-era material that is available as scanned pages, only.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
