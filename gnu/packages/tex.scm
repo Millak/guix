@@ -73881,6 +73881,26 @@ bar ;
 @end itemize")
     (license license:lppl1.3+)))
 
+(define-public texlive-beamertheme-focus
+  (package
+    (name "texlive-beamertheme-focus")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamertheme-focus/"
+                   "tex/latex/beamertheme-focus/")
+             (base32
+              "0bmykagnjn1ws9d6zx95cac0c47sik83ivdgv5rpvdjysl7jq57a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamertheme-focus")
+    (synopsis "A minimalist presentation theme for LaTeX Beamer")
+    (description
+     "This package provides a presentation theme for LaTeX Beamer that aims at
+a clean and minimalist design, so to minimize distractions and put the focus
+directly on the content.")
+    (license license:gpl3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
