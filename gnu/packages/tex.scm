@@ -76515,6 +76515,29 @@ defaults, for producing colophons without having to muck around with a lot of
 manual code.")
     (license license:lppl1.3+)))
 
+(define-public texlive-color-edits
+  (package
+    (name "texlive-color-edits")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/color-edits/"
+                   "source/latex/color-edits/"
+                   "tex/latex/color-edits/")
+             (base32
+              "16x695xaaifx621m7jqacm16wh2x96d1lrnp06hk4cg9llvfn00x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/color-edits")
+    (synopsis "Colorful edits for multiple authors of a shared document")
+    (description
+     "This package provides a fairly light-weight solution for annotating LaTeX
+source code with color to show additions/changes, replacements, deletions, and
+comments.  This is particularly useful when a document is being edited by
+multiple authors.  Two package options allow the quick suppression of all
+colorful edits and comments, and showing text whose deletion was proposed.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
