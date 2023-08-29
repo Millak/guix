@@ -73940,6 +73940,25 @@ Beamer style by redefining colors and fonts.")
 tries to minimize noise and maximize space for content.")
     (license license:cc-by-sa4.0)))
 
+(define-public texlive-beamertheme-npbt
+  (package
+    (name "texlive-beamertheme-npbt")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamertheme-npbt/"
+                   "tex/latex/beamertheme-npbt/")
+             (base32
+              "0za5481fssy2inp6bga83c6gm9klr516scnvnpwl92ad11gzd2cg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamertheme-npbt")
+    (synopsis "Collection of LaTeX Beamer themes")
+    (description
+     "@acronym{NPBT, Norman's Pandoc Beamer Themes} includes three Beamer themes:
+Sefiroth Consulting, FOM, FOM ifes and eufom.")
+    (license (list license:gpl3 license:public-domain))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
