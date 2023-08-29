@@ -94221,6 +94221,27 @@ allows you to use those roman numbers as page number.")
 @code{\\count0}) to be negative when roman page numbering is in effect.")
     (license license:public-domain)))
 
+(define-public texlive-romannum
+  (package
+    (name "texlive-romannum")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/romannum/"
+                   "source/latex/romannum/"
+                   "tex/latex/romannum/")
+             (base32
+              "1n9hy1pxb6lgf27zmzzizj7jlygv9jc72gjlawqpp1akzjfzdq5r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/romannum")
+    (synopsis "Generate roman numerals instead of Arabic digits")
+    (description
+     "The @code{romannum} package changes LaTeX generated numbers to be printed
+with roman numerals instead of Arabic digits.  Users of the @code{bookhands}
+fonts may find this package useful.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
