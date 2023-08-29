@@ -86613,6 +86613,26 @@ definitions of changing labels are printed at the end of each compile.
 Multiply-defined labels are printed as well.")
     (license license:public-domain)))
 
+(define-public texlive-lambdax
+  (package
+    (name "texlive-lambdax")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lambdax/" "source/latex/lambdax/"
+                   "tex/latex/lambdax/")
+             (base32
+              "1lmqayjzzpamvwnff65iqaqjp6x5v926p5nw4yvrd7j0nnwmz0wg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lambdax")
+    (synopsis "Use Lambda expression within LaTeX")
+    (description
+     "This package provides Lambda expressions.  It is an interface to specify the
+parameters and replacement code of a document-command, and then to evaluate it
+with compatible arguments.  Optionally, it can be used recursively.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
