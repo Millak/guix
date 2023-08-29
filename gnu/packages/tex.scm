@@ -97462,6 +97462,27 @@ textbooks) to organize exercises in columns counting horizontally rather than
 vertically.  This is what the @code{tasks} package helps to achieve.")
     (license license:lppl1.3c)))
 
+(define-public texlive-tcldoc
+  (package
+    (name "texlive-tcldoc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tcldoc/" "source/latex/tcldoc/"
+                   "tex/latex/tcldoc/")
+             (base32
+              "09z9gdhidwsmn8h1a77smyyis8w03w8qw94biqcfqqzgsra2ling")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tclldoc")
+    (synopsis "Doc/docstrip for Tcl")
+    (description
+     "The @code{tclldoc} package and class simplify the application of the
+doc/docstrip style of literate programming with Tcl.  The @code{tclldoc}
+package is a bit like the @code{doc} package is for LaTeX, whereas the
+@code{tclldoc} class more parallels the @code{ltxdoc} class.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
