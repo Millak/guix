@@ -77363,6 +77363,27 @@ a copyright notice relating to the matter created by the image command.")
 @code{\\section}, etc.")
     (license license:lppl1.3+)))
 
+(define-public texlive-counttexruns
+  (package
+    (name "texlive-counttexruns")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/counttexruns/"
+                   "source/latex/counttexruns/"
+                   "tex/latex/counttexruns/")
+             (base32
+              "0ppy8qfpjq4vcq2w53ms63khsmw09vrg1psxd6ylr8rp2m3mrdgy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/counttexruns")
+    (synopsis "Count compilations of a document")
+    (description
+     "The package counts how often a LaTeX document is compiled, keeping the data
+in an external file.  To print the count, can use the macro
+@code{\\thecounttexruns}.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
