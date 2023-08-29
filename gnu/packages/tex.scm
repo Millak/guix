@@ -97134,6 +97134,37 @@ a class where @code{\\tableofcontents} may only be used once, the command
 to provide several tables.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tablists
+  (package
+    (name "texlive-tablists")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tablists/"
+                   "source/latex/tablists/"
+                   "tex/latex/tablists/")
+             (base32
+              "1bwwqzdfsqnm338qwnc0lnyskk58k6s4lr0v2gfizskamzygmi1b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-fontinst
+                  texlive-helvetic
+                  texlive-hypdoc
+                  texlive-makecell
+                  texlive-paralist
+                  texlive-psnfss))))
+    (home-page "https://ctan.org/pkg/tablists")
+    (synopsis "Tabulated lists of short items")
+    (description
+     "This package offers environments and commands for one-level and two-level
+lists of short items (e.g., exercises in textbooks).  The environments support
+optional arguments of item numbering similar to the @code{enumerate} or
+@code{paralist} packages.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
