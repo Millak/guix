@@ -97521,6 +97521,40 @@ users. (Presentation is as if it were a class; users are expected to start
 from a template document.)")
     (license license:lppl)))
 
+(define-public texlive-ted
+  (package
+    (name "texlive-ted")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ted/" "source/latex/ted/"
+                   "tex/latex/ted/")
+             (base32
+              "0vkp71bpmhs3ys29cx4sxcvqqx63pqym6n87j3sr5hy7rw20ya0x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-etoolbox
+                  texlive-hypdoc
+                  texlive-lm
+                  texlive-microtype
+                  texlive-minitoc))))
+    (home-page "https://ctan.org/pkg/ted")
+    (synopsis "Primitive token list editor")
+    (description
+     "Just like @code{sed} is a stream editor, @code{ted} is a token list editor.
+The @code{ted} package provides two user macros: @code{\\Substitute} and
+@code{\\ShowTokens}.  The first is maybe the most useful: it performs
+substitutions in token lists (even inside braces).  The second displays each
+token of the list (one per line) with its catcode (in the list, not just the
+current one), and can be useful for debugging or for TeX learners.  Ted is
+designed to work well even if strange tokens (that is, unusual
+@samp{@{charcode, catcode@}} pairs or tokens with a confusing meaning) occur
+in the list.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
