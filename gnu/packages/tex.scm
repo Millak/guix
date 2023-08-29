@@ -90268,6 +90268,28 @@ direct from package files.
 column mode (@emph{nidan-kumi}).")
     (license license:bsd-3)))
 
+(define-public texlive-ninecolors
+  (package
+    (name "texlive-ninecolors")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ninecolors/"
+                   "tex/latex/ninecolors/")
+             (base32
+              "00y4csamr0nrrjmf9xjcym95a4rkg2a8dncdwgjc39il3ql0za9c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ninecolors")
+    (synopsis "Select colors with proper WCAG color contrast")
+    (description
+     "This package carefully selects and defines 9 colors for 13 hues each.  All
+colors with the same suffix number have equal luminance level.  Also the color
+black is of level 0, and the color white is of level 10.  By simply choosing two
+colors in the above list, which differ in level by at least 5, as foreground and
+background colors, you will get proper WCAG Color Contrast.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
