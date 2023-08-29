@@ -97327,6 +97327,25 @@ the content and style of the table, and the style of the table can be
 completely set in @code{keyval} way.")
     (license license:lppl1.3c)))
 
+(define-public texlive-tagging
+  (package
+    (name "texlive-tagging")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tagging/" "tex/latex/tagging/")
+             (base32
+              "1w1rjdfaamk1ifjv0k39hnc70aj9h5iw3l7l9cnbf8yrkkha84f4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tagging")
+    (synopsis "Document configuration with tags")
+    (description
+     "The package allows the user to generate multiple documents from a single
+source, by marking pieces of the document with tags and specifying which
+marked pieces to include or exclude.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
