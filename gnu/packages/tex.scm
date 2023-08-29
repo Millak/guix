@@ -74881,6 +74881,38 @@ documentation.  A second macro is included which sorts one list and applies
 the same permutation to a second list.")
     (license license:lppl1.3c)))
 
+(define-public texlive-bullcntr
+  (package
+    (name "texlive-bullcntr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bullcntr/"
+                   "source/latex/bullcntr/"
+                   "tex/latex/bullcntr/")
+             (base32
+              "1pbyp7s1ylrpv13d9m5wk949rjk15xh4hqdi278wf1qav8w71h66")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; Build process displays an infobox and waits for
+               ;; user's input.  Skip this part.
+               (add-before 'build 'skip-infobox
+                 (lambda _
+                   (substitute* "source/latex/bullcntr/bullcntr.ins"
+                     (("\\Ask.*") "")
+                     (("\\(your .*? will be ignored\\).*") "")))))))
+    (home-page "https://ctan.org/pkg/bullcntr")
+    (synopsis "Display list item counter as regular pattern of bullets")
+    (description
+     "The @code{bullcntr} package defines the command @code{\\bullcntr},
+which may be thought of as an analogue of the @code{\\fnsymbol} command: like
+the latter, it displays the value of a counter lying between 1 and 9, but
+uses, for the purpose, a regular pattern of bullets.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
