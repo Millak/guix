@@ -86009,6 +86009,34 @@ both English and German texts.")
 numbers of rows and columns.")
     (license license:lppl)))
 
+(define-public texlive-jmsdelim
+  (package
+    (name "texlive-jmsdelim")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/jmsdelim/"
+                   "source/latex/jmsdelim/"
+                   "tex/latex/jmsdelim/")
+             (base32
+              "0xi2gijzl747ixhl7nwam0ldzvq834j70cmqbz8sik75gwmisdj9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/jmsdelim")
+    (synopsis "Package for compositional delimiter sizing")
+    (description
+     "Correctly sizing delimiters is very difficult, particularly in
+well-architected documents: a correctly engineered mathematical document will
+include macros for all operations, and these macros necessarily will include
+delimiters (such as parentheses).  However, the correct size for the delimiter
+cannot be chosen ahead of time, because it will depend on the arguments; two
+options are available: Provide optional arguments to each notation macro for
+choosing delimiter sizes.  This is nearly intractable to do in practice.
+Ignore delimiter sizes.  With @code{jmsdelim} we offer an alternative: the
+correct delimiter sizes can be set at the leaf nodes of a mathematical
+expression, and magically bubble upward through the delimiters.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
