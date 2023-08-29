@@ -98948,6 +98948,30 @@ titlepage styles with several standard elements, and optionally additional
 elements.")
     (license license:lppl1.3c)))
 
+(define-public texlive-unicodefonttable
+  (package
+    (name "texlive-unicodefonttable")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/unicodefonttable/"
+                   "source/latex/unicodefonttable/"
+                   "tex/latex/unicodefonttable/")
+             (base32
+              "1r1z89bcc48kzz4sms1sp0gvbrssq5s949b5srcyf2rmw1a4g93f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/unicodefonttable")
+    (synopsis "Unicode font table generator")
+    (description
+     "This package produces font tables for Unicode fonts as well as for 8-bit fonts.
+The table layout can be adjusted in various ways including restricting the
+range of output to show only a portion of a specific font.  To quickly produce
+a one-off table there is a stand-alone version @file{unicodefont.tex} that
+asks you a few questions and then generates the table --- somewhat similar to
+@file{nfssfont.tex} for 8-bit fonts.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
