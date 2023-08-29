@@ -99621,6 +99621,25 @@ can be scaled and moved freely.")
 commands for @code{tabular} and similar environment.")
     (license license:expat)))
 
+(define-public texlive-vwcol
+  (package
+    (name "texlive-vwcol")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/vwcol/" "source/latex/vwcol/"
+                   "tex/latex/vwcol/")
+             (base32
+              "06lj8yvijjdlffl4qbgcxkygy6s43w6h8bgvs7k3vnn7znb7ga00")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/vwcol")
+    (synopsis "Variable-width multiple text columns")
+    (description
+     "The package provides a crude environment (@code{vwcol}) for typesetting
+multicolumn paragraph text of various column widths on a single page.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
