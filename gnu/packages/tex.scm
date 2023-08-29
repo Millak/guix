@@ -90593,6 +90593,23 @@ style, these citations will come at the very start of the bibliography, which
 is confusing.  This package suppresses the effect.")
     (license license:public-domain)))
 
+(define-public texlive-nowidow
+  (package
+    (name "texlive-nowidow")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/nowidow/" "source/latex/nowidow/"
+                   "tex/latex/nowidow/")
+             (base32
+              "06vfrixlxv49y53hjsk8spr5k0sd533lnql684jp4yfjq9qqyyaw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nowidow")
+    (synopsis "Avoid widows")
+    (description "This package provides a useful macro to manage widow lines.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
