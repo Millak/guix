@@ -95759,6 +95759,25 @@ and Brazilian), Russian and Spanish typesetting.  It compiles with either
 XeLaTeX or LuaLaTeX.")
     (license license:lppl1.3c)))
 
+(define-public texlive-sitem
+  (package
+    (name "texlive-sitem")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sitem/" "source/latex/sitem/"
+                   "tex/latex/sitem/")
+             (base32
+              "0a3j735747kip4l72rl8xkzlnmp0fsqj9vdig4m1jbvwk2qhsn8c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sitem")
+    (synopsis "Save the optional argument of @code{\\item}")
+    (description
+     "The package modifies @code{\\item} commands to save the optional argument in
+a box.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
