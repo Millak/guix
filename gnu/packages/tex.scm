@@ -92938,6 +92938,28 @@ label names; so instead of @code{\\label@{mysection@}}, one uses
 @samp{sec:} part.")
     (license license:public-domain)))
 
+(define-public texlive-prettytok
+  (package
+    (name "texlive-prettytok")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/prettytok/"
+                   "tex/latex/prettytok/")
+             (base32
+              "1xz1q9n1jgscjsmbyccqwnxi57kzyxhm4bwqyix50pj1gywy27aw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-filecontentsdef texlive-l3kernel
+                             texlive-precattl))
+    (home-page "https://ctan.org/pkg/prettytok")
+    (synopsis "Pretty-print token lists")
+    (description
+     "This package pretty-prints token lists to HTML file for debugging purposes.
+Open the file in any browser to view the result.  It can be used to replace
+@code{\\tl_analysis_show:n}.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
