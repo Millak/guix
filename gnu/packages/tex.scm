@@ -90478,6 +90478,27 @@ provide a more flexible interface, but if you just want an empty page style on
 all pages then this package will do the job.")
     (license license:lppl)))
 
+(define-public texlive-normalcolor
+  (package
+    (name "texlive-normalcolor")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/normalcolor/"
+                   "source/latex/normalcolor/"
+                   "tex/latex/normalcolor/")
+             (base32
+              "1p8718q0jc451m812wfgkj8i7dip49hhyba73s36c7vbnmk3wmfg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/normalcolor")
+    (synopsis "Changing @code{\\normalcolor}")
+    (description
+     "This package provides a command @code{\\setnormalcolor} with the same syntax
+as the command @code{\\color}.  However, @code{\\setnormalcolor} will not
+change the current colour but the normal or default color.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
