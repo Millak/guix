@@ -92983,6 +92983,34 @@ printed.  The unit argument may also be @samp{PT}, in which case length values
 will be printed in point units but without any stretch or shrink values.")
     (license license:lppl)))
 
+(define-public texlive-probsoln
+  (package
+    (name "texlive-probsoln")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/probsoln/"
+                   "source/latex/probsoln/"
+                   "tex/latex/probsoln/")
+             (base32
+              "1805q6qq2rgq2l2akdkh8a7zn9b9l051fc9nbdkwv0j8dvynvlkv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/probsoln")
+    (synopsis "Generate problem sheets and their solution sheets")
+    (description
+     "The package is designed for lecturers who have to generate new problem sheets
+for their students on a regular basis by randomly selecting a specified number
+of problems defined in another file.  The package allows you easily to
+generate a new problem sheet that is different from the previous year, thus
+alleviating the temptation of students to seek out the previous year's
+students and checking out their answers.  The solutions to the problems can be
+defined along with the problem, making it easy to generate the solution sheet
+from the same source code; problems may be reused within a document, so that
+solutions may appear in a different section of the same document as the
+problems they cover.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
