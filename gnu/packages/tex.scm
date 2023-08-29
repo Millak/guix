@@ -93560,6 +93560,26 @@ a TeX document and publish it online without fear of email address harvesters
 or spammers easily picking up the address.")
     (license license:lppl)))
 
+(define-public texlive-rccol
+  (package
+    (name "texlive-rccol")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/rccol/" "source/latex/rccol/"
+                   "tex/latex/rccol/")
+             (base32
+              "1qd37lacjixjkz89lw6q3nszdqxbdsn89rw262rqldx4wn65l4qa")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/rccol")
+    (synopsis "Decimal-centered optionally rounded numbers in tabular")
+    (description
+     "The @code{rccol} package provides decimal-centered numbers: corresponding
+digits and decimal separators aligned.  Furthermore, rounding to the desired
+precision is possible.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
