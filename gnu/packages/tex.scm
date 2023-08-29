@@ -87444,6 +87444,27 @@ typeset (copied) with its dimensions, and its contents are logged in the
 @file{.log} file.")
     (license license:lppl1.3+)))
 
+(define-public texlive-logical-markup-utils
+  (package
+    (name "texlive-logical-markup-utils")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/logical-markup-utils/"
+                   "tex/latex/logical-markup-utils/")
+             (base32
+              "0rklvva3gxifb5j1i0bswh0hra2rkmavk5v88pcxqp6jmzps9zpd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/logical-markup-utils")
+    (synopsis "Packages for language-dependent inline quotes and dashes")
+    (description
+     "The bundle contains two packages: @code{quoted}, for inserting quotation
+marks; and @code{onedash}, for inserting dashes.  Each package takes
+a language name as an option; accepted language options are @code{american},
+@code{british}, @code{german} and @code{polish}.")
+    (license license:gpl3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
