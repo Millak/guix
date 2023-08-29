@@ -92030,6 +92030,38 @@ texts, using the cTib4TeX package.  It provides features like headers in
 different languages, page numbering in Tibetan and more.")
     (license license:gpl3+)))
 
+(define-public texlive-perltex
+  (package
+    (name "texlive-perltex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/perltex/"
+                   "doc/man/man1/perltex.1"
+                   "doc/man/man1/perltex.man1.pdf"
+                   "scripts/perltex/"
+                   "source/latex/perltex/"
+                   "tex/latex/perltex/")
+             (base32
+              "1djgcpij1g63ln74n60xkm8fd43948yq6nks4854627w23yi8k19")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "perltex.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/perltex")
+    (synopsis "Define LaTeX macros in terms of Perl code")
+    (description
+     "PerlTeX is a combination Perl script (@file{perltex.pl}) and LaTeX2e
+package (@file{perltex.sty}) that, together, give the user the ability to
+define LaTeX macros in terms of Perl code.  Once defined, a Perl macro becomes
+indistinguishable from any other LaTeX macro.  PerlTeX thereby combines
+LaTeX's typesetting power with Perl's programmability.  PerlTeX will make use
+of persistent named pipes, and thereby run more efficiently.  Also provided is
+a switch to generate a PerlTeX-free, document-specific, @file{noperltex.sty}
+that is useful when distributing a document to places where PerlTeX is not
+available.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
