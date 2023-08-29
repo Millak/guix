@@ -85633,6 +85633,30 @@ of input nesting.  Tracing may be turned on and off, and the unit of
 indentation may be adjusted.")
     (license license:lppl1.3+)))
 
+(define-public texlive-interactiveworkbook
+  (package
+    (name "texlive-interactiveworkbook")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list
+              "doc/latex/interactiveworkbook/documentation/"
+              "doc/latex/interactiveworkbook/epsfiles/"
+              "doc/latex/interactiveworkbook/samplefiles/"
+              "tex/latex/interactiveworkbook/")
+             (base32
+              "1yvavrbnmq8azzl6yijxah0sqcp1p9xm58n1r006zlpixkhq7d6g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/interactiveworkbook")
+    (synopsis "LaTeX-based interactive PDF on the Web")
+    (description
+     "The package @code{interactiveworkbook} gives the user the ability to write
+LaTeX documents which, ultimately, create interactive question-and-answer
+Portable Document Format (PDF) tutorials meant to be used by internet students
+and that, in particular, freely use mathematical notation.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
