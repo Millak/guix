@@ -85238,6 +85238,26 @@ access to emoji sequences including but not limited to flag sequences,
 diversity modifier sequences, and tag sequences.")
     (license (list license:lppl1.3c license:cc-by4.0))))
 
+(define-public texlive-hypdestopt
+  (package
+    (name "texlive-hypdestopt")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hypdestopt/"
+                   "tex/latex/hypdestopt/")
+             (base32
+              "0pzzgjdwxz7hxhkwc663dbqp0kc831353yrzsm8av1qcnl3mmrk9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hypdestopt")
+    (synopsis "@code{hyperref} destination optimizer")
+    (description
+     "This package supports @code{hyperref}'s pdfTeX driver.  It removes
+unnecessary destinations and shortens the destination names or uses numbered
+destinations to get smaller PDF files.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
