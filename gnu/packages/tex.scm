@@ -80491,6 +80491,28 @@ preprints with the page layout similar to that of the @emph{Astrophysical
 Journal}.")
     (license license:lppl)))
 
+(define-public texlive-endheads
+  (package
+    (name "texlive-endheads")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/endheads/"
+                   "source/latex/endheads/"
+                   "tex/latex/endheads/")
+             (base32
+              "1pbqp5bkak62bqfnh9glk9g37ciachi80m1aavl9s9ahj1dk6af8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/endheads")
+    (synopsis "Running headers of the form @samp{Notes to pp.xx-yy}")
+    (description
+     "Endheads provides running headers of the form @samp{Notes to pp.  xx-yy} for
+endnotes sections.  It also enables one to reset the endnotes counter, and put
+a line marking the chapter change in the endnotes, at the beginning of every
+chapter.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
