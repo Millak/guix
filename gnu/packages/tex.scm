@@ -95672,6 +95672,29 @@ a page numbering style.  Other counters, as well as integers, can be typeset
 in this silly style, too.")
     (license (list license:cc-by-sa4.0 license:lppl1.3c))))
 
+(define-public texlive-simplecd
+  (package
+    (name "texlive-simplecd")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/simplecd/"
+                   "source/latex/simplecd/"
+                   "tex/latex/simplecd/")
+             (base32
+              "1z01p6xzr17745pn344p0s4z8l76sn3vhlliy7mnqlrv29fg6x61")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/simplecd")
+    (synopsis "Simple CD, DVD covers for printing")
+    (description
+     "The package provides printable cut-outs for various CD, DVD and other disc
+holders.  The name of the package comes from its implementation and ease of
+use; it was designed just for text content, but since the text is placed in
+a @code{\\parbox} in a @code{tabular} environment cell, a rather wide range of
+things may be placed.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
