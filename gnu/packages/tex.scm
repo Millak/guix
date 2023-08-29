@@ -87516,6 +87516,27 @@ using standard CSS attributes.  It was written to support precise rendering of
 Madoko documents in LaTeX.")
     (license license:lppl1.3+)))
 
+(define-public texlive-longfigure
+  (package
+    (name "texlive-longfigure")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/longfigure/"
+                   "source/latex/longfigure/"
+                   "tex/latex/longfigure/")
+             (base32
+              "01km3597c6anzy6psq9i502bn3cz5hdybgm4aypi6a59w4y2fp6p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/longfigure")
+    (synopsis "Provides a @code{figure}-like environment that break over pages")
+    (description
+     "The @code{longfigure} package uses and relabels components of the well-known
+@code{longtable} package to provide a @code{table}-like environment that can
+display a stream of figures as a single figure that can break across pages.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
