@@ -77145,6 +77145,30 @@ code) is greatly simplified.")
 hanging indents to make them look nicer.")
     (license license:lppl1.3c)))
 
+(define-public texlive-coollist
+  (package
+    (name "texlive-coollist")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/coollist/"
+                   "source/latex/coollist/"
+                   "tex/latex/coollist/")
+             (base32
+              "19ldgvcfwf24qzp3nv28lx13i6mz6qfiawirg1cn18nlaaig64ss")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/coollist")
+    (synopsis "Manipulate COntent Oriented LaTeX Lists")
+    (description
+     "Lists are defined as a sequence of tokens separated by a comma.
+The @code{coollist} package allows the user to access certain elements of the
+list while neglecting others --- essentially turning lists into a sort of
+array.  List elements are accessed by specifying the position of the object
+within the list (the index of the item).")
+    ;; "This package is released under the GNU LGPL."  Assume latest.
+    (license license:lgpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
