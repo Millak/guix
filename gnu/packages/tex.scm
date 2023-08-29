@@ -81553,6 +81553,32 @@ will continue to receive bugfix releases.  However, new features will not be
 added any more.")
     (license license:lppl1.3+)))
 
+(define-public texlive-exsol
+  (package
+    (name "texlive-exsol")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/exsol/" "source/latex/exsol/"
+                   "tex/latex/exsol/")
+             (base32
+              "0ccxmmq1zm63by0fj520gfzcvxxrq8sacv39ip06kjf3krlgzxsx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/exsol")
+    (synopsis "Exercises and solutions from the same source, into a book")
+    (description
+     "This package provides macros to allow for embedding exercises and solutions
+in the LaTeX source of an instructional text (e.g., a book or a course text)
+while generating the following separate documents: your original text that
+only contains the exercises, and a solution book that contains only the
+solutions to the exercises (optionally, the exercises themselves can also be
+copied to the solution book).  The exercise data are generated when running
+LaTeX on your document; the first run also writes the solutions to a secondary
+file that may be included in a simple document harness, may be processed by
+LaTeX, to generate a nice solution book.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
