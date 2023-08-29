@@ -92630,6 +92630,28 @@ columns.  Complex alignment-based layouts, for example for program code, are
 possible.")
     (license license:lppl)))
 
+(define-public texlive-postcards
+  (package
+    (name "texlive-postcards")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/postcards/"
+                   "tex/latex/postcards/")
+             (base32
+              "110q0lha3wkvh17c67qgdib81pg0qbfbqwbjr00p0zhfyb7ri4xx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/postcards")
+    (synopsis "Facilitates mass-mailing of postcards (junkmail)")
+    (description
+     "This package provides a modification of the standard LaTeX letter class which
+prints multiple, pre-stamped, 5.5 by 3.5 postcards (a US standard size) via
+the @code{envlab} and @code{mailing} packages.  An address database is
+employed to address the front side of each postcard and a message is printed
+on the back side of all.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
