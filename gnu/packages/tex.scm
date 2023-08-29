@@ -75770,6 +75770,26 @@ changes, authors, highlights or comments.  A Python script is provided for
 removing the changes.")
     (license license:lppl1.3+)))
 
+(define-public texlive-chappg
+  (package
+    (name "texlive-chappg")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/chappg/" "source/latex/chappg/"
+                   "tex/latex/chappg/")
+             (base32
+              "14dx6ivfsjmffwarkdfq7wa93llbsmm3x7vsabikwvp899l0x4f3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/chappg")
+    (synopsis "Page numbering by chapter")
+    (description
+     "The package provides for @code{chapterno-pageno} or @code{chaptername-pageno}
+page numbering.  Provision is made for front- and backmatter in @code{book}
+class.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
