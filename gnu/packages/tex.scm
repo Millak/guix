@@ -87963,6 +87963,28 @@ LuaTeX (@code{pdfliteral} mode) by a hierarchical name system.")
 placed inside a TikZ node in the center of the page.")
     (license license:lppl1.3c)))
 
+(define-public texlive-mailing
+  (package
+    (name "texlive-mailing")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mailing/" "source/latex/mailing/"
+                   "tex/latex/mailing/")
+             (base32
+              "16x4s7cql6ckcfplmxx2wc52625wyg0nr0vkdyp7r2kh3j1xci1w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mailing")
+    (synopsis "Macros for mail merging")
+    (description
+     "This package is for use when sending a large number of letters, all with the
+same body text.  The package's @code{\\addressfile} command is used to specify
+who the letter is to be sent to; the body of the @code{\\mailingtext} command
+specifies the text of the letters, possibly using macros defined in the
+@code{\\addressfile}.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
