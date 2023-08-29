@@ -81667,6 +81667,29 @@ to Venezuela because all variables and the displayed text can be redefined by
 invoking commands or editing.")
     (license license:lppl1.3c)))
 
+(define-public texlive-familytree
+  (package
+    (name "texlive-familytree")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/familytree/"
+                   "source/latex/familytree/"
+                   "tex/latex/familytree/")
+             (base32
+              "1p3rivync409ngvpyp8x754d704rkczpg793hbxh2ws96c73ljw5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/familytree")
+    (synopsis "Draw family trees")
+    (description
+     "This package draws family trees.  Boxes describe individuals; lines
+connecting boxes represent sibling or parent-child relationships, or
+marriages.  Excluding the marriage box, you can get a maleline/patrilineal
+tree, or a femaleline/matrilineal tree.  For Japanese, the @file{jlreq.cls}
+vertical option (@emph{tate}) is supported.")
+    (license license:gpl2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
