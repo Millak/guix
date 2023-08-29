@@ -75372,6 +75372,27 @@ the complete file.  The extracted portion can be delimited by strings or by
 docstrip tags.")
     (license license:lppl1.3+)))
 
+(define-public texlive-catechis
+  (package
+    (name "texlive-catechis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/catechis/"
+                   "source/latex/catechis/"
+                   "tex/latex/catechis/")
+             (base32
+              "08h5cd1nrvmxw6nbb3z676lxl72zqplnws3bc5vq3j3sjdirgxlg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/catechis")
+    (synopsis "Macros for typesetting catechisms")
+    (description
+     "The macros include: format for question-and-answer; comments on answers;
+lengthier explanations of answers; citations.  The formatting of all the macros
+is highly (and simply) customizable.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
