@@ -75393,6 +75393,30 @@ lengthier explanations of answers; citations.  The formatting of all the macros
 is highly (and simply) customizable.")
     (license license:lppl1.3+)))
 
+(define-public texlive-catoptions
+  (package
+    (name "texlive-catoptions")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/catoptions/"
+                   "tex/latex/catoptions/")
+             (base32
+              "0366yzf5qx3idbhsjy8v10m3113xpwzy74nnidni6adw5bvzqkbr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/catoptions")
+    (synopsis "Preserving and recalling standard catcodes")
+    (description
+     "The package changes package loading internals so that all subsequently loaded
+packages can rely on normal/standard catcodes of all ASCII characters.  The
+package defines canonical control sequences to represent all the visible ASCII
+characters.  It also provides robust option parsing mechanisms
+@code{(XDeclareOption}, @code{XExecuteOptions} and @code{XProcessOptions},
+which will be used by @code{\\documentclass} if the package has already been
+loaded).  The package also provides a range of other TeX programming tools.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
