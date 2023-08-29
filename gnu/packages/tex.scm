@@ -17162,6 +17162,28 @@ Plain TeX and Eplain.  This is its French translation.")
 French Imprimerie Nationale.")
     (license license:lppl1.3+)))
 
+(define-public texlive-import
+  (package
+    (name "texlive-import")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/import/" "tex/latex/import/")
+             (base32
+              "0wlzs31li6nvzigkxw59bbpmyqrkzpdangvjqq3z7wl6y79sic6g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/import")
+    (synopsis "Establish input relative to a directory")
+    (description
+     "The commands @code{\\import@{full_path@}@{file@}} and
+@code{\\subimport@{path_extension@}@{file@}} set up input through standard
+LaTeX mechanisms (@code{\\input}, @code{\\include} and
+@code{\\includegraphics}) to load files relative to the imported directory.
+There are also @code{\\includefrom}, @code{\\subincludefrom}, and starred
+variants of the commands.")
+    (license license:public-domain)))
+
 (define-public texlive-imsproc
   (package
     (name "texlive-imsproc")
