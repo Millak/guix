@@ -94703,6 +94703,29 @@ typesetting; the various styles define the header, footer and title formatting.
 Many features are freely configurable.")
     (license license:lppl1.3+)))
 
+(define-public texlive-scontents
+  (package
+    (name "texlive-scontents")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/scontents/"
+                   "source/latex/scontents/"
+                   "tex/context/third/scontents/"
+                   "tex/generic/scontents/"
+                   "tex/latex/scontents/")
+             (base32
+              "0817f3xjaxli7rjqpr1gl13mx2iba3c0p95y9818kwccj47v71py")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/scontents")
+    (synopsis "Stores LaTeX contents in memory or files")
+    (description
+     "This package stores valid LaTeX code in memory (sequences).  The stored
+content (including verbatim) can be used as many times as desired in the
+document, additionally can be written to external files if desired.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
