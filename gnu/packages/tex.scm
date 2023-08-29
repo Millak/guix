@@ -95130,6 +95130,31 @@ and a local table of contents for each talk showing the sections and
 subsections of the respective talk.")
     (license license:lppl1.3+)))
 
+(define-public texlive-semtex
+  (package
+    (name "texlive-semtex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/semtex/" "tex/latex/semtex/")
+             (base32
+              "1d0sh9rjnwnfgkh5vnnv2sbk4xnklbf8a6dk1dc3y3p3qv36yial")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/semtex")
+    (synopsis "Deals with stripped SemanTeX documents")
+    (description
+     "This package is a small LaTeX package that adds a collection of simple macros
+for parentheses and bullets.  It exists for one purpose only, to be loaded by
+documents which were originally typeset using the package SemanTeX, but which
+have been stripped of SemanTeX markup using the package @code{stripsemantex}
+which is part of SemanTeX.  Therefore, unless your document is one of those,
+simply don't use this package.  And even if your document is one of those,
+there is a good chance you will not have to load it after all.  In most cases,
+you will be able to replace the macros it provides by macros from other
+packages.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
