@@ -89914,6 +89914,30 @@ variant name forms, and pen names in the text and index.  This may help
 minimize writing and production time and cost.")
     (license license:lppl1.3+)))
 
+(define-public texlive-namespc
+  (package
+    (name "texlive-namespc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/namespc/" "source/latex/namespc/"
+                   "tex/latex/namespc/")
+             (base32
+              "1k4j0rjfl0cy0in272k3dyiqzq5nc31zhygqckfvaw328mkkagz9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-ntgclass texlive-hypdoc))))
+    (home-page "https://ctan.org/pkg/namespc")
+    (synopsis "Rudimentary C++-like namespaces in LaTeX")
+    (description
+     "The @code{namespc} package adds rudimentary C++-like namespace functionality
+to LaTeX.  It may be used to declare local LaTeX commands, which can be made
+accessible in a later contexts without defining them globally.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
