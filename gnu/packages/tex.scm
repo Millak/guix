@@ -82345,6 +82345,24 @@ colored) for the back of files or binders (currently only the special A4
 @emph{Leitz-Ordner} ring binder is supported).")
     (license license:lppl)))
 
+(define-public texlive-flacards
+  (package
+    (name "texlive-flacards")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/flacards/" "tex/latex/flacards/")
+             (base32
+              "048fl0hhd0vh558wzi4lbsnhaxwzg77x5c4x94pn7pmqfn8zlcz0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/flacards")
+    (synopsis "Generate flashcards for printing")
+    (description
+     "The @code{flacards} class provides an easy interface to produce flashcards.
+It will print several cards per page, on both sides of the paper.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
