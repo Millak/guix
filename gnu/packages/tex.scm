@@ -92379,6 +92379,30 @@ according to the national rules.  It also allows to link phone numbers using
 the @code{hyperref} package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-photo
+  (package
+    (name "texlive-photo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/photo/" "source/latex/photo/"
+                   "tex/latex/photo/")
+             (base32
+              "0cyyvqd1l4m7sy0c88j3fyalxg4nkgq62wnw28js7q3qsd6bd40j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/photo")
+    (synopsis "Float environment for photographs")
+    (description
+     "This package introduces a new float type called @code{photo} which works
+similar to the float types @code{table} and @code{figure}.  Various options
+exist for placing photos, captions, and a photographer line.  In
+@code{twocolumn} documents, a possibility exists to generate double-column
+floats automatically if the photo does not fit into one column.  Photos do not
+have to be placed as floats, they can also be placed as boxes, with captions
+and photographer line still being available.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
