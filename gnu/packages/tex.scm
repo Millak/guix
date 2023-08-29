@@ -97922,6 +97922,24 @@ acronyms to be presented as uppercase in text (useful for things like copying
 and pasting from a PDF).")
     (license (list license:lppl1.3+ license:cc-by-sa3.0))))
 
+(define-public texlive-textfit
+  (package
+    (name "texlive-textfit")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/textfit/" "source/latex/textfit/"
+                   "tex/latex/textfit/")
+             (base32
+              "18rhvd8xh83xi7f7mvnqblmi45ws4pcr0vbs689s2ycdxfzfhfzr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/textfit")
+    (synopsis "Fit text to a desired size")
+    (description
+     "This package fits text to a given width or height by scaling the font.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
