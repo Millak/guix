@@ -96374,6 +96374,29 @@ files allowing one to jump from the @file{.dvi} file to the @file{.tex} source
 and back again (given a @file{.dvi} viewer that supports this).")
     (license license:public-domain)))
 
+(define-public texlive-sseq
+  (package
+    (name "texlive-sseq")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sseq/" "source/latex/sseq/"
+                   "tex/latex/sseq/")
+             (base32
+              "02qfqnihvyffs7j4avjn9v7z0z0p07ki10yjbxrimlj0drqcmhqv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sseq")
+    (synopsis "Typesetting spectral sequence charts")
+    (description
+     "The package provides commands to draw spectral sequence diagrams, providing
+facilities for clipping and arranging multiple symbols so that they do not
+overlap.  The package is built using PGF, and shares that systems large
+demands for TeX system memory.  Its geometric commands are based on a turtle
+graphics model, and control structures such as loops and conditionals are
+available.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
