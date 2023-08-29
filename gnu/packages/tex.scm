@@ -100239,6 +100239,59 @@ are defined by their outline.")
 allows modification of the width and the colour of the line.")
     (license license:lppl)))
 
+(define-public texlive-xint
+  (package
+    (name "texlive-xint")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/xint/" "source/generic/xint/"
+                   "tex/generic/xint/")
+             (base32
+              "0dk1rgip7svqzlsvdr67hk9yw3ifak2ka67hpym0hlslmy1igvd2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xint")
+    (synopsis "Expandable operations on long numbers")
+    (description
+     "The @code{xint} bundle modules are:
+
+@itemize
+
+@item @code{xinttools} utilities of independent interest such as expandable
+and non-expandable loops,
+
+@item @code{xintcore} expandable macros implementing addition, subtraction,
+multiplication, division, and powers for arbitrarily long integers,
+
+@item @code{xint} extension of @code{xintcore}, @code{xintfrac} extends the
+scope of @code{xint} to decimal numbers, to numbers using scientific notation
+and also to (exact) fractions,
+
+@item @code{xintexpr} expandable parsers of numeric expressions using the
+standard infix notations, parentheses, built-in functions, user definable
+functions and variables (and more ...), which do either exact
+evaluations (also with fractions) or floating point evaluations under a user
+chosen precision.
+
+@item @code{xintkernel} supports macros for all the bundle constituents,
+
+@code{xintbinhex} converts to and from hexadecimal and binary bases,
+
+@code{xintgcd} provides @code{gcd()} and @code{lcm()} functions to
+@code{xintexpr},
+
+@code{xintseries}, which evaluates numerically partial sums of series and
+power series with fractional coefficients,
+
+@item and @code{xintcfrac}, dedicated to the computation and display of
+continued fractions).
+
+@end itemize
+
+All computations are compatible with expansion-only context.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
