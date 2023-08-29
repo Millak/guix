@@ -86911,6 +86911,27 @@ rearranged by LaTeX so that they print correctly on a single sheet --- no
 external script is necessary.")
     (license license:lppl1.3+)))
 
+(define-public texlive-colorist
+  (package
+    (name "texlive-colorist")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/colorist/" "tex/latex/colorist/")
+             (base32
+              "0c4m2c4gapdkd577v69p1nhqgz1mj4x3lfpy0v5398zx5xncr17c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-projlib))
+    (home-page "https://ctan.org/pkg/colorist")
+    (synopsis "Write your articles or books in a colorful way")
+    (description
+     "This package offers you a LaTeX style file and two classes to typeset
+articles or books in a colorful way.  These classes currently have native
+support for English, French, German, Italian, Portuguese (European and
+Brazilian), and Spanish typesetting.  They compile with any major TeX engine.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
