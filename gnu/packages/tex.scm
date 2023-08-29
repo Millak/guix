@@ -96095,6 +96095,26 @@ other so they never overlap; the lines never overlap either.  Aesthetic and
 customizable style.")
     (license license:lppl1.3c)))
 
+(define-public texlive-snotez
+  (package
+    (name "texlive-snotez")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/snotez/" "tex/latex/snotez/")
+             (base32
+              "075aj3lbmqsvsj0vpq79zbdl64ghcym47k2kc6ijfad2k9ygijbm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/snotez")
+    (synopsis "Typeset notes, in the margin")
+    (description
+     "The package provides a macro @code{\\sidenote}, that places a note in the
+margin of the document, with its baseline aligned with the baseline in the
+body of the document.  These sidenotes are numbered (both in the text, and on
+the notes themselves).")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
