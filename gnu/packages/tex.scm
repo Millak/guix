@@ -81779,6 +81779,24 @@ also define their own styles.  Decorated paragraphs may not include displayed
 mathematics.")
     (license license:lppl1.3+)))
 
+(define-public texlive-fancyqr
+  (package
+    (name "texlive-fancyqr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fancyqr/" "tex/latex/fancyqr/")
+             (base32
+              "1p5dpk1cr8wssakylmnghjd965dr4grcs8gahmcigjsbwib97ksm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fancyqr")
+    (synopsis "Fancy QR-Codes with TikZ")
+    (description
+     "This package provides a simple package to create fancy QR-codes with the help
+of the @code{qrcode} package.")
+    (license license:gpl3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
