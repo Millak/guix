@@ -73681,6 +73681,39 @@ the default themes in the Beamer distribution.  These themes can be used in
 combination with existing inner, outer, and color themes.")
     (license license:lppl1.3c)))
 
+(define-public texlive-beamercolorthemeowl
+  (package
+    (name "texlive-beamercolorthemeowl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamercolorthemeowl/"
+                   "source/latex/beamercolorthemeowl/"
+                   "tex/latex/beamercolorthemeowl/")
+             (base32
+              "0z7vj2mmz5na4dflgkflf599kdv0l5mhnd61zacwbnabyzjiyl32")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamercolorthemeowl")
+    (synopsis "Flexible Beamer color theme to maximize visibility")
+    (description
+     "This package provides a flexible dark or light colour theme designed for maximum
+readability in environments where most themes fall flat.  Its main features are:
+@itemize
+
+@item dark color theme for presenting in low-light conditions;
+
+@item optional light color theme for presenting in bright ambient light;
+
+@item redefines color names @samp{red}, @samp{green}, @samp{blue},
+@samp{yellow} to values that are visible when displayed by certain projectors,
+particularly those with a very bright green channel and dim red and blue
+channels.  This behaviour can be optionally disabled, with the provided
+colours also available as @code{OwlRed}, @code{OwlGreen}, etc.
+
+@end itemize")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
