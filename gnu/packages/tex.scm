@@ -80813,6 +80813,27 @@ place of an equation number.  The name tag will be picked up by a subsequent
     ;; "You may freely use, modify and/or distribute this file."
     (license (license:non-copyleft "file://tex/latex/eqname/eqname.sty"))))
 
+(define-public texlive-errata
+  (package
+    (name "texlive-errata")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/errata/" "source/latex/errata/"
+                   "tex/latex/errata/")
+             (base32
+              "1lslyh03p99zwkrfr5fj099wpcn6gbymnmx5dw4gmb4a1lab82fk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/errata")
+    (synopsis "Error markup for LaTeX documents")
+    (description
+     "This package provides a simple infrastructure for recording errata in LaTeX
+documents.  This allows the user to maintain an updated version of the
+document (with all errors corrected) and to automatically generate an errata
+document highlighting the difference to the published version.")
+    (license license:lppl1.0+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
