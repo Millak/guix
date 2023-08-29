@@ -92652,6 +92652,30 @@ employed to address the front side of each postcard and a message is printed
 on the back side of all.")
     (license license:lppl)))
 
+(define-public texlive-poster-mac
+  (package
+    (name "texlive-poster-mac")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/poster-mac/"
+                   "tex/generic/poster-mac/")
+             (base32
+              "1h63zijhan1rvghklsia9siyzg67f7mq2pfl5n068qdss5i91k77")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/poster-mac")
+    (synopsis "Make posters and banners with TeX")
+    (description
+     "The package offers macros for making posters and banners with TeX.  It is
+compatible with most TeX macro formats, including Plain TeX, LaTeX, AmSTeX,
+and AmS-LaTeX.  The package creates a poster as huge box, which is then
+distributed over as many printer pages as necessary.  The only special
+requirement is that your printer not be bothered by text that lies off the
+page.  This is true of most printers, including laser printers and PostScript
+printers.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
