@@ -98044,6 +98044,40 @@ decides to change a lemma to a proposition or a theorem (or whatever).")
      "The package redefines @code{\\thinspace} to have a stretch component.")
     (license license:gpl3+)))
 
+(define-public texlive-thmtools
+  (package
+    (name "texlive-thmtools")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/thmtools/"
+                   "source/latex/thmtools/"
+                   "tex/latex/thmtools/")
+             (base32
+              "0v8pszndbr76vvq7fhrikpvkxp33kk77ylyb9jl5il66pk28f7zx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; The installation process requires "VERSION.tex" from
+               ;; "doc/".  Extend TEXINPUTS to include this location.
+               (add-before 'build 'extend-texinputs
+                 (lambda _
+                   (setenv "TEXINPUTS"
+                           (string-append (getcwd) "/doc/latex/thmtools:")))))))
+    (home-page "https://ctan.org/pkg/thmtools")
+    (synopsis "Extensions to theorem environments")
+    (description
+     "The bundle provides several packages for commonly-needed support for
+typesetting theorems.  The packages should work with kernel theorems (theorems
+out of the box with LaTeX, and the @code{theorem} and @code{amsthm} packages.
+The features of the bundle include: a key-value interface to
+@code{\\newtheorem}; a @code{\\listoftheorems} command; @code{hyperref} and
+@code{autoref} compatibility; a mechanism for restating entire theorems in
+a single macro call.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
