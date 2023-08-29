@@ -33253,6 +33253,7 @@ supported via the ICU library.")
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (arguments (list #:link-scripts #~(list "arlatex" "bundledoc")))
+    (inputs (list perl))
     (home-page "https://ctan.org/pkg/bundledoc")
     (synopsis "Bundle together all the files needed to build a LaTeX document")
     (description
