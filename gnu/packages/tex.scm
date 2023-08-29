@@ -96434,6 +96434,28 @@ used, the documentation offers a small @code{relinput} package that implements
 the backbone of the @code{import} package.")
     (license license:lppl)))
 
+(define-public texlive-stdclsdv
+  (package
+    (name "texlive-stdclsdv")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/stdclsdv/"
+                   "source/latex/stdclsdv/"
+                   "tex/latex/stdclsdv/")
+             (base32
+              "1hk74qclq68f4lhm4yz548zw4nmy4hldr64ijvlsw5s6l3azhzqq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/stdclsdv")
+    (synopsis "Provide sectioning information for package writers")
+    (description
+     "The @code{stdclsdv} package is designed for package writers who need to know
+what sectioning divsions are provided by the document's class.  It also
+provides a version of @code{\\CheckCommand} that sets a flag rather than
+printing a warning.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
