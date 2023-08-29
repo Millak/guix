@@ -82161,6 +82161,26 @@ multiple footnotes.  Unfortunately the command can cause a blank line at the
 end of a footnote.  The package provides a solution to this problem.")
     (license license:lppl1.3+)))
 
+(define-public texlive-fistrum
+  (package
+    (name "texlive-fistrum")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fistrum/" "source/latex/fistrum/"
+                   "tex/latex/fistrum/")
+             (base32
+              "1mbwy12p5dsxqzl68kqig956g79ipkicwaq246dpfx9726bc3qih")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fistrum")
+    (synopsis "Access to 150 paragraphs of Lorem Fistrum very dummy text")
+    (description
+     "Fistrum is a LaTeX package forked from @code{lipsum} that produces dummy text
+for use in documents and examples.  The paragraphs were taken with permission
+from @url{https://www.chiquitoipsum.com/}.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
