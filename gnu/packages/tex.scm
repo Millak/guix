@@ -80145,6 +80145,29 @@ indented style.  It can be considered as an extended version of package
 keys.")
     (license license:lppl1.3c)))
 
+(define-public texlive-edmargin
+  (package
+    (name "texlive-edmargin")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/edmargin/"
+                   "source/latex/edmargin/"
+                   "tex/latex/edmargin/")
+             (base32
+              "04wcwf60jdnw09cg02qb85q7ca1f4pm87h9f67k0pdm9rb4kbbs0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/edmargin")
+    (synopsis "Multiple series of endnotes for critical editions")
+    (description
+     "Edmargin provides a very simple scheme for endnote sections for critical
+editions.  Endnotes can either be marked in the text, or with marginal
+references to the page in the note sections where the note is to be found.
+Notes can be set in individual paragraphs, or in block paragraph mode (where
+there are many short notes).")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
