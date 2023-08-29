@@ -88371,6 +88371,33 @@ resizable delimiters, big operators, and a @code{MathConstants} table to text
 fonts.")
     (license license:lppl1.3c)))
 
+(define-public texlive-maybemath
+  (package
+    (name "texlive-maybemath")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/maybemath/"
+                   "tex/latex/maybemath/")
+             (base32
+              "07xg0kljl4pj5hx6490yxsl3i4hi1mcmy0g69jpv80zizbgx3004")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/maybemath")
+    (synopsis "Make math bold or italic according to context")
+    (description
+     "The @code{\\maybebm} and @code{\\maybeit} macros can be used in maths
+expressions to make the arguments typeset as bold or italic respectively if
+the surrounding context is appropriate.  They are useful for writing user
+macros for use in general contexts.  @code{\\maybebm} is especially
+appropriate when section titles contain math expressions, since the title will
+appear bold but the header and table of contents usually replicate the title
+in normal width.  @code{\\maybeit} performs a similar role to @code{\\mathrm}
+but the maths expression will be italicised if the surrounding text is.
+@code{\\maybeitsubscript} is provided to shift subscripts to the left if the
+expression is italicised.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
