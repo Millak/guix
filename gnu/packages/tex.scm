@@ -89118,6 +89118,25 @@ in the document.")
 including the ability to re-encode Knuth's basic mathematics fonts.")
     (license license:lppl)))
 
+(define-public texlive-mnotes
+  (package
+    (name "texlive-mnotes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mnotes/" "source/latex/mnotes/"
+                   "tex/latex/mnotes/")
+             (base32
+              "01bd57f9k0g1dp866jj66m6mrcp6483imqxp4nx05s5m6pivs2ff")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mnotes")
+    (synopsis "Margin annotation for collaborative writing")
+    (description
+     "The package provides a flexible mechanism for annotating, and commenting upon,
+collaboratively-written documents.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
