@@ -84379,6 +84379,26 @@ a difficult task in LaTeX, and the present package is no more than an attempt
 to help users to achieve it in a limited way.")
     (license license:lppl)))
 
+(define-public texlive-grid-system
+  (package
+    (name "texlive-grid-system")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/grid-system/"
+                   "tex/latex/grid-system/")
+             (base32
+              "07sald7i8i5vl1ibw3an3kxxk4rhjnnrgi6c571x9xjwz5qvqbnw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/grid-system")
+    (synopsis "Page organisation, modelled on CSS facilities")
+    (description
+     "The package provides the means for LaTeX to implement a grid system as known
+from CSS grid systems.  The facility is useful for creating box layouts as
+used in brochures.")
+    (license license:asl2.0)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
