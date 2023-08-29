@@ -85180,6 +85180,27 @@ to type it once; the package makes sure it is both typeset and indexed.")
 @code{hologo}.  It prints TeX-related names as logos.")
     (license license:lppl)))
 
+(define-public texlive-hvpygmentex
+  (package
+    (name "texlive-hvpygmentex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hvpygmentex/"
+                   "tex/latex/hvpygmentex/")
+             (base32
+              "0i63wq2bshswxg0ccxn18bqcs1v79wziazihs2bg6jcs4ns12y40")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hvpygmentex")
+    (synopsis "Syntax-highlighting of program code")
+    (description
+     "The package is based on @code{pygmentex} but provides an automatic run from
+within the document itself, with the option @code{--shell-escape}.  It does
+not need the additional action by the user to run the external program
+pygmentize to create the code snippets.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
