@@ -73851,6 +73851,36 @@ scarce to keep it clean.")
 department.")
     (license license:gpl3+)))
 
+(define-public texlive-beamertheme-epyt
+  (package
+    (name "texlive-beamertheme-epyt")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamertheme-epyt/"
+                   "tex/latex/beamertheme-epyt/")
+             (base32
+              "008n9g6zs375cpxvkd245xkfq82d6agdxvrcs84wlvisp1g795a4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamertheme-epyt")
+    (synopsis "Simple and clean theme for LaTeX Beamer class")
+    (description
+     "This package provides a simple but nice theme for Beamer, with the following
+features:
+
+@itemize
+
+@item simple structure: with page numbers at footer, no head bar and side
+bar ;
+
+@item simple templates: displaying theorems with traditional inline style;
+
+@item simple colors: using only several foreground and background colors.
+
+@end itemize")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
