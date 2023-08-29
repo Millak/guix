@@ -98504,6 +98504,26 @@ that contains a list of hierarchically organized topics.")
      "This LaTeX package offers commands for typesetting total values of counters.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tramlines
+  (package
+    (name "texlive-tramlines")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tramlines/"
+                   "tex/latex/tramlines/")
+             (base32
+              "0q843pxar0l69h74ywiw9jr9f1rvwj64y4257cz4wn8y4dimyrv9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tramlines")
+    (synopsis
+     "Creae tramlines (lines above and below a title used by lawyers in the UK)")
+    (description
+     "This package automatically creates tramlines (lines above and below a title
+used by lawyers in the UK and the Commonwealth).")
+    (license (list license:lppl1.3c license:cc-by-sa3.0))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
