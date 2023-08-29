@@ -83560,6 +83560,25 @@ into documents.  For @code{memoir} users, the package provides the means to
 tailor page headers and footers to use the metadata.")
     (license license:lppl1.3+)))
 
+(define-public texlive-gitlog
+  (package
+    (name "texlive-gitlog")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gitlog/" "tex/latex/gitlog/")
+             (base32
+              "1fbr0jwiv9g9vifc55y17i36vmfgqlr27p17fg41mxcfcna4nxvs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gitlog")
+    (synopsis "Typesetting @command{git} changelogs")
+    (description
+     "This package allows @command{git} change log history to be incorporated into
+LaTeX documents; the log data is obtained from the Git distributed version
+control system.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
