@@ -90119,6 +90119,25 @@ verbatim-like environment.  It also has a supplementary style file
 @samp{Tab} emulation.")
     (license license:lppl)))
 
+(define-public texlive-nextpage
+  (package
+    (name "texlive-nextpage")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/latex/nextpage/")
+             (base32
+              "1p9dvw7fqspkg6hk6rdmsb5k5m9mkj0kz5a47wg5dgfqgrqpixf8")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nextpage")
+    (synopsis "Generalisations of the page advance commands")
+    (description
+     "This package provides @code{\\clearpage} and @code{\\newpage} variants that
+guarantee to end up on even/odd numbered pages; these four commands all have
+an optional argument whose content will be placed on any empty page
+generated.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
