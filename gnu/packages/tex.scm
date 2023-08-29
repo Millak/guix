@@ -97346,6 +97346,26 @@ source, by marking pieces of the document with tags and specifying which
 marked pieces to include or exclude.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tagpair
+  (package
+    (name "texlive-tagpair")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tagpair/" "tex/latex/tagpair/")
+             (base32
+              "1pw5dip8p38djkksa7c11mzqvhglppy6n0zyv54zqrsd1fwjqwll")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tagpair")
+    (synopsis
+     "Word-by-word glosses, translations, and bibliographic attributions")
+    (description
+     "This package provides environments and commands for pairing lines, bottom lines,
+and tagged lines, intended to be used in particular for word-by-word glosses,
+translations, and bibliographic attributions, respectively.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
