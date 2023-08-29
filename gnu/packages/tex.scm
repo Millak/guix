@@ -92062,6 +92062,25 @@ that is useful when distributing a document to places where PerlTeX is not
 available.")
     (license license:lppl)))
 
+(define-public texlive-permute
+  (package
+    (name "texlive-permute")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/permute/" "source/latex/permute/"
+                   "tex/latex/permute/")
+             (base32
+              "0lrkk57w9sslj8cvjala4frpp71v28ixdkvizrmwpjcn9n0p46pv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/permute")
+    (synopsis "Support for symmetric groups")
+    (description
+     "This package provides a package for symmetric groups, allowing you to input,
+output, and calculate with them.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
