@@ -77214,6 +77214,29 @@ extends the @code{ntheorem} and @code{cleveref} packages.  The package also
 provides other theorem markup commands.")
     (license license:lppl)))
 
+(define-public texlive-cooltooltips
+  (package
+    (name "texlive-cooltooltips")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cooltooltips/"
+                   "source/latex/cooltooltips/"
+                   "tex/latex/cooltooltips/")
+             (base32
+              "0jar70g61p7k4xw7bqir13l0lrfnaka2fvw61k4jiq4v8lic8i4i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cooltooltips")
+    (synopsis "Associate a pop-up window and tooltip with PDF hyperlinks")
+    (description
+     "The @code{cooltooltips} package enables a document to contain hyperlinks that
+pop up a brief tooltip when the mouse moves over them and also open a small
+window containing additional text.  @code{cooltooltips} provides the mechanism
+used by the Visual LaTeX FAQ to indicate the question that each hyperlink
+answers.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
