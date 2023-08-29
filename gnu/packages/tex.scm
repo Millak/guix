@@ -92081,6 +92081,26 @@ available.")
 output, and calculate with them.")
     (license license:lppl)))
 
+(define-public texlive-petiteannonce
+  (package
+    (name "texlive-petiteannonce")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/petiteannonce/"
+                   "tex/latex/petiteannonce/")
+             (base32
+              "0d3ljwsbyv8idym40q1d40md74mlvgpx41ya99y89p2xfm69xffy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/petiteannonce")
+    (synopsis "Class for small advertisements")
+    (description
+     "The class enables you to create the sort of adverts that you pin on
+a noticeboard, with tear-off strips at the bottom where you can place contact
+details.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
