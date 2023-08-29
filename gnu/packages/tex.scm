@@ -88677,6 +88677,27 @@ through a program's menu.")
      "This LaTeX package can be used for typesetting simple restaurant menus.")
     (license license:lppl1.3+)))
 
+(define-public texlive-menukeys
+  (package
+    (name "texlive-menukeys")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/menukeys/"
+                   "source/latex/menukeys/"
+                   "tex/latex/menukeys/")
+             (base32
+              "1cscn6mafm08459amgacy2awa5disqjlr0nbg0zwb0wfkgk5iqln")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/menukeys")
+    (synopsis "Format menu sequences, paths and keystrokes from lists")
+    (description
+     "This package is designed to format menu sequences, paths and keyboard
+shortcuts automatically.  There are several predefined styles and one can
+define one's own styles in a flexible way.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
