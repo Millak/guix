@@ -79335,6 +79335,27 @@ LaTeX document, or within a @file{.dtx} file.")
 that the result is acceptable for inclusion in reports, etc.")
     (license license:lppl1.2+)))
 
+(define-public texlive-docutils
+  (package
+    (name "texlive-docutils")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/docutils/" "tex/latex/docutils/")
+             (base32
+              "01rh5w1dicjszp51vkk5zcs5lzrdmgddfm6dy3nv666gxq12jrf7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/docutils")
+    (synopsis
+     "Helper commands and element definitions for Docutils LaTeX output")
+    (description
+     "The package is intended for use with LaTeX documents generated from
+reStructuredText sources with Docutils.  When generating LaTeX documents,
+specify this package with the stylesheet configuration option, e.g.,
+@samp{rst2latex --stylesheet=docutils exampledocument.txt}.")
+    (license license:bsd-2)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
