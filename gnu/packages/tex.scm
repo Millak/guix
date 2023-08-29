@@ -83902,6 +83902,26 @@ package.")
      "Norwegian Nynorsk language module for the glossaries package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-glossaries-polish
+  (package
+    (name "texlive-glossaries-polish")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/glossaries-polish/"
+                   "source/latex/glossaries-polish/"
+                   "tex/latex/glossaries-polish/")
+             (base32
+              "11m958cr2db908hmlcbkfn0jvnc6c5sgvjzc4aca0cf41ds77xl7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/glossaries-polish")
+    (synopsis "Polish language module for @code{glossaries} package")
+    (description
+     "This package provides a Polish language module for the @code{glossaries}
+package.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
