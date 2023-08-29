@@ -73522,6 +73522,26 @@ usage in the @acronym{SEPA, Single Euro Payments Area}.  The user may adjust
 the terminology to suit local needs.")
     (license license:lppl)))
 
+(define-public texlive-bashful
+  (package
+    (name "texlive-bashful")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bashful/" "tex/latex/bashful/")
+             (base32
+              "08r2yvzck2gngl6sc9giridfmqsbrpdfpv5n9pkwsx0yfx0lk30c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bashful")
+    (synopsis "Invoke Bash commands from within LaTeX")
+    (description
+     "The package makes it possible to execute Unix Bash shell scripts from within
+LaTeX.  The main application is in writing computer-science texts, in which
+you want to make sure the programs listed in the document are executed
+directly from the input.  The package may use other shells than Bash.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
