@@ -78905,6 +78905,32 @@ knowledge.  But obviously, the package is much more powerful and extensible
 for more interesting tasks depending on the individual.")
     (license license:lppl1.3c)))
 
+(define-public texlive-debate
+  (package
+    (name "texlive-debate")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/debate/" "source/latex/debate/"
+                   "tex/latex/debate/")
+             (base32
+              "1509mb8li2c9ih67bp2d10iz2i1fcwyfkcxq2y9qhddnam0rf48h")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-listings
+           texlive-listingsutf8
+           texlive-pdfcol
+           texlive-tcolorbox
+           texlive-xcolor
+           texlive-xkeyval))
+    (home-page "https://ctan.org/pkg/debate")
+    (synopsis "Debates between reviewers")
+    (description
+     "This package helps to organize debates between multiple reviewers of a paper
+within the text.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
