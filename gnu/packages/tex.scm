@@ -80961,6 +80961,28 @@ is no good solution if you want to use Computer Modern.  The package provides
 Metafont source and LaTeX macro support.")
     (license license:lppl)))
 
+(define-public texlive-esint-type1
+  (package
+    (name "texlive-esint-type1")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/esint-type1/"
+                   "dvips/esint-type1/"
+                   "fonts/map/dvips/esint-type1/"
+                   "fonts/type1/public/esint-type1/"
+                   "tex/plain/esint-type1/")
+             (base32
+              "1qxdbp6xlychk4rxypc52s5qyf6p3fzzqzw5077lwkwgqx89jfhm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-esint))
+    (home-page "https://ctan.org/pkg/esint-type1")
+    (synopsis "Font @code{esint10} in Type 1 format")
+    (description
+     "This is Eddie Saudrais's font @code{esint10} in Adobe Type 1 format.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
