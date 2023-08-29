@@ -100694,6 +100694,30 @@ has now been abandoned, in favour of a Perl script @command{yplan} that
 generates a year's planner automatically.")
     (license license:lppl)))
 
+(define-public texlive-zebra-goodies
+  (package
+    (name "texlive-zebra-goodies")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/zebra-goodies/"
+                   "source/latex/zebra-goodies/"
+                   "tex/latex/zebra-goodies/")
+             (base32
+              "0a02haskb2bahfv03dl5661g28nhxigklv6mxm1fbx72an6d2zyw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/zebra-goodies")
+    (synopsis "Collection of handy macros for paper writing")
+    (description
+     "This package offers a collection of macros to help in the process of writing
+a paper.  You may add comments, todo notes, etc.,during revision, in
+a colourful way.  The package also summarizes the inserted notes at the end of
+the document.  There are some predefined note commands as well as a way of
+defining new ones to suit the user's needs.  You may safely remove this
+package once the paper is finished.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
