@@ -75107,6 +75107,26 @@ from days to years is then performed, taking care of leap years and such odd
 things.")
     (license license:lppl1.3+)))
 
+(define-public texlive-calctab
+  (package
+    (name "texlive-calctab")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/calctab/" "tex/latex/calctab/")
+             (base32
+              "0fv5rc42v4ijrrhydq8r79lk3pviqd3adv4nxcbd6px89l6ni6x4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/calctab")
+    (synopsis "Language for numeric tables")
+    (description
+     "The @code{calctab} package helps the user to typeset a kind of economic table
+such as invoices, expense notes and liquidation, or other tabular material
+with a values column.  The code computes sum and percentage with floating
+point numeric methods and builds the render table task.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
