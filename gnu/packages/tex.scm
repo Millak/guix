@@ -99889,6 +99889,26 @@ This package conforms to different Babel languages. (Currently English,
 French, and German are supported.)")
     (license license:lppl1.3c)))
 
+(define-public texlive-wrapfig2
+  (package
+    (name "texlive-wrapfig2")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/wrapfig2/"
+                   "source/latex/wrapfig2/"
+                   "tex/latex/wrapfig2/")
+             (base32
+              "10wjksrni017bw1npwd2h6z6qzll7i024pl1dwsdh9ccfwfjir9w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/wrapfig2")
+    (synopsis "Wrap text around figures")
+    (description
+     "This package wrap text around figures.  It is a fork of @code{wrapfig}
+package.  It is backwards compatible with the original environments.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
