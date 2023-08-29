@@ -75530,6 +75530,26 @@ a full insert for a CD case (it copes with both normal and slim cases).")
 cases, or an entire paper cover, or a label for a plastic slip-cover.")
     (license license:gpl3+)))
 
+(define-public texlive-cdcmd
+  (package
+    (name "texlive-cdcmd")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cdcmd/" "source/latex/cdcmd/"
+                   "tex/latex/cdcmd/")
+             (base32
+              "11qd65ag4bsj1s5b7x11y5444pa0za4vh5n7gl9cw4zy10ccl2rz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cdcmd")
+    (synopsis "Expandable conditional commands for LaTeX")
+    (description
+     "This package provides some conditional commands, just like the
+@code{styledcmd} package.  The difference is that cdcmd can define expandable
+conditional commands.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
