@@ -93925,6 +93925,26 @@ a font designer more slots for insertion of ligatures and accented
 characters.")
     (license license:lppl1.0+)))
 
+(define-public texlive-repeatindex
+  (package
+    (name "texlive-repeatindex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/repeatindex/"
+                   "makeindex/repeatindex/"
+                   "tex/latex/repeatindex/")
+             (base32
+              "10i5z21vz123xq7mn8248584n2h4gziznb28cmjbfmljvc7gfcfr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/repeatindex")
+    (synopsis "Repeat items in an index after a page or column break")
+    (description
+     "This package repeats item of an index if a page or column break occurs within a
+list of subitems.  This helps to find out to which main item a subitem belongs.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
