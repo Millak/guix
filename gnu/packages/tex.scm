@@ -77040,6 +77040,29 @@ country dances, such as contra and square dances, and to create calling cards
 for the same.")
     (license license:lppl1.3c)))
 
+(define-public texlive-conv-xkv
+  (package
+    (name "texlive-conv-xkv")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/conv-xkv/"
+                   "source/latex/conv-xkv/"
+                   "tex/latex/conv-xkv/")
+             (base32
+              "0fwcq7y67dn2j2002kqibphpx30q7d5jay62gi5pwk39d6vrmp5w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/conv-xkv")
+    (synopsis "Create new key-value syntax")
+    (description
+     "This small package supports key-value syntax other than the standard LaTeX
+syntax of @samp{<key>=<value>}.  Using this package, create key-values of the
+form @samp{<key>:<value>} or @samp{<key>-><value>}, for example.  The package
+converts the new notation to @code{xkeyval} notation and passes it on to
+@code{xkeyval}.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
