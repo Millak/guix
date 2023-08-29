@@ -76638,6 +76638,30 @@ a color.")
 overprinting are supported.")
     (license license:expat)))
 
+(define-public texlive-colortab
+  (package
+    (name "texlive-colortab")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/colortab/"
+                   "tex/generic/colortab/")
+             (base32
+              "0xk4rkbfs65bavnigmzdbhs894h3xmq5y2x8nd81ysh7ba93jr5y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/colortab")
+    (synopsis "Shade cells of tables and halign")
+    (description
+     "The package lets you shade or colour the cells in the alignment environments
+such as @code{\\halign} and LaTeX's @code{tabular} and @code{array}
+environments.  The @code{colortbl} package is to be preferred today with
+LaTeX (it assures compatibility with the @code{longtable} package, which is no
+longer true with @code{colortab}); another modern option is the
+table-colouring option of the @code{xcolor}.  However, @code{colortab} remains
+an adequate solution for use with Plain TeX.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
