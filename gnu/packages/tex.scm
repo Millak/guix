@@ -73759,6 +73759,35 @@ provided by the Beamer class (for example, with rounded corners and shadows).
 Good looking posters may be created very rapidly.")
     (license (list license:lppl license:gpl3+))))
 
+(define-public texlive-beamersubframe
+  (package
+    (name "texlive-beamersubframe")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamersubframe/"
+                   "source/latex/beamersubframe/"
+                   "tex/latex/beamersubframe/")
+             (base32
+              "1z1bgrbpfcxr66ldnp2ymr4l6qmmc06v5k91q2av4kfjvanb9bi3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'no-example-file
+            (lambda _
+              (substitute* "source/latex/beamersubframe/beamersubframe.ins"
+                (("\\\\generateexampletrue") "\\generateexamplefalse")))))))
+    (home-page "https://ctan.org/pkg/beamersubframe")
+    (synopsis "Reorder frames in the PDF file")
+    (description
+     "The package provides a method to reorder frames in the PDF file without
+reordering the source.  Its principal use is to embed or append frames with
+details on some subject.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
