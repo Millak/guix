@@ -93832,6 +93832,28 @@ style) for writing technical reference manuals.  It offers a wide left margin
 for notes to the reader, like some of the manuals distributed by Adobe.")
     (license license:lppl)))
 
+(define-public texlive-regcount
+  (package
+    (name "texlive-regcount")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/regcount/"
+                   "source/latex/regcount/"
+                   "tex/latex/regcount/")
+             (base32
+              "1iyc21qs4y5cf1xbqz6h7hpv5w2aplb5xlczzkva23n562gg3gf7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/regcount")
+    (synopsis "Display the allocation status of the TeX registers")
+    (description
+     "The package adds a macro @code{\\rgcounts} which displays the allocation
+status of the TeX registers.  The display is written into the @file{.log} file
+as it is a bit verbose.  An automatic call to @code{\\rgcounts} is done at
+@code{\\begin@{document@}} and @code{\\end@{document@}}.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
