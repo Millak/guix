@@ -93209,6 +93209,26 @@ A Matlab script (LaPrint) is provided, to export an EPS file with
 @code{psfragx} annotations ready embedded.")
     (license license:lppl)))
 
+(define-public texlive-pstring
+  (package
+    (name "texlive-pstring")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pstring/" "tex/latex/pstring/")
+             (base32
+              "07z072r8l55gplyr538nc76c0pfmz8mslx84gdy7nmmp9410sqv1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pstring")
+    (synopsis "Typeset sequences with justification pointers")
+    (description
+     "This package lets you typeset justified sequences, also called pointing
+strings.  It's used for instance, in research papers about game semantics to
+represent sequence of game moves with their associated justification
+pointers.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
