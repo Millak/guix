@@ -79955,6 +79955,26 @@ easier for both beginners and experts.  Despite the term floats in it's name it
 also allows to disable floating of such objects.")
     (license license:lppl1.3+)))
 
+(define-public texlive-easyformat
+  (package
+    (name "texlive-easyformat")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/easyformat/"
+                   "tex/latex/easyformat/")
+             (base32
+              "1y7064ckcbc70a921m8q1rjqz7y9ahmg0dihvf1jqvnhwbjrnxmi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/easyformat")
+    (synopsis "Easily add boldface, italics and smallcaps")
+    (description
+     "This package allows the use of underscores and circumflexes to begin,
+respectively, end, italic, bold or small-caps formatting.  The meaning of
+underscore and circumflex in math mode remain the same.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
