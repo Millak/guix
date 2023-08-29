@@ -75611,6 +75611,27 @@ and similar constructs, and adds a @code{\\cellprops} command accepting
 CSS-like selectors and properties.")
     (license license:gpl3+)))
 
+(define-public texlive-cellspace
+  (package
+    (name "texlive-cellspace")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cellspace/"
+                   "tex/latex/cellspace/")
+             (base32
+              "0l5kz97vqmd6zrq5i9s7zxss7jlp8c5fviw2rfh132yydm6w9arf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cellspace")
+    (synopsis "Ensure minimal spacing of table cells")
+    (description
+     "It is well known that high or deep cells tend to touch the @code{\\hlines} of
+a tabular.  This package provides a modifier @samp{S} acting on usual column
+types so that to ensure a minimal distance that can be controlled through two
+parameters @code{\\cellspacetoplimit} and @code{\\cellspacebottomlimit}.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
