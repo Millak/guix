@@ -78860,6 +78860,26 @@ currently unmaintained.")
 currently unmaintained.")
     (license license:lppl1.3+)))
 
+(define-public texlive-dblfloatfix
+  (package
+    (name "texlive-dblfloatfix")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dblfloatfix/"
+                   "tex/latex/dblfloatfix/")
+             (base32
+              "1pga2fs38f5fh8dms7a2zy8lv25qw86j920d72wy42adn0l3f5gd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dblfloatfix")
+    (synopsis "Fixes for twocolumn floats")
+    (description
+     "The package solves two problems: floats in a two-column document come out in
+the right order and allowed float positions are now @samp{[tbp]}.  The package
+actually merges facilities from @code{fixltx2e} and @code{stfloats}.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
