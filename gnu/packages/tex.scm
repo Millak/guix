@@ -98372,6 +98372,34 @@ and @code{tocstyle}.")
 lists of such items, and to cross-reference to them.")
     (license license:lppl1.0+)))
 
+(define-public texlive-tokcycle
+  (package
+    (name "texlive-tokcycle")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/tokcycle/"
+                   "tex/generic/tokcycle/")
+             (base32
+              "0jwpj78wc50zg2wp1mdylhc025cvz1zd548ivfixdw3lmd2wdc8s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tokcycle")
+    (synopsis "Build tools to process tokens from an input stream")
+    (description
+     "The @code{tokcycle} package helps one to build tools to process tokens from
+an input stream.  If a macro to process an arbitrary single token can be
+built, then @code{tokcycle} can provide a wrapper for cycling through an input
+stream (including macros, spaces, and groups) on a token-by-token basis, using
+the provided macro on each successive character.  @code{tokcycle}
+characterizes each successive token in the input stream as a @samp{Character},
+a @samp{Group}, a @samp{Macro}, or a @samp{Space}.  Each of these token
+categories are processed with a unique directive, to bring about the desired
+effect of the token cycle.  If condition flags are provided to identify
+active, implicit, and catcode-6 tokens as they are digested.  The package
+provides a number of options for handling groups.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
