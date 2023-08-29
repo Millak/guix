@@ -76205,6 +76205,26 @@ pages left blank by @code{\\cleardoublepage}.  By default, LaTeX has no easy
 facilities for this.")
     (license license:lppl1.3+)))
 
+(define-public texlive-clrstrip
+  (package
+    (name "texlive-clrstrip")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/clrstrip/"
+                   "source/latex/clrstrip/"
+                   "tex/latex/clrstrip/")
+             (base32
+              "1cinjd401r60sbn6qh7rqkrkkng1g3azw1zjrfpz59z9h9ckdlwz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/clrstrip")
+    (synopsis "Place contents into a full width colour strip")
+    (description
+     "This lightweight package provides the @code{colorstrip} environment, that
+places its contents into a full page width colour strip.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
