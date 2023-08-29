@@ -99510,6 +99510,31 @@ containing text.  You can use the usual operations to create the union of sets
 or the intersection of sets etc.")
     (license license:lppl1.2+)))
 
+(define-public texlive-vmargin
+  (package
+    (name "texlive-vmargin")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/vmargin/" "source/latex/vmargin/"
+                   "tex/latex/vmargin/")
+             (base32
+              "0548wbh05b6ga8fxvarmsai8kzadcgix5zkh5l4a4ym4lsdgb47l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/vmargin")
+    (synopsis "Set various page dimensions")
+    (description
+     "This package provides a macro to set various margins as well as dimensions
+for header/footer and page dimensions.  Most common paper sizes, paper
+orientation, disabling of headers and footers, and two sided printing are
+supported.
+
+The user interface might not be very fancy, but it's fast, small, and gets the
+job done.  If you are looking for something more elaborate try the
+@code{geometry} package.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
