@@ -99660,6 +99660,25 @@ for internationalization.  There is also support for loading event marks from
 a CSV file.")
     (license license:lppl)))
 
+(define-public texlive-warning
+  (package
+    (name "texlive-warning")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/warning/" "tex/latex/warning/")
+             (base32
+              "0d259bpnv7qgki5cmf0w12gqxiw9ww0901j13lm30b1myxhy0giq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/warning")
+    (synopsis "Global warnings at the end of the logfile")
+    (description
+     "This package provides a command that generates a list of warnings that are
+printed out at the very end of the logfile.  This is useful for warnings such
+as ``Rerun for this or that reason'' or ``This is a draft''.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
