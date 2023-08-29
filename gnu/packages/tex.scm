@@ -98169,6 +98169,27 @@ the user.  The package is designed to work with the @code{memoir} class, and
 also requires PerlTeX and TikZ.")
     (license license:gpl3)))
 
+(define-public texlive-ticket
+  (package
+    (name "texlive-ticket")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ticket/" "tex/latex/ticket/")
+             (base32
+              "1hn6hn8m5zf8srj67g2nwjl8jnlzbnix18db0adidf83mzwbpjws")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ticket")
+    (synopsis "Make labels, visiting-cards, pins with LaTeX")
+    (description
+     "This package provides an easy to handle interface to produce visiting cards,
+labels for your files, stickers, pins and other stuff for your office,
+conferences etc.  All you need is a definition of your ticket included in
+a ticket definition file and the two commands @code{\\ticketdefault} and
+@code{\\ticket}.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
