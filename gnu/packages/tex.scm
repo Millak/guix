@@ -72968,6 +72968,29 @@ the main part of the document.  The total frame number counter is reset to
 0 when entering the appendix.")
     (license license:gpl3)))
 
+(define-public texlive-apptools
+  (package
+    (name "texlive-apptools")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/apptools/"
+                   "source/latex/apptools/"
+                   "tex/latex/apptools/")
+             (base32
+              "0vd1gzz5yiidknzpzhdrw500666m0b881qbv6dwdb3qc9k3gbbnb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/apptools")
+    (synopsis "Tools for customising appendices")
+    (description
+     "The package provides an @code{\\AtAppendix} command to add code to a hook
+that is executed when \\appendix is called by the user.  Additionally, a TeX
+conditional @code{\\ifappendix} and a LaTeX-style conditional
+@code{\\IfAppendix} are provided to check if @code{\\appendix} has already
+been called.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
