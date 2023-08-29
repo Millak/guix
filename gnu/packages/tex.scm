@@ -95850,6 +95850,26 @@ document.  The same note mechanism can also be used with ordinary content,
 e.g., as a to-do mechanism.")
     (license license:expat)))
 
+(define-public texlive-skeycommand
+  (package
+    (name "texlive-skeycommand")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/skeycommand/"
+                   "tex/latex/skeycommand/")
+             (base32
+              "1iqmqxiiiq6mqmnmw4ii30la4d7z970wr7jx0yv50lh102lx67rw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/skeycommand")
+    (synopsis "Create commands using parameters and @code{keyval} in parallel")
+    (description
+     "The package provides tools for defining LaTeX commands and environments using
+combinations of parameters and keys.  All the facilities of the @code{ltxkeys}
+and @code{skeyval} packages are available to the user of @code{skeycommand}.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
