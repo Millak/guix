@@ -72724,6 +72724,26 @@ definition commands; easy label creation for counters; and German language
 tools and predefined abbreviations.")
     (license license:lppl)))
 
+(define-public texlive-akletter
+  (package
+    (name "texlive-akletter")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/akletter/" "tex/latex/akletter/")
+             (base32
+              "1zk48az12ifl90c75bwm9cxbl4sxc73z9gxkj7qd551npr2ry7j1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/akletter")
+    (synopsis "Comprehensive letter support")
+    (description
+     "This is an advanced letter document class which extends LaTeX's usual
+@code{letter} class, providing support for building your own letterhead and
+marking fold points for window envelopes.  The class supersedes an earlier
+class called @code{myletter}.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
