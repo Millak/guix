@@ -97902,6 +97902,26 @@ also has other uses, always in tandem with the @code{texsurgery} Pypi
 package.")
     (license license:bsd-3)))
 
+(define-public texlive-textcsc
+  (package
+    (name "texlive-textcsc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/textcsc/" "tex/latex/textcsc/")
+             (base32
+              "0bs5r723jarv0pm16vvw4h6bclqnnvnj7w4li34i0j2gqs8gk0n5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/textcsc")
+    (synopsis "Simple commands for caps-to-small-caps text")
+    (description
+     "This package provides a simple command (@code{\\textcsc} and
+@code{\\cscshape}) for caps-to-small-caps text, to allow for small caps
+acronyms to be presented as uppercase in text (useful for things like copying
+and pasting from a PDF).")
+    (license (list license:lppl1.3+ license:cc-by-sa3.0))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
