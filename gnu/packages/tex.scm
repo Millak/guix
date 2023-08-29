@@ -77661,6 +77661,27 @@ step (somewhat similarly to the layout used in cooking).")
 various formatting capabilities.")
     (license license:lppl1.3+)))
 
+(define-public texlive-currvita
+  (package
+    (name "texlive-currvita")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/currvita/"
+                   "source/latex/currvita/"
+                   "tex/latex/currvita/")
+             (base32
+              "0416lw6r1dqv5xbjn6xw07dk0dd4ra5w7qvkawmfqmll2wvjq8is")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/currvita")
+    (synopsis "Typeset a curriculum vitae")
+    (description
+     "Currvita is a package rather than a class (like most other curriculum vitae
+offerings).  The author considers that a curriculum vitae can quite reasonably
+form part of another document (such as a letter, or a dissertation).")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
