@@ -85925,6 +85925,25 @@ package is designed for use with the @code{iso} class but may be used with any
 normal class.")
     (license license:lppl)))
 
+(define-public texlive-isotope
+  (package
+    (name "texlive-isotope")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/isotope/" "source/latex/isotope/"
+                   "tex/latex/isotope/")
+             (base32
+              "16828laxqjbq5303c649j9nb36ci3rjdki8zds6pw2y9sdiy2kki")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/isotope")
+    (synopsis "Typeset isotopes")
+    (description
+     "The package provides a command @code{\\isotope} for setting the atomic weight
+and atomic number indications of isotopes.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
