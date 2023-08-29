@@ -95507,6 +95507,26 @@ variant commands also display the internal macros used by such commands, if
 any.  The @code{\\showcs} variant helps with macros with exotic names.")
     (license license:lppl)))
 
+(define-public texlive-showcharinbox
+  (package
+    (name "texlive-showcharinbox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/showcharinbox/"
+                   "source/latex/showcharinbox/"
+                   "tex/latex/showcharinbox/")
+             (base32
+              "1y91l00r6a04bjvqxqf0s4k3bf093q2wccd6s7dcz78wbp92ycj9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/showcharinbox")
+    (synopsis "Show characters inside a box")
+    (description
+     "The package typesets a character inside a box, showing where reference point
+is, and displaying width, height, and depth information of the character.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
