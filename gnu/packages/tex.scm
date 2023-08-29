@@ -93011,6 +93011,24 @@ solutions may appear in a different section of the same document as the
 problems they cover.")
     (license license:lppl)))
 
+(define-public texlive-program
+  (package
+    (name "texlive-program")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/program/" "tex/latex/program/")
+             (base32
+              "1icg7zv74g1q0rvg5vsmri1m17n87wmazgvy9brp3dmincsvg1jd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/program")
+    (synopsis "Typesetting programs and algorithms")
+    (description
+     "The main offering is a @code{program} environment; a @code{programbox}
+environment is available for fragments that must not break with the pages.")
+    (license license:gpl3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
