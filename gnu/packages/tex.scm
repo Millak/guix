@@ -94794,6 +94794,59 @@ KOMA-Script letter class @code{scrlttr2}.  If this option is given, all pages
 of a specific letter are duplicated with background text marking as copies.")
     (license license:lppl1.3+)))
 
+(define-public texlive-sdaps
+  (package
+    (name "texlive-sdaps")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sdaps/" "source/latex/sdaps/"
+                   "tex/latex/sdaps/")
+             (base32
+              "1nddqv5wgbay8wqdjppanbks6xivb48x0l0fpbkv1sak7h92kmbg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-environ
+           texlive-lastpage
+           texlive-pgf
+           texlive-qrcode
+           texlive-sectsty
+           texlive-translator))
+    (home-page "https://ctan.org/pkg/sdaps")
+    (synopsis "LaTeX support files for SDAPS")
+    (description
+     "This bundle contains LaTeX classes and packages to create machine
+readable questionnaires.  Metadata is generated for the whole document and it is
+possible to process created forms fully automatically using the SDAPS main
+program.
+
+Its features include:
+
+@itemize
+
+@item PDF form generation,
+
+@item advanced array like layouting,
+
+@item can flow over multiple pages and repeats the header automatically,
+
+@item optional document wide alignment of @code{array} environments,
+
+@item has complex layout features like rotating the headers to safe space,
+
+@item ability to exchange rows and columns on the fly,
+
+@item different question types: free-form text, single/multiple choice
+questions, range questions,
+
+@item Layouting questions in rows or columns,
+
+@item Possibility to pre-fill questionnaires from LaTeX.
+
+@end itemize")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
