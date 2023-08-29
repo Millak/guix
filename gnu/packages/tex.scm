@@ -99967,6 +99967,36 @@ concepts of namespace and scope.  It also allows users to customize reference
 formats.")
     (license license:expat)))
 
+(define-public texlive-xargs
+  (package
+    (name "texlive-xargs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xargs/" "source/latex/xargs/"
+                   "tex/latex/xargs/")
+             (base32
+              "1gbdnc1k819fncvnhzihx9q6qdxsrkpfjy47dh70bdwqf5klhqbh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-etoolbox
+                  texlive-hypdoc
+                  texlive-lm
+                  texlive-microtype
+                  texlive-minitoc
+                  texlive-mparhack
+                  texlive-xkeyval))))
+    (home-page "https://ctan.org/pkg/xargs")
+    (synopsis "Define commands with many optional arguments")
+    (description
+     "The package provides extended versions of @code{\\newcommand} and related
+LaTeX commands, which allow easy and robust definition of macros with many
+optional arguments, using a clear and simple @code{xkeyval}-style syntax.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
