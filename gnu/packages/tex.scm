@@ -80432,6 +80432,25 @@ operation (note the contrast with the attach operation used by the
 PDF mode, is supported.")
     (license license:lppl1.3c)))
 
+(define-public texlive-embrac
+  (package
+    (name "texlive-embrac")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/embrac/" "tex/latex/embrac/")
+             (base32
+              "0hdgh9gqhb18xj3y203v1prpvc8lhkzjzbgzq1xxb0gvj2bsy187")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/embrac")
+    (synopsis "Upright brackets in emphasised text")
+    (description
+     "The package redefines the commands @code{\\emph} and @code{\\textit} so that
+parentheses and square brackets are typeset in an upright font in their
+arguments.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
