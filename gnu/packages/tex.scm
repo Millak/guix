@@ -77457,6 +77457,29 @@ cover page layout is totally independent of the main document and its page
 layout.")
     (license license:lppl1.2+)))
 
+(define-public texlive-cprotect
+  (package
+    (name "texlive-cprotect")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cprotect/"
+                   "source/latex/cprotect/"
+                   "tex/latex/cprotect/")
+             (base32
+              "0i7x6mz106c5jgb3z5h9ma0srjyjh89w1c5p7jfxc882c2w02lha")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cprotect")
+    (synopsis "Allow verbatim, etc., in macro arguments")
+    (description
+     "The package defines the macro @code{\\cprotect} that makes a following macro
+proof against verbatim in its argument.  A similar macro
+@code{\\cprotEnv} (applied to the @code{\\begin} of an environment) sanitises
+the behavior of fragile environments.  Moving arguments, and corresponding
+``tables of ...'' work happily.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
