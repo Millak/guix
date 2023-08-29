@@ -96813,6 +96813,26 @@ preference.  The package facilitates the task of setting up a font family as
 substitute for another one, using its @code{\\substitutefont} command.")
     (license license:lppl1.3+)))
 
+(define-public texlive-suppose
+  (package
+    (name "texlive-suppose")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/suppose/" "tex/latex/suppose/")
+             (base32
+              "0jll93kng5kkbl1f5yvclaclvxl5kcbsv76vbzmv2p0v271miybn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/suppose")
+    (synopsis "Abbreviate the word ``Suppose''")
+    (description
+     "This package provides commands for abbreviating the word ``Suppose'' in six
+fonts and with other variations.  The author recommends only using these
+commands when the immediately succeeding strings are mathematical in nature.
+He does not recommend using them in formal work.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
