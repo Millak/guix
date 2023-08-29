@@ -85591,6 +85591,25 @@ a file containing the inline image in base64 format, which is decoded and
 included in the source file.")
     (license license:lgpl3)))
 
+(define-public texlive-inlinelabel
+  (package
+    (name "texlive-inlinelabel")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/inlinelabel/"
+                   "tex/latex/inlinelabel/")
+             (base32
+              "0rsngfllng3qajm2rpdjpyf88iizd1nshbwriawh3d6g8b0yi82r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/inlinelabel")
+    (synopsis "Assign equation numbers to inline equations")
+    (description
+     "This package can assign equation numbers to inline equations.  When Japanese
+is supported, you can switch to circled equation numbers.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
