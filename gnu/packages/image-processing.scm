@@ -473,7 +473,8 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
                 "0nm7xwwj7rnsxjdv2ssviys8nhci4n9iiiqm2y14s520hl2dsp1d"))
               (patches (search-patches "vtk-7-python-compat.patch"
                                        "vtk-7-hdf5-compat.patch"
-                                       "vtk-7-gcc-10-compat.patch"))))
+                                       "vtk-7-gcc-10-compat.patch"
+                                       "vtk-7-gcc-11-compat.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments vtk)
        ((#:configure-flags flags)

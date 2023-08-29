@@ -2085,6 +2085,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/vte-CVE-2012-2738-pt1.patch			\
   %D%/packages/patches/vte-CVE-2012-2738-pt2.patch			\
   %D%/packages/patches/vtk-7-gcc-10-compat.patch		\
+  %D%/packages/patches/vtk-7-gcc-11-compat.patch		\
   %D%/packages/patches/vtk-7-hdf5-compat.patch			\
   %D%/packages/patches/vtk-7-python-compat.patch		\
   %D%/packages/patches/wacomtablet-add-missing-includes.patch	\
