@@ -97236,6 +97236,26 @@ parsed, extracted, and reconstituted (not requiring use of any stacking
 constructions).")
     (license license:lppl1.3+)))
 
+(define-public texlive-tabularborder
+  (package
+    (name "texlive-tabularborder")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tabularborder/"
+                   "source/latex/tabularborder/"
+                   "tex/latex/tabularborder/")
+             (base32
+              "0qjjr19f5cxpvvbrna6rg506w8j72dqqddxd412z6r4pcmnbiqd4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tabularborder")
+    (synopsis "Remove excess space at left and right of tabular")
+    (description
+     "The tabular environment is changed so that the outer @code{\\tabcolseps} are
+compensated and a @code{\\hline} has the same length as the text.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
