@@ -97000,6 +97000,27 @@ commands @code{(\\traceLabel} and @code{\\traceReference)} to set and use
 a trace.")
     (license license:lppl)))
 
+(define-public texlive-synttree
+  (package
+    (name "texlive-synttree")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/synttree/"
+                   "source/latex/synttree/"
+                   "tex/latex/synttree/")
+             (base32
+              "1a2ifj2922477vn7gljis6gv9p51q1c0kpl3y7vyb016pmg9ny04")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/synttree")
+    (synopsis "Typeset syntactic trees")
+    (description
+     "This package provides a package to typeset syntactic trees such as those used
+in Chomsky's generative grammar, based on a description of the structure of
+the tree.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
