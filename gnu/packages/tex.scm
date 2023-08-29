@@ -98650,6 +98650,25 @@ pages (except the last).  This is a common convention for examination papers
 and the like.")
     (license license:lppl)))
 
+(define-public texlive-twoinone
+  (package
+    (name "texlive-twoinone")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/twoinone/" "tex/latex/twoinone/")
+             (base32
+              "0asph7md8s5x2y8f18cczca906fc5wkh29ydabs43v3mn17lrkpw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/twoinone")
+    (synopsis "Print two pages on a single page")
+    (description
+     "The package is for printing two pages on a single (landscape) A4 page.
+Page numbers appear on the included pages, and not on the landscape container
+page.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
