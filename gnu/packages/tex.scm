@@ -76022,6 +76022,25 @@ no-one would deny that the PSTricks @code{pst-optic} package, or the MetaPost
 text) to mark steps in procedures, exercises, and so on.")
     (license license:lppl1.3c)))
 
+(define-public texlive-circledtext
+  (package
+    (name "texlive-circledtext")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/circledtext/"
+                   "tex/latex/circledtext/")
+             (base32
+              "0i6xc6y38chrwn0kw0ngvbb95hahwqm1fh5mpady9d1ziw7nxydf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/circledtext")
+    (synopsis "Create circled text")
+    (description
+     "This LaTeX package provides a macro @code{\\circledtext} to typeset circled
+text.  Its starred version can produce an inverted version.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
