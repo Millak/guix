@@ -82454,6 +82454,26 @@ printing, allowing for binding corrections and adding page bleed, if
 required.")
     (license license:lppl1.3c)))
 
+(define-public texlive-flipbook
+  (package
+    (name "texlive-flipbook")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/flipbook/" "tex/latex/flipbook/")
+             (base32
+              "1jy388pxrlmw1spvhznrggwz76b0nfmigp954skm74fpdzhwalmd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/flipbook")
+    (synopsis "Typeset flipbook animations, in the corners of documents")
+    (description
+     "The package provides techniques for adding flip book animations in the corner
+of your LaTeX documents (using images or ASCII art).  Animations are defined
+as a set of numbered files (e.g., @file{im1.pdf}, @file{im2.pdf}, ...).  The
+package relies on @code{fancyhdr} to control the corners.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
