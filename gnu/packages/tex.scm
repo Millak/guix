@@ -87053,6 +87053,26 @@ abbreviations can be used alone or on top of the @code{glossaries} package for
 easy indexing and glossary printing.")
     (license license:lppl1.3+)))
 
+(define-public texlive-lengthconvert
+  (package
+    (name "texlive-lengthconvert")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lengthconvert/"
+                   "source/latex/lengthconvert/"
+                   "tex/latex/lengthconvert/")
+             (base32
+              "19j6ls0jh0s8is0sizc9r3m6x715zblk3rb3cp4nwicf526vnfg3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lengthconvert")
+    (synopsis "Express lengths in arbitrary units")
+    (description
+     "The package provides a command to convert a length to any of a large
+selection of units.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
