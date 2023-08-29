@@ -98589,6 +98589,24 @@ transformations, together with a LaTeX @file{.fd} file and a package providing
 commands for the symbols use in mathematics.")
     (license license:lppl1.2+)))
 
+(define-public texlive-truncate
+  (package
+    (name "texlive-truncate")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/truncate/" "tex/latex/truncate/")
+             (base32
+              "1zxcn84lrl07cjiw4gzg2fnkriwfv8ziww5grbvfhffwqpaf8mgj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/truncate")
+    (synopsis "Truncate text to a specified width")
+    (description
+     "The package will by default break at word boundaries, but package options are
+offered to permit breaks within words.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
