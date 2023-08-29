@@ -81365,6 +81365,28 @@ short exercises, questionnaires, etc.  Usage of the Babel package is detected,
 but not fully supported yet (only English and French are implemented).")
     (license license:gpl2)))
 
+(define-public texlive-exercisebank
+  (package
+    (name "texlive-exercisebank")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/exercisebank/"
+                   "tex/latex/exercisebank/")
+             (base32
+              "1im5c6xgf89nk9bx5vrjlhwrgdj9ih23kgvc46lk9qa91ivsa3h9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/exercisebank")
+    (synopsis
+     "Creating and managing exercises, and reusing them as composed sets")
+    (description
+     "This package makes it easier to maintain and edit your exercise sets.
+Exercises are saved as separate files containing part problems.  These files
+can be used to make sets, and you can cherry-pick or exclude certain part
+problems as you see fit.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
