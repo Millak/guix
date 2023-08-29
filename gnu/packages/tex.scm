@@ -89505,6 +89505,27 @@ approximation to @acronym{APA, American Psychological Association} citation
 and reference style.")
     (license license:public-domain)))
 
+(define-public texlive-mtgreek
+  (package
+    (name "texlive-mtgreek")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mtgreek/" "source/latex/mtgreek/"
+                   "tex/latex/mtgreek/")
+             (base32
+              "1c4npkwx6apdg22ivkvc16scdlr06499idax351s1jq6sdw0yzpb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mtgreek")
+    (synopsis "Use italic and upright greek letters with mathtime")
+    (description
+     "This package is an add-on to the MathTime a style to provide TeX support for
+the use of the MathTime fonts.  The MathTime package has uppercase Greek
+letters hardwired to be upright and only upright; this package provides
+a switch to choose between the two kinds of Greek uppercase letters.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
