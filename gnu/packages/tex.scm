@@ -72404,6 +72404,29 @@ happens when one uses the @code{textpos} package with the
 @code{overlay} option.")
     (license license:expat)))
 
+(define-public texlive-accessibility
+  (package
+    (name "texlive-accessibility")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/accessibility/"
+                   "source/latex/accessibility/"
+                   "tex/latex/accessibility/")
+             (base32
+              "1xd8sps37fa96wzrcmnhr99wr12f1hx5z6j5gzwcn073gxdr8wxh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/accessibility")
+    (synopsis "Create tagged and structured PDF files")
+    (description
+     "The @code{accessibility} package is intended to create tagged,
+structured PDF documents from LaTeX source code.  This package is
+predominantly targeted at documents produced using the KOMA-Script
+document classes.  However, according to its author using the package
+in its current implementation is discouraged.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
