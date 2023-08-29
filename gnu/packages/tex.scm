@@ -87130,6 +87130,31 @@ capitals that have a regular shape (such as @samp{A} and @samp{V}).")
 Support is limited to elements that support the octet rule.")
     (license license:public-domain)))
 
+(define-public texlive-lhelp
+  (package
+    (name "texlive-lhelp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lhelp/" "source/latex/lhelp/"
+                   "tex/latex/lhelp/")
+             (base32
+              "0yr9mv7vihizrra37dy1d0xvrkhbkyg5fvzbhgd1lh25wgpsmi92")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lhelp")
+    (synopsis "Miscellaneous helper packages")
+    (description
+     "This package defines macros which are useful for many documents.  It is
+a large collection of simple little helpers which do not really warrant
+a separate package on their own.  Included are, among other things,
+definitions of common units with preceeding thinspaces, framed boxes where
+both width and height can be specified, starting new odd or even pages, draft
+markers, notes, conditional includes, including EPS files, and versions of
+enumerate and itemize which allow the horizontal and vertical spacing to be
+changed.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
