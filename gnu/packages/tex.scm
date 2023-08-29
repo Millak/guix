@@ -93138,6 +93138,24 @@ a video projector may integrate animation effects, incremental display, and so
 on.  Various visual styles are supported and others are being contributed.")
     (license license:lppl1.2+)))
 
+(define-public texlive-protex
+  (package
+    (name "texlive-protex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/protex/" "tex/latex/protex/")
+             (base32
+              "1cbsz5r8dj528mrpsbdp3flz3dma6kifbd2xqy1vkw6vhc3nbvcg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/protex")
+    (synopsis "Literate programming package")
+    (description
+     "ProTeX is a simple but powerful literate programming tool, which is designed
+to generate useful hypertext output (either PDF, or HTML using TeX4ht).")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
