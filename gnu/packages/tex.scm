@@ -86974,6 +86974,25 @@ lecture notes, such as a number of theorem environments, automatic spacing and
 alignment of figures and much more.")
     (license license:expat)))
 
+(define-public texlive-lectureslides
+  (package
+    (name "texlive-lectureslides")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lectureslides/"
+                   "tex/latex/lectureslides/")
+             (base32
+              "189sm3vxgi1qf6xf07f98p16bah8siwz0q97dpsjrpzx7m32bbiw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lectureslides")
+    (synopsis "Combine single PDF files into one file")
+    (description
+     "This package makes it easy to combine and index individual PDF files into one
+large PDF file.")
+    (license license:cc-by4.0)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
