@@ -84609,6 +84609,26 @@ audience with extracts of the texts about which we will talk.  The package
 supports preparation of such handouts when writing the talk.")
     (license license:lppl1.3+)))
 
+(define-public texlive-handoutwithnotes
+  (package
+    (name "texlive-handoutwithnotes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/handoutwithnotes/"
+                   "source/latex/handoutwithnotes/"
+                   "tex/latex/handoutwithnotes/")
+             (base32
+              "1qb1av9f95wlnpmc33j497mvpzqy3w62mrvqnj4qnyhfdsas3ik2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/handoutwithnotes")
+    (synopsis "Create handouts with notes from your LaTeX Beamer presentation")
+    (description
+     "This package provides @code{pgfpages} layouts to place notes next to the
+scaled slides.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
