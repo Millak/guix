@@ -91446,6 +91446,27 @@ using the @code{\\parnotes} command.")
 Iranian universities as fast and as efficiently as possible.")
     (license license:lppl1.3c)))
 
+(define-public texlive-parselines
+  (package
+    (name "texlive-parselines")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/parselines/"
+                   "source/latex/parselines/"
+                   "tex/latex/parselines/")
+             (base32
+              "11gmlsw6m86wqdzfah2qgr43mxnr7cwk73fxwv8nd47pxcfb9cvj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/parselines")
+    (synopsis "Apply a macro to each line of an environment")
+    (description
+     "The package defines an environment @code{parse lines} which processes each
+line of an environment with a macro.  An example of shading the lines of an
+environment is given.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
