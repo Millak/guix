@@ -75590,6 +75590,27 @@ letter will have its own table of contents, etc., independent from the other
 ones.")
     (license license:lppl)))
 
+(define-public texlive-cellprops
+  (package
+    (name "texlive-cellprops")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cellprops/"
+                   "source/latex/cellprops/"
+                   "tex/latex/cellprops/")
+             (base32
+              "1k30rg5v170x195da08a7gvagzwf6c0w4izqnrhdkfbxkw8w3450")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cellprops")
+    (synopsis "Accept CSS-like selectors in @code{tabular}, @code{array}, ...")
+    (description
+     "This package reworks the internals of @code{tabular}, @code{array},
+and similar constructs, and adds a @code{\\cellprops} command accepting
+CSS-like selectors and properties.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
