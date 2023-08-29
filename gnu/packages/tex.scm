@@ -74174,6 +74174,26 @@ mathematics research.")
     (description "This package provides a theme for Beamer presentations.")
     (license license:gpl3+)))
 
+(define-public texlive-beamerthemelalic
+  (package
+    (name "texlive-beamerthemelalic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamerthemelalic/"
+                   "tex/latex/beamerthemelalic/")
+             (base32
+              "1l3ivw1g2bdjlhs2q8dj95mc7ybylqsqf6l9df56zjys6pd8zwh9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamerthemelalic")
+    (synopsis "Beamer theme for LALIC")
+    (description
+     "This package provides the Beamer theme for @acronym{LALIC, Laboratorio de
+Linguistica e Inteligencia Computacional} of the Federal University of Sao
+Carlos, Brazil.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
