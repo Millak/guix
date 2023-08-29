@@ -78950,6 +78950,27 @@ within the text.")
 raised decimal point, instead of the American-style period.")
     (license license:lppl1.0+)))
 
+(define-public texlive-decorule
+  (package
+    (name "texlive-decorule")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/decorule/"
+                   "source/latex/decorule/"
+                   "tex/latex/decorule/")
+             (base32
+              "07l723zd20ds5sa70vk5hhrd7a90jqy3hf70wm5q1gnmbjszj1da")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/decorule")
+    (synopsis "Decorative swelled rule using font character")
+    (description
+     "The package implements a decorative swelled rule using only a symbol from
+a font installed with all distributions of TeX, so it works independently,
+without the need to install any additional software or fonts.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
