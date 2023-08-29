@@ -77345,6 +77345,24 @@ features available in the package:
 a copyright notice relating to the matter created by the image command.")
     (license license:lppl)))
 
+(define-public texlive-coseoul
+  (package
+    (name "texlive-coseoul")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/coseoul/" "tex/latex/coseoul/")
+             (base32
+              "0xf93pskygb26p47m0063y1q57kgg2gjwwrxg89b5rgmamawjwyw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/coseoul")
+    (synopsis "Context sensitive outline elements")
+    (description
+     "The package provides relative commands that may be used in place of @code{\\chapter},
+@code{\\section}, etc.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
