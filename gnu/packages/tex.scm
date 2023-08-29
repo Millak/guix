@@ -95176,6 +95176,28 @@ the former defines the content of a note, while the latter typesets that
 note.")
     (license license:lppl1.3+)))
 
+(define-public texlive-sesstime
+  (package
+    (name "texlive-sesstime")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sesstime/"
+                   "source/latex/sesstime/"
+                   "tex/latex/sesstime/")
+             (base32
+              "0ajryzcw1pf9yva3qpbx1f7mpl5pnkj4k3ccvh5hxaif86jydcc1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sesstime")
+    (synopsis "Session and timing information in lecture notes")
+    (description
+     "This LaTeX2e package makes it possible to add timing marks to lecture notes
+in order to help managing the time available for presenting a given section of
+the document.  It also provides tools to record and estimate the progress
+throughout the course.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
