@@ -72640,6 +72640,27 @@ extra line of text to the page so that a section fits better on the next page.
 It will also add space to the facing page in a two-sided document.")
     (license license:lppl1.3c)))
 
+(define-public texlive-adjmulticol
+  (package
+    (name "texlive-adjmulticol")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/adjmulticol/"
+                   "source/latex/adjmulticol/"
+                   "tex/latex/adjmulticol/")
+             (base32
+              "0f7z43b2jx0v2zfxmalbhvh7jd9ln41ldy6zncj7s0x5j0p45gfv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/adjmulticol")
+    (synopsis "Adjusting margins for multicolumn and single column output")
+    (description
+     "The package adds, to the @code{multicol} package, the option to change the
+margins for multicolumn and unicolumn layout.  The package understands the
+difference between the even and odd margins for two side printing.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
