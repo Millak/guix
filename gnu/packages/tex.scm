@@ -89036,6 +89036,27 @@ package);
 Support for minutes in German, Dutch and English is provided.")
     (license license:lppl)))
 
+(define-public texlive-mla-paper
+  (package
+    (name "texlive-mla-paper")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mla-paper/"
+                   "tex/latex/mla-paper/")
+             (base32
+              "0i8phimwfdg29njkvnk8p7rcybqsfxv5d90sfpbba990h4knz95y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mla-paper")
+    (synopsis "Proper MLA formatting")
+    (description
+     "The package formats articles using the @acronym{MLA, Modern Language
+Association} style.  The aim is that students and other academics in the
+humanities should be able to typeset their materials, properly, with minimal
+effort on their part.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
