@@ -95806,6 +95806,28 @@ document classes provided, it hides a lot of LaTeX from someone who just wants
 to write articles and books.")
     (license license:lppl1.3+)))
 
+(define-public texlive-skdoc
+  (package
+    (name "texlive-skdoc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/skdoc/" "source/latex/skdoc/"
+                   "tex/latex/skdoc/")
+             (base32
+              "0m0961393b2r5rmkyjnl9l13gvzxjmif63mbl45wykcvpwrp2jhl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/skdoc")
+    (synopsis "Documentation and extraction for packages and document classes")
+    (description
+     "The class provides the functionality and implementation of packages and
+document classes.  The class defines a @code{MacroCode} environment which
+offers an alternative to the usual @code{docstrip} method of installing
+packages.  It has the ability to generate both documentation and code in
+a single run of a single file.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
