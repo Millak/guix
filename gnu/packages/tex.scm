@@ -88929,6 +88929,31 @@ documents.  Inside the minidocument all features of the outer vertical mode like
 page breaking, floats, marginpars, etc., are available.")
     (license license:lppl1.3+)))
 
+(define-public texlive-minifp
+  (package
+    (name "texlive-minifp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/minifp/"
+                   "source/generic/minifp/"
+                   "tex/generic/minifp/")
+             (base32
+              "0kan8c7v4y7b56wxxap64x13a22dl04xq4w5aaq9lyd1v55d4cyh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/minifp")
+    (synopsis "Fixed-point real computations to 8 decimals")
+    (description
+     "The package provides basic arithmetic operations to 8 decimal places for
+plain TeX or LaTeX.  Results are exact when they fit within the digit limits.
+Along with the basic package is an optional extension that adds computation of
+sin, cos, log, sqrt, exp, powers and angles.  These are also exact when
+theoretically possible and are otherwise accurate to at least 7 decimal
+places.  In addition, the package provides a stack-based programming
+environment.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
