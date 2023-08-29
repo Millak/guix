@@ -82821,6 +82821,26 @@ then the references are hyperlinked.  (References to footnotes in
 @code{footnoterange*} environments are never hyperlinked.)")
     (license license:lppl1.3c)))
 
+(define-public texlive-footnpag
+  (package
+    (name "texlive-footnpag")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/footnpag/"
+                   "source/latex/footnpag/"
+                   "tex/latex/footnpag/")
+             (base32
+              "1qf12zr9qs54wpih691290l9jnf3cjdfpym6g8p0w06al8x797zs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/footnpag")
+    (synopsis "Per-page numbering of footnotes")
+    (description
+     "This packages allows footnotes on individual pages to be numbered from @samp{1},
+rather than being numbered sequentially through the document.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
