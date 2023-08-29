@@ -100563,6 +100563,24 @@ are valid for @code{url} can be used and will be passed on to this package.")
 is currently unmaintained and does not work with modern LaTeX releases.")
     (license license:lppl1.3+)))
 
+(define-public texlive-xytree
+  (package
+    (name "texlive-xytree")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xytree/" "tex/latex/xytree/")
+             (base32
+              "0l0is0a46zp21qswwdb5rbjh4ap61lm5d581j5q9baiycmxk4ban")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xytree")
+    (synopsis "Tree macros using XY-Pic")
+    (description
+     "The package provides means to draw linguistic syntactic trees with ease and
+to support hopefully sufficient functionalities, that the linguist may need.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
