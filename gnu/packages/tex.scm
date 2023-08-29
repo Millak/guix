@@ -83380,6 +83380,33 @@ way.  It includes options for paragraph indentation and vertical alignment
 with respect to the visual top and bottom margins.")
     (license license:lppl)))
 
+(define-public texlive-gensymb
+  (package
+    (name "texlive-gensymb")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gensymb/" "source/latex/gensymb/"
+                   "tex/latex/gensymb/")
+             (base32
+              "1k4pkls5yp538s55mck65xm5l15mn6qjz89f0vd92iiljbd2b5z8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gensymb")
+    (synopsis "Generic symbols for both text and math mode")
+    (description
+     "This package provides generic commands @code{\\degree}, @code{\\celsius},
+@code{\\perthousand}, @code{\\micro} and @code{\\ohm}, which work both in text
+and maths mode.  Various means are provided to fake the symbols or take them
+from particular symbol fonts, if they are not available in the default fonts
+used in the document.  This should be perfectly transparent at user level, so
+that one can apply the same notation for units of measurement in text and math
+mode and with arbitrary typefaces.
+
+Note that the package has been designed to work in conjunction with
+@file{units.sty}.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
