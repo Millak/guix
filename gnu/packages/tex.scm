@@ -73058,6 +73058,29 @@ fixed or calculated like in tabularx environments.  Macros for drawing
 vertical and horizontal rules of variable thickness are also provided.")
     (license license:lppl1.3+)))
 
+(define-public texlive-arrayjobx
+  (package
+    (name "texlive-arrayjobx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/arrayjobx/"
+                   "tex/generic/arrayjobx/")
+             (base32
+              "0w7wvq1wvxvdhd196hl16c3lgzl4b8x05dhv5dy576cr4xc9chgw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/arrayjobx")
+    (synopsis "Array data structures for (La)TeX")
+    (description
+     "This package provides array data structures in @code{(La)TeX,} in the meaning
+of the classical procedural programming languages like Fortran, Ada or C, and
+macros to manipulate them.  Arrays can be mono or bi-dimensional.  This is
+useful for applications which require high level programming techniques, like
+algorithmic graphics programmed in the TeX language.  The package supersedes
+the @code{arrayjob} package.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
