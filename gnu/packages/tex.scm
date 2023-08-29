@@ -95651,6 +95651,27 @@ messages that begin with...'').  Messages may be saved to an external file for
 later reference.")
     (license license:lppl)))
 
+(define-public texlive-sillypage
+  (package
+    (name "texlive-sillypage")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sillypage/"
+                   "source/latex/sillypage/"
+                   "tex/latex/sillypage/")
+             (base32
+              "04jnp1hl3k0hs8rgzn1q3q41rmd95wlzv7f1dd9s4affzfk6an1z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sillypage")
+    (synopsis "John Cleese's silly walk as page numbering style")
+    (description
+     "This simple LaTeX package provides John Cleese's iconic silly walk routine as
+a page numbering style.  Other counters, as well as integers, can be typeset
+in this silly style, too.")
+    (license (list license:cc-by-sa4.0 license:lppl1.3c))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
