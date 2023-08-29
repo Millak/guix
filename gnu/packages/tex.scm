@@ -93903,6 +93903,28 @@ say, a pre-silicon test environment.")
 number of such registers.")
     (license license:lppl1.3+)))
 
+(define-public texlive-relenc
+  (package
+    (name "texlive-relenc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/relenc/"
+                   "fonts/tfm/public/relenc/"
+                   "fonts/vf/public/relenc/"
+                   "source/latex/relenc/" "tex/latex/relenc/")
+             (base32
+              "1n712fg70rsxw3y7yxi3ijwb5cdn78ylkfs0j5kxi8k73lzxjjkb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/relenc")
+    (synopsis "Relaxed font encoding")
+    (description
+     "This LaTeX package provides a relaxed font encoding to make available to
+a font designer more slots for insertion of ligatures and accented
+characters.")
+    (license license:lppl1.0+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
