@@ -86236,6 +86236,29 @@ vertically next to one larger figure.  Subfloats are supported by two
 environments.")
     (license license:lppl1.3+)))
 
+(define-public texlive-keyindex
+  (package
+    (name "texlive-keyindex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/keyindex/"
+                   "source/latex/keyindex/"
+                   "tex/latex/keyindex/")
+             (base32
+              "1zw2sj3qq0v0kp68mmb72x44mpwfj0hnzxwqdv92m5528k1ylyr9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/keyindex")
+    (synopsis "Index entries by key lookup")
+    (description
+     "The package provides functionality for producing an index without directly
+entering index entries into the text using the @code{\\index} command, but
+instead by looking up short keys and printing a predefined string in the main
+text and adding a corresponding index entry.  The standard use case is the
+production of an index of names.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
