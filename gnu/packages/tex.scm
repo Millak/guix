@@ -93986,6 +93986,25 @@ pasted.")
 preserving SyncTeX information.")
     (license license:lppl1.3c)))
 
+(define-public texlive-resmes
+  (package
+    (name "texlive-resmes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/resmes/" "source/latex/resmes/"
+                   "tex/latex/resmes/")
+             (base32
+              "1rj78zbk6dcadacck9n6jp23424aciwk88b5xgqmxgb3km5rnp89")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/resmes")
+    (synopsis "Measure restriction symbol in LaTeX")
+    (description
+     "This package provides a simple macro @code{\\resmes} that prints the measure
+restriction symbol.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
