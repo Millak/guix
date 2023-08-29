@@ -95081,6 +95081,29 @@ semester plan.  It includes a timetable (which is using the schedule-Package)
 as well as appointments, deadlines, and exams.")
     (license license:lppl1.3+)))
 
+(define-public texlive-semioneside
+  (package
+    (name "texlive-semioneside")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/semioneside/"
+                   "source/latex/semioneside/"
+                   "tex/latex/semioneside/")
+             (base32
+              "025wvr95j3p8i1pfcvai57zaq1bnw0wkf1j8piljlaap95fc09ii")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/semioneside")
+    (synopsis
+     "Put only special contents on left-hand pages in two sided layout")
+    (description
+     "This package supports the preparation of semi one sided documents.  That is,
+two sided documents, where all text is output on right-hand pages --- as in
+a one-sided documents --- and only special contents are output on left-hand
+pages on user request, e.g., floating objects.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
