@@ -84706,6 +84706,26 @@ based upon the Koma-Script bundle and the @code{seminar} class.  It includes
 @code{hcart}, @code{hcreport}, @code{hcletter}, and @code{hcslides}.")
     (license license:gpl2+)))
 
+(define-public texlive-he-she
+  (package
+    (name "texlive-he-she")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/he-she/" "tex/latex/he-she/")
+             (base32
+              "13vkrg4a4czq2l1ngn1y4sc6pa1dljzr4qzh8kgsbdnf48s38nrm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/he-she")
+    (synopsis "Alternating pronouns to aid gender-neutral writing")
+    (description
+     "The package implements a version of semi-automatic pronoun switching for
+writing gender-neutral (and possibly annoying) prose.  It has upper- and
+lowercase versions of switching pronouns for all case forms, plus anaphoric
+versions that reflect the current gender choice.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
