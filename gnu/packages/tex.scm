@@ -93945,6 +93945,28 @@ characters.")
 list of subitems.  This helps to find out to which main item a subitem belongs.")
     (license license:lppl)))
 
+(define-public texlive-repltext
+  (package
+    (name "texlive-repltext")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/repltext/"
+                   "source/latex/repltext/"
+                   "tex/latex/repltext/")
+             (base32
+              "0kgkybp0fajswdl0cv8w29nglc2a0g2fxsm4k8z6idn2dkcc2z0c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/repltext")
+    (synopsis "Control how text gets copied from a PDF file")
+    (description
+     "The @code{repltext} package exposes to LaTeX a relatively obscure PDF
+feature: replacement text.  When replacement text is specified for a piece of
+text, it is the replacement text, not the typeset text that is copied and
+pasted.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
