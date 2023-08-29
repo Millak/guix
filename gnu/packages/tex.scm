@@ -80645,6 +80645,27 @@ The package is currently broken, cf.@:
 and address formatting according to the US Postal Service rules.")
     (license license:lppl)))
 
+(define-public texlive-epigraph
+  (package
+    (name "texlive-epigraph")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/epigraph/"
+                   "source/latex/epigraph/"
+                   "tex/latex/epigraph/")
+             (base32
+              "0swqk1wad1ipv4ki8innsgvij88b6mrmrcjshxv3jb9s6j2w5b7g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/epigraph")
+    (synopsis "Typeset epigraphs")
+    (description
+     "Epigraphs are the pithy quotations often found at the start (or end) of
+a chapter.  Both single epigraphs and lists of epigraphs are catered for.
+Various aspects are easily configurable.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
