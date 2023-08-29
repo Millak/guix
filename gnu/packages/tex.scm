@@ -99236,6 +99236,26 @@ provided that the name has been structured appropriately: the package expects
 the file name to consist of a set of words separated by hyphens.")
     (license license:lppl)))
 
+(define-public texlive-vcell
+  (package
+    (name "texlive-vcell")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/vcell/" "tex/latex/vcell/")
+             (base32
+              "0y4gxf5waxs7n9xb9qbraa9isk11pvxm5737z0j069kg6bkra5rl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/vcell")
+    (synopsis "Vertical alignment of content inside table cells")
+    (description
+     "This package offers low-level macros to build rows with vertically-aligned
+cells (top, middle or bottom) and calculate the height of a row.  These cells
+can have variable or fixed height and can be paragraph-cells or inline-cells.
+Different vertical alignments can be used in the same row.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
