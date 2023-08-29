@@ -82560,6 +82560,25 @@ standard one or two column layout.")
     (description "This package allows including functional MetaPost in LaTeX.")
     (license license:lppl)))
 
+(define-public texlive-fn2end
+  (package
+    (name "texlive-fn2end")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fn2end/" "tex/latex/fn2end/")
+             (base32
+              "1d1gpl3inhimzylrkx0pjl1xjczf2qp9m3823kj8s8kw0y54bg61")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fn2end")
+    (synopsis "Convert footnotes to endnotes")
+    (description
+     "This package defines macros @code{\\makeendnotes}, which converts
+@code{\\footnote} to produce endnotes; and @code{\\theendnotes} which prints
+them out.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
