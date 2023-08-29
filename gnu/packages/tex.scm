@@ -74421,6 +74421,35 @@ An example would be when the integrand is a matrix.")
 two-column parallel text.")
     (license license:lppl1.3c)))
 
+(define-public texlive-biochemistry-colors
+  (package
+    (name "texlive-biochemistry-colors")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/biochemistry-colors/"
+                   "tex/latex/biochemistry-colors/")
+             (base32
+              "10c7gw5ldsniz7bkzw9a8nzza1zgyphdjk6n8laf0rryjhwriml2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/biochemistry-colors")
+    (synopsis
+     "Colors used to display amino acids, nucleotides, sugars or atoms in
+biochemistry")
+    (description
+     "@file{Biochemistry-colors.sty} defines the standard colors of biochemistry
+for use with the @code{color} package and the @code{xcolor} package.  Colors
+include:
+
+@itemize
+@item Shapely-colors for amino acids and nucleotides;
+@item CPK-Colors (Corey, Pauling and Koltun) of elements;
+@item Jmol-colors of elements, important isotopes and structures;
+@item Glycopedia colors for sugars.
+@end itemize")
+    (license (list license:lppl license:gpl3+))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
