@@ -91896,6 +91896,36 @@ PDF meta-data fields as well as suppressing some pdfTeX meta-data entries in
 the resulting PDF.")
     (license license:lppl1.3c)))
 
+(define-public texlive-pdfreview
+  (package
+    (name "texlive-pdfreview")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pdfreview/"
+                   "tex/latex/pdfreview/")
+             (base32
+              "19ybq5yqzp39z9l04sf3inp41rm9w5k6h02ig7qhc34gi9ps97bi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pdfreview")
+    (synopsis "Annotate PDF files with margin notes")
+    (description
+     "This package lets you add comments in the page margins of PDF files, e.g.,
+when reviewing manuscripts or grading reports.  The PDF file to be annotated
+is included, one page at a time, as graphics, in a manner similar to the
+@code{pdfpages} package.  Notes are placed in the margin next to the included
+graphics using a grid of help lines.  Alternatively, only numbers are placed
+in the page margins, and the notes are collected into a numbered list at the
+end of the document.
+
+Note that this package is not intended for adding notes directly to the LaTeX
+source of the document that is being reviewed; instead, the document
+undergoing review is already in PDF format and remains unchanged.  Also note
+that this package does not produce the usual PDF sticky notes that must be
+opened by clicking on them; instead, the notes are simply shown as text.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
