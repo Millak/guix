@@ -83358,6 +83358,28 @@ those languages.  The @code{gender} package uses alternately masculine and
 feminine forms.  It is also possible to use just one form out of a template.")
     (license license:lppl1.3+)))
 
+(define-public texlive-genmpage
+  (package
+    (name "texlive-genmpage")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/genmpage/"
+                   "source/latex/genmpage/"
+                   "tex/latex/genmpage/")
+             (base32
+              "0mk55x85kn7v38l4pa5l8yv8axyfgn01vdxk51iahyzzmlw4fm6f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/genmpage")
+    (synopsis "Generalization of LaTeX's minipages")
+    (description
+     "The GenMPage package generalizes LaTeX's minipages.  @code{Keyval} options
+and styles can be used to determine their appearance in an easy and consistent
+way.  It includes options for paragraph indentation and vertical alignment
+with respect to the visual top and bottom margins.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
