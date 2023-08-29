@@ -81187,6 +81187,38 @@ the necessary ingredients for the exam;
 @end itemize")
     (license license:cc-by-sa4.0)))
 
+(define-public texlive-exam-n
+  (package
+    (name "texlive-exam-n")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/exam-n/" "source/latex/exam-n/"
+                   "tex/latex/exam-n/")
+             (base32
+              "1nzg6w0rd3hlpkihkg44qljavha1zkp8wggpivd7q54l1hyib07s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/exam-n")
+    (synopsis "Exam class, focused on collaborative authoring")
+    (description
+     "The class design offers:
+
+@itemize
+
+@item direct support for collaborative development of an exam, using a model
+in which a departmental exams convener or exam chair coordinates multiple
+authors writing individual questions (the class file and associated process is
+in regular use within a physics and astronomy department);
+
+@item all of the traditional exam paper features such as sectioning, per-part
+running marks, ``Question n continued'' catchwords, and so on;
+
+@item readily configured local adaptation.
+
+@end itemize")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
