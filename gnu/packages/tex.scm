@@ -93356,6 +93356,30 @@ QCM can also typeset exam corrections automatically, and comes with support
 for AUC-TeX.")
     (license license:lppl)))
 
+(define-public texlive-qstest
+  (package
+    (name "texlive-qstest")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/qstest/" "source/latex/qstest/"
+                   "tex/latex/qstest/")
+             (base32
+              "1b1w1h4g2b3hbgza87aqm9hb36g46xwcr2f42qb30drc8p5svybv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/qstest")
+    (synopsis "Bundle for unit tests and pattern matching")
+    (description
+     "This is @code{qstest} bundle, which contains the packages @code{makematch}
+for matching patterns to targets (with a generalization in the form of pattern
+lists and keyword lists), and @code{qstest} for performing unit tests,
+allowing the user to run a number of logged tests ensuring the consistency of
+values, properties and call sequences during execution of test code.  Both
+packages make extensive use of in their package documentation, providing
+illustrated examples that are automatically verified to work as expected.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
