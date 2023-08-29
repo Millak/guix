@@ -100647,6 +100647,28 @@ sheets.  Finally, it provides some nice defaults for a few of the more common
 styles and sizes.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ycbook
+  (package
+    (name "texlive-ycbook")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ycbook/" "tex/latex/ycbook/")
+             (base32
+              "0ikjh157df0l2yq8whpsizs32i92xg8am65migbjq6pfm57bph70")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ycbook")
+    (synopsis "A versatile book class")
+    (description
+     "This class is intended to be an interpretation of the @code{mwbk} class which
+is a part of the @code{mwcls} package.  The @code{mwcls} classes are simple,
+yet powerful and customizable classes that allow the end-user to customize the
+layout of headers, headings etc.  They also have the benefit of being more
+economic in space than the most common LaTeX classes, while keeping a clear
+appearance and a smooth flow.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
