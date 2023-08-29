@@ -99469,6 +99469,25 @@ single-sided document.")
 numbers with bars to the left or right of the text.")
     (license license:lppl1.3c)))
 
+(define-public texlive-vgrid
+  (package
+    (name "texlive-vgrid")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/vgrid/" "source/latex/vgrid/"
+                   "tex/latex/vgrid/")
+             (base32
+              "1czaf1rz4x7wsinnk6mg78674azg5hnyi53rwh64bv2lzs3l0ah1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/vgrid")
+    (synopsis "Overlay a grid on the printed page")
+    (description
+     "The package overlays a grid (whose spacing is @code{\\baselineskip}, which
+offers guidelines for considering the ``rhythm'' of the document on the page.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
