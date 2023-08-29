@@ -73959,6 +73959,25 @@ tries to minimize noise and maximize space for content.")
 Sefiroth Consulting, FOM, FOM ifes and eufom.")
     (license (list license:gpl3 license:public-domain))))
 
+(define-public texlive-beamertheme-phnompenh
+  (package
+    (name "texlive-beamertheme-phnompenh")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamertheme-phnompenh/"
+                   "tex/latex/beamertheme-phnompenh/")
+             (base32
+              "0d373v9a2x1kxz48j1c1vfgv6jimp08f1wc9wnh9ahaxf6796qds")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamertheme-phnompenh")
+    (synopsis "Simple Beamer theme")
+    (description
+     "The package provides a simple theme, similar to some others, but designed to
+be attractive.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
