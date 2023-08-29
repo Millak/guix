@@ -82970,6 +82970,30 @@ manually.  This package offers some commands for defining such fields in
 a distinctive way.")
     (license license:lppl)))
 
+(define-public texlive-fragments
+  (package
+    (name "texlive-fragments")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fragments/"
+                   "tex/latex/fragments/")
+             (base32
+              "0p2s3nmq25ypvnbfmgr70cw0b3y7s2i40xig9ddjcd1f8q1i1nyq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fragments")
+    (synopsis "Fragments of LaTeX code")
+    (description
+     "This package provides a collection of fragments of LaTeX code, suitable for
+inclusion in packages, or (possibly) in users documents.  Included are:
+@code{checklab}, for modifying the label checking code at
+@code{\\end@{document@}}; @code{overrightarrow}, defining a doubled over-arrow
+macro; @code{removefr}, for removing reset relations between counters; and
+@code{subscript}, defining a @code{\\textsubscript} command.")
+    ;; It contains a collection of packages, with different licenses.
+    (license (list license:public-domain license:lppl))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
