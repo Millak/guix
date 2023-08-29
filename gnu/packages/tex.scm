@@ -98715,6 +98715,32 @@ alternate glyph (as in the @code{fourier} package).  The @code{txgreeks}
 package does not constrain the text font that may be used in the document.")
     (license license:lppl1.3+)))
 
+(define-public texlive-typed-checklist
+  (package
+    (name "texlive-typed-checklist")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/typed-checklist/"
+                   "source/latex/typed-checklist/"
+                   "tex/latex/typed-checklist/")
+             (base32
+              "1g0qcw8b461qsmic1xr00zzqcv84xqwdrdq9zs4klxyb3y5d0389")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/typed-checklist")
+    (synopsis
+     "Typesetting tasks, goals, milestones, artifacts, and more in LaTeX")
+    (description
+     "The main goal of this package is to provide means for typesetting checklists
+in a way that stipulates users to explicitly distinguish checklists for goals,
+for tasks, for artifacts, and for milestones --- i.e., the type of checklist
+entries.  The intention behind this is that a user of the package is coerced
+to think about what kind of entries he/she adds to the checklist.  This shall
+yield a clearer result and, in the long run, help with training to distinguish
+entries of different types.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
