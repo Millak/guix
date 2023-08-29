@@ -75307,6 +75307,28 @@ for drawing the formulas.  Different representation models (Fischer, Haworth,
 chair...) are supported as well as alpha, beta, and chain isomers.")
     (license license:lppl1.3+)))
 
+(define-public texlive-cases
+  (package
+    (name "texlive-cases")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cases/" "tex/latex/cases/")
+             (base32
+              "0n108l0k9xla9fd5dvnfgvy7pzdy0rzq8p86a6m7ia6kwn3gjwgp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cases")
+    (synopsis "Numbered cases environment")
+    (description
+     "This package provides a LaTeX environment @code{numcases} to produce
+multi-case equations with a separate equation number for each case.  There is
+also a @code{subnumcases} environment which numbers each case with the overall
+equation number plus a letter.")
+    ;; These macros may be freely transmitted, reproduced, or modified
+    ;; provided that this notice is left intact.
+    (license (license:fsf-free "file://doc/latex/cases/README"))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
