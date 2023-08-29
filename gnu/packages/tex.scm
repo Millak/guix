@@ -85358,6 +85358,23 @@ compressed to @samp{[1-3]}, where the @samp{1} and the @samp{3} are
      "The package is for typesetting bracketed dichotomous identification keys.")
     (license license:gpl3)))
 
+(define-public texlive-idxcmds
+  (package
+    (name "texlive-idxcmds")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/idxcmds/" "tex/latex/idxcmds/")
+             (base32
+              "1i4jb86dlawqc4nxwrz5h3wc5h1mp0zav2f349f83hhf5gaf6y5x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/idxcmds")
+    (synopsis "Semantic commands for adding formatted index entries")
+    (description
+     "The package provides commands for adding formatted index entries.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
