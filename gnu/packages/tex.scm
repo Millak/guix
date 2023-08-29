@@ -73208,6 +73208,30 @@ assignments.")
 each time some master counter is stepped.")
     (license license:lppl1.3+)))
 
+(define-public texlive-association-matrix
+  (package
+    (name "texlive-association-matrix")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/association-matrix/"
+                   "tex/latex/association-matrix/")
+             (base32
+              "19fzimmprv08hiwgdxrgayjf9mxp07ris54yc6wj50nah8qirghw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/association-matrix")
+    (synopsis "LaTeX support for creating association matrices")
+    (description
+     "This package allows the creation of association matrices in an clear and
+concise fashion, without having to deal with manually generating and modifying
+the tables while working.  All you have to do is define the rows and the
+columns by their unique identifier, and then specify which cells should be
+marked as associated.  Then, the @code{\\amxgenerate} command generates
+a table that shows in the cells with a blip (*) where the association was
+added.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
