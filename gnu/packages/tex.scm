@@ -95218,6 +95218,26 @@ prescribed by ANSI Std.@: Z39.18 for report documentation as part of
 a document delivered, for instance, on a U.S.  government contract.")
     (license license:lppl1.2+)))
 
+(define-public texlive-sffms
+  (package
+    (name "texlive-sffms")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sffms/" "source/latex/sffms/"
+                   "tex/latex/sffms/")
+             (base32
+              "1bijlqr55fbd1jx6739242vbi04zai5mcqmy23dzhpn8bbayzvrj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sffms")
+    (synopsis "Typesetting science fiction/fantasy manuscripts")
+    (description
+     "The class is designed for typesetting science fiction and fantasy manuscripts.
+Sffms now includes several options for specific publishers as well as
+extensive documentation aimed at new LaTeX users.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
