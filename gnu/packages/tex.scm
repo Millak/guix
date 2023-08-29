@@ -85461,6 +85461,31 @@ find in a comma separated list and, additionally, a number of macro tests.")
 presentations with pdfLaTeX.")
     (license license:lppl1.2+)))
 
+(define-public texlive-ifnextok
+  (package
+    (name "texlive-ifnextok")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ifnextok/"
+                   "source/latex/ifnextok/"
+                   "tex/latex/ifnextok/")
+             (base32
+              "0hlf4vn8ki9p425s9wki2b86jx9kxcmbk12h3cljmy32f6bxs7bh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ifnextok")
+    (synopsis "Utility macro: peek ahead without ignoring spaces")
+    (description
+     "The package deals with the behaviour of the LaTeX internal command
+@code{\\@@ifnextchar}, which skips blank spaces.  This has the potential to
+surprise users, since it can produce really unwanted effects.  A common
+example occurs with brackets starting a line following @code{\\\\}: the
+command looks for an optional argument, whereas the user wants the brackets to
+be printed.  The package offers commands and options for modifying this
+behaviour, maybe limited to certain parts of the document source.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
