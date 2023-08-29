@@ -100581,6 +100581,26 @@ is currently unmaintained and does not work with modern LaTeX releases.")
 to support hopefully sufficient functionalities, that the linguist may need.")
     (license license:lppl)))
 
+(define-public texlive-yafoot
+  (package
+    (name "texlive-yafoot")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/yafoot/" "source/latex/yafoot/"
+                   "tex/latex/yafoot/")
+             (base32
+              "04p8qlk7nbrapr2gggkqm2iqgq36ywh7a7iqawmmqhsqnmz501cp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/yafoot")
+    (synopsis "Bundle of miscellaneous footnote packages")
+    (description
+     "This package contains three packages: @code{pfnote} to number footnotes per page,
+@code{fnpos} to control the position of footnotes, and @code{dblfnote} to make
+footnotes double-columned.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
