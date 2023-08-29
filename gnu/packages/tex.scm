@@ -80875,6 +80875,27 @@ it is possible to do arithmetical operations on them.  The package is
 localised in Italian, English, French, German, Greek, Serbian, and Spanish.")
     (license license:lppl)))
 
+(define-public texlive-esdiff
+  (package
+    (name "texlive-esdiff")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/esdiff/" "source/latex/esdiff/"
+                   "tex/latex/esdiff/")
+             (base32
+              "1p55w91d08r3r7x1kjapbgfpq94n40c09nv0cf2ivmwqvrr1qr0a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/esdiff")
+    (synopsis "Simplify typesetting of derivatives")
+    (description
+     "The package makes writing derivatives very easy.  It offers macros for
+derivatives, partial derivatives and multiple derivatives, and allows
+specification of the point at which the value is calculated.  Some typographic
+alternatives may be selected by package options")
+    (license license:lppl1.0+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
