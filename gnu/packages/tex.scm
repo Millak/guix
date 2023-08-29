@@ -80558,6 +80558,26 @@ There is an option to typeset the pronunciation in the style of Harrap's
 dictionary.")
     (license license:lppl)))
 
+(define-public texlive-engrec
+  (package
+    (name "texlive-engrec")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/engrec/" "source/latex/engrec/"
+                   "tex/latex/engrec/")
+             (base32
+              "0qal8bildiah9h67p69ixy9q2c11v6x8p9lsl4fwyhjm3zvmz8qb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/engrec")
+    (synopsis "@code{enumerate} with lower- or uppercase Greek letters")
+    (description
+     "This package provides two macros @code{\\engrec} and @code{\\EnGrec} to
+convert number arguments to lower case or upper case Greek letters.  Options
+are provided to work with the @code{upgreek} and @code{fourier} packages.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
