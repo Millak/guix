@@ -77622,6 +77622,25 @@ especially supported; however, this lightweight tool offers no support for
 data sorting or data base storage.")
     (license license:lppl1.3+)))
 
+(define-public texlive-cuisine
+  (package
+    (name "texlive-cuisine")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cuisine/" "source/latex/cuisine/"
+                   "tex/latex/cuisine/")
+             (base32
+              "1zlp0ravbzb75z99zr3qdga00a5lb9xk7mp67nbj68pn9arb97zd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cuisine")
+    (synopsis "Typeset recipes")
+    (description
+     "This package typesets recipes with the ingredients lined up with their method
+step (somewhat similarly to the layout used in cooking).")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
