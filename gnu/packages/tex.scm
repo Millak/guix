@@ -78141,6 +78141,27 @@ currently unmaintained.")
 currently unmaintained.")
     (license license:lppl1.3+)))
 
+(define-public texlive-datetime2-dutch
+  (package
+    (name "texlive-datetime2-dutch")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/datetime2-dutch/"
+                   "source/latex/datetime2-dutch/"
+                   "tex/latex/datetime2-dutch/")
+             (base32
+              "1ad2pf6ycf164lh59kr94lkqmqgf2lhay2y4dkd0ycgifypizi07")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/datetime2-dutch")
+    (synopsis "Dutch language module for the @code{datetime2} package")
+    (description
+     "This module provides the @code{dutch} style that can be set using
+@code{\\DTMsetstyle} provided by @file{datetime2.sty}.  This package is
+currently unmaintained.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
