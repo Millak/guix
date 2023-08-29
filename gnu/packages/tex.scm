@@ -81340,6 +81340,31 @@ redefines the internal @code{\\@@include} command, so it conflicts with
 packages that do the same.")
     (license license:public-domain)))
 
+(define-public texlive-exercise
+  (package
+    (name "texlive-exercise")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/exercise/"
+                   "source/latex/exercise/"
+                   "tex/latex/exercise/")
+             (base32
+              "01i4gagm7d3fqjp6cczw7xsvavlir7wm1i2qxrdxc9fa1xsixq1z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/exercise")
+    (synopsis "Typeset exercises, problems, etc. and their answers")
+    (description
+     "The package helps to typeset exercises or list of exercises within any
+document.  Exercises, questions and sub-questions are automatically numbered.
+It is possible to put answers in the same document, and display them
+immediatly, later in the document or not to print answers at all.  The layout
+of exercises is fully customisable.  It is possible to typeset long problems,
+short exercises, questionnaires, etc.  Usage of the Babel package is detected,
+but not fully supported yet (only English and French are implemented).")
+    (license license:gpl2)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
