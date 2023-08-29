@@ -81579,6 +81579,47 @@ file that may be included in a simple document harness, may be processed by
 LaTeX, to generate a nice solution book.")
     (license license:lppl1.3+)))
 
+(define-public texlive-extract
+  (package
+    (name "texlive-extract")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/extract/" "source/latex/extract/"
+                   "tex/latex/extract/")
+             (base32
+              "1w2nsgfyhjzg0gwr3rzhq13jh7lj63lh36qjv16hayd2kxrcpb62")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-float
+                  texlive-fourier
+                  texlive-hypdoc
+                  texlive-listings
+                  texlive-pgf
+                  texlive-pst-text
+                  texlive-pstricks
+                  texlive-xcolor
+                  texlive-xkeyval))))
+    (home-page "https://ctan.org/pkg/extract")
+    (synopsis "Extract parts of a document and write to another document")
+    (description
+     "The package provides the means to extract specific content from a source
+document and write that to a target document.  One could, for instance, use
+this to extract all exercises from lecture notes and generate an exercises
+book on the fly.  The package also provides an environment which writes its
+body entirely to the target file.  Another environment will write to the
+target file, but will also execute the body.  This allows to share code (for
+instance, a preamble) between the source document and the target file.
+Finally, the package provides an interface to conditionally extract content.
+With a single package option, one can specify exactly which commands (counted
+from the start of the document) should be extracted and which not.  This might
+be useful for extracting specific slides from a presentation and use them in
+a new file.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
