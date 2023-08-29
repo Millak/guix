@@ -87293,6 +87293,28 @@ produces a @file{.lol} file.  It does not change
 packages that change the layout of @code{\\caption} still work.")
     (license license:lppl)))
 
+(define-public texlive-listlbls
+  (package
+    (name "texlive-listlbls")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/listlbls/"
+                   "source/latex/listlbls/"
+                   "tex/latex/listlbls/")
+             (base32
+              "1vxzvqz6iyvz69z5khjyd05di4yw29h9qp34xfcsqhk0by8hnbdy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/listlbls")
+    (synopsis "Creates a list of all labels used throughout a document")
+    (description
+     "The package aims to help a LaTeX author to keep track of all defined
+labels by typesetting a complete list of labels wherever the author requests it.
+(Of course, the user may need to have additional LaTeX runs to get the
+references right.)")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
