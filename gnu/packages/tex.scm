@@ -91347,6 +91347,26 @@ appear one after another and the user can choose the number of columns, style
 and so on.  The class allows users to create newsletters too.")
     (license license:lppl)))
 
+(define-public texlive-paracol
+  (package
+    (name "texlive-paracol")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/paracol/" "source/latex/paracol/"
+                   "tex/latex/paracol/")
+             (base32
+              "1qrwdbz75i32gmaqg8cmzycqgjmw9m651fqq4h582lzaqkgqwyq1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/paracol")
+    (synopsis "Multiple columns with texts in parallel")
+    (description
+     "The package provides yet another multi-column typesetting mechanism by which
+you produce multi-column (e.g., bilingual) document switching and sychronizing
+each corresponding part in parallel.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
