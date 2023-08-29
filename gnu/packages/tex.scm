@@ -82728,6 +82728,27 @@ parts: quire and folio numbers.  The intended use for this package is to help
 creating old-style books.")
     (license license:lppl1.3c)))
 
+(define-public texlive-fontsetup
+  (package
+    (name "texlive-fontsetup")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fontsetup/"
+                   "tex/latex/fontsetup/")
+             (base32
+              "03zigbwldivrdp9h3cksgvhw88zniq4yi968jmxy6plsg1qy8qq6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fontsetup")
+    (synopsis
+     "Front-end to @code{fontspec}, for selected fonts with math support")
+    (description
+     "This package facilitates the use of @code{fontspec} for users who do not wish
+to bother with details, with a special focus on quality fonts supporting
+mathematics.")
+    (license license:gpl3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
