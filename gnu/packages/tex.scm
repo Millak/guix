@@ -77326,6 +77326,25 @@ features available in the package:
 @end itemize")
     (license license:lppl1.3+)))
 
+(define-public texlive-copyrightbox
+  (package
+    (name "texlive-copyrightbox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/copyrightbox/"
+                   "tex/latex/copyrightbox/")
+             (base32
+              "0jyd3ij1zc93hpjwc61bpkcr7xhjr2q6i88909mwjfkqf5w8bdh2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/copyrightbox")
+    (synopsis "Provide copyright notices for images in a document")
+    (description
+     "The package command @code{\\copyrightbox}, which places the text as
+a copyright notice relating to the matter created by the image command.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
