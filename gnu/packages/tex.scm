@@ -76161,6 +76161,29 @@ and commands into and across multiple documents.  It replaces the
 is to partition LaTeX3 clists and map differentiatedly across its components.")
     (license license:lppl1.3c)))
 
+(define-public texlive-clock
+  (package
+    (name "texlive-clock")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/clock/"
+                   "fonts/source/public/clock/"
+                   "fonts/tfm/public/clock/" "tex/latex/clock/")
+             (base32
+              "187k0pljafh3mnrwk5wapq8hq6lyny1j7wyjidp4r1df62l6111z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/clock")
+    (synopsis "Graphical and textual clocks for TeX and LaTeX")
+    (description
+     "Features graphical clocks (with a classical 12h dial and two hands) and text
+clocks (in 24h format) which can show system time or any time the user
+desires.  The clock faces (appearances of the dial) are easily expandable; the
+default uses a custom Metafont font.")
+    (license license:gpl2)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
