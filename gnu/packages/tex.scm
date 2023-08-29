@@ -81042,6 +81042,26 @@ package has no immediate use for document authors; it only contains
 @code{expl3} functions intended for programmers.")
     (license license:lppl1.3c)))
 
+(define-public texlive-eulerpx
+  (package
+    (name "texlive-eulerpx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/eulerpx/" "tex/latex/eulerpx/")
+             (base32
+              "1lwyi35vzx21cg9kmg94c9z73af3dqf63klzzs86ahbz4f7lvp66")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/eulerpx")
+    (synopsis "Modern interface for the Euler math fonts")
+    (description
+     "This package provides the @code{eulerpx} font, which started as a hybrid of
+multiple other font packages, notably @code{eulervm} and @code{newpxmath}.
+This package was put together with the intent to use it with the Palatino and
+Optima fonts, but it may work with other combinations, too.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
