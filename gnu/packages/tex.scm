@@ -74384,6 +74384,24 @@ initialize question number; and more.")
 references.")
     (license license:expat)))
 
+(define-public texlive-bigints
+  (package
+    (name "texlive-bigints")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bigints/" "tex/latex/bigints/")
+             (base32
+              "1ly9kqyi954gd41rjmpdml60s4my0d8b7ldq3crcc3i7sqjnc4fw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bigints")
+    (synopsis "Writing big integrals")
+    (description
+     "The package provides facilities for drawing big integral signs when needed.
+An example would be when the integrand is a matrix.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
