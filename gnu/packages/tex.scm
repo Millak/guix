@@ -89675,6 +89675,27 @@ addition of multiple environments using a @samp{key=value} syntax.
 Macros to define environments using this syntax are also provided.")
     (license license:lppl1.3+)))
 
+(define-public texlive-multiexpand
+  (package
+    (name "texlive-multiexpand")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/multiexpand/"
+                   "source/generic/multiexpand/"
+                   "tex/generic/multiexpand/")
+             (base32
+              "1gvdmz8sahwb1idnivn21wvl1zkaywqianl813hrxji4gvm2ifg1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/multiexpand")
+    (synopsis "Variations on the primitive command @code{\\expandafter}")
+    (description
+     "The package provides two user commands; one that performs multiple expansions,
+and one that does multiple @code{\\expandafter} operations, in a single macro
+call.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
