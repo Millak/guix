@@ -97390,6 +97390,35 @@ a screen reader.  Its goal is to get a feeling for what has to be done, which
 kernel changes are needed, how packages should be adapted.")
     (license license:lppl1.3c)))
 
+(define-public texlive-talk
+  (package
+    (name "texlive-talk")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/talk/" "source/latex/talk/"
+                   "tex/latex/talk/")
+             (base32
+              "1ws65g8m640dqclbzbl4ip2g3n0j1kpvp447f9sl71j4hxc3lvzx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/talk")
+    (synopsis "LaTeX class for presentations")
+    (description
+     "The @code{talk} document class allows you to create slides for screen
+presentations or printing on transparencies.  It also allows you to print
+personal notes for your talk.  You can create overlays and display structure
+information (current section / subsection, table of contents) on your slides.
+The main feature that distinguishes talk from other presentation classes like
+beamer or prosper is that it allows the user to define an arbitrary number of
+slide styles and switch between these styles from slide to slide.  This way
+the slide layout can be adapted to the slide content.  For example, the title
+or contents page of a talk can be given a slightly different layout than the
+other slides.  The talk class makes no restrictions on the slide design
+whatsoever.  The entire look and feel of the presentation can be defined by
+the user.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
