@@ -88258,6 +88258,27 @@ institutions that still maintain the typewriter is the summit of
 non-professional printing.")
     (license license:lppl)))
 
+(define-public texlive-manyind
+  (package
+    (name "texlive-manyind")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/manyind/" "tex/latex/manyind/")
+             (base32
+              "0szsdqxl962c5bsqhg9qvqx8ls5rfpxq7yp8cwlpn11rmp77jbca")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/manyind")
+    (synopsis "Provides support for many indexes")
+    (description
+     "This package provides support for many indexes, leaving all the bookkeeping
+to LaTeX and MakeIndex.  No extra programs or files are needed.  One runs
+@command{latex} and @command{makeindex} as if there is just one index.  In the
+main file one puts commands like @samp{\\setindex@{main@}} to steer the flow.
+Some features of MakeIndex may no longer work.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
