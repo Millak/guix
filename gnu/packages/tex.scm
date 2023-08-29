@@ -79544,6 +79544,39 @@ with @code{\\DeclareRobustActChar}, in the same way that @code{\\renewcommand}
 works for ordinary commands.")
     (license license:lppl)))
 
+(define-public texlive-draftcopy
+  (package
+    (name "texlive-draftcopy")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/draftcopy/"
+                   "source/latex/draftcopy/"
+                   "tex/latex/draftcopy/")
+             (base32
+              "1vxmpwmyqmzijp73akianjci6kw27dh6hsahh8b3glxh38mz3qm7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; Build process generates the package from
+               ;; "draftcopy.doc", located in "doc/".  Bring it in the
+               ;; working directory.
+               (add-after 'unpack 'move-data
+                 (lambda _
+                   (install-file "doc/latex/draftcopy/draftcopy.doc"
+                                 "build/"))))))
+    (home-page "https://ctan.org/pkg/draftcopy")
+    (synopsis "Identify draft copies")
+    (description
+     "Places the word @samp{DRAFT} (or other words) in light grey diagonally across
+the background (or at the bottom) of each (or selected) pages of the document.
+The package uses PostScript @code{\\special} commands, and may not therefore
+be used with pdfLaTeX.  For that usage, consider the @code{wallpaper} or
+@code{draftwatermark} packages.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
