@@ -74597,6 +74597,27 @@ whose edges may be variously fancy.  The bundle includes a few
 examples (shaded box, box with a wavy line on its side, etc).")
     (license license:gpl3+)))
 
+(define-public texlive-bold-extra
+  (package
+    (name "texlive-bold-extra")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bold-extra/"
+                   "tex/latex/bold-extra/")
+             (base32
+              "1zxrgc51w0bx8bsgwy9qymfjskhnhycg0lrq47jmzfcglawp5137")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bold-extra")
+    (synopsis "Use bold small caps and typewriter fonts")
+    (description
+     "This package allows access to extra bold fonts for Computer Modern OT1
+encoding (the fonts are available in Metafont source).  Since there is more
+than one bold tt-family font set, the version required is selected by
+a package option.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
