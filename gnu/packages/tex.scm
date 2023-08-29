@@ -85972,6 +85972,25 @@ Since the package redefines the internals of @code{hyperref}, it must be
 loaded after @code{hyperref}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-iwhdp
+  (package
+    (name "texlive-iwhdp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/iwhdp/" "tex/latex/iwhdp/")
+             (base32
+              "0ryjbp5cb7p2amh9zp1gyl0ay8vc2f4z2gnrlnsx3hwy2nrzdl17")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/iwhdp")
+    (synopsis "Halle Institute for Economic Research (IWH) Discussion Papers")
+    (description
+     "The document class is for creating Discussion Papers of the Halle Institute
+for Economic Research (IWH) in Halle, Germany.  The class offers options for
+both English and German texts.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
