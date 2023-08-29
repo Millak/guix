@@ -85678,6 +85678,25 @@ in other frequently-used packages, or provide interfaces to other useful
 facilities such as the pdfTeX @code{\\pdfelapsedtime} primitive.")
     (license license:lppl1.3+)))
 
+(define-public texlive-intopdf
+  (package
+    (name "texlive-intopdf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/intopdf/" "source/latex/intopdf/"
+                   "tex/latex/intopdf/")
+             (base32
+              "04mys6v63mahinv08cjd71yvs1d93ly7hqw5n4m0pkljjihdjyf7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/intopdf")
+    (synopsis "Embed non-PDF files into PDF with hyperlink")
+    (description
+     "The package allows to embed non-PDF files (e.g., BibTeX} into PDF with an
+hyperlink.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
