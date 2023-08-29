@@ -85320,6 +85320,27 @@ to allow adding Barcode form fields supported by some modern PDF readers.
 Currently, only pdfTeX is supported.")
     (license license:lppl1.3c)))
 
+(define-public texlive-hypernat
+  (package
+    (name "texlive-hypernat")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hypernat/" "tex/latex/hypernat/")
+             (base32
+              "16kdllcc7ab9hy5d3gnacxha4kkn20x7v1j7j30flg2vrgfphvmf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hypernat")
+    (synopsis "Allow @code{hyperref} and @code{natbib} to work together")
+    (description
+     "This package allows @code{hyperref} package and the @code{natbib} package
+with options @code{numbers} and @code{sort&compress} to work together.  This
+means that multiple sequential citations, e.g., @samp{[3,2,1]}, will be
+compressed to @samp{[1-3]}, where the @samp{1} and the @samp{3} are
+(color-)linked to the bibliography.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
