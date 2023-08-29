@@ -88440,6 +88440,29 @@ allows the creation of simple covers as well as covers with an additional page
 for more information about the cassette (e.g., table of contents).")
     (license license:gpl3+)))
 
+(define-public texlive-mcexam
+  (package
+    (name "texlive-mcexam")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mcexam/" "tex/latex/mcexam/")
+             (base32
+              "1j16v67rq9vlyaxjc49lbl7xawas0m2l4vkfnkl47va4091dcq29")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mcexam")
+    (synopsis "Create randomized multiple choice questions")
+    (description
+     "This LaTeX package automatically randomly permutes the order of questions as
+well as the answer options in different versions of a multiple choice
+exam/test.  Next to the exam versions themselves, the package also allows
+printing a concept version of the exam, a key table with the correct answers
+or points, and a document with solutions and explanations per exam version.
+The package also allows writing an R code which processes the results of the
+exam and calculates the grades.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
