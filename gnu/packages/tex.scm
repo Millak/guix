@@ -82948,6 +82948,28 @@ ability to enter any Unicode character using the notation
 @code{\\u@var{XXXX}}, where @var{XXXX} are four hex digits.")
     (license license:lppl1.2+)))
 
+(define-public texlive-formular
+  (package
+    (name "texlive-formular")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/formular/"
+                   "source/latex/formular/"
+                   "tex/latex/formular/")
+             (base32
+              "1vjqb9r9c9vwxwnn87zwpd2m94ygaqgvi8pzp37hc9kqxbpx1wkx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/formular")
+    (synopsis "Create forms containing field for manual entry")
+    (description
+     "When typesetting forms there often arises the need for defining fields which
+consist of one or more lines where the customer can write something down
+manually.  This package offers some commands for defining such fields in
+a distinctive way.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
