@@ -72825,6 +72825,26 @@ questionnaires in a table with two columns.  The aim is to provide some useful
 macros to build QCM in tables.")
     (license license:lppl1.3+)))
 
+(define-public texlive-altfont
+  (package
+    (name "texlive-altfont")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/altfont/" "source/latex/altfont/"
+                   "tex/latex/altfont/")
+             (base32
+              "03rr2j5pbld5wd0ici53m870mlmf44g5h9xgf6qnkra1assgi0sj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/altfont")
+    (synopsis "Alternative font handling in LaTeX")
+    (description
+     "The package provides a replacement for that part of @code{psnfss} and
+@code{mfnfss} that changes the default font.  The package is distributed
+together with the @code{psfont} package.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
