@@ -96960,6 +96960,24 @@ provides one simple command to typeset a swung dash in XeLaTeX and LuaLaTeX,
 by applying transformations to the given font's glyph for a tilde.")
     (license license:lppl1.3c)))
 
+(define-public texlive-syntax
+  (package
+    (name "texlive-syntax")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/syntax/" "tex/latex/syntax/")
+             (base32
+              "1n064jqsgcz3g6nkqmd05zpaf8hivm48mdms39a69cmw5958am9j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/syntax2")
+    (synopsis "Creation of syntax diagrams")
+    (description
+     "This package creates syntax diagrams using special environments and commands
+to represent the diagram structure.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
