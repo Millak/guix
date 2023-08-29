@@ -86633,6 +86633,26 @@ parameters and replacement code of a document-command, and then to evaluate it
 with compatible arguments.  Optionally, it can be used recursively.")
     (license license:lppl1.3c)))
 
+(define-public texlive-lastpackage
+  (package
+    (name "texlive-lastpackage")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lastpackage/"
+                   "source/latex/lastpackage/"
+                   "tex/latex/lastpackage/")
+             (base32
+              "1wa0cdrig4zivblalxx9q935yyd9z36jy26f8chj8skva25dhbz8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lastpackage")
+    (synopsis "Indicates the last loaded package")
+    (description
+     "This package may be used to define the last point where some code shall be
+executed.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
