@@ -95372,6 +95372,89 @@ terminal sessions --- like command executions or shell operations.  The look
 and feel of the package output imitates the look of a shell prompt.")
     (license license:lppl1.3+)))
 
+(define-public texlive-shipunov
+  (package
+    (name "texlive-shipunov")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/shipunov/" "doc/latex/shipunov/"
+                   "tex/latex/shipunov/")
+             (base32
+              "1zzjbsshv60k2a3nfgj1rdad3883ys04an5hsq7hm4vs62k6j53b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/shipunov")
+    (synopsis "Collection of LaTeX packages and classes")
+    (description
+     "The bundle collects packages and classes, along with one bibliography style
+and examples and scripts for converting TeX files.  Many of the files in the
+collection are designed to support field biologists and/or Russian writers,
+while others have wider application.  The collection includes:
+
+@itemize
+
+@item @code{add2}, a quick way to fit as many as possible into one page, which
+is good for handouts.
+
+@item @code{altverse}, for typesetting verses.
+
+@item @code{autolist}, a means to define various sorts of list.
+
+@item @code{biokey}, providing flexible identification key tables in LaTeX.
+It implements straightforward macros to typeset sets of biological
+identification keys.  Layout is flexible, and the macros will be useful in
+other disciplines.
+
+@item @code{biolist}, to list observed species.  It offers pretty formatting of
+species lists of flora and fauna.
+
+@item @code{boldline}, for heavier lines in tables.  The package provides
+commands replacing @code{\\hline} and @code{\\cline}, as well as a table
+preamble element that generates heavy lines.
+
+@item @code{cassete}, to print labels for audio cassettes.
+
+@item @code{classif2}, for biological classification tables.  The package
+defines an environment @code{classif} that simplifies the process of
+typesetting classification tables.
+
+@item @code{dline}, for a double line on the left of text.
+
+@item @code{drcaps}, for simple dropped capitals.  The package offers simple
+macros for dropped capitals, in a couple of forms.
+
+@item @code{etiketka}, a class for typesetting business-card-sized
+information (including business cards).
+
+@item @code{flower}, for typesetting lists of flower formulas.
+
+@item @code{isyntax}, which interactively checks LaTeX file syntax.
+
+@item @code{numerus}, for spelling numbers in Russian words.
+
+@item @code{punct}: within italicized text, punctuation is still straight,
+this is typographically more aesthetic.
+
+@item @code{qqru}, providing universal quotation marks, for Russian and
+English.
+
+@item @code{rusnat}, a bibliography style file, now deprecated.
+
+@item @code{sltables}, which simplifies tables for LaTeX.  These macros
+develop the concepts of the @code{stables}, which are designed to offer table
+macros whose use is as simple as one might hope.  Some would claim that
+LaTeX's built-in table specifications are as simple as one might hope, but
+this package offers many short-cuts and optimization of the mechanisms of
+tables.
+
+@item @code{starfn}, for stars as footnote marks.
+
+@item @code{textfrac}, for simple slanted fractions.
+
+@end itemize")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
