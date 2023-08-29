@@ -80168,6 +80168,31 @@ Notes can be set in individual paragraphs, or in block paragraph mode (where
 there are many short notes).")
     (license license:lppl)))
 
+(define-public texlive-eemeir
+  (package
+    (name "texlive-eemeir")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/eemeir/" "source/latex/eemeir/"
+                   "tex/latex/eemeir/")
+             (base32
+              "1gqj1rmagd4vy8pw9c6w5bsxbicq1in8ksp3vprj8c0akskndnzp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/eemeir")
+    (synopsis "Adjust the gender of words in a document")
+    (description
+     "This package defines macros for third-person singular pronouns
+(@code{\\E}, @code{\\Em}, @code{\\Eir}, @code{\\Eirs}), which expand
+differently according to a masculine/feminine switch. (If the switch is
+masculine, they would expand to @samp{he}, @samp{him}, @samp{his} and
+@samp{his}; if feminine, they would expand to @samp{she}, @samp{her},
+@samp{her} and @samp{hers}.  Apart from the pronouns, one can define word
+pairs, such as mother/father, daughter/son, and so on.  Gender may be defined
+once per document, as an environment, or may be flipped on the fly.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
