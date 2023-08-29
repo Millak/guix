@@ -89958,6 +89958,24 @@ a @code{preprint} class.  The class's extensions are provided in a number of
 small packages, some of which may also be used with the standard classes.")
     (license license:lppl)))
 
+(define-public texlive-nestquot
+  (package
+    (name "texlive-nestquot")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/latex/nestquot/")
+             (base32
+              "0l2glc6aykd492rspxphgscx0ykc8cakvqkm8z99jq7xxi80l1x8")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nestquot")
+    (synopsis "Alternate quotes between double and single with nesting")
+    (description
+     "This package provides two new commands: @code{\\nlq} and @code{\\nrq} for
+nesting left and right quotes that properly change between double and single
+quotes according to their nesting level.")
+    (license license:bsd-3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
