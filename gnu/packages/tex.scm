@@ -80451,6 +80451,26 @@ parentheses and square brackets are typeset in an upright font in their
 arguments.")
     (license license:lppl1.3+)))
 
+(define-public texlive-emptypage
+  (package
+    (name "texlive-emptypage")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/emptypage/"
+                   "source/latex/emptypage/"
+                   "tex/latex/emptypage/")
+             (base32
+              "0dwf5x4260wa1zl3zn7zl3jlk5jr3jlgflc943lx4m5mpdr85wvj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/emptypage")
+    (synopsis "Make empty pages really empty")
+    (description
+     "This package prevents page numbers and headings from appearing on empty
+pages.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
