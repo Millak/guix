@@ -96700,6 +96700,29 @@ document and may be typeset separately.  What the package does is sharing the
 @file{.aux} files.")
     (license license:expat)))
 
+(define-public texlive-subeqn
+  (package
+    (name "texlive-subeqn")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/subeqn/" "source/latex/subeqn/"
+                   "tex/latex/subeqn/")
+             (base32
+              "0x58m2lsjc8d3m673g59cxw3a81cj5699cd8vvps1fly0fsl5azb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/subeqn")
+    (synopsis "Package for subequation numbering")
+    (description
+     "Sometimes it is necessary to be able to refer to subexpressions of an
+equation.  In order to do that these subexpressions should be numbered.  In
+standard LaTeX there is no provision for this.  The @code{subeqn} package
+solves this.  Note that this package is not compatible with the package
+@code{subeqnarray}, but it can be used together with the LaTeX class options
+@code{leqno} and @code{fleqn}.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
