@@ -73809,6 +73809,29 @@ design.  The layout is elegant but subtle, so as to keep the audience's
 attention on your content.")
     (license license:expat)))
 
+(define-public texlive-beamertheme-cuerna
+  (package
+    (name "texlive-beamertheme-cuerna")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamertheme-cuerna/"
+                   "source/latex/beamertheme-cuerna/"
+                   "tex/latex/beamertheme-cuerna/")
+             (base32
+              "1w3vycn4a7ibkamnz6c3rpqy7ccl1zwjakh7dgdcnrcrsl9qvflg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamertheme-cuerna")
+    (synopsis "Beamer theme with four colour palettes")
+    (description
+     "The package contains a theme for Beamer which is referenced as Cuerna inside
+Beamer and has four basic colour themes.  The title page shows rectangles that
+represent the Fibonacci sequence, and spiral is drawn on top of the
+rectangles.  Besides that the rest of the graphic elements in the slides are
+scarce to keep it clean.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
