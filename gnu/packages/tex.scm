@@ -84888,6 +84888,25 @@ file by toggling a switch.  However, it can only be used to create documents
 to be printed on paper.")
     (license license:expat)))
 
+(define-public texlive-highlightlatex
+  (package
+    (name "texlive-highlightlatex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/highlightlatex/"
+                   "tex/latex/highlightlatex/")
+             (base32
+              "078gfncpx7nxwz2xxhdb1a294bwmf3rh9rcqp664c5aj2q7ynvz0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/highlightlatex")
+    (synopsis "Syntax highlighting for LaTeX")
+    (description
+     "This package provides extensive colored syntax highlighting for LaTeX.
+For this purpose it builds on the generic @code{listings} package.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
