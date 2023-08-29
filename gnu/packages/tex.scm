@@ -93156,6 +93156,26 @@ on.  Various visual styles are supported and others are being contributed.")
 to generate useful hypertext output (either PDF, or HTML using TeX4ht).")
     (license license:lppl)))
 
+(define-public texlive-protocol
+  (package
+    (name "texlive-protocol")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/protocol/"
+                   "source/latex/protocol/"
+                   "tex/latex/protocol/")
+             (base32
+              "000gqwbqfbir9kx8j9n0hs40pdwsk7mf82j3p4m3byhc38j56cds")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/protocol")
+    (synopsis "Class for minutes of meetings")
+    (description
+     "The present version of the class supports German meeting minutes including
+vote results and action items.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
