@@ -79356,6 +79356,26 @@ specify this package with the stylesheet configuration option, e.g.,
 @samp{rst2latex --stylesheet=docutils exampledocument.txt}.")
     (license license:bsd-2)))
 
+(define-public texlive-dotarrow
+  (package
+    (name "texlive-dotarrow")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dotarrow/"
+                   "source/latex/dotarrow/"
+                   "tex/latex/dotarrow/")
+             (base32
+              "10zw1j5adkw0nz2ym1kll47sv1wxmwxkbas5cnyhpg818wzagckf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dotarrow")
+    (synopsis "Extendable dotted arrows")
+    (description
+     "The package can draw dotted arrows that are extendable, in the same was as
+@code{\\xrightarrow}.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
