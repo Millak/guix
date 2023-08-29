@@ -83982,6 +83982,26 @@ package.")
 package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-glossaries-spanish
+  (package
+    (name "texlive-glossaries-spanish")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/glossaries-spanish/"
+                   "source/latex/glossaries-spanish/"
+                   "tex/latex/glossaries-spanish/")
+             (base32
+              "0wdlm1h7si2fsrfi56pf9kv5wxa6yv1w47vafm0qlhkwbz4z5f7l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/glossaries-spanish")
+    (synopsis "Spanish language module for @code{glossaries} package")
+    (description
+     "This package provides a Spanish language module for @code{glossaries}
+package.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
