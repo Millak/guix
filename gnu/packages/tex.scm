@@ -91092,6 +91092,27 @@ on Arabic numerals, but on any expanded list of tokens passed to it.  This
 makes it suitable for, among other things, counters of all kinds.")
     (license license:lppl1.3c)))
 
+(define-public texlive-pagecont
+  (package
+    (name "texlive-pagecont")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pagecont/"
+                   "source/latex/pagecont/"
+                   "tex/latex/pagecont/")
+             (base32
+              "1n2axjznak2mlajk5m9jgdxzn7n3jmaiv0hsx2mk165630h4vaax")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pagecont")
+    (synopsis "Page numbering that continues between documents")
+    (description
+     "The package provides the facility that several documents can be typeset
+independently with page numbers in sequence, as if they were a single
+document.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
