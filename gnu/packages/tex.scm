@@ -97043,6 +97043,30 @@ environment which does not create this difficulty, so that users need not
 learn two sets of accent commands.")
     (license license:lppl1.0+)))
 
+(define-public texlive-tabfigures
+  (package
+    (name "texlive-tabfigures")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tabfigures/"
+                   "source/latex/tabfigures/"
+                   "tex/latex/tabfigures/")
+             (base32
+              "18z0w4q5s1pz1r39b6ca8d5l7gp0x9dg9l4b351wsr1jjcci60c0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tabfigures")
+    (synopsis "Maintain vertical alignment of figures")
+    (description
+     "Knuth designed his original fonts with tabular figures (figures whose width
+is uniform); this makes some layout problems rather simple.  In more recent
+times, fonts (such as Minion Pro), which offer proportionally spaced figures,
+are increasingly being used.  The package provides mechanisms whereby such
+proportional figures may still be aligned in tabular style (for example, in
+the table of contents).")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
