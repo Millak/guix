@@ -87942,6 +87942,27 @@ preparation.")
 LuaTeX (@code{pdfliteral} mode) by a hierarchical name system.")
     (license license:lppl1.3c)))
 
+(define-public texlive-magicwatermark
+  (package
+    (name "texlive-magicwatermark")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/magicwatermark/"
+                   "source/latex/magicwatermark/"
+                   "tex/latex/magicwatermark/")
+             (base32
+              "1abi3xvy123alpgv0z7h7gyfj2ynz462vfsxpx0q5pnbv8648y3h")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-ctex))
+    (home-page "https://ctan.org/pkg/magicwatermark")
+    (synopsis "Flexible way to set watermarks")
+    (description
+     "This package can flexibly set and clear watermarks.  All watermark content is
+placed inside a TikZ node in the center of the page.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
