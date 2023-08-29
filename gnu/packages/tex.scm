@@ -76977,6 +76977,28 @@ automatically, with a system for labelling/referencing.  In addition, several
 families of constants (with different symbols) may be defined.")
     (license license:lppl)))
 
+(define-public texlive-continue
+  (package
+    (name "texlive-continue")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/continue/"
+                   "source/latex/continue/"
+                   "tex/latex/continue/")
+             (base32
+              "0c9yz5lm9y0jzad0mx36axww9p3b4gfbjdnddpky9w12kv0xn66f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/continue")
+    (synopsis "Prints continuation marks on pages of multipage documents")
+    (description
+     "This package provides for a variety of continuation indicators on pages when
+the text continues on the following page.  The default is to only mark odd
+pages, but all pages can be marked and the marking can be stopped or started
+at any point.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
