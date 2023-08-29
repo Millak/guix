@@ -75675,6 +75675,29 @@ environments, and material whose natural width exceeds the current line width
 will get properly centered too.")
     (license license:lppl1.3c)))
 
+(define-public texlive-centerlastline
+  (package
+    (name "texlive-centerlastline")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/centerlastline/"
+                   "source/latex/centerlastline/"
+                   "tex/latex/centerlastline/")
+             (base32
+              "1dcprnm2wmajwbm2njin2yycyfs31w2c2b9cmah5f7xb3388mhhq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/centerlastline")
+    (synopsis
+     "Paragraphs with last line centered, known as Spanish paragraphs")
+    (description
+     "This LaTeX package provides a command @code{\\centerlastline} and an
+environment @code{centerlastline} that typeset Spanish paragraphs, that is
+paragraphs without indentation, and last line centered, useful to finish
+a large paragraph of text at the end of chapters, prologues, etc.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
