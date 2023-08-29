@@ -97732,6 +97732,27 @@ access locale-dependent information, such as the currency symbol and decimal
 separator.")
     (license license:lppl1.3+)))
 
+(define-public texlive-texlogos
+  (package
+    (name "texlive-texlogos")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "tex/latex/texlogos/")
+             (base32
+              "0rp4l8da3dn6djdjajavxqr5mmi3fsyadcqrpmd9cfggdvb9i8qz")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/texlogos")
+    (synopsis "Ready-to-use LaTeX logos")
+    (description
+     "TeXlogos defines an assortment of frequently used logos not contained in base
+LaTeX itself.  The Metafont, MetapostAMS, BibTeX and SliTeX logos are defined,
+as long as you have the appropriate CM/Logo/AMS fonts.  Currency symbols Euro,
+Cent, Yen, Won and Naira are defined so as not to need TS1-encoded fonts.
+Also defined are the C++ logo, with the @samp{+} signs properly positioned,
+and the logo of the Vienna University Business Administration Center (BWZ).")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
