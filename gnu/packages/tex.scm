@@ -82749,6 +82749,34 @@ to bother with details, with a special focus on quality fonts supporting
 mathematics.")
     (license license:gpl3)))
 
+(define-public texlive-footmisx
+  (package
+    (name "texlive-footmisx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/footmisx/"
+                   "source/latex/footmisx/"
+                   "tex/latex/footmisx/")
+             (base32
+              "17gkxi48nr52dcvm2x7zbf81h57aryy64f77y8gj1l4gvkh7ylbm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/footmisx")
+    (synopsis "Range of footnote options")
+    (description
+     "This a fork of @code{footmisc} package allowing to use @code{hyperref}.
+The package provides means of changing the layout of the footnotes themselves,
+a way to number footnotes per page, to make footnotes disappear in a moving
+argument and to deal with multiple references to footnotes from the same
+place.  The package also has a range of techniques for labelling footnotes
+with symbols rather than numbers.  Some of the functions of the package are
+overlap with the functionality of other packages.
+
+Don't be seduced by @code{fnpara}, whose implementation is improved by the
+present package.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
