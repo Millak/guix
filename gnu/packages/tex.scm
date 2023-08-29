@@ -78671,6 +78671,28 @@ currently unmaintained.")
 currently unmaintained.")
     (license license:lppl1.3+)))
 
+(define-public texlive-datetime2-serbian
+  (package
+    (name "texlive-datetime2-serbian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/datetime2-serbian/"
+                   "source/latex/datetime2-serbian/"
+                   "tex/latex/datetime2-serbian/")
+             (base32
+              "05wwhd66k50wzfyypv5sg4n43xfgn1hgvdm3782vq3l3s94bkbnf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/datetime2-serbian")
+    (synopsis "Serbian language module for the @code{datetime2} package")
+    (description
+     "This module provides the @code{serbian} style that can be set using
+@code{\\DTMsetstyle} provided by @file{datetime2.sty}.  It provides both
+Cyrillic and Latin, Ekavian and Ijekavian variants of Serbian date formats,
+regionalized and non-regionalized.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
