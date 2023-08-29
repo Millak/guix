@@ -98462,6 +98462,29 @@ concatenated macro names; macros for text replacement.")
     (description "This package moves floats to the top of the page.")
     (license license:gpl3+)))
 
+(define-public texlive-topiclongtable
+  (package
+    (name "texlive-topiclongtable")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/topiclongtable/"
+                   "tex/latex/topiclongtable/")
+             (base32
+              "0ib9d3an7glqgc329f5krjjqf5cdwrpdzfv2b9sl6hpfyw0z7r7f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/topiclongtable")
+    (synopsis "Extend longtable with cells that merge hierarchically")
+    (description
+     "This LaTeX package extends @code{longtable} implementing cells that: merge
+with the one above if it has the same content, do not merge with the one above
+unless the ones on the left are merged, are well behaved with respect to
+@code{longtable} chunking on page breaks, and automatically draw the correct
+separation lines.  The typical use case is a table spanning multiple pages
+that contains a list of hierarchically organized topics.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
