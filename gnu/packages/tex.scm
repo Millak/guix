@@ -96456,6 +96456,27 @@ provides a version of @code{\\CheckCommand} that sets a flag rather than
 printing a warning.")
     (license license:lppl)))
 
+(define-public texlive-stdpage
+  (package
+    (name "texlive-stdpage")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/stdpage/" "source/latex/stdpage/"
+                   "tex/latex/stdpage/")
+             (base32
+              "064l0mj06wnacz7hcgf9c4nqc6f7l2fyg6gvq797vbdffgw721wd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/stdpage")
+    (synopsis "Standard pages with n lines of at most m characters each")
+    (description
+     "For translations, proofreading, journal contributions etc., standard pages
+are used.  Those standard pages consist of a fixed number of lines and
+characters per line.  This package produces pages with n lines of at most
+m characters each.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
