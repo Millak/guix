@@ -79652,6 +79652,26 @@ booleans, as well as program and file names, file types, internet objects, the
 names of certain programs, a number of logos, and inline dashes and slashes.")
     (license license:lppl1.3+)))
 
+(define-public texlive-dtxgallery
+  (package
+    (name "texlive-dtxgallery")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dtxgallery/")
+             (base32
+              "07c403zbx7sxkhhrwrfw3np20xlqhdk893b4bd6r8lqb0zipp5b5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dtxgallery")
+    (synopsis "Small collection of minimal @file{.dtx} examples")
+    (description
+     "This package provides a collection of files that demonstrate simple things
+that are possible with the flexible and under-appreciated @code{docstrip} file
+format.  Each file of the collection is provided as a @file{.dtx} file and as
+the corresponding @file{.pdf}.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
