@@ -73495,6 +73495,33 @@ opacity) of the background material that will be displayed; all placement and
 attribute settings are controlled by setting key values.")
     (license license:lppl)))
 
+(define-public texlive-bankstatement
+  (package
+    (name "texlive-bankstatement")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bankstatement/"
+                   "tex/latex/bankstatement/")
+             (base32
+              "0q2pgz8hvn50dp2i1krbc13zayan5p3mikvzg2h9fyjqc1xxg58g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bankstatement")
+    (synopsis "LaTeX class for bank statements based on CSV data")
+    (description
+     "More and more banks allow their customers to download posting records in
+various formats.  By using the @code{bankstatement} class, you can create bank
+statements, as long as a CSV format is available.  At the moment, the
+CSV-mt940 and CSV-camt formats --- used by many German @emph{Sparkassen} ---
+are supported.  You can quite easily add support for other CSV formats.
+Simply define the order of the keys in the CSV data file and how to use them.
+The terminology in this class --- such as @acronym{BIC, Business Identifier
+Code} or @acronym{IBAN, International Bank Account Number} --- is based on
+usage in the @acronym{SEPA, Single Euro Payments Area}.  The user may adjust
+the terminology to suit local needs.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
