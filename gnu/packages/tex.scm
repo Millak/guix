@@ -97986,6 +97986,25 @@ text mode every time a comma is used in math mode may slow down the
 compilation process.")
     (license license:lppl1.3c)))
 
+(define-public texlive-texvc
+  (package
+    (name "texlive-texvc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/texvc/" "source/latex/texvc/"
+                   "tex/latex/texvc/")
+             (base32
+              "1ryr67kls8xqykv73zm583hiavc4z52b78jkg9wqz4zv9nykifjh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/texvc")
+    (synopsis "Use MediaWiki LaTeX commands")
+    (description
+     "This package provides all MediaWiki commands to copy and past formulae from
+MediaWiki to LaTeX documents.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
