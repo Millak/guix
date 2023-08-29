@@ -98218,6 +98218,29 @@ viewed as an ASCII-based input method for producing IPA characters in Unicode.
 It needs the New Computer Modern font for printing IPA characters.")
     (license (list license:gpl3+ license:fdl1.3+))))
 
+(define-public texlive-titlecaps
+  (package
+    (name "texlive-titlecaps")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/titlecaps/"
+                   "tex/latex/titlecaps/")
+             (base32
+              "0v921cy02dm72q60976vijpcbp5zpwljgr7y8ry5n4gqzzinnfbj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/titlecaps")
+    (synopsis "Setting rich-text input into titling caps")
+    (description
+     "The package is intended for setting rich text into titling capitals (in which
+the first character of words are capitalized).  It automatically accounts for
+diacritical marks (like umlauts), national symbols (like @samp{ae}),
+punctuation, and font changing commands that alter the appearance or size of
+the text.  It allows a list of predesignated words to be protected as
+lower-cased, and also allows for titling exceptions of various sorts.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
