@@ -100760,6 +100760,36 @@ information (e.g. theorems, equations, proofs, etc.) in your document.  You
 can customize the style and color to denote different categories, too.")
     (license license:cc-by4.0)))
 
+(define-public texlive-ziffer
+  (package
+    (name "texlive-ziffer")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ziffer/" "tex/latex/ziffer/")
+             (base32
+              "073w0rpkf7g1pjy4i30x20g7k0wksqpwi2288ly2fz4b2d66aafc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ziffer")
+    (synopsis "Conversion of punctuation in maths mode")
+    (description
+     "The package modifies the behaviour of characters in maths mode so that:
+
+@itemize
+
+@item @samp{.} is used as a one-thousand separator (as is common in Germany);
+
+@item @samp{,} is used as a decimal separator (as is common in Germany);
+
+@item @samp{--} is represented with spacing as appropriate to such constructs
+as @samp{1.000,--}.
+
+@end itemize
+
+These conversions may be switched on and off.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
