@@ -89375,6 +89375,30 @@ using the @code{fifinddo} package.
 @end itemize")
     (license license:lppl1.3+)))
 
+(define-public texlive-moresize
+  (package
+    (name "texlive-moresize")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/moresize/"
+                   "source/latex/moresize/"
+                   "tex/latex/moresize/")
+             (base32
+              "0wa1pp7k5s8xcxjw37543jdjclnx5hzcx4gnivhsb34s9nhwcjzn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/moresize")
+    (synopsis "Allows font sizes up to 35.83pt")
+    (description
+     "This package provides a package for using font sizes up to 35.88pt, for
+example with the EC fonts.  New commands @code{\\HUGE} and @code{\\ssmall} for
+selecting font sizes are provided together with some options working around
+current LaTeX2e shortcomings in using big font sizes.  The package also
+provides options for improving the typesetting of paragraphs (or headlines)
+with embedded math expressions at font sizes above 17.28pt.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
