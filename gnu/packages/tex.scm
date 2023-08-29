@@ -94371,6 +94371,26 @@ useful when showing the absolute size of something in electronic documents, or
 designating the relative scale in printed materials.")
     (license license:lppl1.3c)))
 
+(define-public texlive-rulercompass
+  (package
+    (name "texlive-rulercompass")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/rulercompass/"
+                   "source/latex/rulercompass/"
+                   "tex/latex/rulercompass/")
+             (base32
+              "0ndbyvpqx5p8z7fnpiz8rihmvd8qni0pwl5d2wa8xslialy777b0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/rulercompass")
+    (synopsis "TikZ library for straight-edge and compass diagrams")
+    (description
+     "The package defines some commands and styles to support drawing straight-edge
+and compass diagrams with TikZ.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
