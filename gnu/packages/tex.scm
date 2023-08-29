@@ -91113,6 +91113,30 @@ independently with page numbers in sequence, as if they were a single
 document.")
     (license license:lppl)))
 
+(define-public texlive-pagegrid
+  (package
+    (name "texlive-pagegrid")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pagegrid/"
+                   "source/latex/pagegrid/"
+                   "tex/latex/pagegrid/")
+             (base32
+              "0vyy27d9209r5v0n6scd8zbk7qgjx13df12qwydkrhg246khx0is")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pagegrid")
+    (synopsis "Print page grid in background")
+    (description
+     "This package puts a grid on the paper.  It was written for developers of
+a class or package who have to put elements on definite locations on
+a page (e.g., @code{letter} class).  The grid allows a faster optical check,
+whether the positions are correct.  If the previewer already offers features
+for measuring, the package might be unnecessary.  Otherwise it saves the
+developer from printing the page and measuring by hand.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
