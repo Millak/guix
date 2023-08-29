@@ -92524,6 +92524,26 @@ environment that takes the place of the @code{figure} environment for such
 colour images.")
     (license license:lppl)))
 
+(define-public texlive-plweb
+  (package
+    (name "texlive-plweb")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/plweb/" "source/latex/plweb/"
+                   "tex/latex/plweb/")
+             (base32
+              "1gnr1ykjmj014w4di19c02ir3y6x6fqzdz6g7km3bki1kjq0gj6p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pl")
+    (synopsis "Literate programming for Prolog with LaTeX")
+    (description
+     "Instead of having to transform the common source into program or documentation,
+the central idea was to develop a method to have one common source which can
+be interpreted by a Prolog system as well as by LaTeX.")
+    (license (license:fsf-free "file://doc/latex/plweb/README"))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
