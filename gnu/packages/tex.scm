@@ -100866,6 +100866,26 @@ alongside @code{zref-clever}.  It provides @samp{\\z...}  counterparts to
 some (scoped) setup for @code{varioref}, then calls the original one.")
     (license license:lppl1.3c)))
 
+(define-public texlive-zwgetfdate
+  (package
+    (name "texlive-zwgetfdate")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/zwgetfdate/"
+                   "tex/latex/zwgetfdate/")
+             (base32
+              "1qkipas5qrrxvjvm08fws45vfqg87qz3x4ghpgcmipd91ydcaxc3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/zwgetfdate")
+    (synopsis "Get package or file date")
+    (description
+     "The package can fetch the date declaration of packages and files used by
+a document, and then provide the information in macros.  The facilities
+provide a means of obtaining the date of a package being documented.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
