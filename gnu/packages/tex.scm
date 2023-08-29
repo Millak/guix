@@ -83140,6 +83140,27 @@ environment provides options to set margins around the minipage and configure
 the background.")
     (license license:gpl3)))
 
+(define-public texlive-fullwidth
+  (package
+    (name "texlive-fullwidth")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fullwidth/"
+                   "tex/latex/fullwidth/")
+             (base32
+              "04wy2sxsbkyg62bhg5av9zg6q07snabwrxv776x3m1mlwi4fw7nh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fullwidth")
+    (synopsis "Adjust margins of text block")
+    (description
+     "The package provides the environment @code{fullwidth}, which sets the left
+and right margins in a simple way.  There is no constraint about page breaks;
+if you are using the two-side mode, you can set the inner and outer margins to
+avoid the effects of the different margins.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
