@@ -88999,6 +88999,43 @@ package automatically provides line numbers and quotations from the
 manuscript, for this letter.")
     (license license:lppl1.2+)))
 
+(define-public texlive-minutes
+  (package
+    (name "texlive-minutes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/minutes/" "source/latex/minutes/"
+                   "tex/latex/minutes/")
+             (base32
+              "1ln6lxw8sf9wyqii7v8w7cjw7byhkasyvmwivkwszwqjn054431b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/minutes")
+    (synopsis "Typeset the minutes of meetings")
+    (description
+     "This package supports the creation of a collection of minutes.  Its features
+include:
+
+@itemize
+
+@item support of tasks (who, schedule, what, time of finishing; possibility of
+creating a list of open tasks; inclusion of open tasks from other minutes);
+
+@item support for attachments;
+
+@item support of schedule dates (in planning: support for the @code{calendar}
+package);
+
+@item different versions, such as secret parts;
+
+@item macros for votes and decisions (list of decisions).
+
+@end itemize
+
+Support for minutes in German, Dutch and English is provided.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
