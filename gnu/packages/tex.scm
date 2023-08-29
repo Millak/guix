@@ -93050,6 +93050,29 @@ which is by default the @code{\\jobname} with the date appended (but is
 user-modifiable).")
     (license license:lppl)))
 
+(define-public texlive-progressbar
+  (package
+    (name "texlive-progressbar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/progressbar/"
+                   "tex/latex/progressbar/")
+             (base32
+              "0s2hspv490bbvazjzkcpvaa3l4ypgwn3pymiiqibas9kvgs5yycj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/progressbar")
+    (synopsis
+     "Visualize shares of total amounts in the form of a (progress-)bar")
+    (description
+     "This package allows you to easily visualize shares of total amounts in the
+form of a bar.  So basically you can convert any number between 0 and 1 to
+a progressbar using the command @code{\\progressbar@{<number>@}}.  Also a lot
+of customizations are possible, allowing you to create an unique progress bar
+on your own.  The package uses TikZ to produce its graphics.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
