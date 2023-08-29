@@ -98485,6 +98485,25 @@ separation lines.  The typical use case is a table spanning multiple pages
 that contains a list of hierarchically organized topics.")
     (license license:expat)))
 
+(define-public texlive-totalcount
+  (package
+    (name "texlive-totalcount")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/totalcount/"
+                   "source/latex/totalcount/"
+                   "tex/latex/totalcount/")
+             (base32
+              "1c24h0snldg1lpijsm7h65dr7bs32dk6nsvlgmcc92kmxc13y9lj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/totalcount")
+    (synopsis "Commands for typesetting total values of counters")
+    (description
+     "This LaTeX package offers commands for typesetting total values of counters.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
