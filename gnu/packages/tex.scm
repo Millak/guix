@@ -75469,6 +75469,27 @@ float environments and lists of floats.  Tools are provided for specifying
 your own captioning styles.")
     (license license:lppl1.3+)))
 
+(define-public texlive-cclicenses
+  (package
+    (name "texlive-cclicenses")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cclicenses/"
+                   "source/latex/cclicenses/"
+                   "tex/latex/cclicenses/")
+             (base32
+              "166pis25x18plpqm7y1ir4lwsm4ahxvn6q44gh686rsf49f4ky6p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cclicenses")
+    (synopsis "Typeset Creative Commons licence logos")
+    (description
+     "The @code{cclicenses} package helps users typesetting Creative Commons logos
+in LaTeX. It defines some commands useful to quickly write these logos,
+related to CC licences versions 1.0 and 2.0.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
