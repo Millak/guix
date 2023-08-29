@@ -82091,6 +82091,28 @@ its modification date according to @code{\\pdffilemoddate} if the latter is
 available.")
     (license license:lppl)))
 
+(define-public texlive-fileinfo
+  (package
+    (name "texlive-fileinfo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fileinfo/"
+                   "source/latex/fileinfo/"
+                   "tex/latex/fileinfo/")
+             (base32
+              "1i6nvxkzh67bkkqhd64bl2ivqd9v3y1qkw4qxy8pk49hc57mpc4b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fileinfo")
+    (synopsis "Enhanced display of LaTeX File Information")
+    (description
+     "The bundle provides two packages, @code{readprov} and @code{myfilist}.  The
+@code{readprov} package provides a means of reading file information without
+loading the body of the file.  The @code{myfilist} package uses
+@code{readprov} and controls what @code{\\listfiles} will report.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
