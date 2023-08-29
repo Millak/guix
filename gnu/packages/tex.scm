@@ -81755,6 +81755,30 @@ the needs of the @code{chemschemex} package")
 floating point numbers, such as you find in program output.")
     (license license:lppl1.0+)))
 
+(define-public texlive-fancypar
+  (package
+    (name "texlive-fancypar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fancypar/"
+                   "source/latex/fancypar/"
+                   "tex/latex/fancypar/")
+             (base32
+              "10m9l4wm8vhzzafvsn1yqan5bv79jm339wznh2w0dxrc82rbzgv6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fancypar")
+    (synopsis "Decoration of individual paragraphs")
+    (description
+     "Decorates individual paragraphs of a document, offering five pre-defined styles.
+ The command offers an optional key-value argument with the user may define
+parameters of the selected style.  Predefined styles offer a spiral-notebook,
+a zebra-like, a dashed, a marked design, and an underlined style.  Users may
+also define their own styles.  Decorated paragraphs may not include displayed
+mathematics.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
