@@ -73978,6 +73978,32 @@ Sefiroth Consulting, FOM, FOM ifes and eufom.")
 be attractive.")
     (license license:gpl3+)))
 
+(define-public texlive-beamertheme-pure-minimalistic
+  (package
+    (name "texlive-beamertheme-pure-minimalistic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamertheme-pure-minimalistic/"
+                   "tex/latex/beamertheme-pure-minimalistic/")
+             (base32
+              "1zn8a4jjq5m9d1v0jqr7c4yrhjbhnz5rspbady1cgwn14hpa0xpg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamertheme-pure-minimalistic")
+    (synopsis "Minimalistic presentation theme for LaTeX Beamer")
+    (description
+     "The main features of this minimalistic Beamer theme are:
+@itemize
+@item easily use own logos;
+@item customizable;
+@item looks good in a 4:3 and 16:9 aspect ratio;
+@item provides an environment for vertically-spaced items;
+@item provides light and dark mode;
+@item is designed to be purely minimalistic without any distractions.
+@end itemize")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
