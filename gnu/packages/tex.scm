@@ -72928,6 +72928,25 @@ though they may possibly have a prefix, and a suffix (the
 @code{\\restorechapter} command restores the status quo ante.")
     (license license:lppl)))
 
+(define-public texlive-answers
+  (package
+    (name "texlive-answers")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/answers/" "source/latex/answers/"
+                   "tex/latex/answers/")
+             (base32
+              "0cbjkzahi11wqylylxa4gxc3hi5bz2k2pm91brzxsg1sk3d1f4cn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/answers")
+    (synopsis "Setting questions (or exercises) and answers")
+    (description
+     "The package allows a lot of flexibility in constructing question and answer
+sheets.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
