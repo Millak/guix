@@ -83337,6 +83337,27 @@ pages, and back cover.  The four panels are set in minipages for formatting by
 the user.")
     (license license:lppl)))
 
+(define-public texlive-gender
+  (package
+    (name "texlive-gender")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gender/" "source/latex/gender/"
+                   "tex/latex/gender/")
+             (base32
+              "16srrl535ynv2zn6kg6w4rkywznrznjn5zwyhpclv4dhd48p6z27")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gender")
+    (synopsis "Gender neutrality for languages with grammatical gender")
+    (description
+     "Many languages --- like German or French --- use masculine and feminine
+grammatical genders.  There are many ideas how to promote gender neutrality in
+those languages.  The @code{gender} package uses alternately masculine and
+feminine forms.  It is also possible to use just one form out of a template.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
