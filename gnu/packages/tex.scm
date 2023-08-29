@@ -89870,6 +89870,26 @@ dumped in the format are loaded at very high speed.  This is useful when
 a document loads many packages.")
     (license license:lppl1.3+)))
 
+(define-public texlive-nag
+  (package
+    (name "texlive-nag")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/nag/" "source/latex/nag/"
+                   "tex/latex/nag/")
+             (base32
+              "1r7b31wbd3cxixm9dqw4pkn9r9ghsdzqz2rb4mbp5va6yrmiz1sw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nag")
+    (synopsis "Detecting and warning about obsolete LaTeX commands")
+    (description
+     "There are commands, classes and packages which are outdated and superseded.
+The @code{nag} package provides routines to warn the user about the use of
+such obsolete things.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
