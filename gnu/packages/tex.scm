@@ -90815,6 +90815,25 @@ repetition of full citations, achieving this, to a large extent,
 automatically.")
     (license license:lppl)))
 
+(define-public texlive-opencolor
+  (package
+    (name "texlive-opencolor")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/opencolor/"
+                   "tex/latex/opencolor/")
+             (base32
+              "0q632lyhjbvvan92jd0w76zy78lbqr6vp17v0bbwcs68jpff65m0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/opencolor")
+    (synopsis "Definitions from the Open Color library")
+    (description
+     "This package provides hexadecimal color definitions of the 130 colors
+included in the Open Color library.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
