@@ -93854,6 +93854,32 @@ as it is a bit verbose.  An automatic call to @code{\\rgcounts} is done at
 @code{\\begin@{document@}} and @code{\\end@{document@}}.")
     (license license:lppl)))
 
+(define-public texlive-register
+  (package
+    (name "texlive-register")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/register/"
+                   "source/latex/register/"
+                   "tex/latex/register/")
+             (base32
+              "0zcffpp53dg59d7l24vsl6qjb6qfhmfbvwcbr658jhdmhawkzirr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/register")
+    (synopsis "Typeset programmable elements in digital hardware (registers)")
+    (description
+     "This package is designed for typesetting the programmable elements in digital
+hardware, i.e., registers.  Such registers typically have many fields and can
+be quite wide; they are thus a challenge to typeset in a consistent manner.
+Register is similar in some aspects to the @code{bytefield} and
+@code{bitpattern} packages.  Anyone doing hardware documentation using LaTeX
+should examine those packages.  An example Perl module and script are
+provided, to convert the register specifications into structures suitable for,
+say, a pre-silicon test environment.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
