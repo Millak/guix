@@ -75632,6 +75632,27 @@ types so that to ensure a minimal distance that can be controlled through two
 parameters @code{\\cellspacetoplimit} and @code{\\cellspacebottomlimit}.")
     (license license:lppl)))
 
+(define-public texlive-censor
+  (package
+    (name "texlive-censor")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/censor/" "tex/latex/censor/")
+             (base32
+              "0c70p2mkdg4vajgxs50cpppdzzdyk8j21hinj0ikmrwxy8rsq1x5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/censor")
+    (synopsis "Tools for producing redacted documents")
+    (description
+     "This package provides simple tools for creating redacted documents with
+blacked-out text.  Its tools are useful both for creating documents in
+a restricted environment (for redacted release in an unrestricted environment)
+as well as in an unrestricted environment (for eventual transfer and
+completion in the restricted environment).")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
