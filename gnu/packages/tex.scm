@@ -77063,6 +77063,25 @@ converts the new notation to @code{xkeyval} notation and passes it on to
 @code{xkeyval}.")
     (license license:lppl1.2+)))
 
+(define-public texlive-cooking
+  (package
+    (name "texlive-cooking")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cooking/" "source/latex/cooking/"
+                   "tex/latex/cooking/")
+             (base32
+              "0spf9493hw5iqp9hbh5y0imi2z61bxwz51v0c0v3r43pv8cscgpf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cooking")
+    (synopsis "Typeset recipes")
+    (description
+     "The package typesets recipes according to the style used in a well-respected
+German cookery book.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
