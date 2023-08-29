@@ -90519,6 +90519,38 @@ within a document, by putting the text in a box and adding an icon in the
 margin.")
     (license license:lppl)))
 
+(define-public texlive-notespages
+  (package
+    (name "texlive-notespages")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/notespages/"
+                   "source/latex/notespages/"
+                   "tex/latex/notespages/")
+             (base32
+              "14q6rjkbnhnj7fbw3vsnnxp08qm3w9vax6s22g20qclh3q1x2ll6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Do not stop build to ask about building part of the
+          ;; documentation.
+          (add-after 'unpack 'non-interactive-build
+            (lambda _
+              (substitute* "source/latex/notespages/notespages.ins"
+                (("\\\\generateexampletrue") "\\generateexamplefalse")))))))
+    (home-page "https://ctan.org/pkg/notespages")
+    (synopsis "Filling documents with notes pages and notes areas")
+    (description
+     "This package package provides one macro to insert a single notes page and
+another to fill the document with multiple notes pages, until the total number
+of pages (so far) is a multiple of a given number.  A third command can be
+used to fill half empty pages with a notes area.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
