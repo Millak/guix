@@ -85610,6 +85610,29 @@ included in the source file.")
 is supported, you can switch to circled equation numbers.")
     (license license:expat)))
 
+(define-public texlive-inputtrc
+  (package
+    (name "texlive-inputtrc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/inputtrc/"
+                   "source/latex/inputtrc/"
+                   "tex/latex/inputtrc/")
+             (base32
+              "0nmflwlf1ydrrb1n6gy8b6zfh18c02z0iyfv91m6c674spaiplsr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/inputtrc")
+    (synopsis "Trace which file loads which")
+    (description
+     "The package produces screen/log messages of the form @samp{<current>
+INPUTTING <next>} reporting LaTeX input commands (@samp{<current>} and
+@samp{<next}> being file names).  The message is indented to reflect the level
+of input nesting.  Tracing may be turned on and off, and the unit of
+indentation may be adjusted.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
