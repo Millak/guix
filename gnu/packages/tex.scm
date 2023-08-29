@@ -96571,6 +96571,28 @@ together sequentially and nested (after a fashion) to achieve rather complex
 manipulations.")
     (license license:lppl1.3+)))
 
+(define-public texlive-sttools
+  (package
+    (name "texlive-sttools")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sttools/" "source/latex/sttools/"
+                   "tex/latex/sttools/")
+             (base32
+              "0dvx30fzzkf632c3qnz7bg2ljlnawz7440qga8shcdb70i951lgm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sttools")
+    (synopsis "Various macros")
+    (description
+     "This package provides a collection of tools and macros, providing:
+miscellaneous float control, page styles for floats, multipage tabulars, even
+columns at end of twocolumn region, switching between one- and two-column
+anywhere, simulating the effect of ``midfloats'', a package to manipulate
+numerical lists and arrays.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
