@@ -96045,6 +96045,35 @@ using the extended labels.")
 between (some) metric and Imperial units.")
     (license license:lppl1.3+)))
 
+(define-public texlive-snapshot
+  (package
+    (name "texlive-snapshot")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/snapshot/"
+                   "source/latex/snapshot/"
+                   "tex/latex/snapshot/")
+             (base32
+              "1skw799vxasx87ib0avmjh1wspj4h21r9lys8xyxmazm1xgwfjj3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/snapshot")
+    (synopsis "List the external dependencies of a LaTeX document")
+    (description
+     "The @code{snapshot} package helps the owner of a LaTeX document obtain a list
+of the external dependencies of the document, in a form that can be embedded
+at the top of the document.  It provides a snapshot of the current processing
+context of the document, insofar as it can be determined from inside LaTeX.
+If a document contains such a dependency list, then it becomes possible to
+arrange that the document be processed always with the same versions of
+everything, in order to ensure the same output.  This could be useful for
+someone wanting to keep a LaTeX document on hand and consistently reproduce an
+identical DVI file from it, on the fly; or for someone wanting to shield
+a document during the final stages of its production cycle from unexpected
+side effects of routine upgrades to the TeX system.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
