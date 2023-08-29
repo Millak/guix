@@ -92125,6 +92125,30 @@ again.  This way the functions should be usable in every @code{pgfmath}
 context, though there is some overhead to this approach.")
     (license license:lppl1.3c)))
 
+(define-public texlive-phfcc
+  (package
+    (name "texlive-phfcc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/phfcc/" "source/latex/phfcc/"
+                   "tex/latex/phfcc/")
+             (base32
+              "04i0srq2ps4l8vbacci3ipdw4mc4hccwzp03lxj4b4a874yxdhg6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/phfcc")
+    (synopsis "Convenient inline commenting in collaborative documents")
+    (description
+     "This packages allows one to easily define helper macros to insert comments in
+a LaTeX document.  A convenient syntax enables you to mark text
+additions (e.g., @samp{\\phf@{I'm adding this text@}}), an in-line
+comment (e.g., @samp{We're the best \\phf[I'm not sure about this.]}), and
+text removals (e.g., @samp{\\phf*@{remove me@}}).  New colors are assigned
+automatically to each commenter by default, and the appearance of all comments
+is highly customizable.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
