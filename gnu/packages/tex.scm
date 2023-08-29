@@ -83118,6 +83118,28 @@ and @code{\\chapter} and other @code{\\section}-like commands.")
 letter in a fullblock style (everything at the left margin).")
     (license license:lppl)))
 
+(define-public texlive-fullminipage
+  (package
+    (name "texlive-fullminipage")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fullminipage/"
+                   "source/latex/fullminipage/"
+                   "tex/latex/fullminipage/")
+             (base32
+              "040vavcp48fvif39ypnl5hxvalmbywkqy6vvxxwd1pnmmcl17ccf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fullminipage")
+    (synopsis "Minipage spanning a complete page")
+    (description
+     "This package provides the environment @code{fullminipage}, which generates
+a minipage spanning a new, complete page with page style empty.  The
+environment provides options to set margins around the minipage and configure
+the background.")
+    (license license:gpl3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
