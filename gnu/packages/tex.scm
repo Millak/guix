@@ -72449,6 +72449,31 @@ submission to the journals of the American Chemical Society.  The
 is distributed as part of the bundle.")
     (license license:lppl1.3c)))
 
+(define-public texlive-acro
+  (package
+    (name "texlive-acro")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/acro/" "tex/latex/acro/")
+             (base32
+              "0c0gyc3q2qz24zjxplfcxswgh1sd9xw5fa0zwk33gahbzm1vbkqb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-etoolbox texlive-l3kernel
+                             texlive-l3packages))
+    (home-page "https://ctan.org/pkg/acro")
+    (synopsis "Typeset acronyms")
+    (description
+     "The package enables the author to create acronyms in a simple way,
+and provides means to add them to different classes of acronyms.
+Lists can be created of separate acronym classes.  The package option
+@code{single} instructs the package to ignore acronyms that are used
+only once in the whole document.  As an experimental feature the
+package also offers the option sort which automatically sorts the list
+created by @code{\\printacronyms}.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
