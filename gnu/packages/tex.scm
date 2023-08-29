@@ -84339,6 +84339,25 @@ and the user did not enter any text into the field.  The package works for
 Dvips/Distiller, pdfLaTeX, LuaLaTeX, and XeLaTeX.")
     (license license:lppl1.2+)))
 
+(define-public texlive-grfpaste
+  (package
+    (name "texlive-grfpaste")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/grfpaste/" "tex/latex/grfpaste/")
+             (base32
+              "1fkf8vxaznqmdqjwdixxs56cwi4pdrzqb7rcn09kaq6dhj3a79kl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/grfpaste")
+    (synopsis "Include fragments of a DVI file")
+    (description
+     "This package provides a mechanism to include fragments of DVI files with the
+@code{graphicx} package, so that you can use @code{\\includegraphics} to
+include DVI files.  The package requires the @command{dvipaste} program.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
