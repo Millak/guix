@@ -92221,6 +92221,28 @@ and some basic styling to make the note look nicer.  At the same time, it is
 highly flexible and customizable.")
     (license license:lppl1.3+)))
 
+(define-public texlive-phfparen
+  (package
+    (name "texlive-phfparen")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/phfparen/"
+                   "source/latex/phfparen/"
+                   "tex/latex/phfparen/")
+             (base32
+              "1b11l81xcqna11w7hhzy4adybrgpr1a64jl7376w970v7d41nd4d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/phfparen")
+    (synopsis "Parenthetic math expressions made simpler and less redundant")
+    (description
+     "This package provides a more condensed and flexible syntax for
+parenthesis-delimited expressions in math mode which also allows for an easier
+switching of brace sizes.  For example, the syntax @samp{\\big( a + b )} can
+be used to replace @samp{\\bigl( a + b \\bigr)}.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
