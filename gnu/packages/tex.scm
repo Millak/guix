@@ -29025,6 +29025,36 @@ Times, the other matching Libertine.")
 abbreviations of longer expressions.")
     (license license:lppl)))
 
+(define-public texlive-svg
+  (package
+    (name "texlive-svg")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/svg/" "source/latex/svg/"
+                   "tex/latex/svg/")
+             (base32
+              "1yizgrjn6l9j1cf8mvkjz0zni7bzmajszc1y8q80xc723nwnbq7q")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/svg")
+    (synopsis "Include and extract SVG pictures in LaTeX documents")
+    (description
+     "This bundle contains the two packages @code{svg} and @code{svg-extract}.
+
+The @code{svg} package is intended for the automated integration of SVG
+graphics into LaTeX documents.  Therefore the capabilities provided by
+Inkscape --- or more precisely its command line tool --- are used to export
+the text within an SVG graphic to a separate file, which is then rendered by
+LaTeX.  For this purpose the two commands @code{\\includesvg} and
+@code{\\includeinkscape} are provided which are very similar to the
+@code{\\includegraphics} command of the @code{graphicx} package.
+
+In addition, the package @code{svg-extract} allows the extraction of these
+graphics into independent files in different graphic formats, exactly as it is
+rendered within the LaTeX document, using either ImageMagick or Ghostscript.")
+    (license license:lppl1.3c)))
+
 (define-public texlive-svrsymbols
   (package
     (name "texlive-svrsymbols")
