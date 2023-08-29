@@ -94160,6 +94160,29 @@ entries more robust.  This bundle provides @file{robustindex.sty} and
 maintain correct page numbers.")
     (license license:lppl1.2+)))
 
+(define-public texlive-romanbar
+  (package
+    (name "texlive-romanbar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/romanbar/"
+                   "source/latex/romanbar/"
+                   "tex/latex/romanbar/")
+             (base32
+              "0fq5jlpfj7cz6b4ic6y19sk35z51h6qqkqh0n8kg5snpclag1662")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/romanbar")
+    (synopsis "Write roman number with bars")
+    (description
+     "Bars, in the present context, are lines above and below text that abut with
+the text.  Barred roman numerals are sometimes found in publications.  The
+package provides a function that prints barred roman numerals (converting
+Arabic numerals if necessary).  The package also provides a predicate
+@code{\\ifnumeric}.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
