@@ -75264,6 +75264,28 @@ your float environment with minimal overhead.  This package adds three
 commands: @code{\\caption*}, @code{\\captcont}, and @code{\\captcont*}.")
     (license license:lppl)))
 
+(define-public texlive-captdef
+  (package
+    (name "texlive-captdef")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/captdef/" "tex/latex/captdef/")
+             (base32
+              "0arj6qqzq6idhbp1zm51z0ad8jyghkrp4yg34ybl7zshaxnm4ixn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/captdef")
+    (synopsis "Declare free-standing @code{\\caption} commands")
+    (description
+     "The @code{\\DeclareCaption} command defines a class of caption command
+associated with the counter specified to the command.  These commands are
+free-standing (i.e., don't need to be inside a float environment).  The
+package uses @code{\\DeclareCaption} to define @code{\\figcaption} and
+@code{\\tabcaption}, which can be used outside @code{figure} or @code{table}
+environments.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
