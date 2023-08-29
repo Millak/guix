@@ -88279,6 +88279,28 @@ main file one puts commands like @samp{\\setindex@{main@}} to steer the flow.
 Some features of MakeIndex may no longer work.")
     (license license:lppl1.2+)))
 
+(define-public texlive-marginfit
+  (package
+    (name "texlive-marginfit")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/marginfit/"
+                   "source/latex/marginfit/"
+                   "tex/latex/marginfit/")
+             (base32
+              "1hw87d6f6r23f9ri9j7r51v6vbq4naycldqjach2snv19s6a2855")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/marginfit")
+    (synopsis "Improved margin notes")
+    (description
+     "This package fixes various bugs with the margin paragraph implementation of
+LaTeX. Those bugs include margin notes that are attached to the wrong side as
+well as those that stick out of the bottom of the page.  This package provides
+a drop-in replacement solution.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
