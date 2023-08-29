@@ -72474,6 +72474,27 @@ package also offers the option sort which automatically sorts the list
 created by @code{\\printacronyms}.")
     (license license:lppl1.3c)))
 
+(define-public texlive-acroterm
+  (package
+    (name "texlive-acroterm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/acroterm/"
+                   "source/latex/acroterm/"
+                   "tex/latex/acroterm/")
+             (base32
+              "04ickn8igj226vdjffgpx9ysvlcl5d61m565ijcs3zln02w5c06y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/acroterm")
+    (synopsis "Manage and index acronyms and terms")
+    (description
+     "This is yet another package for acronyms: it offers simple markup of
+acronyms and technical terms in the text, giving an index each of
+terms and acronyms with their expanded form.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
