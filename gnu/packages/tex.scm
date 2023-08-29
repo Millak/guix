@@ -94352,6 +94352,25 @@ should be backwards compatible with @code{inputenc}.  @code{rtkinenc} is not
 a new version of @code{inputenc} though, nor is it part of standard LaTeX.")
     (license license:lppl)))
 
+(define-public texlive-rulerbox
+  (package
+    (name "texlive-rulerbox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/rulerbox/" "tex/latex/rulerbox/")
+             (base32
+              "1rrhkr9z22xz0adm77b09spcpc80v2ld3iqzcgaq4hfmsl4vykzv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/rulerbox")
+    (synopsis "Draw rulers around a box")
+    (description
+     "This is a LaTeX package for drawing rulers around a box.  This might be
+useful when showing the absolute size of something in electronic documents, or
+designating the relative scale in printed materials.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
