@@ -87921,6 +87921,27 @@ preparation.")
     ;; is retained."
     (license (license:fsf-free "file://tex/latex/magaz/magaz.sty"))))
 
+(define-public texlive-magicnum
+  (package
+    (name "texlive-magicnum")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/magicnum/" "scripts/magicnum/"
+                   "source/latex/magicnum/"
+                   "tex/generic/magicnum/")
+             (base32
+              "004zwr1qgk1cmhrxj0qb6i4p3dilh1mzbaaif03zr4wj6bb25dq3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/magicnum")
+    (synopsis "Access TeX systems' ``magic numbers''")
+    (description
+     "This package allows access to the various parameter values in TeX
+(catcode values), e-TeX (group, if and node types, and interaction mode), and
+LuaTeX (@code{pdfliteral} mode) by a hierarchical name system.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
