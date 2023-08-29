@@ -75833,6 +75833,28 @@ the name of a folder, for example.")
      "The package provides a clean, multi-column design intended for cheat sheets.")
     (license license:expat)))
 
+(define-public texlive-checkend
+  (package
+    (name "texlive-checkend")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/checkend/" "tex/latex/checkend/")
+             (base32
+              "0p3zs72kqfdqzcksjiap6n2nzj4awcr78bhkmjvrshrn2gkhzl6k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/checkend")
+    (synopsis "Extend ``improperly closed environment'' messages")
+    (description
+     "When an environment is left open, LaTeX gives an error at the end of the
+document.  However it only informs about the first of them, while the rest are
+shown with meaningless errors: (``\\end occurred inside a group at level N'')
+This package replaces these errors with more useful messages which show which
+environments (in reverse order) were not closed.  There are no user macros:
+just use the package.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
