@@ -76443,6 +76443,29 @@ is much more powerful and faster than @code{l3regex}.")
 job is mostly done by the @code{inputenc} package in the LaTeX distribution.")
     (license license:bsd-3)))
 
+(define-public texlive-codesection
+  (package
+    (name "texlive-codesection")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/codesection/"
+                   "source/latex/codesection/"
+                   "tex/latex/codesection/")
+             (base32
+              "0m3lq9rap7a5qxflypmv0546n7hyavm2p0z4yf3rp5rp769161fb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/codesection")
+    (synopsis "Provides an environment that may be conditionally included")
+    (description
+     "This package provides an environment to switch a section of code on or off.
+The code may be placed anywhere in the file (it is not limited to the document
+or the preamble).  The motivation for this package was to have commands which
+allow preselection based on whether sections of code in a preamble of
+a template are executed.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
