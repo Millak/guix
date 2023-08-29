@@ -74819,6 +74819,25 @@ producing a document with figures and tables appearing in the desired
 location.")
     (license license:lppl)))
 
+(define-public texlive-bracketkey
+  (package
+    (name "texlive-bracketkey")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bracketkey/"
+                   "tex/latex/bracketkey/")
+             (base32
+              "07gkjxcbycfy39wylm880wnkcw6p6sm5by47vhdlwraqkbx65a94")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bracketkey")
+    (synopsis "Produce bracketed identification keys")
+    (description
+     "The package provides an environment @code{bracketkey} for use when producing
+lists of species.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
