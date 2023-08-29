@@ -84686,6 +84686,26 @@ object is provided as an argument to the commands, so that they have the look
 of accent commands.")
     (license license:public-domain)))
 
+(define-public texlive-hc
+  (package
+    (name "texlive-hc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/hc/" "doc/latex/hc/"
+                   "source/latex/hc/" "tex/latex/hc/")
+             (base32
+              "14f794rn7qzrb4g5l4k3chp7r66dg7nyn25byis8hjca0rbd0gcs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hc")
+    (synopsis "Replacement for the LaTeX classes")
+    (description
+     "This package provides a set of replacements for the default LaTeX classes,
+based upon the Koma-Script bundle and the @code{seminar} class.  It includes
+@code{hcart}, @code{hcreport}, @code{hcletter}, and @code{hcslides}.")
+    (license license:gpl2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
