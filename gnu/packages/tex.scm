@@ -80772,6 +80772,28 @@ the student's effort on that quiz.")
 list in which the indentation corresponds to the longest item of the list.")
     (license license:lppl)))
 
+(define-public texlive-eqnalign
+  (package
+    (name "texlive-eqnalign")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/eqnalign/"
+                   "source/latex/eqnalign/"
+                   "tex/latex/eqnalign/")
+             (base32
+              "1fnpis9yr7b3h4rnxcgap96fr8dxpk2ziiil9vk3xf18fmzr6b8d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/eqnalign")
+    (synopsis "Make @code{eqnarray} behave like @code{align}")
+    (description
+     "The package makes @code{eqnarray} environment behave like @code{align} from
+@code{amsmath}.  It is intended for quick-fixing documents that use
+@code{eqnarray}.  In cases where it fails, manual conversion to @code{align}
+is required, but these cases should be seldom.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
