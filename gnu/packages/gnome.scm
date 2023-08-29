@@ -7606,8 +7606,7 @@ configuration program to choose applications starting on login.")
 (define-public gjs
   (package
     (name "gjs")
-    ;; Note: We use a pre-release for compatibility with recent LibFFI.
-    (version "1.73.2")
+    (version "1.76.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -7615,7 +7614,7 @@ configuration program to choose applications starting on login.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0xfspsc1q4xm7p500lmy17b9csyaqps1kilylq8wjjd0fjqq8ayg"))
+                "1m15qscx2z862gfkb9pxg30bz8ka0h774l2azs5dfvzaagbckn7p"))
               (modules '((guix build utils)))
               (snippet
                '(begin
