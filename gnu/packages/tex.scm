@@ -83843,6 +83843,26 @@ package.")
      "This package provides an Irish language module for @code{glossaries} package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-glossaries-italian
+  (package
+    (name "texlive-glossaries-italian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/glossaries-italian/"
+                   "source/latex/glossaries-italian/"
+                   "tex/latex/glossaries-italian/")
+             (base32
+              "0z707spqm7i77f0p2vb576z7m2xbi84fk46sxp41if6hdq1ic30k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/glossaries-italian")
+    (synopsis "Italian language module for @code{glossaries} package")
+    (description
+     "This package provides an Italian language module for @code{glossaries}
+package.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
