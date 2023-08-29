@@ -89831,6 +89831,24 @@ directives, the class uses a set of lists, provided by the package
 @code{etextools}.  Basic support for using TikZ decorations is also provided.")
     (license license:lppl1.3+)))
 
+(define-public texlive-mylatex
+  (package
+    (name "texlive-mylatex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mylatex/" "tex/latex/mylatex/")
+             (base32
+              "18a2mswspg6m02mx1nkbsrqh82cky6yyywbrjv423z09w95s3nks")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mylatex")
+    (synopsis "Make a format containing a document's preamble")
+    (description
+     "The file @file{mylatex.ltx} permits you to create a format that pre-loads
+a set of package files (and/or other macros) that you regularly use.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
