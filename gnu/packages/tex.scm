@@ -85778,6 +85778,26 @@ for readability.  It does not support separate projects per invoice.  It can
 be used as a replacement for @code{invoice} in most cases.")
     (license license:gpl3+)))
 
+(define-public texlive-iso
+  (package
+    (name "texlive-iso")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/iso/" "makeindex/iso/"
+                   "source/latex/iso/" "tex/latex/iso/")
+             (base32
+              "1rzxf4nykw6ar9dhn4vanwdryx7hapfjmqqjnlpg0ly05fckqd4i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/iso")
+    (synopsis "Generic ISO standards typesetting macros")
+    (description
+     "This package provide generic class and package files for typesetting ISO
+International Standard documents.  Several standard documents have been
+printed by ISO from camera-ready copy prepared using LaTeX and these files.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
