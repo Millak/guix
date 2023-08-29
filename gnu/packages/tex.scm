@@ -99557,6 +99557,30 @@ counters, definitions, index entries etc., are kept consistent throughout the
 input file.")
     (license license:lppl)))
 
+(define-public texlive-vpe
+  (package
+    (name "texlive-vpe")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/vpe/" "scripts/vpe/"
+                   "tex/latex/vpe/")
+             (base32
+              "1mic6ljwfx50rassr1rr8ymqvbiblbpvrcdqkvwbahxxirjdj1xl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:link-scripts #~(list "vpe.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/vpe")
+    (synopsis "Source specials for PDF output")
+    (description
+     "VPE is a system to make the equivalent of source special marks in a PDF
+file.  Clicking on a mark will activate an editor, pointing at the source line
+that produced the text that was marked.  The system comprises a Perl
+file (@file{vpe.pl}) and a LaTeX package (@file{vpe.sty}).")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
