@@ -92564,6 +92564,27 @@ be interpreted by a Prolog system as well as by LaTeX.")
 e.g. @samp{cp437}.  It uses rules instead of using a font.")
     (license license:lppl1.3c)))
 
+(define-public texlive-polynom
+  (package
+    (name "texlive-polynom")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/polynom/" "source/latex/polynom/"
+                   "tex/latex/polynom/")
+             (base32
+              "1zywkgngpf7n8hgfdwj0cp2i3b2wn0jqrf799vrgfscwg7dhbgm3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/polynom")
+    (synopsis "Macros for manipulating polynomials")
+    (description
+     "The @code{polynom} package implements macros for manipulating polynomials,
+for example it can typeset long polynomial divisions.  The main test case and
+application is the polynomial ring in one variable with rational
+coefficients.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
