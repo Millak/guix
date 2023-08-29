@@ -96939,6 +96939,27 @@ a document large figures that do not fit into a single page.  A single user
 macro is defined to handle all five display modes.")
     (license license:lppl1.3c)))
 
+(define-public texlive-swungdash
+  (package
+    (name "texlive-swungdash")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/swungdash/"
+                   "tex/latex/swungdash/")
+             (base32
+              "0b8qq8yh6rp6gmglgbi4afdd48hbhd2gncxcjarwddy1x127jc62")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/swungdash")
+    (synopsis "Typeset a swung dash in LaTeX")
+    (description
+     "The swung dash (U+2053) is a useful character traditionally used in
+typsetting dictionaries, but not supported by most typefaces.  This package
+provides one simple command to typeset a swung dash in XeLaTeX and LuaLaTeX,
+by applying transformations to the given font's glyph for a tilde.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
