@@ -92821,6 +92821,39 @@ and @code{\\restoregeometry} of the @code{geometry} package @code{\\newpagecolor
 @code{\\restorebackgroundpagecolor} are provided.")
     (license license:lppl1.3c)))
 
+(define-public texlive-ppt-slides
+  (package
+    (name "texlive-ppt-slides")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ppt-slides/"
+                   "source/latex/ppt-slides/"
+                   "tex/latex/ppt-slides/")
+             (base32
+              "18sig2mk6pb2i86x9jyl2fyac10sg356n1wwvwxzgpbrn62g46y6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-crumbs
+           texlive-enumitem
+           texlive-hyperref
+           texlive-pagecolor
+           texlive-pgf
+           texlive-pgfopts
+           texlive-qrcode
+           texlive-seqsplit
+           texlive-tikzpagenodes
+           texlive-tools
+           texlive-varwidth
+           texlive-xcolor))
+    (home-page "https://ctan.org/pkg/ppt-slides")
+    (synopsis "Slide decks a la PowerPoint (PPT)")
+    (description
+     "This LaTeX package helps you create slide decks looking like those created
+with PowerPoint, but more precise, uniform, and visually strict.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
