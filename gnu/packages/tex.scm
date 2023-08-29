@@ -96415,6 +96415,25 @@ available.")
 user may add headers and footers to the slide.")
     (license license:lppl1.3+)))
 
+(define-public texlive-stack
+  (package
+    (name "texlive-stack")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "source/latex/stack/" "tex/latex/stack/")
+             (base32
+              "0annz6qz921m1f7l2scqsg9kh10xxihizwf0gg10drm6yvxmy7ha")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/stack")
+    (synopsis "Tools to define and use stacks")
+    (description
+     "The package provides a small set of commands to implement stacks
+independently of TeX's own stack.  As an example of how the stacks might be
+used, the documentation offers a small @code{relinput} package that implements
+the backbone of the @code{import} package.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
