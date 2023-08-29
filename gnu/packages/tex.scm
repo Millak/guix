@@ -74119,6 +74119,27 @@ Trigon also includes different styles and layouts for the main title page, the
 section page and the default slide background.")
     (license license:cc-by-sa4.0)))
 
+(define-public texlive-beamertheme-upenn-bc
+  (package
+    (name "texlive-beamertheme-upenn-bc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamertheme-upenn-bc/"
+                   "tex/latex/beamertheme-upenn-bc/")
+             (base32
+              "0xlknz4y6gklpdsrxiqssgl3fakrs4jqqps8yk689lvg1gqj942c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamertheme-upenn-bc")
+    (synopsis
+     "Beamer themes for Boston College and the University of Pennsylvania")
+    (description
+     "This package provides Beamer themes in the colors of the University of
+Pennsylvania, USA, and Boston College, USA.  Both were tested for the
+presentation theme Warsaw.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
