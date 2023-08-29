@@ -93731,6 +93731,25 @@ can then be cut out and pasted on to note cards.  The recipe then looks
 elegant and fits in the box of recipes.")
     (license license:lppl)))
 
+(define-public texlive-rectopma
+  (package
+    (name "texlive-rectopma")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/rectopma/" "tex/latex/rectopma/")
+             (base32
+              "158rk112xb538zav89w6yp4s0nasp8z4s7gwq22q3nchm4q7j8br")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/rectopma")
+    (synopsis "Recycle top matter")
+    (description
+     "This package saves the arguments of @code{\\author} and
+@code{\\title} for reference (after @code{\\maketitle}) in
+a document.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
