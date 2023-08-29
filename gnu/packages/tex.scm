@@ -96074,6 +96074,27 @@ a document during the final stages of its production cycle from unexpected
 side effects of routine upgrades to the TeX system.")
     (license license:lppl1.3c)))
 
+(define-public texlive-snaptodo
+  (package
+    (name "texlive-snaptodo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/snaptodo/" "tex/latex/snaptodo/")
+             (base32
+              "0iya0njq8icvf084ifs76hhbbc50h9livsp499v85r9x77hblmlf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/snaptodo")
+    (synopsis "Todo that snaps to the closer side")
+    (description
+     "This package is an alternative to @code{todonotes}, from which it differs in
+the following ways: depending on where you call @code{\\snaptodo}, the note is
+put in the left or the right margin, whichever is closer.  The notes bump each
+other so they never overlap; the lines never overlap either.  Aesthetic and
+customizable style.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
