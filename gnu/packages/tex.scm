@@ -15190,6 +15190,7 @@ Polyglossia.")
     (build-system texlive-build-system)
     (arguments
      (list #:link-scripts #~(list "makeglossaries" "makeglossaries-lite.lua")))
+    (inputs (list perl))
     (propagated-inputs
      (list texlive-amsmath
            texlive-datatool
