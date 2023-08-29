@@ -94027,6 +94027,28 @@ semi-automatic grid typesetting.  It does more or less what the existing
 do some horizontal movements to get to @samp{Tab} positions.")
     (license license:lppl1.3c)))
 
+(define-public texlive-rgltxdoc
+  (package
+    (name "texlive-rgltxdoc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/rgltxdoc/"
+                   "source/latex/rgltxdoc/"
+                   "tex/latex/rgltxdoc/")
+             (base32
+              "0wbgxl24d67hcwy01vsajg2am6ia6dagxgl32ql4854gcim0ypbj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/rgltxdoc")
+    (synopsis "Common code for documentation of the author's packages")
+    (description
+     "This package combines several other packages and defines additional macros
+and environments for documenting LaTeX code.  The package mainly serves the
+purpose of combining the preferences used in the author's own package
+documentations.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
