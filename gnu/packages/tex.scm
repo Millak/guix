@@ -84513,6 +84513,41 @@ environments you want, or creating an entire document containing only those
 environments.")
     (license license:lppl)))
 
+(define-public texlive-ha-prosper
+  (package
+    (name "texlive-ha-prosper")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ha-prosper/"
+                   "source/latex/ha-prosper/"
+                   "tex/latex/ha-prosper/")
+             (base32
+              "0xszyc03vf7h160gxqfd8yfs4aya7s17av4ylf9nc6abbvwipapk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-eepic
+                  texlive-hypdoc
+                  texlive-pgf
+                  texlive-pst-3d
+                  texlive-pst-node
+                  texlive-pstricks
+                  texlive-xcolor
+                  texlive-xcomment
+                  texlive-xkeyval))))
+    (home-page "https://ctan.org/pkg/ha-prosper")
+    (synopsis "Patches and improvements for Prosper")
+    (description
+     "HA-prosper is a patch for Prosper that adds new functionality to Prosper
+based presentations.  Among the new features you will find automatic
+generation of a table of contents on each slide, support for notes and
+portrait slides.  The available styles demonstrate how to expand the
+functionality of Prosper even further.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
