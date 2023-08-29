@@ -73901,6 +73901,25 @@ a clean and minimalist design, so to minimize distractions and put the focus
 directly on the content.")
     (license license:gpl3)))
 
+(define-public texlive-beamertheme-light
+  (package
+    (name "texlive-beamertheme-light")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamertheme-light/"
+                   "tex/latex/beamertheme-light/")
+             (base32
+              "0yknbvp325d3xkgnb76a4ndk2c99mnig6ylmpqrn9srgj1h4ckiw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamertheme-light")
+    (synopsis "Minimal Beamer style")
+    (description
+     "The LaTeX package @code{beamertheme-light} provides an aesthetic and minimal
+Beamer style by redefining colors and fonts.")
+    (license license:gpl3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
