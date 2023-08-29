@@ -97021,6 +97021,28 @@ in Chomsky's generative grammar, based on a description of the structure of
 the tree.")
     (license license:lppl)))
 
+(define-public texlive-tabbing
+  (package
+    (name "texlive-tabbing")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tabbing/" "source/latex/tabbing/"
+                   "tex/latex/tabbing/")
+             (base32
+              "1dpkirz4318031ikq3y1134y19cyq6lgzhj610w12zywfmdy5jcj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tabbing")
+    (synopsis "Tabbing with accented letters")
+    (description
+     "By default, some of the tabbing environment's commands clash with default
+accent commands; LaTeX provides the odd commands @code{\\a'}, etc., to deal
+with the clash.  The package offers a variant of the @code{tabbing}
+environment which does not create this difficulty, so that users need not
+learn two sets of accent commands.")
+    (license license:lppl1.0+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
