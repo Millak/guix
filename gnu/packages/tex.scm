@@ -79905,6 +79905,30 @@ package @code{easybase} can also be used with CTeX and standard document
 classes.")
     (license license:lppl1.3c)))
 
+(define-public texlive-easyfig
+  (package
+    (name "texlive-easyfig")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/easyfig/" "source/latex/easyfig/"
+                   "tex/latex/easyfig/")
+             (base32
+              "1xkc0syipviic3cfc4y3lx5zza13cs8ykmbcvcn30ls17y50rmkm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-ydoc))
+    (home-page "https://ctan.org/pkg/easyfig")
+    (synopsis "Simplifying the use of common figures")
+    (description
+     "The package provides the command @code{\\Figure} to simplify the business of
+including an image as figure in the most common form (centred and with caption
+and label).  The package uses the package @code{adjustbox} to center an image
+and to simplify further modifications.  As @code{adjustbox} now provides keys
+to turn images or other material into floats or non-floats, including
+captions, @code{easyfig} has become quite redundant.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
