@@ -95695,6 +95695,26 @@ a @code{\\parbox} in a @code{tabular} environment cell, a rather wide range of
 things may be placed.")
     (license license:lppl1.2+)))
 
+(define-public texlive-simplecv
+  (package
+    (name "texlive-simplecv")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/simplecv/"
+                   "source/latex/simplecv/"
+                   "tex/latex/simplecv/")
+             (base32
+              "03clih4gy6isd2p0xg75w19d4l8zx1d9c2i46idfh8wzcqzr35mj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/simplecv")
+    (synopsis "Simple class for writing curricula vitae")
+    (description
+     "This package provides a derivative of the CV class available to LyX users
+(renamed to avoid the existing @code{cv} package).")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
