@@ -81433,6 +81433,29 @@ in the exercises can be added automatically.  The package also permits to hide
 the solutions.")
     (license license:lppl1.2+)))
 
+(define-public texlive-exesheet
+  (package
+    (name "texlive-exesheet")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/exesheet/"
+                   "source/latex/exesheet/"
+                   "tex/latex/exesheet/")
+             (base32
+              "0qszpi5k1a3ndb90i1li7hp0h9mpaym9i5rn33j4jfg4pf0m7a4b")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/exesheet")
+    (synopsis "Typesetting exercise or exam sheets")
+    (description
+     "This package is used for typesetting exercise or exam sheets.  In addition,
+the @code{exesheet} class loads the @code{schooldocs} package.  The package
+provides: macros to mark out exercises and subparts, specific settings for
+enumeration lists, environments for questions and answers, with conditional
+display, macros for marking schemes with detailed comments.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
