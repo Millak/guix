@@ -72865,6 +72865,27 @@ together with the @code{psfont} package.")
 superscripts, with square brackets in the source code.")
     (license license:lppl1.3+)))
 
+(define-public texlive-amsaddr
+  (package
+    (name "texlive-amsaddr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/amsaddr/" "source/latex/amsaddr/"
+                   "tex/latex/amsaddr/")
+             (base32
+              "04y34raa9vfrl66jw566rbb00q5xjbm2zh6k6hjs9nlqhndk62k5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/amsaddr")
+    (synopsis "Alter the position of affiliations in @code{amsart}")
+    (description
+     "The package is to be used with the @code{amsart} document class.  It lets you
+move the authors affiliations either just below the authors names on the front
+page or as footnotes on the first page.  The email addresses are always listed
+as a footnote on the front page.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
