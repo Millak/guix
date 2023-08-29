@@ -82902,6 +82902,25 @@ calculations based on the contents of lists and arrays.")
 in documents.")
     (license license:lppl1.3+)))
 
+(define-public texlive-formlett
+  (package
+    (name "texlive-formlett")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/formlett/"
+                   "tex/generic/formlett/")
+             (base32
+              "0nbg8g7hyxanyx2jkv7nz2iwz4x25wh9y8licz4zg8vcz99izn1k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/formlett")
+    (synopsis "Letters to multiple recipients")
+    (description
+     "This package provides a package for multiple letters from the same basic
+source; the package offers parametrisation of the letters actually sent.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
