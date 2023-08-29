@@ -95060,6 +95060,27 @@ also includes some macros for musical symbols and other basic notations for
 musical analysis.")
     (license license:lppl1.3+)))
 
+(define-public texlive-semesterplanner
+  (package
+    (name "texlive-semesterplanner")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/semesterplanner/"
+                   "source/lualatex/semesterplanner/"
+                   "tex/lualatex/semesterplanner/")
+             (base32
+              "1ixi839q2p88gplzlxhx4mqk9nwaw9yi16xh2fvihbmd0gllzw86")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/semesterplanner")
+    (synopsis "Create beautiful semester timetables and more")
+    (description
+     "This package defines several useful environments for a beautiful printable
+semester plan.  It includes a timetable (which is using the schedule-Package)
+as well as appointments, deadlines, and exams.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
