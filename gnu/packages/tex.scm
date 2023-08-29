@@ -97483,6 +97483,24 @@ package is a bit like the @code{doc} package is for LaTeX, whereas the
 @code{tclldoc} class more parallels the @code{ltxdoc} class.")
     (license license:lppl)))
 
+(define-public texlive-tdclock
+  (package
+    (name "texlive-tdclock")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tdclock/" "tex/latex/tdclock/")
+             (base32
+              "0az6h5avri7z7mvp222zwkd7n5nsnx8np73ym2rppp9d2j8fq9wb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tdclock")
+    (synopsis "Ticking digital clock package for PDF output")
+    (description
+     "This package provides a ticking digital clock package to be used in pdfLaTeX
+documents, for example in presentations.")
+    (license license:gpl2)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
