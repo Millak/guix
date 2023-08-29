@@ -98923,6 +98923,31 @@ decorations (such as braces) at arbirary positions over and under expressions,
 overlapping as necessary.")
     (license license:lppl1.3+)))
 
+(define-public texlive-uni-titlepage
+  (package
+    (name "texlive-uni-titlepage")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/uni-titlepage/"
+                   "source/latex/uni-titlepage/"
+                   "tex/latex/uni-titlepage/")
+             (base32
+              "047092jnshnnhy2axqpxh0x0lzaz1dkk9k8gy1vdgwimigzxxn9a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uni-titlepage")
+    (synopsis
+     "Universal titlepages with configuration options and predefined styles")
+    (description
+     "Creation of title pages is something most authors should not have to do.  But
+reality is not perfect, so a lot of authors have to do it.  This package not
+only provides several pages for the title instead of only one --- at least
+five are typical for a thesis! ---, it also provides a bunch of predefined
+titlepage styles with several standard elements, and optionally additional
+elements.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
