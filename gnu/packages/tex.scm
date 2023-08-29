@@ -73382,6 +73382,30 @@ equations that are referenced.  This operation is similar to the
 @samp{showonlyrefs} option of the package @code{mathtools}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-autopdf
+  (package
+    (name "texlive-autopdf")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/autopdf/" "source/latex/autopdf/"
+                   "tex/latex/autopdf/")
+             (base32
+              "0sdlazmx6g530ava1ip8mafbd2p57i7mf8sdlg3y1m4bvq244v4m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "pdflatex"))
+    (native-inputs
+     (list (texlive-updmap.cfg (list texlive-catchfile texlive-hypdoc))))
+    (home-page "https://ctan.org/pkg/autopdf")
+    (synopsis "Conversion of graphics to pdfLaTeX-compatible formats")
+    (description
+     "The package facilitates the on-the-fly conversion of various graphics formats
+to formats supported by pdfLaTeX (e.g., PDF).  It uses a range of external
+programs, and therefore requires that the LaTeX run starts with @samp{write18}
+enabled.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
