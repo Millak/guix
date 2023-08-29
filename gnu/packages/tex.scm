@@ -82407,6 +82407,29 @@ and the response or the answer on the flip (back) side.  Flash cards come in
 many sizes depending on the nature of the information they contain.")
     (license license:gpl2+)))
 
+(define-public texlive-flashmovie
+  (package
+    (name "texlive-flashmovie")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/flashmovie/"
+                   "tex/latex/flashmovie/")
+             (base32
+              "16m9ql650w70vi3iwqf4988v9yz14pimr88c87cgxwdmvzz0ak3j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/flashmovie")
+    (synopsis "Directly embed flash movies into PDF files")
+    (description
+     "The package allows direct embedding of flash movies into PDF files.  It is
+designed for use with pdfLaTeX.  The package takes advantage of the embedded
+Adobe Flash player in Adobe Reader 9; the reader is invoked with the rich
+media annotation feature.  This method of embedding movies is attractive since
+it removes all platform dependencies; however, the user is required to use
+Acrobat 9.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
