@@ -91674,6 +91674,29 @@ mathematics and computer science content.  It is currently customised towards
 teaching in French (and the examples are in French).")
     (license license:lppl)))
 
+(define-public texlive-pdf14
+  (package
+    (name "texlive-pdf14")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pdf14/" "source/latex/pdf14/"
+                   "tex/latex/pdf14/")
+             (base32
+              "1sha8vbj0d75a3hsx8x34r79yfm3r5x9fn0qi4zbf070x3way6ff")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pdf14")
+    (synopsis "Restore PDF 1.4 to a TeX live 2010 format")
+    (description
+     "Starting with TeX Live 2010, the various formats, that directly generate PDF,
+default to generating PDF 1.5.  This is generally a good thing, but it can
+lead to compatibility issues with some older PDF viewers.  This package
+changes the version of PDF generated with formats (based on pdfTeX or LuaTeX
+in PDF mode), back to 1.4 for documents that need to achieve maximal
+compatibility with old viewers.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
