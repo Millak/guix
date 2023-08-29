@@ -99256,6 +99256,29 @@ can have variable or fixed height and can be paragraph-cells or inline-cells.
 Different vertical alignments can be used in the same row.")
     (license license:lppl1.3c)))
 
+(define-public texlive-vdmlisting
+  (package
+    (name "texlive-vdmlisting")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/vdmlisting/"
+                   "tex/latex/vdmlisting/")
+             (base32
+              "0yhgql2gflygjhx5mz87qqyiny7j0wpiqs2yvpmzm57linna3vzn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/vdmlisting")
+    (synopsis "Typesetting VDM in ASCII syntax")
+    (description
+     "The package is an extension for the @code{listings} package that provides
+a source code printer for LaTeX.  This package defines new language
+definitions and listing environments for the three language dialects of the
+Vienna Development Method: VDM-SL, VDM-PP and VDM-RT.  If one wants to typeset
+VDM with a mathematical syntax instead of the ASCII syntax used here, one
+should use the @code{vdm} pacakge instead.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
