@@ -83037,6 +83037,27 @@ structure for the conditional, greater care taken to allow for the line width
 in the spacing of formulas.")
     (license license:gpl3+)))
 
+(define-public texlive-froufrou
+  (package
+    (name "texlive-froufrou")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/froufrou/"
+                   "source/latex/froufrou/"
+                   "tex/latex/froufrou/")
+             (base32
+              "1d1ifplkdxb7s8mr7zisbzkr9r5hvn7hk0q5dpzpyx8zwhzyvkss")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/froufrou")
+    (synopsis "Fancy section separators")
+    (description
+     "This package provides fancy separators, which are visual cues that indicate
+a change of subject or context without actually starting a new chapter or
+section.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
