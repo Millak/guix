@@ -83664,6 +83664,26 @@ anywhere else in a document, including before it was declared.")
 replaced by @code{\\gloss}.")
     (license license:lppl)))
 
+(define-public texlive-glossaries-danish
+  (package
+    (name "texlive-glossaries-danish")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/glossaries-danish/"
+                   "source/latex/glossaries-danish/"
+                   "tex/latex/glossaries-danish/")
+             (base32
+              "0z5b71k881qz0649hd9rr5n0cgm8yvckv7jxmk1kh0y6nd9i4k6l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/glossaries-danish")
+    (synopsis "Danish language module for @code{glossaries} package")
+    (description
+     "This package provides a Danish language module for @code{glossaries}
+package.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
