@@ -79520,6 +79520,30 @@ section, subsection and subsubsection headers and (if @code{amsmath} is
 loaded) details of the @code{align} environment.")
     (license license:lppl)))
 
+(define-public texlive-drac
+  (package
+    (name "texlive-drac")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/drac/" "source/latex/drac/"
+                   "tex/latex/drac/")
+             (base32
+              "0clkdwjk28vqqzvzby9v28ysmhg7avfqkf093844p8bfjs2i3csw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/drac")
+    (synopsis "Declare active character substitution, robustly")
+    (description
+     "The package provides macros @code{\\DeclareRobustActChar} and
+@code{\\ReDeclareRobActChar}.  One uses @code{\\DeclareRobustActChar} in the
+same way one would use @code{\\DeclareRobustCommand}; the macro
+@code{\\protects} the active character when it appears in a moving argument.
+@code{\\ReDeclareRobActChar} redefines an active character previously defined
+with @code{\\DeclareRobustActChar}, in the same way that @code{\\renewcommand}
+works for ordinary commands.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
