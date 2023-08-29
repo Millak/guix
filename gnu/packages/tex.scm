@@ -81062,6 +81062,28 @@ This package was put together with the intent to use it with the Palatino and
 Optima fonts, but it may work with other combinations, too.")
     (license license:lppl1.3+)))
 
+(define-public texlive-europasscv
+  (package
+    (name "texlive-europasscv")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/europasscv/"
+                   "tex/latex/europasscv/")
+             (base32
+              "0q9nj9p87np8p55p3fl0ffhaqlazvn2xh82lmk4fdlhc593mbhpy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/europasscv")
+    (synopsis
+     "Unofficial class for the new version of the Europass curriculum vitae")
+    (description
+     "This class is an unofficial LaTeX implementation of the Europass CV, the
+standard model for curriculum vitae as recommended by the European Commission.
+It includes the major style updates that came out in 2013, featuring a neater,
+more compact and somewhat fancier layout.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
