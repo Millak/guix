@@ -89784,6 +89784,30 @@ placing @code{\\version} in the header or footer, each page can be marked with
 the unique build number describing the progress of your document.")
     (license license:lppl1.2+)))
 
+(define-public texlive-mwe
+  (package
+    (name "texlive-mwe")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mwe/" "source/latex/mwe/"
+                   "tex/latex/mwe/")
+             (base32
+              "19ak9zq3mcz2bla9vwvlbvj8h6k64n0wpsvjbbdql51jrqa1r4dj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-ydoc))
+    (home-page "https://ctan.org/pkg/mwe")
+    (synopsis "Packages and image files for MWEs")
+    (description
+     "The bundle provides several files useful when creating a @acronym{MWE,
+Minimal Working Example}.  The package itself loads a small set of packages
+often used when creating MWEs.  In addition, a range of images are provided,
+so that they may be used in any (La)TeX document.  This allows different users
+to share MWEs which include image commands, without the need to share image
+files or to use replacement code.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
