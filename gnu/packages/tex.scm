@@ -96918,6 +96918,27 @@ retrieve information necessary for the required output.")
 typeset documents.")
     (license license:lppl1.0+)))
 
+(define-public texlive-swfigure
+  (package
+    (name "texlive-swfigure")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/swfigure/"
+                   "source/latex/swfigure/"
+                   "tex/latex/swfigure/")
+             (base32
+              "1w2s9wil773dypa7xllbvawbdk41qdfzwy19pya17z8qp8csjqvh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/swfigure")
+    (synopsis "Insert large images that do not fit into a single page")
+    (description
+     "This package defines five different display modes in order to place in
+a document large figures that do not fit into a single page.  A single user
+macro is defined to handle all five display modes.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
