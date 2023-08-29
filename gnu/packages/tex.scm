@@ -99770,6 +99770,25 @@ across columns or pages and display formulas separated from their introductory
 paragraph.")
     (license license:lppl1.3c)))
 
+(define-public texlive-williams
+  (package
+    (name "texlive-williams")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/williams/" "tex/latex/williams/")
+             (base32
+              "1rk7x20a23mq3r920hr96m65x48040q8m0ps6in91qlf77fz0lpw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/williams")
+    (synopsis "Miscellaneous macros by Peter Williams")
+    (description
+     "The bundle provides two packages: @code{antree}, which provides macros for
+annotated node trees, and @code{toklist}, which is an implementation of
+Knuth's token list macros, to be found on pp.378--379 of the @emph{TeXbook}.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
