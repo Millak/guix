@@ -89100,6 +89100,24 @@ then be used to refer to elements or arguments without hard-coding the symbols
 in the document.")
     (license license:lppl)))
 
+(define-public texlive-mmap
+  (package
+    (name "texlive-mmap")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mmap/" "tex/latex/mmap/")
+             (base32
+              "0gzkpsgfiqkazjrcnr5bvrjs9fa220sxdq761mspvsw80aglagy5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mmap")
+    (synopsis "Include CMap resources in PDF files from pdfTeX")
+    (description
+     "The package is an extension of @code{cmap} with improved flexibility and coverage,
+including the ability to re-encode Knuth's basic mathematics fonts.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
