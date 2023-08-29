@@ -87703,6 +87703,26 @@ already defined and should be introduced by intermediate packages.")
 The patch applies to version 4.11 of @code{longtable}.")
     (license license:lppl)))
 
+(define-public texlive-ltxguidex
+  (package
+    (name "texlive-ltxguidex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ltxguidex/"
+                   "tex/latex/ltxguidex/")
+             (base32
+              "0wi2v8fvp12vqrhfmbj16mgi9lph0jdf9gks6z3p0kwp0l9jn5cy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ltxguidex")
+    (synopsis "Extended @code{ltxguide} class")
+    (description
+     "The @code{ltxguidex} document class extends @code{ltxguide} with a set of
+environments and commands that make writing beautiful LaTeX documentation
+easier and more natural.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
