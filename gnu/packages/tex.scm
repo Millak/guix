@@ -97299,6 +97299,34 @@ deals with the problem of column heads that are significantly wider than the
 body of the column.")
     (license license:lppl)))
 
+(define-public texlive-tabularray
+  (package
+    (name "texlive-tabularray")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tabularray/"
+                   "tex/latex/tabularray/")
+             (base32
+              "0bwjlna7732ii8ivk2szmz7kd6rddfgnh5qc9ilxwlwr9c7zw2xz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tabularray")
+    (synopsis "Typeset tabulars and arrays with LaTeX3")
+    (description
+     "LaTeX tables are implemented using TeX commands such as @code{\\halign},
+@code{\\noalign}, @code{\\span}, and @code{\\omit}.  In order to implement new
+features, many macro packages have modified the inner table commands inside
+LaTeX.  This makes package code complicated, difficult to maintain, and often
+conflicts with each other.  At present, the LaTeX3 programming layer is
+basically mature.  This @code{tabularray} package will discard the old
+@code{\\halign} commands and directly use LaTeX3 functions to parse the table,
+and then typeset the entire table.  Under the premise of being compatible with
+the basic syntax of LaTeX2 tables, this macro package will completely separate
+the content and style of the table, and the style of the table can be
+completely set in @code{keyval} way.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
