@@ -88847,6 +88847,24 @@ quiz and insert it into the same or a different document.  Solutions are ones
 created by either the @code{exerquiz} or @code{eqexam} package.")
     (license license:lppl1.2+)))
 
+(define-public texlive-midpage
+  (package
+    (name "texlive-midpage")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/midpage/" "tex/latex/midpage/")
+             (base32
+              "0ky1p8y4vc30p6395yw820qw6i3rs0fhjrylf0szfbd969qk50yv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/midpage")
+    (synopsis "Environment for vertical centering")
+    (description
+     "The environment will center text, if immediately preceded and followed by
+@code{\\clearpage}.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
