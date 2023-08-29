@@ -85443,6 +85443,24 @@ the LuaTeX engine.")
 find in a comma separated list and, additionally, a number of macro tests.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ifmslide
+  (package
+    (name "texlive-ifmslide")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ifmslide/" "tex/latex/ifmslide/")
+             (base32
+              "0qwf9bx7im71nr04y4im47lh29m8s7w772y077m70fbr5mbila9n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ifmslide")
+    (synopsis "Presentation slides for screen and printouts")
+    (description
+     "This package is used to produce printed slides with LaTeX and online
+presentations with pdfLaTeX.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
