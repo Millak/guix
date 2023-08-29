@@ -72534,6 +72534,67 @@ certain or life annuities, and an over angle square bracket used to emphasize
 joint status in symbols of life contingencies.")
     (license license:lppl1.3c)))
 
+(define-public texlive-actuarialsymbol
+  (package
+    (name "texlive-actuarialsymbol")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/actuarialsymbol/"
+                   "source/latex/actuarialsymbol/"
+                   "tex/latex/actuarialsymbol/")
+             (base32
+              "1rnipnm3crv9qmcf7icymizkp4bkkaa1p50qfni04aq89csqnkwq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:tex-format "latex"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Build process requires an image from "doc/", so we need
+          ;; to point to it so it can be found.  Unfortunately, it is
+          ;; a JPG file, therefore missing a bounding box.  Add
+          ;; missing informations, too.
+          (add-before 'build 'fix-build
+            (lambda _
+              (substitute* "source/latex/actuarialsymbol/actuarialsymbol.dtx"
+                (("\\\\includegraphics.*\\{mosaic\\}")
+                 (string-append "\\includegraphics[bb=0 0 1000 300]{"
+                                (getcwd) "/doc/latex/actuarialsymbol/mosaic.jpg"
+                                "}"))))))))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-actuarialangle
+                  texlive-booktabs
+                  texlive-enumitem
+                  texlive-etoolbox
+                  texlive-framed
+                  texlive-helvetic
+                  texlive-hypdoc
+                  texlive-inconsolata
+                  texlive-mathpazo
+                  texlive-metalogo
+                  texlive-microtype
+                  texlive-natbib
+                  texlive-upquote
+                  texlive-pict2e
+                  texlive-rsfso
+                  texlive-xcolor
+                  texlive-xkeyval))))
+    (home-page "https://ctan.org/pkg/actuarialsymbol")
+    (synopsis
+     "Actuarial symbols of life contingencies and financial mathematics")
+    (description
+     "This package provides commands to compose actuarial symbols of life
+contingencies and financial mathematics characterized by subscripts and
+superscripts on both sides of a principal symbol.  The package also features
+commands to easily and consistently position precedence numbers above or below
+statuses in symbols for multiple lives contracts.  Since the actuarial
+notation can get quite involved, the package defines a number of shortcut
+macros to ease entry of the most common elements.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
