@@ -82796,6 +82796,31 @@ present package.")
 bottom of the page, back to the occurence of the footnote in the main text.")
     (license license:lppl1.3+)))
 
+(define-public texlive-footnoterange
+  (package
+    (name "texlive-footnoterange")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/footnoterange/"
+                   "source/latex/footnoterange/"
+                   "tex/latex/footnoterange/")
+             (base32
+              "1sc3m2hy4hgc3mxsaby9say1hsad4flchs7wv2xxv4wzss3g2kgh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/footnoterange")
+    (synopsis "References to ranges of footnotes")
+    (description
+     "The package provides the environments @code{footnoterange} and
+@code{footnoterange*}.  Multiple footnotes inside these environments are not
+referenced as (e.g.) @samp{1 2 3} but as @samp{1-3}, i.e., the range (from
+first to last referred footnote at that place) is given.  If the
+@code{hyperref} package is loaded with enabled @code{hyperfootnotes} option,
+then the references are hyperlinked.  (References to footnotes in
+@code{footnoterange*} environments are never hyperlinked.)")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
