@@ -91973,6 +91973,25 @@ embellishments that a user can imagine to have in as presentation.
 The package can make use of the facilities of the PPower4 post-processor.")
     (license license:lppl)))
 
+(define-public texlive-pdfsync
+  (package
+    (name "texlive-pdfsync")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pdfsync/" "tex/latex/pdfsync/")
+             (base32
+              "0csxvx2wns2hng28s320i1wv7c73yx98jzwiich1hsqp93sss6a1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pdfsync")
+    (synopsis "Provide links between source and PDF")
+    (description
+     "The package runs with pdfTeX or XeTeX, and creates an auxiliary file with
+geometrical information to permit references back and forth between source and
+PDF, assuming a conforming editor and PDF viewer.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
