@@ -88071,6 +88071,27 @@ a @code{\\makebox} command, except that the width is given by a sample text
 instead of an explicit length measure.")
     (license license:lppl)))
 
+(define-public texlive-makecirc
+  (package
+    (name "texlive-makecirc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/metapost/makecirc/"
+                   "metapost/makecirc/")
+             (base32
+              "17l4gd9ipbgfcpiy980dlp7zzbrsy9qfcci1ajig2l23gqa50j52")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/makecirc")
+    (synopsis "MetaPost library for drawing electrical circuit diagrams")
+    (description
+     "MakeCirc is a MetaPost library that contains diverse symbols for use in
+circuit diagrams.  MakeCirc offers a high quality tool, with a simple syntax.
+MakeCirc is completely integrated with LaTeX documents and with other MetaPost
+drawing/graphic.  Its output is a PostScript file.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
