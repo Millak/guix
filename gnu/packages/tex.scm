@@ -75350,6 +75350,28 @@ equation number plus a letter.")
 use within a document.")
     (license license:public-domain)))
 
+(define-public texlive-catchfilebetweentags
+  (package
+    (name "texlive-catchfilebetweentags")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/catchfilebetweentags/"
+                   "source/latex/catchfilebetweentags/"
+                   "tex/latex/catchfilebetweentags/")
+             (base32
+              "11zkhb69gaabcdi1h41iz5yfkq90ch9zfkpnfqf1slvrfy8d8bzc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/catchfilebetweentags")
+    (synopsis "Catch text delimited by @code{docstrip} tags")
+    (description
+     "This package provides a macro @code{\\catchfilebetweentags} acts like the
+original @code{\\catchfile} but only extracts a portion of the file instead of
+the complete file.  The extracted portion can be delimited by strings or by
+docstrip tags.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
