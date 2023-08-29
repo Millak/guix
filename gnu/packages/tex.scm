@@ -82308,6 +82308,23 @@ annotations.  The command @code{\\listofnotes} prints a list of outstanding
 notes, with links to the pages on which they appear.")
     (license license:public-domain)))
 
+(define-public texlive-fjodor
+  (package
+    (name "texlive-fjodor")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fjodor/" "tex/latex/fjodor/")
+             (base32
+              "0s0aaf5h1rm18hyav988rqvsq4xzyszr41p7sqnl92xxi5xzg86h")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fjodor")
+    (synopsis "Selection of layout styles")
+    (description
+     "The package provides several page layouts, selectable by package options.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
