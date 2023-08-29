@@ -98826,6 +98826,43 @@ page into columns, and may be used for fixing measurements of layout.")
 environments for typesetting university assignments.")
     (license license:lppl)))
 
+(define-public texlive-uebungsblatt
+  (package
+    (name "texlive-uebungsblatt")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/uebungsblatt/"
+                   "tex/latex/uebungsblatt/")
+             (base32
+              "00vgn9qv9xl0afj37r2nlvw51vb3qfdd8an5az8f7mqkydi33ppa")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uebungsblatt")
+    (synopsis "LaTeX class for writing exercise sheets")
+    (description
+     "This package implements a LaTeX class for writing exercise sheets for
+a lecture.  Its features are:
+
+@itemize
+
+@item quick typesetting of exercise sheets or their revisions,
+
+@item simple user friendly commands,
+
+@item elegant page formatting,
+
+@item automatic numbering of exercises and sub-exercises,
+
+@item the number of the exercise sheet is extracted automatically from the
+file name,
+
+@item static information about the lectures and the authors needs to provided
+at one point only.
+
+@end itemize")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
