@@ -72845,6 +72845,26 @@ macros to build QCM in tables.")
 together with the @code{psfont} package.")
     (license license:gpl3+)))
 
+(define-public texlive-altsubsup
+  (package
+    (name "texlive-altsubsup")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/altsubsup/"
+                   "source/latex/altsubsup/"
+                   "tex/latex/altsubsup/")
+             (base32
+              "1c30v7pxlfxvkygli3xkzx9sbn99xkaqvs2s4ansz4wxzamsziiz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/altsubsup")
+    (synopsis "Subscripts and superscripts with square brackets")
+    (description
+     "This is a LaTeX package to write alternative and customisable subscripts and
+superscripts, with square brackets in the source code.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
