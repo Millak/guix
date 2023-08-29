@@ -82620,6 +82620,27 @@ labels.  The package also provides a @code{\\Ref} command to make reference to
 such redefined labels at the start of a sentence.")
     (license license:lppl)))
 
+(define-public texlive-fnpara
+  (package
+    (name "texlive-fnpara")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fnpara/" "tex/latex/fnpara/")
+             (base32
+              "0rc8r9dq23fvjygk44mpk74fzcdl55134sql91wc663z7yaz35xc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fnpara")
+    (synopsis "Footnotes in paragraphs")
+    (description
+     "Typeset footnotes in run-on paragraphs, instead of one above another; this is
+a re-seating, for the LaTeX environment, of an example in the @emph{TeXbook}.
+The same basic code, improved for use in e-TeX-based LaTeX, appears in the
+comprehensive footnote package @code{footmisc}, and superior versions are also
+available in the @code{manyfoot} and @code{bigfoot} packages.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
