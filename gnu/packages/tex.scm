@@ -86405,6 +86405,29 @@ throughout a document.  It helps building an index.  In combination with
 to its introduction.  It also offers simple notations.")
     (license license:lppl1.2+)))
 
+(define-public texlive-koma-moderncvclassic
+  (package
+    (name "texlive-koma-moderncvclassic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/koma-moderncvclassic/"
+                   "tex/latex/koma-moderncvclassic/")
+             (base32
+              "169z8jvbsg8c9czf9p5lkcffm3nic6vvp7l4s1my0rqbvyyqs795")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/koma-moderncvclassic")
+    (synopsis
+     "Combine @code{moderncv} classic style and @code{koma-script} classes")
+    (description
+     "This package provides an imitation of the @code{moderncv} class with the
+classic style, to be used in conjunction with the @code{koma-script} classes.
+Thus it is possible to configure pagelayout, headings etc., the way it is done
+in @code{koma-scripts} classes.  Moreover, it is possible to use BibLaTeX,
+while the original @code{moderncv} class is incompatible with it.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
