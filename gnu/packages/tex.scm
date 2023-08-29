@@ -88347,6 +88347,30 @@ e-pTeX), upLaTeX (runs on e-upTeX), and Lamed (runs on Aleph, successor of
 Omega).")
     (license license:bsd-3)))
 
+(define-public texlive-mathfont
+  (package
+    (name "texlive-mathfont")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mathfont/"
+                   "source/latex/mathfont/"
+                   "tex/latex/mathfont/")
+             (base32
+              "0mr0nnjag8mvs11kll8xzg5jjp1l57pyjwyhqz21n65lq18c1swx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mathfont")
+    (synopsis "Use TrueType and OpenType fonts in math mode")
+    (description
+     "The @code{mathfont} package adapts unicode text fonts for math mode.  The
+package allows the user to specify a default unicode font for different
+classes of math symbols, and it provides tools to change the font locally for
+math alphabet characters.  When typesetting with LuaTeX, @code{mathfont} adds
+resizable delimiters, big operators, and a @code{MathConstants} table to text
+fonts.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
