@@ -98400,6 +98400,30 @@ active, implicit, and catcode-6 tokens as they are digested.  The package
 provides a number of options for handling groups.")
     (license license:lppl1.3c)))
 
+(define-public texlive-tokenizer
+  (package
+    (name "texlive-tokenizer")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tokenizer/"
+                   "tex/latex/tokenizer/")
+             (base32
+              "0gvqn1rc3aq7kzmg6vibwgcpvpzsqkdfbp5im43405zl3d7rzhb9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tokenizer")
+    (synopsis "Tokenizer for LaTeX")
+    (description
+     "This package provides a tokenizer for LaTeX.
+@code{\\GetTokens@{Target1@}@{Target2@}@{Source@}} splits source into two
+tokens at the first encounter of a comma.  The first token is saved in a newly
+created command with the name passed as @samp{<Target1>} and the second token
+likewise.  A package option @code{trim} causes leading and trailing space to
+be removed from each token; with this option, the @code{\\TrimSpaces} command
+is defined, which removes leading and trailing spaces from its argument.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
