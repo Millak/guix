@@ -76003,6 +76003,25 @@ no-one would deny that the PSTricks @code{pst-optic} package, or the MetaPost
 @code{makecirc} package do the job better.")
     (license license:gpl3+)))
 
+(define-public texlive-circledsteps
+  (package
+    (name "texlive-circledsteps")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/circledsteps/"
+                   "tex/latex/circledsteps/")
+             (base32
+              "16njn3jxq3sl40hr5vvb7jny6nia8jci49917k6m84ppikqlc5mv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/circledsteps")
+    (synopsis "Typeset circled numbers")
+    (description
+     "This package generates circled numbers (or other kinds of markers or small
+text) to mark steps in procedures, exercises, and so on.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
