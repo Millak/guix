@@ -82247,6 +82247,46 @@ extension font so that it becomes arbitrarily scalable, using the optical size
 fonts provided by the AMS together with the original @code{cmex10} font.")
     (license license:lppl1.3c)))
 
+(define-public texlive-fixme
+  (package
+    (name "texlive-fixme")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fixme/" "source/latex/fixme/"
+                   "tex/latex/fixme/")
+             (base32
+              "1mgx9v7c0l572lz6ysbpg0hrqk4lpy5sn9kcyrpf71zp28szf81s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:tex-format "latex"
+           #:phases
+           ;; Build process requires some directories to be created
+           ;; beforehand.  Create those to prevent an error.
+           #~(modify-phases %standard-phases
+               (add-before 'build 'fix-build
+                 (lambda _
+                   (for-each mkdir-p
+                             '("build/layouts/env"
+                               "build/layouts/target"
+                               "build/themes/")))))))
+    (home-page "https://ctan.org/pkg/fixme")
+    (synopsis "Collaborative annotation tool for LaTeX")
+    (description
+     "FiXme is a collaborative annotation tool for LaTeX documents.
+Annotating a document here refers to inserting meta-notes, that is, notes that
+do not belong to the document itself, but rather to its development or
+reviewing process.  Such notes may involve things of different importance
+levels, ranging from simple ``fix the spelling'' flags to critical ``this
+paragraph is a lie'' mentions.  Annotations like this should be visible during
+the development or reviewing phase, but should normally disappear in the final
+version of the document.  FiXme is designed to ease and automate the process
+of managing collaborative annotations, by offering a set of predefined note
+levels and layouts, the possibility to register multiple authors, to reference
+annotations by listing and indexing etc.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
