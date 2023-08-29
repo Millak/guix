@@ -86546,6 +86546,30 @@ KOMA-Script class @file{scrbook.cls}.  There can be several index entries for
 one experiment.")
     (license license:lppl)))
 
+(define-public texlive-labels
+  (package
+    (name "texlive-labels")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/labels/" "source/latex/labels/"
+                   "tex/latex/labels/")
+             (base32
+              "1ldvd3d5c1g2hm4h02px1gzvv3kkkx834nwp3m3skh80nbhd3hcz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/labels")
+    (synopsis "Print sheets of sticky labels")
+    (description
+     "This package provides a LaTeX package to print a regular grid of ragged-right
+labels on a page, suitable for sheets of labels which can be fed through
+a printer.  Macros are provided to allow easy input of names and addresses in
+a form free of TeX markup.  Equally useful is a feature for making multiple
+copies of a single label, e.g., return address stickers to go with the labels.
+Rows, columns, borders can all be specified to match the label sheet being
+used.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
