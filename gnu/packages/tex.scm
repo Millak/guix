@@ -98903,6 +98903,26 @@ arguments.")
 LaTeX.")
     (license license:lppl)))
 
+(define-public texlive-underoverlap
+  (package
+    (name "texlive-underoverlap")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/underoverlap/"
+                   "tex/latex/underoverlap/")
+             (base32
+              "0ah8y9ninlkizjqi74qh4kxa23334pa58bnhl1g5n12vh80c4177")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/underoverlap")
+    (synopsis "Position decorations over and under expressions")
+    (description
+     "The package overcomes TeX's inherent limitations in commands that place
+decorations (such as braces) at arbirary positions over and under expressions,
+overlapping as necessary.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
