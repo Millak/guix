@@ -74341,6 +74341,30 @@ LaTeX package @code{multiply} that provides a command for multiplication of
 a length without numerical overflow.")
     (license license:lppl1.3+)))
 
+(define-public texlive-bhcexam
+  (package
+    (name "texlive-bhcexam")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/xelatex/bhcexam/"
+                   "tex/xelatex/bhcexam/")
+             (base32
+              "1hcj2xjgcmi0ck8mj44sr9jqk6rw639kq4wmyr1afb5i36qdja05")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bhcexam")
+    (synopsis "@code{exam} class for mathematics teachers in China")
+    (description
+     "This @code{exam} class is specially designed for mathematics teachers in
+China.  Using BHCexam you can separate the format and the content very well;
+export both teacher paper and student paper; typeset multiple choice questions
+with 3-6 options keeping adaptively neat alignment; typeset cloze questions
+with a customizable underline; typeset questions with subquestions in lists;
+group questions in a list to control whether to show score, leave spacing,
+initialize question number; and more.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
