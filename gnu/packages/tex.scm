@@ -81838,6 +81838,30 @@ The class is built upon LaTeX Beamer, so all Beamer commands should work.")
 the PGF bundle.")
     (license license:lppl1.3+)))
 
+(define-public texlive-fancytooltips
+  (package
+    (name "texlive-fancytooltips")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fancytooltips/"
+                   "source/latex/fancytooltips/"
+                   "tex/latex/fancytooltips/")
+             (base32
+              "0ykifyjcxirl98nnr2j0sfrcmkjizfmcfqjrjal2byq9nd4642z5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fancytooltips")
+    (synopsis "Include a wide range of material in PDF tooltips")
+    (description
+     "The package was inspired by the @code{cooltooltips} package.  In contrast to
+@code{cooltooltips}, @code{fancytooltips} allows inclusion of tooltips which
+contain arbitrary TeX material or a series of TeX materials (animated
+graphics) from an external PDF file.  To see the tooltips, you have to open
+the files in Adobe Reader.  The links and JavaScripts are inserted using
+@code{eforms} package from the AcroTeX bundle.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
