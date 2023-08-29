@@ -93488,6 +93488,32 @@ user to configure font properties and spacing and to control orphans within
 and after the environment.")
     (license license:lppl1.3+)))
 
+(define-public texlive-quotmark
+  (package
+    (name "texlive-quotmark")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/quotmark/"
+                   "source/latex/quotmark/"
+                   "tex/latex/quotmark/")
+             (base32
+              "1hijpw5d29b6zdgrqrpmg8p5vh9kf3f6kx6r6qr1yc2l7ydscyma")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/quotmark")
+    (synopsis "Consistent quote marks")
+    (description
+     "The package provides a means of ensuring consistent quote marks throughout
+your document.  The style can be changed either via package option or command,
+and the package detects language selections (from the @code{babel} or
+@code{ngerman} packages), and uses the punctuation marks appropriate for the
+current language.
+
+The author now considers the package obsolete, and recommends use of
+@code{csquotes} in its place.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
