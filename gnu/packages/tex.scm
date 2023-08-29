@@ -84548,6 +84548,26 @@ portrait slides.  The available styles demonstrate how to expand the
 functionality of Prosper even further.")
     (license license:lppl)))
 
+(define-public texlive-hackthefootline
+  (package
+    (name "texlive-hackthefootline")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hackthefootline/"
+                   "tex/latex/hackthefootline/")
+             (base32
+              "0896maf9g2hmahfgp06aw3ibfy4az4bkvdypdp55padzy6qng9rn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hackthefootline")
+    (synopsis
+     "Footline selection and configuration for LaTeX Beamer's standard themes")
+    (description
+     "This package is taking over, defining and redefining different footlines.
+Configuration is provided via using key-value syntax.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
