@@ -98324,6 +98324,35 @@ a single package option hide, or just make them disappear entirely with the
 option off.")
     (license license:expat)))
 
+(define-public texlive-tocdata
+  (package
+    (name "texlive-tocdata")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tocdata/" "source/latex/tocdata/"
+                   "tex/latex/tocdata/")
+             (base32
+              "12yzfjg8ag7nh9ddk2mja1mn4w31rw931kzgdwk4aq022w5ksv8m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tocdata")
+    (synopsis "Adds names to chapters, sections, figures in the TOC and LOF")
+    (description
+     "The @code{tocdata} package may be used to add a small amount of data to an
+entry in the table of contents or list of figures, between the section or
+caption name and the page number.  The typical use would be to add the name of
+an author or artist of a chapter or section, such as in an anthology or
+a collection of papers.  Additionally, user-level macros are provided which
+add the author's name to a chapter or section, along with an optional prefix
+and/or suffix, and add to a figure the artist's name, prefix, and suffix, plus
+optional additional text.  Author and artist names are also added to the
+index.  Additional user-level macros control formatting.  @code{tocdata} works
+with the TOC/LOF formatting of the default LaTeX classes, @code{memoir},
+@code{koma-script}, and with @code{titletoc}, @code{tocloft}, @code{tocbasic},
+and @code{tocstyle}.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
