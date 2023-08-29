@@ -83626,6 +83626,25 @@ a command @code{\\versionBox} which outputs a box containing the version and
 date of compilation.")
     (license license:lppl1.3c)))
 
+(define-public texlive-globalvals
+  (package
+    (name "texlive-globalvals")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/globalvals/"
+                   "tex/latex/globalvals/")
+             (base32
+              "0wrkkxphwd7ka31ylr27b06854x221gadw2bijj1r18x2vl0n4xb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/globalvals")
+    (synopsis "Declare global variables")
+    (description
+     "This package allows the user to declare a variable which can then be used
+anywhere else in a document, including before it was declared.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
