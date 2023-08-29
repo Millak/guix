@@ -89585,6 +89585,31 @@ that one can generate multiple reference sections.  Each section has it own
 auxiliary file (for use with BibTeX) and title.")
     (license license:lppl)))
 
+(define-public texlive-multicap
+  (package
+    (name "texlive-multicap")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/multicap/"
+                   "source/latex/multicap/"
+                   "tex/latex/multicap/")
+             (base32
+              "1hczlj5hhk3qigbq09k8b8s4sgn526lm72a99r14frblpc3177qr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    ;; "multicap.dtx" only generates documentation, not
+    ;; "multicap.sty".
+    (arguments (list #:build-targets #~'()))
+    (home-page "https://ctan.org/pkg/multicap")
+    (synopsis "Format captions inside @code{multicols}")
+    (description
+     "This is a package for formatting captions of column figures and column
+tabular material, which cannot be standard floats in a @code{multicols}
+environment.  The package also provides a convenient way to customise your
+captions, whether they be in @code{multicols} or not.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
