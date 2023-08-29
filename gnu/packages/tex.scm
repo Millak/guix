@@ -76662,6 +76662,30 @@ table-colouring option of the @code{xcolor}.  However, @code{colortab} remains
 an adequate solution for use with Plain TeX.")
     (license license:lppl)))
 
+(define-public texlive-colorwav
+  (package
+    (name "texlive-colorwav")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/colorwav/"
+                   "source/latex/colorwav/"
+                   "tex/latex/colorwav/")
+             (base32
+              "1kcan6nzkis8xwkfnv7536qr7yxr2gvdi9kcxz5c98jwjapqph1k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/colorwav")
+    (synopsis "Colours by wavelength of visible light")
+    (description
+     "The package allows the user to obtain an RGB value (suitable for use in the
+@code{color} package) from a wavelength of light.  The default unit is
+nanometres, but other units may be used.  Note that this function is also
+available within @code{xcolor}.")
+    ;; "colorwav.sty" mentions "This package is released under the GNU
+    ;; LGPL." Assume the latest one.
+    (license license:lgpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
