@@ -10265,7 +10265,7 @@ Microsoft SkyDrive and Hotmail, using their REST protocols.")
 (define-public gnome-clocks
   (package
     (name "gnome-clocks")
-    (version "42.0")
+    (version "44.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -10273,7 +10273,7 @@ Microsoft SkyDrive and Hotmail, using their REST protocols.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1q3gvniwd4dkr1ghqpp05zr7qswdhaxqrn8j6bm3qbh39bdihw8f"))))
+                "0f1q9wxixjnhwypp6zaplxzj2lrk3x8gfy0x7811m3ybcmrskmqp"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t
@@ -10294,13 +10294,13 @@ Microsoft SkyDrive and Hotmail, using their REST protocols.")
            vala))
     (inputs
      (list geoclue
-           geocode-glib-with-libsoup2
+           geocode-glib
            glib
            gnome-desktop
            gsound
            gtk
            libadwaita
-           libgweather4-with-libsoup2))
+           libgweather4))
     (home-page "https://wiki.gnome.org/Apps/Clocks")
     (synopsis "GNOME's clock application")
     (description
