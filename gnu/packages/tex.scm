@@ -90834,6 +90834,58 @@ automatically.")
 included in the Open Color library.")
     (license license:expat)))
 
+(define-public texlive-optidef
+  (package
+    (name "texlive-optidef")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/optidef/" "tex/latex/optidef/")
+             (base32
+              "1k51i2r67rn2c3i4qar6smhqrrf978cyvcsiak2a6kq446yspy4x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/optidef")
+    (synopsis "Environments for writing optimization problems")
+    (description
+     "This small library provides a standard set of environments for writing
+optimization problems.  It automatically aligns the problems in three points
+with an optional fourth:
+
+@itemize
+
+@item beginning of the words @samp{minimize/argmin} and @samp{subject to},
+
+@item the objective function and the longest left hand side of the
+constraints.
+
+@item the @samp{$=}, @samp{|}, @samp{>}, @samp{|}, @samp{<$} signs of the
+constraints.
+
+@item optionally, the user can add manually a double align character @samp{&&}
+to align some common constraints feature; a clear example could be the
+constraints names, e.g., @samp{boundary constraint} alignment with
+@samp{dynamic constraint}.
+
+@end itemize
+
+Furthermore, it provides an easy interface to define optimization problem for
+three different reference situations:
+
+@enumerate
+
+@item where no equation is referenced/numbered;
+
+@item where the problem is referenced with a single number;
+
+@item where each equation has an individual reference.
+
+@end enumerate
+
+Finally, it also allows a definition of any optimization problem without
+a limitless number of constraints.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
