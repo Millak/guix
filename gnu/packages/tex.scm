@@ -87183,6 +87183,32 @@ Libertine or Biolinum fonts.  This package is for users who only want to
 customize Greek letters in math mode.")
     (license license:lppl1.3c)))
 
+(define-public texlive-limap
+  (package
+    (name "texlive-limap")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/limap/" "source/latex/limap/"
+                   "tex/latex/limap/")
+             (base32
+              "1v81wckm2g0c67shgwxvci6lfsfjhilwrigy22hcpmszfk1czasm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/limap")
+    (synopsis
+     "Typeset maps and blocks according to the Information Mapping(r) method")
+    (description
+     "The Information Mapping method provides a methodology for structuring and
+presenting information.  It claims to be useful for readers who are more
+concerned about finding the right information than reading the document as
+a whole.  Thus short, highly structured, and context free pieces of
+information are used.  A LaTeX style and a LaTeX class are provided.  The
+style contains definitions to typeset maps and blocks according to the
+Information Mapping method.  The class provides all definitions to typeset
+a whole document.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
