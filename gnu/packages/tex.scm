@@ -75127,6 +75127,30 @@ with a values column.  The code computes sum and percentage with floating
 point numeric methods and builds the render table task.")
     (license license:lppl)))
 
+(define-public texlive-calculator
+  (package
+    (name "texlive-calculator")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/calculator/"
+                   "source/latex/calculator/"
+                   "tex/latex/calculator/")
+             (base32
+              "1ji8i6nnd024924cxgg3563c19wrmy7gw8rpp7ddk7zbjwn492m7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/calculator")
+    (synopsis "Use LaTeX as a scientific calculator")
+    (description
+     "The @code{calculator} and @code{calculus} packages define several
+instructions which allow us to realise algebraic operations and to evaluate
+elementary functions and derivatives in our documents.  The package's main
+goal is to define the arithmetic and functional calculations needed in the
+package @code{xpicture}, but the numeric abilities of @code{calculator} and
+@code{calculus} may be useful in other contexts.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
