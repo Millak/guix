@@ -75192,6 +75192,24 @@ start weeks according to local rules: e.g., weeks conventionally start on
 Monday in the English-speaking world.")
     (license license:lppl1.3c)))
 
+(define-public texlive-cancel
+  (package
+    (name "texlive-cancel")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cancel/" "tex/latex/cancel/")
+             (base32
+              "0yb0mwmkdh3p1rsj3d37nkxll24ign348gfdbb7j97i9d6mlaamy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cancel")
+    (synopsis "Place lines through maths formulae")
+    (description
+     "This package draws diagonal lines (``cancelling'' a term) and arrows with
+limits (cancelling a term ``to a value'') through parts of maths formulae.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
