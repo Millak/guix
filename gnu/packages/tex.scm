@@ -95592,6 +95592,42 @@ captions and tables in the margin.  This is common (for example) in science
 text books.")
     (license license:lppl1.3+)))
 
+(define-public texlive-sidenotesplus
+  (package
+    (name "texlive-sidenotesplus")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sidenotesplus/"
+                   "source/latex/sidenotesplus/"
+                   "tex/latex/sidenotesplus/")
+             (base32
+              "1nkyijswqnkd3igg9ln8pgfrmibfgfvavzrmi8d36d9f6bbc4i3a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sidenotesplus")
+    (synopsis
+     "Place referenced notes, alerts, figures and tables into the document margin")
+    (description
+     "Sidenotesplus is a comprehensive package for placing labeled or referenced
+notes, temporary alerts, bibliography references, figures and tables into the
+margin.  Marginals can be either floated or at fixed positions relative to the
+text.  Twoside symmetry is preserved.  For BibLaTeX users, macros for side
+references are provided.  Three margin styles are provided.  Two-page
+symmetric layouts either as (i) Ragged outer with note reverences in the
+margin separator or (ii) justified with last line ragged outer.  And (iii)
+a classic look, justified with last line ragged right and note reference to
+the left of the note, but two-page symmetry is lost.  The command
+@code{\\sidenote} mimics the @code{\\footnote} command and provides
+labelled (numbers, alphabetic, roman) references.  However, un-numbered and
+custom symbols can also be specified.  Temporary sidealerts are rendered only
+if the package option alerton is specified.  Alerts are useful as to do
+reminders during document development.  Furthermore, captions for figures and
+tables can also be placed into margin.  Also, full width environments for
+figures, tables and text are provided.  The text environment can be partially
+widened, suitable if that extra space for an equation is required.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
