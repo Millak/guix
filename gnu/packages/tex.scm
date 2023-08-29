@@ -79272,6 +79272,29 @@ everything but the material between @code{\\begin@{document@}} and
 @code{\\end@{document@}}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-docshots
+  (package
+    (name "texlive-docshots")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/docshots/"
+                   "source/latex/docshots/"
+                   "tex/latex/docshots/")
+             (base32
+              "0468gs2l00x853zvlskhf7fmvq7z0v0pa7wkfiz3sv4zn0rivnpj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-fancyvrb texlive-iexec texlive-pdfcrop
+                             texlive-pgf texlive-pgf-blur))
+    (home-page "https://ctan.org/pkg/docshots")
+    (synopsis "TeX samples next to their PDF Snapshots")
+    (description
+     "This LaTeX package helps you show TeX code next to the corresponding PDF
+snapshots, in two-column formatting.  You can use it either in @file{.dtx}
+documentation or in @file{.tex} files.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
