@@ -84313,6 +84313,32 @@ polar, log-polar, Smith charts.  It is based on the @code{picture} environment
 and its extensions.")
     (license license:lppl1.3c)))
 
+(define-public texlive-grayhints
+  (package
+    (name "texlive-grayhints")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/grayhints/"
+                   "source/latex/grayhints/"
+                   "tex/latex/grayhints/")
+             (base32
+              "0vgdqapcy0iahm7yh5cwlzmq9pq6ra763lgc9rc7sw5s25j1wzvx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/grayhints")
+    (synopsis "Produce gray hints to a variable text field")
+    (description
+     "The package provides JavaScript code snippets to create gray hints.
+Gray hints, as the author terms them, are text that appears initially in
+a text field that gives a short hint as to what the contents of the text field
+should be.  For example, a text field might contain the hint @samp{First
+Name}, or a date field might read @samp{yyyy/mm/dd}.  As soon as the field
+comes into focus, the hint disappears.  It reappears when the field is blurred
+and the user did not enter any text into the field.  The package works for
+Dvips/Distiller, pdfLaTeX, LuaLaTeX, and XeLaTeX.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
