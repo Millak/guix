@@ -95351,6 +95351,27 @@ polygon form.")
      (list license:gpl2+
            (license:fsf-free "file://doc/generic/shapepar/README.shapepar")))))
 
+(define-public texlive-shdoc
+  (package
+    (name "texlive-shdoc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/shdoc/" "source/latex/shdoc/"
+                   "tex/latex/shdoc/")
+             (base32
+              "0gx7jndmz4x2n03af7537bbngbmpg4vh51m35q9ziz6agsvjlxn3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/shdoc")
+    (synopsis
+     "Float environment to document the shell commands of a terminal session")
+    (description
+     "The package provides a simple, though fancy float environment to document
+terminal sessions --- like command executions or shell operations.  The look
+and feel of the package output imitates the look of a shell prompt.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
