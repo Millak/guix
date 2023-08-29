@@ -91697,6 +91697,28 @@ in PDF mode), back to 1.4 for documents that need to achieve maximal
 compatibility with old viewers.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pdfcolmk
+  (package
+    (name "texlive-pdfcolmk")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pdfcolmk/" "tex/latex/pdfcolmk/")
+             (base32
+              "0maapa92xjv2d9l4ra0zjn4girzyk5lnaq7asigj050a9v611wqs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pdfcolmk")
+    (synopsis "Improved colour support under pdfTeX (legacy stub)")
+    (description
+     "The package used to provide macros that emulated the colour stack
+functionality of Dvips.  The colour stack deals with colour manipulations when
+asynchronous events (like page-breaking) occur.  For current releases of
+pdfTeX, this package is not needed, since real colour stacks are available.
+It has therefore become empty stub that does nothing at all, just in case
+there are still documents that reference it.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
