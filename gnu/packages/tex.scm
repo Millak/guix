@@ -79034,6 +79034,25 @@ are set up for people using insulin injections and blood glucose teststrips,
 as well as counting/estimating carbs, protein, and fat.")
     (license license:gpl3)))
 
+(define-public texlive-diagnose
+  (package
+    (name "texlive-diagnose")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/diagnose/" "tex/latex/diagnose/")
+             (base32
+              "1qvnl8cvyh7000191akgx15mdhqwmabfm7bdwwsn1kdq091csa4a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/diagnose")
+    (synopsis "Diagnostic tool for a TeX installation")
+    (description
+     "This package provides macros to assist evaluation of the capabilities of
+a TeX installation (i.e., what extensions it supports).  An example document
+that examines the installation is available.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
