@@ -89564,6 +89564,27 @@ enumerated array in which columns are vertically aligned on the counter.")
 different audiences.")
     (license license:lppl1.3+)))
 
+(define-public texlive-multibbl
+  (package
+    (name "texlive-multibbl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/multibbl/"
+                   "source/latex/multibbl/"
+                   "tex/latex/multibbl/")
+             (base32
+              "06abaw5disihnjg1x5zd7y413rrqmwq10pqjw2hkn9frak2xmhaw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/multibbl")
+    (synopsis "Multiple bibliographies")
+    (description
+     "The package @code{multibbl} redefines the standard bibliographic commands so
+that one can generate multiple reference sections.  Each section has it own
+auxiliary file (for use with BibTeX) and title.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
