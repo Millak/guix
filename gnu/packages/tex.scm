@@ -73150,6 +73150,27 @@ lists from files and provides macros for configuring the use of the list
 environments and the appearance of the typeset results.")
     (license license:lppl1.2+)))
 
+(define-public texlive-askinclude
+  (package
+    (name "texlive-askinclude")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/askinclude/"
+                   "source/latex/askinclude/"
+                   "tex/latex/askinclude/")
+             (base32
+              "0bygb2xlxmazjv3ihag1j4xa8mdrj6n3wmrf0qsz8fksfajxmxks")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/askinclude")
+    (synopsis "Interactive use of @code{\\includeonly}")
+    (description
+     "The package asks the user which files to put in a @code{\\includeonly}
+command.  There is provision for answering ``same as last time'' or ``all
+files''.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
