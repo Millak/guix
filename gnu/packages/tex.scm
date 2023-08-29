@@ -72284,6 +72284,25 @@ break statement, except that the loop does not terminate until the end of the
 current iteration.")
     (license license:lppl)))
 
+(define-public texlive-2up
+  (package
+    (name "texlive-2up")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/2up/" "tex/generic/2up/")
+             (base32
+              "0b1fw8j91jdjq5jf2riq6q1qxxwzsv5vx5qsramzvk5cq391s1yg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/twoup-gen")
+    (synopsis "Macros to print two-up")
+    (description
+     "The @code{2up} package offers considerable flexibility as to paper
+size and layout, and produces a standard DVI file without involving
+additional DVI or PostScript filters.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
