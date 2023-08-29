@@ -82287,6 +82287,27 @@ levels and layouts, the possibility to register multiple authors, to reference
 annotations by listing and indexing etc.")
     (license license:lppl1.3+)))
 
+(define-public texlive-fixmetodonotes
+  (package
+    (name "texlive-fixmetodonotes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fixmetodonotes/"
+                   "source/latex/fixmetodonotes/"
+                   "tex/latex/fixmetodonotes/")
+             (base32
+              "100rxmm6v99v02n76rfiahmv5947v1cfnkch4ylax11ipd3s9jnk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fixmetodonotes")
+    (synopsis "Add notes on document development")
+    (description
+     "The package provides tools to highlight @samp{FIXME} and @samp{TODO}
+annotations.  The command @code{\\listofnotes} prints a list of outstanding
+notes, with links to the pages on which they appear.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
