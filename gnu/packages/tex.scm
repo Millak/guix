@@ -94288,6 +94288,24 @@ exercises and solutions: using the package, you can print the exercise text
 normally and the solutions rotated.")
     (license license:lppl)))
 
+(define-public texlive-roundbox
+  (package
+    (name "texlive-roundbox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/roundbox/" "tex/latex/roundbox/")
+             (base32
+              "1pyxk774xpl88pqjd1jg17cv06ipvv0injkhvf96ziz6mkranjzw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/roundbox")
+    (synopsis "Round boxes in LaTeX")
+    (description
+     "This package implements a command @code{\\roundbox} that can be used, in LaTeX,
+for producing boxes, framed with rounded corners.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
