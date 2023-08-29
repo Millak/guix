@@ -95012,6 +95012,26 @@ called @code{stripsemantex}, which allows you to completely strip your
 documents of SemanTeX markup to prepare them e.g., for publication.")
     (license license:lppl1.3c)))
 
+(define-public texlive-semantic
+  (package
+    (name "texlive-semantic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/semantic/"
+                   "source/latex/semantic/"
+                   "tex/latex/semantic/")
+             (base32
+              "14v1538y7gsn63833j41z9yan8cpn2c4pls2rwyyk7qmzjj30nh7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/semantic")
+    (synopsis "Help for writing programming language semantics")
+    (description
+     "This package eases the typesetting of notation of semantics and compilers.
+It includes T-diagrams, various derivation symbols and inference trees.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
