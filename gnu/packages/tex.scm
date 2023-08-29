@@ -84198,6 +84198,40 @@ of (mathematical) formulae.  Options for shifting, smashing and hiding the
 graphics may be useful in support, for example, of the Beamer framework.")
     (license license:lppl1.3+)))
 
+(define-public texlive-graphicscache
+  (package
+    (name "texlive-graphicscache")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/graphicscache/"
+                   "source/latex/graphicscache/"
+                   "tex/latex/graphicscache/")
+             (base32
+              "1wi1ls3x934f6nifa25rcxl2jicihvgfh3sn5mjiwb15pxv2hmpd")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/graphicscache")
+    (synopsis "Cache @code{\\includegraphics} calls")
+    (description
+     "This LaTeX package provides caching of @code{\\includegraphics} calls,
+therefore recompilations are much faster.  Also, images can be post-processed
+with Ghostscript before inclusion, with the following consequences:
+
+@itemize
+
+@item automatic downscaling to specified DPI;
+
+@item automatic JPEG compression with configurable quality;
+
+@item much smaller files.
+
+@end itemize
+
+@code{graphicscache} supports pdfLaTeX and LuaLaTeX; XeLaTeX is not
+supported.")
+    (license license:bsd-3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
