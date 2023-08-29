@@ -76562,6 +76562,25 @@ process of writing.  Three options are provided, including a non-color option
 designed for printing (which numbers delimiters and underlines new commands).")
     (license license:lppl1.0+)))
 
+(define-public texlive-colorframed
+  (package
+    (name "texlive-colorframed")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/colorframed/"
+                   "tex/latex/colorframed/")
+             (base32
+              "0sfg6rkyhh9i13003xdm6mnskj4nlngwq268ra4ik9vrb11s70g9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/colorframed")
+    (synopsis "Fix color problems with the package @code{framed}")
+    (description
+     "This package fixes problems with colour loss that occurres in the
+environments of the @code{framed} package.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
