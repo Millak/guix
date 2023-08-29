@@ -93029,6 +93029,27 @@ problems they cover.")
 environment is available for fragments that must not break with the pages.")
     (license license:gpl3)))
 
+(define-public texlive-progress
+  (package
+    (name "texlive-progress")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/progress/" "tex/latex/progress/")
+             (base32
+              "14sfbs9d3b28xqqaxzv7wcyjk60gqy30zwpl91mz0g55xxng7y6r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/progress")
+    (synopsis "Creates an overview of a document's state")
+    (description
+     "Progress is a package which, when compiling TeX and LaTeX documents,
+generates a HTML file showing an overview of a document's state (of how
+finished it is).  The report is sent to file @code{\\ProgressReportName},
+which is by default the @code{\\jobname} with the date appended (but is
+user-modifiable).")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
