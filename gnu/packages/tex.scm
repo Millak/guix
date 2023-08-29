@@ -94726,6 +94726,31 @@ content (including verbatim) can be used as many times as desired in the
 document, additionally can be written to external files if desired.")
     (license license:lppl1.3c)))
 
+(define-public texlive-scrambledenvs
+  (package
+    (name "texlive-scrambledenvs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/scrambledenvs/"
+                   "source/latex/scrambledenvs/"
+                   "tex/latex/scrambledenvs/")
+             (base32
+              "0s88vg9zwsbny8i8m5vs9hwd4fpblsvwwxam5z3416i2xc924mnx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/scrambledenvs")
+    (synopsis "Create and print scrambled environments")
+    (description
+     "This package allows you to create and print scrambled environments for purposes
+such as randomized hint environments.  You can mark a location with a series of
+hints, and then print the hints at the end in a pseudo-random order.  The
+general structure follows: there is an outer environment which creates the
+label, an inner environment that creates the references, and a print command
+that prints out all of the hints.  This generalizes beyond hints; one can create
+scrambled solutions as well, etc.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
