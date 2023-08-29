@@ -84067,6 +84067,29 @@ typeset plain text instead of generating an error or printing @samp{??}  if
 there is no respective hypertarget or label.")
     (license license:lppl)))
 
+(define-public texlive-gmutils
+  (package
+    (name "texlive-gmutils")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gmutils/" "tex/latex/gmutils/")
+             (base32
+              "1qaxxhf75rm9jz8bpw1nwfay8vik6i366pqi2yksnplbsnnb46m5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gmutils")
+    (synopsis "Support macros for other packages")
+    (description
+     "This package provides miscellaneous macros used by others of the author's
+packages.  The package includes: @code{\\newgif} and other globals;
+@code{\\@@ifnextcat} and @code{\\@@ifXeTeX}; @code{\\(Re)storeMacro(s)} to
+override redefinitions; @code{\\afterfi} and friends; commands from
+@code{relsize}, etc.; ``almost an environment'' or redefinition of
+@code{\\begin} (@code{\\begin*} doesn't check if the @code{argument}
+environment is defined).")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
