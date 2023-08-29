@@ -93443,6 +93443,28 @@ easily insert rather complicated mathematical material in
 @url{https://socrative.com, socrative quizzes}.")
     (license license:lppl1.3c)))
 
+(define-public texlive-quotchap
+  (package
+    (name "texlive-quotchap")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/quotchap/"
+                   "source/latex/quotchap/"
+                   "tex/latex/quotchap/")
+             (base32
+              "1v3hn7znccza193jlny1f61q6nx1hawp3hmr3277iq31idv59m99")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (home-page "https://ctan.org/pkg/quotchap")
+    (synopsis "Decorative chapter headings")
+    (description
+     "This is a package for creating decorative chapter headings with quotations.
+Uses graphical and coloured output and by default needs the Adobe standard
+font set (as supported by @code{psnfss}).")
+    (license license:gpl2)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
