@@ -82660,6 +82660,31 @@ stop), and adjusts kerning as appropriate.  As a side effect, a change to the
 handling of multiple footnotes is provided.")
     (license license:lppl1.3c)))
 
+(define-public texlive-fnumprint
+  (package
+    (name "texlive-fnumprint")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fnumprint/"
+                   "source/latex/fnumprint/"
+                   "tex/latex/fnumprint/")
+             (base32
+              "0ni19n3g4qhj1cf5602jrrwkzfz89jz2yfvplynk3dsfrxnrm78x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fnumprint")
+    (synopsis "Print a number in ``appropriate'' format")
+    (description
+     "The package defines two macros which decide to typeset a number either as an
+Arabic number or as a word (or words) for the number.  If the number is
+between zero and twelve (including zero and twelve) then words will be used;
+if the number is outside that range, it will be typeset using the package
+numprint Words for English representation of numbers are generated within the
+package, while those for German are generated using the package
+@code{zahl2string}.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
