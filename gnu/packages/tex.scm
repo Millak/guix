@@ -98691,6 +98691,30 @@ However, some LaTeX preliminaries are necessary to use those tools.  The
 use the PostScript tools.")
     (license license:lppl)))
 
+(define-public texlive-txgreeks
+  (package
+    (name "texlive-txgreeks")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/txgreeks/"
+                   "source/latex/txgreeks/"
+                   "tex/latex/txgreeks/")
+             (base32
+              "1n5bn8jd3czcns0rhslndmqh4sgka8ym12bpps1xhz5z64lsfbjj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/txgreeks")
+    (synopsis "Shape selection for TX fonts Greek letters")
+    (description
+     "The package allows LaTeX users who use the TX fonts to select the
+shapes (italic or upright) for the Greek lowercase and uppercase letters.
+Once the shapes for lowercase and uppercase have been selected via a package
+option, the @samp{\\other} prefix (e.g., @code{\\otheralpha}) allows using the
+alternate glyph (as in the @code{fourier} package).  The @code{txgreeks}
+package does not constrain the text font that may be used in the document.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
