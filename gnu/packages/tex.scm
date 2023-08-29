@@ -79497,6 +79497,29 @@ environment, the float will only be typeset on an even-numbered page, and the
 two floats will appear side-by-side in a two-sided document.")
     (license license:lppl)))
 
+(define-public texlive-dprogress
+  (package
+    (name "texlive-dprogress")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dprogress/"
+                   "source/latex/dprogress/"
+                   "tex/latex/dprogress/")
+             (base32
+              "1g3x1pqbpm6krv9p21jslbprrz9zxmjj33qa62cnpyd4sp1h5ppn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dprogress")
+    (synopsis "LaTeX-relevant log information for debugging")
+    (description
+     "The package logs LaTeX's progress through the file, making the LaTeX output
+more verbose.  This helps to make LaTeX debugging easier, as it is simpler to
+find where exactly LaTeX failed.  The package outputs the typesetting of
+section, subsection and subsubsection headers and (if @code{amsmath} is
+loaded) details of the @code{align} environment.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
