@@ -97278,6 +97278,27 @@ of the formulas for each number of the list.  The table may be built either
 horizontally or vertically and is fully customizable.")
     (license license:lppl)))
 
+(define-public texlive-tabularew
+  (package
+    (name "texlive-tabularew")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tabularew/"
+                   "source/latex/tabularew/"
+                   "tex/latex/tabularew/")
+             (base32
+              "02xral8h2qbwm8mr4y701mrigk72x42kgjl9zki72qnx95fcy579")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tabularew")
+    (synopsis "Variation on the @code{tabular} environment")
+    (description
+     "The package offers a modification of the @code{tabular} environment, which
+deals with the problem of column heads that are significantly wider than the
+body of the column.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
