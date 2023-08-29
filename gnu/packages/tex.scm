@@ -97419,6 +97419,29 @@ whatsoever.  The entire look and feel of the presentation can be defined by
 the user.")
     (license license:lppl)))
 
+(define-public texlive-tamefloats
+  (package
+    (name "texlive-tamefloats")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tamefloats/"
+                   "tex/latex/tamefloats/")
+             (base32
+              "1qsmyw732ilgdwhwhh4dnd1yhk2x3hn95sn9v6aq58mdlhax2cv0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tamefloats")
+    (synopsis "Experimentally use @code{\\holdinginserts} with LaTeX floats")
+    (description
+     "LaTeX's figures, tables, and @code{\\marginpars} are dangerous for footnotes (and
+probably also @code{\\enlargethispage}).  Here is a proposal (a patch package) to help,
+by using @code{\\holdinginserts} in a simple way.  It replaces the original problem with
+a new one --- it is an experiment to find out whether the new problem is less bad
+(or it is just a contribution to the discussion, maybe just a summary of
+previous work).")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
