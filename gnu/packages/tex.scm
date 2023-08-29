@@ -74213,6 +74213,24 @@ Carlos, Brazil.")
 nothing more than style file needed for preparing presentations.")
     (license license:lppl)))
 
+(define-public texlive-beamerthemenord
+  (package
+    (name "texlive-beamerthemenord")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamerthemenord/"
+                   "tex/latex/beamerthemenord/")
+             (base32
+              "1wb62lqlzaim5lbc0293cjrg1sxp6knrnsqdb7p2rqqlf46wjh34")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamerthemenord")
+    (synopsis "Simple Beamer theme using the Nord color theme")
+    (description
+     "This package provides a simple Beamer theme using the Nord color theme.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
