@@ -88008,6 +88008,29 @@ or other such documents.  It allows access to the entry number, number of
 entries and so on.")
     (license license:lppl1.2+)))
 
+(define-public texlive-makebarcode
+  (package
+    (name "texlive-makebarcode")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/makebarcode/"
+                   "tex/latex/makebarcode/")
+             (base32
+              "02vqhf33bnmag5q08q4r2n41j04c73i40zz54wknrhhs2w6ksp20")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/makebarcode")
+    (synopsis "Print various kinds 2/5 and Code 39 bar codes")
+    (description
+     "The package contains macros for printing various 2/5 bar codes and Code 39
+bar codes.  The macros do not use fonts but create the bar codes directly
+using vertical rules.  It is therefore possible to vary width to height ratio,
+ratio of thin and thick bars.  The package is therefore convenient for
+printing ITF bar codes as well as bar codes for identification labels for HP
+storage media.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
