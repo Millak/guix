@@ -74978,6 +74978,27 @@ file.  It is useful to create special document- templates that can be compiled
 in both PDF-mode and DVI-mode.")
     (license license:expat)))
 
+(define-public texlive-bxenclose
+  (package
+    (name "texlive-bxenclose")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bxenclose/"
+                   "tex/latex/bxenclose/")
+             (base32
+              "0s9xy8bp56bhi94djx0vxh6qsyz5nvqm8zkgag0900vfj2d339dh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bxenclose")
+    (synopsis "Enclose the document body with some pieces of code")
+    (description
+     "The package enables authors to designate in the preamble to make the document
+body enclosed with the given pieces of code.  As is known, there are already
+various mechanisms provided by LaTeX kernel or packages that attach hooks at
+the beginning and end of documents.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
