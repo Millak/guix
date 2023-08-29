@@ -88301,6 +88301,30 @@ well as those that stick out of the bottom of the page.  This package provides
 a drop-in replacement solution.")
     (license license:lppl1.3+)))
 
+(define-public texlive-mathexam
+  (package
+    (name "texlive-mathexam")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mathexam/"
+                   "source/latex/mathexam/"
+                   "tex/latex/mathexam/")
+             (base32
+              "1jw06n6cghs3s2s0yz3w0y5zx39hx7f74qs797lfki57bic34mla")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mathexam")
+    (synopsis "Package for typesetting exams")
+    (description
+     "The package can help you typeset exams (mostly in mathematics and related
+disciplines where students are required to show their calculations followed by
+one or more short answers).  It provides commands for inclusion of space for
+calculations, as well as commands for automatic creation of answer spaces.  In
+addition, the package will automatically create page headers and footers, and
+will let you include instructions and space for students to put their name.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
