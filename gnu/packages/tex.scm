@@ -88121,6 +88121,30 @@ together, fully support creation of all of the internal pages of
 a cookbook (i.e., everything except the cover art).")
     (license license:lppl1.3c)))
 
+(define-public texlive-makedtx
+  (package
+    (name "texlive-makedtx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/makedtx/" "scripts/makedtx/"
+                   "source/support/makedtx/"
+                   "tex/latex/makedtx/")
+             (base32
+              "1g20p9n834b8a55rp3l4ybwxvz2w1pp27fmak2wn8zz62nmxl4lf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:link-scripts #~(list "makedtx.pl")))
+    (inputs (list perl))
+    (home-page "https://ctan.org/pkg/makedtx")
+    (synopsis "Perl script to help generate @file{.dtx} and @file{.ins} files")
+    (description
+     "The @code{makedtx} bundle is provided to help LaTeX2e developers to write the
+code and documentation in separate files, and then combine them into a single
+@file{.dtx} file for distribution.  It automatically generates the character
+table, and also writes the associated installation (@file{.ins}) script.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
