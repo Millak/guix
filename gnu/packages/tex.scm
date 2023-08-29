@@ -73252,6 +73252,28 @@ added.")
 theorems, definitions, remarks).")
     (license license:public-domain)))
 
+(define-public texlive-aurl
+  (package
+    (name "texlive-aurl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/aurl/" "tex/latex/aurl/")
+             (base32
+              "01ra6hs6x5imnrjkdv05lairssh7a85bhxq9ghg086jy8lzrgf4c")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/aurl")
+    (synopsis
+     "Extends the @code{hyperref} package with a mechanism for hyperlinked URLs
+abbreviated with prefixes")
+    (description
+     "Semantic Web resource URLs are often abbreviated with prefixes, like
+@samp{owl:Class} or @samp{rdf:type}.  The abbreviated URL (@code{aurl})
+package provides the correct hyperlinks for those URLs.  The 1000 most common
+prefixes are predefined and more can be added.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
