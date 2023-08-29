@@ -99909,6 +99909,26 @@ French, and German are supported.)")
 package.  It is backwards compatible with the original environments.")
     (license license:lppl1.3c)))
 
+(define-public texlive-wrapstuff
+  (package
+    (name "texlive-wrapstuff")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/wrapstuff/"
+                   "source/latex/wrapstuff/"
+                   "tex/latex/wrapstuff/")
+             (base32
+              "1a5dlivmmpanlk376c3f9hx71cmb2cx0dg8ijhl7bccqic0zx234")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-ctex))
+    (home-page "https://ctan.org/pkg/wrapstuff")
+    (synopsis "Wrapping text around stuff")
+    (description
+     "This package provides another implementation of text wrapping.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
