@@ -98524,6 +98524,26 @@ that contains a list of hierarchically organized topics.")
 used by lawyers in the UK and the Commonwealth).")
     (license (list license:lppl1.3c license:cc-by-sa3.0))))
 
+(define-public texlive-trfsigns
+  (package
+    (name "texlive-trfsigns")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/trfsigns/"
+                   "source/latex/trfsigns/"
+                   "tex/latex/trfsigns/")
+             (base32
+              "0j2zlydfxbdmx5ligdw2gqkqbb5mcajmag05c4b99ijr2q58ccyh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/trfsigns")
+    (synopsis "Typeset transform signs")
+    (description
+     "This package provides a package for typesetting various transformation signs
+for Laplace transforms, Fourier transforms and others.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
