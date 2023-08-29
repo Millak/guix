@@ -92770,6 +92770,27 @@ The aim of this class is to produce a printable version of the slides written
 with Prosper, with two slides per page.")
     (license license:lppl)))
 
+(define-public texlive-crumbs
+  (package
+    (name "texlive-crumbs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/crumbs/" "source/latex/crumbs/"
+                   "tex/latex/crumbs/")
+             (base32
+              "12hyir8ia6ns2r3wf27vr58ymkgcvpsj2m3vzal815znimhk8ik2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-catchfile texlive-etoolbox
+                             texlive-xkeyval))
+    (home-page "https://ctan.org/pkg/crumbs")
+    (synopsis "Add a navigation path to the page header")
+    (description
+     "This package adds a navigation path, or breadcrumb trail, to the header of
+a presentation, just like some websites do in order to simplify navigation.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
