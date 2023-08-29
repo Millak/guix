@@ -97555,6 +97555,27 @@ designed to work well even if strange tokens (that is, unusual
 in the list.")
     (license license:lppl)))
 
+(define-public texlive-templatetools
+  (package
+    (name "texlive-templatetools")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/templatetools/"
+                   "source/latex/templatetools/"
+                   "tex/latex/templatetools/")
+             (base32
+              "02gi82iqbm568rvyqlmg61lzifxl32fd4cmgk5i4aiw93im0s1al")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/templatetools")
+    (synopsis "Commands useful in LaTeX templates")
+    (description
+     "The package provides a collection of tools, which are helpful for the
+creation of a LaTeX template if conditional paths for code execution are
+required.  All the commands work both in the preamble and in the document.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
