@@ -96271,6 +96271,26 @@ shapes around them.  It is chiefly intended for use in Beamer presentations,
 but it can be used in other document classes as well.")
     (license license:lppl1.3+)))
 
+(define-public texlive-spotcolor
+  (package
+    (name "texlive-spotcolor")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/spotcolor/"
+                   "tex/latex/spotcolor/")
+             (base32
+              "10nnal9cffwvwpw108fbkfhn7q4labs9xnb5nfz1sn9wk4li3j30")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/spotcolor")
+    (synopsis "Spot colours for pdfLaTeX")
+    (description
+     "This package provides procedures for using spot colours in LaTeX documents
+and the generated PDF files.  Predefined templates for PANTONE and HKS colour
+spaces are included but new ones can easily be defined.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
