@@ -96354,6 +96354,26 @@ spverbatim allow LaTeX to break lines at space characters.")
 to Serbian style.")
     (license license:gpl3+)))
 
+(define-public texlive-srcltx
+  (package
+    (name "texlive-srcltx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/srcltx/" "source/latex/srcltx/"
+                   "tex/latex/srcltx/")
+             (base32
+              "1yj6clsb89n0aiz8pn7il1vf2pfg369psys3b73dncf92dhlawff")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/srcltx")
+    (synopsis "Jump between DVI and TeX files")
+    (description
+     "This package provides a @code{\\special} insertion into generated @file{.dvi}
+files allowing one to jump from the @file{.dvi} file to the @file{.tex} source
+and back again (given a @file{.dvi} viewer that supports this).")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
