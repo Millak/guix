@@ -90950,6 +90950,26 @@ searching.")
 hyperlinked to the URL of the researcher whose iD was specified.")
     (license license:lppl1.3c)))
 
+(define-public texlive-orientation
+  (package
+    (name "texlive-orientation")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/orientation/"
+                   "tex/latex/orientation/")
+             (base32
+              "1qb9a3wmccih89q609r45bjbl0gq95didgz9766wyzzx3sq2zbxx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/orientation")
+    (synopsis "Set page orientation with Dvips/Ghostscript")
+    (description
+     "This package provides commands for manual (per-page and per-document)
+orientation of pages in a PDF created with
+dvips/Ghostscript (@command{ps2pdf}).")
+    (license license:cc0)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
