@@ -99301,6 +99301,28 @@ spot of invocation, rather than floating the figures to the top of the next
 page.")
     (license license:gpl3+)))
 
+(define-public texlive-verbatimcopy
+  (package
+    (name "texlive-verbatimcopy")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/verbatimcopy/"
+                   "tex/latex/verbatimcopy/")
+             (base32
+              "0nmni0l73rjsapixl27i2hxp17psa73pycwkvvql4n1x9zl7yw9w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/verbatimcopy")
+    (synopsis "Make copies of text documents from within LaTeX")
+    (description
+     "This package provides @code{\\VerbatimCopy@{in@}@{out@}} that will enable
+LaTeX to take a verbatim copy of one text file, and save it under another
+name.  The package provides a means to specify the output directory to be
+used, but does no checking and may therefore overwrite an important file if
+used injudiciously.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
