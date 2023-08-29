@@ -74701,6 +74701,46 @@ randomly-sized shelf of books, with the title and author in a randomly-chosen
 typeface.")
     (license license:lppl1.3+)))
 
+(define-public texlive-boolexpr
+  (package
+    (name "texlive-boolexpr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/boolexpr/"
+                   "source/latex/boolexpr/"
+                   "tex/latex/boolexpr/")
+             (base32
+              "1274l5q5nn1la2c5cbgvwmkpqhb28a94vsz92d3rsqgcahjdgapq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/boolexpr")
+    (synopsis "Boolean expression evaluator and a switch command")
+    (description
+     "The @code{\\boolexpr} macro evaluates boolean expressions in a purely
+expandable way.  @samp{\\boolexpr@{ A \\OR B \\AND C @}} expands to 0 if the
+logical expression is TRUE.  A, B, C may be:
+
+@itemize
+
+@item numeric expressions such as: @samp{x=y}, @samp{x<>y}, @samp{x>y} or
+@samp{x<y};
+
+@item boolean switches: @samp{\\iftrue 0\\else 1\\fi};
+
+@item conditionals: @samp{\\ifcsname whatsit\\endcsname 0\\else 1\\fi};
+
+@item another @code{\\boolexpr}: @samp{\\boolexpr@{ D \\OR E \\AND F @}}.
+
+@end itemize
+
+@code{\\boolexpr} may be used with @code{\\ifcase}.
+
+The @code{\\switch} command (which is also expandable) has the form:
+@samp{\\switch \\case@{<boolean expression>@} ... \\case@{<boolean
+expression>@} ...  ... \\otherwise ... \\endswitch}.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
