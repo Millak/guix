@@ -15272,27 +15272,6 @@ serve as interface.  The package supersedes @code{glossary} package (which is
 now obsolete).")
     (license license:lppl1.3+)))
 
-(define-public texlive-glossaries-extra
-  (package
-    (name "texlive-glossaries-extra")
-    (version (number->string %texlive-revision))
-    (source (texlive-origin
-             name version
-             (list "bibtex/bib/glossaries-extra/"
-                   "doc/latex/glossaries-extra/"
-                   "source/latex/glossaries-extra/"
-                   "tex/latex/glossaries-extra/")
-             (base32
-              "0s075syzxyz4mkdmq3y4xk38gb9ip19k0cdrlymmixd7jiawvlm8")))
-    (outputs '("out" "doc"))
-    (build-system texlive-build-system)
-    (home-page "https://ctan.org/pkg/glossaries-extra")
-    (synopsis "Extension to the @code{glossaries} package")
-    (description
-     "This package provides improvements and extra features to the
-@code{glossaries} package.")
-    (license license:lppl1.3+)))
-
 (define-public texlive-gmverse
   (package
     (name "texlive-gmverse")
