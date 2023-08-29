@@ -91654,6 +91654,26 @@ balance package; otherwise, it uses @code{\\enlargethispage} to make the left
 column shorter, balancing the columns.")
     (license license:lppl1.3c)))
 
+(define-public texlive-pbsheet
+  (package
+    (name "texlive-pbsheet")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pbsheet/" "source/latex/pbsheet/"
+                   "tex/latex/pbsheet/")
+             (base32
+              "126gps82j47xhw01p8w8qpcdlfffzqxan6xjizz9gdj1bhgyqk49")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pbsheet")
+    (synopsis "Problem sheet class")
+    (description
+     "This class is designed to simplify the typesetting of problem sheets with
+mathematics and computer science content.  It is currently customised towards
+teaching in French (and the examples are in French).")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
