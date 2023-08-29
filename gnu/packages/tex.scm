@@ -86869,6 +86869,27 @@ a counter.  The @code{keyval} package is used for the user to provide values
 for the range and a seed, and for the name of the counter to be used.")
     (license license:lppl)))
 
+(define-public texlive-leading
+  (package
+    (name "texlive-leading")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/leading/" "source/latex/leading/"
+                   "tex/latex/leading/")
+             (base32
+              "0fhdld6bagjyg0fs6c4gy0yp1p6wcrldqrs4hkrhylgrs2ilana9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/leading")
+    (synopsis "Define leading with a length")
+    (description
+     "The package defines a command @code{\\leading}, whose argument specifies the
+nominal distance between consecutive baselines of typeset text.  The command
+replaces the rather more difficult LaTeX command @code{\\linespread}, where
+the leading is specified by reference to the font size.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
