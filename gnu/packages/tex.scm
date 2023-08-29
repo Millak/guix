@@ -94138,6 +94138,28 @@ parameters to particular measurements.")
 which checks for the existence of a command before declaring it robust.")
     (license license:lppl)))
 
+(define-public texlive-robustindex
+  (package
+    (name "texlive-robustindex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/robustindex/"
+                   "tex/latex/robustindex/")
+             (base32
+              "1vm0fsshl9g4kkw9sfdva6xrmxmqhk1sndrg4nbh6ch8mk5s4b2a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/robustindex")
+    (synopsis "Create index with pagerefs")
+    (description
+     "Third parties often change the page numbers without rerunning
+@command{makeindex}.  One would like to make the page numbers in the index
+entries more robust.  This bundle provides @file{robustindex.sty} and
+@file{robustglossary.sty}, which use the @code{\\pageref} mechanism to
+maintain correct page numbers.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
