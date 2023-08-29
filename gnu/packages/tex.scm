@@ -100886,6 +100886,27 @@ a document, and then provide the information in macros.  The facilities
 provide a means of obtaining the date of a package being documented.")
     (license license:lppl1.3+)))
 
+(define-public texlive-zwpagelayout
+  (package
+    (name "texlive-zwpagelayout")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/zwpagelayout/"
+                   "tex/latex/zwpagelayout/")
+             (base32
+              "0wvdx8jgvxpxln61xbh4lyd95r6g1dnjmhy1vjsqqdhqwwgch40x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/zwpagelayout")
+    (synopsis "Page layout and crop-marks")
+    (description
+     "This package was developed as a typographers toolbox offering important
+basic features for everyday work.  It allows setting the paper size and the
+page layout; it can print crop marks; and it can reflect pages both
+horizontally and vertically.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
