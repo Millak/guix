@@ -73034,6 +73034,30 @@ letters long.)  The commands generate an @code{\\hbox}, and may be used both
 in text and in maths formulae.")
     (license license:lppl)))
 
+(define-public texlive-arraycols
+  (package
+    (name "texlive-arraycols")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/arraycols/"
+                   "source/latex/arraycols/"
+                   "tex/latex/arraycols/")
+             (base32
+              "1hglgawvmg2c935j5l531244461mqn0xavd75ys1xybbnzc7r44r")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/arraycols")
+    (synopsis
+     "New column types for @code{array} and @code{tabular} environments")
+    (description
+     "This small package provides new column types for @code{array} and
+@code{tabular} environments, horizontally and vertically centered, or with
+adjusted height for big mathematical expressions.  The columns width can be
+fixed or calculated like in tabularx environments.  Macros for drawing
+vertical and horizontal rules of variable thickness are also provided.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
