@@ -84588,6 +84588,27 @@ especially suitable for math, physics, statistics and the like.  It can easily
 be used for creating exercises, too.")
     (license license:lppl1.3c)))
 
+(define-public texlive-handout
+  (package
+    (name "texlive-handout")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/handout/" "tex/latex/handout/")
+             (base32
+              "08jmgzfrb17b6kv4d6na7i0a9amapgf5bhs29b8ajh46rdijckym")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/handout")
+    (synopsis "Create handout for auditors of a talk")
+    (description
+     "In some fields of scholarship, a beamer does not offer good support when
+giving a talk in a proceeding.  For example, in classical philology, the main
+sources are text, and it will be better to distribute a handout to the
+audience with extracts of the texts about which we will talk.  The package
+supports preparation of such handouts when writing the talk.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
