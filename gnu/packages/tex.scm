@@ -86037,6 +86037,27 @@ correct delimiter sizes can be set at the leaf nodes of a mathematical
 expression, and magically bubble upward through the delimiters.")
     (license license:lppl1.3c)))
 
+(define-public texlive-jobname-suffix
+  (package
+    (name "texlive-jobname-suffix")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/jobname-suffix/"
+                   "tex/latex/jobname-suffix/")
+             (base32
+              "1qyb61pzfwdqna53akjpwwbaab1w827rjv83hrq8ss1cd754v2ka")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/jobname-suffix")
+    (synopsis "Compile differently based on the filename")
+    (description
+     "This package allows to compile a document differently depending on the
+portion of the document's file name (internally, the @code{\\jobname}) that
+comes after the first @samp{-} character.  This allows one to have one source
+file and multiple links to this source file that each compile differently.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
