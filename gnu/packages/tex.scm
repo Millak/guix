@@ -100043,6 +100043,26 @@ of documents that are to be built separately, but have a common bookmark
 tree.")
     (license license:lppl1.2+)))
 
+(define-public texlive-xcntperchap
+  (package
+    (name "texlive-xcntperchap")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xcntperchap/"
+                   "tex/latex/xcntperchap/")
+             (base32
+              "0cbkvf8dw1pi6qr397pf985s4zyvdmc5g87y9jvg9na69v8r4pkj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xcntperchap")
+    (synopsis
+     "Track the number of subsections etc., that occur in a specified tracklevel")
+    (description
+     "This package is the successor of @code{cntperchap} and allows to provide more
+tracklevels than just only one.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
