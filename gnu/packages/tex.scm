@@ -97689,6 +97689,26 @@ alphabets.  The supplementary package @file{testidx-glossaries.sty} uses the
 indexing interface provided by the @code{glossaries} package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tex-label
+  (package
+    (name "texlive-tex-label")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tex-label/"
+                   "source/latex/tex-label/"
+                   "tex/latex/tex-label/")
+             (base32
+              "1xvyyvzyxiynsf4a64b6m40m7qnn2q2xdp81fsksz53s7d3h0wp2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tex-label")
+    (synopsis "Place a classification on each page of a document")
+    (description
+     "This package enables the user to place a classification label on each page,
+at the bottom to the right of the page number.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
