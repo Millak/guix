@@ -99581,6 +99581,25 @@ that produced the text that was marked.  The system comprises a Perl
 file (@file{vpe.pl}) and a LaTeX package (@file{vpe.sty}).")
     (license license:lppl)))
 
+(define-public texlive-vruler
+  (package
+    (name "texlive-vruler")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/vruler/" "tex/latex/vruler/")
+             (base32
+              "06yvgz6bl6xjkvf7a4nwdsrpdql97bg812vh7s524f7y3whka1lp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/vruler")
+    (synopsis "Numbering text")
+    (description
+     "The package offers facilities for adding a columns of numbering to the
+general text so that the text can be properly referenced.  The vertical ruler
+can be scaled and moved freely.")
+    (license license:lppl1.0+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
