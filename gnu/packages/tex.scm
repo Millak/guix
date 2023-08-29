@@ -80896,6 +80896,25 @@ specification of the point at which the value is calculated.  Some typographic
 alternatives may be selected by package options")
     (license license:lppl1.0+)))
 
+(define-public texlive-esieecv
+  (package
+    (name "texlive-esieecv")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/esieecv/" "source/latex/esieecv/"
+                   "tex/latex/esieecv/")
+             (base32
+              "1d3dx97q7lq5sgixki18vpgjlkgvkljbydi03r10ypnjxidrcxcf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/esieecv")
+    (synopsis "Curriculum vitae for French use")
+    (description
+     "The package allows the user to set up a curriculum vitae as a French employer
+will expect.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
