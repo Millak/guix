@@ -94267,6 +94267,27 @@ a bridge between the two packages and extends the commands from the float
 package to define rotated versions of the new floats, too.")
     (license license:lppl)))
 
+(define-public texlive-rotpages
+  (package
+    (name "texlive-rotpages")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/rotpages/" "tex/latex/rotpages/")
+             (base32
+              "1lr7xj6z1l0prl787sfw3l5z4m4gp46n840zc84a51rm05vghjp7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/rotpages")
+    (synopsis "Typeset sets of pages upside-down and backwards")
+    (description
+     "The @code{rotpages} package allows you to format documents where small sets
+of pages are rotated by 180 degrees and rearranged, so that they can be read
+by turning the printed copy upside-down.  It was developed for collecting
+exercises and solutions: using the package, you can print the exercise text
+normally and the solutions rotated.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
