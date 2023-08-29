@@ -83079,6 +83079,25 @@ such that @code{\\abovecaptionskip} and @code{\\belowcaptionskip} are swapped.
 The package should also work with a non-standard table environment.")
     (license license:gpl3+)))
 
+(define-public texlive-ftnxtra
+  (package
+    (name "texlive-ftnxtra")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ftnxtra/" "source/latex/ftnxtra/"
+                   "tex/latex/ftnxtra/")
+             (base32
+              "0fyf6gvyn91i3r8jsfcs6wka0ygkdvcll2lbpaigm355mzvm9xnl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ftnxtra")
+    (synopsis "Extend the applicability of the @code{\\footnote} command")
+    (description
+     "The package treats footnotes in @code{\\caption}, the tabular environment,
+and @code{\\chapter} and other @code{\\section}-like commands.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
