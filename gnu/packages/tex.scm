@@ -81930,6 +81930,28 @@ significantly less effort.  Just load the package as usual, then, the control
 sequence @code{\\classname} will hold the name you were looking for.")
     (license license:lppl1.3c)))
 
+(define-public texlive-fewerfloatpages
+  (package
+    (name "texlive-fewerfloatpages")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fewerfloatpages/"
+                   "source/latex/fewerfloatpages/"
+                   "tex/latex/fewerfloatpages/")
+             (base32
+              "1qvyjgigrm3nqcn795v992zifnhs77nhxj9hgxsalf2r668nlw2v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fewerfloatpages")
+    (synopsis "Reduce the number of unnecessary float pages")
+    (description
+     "This package implements a float algorithm extension for handling float pages.
+It attempts to reduce the number of unnecessary (fairly empty) float pages
+while making sure that floats nevertheless stay close to their call-outs.
+Several aspects of the algorithm behavior are adjustable.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
