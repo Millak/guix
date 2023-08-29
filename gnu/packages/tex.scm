@@ -86341,6 +86341,30 @@ managing keys.  Its machinery isn't as extensive as that of, e.g., the
 processing are the design aims of the package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-keyvaltable
+  (package
+    (name "texlive-keyvaltable")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/keyvaltable/"
+                   "source/latex/keyvaltable/"
+                   "tex/latex/keyvaltable/")
+             (base32
+              "0c1wgdh83b673ay0ak18iyqpwdmfyhpfqlpbk30fjrkxf78bmw83")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/keyvaltable")
+    (synopsis "Re-usable table layouts separating content and presentation")
+    (description
+     "The main goal of this package is to offer means for typesetting tables easily
+and yet still looking rather nicely in a way that separates content from
+presentation and with re-usable layout for tables of the same type.  For this
+purpose, the package provides the environment @code{KeyValTable}, which allows
+one to typeset tables that have a previously defined column layout and whose
+rows can be produced in a key-value fashion.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
