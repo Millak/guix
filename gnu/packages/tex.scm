@@ -85162,6 +85162,24 @@ of @code{makeidx}.  With the package, to index a word in a text, you only have
 to type it once; the package makes sure it is both typeset and indexed.")
     (license license:lppl)))
 
+(define-public texlive-hvlogos
+  (package
+    (name "texlive-hvlogos")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hvlogos/" "tex/latex/hvlogos/")
+             (base32
+              "0s12whi7dbn94vb2rg3warbarbn9gh4mjv7kw7br401bc2zf7kc0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hvlogos")
+    (synopsis "Print TeX-related names as logo")
+    (description
+     "This package is more or less an extension to Heiko Oberdiek's package
+@code{hologo}.  It prints TeX-related names as logos.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
