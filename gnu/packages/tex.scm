@@ -74194,6 +74194,25 @@ Linguistica e Inteligencia Computacional} of the Federal University of Sao
 Carlos, Brazil.")
     (license license:gpl3+)))
 
+(define-public texlive-beamerthemenirma
+  (package
+    (name "texlive-beamerthemenirma")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamerthemenirma/"
+                   "tex/latex/beamerthemenirma/")
+             (base32
+              "09p6ip8di5i2gfms3s0iy17175y50v09v23pl5w6977l30wwyyas")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamerthemenirma")
+    (synopsis "Beamer theme for academic presentations")
+    (description
+     "The package is developed for academic purposes.  The distribution includes
+nothing more than style file needed for preparing presentations.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
