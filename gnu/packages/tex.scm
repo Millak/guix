@@ -83223,6 +83223,27 @@ documents.  The package is part of the @code{fundus} bundle.")
 distributed as part of the @code{fundus} bundle.")
     (license license:lppl1.3+)))
 
+(define-public texlive-fundus-sueterlin
+  (package
+    (name "texlive-fundus-sueterlin")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fundus-sueterlin/"
+                   "source/latex/fundus-sueterlin/"
+                   "tex/latex/fundus-sueterlin/")
+             (base32
+              "1yk6djd3yiwsk20z86b3w9wkfbh7xb3i5r5az6br8aivqqp72fvp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fundus-sueterlin")
+    (synopsis "Support for Sueterlin fonts")
+    (description
+     "The package supports use, in LaTeX, of the Metafont emulation of the
+Sueterlin handwriting fonts.  The package is distributed as part of the
+@code{fundus} bundle..")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
