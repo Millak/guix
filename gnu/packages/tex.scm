@@ -72744,6 +72744,25 @@ marking fold points for window envelopes.  The class supersedes an earlier
 class called @code{myletter}.")
     (license license:lppl)))
 
+(define-public texlive-alchemist
+  (package
+    (name "texlive-alchemist")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/alchemist/"
+                   "tex/latex/alchemist/")
+             (base32
+              "1vbkzmg6ilyz31xa14mzh08m758vrqb1c0qfii9cxzp7sdn1706w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/alchemist")
+    (synopsis "Typeset alchemist and astrological symbols")
+    (description
+     "This style file makes the alchemical and astrological symbols
+accessible in Unicode.")
+    (license (list license:gpl3+ license:lppl))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
