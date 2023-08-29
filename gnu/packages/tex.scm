@@ -72595,6 +72595,29 @@ notation can get quite involved, the package defines a number of shortcut
 macros to ease entry of the most common elements.")
     (license license:lppl1.3c)))
 
+(define-public texlive-addfont
+  (package
+    (name "texlive-addfont")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/addfont/" "tex/latex/addfont/")
+             (base32
+              "0wwjvqgidayw5s6av67k36l6ahbcwwyyn186r3frrgravyshld20")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/addfont")
+    (synopsis "Easier use of fonts without LaTeX support")
+    (description
+     "This package is intended for use by users who know about fonts.  It is
+a quick-fix for fonts which do not have genuine LaTeX support.  It is not
+meant as a replacement of the LaTeX font definition files.  It is meant as
+something more useable for LaTeX users than the @code{\\newfont} command.
+With @code{addfont} the loaded font scales along with the usual LaTeX size
+selection.  Using this package still requires some knowledge on how to use
+fonts with LaTeX.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
