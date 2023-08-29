@@ -90434,6 +90434,27 @@ ensure that centered objects as one line captions are centered as well.  Also
 the vertical spaces for table captions above the table are changed.")
     (license license:public-domain)))
 
+(define-public texlive-nonumonpart
+  (package
+    (name "texlive-nonumonpart")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/nonumonpart/"
+                   "source/latex/nonumonpart/"
+                   "tex/latex/nonumonpart/")
+             (base32
+              "0dn7y32yzzv6wy5z6v96q0cbhrdgadqj6hdcla2k7cfrnvh3lc1k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nonumonpart")
+    (synopsis "Prevent page numbers on part pages")
+    (description
+     "The package removes page numbers on @code{\\part} pages.  The package accepts
+no options and defines no user commands; the user needs only to load it, and
+the requirement is met.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
