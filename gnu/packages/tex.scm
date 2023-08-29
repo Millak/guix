@@ -96201,6 +96201,25 @@ package requires pdfLaTeX; sparklines cannot appear in a DVI file.  The
 sparklines package uses PGF.")
     (license license:lppl)))
 
+(define-public texlive-sphack
+  (package
+    (name "texlive-sphack")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/sphack/" "tex/latex/sphack/")
+             (base32
+              "1pami588h0lw8f79idy088bwhfjrf2q993nrjw8cb0bpsbqqmrx6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/sphack")
+    (synopsis "Patch LaTeX kernel spacing macros")
+    (description
+     "This package changes the kernel internal
+@code{\\@@bsphack}/@code{\\@@esphack} so that it is also invisible in vertical
+mode.")
+    (license license:knuth)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
