@@ -76141,6 +76141,26 @@ and commands into and across multiple documents.  It replaces the
 @code{copypaste} package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-clistmap
+  (package
+    (name "texlive-clistmap")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/clistmap/"
+                   "source/latex/clistmap/"
+                   "tex/latex/clistmap/")
+             (base32
+              "19chjqjmfcllaf6i1i5zspjvh6j5ljr6lh6w12f9b6h4941ncx58")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/clistmap")
+    (synopsis "Map and iterate over LaTeX3 clists")
+    (description
+     "This package provides a key-based interface for defining templates whose job
+is to partition LaTeX3 clists and map differentiatedly across its components.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
