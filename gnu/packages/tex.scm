@@ -75445,6 +75445,30 @@ PFB format.  The bundle also includes a package that provides some macros of
 philological interest.")
     (license license:lppl)))
 
+(define-public texlive-ccaption
+  (package
+    (name "texlive-ccaption")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ccaption/"
+                   "source/latex/ccaption/"
+                   "tex/latex/ccaption/")
+             (base32
+              "1c211xqpfdkrg6xax9zab706gr0ws4lypsb67q81pw6lpjsl20ya")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ccaption")
+    (synopsis "Continuation headings and legends for floats")
+    (description
+     "This package provides a package providing commands for continuation captions,
+unnumbered captions, and also a non-specific legend heading for any
+environment.  Methods are also provided to define captions for use outside
+float (e.g., @code{figure} and @code{table}) environments, and to define new
+float environments and lists of floats.  Tools are provided for specifying
+your own captioning styles.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
