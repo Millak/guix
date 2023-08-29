@@ -72362,6 +72362,25 @@ results; the operation itself is better provided by the
 by @code{geometry}.")
     (license license:public-domain)))
 
+(define-public texlive-abraces
+  (package
+    (name "texlive-abraces")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/abraces/" "tex/latex/abraces/")
+             (base32
+              "02pdq877cb24vinqzl09wb0hyrvcijm2jjm5bqxb1jrd2nxcj8xh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/abraces")
+    (synopsis "Asymmetric over-/underbraces in maths")
+    (description
+     "The package provides a character key-driven interface to supplement
+new constructions of the traditional @code{\\overbrace} and
+@code{\\underbrace} pairs in an asymmetric or arbitrary way.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
