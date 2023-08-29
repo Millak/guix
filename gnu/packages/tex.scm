@@ -75977,6 +75977,32 @@ specification, adjustable tick mark step size, and scaling to specified
 width.")
     (license license:lppl1.3+)))
 
+(define-public texlive-circ
+  (package
+    (name "texlive-circ")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/circ/"
+                   "fonts/source/public/circ/"
+                   "fonts/tfm/public/circ/"
+                   "source/latex/circ/" "tex/latex/circ/")
+             (base32
+              "1i2x3xvrfnr5b24sl2w6szds7754d5ji4w79y1p8h2c3gcvj6qmm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (native-inputs (list texlive-metafont))
+    (home-page "https://ctan.org/pkg/circ")
+    (synopsis "Macros for typesetting circuit diagrams")
+    (description
+     "Several electrical symbols like resistor, capacitor, transistors etc., are
+defined.  The symbols can be connected with wires.  The package also contains
+an American resistor symbol for those of us on that side of the Atlantic.  The
+package also has simple facilities for producing optics diagrams; however,
+no-one would deny that the PSTricks @code{pst-optic} package, or the MetaPost
+@code{makecirc} package do the job better.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
