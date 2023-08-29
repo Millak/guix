@@ -79734,6 +79734,35 @@ following macros are available:
 @end itemize")
     (license license:lppl1.3c)))
 
+(define-public texlive-dvdcoll
+  (package
+    (name "texlive-dvdcoll")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/dvdcoll/" "doc/latex/dvdcoll/"
+                   "tex/latex/dvdcoll/")
+             (base32
+              "1vjsv46yffnibsr1g5wzg0bim3db1wqrxqvwp7fm6bxskfsvy4mq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dvdcoll")
+    (synopsis "Class for typesetting DVD archives")
+    (description
+     "Having lost the overview of my DVD archives, I simply could not remember if
+I already recorded the documentary running on TV that day.  I chose to
+recreate the index using LaTeX: the design aim was a hyperlinked and fully
+searchable PDF-document, listing my DVDs with all titles, lengths and so on.
+Further requirements were support for seasons of TV series and a list with all
+faulty or missing programs for rerecording.  The @code{dvdcoll} class supports
+all these requirements.
+
+@file{dvdcoll.cls} follows the structure @samp{<number><title><length>}.  As
+a result, the class is not limited to DVDs --- you can of course typeset
+archives of CD-ROMs, Audio-CDs and so on.  Supported languages at the moment:
+English, French, German, Italian, Polish, Portuguese, Spanish.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
