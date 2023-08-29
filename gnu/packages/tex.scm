@@ -78058,6 +78058,27 @@ currently unmaintained.")
 currently unmaintained.")
     (license license:lppl1.3+)))
 
+(define-public texlive-datetime2-catalan
+  (package
+    (name "texlive-datetime2-catalan")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/datetime2-catalan/"
+                   "source/latex/datetime2-catalan/"
+                   "tex/latex/datetime2-catalan/")
+             (base32
+              "0gpzbfiig2180ybdz998qfxlvj7i9qn0b8qikbmfdx980a9y4kd2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/datetime2-catalan")
+    (synopsis "Catalan language module for the @code{datetime2} package")
+    (description
+     "This module provides the @code{catalan} style that can be set using
+\\DTMsetstyle provided by datetime2.sty.  This package is currently
+unmaintained.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
