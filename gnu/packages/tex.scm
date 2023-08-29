@@ -96524,6 +96524,26 @@ essentially turning it into a document format for mathematical knowledge
 management (MKM).")
     (license license:lppl)))
 
+(define-public texlive-storecmd
+  (package
+    (name "texlive-storecmd")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/storecmd/" "tex/latex/storecmd/")
+             (base32
+              "1ds88g5zb97vjlijnk2vq487ixs3pklq7f9fn66j17cdcnsz619f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/storecmd")
+    (synopsis "Store the name of a defined command in a container")
+    (description
+     "The package provides macros for command definition that save the name of the
+command being defined in a file or a macro container.  The list could be
+useful for spelling exceptions in text editors that do not support TeX
+syntax.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
