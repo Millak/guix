@@ -77975,6 +77975,27 @@ files and LuaLaTeX.  As long as the @file{.aux} file is not deleted/modified
 the date-stamp generated with this package remains intact.")
     (license (list license:gpl3+ license:fdl1.3+))))
 
+(define-public texlive-datetime2-bahasai
+  (package
+    (name "texlive-datetime2-bahasai")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/datetime2-bahasai/"
+                   "source/latex/datetime2-bahasai/"
+                   "tex/latex/datetime2-bahasai/")
+             (base32
+              "15rmkxsi1d3c74m0z1hnn9jw5mgqxyglfwbck92l87ha7zmj2ncf")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/datetime2-bahasai")
+    (synopsis "Bahasai language module for the @code{datetime2} package")
+    (description
+     "This module provides the @code{bahasai} style that can be set using
+@code{\\DTMsetstyle} provided by @file{datetime2.sty}.  This package is
+currently unmaintained.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
