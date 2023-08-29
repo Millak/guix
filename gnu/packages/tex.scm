@@ -91237,6 +91237,25 @@ The active palette for each theme can be swapped in to make experimenting with
 colors easier or give users choices as to which theme they pick.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pangram
+  (package
+    (name "texlive-pangram")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pangram/" "source/latex/pangram/"
+                   "tex/latex/pangram/")
+             (base32
+              "14vlhvrc2j1vz9jhj3npm0nn1qbs9b2b4dv5qm3mnvi5a34wq586")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pangram")
+    (synopsis "LaTeX package for testing fonts")
+    (description
+     "This package provides a simple way for font designers and users to test their
+fonts in different sizes without much input.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
