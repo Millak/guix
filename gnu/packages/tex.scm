@@ -83449,6 +83449,25 @@ environments which structure their data in the same way that @code{itemize} or
 @code{enumerate} do.")
     (license license:lppl1.3+)))
 
+(define-public texlive-gindex
+  (package
+    (name "texlive-gindex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gindex/" "makeindex/gindex/"
+                   "tex/latex/gindex/")
+             (base32
+              "15rk5wbh0xysri3zqd3l0a0z3hcj5fc7g6k3v3li093hfbrzm81q")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gindex")
+    (synopsis "Formatting indexes")
+    (description
+     "This package provides a way to generate the format of index entries from
+within LaTeX.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
