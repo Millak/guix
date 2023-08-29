@@ -86742,6 +86742,28 @@ The macros defined by LaTeXgit can be helpful to documentation authors and
 others to whom clear document versioning is important.")
     (license license:gpl3)))
 
+(define-public texlive-layouts
+  (package
+    (name "texlive-layouts")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/layouts/" "source/latex/layouts/"
+                   "tex/latex/layouts/")
+             (base32
+              "0bmkqld4rc0pw8ha54b1z4ycy5rj5alr9n1yv7qj5b0a4jadynf3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/layouts")
+    (synopsis "Display various elements of a document's layout")
+    (description
+     "This package displays information about a document, including: text
+positioning on a page; disposition of floats; layout of paragraphs, lists,
+footnotes, table of contents, and sectional headings; font boxes.  Facilities
+are provided for a document designer to experiment with the layout
+parameters.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
