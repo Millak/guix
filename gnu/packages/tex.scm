@@ -86993,6 +86993,25 @@ alignment of figures and much more.")
 large PDF file.")
     (license license:cc-by4.0)))
 
+(define-public texlive-leftidx
+  (package
+    (name "texlive-leftidx")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/leftidx/" "source/latex/leftidx/"
+                   "tex/latex/leftidx/")
+             (base32
+              "031vrri30b0ccg44ia9i06mraamv3mr9184vmyqipcmsd2glpyla")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/leftidx")
+    (synopsis "Left and right subscripts and superscripts in math mode")
+    (description
+     "Using this package, left and right subscripts and superscripts are
+automatically raised for better fitting to the symbol they belong to.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
