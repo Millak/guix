@@ -86470,6 +86470,37 @@ fit).")
 between different styles, and may adjust settings to tune the output.")
     (license license:lppl1.3+)))
 
+(define-public texlive-komacv-rg
+  (package
+    (name "texlive-komacv-rg")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/komacv-rg/"
+                   "source/latex/komacv-rg/"
+                   "tex/latex/komacv-rg/")
+             (base32
+              "13r94krp1mylj09pi800mxdv0q3f0r7zd31rw8wblfkqrzhh7gw2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/komacv-rg")
+    (synopsis
+     "Aid in creating CVs and related documents with the @code{komacv} class")
+    (description
+     "The @code{komacv-rg} bundle provides packages that aid in creating CVs based
+on the @code{komacv} class and creating related documents, such as cover
+letters and cover sheets for job applications.
+
+Concretely, the bundle consists of three packages: @code{komacv-addons},
+@code{komacv-lco}, and @code{komacv-multilang}.  @code{komacv-addons} is
+a small collection of add-ons and fixes for the @code{komacv} class;
+@code{komacv-lco} enables the use of @code{letter} class options from
+@code{scrlttr2} also in @code{komacv}-based and other
+non-@code{scrlttr2}-based documents; @code{komacv-multilang} enables the
+provisioning of CVs in multiple languages and the selection of a language via
+Babel or Polyglossia.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
