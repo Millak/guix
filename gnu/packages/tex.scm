@@ -93967,6 +93967,25 @@ text, it is the replacement text, not the typeset text that is copied and
 pasted.")
     (license license:lppl1.3c)))
 
+(define-public texlive-rescansync
+  (package
+    (name "texlive-rescansync")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/rescansync/"
+                   "tex/latex/rescansync/")
+             (base32
+              "084wqg5h7jxqccz2ml7r0y2r3a9mp7zd7add9g1ly7p3fykygi0h")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/rescansync")
+    (synopsis "Re-scan tokens with synctex information")
+    (description
+     "This package allows users to execute saved code to typeset text while
+preserving SyncTeX information.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
