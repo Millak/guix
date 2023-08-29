@@ -83490,6 +83490,32 @@ sharp-s to the short forms defined by Babel, e.g., @samp{\"a} instead, if the
 text is typeset in German.")
     (license license:lppl)))
 
+(define-public texlive-gitfile-info
+  (package
+    (name "texlive-gitfile-info")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/support/gitfile-info/"
+                   "source/support/gitfile-info/"
+                   "tex/latex/gitfile-info/")
+             (base32
+              "05bfzaralkx3rvz63c2i29v49fp2ki5smwx5gya1lxzlhmv1krmv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gitfile-info")
+    (synopsis "Get Git metadata for a specific file")
+    (description
+     "If you are using @command{git} to control versions of LaTeX files, you may
+want to show yourself or other users or devs the current version of the file,
+information about the author and last edited date.  All packages for Git known
+make that kind of information available for the whole repository.  But
+sometimes you have a lot of files within the same repository in different
+versions, from different authors etc.  Perhaps you also split up a big project
+in small files and want to show within the document who had edited what.  This
+package gives you the opportunity to do so.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
