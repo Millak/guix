@@ -81797,6 +81797,27 @@ mathematics.")
 of the @code{qrcode} package.")
     (license license:gpl3)))
 
+(define-public texlive-fancyslides
+  (package
+    (name "texlive-fancyslides")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fancyslides/"
+                   "tex/latex/fancyslides/")
+             (base32
+              "0z233j16v6rgrz7y3wlsnp8ff93ybp0154vayh8p0pwh9vvvmkzw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fancyslides")
+    (synopsis "Custom presentation class built upon LaTeX Beamer")
+    (description
+     "This class is prepared for short presentations with a modern look & feel.  It
+offers the following features: custom background for each slide, predefined
+types of slides, simplified commands (e.g. for starting and ending slide).
+The class is built upon LaTeX Beamer, so all Beamer commands should work.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
