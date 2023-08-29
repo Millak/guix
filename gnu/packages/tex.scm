@@ -79376,6 +79376,25 @@ specify this package with the stylesheet configuration option, e.g.,
 @code{\\xrightarrow}.")
     (license license:lppl)))
 
+(define-public texlive-dotlessi
+  (package
+    (name "texlive-dotlessi")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dotlessi/" "tex/latex/dotlessi/")
+             (base32
+              "096xlk6r297y4qpwqvpas38anw2q33g9g3xv3msq5qs0xyirask9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dotlessi")
+    (synopsis "Provides dotless @samp{i} and @samp{j} for use in any math font")
+    (description
+     "The package provides two commands: @code{\\dotlessi} and @code{\\dotlessj},
+which give access to dotless @samp{i} and @samp{j} in math mode.  They are
+intended for symbols in non English languages.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
