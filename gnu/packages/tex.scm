@@ -96251,6 +96251,26 @@ program splits that file into several raw index files and calls your favorite
 index processor for each of the files.")
     (license license:lppl)))
 
+(define-public texlive-spot
+  (package
+    (name "texlive-spot")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/spot/" "source/latex/spot/"
+                   "tex/latex/spot/")
+             (base32
+              "05y83rvvxnlgq77clmf3k7id72v5lnyfvxhyp30gfaxni68v44n5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/spot")
+    (synopsis "Spotlight highlighting for Beamer")
+    (description
+     "The package allows dramatic highlighting of words and phrases by painting
+shapes around them.  It is chiefly intended for use in Beamer presentations,
+but it can be used in other document classes as well.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
