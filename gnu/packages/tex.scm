@@ -72783,6 +72783,29 @@ accessible in Unicode.")
 errors, warnings and success messages).")
     (license license:lppl1.3+)))
 
+(define-public texlive-alnumsec
+  (package
+    (name "texlive-alnumsec")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/alnumsec/"
+                   "source/latex/alnumsec/"
+                   "tex/latex/alnumsec/")
+             (base32
+              "1c70939fnp251g9p9ksqabjjsfngkp155h5grq21mpx1m7x4zlcb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/alnumsec")
+    (synopsis "Alphanumeric section numbering")
+    (description
+     "This package allows you to use alphanumeric section numbering.  Its output is
+similar to @code{alphanum}, but you can use the standard LaTeX sectioning
+commands, so that it is possible to switch numbering schemes easily.  Greek
+letters, double letters (@samp{bb}) and different delimiters around them are
+supported.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
