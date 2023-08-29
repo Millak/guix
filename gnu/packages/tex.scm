@@ -72806,6 +72806,25 @@ letters, double letters (@samp{bb}) and different delimiters around them are
 supported.")
     (license license:lppl)))
 
+(define-public texlive-alterqcm
+  (package
+    (name "texlive-alterqcm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/alterqcm/" "tex/latex/alterqcm/")
+             (base32
+              "1ag9dxw5x95mk5mjd5jlvk4p0ddjxxzvica669hr4habyiyjmcm1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/alterqcm")
+    (synopsis "Multiple choice questionnaires in two column tables")
+    (description
+     "The alterqcm package is a LaTeX2e package, for making multiple choices
+questionnaires in a table with two columns.  The aim is to provide some useful
+macros to build QCM in tables.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
