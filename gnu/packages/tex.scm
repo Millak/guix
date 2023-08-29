@@ -87723,6 +87723,29 @@ environments and commands that make writing beautiful LaTeX documentation
 easier and more natural.")
     (license license:lppl1.3c)))
 
+(define-public texlive-ltxkeys
+  (package
+    (name "texlive-ltxkeys")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ltxkeys/" "tex/latex/ltxkeys/")
+             (base32
+              "169hm5v3rr7nl06f3qlpf7x4cpchs69r37q0xdzvpjm184s0r03n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ltxkeys")
+    (synopsis "Robust key parser for LaTeX")
+    (description
+     "The package provides facilities for creating and managing keys in the sense
+of the @code{keyval} and @code{xkeyval} packages, but it is intended to be
+more robust and faster.  Its robustness comes from its ability to preserve
+braces in key values throughout parsing.  The need to preserve braces in key
+values arises often in parsing keys (for example, in the @code{xwatermark}
+package).  The package also provides functions for defining and managing
+keys.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
