@@ -94203,6 +94203,24 @@ Arabic numerals if necessary).  The package also provides a predicate
 allows you to use those roman numbers as page number.")
     (license license:lppl1.3+)))
 
+(define-public texlive-romanneg
+  (package
+    (name "texlive-romanneg")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/romanneg/" "tex/latex/romanneg/")
+             (base32
+              "1j6anqlmvg36znah2cx10lpa5fnlqa1g2lfv3g2351hy2i94g9f8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/romanneg")
+    (synopsis "Roman page numbers negative")
+    (description
+     "This package causes the page numbers in the DVI file (as defined by
+@code{\\count0}) to be negative when roman page numbering is in effect.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
