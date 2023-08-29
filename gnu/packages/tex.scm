@@ -75698,6 +75698,25 @@ paragraphs without indentation, and last line centered, useful to finish
 a large paragraph of text at the end of chapters, prologues, etc.")
     (license license:lppl1.2+)))
 
+(define-public texlive-changelayout
+  (package
+    (name "texlive-changelayout")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/changelayout/"
+                   "tex/latex/changelayout/")
+             (base32
+              "125szym91d35di3w44kb6as10fckvpg873m432sznrk06swfikds")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/changelayout")
+    (synopsis "Change the layout of individual pages and their text")
+    (description
+     "The package is an extension of the @code{changepage} package to permit the
+user to change the layout of individual pages and their texts.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
