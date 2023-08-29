@@ -99488,6 +99488,28 @@ numbers with bars to the left or right of the text.")
 offers guidelines for considering the ``rhythm'' of the document on the page.")
     (license license:lppl1.3+)))
 
+(define-public texlive-vhistory
+  (package
+    (name "texlive-vhistory")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/vhistory/" "tex/latex/vhistory/")
+             (base32
+              "0s7p56x77yqhrmmf46y3ip703xr49dc0cs4h32qf42ahh6psw8pn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/vhistory")
+    (synopsis "Support for creating a change log")
+    (description
+     "Vhistory simplifies the creation of a history of versions of a document.
+You can easily extract information like the current version of a list of
+authors from that history.  It helps you to get consistent documents.  The
+package @code{sets}, which is used by @code{vhistory}, allows you to use sets
+containing text.  You can use the usual operations to create the union of sets
+or the intersection of sets etc.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
