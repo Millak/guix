@@ -86259,6 +86259,27 @@ text and adding a corresponding index entry.  The standard use case is the
 production of an index of names.")
     (license license:lppl1.3c)))
 
+(define-public texlive-keyparse
+  (package
+    (name "texlive-keyparse")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/keyparse/"
+                   "source/latex/keyparse/"
+                   "tex/latex/keyparse/")
+             (base32
+              "11g2knzck2g1j8mcqy3821p8a7xz1a0krz2s3ak7jn060aim72hi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/keyparse")
+    (synopsis "Key based parser")
+    (description
+     "This LaTeX package provides an interface to define and evaluate key-based
+replacement rules.  It can be used to parse the argument specification of
+a document command.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
