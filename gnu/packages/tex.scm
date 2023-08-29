@@ -87250,6 +87250,26 @@ easily write linear operators as they appear in many-body physics, quantum
 theory, and linear algebra, in any of the ways commonly in use.")
     (license license:lppl1.3+)))
 
+(define-public texlive-lisp-on-tex
+  (package
+    (name "texlive-lisp-on-tex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lisp-on-tex/"
+                   "tex/latex/lisp-on-tex/")
+             (base32
+              "07d4bw1hs3vl8yrix13cski3gzdv6sd3s32amdnca7sjjbfp9b0l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lisp-on-tex")
+    (synopsis "Execute LISP code in a LaTeX document")
+    (description
+     "The package provides a LISP interpreter written using TeX macros; it is
+provided as a LaTeX package.  The interpreter static scoping, dynamic typing,
+and eager evaluation.")
+    (license license:bsd-2)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
