@@ -93097,6 +93097,25 @@ displaying the document with extra line spacing, and for displaying it in
 either corrected or uncorrected state, both without margin notes.")
     (license license:lppl1.3c)))
 
+(define-public texlive-properties
+  (package
+    (name "texlive-properties")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/properties/"
+                   "tex/latex/properties/")
+             (base32
+              "0za99c6894nmss3jz7ivbx7gia2c6pzqsxnr0rmzayd4ig4q543y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/properties")
+    (synopsis "Load properties from a file")
+    (description
+     "The package loads properties (key, value) from a properties file, e.g.,
+@code{\\jobname.properties}.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
