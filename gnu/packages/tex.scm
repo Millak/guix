@@ -79880,6 +79880,31 @@ blocks inside a presentation.")
 index of things to do.")
     (license license:asl2.0)))
 
+(define-public texlive-easybook
+  (package
+    (name "texlive-easybook")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/easybook/"
+                   "source/latex/easybook/"
+                   "tex/latex/easybook/")
+             (base32
+              "11s8ibg4dbsdy4h8qwlzd3qz70rbi30hgsbzahakrh9q4pq7ix42")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/easybook")
+    (synopsis "Easily typesetting Chinese theses or books")
+    (description
+     "@code{easybook} is a pure academic template based on the @code{ctexbook} book
+document class.  It also has the functions of @code{book} and @code{article}
+document class, combined with the general framework design of the dissertation
+of many universities in China.  It provides multiple commands and interfaces
+allowing users to easily customize the thesis template.  Its basic macro
+package @code{easybase} can also be used with CTeX and standard document
+classes.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
