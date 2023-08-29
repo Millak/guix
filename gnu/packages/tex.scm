@@ -96899,6 +96899,25 @@ is well supported.  The package interacts with an external Perl script, to
 retrieve information necessary for the required output.")
     (license license:lppl)))
 
+(define-public texlive-svninfo
+  (package
+    (name "texlive-svninfo")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/svninfo/" "source/latex/svninfo/"
+                   "tex/latex/svninfo/")
+             (base32
+              "0y0lxpp1lqznvsxvckhcnvw3l712l9prfb9gi56csypngaqph5rb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/svninfo")
+    (synopsis "Typeset Subversion keywords")
+    (description
+     "This is a package for incorporating the values of Subversion keywords into
+typeset documents.")
+    (license license:lppl1.0+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
