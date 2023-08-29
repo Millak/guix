@@ -95547,6 +95547,30 @@ current value of @code{\\baselineskip} rounded to the nearest tenth of
 a point.")
     (license license:lppl)))
 
+(define-public texlive-showlabels
+  (package
+    (name "texlive-showlabels")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/showlabels/"
+                   "source/latex/showlabels/"
+                   "tex/latex/showlabels/")
+             (base32
+              "0c88yijjfw1xnlcchmsk9965fn464fj5xzi0s9ri13nj8cq7dmsw")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/showlabels")
+    (synopsis "Show label commands in the margin")
+    (description
+     "This package helps you keep track of all the labels you define, by putting
+the name of new labels into the margin whenever the @code{\\label} command is
+used.  The package allows you to do the same thing for other commands.  The
+only one for which this is obviously useful is the @code{\\cite} command, but
+it's easy to do it for others, such as the @code{\\ref} or @code{\\begin}
+commands.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
