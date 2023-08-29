@@ -96544,6 +96544,33 @@ useful for spelling exceptions in text editors that do not support TeX
 syntax.")
     (license license:lppl1.3+)))
 
+(define-public texlive-stringstrings
+  (package
+    (name "texlive-stringstrings")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/stringstrings/"
+                   "source/latex/stringstrings/"
+                   "tex/latex/stringstrings/")
+             (base32
+              "0ayqzw5z2kj8q87zh0x9m8wk6swnz87s4ils21z557izqb668w4y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/stringstrings")
+    (synopsis "String manipulation for cosmetic and programming application")
+    (description
+     "The package provides a large and sundry set of macros for the manipulation of
+strings.  The macros are developed not merely for cosmetic application (such
+as changing the case of letters and string substitution), but also for
+programming applications such as character look-ahead, argument parsing,
+conditional tests on various string conditions, etc.  The macros were designed
+all to be expandable (note that things such as @code{\\uppercase} and
+@code{\\lowercase} are not expandable), so that the macros may be strung
+together sequentially and nested (after a fashion) to achieve rather complex
+manipulations.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
