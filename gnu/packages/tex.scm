@@ -98121,6 +98121,31 @@ through as if its contents were contiguous.")
      "This package places thumb marks in books, manuals and reference maunals.")
     (license license:gpl3+)))
 
+(define-public texlive-thumbs
+  (package
+    (name "texlive-thumbs")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/thumbs/" "source/latex/thumbs/"
+                   "tex/latex/thumbs/")
+             (base32
+              "0p7p9kg81b0zld25xfipjlv5dv9sc8mjq80kv15mkc4v2y41cdl2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/thumbs")
+    (synopsis "Create thumb indexes")
+    (description
+     "The package puts running, customizable thumb marks in the outer margin,
+moving downward as the chapter number (or whatever shall be marked by the
+thumb marks) increases.  Additionally an overview page/table of thumb marks
+can be added automatically, which gives the names of the thumbed objects, the
+page where the object/thumb mark first appears, and the thumb mark itself at
+its correct position.  The thumb marks are useful for large documents (such as
+reference guides, anthologies, etc.), where a quick and easy way to find (for
+example) a chapter is needed.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
