@@ -90034,6 +90034,30 @@ LaTeX input and output mechanisms.  Some facilities of the @code{verbatim}
 package are also mapped.")
     (license license:lppl)))
 
+(define-public texlive-newlfm
+  (package
+    (name "texlive-newlfm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/newlfm/" "source/latex/newlfm/"
+                   "tex/latex/newlfm/")
+             (base32
+              "1psscqagy9p1gv208dwv0xd053afpaa6s3rxasv69ni6inm3wlln")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/newlfm")
+    (synopsis "Write letters, facsimiles, and memos")
+    (description
+     "This package integrates the @code{letter} class with @code{fancyhdr} and
+@code{geometry} to automatically make letterhead stationery.  It is useful for
+writing letters, fax, and memos.  You can set up an address book using wrapper
+macros.  You put all the information for a person into a wrapper and then put
+the wrapper in a document.  The class handles letterheads automatically.  You
+place the object for the letterhead (picture, information, etc.) in a box and
+all sizing is set automatically.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
