@@ -89167,6 +89167,29 @@ in a classic and in a casual style.  It is fairly customizable, allowing you
 to define your own style by changing the colours, the fonts, etc.")
     (license license:lppl1.3c)))
 
+(define-public texlive-modernposter
+  (package
+    (name "texlive-modernposter")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/modernposter/"
+                   "tex/latex/modernposter/")
+             (base32
+              "0ihkzzq141k2pw3qdyz808vsj59wx4zs7qs0qq0qwawcdv1q7bl9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/modernposter")
+    (synopsis "Modern LaTeX poster theme")
+    (description
+     "This class extends the a0poster class in that it adds support to easily
+create posters without the need for taking care of the layout at all.  It
+allows to use @code{\\maketitle} to generate a fancy header containing the
+title information and also provides macros to position various different types
+of text boxes in a two-column layout.  The color scheme is inspired by the
+@code{metropolis} Beamer theme.")
+    (license license:cc-by-sa4.0)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
