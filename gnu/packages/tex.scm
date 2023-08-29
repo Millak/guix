@@ -94118,6 +94118,26 @@ The @code{geometry} package is better if you want to set page layout
 parameters to particular measurements.")
     (license license:gpl3+)))
 
+(define-public texlive-robustcommand
+  (package
+    (name "texlive-robustcommand")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/robustcommand/"
+                   "source/latex/robustcommand/"
+                   "tex/latex/robustcommand/")
+             (base32
+              "0h8j23ww9mrwsnn61f21inxr5m8xsgb60qswk6p8nw89z2zgrl7x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/robustcommand")
+    (synopsis "Declare robust command, with @code{\\newcommand} checks")
+    (description
+     "The package merely provides a variation of @code{\\DeclareRobustCommand},
+which checks for the existence of a command before declaring it robust.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
