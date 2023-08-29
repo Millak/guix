@@ -100150,6 +100150,31 @@ hint.  The package depends on the Emerald fonts.")
 @code{natbib} citations with PDF tooltips.")
     (license license:gpl3+)))
 
+(define-public texlive-xdoc
+  (package
+    (name "texlive-xdoc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xdoc/" "makeindex/xdoc/"
+                   "source/latex/xdoc/" "tex/latex/xdoc/")
+             (base32
+              "0jyvl0xaknycr47rypcvdcriz4kx0kgnvy643p1rgmnjddvarv1n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xdoc")
+    (synopsis "Extending the LaTeX doc system")
+    (description
+     "Xdoc is a project to rewrite the implementation of the LaTeX @code{doc}
+package (in a broader sense) to make its features more general and flexible.
+For example, where @code{doc} only provides commands for documenting macros
+and environments, @code{xdoc} also provides commands for similarly documenting
+package options and switches.  This is furthermore done in such a way that it
+is very easy to add more such commands for documenting things, such as e.g.,
+templates, and program components for other languages (functions, classes,
+procedures, etc.).")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
