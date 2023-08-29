@@ -92465,6 +92465,25 @@ proof structures; @code{onepagem} for omitting the page number in one-page
 documents and @code{time}, which prints a 12-hour format time.")
     (license license:public-domain)))
 
+(define-public texlive-pkgloader
+  (package
+    (name "texlive-pkgloader")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pkgloader/"
+                   "tex/latex/pkgloader/")
+             (base32
+              "0lmim1ssnhws8lvh6rs36q6b50al3j638nd6rqilv2pvy9z30ich")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pkgloader")
+    (synopsis "Manage the options and loading order of other packages")
+    (description
+     "The package seeks to address the frustration caused by package conflicts.  It
+manages the options and loading order of other packages.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
