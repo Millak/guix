@@ -97829,6 +97829,32 @@ fonts from Computer Modern maths, Computer Modern bright maths, or Euler
 fonts.")
     (license license:gpl3+)))
 
+(define-public texlive-texpower
+  (package
+    (name "texlive-texpower")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/texpower/"
+                   "source/latex/texpower/"
+                   "tex/latex/texpower/")
+             (base32
+              "1jndkkngnldksg37hx1hpcawhyzy9phirqsbk03l2hwqv20r5hz4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-tpslifonts))
+    (home-page "https://ctan.org/pkg/texpower")
+    (synopsis "Create dynamic online presentations with LaTeX")
+    (description
+     "TeXPower is a bundle of packages intended to provide an all-inclusive
+environment for designing pdf screen presentations to be viewed in full-screen
+mode, especially for projecting online with a video beamer.  For some of its
+core functions, it uses code derived from @code{ppower4} packages.  It is,
+however, not a complete environment in itself: it relies on an existing class
+for preparing slides (such as @code{foiltex} or @code{seminar}) or another
+package such as @code{pdfslide}.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
