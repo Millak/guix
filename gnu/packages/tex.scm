@@ -82181,6 +82181,49 @@ for use in documents and examples.  The paragraphs were taken with permission
 from @url{https://www.chiquitoipsum.com/}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-fithesis
+  (package
+    (name "texlive-fithesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fithesis/"
+                   "source/latex/fithesis/"
+                   "tex/latex/fithesis/")
+             (base32
+              "0w2jf4cxz73q588fnmqmh4xdr0cag1b7m8ld3hc7agmsv7hcfn5z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:phases
+      ;; "fithesis.ins" expects some directories in "build".  Create them
+      ;; first to prevent an error.
+      #~(modify-phases %standard-phases
+          (add-before 'build 'fix-build
+            (lambda _
+              (mkdir-p "build/mu")
+              (with-directory-excursion "build/mu"
+                (for-each mkdir-p
+                          '("econ"
+                            "fi"
+                            "fsps"
+                            "fss"
+                            "law"
+                            "med"
+                            "ped"
+                            "pharm"
+                            "phil"
+                            "sci"))))))))
+    (home-page "https://ctan.org/pkg/fithesis")
+    (synopsis
+     "Thesis class and template for Masaryk University (Brno, Czech Republic)")
+    (description
+     "This package provides a document class for the typesetting of theses at the
+Masaryk University (Brno, Czech Republic).  The class has been designed for
+easy extensibility by style and locale files of other academic institutions.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
