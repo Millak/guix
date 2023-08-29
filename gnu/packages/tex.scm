@@ -77576,6 +77576,30 @@ It is intended for both authors and package writers (e.g., to create Beamer
 color themes).")
     (license (list license:lppl license:gpl3+))))
 
+(define-public texlive-csvmerge
+  (package
+    (name "texlive-csvmerge")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/csvmerge/"
+                   "source/latex/csvmerge/"
+                   "tex/latex/csvmerge/")
+             (base32
+              "1rbh4z8xw849v79jl5xnvrbsgkgc7dcv59qm3fna08ilhjnhgxz1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/csvmerge")
+    (synopsis "Merge TeX code with CSV data")
+    (description
+     "This package provides macros for processing a CSV spreadsheet file with
+a minimum of configuration for the CSV file.  The first row names the columns
+and the remaining rows are data.  This data can be merged with TeX code
+residing in an auxiliary file and the process repeated for each data row.
+There is one macro to set things up, one to extract the data, and one to tell
+if the field is empty or not.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
