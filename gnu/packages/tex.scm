@@ -84358,6 +84358,27 @@ Dvips/Distiller, pdfLaTeX, LuaLaTeX, and XeLaTeX.")
 include DVI files.  The package requires the @command{dvipaste} program.")
     (license license:lppl)))
 
+(define-public texlive-grid
+  (package
+    (name "texlive-grid")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/grid/" "source/latex/grid/"
+                   "tex/latex/grid/")
+             (base32
+              "0gli4izscbk4mvgsr4v9vvf8pbsd56sqa261944jy1smiyni7nwc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/grid")
+    (synopsis "Grid typesetting in LaTeX")
+    (description
+     "The package helps to enables grid typesetting in double column documents.
+Grid typesetting (vertical aligning of lines of text in adjacent columns) is
+a difficult task in LaTeX, and the present package is no more than an attempt
+to help users to achieve it in a limited way.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
