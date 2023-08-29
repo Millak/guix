@@ -79929,6 +79929,32 @@ to turn images or other material into floats or non-floats, including
 captions, @code{easyfig} has become quite redundant.")
     (license license:lppl1.3+)))
 
+(define-public texlive-easyfloats
+  (package
+    (name "texlive-easyfloats")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/easyfloats/"
+                   "source/latex/easyfloats/"
+                   "tex/latex/easyfloats/")
+             (base32
+              "0lp0bflj0m05rxbg5514mg87ipkanrpypvijhqa6qwj08c7gvahk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-caption texlive-environ texlive-etoolbox
+                             texlive-float texlive-pgf))
+    (home-page "https://ctan.org/pkg/easyfloats")
+    (synopsis
+     "Easier interface to insert figures, tables and other objects in LaTeX")
+    (description
+     "In standard LaTeX inserting objects like figures or tables requires too
+much knowledge for beginners and too much typing effort and hardcoding for
+people like me.  This package aims to make insertion of figures and tables
+easier for both beginners and experts.  Despite the term floats in it's name it
+also allows to disable floating of such objects.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
