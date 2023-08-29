@@ -73714,6 +73714,28 @@ colours also available as @code{OwlRed}, @code{OwlGreen}, etc.
 @end itemize")
     (license license:lppl1.3+)))
 
+(define-public texlive-beamerdarkthemes
+  (package
+    (name "texlive-beamerdarkthemes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamerdarkthemes/"
+                   "tex/latex/beamerdarkthemes/")
+             (base32
+              "08w0qqzy9ibi48ah7f2mpzlgfb7wnn202gcrbj0n82w3sxn8lilc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamerdarkthemes")
+    (synopsis "Dark color themes for Beamer")
+    (description
+     "This package provides a package with three dark color themes for Beamer,
+designed for presentations with pictures and/or for bright rooms without
+screen.  These themes mix one dominant foreground colour and a black
+background.  Cormorant stands for green, Frigatebird for red and Magpie for
+blue.")
+    (license (list license:lppl1.3+ license:cc-by4.0))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
