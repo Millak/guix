@@ -88549,6 +88549,35 @@ sample presentations using both @file{.tex} files and @file{.rnw} files.  The
 document class is obviously compatible with both.")
     (license license:lppl1.3+)))
 
+(define-public texlive-meetingmins
+  (package
+    (name "texlive-meetingmins")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/meetingmins/"
+                   "source/latex/meetingmins/"
+                   "tex/latex/meetingmins/")
+             (base32
+              "1x5w8iwxhf6cyl5iimrsddfi38ijgydhcg5sh5vb3spzf7dfjl64")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:phases
+           ;; Build process writes files to a sub-directory.  Create it first
+           ;; to prevent an error.
+           #~(modify-phases %standard-phases
+               (add-before 'build 'fix-build
+                 (lambda _ (mkdir-p "build/samples/"))))))
+    (home-page "https://ctan.org/pkg/meetingmins")
+    (synopsis "Format written minutes of meetings")
+    (description
+     "The class allows formatting of meeting minutes using @code{\\section}
+commands (which provide hierarchical structure).  An agenda can also
+be produced for distribution prior to the meeting, with user-selected
+portions suppressed from printing.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
