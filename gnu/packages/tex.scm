@@ -80983,6 +80983,38 @@ Metafont source and LaTeX macro support.")
      "This is Eddie Saudrais's font @code{esint10} in Adobe Type 1 format.")
     (license license:public-domain)))
 
+(define-public texlive-etaremune
+  (package
+    (name "texlive-etaremune")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/etaremune/"
+                   "source/latex/etaremune/"
+                   "tex/latex/etaremune/")
+             (base32
+              "12ljghlhh7li8pgpaa39gnsvvn4l4bmww74zik4q3qmirkhvi949")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-filecontents
+                  texlive-footmisc
+                  texlive-fourier
+                  texlive-hypdoc
+                  texlive-listings
+                  texlive-xcolor
+                  texlive-xkeyval))))
+    (home-page "https://ctan.org/pkg/etaremune")
+    (synopsis "Reverse-counting @code{enumerate} environment")
+    (description
+     "The package implements the @code{etaremune} environment which is an
+@code{enumerate} environment in which the labels decrease instead of
+increasing.  The package is noticeably more efficient than the @code{revnum}
+package, which uses painfully many counters.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
