@@ -91526,6 +91526,26 @@ for populating locations in the grid. PGF/TikZ is used for placement and
 population of the cells.")
     (license license:lppl)))
 
+(define-public texlive-patch
+  (package
+    (name "texlive-patch")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "source/generic/patch/")
+             (base32
+              "02xfy1fs30nha0l03lqwl8xrpd81855kb5nb660ks83aj187dghy")))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/patch")
+    (synopsis "Patch loaded packages, etc.")
+    (description
+     "The package defines macros that allow patching of existing commands,
+specifying those parts of the existing macro to be replaced, along with the
+replacements.  Thus it provides more sophisticated manipulation than a package
+like @code{patchcmd}, which only permits modification by adding commands at
+the beginning or end of an existing definition.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
