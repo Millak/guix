@@ -77782,6 +77782,31 @@ statements, destruction notices, organization logos, and security labels to
 it.")
     (license license:expat)))
 
+(define-public texlive-cybercic
+  (package
+    (name "texlive-cybercic")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cybercic/"
+                   "source/latex/cybercic/"
+                   "tex/latex/cybercic/")
+             (base32
+              "0nbg4pj8dkwwkjwmd8xixgz0hx1b0sf6s7j0d372dzfgr57712cq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cybercic")
+    (synopsis "``Controls in contents'' for the @code{cyber} package")
+    (description
+     "This package is used in concert with the @code{cyber} package to make
+documents with annotations of compliance with cybersecurity requirements.
+When you include this package, some notations of compliance are added to
+section names as seen in the table of contents of the final document.  It also
+makes your document more brittle in unexpected ways: for example, when you use
+@code{cybercic} in the same document as @code{hyperref}, you cannot use any
+formatting in your section titles.  So don't use cybercic unless you need to.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
