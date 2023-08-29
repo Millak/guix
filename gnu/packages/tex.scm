@@ -84267,6 +84267,30 @@ having, for instance, a logo on every page.  The package only works when
 post-processed with Dvips.")
     (license license:lppl)))
 
+(define-public texlive-graphicxbox
+  (package
+    (name "texlive-graphicxbox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/graphicxbox/"
+                   "source/latex/graphicxbox/"
+                   "tex/latex/graphicxbox/")
+             (base32
+              "0qamnhnr06qa24g7vlrhzr92p00zz82in4jk64al0dahv18rpnkc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/graphicxbox")
+    (synopsis "Insert a graphical image as a background")
+    (description
+     "The package defines two new commands @code{\\graphicxbox} and
+@code{\\fgraphicxbox}, which are companions to @code{\\colorbox} and
+@code{\\fcolorbox} of the standard LaTeX @code{color} package.  The
+@code{\\graphicxbox} command inserts a graphical image as a background rather
+than a background color, while @code{\\fgraphicxbox} does the same thing, but
+also draws a colored frame around the box.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
