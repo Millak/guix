@@ -85076,6 +85076,53 @@ simulate switching option @code{ocgcolorlinks} of the @code{hyperref} package
 on and off.  This package is possibly obsolete.")
     (license license:lppl1.3+)))
 
+(define-public texlive-huawei
+  (package
+    (name "texlive-huawei")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/huawei/" "source/latex/huawei/"
+                   "tex/latex/huawei/")
+             (base32
+              "17s6qdcm79lf1n8r43wbzm71yblmpivi5gwy09qb2wqpk4hwzxsy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs
+     (list texlive-biblatex
+           texlive-cjk
+           texlive-currfile
+           texlive-datetime
+           texlive-enumitem
+           texlive-fancyhdr
+           texlive-footmisc
+           texlive-geometry
+           texlive-graphics
+           texlive-hyperref
+           texlive-l3packages
+           texlive-lastpage
+           texlive-libertine
+           texlive-makecell
+           texlive-microtype
+           texlive-minted
+           texlive-paralist
+           texlive-pgf
+           texlive-setspace
+           texlive-svg
+           texlive-tcolorbox
+           texlive-textpos
+           texlive-titling
+           texlive-tools
+           texlive-ulem
+           texlive-wrapfig
+           texlive-xcolor))
+    (home-page "https://ctan.org/pkg/huawei")
+    (synopsis "Template for Huawei documents")
+    (description
+     "This unofficial package provides a class for creating documents for people
+working with Huawei Technologies Co., Ltd.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
