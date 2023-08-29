@@ -84113,6 +84113,25 @@ character as a shorthand as in the @code{\\MakeShortVerb} command of the
 @code{shortvrb} package.")
     (license license:lppl)))
 
+(define-public texlive-grabbox
+  (package
+    (name "texlive-grabbox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/grabbox/" "source/latex/grabbox/"
+                   "tex/latex/grabbox/")
+             (base32
+              "0c1p9980nvxs182cyy56q11vcb0czrs2sa4bc0jgqvs4a25lpicj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/grabbox")
+    (synopsis "Read an argument into a box and execute the code afterwards")
+    (description
+     "The package provides the command @code{\\grabbox}, which grabs an argument
+into a box and executes the code afterwards.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
