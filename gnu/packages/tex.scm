@@ -88658,6 +88658,25 @@ English (GB/US) and German.")
 through a program's menu.")
     (license license:lppl)))
 
+(define-public texlive-menucard
+  (package
+    (name "texlive-menucard")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/menucard/"
+                   "source/latex/menucard/"
+                   "tex/latex/menucard/")
+             (base32
+              "01n1n4yamx6z1bs2drqqr7sjbarans1llqlkyaisxcrbv9hn47sa")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/menucard")
+    (synopsis "Typesetting menu cards with LaTeX")
+    (description
+     "This LaTeX package can be used for typesetting simple restaurant menus.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
