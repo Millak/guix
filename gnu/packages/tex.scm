@@ -79995,6 +79995,29 @@ to configure the appearance of the list; lists may be nested (effectively to
 unlimited depth).")
     (license license:lppl)))
 
+(define-public texlive-easyreview
+  (package
+    (name "texlive-easyreview")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/easyreview/"
+                   "source/latex/easyreview/"
+                   "tex/latex/easyreview/")
+             (base32
+              "1r0mqqvqn0sd3cv0lhch3v0lkh68z8qx7887zh7i828fkm5x29sm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/easyreview")
+    (synopsis
+     "Provide a way to review (or perform editorial process) in LaTeX")
+    (description
+     "The easyReview package provides a way to review (or perform editorial
+process) in LaTeX.  You can use the provided commands to claim attention in
+different ways to part of the text, or even to indicate that a text was added,
+needs to be removed, needs to be replaced and add comments to the text.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
