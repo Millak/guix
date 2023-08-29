@@ -79153,6 +79153,43 @@ maintenance and exploitation of an address book-like database.")
 quotations are detected.")
     (license license:public-domain)))
 
+(define-public texlive-dlfltxb
+  (package
+    (name "texlive-dlfltxb")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "bibtex/bst/dlfltxb/" "doc/latex/dlfltxb/"
+                   "tex/latex/dlfltxb/")
+             (base32
+              "036szsm6al1b5vrkcvabjwlz465j3bp63fdqsisb1j7153wqfc0g")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dlfltxb")
+    (synopsis "Macros related to @emph{Introdktion til LaTeX}")
+    (description
+     "The bundle contains various macros either used for creating the author's book
+@emph{Introduktion til LaTeX} (in Danish), or presented in the book as code
+tips.  The bundle comprises:
+
+@itemize
+
+@item @code{dlfltxbcodetips}: various macros helpful in typesetting
+mathematics;
+
+@item @code{dlfltxbmarkup}: provides macros used throughout, for registering
+macro names, packages etc., in the text, in the margin and in the index, all
+by using categorised keys;
+
+@item @code{dlfltxbtocconfig}: macros for the two tables of contents that the
+book has;
+
+@item @code{dlfltxbmisc}: various macros for typesetting LaTeX arguments, and
+the macro used in the bibliography that can wrap a URL up into a BibTeX entry.
+
+@end itemize")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
