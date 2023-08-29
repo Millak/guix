@@ -74913,6 +74913,28 @@ the latter, it displays the value of a counter lying between 1 and 9, but
 uses, for the purpose, a regular pattern of bullets.")
     (license license:lppl1.3+)))
 
+(define-public texlive-bxcalc
+  (package
+    (name "texlive-bxcalc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bxcalc/" "tex/latex/bxcalc/")
+             (base32
+              "0bfg0pg5xk3k9wxzvwssr9xb9z94ij24h17jc0mri25c05asng3y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bxcalc")
+    (synopsis "Extend the functionality of the @code{calc} package")
+    (description
+     "This package bundle consists of the following packages: @code{bxcalcize}, to
+make @code{calc} expressions available in more places, and @code{bxcalcux}, to
+add user-defined units to the @code{calc} syntax.
+
+In addition, this bundle provides the @code{bxcalc} package, which simply
+loads the above-mentioned packages internally.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
