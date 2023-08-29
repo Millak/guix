@@ -85866,6 +85866,25 @@ is based on the NTG @code{brief} class, which implements the NEN1026
 standard.")
     (license license:lppl1.3c)))
 
+(define-public texlive-isonums
+  (package
+    (name "texlive-isonums")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/isonums/" "tex/latex/isonums/")
+             (base32
+              "0lm47qxvhdw3mc7549bw32k978cl7gik0inkmin8x0w9mdg22lm5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/isonums")
+    (synopsis "Display numbers in maths mode according to ISO 31-0")
+    (description
+     "The package makes a quick hack to ziffer to display numbers in maths mode
+according to ISO 31-0, regardless of input format (European $1.235,7$ or
+Anglo-American $1,235.7$).")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
