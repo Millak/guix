@@ -79616,6 +79616,42 @@ e.V.  The arrangement means that the class may be used by article writers to
 typeset a single article, as well as to produce the complete journal.")
     (license license:lppl1.3c)))
 
+(define-public texlive-dtxdescribe
+  (package
+    (name "texlive-dtxdescribe")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dtxdescribe/"
+                   "source/latex/dtxdescribe/"
+                   "tex/latex/dtxdescribe/")
+             (base32
+              "1320k8s8lcsl816mmvx1fsxibsybc1mr234lxmg49lkhqqgxilb7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dtxdescribe")
+    (synopsis "Describe additional object types in @file{.dtx} source files")
+    (description
+     "The @code{doc} package includes tools for describing macros and environments
+in LaTeX source @file{.dtx} format.  The @code{dtxdescribe} package adds tools
+for describing booleans, lengths, counters, keys, packages, classes, options,
+files, commands, arguments, and other objects, and also works with the
+standard document classes as well, for those who do not wish to use the
+@file{.dtx} format.
+
+Each item is given a margin tag similar to @code{\\DescribeEnv}, and is listed
+in the index by itself and also by category.  Each item may be sorted further
+by an optional class.  All index entries except code lines are hyperlinked.
+The dtxexample environment is provided for typesetting example code and its
+results.  Contents are displayed verbatim along with a caption and
+cross-referencing.  They are then input and executed, and the result is shown.
+Environments are also provided for displaying verbatim or formatted source
+code, user-interface displays, and sidebars with titles.  Macros are provided
+for formatting the names of inline LaTeX objects such as packages and
+booleans, as well as program and file names, file types, internet objects, the
+names of certain programs, a number of logos, and inline dashes and slashes.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
