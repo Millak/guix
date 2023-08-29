@@ -78398,6 +78398,27 @@ currently unmaintained.")
 currently unmaintained.")
     (license license:lppl1.3+)))
 
+(define-public texlive-datetime2-irish
+  (package
+    (name "texlive-datetime2-irish")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/datetime2-irish/"
+                   "source/latex/datetime2-irish/"
+                   "tex/latex/datetime2-irish/")
+             (base32
+              "1lm9kh5q5rc9hgi7mddxhyjn9r52l3sgcz6i99iylz0gjcpcl2h5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/datetime2-irish")
+    (synopsis "Irish Gaelic language module for the @code{datetime2} Package")
+    (description
+     "This module provides the @code{irish} style that can be set using
+@code{\\DTMsetstyle} provided by @file{datetime2.sty}.  This package is
+currently unmaintained.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
