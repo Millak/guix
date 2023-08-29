@@ -98005,6 +98005,28 @@ compilation process.")
 MediaWiki to LaTeX documents.")
     (license license:lppl1.3+)))
 
+(define-public texlive-theoremref
+  (package
+    (name "texlive-theoremref")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/theoremref/"
+                   "tex/latex/theoremref/")
+             (base32
+              "1f2897nw1qsfp3lydx1v0ph9vyvwc0ms2azln69wr8ijh3lgyack")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/theoremref")
+    (synopsis "References with automatic theorem names")
+    (description
+     "The @code{theoremref} package provides variants of the @code{\\label} and
+@code{\\ref} commands for @code{theorem}-like environments, capable of
+automatically typesetting references including the theorem name (apart from
+the theorem number).  The scheme is particularly valuable if the author
+decides to change a lemma to a proposition or a theorem (or whatever).")
+    (license (list license:lppl license:gpl2))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
