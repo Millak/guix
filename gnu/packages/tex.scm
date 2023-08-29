@@ -99365,6 +99365,28 @@ LaTeX documents.  The highlighted source code output is formatted via Pygments
 library of the Python language.")
     (license license:lppl1.2+)))
 
+(define-public texlive-verifiche
+  (package
+    (name "texlive-verifiche")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/verifiche/"
+                   "source/latex/verifiche/"
+                   "tex/latex/verifiche/")
+             (base32
+              "1k3vly7hrvj3xfinhmd0pdmjqy42ab839sxiywf2141sn9ngjs5i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/verifiche")
+    (synopsis "Typeset (Italian) high school tests")
+    (description
+     "The purpose of this package is to manage the exercises for a test, their
+points, levels of difficulty, and solutions.  Some typical formats of
+exercises are already implemented: plain exercise, ``complete the text'',
+``true or false'', closed questions, open questions, and ``find the error''.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
