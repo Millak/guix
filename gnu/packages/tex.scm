@@ -94005,6 +94005,28 @@ preserving SyncTeX information.")
 restriction symbol.")
     (license license:expat)))
 
+(define-public texlive-returntogrid
+  (package
+    (name "texlive-returntogrid")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/returntogrid/"
+                   "tex/latex/returntogrid/")
+             (base32
+              "0sm1ncfplpa1bfmxi6ak3hnpalkw211h6mrhl89qls00gd3hf5hg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/returntogrid")
+    (synopsis "Semi-automatic grid typesetting")
+    (description
+     "@code{returntogrid} offers a few commands to get something like an simple,
+semi-automatic grid typesetting.  It does more or less what the existing
+@code{gridset} package does.  The main differences to gridset are that
+@code{returntogrid} works also with LuaLaTeX and that it has also a command to
+do some horizontal movements to get to @samp{Tab} positions.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
