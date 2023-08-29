@@ -87382,6 +87382,25 @@ The concept of creating the list of symbols, though, is different from the way
 that are used in constructing LK proof diagrams.")
     (license license:gpl3+)))
 
+(define-public texlive-lmake
+  (package
+    (name "texlive-lmake")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lmake/" "source/latex/lmake/"
+                   "tex/latex/lmake/")
+             (base32
+              "0d3bn1rbnmv1ai7ciiym6z10yrpca3c7f5phsf49hbrpp3x4whpj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lmake")
+    (synopsis "Process lists to do repetitive actions")
+    (description
+     "The package provides commands to simplify processing of sequential list-like
+structures, such as making a series of similar commands from a list of names.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
