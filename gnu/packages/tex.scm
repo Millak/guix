@@ -88398,6 +88398,28 @@ but the maths expression will be italicised if the surrounding text is.
 expression is italicised.")
     (license license:lppl)))
 
+(define-public texlive-mcaption
+  (package
+    (name "texlive-mcaption")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mcaption/"
+                   "source/latex/mcaption/"
+                   "tex/latex/mcaption/")
+             (base32
+              "1ibg7k05mcwjkb6ln4w6nlbp9f4iybqhs7wrc1smf6f7dh14d0np")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mcaption")
+    (synopsis "Put captions in the margin")
+    (description
+     "The @code{mcaption} package provides an @code{mcaption} environment which
+puts figure or table captions in the margin.  The package works with the
+standard classes and with the KOMA-Script document classes @code{scrartcl},
+@code{scrreprt} and @code{scrbook}.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
