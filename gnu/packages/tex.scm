@@ -87335,30 +87335,6 @@ typesetting the ISO 10303 (STEP) standards.  Standard documents prepared using
 these packages have been published by ISO.")
     (license license:lppl)))
 
-(define-public texlive-isodate
-  (package
-    (name "texlive-isodate")
-    (version (number->string %texlive-revision))
-    (source (texlive-origin
-             name version
-             (list "doc/latex/isodate/" "source/latex/isodate/"
-                   "tex/latex/isodate/")
-             (base32
-              "0bha4qpa1hi5i4npr00wz4qvzzc4yw4qydjjmm8n878p8cfygvga")))
-    (outputs '("out" "doc"))
-    (build-system texlive-build-system)
-    (home-page "https://ctan.org/pkg/isodate")
-    (synopsis "Tune the output format of dates according to language")
-    (description
-     "This package provides ten output formats of the commands @code{\\today},
-@code{\\printdate}, @code{\\printdateTeX}, and @code{\\daterange} (partly
-language dependent).  The commands @code{\\printdate} and
-@code{\\printdateTeX} print any date.  The command @code{\\daterange} prints
-a date range and leaves out unnecessary year or month entries.  This package
-supports German (old and new rules), Austrian, US English, British English,
-French, Danish, Swedish, and Norwegian.")
-    (license license:lppl)))
-
 (define-public texlive-isodoc
   (package
     (name "texlive-isodoc")
