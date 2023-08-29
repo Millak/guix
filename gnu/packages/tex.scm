@@ -85736,6 +85736,26 @@ invisible expense items and deductions; output may be presented in any of 10
 different languages.")
     (license license:lppl1.3c)))
 
+(define-public texlive-invoice-class
+  (package
+    (name "texlive-invoice-class")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/invoice-class/"
+                   "tex/latex/invoice-class/")
+             (base32
+              "0078i0vv2qxfxgn45rxxzll7f7b0h33jcigm9zkx6hcmq62sv0rz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/invoice-class")
+    (synopsis "Produces a standard US invoice from a CSV file")
+    (description
+     "This class produces a standard US commercial invoice using data from a CSV file.
+Invoices can span multiple pages.  The class is configurable for different
+shipping addresses.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
