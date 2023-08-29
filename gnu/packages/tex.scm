@@ -91170,6 +91170,26 @@ a responsive workflow, even for large documents with lots of photos and
 graphics.")
     (license license:lppl1.3c)))
 
+(define-public texlive-pagerange
+  (package
+    (name "texlive-pagerange")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pagerange/"
+                   "tex/latex/pagerange/")
+             (base32
+              "07ddakr8p8gjzyxs3b6kl000ij13y9i4pdbxay0ghddx36z7z620")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pagerange")
+    (synopsis "Flexible and configurable page range typesetting")
+    (description
+     "The package defines a command @code{\\pagerange} that typesets ranges of page
+numbers, expanding them (e.g., adding first or last page numbers) and
+standardising them.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
