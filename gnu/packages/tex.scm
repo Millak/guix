@@ -99061,6 +99061,27 @@ document authors, document validators, specification description, task
 management, and several helping macros.")
     (license license:lgpl3)))
 
+(define-public texlive-uri
+  (package
+    (name "texlive-uri")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/uri/" "source/latex/uri/"
+                   "tex/latex/uri/")
+             (base32
+              "1vljxmd8fp5jfh8z223z2hh9rl40kiscvsp9y49k0677a1qk8yhq")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/uri")
+    (synopsis "Hyperlinks for a wide range of URIs")
+    (description
+     "The package provides automatic hyperlinks for URIs of type arXiv, ASIN,
+DOI, HDL, NBN, OCLC, OID, PubMed, TINY, TINY with preview, and WebCite.  It
+provides commands @code{\\citeurl}, @code{\\mailto}, @code{\\ukoeln}, and
+@code{\\uref}.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
