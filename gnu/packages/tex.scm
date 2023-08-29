@@ -76728,6 +76728,25 @@ colour change from one colour to another as a function of how far through the
 presentation you are.")
     (license license:gpl3)))
 
+(define-public texlive-combelow
+  (package
+    (name "texlive-combelow")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/combelow/" "tex/latex/combelow/")
+             (base32
+              "1ya26afw6n94k5hm0miznk5my9zxdfx54396ip4n87dkgs9n827a")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/combelow")
+    (synopsis "Typeset comma-below letters, as in Romanian")
+    (description
+     "The package defines a command @code{\\cb} that positions a comma below
+a letter, as required (for example) in Romanian typesetting.  The command is
+robust, but interferes with hyphenation.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
