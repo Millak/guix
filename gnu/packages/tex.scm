@@ -91284,6 +91284,26 @@ environment, subtitle and institution commands for the title section and new
 commands for revisions.")
     (license license:gpl3+)))
 
+(define-public texlive-papercdcase
+  (package
+    (name "texlive-papercdcase")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/papercdcase/"
+                   "source/latex/papercdcase/"
+                   "tex/latex/papercdcase/")
+             (base32
+              "0c4nyy0brcarc2pa8wi6x2z0jv281qzr74s3majlirpkk4c87421")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/papercdcase")
+    (synopsis "Origami-style folding paper CD case")
+    (description
+     "This package implements a LaTeX style file to produce origami-style
+folding paper CD cases.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
