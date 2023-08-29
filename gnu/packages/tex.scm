@@ -80103,6 +80103,27 @@ curriculum vitae inspired by the european curriculum vitae.  The distribution
 comes with a German and an English template.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ed
+  (package
+    (name "texlive-ed")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ed/" "source/latex/ed/"
+                   "tex/latex/ed/")
+             (base32
+              "1i6nc3k58f81gk3dg4cgnvccj951p3ffc6xan8j644a4bxlclr8z")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ed")
+    (synopsis "Editorial notes for LaTeX documents")
+    (description
+     "This package defines a couple of editorial notes that simplify collaboration
+on a LaTeX text.  These allow authors to annotate status information in the
+source.  In draft mode, the annotations are shown for communication, and in
+publication mode these are suppressed.")
+    (license license:lppl1.0+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
