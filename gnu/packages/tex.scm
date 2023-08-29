@@ -87537,6 +87537,29 @@ Madoko documents in LaTeX.")
 display a stream of figures as a single figure that can break across pages.")
     (license license:lppl1.3+)))
 
+(define-public texlive-longnamefilelist
+  (package
+    (name "texlive-longnamefilelist")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/longnamefilelist/"
+                   "source/latex/longnamefilelist/"
+                   "tex/latex/longnamefilelist/")
+             (base32
+              "05bjbn4l45ydyj2npaxki3k5kd4d2pwlbp672xg0mbh6aj1bnanr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/longnamefilelist")
+    (synopsis "Tidy @code{\\listfiles} with long file names")
+    (description
+     "The package equips LaTeX's @code{\\listfiles} command with an optional
+argument for the number of characters in the longest base filename.  This way
+you get a neatly aligned file list even when it contains files whose base
+names have more than 8 characters.  The package can be combined with the
+@code{myfilist} package as explained in the documentation.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
