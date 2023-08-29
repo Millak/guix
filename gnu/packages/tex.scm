@@ -100376,6 +100376,29 @@ package allows such commands to be expandable provided that they have at least
 one mandatory argument.")
     (license license:lppl)))
 
+(define-public texlive-xpunctuate
+  (package
+    (name "texlive-xpunctuate")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xpunctuate/"
+                   "source/latex/xpunctuate/"
+                   "tex/latex/xpunctuate/")
+             (base32
+              "1sgjyrdgsvrlvx2zfy0ya6laapylfkw6ivdxvmba8rxllcas462x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xpunctuate")
+    (synopsis "Process trailing punctuation which may be redundant")
+    (description
+     "The package provides commands that enable the user (or package writer) to
+insert punctuation after the macro.  The package provides the commands
+@code{\\xperiod}, @code{\\xcomma} and @code{\\xperiodcomma}, which follow
+a similar procedure to that of @code{\\xspace}, and insert punctuation if and
+only if it is necessary.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
