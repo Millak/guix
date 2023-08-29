@@ -86589,6 +86589,30 @@ used.")
 reference labels to @code{easylist} items.")
     (license license:expat)))
 
+(define-public texlive-labelschanged
+  (package
+    (name "texlive-labelschanged")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/labelschanged/"
+                   "source/latex/labelschanged/"
+                   "tex/latex/labelschanged/")
+             (base32
+              "1x126fdi7bq0m1fsaj344fhfqnkz0bjcdgahw3d1drac1nvh6fqk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/labelschanged")
+    (synopsis
+     "Identify labels which cause endless ``may have changed'' warnings")
+    (description
+     "Several conditions can cause LaTeX labels to keep changing, no matter how
+many times a document is recompiled.  This package helps diagnose the cause of
+repeated ``Label(s) may have changed'' warnings.  The names and before/after
+definitions of changing labels are printed at the end of each compile.
+Multiply-defined labels are printed as well.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
