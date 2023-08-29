@@ -84174,6 +84174,30 @@ olympiads where multiple solutions have to be graded and might offer mutual
 exclusive ways of receiving points.")
     (license license:lppl1.3c)))
 
+(define-public texlive-graphbox
+  (package
+    (name "texlive-graphbox")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/graphbox/"
+                   "source/latex/graphbox/"
+                   "tex/latex/graphbox/")
+             (base32
+              "0s5zgfc6c0sanqsc2ww4fr5iphs9zg6388dr5l0x00bwks1579l6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/graphbox")
+    (synopsis "Extend graphicx to improve placement of graphics")
+    (description
+     "Graphbox is an extension of the standard @code{graphicx} LaTeX2e package to
+allow the placement of graphics relative to the ``current position'' using
+additional optional arguments of @code{\\includegraphics}.  For example,
+changing the vertical alignment is convenient for using graphics as elements
+of (mathematical) formulae.  Options for shifting, smashing and hiding the
+graphics may be useful in support, for example, of the Beamer framework.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
