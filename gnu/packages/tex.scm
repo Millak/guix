@@ -76619,6 +76619,25 @@ Using the package, you don't need to write @code{\\definecolor} before using
 a color.")
     (license license:lppl1.3+)))
 
+(define-public texlive-colorspace
+  (package
+    (name "texlive-colorspace")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/colorspace/"
+                   "tex/latex/colorspace/")
+             (base32
+              "1am4qhzhqk9qf6d3bfxpw51lgx9nz25vxdm6y823hpdk06ipq2yi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/colorspace")
+    (synopsis "Provides PDF color spaces")
+    (description
+     "The package provides PDF color spaces.  Currently, only spot colors and
+overprinting are supported.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
