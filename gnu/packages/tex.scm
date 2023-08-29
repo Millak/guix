@@ -86785,6 +86785,39 @@ as a manual for the macros.  Having said all of which, confidence is enhanced
 by the knowledge that the TeX code was formally verified.")
     (license license:lppl1.2+)))
 
+(define-public texlive-lccaps
+  (package
+    (name "texlive-lccaps")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/lccaps/" "source/latex/lccaps/"
+                   "tex/latex/lccaps/")
+             (base32
+              "1a56p7c7ldyhhrin1dm9lq1pjjblx32kyjs5005pkl35h8fl2gd2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (home-page "https://ctan.org/pkg/lccaps")
+    (synopsis "Lowercased (spaced) small capitals")
+    (description
+     "This little package serves the purpose of providing a uniform method to use
+lowercased small capitals and spaced lowercased small capitals.  It comes with
+four new user macros:
+
+@itemize
+
+@item @code{\\textlcc}, the main feature: lowercased small capitals;
+
+@item @code{\\spacedcaps}, a prefix to small capitals text commands to
+slightly increase their spacing;
+
+@item @code{\\textslcc} and @code{\\textssc}, which are shortcuts for
+@code{\\spacedcaps\\textlcc} and @code{\\spacedcaps\\textsc} (respectively).
+
+@end itemize")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
