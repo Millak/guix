@@ -80625,6 +80625,26 @@ The package is currently broken, cf.@:
      "This simple package prints both from and to addresses.")
     (license license:lppl)))
 
+(define-public texlive-envlab
+  (package
+    (name "texlive-envlab")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/envlab/" "source/latex/envlab/"
+                   "tex/latex/envlab/")
+             (base32
+              "08qqvbs12b5fbx2wa86591nr6jhzh42f6y0ch06lxywpy1lgrqrb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:build-targets #~(list "envlab.ins")))
+    (home-page "https://ctan.org/pkg/envlab")
+    (synopsis "Addresses on envelopes or mailing labels")
+    (description
+     "This LaTeX package produces mailing envelopes and labels, including barcodes
+and address formatting according to the US Postal Service rules.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
