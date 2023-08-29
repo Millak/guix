@@ -90413,6 +90413,27 @@ or @samp{@{} and @samp{@}} can still create break-points.")
 arguments: the symbol, description and physical unit.")
     (license license:lppl)))
 
+(define-public texlive-nonfloat
+  (package
+    (name "texlive-nonfloat")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/nonfloat/"
+                   "source/latex/nonfloat/"
+                   "tex/latex/nonfloat/")
+             (base32
+              "085mas0as5p1bk4d2ffk01xc6fm1n52iidcdlzrw9d2s5cf8kc8y")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nonfloat")
+    (synopsis "Non-floating table and figure captions")
+    (description
+     "This package adjusts the @code{figure} and @code{table} environments to
+ensure that centered objects as one line captions are centered as well.  Also
+the vertical spaces for table captions above the table are changed.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
