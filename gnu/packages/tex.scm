@@ -87337,6 +87337,33 @@ environment.  The advantage of using a tabular is that the user can add
 additional columns to each entry in the list.")
     (license license:lppl)))
 
+(define-public texlive-listofsymbols
+  (package
+    (name "texlive-listofsymbols")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/listofsymbols/"
+                   "source/latex/listofsymbols/"
+                   "tex/latex/listofsymbols/")
+             (base32
+              "1srbs3hfymyzxf9jz9zsvjladzkc27k7r4lb50aqypry9x2m0p04")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/listofsymbols")
+    (synopsis "Create and manipulate lists of symbols")
+    (description
+     "Listofsymbols provides commands to automatically create a list of
+symbols (also called notation or nomenclature), and to handle symbols
+logically, i.e., define a macro that is expanded to the desired output and use
+the macro in the text rather than hard-coding the output into the text.  This
+helps to ensure consistency throughout the text, especially if there is
+a chance that symbols will be changed at some stage.  The package is more or
+less a combination of what the packages @code{nomencl} and @code{formula} do.
+The concept of creating the list of symbols, though, is different from the way
+@file{nomencl.sty} does it.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
