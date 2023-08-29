@@ -82598,6 +82598,28 @@ them out.")
 a warning to the log file.")
     (license license:lppl)))
 
+(define-public texlive-fncylab
+  (package
+    (name "texlive-fncylab")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fncylab/" "tex/latex/fncylab/")
+             (base32
+              "1yk1byhczzjnig7x5g0aidsk64nh4shbwn66v4j0bm0ps6ya2b9v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fncylab")
+    (synopsis "Alter the format of @code{\\label} references")
+    (description
+     "LaTeX provides a mechanism for altering the appearance of references to
+labels, but it's somewhat flawed, and requires that the user manipulate
+internal commands.  The package solves the problem, by providing
+a @code{\\labelformat} command for changing the format of references to
+labels.  The package also provides a @code{\\Ref} command to make reference to
+such redefined labels at the start of a sentence.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
