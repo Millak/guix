@@ -86570,6 +86570,25 @@ Rows, columns, borders can all be specified to match the label sheet being
 used.")
     (license license:lppl1.2+)))
 
+(define-public texlive-labels4easylist
+  (package
+    (name "texlive-labels4easylist")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/labels4easylist/"
+                   "tex/latex/labels4easylist/")
+             (base32
+              "1igsf1lqvmfp1yjynwcr3w6lpwsckq3gcx44j6jh65425sfn7mxy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/labels4easylist")
+    (synopsis "Add reference labels to @code{easylist} items")
+    (description
+     "This package provides the @code{\\itemLabel} macro for adding configurable
+reference labels to @code{easylist} items.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
