@@ -86302,6 +86302,25 @@ a replacement for @code{keyreader}.  Since @code{keyreader} has remained
 a favourite with users, it has been reinstated.")
     (license license:lppl1.3+)))
 
+(define-public texlive-keystroke
+  (package
+    (name "texlive-keystroke")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/keystroke/"
+                   "tex/latex/keystroke/")
+             (base32
+              "0vgzbh02aadnwmhfvysijxxy4bkf3wv6hxmghb8kz8g7sam4f5p1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/keystroke")
+    (synopsis "Graphical representation of keys on keyboard")
+    (description
+     "This package provides a LaTeX package which provides macros for the
+graphical representation of the keys on a computer keyboard.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
