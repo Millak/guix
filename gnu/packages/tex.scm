@@ -72344,6 +72344,24 @@ results; the operation itself is better provided by the
 @code{geometry} package.")
     (license license:lppl1.0+)))
 
+(define-public texlive-a5comb
+  (package
+    (name "texlive-a5comb")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/a5comb/" "tex/latex/a5comb/")
+             (base32
+              "07ifhiza5ax2s6xlhz8q2xvb0q3acymfp0qhhpbhswygpqb0p75w")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/a5comb")
+    (synopsis "Support for A5 paper sizes")
+    (description
+     "This package provides support for A5 paper sizes.  It is superseded
+by @code{geometry}.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
