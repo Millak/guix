@@ -98146,6 +98146,29 @@ reference guides, anthologies, etc.), where a quick and easy way to find (for
 example) a chapter is needed.")
     (license license:lppl1.3+)))
 
+(define-public texlive-thumby
+  (package
+    (name "texlive-thumby")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/thumby/" "tex/latex/thumby/")
+             (base32
+              "138ddfn5ha4lbmf66snwvvrvjx0anfgcb9gpv2slbybm0lb9gb6k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/thumby")
+    (synopsis "Create thumb indexes for printed books")
+    (description
+     "The package can generate thumb indexes for your document.  It features
+printing thumb indexes on one- or two-sided pages, along with background- and
+foreground-color selection and full LaTeX styling of the chapter numbers in
+the thumb indexes.  The height of each thumb index is automatically chosen
+based on the number of chapters in your document, while the width is chosen by
+the user.  The package is designed to work with the @code{memoir} class, and
+also requires PerlTeX and TikZ.")
+    (license license:gpl3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
