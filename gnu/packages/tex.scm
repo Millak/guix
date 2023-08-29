@@ -90649,6 +90649,25 @@ In this way, you can (unambiguously) refer to each snippet elsewhere in your
 document.")
     (license license:lppl1.3+)))
 
+(define-public texlive-numname
+  (package
+    (name "texlive-numname")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/numname/" "tex/latex/numname/")
+             (base32
+              "164v2rlz3gvfmdpi0qprgkbkz14z8nndr282g85bkggdl4fl9968")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/numname")
+    (synopsis "Convert a number to its English expression")
+    (description
+     "The package can generate cardinal (one, two, ...) and ordinal (first, second,
+...) numbers.  The code derives from the memoir class, and is extracted for
+the convenience of non-users of that class.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
