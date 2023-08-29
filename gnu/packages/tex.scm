@@ -84907,6 +84907,25 @@ to be printed on paper.")
 For this purpose it builds on the generic @code{listings} package.")
     (license license:expat)))
 
+(define-public texlive-histogr
+  (package
+    (name "texlive-histogr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/histogr/" "source/latex/histogr/"
+                   "tex/latex/histogr/")
+             (base32
+              "1flg3r64zlwxhkxr4np7p5nzsfshyy4bzxspqpkzz08lvj8q7imz")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/histogr")
+    (synopsis "Draw histograms with the LaTeX @code{picture} environment")
+    (description
+     "This is a collection of macros to draw histogram bars inside a LaTeX
+@code{picture} environment.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
