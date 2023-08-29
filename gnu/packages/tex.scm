@@ -78162,6 +78162,34 @@ currently unmaintained.")
 currently unmaintained.")
     (license license:lppl1.3+)))
 
+(define-public texlive-datetime2-en-fulltext
+  (package
+    (name "texlive-datetime2-en-fulltext")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/datetime2-en-fulltext/"
+                   "source/latex/datetime2-en-fulltext/"
+                   "tex/latex/datetime2-en-fulltext/")
+             (base32
+              "06zqgqd1pxnwi672460x0xxm2q0yk9kbzwa3hpwrpdsc16xa87j1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/datetime2-en-fulltext")
+    (synopsis "English full text styles for the @code{datetime2} package")
+    (description
+     "This package provides English date and time styles that use words for the
+numbers and ordinals.  This package provides the following date and time
+styles: @code{en-fulltext}, @code{en-FullText}, @code{en-FULLTEXT}, and the
+additional time style @code{en-Fulltext}. (The date equivalent can be obtained
+through commands like @code{\\Today}.)
+
+Unlike the base styles provided by @file{datetime2.sty}, these styles aren't
+expandable styles.  This means that you can't use the date or time in PDF
+bookmarks or in the argument of certain commands, such as
+@code{\\MakeUppercase}, while these styles are in use.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
