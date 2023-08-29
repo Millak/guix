@@ -100718,6 +100718,25 @@ defining new ones to suit the user's needs.  You may safely remove this
 package once the paper is finished.")
     (license license:lppl1.3c)))
 
+(define-public texlive-zed-csp
+  (package
+    (name "texlive-zed-csp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/zed-csp/" "tex/latex/zed-csp/")
+             (base32
+              "16xv24vf6d3znfa2a6qhbz7hgq3s5n8fg8i8h07i9rf008apja0d")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/zed-csp")
+    (synopsis "Typesetting Z and CSP format specifications")
+    (description
+     "The package supports real-time CSP and incorporates the functionality of
+Spivey's original Z package, written for LaTeX 2.09.")
+    ;; "You may copy and distribute this file freely."
+    (license (license:non-copyleft "file://tex/latex/zed-csp/zed-csp.sty"))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
