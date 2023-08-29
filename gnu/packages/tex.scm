@@ -89399,6 +89399,28 @@ provides options for improving the typesetting of paragraphs (or headlines)
 with embedded math expressions at font sizes above 17.28pt.")
     (license license:lppl)))
 
+(define-public texlive-movie15
+  (package
+    (name "texlive-movie15")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/movie15/" "tex/latex/movie15/")
+             (base32
+              "1q1l099s84cnp7byh889mi322vjs8nivw7zljgffngjpzinccgbm")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/movie15")
+    (synopsis "Multimedia inclusion package")
+    (description
+     "The package provides an interface to embed movies, sounds and 3D objects into
+PDF documents for use with LaTeX as well as pdfLaTeX.  The package defines
+a command @code{\\includemovie} with PDF-1.5 compatibility.  Option
+@code{autoplay} causes the media clip to be started right after the page has
+loaded.  This is useful for side by side movie clips to be played back
+synchronously.  The package is now superseded by @code{media9}.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
