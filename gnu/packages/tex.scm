@@ -94868,6 +94868,25 @@ to various mathematical symbols used in that theory, mostly with automatic
 mathematics mode, so they work the same in formulae and in text.")
     (license license:lppl)))
 
+(define-public texlive-secdot
+  (package
+    (name "texlive-secdot")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/secdot/" "tex/latex/secdot/")
+             (base32
+              "1ndmzj21xwjdqz905h0bgz581adsij2w95m1zjpc9avhgsgx7fy0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/secdot")
+    (synopsis "Section numbers with trailing dots")
+    (description
+     "This package makes the numbers of @code{\\section} commands come out with
+a trailing dot.  It includes a command whereby the same can be made to happen
+with other sectioning commands.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
