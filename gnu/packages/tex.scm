@@ -97709,6 +97709,29 @@ indexing interface provided by the @code{glossaries} package.")
 at the bottom to the right of the page number.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tex-locale
+  (package
+    (name "texlive-tex-locale")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/tex-locale/"
+                   "source/latex/tex-locale/"
+                   "tex/generic/tex-locale/"
+                   "tex/latex/tex-locale/")
+             (base32
+              "0h7sl172flri87cbpygabkhk2qlrng3cwkyk71hz8289qx4g0wpr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tex-locale")
+    (synopsis "Localisation support for TeX and LaTeX documents")
+    (description
+     "This package uses both @code{tracklang} and @code{texosquery} to look up the
+locale information from the operating system and provide commands that can
+access locale-dependent information, such as the currency symbol and decimal
+separator.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
