@@ -87832,6 +87832,30 @@ the imperial system.  In order to display the numbers with measurement
 uncertainties, the package is able to perform Gaussian error propagation.")
     (license license:expat)))
 
+(define-public texlive-luatodonotes
+  (package
+    (name "texlive-luatodonotes")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/luatodonotes/"
+                   "source/lualatex/luatodonotes/"
+                   "tex/lualatex/luatodonotes/")
+             (base32
+              "0skkr16d6kpn811nwqifsypc14p9m0q0jza8lmmk609bq8r7qvf1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/luatodonotes")
+    (synopsis "Add editing annotations in a LuaLaTeX document")
+    (description
+     "The package allows the user to insert comments into a document that
+suggest (for example) further editing that may be needed.  The comments are
+shown in the margins alongside the text; different styles for the comments may
+be used; the styles are selected using package options.  The package is based
+on the package @code{todonotes}, and depends heavily on Lua, so it can only be
+used with LuaLaTeX.")
+    (license license:lppl1.2+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
