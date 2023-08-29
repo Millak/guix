@@ -78233,6 +78233,27 @@ zone mapping setting is on.")
 currently unmaintained.")
     (license license:lppl1.3+)))
 
+(define-public texlive-datetime2-estonian
+  (package
+    (name "texlive-datetime2-estonian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/datetime2-estonian/"
+                   "source/latex/datetime2-estonian/"
+                   "tex/latex/datetime2-estonian/")
+             (base32
+              "0fkdxp8s6gd9644z9vw7a9gnw7anrm4l0yawa59qdnv1yf8pyssp")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/datetime2-estonian")
+    (synopsis "Estonian language module for the @code{datetime2} package")
+    (description
+     "This module provides the @code{estonian} style that can be set using
+@code{\\DTMsetstyle} provided by @file{datetime2.sty}.  This package is
+currently unmaintained.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
