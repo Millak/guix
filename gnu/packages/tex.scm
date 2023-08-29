@@ -93667,6 +93667,24 @@ macros, like @code{\\Mbox}.  However, normally the long form uses the short
 form anyway when no optional arguments are used.")
     (license license:lppl1.3+)))
 
+(define-public texlive-recipe
+  (package
+    (name "texlive-recipe")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/recipe/" "tex/latex/recipe/")
+             (base32
+              "1rw29wqyasp939w3shkh0ch1q97g51r1jd3g0gskasif9i4p4al8")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/recipe")
+    (synopsis "LaTeX class to typeset recipes")
+    (description
+     "The layout design is relatively straightforward; the class uses the Bookman and the
+BrushScript-Italic fonts.")
+    (license license:public-domain)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
