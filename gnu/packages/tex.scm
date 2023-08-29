@@ -79790,6 +79790,25 @@ and pieces of code are also possible.  Currently only MATLAB and Python are
 supported to produce dynamic number list files.")
     (license license:expat)))
 
+(define-public texlive-dynblocks
+  (package
+    (name "texlive-dynblocks")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dynblocks/"
+                   "tex/latex/dynblocks/")
+             (base32
+              "1jmwkxa4s37cqanpfnzvcq80ic3dvnal5x0g5749c0b410f7x3im")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dynblocks")
+    (synopsis "Simple way to create dynamic blocks for Beamer")
+    (description
+     "The package provides full customisation of the aspect and dimensions of
+blocks inside a presentation.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
