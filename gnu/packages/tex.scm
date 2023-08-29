@@ -92332,6 +92332,28 @@ goodies and is highly customizable.  In particular, it can connect theorems to
 proofs, automatically producing text such as @samp{See proof on page X}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-philex
+  (package
+    (name "texlive-philex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/philex/" "tex/latex/philex/")
+             (base32
+              "05qlcfradxs3pcz8a9an6aihbxwm0dbsa8b6sf55yi7j85ymp991")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/philex")
+    (synopsis "Cross references for named and numbered environments")
+    (description
+     "Philex provides means for creating and cross-referencing named or numbered
+environments.  Possible uses would be equations, example sentences (as in
+linguistics or philosophy) or named principles.  Cross references may refer
+either to the number, or to a short name of the target environment, or to the
+contents of the environment.  Philex builds on the facilities of the
+@code{linguex} package.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
