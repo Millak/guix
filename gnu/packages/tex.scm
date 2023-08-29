@@ -75510,6 +75510,26 @@ require no more than a simple data file per cover; the package will make
 a full insert for a CD case (it copes with both normal and slim cases).")
     (license license:gpl3+)))
 
+(define-public texlive-cd-cover
+  (package
+    (name "texlive-cd-cover")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cd-cover/"
+                   "source/latex/cd-cover/"
+                   "tex/latex/cd-cover/")
+             (base32
+              "1r9msar7x87ibjw3wgh9m6xnrw01khnsdc20g0jhhrn53fyrxhg9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cdcover")
+    (synopsis "Typeset CD covers")
+    (description
+     "The CD-cover class will typeset front and back cover sheets for CD jewel
+cases, or an entire paper cover, or a label for a plastic slip-cover.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
