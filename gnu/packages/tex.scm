@@ -85991,6 +85991,24 @@ for Economic Research (IWH) in Halle, Germany.  The class offers options for
 both English and German texts.")
     (license license:lppl1.3+)))
 
+(define-public texlive-jlabels
+  (package
+    (name "texlive-jlabels")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/jlabels/" "tex/latex/jlabels/")
+             (base32
+              "1p12sr2i44mmn4cr3vsmrbaixx17c53qx4jh4k3mscwj7rkf3af1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/jlabels")
+    (synopsis "Make letter-sized pages of labels")
+    (description
+     "The package makes letter-sized pages of labels.  It provides controls for the
+numbers of rows and columns.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
