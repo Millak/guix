@@ -84291,6 +84291,28 @@ than a background color, while @code{\\fgraphicxbox} does the same thing, but
 also draws a colored frame around the box.")
     (license license:lppl)))
 
+(define-public texlive-graphpaper
+  (package
+    (name "texlive-graphpaper")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/graphpaper/"
+                   "source/latex/graphpaper/"
+                   "tex/latex/graphpaper/")
+             (base32
+              "1vi9fhgczi9g0i8wvvd8q4kh558nlnww5y6bvihsajs65p44h638")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/graphpaper")
+    (synopsis "LaTeX class to generate several types of graph papers")
+    (description
+     "Graphpaper is a LaTeX document class which allows to print several types of
+graph papers: bilinear (millimeter paper), semilogarithmic, bilogarithmic,
+polar, log-polar, Smith charts.  It is based on the @code{picture} environment
+and its extensions.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
