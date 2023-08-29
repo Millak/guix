@@ -90668,6 +90668,25 @@ document.")
 the convenience of non-users of that class.")
     (license license:lppl)))
 
+(define-public texlive-numspell
+  (package
+    (name "texlive-numspell")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/numspell/" "tex/latex/numspell/")
+             (base32
+              "0cb1xzpkassg9zdk2p22dm6f9x4hg7ij7siw1bivhqwfgkd1l617")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/numspell")
+    (synopsis "Spelling cardinal and ordinal numbers")
+    (description
+     "This package supports the spelling of cardinal and ordinal numbers.
+Supported languages are English, French, German, Hungarian, Italian, and
+Latin.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
