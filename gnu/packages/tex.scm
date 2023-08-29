@@ -89890,6 +89890,30 @@ The @code{nag} package provides routines to warn the user about the use of
 such obsolete things.")
     (license license:lppl)))
 
+(define-public texlive-nameauth
+  (package
+    (name "texlive-nameauth")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/nameauth/"
+                   "source/latex/nameauth/"
+                   "tex/latex/nameauth/")
+             (base32
+              "1mx7kamgidlp26rgkxfp6x5bc597361fvrg938rwdlrph4irvrhn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nameauth")
+    (synopsis
+     "Name authority mechanism for consistency in body text and index")
+    (description
+     "Publications, that reference many names, require editors and proofreaders to
+track those names in the text and index.  The package offers name authority
+macros that allow authors and compilers to normalize occurrences of names,
+variant name forms, and pen names in the text and index.  This may help
+minimize writing and production time and cost.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
