@@ -74296,6 +74296,29 @@ is taken from the French words \"beau\" (= \"beautiful\") and \"livre\" (= \"boo
 Don Knuth and used in his book @emph{Concrete Mathematics}.")
     (license license:lppl)))
 
+(define-public texlive-bewerbung
+  (package
+    (name "texlive-bewerbung")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bewerbung/"
+                   "source/latex/bewerbung/"
+                   "tex/latex/bewerbung/")
+             (base32
+              "0nimbimwk5z0y7vaw29dn77vr2hfd8wzv1rqdj8vqwk5lf2jsf67")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bewerbung")
+    (synopsis "Typesetting job applications")
+    (description
+     "The package provides packages and classes for typesetting applications with
+titlepage, cover letter, CV and additional documents in just a single
+document.  There is also a class for printing a table of the latest
+applications that can be shown to the German authorities.  The data for these
+applications can be maintained in a simple CSV file.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
