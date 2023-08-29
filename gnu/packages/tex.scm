@@ -91546,6 +91546,28 @@ like @code{patchcmd}, which only permits modification by adding commands at
 the beginning or end of an existing definition.")
     (license license:lppl)))
 
+(define-public texlive-patchcmd
+  (package
+    (name "texlive-patchcmd")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/patchcmd/"
+                   "source/latex/patchcmd/"
+                   "tex/latex/patchcmd/")
+             (base32
+              "14w3r2xqwq9nwhpdfmlib48xjg2wn4ns58qa4rqsslw1bbsyrl3q")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/patchcmd")
+    (synopsis "Change the definition of an existing command")
+    (description
+     "The package provides a command @code{\\patchcommand} that can be used to add
+material at the beginning and the end of the replacement text of an existing
+macro.  It works for macros with any number of normal arguments, including
+those that were defined with @code{\\DeclareRobustCommand}.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
