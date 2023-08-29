@@ -87810,6 +87810,28 @@ where the break starts.  The author may then either add the hyphenation to the
 white-list, or adjust the document to avoid the break.")
     (license license:expat)))
 
+(define-public texlive-lua-physical
+  (package
+    (name "texlive-lua-physical")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/lua-physical/"
+                   "scripts/lua-physical/")
+             (base32
+              "1bkzlzbpa26iw78qpp00svrzndcw78kcw1zv39hwbsyk9lz2a39s")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/lua-physical")
+    (synopsis
+     "Functions and objects for the computation of physical quantities")
+    (description
+     "This is a pure Lua library, which provides functions and objects for the
+computation of physical quantities.  The package provides units of the SI and
+the imperial system.  In order to display the numbers with measurement
+uncertainties, the package is able to perform Gaussian error propagation.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
