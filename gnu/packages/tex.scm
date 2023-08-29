@@ -96723,6 +96723,31 @@ solves this.  Note that this package is not compatible with the package
 @code{leqno} and @code{fleqn}.")
     (license license:lppl)))
 
+(define-public texlive-subeqnarray
+  (package
+    (name "texlive-subeqnarray")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/subeqnarray/"
+                   "source/latex/subeqnarray/"
+                   "tex/latex/subeqnarray/")
+             (base32
+              "19jv7sl6p1kshv13wk813lndb9fjr4bf2rf4s1ffd0l253mmxch6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/subeqnarray")
+    (synopsis "Equation array with sub numbering")
+    (description
+     "This package defines the @code{subeqnarray} and @code{subeqnarray*}
+environments, which behave like the corresponding @code{eqnarray} and
+@code{eqnarray*} environments, except that the individual lines are numbered
+like @samp{1a}, @samp{1b}, etc.  To refer to these numbers an extra label
+command @code{\\slabel} is provided.  Users are urged to consider the
+alignment capabilities of the @code{amsmath} bundle, which produce better
+results than @code{eqnarray}-related macros.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
