@@ -97212,6 +97212,30 @@ areas where the function is not defined, or placing special values.  Several
 features of the variation tables can be customized.")
     (license license:lppl1.3+)))
 
+(define-public texlive-tabstackengine
+  (package
+    (name "texlive-tabstackengine")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tabstackengine/"
+                   "tex/latex/tabstackengine/")
+             (base32
+              "1qj9w9rjsakrijy953ab2sa5k92npvvm4zz1y2z4k4a78g981q0n")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tabstackengine")
+    (synopsis "\"Tabbing\" front-end to stackengine")
+    (description
+     "The package provides a front end to the @code{stackengine} package,
+to allow tabbed stacking.  In most cases, an existing @code{stackengine}
+command may be prepended with the word @samp{tabbed}, @samp{align} or
+@samp{tabular} to create a new tabbed version of a stacking macro.  In
+addition, hooks in the package's parser that tabbed strings of data may be
+parsed, extracted, and reconstituted (not requiring use of any stacking
+constructions).")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
