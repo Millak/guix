@@ -86321,6 +86321,26 @@ a favourite with users, it has been reinstated.")
 graphical representation of the keys on a computer keyboard.")
     (license license:gpl3+)))
 
+(define-public texlive-keyval2e
+  (package
+    (name "texlive-keyval2e")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/keyval2e/" "tex/latex/keyval2e/")
+             (base32
+              "0h8clf8xy8lw3zairdr8x5v4yv904ffibcva54ckbnvzls48ka6m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/keyval2e")
+    (synopsis "Lightweight and robust key-value parser")
+    (description
+     "The package provides lightweight and robust facilities for creating and
+managing keys.  Its machinery isn't as extensive as that of, e.g., the
+@code{ltxkeys} package, but it is equally robust; ease of use and speed of
+processing are the design aims of the package.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
