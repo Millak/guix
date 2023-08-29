@@ -84726,6 +84726,26 @@ lowercase versions of switching pronouns for all case forms, plus anaphoric
 versions that reflect the current gender choice.")
     (license license:lppl1.3+)))
 
+(define-public texlive-hep-acronym
+  (package
+    (name "texlive-hep-acronym")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hep-acronym/"
+                   "source/latex/hep-acronym/"
+                   "tex/latex/hep-acronym/")
+             (base32
+              "18vgzqq53r787xjk2c2ggc74ji6qcmvp8r0id7jgcp9yydpz01m5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hep-acronym")
+    (synopsis "@code{acronym} extension for glossaries")
+    (description
+     "The hep-acronym package provides an @code{\\acronym} macro based on the
+@code{glossaries} package.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
