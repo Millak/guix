@@ -76706,6 +76706,28 @@ available within @code{xcolor}.")
 @code{color} package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-colourchange
+  (package
+    (name "texlive-colourchange")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/colourchange/"
+                   "tex/latex/colourchange/")
+             (base32
+              "1366p2y9a2ls5mdyvar4c1s3qzpb0ghjn4dzvnsnmd36cgyqjcmc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/colourchange")
+    (synopsis "Change colors in a Beamer presentation")
+    (description
+     "The package allows you to change the colour of the structural elements (inner
+theme and outer theme) of your Beamer presentation during the presentation.
+There is a manual option but there is also the option to have your structure
+colour change from one colour to another as a function of how far through the
+presentation you are.")
+    (license license:gpl3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
