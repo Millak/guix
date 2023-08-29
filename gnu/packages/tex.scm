@@ -73563,6 +73563,24 @@ typically found in textbooks.  It focuses on the American style of performing
 these algorithms.")
     (license license:lppl1.3+)))
 
+(define-public texlive-bchart
+  (package
+    (name "texlive-bchart")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bchart/" "tex/latex/bchart/")
+             (base32
+              "0kz2iijyfbnhr3i8fsiva96h5jazzdwsfbywg1a410imwacb54y9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bchart")
+    (synopsis "Draw simple bar charts in LaTeX")
+    (description
+     "The package provides horizontal bar charts, drawn using TikZ on a numeric
+X-axis.  The focus of the package is simplicity and aesthetics.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
