@@ -100737,6 +100737,29 @@ Spivey's original Z package, written for LaTeX 2.09.")
     ;; "You may copy and distribute this file freely."
     (license (license:non-copyleft "file://tex/latex/zed-csp/zed-csp.sty"))))
 
+(define-public texlive-zennote
+  (package
+    (name "texlive-zennote")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/zennote/" "tex/latex/zennote/")
+             (base32
+              "0iviklm37rdzn7fbq8i6kn5hfj3kqh32pz5pamr1bg52whvn0ly2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/zennote")
+    (synopsis "Streamline your note-taking process")
+    (description
+     "This package aims to provide you with an easy interface to speed up the
+process when organizing and producing elegant notes.  All the tables, figures,
+equations, and listings are labelled according to the notenumber with the
+@code{\\titlebox} command.  The @code{noteframe} environment helps you
+generate fancy colored boxes to emphasize the important
+information (e.g. theorems, equations, proofs, etc.) in your document.  You
+can customize the style and color to denote different categories, too.")
+    (license license:cc-by4.0)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
