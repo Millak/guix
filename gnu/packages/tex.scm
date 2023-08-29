@@ -75210,6 +75210,27 @@ Monday in the English-speaking world.")
 limits (cancelling a term ``to a value'') through parts of maths formulae.")
     (license license:public-domain)))
 
+(define-public texlive-canoniclayout
+  (package
+    (name "texlive-canoniclayout")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/canoniclayout/"
+                   "source/latex/canoniclayout/"
+                   "tex/latex/canoniclayout/")
+             (base32
+              "1cy2h0j7jarvfwdviy248laq6h9dyrj902kwd78m7l9lhmcpdkx6")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/canoniclayout")
+    (synopsis "Create canonical page layouts with @code{memoir}")
+    (description
+     "This package provides a canonic text layout has specified relations to
+a circle inscribed within the enclosing page.  The package allows the user to
+use a canonic layout with the @code{memoir} class.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
