@@ -672,37 +672,41 @@ TEAMS when a patch is received by Debbugs."
               (format #t "~a~a~%" prefix (member->string member)))
             (sort-members (team-members team))))
 
-(define (list-teams)
-  "Print all teams, their scope and their members."
-  (define port* (current-output-port))
-  (define width* (%text-width))
-  (for-each
-   (lambda (team)
-     (format port*
-             "\
+(define (print-team team)
+  "Print TEAM, a <team> record object."
+  (format #t
+          "\
 id: ~a
 name: ~a
 description: ~a
 ~amembers:
 "
-             (team-id team)
-             (team-name team)
-             (or (and=> (team-description team)
-                        (lambda (text)
-                          (string->recutils
-                           (fill-paragraph text width*
-                                           (string-length "description: ")))))
-                 "<none>")
-             (match (team-scope team)
-               (() "")
-               (scope (format #f "scope: ~{~s ~}~%" scope))))
-     (list-members team #:prefix "+ ")
-     (newline))
-   (sort
-    (hash-map->list (lambda (key value) value) %teams)
-    (lambda (team1 team2)
-      (string<? (symbol->string (team-id team1))
-                (symbol->string (team-id team2)))))))
+            (team-id team)
+            (team-name team)
+            (or (and=> (team-description team)
+                       (lambda (text)
+                         (string->recutils
+                          (fill-paragraph text (%text-width)
+                                          (string-length "description: ")))))
+                "<none>")
+            (match (team-scope team)
+              (() "")
+              (scope (format #f "scope: ~{~s ~}~%" scope))))
+    (list-members team #:prefix "+ ")
+    (newline)))
+
+(define (sort-teams teams)
+  "Sort TEAMS, a list of <team> record objects."
+  (sort teams
+        (lambda (team1 team2)
+          (string<? (symbol->string (team-id team1))
+                    (symbol->string (team-id team2))))))
+
+(define* (list-teams)
+  "Print all teams, their scope and their members."
+  (for-each print-team
+            (sort-teams (hash-map->list
+                         (lambda (_ value) value) %teams))))
 
 
 (define (diff-revisions rev-start rev-end)
