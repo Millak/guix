@@ -74659,6 +74659,27 @@ scheme management, document layout, headings and footers, front page layout,
 and other minor items.")
     (license license:lppl)))
 
+(define-public texlive-booklet
+  (package
+    (name "texlive-booklet")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/booklet/" "source/latex/booklet/"
+                   "tex/latex/booklet/")
+             (base32
+              "1hb1xhw2zssrhk3yipari2a7g1nhz7f48s52b0a6c5fl9l0bpk64")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/booklet")
+    (synopsis "Aids for printing simple booklets")
+    (description
+     "Pages of a document processed with the booklet package will be reordered and
+scaled so that they can be printed as four pages per physical sheet of paper,
+two pages per side.  The resulting sheets will, when folded in half, assemble
+into a booklet.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
