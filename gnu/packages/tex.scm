@@ -91586,6 +91586,25 @@ those that were defined with @code{\\DeclareRobustCommand}.")
      "The package provides helpers for German language package documentation.")
     (license license:lppl)))
 
+(define-public texlive-pawpict
+  (package
+    (name "texlive-pawpict")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pawpict/" "source/latex/pawpict/"
+                   "tex/latex/pawpict/")
+             (base32
+              "15b9xr4ilvkwgcw19narv52ixn4w9c6q2cl2dqs3myglvaw21w4p")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pawpict")
+    (synopsis "Using graphics from PAW")
+    (description
+     "This package provides support for the easy inclusion of graphics made by
+@acronym{PAW, Physics Analysis Workstation}.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
