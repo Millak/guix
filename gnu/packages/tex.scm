@@ -73661,6 +73661,26 @@ a specific audience while leaving their order according to a logical structure
 in the LaTeX source.")
     (license license:lppl)))
 
+(define-public texlive-beamerauxtheme
+  (package
+    (name "texlive-beamerauxtheme")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamerauxtheme/"
+                   "tex/latex/beamerauxtheme/")
+             (base32
+              "1zm2s4f5gjd4r72nrzwlg40232hmmnaa94zqjlz4nxwqlrbw5n6i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamerauxtheme")
+    (synopsis "Supplementary outer and inner themes for Beamer")
+    (description
+     "This bundle provides a collection of inner and outer themes as supplements to
+the default themes in the Beamer distribution.  These themes can be used in
+combination with existing inner, outer, and color themes.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
