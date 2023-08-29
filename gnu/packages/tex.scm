@@ -100442,6 +100442,25 @@ only if it is necessary.")
 follows them in the command stream and choose appropriate behaviour.")
     (license license:lppl1.3+)))
 
+(define-public texlive-xprintlen
+  (package
+    (name "texlive-xprintlen")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xprintlen/"
+                   "tex/latex/xprintlen/")
+             (base32
+              "0skz6y06wslzf0yb0g101g24kw6bkm9kl825swpqahyzdgwapxw4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/xprintlen")
+    (synopsis "Print TeX lengths in a variety of units")
+    (description
+     "The package defines a command, @code{\\printlen}, to print TeX lengths in
+a variety of units.  It can handle all units supported by TeX.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
