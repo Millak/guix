@@ -96748,6 +96748,27 @@ alignment capabilities of the @code{amsmath} bundle, which produce better
 results than @code{eqnarray}-related macros.")
     (license license:lppl)))
 
+(define-public texlive-subfigmat
+  (package
+    (name "texlive-subfigmat")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/subfigmat/"
+                   "tex/latex/subfigmat/")
+             (base32
+              "1656zcs1zay6pz1sqlhnspbphg7zkq7ziyxb8kkn943f2a8azmka")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/subfigmat")
+    (synopsis "Automates layout when using the @code{subfigure} package")
+    (description
+     "This package defines an @code{array}/@code{matrix}-type environment that is
+used with the @code{subfigure} package to automate the placement of
+sub-figures (or tables or text).  The sub-figures are placed left-to-right,
+top-to-bottom.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
