@@ -78483,6 +78483,27 @@ uses a format ``am pm'', the second a format ``24 hours''.")
 currently unmaintained.")
     (license license:lppl1.3+)))
 
+(define-public texlive-datetime2-lsorbian
+  (package
+    (name "texlive-datetime2-lsorbian")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/datetime2-lsorbian/"
+                   "source/latex/datetime2-lsorbian/"
+                   "tex/latex/datetime2-lsorbian/")
+             (base32
+              "0h7fk0xgppscml7sl7sn3c4yrnr131a8v1zxng88af3xr2xlsb37")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/datetime2-lsorbian")
+    (synopsis "Lower Sorbian language module for the @code{datetime2} package")
+    (description
+     "This module provides the @code{lsorbian} style that can be set using
+@code{\\DTMsetstyle} provided by @file{datetime2.sty}.  This package is
+currently unmaintained.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
