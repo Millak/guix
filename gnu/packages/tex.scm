@@ -81524,6 +81524,35 @@ faint-hearted users.  The package may be used, for example, to communicate
 between documents for the purposes of Dvipaste.")
     (license license:lppl)))
 
+(define-public texlive-exsheets
+  (package
+    (name "texlive-exsheets")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/exsheets/" "tex/latex/exsheets/")
+             (base32
+              "0wyld65ghidmiivvx7yan3x8wbx6ma5baw4w6imzdbkvdbp4dxms")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/exsheets")
+    (synopsis "Create exercise sheets and exams")
+    (description
+     "The package provides the means to create exercises or questions and their
+corresponding solutions.  The questions may be divided into classes and/or
+topics and may be printed selectively.  Meta-data to questions can be added
+and recovered.  The solutions may be printed where they are, or collected and
+printed at a later point in the document all together, section-wise or
+selectively by ID. The package provides the means to selectively include
+questions from an external file, and to control the style of headings of both
+questions and solutions.
+
+This package has been superseded by its official successor @code{xsim}.
+@code{exsheets} itself is now considered obsolete, but will stay alive, and
+will continue to receive bugfix releases.  However, new features will not be
+added any more.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
