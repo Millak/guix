@@ -85341,6 +85341,23 @@ compressed to @samp{[1-3]}, where the @samp{1} and the @samp{3} are
 (color-)linked to the bibliography.")
     (license license:gpl3+)))
 
+(define-public texlive-identkey
+  (package
+    (name "texlive-identkey")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/identkey/" "tex/latex/identkey/")
+             (base32
+              "0h9am5zwjmpy8wrszldiwfwqx2z310s7mv3mnk4ra2hhllkpdvgy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/identkey")
+    (synopsis "Typesetting bracketed dichotomous identification keys")
+    (description
+     "The package is for typesetting bracketed dichotomous identification keys.")
+    (license license:gpl3)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
