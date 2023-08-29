@@ -75814,6 +75814,25 @@ the current folder of the chapter/section/subsection.  It makes easy changing
 the name of a folder, for example.")
     (license license:lppl)))
 
+(define-public texlive-cheatsheet
+  (package
+    (name "texlive-cheatsheet")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cheatsheet/"
+                   "source/latex/cheatsheet/"
+                   "tex/latex/cheatsheet/")
+             (base32
+              "09v25l1xcjrm1bnvfwqa7scr7r9hz6qy9l4pr1haww0ma1fj0rba")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cheatsheet")
+    (synopsis "Simple cheat sheet class")
+    (description
+     "The package provides a clean, multi-column design intended for cheat sheets.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
