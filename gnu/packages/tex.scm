@@ -85123,6 +85123,26 @@ on and off.  This package is possibly obsolete.")
 working with Huawei Technologies Co., Ltd.")
     (license license:expat)))
 
+(define-public texlive-hvextern
+  (package
+    (name "texlive-hvextern")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hvextern/" "tex/latex/hvextern/")
+             (base32
+              "0s9plyr1733afzwqz2mq8dqga0awf62lgiqrrvh9z7vvmihgn5bl")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hvextern")
+    (synopsis "Write and execute external code, and insert the output")
+    (description
+     "This package allows to write MetaPost, TeX, ConTeXt, LaTeX, LuaTeX,
+LuaLaTeX, XeTeX, XeLaTeX, Lua, Perl, or Python source code into an external
+file, run that file via shell escape to create PDF, PNG, or text output, and
+include that output automatically into the main LaTeX document.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
