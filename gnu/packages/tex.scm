@@ -96503,6 +96503,27 @@ font better.  To achieve the borrowing, one only needs to load the package and
 specify the name of the target font via the from option.")
     (license license:lppl1.3c)))
 
+(define-public texlive-stex
+  (package
+    (name "texlive-stex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/stex/" "source/latex/stex/"
+                   "tex/latex/stex/")
+             (base32
+              "1yh991kwsm59vsylw0q1xifq18b8bdfmzf4ga0x7f0bcmwf3plab")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/stex")
+    (synopsis "Infrastructure for semantic preloading of LaTeX documents")
+    (description
+     "The sTeX package collection is a version of (La)TeX that allows to
+markup (La)TeX documents semantically without leaving the document format,
+essentially turning it into a document format for mathematical knowledge
+management (MKM).")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
