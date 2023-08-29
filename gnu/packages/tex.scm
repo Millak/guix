@@ -78099,6 +78099,27 @@ unmaintained.")
 @code{\\DTMsetstyle} provided by @file{datetime2.sty}.")
     (license license:lppl1.3+)))
 
+(define-public texlive-datetime2-czech
+  (package
+    (name "texlive-datetime2-czech")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/datetime2-czech/"
+                   "source/latex/datetime2-czech/"
+                   "tex/latex/datetime2-czech/")
+             (base32
+              "03zk1qjqxanmdli8rnb15g847gslczz265smjl0b5w5nw5cs7nlh")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/datetime2-czech")
+    (synopsis "Czech language module for the @code{datetime2} package")
+    (description
+     "This module provides the @code{czech} style that can be set using
+@code{\\DTMsetstyle} provided by @file{datetime2.sty}.  This package is
+currently unmaintained.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
