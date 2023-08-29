@@ -77103,6 +77103,30 @@ offers an easy-to-use key-value syntax to convert one unit into another (for
 example @samp{dag} to @samp{g}).")
     (license license:lppl1.3c)))
 
+(define-public texlive-cool
+  (package
+    (name "texlive-cool")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cool/" "source/latex/cool/"
+                   "tex/latex/cool/")
+             (base32
+              "0sjq7mx1hcz3sdg2nz6s7c1c7z3cj8n2wqml41cyqg01wspikgjx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cool")
+    (synopsis "COntent-Oriented LaTeX")
+    (description
+     "The package (COntent Oriented LaTeX) gives LaTeX the power to retain
+mathematical meaning of its expressions in addition to the typsetting
+instructions; essentially separating style from the content of the math.  One
+advantage of keeping mathematical meaning is that conversion of LaTeX
+documents to other executable formats (such as Content MathML or Mathematica
+code) is greatly simplified.")
+    ;; "This package is released under the GNU LGPL."  Assume latest.
+    (license license:lgpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
