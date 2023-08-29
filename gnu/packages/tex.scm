@@ -96637,6 +96637,27 @@ a new handout.  As a secondary feature, the package defines a basic visual
 style for handouts.  This style can be easily changed.")
     (license license:lppl1.3+)))
 
+(define-public texlive-styledcmd
+  (package
+    (name "texlive-styledcmd")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/styledcmd/"
+                   "source/latex/styledcmd/"
+                   "tex/latex/styledcmd/")
+             (base32
+              "0828ay5kyd0z77mh1y590m3ln52awi0rcdmdp5djlx1198xlvfj5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/styledcmd")
+    (synopsis "Handling multiple versions of user-defined macros")
+    (description
+     "This package allows creating and maintaining different versions of the same
+command, in order to choose the best option for every document.  This includes
+expandable and protected commands.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
