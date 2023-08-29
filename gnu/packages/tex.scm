@@ -73600,6 +73600,24 @@ X-axis.  The focus of the package is simplicity and aesthetics.")
 presentation from right to left.  It requires Babel with the LuaTeX engine.")
     (license license:lppl1.3c)))
 
+(define-public texlive-beamer2thesis
+  (package
+    (name "texlive-beamer2thesis")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/beamer2thesis/"
+                   "tex/latex/beamer2thesis/")
+             (base32
+              "0zk46yxxjc55vbvz17fnwbi02545vywjdaiza9165kxpvhmw75vi")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamer2thesis")
+    (synopsis "Thesis presentations using Beamer")
+    (description
+     "The package specifies a Beamer theme for presenting a thesis.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
