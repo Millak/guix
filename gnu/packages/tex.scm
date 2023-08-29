@@ -74365,6 +74365,25 @@ group questions in a list to control whether to show score, leave spacing,
 initialize question number; and more.")
     (license license:lppl1.3+)))
 
+(define-public texlive-bibletext
+  (package
+    (name "texlive-bibletext")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bibletext/"
+                   "tex/latex/bibletext/")
+             (base32
+              "1w7w1wf4ll77fjkwjb0akvms8hyyrs1gp84zk69f9z97330iapms")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bibletext")
+    (synopsis "Insert @emph{Bible} passages by their reference")
+    (description
+     "The package allows to insert @emph{Bible} texts in a document by specifying
+references.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
