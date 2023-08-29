@@ -93253,6 +93253,30 @@ alternate glyph (as in the fourier package).  The @code{pxgreeks} package does
 not constrain the text font that may be used in the document.")
     (license license:lppl1.3+)))
 
+(define-public texlive-pygmentex
+  (package
+    (name "texlive-pygmentex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pygmentex/" "scripts/pygmentex/"
+                   "tex/latex/pygmentex/")
+             (base32
+              "012ljn25ihnw3i9fava7z9zg1372m7map6sgkjsikwlk18v8b30j")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list #:link-scripts #~(list "pygmentex.py")))
+    (inputs (list python))
+    (home-page "https://ctan.org/pkg/pygmentex")
+    (synopsis "Use Pygments to format code listings in documents")
+    (description
+     "PygmenTeX is a Python-based LaTeX package that can be used for typesetting
+code listings in a LaTeX document using Pygments.  Pygments is a generic
+syntax highlighter for general use in all kinds of software such as forum
+systems, wikis or other applications that need to prettify source code.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
