@@ -79596,6 +79596,26 @@ be used with pdfLaTeX.  For that usage, consider the @code{wallpaper} or
 draft and modify the display with various options.")
     (license license:lppl1.3+)))
 
+(define-public texlive-dtk
+  (package
+    (name "texlive-dtk")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/dtk/" "tex/latex/dtk/")
+             (base32
+              "0004hpmspsznsyzw1jc1giqsl2vrkr5p8gwr1p05z4742ijdcpvb")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/dtk")
+    (synopsis "Document class for the journal of DANTE")
+    (description
+     "The bundle provides a class and style file for typesetting @emph{Die
+TeXnische Komodie} --- the communications of the German TeX Users Group DANTE
+e.V.  The arrangement means that the class may be used by article writers to
+typeset a single article, as well as to produce the complete journal.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
