@@ -95296,6 +95296,26 @@ generally recommended, therefore, to use @code{mdframed} instead.")
 and supporting mechanisms.")
     (license license:lppl)))
 
+(define-public texlive-shadowtext
+  (package
+    (name "texlive-shadowtext")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/shadowtext/"
+                   "tex/latex/shadowtext/")
+             (base32
+              "1ffldvx7as6jympf2fqkwd2arxphcf6l1cmpf8kvgh1f5hdbzwcr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/shadowtext")
+    (synopsis "Produce text with a shadow behind it")
+    (description
+     "The package introduces a command @code{\\shadowtext}, which adds a drop
+shadow to the text that is given as its argument.  The colour and positioning
+of the shadow are customisable.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
