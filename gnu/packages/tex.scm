@@ -95778,6 +95778,34 @@ XeLaTeX or LuaLaTeX.")
 a box.")
     (license license:lppl1.3+)))
 
+(define-public texlive-skb
+  (package
+    (name "texlive-skb")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/skb/" "source/latex/skb/"
+                   "tex/latex/skb/")
+             (base32
+              "146fjbh3jihjq9chbzshfcaha2d05dzqwcg7j154af00na59n8qk")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (home-page "https://ctan.org/pkg/skb")
+    (synopsis "Tools for a repository of long-living documents")
+    (description
+     "The package provides macros that help to build a document repository for long
+living documents.  It focuses on structure and re-use of text, code, figures
+etc.  The basic concept is first to separate structure from content (i.e.,
+text about a topic from the structure it is presented by) and then separating
+the content from the actual published document, thus enabling easy re-use of
+text blocks in different publications (i.e., text about a protocol in a short
+article about this protocol as well as in a book about many protocols); all
+without constantly copying or changing text.  As a side effect, using the
+document classes provided, it hides a lot of LaTeX from someone who just wants
+to write articles and books.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
