@@ -88463,6 +88463,26 @@ The package also allows writing an R code which processes the results of the
 exam and calculates the grades.")
     (license license:lppl1.3c)))
 
+(define-public texlive-mcite
+  (package
+    (name "texlive-mcite")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mcite/" "source/latex/mcite/"
+                   "tex/latex/mcite/")
+             (base32
+              "1hr8hc5d7ha249a817rgc64jx3nh8k1assbvknd14gbbp3x8wqx7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mcite")
+    (synopsis "Multiple items in a single citation")
+    (description
+     "The mcite package allows the user to collapse multiple citations into one, as
+is customary in physics journals.  The package requires a customised BibTeX
+style for its work; the documentation explains how to do that customisation.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
