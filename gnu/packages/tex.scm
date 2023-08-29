@@ -73581,6 +73581,25 @@ these algorithms.")
 X-axis.  The focus of the package is simplicity and aesthetics.")
     (license license:expat)))
 
+(define-public texlive-beamer-rl
+  (package
+    (name "texlive-beamer-rl")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/beamer-rl/"
+                   "tex/lualatex/beamer-rl/")
+             (base32
+              "0d38vgfb8c57zkjl8xx0xrwdbpy4lfkcxsalrfyhnxpfz25rzgy1")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/beamer-rl")
+    (synopsis "Right to left presentation with beamer and babel")
+    (description
+     "This class provides patches of some Beamer templates and commands for
+presentation from right to left.  It requires Babel with the LuaTeX engine.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
