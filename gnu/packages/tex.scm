@@ -85143,6 +85143,25 @@ file, run that file via shell escape to create PDF, PNG, or text output, and
 include that output automatically into the main LaTeX document.")
     (license license:lppl1.3c)))
 
+(define-public texlive-hvindex
+  (package
+    (name "texlive-hvindex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/hvindex/" "tex/latex/hvindex/")
+             (base32
+              "1vy5x6ws4kq68g6k9bprxnhk41w63v035ippsc3wq2mfp6s29hif")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/hvindex")
+    (synopsis "Support for indexing")
+    (description
+     "The package simplifies the indexing of words using the @code{\\index} command
+of @code{makeidx}.  With the package, to index a word in a text, you only have
+to type it once; the package makes sure it is both typeset and indexed.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
