@@ -77082,6 +77082,27 @@ converts the new notation to @code{xkeyval} notation and passes it on to
 German cookery book.")
     (license license:gpl3+)))
 
+(define-public texlive-cooking-units
+  (package
+    (name "texlive-cooking-units")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cooking-units/"
+                   "source/latex/cooking-units/"
+                   "tex/latex/cooking-units/")
+             (base32
+              "0i8h804gpdpi4ax60hm2fr54dcqfawkzjg64xj9za74zw24ga90v")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cooking-units")
+    (synopsis "Typeset and convert units for cookery books and recipes")
+    (description
+     "The package provides commands to typeset amounts and units consistently and
+offers an easy-to-use key-value syntax to convert one unit into another (for
+example @samp{dag} to @samp{g}).")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
