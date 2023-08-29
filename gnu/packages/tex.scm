@@ -89808,6 +89808,29 @@ to share MWEs which include image commands, without the need to share image
 files or to use replacement code.")
     (license license:lppl1.3+)))
 
+(define-public texlive-mycv
+  (package
+    (name "texlive-mycv")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mycv/" "scripts/mycv/"
+                   "source/latex/mycv/" "tex/latex/mycv/")
+             (base32
+              "0qz2n8iqp87xnfa0w6a0hq6k2b6kzf9cbl722h5yc0msrp635nfs")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mycv")
+    (synopsis "List-driven CV class, allowing TikZ decorations")
+    (description
+     "The class provides a set of functionality for writing @acronym{CV, Curriculum
+Vitae} with different layouts.  The idea is that a user can write some custom
+configuration directives, by means of which is possible both to produce
+different CV layouts and quickly switch among them.  In order to process such
+directives, the class uses a set of lists, provided by the package
+@code{etextools}.  Basic support for using TikZ decorations is also provided.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
