@@ -79672,6 +79672,27 @@ format.  Each file of the collection is provided as a @file{.dtx} file and as
 the corresponding @file{.pdf}.")
     (license license:lppl)))
 
+(define-public texlive-ducksay
+  (package
+    (name "texlive-ducksay")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ducksay/" "source/latex/ducksay/"
+                   "tex/latex/ducksay/")
+             (base32
+              "0qq3iw1bbxjlc0yc6lcz6wpmgkbmx02sagfal4rima6gg06yp346")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ducksay")
+    (synopsis "Draw ASCII art of animals saying a specified message")
+    (description
+     "The package draws ASCII art of animals saying a specified message.  The
+following macros are available: @code{\\ducksay}, @code{\\duckthink},
+@code{\\DefaultAnimal}, @code{\\AddAnimal}, and @code{\\DucksayOptions}.
+Multi-line messages are fully supported.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
