@@ -89465,6 +89465,26 @@ MSC and draws the corresponding MSC. The current version of the MSC macro
 package supports the full MSC2000 language.")
     (license license:lppl1.3+)))
 
+(define-public texlive-msg
+  (package
+    (name "texlive-msg")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/msg/" "source/latex/msg/"
+                   "tex/latex/msg/")
+             (base32
+              "1l6imkzdnygfsqzx75qj9j5rk2qvjgqhclvj54mai9rs6dfrcvk9")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/msg")
+    (synopsis "Package for LaTeX localisation")
+    (description
+     "The package is designed to localise any document class or package.  This
+should be very useful for end-users who could obtain messages in their own
+preferred language.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
