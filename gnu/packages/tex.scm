@@ -83922,6 +83922,26 @@ package.")
 package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-glossaries-portuges
+  (package
+    (name "texlive-glossaries-portuges")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/glossaries-portuges/"
+                   "source/latex/glossaries-portuges/"
+                   "tex/latex/glossaries-portuges/")
+             (base32
+              "0r6a8g12dv99fgq6ky3w9z238q575i8z5nhciv6f8bwbjrw5q6sn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/glossaries-portuges")
+    (synopsis "Portuges language module for @code{glossaries} package")
+    (description
+     "This package provides a Portuges language module for @code{glossaries}
+package.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
