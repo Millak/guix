@@ -97256,6 +97256,28 @@ constructions).")
 compensated and a @code{\\hline} has the same length as the text.")
     (license license:lppl1.2+)))
 
+(define-public texlive-tabularcalc
+  (package
+    (name "texlive-tabularcalc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/tabularcalc/"
+                   "tex/latex/tabularcalc/")
+             (base32
+              "0xcwn9cqs32z8kfb37k1i1hyxaqjvrbhnriy5fa9spymlrb4pi3i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/tabularcalc")
+    (synopsis "Calculate formulas in a tabular environment")
+    (description
+     "Given a list of numbers and one (or more) formulas, the package offers an
+easy syntax to build a table of values, i.e., a tabular in which the first row
+contains the list of numbers, and the other rows contain the calculated values
+of the formulas for each number of the list.  The table may be built either
+horizontally or vertically and is fully customizable.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
