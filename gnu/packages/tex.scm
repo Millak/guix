@@ -78419,6 +78419,29 @@ currently unmaintained.")
 currently unmaintained.")
     (license license:lppl1.3+)))
 
+(define-public texlive-datetime2-it-fulltext
+  (package
+    (name "texlive-datetime2-it-fulltext")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/datetime2-it-fulltext/"
+                   "source/latex/datetime2-it-fulltext/"
+                   "tex/latex/datetime2-it-fulltext/")
+             (base32
+              "04y6ivyj8wdyhqc2psaqljg73vz0ss0hdqivnlxb3l9b3m21vrlv")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-iftex))
+    (home-page "https://ctan.org/pkg/datetime2-it-fulltext")
+    (synopsis "Italian full text styles for the @code{datetime2} package")
+    (description
+     "This package provides Italian date and time styles that use words for the
+numbers and ordinals.  This package includes the following date and time
+styles: @code{itfulltext} and @code{it-fulltext-twenty-four}.  The first style
+uses a format ``am pm'', the second a format ``24 hours''.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
