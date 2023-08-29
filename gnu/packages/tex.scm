@@ -95316,6 +95316,41 @@ shadow to the text that is given as its argument.  The colour and positioning
 of the shadow are customisable.")
     (license license:lppl)))
 
+(define-public texlive-shapepar
+  (package
+    (name "texlive-shapepar")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/generic/shapepar/"
+                   "tex/generic/shapepar/")
+             (base32
+              "0bv18gkw4x5hz5bharypnw30zhiasryczvq92bib57gww8lxr3n7")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/shapepar")
+    (synopsis "Macro to typeset paragraphs in specific shapes")
+    (description
+     "@code{\\shapepar} is a macro to typeset paragraphs in a specific shape.  The
+size is adjusted automatically so that the entire shape is filled with text.
+There may not be displayed maths or @code{\\vadjust} material (no
+@code{\\vspace}) in the argument of @code{\\shapepar}.  The macros work for
+both LaTeX and plain TeX.
+
+@code{\\shapepar} works in terms of user-defined shapes, though the package
+does provide some predefined shapes.  The tedium of creating these polygon
+definitions may be alleviated by using the @code{shapepatch} extension to
+@code{transfig} which will convert @code{xfig} output to @code{\\shapepar}
+polygon form.")
+    ;; Python scripts (in "doc" output) is released under GPL2+, all
+    ;; other files are licensed by the statement: " This software may
+    ;; be freely used, transmitted, shared, copied, sold, or modified,
+    ;; provided that any modifications are clearly identified and this
+    ;; notice is left intact.
+    (license
+     (list license:gpl2+
+           (license:fsf-free "file://doc/generic/shapepar/README.shapepar")))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
