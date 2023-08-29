@@ -87770,6 +87770,24 @@ muskips, boxes, tokens and marks are provided by the etex package.
 all kind of control sequences.")
     (license license:lppl1.3+)))
 
+(define-public texlive-ltxtools
+  (package
+    (name "texlive-ltxtools")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ltxtools/" "tex/latex/ltxtools/")
+             (base32
+              "0rvwdnx33k805xb72vdi6r3gw6kmw1apjiqrf0ggvi9dl2r4pfbj")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ltxtools")
+    (synopsis "Collection of LaTeX API macros")
+    (description
+     "This is a bundle of macros that the author uses in the coding of others of
+his macro files.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
