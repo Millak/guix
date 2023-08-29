@@ -93402,6 +93402,26 @@ standard symbols as well as those from the @code{amsfonts} bundle and the
 @code{stmaryrd} package.")
     (license license:gpl3+)))
 
+(define-public texlive-quicktype
+  (package
+    (name "texlive-quicktype")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/quicktype/"
+                   "tex/latex/quicktype/")
+             (base32
+              "1aza4qdzqylv8h2gdzq83m8hs4n8lf3f6l4x2gf3q9mg2v0gms2x")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/quicktype")
+    (synopsis "LaTeX package for quick typesetting")
+    (description
+     "This package is intended for the quick typesetting of basic LaTeX documents
+using shortcuts to existing commands and specific commands for quick
+formatting and creation of tables and title pages with a graphic image.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
