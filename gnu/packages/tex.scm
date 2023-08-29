@@ -92791,6 +92791,36 @@ with Prosper, with two slides per page.")
 a presentation, just like some websites do in order to simplify navigation.")
     (license license:expat)))
 
+(define-public texlive-pagecolor
+  (package
+    (name "texlive-pagecolor")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pagecolor/"
+                   "source/latex/pagecolor/"
+                   "tex/latex/pagecolor/")
+             (base32
+              "153hlqp4dzcrc3hkpss6m908f47yk6d3bfyyy9xkx795fa4c83n5")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pagecolor")
+    (synopsis "Interrogate page color")
+    (description
+     "This package provides the command @code{\\thepagecolor}, which gives the current page
+(background) color, i.e., the argument used with the most recent call of
+@code{\\pagecolor@{...@}}.  The command @code{\\thepagecolornone} gives the
+same color as @code{\\thepagecolor}, except when the page background color is
+@code{none} (e.g., as a result of using the @code{\\nopagecolor} command).  In
+that case @code{\\thepagecolor} is @code{white} and @code{\\thepagecolornone}
+is @code{none}.  When @code{\\nopagecolor} is unknown or broken
+(@code{crop} package), this package provides a replacement.  Similar to @code{\\newgeometry}
+and @code{\\restoregeometry} of the @code{geometry} package @code{\\newpagecolor@{...@}} and
+@code{\\restorepagecolor} are provided.  For use with the @code{crop} package
+@code{\\backgroundpagecolor@{...@}} as well as @code{\\newbackgroundpagecolor@{...@}} and
+@code{\\restorebackgroundpagecolor} are provided.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
