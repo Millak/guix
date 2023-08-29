@@ -93229,6 +93229,30 @@ represent sequence of game moves with their associated justification
 pointers.")
     (license license:public-domain)))
 
+(define-public texlive-pxgreeks
+  (package
+    (name "texlive-pxgreeks")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/pxgreeks/"
+                   "source/latex/pxgreeks/"
+                   "tex/latex/pxgreeks/")
+             (base32
+              "1s4bckmniy5paszg6hjqkf7vkj66mc5fpplwlz7xq432k0773xx3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/pxgreeks")
+    (synopsis "Shape selection for PX fonts Greek letters")
+    (description
+     "The package allows LaTeX maths users of the PX fonts to select the shapes
+(italic or upright) for the Greek lowercase and uppercase letters.  Once the
+shapes for lowercase and uppercase have been selected via a package option,
+the @code{\\other} prefix (e.g., @code{\\otheralpha}) allows using the
+alternate glyph (as in the fourier package).  The @code{pxgreeks} package does
+not constrain the text font that may be used in the document.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
