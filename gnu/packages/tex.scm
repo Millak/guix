@@ -74556,6 +74556,27 @@ similar to the TeX primitive @code{\\magnification} but more accurate and
 user-friendly.")
     (license license:lppl1.3+)))
 
+(define-public texlive-bnumexpr
+  (package
+    (name "texlive-bnumexpr")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/bnumexpr/"
+                   "source/latex/bnumexpr/"
+                   "tex/latex/bnumexpr/")
+             (base32
+              "01d91gb1f6iqzh6krc21fc1akvh8w2v3flpq02kig915w7w9r4sn")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/bnumexpr")
+    (synopsis
+     "Extends eTeX's @code{\\numexpr...\\relax} construct to big integers")
+    (description
+     "The package extends e-TeX @code{\\numexpr...\\relax} operation to allow big
+integers, powers, factorials, truncated division and its associated modulo.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
