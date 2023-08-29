@@ -82777,6 +82777,25 @@ Don't be seduced by @code{fnpara}, whose implementation is improved by the
 present package.")
     (license license:lppl1.3+)))
 
+(define-public texlive-footnotebackref
+  (package
+    (name "texlive-footnotebackref")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/footnotebackref/"
+                   "tex/latex/footnotebackref/")
+             (base32
+              "0ns4kdqkpirv1n8kc52n9qymbk6z0pczihxz3n26fl4acnz3nsmy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/footnotebackref")
+    (synopsis "Back-references from footnotes")
+    (description
+     "The package provides the means of creating hyperlinks, from a footnote at the
+bottom of the page, back to the occurence of the footnote in the main text.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
