@@ -90768,6 +90768,29 @@ documents.")
 @code{cmmib} fonts for use to produce old-style numbers.")
     (license license:lppl)))
 
+(define-public texlive-onlyamsmath
+  (package
+    (name "texlive-onlyamsmath")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/onlyamsmath/"
+                   "source/latex/onlyamsmath/"
+                   "tex/latex/onlyamsmath/")
+             (base32
+              "1sl2zrd2vp9lpvjxaqa9mfff8n9m6wk39mb855k6xr2pkhdiyw7m")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/onlyamsmath")
+    (synopsis
+     "Inhibit use of non-@code{amsmath} mathematics markup when using amsmath")
+    (description
+     "This package inhibits the usage of plain TeX and (on demand) of standard
+LaTeX mathematics environments.  This is useful for class writers who want to
+encourage their users to use the environments provided by the @code{amsmath}
+package.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
