@@ -82113,6 +82113,32 @@ loading the body of the file.  The @code{myfilist} package uses
 @code{readprov} and controls what @code{\\listfiles} will report.")
     (license license:lppl1.3+)))
 
+(define-public texlive-fink
+  (package
+    (name "texlive-fink")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fink/" "source/latex/fink/"
+                   "tex/latex/fink/")
+             (base32
+              "1mj7hjmyx83wv9hm8qsz889bh8p0kdx5a01nbgx0qdxm9wqqyxx0")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments (list #:tex-format "latex"))
+    (home-page "https://ctan.org/pkg/fink")
+    (synopsis "LaTeX2e file name keeper")
+    (description
+     "This package keeps track of files included in your document, with
+@code{\\input} or @code{\\include}.  You then have permanent access to the
+name of the file currently being processed through the macro
+@code{\\finkfile}.
+
+FiNK has been deprecated and is not maintained anymore.  People
+interested in FiNK's functionality are invited to use a package named
+@code{currfile} instead.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
