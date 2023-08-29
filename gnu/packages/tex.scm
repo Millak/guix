@@ -75653,6 +75653,28 @@ as well as in an unrestricted environment (for eventual transfer and
 completion in the restricted environment).")
     (license license:lppl1.3+)))
 
+(define-public texlive-centeredline
+  (package
+    (name "texlive-centeredline")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/centeredline/"
+                   "tex/latex/centeredline/")
+             (base32
+              "04m40vpikcrxaak3z8xyp7kn4ndzg3w90ma8333qv4k7ck2h2sh3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/centeredline")
+    (synopsis "Macro for centering lines")
+    (description
+     "This package provides a macro @code{\\centeredline}, which allows one to
+conveniently center a line inside a paragraph while allowing usage therein of
+@code{\\verb} or other macros changing catcodes.  It works nicely in list
+environments, and material whose natural width exceeds the current line width
+will get properly centered too.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
