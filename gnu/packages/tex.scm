@@ -89938,6 +89938,26 @@ to LaTeX.  It may be used to declare local LaTeX commands, which can be made
 accessible in a later contexts without defining them globally.")
     (license license:lppl)))
 
+(define-public texlive-ncclatex
+  (package
+    (name "texlive-ncclatex")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ncclatex/" "tex/latex/ncclatex/")
+             (base32
+              "10jv9da81472x33bhjqhxan4f4hzbl5pbf1p3xj0fnidd8440nk2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ncclatex")
+    (synopsis "Extended general-purpose class")
+    (description
+     "The @code{ncc} class provides a framework for a common class to replace the
+standard @code{article}, @code{book} and @code{report} classes, and providing
+a @code{preprint} class.  The class's extensions are provided in a number of
+small packages, some of which may also be used with the standard classes.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
