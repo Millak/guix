@@ -89190,6 +89190,27 @@ of text boxes in a two-column layout.  The color scheme is inspired by the
 @code{metropolis} Beamer theme.")
     (license license:cc-by-sa4.0)))
 
+(define-public texlive-moderntimeline
+  (package
+    (name "texlive-moderntimeline")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/moderntimeline/"
+                   "source/latex/moderntimeline/"
+                   "tex/latex/moderntimeline/")
+             (base32
+              "1bn0kcgrr76slg93fp8zqlcwawk8a38galknyr6dv79lilmldx8h")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/moderntimeline")
+    (synopsis "Timelines for use with @code{moderncv}")
+    (description
+     "The package provides commands to configure and to draw time line diagrams;
+such diagrams are designed to fit into Curriculum Vitae documents written
+using the @code{moderncv} class.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
