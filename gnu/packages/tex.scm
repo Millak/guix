@@ -88805,6 +88805,27 @@ them not directly related to metre) that are often used in critical editions
 of classical texts.")
     (license license:lppl)))
 
+(define-public texlive-mftinc
+  (package
+    (name "texlive-mftinc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/mftinc/" "source/latex/mftinc/"
+                   "tex/latex/mftinc/")
+             (base32
+              "0kixm45whs2160yg8kw0anyvhrklwr342zdqhxkdpvqb5qp957mr")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/mftinc")
+    (synopsis "Pretty-print Metafont source")
+    (description
+     "The @code{mft} program pretty-prints Metafont source code into a TeX file.
+The @code{mftinc} package facilitates incorporating such files into a LaTeX2e
+document.  In addition, @code{mftinc} provides routines for improved comment
+formatting and for typesetting font tables.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
