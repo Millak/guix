@@ -82579,6 +82579,25 @@ standard one or two column layout.")
 them out.")
     (license license:public-domain)))
 
+(define-public texlive-fnbreak
+  (package
+    (name "texlive-fnbreak")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/fnbreak/" "source/latex/fnbreak/"
+                   "tex/latex/fnbreak/")
+             (base32
+              "0v8mlzwc6ccp545k325lfs6fdfshpv0dr592aj3f85dg54qpmj8k")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/fnbreak")
+    (synopsis "Warn for split footnotes")
+    (description
+     "This package detects footnotes that are split over several pages, and writes
+a warning to the log file.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
