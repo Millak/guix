@@ -100200,6 +100200,27 @@ standard LaTeX @code{\\ldots} as well as preset package options for the
 @emph{Chicago Manual of Style} (Turabian); the Bluebook; and MLA guidelines.")
     (license license:lppl1.3+)))
 
+(define-public texlive-xfakebold
+  (package
+    (name "texlive-xfakebold")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/xfakebold/"
+                   "tex/latex/xfakebold/")
+             (base32
+              "0p51bscpac1vaxpqpwd9fdkxa1gv8f5x640zzzp09yhcbmpync8f")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (propagated-inputs (list texlive-iftex))
+    (home-page "https://ctan.org/pkg/xfakebold")
+    (synopsis "Fake a regular font for bold characters")
+    (description
+     "This package uses PDF's text rendering to modify the linewidth of an outline
+font to get bold characters.  It works only for vectorfonts where the glyphs
+are defined by their outline.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
