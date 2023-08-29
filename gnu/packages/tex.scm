@@ -99174,6 +99174,27 @@ The output is pre-configured in landscape mode and uses Times Roman by
 default.")
     (license license:artistic2.0)))
 
+(define-public texlive-variablelm
+  (package
+    (name "texlive-variablelm")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/fonts/variablelm/"
+                   "tex/latex/variablelm/")
+             (base32
+              "1jlcvsz8ah8s33vqbnw13mgap3k8lh4p6ap1bwf6czwyq7m5r47h")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/variablelm")
+    (synopsis "Font definitions for the variable Latin Modern fonts")
+    (description
+     "This package provides a mechanism for scaling a typeface.  It is directed at
+the Latin Modern fonts and provides the font definitions and the corresponding
+style file.  This mechanism is useful in mixed text compositions, for example
+Japanese-Latin.")
+    (license license:gfl1.0)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
