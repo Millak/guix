@@ -77954,6 +77954,27 @@ Additionally there are commands for incrementing and decrementing a date.
 Leap years and the Gregorian calendar reform are considered.")
     (license license:lppl1.2+)))
 
+(define-public texlive-datestamp
+  (package
+    (name "texlive-datestamp")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/lualatex/datestamp/"
+                   "source/lualatex/datestamp/"
+                   "tex/lualatex/datestamp/")
+             (base32
+              "1ldrdjypypdbddazj2h3jyzhwf57q4fnssnbfy9rdqlggw30mh34")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/datestamp")
+    (synopsis "Fixed date-stamps with LuaLaTeX")
+    (description
+     "This package adds fixed date-stamps with simple and customizable @file{.aux}
+files and LuaLaTeX.  As long as the @file{.aux} file is not deleted/modified
+the date-stamp generated with this package remains intact.")
+    (license (list license:gpl3+ license:fdl1.3+))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
