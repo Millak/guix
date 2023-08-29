@@ -74535,6 +74535,27 @@ the return address, the closing, and the signature appear flushed on the left
 margin.")
     (license license:public-domain)))
 
+(define-public texlive-blowup
+  (package
+    (name "texlive-blowup")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/blowup/" "source/latex/blowup/"
+                   "tex/latex/blowup/")
+             (base32
+              "07hkichn9j4bgah9q2v00hbq0bqf4y11ylhyhwm439a24bjwp4jx")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/blowup")
+    (synopsis "Upscale or downscale all pages of a document")
+    (description
+     "The package @code{blowup} only defines the user-level macro @code{\\blowUp},
+which can be used to upscale or downscale all pages of a document.  It is
+similar to the TeX primitive @code{\\magnification} but more accurate and
+user-friendly.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
