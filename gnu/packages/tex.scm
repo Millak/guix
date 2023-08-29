@@ -89544,6 +89544,26 @@ a switch to choose between the two kinds of Greek uppercase letters.")
 enumerated array in which columns are vertically aligned on the counter.")
     (license license:lppl1.0+)))
 
+(define-public texlive-multiaudience
+  (package
+    (name "texlive-multiaudience")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/multiaudience/"
+                   "source/latex/multiaudience/"
+                   "tex/latex/multiaudience/")
+             (base32
+              "1j0lh7pwaqccg68x1j938c69b05x7qbj1i70ka4ywh3pi6ilqw9i")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/multiaudience")
+    (synopsis "Several versions of output from the same source")
+    (description
+     "This package allows to generate several versions of the same document for
+different audiences.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
