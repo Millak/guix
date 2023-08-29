@@ -99600,6 +99600,27 @@ general text so that the text can be properly referenced.  The vertical ruler
 can be scaled and moved freely.")
     (license license:lppl1.0+)))
 
+(define-public texlive-vtable
+  (package
+    (name "texlive-vtable")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/vtable/" "tex/latex/vtable/")
+             (base32
+              "1kvkaksls3nvjzqpf45l13jmm8mdpz8iccxhx5pqsfhwy19b9yp2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/vtable")
+    (synopsis "Vertical alignement of table cells")
+    (description
+     "The package allows vertical alignement of table cell by providing: @samp{Z},
+@samp{L}, @samp{C}, @samp{R}, samp{J} and @samp{I} column types,
+@code{\\nextRow} and @code{\\lb} commands, @code{\\setMultiColRow},
+@code{\\setMultiColumn}, @code{\\setMultiRow} and @code{\\tableFormatedCell}
+commands for @code{tabular} and similar environment.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
