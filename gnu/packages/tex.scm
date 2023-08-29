@@ -100790,6 +100790,33 @@ as @samp{1.000,--}.
 These conversions may be switched on and off.")
     (license license:lppl)))
 
+(define-public texlive-zref-check
+  (package
+    (name "texlive-zref-check")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/zref-check/"
+                   "source/latex/zref-check/"
+                   "tex/latex/zref-check/")
+             (base32
+              "0zjv0qijvl2rz08amgvqm785v46salk6q9v0bh5y64k1ljzg96jg")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/zref-check")
+    (synopsis "Flexible cross-references with contextual checks based on @code{zref}")
+    (description
+     "This package provides an user interface for making LaTeX cross-references
+flexibly, while allowing to have them checked for consistency with the
+document structure as typeset.  Statements such as @samp{above}, @samp{on the
+next page}, @samp{previously}, can be given to @code{\\zcheck} in free-form,
+and a set of checks can be specified to be run against a given label, which
+will result in a warning at compilation time if any of these checks fail.
+@code{\\zctarget} and the @code{zcregion} environment are also defined as
+a means to easily set label targets to arbitrary places in the text which can
+be referred to by @code{\\zcheck}.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
