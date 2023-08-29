@@ -86084,6 +86084,27 @@ includes a package @file{jsmembertable.sty} that helps in generating course
 member and presence lists.")
     (license license:lppl1.3+)))
 
+(define-public texlive-jumplines
+  (package
+    (name "texlive-jumplines")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/jumplines/"
+                   "tex/latex/jumplines/")
+             (base32
+              "0vih9bayflngvsx0q0pfqzp04vbp5mjjgc7m8yhs4drr27nh75j2")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/jumplines")
+    (synopsis "Articles with teasers and continuation later on")
+    (description
+     "Jumplines is a package for typesetting (newspaper) articles that show a teaser
+(some few lines of text/content) and are continued at a later place, with
+optional hyperlinking and a list of articles.  It requires LuaLaTeX for colour
+support in split boxes.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
