@@ -90455,6 +90455,29 @@ no options and defines no user commands; the user needs only to load it, and
 the requirement is met.")
     (license license:lppl1.2+)))
 
+(define-public texlive-nopageno
+  (package
+    (name "texlive-nopageno")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/nopageno/" "tex/latex/nopageno/")
+             (base32
+              "1az5hq793q20h73vay67pyxk6bhmi1xxbp7gw5nbyy7jcyq39389")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/nopageno")
+    (synopsis "No page numbers in LaTeX documents")
+    (description
+     "LaTeX's standard styles use two page styles, one on normal pages and one on
+opening pages with @code{\\maketitle} or @code{\\chapter}, etc.  Unfortunately
+there is only easy access to changing one of these two so if you want
+something other than plain on the opening pages you must use
+@code{\\thispagestyle} on each such page.  The @code{fancyhdr} package does
+provide a more flexible interface, but if you just want an empty page style on
+all pages then this package will do the job.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
