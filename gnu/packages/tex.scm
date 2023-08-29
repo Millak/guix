@@ -83603,6 +83603,29 @@ which version of your document.  This Git information can be included on every
 page by a watermark or (for custom needs) via provided variables.")
     (license license:lppl1.3+)))
 
+(define-public texlive-gitver
+  (package
+    (name "texlive-gitver")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/gitver/" "tex/latex/gitver/")
+             (base32
+              "1z2amfxc59zdzhvqdqrxnjxr0qgymc384bnm6w0m00p2mhj5pbvy")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/gitver")
+    (synopsis
+     "Get the current Git hash of a project and typeset it in the document")
+    (description
+     "This package will get a description of the current Git version of the
+document and store it in a command @code{\\gitVer}.  If @code{memoir} or
+@code{fancyhdr} are in use, it will also add this to the document footers
+unless the option @code{noheader} is passed.  The package also defines
+a command @code{\\versionBox} which outputs a box containing the version and
+date of compilation.")
+    (license license:lppl1.3c)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
