@@ -76315,6 +76315,25 @@ ideas of mine such as a mechansim for providing abbreviations etc.  Not at
 least it provides a number of programming tools.")
     (license license:lppl1.3+)))
 
+(define-public texlive-cntformats
+  (package
+    (name "texlive-cntformats")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/cntformats/"
+                   "tex/latex/cntformats/")
+             (base32
+              "09j0acva6hx3ny2k76j7psmykfyqb40mvr08cl2gndqmx24j1s3l")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/cntformats")
+    (synopsis "Different way to read counters")
+    (description
+     "The package offers package or class authors a way to format counters with
+patterns.  These patterns do not affect normal LaTeX treatment of counters.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
