@@ -77996,6 +77996,26 @@ the date-stamp generated with this package remains intact.")
 currently unmaintained.")
     (license license:lppl1.3+)))
 
+(define-public texlive-datetime2-basque
+  (package
+    (name "texlive-datetime2-basque")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/datetime2-basque/"
+                   "source/latex/datetime2-basque/"
+                   "tex/latex/datetime2-basque/")
+             (base32
+              "17wy1d12ix13a1nnsi7n60jmj2jj32jbn9cnbin30pld38b5a7j3")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/datetime2-basque")
+    (synopsis "Basque language module for the @code{datetime2} package")
+    (description
+     "This module provides the @code{basque} style that can be set using
+@code{\\DTMsetstyle} provided by @file{datetime2.sty}.")
+    (license license:lppl1.3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
