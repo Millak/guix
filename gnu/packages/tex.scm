@@ -98972,6 +98972,30 @@ asks you a few questions and then generates the table --- somewhat similar to
 @file{nfssfont.tex} for 8-bit fonts.")
     (license license:lppl1.3c)))
 
+(define-public texlive-unisc
+  (package
+    (name "texlive-unisc")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/unisc/" "source/latex/unisc/"
+                   "tex/latex/unisc/")
+             (base32
+              "0rrpaga6hny2v8qv5kx860zn8b9j8ypy3bmq4a5nadscg08g7v17")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/unisc")
+    (synopsis "Unicode small caps with Lua/XeLaTeX")
+    (description
+     "LaTeX produces small caps with @code{\\textsc@{text@}} or @code{@{\\scshape
+text@}}.  Neither of these commands produce small caps in Unicode.  If the
+output text is copied and pasted somewhere it shows the same characters as
+used in the input.  This package aims to internally convert all the characters
+provided to the commands mentioned above.  It assumes that the file using this
+package is compiled with Lua/XeLaTeX and a good Unicode font which has the
+small caps characters, e.g., Charis SIL.")
+    (license (list license:gpl3+ license:fdl1.3+))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
