@@ -76956,6 +76956,27 @@ document.  A condition space is defined by specifying a condition domain and
 a condition property to match with one or more substitutable forms.")
     (license license:lppl1.3c)))
 
+(define-public texlive-constants
+  (package
+    (name "texlive-constants")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/constants/"
+                   "source/latex/constants/"
+                   "tex/latex/constants/")
+             (base32
+              "0ykg2q3mbgc705v7c14pldz57g4qjm4z5cw8jw3fi2254fzdb2h4")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/constants")
+    (synopsis "Automatic numbering of constants")
+    (description
+     "The package provides a way to number constants in a mathematical proof
+automatically, with a system for labelling/referencing.  In addition, several
+families of constants (with different symbols) may be defined.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
