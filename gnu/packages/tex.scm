@@ -75231,6 +75231,39 @@ a circle inscribed within the enclosing page.  The package allows the user to
 use a canonic layout with the @code{memoir} class.")
     (license license:lppl1.3+)))
 
+(define-public texlive-captcont
+  (package
+    (name "texlive-captcont")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/captcont/"
+                   "source/latex/captcont/"
+                   "tex/latex/captcont/")
+             (base32
+              "00k6ks2nwqwm37pk9m0zl755q8cvdg8kcwbbw5vwiyrqpifpmwyc")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-build
+            ;; This phase is necessary because the build phase is reluctant to
+            ;; generate "ltxdoc.cfg" since there is another one among the
+            ;; inputs already.
+            (lambda _
+              (substitute* "source/latex/captcont/captcont.ins"
+                (("\\\\generateFile\\{ltxdoc\\.cfg\\}\\{t\\}")
+                 "\\generateFile{ltxdoc.cfg}{f}")))))))
+    (home-page "https://ctan.org/pkg/captcont")
+    (synopsis "Retain float number across several floats")
+    (description
+     "The @code{captcont} package provides the ability to continue the numbering in
+your float environment with minimal overhead.  This package adds three
+commands: @code{\\caption*}, @code{\\captcont}, and @code{\\captcont*}.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
