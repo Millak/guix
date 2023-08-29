@@ -83058,6 +83058,27 @@ a change of subject or context without actually starting a new chapter or
 section.")
     (license license:lppl1.3c)))
 
+(define-public texlive-ftcap
+  (package
+    (name "texlive-ftcap")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ftcap/" "tex/latex/ftcap/")
+             (base32
+              "0z5ydpf7gxpmfmkaxim5jg32drpaqqb0f58jsbdpiap666lhsb34")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ftcap")
+    (synopsis
+     "Allows @code{\\caption} at the beginning of a @code{table} environment")
+    (description
+     "For several reasons a @code{\\caption} may be desirable at the top of
+a @code{table} environment.  This package changes the @code{table} environment
+such that @code{\\abovecaptionskip} and @code{\\belowcaptionskip} are swapped.
+The package should also work with a non-standard table environment.")
+    (license license:gpl3+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
