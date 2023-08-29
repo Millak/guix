@@ -80018,6 +80018,27 @@ different ways to part of the text, or even to indicate that a text was added,
 needs to be removed, needs to be replaced and add comments to the text.")
     (license license:lppl)))
 
+(define-public texlive-ebezier
+  (package
+    (name "texlive-ebezier")
+    (version (number->string %texlive-revision))
+    (source (texlive-origin
+             name version
+             (list "doc/latex/ebezier/" "source/latex/ebezier/"
+                   "tex/latex/ebezier/")
+             (base32
+              "0cmmlm6sx9xc3ail8dfcwx7afx6by0384ac5hhxp6mry52x0j9ki")))
+    (outputs '("out" "doc"))
+    (build-system texlive-build-system)
+    (home-page "https://ctan.org/pkg/ebezier")
+    (synopsis "Device independent picture environment enhancement")
+    (description
+     "Ebezier is a device independent extension for the standard @code{picture}
+environment.  Linear, quadratic, and cubic bezier curves are supplied in
+connection with higher level circle drawing commands.  Additionally some
+macros for the calculation of curve lenghts are part of this package.")
+    (license license:lppl)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
