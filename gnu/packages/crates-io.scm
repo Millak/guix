@@ -49419,6 +49419,27 @@ in your code.")
 in terms of the upstream unstable API.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-proc-macro2-1.0.34
+  (package
+    (inherit rust-proc-macro2-1)
+    (name "rust-proc-macro2")
+    (version "1.0.34")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "proc-macro2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1c93jhwl8lv3hiqqvdhd2d2xhjryh5bqb9w5icr5i7bw1wnfk11g"))))
+    (arguments
+     `(#:cargo-test-flags '("--lib")
+       #:cargo-inputs
+       (("rust-unicode-ident" ,rust-unicode-ident-1))
+       #:cargo-development-inputs
+       (("rust-quote" ,rust-quote-1.0.10)
+        ("rust-rustversion" ,rust-rustversion-1))))))
+
 (define-public rust-proc-macro2-0.4
   (package
     (inherit rust-proc-macro2-1)
