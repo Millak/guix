@@ -93,6 +93,7 @@
   #:export (guix-system
             read-operating-system
 
+            profile-boot-parameters
             service-node-type
             shepherd-service-node-type))
 
