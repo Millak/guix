@@ -73245,6 +73245,29 @@ the Trust-DNS client to use rustls for TLS.")
      "Test harness for ui tests of compiler diagnostics.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-trybuild-1.0.19
+  (package
+    (inherit rust-trybuild-1)
+    (name "rust-trybuild")
+    (version "1.0.19")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "trybuild" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ab7ahdx563n6kbm14pm3qnxq4fp06pz42nh5ii4acvlzycnwdh4"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-toml" ,rust-toml-0.5)
+        ("rust-dissimilar" ,rust-dissimilar-1)
+        ("rust-glob" ,rust-glob-0.3)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1.0.73)
+        ("rust-termcolor" ,rust-termcolor-1))
+       #:cargo-development-inputs (("rust-automod" ,rust-automod-1))))))
+
 (define-public rust-trybuild2-1
   (package
     (name "rust-trybuild2")
