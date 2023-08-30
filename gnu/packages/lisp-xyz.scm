@@ -5646,8 +5646,8 @@ RFC 1321 by R. Rivest, published April 1992.")
      (list ecl-flexi-streams))))
 
 (define-public sbcl-cl+ssl
-  (let ((commit "1e2ffc9511df4b1c25c23e0313a642a610dae352")
-        (revision "5"))
+  (let ((commit "17d5cdd65405f1d26e26f3e875e70027d0c8eedb")
+        (revision "6"))
     (package
       (name "sbcl-cl+ssl")
       (version (git-version "0.0.0" revision commit))
@@ -5659,7 +5659,7 @@ RFC 1321 by R. Rivest, published April 1992.")
                (commit commit)))
          (file-name (git-file-name "cl+ssl" version))
          (sha256
-          (base32 "0iwdh416ggzs2ig6i0ivrwfy21w7m39w464pc7j3p9pvq09837fy"))))
+          (base32 "0v0kx2m5355jkdshmj0z923c5rlvdl2n11rb3hjbv3kssdfsbs0s"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        '(#:phases
