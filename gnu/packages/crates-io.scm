@@ -41724,6 +41724,19 @@ with all line endings.")
 notification library.")
     (license (list license:cc0 license:artistic2.0))))
 
+(define-public rust-notify-5-pre.13
+  (package
+    (inherit rust-notify-5)
+    (name "rust-notify")
+    (version "5.0.0-pre.13")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "notify" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0za8mpacxkr62fii5h7ny4h396y0m8myd3hf08njqdg2h21kap94"))))))
+
 (define-public rust-notify-4
   (package
     (inherit rust-notify-5)
