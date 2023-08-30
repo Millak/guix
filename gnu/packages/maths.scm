@@ -5935,7 +5935,7 @@ structured and unstructured grid problems.")))
               (install-file "src/matioConfig.h"
                             (string-append #$output "/include")))))))
     (inputs
-     (list zlib hdf5-1.8))
+     (list zlib hdf5))
     (home-page "http://matio.sourceforge.net/")
     (synopsis "Library for reading and writing MAT files")
     (description "Matio is a library for reading and writing MAT files.  It
