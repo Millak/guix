@@ -53,7 +53,7 @@
   "Alternative to `make-regexp' producing annotated <regexp*> objects."
   (%make-regexp* pat flag (make-regexp pat flag)))
 
-(define (regexp-exec* rx* str)
+(define (regexp*-exec rx* str)
   "Execute the RX* regexp, a <regexp*> object."
   (regexp-exec (regexp*-rx rx*) str))
 
@@ -653,8 +653,8 @@ of file names as string."
                 (any (match-lambda
                        ((? string? scope)
                         (string=? scope file))
-                       ((? regexp? scope)
-                        (regexp-exec scope file)))
+                       ((? regexp*? scope)
+                        (regexp*-exec scope file)))
                      (team-scope team)))
               files)
          (cons team acc)
