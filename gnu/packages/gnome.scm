@@ -8728,7 +8728,7 @@ library.")
 (define-public gdm
   (package
     (name "gdm")
-    (version "42.0")
+    (version "44.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -8736,7 +8736,7 @@ library.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0m9qmm3vm81jmqlc30a1fb79hsr4l4lpiw0zjxww3gipd6bsqa53"))
+                "03avvkrm2jd0731ggh9cjnkhrfysqp4slrq0km3gqa3xpqx6n9k8"))
               (patches
                (search-patches
                 "gdm-default-session.patch"
@@ -8929,6 +8929,7 @@ logo='~a'~%" icon))))))
      (list accountsservice
            check                        ;for testing
            dbus
+           egl-wayland
            elogind
            eudev
            gnome-session
