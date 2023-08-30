@@ -50,6 +50,7 @@
   #:export (switch-system-program
             switch-to-system
 
+            running-services
             upgrade-services-program
             upgrade-shepherd-services
 
