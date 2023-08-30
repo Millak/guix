@@ -59866,6 +59866,32 @@ data.  This crate provides a wrapper that works with any existing Serde
      "This package provides a JSON serialization file format.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-serde-json-1.0.73
+  (package
+    (inherit rust-serde-json-1)
+    (name "rust-serde-json")
+    (version "1.0.73")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serde-json" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xbwmzc5j6r1nz62a20w6l9bkwbhzd11vwbdqmzbqcv5pi207gdw"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-indexmap" ,rust-indexmap-1.7)
+        ("rust-itoa" ,rust-itoa-1)
+        ("rust-ryu" ,rust-ryu-1)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-automod" ,rust-automod-1)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-serde-bytes" ,rust-serde-bytes-0.11)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-stacker" ,rust-serde-stacker-0.1)
+        ("rust-trybuild" ,rust-trybuild-1))))))
+
 (define-public rust-serde-json-0.9
   (package
     (inherit rust-serde-json-1)
