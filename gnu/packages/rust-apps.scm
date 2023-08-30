@@ -1780,9 +1780,10 @@ background agent taking care of maintaining the necessary state.")
          "1ci85bp8xwqrk8nqr8sh6yj8njgd98nhgnhaks2g00c77wwyra41"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f             ; virtual manifest
+     `(#:rust ,rust-1.64
+       #:install-source? #f             ; virtual manifest
        #:cargo-test-flags
-       '("--release" "--"
+       '("--release" "--lib" "--tests" "--"
          "--skip=tests::test_version_check" ;it need rustc's version
          ;; FIXME: Guix's rust does not install source in
          ;; %out/lib/rustlib/src/rust so "can't load standard library from
@@ -1793,12 +1794,19 @@ background agent taking care of maintaining the necessary state.")
          "--skip=tests::sourcegen::sourcegen_assists_docs" ;need rustfmt
          "--skip=tests::sourcegen_ast::sourcegen_ast"      ;same
 
-         "--skip=tidy::cargo_files_are_tidy"    ;not needed
          "--skip=tidy::check_licenses"          ;it runs cargo metadata
          "--skip=tidy::check_merge_commits"     ;it runs git rev-list
          "--skip=tidy::check_code_formatting"   ;need rustfmt as cargo fmt
-         "--skip=tidy::generate_grammar"        ;same
-         "--skip=tidy::generate_assists_tests") ;same
+
+         ;; These tests require rust <= 1.60 and too many packages
+         ;; has as dependency rust-serde-json-1 that use indexmap2
+         ;; and it need rust >= 1.64
+         "--skip=tests::list_test_macros"
+         "--skip=tests::test_derive_empty"
+         "--skip=tests::test_attr_macro"
+         "--skip=tests::test_fn_like_macro"
+         "--skip=tests::test_fn_like_macro2"
+         "--skip=tests::test_derive_error")
        #:cargo-development-inputs
        (("rust-arbitrary" ,rust-arbitrary-1)
         ("rust-derive-arbitrary" ,rust-derive-arbitrary-1)
@@ -1845,7 +1853,7 @@ background agent taking care of maintaining the necessary state.")
         ("rust-memmap2" ,rust-memmap2-0.5)
         ("rust-mimalloc" ,rust-mimalloc-0.1)
         ("rust-miow" ,rust-miow-0.4)
-        ("rust-notify" ,rust-notify-5)
+        ("rust-notify" ,rust-notify-5-pre.13)
         ("rust-object" ,rust-object-0.28)
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-parking-lot" ,rust-parking-lot-0.11)
@@ -1927,7 +1935,7 @@ exec -a \"$0\" \"~a\" \"$@\""
                (chdir "../..")
                (install-file "LICENSE-MIT" doc)
                (install-file "LICENSE-APACHE" doc)))))))
-    (native-inputs (list rust-src))
+    (native-inputs (list rust-src-1.64))
     (home-page "https://rust-analyzer.github.io/")
     (synopsis "Experimental Rust compiler front-end for IDEs")
     (description "Rust-analyzer is a modular compiler frontend for the Rust

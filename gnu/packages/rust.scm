@@ -652,7 +652,7 @@ safety and thread safety guarantees.")
   (rust-bootstrapped-package
    rust-1.62 "1.63.0" "1l4rrbzhxv88pnfq94nbyb9m6lfnjwixma3mwjkmvvs2aqlq158z"))
 
-(define rust-1.64
+(define-public rust-1.64
   (let ((base-rust
          (rust-bootstrapped-package
           rust-1.63 "1.64.0" "018j720b2n12slp4xk64jc6shkncd46d621qdyzh2a8s3r49zkdk")))
@@ -891,10 +891,10 @@ safety and thread safety guarantees.")
                             `("procps" ,procps)
                             (package-native-inputs base-rust))))))
 
-(define-public rust-src
+(define-public rust-src-1.64
   (hidden-package
    (package
-     (inherit rust)
+     (inherit rust-1.64)
      (name "rust-src")
      (build-system copy-build-system)
      (native-inputs '())
