@@ -21082,13 +21082,13 @@ Mustache templating language renderer.")
 (define-public python-duckdb
   (package
     (name "python-duckdb")
-    (version "0.8.0")
+    (version "0.8.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "duckdb" version))
               (sha256
                (base32
-                "13y1gs565q51li5fi9m7fpf0sqns8frsaii6v95acwjhmdds73f6"))))
+                "1sgfmii5xlkbx3hzyjxg80gl2ni1rxpabahl4gww9by2mgs3fkd5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
