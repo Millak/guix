@@ -1577,7 +1577,7 @@ pass-tomb to automatically close your store after a given time.")
 (define-public xkcdpass
   (package
     (name "xkcdpass")
-    (version "1.19.3")
+    (version "1.19.4")
     (home-page "https://github.com/redacted/XKCD-password-generator")
     (source (origin
               (method git-fetch)
@@ -1587,7 +1587,7 @@ pass-tomb to automatically close your store after a given time.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xfrmx9k2vinlagv476rfcfdp41aix1ldy6qnzzx26n985gcyk7p"))))
+                "1din4fqxgcj74vcjrsmn19sv81raards39x8pd75hmfxqqgggnd6"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
