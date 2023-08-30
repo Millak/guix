@@ -57560,7 +57560,7 @@ in pure Rust.")
        #:cargo-inputs
        (("rust-crossbeam-utils"
          ,rust-crossbeam-utils-0.8)
-        ("rust-indexmap" ,rust-indexmap-1)
+        ("rust-indexmap" ,rust-indexmap-1.7)
         ("rust-lock-api" ,rust-lock-api-0.4)
         ("rust-log" ,rust-log-0.4)
         ("rust-oorandom" ,rust-oorandom-11.1)
@@ -59960,7 +59960,7 @@ programs in rust.")
         (("rust-serde" ,rust-serde-1))
         #:cargo-development-inputs
         (("rust-serde-derive" ,rust-serde-derive-1)
-         ("rust-serde-json" ,rust-serde-json-1))))
+         ("rust-serde-json" ,rust-serde-json-1.0.73))))
     (home-page
       "https://github.com/dtolnay/path-to-error")
     (synopsis
@@ -60018,14 +60018,14 @@ commonly used by Ruby on Rails via Rack.")
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
+       (("rust-proc-macro2" ,rust-proc-macro2-1.0.34)
+        ("rust-quote" ,rust-quote-1.0.10)
         ("rust-syn" ,rust-syn-1))
        #:cargo-development-inputs
        (("rust-rustversion" ,rust-rustversion-1)
         ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-trybuild" ,rust-trybuild-1))))
+        ("rust-serde-json" ,rust-serde-json-1.0.73)
+        ("rust-trybuild" ,rust-trybuild-1.0.19))))
     (home-page "https://github.com/dtolnay/serde-repr")
     (synopsis "Serialize and deserialize C-like enum as underlying repr")
     (description
