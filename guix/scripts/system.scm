@@ -94,6 +94,7 @@
             read-operating-system
 
             profile-boot-parameters
+            report-shepherd-error
             service-node-type
             shepherd-service-node-type))
 
