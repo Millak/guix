@@ -51640,6 +51640,25 @@ transport protocol in Rust.")
     (description "Quasi-quoting macro quote!(...)")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-quote-1.0.10
+  (package
+    (inherit rust-quote-1)
+    (name "rust-quote")
+    (version "1.0.10")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "quote" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "01ff7a76f871ggnby57iagw6499vci4bihcr11g6bqzjlp38rg1q"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1.0.34))
+       #:cargo-development-inputs
+       (("rust-rustversion" ,rust-rustversion-1)
+        ("rust-trybuild" ,rust-trybuild-1.0.19))))))
+
 (define-public rust-quote-0.6
   (package
     (inherit rust-quote-1)
