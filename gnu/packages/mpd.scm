@@ -44,10 +44,8 @@
   #:use-module (gnu packages avahi)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
-  #:use-module (gnu packages build-tools) ;meson-next
   #:use-module (gnu packages boost)
   #:use-module (gnu packages cdrom)
-  #:use-module (gnu packages cmake) ;for MPD
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages file-systems)
   #:use-module (gnu packages freedesktop) ;elogind
