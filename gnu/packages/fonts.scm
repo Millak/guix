@@ -57,6 +57,7 @@
 ;;; Copyright © 2023 Arnaud Lechevallier <arnaud.lechevallier@free.fr>
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2023 chris <chris@bumblehead.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3411,3 +3412,25 @@ better code & UI.  It is inspired by casual script signpainting, but designed
 primarily to meet the needs of programming environments and application
 interfaces.")
     (license license:silofl1.1)))
+
+(define-public fonts-tlwg
+ (package
+   (name "fonts-tlwg")
+   (version "0.7.3")
+   (source
+    (origin
+     (method url-fetch)
+     (uri (string-append
+           "https://github.com/tlwg/" name
+           "/releases/download/v" version "/" name "-" version ".tar.xz"))
+     (sha256
+      (base32
+       "00mv8rmjpsk8jbbl978q3yrc2pxj8a86a3d092563dlc9n8gykkf"))))
+   (native-inputs (list fontforge))
+   (build-system gnu-build-system)
+   (home-page "https://github.com/tlwg/fonts-tlwg/")
+   (synopsis "Collection of scalable Thai fonts")
+   (description "Fonts-TLWG is a collection of Thai scalable fonts.  Its goal
+is to provide fonts that conform to existing standards and recommendations, so
+that it can be a reference implementation.")
+   (license license:gpl2+)))
