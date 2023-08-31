@@ -9,14 +9,15 @@
 # Felipe Nogueira <contato.fnog@gmail.com>, 2023.
 # Edino Tavares Moniz <onidemon37@protonmail.com>, 2023.
 # Florian Pelz <pelzflorian@pelzflorian.de>, 2023.
+# Camila Flores Granella <cgranell@redhat.com>, 2023.
 #: guix/diagnostics.scm:159
 msgid ""
 msgstr ""
 "Project-Id-Version: guix 1.2.0-pre1\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2023-06-19 03:18+0000\n"
-"PO-Revision-Date: 2023-07-30 12:21+0000\n"
-"Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
+"PO-Revision-Date: 2023-08-30 06:09+0000\n"
+"Last-Translator: Camila Flores Granella <cgranell@redhat.com>\n"
 "Language-Team: Portuguese (Brazil) <https://translate.fedoraproject.org/projects/guix/guix/pt_BR/>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
@@ -113,7 +114,7 @@ msgstr "Este é um serviço simples."
 #: gnu/services.scm:341
 #, scheme-format
 msgid "modify-services: service '~a' not found in service list"
-msgstr ""
+msgstr "modify-services: o serviço '~a' não foi localizado na lista de serviços"
 
 #: gnu/services.scm:422
 msgid ""
@@ -335,18 +336,24 @@ msgid ""
 "Populate the @file{/etc/fstab} based on the given file\n"
 "system objects."
 msgstr ""
+"Preencha o @file{/etc/fstab} com base nos objetos\n"
+"do sistema de arquivos dados."
 
 #: gnu/services/base.scm:357
 msgid ""
 "Take care of syncing the root file\n"
 "system and of remounting it read-only when the system shuts down."
 msgstr ""
+"Se atente para sincronizar o sistema de arquivos\n"
+"root e remontá-lo em modo de leitura (read-only) quando o sistema desligar."
 
 #: gnu/services/base.scm:551
 msgid ""
 "Provide Shepherd services to mount and unmount the given\n"
 "file systems, as well as corresponding @file{/etc/fstab} entries."
 msgstr ""
+"Forneça serviços Shepherd para montar e desmontar os \n"
+"sistemas de arquivo, bem como as entradas @file{/etc/fstab} correspondentes"
 
 #: gnu/services/base.scm:649
 msgid ""
