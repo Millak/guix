@@ -352,7 +352,7 @@ seen in a terminal.")
 (define-public highlight
   (package
     (name "highlight")
-    (version "4.7")
+    (version "4.8")
     (outputs (list "out" "gui"))
     (source (origin
               (method url-fetch)
@@ -360,7 +360,7 @@ seen in a terminal.")
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "1cl21qpgy92w1x53vrn1bgq84mkh6fgayc9k38mz4xmz2yw01nv1"))
+                "1iggdw4c8pfz1z1c51fyd6x79y1mnc82b6lfkg3vbb44739m5cjs"))
               (patches (search-patches "highlight-gui-data-dir.patch"))))
     (build-system gnu-build-system)
     (arguments
