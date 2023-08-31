@@ -9568,8 +9568,8 @@ function.")
   (sbcl-package->cl-source-package sbcl-specialization-store))
 
 (define-public sbcl-cl-gobject-introspection
-  (let ((commit "c4fef07d01cec7c830ce84ef150ed8e4da5959c4")
-        (revision "2"))
+  (let ((commit "83beec4492948b52aae4d4152200de5d5c7ac3e9")
+        (revision "3"))
     (package
       (name "sbcl-cl-gobject-introspection")
       (version (git-version "0.3" revision commit))
@@ -9582,7 +9582,7 @@ function.")
                (commit commit)))
          (file-name (git-file-name "cl-gobject-introspection" version))
          (sha256
-          (base32 "18n4wg93sf6cjmpcpr47bg2rd8mbm9ml9lykmjsxgvsf3nwr5vnw"))))
+          (base32 "0xwmj4b3whz12i474g54krp1v6h0fpvsx8lgwpk6rkli9xc71wc3"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list glib
