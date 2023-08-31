@@ -7546,7 +7546,7 @@ such as gzip tarballs.")
 (define-public gnome-session
   (package
     (name "gnome-session")
-    (version "42.0")
+    (version "44.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -7555,7 +7555,7 @@ such as gzip tarballs.")
               (patches (search-patches "gnome-session-support-elogind.patch"))
               (sha256
                (base32
-                "1alwjqr36rd0s132qs2clwnxgilcbylps6lm41lr50mn782hdjiw"))))
+                "1ipjvcjabifqgmrz65m3vwmhk99nbm8jcxcikyg5w4r6cnljky6c"))))
     (arguments
      `(#:glib-or-gtk? #t
        #:phases
