@@ -2402,6 +2402,16 @@ BIOS or UEFI boot menu, where you can choose to boot from the USB stick.
 In order to boot from Libreboot, switch to the command mode by pressing
 the @kbd{c} key and type @command{search_grub usb}.
 
+Sadly, on some machines, the installation medium cannot be properly
+booted and you only see a black screen after booting even after you
+waited for ten minutes.  This may indicate that your machine cannot run
+Guix System; perhaps you instead want to install Guix on a foreign
+distro (@pxref{Binary Installation}).  But don't give up just yet; a
+possible workaround is pressing the @kbd{e} key in the GRUB boot menu
+and appending @option{nomodeset} to the Linux bootline.
+Sometimes the black screen issue can also be resolved by connecting a
+different display.
+
 @xref{Installing Guix in a VM}, if, instead, you would like to install
 Guix System in a virtual machine (VM).
 
