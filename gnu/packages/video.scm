@@ -319,6 +319,8 @@ video and audio streams from a DVD.")
      "https://linuxfromscratch.org/blfs/view/svn/multimedia/transcode.html")
     (license license:gpl2+)))
 
+;;; Warning: this package shouldn't be added as an input anywhere, as it can
+;;; only be used for recent x86_64 CPUs implementing the AVX2 instruction!
 (define-public svt-hevc
   (package
     (name "svt-hevc")
@@ -341,11 +343,12 @@ video and audio streams from a DVD.")
     (synopsis "SVT HEVC encoder")
     (description "Scalable Video Technology (SVT) is a software-based video
 coding technology that is highly optimized for Intel's Xeon processors.  Using
-the SVT-HEVC encoder, it is possible to spread video encoding processing across
-multiple Intel's Xeon processors to achieve a real advantage of processing
-efficiency.")
-    (home-page "https://01.org/svt")
-    ;; Specifically targets x86_64 Intel hardware.
+the SVT-HEVC encoder, it is possible to spread video encoding processing
+across multiple Intel's Xeon processors to achieve a real advantage of
+processing efficiency.  Note that this package @emph{requires} the AVX2
+instruction, which means it will @emph{not} work on older x86_64 CPUs such as
+the Core 2 Duo.")
+    (home-page "https://github.com/OpenVisualCloud/SVT-HEVC/")
     (supported-systems '("x86_64-linux"))
     (license (license:non-copyleft "file:///LICENSE.md"))))
 
