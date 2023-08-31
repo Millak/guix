@@ -43,7 +43,7 @@
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021-2023 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2021, 2022 Taiju HIGASHI <higashi@taiju.info>
-;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2022-2023 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Kitzman <kitzman@disroot.org>
 ;;; Copyright © 2021 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
@@ -1909,6 +1909,36 @@ programming.  Iosevka is completely generated from its source code.")
     (description
      "Iosevka Comfy is a TTF font derived from Iosevka.  It is a slightly tweaked
      version of the original, designed for enhanced readability.")
+    (license license:silofl1.1)))
+
+(define-public font-junicode
+  (package
+    (name "font-junicode")
+    (version "2.003")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/psb1558/Junicode-font")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qg1qwk294p2hgq2gbyhfwwdas1xbkfz3csxf5jz4xqiskn4skgl"))))
+    (build-system font-build-system)
+    (home-page "https://github.com/psb1558/Junicode-font")
+    (synopsis "Unicode font for medievalists, linguists, and others")
+    (description "The Junicode font was developed for students and scholars of
+medieval Europe, but its large glyph repertoire also makes it useful as a
+general-purpose font.  Its visual design is based on the typography used by
+Oxford University Press in the late 17th and early 18th centuries.  The font
+implements the @acronym{MUFI, Medieval Unicode Font Initiative} recommendation
+for encoding ligatures, alternative letter forms, and other features of
+interest to medievalists using Unicode's Private Use Area.
+
+Junicode 2 is a major reworking of the font family.  Its OpenType programming
+has been rebuilt to support the creation of searchable, accessible electronic
+documents using the @acronym{MUFI} characters.  The family includes five
+weights and five widths in both Roman and Italic, plus variable fonts.")
     (license license:silofl1.1)))
 
 (define-public font-sarasa-gothic
