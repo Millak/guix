@@ -849,7 +849,9 @@ model to base your own plug-in on, here it is.")
     (inputs
      (append
       (if (target-x86?) (list mediasdk) '())
-      (if (target-x86-64?) (list svt-hevc) '())
+      ;; Note: svt-hevc cannot be used, as it would break the package for
+      ;; older x86_64 CPUs that lack AVX2, such as the Core 2 Duo (see:
+      ;; https://github.com/OpenVisualCloud/SVT-HEVC/issues/573#issuecomment-680678144).
       (list bluez
             bzip2
             cairo
