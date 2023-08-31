@@ -9113,7 +9113,7 @@ properties, screen resolution, and other GNOME parameters.")
 (define-public gnome-shell
   (package
     (name "gnome-shell")
-    (version "42.4")
+    (version "44.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -9121,7 +9121,7 @@ properties, screen resolution, and other GNOME parameters.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0kn5fclciybp2fs38wd39hdz85y91pas0ckfa02pmyx91sbz4pw7"))))
+                "1grizh3fbks5dgizaj38300cz97ay81q0hlk1pvawkpfq9qlnsam"))))
     (build-system meson-build-system)
     (arguments
      (let ((disallowed-references
@@ -9159,6 +9159,12 @@ properties, screen resolution, and other GNOME parameters.")
                 (substitute* "meson.build"
                   (("gtk_update_icon_cache: true")
                    "gtk_update_icon_cache: false"))))
+            (add-after 'unpack 'unbreak-perf-tests
+              (lambda _
+                ;; Lest non-fatal dbus warnings be made fatal again…
+                (substitute* "tests/meson.build"
+                  (("perf_testenv\\.set\\('G_DEBUG'" all)
+                   (string-append "# " all)))))
             (add-before 'configure 'record-absolute-file-names
               (lambda* (#:key inputs #:allow-other-keys)
                 (let ((ibus-daemon (search-input-file inputs "bin/ibus-daemon"))
@@ -9175,7 +9181,13 @@ properties, screen resolution, and other GNOME parameters.")
                 ;; Tests require a running X server.
                 (system "Xvfb :1 &")
                 (setenv "DISPLAY" ":1")
-                (setenv "HOME" "/tmp"))) ;to avoid "fatal" warnings
+                ;; For the missing /var/lib/dbus/machine-id
+                (setenv "DBUS_FATAL_WARNINGS" "0")
+                (setenv "NO_AT_BRIDGE" "1")
+                (setenv "HOME" "/tmp")
+                (setenv "XDG_RUNTIME_DIR" (string-append (getcwd) "/runtime-dir"))
+                (mkdir (getenv "XDG_RUNTIME_DIR"))
+                (chmod (getenv "XDG_RUNTIME_DIR") #o700)))
             (add-after 'install 'wrap-programs
               (lambda* (#:key inputs #:allow-other-keys)
                 (let ((gi-typelib-path  (getenv "GI_TYPELIB_PATH"))
@@ -9241,16 +9253,17 @@ printf '~a is deprecated.  Use the \"gnome-extensions\" CLI or \
            perl
            pkg-config
            python
+           python-dbus
+           python-dbusmock
            ruby-sass
            sassc
            ;; For tests
            xorg-server-for-tests))
     (inputs
      (list accountsservice
-           caribou
            docbook-xsl
            evolution-data-server
-           gcr-3
+           gcr
            gdm
            librsvg
            gjs
