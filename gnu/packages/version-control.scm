@@ -33,7 +33,7 @@
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
-;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2021 Léo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
@@ -822,6 +822,52 @@ on @command{git}, and use any regular Git hosting service.")
     (description "@code{git-cal} is a script to view commits calendar similar
 to GitHub contributions calendar.")
     (license license:expat)))
+
+(define-public xdiff
+  (let ((revision "0")
+        (commit "a137bc7ee6c76618ed1737c257548eaa10ac0089"))
+    (package
+      (name "xdiff")
+      ;; The base version is taken from the CMakeLists.txt file.
+      (version (git-version "0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/libgit2/xdiff")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1rxzpag2pih64qlgq40xg1z6mz0bzvps4baxw7bmykyhjhc2gx75"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:modules '((guix build cmake-build-system)
+                    (guix build utils)
+                    (srfi srfi-26))
+        #:tests? #f                     ;no test suite
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'create-shared-library
+              (lambda _
+                (substitute* "CMakeLists.txt"
+                  (("add_library\\(xdiff STATIC")
+                   "add_library(xdiff SHARED"))))
+            (replace 'install           ;no install target
+              (lambda _
+                (with-directory-excursion "../source"
+                  (for-each (cute install-file <>
+                                  (string-append #$output "/include"))
+                            (list "xdiff.h"
+                                  "git-xdiff.h"))) ;included by xdiff.h
+                (install-file "libxdiff.so"
+                              (string-append #$output "/lib")))))))
+      (home-page "https://github.com/libgit2/xdiff")
+      (synopsis "File differential library used by git")
+      (description "@code{xdiff} is the file differential library used by git,
+which has been extracted into a standalone library for compatibility with
+other git-like projects such as @code{libgit2}.")
+      (license license:lgpl2.1+))))
 
 (define-public libgit2
   (package
