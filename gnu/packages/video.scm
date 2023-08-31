@@ -50,7 +50,7 @@
 ;;; Copyright © 2021 Alexey Abramov <levenson@mmer.org>
 ;;; Copyright © 2021, 2022, 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 David Wilson <david@daviwil.com>
-;;; Copyright © 2021,2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Thiago Jung Bauermann <bauermann@kolabnow.com>
@@ -741,36 +741,19 @@ stream decoding")
                (base32
                 "1vkh19gb76agvh4h87ysbrgy82hrw88lnsvhynjf4vng629dmpgv"))))
     (build-system gnu-build-system)
-    (native-inputs
-     `(("config" ,config)
-       ("makeinfo" ,texinfo)))
-    (inputs
-     (list ncurses))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'update-config-scripts
-           (lambda* (#:key inputs native-inputs #:allow-other-keys)
-             ;; Replace outdated config.guess and config.sub.
-             (for-each (lambda (file)
-                         (install-file
-                          (search-input-file
-                           (or native-inputs inputs)
-                           (string-append "/bin/" file)) "."))
-                       '("config.guess" "config.sub"))))
-         (replace 'configure
-                  (lambda* (#:key build inputs outputs #:allow-other-keys)
-                    ;; This old `configure' script doesn't support
-                    ;; variables passed as arguments.
-                    (let ((out     (assoc-ref outputs "out"))
-                          (ncurses (assoc-ref inputs "ncurses")))
-                      (setenv "CONFIG_SHELL" (which "bash"))
-                      (invoke "./configure"
-                              "--disable-static"
-                              (string-append "--prefix=" out)
-                              (string-append "--build=" build)
-                              (string-append "--with-ncurses="
-                                             ncurses))))))))
+     (list
+      #:configure-flags
+      #~(list "--disable-static"
+              (string-append "--with-ncurses="
+                             #$(this-package-input "ncurses")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'force-autoreconf
+            (lambda _
+              (delete-file "configure"))))))
+    (native-inputs (list autoconf automake libtool texinfo))
+    (inputs (list ncurses))
     (home-page "https://aa-project.sourceforge.net/aalib/")
     (synopsis "ASCII-art library")
     (description
