@@ -36339,7 +36339,7 @@ commands, in particular @code{find-definition}.")
 (define-public emacs-burly
   (package
     (name "emacs-burly")
-    (version "0.2")
+    (version "0.3")
     (source
      (origin
        (method git-fetch)
@@ -36348,7 +36348,7 @@ commands, in particular @code{find-definition}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zaknazhi8if38rmy9irnqwagsl76pqlxnzawzgn1vlv3aawivdk"))))
+        (base32 "04qqxwb6pavgvis0irfg4s5rj2j5zja6gp78inb67fbvb0g4h84c"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-map))
