@@ -9177,6 +9177,30 @@ the library more lightweight.")
 matching and globbing with support for \"doublestar\" patterns.")
     (license license:expat)))
 
+(define-public go-github-com-bmizerany-perks-quantile
+  (package
+    (name "go-github-com-bmizerany-perks-quantile")
+    (version "0.0.0-20230307044200-03f9df79da1e")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/bmizerany/perks")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1f2a99v3618bz2mf61iwhdjm3xi1gam6v4apqgcrz71gj7ba9943"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:unpack-path "github.com/bmizerany/perks"
+           #:import-path "github.com/bmizerany/perks/quantile"))
+    (home-page "https://github.com/bmizerany/perks")
+    (synopsis "Library for computing quantiles")
+    (description
+     "Perks contains the Go package @code{quantile} that computes approximate
+quantiles over an unbounded data stream within low memory and CPU bounds.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-dlclark-regexp2
   (package
     (name "go-github-com-dlclark-regexp2")
