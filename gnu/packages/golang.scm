@@ -3333,6 +3333,32 @@ sunset times from geographical coordinates and a date.")
 queue.")
     (license license:expat)))
 
+(define-public go-github-com-nsqio-go-nsq
+  (package
+    (name "go-github-com-nsqio-go-nsq")
+    (version "1.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/nsqio/go-nsq")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1h9z3z225sdgg7fl3l7x11xn5ch6lm5flgmcj046cdp453qj2qhf"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:tests? #f                  ;tests require networking
+           #:import-path "github.com/nsqio/go-nsq"))
+    (propagated-inputs (list go-github-com-golang-snappy))
+    (home-page "https://github.com/nsqio/go-nsq")
+    (synopsis "Consumer/producer library for NSQ")
+    (description
+     "The @code{nsq} Go module provides a high-level @code{Consumer} and
+@code{Producer} types as well as low-level functions to communicate over the
+NSQ protocol @url{https://nsq.io/}.")
+    (license license:expat)))
+
 (define-public go-github-com-hebcal-gematriya
   (let ((commit "fe3043f73e415eb82727701d10f2fb40f87675e9")
         (revision "0"))
