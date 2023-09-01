@@ -10823,7 +10823,7 @@ variants.")
 (define-public emacs-solarized-theme
   (package
     (name "emacs-solarized-theme")
-    (version "2.0.1")
+    (version "2.0.3")
     (source
      (origin
        (method git-fetch)
@@ -10832,7 +10832,7 @@ variants.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0l2lcdm2hsjasfkg4rmypa4mvbhglbkkyv0jg88ygc6py9klcccd"))))
+        (base32 "0mip5da7glzylmagxkmi2f68i19phbbzn72vh3jd3w76labcvbzm"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-dash))
