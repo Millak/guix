@@ -22,8 +22,9 @@
 
 ;;; Commentary:
 
-;; This file provides auxiliary code to autoload Emacs packages
-;; installed with Guix.
+;; This file provides auxiliary code to autoload Emacs packages installed with
+;; Guix.  To produce verbose messages useful while debugging, set the
+;; GUIX-EMACS-VERBOSE variable to true.
 
 ;;; Code:
 (require 'seq)
@@ -40,6 +41,15 @@ The files in the list do not have extensions (.el, .elc)."
   (delete-dups (mapcar #'file-name-sans-extension
                        (directory-files directory 'full-name
                                         guix-emacs-autoloads-regexp))))
+
+(defcustom guix-emacs-verbose nil
+  "Set to true to provide verbose messages, such as when loading packages."
+  :type 'boolean
+  :group 'guix-emacs)
+
+(defun guix-emacs--load-file-no-error (file)
+  "Load FILE, ignoring any errors"
+  (load file 'noerror (not guix-emacs-verbose)))
 
 (defun guix-emacs--non-core-load-path ()
   ;; Filter out core Elisp directories, which are already handled by Emacs.
@@ -63,9 +73,7 @@ The files in the list do not have extensions (.el, .elc)."
   (interactive)
   (let ((autoloads (mapcan #'guix-emacs-find-autoloads
                            (guix-emacs--non-core-load-path))))
-    (mapc (lambda (f)
-            (load f 'noerror t))
-          autoloads)))
+    (mapc #'guix-emacs--load-file-no-error autoloads)))
 
 ;;;###autoload
 (defun guix-emacs-load-package-descriptors ()
