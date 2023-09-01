@@ -2904,7 +2904,7 @@ terminals.")
 (define-public emacs-reformatter
   (package
     (name "emacs-reformatter")
-    (version "0.6")
+    (version "0.7")
     (source
      (origin
        (method git-fetch)
@@ -2913,7 +2913,7 @@ terminals.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dfn7c3gpavpiwd73v2pasd8wd8b62dczhg9iv1cgh8vaqlsf92x"))))
+        (base32 "1vm030lz489vjx1dz1jrnj7zd2b43y98rffdxyshfvxbfv1cbmyk"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/purcell/reformatter.el")
     (synopsis "Define commands which run reformatters on the current buffer")
