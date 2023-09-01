@@ -3,7 +3,7 @@
 
 ;; Copyright © 2014, 2015, 2016, 2017 Alex Kost <alezost@gmail.com>
 ;; Copyright © 2017 Kyle Meyer <kyle@kyleam.com>
-;; Copyright © 2019 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;; Copyright © 2019, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 
 ;; This file is part of GNU Guix.
 
@@ -47,6 +47,13 @@ The files in the list do not have extensions (.el, .elc)."
                 (string-match-p "/share/emacs/site-lisp" dir))
               load-path))
 
+(defun guix-emacs--subdirs-files ()
+  "Return the Guix subdirs.el files found on the (non-core) load path."
+  (seq-filter #'file-exists-p
+              (mapcar (lambda (dir)
+                        (expand-file-name "subdirs.el" dir))
+                      (guix-emacs--non-core-load-path))))
+
 ;;;###autoload
 (defun guix-emacs-autoload-packages ()
   "Autoload Emacs packages found in EMACSLOADPATH.
@@ -63,19 +70,18 @@ The files in the list do not have extensions (.el, .elc)."
 ;;;###autoload
 (defun guix-emacs-load-package-descriptors ()
   "Load descriptors for packages found in EMACSLOADPATH via subdirs.el."
-  (dolist (dir (guix-emacs--non-core-load-path))
-    (let ((subdirs-file (expand-file-name "subdirs.el" dir)))
-     (when (file-exists-p subdirs-file)
-      (with-temp-buffer
-        (insert-file-contents subdirs-file)
-        (goto-char (point-min))
-        (let ((subdirs (read (current-buffer))))
-          (and (equal (car-safe subdirs) 'normal-top-level-add-to-load-path)
-               (equal (car-safe (cadr subdirs)) 'list)
-               (dolist (subdir (cdadr subdirs))
-                 (let ((pkg-dir (expand-file-name subdir dir)))
-                   (when (file-directory-p pkg-dir)
-                     (package-load-descriptor pkg-dir)))))))))))
+  (dolist (subdirs-file (guix-emacs--subdirs-files))
+    (with-temp-buffer
+      (insert-file-contents subdirs-file)
+      (goto-char (point-min))
+      (let ((subdirs (read (current-buffer))))
+        (and (equal (car-safe subdirs) 'normal-top-level-add-to-load-path)
+             (equal (car-safe (cadr subdirs)) 'list)
+             (dolist (subdir (cdadr subdirs))
+               (let ((pkg-dir (expand-file-name
+                               subdir (file-name-directory subdirs-file))))
+                 (when (file-directory-p pkg-dir)
+                   (package-load-descriptor pkg-dir)))))))))
 
 ;; If emacs built with tree-sitter, read the value of the environment variable
 ;; to make tree-sitter grammars available in emacs out-of-the-box.
