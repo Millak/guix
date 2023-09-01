@@ -590,3 +590,20 @@ which will be used as a snippet in origin."
      (git-version "0.1.0" revision commit)
      #:repository-url "https://github.com/6cdh/tree-sitter-racket"
      #:commit commit)))
+
+(define-public tree-sitter-plantuml
+  ;; No tags
+  (let ((commit "bea443ef909484938cb0a9176ebda7b8a3d108f7")
+        (revision "0"))
+    (tree-sitter-grammar
+     "plantuml" "PlantUML"
+     "0swqq4blhlvvgrvsb0h4cjl3pnfmmdpfd5r5kg9rpdwk0sn98x3a"
+     (git-version "1.0.0" revision commit)
+     #:repository-url "https://github.com/Decodetalkers/tree_sitter_plantuml"
+     #:commit commit
+     #:get-cleanup-snippet
+     (lambda _
+       #~(begin
+           (use-modules (guix build utils))
+           (delete-file "binding.gyp")
+           (delete-file-recursively "bindings"))))))
