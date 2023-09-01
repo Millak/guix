@@ -12778,7 +12778,7 @@ Clojure projects from templates.")
 (define-public emacs-clj-refactor
   (package
     (name "emacs-clj-refactor")
-    (version "3.7.0")
+    (version "3.9.1")
     (source
      (origin
        (method git-fetch)
@@ -12787,15 +12787,21 @@ Clojure projects from templates.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nwc4c8cn9mj9x7fsjx1m34rma5qq87d611j7w02kfa7yhbj0vwk"))))
+        (base32 "1c7ndc81j3pljgf7n188f3mm6vm3gyiplh4mnb4y5wbkbnpiwgdc"))))
     (build-system emacs-build-system)
     (propagated-inputs
-     (list emacs-yasnippet emacs-paredit emacs-multiple-cursors emacs-cider
-           emacs-clojure-mode emacs-parseedn emacs-hydra emacs-inflections))
+     (list emacs-cider
+           emacs-clojure-mode
+           emacs-hydra
+           emacs-inflections
+           emacs-multiple-cursors
+           emacs-paredit
+           emacs-parseedn
+           emacs-yasnippet))
     (home-page "https://github.com/clojure-emacs/clj-refactor.el")
     (synopsis "Powerful refactoring functionality for Clojure projects")
     (description "This Emacs package complements the refactoring functionality
-you'd find in clojure-mode and CIDER.")
+you'd find in Clojure mode and CIDER.")
     (license license:gpl3+)))
 
 (define-public emacs-clojure-snippets
