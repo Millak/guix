@@ -2801,13 +2801,13 @@ and ease-of-key score.  Most frequently used commands have most easy keys.")
 (define-public emacs-xr
   (package
     (name "emacs-xr")
-    (version "1.23")
+    (version "1.24")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/xr-" version ".tar"))
        (sha256
-        (base32 "1nz3fhd4qx8fxib78y41jvnzn27lf7mlvpkz565d5zc9q4mr300z"))))
+        (base32 "04g7qx6qmhp98pw5iwdhspln9sg9jzjq2zp3nmq3q1yl82pzd214"))))
     (build-system emacs-build-system)
     (home-page "https://elpa.gnu.org/packages/xr.html")
     (synopsis "Convert string regexp to rx notation")
