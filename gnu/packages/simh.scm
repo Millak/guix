@@ -19,6 +19,7 @@
 
 (define-module (gnu packages simh)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -48,41 +49,40 @@
     (inputs
      (list libpcap))
     (arguments
-     `(#:tests? #f
-       #:make-flags (list
-                     (string-append "GCC=" ,(cc-for-target) " -fcommon"))
-       #:modules ((ice-9 string-fun)
-                  ,@%gnu-build-system-modules)
-       #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (add-before 'build 'prepare-build
-             (lambda _
-               (substitute* "makefile"
-                 (("LIBPATH:=/usr/lib")
-                  (string-append "LIBPATH:="
-                                 (string-replace-substring
-                                  (getenv "LIBRARY_PATH") ":" " ")))
-                 (("export LIBRARY_PATH = .*") ""))
-               (mkdir "BIN")))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin/"))
-                      (lib (string-append out "/lib/simh/")))
-                 (mkdir-p bin)
-                 (mkdir-p lib)
-                 (for-each
-                   (lambda (file)
-                     (copy-file file (string-append bin
-                                                    "simh-"
-                                                    (basename file))))
-                   (find-files "BIN"))
-                 (for-each
-                   (lambda (file)
-                     (copy-file file (string-append lib
-                                                    (basename file))))
-                   (find-files "VAX" "bin$"))))))))
+     (list #:tests? #f
+           #:make-flags
+           #~(list (string-append "GCC=" #$(cc-for-target) " -fcommon"))
+           #:modules `((ice-9 string-fun)
+                       ,@%gnu-build-system-modules)
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (add-before 'build 'prepare-build
+                 (lambda _
+                   (substitute* "makefile"
+                     (("LIBPATH:=/usr/lib")
+                      (string-append "LIBPATH:="
+                                     (string-replace-substring
+                                      (getenv "LIBRARY_PATH") ":" " ")))
+                     (("export LIBRARY_PATH = .*") ""))
+                   (mkdir "BIN")))
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (bin (string-append out "/bin/"))
+                          (lib (string-append out "/lib/simh/")))
+                     (mkdir-p bin)
+                     (mkdir-p lib)
+                     (for-each (lambda (file)
+                                 (copy-file file
+                                            (string-append bin "simh-"
+                                                           (basename file))))
+                               (find-files "BIN"))
+                     (for-each (lambda (file)
+                                 (copy-file file
+                                            (string-append lib
+                                                           (basename file))))
+                               (find-files "VAX" "bin$"))))))))
     (home-page "http://simh.trailing-edge.com")
     (synopsis "Collection of simulators from The Computer History Simulation
 Project")
