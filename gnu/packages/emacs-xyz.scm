@@ -27354,7 +27354,7 @@ customisation options to control its behaviour.")
 (define-public emacs-dired-rsync
   (package
     (name "emacs-dired-rsync")
-    (version "0.6")
+    (version "0.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -27363,17 +27363,17 @@ customisation options to control its behaviour.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19za6i96xrmczdh928n5ixd7j7pvy175sz1msaiwvdjwysjr8k51"))))
+                "1zvsmpvham670i807rs8f2f0h73yk4fpaavj0hzksqcl5ykh4fgr"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-s emacs-dash))
     (home-page "https://github.com/stsquad/dired-rsync/")
     (synopsis "Support for rsync from Emacs dired buffers")
     (description "This package adds a single command @code{dired-rsync} which
-allows the user to copy marked files in a dired buffer via @code{rsync}.  This
+allows the user to copy marked files in a Dired buffer via @code{rsync}.  This
 is useful, especially for large files, because the copy happens in the
 background and doesn’t lock up Emacs.  It is also more efficient than using
-tramps own encoding methods for moving data between systems.")
+Tramp's own encoding methods for moving data between systems.")
     (license license:gpl3+)))
 
 (define-public emacs-pcre2el
