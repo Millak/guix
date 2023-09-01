@@ -20159,7 +20159,7 @@ and performs syntax checks on them.")
 (define-public emacs-inheritenv
   (package
     (name "emacs-inheritenv")
-    (version "0.1")
+    (version "0.2")
     (source
      (origin
        (method git-fetch)
@@ -20168,7 +20168,7 @@ and performs syntax checks on them.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ygzf70vfb7qwpsllcq5i3brprsnx3sxy2zng02mzwrr5jkx4ypc"))))
+        (base32 "04na9m3z3k94jjqcqps95xcmvjklnddhli2xaac16m4ackw2wv9b"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/purcell/inheritenv/releases")
     (synopsis "Emacs temp buffers inherit buffer-local environment variables")
