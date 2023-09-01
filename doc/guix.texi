@@ -14175,6 +14175,16 @@ TeX package:
 guix import texlive fontspec
 @end example
 
+Additional options include:
+
+@table @code
+@item --recursive
+@itemx -r
+Traverse the dependency graph of the given upstream package recursively
+and generate package expressions for all those packages that are not yet
+in Guix.
+@end table
+
 @item json
 @cindex JSON, import
 Import package metadata from a local JSON file.  Consider the following
@@ -45928,47 +45938,48 @@ will not have the desired effect.  @xref{Package Transformation Options,
 Guix provides packages for the @TeX{}, @LaTeX{}, ConTeXt, LuaTeX, and
 related typesetting systems, taken from the
 @uref{https://www.tug.org/texlive/, @TeX{} Live distribution}.  However,
-because @TeX{} Live is so huge and because finding your way in this maze
-is tricky, we thought that you, dear user, would welcome guidance on how
-to deploy the relevant packages so you can compile your @TeX{} and
-@LaTeX{} documents.
+because @TeX{} Live is so huge and because finding one's way in this
+maze is tricky, so this section provides some guidance on how to deploy
+the relevant packages to compile @TeX{} and @LaTeX{} documents.
 
-@TeX{} Live currently comes in two flavors in Guix:
+@TeX{} Live currently comes in two mutually exclusive flavors in Guix:
 
 @itemize
 @item
 The ``monolithic'' @code{texlive} package: it comes with @emph{every
-single @TeX{} Live package} (more than 7,000 of them), but it is huge
-(more than 4@tie{}GiB for a single package!).
+single @TeX{} Live package} (roughly 4,200), but it is huge---more than
+4@tie{}GiB for a single package!
 
 @item
-The ``modular'' @samp{texlive-} packages: you start off with
-a combination of @TeX{} Live @dfn{collections} and
-@dfn{schemes}---``meta-packages'' such as
-@code{texlive-collection-fontsrecommended}, or
-@code{texlive-collection-context}, that provide the set of packages
-needed in this particular domain, schemes being the name for collections
-of such collections.  This grants you core functionality and the main
-commands---@command{pdflatex}, @command{dvips}, @command{luatex},
-@command{mf}, etc.  You can then complete your selection with additional
-collections or individual packages that provide just the features you
-need---@code{texlive-listings} for the @code{listings} package,
-@code{texlive-beamer} for Beamer, @code{texlive-pgf} for PGF/TikZ, and
-so on.
+A ``modular'' @TeX{} Live distribution, in which you only install the
+packages, always prefixed with @samp{texlive-}, you need.
 @end itemize
 
-We recommend using the modular package set because it is much less
-resource-hungry.  To build your documents, you would use commands such
-as:
+So to insist, these two flavors cannot be combined@footnote{No rule
+without exception! As the monolithic @TeX{} Live does not contain the
+@command{biber} executable, it is okay to combine it with
+@code{texlive-biber}, which does.}.  If in the modular setting your
+document does not compile, the solution is not to add the monolithic
+@code{texlive} package, but to add the set of missing packages from the
+modular distribution.
+
+Building a coherent system that provides all the essential tools and, at
+the same time, satisfies all of its internal dependencies can be
+a difficult task.  It is therefore recommended to start with sets of
+packages, called @dfn{collections}, and @dfn{schemes}, the name for
+collections of collections.  The following command lists available
+schemes and collections (@pxref{guix-search,, Invoking guix package}):
 
 @example
-guix shell texlive-scheme-basic texlive-cm-super -- pdflatex doc.tex
+guix search texlive-\(scheme\|collection\) | recsel -p name,description
 @end example
 
-You can quickly end up with unreasonably long command lines though.  The
-solution is to instead write a manifest, for example like this one,
-which would probably be a reasonable starting point for a French
-@LaTeX{} user:
+If needed, you may then complete your system with individual packages,
+particularly when they belong to a large collection you're not otherwise
+interested in.
+
+For instance, the following manifest is a reasonable, yet frugal
+starting point for a French @LaTeX{} user:
 
 @lisp
 (specifications->manifest
@@ -45977,31 +45988,18 @@ which would probably be a reasonable starting point for a French
    "texlive-scheme-basic"
    "texlive-collection-latexrecommended"
    "texlive-collection-fontsrecommended"
-
    "texlive-babel-french"
 
-   ;; PGF/TikZ
-   "texlive-pgf"
-
-   ;; Additional font.
-   "texlive-kpfonts"))
+   ;; From "latexextra" collection.
+   "texlive-tabularray"
+   ;; From "binextra" collection.
+   "texlive-texdoc"))
 @end lisp
 
-You can then pass it to any command with the @option{-m} option:
-
-@example
-guix shell -m manifest.scm -- pdflatex doc.tex
-@end example
-
-@xref{Writing Manifests}, for more on manifests.  In the future, we plan
-to provide more collections and schemes.  That will allow you to list
-fewer packages.
-
-The main difficulty here is that using the modular package set forces
-you to select precisely the packages that you need.  You can use
-@command{guix search}, but finding the right package can prove to be
-tedious.  When a package is missing, @command{pdflatex} and similar
-commands fail with an obscure message along the lines of:
+If you come across a document that does not compile in such a basic
+setting, the main difficulty is finding the missing packages.  In this
+case, @command{pdflatex} and similar commands tend to fail with obscure
+error messages along the lines of:
 
 @example
 doc.tex: File `tikz.sty' not found.
@@ -46017,7 +46015,7 @@ kpathsea: Running mktexmf phvr7t
 @end example
 
 How do you determine what the missing package is?  In the first case,
-you'll find the answer by running:
+you will find the answer by running:
 
 @example
 $ guix search texlive tikz
@@ -46027,11 +46025,11 @@ version: 59745
 @end example
 
 In the second case, @command{guix search} turns up nothing.  Instead,
-you can search the @TeX{} Live package database using the @command{tlmgr}
-command:
+you can search the @TeX{} Live package database using the
+@command{tlmgr} command:
 
 @example
-$ guix shell texlive-bin -- tlmgr info phvr7t
+$ tlmgr info phvr7t
 tlmgr: cannot find package phvr7t, searching for other matches:
 
 Packages containing `phvr7t' in their title/description:
@@ -46046,32 +46044,10 @@ tex4ht:
         texmf-dist/tex4ht/ht-fonts/alias/adobe/helvetic/phvr7t.htf
 @end example
 
-The file is available in the @TeX{} Live @code{helvetic} package, which is
-known in Guix as @code{texlive-helvetic}.  Quite a ride, but we found
-it!
-
-There is one important limitation though: Guix currently provides a
-subset of the @TeX{} Live packages.  If you stumble upon a missing
-package, you can try and import it (@pxref{Invoking guix import}):
-
-@example
-guix import texlive @var{package}
-@end example
-
-Additional options include:
-
-@table @code
-@item --recursive
-@itemx -r
-Traverse the dependency graph of the given upstream package recursively
-and generate package expressions for all those packages that are not yet
-in Guix.
-@end table
-
-@quotation Note
-@TeX{} Live packaging is still very much work in progress, but you can
-help!  @xref{Contributing}, for more information.
-@end quotation
+@noindent
+The file is available in the @TeX{} Live @code{helvetic} package, which
+is known in Guix as @code{texlive-helvetic}.  Quite a ride, but you
+found it!
 
 @node Security Updates
 @chapter Security Updates
