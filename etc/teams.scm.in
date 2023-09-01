@@ -262,6 +262,7 @@ packages (e.g. Astronomy, Chemistry, Math, Physics etc.)"
 ecosystem."
         #:scope (list "gnu/packages/aux-files/emacs/guix-emacs.el"
                       (make-regexp* "^gnu/packages/emacs(-.+|)\\.scm$")
+                      "gnu/packages/tree-sitter.scm"
                       "guix/build/emacs-build-system.scm"
                       "guix/build/emacs-utils.scm"
                       "guix/build-system/emacs.scm"
