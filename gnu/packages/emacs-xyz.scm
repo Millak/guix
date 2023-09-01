@@ -302,16 +302,16 @@
 (define-public emacs-ac-php
   (package
     (name "emacs-ac-php")
-    (version "2.4.2")
+    (version "2.5.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/xcwen/ac-php")
-             (commit "dc563f4b1efeac8ae75f217532f4c99b4ba417de")))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "188hisppjbpia3bmrpsxvkfi8xkirisarnrpvkk3ya4k8lv4z13p"))))
+        (base32 "0fmp1595v06dgmx9skxphknaagf9ds9l7ygi7lzxas1s8d05dj10"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -320,17 +320,17 @@
     (inputs
      (list emacs-auto-complete
            emacs-company
-           emacs-helm
            emacs-dash
-           emacs-php-mode
-           emacs-s
            emacs-f
+           emacs-helm
+           emacs-php-mode
            emacs-popup
+           emacs-s
            emacs-xcscope))
     (native-inputs
      (list emacs-ert-runner))
     (home-page "https://github.com/xcwen/ac-php")
-    (synopsis "emacs auto-complete & company-mode for php")
+    (synopsis "Emacs Auto Complete & Company mode for PHP")
     (description
      "This package provides Auto Complete and Company back-ends for PHP.")
     (license license:gpl3+)))
