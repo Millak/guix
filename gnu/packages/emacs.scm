@@ -209,7 +209,7 @@
                     (display
                      (string-append
                       "(when (require 'guix-emacs nil t)\n"
-                      "  (guix-emacs-autoload-packages)\n"
+                      "  (guix-emacs-autoload-packages 'no-reload)\n"
                       "  (advice-add 'package-load-all-descriptors"
                       " :after #'guix-emacs-load-package-descriptors))"))))
                 ;; Remove the extraneous subdirs.el file, as it causes Emacs to

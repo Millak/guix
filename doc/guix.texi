@@ -2167,12 +2167,15 @@ which they are installed.  The Elisp libraries are made available to
 Emacs through the @env{EMACSLOADPATH} environment variable, which is
 set when installing Emacs itself.
 
+@cindex guix-emacs-autoload-packages, refreshing Emacs packages
 Additionally, autoload definitions are automatically evaluated at the
 initialization of Emacs, by the Guix-specific
-@code{guix-emacs-autoload-packages} procedure.  If, for some reason, you
-want to avoid auto-loading the Emacs packages installed with Guix, you
-can do so by running Emacs with the @option{--no-site-file} option
-(@pxref{Init File,,, emacs, The GNU Emacs Manual}).
+@code{guix-emacs-autoload-packages} procedure.  This procedure can be
+interactively invoked to have newly installed Emacs packages discovered,
+without having to restart Emacs.  If, for some reason, you want to avoid
+auto-loading the Emacs packages installed with Guix, you can do so by
+running Emacs with the @option{--no-site-file} option (@pxref{Init
+File,,, emacs, The GNU Emacs Manual}).
 
 @quotation Note
 Emacs can now compile packages natively.  Under the default
