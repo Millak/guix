@@ -9931,6 +9931,72 @@ identifier translation via the GDC API.")
      "This package implements widgets to provide user interfaces.")
     (license license:artistic2.0)))
 
+(define-public r-trackviewer
+  (package
+    (name "r-trackviewer")
+    (version "1.36.2")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "trackViewer" version))
+              (sha256
+               (base32
+                "1ngfpd308y8i3vgv07cggk2azs64lsyyc9zfi3pz0gapr33ha6a1"))
+              (snippet
+               '(delete-file "inst/htmlwidgets/lib/d3/d3.v4.min.js"))))
+    (properties `((upstream-name . "trackViewer")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'process-javascript
+           (lambda* (#:key inputs #:allow-other-keys)
+             (with-directory-excursion "inst/htmlwidgets/lib/d3"
+               (let ((source (assoc-ref inputs "_"))
+                     (target "d3.v4.min.js"))
+                 (format #true "Processing ~a --> ~a~%"
+                         source target)
+                 (invoke "esbuild" source "--minify"
+                         (string-append "--outfile=" target)))))))))
+    (propagated-inputs (list r-annotationdbi
+                             r-biocgenerics
+                             r-genomeinfodb
+                             r-genomicalignments
+                             r-genomicfeatures
+                             r-genomicranges
+                             r-graph
+                             r-grimport
+                             r-gviz
+                             r-htmlwidgets
+                             r-interactionset
+                             r-iranges
+                             r-plotrix
+                             r-rgraphviz
+                             r-rhdf5
+                             r-rsamtools
+                             r-rtracklayer
+                             r-s4vectors
+                             r-scales
+                             r-strawr))
+    (native-inputs
+     (list esbuild
+           r-knitr
+           (origin
+             (method url-fetch)
+             (uri "https://web.archive.org/web/20230428092426id_/\
+https://d3js.org/d3.v4.js")
+             (sha256
+              (base32
+               "0y7byf6kcinfz9ac59jxc4v6kppdazmnyqfav0dm4h550fzfqqlg")))))
+    (home-page "https://bioconductor.org/packages/trackViewer")
+    (synopsis "Web interface for interactive multi-omics data analysis")
+    (description
+     "TrackViewer offers multi-omics analysis with web based tracks and
+lollipops.  Visualize mapped reads along with annotation as track layers for
+NGS datasets such as ChIP-seq, RNA-seq, miRNA-seq, DNA-seq, SNPs and
+methylation data.")
+    (license license:gpl2+)))
+
 (define-public r-transcriptr
   (package
     (name "r-transcriptr")
