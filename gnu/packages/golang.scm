@@ -10088,6 +10088,29 @@ extensions.")
 for color and styles.")
     (license license:lgpl3)))
 
+(define-public go-github-com-julienschmidt-httprouter
+  (package
+    (name "go-github-com-julienschmidt-httprouter")
+    (version "1.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/julienschmidt/httprouter")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1a6sy0ysqknsjssjh7qg1dqn21xmj9a36c57nrk7srfmab4ffmk1"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/julienschmidt/httprouter"))
+    (home-page "https://github.com/julienschmidt/httprouter")
+    (synopsis "High performance HTTP request router")
+    (description
+     "Package @code{httprouter} is a trie based high performance HTTP request
+router.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-kevinburke-ssh-config
   (package
     (name "go-github-com-kevinburke-ssh-config")
