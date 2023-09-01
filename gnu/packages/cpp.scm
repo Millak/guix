@@ -1731,6 +1731,30 @@ C.  It focuses on standardization and parsing exactness and is at ease with
 almost every type of file containing key/value pairs.")
     (license license:gpl3+)))
 
+(define-public libcppgenerate
+  ;; dbus-cxx requires an unreleased fix.
+  (let ((commit "930c5503f76c877b72b9ff8546353d6f422bd010")
+        (revision "0"))
+    (package
+      (name "libcppgenerate")
+      (version (git-version "0.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/rm5248/libcppgenerate")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0csdg9b406i85aqgivjmvqjdnqbyiyjh3s0xsfsxppv7wlh7j85r"))))
+      (build-system cmake-build-system)
+      (arguments (list #:configure-flags #~'("-DENABLE_TESTS=ON")))
+      (home-page "https://github.com/rm5248/libcppgenerate")
+      (synopsis "C++ code generator library for C++")
+      (description "@code{libcppgenerate} is a library for generating C++ code
+from C++.")
+      (license license:asl2.0))))
+
 (define-public libcutl
   (package
     (name "libcutl")
