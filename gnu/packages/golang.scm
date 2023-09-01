@@ -6400,6 +6400,34 @@ trivial @command{big.Int} encoding benchmark results in 6 times faster
 encoding and 8 times faster decoding.")
       (license license:expat))))
 
+(define-public go-github-com-mreiferson-go-svc
+  ;; NSQ specific fork of github.com/judwhite/go-svc, as Guix go build system
+  ;; does not support go.mod with `replace' statement.
+  (let ((commit "7a96e00010f68d9436e3de53a70c53f209a0c244")
+        (revision "0"))
+    (package
+      (name "go-github-com-mreiferson-go-svc")
+      (version (git-version "1.2.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/mreiferson/go-svc")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1acgb0n3svhnraqj1fz5qc5n3b4vc5ffwyk9vfi6gcfkibm0hgmd"))))
+      (build-system go-build-system)
+      (arguments
+       '(#:import-path "github.com/judwhite/go-svc"))
+      (propagated-inputs (list go-golang-org-x-sys))
+      (home-page "https://github.com/mreiferson/go-svc")
+      (synopsis "Go Windows Service wrapper for GNU/Linux")
+      (description
+       "Go Windows Service wrapper compatible with GNU/Linux.  Windows tests
+@url{https://github.com/judwhite/go-svc/raw/master/svc/svc_windows_test.go,here}.")
+      (license license:expat))))
+
 (define-public go-github-com-gxed-hashland-keccakpg
   (let ((commit "d9f6b97f8db22dd1e090fd0bbbe98f09cc7dd0a8")
         (revision "0"))
