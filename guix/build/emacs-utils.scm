@@ -139,7 +139,7 @@ If native code is not supported, compile to bytecode instead."
            (files (directory-files-recursively ,dir "\\.el$")))
        (mapc
         (lambda (file)
-          (let (byte-to-native-output-file
+          (let (byte-to-native-output-buffer-file
                 ;; First entry is the eln-cache of the homeless shelter,
                 ;; second entry is the install directory.
                 (eln-dir (and (native-comp-available-p)
@@ -148,13 +148,9 @@ If native code is not supported, compile to bytecode instead."
                 (native-compile file
                                 (comp-el-to-eln-filename file eln-dir))
                 (byte-compile-file file))
-            ;; Sadly, we can't use pcase because quasiquote works different in
-            ;; Emacs.  See `batch-byte+native-compile' in comp.el for the
-            ;; actual shape of byte-to-native-output-file.
-            (unless (null byte-to-native-output-file)
-              (rename-file (car byte-to-native-output-file)
-                           (cdr byte-to-native-output-file)
-                           t))))
+            ;; After native compilation, write the bytecode file.
+            (unless (null byte-to-native-output-buffer-file)
+              (comp-write-bytecode-file nil))))
        files))
     #:dynamic? #t))
 
