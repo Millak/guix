@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;;; guix-emacs.el --- Emacs packages installed with Guix
 
 ;; Copyright © 2014, 2015, 2016, 2017 Alex Kost <alezost@gmail.com>
