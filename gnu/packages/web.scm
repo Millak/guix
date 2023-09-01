@@ -979,7 +979,7 @@ similar to live activity monitoring provided with NGINX plus.")
 (define-public lighttpd
   (package
     (name "lighttpd")
-    (version "1.4.70")
+    (version "1.4.71")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.lighttpd.net/lighttpd/"
@@ -987,7 +987,7 @@ similar to live activity monitoring provided with NGINX plus.")
                                   "lighttpd-" version ".tar.xz"))
               (sha256
                (base32
-                "11gyc77d6g634mshdqmbl50bmx1i7aibg6kp0dz8kfdnyhfbw7lj"))))
+                "1b5g4l9q84sjfwx9x1d7bqp9n5j0wkaj8cyzak1zv5h3l9fr3dmq"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
