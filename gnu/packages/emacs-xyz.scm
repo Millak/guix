@@ -7161,7 +7161,7 @@ allrecipes.com.")
 (define-public emacs-org-inline-pdf
   (package
     (name "emacs-org-inline-pdf")
-    (version "0.3")
+    (version "0.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7170,7 +7170,7 @@ allrecipes.com.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1i5hvdnd0bqr663i2ccdxba58ib0ixmc1y40mld6znmgc8p2973l"))))
+                "04rfv4qsyhc8w23hbzw8k5f292lafkgf1n0gbbkgc93gifx91s4f"))))
     (build-system emacs-build-system)
     (inputs
      (list pdf2svg))
@@ -7186,7 +7186,7 @@ allrecipes.com.")
     (home-page "https://github.com/shg/org-inline-pdf.el")
     (synopsis "Inline PDF previewing for Org")
     (description "This package provides a minor mode that enables
-inline PDF preview in Org buffers by using pdf2svg.")
+inline PDF preview in Org buffers by using @command{pdf2svg}.")
     (license license:gpl3+)))
 
 (define-public emacs-org-rainbow-tags
