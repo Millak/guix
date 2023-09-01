@@ -809,20 +809,6 @@ the creation and parsing of messages using the Multipurpose Internet Mail
 Extension (MIME).")
     (license (list license:lgpl2.1+ license:gpl2+ license:gpl3+))))
 
-;; Some packages are not ready for GMime 3 yet.
-(define-public gmime-2.6
-  (package
-    (inherit gmime)
-    (version "2.6.23")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/gmime/"
-                                  (version-major+minor version)
-                                  "/gmime-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0slzlzcr3h8jikpz5a5amqd0csqh2m40gdk910ws2hnaf5m6hjbi"))))))
-
 (define-public altermime
   (package
     (name "altermime")
