@@ -271,11 +271,14 @@ This package includes the @command{tree-sitter} command-line tool.")
           (grammar-directories '("."))
           (article "a")
           (inputs '())
+          (get-cleanup-snippet tree-sitter-delete-generated-files)
           (license license:expat))
   "Returns a package for Tree-sitter grammar.  NAME will be used with
 tree-sitter- prefix to generate package name and also for generating
 REPOSITORY-URL value if it's not specified explicitly, TEXT is a string which
-will be used in description and synopsis."
+will be used in description and synopsis. GET-CLEANUP-SNIPPET is a function,
+it recieves GRAMMAR-DIRECTORIES as an argument and should return a G-exp,
+which will be used as a snippet in origin."
   (let* ((multiple? (> (length grammar-directories) 1))
          (grammar-names (string-append text " grammar" (if multiple? "s" "")))
          (synopsis (string-append "Tree-sitter " grammar-names))
@@ -296,7 +299,7 @@ will be used in description and synopsis."
                 (file-name (git-file-name name version))
                 (sha256 (base32 hash))
                 (snippet
-                 (tree-sitter-delete-generated-files grammar-directories))))
+                 (get-cleanup-snippet grammar-directories))))
       (build-system tree-sitter-build-system)
       (arguments (list #:grammar-directories grammar-directories))
       (inputs inputs)
