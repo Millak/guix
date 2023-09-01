@@ -15283,7 +15283,7 @@ Lua programming language}.")
 (define-public emacs-ebuild-mode
   (package
     (name "emacs-ebuild-mode")
-    (version "1.65")
+    (version "1.66")
     (source
      (origin
        (method url-fetch)
@@ -15292,7 +15292,7 @@ Lua programming language}.")
              "ebuild-mode-" version ".tar.xz"))
        (file-name (string-append name "-" version ".tar.xz"))
        (sha256
-        (base32 "07zla002lxkck4cgpfr5c5lmarxb12yfnldgflv9vf88yfa997xw"))))
+        (base32 "1n36avqbr8yr712950yvzva01b28nl5n3k8r6pbx8mjjlaj5hvqf"))))
     (build-system emacs-build-system)
     (arguments
      (list
