@@ -8287,6 +8287,29 @@ graphing packages.  This package also forms the statistical processing backend
 for ggstatsplot.")
     (license license:gpl3)))
 
+(define-public r-strawr
+  (package
+    (name "r-strawr")
+    (version "0.0.91")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "strawr" version))
+              (sha256
+               (base32
+                "1nbcn20g3f3f5x9sscj3020n5h4iaphr70s90n2fz31vc4snzq2m"))))
+    (properties `((upstream-name . "strawr")))
+    (build-system r-build-system)
+    (inputs (list curl zlib))
+    (propagated-inputs (list r-rcpp))
+    (home-page "https://github.com/aidenlab/straw/tree/master/R")
+    (synopsis "Fast implementation of reading / dumping of .hic files")
+    (description
+     "This package provides an API for efficient @file{.hic} file data
+extraction with programmatic matrix access.  It doesn't store the pointer data
+for all the matrices, only the one queried, and currently it only supports
+matrices.")
+    (license license:expat)))
+
 (define-public r-stringdist
   (package
     (name "r-stringdist")
