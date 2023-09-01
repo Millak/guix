@@ -6400,6 +6400,29 @@ trivial @command{big.Int} encoding benchmark results in 6 times faster
 encoding and 8 times faster decoding.")
       (license license:expat))))
 
+(define-public go-github-com-mreiferson-go-options
+  (package
+    (name "go-github-com-mreiferson-go-options")
+    (version "1.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mreiferson/go-options")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1pxs9ybrh196qy14ijn4zn51h2z28lj31y6vxrz2xxhgvpmfmxyl"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/mreiferson/go-options"))
+    (home-page "https://github.com/mreiferson/go-options")
+    (synopsis "Go package to structure and resolve options")
+    (description
+     "The @code{options} Go package resolves configuration values set via
+command line flags, config files, and default struct values.")
+    (license license:expat)))
+
 (define-public go-github-com-mreiferson-go-svc
   ;; NSQ specific fork of github.com/judwhite/go-svc, as Guix go build system
   ;; does not support go.mod with `replace' statement.
