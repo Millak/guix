@@ -1435,6 +1435,7 @@ default.")
                   qtxmlpatterns
                   qqc2-desktop-style
                   qxmpp
+                  sonnet
                   zxing-cpp))
     (home-page "https://www.kaidan.im/")
     (synopsis "Qt-based XMPP/Jabber Client")
