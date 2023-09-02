@@ -23998,9 +23998,10 @@ tabs, history, or bookmarks from Emacs.")
     (propagated-inputs
      (list emacs-projectile))
     (home-page "https://github.com/purcell/ibuffer-projectile")
-    (synopsis "Group ibuffer's list by projectile root")
-    (description "Adds functionality to Emacs @code{ibuffer} for
-grouping buffers by their projectile root directory.")
+    (synopsis "Group Ibuffer's list by Projectile root")
+    (description
+     "This packages adds functionality to Emacs Ibuffer for grouping buffers
+by their Projectile root directory.")
     (license license:gpl3+)))
 
 (define-public emacs-ibuffer-vc
