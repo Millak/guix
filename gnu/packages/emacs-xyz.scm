@@ -15989,7 +15989,7 @@ passive voice.")
 (define-public emacs-neotree
   (package
     (name "emacs-neotree")
-    (version "0.5.2")
+    (version "0.6.0")
     (home-page "https://github.com/jaypei/emacs-neotree")
     (source (origin
               (method git-fetch)
@@ -15998,7 +15998,7 @@ passive voice.")
                      (commit version)))
               (sha256
                (base32
-                "0hx72fq10772bbyqrj7mhhp02k26cccjxdadiqm1ykainhfmn1x0"))
+                "1rwm8j48ks9fa5q3g8crpfzbikxfjj5m13w9ylimg34xniycrlq2"))
               (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (synopsis "Folder tree view for Emacs")
