@@ -23962,7 +23962,7 @@ within Emacs.")
 (define-public emacs-ibrowse
   (package
     (name "emacs-ibrowse")
-    (version "0.2.2")
+    (version "0.2.3")
     (source
      (origin
        (method git-fetch)
@@ -23971,7 +23971,7 @@ within Emacs.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dm46k67smg2m33c6n68blpw2mw7fx1ymq81kv54jjlpmv3xrdsf"))))
+        (base32 "0dqdldb5hmb6r99fkx1cjfr1b40nvf4i6hh44rk8y78kw9yfd4s1"))))
     (build-system emacs-build-system)
     (inputs (list emacs-websocket sqlite))
     (home-page "https://git.sr.ht/~ngraves/ibrowse.el")
