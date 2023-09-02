@@ -5899,18 +5899,6 @@ services for numerous locations.")
            libsoup
            libxml2))))
 
-(define-public libgweather4-with-libsoup2
-  (package
-    (inherit libgweather4)
-    (name "libgweather4-with-libsoup2")
-    (arguments (substitute-keyword-arguments (package-arguments libgweather4)
-                 ((#:configure-flags flags)
-                  #~(cons "-Dsoup2=true" #$flags))))
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs libgweather4)
-       (replace "geocode-glib" geocode-glib-with-libsoup2)
-       (replace "libsoup" libsoup-minimal-2)))))
-
 (define-public gnome-settings-daemon
   (package
     (name "gnome-settings-daemon")
