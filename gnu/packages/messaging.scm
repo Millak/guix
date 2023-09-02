@@ -1405,7 +1405,7 @@ default.")
 (define-public kaidan
   (package
     (name "kaidan")
-    (version "0.8.0")
+    (version "0.9.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/unstable/kaidan/" version
@@ -1415,7 +1415,7 @@ default.")
         #~(begin
             (delete-file-recursively "3rdparty")))
        (sha256
-        (base32 "195iddv35gc3k83r226y17avsab2b9bszgd7z7ynbddsgbf75rx7"))))
+        (base32 "1waqv0fdkhvp3cqy2a2g6i2wc9s0zbvgzknymrwxy99mnx9ymw9g"))))
     (build-system qt-build-system)
     (arguments
      (list #:configure-flags #~(list "-DBUILD_TESTS=true")))
