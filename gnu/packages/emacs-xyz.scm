@@ -23983,7 +23983,7 @@ tabs, history, or bookmarks from Emacs.")
 (define-public emacs-ibuffer-projectile
   (package
     (name "emacs-ibuffer-projectile")
-    (version "0.3")
+    (version "0.4")
     (source
      (origin
        (method git-fetch)
@@ -23993,7 +23993,7 @@ tabs, history, or bookmarks from Emacs.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "18cqxnwzzbkcj9jcaw89b210432yzhrl1dwsv48p0jbhfnr17k41"))))
+         "1n9fqkwjxilzlb86ia95pjdv8lbgvsp8lwkw47v9kjvq2vnmarv5"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-projectile))
