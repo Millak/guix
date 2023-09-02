@@ -1524,7 +1524,7 @@ extraction, and lookup for applications on the desktop.")
 (define-public gnome-initial-setup
   (package
     (name "gnome-initial-setup")
-    (version "42.2")
+    (version "44.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gnome-initial-setup/"
@@ -1532,7 +1532,7 @@ extraction, and lookup for applications on the desktop.")
                                   "/gnome-initial-setup-" version ".tar.xz"))
               (sha256
                (base32
-                "0yxy39a7d2whphd0jskvra5q8zy4v7m7lziy5fxibgls4j5xk0sd"))))
+                "1zxv0i6lwcnjs4m0ny08wxbfz25ygnwkbh4l3dkrhapqr1nzqg2r"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -1556,28 +1556,27 @@ extraction, and lookup for applications on the desktop.")
            pkg-config))
     (inputs
      (list accountsservice
-           cheese
            elogind
            gdm
            geoclue
            gnome-desktop
-           gnome-online-accounts-3.44
+           gnome-online-accounts
            gstreamer
            ibus
            json-glib
            mit-krb5
+           libadwaita
            libgnomekbd
-           libgweather4-with-libsoup2
-           libhandy
+           libgweather4
            libnma
            libpwquality
            libsecret
            network-manager
            packagekit
            polkit
-           rest
+           rest-next
            upower
-           webkitgtk-with-libsoup2))
+           webkitgtk-next))
     (synopsis "Initial setup wizard for GNOME desktop")
     (description "This package provides a set-up wizard when a
 user logs into GNOME for the first time.  It typically provides a
