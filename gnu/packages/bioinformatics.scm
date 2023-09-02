@@ -9791,11 +9791,11 @@ tasks.")
       (license license:expat))))
 
 (define-public r-chromunity
-  (let ((commit "09fce8bc12cb84b45a6ea25bf8db6e5b75113d4f")
+  (let ((commit "712e56ccba64e8881dbb203546379a5c3c639bb2")
         (revision "1"))
     (package
       (name "r-chromunity")
-      (version (git-version "0.0.1" revision commit))
+      (version (git-version "0.0.2" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -9804,12 +9804,13 @@ tasks.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0lp0h614k8fq6h9gpbylk4chh7q6w4qda8lx03ajrpppxmg7al2d"))))
+                  "0sdja11l7bg5rmcbp2cl226cq9qrj3r8kq5lg49zbin83hya27vh"))))
       (properties `((upstream-name . "chromunity")))
       (build-system r-build-system)
       (propagated-inputs
        (list r-arrow
              r-biocgenerics
+             r-bsgenome-hsapiens-ucsc-hg38
              r-data-table
              r-gchain
              r-genomicranges
@@ -9821,7 +9822,6 @@ tasks.")
              r-pbmcapply
              r-plyr
              r-r6
-             r-skitools
              r-zoo))
       (home-page "https://github.com/mskilab/chromunity")
       (synopsis "Discovery of communities in Pore-C concatemers")
