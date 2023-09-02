@@ -13275,7 +13275,7 @@ Document Analysis and Recognition program.")
 (define-public libadwaita
   (package
     (name "libadwaita")
-    (version "1.2.0")
+    (version "1.3.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/libadwaita/"
@@ -13283,7 +13283,7 @@ Document Analysis and Recognition program.")
                                   "libadwaita-" version ".tar.xz"))
               (sha256
                (base32
-                "0326qs0zhfi6zv52p90axnicmv0qb2l2hwpyv60pk9lvwcdkwbrj"))))
+                "1gdimh85f5hb6jhnivjaai4m08nz4x9iif5rxdckn8b0lzrwl740"))))
     (build-system meson-build-system)
     (arguments
      `(#:phases
