@@ -9618,7 +9618,7 @@ shared object databases, search tools and indexing.")
 (define-public nautilus
   (package
     (name "nautilus")
-    (version "42.2")
+    (version "44.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -9626,7 +9626,7 @@ shared object databases, search tools and indexing.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1cncyiyh79w1id6a6s2f0rxmgwl65lp4ml4afa0z35jrnwp2s8cr"))
+                "1rfkh43iw4bqv36ccznl3lh9g0p9pa8xqyjk167qlvar4xchcji7"))
               (patches
                (search-patches "nautilus-extension-search-path.patch"))))
     (build-system meson-build-system)
@@ -9635,6 +9635,13 @@ shared object databases, search tools and indexing.")
       #:glib-or-gtk? #t
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-tracker3-command
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/nautilus-tag-manager.c"
+                (("\"tracker3\"")
+                 (string-append "\""
+                                (search-input-file inputs "/bin/tracker3")
+                                "\"")))))
           (add-after 'unpack 'disable-tracker-tests
             ;; The tracker test hangs in the build container (see:
             ;; https://gitlab.gnome.org/GNOME/nautilus/-/issues/2486).
@@ -9645,8 +9652,9 @@ shared object databases, search tools and indexing.")
           (add-after 'unpack 'skip-gtk-update-icon-cache
             ;; Don't create 'icon-theme.cache'.
             (lambda _
-              (substitute* "build-aux/meson/postinstall.py"
-                (("gtk-update-icon-cache") "true"))))
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false"))))
           (delete 'check)
           (add-after 'install 'check
             (assoc-ref %standard-phases 'check))
@@ -9673,18 +9681,18 @@ shared object databases, search tools and indexing.")
            gnome-autoar
            gst-plugins-base
            json-glib
-           libhandy
+           libadwaita
            libportal
            libseccomp
            libselinux
            tracker
            tracker-miners
-           ;; XXX: gtk+ is required by libnautilus-extension.pc
+           ;; XXX: gtk is required by libnautilus-extension.pc
            ;;
-           ;; Don't propagate it to reduces "profile pollution" of the 'gnome' meta
+           ;; Don't propagate it to reduce "profile pollution" of the 'gnome' meta
            ;; package.  See:
            ;; <http://lists.gnu.org/archive/html/guix-devel/2016-03/msg00283.html>.
-           gtk+
+           gtk
            libexif
            libxml2))
     (native-search-paths
