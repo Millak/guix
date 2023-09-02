@@ -5375,7 +5375,7 @@ more fun.")
 (define-public gnome-console
   (package
     (name "gnome-console")
-    (version "42.2")
+    (version "44.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gnome-console/"
@@ -5383,28 +5383,20 @@ more fun.")
                                   "gnome-console-" version ".tar.xz"))
               (sha256
                (base32
-                "0jbh8g3hmc35fy5fbscqf0831xpg1kv66ci9hykpbia4hz0yc9kx"))))
+                "13asis4fabsm0wy3m6bk4k3bmnh6a9c9bwwpv6b3why0lvll87xr"))))
     (build-system meson-build-system)
     (arguments
      (list #:glib-or-gtk? #t
-           #:configure-flags #~(list "-Dtests=true"
-                                     "-Dnautilus=enabled")
-           #:phases #~(modify-phases %standard-phases
-                        (add-after 'unpack 'patch-nautilus-extension-path
-                          (lambda _
-                            (substitute* "nautilus/meson.build"
-                              (("'extensions-[0-9.]*'")
-                               "'site-extensions'")))))))
+           #:configure-flags #~(list "-Dtests=true")))
     (native-inputs (list `(,glib "bin")
                          gettext-minimal
                          sassc
                          pkg-config
                          `(,gtk+ "bin")
                          desktop-file-utils))
-    (inputs (list gtk+
-                  libhandy
-                  nautilus
-                  vte
+    (inputs (list gtk
+                  libadwaita
+                  vte-with-gtk-4
                   libgtop
                   gsettings-desktop-schemas))
     (home-page "https://gitlab.gnome.org/GNOME/console")
