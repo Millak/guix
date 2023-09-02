@@ -9500,7 +9500,7 @@ endpoint and it understands SPARQL.")
 (define-public tracker-miners
   (package
     (name "tracker-miners")
-    (version "3.3.1")
+    (version "3.5.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/tracker-miners/"
@@ -9508,7 +9508,7 @@ endpoint and it understands SPARQL.")
                                   "/tracker-miners-" version ".tar.xz"))
               (sha256
                (base32
-                "151w6ljq1gk9idqfq9qs3w16vms91jnxy59c9kx6jaf0fb9cdp9y"))))
+                "0sbc3fmvqg5hvdl5sq8w77lqmk9i6vc13izcxck8winrrgx93ys0"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -9542,12 +9542,7 @@ endpoint and it understands SPARQL.")
              ;; to be true and the UPower daemon to be started.
              (substitute* "examples/python/meson.build"
                (("foreach example_name:.*")
-                "foreach example_name: []"))
-             ;; Disable this test that is failing randomly:
-             ;; https://gitlab.gnome.org/GNOME/tracker-miners/-/issues/170.
-             (substitute* "tests/libtracker-miner/meson.build"
-               (("'miner-fs'.*")
-                ""))))
+                "foreach example_name: []"))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
@@ -9579,6 +9574,7 @@ endpoint and it understands SPARQL.")
            giflib
            glib
            gstreamer
+           gst-plugins-base
            icu4c
            json-glib
            libcue
