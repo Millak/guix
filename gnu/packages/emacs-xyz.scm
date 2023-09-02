@@ -2288,99 +2288,97 @@ replacement.")
       (license license:gpl3+))))
 
 (define-public emacs-haskell-mode
-  (let ((revision "0")
-        (commit "5a9f8072c7b9168f0a8409adf9d62a3e4ad4ea3d"))
-    (package
-      (name "emacs-haskell-mode")
-      (version (git-version "17.2" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/haskell/haskell-mode")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0np1wrwdq7b9hpqpl9liampacnkx6diphyk8h2sbz2mfn9qr7pxs"))))
-      (propagated-inputs
-       (list emacs-dash))
-      (native-inputs
-       (list emacs-minimal emacs-el-search emacs-stream texinfo))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        #:make-flags #~(list
-                        (string-append "EMACS=" #$emacs-minimal "/bin/emacs"))
-        #:modules `((ice-9 match)
-                    (srfi srfi-26)
-                    ((guix build emacs-build-system) #:prefix emacs:)
-                    ,@%gnu-build-system-modules)
-        #:imported-modules `(,@%gnu-build-system-modules
-                             (guix build emacs-build-system)
-                             (guix build emacs-utils))
-        #:phases
-        #~(modify-phases %standard-phases
-            (delete 'configure)
-            (add-before 'build 'pre-build
-              (lambda* (#:key inputs #:allow-other-keys)
-                (define (el-dir store-dir)
-                  (match (find-files store-dir "\\.el$")
-                    ((f1 f2 ...) (dirname f1))
-                    (_ "")))
+  (package
+    (name "emacs-haskell-mode")
+    (version "17.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/haskell/haskell-mode")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03j94fgw1bljbjqmikbn9mnrfifxf7g9zrb727zmnnrjwyi0wd4n"))))
+    (propagated-inputs
+     (list emacs-dash))
+    (native-inputs
+     (list emacs-minimal emacs-el-search emacs-stream texinfo))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags #~(list
+                      (string-append "EMACS=" #$emacs-minimal "/bin/emacs"))
+      #:modules `((ice-9 match)
+                  (srfi srfi-26)
+                  ((guix build emacs-build-system) #:prefix emacs:)
+                  ,@%gnu-build-system-modules)
+      #:imported-modules `(,@%gnu-build-system-modules
+                           (guix build emacs-build-system)
+                           (guix build emacs-utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'build 'pre-build
+            (lambda* (#:key inputs #:allow-other-keys)
+              (define (el-dir store-dir)
+                (match (find-files store-dir "\\.el$")
+                  ((f1 f2 ...) (dirname f1))
+                  (_ "")))
 
-                (let ((sh (search-input-file inputs "/bin/sh")))
-                  (define emacs-prefix? (cut string-prefix? "emacs-" <>))
+              (let ((sh (search-input-file inputs "/bin/sh")))
+                (define emacs-prefix? (cut string-prefix? "emacs-" <>))
 
-                  (setenv "SHELL" "sh")
-                  (setenv "EMACSLOADPATH"
-                          (string-concatenate
-                           (map (match-lambda
-                                  (((? emacs-prefix? name) . dir)
-                                   (string-append (el-dir dir) ":"))
-                                  (_ ""))
-                                inputs)))
-                  (substitute* (find-files "." "\\.el") (("/bin/sh") sh)))))
-            (add-before 'check 'delete-failing-tests
-              ;; XXX: these tests require GHC executable, which would be a big
-              ;; native input.
-              (lambda _
-                (with-directory-excursion "tests"
-                  ;; File `haskell-indent-tests.el' fails with
-                  ;; `haskell-indent-put-region-in-literate-2'
-                  ;; on Emacs 27.1+
-                  ;; XXX: https://github.com/haskell/haskell-mode/issues/1714
-                  (for-each delete-file
-                            '("haskell-indent-tests.el"
-                              "haskell-customize-tests.el"
-                              "inferior-haskell-tests.el"))
+                (setenv "SHELL" "sh")
+                (setenv "EMACSLOADPATH"
+                        (string-concatenate
+                         (map (match-lambda
+                                (((? emacs-prefix? name) . dir)
+                                 (string-append (el-dir dir) ":"))
+                                (_ ""))
+                              inputs)))
+                (substitute* (find-files "." "\\.el") (("/bin/sh") sh)))))
+          (add-before 'check 'delete-failing-tests
+            ;; XXX: these tests require GHC executable, which would be a big
+            ;; native input.
+            (lambda _
+              (with-directory-excursion "tests"
+                ;; File `haskell-indent-tests.el' fails with
+                ;; `haskell-indent-put-region-in-literate-2'
+                ;; on Emacs 27.1+
+                ;; XXX: https://github.com/haskell/haskell-mode/issues/1714
+                (for-each delete-file
+                          '("haskell-indent-tests.el"
+                            "haskell-customize-tests.el"
+                            "inferior-haskell-tests.el"))
 
-                  ;; requires many external tools (e.g. git, hasktags)
-                  (substitute* "haskell-mode-tests.el"
-                    (("\\(ert-deftest haskell-generate-tags.*" all)
-                     (string-append all " (skip-unless nil)"))))))
-            (replace 'install
-              (lambda* (#:key outputs #:allow-other-keys)
-                (let* ((out (assoc-ref outputs "out"))
-                       (el-dir (emacs:elpa-directory out))
-                       (doc (string-append
-                             out "/share/doc/haskell-mode-" #$version))
-                       (info (string-append out "/share/info")))
-                  (define (copy-to-dir dir files)
-                    (for-each (lambda (f)
-                                (install-file f dir))
-                              files))
+                ;; requires many external tools (e.g. git, hasktags)
+                (substitute* "haskell-mode-tests.el"
+                  (("\\(ert-deftest haskell-generate-tags.*" all)
+                   (string-append all " (skip-unless nil)"))))))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (el-dir (emacs:elpa-directory out))
+                     (doc (string-append
+                           out "/share/doc/haskell-mode-" #$version))
+                     (info (string-append out "/share/info")))
+                (define (copy-to-dir dir files)
+                  (for-each (lambda (f)
+                              (install-file f dir))
+                            files))
 
-                  (with-directory-excursion "doc"
-                    (invoke "makeinfo" "haskell-mode.texi")
-                    (install-file "haskell-mode.info" info))
-                  (copy-to-dir doc '("CONTRIBUTING.md" "NEWS" "README.md"))
-                  (copy-to-dir el-dir (find-files "." "\\.elc?"))))))))
-      (home-page "https://github.com/haskell/haskell-mode")
-      (synopsis "Haskell mode for Emacs")
-      (description
-       "This is an Emacs mode for editing, debugging and developing Haskell
+                (with-directory-excursion "doc"
+                  (invoke "makeinfo" "haskell-mode.texi")
+                  (install-file "haskell-mode.info" info))
+                (copy-to-dir doc '("CONTRIBUTING.md" "NEWS" "README.md"))
+                (copy-to-dir el-dir (find-files "." "\\.elc?"))))))))
+    (home-page "https://github.com/haskell/haskell-mode")
+    (synopsis "Haskell mode for Emacs")
+    (description
+     "This is an Emacs mode for editing, debugging and developing Haskell
 programs.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-dante
   (package
