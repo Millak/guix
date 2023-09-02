@@ -102,7 +102,11 @@ devices on various operating systems.")
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
-           #~(list "--disable-static")))
+           #~(list "--disable-static"
+                   ;; Extending the RUNPATH is necessary, otherwise loading
+                   ;; the libusb-1.0.so.0 library fails.
+                   (string-append "LDFLAGS=-Wl,-rpath="
+                                  #$(this-package-input "libusb") "/lib"))))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (inputs
