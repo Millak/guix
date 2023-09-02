@@ -24007,7 +24007,7 @@ by their Projectile root directory.")
 (define-public emacs-ibuffer-vc
   (package
     (name "emacs-ibuffer-vc")
-    (version "0.11")
+    (version "0.12")
     (source
      (origin
        (method git-fetch)
@@ -24016,7 +24016,7 @@ by their Projectile root directory.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mgn7b786j4hwq1ks012hxxgvrfn5rz90adi2j190gmjz60rc5g5"))))
+        (base32 "0mnxh6annmys4h1xhc2c7l7ajp4pwvdg68n30x7a21ad9qlvizil"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/purcell/ibuffer-vc")
     (synopsis "Group Ibuffer's list by revision control system indications")
