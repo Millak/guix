@@ -53,6 +53,7 @@
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system perl)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
@@ -56964,31 +56965,34 @@ dynamic bibliography sets and many other features.")
 (define-public rubber
   (package
     (name "rubber")
-    (version "1.5.1")
+    (version "1.6.0")
     (source (origin
-              (method url-fetch)
-              (uri (list (string-append "https://launchpad.net/rubber/trunk/"
-                                        version "/+download/rubber-"
-                                        version ".tar.gz")
-                         (string-append "http://ebeffara.free.fr/pub/rubber-"
-                                        version ".tar.gz")))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/latex-rubber/rubber/")
+                    (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "178dmrp0mza5gqjiqgk6dqs0c10s0c517pk6k9pjbam86vf47a1p"))))
-    (build-system python-build-system)
+                "0kndj42f87042x44p4jqwcf44bhpvhfqi2ilhh8sl09px2rm0qzl"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f ; no `check' target
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'build)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; texlive is required to build the PDF documentation; do not
-             ;; build it.
-             (invoke "python" "setup.py" "build" "--pdf=False" "install"
-                     (string-append "--prefix=" (assoc-ref outputs "out"))))))))
-    (native-inputs (list texinfo))
-    (home-page "https://launchpad.net/rubber")
+     (list
+      #:tests? #true
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build)
+          ;; setup.py script does not support one of the Python build
+          ;; system's default flags, "--single-version-externally-managed".
+          (replace 'install
+            (lambda _
+              (invoke "python" "setup.py" "install"
+                      (string-append "--prefix=" #$output)
+                      "--root=/"))))))
+    (native-inputs
+     (list texinfo (texlive-updmap.cfg (list texlive-texinfo))))
+    (inputs (list python-wrapper))
+    (home-page "https://gitlab.com/latex-rubber/rubber/")
     (synopsis "Wrapper for LaTeX and friends")
     (description
      "Rubber is a program whose purpose is to handle all tasks related to the
@@ -56997,7 +57001,7 @@ of course, enough times so that all references are defined, and running BibTeX
 to manage bibliographic references.  Automatic execution of dvips to produce
 PostScript documents is also included, as well as usage of pdfLaTeX to produce
 PDF documents.")
-    (license license:gpl2+)))
+    (license license:gpl3+)))
 
 (define-public texmaker
   (package
