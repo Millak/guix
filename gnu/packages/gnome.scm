@@ -9356,7 +9356,7 @@ core C library, and bindings for Python (PyGTK).")
 (define-public gnome-autoar
   (package
     (name "gnome-autoar")
-    (version "0.4.3")
+    (version "0.4.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -9364,7 +9364,7 @@ core C library, and bindings for Python (PyGTK).")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "124y4j3wgb6axgfzw9f00865r033fg7b0qy9qgfsp5ilan4hgpvv"))))
+                "1hn3rzd6z2g2xvnx8icifybq26vvxk44qmqz392b2g6g7crvxby0"))))
     (build-system meson-build-system)
     (native-inputs
      (list gobject-introspection `(,glib "bin") pkg-config))
