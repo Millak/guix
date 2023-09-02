@@ -51,6 +51,7 @@
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages java)
+  #:use-module (gnu packages javascript)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages netpbm)
   #:use-module (gnu packages python)
@@ -7733,6 +7734,90 @@ of other R packages who wish to make use of HTSlib.")
      "This package provides a function to impute missing gene expression
 microarray data, using nearest neighbor averaging.")
     (license license:gpl2+)))
+
+(define-public r-interactivedisplay
+  (package
+    (name "r-interactivedisplay")
+    (version "1.38.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "interactiveDisplay" version))
+              (sha256
+               (base32
+                "1y9fdnpz1bagrwhyj8jikp2q5fd9y74j48l5z7f0s88v88sa7szl"))
+              (snippet
+               '(for-each delete-file
+                          '("inst/www/js/jquery.js"
+                            "inst/www/js/jquery.min.js"
+                            "inst/www/js/jquery.dataTables.min.js")))))
+    (properties `((upstream-name . "interactiveDisplay")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:modules '((guix build utils)
+                  (guix build r-build-system)
+                  (srfi srfi-1))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'process-javascript
+           (lambda* (#:key inputs #:allow-other-keys)
+             (call-with-values
+                 (lambda ()
+                   (unzip2
+                    `((,(assoc-ref inputs "js-jquery-1.8.2")
+                       "inst/www/js/jquery.js")
+                      (,(assoc-ref inputs "js-jquery-1.9.1")
+                       "inst/www/js/jquery.min.js")
+                      (,(search-input-file inputs
+                                           "/share/javascript/jquery.dataTables.min.js")
+                       "inst/www/js/jquery.dataTables.min.js"))))
+               (lambda (sources targets)
+                 (for-each (lambda (source target)
+                             (format #true "Processing ~a --> ~a~%"
+                                     source target)
+                             (invoke "esbuild" source "--minify"
+                                     (string-append "--outfile=" target)))
+                           sources targets))))))))
+    (propagated-inputs
+     (list r-annotationdbi
+           r-biocgenerics
+           r-biocmanager
+           r-category
+           r-dt
+           r-ggplot2
+           r-gridsvg
+           r-interactivedisplaybase
+           r-plyr
+           r-rcolorbrewer
+           r-reshape2
+           r-shiny
+           r-zlibbioc
+           r-xml))
+    (native-inputs
+     `(("esbuild" ,esbuild)
+       ("r-knitr" ,r-knitr)
+       ("js-datatables" ,js-datatables)
+       ("js-jquery-1.8.2"
+        ,(origin
+           (method url-fetch)
+           (uri "https://code.jquery.com/jquery-1.8.2.js")
+           (sha256
+            (base32
+             "0nikk2clbnyi02k0brvhbd8m43lfh4l1zrya35jya9sy6wb9b9ng"))))
+       ("js-jquery-1.9.1"
+        ,(origin
+           (method url-fetch)
+           (uri "https://code.jquery.com/jquery-1.9.1.js")
+           (sha256
+            (base32
+             "0h4dk67yc9d0kadqxb6b33585f3x3559p6qmp70l00qwq030vn3v"))))))
+    (home-page "https://bioconductor.org/packages/interactiveDisplay")
+    (synopsis "Package for Shiny web displays of Bioconductor objects")
+    (description
+     "This package offers interactive Shiny displays for Bioconductor
+objects.  In addition, this package empowers users to develop engaging
+visualizations and interfaces for working with Bioconductor data.")
+    (license license:artistic2.0)))
 
 (define-public r-interactivedisplaybase
   (package
