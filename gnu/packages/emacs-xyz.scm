@@ -33218,7 +33218,7 @@ information from the tags gathered by CEDET's semantic analyzer.)")
 (define-public emacs-eshell-prompt-extras
   (package
     (name "emacs-eshell-prompt-extras")
-    (version "1.0")
+    (version "1.1")
     (home-page "https://github.com/zwild/eshell-prompt-extras")
     (source
      (origin
@@ -33229,7 +33229,7 @@ information from the tags gathered by CEDET's semantic analyzer.)")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0gb07mns23dgqqr6qfy7d6ndizy15sqgbgfaig6k5xbjnwi02v9g"))))
+         "04wgffj43lw1i853s8vkw8hvjx29vv5lnmhjyqcclwfnbj7ddvn9"))))
     (build-system emacs-build-system)
     (synopsis "Display extra information and color for your Eshell prompt")
     (description "This library displays various customizable elements for
