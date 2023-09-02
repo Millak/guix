@@ -142,6 +142,7 @@
   #:use-module (gnu packages geo)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphviz)
+  #:use-module (gnu packages groff)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
@@ -7336,6 +7337,28 @@ jQuery.Syntax JavaScript libraries.")
                (base32
                 "0h9vf4fx056imjf8ibmn03wg1c3hniipy1nsm2jqi62lp1m19c95"))))
     (build-system glib-or-gtk-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'set-man-file-name
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; Invoke 'man' directly instead of searching $PATH.
+                   (substitute* '("libyelp/yelp-man-parser.c"
+                                  "libyelp/yelp-uri.c")
+                     (("\"man\"")
+                      (string-append "\""
+                                     (search-input-file inputs "bin/man")
+                                     "\""))
+                     (("G_SPAWN_SEARCH_PATH")
+                      "0"))))
+               (add-after 'install 'help-man-find-its-dependencies
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   ;; XXX: Currently 'man' looks for 'groff' in $PATH in one
+                   ;; case.  This should be fixed in 'man-db' proper.
+                   (wrap-program (string-append (assoc-ref outputs "out")
+                                                "/bin/yelp")
+                     `("PATH" ":" prefix
+                       (,(dirname (search-input-file inputs "bin/groff"))))))))))
     (native-inputs
      (list `(,glib "bin") ; for glib-genmarshal, etc.
            intltool
@@ -7347,6 +7370,8 @@ jQuery.Syntax JavaScript libraries.")
      (list gsettings-desktop-schemas
            libhandy
            libxslt
+           man-db                                 ;for URIs like "man:ls"
+           groff-minimal                          ;ditto
            sqlite
            webkitgtk
            yelp-xsl))
