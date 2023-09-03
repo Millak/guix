@@ -75,7 +75,7 @@ in apps built for the Pantheon desktop.")
 (define-public pantheon-calculator
   (package
     (name "pantheon-calculator")
-    (version "1.7.2")
+    (version "2.0.2")
     (source
      (origin
        (method git-fetch)
@@ -85,7 +85,7 @@ in apps built for the Pantheon desktop.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "11rwwi6nlhwpcm29dn2mbz0239nfjdwlqlqbchm0j9sr1ypifk2k"))))
+         "1w59sgznzybawhz411avqayws8jq0471n6hwhkplvcz7inxlzdrw"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -97,15 +97,15 @@ in apps built for the Pantheon desktop.")
     (inputs
       (list granite
             glib
-            gtk+
+            gtk
             libgee
             libhandy))
     (native-inputs
-     `(("cmake" ,cmake)
-       ("glib:bin" ,glib "bin") ; for glib-compile-schemas
-       ("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)))
+      (list cmake
+            `(,glib "bin") ; for glib-compile-schemas
+            gettext-minimal
+            pkg-config
+            vala))
     (home-page "https://github.com/elementary/calculator")
     (synopsis "Desktop calculator")
     (description "Calculator is an application for performing simple
