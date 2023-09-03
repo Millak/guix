@@ -1554,7 +1554,7 @@ tracker's SOAP service, such as @url{https://bugs.gnu.org}.")
 (define-public guile-email
   (package
     (name "guile-email")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method git-fetch)
@@ -1564,7 +1564,7 @@ tracker's SOAP service, such as @url{https://bugs.gnu.org}.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0q98r460yr75gyxg06zrrixwazncd9nxl2pgr68mff2wf41f291h"))))
+         "09r50zbkyxvg6f7qn37yibasw69ajxls3sgdnhy9j70mbvcmx9c4"))))
     (build-system gnu-build-system)
     (native-inputs
      (list texinfo))
