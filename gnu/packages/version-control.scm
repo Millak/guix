@@ -48,6 +48,7 @@
 ;;; Copyright © 2022 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;; Copyright © 2015, 2022 David Thompson <davet@gnu.org>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2023 Kjartan Oli Agustsson <kjartanoli@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -116,6 +117,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages web)
+  #:use-module (gnu packages patchutils)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages perl-check)
@@ -3722,3 +3724,34 @@ create and manage trackers, tickets
 interact with GraphQL APIs directly
 @end table")
     (license license:agpl3)))
+
+(define-public commit-patch
+  (package
+    (name "commit-patch")
+    (version "2.6.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/caldwell/commit-patch/releases/download/"
+                    version "/commit-patch-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0v11vjyisk243zi0ym90bnqb229j7iaqx1lwqdkszxzn1yxwq4ck"))))
+    (build-system copy-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'fix-paths
+                          (lambda* (#:key inputs #:allow-other-keys)
+                            (patch-shebang "commit-patch"))))
+           #:install-plan ''(("commit-patch" "bin/")
+                             ("commit-patch-buffer.el"
+                              "share/emacs/site-lisp/"))))
+    (inputs (list perl))
+    (propagated-inputs (list patchutils))
+    (synopsis "Commit parts of changes to VCS repositories")
+    (description
+     "commit-patch is a utility that lets you check in select portions of a
+file into Darcs, Git, Mercurial, Bazaar, Subversion, or CVS repositories.  It
+comes as a command line app and also an Emacs interface.")
+    (home-page "https://porkrind.org/commit-patch/")
+    (license license:gpl2+)))
