@@ -16086,7 +16086,7 @@ programming and reproducible research.")
 (define-public emacs-org-contrib
   (package
     (name "emacs-org-contrib")
-    (version "0.4.1")
+    (version "0.4.2")
     (source
      (origin
        (method git-fetch)
@@ -16095,7 +16095,7 @@ programming and reproducible research.")
              (commit (string-append "release_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0f3zjy3ybkqmvvlx04251add0vcz248qibxy5akal96l8bdhjajx"))))
+        (base32 "11p83gp5lpajf3aaaijs0p6y83sd9g6cv65h7021prcn4qbvipl8"))))
     (build-system emacs-build-system)
     (arguments
      `(#:phases
