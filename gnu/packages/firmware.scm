@@ -33,6 +33,7 @@
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix git-download)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
@@ -40,6 +41,8 @@
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages autotools)
+  #:use-module (gnu packages avr)
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
@@ -52,6 +55,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages efi)
   #:use-module (gnu packages elf)
+  #:use-module (gnu packages flashing-tools)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
@@ -1212,6 +1216,11 @@ AR100.")
 (define-public crust-pine64-plus
   (make-crust-package "pine64_plus"))
 
+
+;;;
+;;; QMK Firmware.
+;;;
+
 (define-public qmk
   (package
     (name "qmk")
@@ -1224,18 +1233,56 @@ AR100.")
                 "1619q9v90740dbg8xpzqlhwcasz42xj737803aiip8qc3a7zhwgq"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:tests? #f)) ;No tests.
-    (propagated-inputs (list python-dotty-dict
-                             python-hid
-                             python-hjson
-                             python-jsonschema
-                             python-milc
-                             python-pillow
-                             python-pygments
-                             python-pyserial
-                             python-pyusb))
+     (list
+      #:tests? #f                       ;no tests
+      #:modules '((guix build pyproject-build-system)
+                  (guix build utils)
+                  (srfi srfi-26))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'wrap 'wrap-path
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (wrap-program (search-input-file outputs "bin/qmk")
+                `("PATH" prefix
+                  ,(map (compose dirname
+                                 (cut search-input-file inputs <>))
+                        '("bin/avr-gcc"
+                          "bin/avrdude"
+                          "bin/dfu-programmer"
+                          "bin/git"
+                          ;; TODO: Remove after git is wrapped with these.
+                          "bin/basename"
+                          "bin/sed"
+                          "bin/uname")))))))))
+    ;; The inputs are not propagated since qmk is to be used strictly as a
+    ;; command.
+    (inputs
+     (list (make-avr-toolchain)
+           avrdude
+           dfu-programmer
+           git-minimal                  ;for the clone action
+           python-dotty-dict
+           python-hid
+           python-hjson
+           python-jsonschema
+           python-milc
+           python-pillow
+           python-pygments
+           python-pyserial
+           python-pyusb
+           ;; These are added to workaround faults in our git package (see
+           ;; bug#65924).
+           coreutils-minimal
+           sed
+           util-linux))
     (home-page "https://qmk.fm")
     (synopsis "Command line utility to manage QMK keyboard firmwares")
-    (description "This package provides a program to help users work with
-@acronym{QMK, Quantum Mechanical Keyboard} firmwares.")
+    (description "The QMK CLI provides a @acronym{CLI, command line interface}
+based program to help users work with the QMK firmware, which can be used for
+multiple custom keyboards such as Planck, ErgoDox, Corne and others.
+
+This @acronym{CLI} program is mainly used for building the QMK firmware, but
+also has some other convenience utilities.  It is highly recommended to
+install the udev rules provided by the @code{qmk-udev-rules} package to avoid
+having to run @command{qmk} as root when flashing the firmware.")
     (license license:expat)))
