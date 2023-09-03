@@ -132,6 +132,7 @@
 ;;; Copyright © 2023 Fabio Natali <me@fabionatali.com>
 ;;; Copyright © 2023 Arnaud Lechevallier <arnaud.lechevallier@free.fr>
 ;;; Copyright © 2023 Ahmad Draidi <a.r.draidi@redscript.org>
+;;; Copyright © 2023 Sergiu Ivanov <sivanov@colimite.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4103,6 +4104,42 @@ as a library for other Emacs packages.")
 writing input files for TeX, LaTeX, ConTeXt, Texinfo, and docTeX using Emacs
 or XEmacs.")
     (license license:gpl3+)))
+
+(define-public emacs-latex-extra
+  (let ((commit "a81e7588448f85c5fcc3f3fc71cf957d0928a656")
+        (revision "0"))
+    (package
+      (name "emacs-latex-extra")
+      (version (git-version "1.14" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/Malabarba/latex-extra")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "0sajg5vmygnkcnmkrpf8r7c4b8v95hgsv1y6pz868jpznmldnxkb"))
+                (file-name (git-file-name name version))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #true
+        #:test-command
+        #~(list "emacs" "-Q" "--batch"
+                "--eval=(cd \"tests/\")"
+                "-l" "latex-extra-test.el"
+                "-f" "ert-run-tests-batch-and-exit")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'build 'set-home
+              (lambda _ (setenv "HOME" (getcwd)))))))
+      (propagated-inputs (list emacs-auctex))
+      (home-page "https://github.com/Malabarba/latex-extra")
+      (synopsis "Usability improvements for LaTeX mode")
+      (description
+       "Latex-extra defines extra commands and keys for LaTeX mode, as well
+as brings user experience improvements.")
+      (license license:gpl3+))))
 
 (define-public emacs-autothemer
   (let ((commit "8f72afc6dba5ad7cc3a201a084fd20571f945d2e")) ;version bump
