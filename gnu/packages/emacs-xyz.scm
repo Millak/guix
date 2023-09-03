@@ -36433,7 +36433,7 @@ rules about where space should be left to separate words and parentheses.")
 (define-public emacs-seriestracker
   (package
     (name "emacs-seriestracker")
-    (version "1.1")
+    (version "1.3.1")
     (source
      (origin
        (method git-fetch)
@@ -36442,7 +36442,7 @@ rules about where space should be left to separate words and parentheses.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0b9hf20iah3ym2d4kz67k0kb48dq0442zxw4zmc03zg3sxfdxh0x"))))
+        (base32 "0gfm7ss3bwj3m2y1mb4sdmsv85mjnpkgmzasa3yfj69zbq46glhn"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-dash))
     (home-page "https://github.com/MaximeWack/seriesTracker")
