@@ -37435,7 +37435,7 @@ with popups, which also work in the terminal.")
 (define-public emacs-popon
   (package
     (name "emacs-popon")
-    (version "0.12")
+    (version "0.13")
     (source
      (origin
        (method git-fetch)
@@ -37445,7 +37445,7 @@ with popups, which also work in the terminal.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wkydg326ql8cvvmibq1nf6y40d1b0ax0p892pwncmi7awnf20gr"))))
+        (base32 "046l8is3rg0c6qhiy7wh91pcdhwqhnw47md8q231w8mxnw5b1n5j"))))
     (build-system emacs-build-system)
     (home-page "https://codeberg.org/akib/emacs-popon/")
     (synopsis "Pop floating text on a window")
