@@ -27429,23 +27429,24 @@ Tramp's own encoding methods for moving data between systems.")
     (license license:gpl3+)))
 
 (define-public emacs-pcre2el
-  (package
-    (name "emacs-pcre2el")
-    (version "1.9")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/joddie/pcre2el")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0s6by4arny1w4i0hm4xghhjgjgb4iy7n189ddqdcsh4jrgwjyaxl"))))
-    (build-system emacs-build-system)
-    (home-page "https://github.com/joddie/pcre2el")
-    (synopsis "Convert between PCRE, Emacs and rx regexp syntax")
-    (description "@code{pcre2el} or @code{rxt} (RegeXp Translator or RegeXp
+  (let ((commit "018531ba0cf8e2b28d1108136a0e031b6a45f1c1")) ;version bump
+    (package
+      (name "emacs-pcre2el")
+      (version "1.12")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/joddie/pcre2el")
+               (commit version)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "09mzgrxcxr0a4k45k469vj9yh5ld8pi6v6kph7wvjsjd71q9rj4s"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/joddie/pcre2el")
+      (synopsis "Convert between PCRE, Emacs and rx regexp syntax")
+      (description "@code{pcre2el} or @code{rxt} (RegeXp Translator or RegeXp
 Tools) is a utility for working with regular expressions in Emacs, based on a
 recursive-descent parser for regexp syntax.  In addition to converting (a
 subset of) PCRE syntax into its Emacs equivalent, it can do the following:
@@ -27460,7 +27461,7 @@ provided the list is finite
 @item provide live font-locking of regexp syntax (so far only for Elisp
 buffers – other modes on the TODO list).
 @end itemize\n")
-    (license license:gpl3)))
+      (license license:gpl3))))
 
 (define-public emacs-magit-todos
   (package
