@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015, 2017, 2018 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2016, 2017, 2019-2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -152,16 +152,22 @@ online pastebin services.")
                         (("test-gpg-valid\\$\\(EXEEXT)") "")
                         (("test-gpg-styles\\$\\(EXEEXT)") "")))))
        #:configure-flags
-       '("--enable-static=no")))
-    (inputs (list bzip2
+       '("--enable-static=no"
+         "--with-bzip2=yes"
+         "--with-lzma=yes")))
+    (inputs (list brotli
+                  bzip2
                   gnutls/dane
                   gpgme
                   libidn2
                   libmicrohttpd
                   libpsl
+                  `(,nghttp2 "lib")
                   pcre2
-                  zlib))
-    ;; TODO: Add libbrotlidec, libnghttp2.
+                  xz
+                  zlib
+                  `(,zstd "lib")))
+    ;; TODO: Add libhsts.
     (native-inputs (list pkg-config))
     (home-page "https://gitlab.com/gnuwget/wget2")
     (synopsis "Successor of GNU Wget")
