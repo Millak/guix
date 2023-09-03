@@ -16007,7 +16007,7 @@ passive voice.")
 (define-public emacs-org
   (package
     (name "emacs-org")
-    (version "9.6.8")
+    (version "9.6.9")
     (source
      (origin
        (method git-fetch)
@@ -16016,7 +16016,7 @@ passive voice.")
              (commit (string-append "release_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cv1wkvfvr1aj8rv0frnlcwk34ib210ys2419b5fp1lfcfdi9in5"))))
+        (base32 "1j1bv6pz8s15ymr1mzrsb465vv39qmd6sb5cjq3sb9c0nzm1mzif"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -16057,8 +16057,6 @@ passive voice.")
                  (string-append all "  (skip-unless nil)\n")))
               (substitute* "testing/lisp/test-org.el"
                 (("test-org/org-(encode-time|time-string-to-time) .*" all)
-                 (string-append all "  (skip-unless nil)\n"))
-                (("test-org/insert-heading .*" all)
                  (string-append all "  (skip-unless nil)\n")))))
           (replace 'install
             (lambda _
