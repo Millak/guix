@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
-;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Jean-Baptiste Volatier <jbv@pm.me>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
@@ -603,7 +603,7 @@ rendering library.")
 (define-public julia-gr-jll
   (package
     (name "julia-gr-jll")
-    (version "0.58.1+0")
+    (version "0.69.1+0")
     (source
       (origin
         (method git-fetch)
@@ -612,7 +612,7 @@ rendering library.")
                (commit (string-append "GR-v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "16m22n0wh86v3lh0im2pc9bg381djbmqji5hjx42j6aaz634gqiq"))))
+         (base32 "1zpa35j9f6288sa9md28g0bqkdhwx0j0dmsyy3kc0zxjlz188a94"))))
     (build-system julia-build-system)
     (arguments
      '(#:tests? #f  ; no runtests
