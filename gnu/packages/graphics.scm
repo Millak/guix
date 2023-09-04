@@ -1415,7 +1415,7 @@ virtual reality, scientific visualization and modeling.")
 (define-public gr-framework
   (package
     (name "gr-framework")
-    (version "0.58.1")
+    (version "0.69.1")
     (source
       (origin
         (method git-fetch)
@@ -1424,12 +1424,11 @@ virtual reality, scientific visualization and modeling.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0q1rz4iyxbh0dc22y4w28ry3hr0yypdwdm6pw2zlwgjya7wkbvsw"))
+         (base32 "0kllbj4bj3f5w4wzg29ilac66fd0bslqq5srj845ssmzp4ynqglh"))
         (modules '((guix build utils)))
         (snippet
          '(begin
-            (delete-file-recursively "3rdparty")
-            #t))))
+            (delete-file-recursively "3rdparty")))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))    ; no test target
