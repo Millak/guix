@@ -5571,65 +5571,57 @@ fullscreen, use F5 or Alt+Enter.")
 (define-public tennix
   (package
     (name "tennix")
-    (version "1.3.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://repo.or.cz/tennix.git")
-             (commit (string-append "tennix-" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "02cj4lrdrisal5s9pnbf2smx7qz9czczjzndfkhfx0qy67b957sk"))
-       ;; Remove non-free images.
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           (for-each delete-file
-                     '("data/loc_training_camp.png"
-                       "data/loc_austrian_open.png"
-                       "data/loc_olympic_green_tennis.png"))
-           #t))))
+    (version "1.3.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://repo.or.cz/tennix.git")
+                    (commit (string-append "tennix-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1fmg0vw8c2spyxy4k64nwky80jsw9mc3vnlch49q6cagjsg9y8dj"))
+              ;; Remove non-free images.
+              (modules '((guix build utils)))
+              (snippet '(begin
+                          (for-each delete-file
+                                    '("data/loc_training_camp.png"
+                                      "data/loc_austrian_open.png"
+                                      "data/loc_olympic_green_tennis.png")) #t))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ;no test
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-include
-           (lambda _
-             (substitute* '("src/graphics.h" "src/sound.h")
-               (("#include \"(SDL_(image|ttf|mixer)\\.h)\"" _ header)
-                (string-append "#include \"SDL/" header "\"")))
-             (substitute* '("src/tennix.h" "src/network.h" "src/SDL_rotozoom.h")
-               (("#include <SDL.h>") "#include <SDL/SDL.h>")
-               (("#include <SDL_net.h>") "#include <SDL/SDL_net.h>"))
-             #t))
-         (add-after 'unpack 'locate-install
-           ;; Build process cannot expand "$(INSTALL)" in Makefile.
-           (lambda _
-             (substitute* "makefile"
-               (("^CONFIGURE_OUTPUT :=.*" all)
-                (string-append "INSTALL := install -c\n" all)))
-             #t))
-         (replace 'configure
-           ;; The "configure" script is picky about the arguments it
-           ;; gets.  Call it ourselves.
-           (lambda _
-             (invoke "./configure" "--prefix" (assoc-ref %outputs "out")))))))
-    (native-inputs
-     (list which))
-    (inputs
-     `(("python" ,python-wrapper)
-       ("sdl" ,(sdl-union (list sdl sdl-image sdl-mixer sdl-ttf sdl-net)))))
+     (list
+      #:tests? #f ;no tests
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'locate-install
+                     ;; Build process cannot expand "$(INSTALL)" in Makefile.
+                     (lambda _
+                       (substitute* "makefile"
+                         (("^CONFIGURE_OUTPUT :=.*" all)
+                          (string-append "INSTALL := install -c\n" all))) #t))
+                   (replace 'configure
+                     ;; The "configure" script is picky about the arguments it
+                     ;; gets.  Call it ourselves.
+                     (lambda _
+                       (invoke "./configure" "--prefix"
+                               (assoc-ref %outputs "out")))))))
+    (native-inputs (list which))
+    (inputs (list python
+                  (sdl-union (list sdl2
+                                   sdl2-image
+                                   sdl2-mixer
+                                   sdl2-ttf
+                                   sdl2-net
+                                   sdl2-gfx))))
     (home-page "https://icculus.org/tennix/")
     (synopsis "Play tennis against the computer or a friend")
-    (description "Tennix is a 2D tennis game.  You can play against the
+    (description
+     "Tennix is a 2D tennis game.  You can play against the
 computer or against another player using the keyboard.  The game runs
 in-window at 640x480 resolution or fullscreen.")
     ;; Project is licensed under GPL2+ terms.  It includes images
-    ;; released under Public Domain terms, and SDL_rotozoom, released
-    ;; under LGPL2.1 terms.
-    (license (list license:gpl2+ license:public-domain license:lgpl2.1))))
+    ;; released under Public Domain terms.
+    (license (list license:gpl2+ license:public-domain))))
 
 (define-public warzone2100
   (package
