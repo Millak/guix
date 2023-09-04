@@ -53,7 +53,7 @@ Copyright @copyright{} 2017, 2019, 2020, 2021, 2022, 2023 Maxim Cournoyer@*
 Copyright @copyright{} 2017–2022 Tobias Geerinckx-Rice@*
 Copyright @copyright{} 2017 George Clemmer@*
 Copyright @copyright{} 2017 Andy Wingo@*
-Copyright @copyright{} 2017, 2018, 2019, 2020 Arun Isaac@*
+Copyright @copyright{} 2017, 2018, 2019, 2020, 2023 Arun Isaac@*
 Copyright @copyright{} 2017 nee@*
 Copyright @copyright{} 2018 Rutger Helling@*
 Copyright @copyright{} 2018, 2021 Oleg Pykhalov@*

@@ -1345,6 +1345,12 @@ should not be delayed.
 When a bug is resolved, please close the thread by sending an email to
 @email{@var{ISSUE_NUMBER}-done@@debbugs.gnu.org}.
 
+@menu
+* Configuring Git::
+* Sending a Patch Series::
+* Teams::
+@end menu
+
 @node Configuring Git
 @subsection Configuring Git
 @cindex git configuration
@@ -1542,10 +1548,10 @@ This section describes how the Guix project tracks its bug reports,
 patch submissions and topic branches.
 
 @menu
-* The Issue Tracker::             The official bug and patch tracker.
-* Managing Patches and Branches:: How changes to Guix are managed.
-* Debbugs User Interfaces::       Ways to interact with Debbugs.
-* Debbugs Usertags::              Tag reports with custom labels.
+* The Issue Tracker::           The official bug and patch tracker.
+* Managing Patches and Branches::  How changes to Guix are managed.
+* Debbugs User Interfaces::     Ways to interact with Debbugs.
+* Debbugs Usertags::            Tag reports with custom labels.
 @end menu
 
 @node The Issue Tracker
@@ -1625,6 +1631,8 @@ information on some builds and substitute availability.
 @node Debbugs User Interfaces
 @subsection Debbugs User Interfaces
 
+@subsubsection Web interface
+
 A web interface (actually @emph{two} web interfaces!) are available to
 browse issues:
 
@@ -1645,6 +1653,88 @@ bug reports and patches, and to participate in discussions;
 To view discussions related to issue number @var{n}, go to
 @indicateurl{https://issues.guix.gnu.org/@var{n}} or
 @indicateurl{https://bugs.gnu.org/@var{n}}.
+
+@subsubsection Command-line interface
+
+Mumi also comes with a command-line interface that can be used to search
+existing issues, open new issues and send patches.  You do not need to
+use Emacs to use the mumi command-line client.  You interact with it
+only on the command-line.
+
+To use the mumi command-line interface, navigate to a local clone of the
+Guix git repository, and drop into a shell with mumi, git and
+git:send-email installed.
+
+@example
+$ cd guix
+~/guix$ guix shell mumi git git:send-email
+@end example
+
+To search for issues, say all open issues about "zig", run
+
+@example
+~/guix [env]$ mumi search zig is:open
+
+#60889 Add zig-build-system
+opened on 17 Jan 17:37 Z by Ekaitz Zarraga
+#61036 [PATCH 0/3] Update zig to 0.10.1
+opened on 24 Jan 09:42 Z by Efraim Flashner
+#39136 [PATCH] gnu: services: Add endlessh.
+opened on 14 Jan 2020 21:21 by Nicol? Balzarotti
+#60424 [PATCH] gnu: Add python-online-judge-tools
+opened on 30 Dec 2022 07:03 by gemmaro
+#45601 [PATCH 0/6] vlang 0.2 update
+opened on  1 Jan 2021 19:23 by Ryan Prior
+@end example
+
+Pick an issue and make it the "current" issue.
+
+@example
+~/guix [env]$ mumi current 61036
+
+#61036 [PATCH 0/3] Update zig to 0.10.1
+opened on 24 Jan 09:42 Z by Efraim Flashner
+@end example
+
+Once an issue is the current issue, you can easily create and send
+patches to it using
+
+@example
+~/guix [env]$ git format-patch origin/master
+~/guix [env]$ mumi send-email foo.patch bar.patch
+@end example
+
+Note that you do not have to pass in @samp{--to} or @samp{--cc}
+arguments to @command{git format-patch}.  @command{mumi send-email} will
+put them in correctly when sending the patches.
+
+To open a new issue, run
+
+@example
+~/guix [env]$ mumi new
+@end example
+
+and send patches
+
+@example
+~/guix [env]$ mumi send-email foo.patch bar.patch
+@end example
+
+@command{mumi send-email} is really a wrapper around @command{git
+send-email} that automates away all the nitty-gritty of sending patches.
+It uses the current issue state to automatically figure out the correct
+@samp{To} address to send to, other participants to @samp{Cc}, headers
+to add, etc.
+
+Also note that, unlike @command{git send-email}, @command{mumi
+send-email} works perfectly well with single and multiple patches alike.
+It automates away the debbugs dance of sending the first patch, waiting
+for a response from debbugs and sending the remaining patches.  It does
+so by sending the first patch, polling the server for a response, and
+then sending the remaining patches.  This polling can unfortunately take
+a few minutes.  So, please be patient.
+
+@subsubsection Emacs interface
 
 If you use Emacs, you may find it more convenient to interact with
 issues using @file{debbugs.el}, which you can install with:
