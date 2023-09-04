@@ -2626,7 +2626,7 @@ users; instead, you should use one of the packages that builds on
 (define-public julia-gr
   (package
     (name "julia-gr")
-    (version "0.58.1")
+    (version "0.69.5")
     (source
       (origin
         (method git-fetch)
@@ -2635,7 +2635,7 @@ users; instead, you should use one of the packages that builds on
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "18zxa1w2wmrf44c5l10qbh99zjdp7h94gxlymh47cf5kj5fc4xmx"))))
+         (base32 "0i4vb5y1m47x1ispr52h5a5gs544205vpiz4cypd4pr242f96dcb"))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-gr-jll))
