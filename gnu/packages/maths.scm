@@ -48,7 +48,7 @@
 ;;; Copyright © 2021, 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
 ;;; Copyright © 2021 Jean-Baptiste Volatier <jbv@pm.me>
-;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021, 2023 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Pierre-Antoine Bouttier <pierre-antoine.bouttier@univ-grenoble-alpes.fr>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -4324,102 +4324,99 @@ to BMP, JPEG or PNG image formats.")
 (define-public maxima
   (package
     (name "maxima")
-    (version "5.46.0")
+    (version "5.47.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/maxima/Maxima-source/"
                            version "-source/" name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "01wbm8jj43p7gpdj4h55aij0b44bjydn4bwb7q1wjrfs91mz143k"))
+        (base32 "0yhgsi7s22bpblrmrj60x0jsjdz98b5hjdcq7b0fhlzx4hdh414i"))
        (patches (search-patches "maxima-defsystem-mkdir.patch"))))
     (build-system gnu-build-system)
     (inputs
-     `(("bash" ,bash-minimal)
-       ("gnuplot" ,gnuplot)                       ;for plots
-       ("sbcl" ,sbcl)
-       ("sed" ,sed)
-       ("tk" ,tk)))                               ;Tcl/Tk is used by 'xmaxima'
+     (list bash-minimal
+           gnuplot                       ;for plots
+           sbcl
+           sed
+           tk))                          ;Tcl/Tk is used by 'xmaxima'
     (native-inputs
      (list texinfo perl python))
     (arguments
-     `(#:configure-flags
-       ,#~(list "--enable-sbcl"
-                (string-append "--with-sbcl=" #$sbcl "/bin/sbcl")
-                (string-append "--with-posix-shell=" #$bash-minimal "/bin/sh")
-                (string-append "--with-wish=" #$tk "/bin/wish"
-                               #$(version-major+minor (package-version tk))))
-       ;; By default Maxima attempts to write temporary files to
-       ;; '/tmp/nix-build-maxima-*', which won't exist at run time.
-       ;; Work around that.
-       #:make-flags (list "TMPDIR=/tmp")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((sed (search-input-file inputs "/bin/sed"))
-                    (coreutils (assoc-ref inputs "coreutils"))
-                    (dirname (string-append coreutils "/bin/dirname"))
-                    (head (string-append coreutils "/bin/head"))
-                    (perl (search-input-file inputs "/bin/perl"))
-                    (python (search-input-file inputs "/bin/python3")))
-               (substitute* "src/maxima.in"
-                 (("sed ") (string-append sed " "))
-                 (("dirname") dirname)
-                 (("head") head))
-               (substitute* "doc/info/Makefile.in"
-                 (("/usr/bin/env perl") perl))
-               (substitute* "doc/info/build_html.sh.in"
-                 (("python") python))
-               #t)))
-         (add-before 'check 'pre-check
-           (lambda _
-             (chmod "src/maxima" #o555)
-             #t))
-         (replace 'check
-           (lambda _
-             ;; This is derived from the testing code in the "debian/rules" file
-             ;; of Debian's Maxima package.
-             ;; If Maxima can successfully run this, the binary to be installed
-             ;; should be fine.
-             (invoke "sh" "-c"
-                     (string-append
-                      "./maxima-local "
-                      "--lisp=sbcl "
-                      "--batch-string=\"run_testsuite();\" "
-                      "| grep -q \"No unexpected errors found\""))))
-         ;; Make sure the doc and emacs files are found in the
-         ;; standard location.  Also configure maxima to find gnuplot
-         ;; without having it on the PATH.
-         (add-after 'install 'post-install
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (let* ((gnuplot (assoc-ref inputs "gnuplot"))
-                    (out (assoc-ref outputs "out"))
-                    (datadir (string-append out "/share/maxima/" ,version))
-                    (binutils (dirname (search-input-file inputs "/bin/as"))))
-               (with-directory-excursion out
-                 (mkdir-p "share/emacs")
-                 (mkdir-p "share/doc")
-                 (symlink
-                  (string-append datadir "/doc/")
-                  (string-append out "/share/doc/maxima"))
-                 (with-atomic-file-replacement
-                  (string-append datadir "/share/maxima-init.lisp")
-                  (lambda (in out)
-                    (format out "~a ~s~a~%"
-                            "(setf $gnuplot_command "
-                            (string-append gnuplot "/bin/gnuplot") ")")
-                    (dump-port in out))))
-               ;; Ensure that Maxima will have access to the GNU binutils
-               ;; components at runtime.
-               (wrap-program (string-append out "/bin/maxima")
-                 `("PATH" prefix (,binutils))))
-             #t))
-         ;; The Maxima command ‘describe’ allows picking the relevant portions
-         ;; from Maxima’s Texinfo docs.  However it does not support reading
-         ;; gzipped info files.
-         (delete 'compress-documentation))))
+     (list
+      #:configure-flags
+      #~(list "--enable-sbcl"
+              (string-append "--with-sbcl=" #$sbcl "/bin/sbcl")
+              (string-append "--with-posix-shell=" #$bash-minimal "/bin/sh")
+              (string-append "--with-wish=" #$tk "/bin/wish"
+                             #$(version-major+minor (package-version tk))))
+      ;; By default Maxima attempts to write temporary files to
+      ;; '/tmp/nix-build-maxima-*', which won't exist at run time.
+      ;; Work around that.
+      #:make-flags #~(list "TMPDIR=/tmp")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((sed (search-input-file inputs "/bin/sed"))
+                     (coreutils (assoc-ref inputs "coreutils"))
+                     (dirname (string-append coreutils "/bin/dirname"))
+                     (head (string-append coreutils "/bin/head"))
+                     (perl (search-input-file inputs "/bin/perl"))
+                     (python (search-input-file inputs "/bin/python3")))
+                (substitute* "src/maxima.in"
+                  (("sed ") (string-append sed " "))
+                  (("dirname") dirname)
+                  (("head") head))
+                (substitute* "doc/info/Makefile.in"
+                  (("/usr/bin/env perl") perl))
+                (substitute* "doc/info/build_html.sh.in"
+                  (("python") python)))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (chmod "src/maxima" #o555)))
+          (replace 'check
+            (lambda _
+              ;; This is derived from the testing code in the "debian/rules" file
+              ;; of Debian's Maxima package.
+              ;; If Maxima can successfully run this, the binary to be installed
+              ;; should be fine.
+              (invoke "sh" "-c"
+                      (string-append
+                       "./maxima-local "
+                       "--lisp=sbcl "
+                       "--batch-string=\"run_testsuite();\" "
+                       "| grep -q \"No unexpected errors found\""))))
+          ;; Make sure the doc and emacs files are found in the
+          ;; standard location.  Also configure maxima to find gnuplot
+          ;; without having it on the PATH.
+          (add-after 'install 'post-install
+            (lambda* (#:key outputs inputs #:allow-other-keys)
+              (let* ((gnuplot (assoc-ref inputs "gnuplot"))
+                     (out (assoc-ref outputs "out"))
+                     (datadir (string-append out "/share/maxima/" #$version))
+                     (binutils (dirname (search-input-file inputs "/bin/as"))))
+                (with-directory-excursion out
+                  (mkdir-p "share/emacs")
+                  (mkdir-p "share/doc")
+                  (symlink
+                   (string-append datadir "/doc/")
+                   (string-append out "/share/doc/maxima"))
+                  (with-atomic-file-replacement
+                   (string-append datadir "/share/maxima-init.lisp")
+                   (lambda (in out)
+                     (format out "~a ~s~a~%"
+                             "(setf $gnuplot_command "
+                             (string-append gnuplot "/bin/gnuplot") ")")
+                     (dump-port in out))))
+                ;; Ensure that Maxima will have access to the GNU binutils
+                ;; components at runtime.
+                (wrap-program (string-append out "/bin/maxima")
+                  `("PATH" prefix (#$binutils))))))
+          ;; The Maxima command ‘describe’ allows picking the relevant portions
+          ;; from Maxima’s Texinfo docs.  However it does not support reading
+          ;; gzipped info files.
+          (delete 'compress-documentation))))
     (home-page "https://maxima.sourceforge.io")
     (synopsis "Numeric and symbolic expression manipulation")
     (description "Maxima is a system for the manipulation of symbolic and
