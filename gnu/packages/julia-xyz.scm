@@ -5168,7 +5168,7 @@ embedded in a real vector space.")
 (define-public julia-recipesbase
   (package
     (name "julia-recipesbase")
-    (version "1.1.1")
+    (version "1.2.1")
     (source
       (origin
         (method git-fetch)
@@ -5177,7 +5177,7 @@ embedded in a real vector space.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1b6m5rz6wprj30rwvlxz4r1jv5gl0ay0f52kfmy2w7lqly7zhap5"))))
+         (base32 "0icyn56b17bqlxqkc3h44ndn0f1g2g9wy2kjvl8b6pfqni4ybazm"))))
     (build-system julia-build-system)
     (home-page "https://github.com/JuliaPlots/RecipesBase.jl")
     (synopsis "Define transformation recipes on user types")
