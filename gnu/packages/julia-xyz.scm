@@ -5192,7 +5192,7 @@ more complex visualizations.")
 (define-public julia-recipespipeline
   (package
     (name "julia-recipespipeline")
-    (version "0.3.4")
+    (version "0.6.6")
     (source
       (origin
         (method git-fetch)
@@ -5201,7 +5201,7 @@ more complex visualizations.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0zq4bzxvq36zr0va6iip3x97mgq5b4fwza8avszx1ryfqm3lg1f7"))))
+         (base32 "1lsjnlkmhcxngrcszfwmzb7hqg8bczi00mn7kbmwp5ffqb7fh0vv"))))
     (build-system julia-build-system)
     (arguments
      (list #:tests? #f))    ; Cycle with Plots.jl.
