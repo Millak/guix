@@ -241,6 +241,12 @@ may also simplify input method development.")
                  #$flags))
        ((#:phases phases '%standard-phases)
         #~(modify-phases #$phases
+            (add-after 'unpack 'disable-registry-cache
+              ;; IBus registry cache depends on mtime, which doesn't work on
+              ;; Guix.
+              (lambda _
+                (substitute* "bus/main.c"
+                  (("ibus_init") "g_cache = \"none\"; ibus_init"))))
             (replace 'wrap-with-additional-paths
               (lambda* (#:key outputs #:allow-other-keys)
                 ;; Make sure 'ibus-setup' and 'ibus-daemon' runs with the
