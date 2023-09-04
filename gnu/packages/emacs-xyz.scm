@@ -11467,8 +11467,8 @@ and present results either as single emails or full trees.")
     (license license:gpl3+)))
 
 (define-public emacs-consult-org-roam
-  (let* ((commit "9572c5bc194a583dc9e86ea7d2751959d86b5c78")
-         (revision "0"))
+  (let* ((commit "2ca42a1c1641a29f1447d35be01bd1fda368a9e2")
+         (revision "1"))
     (package
       (name "emacs-consult-org-roam")
       (version (git-version "0.1" revision commit))
@@ -11481,7 +11481,7 @@ and present results either as single emails or full trees.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0c2hjd2gw77h77487fzdqfybg0ricsvlnwwfxai9baawz37bcn7q"))))
+           "142fra7wap6dfwd4c82j7z3nk1yw78slrwhjx6vkiql8ylbiw5fi"))))
       (build-system emacs-build-system)
       (propagated-inputs (list emacs-consult emacs-org-roam))
       (home-page "https://github.com/jgru/consult-org-roam")
