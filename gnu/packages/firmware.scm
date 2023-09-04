@@ -1223,10 +1223,17 @@ AR100.")
                (base32
                 "1619q9v90740dbg8xpzqlhwcasz42xj737803aiip8qc3a7zhwgq"))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #f)) ;; No tests.
-    (propagated-inputs (list python-dotty-dict python-hid python-hjson
-                             python-jsonschema python-milc python-pillow
-                             python-pygments python-pyserial python-pyusb))
+    (arguments
+     (list #:tests? #f)) ;No tests.
+    (propagated-inputs (list python-dotty-dict
+                             python-hid
+                             python-hjson
+                             python-jsonschema
+                             python-milc
+                             python-pillow
+                             python-pygments
+                             python-pyserial
+                             python-pyusb))
     (home-page "https://qmk.fm")
     (synopsis "Command line utility to manage QMK keyboard firmwares")
     (description "This package provides a program to help users work with
