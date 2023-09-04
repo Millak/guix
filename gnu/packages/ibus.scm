@@ -269,6 +269,13 @@ may also simplify input method development.")
                        python
                        python-dbus
                        python-pygobject)))
+    (native-search-paths
+     (cons (search-path-specification
+            (variable "GUIX_GTK3_IM_MODULE_FILE")
+            (file-type 'regular)
+            (separator #f)
+            (files '("lib/gtk-3.0/3.0.0/immodules-gtk3.cache")))
+           (package-native-search-paths ibus-minimal)))
     (properties (alist-delete 'hidden? (package-properties ibus-minimal)))))
 
 (define-public ibus-libpinyin
