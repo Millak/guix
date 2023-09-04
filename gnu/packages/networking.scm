@@ -1474,6 +1474,26 @@ containing both Producer and Consumer support.")
                (base32
                 "0ay0n0d85254zdmv8znmn399gfiqpk6ga0jwdwa7ylpbw9pbdzw8"))))
     (build-system gnu-build-system)
+    (native-inputs
+     (if (%current-target-system)
+         (list pkg-config
+               libtool
+               gettext-minimal
+               autoconf automake)
+         '()))
+    (arguments
+     (if (%current-target-system)
+         (list #:phases
+               #~(modify-phases %standard-phases
+                   ;; AC_FUNC_MALLOC and AC_FUNC_REALLOC usually unneeded
+                   ;; see https://lists.gnu.org/archive/html/autoconf/2003-02/msg00017.html
+                   (add-after 'unpack 'fix-rpl_malloc
+                     (lambda _
+                       (substitute* "configure.ac"
+                         (("AC_FUNC_MALLOC") ""))
+                       ;; let bootstrap phase run.
+                       (delete-file "./configure")))))
+         '()))
     (home-page "https://libndp.org/")
     (synopsis "Library for Neighbor Discovery Protocol")
     (description
