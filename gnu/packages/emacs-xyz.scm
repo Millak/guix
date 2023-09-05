@@ -31173,6 +31173,29 @@ current subtree.  The cards are inserted under a new ``Cards'' heading in the
 current tree.")
       (license license:gpl3+))))
 
+(define-public emacs-org-dynamic-agenda
+  (package
+    (name "emacs-org-dynamic-agenda")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~ngraves/org-dynamic-agenda")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yw5ns7ar5mbj8yfhd6m5kigssb3csxjhwvmjggksq1557w1ypmx"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list #:include
+           #~(list "org-dynamic-agenda\\.el" "README\\.org")))
+    (home-page "https://git.sr.ht/~ngraves/org-dynamic-agenda")
+    (synopsis "Dynamically generate org-agenda-files")
+    (description
+     "This package dynamically generates org-agenda-files.")
+    (license license:gpl3+)))
+
 (define-public emacs-dash-docs
   (let ((commit "dafc8fc9f1ddb2e4e39e0b8d066c42d5d7ce8d06")
         (revision "2"))
