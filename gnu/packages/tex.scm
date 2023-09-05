@@ -44176,7 +44176,7 @@ rhombi are provided.")
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
     (home-page "https://ctan.org/pkg/tikzinclude")
-    (synopsis "Import TikZ images from colletions")
+    (synopsis "Import TikZ images from collections")
     (description
      "The package addresses the problem of importing only one TikZ-image from
 a file holding multiple images.")
