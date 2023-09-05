@@ -10474,7 +10474,7 @@ when the cursor enters a fragment and disappear when it leaves.")
 
 (define-public emacs-org-dailies
   ;; No tags or versions.
-  (let ((commit "2db691bbfbee91e81eb828c98af1dee6c06a1cb1")
+  (let ((commit "64477d5c5cd92df72ba1375eeb149889d42371d7")
         (revision "0"))
     (package
       (name "emacs-org-dailies")
@@ -10487,13 +10487,13 @@ when the cursor enters a fragment and disappear when it leaves.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1kbl7c9amwnimhw2d8zx8jdjy659z41d5x25bjdfb3ic9w9gcmfg"))))
+          (base32 "1lxm2xr743c2a5wj82qpprcdfsspcw33ijyq5wfbhcv2kngm4yql"))))
       (build-system emacs-build-system)
       (propagated-inputs (list emacs-dash))
       (home-page "https://git.sr.ht/~ngraves/org-dailies")
       (synopsis "Bare-bones daily journaling with Emacs")
       (description
-       "This package provides daily journaling helpers. It is a bare-bones
+       "This package provides daily journaling helpers.  It is a bare-bones
 copy of the org-roam-dailies extension without org-roam.")
       (license license:gpl3+))))
 
