@@ -73812,8 +73812,8 @@ which is ordinarily processed by a tightly bound processor (called
     (description
      "The package redefines the LaTeX internal @code{\\@@for} macro so that
 the loop may be prematurely terminated.  The action is akin to the C/Java
-break statement, except that the loop does not terminate until the end of the
-current iteration.")
+@code{break} statement, except that the loop does not terminate until the end
+of the current iteration.")
     (license license:lppl)))
 
 (define-public texlive-2up
