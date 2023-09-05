@@ -29978,7 +29978,7 @@ applications and daemons.")
 (define-public python-qtsass
   (package
     (name "python-qtsass")
-    (version "0.3.0")
+    (version "0.4.0")
     (source
      (origin
        ;; There are no tests in the PyPI tarball.
@@ -29988,7 +29988,7 @@ applications and daemons.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09s04aa14d8jqbh71clrb5y7vcmkxlp94mwmvzrkxahry3bk03cb"))))
+        (base32 "1skdihfby2f41zxgwa5zv44vdxjrw301rh88rjmzj4xbdlix6cig"))))
     (build-system python-build-system)
     (arguments
      `(#:test-target "pytest"
@@ -30000,7 +30000,7 @@ applications and daemons.")
              (for-each make-file-writable (find-files "."))
              #t)))))
     (native-inputs
-     (list python-pytest python-pytest-cov python-pytest-runner))
+     (list python-flaky python-pytest python-pytest-cov python-pytest-runner))
     (propagated-inputs
      (list python-libsass))
     (home-page "https://github.com/spyder-ide/qtsass")
