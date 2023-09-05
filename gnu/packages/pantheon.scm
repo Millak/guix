@@ -116,7 +116,7 @@ desktop.")
 (define-public sideload
   (package
     (name "sideload")
-    (version "6.0.2")
+    (version "6.2.1")
     (source
      (origin
        (method git-fetch)
@@ -126,7 +126,7 @@ desktop.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0abpcawmmv5mgzk2i5n9rlairmjr2v9rg9b8c9g7xa085s496bi9"))))
+         "0vrj91899f13cvzpycqy3y74hmixsffjbzsj29da7n370fa3ci86"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
