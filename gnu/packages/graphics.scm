@@ -1999,9 +1999,9 @@ and engineering community.")
   ;; https://skia.org/docs/user/release/release_notes/.  The commit used
   ;; should be the last commit, as recommended at
   ;; https://skia.org/docs/user/release/.
-  (let ((version "98")
+  (let ((version "110")
         (revision "0")
-        (commit "55c56abac381e1ae3f0116c410bed81b05e0a38a"))
+        (commit "0f3fb7a005fb357962e8b948ff4ec6b37f11e01b"))
     (package
       (name "skia")
       (version (git-version version revision commit))
@@ -2013,7 +2013,7 @@ and engineering community.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1ldns2j1g2wj2phlxr9zqkdgs5g64pisxhwxcrq9ijn8a3jhafr2"))))
+                  "1aqdnx3817hzhy60mc72j6iwaywvd3b5fj3ffpjxnnras38x2jvp"))))
       (build-system gnu-build-system)   ;actually GN + Ninja
       (arguments
        (list
@@ -2044,7 +2044,10 @@ and engineering community.")
                          "extra_ldflags=[\"-Wl,-rpath=" #$output "/lib\"] "
                          ;; Disabled, otherwise the build system attempts to
                          ;; download the SDK at build time.
-                         "skia_use_dng_sdk=false "))))
+                         "skia_use_dng_sdk=false "
+                         ;; Wuffs is a google language that may improve performance
+                         ;; disabled while unpackaged
+                         "skia_use_wuffs=false "))))
             (replace 'build
               (lambda* (#:key parallel-build? #:allow-other-keys)
                 (let ((job-count (if parallel-build?
@@ -2123,6 +2126,8 @@ Cflags: -I${includedir}~%" #$output #$version)))))
                            "--args="
                            "cc=\"gcc\" "              ;defaults to 'cc'
                            "skia_compile_sksl_tests=false " ; disable some tests
+                           "skia_use_perfetto=false " ; disable performance tests
+                           "skia_use_wuffs=false "  ; missing performance tool
                            "skia_use_system_expat=true " ; use system expat library
                            ;; Specify where to locate the includes.
                            "extra_cflags=["
