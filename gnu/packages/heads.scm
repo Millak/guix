@@ -158,6 +158,7 @@ done
            (uri "http://www.musl-libc.org/releases/musl-1.1.24.tar.gz")
            (sha256
             (base32 "18r2a00k82hz0mqdvgm7crzc7305l36109c0j9yjmkxj2alcjw0k"))))))
+    (supported-systems (delete "i586-gnu" %supported-systems))
     (home-page "https://github.com/osresearch/heads")
     (synopsis "Musl-cross gcc 5 toolchain")
     (description "Musl-cross toolchain: binutils, gcc 5 and musl.")
