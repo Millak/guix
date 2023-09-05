@@ -41683,7 +41683,19 @@ and glued together.  This will lead to a physical product box.")
               "1anrvgs0hd3790dwpxqal0c2drjmvh93vnyqap40rvp8axwi0a6n")))
     (outputs '("out" "doc"))
     (build-system texlive-build-system)
-    (arguments (list #:link-scripts #~(list "ps2eps.pl")))
+    (arguments
+     (list #:link-scripts #~(list "ps2eps.pl")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'configure-ghostscript-executable
+                 ;; ps2eps.pl uses the "gswin32c" ghostscript executable on
+                 ;; Windows, and the "gs" ghostscript executable on Unix.  It
+                 ;; detects Unix by checking for the existence of the
+                 ;; "/usr/bin" directory.  Since Guix System does not have
+                 ;; "/usr/bin", it is also detected as Windows.
+                 (lambda _
+                   (substitute* "scripts/ps2eps/ps2eps.pl"
+                     (("gswin32c") "gs")))))))
     (inputs (list perl))
     (home-page "https://ctan.org/pkg/ps2eps")
     (synopsis "Produce Encapsulated PostScript from PostScript")
