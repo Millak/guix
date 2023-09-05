@@ -980,7 +980,8 @@ the directory containing its source tarball.  Optionally include a VERSION
 string to fetch a specific version."
   (let* ((uri       (string->uri
                      (match (origin-uri (package-source package))
-                       ((? (cut string-prefix? "mirror://" <>) url)
+                       ((and (? string?)
+                             (? (cut string-prefix? "mirror://" <>) url))
                         ;; Retrieve the authoritative HTTP URL from a mirror.
                         (http-url? url))
                        ((? string? url) url)
