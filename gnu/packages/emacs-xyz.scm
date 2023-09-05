@@ -31196,6 +31196,18 @@ current tree.")
      "This package dynamically generates org-agenda-files.")
     (license license:gpl3+)))
 
+(define-public emacs-org-ql-dynamic-agenda
+  (package
+    (inherit emacs-org-dynamic-agenda)
+    (name "emacs-org-ql-dynamic-agenda")
+    (arguments
+     (list #:include
+           #~(list "org-ql-dynamic-agenda\\.el" "README\\.org")))
+    (propagated-inputs (list emacs-org-ql))
+    (description
+     "This package dynamically generates org-agenda-files, and take advantage
+of the org-ql cache.")))
+
 (define-public emacs-dash-docs
   (let ((commit "dafc8fc9f1ddb2e4e39e0b8d066c42d5d7ce8d06")
         (revision "2"))
