@@ -1999,9 +1999,9 @@ and engineering community.")
   ;; https://skia.org/docs/user/release/release_notes/.  The commit used
   ;; should be the last commit, as recommended at
   ;; https://skia.org/docs/user/release/.
-  (let ((version "110")
+  (let ((version "112")
         (revision "0")
-        (commit "0f3fb7a005fb357962e8b948ff4ec6b37f11e01b"))
+        (commit "6d0b93856303fcf3021a8b40654d7739fda4dfb0"))
     (package
       (name "skia")
       (version (git-version version revision commit))
@@ -2013,7 +2013,7 @@ and engineering community.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1aqdnx3817hzhy60mc72j6iwaywvd3b5fj3ffpjxnnras38x2jvp"))))
+                  "0g07xlvpbbxqmr9igvy5d1hy11z7dz9nzp2fd3ka9y2jqciniyz6"))))
       (build-system gnu-build-system)   ;actually GN + Ninja
       (arguments
        (list
@@ -2033,6 +2033,7 @@ and engineering community.")
                          "cc=\"gcc\" "              ;defaults to 'cc'
                          "is_official_build=true "  ;to use system libraries
                          "is_component_build=true " ;build as a shared library
+                         "skia_use_system_zlib=true " ; use system zlib library
                          ;; Specify where locate the harfbuzz and freetype
                          ;; includes.
                          (format #f "extra_cflags=[\"-I~a\",\"-I~a\"] "
@@ -2129,6 +2130,7 @@ Cflags: -I${includedir}~%" #$output #$version)))))
                            "skia_use_perfetto=false " ; disable performance tests
                            "skia_use_wuffs=false "  ; missing performance tool
                            "skia_use_system_expat=true " ; use system expat library
+                           "skia_use_system_zlib=true " ; use system zlib library
                            ;; Specify where to locate the includes.
                            "extra_cflags=["
                            (string-join
