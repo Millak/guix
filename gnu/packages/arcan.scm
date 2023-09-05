@@ -189,66 +189,66 @@ engine programmable using Lua.")
     (synopsis "Combined display server, multimedia framework and game engine (SDL)")))
 
 (define-public xarcan
-    (package
-      (name "xarcan")
-      (version "0.6.1")
-      (source
-       (origin
-         (method git-fetch)
-         (file-name (git-file-name name version))
-         (uri (git-reference
-               (url "https://github.com/letoram/xarcan")
-               (commit version)))
-         (sha256
-          (base32 "1z4sf101i2y6rg2vcxfwmp1nkzfa3rw1pp48ym1ds1ka513vy128"))))
-      (build-system meson-build-system)
-      (arguments
-       (list
-        #:configure-flags
-        #~(list
-           "-Dglamor=true" "-Dint10=false"
-           "-Dipv6=true"
-           "-Dsystemd_logind=false"
+  (package
+    (name "xarcan")
+    (version "0.6.1")
+    (source
+     (origin
+       (method git-fetch)
+       (file-name (git-file-name name version))
+       (uri (git-reference
+             (url "https://github.com/letoram/xarcan")
+             (commit version)))
+       (sha256
+        (base32 "1z4sf101i2y6rg2vcxfwmp1nkzfa3rw1pp48ym1ds1ka513vy128"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         "-Dglamor=true" "-Dint10=false"
+         "-Dipv6=true"
+         "-Dsystemd_logind=false"
 
-           ;; The following arguments were taken from the Xwayland package.
+         ;; The following arguments were taken from the Xwayland package.
 
-           ;; The build system insist on providing a default font path; give
-           ;; that of dejavu, the same used for our fontconfig package.
-           (string-append "-Ddefault_font_path="
-                          #$(this-package-input "font-dejavu") "/share/fonts")
-           (string-append "-Dxkb_dir=" #$(this-package-input "xkeyboard-config")
-                          "/share/X11/xkb")
-           (string-append "-Dxkb_bin_dir=" #$(this-package-input "xkbcomp") "/bin")
-           (format #f "-Dbuilder_string=\"Build ID: ~a ~a\"" #$name #$version))))
-      (native-inputs
-       (list pkg-config autoconf automake libtool util-macros))
-      (inputs
-       (list arcan
-             font-dejavu
-             font-util
-             libdrm
-             libepoxy
-             libtirpc
-             libx11
-             libxfont2
-             libxkbfile
-             libxshmfence
-             mesa
-             openssl
-             pixman
-             xcb-util
-             xcb-util-wm
-             xkbcomp
-             xkeyboard-config
-             xorgproto
-             xtrans))
-      (home-page "https://arcan-fe.com")
-      (synopsis "Patched Xserver that bridges connections to Arcan")
-      (description "Patched Xserver with a KDrive backend that uses the arcan-shmif
+         ;; The build system insist on providing a default font path; give
+         ;; that of dejavu, the same used for our fontconfig package.
+         (string-append "-Ddefault_font_path="
+                        #$(this-package-input "font-dejavu") "/share/fonts")
+         (string-append "-Dxkb_dir=" #$(this-package-input "xkeyboard-config")
+                        "/share/X11/xkb")
+         (string-append "-Dxkb_bin_dir=" #$(this-package-input "xkbcomp")
+                        "/bin")
+         (format #f "-Dbuilder_string=\"Build ID: ~a ~a\"" #$name #$version))))
+    (native-inputs
+     (list pkg-config autoconf automake libtool util-macros))
+    (inputs
+     (list arcan
+           font-dejavu
+           font-util
+           libdrm
+           libepoxy
+           libtirpc
+           libx11
+           libxfont2
+           libxkbfile
+           libxshmfence
+           mesa
+           openssl
+           pixman
+           xcb-util
+           xcb-util-wm
+           xkbcomp
+           xkeyboard-config
+           xorgproto
+           xtrans))
+    (home-page "https://arcan-fe.com")
+    (synopsis "Patched Xserver that bridges connections to Arcan")
+    (description "Patched Xserver with a KDrive backend that uses the arcan-shmif
  to map Xlib/Xcb/X clients to a running arcan instance.  It allows running an X session
 as a window under Arcan.")
-      (license (list license:expat
-                     license:bsd-3))))
+    (license (list license:bsd-3 license:expat))))
 
 (define-public arcan-wayland
   (package
