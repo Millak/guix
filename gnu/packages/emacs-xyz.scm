@@ -10435,6 +10435,31 @@ org-mode elements depending on cursor position.  Hidden fragment parts appear
 when the cursor enters a fragment and disappear when it leaves.")
     (license license:expat)))
 
+(define-public emacs-org-dailies
+  ;; No tags or versions.
+  (let ((commit "2db691bbfbee91e81eb828c98af1dee6c06a1cb1")
+        (revision "0"))
+    (package
+      (name "emacs-org-dailies")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.sr.ht/~ngraves/org-dailies")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1kbl7c9amwnimhw2d8zx8jdjy659z41d5x25bjdfb3ic9w9gcmfg"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-dash))
+      (home-page "https://git.sr.ht/~ngraves/org-dailies")
+      (synopsis "Bare-bones daily journaling with Emacs")
+      (description
+       "This package provides daily journaling helpers. It is a bare-bones
+copy of the org-roam-dailies extension without org-roam.")
+      (license license:gpl3+))))
+
 (define-public emacs-org-drill
   (package
     (name "emacs-org-drill")
