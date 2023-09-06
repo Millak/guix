@@ -6030,6 +6030,26 @@ texts between multiple character encodings.  It is currently based on the
 @code{iconv} interface, and supports all major platforms using GNU libiconv.")
     (license license:expat)))
 
+(define-public julia-stringmanipulation
+  (package
+    (name "julia-stringmanipulation")
+    (version "0.3.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/ronisbr/StringManipulation.jl")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "15ss8hkjyjs2x66j1krrrxaa1hdpwz0ygs3cg3bdpm336k7621q8"))))
+    (build-system julia-build-system)
+    (home-page "https://github.com/ronisbr/StringManipulation.jl")
+    (synopsis "Functions to manipulate strings with ANSI escape sequences")
+    (description "This package provides several functions to manipulate strings
+with ANSI escape sequences.")
+    (license license:expat)))
+
 (define-public julia-structarrays
   (package
     (name "julia-structarrays")
