@@ -63,6 +63,7 @@
 ;;; Copyright © 2022 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 David Thompson <dthompson2@worcester.edu>
 ;;; Copyright © 2023 Christopher Howard <christopher@librehacker.com>
+;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1709,6 +1710,42 @@ other systems that want to manipulate WebAssembly files.")
     (synopsis "WebAssembly interpreter")
     (description "WASM3 is a fast WebAssembly interpreter.")
     (license license:expat)))
+
+(define-public wasm-micro-runtime
+  (package
+    (name "wasm-micro-runtime")
+    (version "1.2.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/bytecodealliance/wasm-micro-runtime")
+                    (commit (string-append "WAMR-" version))))
+              (file-name (git-file-name "WAMR" version))
+              (sha256
+               (base32
+                "1s7r8vfxixf737jp12cf7as68fd63lrmqdxj7fiqdla2wk89ly3f"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      ;; Running the tests is difficult.  The test script in
+      ;; tests/wamr-test-suites insists on downloading and building wabt (even
+      ;; if we provide it) and it has a hard time accepting a separately
+      ;; provided clone of the https://github.com/WebAssembly/spec repository.
+      ;; Future releases provide unit tests which may be easier to run.
+      #:tests? #false
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _
+             (chdir "product-mini/platforms/linux"))))))
+    (home-page "https://bytecodealliance.github.io/wamr.dev")
+    (synopsis "WebAssembly Micro Runtime")
+    (description "WebAssembly Micro Runtime (WAMR) is a lightweight standalone
+WebAssembly (Wasm) runtime with small footprint, high performance and highly
+configurable features for applications cross from embedded, IoT, edge to
+Trusted Execution Environment (TEE), smart contract, cloud native and other
+features.")
+    (license license:asl2.0)))
 
 (define-public websocketpp
   (package
