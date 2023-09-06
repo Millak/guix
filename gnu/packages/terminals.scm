@@ -642,17 +642,17 @@ should be thread-safe.")
         (base32 "1q16fbznm54p24hqvw8c9v3347apk86ybsxyghsbsa11vm1ny589"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list
-        ;; FIXME: cross build fails.
-        ;; ld: src/.libs/encoding.o: error adding symbols: file in wrong format
-        ;; collect2: error: ld returned 1 exit status
-        (string-append "CC=" ,(cc-for-target))
-        (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:test-target "test"
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+     (list #:make-flags
+           #~(list
+              ;; FIXME: cross build fails.
+              ;; ld: src/.libs/encoding.o: error adding symbols: file in wrong format
+              ;; collect2: error: ld returned 1 exit status
+              (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+           #:test-target "test"
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))
     (native-inputs
      (list libtool perl))
     (home-page "https://www.leonerd.org.uk/code/libvterm/")
