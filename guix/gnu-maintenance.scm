@@ -600,7 +600,7 @@ rewritten to something like
                                        links)))
                      ;; Retrieve the item having the largest version.
                      (if (null? candidates)
-                         (error "no candidates found in rewrite-url")
+                         parents
                          (cons (cdr (first (sort candidates
                                                  (lambda (x y)
                                                    (version>? (car x)
