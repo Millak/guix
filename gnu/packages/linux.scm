@@ -141,6 +141,7 @@
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages lsof)
   #:use-module (gnu packages lua)
+  #:use-module (gnu packages m4)
   #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages multiprecision)
@@ -10363,3 +10364,39 @@ error detection and correction (EDAC).")
 against the several transient execution CVEs that were published since early
 2018, and gives guidance as to how to mitigate them.")
     (license license:gpl3)))
+
+(define-public csmith
+  (package
+    (name "csmith")
+    (version "2.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/csmith-project/csmith")
+                    (commit (string-append "csmith-" version))))
+              (sha256
+               (base32
+                "0nhrsnv6cny14xz68qb1h30fbwc05adkisk51p3x63mydm60ddl3"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf automake libtool m4 perl))
+    (arguments
+     (list
+      #:tests? #f                       ;no test suite
+      ;; Do not install headers under 'include/csmith-VERSION' but in
+      ;; 'include/csmith'.
+      #:phases
+      `(modify-phases %standard-phases
+         (add-after 'unpack 'patch-includedir
+           (lambda _
+             (substitute* "runtime/Makefile.am"
+               (("\\$\\(includedir\\)/\\$\\(PACKAGE\\)-\\$\\(VERSION\\)")
+                "$(includedir)/$(PACKAGE)"))))
+         (add-before 'bootstrap 'force-bootstrap
+           (lambda _
+             (delete-file "configure"))))))
+    (home-page "https://github.com/csmith-project/csmith")
+    (synopsis "Random generator of C programs")
+    (description "The primary purpose of Csmith is to find compiler bugs with
+random programs using differential testing.")
+    (license license:bsd-4)))
