@@ -11581,25 +11581,28 @@ versions utilizing Consult's internal API.")
       (license license:gpl3+))))
 
 (define-public emacs-consult-eglot
-  (package
-   (name "emacs-consult-eglot")
-   (version "0.2.0")
-   (source (origin
-            (method git-fetch)
-            (uri (git-reference
-                  (url "https://github.com/mohkale/consult-eglot")
-                  (commit (string-append "v" version))))
-            (sha256
-             (base32 "1qxk1npxbf8m3g9spikgdxcf6mzjx6cwy3f5vn6zz5ksh14xw3sd"))
-            (file-name (git-file-name name version))))
-   (build-system emacs-build-system)
-   (propagated-inputs (list emacs-consult emacs-eglot))
-   (home-page "https://github.com/mohkale/consult-eglot")
-   (synopsis "Consulting-read interface for eglot")
-   (description "This package acts as a parallel of consult-lsp for eglot and
+  (let ((revision "0")
+        (commit "db9d41c9812a5a8a7b9a22fa7f3c314e37584d41"))
+    (package
+      (name "emacs-consult-eglot")
+      (version (git-version "0.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/mohkale/consult-eglot")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "1xcv9lj4r9s584gfkbqi9dmi045a3phb2x63fzfd7vpdy15xg47n"))
+                (file-name (git-file-name name version))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-consult emacs-eglot))
+      (home-page "https://github.com/mohkale/consult-eglot")
+      (synopsis "Consulting-read interface for eglot")
+      (description "This package acts as a parallel of consult-lsp for eglot and
 provides a front-end interface for the workspace/symbols LSP procedure
 call.")
-   (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-consult-flycheck
   ;; This particular commit introduces bug fixes above latest release.
