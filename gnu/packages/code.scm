@@ -805,20 +805,18 @@ independent targets.")
                (base32
                 "17x9p5pqgzjchi9xhskp4kq7ag4chmsgbkvwym5m2b9zwm6qykpm"))))
     (build-system cmake-build-system)
-    (native-inputs
-     `(("python" ,python-wrapper)))
+    (native-inputs (list python-wrapper))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'unpack-etc
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Configuration samples are not installed by default.
-             (let* ((output (assoc-ref outputs "out"))
-                    (etcdir (string-append output "/etc")))
-               (for-each (lambda (l)
-                           (install-file l etcdir))
-                         (find-files "etc" "\\.cfg$")))
-             #t)))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'unpack-etc
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   ;; Configuration samples are not installed by default.
+                   (let* ((output (assoc-ref outputs "out"))
+                          (etcdir (string-append output "/etc")))
+                     (for-each (lambda (l)
+                                 (install-file l etcdir))
+                               (find-files "etc" "\\.cfg$"))))))))
     (home-page "https://uncrustify.sourceforge.net/")
     (synopsis "Code formatter for C and other related languages")
     (description
