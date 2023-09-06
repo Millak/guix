@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Jesse Gibbons <jgibbons2357+guix@gmail.com>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -46,10 +47,12 @@
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'install 'wrap-binaries
-           (lambda* (#:key outputs #:allow-other-keys)
+           (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
                (wrap-program (string-append out "/bin/npietedit")
-                 `("PATH" ":" prefix (,(dirname (which "wish")))))
+                 `("PATH" ":" prefix
+                   (,(dirname
+                      (search-input-file inputs "bin/wish")))))
                #t))))))
     (inputs
      (list gd giflib libpng tk))
