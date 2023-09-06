@@ -491,27 +491,25 @@ Doom clone shooter game.")
 (define-public armagetronad
   (package
     (name "armagetronad")
-    (version "0.2.9.1.0")
+    (version "0.2.9.1.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/armagetronad/stable/"
                                   version "/armagetronad-" version ".tbz"))
               (sha256
                (base32
-                "18gn4sg4j5sw38ngb90sl50raliplrsgjcvy8fjwry733k0cgdjr"))))
+                "0cpxvzbssyf45fmanp1d6l992wln8zkjx4z2flgx27fg1rqdw5zn"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list libxml2
-           sdl
-           sdl-image
-           freeglut
-           libpng
-           libjpeg-turbo))
+    (native-inputs (list pkg-config))
+    (inputs (list libxml2
+                  (sdl-union (list sdl sdl-image sdl-mixer))
+                  freeglut
+                  libpng
+                  libjpeg-turbo))
     (home-page "https://www.armagetronad.org")
     (synopsis "Tron clone in 3D")
-    (description "Armagetron Advanced is a multiplayer game in 3d that
+    (description
+     "Armagetron Advanced is a multiplayer game in 3d that
 attempts to emulate and expand on the lightcycle sequence from the movie Tron.
 It's an old school arcade game slung into the 21st century.  Highlights
 include a customizable playing arena, HUD, unique graphics, and AI bots.  For
