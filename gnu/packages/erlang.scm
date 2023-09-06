@@ -9,6 +9,7 @@
 ;;; Copyright © 2021 Cees de Groot <cg@evrl.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 wrobell <wrobell@riseup.net>
+;;; Copyright © 2023 Tim Johann <t1m@phrogstar.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -27,6 +28,7 @@
 
 (define-module (gnu packages erlang)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system rebar)
@@ -738,3 +740,75 @@ a git checkout.")
     (description "This plugin allows running PropEr test suites from within
 rebar3.")
     (license license:bsd-3)))
+
+(define-public erlang-lfe
+  (package
+    (name "erlang-lfe")
+    (version "2.1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/lfe/lfe")
+                    (commit "v2.1.2")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "180hz1p2v3vb6yyzcfwircmljlnd86ln8z80lzy3mwlyrcxblvxy"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:modules '((ice-9 ftw)
+                  (srfi srfi-26)
+                  (guix build gnu-build-system)
+                  (guix build utils))
+      #:make-flags #~(list (string-append "PREFIX=" #$output) "CC=gcc")
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          ;; The following is inspired by rebar-build-system.scm
+          (add-before 'check 'erlang-depends
+            (lambda* (#:key inputs #:allow-other-keys)
+              (define input-directories
+                (list #$(this-package-native-input "rebar3-proper")
+                      #$(this-package-native-input "erlang-proper")))
+              (mkdir-p "_checkouts")
+              (for-each
+               (lambda (input-dir)
+                 (let ((elibdir (string-append input-dir "/lib/erlang/lib")))
+                   (when (directory-exists? elibdir)
+                     (for-each
+                      (lambda (dirname)
+                        (let ((src (string-append elibdir "/" dirname))
+                              (dest (string-append "_checkouts/" dirname)))
+                          (when (not (file-exists? dest))
+                            ;; Symlinking will not work, since rebar3 will try
+                            ;; to overwrite the _build directory several times
+                            ;; with the contents of _checkout, so we copy the
+                            ;; directory tree to _checkout and make it
+                            ;; writable.
+                            (copy-recursively src dest #:follow-symlinks? #t)
+                            (for-each (cut chmod <> #o777)
+                                      (find-files dest)))))
+                      (scandir elibdir (lambda (file)
+                                         (and (not (member file '("." "..")))
+                                              (file-is-directory?
+                                               (string-append elibdir
+                                                              "/"
+                                                              file)))))))))
+               input-directories)))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (begin
+                  (setenv "REBAR_CACHE_DIR" "/tmp")
+                  (invoke "make" "-j" (number->string (parallel-job-count))
+                          "tests"))))))))
+    (native-inputs (list rebar3 rebar3-proper erlang-proper))
+    (propagated-inputs (list erlang))
+    (home-page "https://github.com/lfe/lfe")
+    (synopsis "Lisp Flavoured Erlang")
+    (description
+     "LFE, Lisp Flavoured Erlang, is a Lisp syntax front-end to the Erlang
+compiler.  Code produced with it is compatible with \"normal\" Erlang
+ code.  An LFE evaluator and shell is also included.")
+    (license license:asl2.0)))
