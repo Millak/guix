@@ -133,6 +133,7 @@
 ;;; Copyright © 2023 Arnaud Lechevallier <arnaud.lechevallier@free.fr>
 ;;; Copyright © 2023 Ahmad Draidi <a.r.draidi@redscript.org>
 ;;; Copyright © 2023 Sergiu Ivanov <sivanov@colimite.fr>
+;;; Copyright © 2023 Camilo Q.S. (Distopico) <distopico@riseup.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2536,6 +2537,29 @@ use with Flymake, give users the tools to easily define new syntax checkers
 and help selectively enable or disable diagnostic functions based on major
 modes.")
     (license license:expat)))
+
+(define-public emacs-flymake-guile
+  (package
+    (name "emacs-flymake-guile")
+    (version "0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url
+              "https://framagit.org/flymake-backends/flymake-guile.git")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0cb2wcn34bzj93y7s1g2b2sxv79vqihb3a5n0rhxbrddfila95hh"))))
+    (build-system emacs-build-system)
+    (home-page "https://framagit.org/flymake-backends/flymake-guile")
+    (synopsis "GNU Guile support for Flymake")
+    (description
+     "This package provides a Flymake backend for GNU Guile using @code{guild
+compile}.")
+    (license license:gpl3+)))
 
 (define-public emacs-flymake-popon
   (package
