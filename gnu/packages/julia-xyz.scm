@@ -4860,7 +4860,7 @@ everything from run time algorithm choice to code generation at compile time.")
 (define-public julia-prettytables
   (package
     (name "julia-prettytables")
-    (version "1.0.1")
+    (version "2.1.2")
     (source
       (origin
         (method git-fetch)
@@ -4869,20 +4869,28 @@ everything from run time algorithm choice to code generation at compile time.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1d1sd87kkwbar3l608h0adzws42cwdrmp1idxx7an6mfqcsdrijw"))))
+         (base32 "029niwxgql9rcyx0rxcyhmwkzxciccji4hb59g6752ixam65wxkh"))))
     (build-system julia-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'link-depot 'skip-color-tests
+          (add-after 'link-depot 'skip-tests-manipulating-terminal-display
             (lambda _
               (substitute* "test/text_backend.jl"
-                ((".*colors\\.jl.*") "")))))))
+                ((".*colors\\.jl.*") "")
+                ((".*custom_cells\\.jl.*") ""))
+              (substitute* "test/general.jl"
+                ((".*string\\.jl.*") ""))
+              (substitute* "test/text_backend/issues.jl"
+                (("testset.*161.*begin" all)
+                 (string-append all " return"))))))))
     (propagated-inputs
      (list julia-crayons
            julia-formatting
+           julia-offsetarrays
            julia-reexport
+           julia-stringmanipulation
            julia-tables))
     (home-page "https://github.com/ronisbr/PrettyTables.jl")
     (synopsis "Print data in formatted tables")
