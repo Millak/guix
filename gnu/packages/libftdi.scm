@@ -28,6 +28,8 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages documentation)
+  #:use-module (gnu packages graphviz)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -49,12 +51,13 @@
               (patches
                (search-patches "libftdi-fix-paths-when-FTDIPP-set.patch"))))
     (build-system cmake-build-system)
-    (outputs '("out" "python"))
+    (outputs '("out" "doc" "python"))
     (arguments
      (list
       #:configure-flags
       #~(list (string-append "-DCMAKE_INSTALL_DOCDIR="
                              #$output "/share/doc/" #$name "-" #$version)
+              "-DDOCUMENTATION=ON"
               "-DEXAMPLES=OFF"
               "-DFTDIPP=ON"
               "-DLIB_SUFFIX=''"         ; place libraries in /lib, not /lib64
@@ -74,11 +77,20 @@
                 (rename-file (string-append #$output
                                             "/share/libftdi/examples")
                              (string-append #$output:python
-                                            "/share/libftdi/examples"))))))
+                                            "/share/libftdi/examples")))))
+          (add-after 'install-python-binding 'install-documentation
+            (lambda _
+              (let ((share (string-append #$output:doc "/share")))
+                (copy-recursively "doc/man"
+                                  (string-append share "/man"))
+                (copy-recursively "doc/html"
+                                  (string-append share "/doc/"
+                                                 #$name "-" #$version
+                                                 "/html"))))))
       #:test-target "check"
       #:tests? #f))                     ; tests fail without access to USB
     (native-inputs
-     (list pkg-config python swig))
+     (list doxygen graphviz pkg-config python swig))
     (inputs
      (list boost libconfuse))
     (propagated-inputs
