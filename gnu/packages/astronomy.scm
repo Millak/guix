@@ -1657,6 +1657,10 @@ bad pixel tracking throughout the reduction process.")
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
+               (add-before 'build 'set-env-version
+                 (lambda _
+                   (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                           #$version)))
                (add-before 'check 'set-home-env
                  (lambda _
                    (setenv "HOME" (getcwd)))))))
@@ -1668,6 +1672,7 @@ bad pixel tracking throughout the reduction process.")
            python-pytest
            python-pytest-cov
            python-pytest-remotedata
+           python-setuptools-scm
            python-xarray))
     (home-page "https://github.com/MAVENSDC/cdflib")
     (synopsis "Python library to deal with NASA's CDF astronmical data format")
