@@ -1,0 +1,32 @@
+From 15d0f7d96cf53263196e26f2eb48ededdff0efeb Mon Sep 17 00:00:00 2001
+Message-ID: <15d0f7d96cf53263196e26f2eb48ededdff0efeb.1694148833.git.vivien@planete-kraus.eu>
+From: Vivien Kraus <vivien@planete-kraus.eu>
+Date: Thu, 7 Sep 2023 22:16:48 +0200
+Subject: [PATCH] Prevent double free on context objects
+
+The display is unrefed in the context destructor, but not refed in the
+constructor.
+
+This targets an archived (read-only) repository.
+---
+ cogl/cogl-context.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/cogl/cogl-context.c b/cogl/cogl-context.c
+index a7eed29a..7cdc9fe7 100644
+--- a/cogl/cogl-context.c
++++ b/cogl/cogl-context.c
+@@ -218,7 +218,7 @@ cogl_context_new (CoglDisplay *display,
+       return NULL;
+     }
+ 
+-  context->display = display;
++  context->display = cogl_object_ref (display);
+ 
+   /* This is duplicated data, but it's much more convenient to have
+      the driver attached to the context and the value is accessed a
+
+base-commit: 61d966c7442d521e38572b7f93ac7b8973a9c65e
+-- 
+2.41.0
+

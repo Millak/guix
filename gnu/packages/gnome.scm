@@ -6133,7 +6133,9 @@ throughout GNOME for API documentation).")
                            (version-major+minor version) "/"
                            "cogl-" version ".tar.xz"))
        (sha256
-        (base32 "0nfph4ai60ncdx7hy6hl1i1cmp761jgnyjfhagzi0iqq36qb41d8"))))
+        (base32 "0nfph4ai60ncdx7hy6hl1i1cmp761jgnyjfhagzi0iqq36qb41d8"))
+       (patches
+        (search-patches "cogl-fix-double-free.patch"))))
     ;; NOTE: mutter exports a bundled fork of cogl, so when making changes to
     ;; cogl, corresponding changes may be appropriate in mutter as well.
     (build-system gnu-build-system)
