@@ -3181,13 +3181,13 @@ JPL ephemerides use to predict raw (x,y,z) planetary positions.")
 (define-public python-jwst
   (package
     (name "python-jwst")
-    (version "1.10.2")
+    (version "1.11.4")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "jwst" version))
               (sha256
                (base32
-                "1lmfyw2y7c84rs9xqavah9aidj478ijiiijlz6fag11xqn1vs98y"))))
+                "1q3kpdjr8j1y8hkpidy80aqxsp3k13sz4j5aagq3wnzvpnds3x73"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3204,11 +3204,13 @@ JPL ephemerides use to predict raw (x,y,z) planetary positions.")
     (propagated-inputs (list opencv
                              python-asdf
                              python-asdf-astropy
+                             python-asdf-transform-schemas
                              python-astropy
                              python-bayesicfitting
                              python-crds
                              python-drizzle
                              python-gwcs
+                             python-jplephem
                              python-jsonschema
                              python-numpy
                              python-photutils
@@ -3226,9 +3228,7 @@ JPL ephemerides use to predict raw (x,y,z) planetary positions.")
                              python-stsci-imagestats
                              python-tweakwcs
                              python-wiimatch))
-    (native-inputs (list python-codecov
-                         python-colorama
-                         python-flake8
+    (native-inputs (list python-colorama
                          python-pytest
                          python-pytest-cov
                          python-pytest-doctestplus
