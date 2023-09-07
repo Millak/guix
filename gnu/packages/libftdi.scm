@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2023 Simon South <simon@simonsouth.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -18,15 +19,19 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages libftdi)
+  #:use-module (guix build utils)
   #:use-module (guix build-system cmake)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python)
+  #:use-module (gnu packages swig)
   #:use-module (gnu packages textutils))
 
 (define-public libftdi
@@ -42,6 +47,7 @@
                (base32
                 "0x0vncf6i92slgrn0h7ghkskqbglbs534220qa84d0qg114zndpc"))))
     (build-system cmake-build-system)
+    (outputs '("out" "python"))
     (arguments
      (list
       #:configure-flags
@@ -49,10 +55,26 @@
                              #$output "/share/doc/" #$name "-" #$version)
               "-DEXAMPLES=OFF"
               "-DLIB_SUFFIX=''")        ; place libraries in /lib, not /lib64
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-python-binding
+            (lambda _
+              (let* ((python-version
+                      #$(version-major+minor (package-version python)))
+                     (python-lib-path
+                      (string-append "/lib/python" python-version)))
+                (mkdir-p (string-append #$output:python "/lib"))
+                (mkdir-p (string-append #$output:python "/share/libftdi"))
+                (rename-file (string-append #$output python-lib-path)
+                             (string-append #$output:python python-lib-path))
+                (rename-file (string-append #$output
+                                            "/share/libftdi/examples")
+                             (string-append #$output:python
+                                            "/share/libftdi/examples"))))))
       #:test-target "check"
       #:tests? #f))                     ; tests fail without access to USB
     (native-inputs
-     (list pkg-config))
+     (list pkg-config python swig))
     (inputs
      (list boost libconfuse))
     (propagated-inputs
