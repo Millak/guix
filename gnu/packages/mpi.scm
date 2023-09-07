@@ -247,6 +247,12 @@ bind processes, and much more.")
                             "--enable-openib-rdmacm"
                             "--enable-openib-rdmacm-ibaddr"
 
+                            ;; Enable support for the 'Process Management
+                            ;; Interface for Exascale' (PMIx) used e.g. by
+                            ;; Slurm for the management communication and
+                            ;; coordination of MPI processes.
+                            "--with-pmix=internal"
+
                             ;; Enable support for SLURM's Process Manager
                             ;; Interface (PMI).
                             ,(string-append "--with-pmi="
