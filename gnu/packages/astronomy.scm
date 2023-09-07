@@ -3844,13 +3844,7 @@ Grace Roman Space Telescope.")
                 "1y12cp8172i4a314gmhpi86jw6pfylz1adh0rzr5zqmvd3mrjqlj"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; XXX: Check how to make all tests enabled, probably some more inner
-     ;; input chain needs to be upgraded, keep them disabled to make the build
-     ;; green.
-     (list #:test-flags #~(list "-k"
-                                (string-append "not test_will_validate"
-                                 " and not test_will_strict_validate"
-                                 " and not test_nuke_validation"))
+     (list
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'set-env
