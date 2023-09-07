@@ -2526,13 +2526,13 @@ image processing functions: @code{xyxymatch}, @code{geomap}.")
 (define-public python-stdatamodels
   (package
     (name "python-stdatamodels")
-    (version "1.7.1")
+    (version "1.8.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "stdatamodels" version))
               (sha256
                (base32
-                "0d7a27myl3xgri3z7yx26mr4dpqnlfhdh5i2ql2miwymi0mx3ij5"))))
+                "003h3f07aqf6s24ivwnps81n2h51k545b236s75l8ppvjrm45xfq"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2546,13 +2546,11 @@ image processing functions: @code{xyxymatch}, @code{geomap}.")
     (propagated-inputs (list python-asdf
                              python-asdf-astropy
                              python-astropy
-                             python-jsonschema
                              python-numpy
                              python-psutil))
     (native-inputs (list python-crds
                          python-pytest
                          python-pytest-doctestplus
-                         python-pytest-openfiles
                          python-scipy
                          python-semantic-version
                          python-setuptools-scm))
