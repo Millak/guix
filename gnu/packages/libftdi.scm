@@ -32,7 +32,7 @@
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "http://www.intra2net.com/en/developer/libftdi/download/"
+                    "https://www.intra2net.com/en/developer/libftdi/download/"
                     "libftdi1-" version ".tar.bz2"))
               (sha256
                (base32
