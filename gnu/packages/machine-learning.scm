@@ -115,6 +115,28 @@
   #:use-module (gnu packages xorg)
   #:use-module (ice-9 match))
 
+(define-public fasttext
+  (package
+    (name "fasttext")
+    (version "0.9.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/facebookresearch/fastText")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07cz2ghfq6amcljaxpdr5chbd64ph513y8zqmibfx2xwfp74xkhn"))))
+    (build-system cmake-build-system)
+    ;; Tests require downloading of test data.
+    (arguments (list #:tests? #false))
+    (home-page "https://github.com/facebookresearch/fastText")
+    (synopsis "Library for fast text representation and classification")
+    (description "fastText is a library for efficient learning of word
+representations and sentence classification.")
+    (license license:expat)))
+
 (define-public fann
   ;; The last release is >100 commits behind, so we package from git.
   (let ((commit "d71d54788bee56ba4cf7522801270152da5209d7"))
