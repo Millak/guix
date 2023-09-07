@@ -2040,13 +2040,13 @@ and a list of words that are easier to remember for humans (the
 (define-public python-bitarray
   (package
     (name "python-bitarray")
-    (version "2.6.1")
+    (version "2.8.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "bitarray" version))
               (sha256
                (base32
-                "0c4jli872nzix81n1xirnrghlq2fdsxb570d9rnfvxi1694sah44"))))
+                "1wy80bmhg33bpzn28g1n7s8r8f4drj7pcl4m2qb5sql8bbryx376"))))
     (build-system python-build-system)
     (arguments
      (list #:phases
