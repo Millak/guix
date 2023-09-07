@@ -3835,13 +3835,13 @@ Grace Roman Space Telescope.")
 (define-public python-roman-datamodels
   (package
     (name "python-roman-datamodels")
-    (version "0.15.0")
+    (version "0.17.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "roman_datamodels" version))
               (sha256
                (base32
-                "0frhm1cqqd8934yizhm4fy78y38q2w9ncm4rv1n74hfypkyis4ap"))))
+                "1y12cp8172i4a314gmhpi86jw6pfylz1adh0rzr5zqmvd3mrjqlj"))))
     (build-system pyproject-build-system)
     (arguments
      ;; XXX: Check how to make all tests enabled, probably some more inner
@@ -3850,7 +3850,12 @@ Grace Roman Space Telescope.")
      (list #:test-flags #~(list "-k"
                                 (string-append "not test_will_validate"
                                  " and not test_will_strict_validate"
-                                 " and not test_nuke_validation"))))
+                                 " and not test_nuke_validation"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-env
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
     (propagated-inputs (list python-asdf
                              python-asdf-astropy
                              python-asdf-standard
@@ -3859,8 +3864,10 @@ Grace Roman Space Telescope.")
                              python-numpy
                              python-psutil
                              python-rad))
-    (native-inputs (list python-pytest python-pytest-doctestplus
-                         python-pytest-openfiles python-semantic-version
+    (native-inputs (list python-pytest
+                         python-pytest-doctestplus
+                         python-pytest-env
+                         python-semantic-version
                          python-setuptools-scm))
     (home-page "https://github.com/spacetelescope/roman_datamodels")
     (synopsis "Roman Datamodels Support")
