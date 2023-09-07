@@ -24,6 +24,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (gnu packages)
+  #:use-module (gnu packages boost)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages textutils))
@@ -47,11 +48,13 @@
       #~(list (string-append "-DCMAKE_INSTALL_DOCDIR="
                              #$output "/share/doc/" #$name "-" #$version)
               "-DEXAMPLES=OFF"
-              "-DLIB_SUFFIX=''")))      ; place libraries in /lib, not /lib64
+              "-DLIB_SUFFIX=''")        ; place libraries in /lib, not /lib64
+      #:test-target "check"
+      #:tests? #f))                     ; tests fail without access to USB
     (native-inputs
      (list pkg-config))
     (inputs
-     (list libconfuse))
+     (list boost libconfuse))
     (propagated-inputs
      (list libusb))                     ; required by libftdi1.pc
     (home-page "https://www.intra2net.com/en/developer/libftdi/")
@@ -59,5 +62,5 @@
     (description
      "libFTDI is a library to talk to FTDI chips: FT232BM, FT245BM, FT2232C,
 FT2232D, FT245R and FT232H including the popular bitbangmode.")
-    (license (list license:gpl2         ; ftdi_eeprom
+    (license (list license:gpl2         ; ftdi_eeprom, C++ bindings
                    license:lgpl2.1))))  ; main library
