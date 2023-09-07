@@ -20,6 +20,7 @@
 (define-module (gnu packages libftdi)
   #:use-module (guix build-system cmake)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (gnu packages)
@@ -38,6 +39,8 @@
                (base32
                 "0x0vncf6i92slgrn0h7ghkskqbglbs534220qa84d0qg114zndpc"))))
     (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DEXAMPLES=OFF")))
     (propagated-inputs
      (list libusb))                     ; required by libftdi1.pc
     (home-page "https://www.intra2net.com/en/developer/libftdi/")
