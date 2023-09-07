@@ -40,7 +40,10 @@
                 "0x0vncf6i92slgrn0h7ghkskqbglbs534220qa84d0qg114zndpc"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:configure-flags #~(list "-DEXAMPLES=OFF")))
+     (list
+      #:configure-flags
+      #~(list "-DEXAMPLES=OFF"
+              "-DLIB_SUFFIX=''")))      ; place libraries in /lib, not /lib64
     (propagated-inputs
      (list libusb))                     ; required by libftdi1.pc
     (home-page "https://www.intra2net.com/en/developer/libftdi/")
