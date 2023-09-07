@@ -534,45 +534,42 @@ mining in astronomy.")
 (define-public python-fitsio
   (package
     (name "python-fitsio")
-    (version "1.1.10")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fitsio" version))
        (sha256
-        (base32 "0dv2vjj8qn3rq5sr99x5yjjch5h867c8q7zh73i67dzdsk7ix0jf"))
+        (base32 "04fbg1ffj7qrlzw50xzzkfnlk6qjjqq96j0im7phprmwb1rbvzzh"))
        (modules '((guix build utils)))
        (snippet
-        ;; Remove the bundled cfitsio
+        ;; Remove the bundled cfitsio. When update the package check the
+        ;; current bundled version.
         #~(begin
-            (delete-file-recursively "cfitsio3490")
+            (delete-file-recursively "cfitsio-4.2.0")
             (substitute* "MANIFEST.in"
-              (("recursive-include cfitsio3490.*$\n") ""))))))
+              (("recursive-include cfitsio-4.2.0.*$\n") ""))))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'unbundle-cfitsio
+          (add-before 'build 'set-env
             (lambda _
-              (let* ((cfitsio #$(this-package-input "cfitsio"))
-                     (includedir (string-append "\"" cfitsio "/include\""))
-                     (libdir (string-append "\"" cfitsio "/lib\"")))
-                ;; Use Guix' cfitsio instead of the bundled one
-                (substitute* "setup.py"
-                  (("self.use_system_fitsio = False") "pass")
-                  (("self.system_fitsio_includedir = None") "pass")
-                  (("self.system_fitsio_libdir = None") "pass")
-                  (("self.use_system_fitsio") "True")
-                  (("self.system_fitsio_includedir") includedir)
-                  (("self.system_fitsio_libdir") libdir)))))
+              (setenv "FITSIO_USE_SYSTEM_FITSIO" "True")
+              (setenv "FITSIO_SYSTEM_FITSIO_INCLUDEDIR"
+                      (string-append
+                       #$(this-package-input "cfitsio") "/include"))
+              (setenv "FITSIO_SYSTEM_FITSIO_LIBDIR"
+                      (string-append
+                       #$(this-package-input "cfitsio") "/lib"))))
           (add-before 'check 'build-extensions
             (lambda _
               (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (native-inputs
      (list python-pytest))
     (inputs
-     (list curl cfitsio))
+     (list curl cfitsio zlib))
     (propagated-inputs
      (list python-numpy))
     (home-page "https://github.com/esheldon/fitsio")
