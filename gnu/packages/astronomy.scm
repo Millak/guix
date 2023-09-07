@@ -1582,7 +1582,7 @@ specifically in the C code.")
 (define-public python-bayesicfitting
   (package
     (name "python-bayesicfitting")
-    (version "3.1.1")
+    (version "3.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1591,7 +1591,7 @@ specifically in the C code.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "07y9dr9wxhxrvhk0jjakhbyrgal60i92m7z7q14fp12k8x0gl69l"))))
+                "0q6v7w9b1xzam0qn5vsl5wrdp1fkfpsn411pzd8wyy9giznpajxi"))))
     (build-system python-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
