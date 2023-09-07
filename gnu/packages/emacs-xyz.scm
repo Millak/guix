@@ -4947,6 +4947,28 @@ written in the Go programming language.")
 directly inside Emacs.  It requires a Google Map Static API key to function.")
       (license license:gpl3+))))
 
+(define-public emacs-nominatim
+  (let ((revision "0")
+        (commit "f814e16f8f4e2cfd633f52b29699a009ab704fbf"))
+    (package
+      (name "emacs-nominatim")
+      (version (git-version "0.9.3" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://codeberg.org/emacs-weirdware/nominatim")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "19nw2iy8fxy6mfd4nwrdfa23a74a1b644400xx0900fwn6ihjhpl"))))
+      (build-system emacs-build-system)
+      (home-page "https://codeberg.org/emacs-weirdware/nominatim")
+      (synopsis "Forward and reverse geocode using Nominatim inside Emacs")
+      (description "This is an Emacs library which lets you forward and
+reverse geocode using Nominatim, a component of OpenStreetMap.")
+      (license license:gpl3+))))
+
 (define-public emacs-graphviz-dot-mode
   (package
     (name "emacs-graphviz-dot-mode")
