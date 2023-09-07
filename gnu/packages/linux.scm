@@ -5548,7 +5548,7 @@ arrays when needed.")
 (define-public multipath-tools
   (package
     (name "multipath-tools")
-    (version "0.9.3")
+    (version "0.9.6")
     (home-page "https://github.com/opensvc/multipath-tools")
     (source (origin
               (method git-fetch)
@@ -5556,7 +5556,7 @@ arrays when needed.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0zcnr1135znizbnfqhqv3by9i2qwn5vg6kgmj6ma3yy1x1krx0d4"))
+                "1933iqh9r54pdl95yck0n4bw7jiiblymc964vlc1787qd4q012sz"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -5574,7 +5574,7 @@ arrays when needed.")
                            (string-append "prefix=" #$output)
                            ;; Install Udev rules below this directory, relative
                            ;; to the prefix.
-                           "SYSTEMDPATH=lib")
+                           (string-append "systemd_prefix=" #$output))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-source
@@ -5606,6 +5606,16 @@ arrays when needed.")
                 (("CFLAGS \\+= " match)
                  (string-append match "-Wno-error=unused-function ")))))
           (delete 'configure)           ;no configure script
+          (add-before 'build 'no-fortify-3
+            (lambda _
+              ;; NOTE: The check made seems to wrongly assume the
+              ;; FORTIFY_SOURCE=3 is valid.  However, when compiling, warnings
+              ;; are emitted from glibc, resulting in failed build.  Fix this
+              ;; by forcing the usage of FORTIFY_SOURCE=2.
+              (substitute* "create-config.mk"
+                (("FORTIFY_SOURCE=3")
+                 "FORTIFY_SOURCE=2"))
+              ))
           (add-before 'build 'set-LDFLAGS
             (lambda _
               ;; Note: this cannot be passed as a make flag because that will
@@ -5623,7 +5633,9 @@ arrays when needed.")
            liburcu
            lvm2
            readline
-           eudev))
+           eudev
+           ;; For libmount.
+           `(,util-linux "lib")))
     (synopsis "Access block devices through multiple paths")
     (description
      "This package provides the following binaries to drive the
