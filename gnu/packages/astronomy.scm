@@ -2810,8 +2810,11 @@ standard astronomy libraries:
     (home-page "https://nouspiro.space/?page_id=306")
     (synopsis "Astronomical library to load and write XISF file format")
     (description
-     "LibXISF is C++ library that can read and write XISF files produced by
-PixInsight.  It implements XISF 1.0 specification.")
+     "LibXISF is C++ library that can read and write @acronym{XISF,Extensible
+Image Serialization Format} files produced by @url{https://pixinsight.com/,
+PixInsight}.  It implements
+@url{https://pixinsight.com/doc/docs/XISF-1.0-spec/XISF-1.0-spec.html, XISF
+1.0 specification}.")
     (license license:gpl3+)))
 
 (define-public missfits
