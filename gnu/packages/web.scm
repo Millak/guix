@@ -6110,13 +6110,13 @@ deployments.")
   (package
     (name "varnish")
     (home-page "https://varnish-cache.org/")
-    (version "7.2.1")
+    (version "7.3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append home-page "_downloads/varnish-" version ".tgz"))
               (sha256
                (base32
-                "0h590kr7rhp57a4kfx6apyvqk60w78qdjwpr6g2ikv5840bpv4sd"))))
+                "1rsay4vrg0dvf8d7bpj8dvaax4v949p6x1l6qd3hdabhq87bpnz2"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib")
