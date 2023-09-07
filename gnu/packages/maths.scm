@@ -5917,7 +5917,7 @@ structured and unstructured grid problems.")))
 (define-public matio
   (package
     (name "matio")
-    (version "1.5.19")
+    (version "1.5.23")
     (source
      (origin
        (method url-fetch)
@@ -5925,7 +5925,7 @@ structured and unstructured grid problems.")))
                            "matio-" version ".tar.gz"))
        (sha256
         (base32
-         "0vr8c1mz1k6mz0sgh6n3scl5c3a71iqmy5fnydrgq504icj4vym4"))))
+         "0vjdkxn402gwrgbi5ii3n2ai01bjzzfb588iqd9ylinzc7kfm4cz"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -5936,7 +5936,7 @@ structured and unstructured grid problems.")))
               (install-file "src/matioConfig.h"
                             (string-append #$output "/include")))))))
     (inputs
-     (list zlib hdf5-1.8))
+     (list zlib hdf5))
     (home-page "http://matio.sourceforge.net/")
     (synopsis "Library for reading and writing MAT files")
     (description "Matio is a library for reading and writing MAT files.  It

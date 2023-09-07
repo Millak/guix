@@ -779,6 +779,9 @@ namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \
                                  libdir "/panners" ":"
                                  libdir "/surfaces" ":"
                                  libdir "/vamp" "\"]"))))))
+         (add-after 'build 'build-i18n
+           (lambda _
+             (invoke "python" "waf" "i18n")))
          (add-after 'install 'install-freedesktop-files
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out   (assoc-ref outputs "out"))
@@ -2829,7 +2832,7 @@ implementation of the Open Sound Control (@dfn{OSC}) protocol.")
 (define-public rtaudio
   (package
     (name "rtaudio")
-    (version "5.1.0")
+    (version "5.2.0")
     (source
      (origin
        (method git-fetch)
@@ -2838,20 +2841,8 @@ implementation of the Open Sound Control (@dfn{OSC}) protocol.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "156c2dgh6jrsyfn1y89nslvaxm4yifmxridsb708yvkaym02w2l8"))))
+        (base32 "189xphhf0winf8b60dx1kk2biz811wk6ps44br7l1lyfhymxcjmi"))))
     (build-system cmake-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; The header that pkg-config expects is include/rtaudio/RtAudio.h,
-         ;; but this package installs it as include/RtAudio.h by default.
-         (add-after 'install 'fix-inc-path
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (inc (string-append out "/include")))
-               (mkdir-p (string-append inc "/rtaudio"))
-               (rename-file (string-append inc "/RtAudio.h")
-                            (string-append inc "/rtaudio/RtAudio.h"))))))))
     (native-inputs
      (list pkg-config))
     (inputs

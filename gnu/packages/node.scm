@@ -669,7 +669,7 @@ parser definition into a C output.")
 (define-public llhttp-bootstrap
   (package
     (name "llhttp")
-    (version "6.0.10")
+    (version "6.0.11")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -678,7 +678,7 @@ parser definition into a C output.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0izwqa77y007xdi0bj3ccw821n19rz89mz4hx4lg99fwkwylr6x8"))
+                "16gaylka6nx9bsff9xga3s8xihxm3k7svrb88lr4dj2s4pzlfga9"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -738,14 +738,14 @@ source files.")
 (define-public node-lts
   (package
     (inherit node)
-    (version "18.16.0")
+    (version "18.17.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nodejs.org/dist/v" version
                                   "/node-v" version ".tar.gz"))
               (sha256
                (base32
-                "0vcc132z7lkxnw5clmiz6sp6ccmw35pyb69hczphrig5frfmqkva"))
+                "0dachvhf5jxrb1av8mn2dikbhwklxsgc9y2zg4h50fcwh5d54mqi"))
               (modules '((guix build utils)))
               (snippet
                '(begin

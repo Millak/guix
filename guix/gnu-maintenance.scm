@@ -600,7 +600,7 @@ rewritten to something like
                                        links)))
                      ;; Retrieve the item having the largest version.
                      (if (null? candidates)
-                         (error "no candidates found in rewrite-url")
+                         parents
                          (cons (cdr (first (sort candidates
                                                  (lambda (x y)
                                                    (version>? (car x)
@@ -980,7 +980,8 @@ the directory containing its source tarball.  Optionally include a VERSION
 string to fetch a specific version."
   (let* ((uri       (string->uri
                      (match (origin-uri (package-source package))
-                       ((? (cut string-prefix? "mirror://" <>) url)
+                       ((and (? string?)
+                             (? (cut string-prefix? "mirror://" <>) url))
                         ;; Retrieve the authoritative HTTP URL from a mirror.
                         (http-url? url))
                        ((? string? url) url)

@@ -2818,7 +2818,8 @@ consumption.")
                                        "|kiowidgets-kdirmodeltest"
                                        "|kiowidgets-kurifiltertest-colon-separator"
                                        "|kiofilewidgets-kfilewidgettest"
-                                       "|kiowidgets-kurifiltertest-space-separator)")))))
+                                       "|kiowidgets-kurifiltertest-space-separator"
+                                       "|kioworker-httpheaderdispositiontest)")))))
           (add-after 'install 'add-symlinks
             ;; Some package(s) (e.g. bluedevil) refer to these service types by
             ;; the wrong name.  I would prefer to patch those packages, but I

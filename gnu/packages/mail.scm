@@ -801,27 +801,13 @@ It adds a large amount of new and improved features to mutt.")
            vala
            which))                      ; to find libtool, &c.
     (inputs (list glib gpgme zlib))
-    (home-page "http://spruce.sourceforge.net/gmime/")
+    (home-page "https://spruce.sourceforge.net/gmime/")
     (synopsis "MIME message parser and creator library")
     (description
      "GMime provides a core library and set of utilities which may be used for
 the creation and parsing of messages using the Multipurpose Internet Mail
 Extension (MIME).")
     (license (list license:lgpl2.1+ license:gpl2+ license:gpl3+))))
-
-;; Some packages are not ready for GMime 3 yet.
-(define-public gmime-2.6
-  (package
-    (inherit gmime)
-    (version "2.6.23")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/gmime/"
-                                  (version-major+minor version)
-                                  "/gmime-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0slzlzcr3h8jikpz5a5amqd0csqh2m40gdk910ws2hnaf5m6hjbi"))))))
 
 (define-public altermime
   (package
@@ -4087,8 +4073,8 @@ It is a replacement for the @command{urlview} program.")
     (license license:gpl2+)))
 
 (define-public mumi
-  (let ((commit "85d5efb4367b9178eb7093e3ebca760745de0753")
-        (revision "2"))
+  (let ((commit "2453a5a6686c035854e4d523b8faa8c47405bd76")
+        (revision "3"))
     (package
       (name "mumi")
       (version (git-version "0.0.5" revision commit))
@@ -4100,7 +4086,7 @@ It is a replacement for the @command{urlview} program.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0yn8dfj3krqwfsdn888vbv903kfa7clmbj2xxin263zqcyzc3alq"))))
+                  "0dq87qn77c6qganhck048qxq5ghj3fh2v604f87hwv530lxifabr"))))
       (build-system gnu-build-system)
       (arguments
        (list

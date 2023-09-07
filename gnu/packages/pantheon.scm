@@ -30,6 +30,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages xml)
+  #:use-module (gnu packages web)
   #:use-module (gnu packages)
   #:use-module (guix build-system meson)
   #:use-module (guix git-download)
@@ -40,7 +41,7 @@
 (define-public granite
   (package
     (name "granite")
-    (version "6.2.0")
+    (version "7.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -49,16 +50,21 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ilslmg63hh2x7h5rvs3mhzw1y9ixhhkqnn1j1lzwm12v2iidkaq"))))
+                "0pyvkif2kin5dskh7adadsh4r96mvx12y7cs6gnm0ml733q548dj"))))
     (build-system meson-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
                   (add-after 'unpack 'disable-icon-cache
                     (lambda _
                       (setenv "DESTDIR" "/"))))))
-    (inputs (list glib gtk+ libgee))
-    (native-inputs (list gettext-minimal gobject-introspection pkg-config
-                         python vala))
+    (inputs (list sassc))
+    (propagated-inputs (list glib libgee gtk))      ;required in .pc file
+    (native-inputs (list gettext-minimal
+                         `(,glib "bin")
+                         gobject-introspection
+                         pkg-config
+                         python
+                         vala))
     (home-page "https://github.com/elementary/granite")
     (synopsis "Library that extends GTK with common widgets and utilities")
     (description "Granite is a companion library for GTK+ and GLib.  Among other
@@ -69,7 +75,7 @@ in apps built for the Pantheon desktop.")
 (define-public pantheon-calculator
   (package
     (name "pantheon-calculator")
-    (version "1.7.2")
+    (version "2.0.2")
     (source
      (origin
        (method git-fetch)
@@ -79,7 +85,7 @@ in apps built for the Pantheon desktop.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "11rwwi6nlhwpcm29dn2mbz0239nfjdwlqlqbchm0j9sr1ypifk2k"))))
+         "1w59sgznzybawhz411avqayws8jq0471n6hwhkplvcz7inxlzdrw"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -91,15 +97,15 @@ in apps built for the Pantheon desktop.")
     (inputs
       (list granite
             glib
-            gtk+
+            gtk
             libgee
             libhandy))
     (native-inputs
-     `(("cmake" ,cmake)
-       ("glib:bin" ,glib "bin") ; for glib-compile-schemas
-       ("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)))
+      (list cmake
+            `(,glib "bin") ; for glib-compile-schemas
+            gettext-minimal
+            pkg-config
+            vala))
     (home-page "https://github.com/elementary/calculator")
     (synopsis "Desktop calculator")
     (description "Calculator is an application for performing simple
@@ -110,7 +116,7 @@ desktop.")
 (define-public sideload
   (package
     (name "sideload")
-    (version "6.0.2")
+    (version "6.2.1")
     (source
      (origin
        (method git-fetch)
@@ -120,7 +126,7 @@ desktop.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0abpcawmmv5mgzk2i5n9rlairmjr2v9rg9b8c9g7xa085s496bi9"))))
+         "0vrj91899f13cvzpycqy3y74hmixsffjbzsj29da7n370fa3ci86"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t

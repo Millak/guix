@@ -3,7 +3,7 @@
 ;;; Copyright © 2014, 2017 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Joshua Grant <tadni@riseup.net>
 ;;; Copyright © 2014 Alex Kost <alezost@gmail.com>
-;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
+;;; Copyright © 2015, 2023 Sou Bunnbu <iyzsong@envs.net>
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2015, 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016 Leo Famulari <leo@famulari.name>
@@ -43,7 +43,7 @@
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021-2023 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2021, 2022 Taiju HIGASHI <higashi@taiju.info>
-;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2022-2023 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Kitzman <kitzman@disroot.org>
 ;;; Copyright © 2021 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
@@ -57,6 +57,7 @@
 ;;; Copyright © 2023 Arnaud Lechevallier <arnaud.lechevallier@free.fr>
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2023 chris <chris@bumblehead.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -98,6 +99,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages sdl)
   #:use-module (gnu packages xorg))
 
 (define-public font-artifika
@@ -1175,6 +1177,60 @@ It contains the following fonts and styles:
 @end enumerate\n")
     (license license:gpl2+)))
 
+(define-public font-unscii
+  (package
+    (name "font-unscii")
+    (version "2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "http://viznut.fi/unscii/unscii-"
+                    version "-src.tar.gz"))
+              (sha256
+               (base32
+                "0msvqrq7x36p76a2n5bzkadh95z954ayqa08wxd017g4jpa1a4jd"))))
+    (build-system gnu-build-system)
+    (outputs '("out" "otf" "ttf" "woff"))
+    (native-inputs (list bdftopcf fontforge perl perl-text-charwidth))
+    (inputs (list sdl sdl-image))
+    (arguments
+     (list #:tests? #f                  ;no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)      ;no configure script
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((pcfdir (string-append
+                                  (assoc-ref outputs "out")
+                                  "/share/fonts/misc"))
+                         (otfdir (string-append
+                                  (assoc-ref outputs "otf")
+                                  "/share/fonts/opentype"))
+                         (ttfdir (string-append
+                                  (assoc-ref outputs "ttf")
+                                  "/share/fonts/truetype"))
+                         (woffdir (string-append
+                                   (assoc-ref outputs "woff")
+                                   "/share/fonts/webfonts"))
+                         (install-fonts
+                          (lambda (pred dir)
+                            (for-each
+                             (lambda (f) (install-file f dir))
+                             (find-files "." pred)))))
+                     (install-fonts "\\.pcf$" pcfdir)
+                     (install-fonts "\\.otf$" otfdir)
+                     (install-fonts "\\.ttf$" ttfdir)
+                     (install-fonts "\\.woff$" woffdir)))))))
+    (synopsis "Classic bitmapped Unicode fonts")
+    (description
+     "Unscii is a set of bitmapped Unicode fonts based on classic system
+fonts.  Unscii attempts to support character cell art well while also being
+suitable for terminal and programming use.  The two main variants are
+unscii-8 (8×8 pixels per glyph) and unscii-16 (8×16).")
+    (home-page "http://viznut.fi/unscii/")
+    ;; "unscii-16-full" falls under GPL, the other are in the Public Domain.
+    (license (list license:gpl2+ license:public-domain))))
+
 (define-public font-fantasque-sans
   (package
     (name "font-fantasque-sans")
@@ -1855,10 +1911,40 @@ programming.  Iosevka is completely generated from its source code.")
      version of the original, designed for enhanced readability.")
     (license license:silofl1.1)))
 
+(define-public font-junicode
+  (package
+    (name "font-junicode")
+    (version "2.003")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/psb1558/Junicode-font")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qg1qwk294p2hgq2gbyhfwwdas1xbkfz3csxf5jz4xqiskn4skgl"))))
+    (build-system font-build-system)
+    (home-page "https://github.com/psb1558/Junicode-font")
+    (synopsis "Unicode font for medievalists, linguists, and others")
+    (description "The Junicode font was developed for students and scholars of
+medieval Europe, but its large glyph repertoire also makes it useful as a
+general-purpose font.  Its visual design is based on the typography used by
+Oxford University Press in the late 17th and early 18th centuries.  The font
+implements the @acronym{MUFI, Medieval Unicode Font Initiative} recommendation
+for encoding ligatures, alternative letter forms, and other features of
+interest to medievalists using Unicode's Private Use Area.
+
+Junicode 2 is a major reworking of the font family.  Its OpenType programming
+has been rebuilt to support the creation of searchable, accessible electronic
+documents using the @acronym{MUFI} characters.  The family includes five
+weights and five widths in both Roman and Italic, plus variable fonts.")
+    (license license:silofl1.1)))
+
 (define-public font-sarasa-gothic
   (package
     (name "font-sarasa-gothic")
-    (version "0.41.6")
+    (version "0.41.8")
     (source
      (origin
        (method url-fetch)
@@ -1866,7 +1952,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "/releases/download/v" version
                            "/sarasa-gothic-ttc-" version ".7z"))
        (sha256
-        (base32 "1l238rx9nw6acxy5k5b7bjd8br8cnivdlyly7r20w1b36gscl878"))))
+        (base32 "0m2c3g8c6wxgyyvmraln4bx0qn949j9rin593s1c01hzah435cac"))))
     (build-system font-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -2004,20 +2090,41 @@ emphasis while still being readable.")
     (license license:silofl1.1)))
 
 (define-public font-openmoji
-  (package
+  (let ((commit "93f059dfb68401d49beaef7a3e09b80072b51a1f")
+        (revision "1"))
+   (package
     (name "font-openmoji")
-    (version "13.1.0")
+    (version (git-version "14.0.0" revision commit))
     (source
      (origin
-       (method url-fetch/zipbomb)
-       (uri
-        (string-append "https://github.com/hfg-gmuend/openmoji/"
-                       "releases/download/" version
-                       "/openmoji-font.zip"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hfg-gmuend/openmoji/")
+             (commit commit)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "0xmy3hr38v03f1riwxmxdibb7iwj0qz288inqaha3pwq7pj7ln45"))))
+         "16w4lg2y6qzb45j08l7cdwprjhprsm11jsm6nxzxwy2wzykd7gxk"))))
     (build-system font-build-system)
+    (arguments (list #:modules `((ice-9 ftw)
+                                 (guix build font-build-system)
+                                 (guix build utils))
+                     #:phases
+                     #~(modify-phases %standard-phases
+                         (add-after 'unpack 'chdir
+                           (lambda _ (chdir "font")))
+                         (add-after 'chdir 'strip-alternative-variants
+                           (lambda _
+                             (let ((keep '("OpenMoji-black-glyf"
+                                           "OpenMoji-color-glyf_colr_0"
+                                           "."
+                                           "..")))
+                               (for-each (lambda (f)
+                                           (unless (member f keep)
+                                             (delete-file-recursively f)))
+                                         (scandir ".")))))
+                         (add-before 'install-license-files 'chdir-back
+                           (lambda _ (chdir ".."))))))
     (native-inputs
      (list unzip))
     (home-page "https://openmoji.org")
@@ -2025,7 +2132,7 @@ emphasis while still being readable.")
     (description
      "This package provides the OpenMoji font in both color and black
 variants.")
-    (license license:cc-by-sa4.0)))
+    (license license:cc-by-sa4.0))))
 
 (define-public font-dosis
   (package
@@ -3335,3 +3442,25 @@ better code & UI.  It is inspired by casual script signpainting, but designed
 primarily to meet the needs of programming environments and application
 interfaces.")
     (license license:silofl1.1)))
+
+(define-public fonts-tlwg
+ (package
+   (name "fonts-tlwg")
+   (version "0.7.3")
+   (source
+    (origin
+     (method url-fetch)
+     (uri (string-append
+           "https://github.com/tlwg/" name
+           "/releases/download/v" version "/" name "-" version ".tar.xz"))
+     (sha256
+      (base32
+       "00mv8rmjpsk8jbbl978q3yrc2pxj8a86a3d092563dlc9n8gykkf"))))
+   (native-inputs (list fontforge))
+   (build-system gnu-build-system)
+   (home-page "https://github.com/tlwg/fonts-tlwg/")
+   (synopsis "Collection of scalable Thai fonts")
+   (description "Fonts-TLWG is a collection of Thai scalable fonts.  Its goal
+is to provide fonts that conform to existing standards and recommendations, so
+that it can be a reference implementation.")
+   (license license:gpl2+)))

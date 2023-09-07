@@ -32,14 +32,14 @@
 (define-public plantuml
   (package
     (name "plantuml")
-    (version "1.2022.7")
+    (version "1.2023.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/plantuml/"
                                   version "/plantuml-" version ".tar.gz"))
               (sha256
                (base32
-                "0lcvp6hdlzgh6ia14zzdc6h9hn8xrm9w9dcx5jpzhs8nbygkazvj"))))
+                "0680hlhmwvzp1fw3zdsmy2x4szdhpdjgk028674fg3hwzwk5fv40"))))
     (build-system ant-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
@@ -57,7 +57,7 @@
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((dot (search-input-file inputs "/bin/dot")))
                (substitute*
-                   "src/net/sourceforge/plantuml/cucadiagram/dot/GraphvizLinux.java"
+                   "src/net/sourceforge/plantuml/dot/GraphvizLinux.java"
                  (("/usr/bin/dot") dot)))
              #t))
          (replace 'install

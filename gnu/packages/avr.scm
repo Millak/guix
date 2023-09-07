@@ -46,7 +46,7 @@
     (name "avr-binutils")))
 
 (define avr-gcc
-  (let ((xgcc (cross-gcc "avr" #:xgcc gcc #:xbinutils avr-binutils)))
+  (let ((xgcc (cross-gcc "avr" #:xbinutils avr-binutils)))
     (package
       (inherit xgcc)
       (name "avr-gcc")

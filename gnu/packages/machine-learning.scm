@@ -1194,7 +1194,7 @@ I/O.")
 
 
 (define-public gemmlowp
-  (let ((commit "f9959600daa42992baace8a49544a00a743ce1b6")
+  (let ((commit "08e4bb339e34017a0835269d4a37c4ea04d15a69")
         (version "0.1")
         (revision "1"))
     (package
@@ -1207,13 +1207,14 @@ I/O.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1hzfhlhzcb827aza6a7drydc67dw5fm3qfqilb9ibskan8dsf0c6"))))
+                  "1q8f3w5slxd8fbn31hpm00y6wyp7gm71rzr27cmcff4b3px4ca6k"))))
       (arguments
        `(#:configure-flags
          (list ,@(match (%current-system)
                    ((or "x86_64-linux" "i686-linux")
                     '("-DCMAKE_CXX_FLAGS=-msse2"))
-                   (_ '())))
+                   (_ '()))
+               "-DBUILD_SHARED_LIBS=ON")
          #:phases
          (modify-phases %standard-phases
            ;; This directory contains the CMakeLists.txt.
@@ -1993,13 +1994,13 @@ discrete, and conditional dimensions.")
 (define-public python-deepxde
   (package
     (name "python-deepxde")
-    (version "1.9.2")
+    (version "1.9.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "DeepXDE" version))
               (sha256
                (base32
-                "07bz3d7d698l0fhznw5l8p16b22d4ly7xq99vrgv48c722qr2r5b"))))
+                "1zw2gqssc0s3maf4gdjckxmzx1d3036hbp1iir26kd08hxj93vzs"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f                  ; there are no tests

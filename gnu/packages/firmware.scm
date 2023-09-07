@@ -9,6 +9,7 @@
 ;;; Copyright © 2020, 2021, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34,6 +35,8 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
@@ -68,6 +71,7 @@
   #:use-module (gnu packages polkit)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages shells)
   #:use-module (gnu packages sqlite)
@@ -1210,3 +1214,24 @@ AR100.")
 
 (define-public crust-pine64-plus
   (make-crust-package "pine64_plus"))
+
+(define-public qmk
+  (package
+    (name "qmk")
+    (version "1.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "qmk" version))
+              (sha256
+               (base32
+                "1619q9v90740dbg8xpzqlhwcasz42xj737803aiip8qc3a7zhwgq"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ;; No tests.
+    (propagated-inputs (list python-dotty-dict python-hid python-hjson
+                             python-jsonschema python-milc python-pillow
+                             python-pygments python-pyserial python-pyusb))
+    (home-page "https://qmk.fm")
+    (synopsis "Command line utility to manage QMK keyboard firmwares")
+    (description "This package provides a program to help users work with
+@acronym{QMK, Quantum Mechanical Keyboard} firmwares.")
+    (license license:expat)))

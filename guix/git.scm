@@ -360,6 +360,11 @@ dynamic extent of EXP."
 (define (reference-available? repository ref)
   "Return true if REF, a reference such as '(commit . \"cabba9e\"), is
 definitely available in REPOSITORY, false otherwise."
+  ;; Note: this must not rely on 'resolve-reference', as that procedure always
+  ;; resolves the references for branch names such as master.  The semantic we
+  ;; want here is that unless the reference is exact (e.g. a commit), the
+  ;; reference should not be considered available, as it could have changed on
+  ;; the remote.
   (match ref
     ((or ('commit . commit)
          ('tag-or-commit . (? commit-id? commit)))

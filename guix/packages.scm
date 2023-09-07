@@ -761,7 +761,8 @@ object."
               (lambda (port)
                 (go-to-location port line column)
                 (match (read port)
-                  (('package inits ...)
+                  ((or ('package inits ...)
+                       ('package/inherit _ inits ...))
                    (let ((field (assoc field inits)))
                      (match field
                        ((_ value)

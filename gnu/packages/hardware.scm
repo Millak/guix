@@ -2,7 +2,7 @@
 ;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
-;;; Copyright © 2021 Evgeny Pisemsky <evgeny@pisemsky.com>
+;;; Copyright © 2021, 2023 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;; Copyright © 2021 Léo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 Denis Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
@@ -1459,3 +1459,37 @@ your network, send SCPI commands, and receive responses.")
 on the LXI Consortium standard which defines the communication protocols for
 modern instrumentation and data acquision systems using Ethernet.")
     (license license:bsd-3)))
+
+(define-public usbrelay
+  (package
+    (name "usbrelay")
+    (version "1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/darrylb123/usbrelay")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0fr3wglr2c6myg4k6ai2p5z38prclcnk2ngik15sq16fnp6qg750"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)) ;no configure script
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                           (string-append "PREFIX=" #$output)
+                           (string-append "LDFLAGS=-Wl,-rpath="
+                                          (string-append #$output "/lib"))
+                           "LDCONFIG=true"
+                           "USBMAJOR=$(USBLIBVER)")
+      #:tests? #f))                     ;no test suite
+    (inputs (list hidapi))
+    (home-page "https://github.com/darrylb123/usbrelay")
+    (synopsis "Control USB relay modules")
+    (description
+     "This is a Linux driver based on hidapi for a variety of inexpensive
+HID compatible USB relay modules available with different number of
+output relays.")
+    (license license:gpl2+)))

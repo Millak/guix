@@ -153,8 +153,9 @@ systemdservicedir = $(libdir)/systemd/system
 nodist_systemdservice_DATA =			\
   etc/gnu-store.mount				\
   etc/guix-daemon.service			\
-  etc/guix-publish.service			\
-  etc/guix-gc.service
+  etc/guix-gc.service				\
+  etc/guix-gc.timer				\
+  etc/guix-publish.service
 
 etc/%.mount: etc/%.mount.in	\
 			 $(top_builddir)/config.status

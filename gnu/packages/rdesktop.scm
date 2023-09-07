@@ -32,6 +32,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages assembly)
+  #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
@@ -43,11 +44,13 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gstreamer)
+  #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages nettle)
+  #:use-module (gnu packages opencl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
@@ -113,13 +116,18 @@ to remotely control a user's Windows desktop.")
            xmlto))
     (inputs
      (list alsa-lib
+           cairo
            cups
+           dbus
            ffmpeg-4
+           gsm
+           lame
            libjpeg-turbo
            libusb
            libx11
            libxkbfile
            libxcursor
+           libxdamage
            libxext
            libxi
            libxv
@@ -127,6 +135,10 @@ to remotely control a user's Windows desktop.")
            libxrender
            libxinerama
            libxshmfence
+           opencl-headers
+           openh264
+           opensles
+           openssl
            pulseaudio
            zlib))
     (propagated-inputs (list libxkbcommon openssl wayland))
@@ -139,7 +151,10 @@ to remotely control a user's Windows desktop.")
                           #~())
                    "-DWITH_PULSE=ON"
                    "-DWITH_CUPS=ON"
-                   "-DBUILD_TESTING=ON")))
+                   "-DBUILD_TESTING=ON"
+                   "-DWITH_SERVER=ON" ;build servers
+                   "-DWITH_SHADOW=ON" ;build shadow server
+                   "-DWITH_PROXY=ON")))
     (home-page "https://www.freerdp.com")
     (synopsis "Remote Desktop Protocol implementation")
     (description "FreeRDP implements Microsoft's Remote Desktop Protocol.

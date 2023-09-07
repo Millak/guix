@@ -469,6 +469,26 @@ Resources file.")
     (description "Xorg font encoding files.")
     (license license:public-domain)))
 
+(define-public fonttosfnt
+  (package
+    (name "fonttosfnt")
+    (version "1.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://xorg/individual/app/"
+                           "fonttosfnt-" version ".tar.gz"))
+       (sha256
+        (base32 "0j66hv6z2bh4q88kbhncakyfpxqs71jmwn8pqw4gyfpn71y324c1"))))
+    (build-system gnu-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list freetype libfontenc xorgproto))
+    (home-page "https://www.x.org/wiki/")
+    (synopsis "Wrap a bitmap font in a sfnt (ttf or otb) wrapper")
+    (description "@command{fonttosfnt} wraps a set of bdf or pcf bitmap fonts
+in a sfnt (TrueType or OpenType) wrapper.")
+    (license license:expat)))
+
 (define-public font-adobe100dpi
   (package
     (name "font-adobe100dpi")
@@ -5287,6 +5307,7 @@ Wayland.")
   (package
     (name "libx11")
     (version "1.8.1")
+    (replacement libx11-fixed)          ;security fixes
     (source
      (origin
        (method url-fetch)
@@ -5315,6 +5336,19 @@ Wayland.")
     (synopsis "Xorg Core X11 protocol client library")
     (description "Xorg Core X11 protocol client library.")
     (license license:x11)))
+
+(define-public libx11-fixed
+  (package
+    (inherit libx11)
+    (version "1.8.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://xorg/individual/lib/libX11-"
+                           version ".tar.xz"))
+       (sha256
+        (base32
+         "1jawl8zp1h7hdmxx1sc6kmxkki187d9yixr2l03ai6wqqry5nlsr"))))))
 
 ;; packages of height 5 in the propagated-inputs tree
 

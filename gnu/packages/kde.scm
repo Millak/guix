@@ -339,6 +339,7 @@ annotating features.")
            kfilemetadata
            kguiaddons
            kiconthemes
+           kirigami
            knewstuff
            knotifications
            knotifyconfig

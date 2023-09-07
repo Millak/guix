@@ -1895,7 +1895,7 @@ compository, supporting the following featuers:
 (define-public waybar
   (package
     (name "waybar")
-    (version "0.9.18")
+    (version "0.9.20")
     (source
      (origin
        (method git-fetch)
@@ -1904,22 +1904,27 @@ compository, supporting the following featuers:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11yia2fs5a05jlbrdhxm26c2sgmbj3iwsk3bsqcvjvv3mlsrhxkf"))))
+        (base32 "07h5l7h7wmzqgg7fbp98khrxg2sq2s4ncp4fiiz1yg62r752idy4"))))
     (build-system meson-build-system)
+    (arguments
+     (list #:configure-flags #~(list "--wrap-mode=nodownload")))
     (inputs (list date
                   fmt
                   gtk-layer-shell
                   gtkmm-3
                   jsoncpp
                   libdbusmenu
+                  libevdev
                   libinput-minimal
                   libmpdclient
                   libnl
                   libxml2
+                  pipewire
                   playerctl
                   pulseaudio
                   spdlog
-                  wayland))
+                  wayland
+                  wireplumber))
     (native-inputs
      (list `(,glib "bin") pkg-config scdoc wayland-protocols))
     (home-page "https://github.com/Alexays/Waybar")
@@ -1961,7 +1966,10 @@ core/thread.")
     (package/inherit base
       (name "waybar-experimental")
       (arguments
-       (list #:configure-flags #~(list "-Dexperimental=true")))
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:configure-flags flags '())
+          #~(cons "-Dexperimental=true"
+                  #$flags))))
       (synopsis "Waybar with experimental features"))))
 
 (define-public wlr-randr
@@ -2025,7 +2033,7 @@ compositors that support the layer-shell protocol.")
 (define-public kanshi
   (package
     (name "kanshi")
-    (version "1.3.1")
+    (version "1.4.0")
     (source
      (origin
        (method git-fetch)
@@ -2034,7 +2042,7 @@ compositors that support the layer-shell protocol.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "195v6lfh9w88nas6pca0v644nvrc645sramj78gzgqdm7nm20rvq"))))
+        (base32 "016s2896mnf4dnyyrqp2pnqrvrqn404c6b16d5kcjf1p21003lp5"))))
     (build-system meson-build-system)
     (inputs (list wayland))
     (native-inputs (list pkg-config scdoc))

@@ -1317,7 +1317,7 @@ Encryption to Gajim.")
 (define-public dino
   (package
     (name "dino")
-    (version "0.4.2")
+    (version "0.4.3")
     (source
      (origin
        (method url-fetch)
@@ -1325,7 +1325,7 @@ Encryption to Gajim.")
         (string-append "https://github.com/dino/dino/releases/download/v"
                        version "/dino-" version ".tar.gz"))
        (sha256
-        (base32 "1vbyrnivibsn4jzmfb6sfq5fxhb0xh1cnhgcmg1rafq751q55cg1"))))
+        (base32 "01jbggjqsbqrzd76bq4h8ccnijsw3m3mav838mnk20kls8agq5d6"))))
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
@@ -1405,7 +1405,7 @@ default.")
 (define-public kaidan
   (package
     (name "kaidan")
-    (version "0.8.0")
+    (version "0.9.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/unstable/kaidan/" version
@@ -1415,7 +1415,7 @@ default.")
         #~(begin
             (delete-file-recursively "3rdparty")))
        (sha256
-        (base32 "195iddv35gc3k83r226y17avsab2b9bszgd7z7ynbddsgbf75rx7"))))
+        (base32 "1waqv0fdkhvp3cqy2a2g6i2wc9s0zbvgzknymrwxy99mnx9ymw9g"))))
     (build-system qt-build-system)
     (arguments
      (list #:configure-flags #~(list "-DBUILD_TESTS=true")))
@@ -1435,6 +1435,7 @@ default.")
                   qtxmlpatterns
                   qqc2-desktop-style
                   qxmpp
+                  sonnet
                   zxing-cpp))
     (home-page "https://www.kaidan.im/")
     (synopsis "Qt-based XMPP/Jabber Client")
@@ -2129,7 +2130,7 @@ are both supported).")
 (define-public profanity
   (package
     (name "profanity")
-    (version "0.13.0")
+    (version "0.14.0")
     (source
      (origin
        (method url-fetch)
@@ -2138,7 +2139,7 @@ are both supported).")
                        version ".tar.gz"))
        (sha256
         (base32
-         "14n45zwc6fxjargqhwqan8fyb7x0ql0hmw56rbjkjfkhpba2qmks"))))
+         "0zygsxxwdxmpppr7vyzi2r7d854yjl6918w0lrs7k41iib9zy8zx"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags

@@ -841,7 +841,7 @@ converter from FontForge’s @acronym{SFD, Spline Font Database} fonts to
 (define-public python-skia-pathops
   (package
     (name "python-skia-pathops")
-    (version "0.7.2")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
@@ -849,7 +849,7 @@ converter from FontForge’s @acronym{SFD, Spline Font Database} fonts to
        (modules '((guix build utils)))
        (snippet '(delete-file-recursively "src/cpp")) ;140+ MiB of stuff
        (sha256
-        (base32 "1456rclfn6a01c2cchlgyn166zppcjcqij0k5gwmm8gvzsd5rn0r"))))
+        (base32 "1vlwl1w6sn8c78fsh1w549n3lk9v3v9hcp866vrsdr4byb7g2ani"))))
     (build-system python-build-system)
     (arguments
      (list

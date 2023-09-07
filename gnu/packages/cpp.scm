@@ -32,6 +32,7 @@
 ;;; Copyright © 2022, 2023 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2022, 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2023 Sughosha <Sughosha@proton.me>
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Liliana Marie Prikler <liliana.prikler@gmail.com>
@@ -509,8 +510,17 @@ library for SIMD (Single Instruction, Multiple Data) with runtime dispatch.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0i1c88rn1wwz8nf3dpapcdkk4w623m3nksfy5yjai10k9irkzy3c"))))
+        (base32 "0i1c88rn1wwz8nf3dpapcdkk4w623m3nksfy5yjai10k9irkzy3c"))
+       (modules '((guix build utils)))
+       ;; It's bundled catch2 fails to build.
+       (snippet '(begin
+                   (delete-file "unittests/catch.hpp")
+                   (substitute* "unittests/compiled_tests.cpp"
+                     (("catch[.]hpp") "catch2/catch.hpp"))
+                   (substitute* "unittests/type_info_test.cpp"
+                     (("catch[.]hpp") "catch2/catch.hpp"))))))
     (build-system cmake-build-system)
+    (inputs (list catch2))
     (home-page "https://chaiscript.com/")
     (synopsis "Embedded scripting language designed for C++")
     (description
@@ -1722,6 +1732,30 @@ C.  It focuses on standardization and parsing exactness and is at ease with
 almost every type of file containing key/value pairs.")
     (license license:gpl3+)))
 
+(define-public libcppgenerate
+  ;; dbus-cxx requires an unreleased fix.
+  (let ((commit "930c5503f76c877b72b9ff8546353d6f422bd010")
+        (revision "0"))
+    (package
+      (name "libcppgenerate")
+      (version (git-version "0.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/rm5248/libcppgenerate")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0csdg9b406i85aqgivjmvqjdnqbyiyjh3s0xsfsxppv7wlh7j85r"))))
+      (build-system cmake-build-system)
+      (arguments (list #:configure-flags #~'("-DENABLE_TESTS=ON")))
+      (home-page "https://github.com/rm5248/libcppgenerate")
+      (synopsis "C++ code generator library for C++")
+      (description "@code{libcppgenerate} is a library for generating C++ code
+from C++.")
+      (license license:asl2.0))))
+
 (define-public libcutl
   (package
     (name "libcutl")
@@ -1948,6 +1982,16 @@ of reading and writing XML.")
     (description "Jsonnet is a templating language extending JSON
 syntax with variables, conditions, functions and more.")
     (license license:asl2.0)))
+
+(define-public python-jsonnet
+  (package
+    (inherit jsonnet)
+    (name "python-jsonnet")
+    (build-system python-build-system)
+    (arguments '())
+    (synopsis "Python bindings for Jsonnet, the data templating language")
+    (description "This package provides a Python library named @code{_jsonnet}
+which can evaluate Jsonnet files and expressions.")))
 
 (define-public simdjson
   (package
@@ -2331,6 +2375,29 @@ parsing with only a single memory allocation.")
        ;; as strings. Building the tests fails with the modification.
        ((#:tests? _ #f) #f)))
     (properties '((hidden? . #t)))))
+
+(define-public optional-lite
+  (package
+    (name "optional-lite")
+    (version "3.5.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/martinmoene/optional-lite")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+                (base32
+                 "0jpsm94kp1504yk9s2km86zv8xrszz30qanmhz2ljmvsdblz2l47"))))
+    (build-system cmake-build-system)
+    (home-page "https://github.com/martinmoene/optional-lite")
+    (synopsis "Nullable object for C++98, C++11 and later")
+    (description
+     "Optional lite is a single-file header-only library to represent optional
+(nullable) objects and pass them by value.  The library aims to provide a
+C++17-like optional for use with C++98 and later.  If available,
+@code{std::optional} is used.")
+    (license license:boost1.0)))
 
 (define-public optionparser
   (package

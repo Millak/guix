@@ -2095,7 +2095,7 @@ cssutils not receiving updates as of 1.0.2.")
 (define-public python-cssselect
   (package
     (name "python-cssselect")
-    (version "1.1.0")
+    (version "1.2.0")
     (source (origin
               ;; The PyPI release does not contain tests.
               (method git-fetch)
@@ -2105,13 +2105,8 @@ cssutils not receiving updates as of 1.0.2.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xslrnhbrmgakp4xg6k26qffay3kqffp3a2z2sk27c65rwxa79kc"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (invoke "pytest" "-vv"))))))
+                "1x4nrvb1p1byi1whmspik7lbh303akdlh762dayfxam3hycsh5kk"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-lxml python-pytest))
     (home-page "https://github.com/scrapy/cssselect")
@@ -7752,25 +7747,17 @@ GCS, Azure Blob Storage, gzip, bz2, etc.)")
 (define-public python-w3lib
   (package
     (name "python-w3lib")
-    (version "1.22.0")
+    (version "2.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "w3lib" version))
-       (patches (search-patches "python-w3lib-fix-test-failure.patch"))
        (sha256
         (base32
-         "1pv02lvvmgz2qb61vz1jkjc04fgm4hpfvaj5zm4i3mjp64hd1mha"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-        (modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest")))))))
+         "1cd4b3w5g3pfccsg79kjj27fwi216ip927rjq7isp8pfjzlp8nzd"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-six))
+     (list python-pytest))
     (home-page "https://github.com/scrapy/w3lib")
     (synopsis "Python library of web-related functions")
     (description
@@ -8052,21 +8039,22 @@ by asyncio.")
 (define-public python-parsel
   (package
     (name "python-parsel")
-    (version "1.6.0")
+    (version "1.8.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "parsel" version))
         (sha256
-          (base32 "0yawf9r3r863lwxj0n89i7h3n8xjbsl5b7n6xg76r68scl5yzvvh"))))
-    (build-system python-build-system)
+          (base32 "0f8yh30y3961a7kqwcnp4j3s7044ilakykiavc0skwdkr5l8xwmg"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
       (list python-cssselect
+            python-jmespath
             python-lxml
-            python-six
+            python-typing-extensions
             python-w3lib))
     (native-inputs
-      (list python-pytest python-pytest-runner))
+      (list python-psutil python-pytest))
     (home-page "https://github.com/scrapy/parsel")
     (synopsis "Extract data from HTML and XML using XPath and CSS selectors")
     (description "Parsel is a library to extract and remove data from
@@ -8077,36 +8065,29 @@ regular expressions.")
 (define-public python-scrapy
   (package
     (name "python-scrapy")
-    (version "2.7.1")
+    (version "2.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Scrapy" version))
        (sha256
-        (base32 "0kpi3hg2ycs6s8cg41r2zc1axd0rpnps8bnzg7wisjyjaf1l1yih"))))
-    (build-system python-build-system)
+        (base32 "03yil4hjn14amx5jnvjfahmm78qqax2664z30xxn0dxmzdspimli"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest"
-                       "-n" (number->string (parallel-job-count))
-                       ;; These tests fail when run in parallel (see:
-                       ;; https://github.com/scrapy/scrapy/issues/5502).
-                       "--ignore" "tests/test_engine.py"
-                       "--ignore" "tests/test_engine_stop_download_bytes.py"
-                       "--ignore" "tests/test_engine_stop_download_headers.py"
-                       ;; This test require network access.
-                       "--ignore" "tests/test_command_check.py"
-                       "-k"
-                       (string-append
-                        ;; The followin tests fail for unknown reasons.
-                        "not test_server_set_cookie_domain_suffix_public_private"
-                        " and not test_user_set_cookie_domain_suffix_public_private"
-                        " and not test_pformat")
-                       "tests")))))))
+     (list #:test-flags
+           ;; Tests fail with DNS lookup or need a display.
+           #~(list "-k" (string-append
+                         "not " (string-join
+                                 (list "test_SCRAPY_CHECK_set"
+                                       "test_check_all_default_contracts"
+                                       "test_check_cb_kwargs_contract"
+                                       "test_check_returns_items_contract"
+                                       "test_check_returns_requests_contract"
+                                       "test_check_scrapes_contract"
+                                       "test_pformat"
+                                       "test_pformat_old_windows"
+                                       "test_pformat_windows")
+                                 " and not ")))))
     (propagated-inputs
      (list python-botocore              ; Optional: For S3FeedStorage class.
            python-cryptography

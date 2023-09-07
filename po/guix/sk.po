@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2023-06-19 03:18+0000\n"
-"PO-Revision-Date: 2023-07-30 12:21+0000\n"
-"Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
+"PO-Revision-Date: 2023-08-07 16:21+0000\n"
+"Last-Translator: Marek Felšöci <marek@felsoci.sk>\n"
 "Language-Team: Slovak <https://translate.fedoraproject.org/projects/guix/guix/sk/>\n"
 "Language: sk\n"
 "MIME-Version: 1.0\n"
@@ -107,7 +107,7 @@ msgstr "Toto je jednoduchá služba."
 #: gnu/services.scm:341
 #, scheme-format
 msgid "modify-services: service '~a' not found in service list"
-msgstr ""
+msgstr "modify-services: služba „~a“ sa nenašla v zozname služieb"
 
 #: gnu/services.scm:422
 msgid ""
@@ -450,16 +450,12 @@ msgstr ""
 "Viď príklad v @xref{Name Service Switch}."
 
 #: gnu/services/base.scm:1572
-#, fuzzy
-#| msgid "Service transmission-daemon has been asked to reload its settings file."
 msgid "Service syslog has been asked to reload its settings file."
-msgstr "Služba transmission-daemon bola požiadaná o opätovné načítanie svojho súboru nastavení."
+msgstr "Služba syslog bola požiadaná o opätovné načítanie svojho súboru nastavení."
 
 #: gnu/services/base.scm:1574
-#, fuzzy
-#| msgid "Service transmission-daemon is not running."
 msgid "Service syslog is not running."
-msgstr "Služba transmission-daemon nebeží."
+msgstr "Služba syslog nebeží."
 
 #: gnu/services/base.scm:1591
 msgid ""
@@ -472,12 +468,12 @@ msgstr ""
 #: gnu/services/base.scm:1630
 #, scheme-format
 msgid "Using file-like value for 'pam-limits-service-type' is deprecated~%"
-msgstr ""
+msgstr "Použitie súbor-pripomínajúcej hodnoty pre „pam-limits-service-type“ sa už neodporúča~%"
 
 #: gnu/services/base.scm:1640
 #, scheme-format
 msgid "invalid input for 'pam-limits-service-type'~%"
-msgstr ""
+msgstr "neplatný vstup pre „pam-limits-service-type“~%"
 
 #: gnu/services/base.scm:1649
 msgid ""
@@ -604,10 +600,9 @@ msgid "invalid value ~s for field '~a'"
 msgstr "neplatná hodnota ~s poľa „~a“"
 
 #: gnu/services/configuration.scm:216
-#, fuzzy, scheme-format
-#| msgid "'--recursive' is deprecated, use '--serializer=nar' instead~%"
+#, scheme-format
 msgid "specifying serializers after documentation is deprecated, use (serializer ~a) instead~%"
-msgstr "voľba „--recursive“ je zastaraná, namiesto nej použite „--serializer“~%"
+msgstr "zadanie prevodníka na sériový tvar po dokumentácii sa už neodporúča, namiesto toho použite (serializer ~a)~%"
 
 #: gnu/services/configuration.scm:466
 #, scheme-format
@@ -1095,10 +1090,12 @@ msgid ""
 "Run Redshift, a program that adjusts the color temperature of display\n"
 "according to time of day."
 msgstr ""
+"Spustiť Redshift, program, ktorý prispôsobuje teplotu farieb obrazovky\n"
+"dennej dobe."
 
 #: gnu/home/services/desktop.scm:237
 msgid "Run the session-specific D-Bus inter-process message bus."
-msgstr ""
+msgstr "Spustiť sedeniu vlastnú medziprocesovú zbernicu správ D-Bus."
 
 #: gnu/home/services/desktop.scm:280
 msgid ""
@@ -1106,18 +1103,25 @@ msgid ""
 "Xorg graphical display server, automatically hides the cursor after a\n"
 "user-defined timeout has expired."
 msgstr ""
+"Spustiť démona @code{unclutter}, ktorý, na systémoch využívajúcich\n"
+"zobrazovací server Xorg, samočinne skrýva kurzor po vypršaní používateľom\n"
+"určeného množstva času."
 
 #: gnu/home/services/desktop.scm:337
 msgid ""
 "Run the @code{xmodmap} utility to modify keymaps and pointer\n"
 "buttons under the Xorg display server via user-defined expressions."
 msgstr ""
+"Spustiť nástroj @code{xmodmap} umožňujúci meniť pridelenie kláves a tlačidiel\n"
+"polohovacích zariadení pod zobrazovacím serverom Xorg pomocou používateľských výrazov."
 
 #: gnu/home/services/fontutils.scm:92
 msgid ""
 "Provides configuration file for fontconfig and make\n"
 "fc-* utilities aware of font packages installed in Guix Home's profile."
 msgstr ""
+"Poskytuje súbor nastavení pre fontconfig a sprístupňuje fc-* nástrojom\n"
+"balíky písiem nainštalované v profile Guix Domov."
 
 #: gnu/home/services/gnupg.scm:147
 msgid ""
@@ -1126,14 +1130,18 @@ msgid ""
 "enabled, @command{gpg-agent} acts as a drop-in replacement for OpenSSH's\n"
 "@command{ssh-agent}."
 msgstr ""
+"Nastaviť sprostredkovateľa GnuPG, @command{gpg-agent}, ktorý zodpovedá\n"
+"za správu OpenPGP a prípadne aj súkromných kľúčov SSH.  Ak je povolená podpora\n"
+"SSH, @command{gpg-agent} sa považuje za priamu náhradu pre OpenSSH príkaz\n"
+"@command{ssh-agent}."
 
 #: gnu/home/services/guix.scm:44
 msgid "Manages the per-user Guix channels specification."
-msgstr ""
+msgstr "Spravuje používateľom vlastné zadania kanálov Guix."
 
 #: gnu/home/services/mcron.scm:131
 msgid "Install and configure the GNU mcron cron job manager."
-msgstr ""
+msgstr "Nainštalovať a nastaviť správcu cron úloh GNU mcron."
 
 #: gnu/home/services/media.scm:67
 msgid ""
@@ -1148,10 +1156,12 @@ msgid ""
 "Install and configure @command{znc}, an @acronym{IRC, Internet Relay\n"
 "Chat} bouncer, as a Shepherd service."
 msgstr ""
+"Nainštalovať a nastaviť @acronym{IRC, Internet Relay Chat}\n"
+"bouncera @command{znc} ako službu Sheperda."
 
 #: gnu/home/services/pm.scm:145
 msgid "Run batsignal, a battery watching and notification daemon."
-msgstr ""
+msgstr "Spustiť batsignal, sledovacieho a oznamovacieho démona pre batérie."
 
 #: gnu/home/services/shells.scm:110
 #, scheme-format
@@ -1160,54 +1170,59 @@ msgid ""
 "for environment initialization of POSIX compliant login shells.  This\n"
 "service type can be extended with a list of file-like objects."
 msgstr ""
+"Vytvoriť @file{~/.profile}, ktorý sa používa\n"
+"na úvodné nastavenie POSIX-ových prihlasovacích príkazových riadkov.  Tento\n"
+"druh služby možno rozšíriť o zoznam súbor-pripomínajúcich objektov."
 
 #: gnu/home/services/shells.scm:304
 msgid "Install and configure Zsh."
-msgstr ""
+msgstr "Nainštalovať a nastaviť Zsh."
 
 #: gnu/home/services/shells.scm:494
 msgid "Install and configure GNU Bash."
-msgstr ""
+msgstr "Nainštalovať a nastaviť GNU Bash."
 
 #: gnu/home/services/shells.scm:626
 msgid "Install and configure Fish, the friendly interactive shell."
-msgstr ""
+msgstr "Nainštalovať a nastaviť Fish, priateľský príkazový riadok s priamym prístupom."
 
 #: gnu/home/services/shepherd.scm:169
 msgid "Configure and install userland Shepherd."
-msgstr ""
+msgstr "Nastaviť a nainštalovať Shepherda v používateľskom prostredí."
 
 #: gnu/home/services/sound.scm:114
 msgid ""
 "Define a PulseAudio sink to broadcast audio output over RTP, which can\n"
 "then by played by another PulseAudio instance."
 msgstr ""
+"Určiť pohlcovač PulseAudio pre vysielanie zvukového výstupu cez RTP.\n"
+"Tento potom možno prehrať v inej inštancii PulseAudio."
 
 #: gnu/home/services/sound.scm:149
 msgid ""
 "Define a PulseAudio source to receive audio broadcasted over RTP by\n"
 "another PulseAudio instance."
 msgstr ""
+"Určiť zdroj PulseAudio pre príjem zvukového vysielania cez RTP inou\n"
+"inštanciou PulseAudio."
 
 #: gnu/home/services/ssh.scm:110
-#, fuzzy, scheme-format
-#| msgid "~a: invalid locale name"
+#, scheme-format
 msgid "~s: invalid address family value"
-msgstr "~a: neplatný názov miestneho jazykového nastavenia"
+msgstr "~s: neplatná hodnota rodiny adries"
 
 #: gnu/home/services/ssh.scm:288
 msgid "define either 'name' or 'match-criteria', not both"
-msgstr ""
+msgstr "zadajte buď „name“ alebo „match-criteria“, nie oboje"
 
 #: gnu/home/services/ssh.scm:295
 msgid "define either 'name' or 'match-criteria' once"
-msgstr ""
+msgstr "raz zadajte buď „name“ alebo „match-criteria“"
 
 #: gnu/home/services/ssh.scm:336
-#, fuzzy, scheme-format
-#| msgid "~s: invalid package license~%"
+#, scheme-format
 msgid "~s: invalid 'add-keys-to-agent' value"
-msgstr "~s: neplatná licencia~%"
+msgstr "~s: neplatná hodnota „add-keys-to-agent“"
 
 #: gnu/home/services/ssh.scm:407
 #, scheme-format
@@ -1222,7 +1237,7 @@ msgstr ""
 
 #: gnu/home/services/ssh.scm:461
 msgid "Install and configure @command{ssh-agent} as a Shepherd service."
-msgstr ""
+msgstr "Nainštalovať a nastaviť @command{ssh-agent} ako službu Shepherda."
 
 #: gnu/home/services/symlink-manager.scm:106
 #, scheme-format
@@ -1307,26 +1322,32 @@ msgid ""
 "non-default value, extend the service-type (using @code{simple-service}\n"
 "for example)."
 msgstr ""
+"Nastaviť základné priečinky XDG.  Služby\n"
+"tohto druhu sa spúšťajú s predvolenou hodnotou. Pre poskytnutie\n"
+"vlastnej hodnoty rozšírte druh služby (napríklad pomocou\n"
+"@code{simple-service})."
 
 #: gnu/home/services/xdg.scm:271
 msgid ""
 "Configure XDG user directories.  To\n"
 "disable a directory, point it to the $HOME."
 msgstr ""
+"Nastaviť používateľské priečinky XDG.  Priečinok\n"
+"možno zakázať jeho presmerovaním na $HOME."
 
 #: gnu/home/services/xdg.scm:323
 #, scheme-format
 msgid "The value of an XDG MIME entry must be a list, string or symbol, was given ~a"
-msgstr ""
+msgstr "Hodnota zápisu XDG MIME musí byť zoznam, reťazec alebo znak, zadaná hodnota je ~a"
 
 #: gnu/home/services/xdg.scm:374
 #, scheme-format
 msgid "XDG desktop type must be of of ~a, was given: ~a"
-msgstr ""
+msgstr "Druh pracovnej plochy XDG musí byť jeden z ~a, zadaný bol: ~a"
 
 #: gnu/home/services/xdg.scm:525
 msgid "Configure XDG MIME applications, and XDG desktop entries."
-msgstr ""
+msgstr "Nastaviť XDG MIME programy a zápisy pracovnej plochy XDG."
 
 #: gnu/system/file-systems.scm:137
 #, scheme-format
@@ -1457,7 +1478,7 @@ msgstr "Vykonajte „sudo guix container exec ~a /run/current-system/profile/bin
 #: gnu/system/linux-container.scm:264
 #, scheme-format
 msgid "or run 'sudo nsenter -a -t ~a' to get a shell into it.~%"
-msgstr "alebo vykonajte „sudo nsenter -a -t ~a“ pre spustenie shellu v kontajneri.~%"
+msgstr "alebo vykonajte „sudo nsenter -a -t ~a“ pre spustenie príkazového riadku v kontajneri.~%"
 
 #: gnu/system/mapped-devices.scm:134
 msgid "Map a device node using Linux's device mapper."
@@ -1539,7 +1560,7 @@ msgstr "Nástroj na aktualizáciu balíkov CHICKEN egg"
 #: guix/import/minetest.scm:498 guix/import/opam.scm:422
 #, scheme-format
 msgid "~a updater doesn't support updating to a specific version, sorry."
-msgstr ""
+msgstr "Nástroj na aktualizáciu ~a nepodporuje prechod na určitú verziu, prepáčte."
 
 #: guix/import/cpan.scm:349
 #, scheme-format
@@ -1566,10 +1587,9 @@ msgid "failed to retrieve package information from ~a: ~a (~a)~%"
 msgstr "nepodarilo sa získať údaje o balíku z ~a: ~a (~a)~%"
 
 #: guix/import/cran.scm:813 guix/import/cran.scm:836
-#, fuzzy, scheme-format
-#| msgid "~a is already the latest version of ~a~%"
+#, scheme-format
 msgid "~a provides only the latest version of each package, sorry."
-msgstr "~a už je najnovšej verzie ~a~%"
+msgstr "~a poskytuje len najnovšiu verziu každého balíka, prepáčte."
 
 #: guix/import/cran.scm:896
 msgid "Updater for CRAN packages"
@@ -1590,10 +1610,9 @@ msgid "~A: download failed~%"
 msgstr "~A: sťahovanie zlyhalo~%"
 
 #: guix/import/elpa.scm:271
-#, fuzzy, scheme-format
-#| msgid "Unsupported MELPA fetcher: ~a, falling back to unstable MELPA source.~%"
+#, scheme-format
 msgid "unsupported MELPA fetcher: ~a, falling back to unstable MELPA source~%"
-msgstr "Nepodporovaný nástroj na sťahovanie MELPA: ~a, použije sa predvolený nestabilný zdroj MELPA.~%"
+msgstr "nepodporovaný nástroj na sťahovanie MELPA: ~a, použije sa predvolený nestabilný zdroj MELPA~%"
 
 #: guix/import/elpa.scm:479
 msgid "Updater for ELPA packages"
@@ -1889,10 +1908,9 @@ msgid "Configuration file"
 msgstr "Súbor nastavení"
 
 #: gnu/installer.scm:329
-#, fuzzy, scheme-format
-#| msgid "cannot determine provenance of ~a~%"
+#, scheme-format
 msgid "cannot determine installer provenance~%"
-msgstr "nie je možné zistiť pôvod ~a~%"
+msgstr "nie je možné zistiť pôvod nástroja na inštaláciu~%"
 
 #: gnu/installer/connman.scm:196
 msgid "Could not determine the state of connman."
@@ -2235,7 +2253,7 @@ msgstr "Vyberte spôsob rozdelenia disku."
 
 #: gnu/installer/newt/partition.scm:49
 msgid "Partition scheme"
-msgstr "Spôsob rozdelenia disku"
+msgstr "Náčrt rozdelenia disku"
 
 #. TRANSLATORS: The ~{ and ~} format specifiers are used to iterate the list
 #. of device names of the user partitions that will be formatted.
@@ -3513,7 +3531,7 @@ msgid ""
 "  -V, --version          display version information and exit"
 msgstr ""
 "\n"
-"  -V, --version          zobraziť podrobnosti o verzii a skončiť"
+"  -V, --version          zobraziť údaje o verzii a skončiť"
 
 #: guix/scripts/build.scm:498
 #, scheme-format
@@ -3985,7 +4003,7 @@ msgstr "žiadny nástroj na aktualizáciu pre ~a"
 #: guix/lint.scm:1527 guix/lint.scm:1705
 #, scheme-format
 msgid "while retrieving upstream info for '~a'"
-msgstr "pri získavaní informácií od poskytovateľa o „~a“"
+msgstr "pri získavaní poznatkov od poskytovateľa o „~a“"
 
 #: guix/lint.scm:1536
 #, scheme-format
@@ -4033,7 +4051,7 @@ msgstr "Disarchive záznam odkazuje na nejestvujúci priečinok SWH „~a“"
 
 #: guix/lint.scm:1687
 msgid "source is not an origin, it cannot be archived"
-msgstr ""
+msgstr "„source“ nie je „origin“, nedá sa archivovať"
 
 #: guix/lint.scm:1697
 msgid "while connecting to Software Heritage"
@@ -4858,7 +4876,7 @@ msgstr "vyvolať zberača odpadkov"
 
 #: guix/scripts/gc.scm:264
 msgid "already ~,2h MiBs available on ~a, nothing to do~%"
-msgstr "na ~*~a už je ~@*~,2h MiB voľného miesta, žiadna činnosť sa nevyžaduje~%"
+msgstr "na ~a už je ~,2h MiB voľného miesta, žiadna činnosť sa nevyžaduje~%"
 
 #: guix/scripts/gc.scm:267
 msgid "freeing ~,2h MiBs~%"
@@ -5134,19 +5152,14 @@ msgstr ""
 "  -s, --style=TVAR      vybrať tvar výstupu, buď „specification“ alebo „variable“"
 
 #: guix/scripts/import/cran.scm:55
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --postinst-file=FILE\n"
-#| "                         Embed the provided postinst script"
 msgid ""
 "\n"
 "  -p, --license-prefix=PREFIX\n"
 "                         add custom prefix to licenses"
 msgstr ""
 "\n"
-"      --postinst-file=SÚBOR\n"
-"                         Vložiť určený skript postinst"
+"  -p, --license-prefix=PREDPONA\n"
+"                         pridať predponu k licenciám"
 
 #: guix/scripts/import/cran.scm:131 guix/scripts/import/texlive.scm:97
 #, scheme-format
@@ -5191,12 +5204,12 @@ msgid ""
 "  -V, --version                  display version information and exit"
 msgstr ""
 "\n"
-"  -V, --version                  zobraziť podrobnosti o verzii a skončiť"
+"  -V, --version                  zobraziť údaje o verzii a skončiť"
 
 #: guix/scripts/import/elpa.scm:99
 #, scheme-format
 msgid "this importer does not consider the version~%"
-msgstr ""
+msgstr "tento nahrávač nezohľadňuje verziu~%"
 
 #: guix/scripts/import/elpa.scm:106 guix/scripts/import/cpan.scm:83
 #: guix/scripts/import/crate.scm:98 guix/scripts/import/egg.scm:100
@@ -5374,7 +5387,7 @@ msgid ""
 "@command{hash guix} to make sure your shell refers to @file{~a}."
 msgstr ""
 "Po nastavení premennej @code{PATH}, použite\n"
-"@command{hash guix}, aby ste sa usitili, že váš shell odkazuje na @file{~a}."
+"@command{hash guix}, aby ste sa usitili, že váš príkazový riadok odkazuje na @file{~a}."
 
 #: guix/scripts/pull.scm:505
 #, scheme-format
@@ -5502,10 +5515,9 @@ msgid "unsupported substitute URI scheme: ~a~%"
 msgstr "nepodporované pravidlo nahrádzania prepojení: ~a~%"
 
 #: guix/scripts/substitute.scm:498
-#, fuzzy, scheme-format
-#| msgid "download from '~a' failed: ~a, ~s~%"
+#, scheme-format
 msgid "download from '~a' failed, trying next URL~%"
-msgstr "sťahovanie z „~a“ zlyhalo: ~a, ~s~%"
+msgstr "sťahovanie z „~a“ zlyhalo, skúšam ďalšie prepojenie~%"
 
 #: guix/scripts/substitute.scm:504
 #, scheme-format
@@ -5513,10 +5525,9 @@ msgid "Downloading ~a...~%"
 msgstr "Sťahuje sa ~a...~%"
 
 #: guix/scripts/substitute.scm:507
-#, fuzzy, scheme-format
-#| msgid "found valid signature for '~a'~%"
+#, scheme-format
 msgid "no valid nar URLs for ~a at ~a~%"
-msgstr "našiel sa platný podpis pre „~a“~%"
+msgstr "žiadne platné nar prepojenia pre ~a na ~a~%"
 
 #: guix/scripts/substitute.scm:618
 #, scheme-format
@@ -6261,86 +6272,76 @@ msgstr "overiť zadania balíkov"
 #: guix/scripts/locate.scm:238
 #, scheme-format
 msgid "schema version:\t~a~%"
-msgstr ""
+msgstr "verzia náčrtu:\t~a~%"
 
 #: guix/scripts/locate.scm:240
-#, fuzzy
-#| msgid "wrong number of arguments~%"
 msgid "number of packages:\t~9h~%"
-msgstr "nesprávny počet parametrov~%"
+msgstr "počet balíkov:\t~9h~%"
 
 #: guix/scripts/locate.scm:242
 msgid "number of files:\t~9h~%"
-msgstr ""
+msgstr "počet súborov:\t~9h~%"
 
 #: guix/scripts/locate.scm:244
 msgid "database size:\t~9h MiB~%"
-msgstr ""
+msgstr "veľkosť databázy:\t~9h MiB~%"
 
 #: guix/scripts/locate.scm:371
-#, fuzzy
-#| msgid "  packages:\n"
 msgid "indexing ~h packages"
-msgstr "  balíky:\n"
+msgstr "indexuje sa ~h balíkov"
 
 #: guix/scripts/locate.scm:444
 #, scheme-format
 msgid "traversing local profile manifests...~%"
-msgstr ""
+msgstr "prechádzam balíkospisy miestneho profilu…~%"
 
 #: guix/scripts/locate.scm:516
 msgid ""
 "Usage: guix locate [OPTIONS...] FILE...\n"
 "Locate FILE and return the list of packages that contain it.\n"
 msgstr ""
+"Použitie: guix locate [VOĽBY...] SÚBOR...\n"
+"Nájsť SÚBOR a vrátiť zoznam balíkov, ktoré ho obsahujú.\n"
 
 #: guix/scripts/locate.scm:518
 msgid ""
 "\n"
 "  -g, --glob          interpret FILE as a glob pattern"
 msgstr ""
+"\n"
+"  -g, --glob          považovať SÚBOR za glob vzor"
 
 #: guix/scripts/locate.scm:520
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --stats            display commit signing statistics upon completion"
 msgid ""
 "\n"
 "      --stats         display database statistics"
 msgstr ""
 "\n"
-"      --stats            po dokončení zobraziť štatistiku podpisovania úprav"
+"      --stats         zobraziť štatistiku databázy"
 
 #: guix/scripts/locate.scm:522
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -u, --update           update source files in place"
 msgid ""
 "\n"
 "  -u, --update        force a database update"
 msgstr ""
 "\n"
-"  -u, --update           aktualizovať zdrojové súbory na mieste"
+"  -u, --update        vynútiť aktualizáciu databázy"
 
 #: guix/scripts/locate.scm:524
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --repair           repair the specified items"
 msgid ""
 "\n"
 "      --clear         clear the database"
 msgstr ""
 "\n"
-"      --repair           opraviť dané položky"
+"      --clear         vyprázdniť databázu"
 
 #: guix/scripts/locate.scm:526
 msgid ""
 "\n"
 "      --database=FILE store the database in FILE"
 msgstr ""
+"\n"
+"      --database=SÚBOR uložiť databázu do SÚBORU"
 
 #: guix/scripts/locate.scm:529
 msgid ""
@@ -6348,68 +6349,57 @@ msgid ""
 "      --method=METHOD use METHOD to select packages to index; METHOD can\n"
 "                      be 'manifests' (fast) or 'store' (slower)"
 msgstr ""
+"\n"
+"      --method=POSTUP použiť POSTUP pre výber balíkov na indexovanie; PRÍSTUP môže\n"
+"                      byť „manifests“ (rýchly) alebo „store“ (pomalší)"
 
 #: guix/scripts/locate.scm:533
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -h, --help             display this help and exit"
 msgid ""
 "\n"
 "  -h, --help          display this help and exit"
 msgstr ""
 "\n"
-"  -h, --help             zobraziť túto pomocnú správu a skončiť"
+"  -h, --help          zobraziť túto pomocnú správu a skončiť"
 
 #: guix/scripts/locate.scm:535
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -V, --version          display version information and exit"
 msgid ""
 "\n"
 "  -V, --version       display version information and exit"
 msgstr ""
 "\n"
-"  -V, --version          zobraziť podrobnosti o verzii a skončiť"
+"  -V, --version       zobraziť údaje o verzii a skončiť"
 
 #: guix/scripts/locate.scm:568 guix/scripts/locate.scm:626
-#, fuzzy, scheme-format
-#| msgid "~a: unknown diff mode~%"
+#, scheme-format
 msgid "~a: unknown indexing method~%"
-msgstr "~a: neznámy spôsob zobrazenia rozdielov~%"
+msgstr "~a: neznámy postup indexovania~%"
 
 #: guix/scripts/locate.scm:581
-#, fuzzy
-#| msgid "search for packages"
 msgid "search for packages providing a given file"
-msgstr "vyhľadávať balíky"
+msgstr "vyhľadať balíky poskytujúce určitý súbor"
 
 #: guix/scripts/locate.scm:637
-#, fuzzy, scheme-format
-#| msgid "building XDG MIME database..."
+#, scheme-format
 msgid "clearing database...~%"
-msgstr "zostavuje sa databáza MIME súborov XDG..."
+msgstr "vyprázdňuje sa databáza...~%"
 
 #: guix/scripts/locate.scm:638
-#, fuzzy, scheme-format
-#| msgid "loading environment from '~a'...~%"
+#, scheme-format
 msgid "indexing files from ~a...~%"
-msgstr "načítavanie prostredia z „~a“...~%"
+msgstr "indexujú sa súbory z ~a...~%"
 
 #: guix/scripts/locate.scm:652
 #, scheme-format
 msgid "no files to search for~%"
-msgstr ""
+msgstr "niet súborov na vyhľadanie~%"
 
 #: guix/scripts/locate.scm:653
-#, fuzzy, scheme-format
-#| msgid "file '~a' not found in search path ~s~%"
+#, scheme-format
 msgid "file~{ '~a'~} not found in database '~a'~%"
 msgid_plural "files~{ '~a'~} not found in database '~a'~%"
-msgstr[0] "súbor „~a“ sa v prehľadávanej ceste nenašiel ~s~%"
-msgstr[1] "súbor „~a“ sa v prehľadávanej ceste nenašiel ~s~%"
-msgstr[2] "súbor „~a“ sa v prehľadávanej ceste nenašiel ~s~%"
+msgstr[0] "súbor~{ „~a“~} sa nenašiel v databáze „~a“~%"
+msgstr[1] "súbory~{ „~a“~} sa nenašli v databáze „~a“~%"
+msgstr[2] "súbory~{ „~a“~} sa nenašli v databáze „~a“~%"
 
 #: guix/scripts/publish.scm:81
 #, scheme-format
@@ -7079,16 +7069,12 @@ msgstr ""
 "  deb           Archív Debianu inštalovateľný pomocou dpkg alebo apt"
 
 #: guix/scripts/pack.scm:1371
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "  deb           Debian archive installable via dpkg/apt"
 msgid ""
 "\n"
 "  rpm           RPM archive installable via rpm/yum"
 msgstr ""
 "\n"
-"  deb           Archív Debianu inštalovateľný pomocou dpkg alebo apt"
+"  rpm           RPM archív inštalovateľný cez rpm/yum"
 
 #: guix/scripts/pack.scm:1389
 msgid ""
@@ -7129,76 +7115,52 @@ msgstr ""
 "                         Vložiť určený SÚBOR triggers"
 
 #: guix/scripts/pack.scm:1412
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --help-deb-format  list options specific to the deb format"
 msgid ""
 "\n"
 "      --help-rpm-format  list options specific to the RPM format"
 msgstr ""
 "\n"
-"      --help-deb-format  zobraziť voľby pre formát deb"
+"      --help-rpm-format  zobraziť voľby pre formát RPM"
 
 #: guix/scripts/pack.scm:1416
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --postinst-file=FILE\n"
-#| "                         Embed the provided postinst script"
 msgid ""
 "\n"
 "      --prein-file=FILE\n"
 "                         Embed the provided prein script"
 msgstr ""
 "\n"
-"      --postinst-file=SÚBOR\n"
-"                         Vložiť určený skript postinst"
+"      --prein-file=SÚBOR\n"
+"                         Vložiť poskytnutý pred-inštalačný skript"
 
 #: guix/scripts/pack.scm:1419
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --postinst-file=FILE\n"
-#| "                         Embed the provided postinst script"
 msgid ""
 "\n"
 "      --postin-file=FILE\n"
 "                         Embed the provided postin script"
 msgstr ""
 "\n"
-"      --postinst-file=SÚBOR\n"
-"                         Vložiť určený skript postinst"
+"      --postin-file=SÚBOR\n"
+"                         Vložiť poskytnutý po-inštalačný skript"
 
 #: guix/scripts/pack.scm:1422
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --postinst-file=FILE\n"
-#| "                         Embed the provided postinst script"
 msgid ""
 "\n"
 "      --preun-file=FILE\n"
 "                         Embed the provided preun script"
 msgstr ""
 "\n"
-"      --postinst-file=SÚBOR\n"
-"                         Vložiť určený skript postinst"
+"      --preun-file=SÚBOR\n"
+"                         Vložiť poskytnutý pred-odinštalačný skript"
 
 #: guix/scripts/pack.scm:1425
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --postinst-file=FILE\n"
-#| "                         Embed the provided postinst script"
 msgid ""
 "\n"
 "      --postun-file=FILE\n"
 "                         Embed the provided postun script"
 msgstr ""
 "\n"
-"      --postinst-file=SÚBOR\n"
-"                         Vložiť určený skript postinst"
+"      --postun-file=SÚBOR\n"
+"                         Vložiť poskytnutý po-odinštalačný skript"
 
 #: guix/scripts/pack.scm:1489
 #, scheme-format
@@ -7337,7 +7299,7 @@ msgstr "neboli určené žiadne balíky; zostaví sa prázdny zväzok~%"
 #: guix/scripts/pack.scm:1745
 #, scheme-format
 msgid "Singularity requires you to provide a shell~%"
-msgstr "Singularity vyžaduje shell~%"
+msgstr "Singularity vyžaduje príkazový riadok~%"
 
 #: guix/scripts/pack.scm:1746
 msgid "Add @code{bash} or @code{bash-minimal} to your package list."
@@ -7739,7 +7701,7 @@ msgstr[2] "načítavajú sa moduly~{ ~a~} z hostiteľa~%"
 #: guix/gnu-maintenance.scm:757
 #, scheme-format
 msgid "Updating to a specific version is not yet implemented for ~a, sorry."
-msgstr ""
+msgstr "Aktualizovanie na určitú verziu sa pre ~a ešte nepodporuje, prepáčte."
 
 #: guix/gnu-maintenance.scm:882
 msgid "Updater for GNU packages"
@@ -7834,10 +7796,9 @@ msgid "process stopped with signal ~a~%"
 msgstr "proces bol zastavený signálom ~a~%"
 
 #: guix/scripts/container/exec.scm:113
-#, fuzzy, scheme-format
-#| msgid "process terminated with signal ~a~%"
+#, scheme-format
 msgid "process exited with status ~d~%"
-msgstr "proces bol ukončený signálom ~a~%"
+msgstr "proces ukončený v stave ~d~%"
 
 #: guix/transformations.scm:158
 #, scheme-format
@@ -7910,10 +7871,9 @@ msgid "tuning ~a for CPU ~a~%"
 msgstr "vylaďuje sa ~a pre procesory ~a~%"
 
 #: guix/transformations.scm:704
-#, fuzzy, scheme-format
-#| msgid "~a: invalid package patch specification"
+#, scheme-format
 msgid "~a: invalid package configure flag specification"
-msgstr "~a: neplatné určenie záplaty balíka"
+msgstr "~a: neplatné určenie príznaku nastavenia balíka"
 
 #: guix/transformations.scm:785
 #, scheme-format
@@ -7921,10 +7881,9 @@ msgid "~a: invalid package patch specification"
 msgstr "~a: neplatné určenie záplaty balíka"
 
 #: guix/transformations.scm:808
-#, fuzzy, scheme-format
-#| msgid "could not find bootstrap binary '~a' for system '~a'"
+#, scheme-format
 msgid "could not find version ~a of '~a' upstream~%"
-msgstr "nepodarilo sa nájsť zavádzací binárny súbor „~a“ pre systém „~a“"
+msgstr "nepodarilo sa nájsť verziu ~a pre „~a“ u poskytovateľa~%"
 
 #: guix/transformations.scm:811
 #, scheme-format
@@ -7932,16 +7891,14 @@ msgid "could not determine latest upstream release of '~a'~%"
 msgstr "nepodarilo sa zistiť najnovšie vydanie balíka „~a“ u poskytovateľa~%"
 
 #: guix/transformations.scm:817
-#, fuzzy, scheme-format
-#| msgid "~a is already the latest version of ~a~%"
+#, scheme-format
 msgid "~a is already the latest version of '~a'~%"
-msgstr "~a už je najnovšej verzie ~a~%"
+msgstr "~a už je tá najnovšia verzia pre „~a“~%"
 
 #: guix/transformations.scm:823
-#, fuzzy, scheme-format
-#| msgid "~a is greater than the latest known version of ~a (~a)~%"
+#, scheme-format
 msgid "using ~a ~a, which is older than the packaged version (~a)~%"
-msgstr "~a je vyššia ako najnovšia známa verzia ~a (~a)~%"
+msgstr "používa sa ~a ~a, čo je staršia verzia, ako tá v balíku (~a)~%"
 
 #: guix/transformations.scm:830
 #, scheme-format
@@ -7949,10 +7906,9 @@ msgid "cannot authenticate source of '~a', version ~a~%"
 msgstr "nepodarilo sa overiť zdroj „~a“, verzia ~a~%"
 
 #: guix/transformations.scm:865
-#, fuzzy, scheme-format
-#| msgid "~a: invalid symlink specification~%"
+#, scheme-format
 msgid "~a: invalid upstream version specification"
-msgstr "~a: neplatne zadaný symbolický odkaz~%"
+msgstr "~a: neplatné zadanie verzie u poskytovateľa"
 
 #: guix/transformations.scm:942
 #, scheme-format
@@ -8039,21 +7995,18 @@ msgid ""
 "\n"
 "      --tune[=CPU]       tune relevant packages for CPU--e.g., \"skylake\""
 msgstr ""
+"\n"
+"      --tune[=PROCESOR]       vyladiť balíky, ktorých sa to týka pre PROCESOR, napr. „skylake“"
 
 #: guix/transformations.scm:1001
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --with-patch=PACKAGE=FILE\n"
-#| "                         add FILE to the list of patches of PACKAGE"
 msgid ""
 "\n"
 "      --with-configure-flag=PACKAGE=FLAG\n"
 "                         append FLAG to the configure flags of PACKAGE"
 msgstr ""
 "\n"
-"      --with-patch=BALÍK=SÚBOR\n"
-"                         pridať SÚBOR do zoznamu záplat pre BALÍK"
+"      --with-configure-flag=BALÍK=PRÍZNAK\n"
+"                         pridať PRÍZNAK k nastavovacím príznakom BALÍKA"
 
 #: guix/transformations.scm:1004
 msgid ""
@@ -8066,19 +8019,14 @@ msgstr ""
 "                         použiť najnovšie dostupné vydanie BALÍKA"
 
 #: guix/transformations.scm:1007
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --with-latest=PACKAGE\n"
-#| "                         use the latest upstream release of PACKAGE"
 msgid ""
 "\n"
 "      --with-version=PACKAGE=VERSION\n"
 "                         use the given upstream VERSION of PACKAGE"
 msgstr ""
 "\n"
-"      --with-latest=BALÍK\n"
-"                         použiť najnovšie dostupné vydanie BALÍKA"
+"      --with-version=BALÍK=VERZIA\n"
+"                         použiť danú VERZIU od poskytovateľa pre BALÍK"
 
 #: guix/transformations.scm:1010
 msgid ""
@@ -8144,10 +8092,9 @@ msgid "failed to fetch source from '~a'"
 msgstr "získavanie zdroja pre „~a“ zlyhalo"
 
 #: guix/upstream.scm:490
-#, fuzzy, scheme-format
-#| msgid "rolling back channel '~a' from ~a to ~a~%"
+#, scheme-format
 msgid "downgrading '~a' from ~a to ~a~%"
-msgstr "vraciam kanál „~a“ z ~a na ~a~%"
+msgstr "vracia sa „~a“ z ~a na ~a~%"
 
 #: guix/upstream.scm:503
 #, scheme-format
@@ -8155,10 +8102,9 @@ msgid "cannot download for this method: ~s"
 msgstr "nedá sa sťahovať týmto spôsobom: ~s"
 
 #: guix/upstream.scm:517
-#, fuzzy, scheme-format
-#| msgid "updater '~a' failed to find upstream releases"
+#, scheme-format
 msgid "updater failed to find release ~a@~a~%"
-msgstr "nástroju na aktualizáciu „~a“ sa nepodarilo nájsť dostupné vydania"
+msgstr "nástroju na aktualizáciu sa nepodarilo nájsť vydanie ~a@~a~%"
 
 #: guix/upstream.scm:519
 #, scheme-format
@@ -8166,15 +8112,14 @@ msgid "updater failed to determine available releases for ~a~%"
 msgstr "nástroju na aktualizáciu sa nepodarilo zistiť dostupné vydania pre ~a~%"
 
 #: guix/upstream.scm:554
-#, fuzzy, scheme-format
-#| msgid "'~a' did not return a list of channels~%"
+#, scheme-format
 msgid "~a: '~a' field not found; leaving it unchanged~%"
-msgstr "„~a“ nevrátil zoznam kanálov~%"
+msgstr "~a: pole „~a“ sa nenašlo; ponecháva sa bezo zmeny~%"
 
 #: guix/upstream.scm:557
 #, scheme-format
 msgid "~a: expected '~a' value: ~s~%"
-msgstr ""
+msgstr "~a: očakávala sa „~a“ hodnota: ~s~%"
 
 #: guix/upstream.scm:672
 #, scheme-format
@@ -8403,6 +8348,8 @@ msgid ""
 "~a: dependency cycle detected:\n"
 "  ~a~{ -> ~a~}~%"
 msgstr ""
+"~a: bola zistená slučka v závislostiach:\n"
+"  ~a~{ -> ~a~}~%"
 
 #: guix/ui.scm:738
 #, scheme-format
@@ -8787,7 +8734,7 @@ msgid ""
 "  -V, --version          display version and copyright information and exit"
 msgstr ""
 "\n"
-"  -V, --version          zobraziť podrobnosti o verzii a autorských právach a skončiť"
+"  -V, --version          zobraziť údaje o verzii a autorských právach a skončiť"
 
 #: guix/ui.scm:2216
 msgid "COMMAND must be one of the sub-commands listed below:\n"
@@ -8925,6 +8872,11 @@ msgid ""
 "\n"
 "The channels you are pulling from are: ~a."
 msgstr ""
+"Toto zvyčajne naznačuje chybu v jednom\n"
+"z použitých kanálov, alebo nemožnosť ich vzájomného použitia.  Môžete\n"
+"si prezrieť záznam o zostavení a nahlásiť chybu vývojárom kanála.\n"
+"\n"
+"Kanály, ktoré používate sú: ~a."
 
 #: guix/status.scm:555
 #, scheme-format
@@ -9056,7 +9008,7 @@ msgstr "neplatný formát poľa podpisu: ~a~%"
 
 #: guix/channels.scm:257
 msgid "channel dependency has an invalid introduction field"
-msgstr ""
+msgstr "závislosť kanála má neplatné úvodné pole"
 
 #: guix/channels.scm:300
 msgid "unsupported '.guix-channel' version"
@@ -9374,10 +9326,9 @@ msgid "~a: connection failed: ~a~%"
 msgstr "~a: pripájanie zlyhalo: ~a~%"
 
 #: guix/substitutes.scm:159
-#, fuzzy, scheme-format
-#| msgid "~a: connection failed: ~a~%"
+#, scheme-format
 msgid "~a: TLS connection failed: in ~a: ~a~%"
-msgstr "~a: pripájanie zlyhalo: ~a~%"
+msgstr "~a: TLS pripojenie zlyhalo: v ~a: ~a~%"
 
 #: guix/substitutes.scm:278
 #, scheme-format
@@ -9587,7 +9538,7 @@ msgid ""
 "  -V, --version             display version information and exit"
 msgstr ""
 "\n"
-"  -V, --version             zobraziť podrobnosti o verzii a skončiť"
+"  -V, --version             zobraziť údaje o verzii a skončiť"
 
 #: guix/scripts/discover.scm:128
 msgid "discover Guix related services using Avahi"
@@ -9635,7 +9586,7 @@ msgid ""
 "      --check            check if the shell clobbers environment variables"
 msgstr ""
 "\n"
-"      --check            overiť, či shell neprepisuje premenné prostredia"
+"      --check            overiť, či príkazový riadok neprepisuje premenné prostredia"
 
 #: guix/scripts/environment.scm:98
 msgid ""
@@ -9689,16 +9640,12 @@ msgstr ""
 "                         izolovaného kontajnera"
 
 #: guix/scripts/environment.scm:114
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -C, --container        run command within an isolated container"
 msgid ""
 "\n"
 "  -W, --nesting          make Guix available within the container"
 msgstr ""
 "\n"
-"  -C, --container        spustiť príkaz v izolovanom kontajneri"
+"  -W, --nesting          sprístupniť Guix v kontajneri"
 
 #: guix/scripts/environment.scm:116
 msgid ""
@@ -9768,7 +9715,7 @@ msgid ""
 msgstr ""
 "Použitie: guix environment [VOĽBA]... BALÍK... [-- PRÍKAZ...]\n"
 "Zostaviť prostredie, ktoré zahŕňa závislosti BALÍKA a spustiť PRÍKAZ alebo\n"
-"interaktívny shell v tomto prostredí.\n"
+"príkazový riadok s priamym prístupom v tomto prostredí.\n"
 
 #: guix/scripts/environment.scm:142
 msgid "This command is deprecated in favor of 'guix shell'.\n"
@@ -9802,7 +9749,7 @@ msgstr "voľba „--inherit“ je zastaraná, namiesto nej použite „--preserv
 #: guix/scripts/environment.scm:364
 #, scheme-format
 msgid "could not add current Guix to the profile~%"
-msgstr ""
+msgstr "nepodarilo sa pridať súčasný Guix do profilu~%"
 
 #: guix/scripts/environment.scm:524
 #, scheme-format
@@ -9812,17 +9759,17 @@ msgstr "~a: príkaz sa nenašiel~%"
 #: guix/scripts/environment.scm:602
 #, scheme-format
 msgid "checking the environment variables visible from shell '~a'...~%"
-msgstr "overovanie premenných prostredia viditeľných v shelli „~a“...~%"
+msgstr "overovanie premenných prostredia viditeľných z príkazového riadku „~a“...~%"
 
 #: guix/scripts/environment.scm:606
 #, scheme-format
 msgid "failed to determine environment of shell '~a'~%"
-msgstr "nepodarilo sa zistiť prostredie shellu „~a“~%"
+msgstr "nepodarilo sa zistiť prostredie príkazového riadku „~a“~%"
 
 #: guix/scripts/environment.scm:613
 #, scheme-format
 msgid "variable '~a' is missing from shell environment~%"
-msgstr "premenná „~a“ chýba v prostredí shellu~%"
+msgstr "premenná „~a“ chýba v prostredí príkazového riadku~%"
 
 #: guix/scripts/environment.scm:620
 #, scheme-format
@@ -9837,7 +9784,7 @@ msgstr "premenná „~a“ bola prepísaná: „~a“~%"
 #: guix/scripts/environment.scm:633
 #, scheme-format
 msgid "'GUIX_ENVIRONMENT' is missing from the shell environment~%"
-msgstr "v prostredí shellu chýba „GUIX_ENVIRONMENT“~%"
+msgstr "v prostredí príkazového riadku chýba „GUIX_ENVIRONMENT“~%"
 
 #: guix/scripts/environment.scm:637
 #, scheme-format
@@ -9847,23 +9794,10 @@ msgstr "„GUIX_ENVIRONMENT“ bola pridelená hodnota „~a“ namiesto „~a�
 #: guix/scripts/environment.scm:651
 #, scheme-format
 msgid "'PS1' is the same in sub-shell~%"
-msgstr "„PS1“ je rovnaké v pod-shelli~%"
+msgstr "„PS1“ je rovnaké vo vnorenom príkazovom riadku~%"
 
 #: guix/scripts/environment.scm:652
-#, fuzzy, scheme-format
-#| msgid ""
-#| "Consider setting a different prompt for\n"
-#| "environment shells to make them distinguishable.\n"
-#| "\n"
-#| "If you are using Bash, you can do that by adding these lines to\n"
-#| "@file{~/.bashrc}:\n"
-#| "\n"
-#| "@example\n"
-#| "if [ -n \"$GUIX_ENVIRONMENT\" ]\n"
-#| "then\n"
-#| "  export PS1=\"\\u@@\\h \\w [env]\\$ \"\n"
-#| "fi\n"
-#| "@end example\n"
+#, scheme-format
 msgid ""
 "Consider setting a different prompt for\n"
 "environment shells to make them distinguishable.\n"
@@ -9875,17 +9809,14 @@ msgid ""
 "PS1='\\u@@\\h \\w${GUIX_ENVIRONMENT:+ [env]}\\$ '\n"
 "@end example\n"
 msgstr ""
-"Zvážte použitie odlišného príkazového riadku\n"
-"v prostrediach shellu, aby ste ich mohli lepšie odlíšiť.\n"
+"Zvážte použitie odlišnej výzvy v príkazových riadkoch\n"
+"prostredí, aby ste ich mohli lepšie rozoznať.\n"
 "\n"
-"Ak používate Bash, môžete tak spraviť pridaním nasledovných\n"
-"riadkov do vášho @file{~/.bashrc}:\n"
+"Ak používate Bash, môžete tak urobiť pridaním týchto riadkov do\n"
+"@file{~/.bashrc}:\n"
 "\n"
 "@example\n"
-"if [ -n \"$GUIX_ENVIRONMENT\" ]\n"
-"then\n"
-"  export PS1=\"\\u@@\\h \\w [env]\\$ \"\n"
-"fi\n"
+"PS1='\\u@@\\h \\w${GUIX_ENVIRONMENT:+ [env]}\\$ '\n"
 "@end example\n"
 
 #: guix/scripts/environment.scm:665
@@ -9915,7 +9846,7 @@ msgstr ""
 "v odlišnom prostredí ako je to, ktoré ste Guix požiadali\n"
 "vytvoriť.\n"
 "\n"
-"Väčšinou to znamená, že vaše spúšťacie súbory shellu neočakávane upravujú\n"
+"Väčšinou to znamená, že vaše spúšťacie súbory príkazového riadku neočakávane upravujú\n"
 "dotyčné premenné prostredia. Napríklad, ak používate Bash, uistite sa, že\n"
 "premenné prostredia sú nastavené pomocou @file{~/.bash_profile} a @emph{nie}\n"
 "pomocou @file{~/.bashrc}. Pre viac podrobností o spúšťacích súboroch Bashu,\n"
@@ -9926,13 +9857,13 @@ msgstr ""
 "@end example\n"
 "\n"
 "Týmto ťažkostiam môžete zabrániť aj použitím voľby @option{--container} alebo\n"
-"@option{-C}, čo vám poskytne úplne izolované prostredie spustené v „kontajneri“\n"
+"@option{-C}, čo vám poskytne úplne oddelené prostredie spustené v „kontajneri“\n"
 "a odolné voči spomenutým nepríjemnostiam."
 
 #: guix/scripts/environment.scm:684
 #, scheme-format
 msgid "All is good!  The shell gets correct environment variables.~%"
-msgstr "Všetko je v poriadku! Shell obsahuje správne premenné prostredia.~%"
+msgstr "Všetko je v poriadku! Príkazový riadok obsahuje správne premenné prostredia.~%"
 
 #: guix/scripts/environment.scm:705
 #, scheme-format
@@ -9993,10 +9924,9 @@ msgid "'--emulate-fhs' cannot be used without '--container~%'"
 msgstr "nedá sa použiť „--emulate-fhs“ bez „--container“~%"
 
 #: guix/scripts/environment.scm:1127
-#, fuzzy, scheme-format
-#| msgid "'--symlink' cannot be used without '--container~%'"
+#, scheme-format
 msgid "'--nesting' cannot be used without '--container~%'"
-msgstr "nedá sa použiť „--symlink“ bez „--container“~%"
+msgstr "nedá sa použiť „--nesting“ bez „--container~%“"
 
 #: guix/scripts/environment.scm:1129
 #, scheme-format
@@ -10397,7 +10327,7 @@ msgid ""
 "  -V, --version                display version information and exit"
 msgstr ""
 "\n"
-"  -V, --version                  zobraziť podrobnosti o verzii a skončiť"
+"  -V, --version                zobraziť údaje o verzii a skončiť"
 
 #: guix/scripts/import/hackage.scm:146
 #, scheme-format
@@ -10436,19 +10366,14 @@ msgstr ""
 "Nahrať a previesť opam balík s NÁZVOM-BALÍKA.\n"
 
 #: guix/scripts/import/opam.scm:49
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --repo             import packages from this opam repository (name, URL or local path)\n"
-#| "                         can be used more than once"
 msgid ""
 "\n"
 "      --repo=REPOSITORY  import packages from REPOSITORY (name, URL, or\n"
 "                         file name); can be used more than once"
 msgstr ""
 "\n"
-"      --repo             nahrať balíky z tohto opam repozitára (názov, prepojenie alebo miestna cesta)\n"
-"                         táto voľba môže byť použitá viackrát"
+"      --repo=REPOZITÁR  nahrať balíky z REPOZITÁRA (názov, prepojenie, alebo\n"
+"                         názov súboru); možno použiť viacnásobne"
 
 #: guix/scripts/import/pypi.scm:44
 msgid ""
@@ -10673,16 +10598,14 @@ msgid "fixed-output derivation and output file name expected~%"
 msgstr "očakávaná bola odvodenina s pevne stanoveným výstupom a názov výstupného súboru~%"
 
 #: guix/scripts/refresh.scm:89
-#, fuzzy, scheme-format
-#| msgid "invalid number: ~a~%"
+#, scheme-format
 msgid "invalid module: ~a~%"
-msgstr "neplatná číselná hodnota: ~a~%"
+msgstr "neplatný modul: ~a~%"
 
 #: guix/scripts/refresh.scm:92
-#, fuzzy, scheme-format
-#| msgid "~a: invalid selection; expected `core' or `non-core'~%"
+#, scheme-format
 msgid "~a: invalid selection; expected `core', `non-core' or `module:NAME'~%"
-msgstr "~a: neplatný výber; vyberte „core“ alebo „non-core“~%"
+msgstr "~a: neplatný výber; očakávalo sa „core“, „non-core“ alebo „module:NÁZOV“~%"
 
 #: guix/scripts/refresh.scm:150
 msgid ""
@@ -10716,6 +10639,11 @@ msgid ""
 "                         the module can also be fully specified as\n"
 "                         'module:(gnu packages guile)'"
 msgstr ""
+"\n"
+"  -s, --select=PODMNOŽINA    vybrať všetky balíky v PODMNOŽINE, jedna z „core“,\n"
+"                         „non-core“ alebo „module:NÁZOV“ (napr.: module:guile)\n"
+"                         modul možno tiež presne určiť pomocou\n"
+"                         „module:(gnu packages guile)“"
 
 #: guix/scripts/refresh.scm:165
 msgid ""
@@ -10762,16 +10690,12 @@ msgstr ""
 "  -r, --recursive        zistiť dostupnosť aktualizácií pre BALÍK a jeho závislosti"
 
 #: guix/scripts/refresh.scm:177
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --list-transitive  list all the packages that PACKAGE depends on"
 msgid ""
 "\n"
 "  -T, --list-transitive  list all the packages that PACKAGE depends on"
 msgstr ""
 "\n"
-"      --list-transitive  zobraziť všetky balíky, na ktorých závisí BALÍK"
+"  -T, --list-transitive  vypísať všetky balíky, na ktorých BALÍK závisí"
 
 #: guix/scripts/refresh.scm:180
 msgid ""
@@ -10846,10 +10770,9 @@ msgid "~a is already the latest version of ~a~%"
 msgstr "~a už je najnovšej verzie ~a~%"
 
 #: guix/scripts/refresh.scm:408
-#, fuzzy, scheme-format
-#| msgid "~a would be upgraded from ~a to ~a~%"
+#, scheme-format
 msgid "~a would be downgraded from ~a to ~a~%"
-msgstr "~a by sa aktualizoval z ~a na ~a~%"
+msgstr "~a by sa vrátil z ~a na ~a~%"
 
 #: guix/scripts/refresh.scm:414
 #, scheme-format
@@ -10857,10 +10780,9 @@ msgid "~a is greater than the latest known version of ~a (~a)~%"
 msgstr "~a je vyššia ako najnovšia známa verzia ~a (~a)~%"
 
 #: guix/scripts/refresh.scm:425
-#, fuzzy, scheme-format
-#| msgid "'~a' updater failed to determine available releases for ~a~%"
+#, scheme-format
 msgid "'~a' updater failed to find version ~a of '~a'~%"
-msgstr "„~a“ nástroju na aktualizáciu sa nepodarilo zistiť dostupné vydania pre ~a~%"
+msgstr "nástroju na aktualizáciu „~a“ sa nepodarilo nájsť verziu ~a pre „~a“~%"
 
 #: guix/scripts/refresh.scm:430
 #, scheme-format
@@ -10913,16 +10835,12 @@ msgstr ""
 "systému Guix. Ak nie je daný žiadny SÚBOR, spustiť Guile REPL.\n"
 
 #: guix/scripts/repl.scm:78
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --list-updaters    list available updaters and exit"
 msgid ""
 "\n"
 "      --list-types       display REPL types and exit"
 msgstr ""
 "\n"
-"      --list-updaters    zobraziť dostupné nástroje na aktualizáciu a skončiť"
+"      --list-types       zobraziť druhy REPL a skončiť"
 
 #: guix/scripts/repl.scm:80
 msgid ""
@@ -10954,6 +10872,8 @@ msgid ""
 "\n"
 "  -i, --interactive      launch REPL after evaluating FILE"
 msgstr ""
+"\n"
+"  -i, --interactive      spustiť REPL po vyhodnotení SÚBORU"
 
 #: guix/scripts/repl.scm:116
 #, scheme-format
@@ -10997,7 +10917,7 @@ msgid ""
 msgstr ""
 "Použitie: guix shell [VOĽBA]... BALÍKY... [-- PRÍKAZ...]\n"
 "Zostaviť prostredie, ktoré zahŕňa BALÍKY a spustiť PRÍKAZ alebo\n"
-"interaktívny shell v tomto prostredí.\n"
+"príkazový riadok s priamym prístupom v tomto prostredí.\n"
 
 #: guix/scripts/shell.scm:61
 msgid ""
@@ -11075,7 +10995,7 @@ msgid ""
 "echo ~a >> ~a\n"
 "@end example\n"
 msgstr ""
-"Pre umožnenie automatického načítania\n"
+"Pre umožnenie samočinného načítania\n"
 "@file{~a} pri vykonaní @command{guix shell} musíte výslovne povoliť príslušný\n"
 "priečinok:\n"
 "\n"
@@ -11103,7 +11023,7 @@ msgid ""
 "to make sure your shell does not clobber environment variables."
 msgstr ""
 "Zvážte použitie voľby @option{--check}, aby ste sa uistili, že\n"
-"váš shell neprepisuje premenné prostredia."
+"váš príkazový riadok neprepisuje premenné prostredia."
 
 #: guix/scripts/style.scm:75
 #, scheme-format
@@ -11136,16 +11056,14 @@ msgid "would be edited~%"
 msgstr "by sa upravilo~%"
 
 #: guix/scripts/style.scm:438
-#, fuzzy, scheme-format
-#| msgid "~a: unsupported input style, bailing out~%"
+#, scheme-format
 msgid "unsupported argument style; bailing out~%"
-msgstr "~a: nepodporovaný tvar vstupu, preskakuje sa~%"
+msgstr "nepodporovaný tvar parametra; preskakuje sa~%"
 
 #: guix/scripts/style.scm:444
-#, fuzzy, scheme-format
-#| msgid "~a: unsupported input style, bailing out~%"
+#, scheme-format
 msgid "unsupported argument field; bailing out~%"
-msgstr "~a: nepodporovaný tvar vstupu, preskakuje sa~%"
+msgstr "nepodporované pole parametra; preskakuje sa~%"
 
 #: guix/scripts/style.scm:468
 #, scheme-format
@@ -11175,10 +11093,8 @@ msgid "- inputs: Rewrite package inputs to the “new style”\n"
 msgstr "- inputs: Prepísať vstupy balíkov do „nového tvaru“\n"
 
 #: guix/scripts/style.scm:564
-#, fuzzy
-#| msgid "- inputs: Rewrite package inputs to the “new style”\n"
 msgid "- arguments: Rewrite package arguments to G-expressions\n"
-msgstr "- inputs: Prepísať vstupy balíkov do „nového tvaru“\n"
+msgstr "- arguments: Prepísať parametre balíkov do G-výrazov\n"
 
 #: guix/scripts/style.scm:567
 msgid ""
