@@ -2252,11 +2252,10 @@ orbits described in TLE files.")
       #:test-flags
       #~(list "-k" (string-append
                     ;; XXX: Failed: DID NOT RAISE <class 'ModuleNotFoundError'>
+                    ;; It struggles to find python-opencsv package info with
+                    ;; 'importlib.metadata'
                     "not test_main_nonexisting_module"
-                    " and not test_main_stdlib_module"
-                    ;; XXX: packaging.version.InvalidVersion: Invalid version: 'unknown'
-                    " and not test_read_cdf"
-                    " and not test_read_empty_cdf"))
+                    " and not test_main_stdlib_module"))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'install 'writable-compiler
