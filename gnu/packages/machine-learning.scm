@@ -137,6 +137,15 @@
 representations and sentence classification.")
     (license license:expat)))
 
+(define-public python-fasttext
+  (package
+    (inherit fasttext)
+    (name "python-fasttext")
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy python-scipy))
+    (inputs (list fasttext))
+    (native-inputs (list pybind11))))
+
 (define-public fann
   ;; The last release is >100 commits behind, so we package from git.
   (let ((commit "d71d54788bee56ba4cf7522801270152da5209d7"))
