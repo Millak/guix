@@ -1575,21 +1575,22 @@ intended as a substitute for the PPPStatus and EthStatus projects.")
                 "1qfdvr60mlwh5kr4p27wjknz1cvrwfi6iadh9ny45661v22i0njx"))))
     (build-system meson-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-ping-test
-           (lambda _
-             ;; Disable ping test, as it requires root or raw socket capabilities.
-             (substitute* "test/meson.build"
-               (("if build_ping == true")
-                "if false")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-ping-test
+            (lambda _
+              ;; Disable ping test, as it requires root or raw socket capabilities.
+              (substitute* "test/meson.build"
+                (("if build_ping == true")
+                 "if false")))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)
-       ("docbook-xsl" ,docbook-xsl)
-       ("docbook-xml" ,docbook-xml)
-       ("libxml2" ,libxml2)          ;for XML_CATALOG_FILES
-       ("xsltproc" ,libxslt)))
+     (list gettext-minimal
+           pkg-config
+           docbook-xsl
+           docbook-xml
+           libxml2                      ;for XML_CATALOG_FILES
+           libxslt))
     (inputs
      (list libcap libidn2 openssl))
     (synopsis "Collection of network utilities")
