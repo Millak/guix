@@ -1978,7 +1978,11 @@ at once based on a Perl regular expression.")
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "rc/rc"
                 (("/usr/sbin/sendmail")
-                 (search-input-file inputs "/bin/mail")))))
+                 (search-input-file inputs "/bin/mail")))
+              (with-fluids ((%default-port-encoding "ISO-8859-1"))
+                (substitute* "src/rottlog"
+                  (("awk")
+                   (search-input-file inputs "/bin/awk"))))))
           (add-after 'build 'set-packdir
             (lambda _
               ;; Set a default location for archived logs.
@@ -1997,7 +2001,7 @@ at once based on a Perl regular expression.")
             (lambda _
               (invoke "make" "install-info"))))))
     (native-inputs (list autoconf automake texinfo util-linux)) ; for 'cal'
-    (inputs (list coreutils mailutils))
+    (inputs (list coreutils gawk mailutils))
     (home-page "https://www.gnu.org/software/rottlog/")
     (synopsis "Log rotation and management")
     (description
