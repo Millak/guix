@@ -37,7 +37,7 @@
 (define-public libftdi
   (package
     (name "libftdi")
-    (version "1.4")
+    (version "1.5")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -45,7 +45,9 @@
                     "libftdi1-" version ".tar.bz2"))
               (sha256
                (base32
-                "0x0vncf6i92slgrn0h7ghkskqbglbs534220qa84d0qg114zndpc"))))
+                "0jdh5r499wbz83vmpskczq5m3cfc1mcv8xqisj5i95k1r3lr2w3w"))
+              (patches
+               (search-patches "libftdi-fix-paths-when-FTDIPP-set.patch"))))
     (build-system cmake-build-system)
     (outputs '("out" "python"))
     (arguments
@@ -54,7 +56,9 @@
       #~(list (string-append "-DCMAKE_INSTALL_DOCDIR="
                              #$output "/share/doc/" #$name "-" #$version)
               "-DEXAMPLES=OFF"
-              "-DLIB_SUFFIX=''")        ; place libraries in /lib, not /lib64
+              "-DFTDIPP=ON"
+              "-DLIB_SUFFIX=''"         ; place libraries in /lib, not /lib64
+              "-DPYTHON_BINDINGS=ON")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'install-python-binding
