@@ -1706,3 +1706,30 @@ ephemeral serial ports.  It features automatic port detection, port enumeration,
 support for non-standard baud rates, the ability to wait for ports to appear,
 and the ability to read and write via stdin and stdout.")
     (license license:expat)))
+
+(define-public roxterm
+  (package
+    (name "roxterm")
+    (version "3.15.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/realh/roxterm.git")
+                     (commit version)))
+              (sha256
+               (base32
+                "19y4lxwj18pr231597rnyyk6f5hwvsajjv7w21wb5c62jjjyfrws"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f)) ; No tests
+    (native-inputs
+     (list docbook-xsl docbook-xml (list glib "bin") libxml2 libxslt
+           pkg-config))
+    (inputs
+     (list dbus dbus-glib gtk+ pcre vte))
+    (synopsis "ROXTerm terminal emulator")
+    (description "This package provides a terminal emulator with hyperlink
+support.  It's based on VTE and aimed at power users.")
+    (home-page "https://realh.github.io/roxterm/")
+    ;; src/gresources.c is under LGPL 2.1+
+    (license (list license:gpl2+ license:lgpl2.1+))))
