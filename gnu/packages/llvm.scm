@@ -85,19 +85,32 @@
   "Return the LLVM target name that corresponds to SYSTEM, a system type such
 as \"x86_64-linux\"."
   ;; See the 'lib/Target' directory of LLVM for a list of supported targets.
+  (match (system->llvm-target-arch system)
+    ("RISCV64" "RISCV")
+    ("X86_64" "X86")
+    (x x)))
+
+(define* (system->llvm-target-arch #:optional
+                                   (system (or (and=> (%current-target-system)
+                                                      gnu-triplet->nix-system)
+                                               (%current-system))))
+  "Return the LLVM target arch name that corresponds to SYSTEM, a system type such
+as \"x86_64-linux\"."
+  ;; See the 'cmake/config-ix.cmake' file of LLVM for a list of supported targets arch.
+  ;; start with # Determine the native architecture.
   (letrec-syntax ((matches (syntax-rules (=>)
                              ((_ (system-prefix => target) rest ...)
                               (if (string-prefix? system-prefix system)
                                   target
                                   (matches rest ...)))
                              ((_)
-                              (error "LLVM target for system is unknown" system)))))
+                              (error "LLVM target arch for system is unknown" system)))))
     (matches ("aarch64"     => "AArch64")
              ("armhf"       => "ARM")
              ("mips64el"    => "Mips")
              ("powerpc"     => "PowerPC")
-             ("riscv"       => "RISCV")
-             ("x86_64"      => "X86")
+             ("riscv64"     => "RISCV64")
+             ("x86_64"      => "X86_64")
              ("i686"        => "X86")
              ("i586"        => "X86"))))
 
@@ -598,7 +611,7 @@ output), and Binutils.")
                    #$(string-append "-DLLVM_DEFAULT_TARGET_TRIPLE="
                                     (%current-target-system))
                    #$(string-append "-DLLVM_TARGET_ARCH="
-                                    (system->llvm-target))
+                                    (system->llvm-target-arch))
                    #$(string-append "-DLLVM_TARGETS_TO_BUILD="
                                     (system->llvm-target)))
                 '())
@@ -658,7 +671,7 @@ of programming tools as well as libraries with equivalent functionality.")
                    #$(string-append "-DLLVM_DEFAULT_TARGET_TRIPLE="
                                     (%current-target-system))
                    #$(string-append "-DLLVM_TARGET_ARCH="
-                                    (system->llvm-target))
+                                    (system->llvm-target-arch))
                    #$(string-append "-DLLVM_TARGETS_TO_BUILD="
                                     (system->llvm-target)))
                 '())
@@ -901,7 +914,7 @@ Library.")
                       #$(string-append "-DLLVM_DEFAULT_TARGET_TRIPLE="
                                        (%current-target-system))
                       #$(string-append "-DLLVM_TARGET_ARCH="
-                                       (system->llvm-target))
+                                       (system->llvm-target-arch))
                       #$(string-append "-DLLVM_TARGETS_TO_BUILD="
                                        (system->llvm-target)))
                    #~())
