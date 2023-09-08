@@ -4,7 +4,7 @@
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2013, 2014, 2015, 2016, 2020 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2016, 2017, 2019-2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2016, 2017, 2019-2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2017, 2020 Julien Lepiller <julien@lepiller.eu>
@@ -1249,6 +1249,25 @@ Swartz.")
 JSON Web Algorithms (JWA) - collectively can be used to encrypt and/or sign
 content using a variety of algorithms.")
     (license license:expat)))
+
+(define-public python-jwcrypto
+  (package
+    (name "python-jwcrypto")
+    (version "1.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "jwcrypto" version))
+              (sha256
+               (base32
+                "138bh6x1yy0qpk63bxa7mxnd97gfdm1fkpwm8wrdz3g3z0fca79c"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-cryptography python-deprecated))
+    (home-page "https://github.com/latchset/jwcrypto")
+    (synopsis "Implementation of JOSE Web standards")
+    (description
+     "WCrypto is an implementation of the @dfn{Javascript Object Signing and
+Encryption} (JOSE) Web Standards.")
+    (license license:lgpl3+)))
 
 (define-public python-pyscss
   (package
