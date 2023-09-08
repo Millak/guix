@@ -8358,17 +8358,6 @@ Python code against some of the style conventions in
 @url{http://www.python.org/dev/peps/pep-0008/,PEP 8}.")
     (license license:expat)))
 
-(define-public python-pycodestyle-2.6
-  (package
-    (inherit python-pycodestyle)
-    (version "2.6.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pycodestyle" version))
-              (sha256
-               (base32
-                "0bhr6ia0hmgx3nhgibc9pmkzhlh1zcqk707i5fbxgs702ll7v2n5"))))))
-
 (define-public python-multidict
   (package
     (name "python-multidict")
