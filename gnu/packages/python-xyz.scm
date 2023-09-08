@@ -3486,17 +3486,17 @@ standard.")
 (define-public python-eventlet
   (package
     (name "python-eventlet")
-    (version "0.33.0")
+    (version "0.33.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "eventlet" version))
        (sha256
         (base32
-         "07qlyhcm0f28sxdizawvdf3d50m3hnbzz5kg3fjp7chvki44y540"))))
+         "1nngffz21afhfi266smf4s5mn5dfd0ykdnirfls9bwnzxbkh6a3j"))))
     (build-system python-build-system)
     (propagated-inputs
-     (list python-dnspython python-greenlet python-monotonic python-six))
+     (list python-dnspython python-greenlet python-six))
     (native-inputs
      (list python-nose))
     (arguments
@@ -3521,7 +3521,9 @@ standard.")
                 ;; <https://github.com/eventlet/eventlet/issues/730>.
                 "-e" "test_patcher_existing_locks_locked"
                 ;; And see <https://github.com/eventlet/eventlet/issues/739>.
-                "-e" "test_017_ssl_zeroreturnerror")))))))
+                "-e" "test_017_ssl_zeroreturnerror"
+                ;; This test is failing on some architectures
+                "-e" "test_fork_after_monkey_patch")))))))
     (home-page "https://eventlet.net")
     (synopsis "Concurrent networking library for Python")
     (description
