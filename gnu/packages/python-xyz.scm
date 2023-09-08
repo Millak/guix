@@ -12493,19 +12493,6 @@ file (e.g. @file{PKG-INFO}).")
       "Pyflakes statically checks Python source code for common errors.")
     (license license:expat)))
 
-(define-public python-pyflakes-2.2
-  (package
-    (inherit python-pyflakes)
-    (version "2.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pyflakes" version))
-              (sha256
-               (base32
-                "1j3zqbiwkyicvww499bblq33x0bjpzdrxajhaysr7sk7x5gdgcim"))
-              (patches
-               (search-patches "python-pyflakes-test-location.patch"))))))
-
 (define-public python-mccabe
   (package
     (name "python-mccabe")
