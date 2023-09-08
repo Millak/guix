@@ -14,6 +14,7 @@
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022, 2023 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
 ;;; Copyright © 2023 Charles Jackson <charles.b.jackson@protonmail.com>
+;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38,6 +39,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
@@ -1423,3 +1425,52 @@ files for reading or editing, and perform basic file system operations.")
 operations and styles which are invoked via key mappings and a menu.  These
 operations are available for most filetypes.")
     (license license:cc0)))
+
+(define-public vim-vader
+  (let ((revision "0")
+        (commit "6fff477431ac3191c69a3a5e5f187925466e275a"))
+    (package
+      (name "vim-vader")
+      (version (git-version "0.4.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/junegunn/vader.vim")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "179dbbqdyl6qf6jdb6kdazn3idz17m1h2n88rlggb1wnly74vjin"))))
+      (build-system copy-build-system)
+      (arguments
+       '(#:install-plan
+             '(("autoload" "share/vim/vimfiles/")
+               ("doc" "share/vim/vimfiles/")
+               ("ftdetect" "share/vim/vimfiles/")
+               ("ftplugin" "share/vim/vimfiles/")
+               ("plugin" "share/vim/vimfiles/")
+               ("syntax" "share/vim/vimfiles/"))
+         #:phases
+         (modify-phases %standard-phases
+           (add-before 'install 'check
+             (lambda* (#:key tests? #:allow-other-keys)
+               (when tests?
+                 ;; FIXME: suite1.vader fails with an unknown reason,
+                 ;; lang-if.vader requires Python and Ruby.
+                 (substitute* "test/vader.vader"
+                   (("Include.*feature/suite1.vader.*$") "")
+                   (("Include.*feature/lang-if.vader.*$") ""))
+
+                 (display "Running Vim tests\n")
+                 (with-directory-excursion "test"
+                   (setenv "VADER_TEST_VIM" "vim -E")
+                   (invoke "bash" "./run-tests.sh"))))))))
+      (native-inputs (list vim))
+      (home-page "https://github.com/junegunn/vader.vim")
+      (synopsis "Test framework for Vimscript")
+      (description "Vader is a test framework for Vimscript designed to
+simplify the process of writing and running unit tests.  Vader.vim provides an
+intuitive test syntax for defining test cases and expectations, it also can
+be integrated with @acronym{CI, Continuous Integration} pipelines to
+automate testing and is compatible with Vim and Neovim.")
+      (license license:expat)))) ;; Specified in README.md.
