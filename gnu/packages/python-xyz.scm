@@ -25143,6 +25143,13 @@ tool).")
        (modules '((guix build utils)))
        (snippet
         '(begin
+           ;; Only add CFLAGS on architectures where they are supported
+           (substitute* "setup.py"
+             (("import sys")
+              "import sys\nimport platform")
+             (("os\\.name == 'posix'")
+              (string-append "os.name + platform.machine() == 'posixx86_64' or"
+                             " os.name + platform.machine() == 'posixx86'")))
            (delete-file-recursively "c-blosc")
            (for-each delete-file '("numcodecs/_shuffle.c"
                                    "numcodecs/blosc.c"
