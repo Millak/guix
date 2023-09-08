@@ -6220,8 +6220,6 @@ without stepping on each others toes.")
        (sha256
         (base32
          "1rn4cd1an6a9dfda884aqpcwcgq8dgydpqvb19nmagw4b70zlj4b"))))
-    ;; NOTE: mutter exports a bundled fork of clutter, so when making changes
-    ;; to clutter, corresponding changes may be appropriate in mutter as well.
     (build-system gnu-build-system)
     (outputs '("out"
                "doc"))                  ;9 MiB of gtk-doc HTML pages
