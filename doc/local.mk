@@ -291,3 +291,38 @@ $(eval $(call version.texi-from-git,vti,doc/guix.texi,))
 $(foreach lang, $(MANUAL_LANGUAGES),							\
   $(eval i=$(shell echo $$(($(i)+1))))							\
   $(eval $(call version.texi-from-git,$(i),po/doc/guix-manual.$(lang).po,-$(lang))))
+
+DIST_CONFIGURE_FLAGS =				\
+  --localstatedir=/var				\
+  --sysconfdir=/etc
+
+# Delete all Autotools-generated files and rerun configure to ensure
+# a clean cache and distributing reproducible versions.
+auto-clean: maintainer-clean-vti doc-clean
+	rm -f ABOUT-NLS INSTALL
+	rm -f aclocal.m4 configure libtool Makefile.in
+	if test -e .git; then				\
+	    git clean -fdx -- '.am*' build-aux m4 po;	\
+	else						\
+	    rm -rf .am*;				\
+	    $(MAKE) -C po/guix maintainer-clean;	\
+	    $(MAKE) -C po/packages maintainer-clean;	\
+	fi
+	rm -f guile
+	rm -f guix-daemon nix/nix-daemon/guix_daemon-guix-daemon.o
+# Automake fails if guix-cookbook-LANG.texi stubs are missing; running
+# autoreconf -vif is not enough.
+	./bootstrap
+# The dependency chain for the guix-cookbook-LANG.texi was cut on purpose;
+# they must be deleted to ensure a rebuild.
+	rm -f $(filter-out %D%/guix.texi %D%/guix-cookbook.texi, $(info_TEXINFOS))
+	./configure $(DIST_CONFIGURE_FLAGS)
+
+# Delete all generated doc files to ensure a clean cache and distributing
+# reproducible versions.
+doc-clean:
+	rm -f $(srcdir)/doc/*.1
+	rm -f $(srcdir)/doc/stamp*
+	rm -f $(DOT_FILES:%.dot=%.png)
+	rm -f $(DOT_VECTOR_GRAPHICS)
+	rm -f doc/images/coreutils-size-map.eps

@@ -954,9 +954,31 @@ guix-binary.%.tar.xz:
 	cp "$$tarball" "$@.tmp" ; mv "$@.tmp" "$@"
 
 
-# The dependency on doc-pot-update is to generate the .pot files, which are
-# not checked in.
-dist: doc-pot-update
+# Assert that Autotools cache is up to date with Git, by checking
+# PACKAGE_VERSION against HEAD.  Indented to get past Automake.
+ ifeq ($(MAKECMDGOALS),dist)
+ git_version = $(shell build-aux/git-version-gen .tarball-version)
+ ifneq ($(PACKAGE_VERSION),$(git_version))
+ $(warning Autotools cache out of date.)
+ $(info Autotools cache version: $(PACKAGE_VERSION).)
+ $(info Git version: $(git_version).)
+ $(info Please run ./bootstrap && ./configure $(DIST_CONFIGURE_FLAGS))
+ ifneq ($(GUIX_ALLOW_IRREPRODUCIBLE_TARBALL),yes)
+ $(error Cannot create reproducible tarball)
+ else
+ $(warning Tarball will be irreproducible; distdir will not get removed!)
+ endif
+ endif
+ endif
+
+# The dependency on dist-doc-pot-update is to clean possibly stale doc and po
+# files and only then generate the .pot files, which are not checked in.
+dist: dist-doc-pot-update
+dist-doc-pot-update: auto-clean
+	$(MAKE) guile$(EXEEXT)
+	$(MAKE) -C po/guix all
+	$(MAKE) -C po/packages all
+	$(MAKE) doc-pot-update
 
 dist-hook: gen-ChangeLog gen-AUTHORS gen-tarball-version
 dist-hook: assert-no-store-file-names
