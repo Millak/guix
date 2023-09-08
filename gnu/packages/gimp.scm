@@ -215,7 +215,7 @@ provided, as well as a framework to add new color models and data types.")
 (define-public gegl
   (package
     (name "gegl")
-    (version "0.4.42")
+    (version "0.4.46")
     (source
      (origin
        (method url-fetch)
@@ -228,8 +228,10 @@ provided, as well as a framework to add new color models and data types.")
                   (string-append "ftp://ftp.gtk.org/pub/gegl/"
                                  (version-major+minor version)
                                  "/gegl-" version ".tar.xz")))
+       (patches
+        (search-patches "gegl-compatibility-old-librsvg.patch"))
        (sha256
-        (base32 "0bg0vlmj4n9x1291b9fsjqxsal192zlg48pa57f6xid6p863ma5b"))))
+        (base32 "14p8n6vily0yp6gqafl2xy7d2rh1j48pcj0a7mglqxy83d4b5cyh"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
@@ -284,6 +286,27 @@ buffers.")
     ;; The library itself is licensed under LGPL while the sample commandline
     ;; application and GUI binary gegl is licensed under GPL.
     (license (list license:lgpl3+ license:gpl3+))))
+
+;; gnome-photos does not build against gegl 0.4.46 yet.
+;; See also <https://gitlab.gnome.org/GNOME/gnome-photos/-/issues/214>.
+(define-public gegl-0.4.44
+  (package
+    (inherit gegl)
+    (version "0.4.44")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (list (string-append "https://download.gimp.org/pub/gegl/"
+                                 (string-take version 3)
+                                 "/gegl-" version ".tar.xz")
+                  (string-append "https://ftp.gtk.org/pub/gegl/"
+                                 (version-major+minor version)
+                                 "/gegl-" version ".tar.xz")
+                  (string-append "ftp://ftp.gtk.org/pub/gegl/"
+                                 (version-major+minor version)
+                                 "/gegl-" version ".tar.xz")))
+       (sha256
+        (base32 "09k1sn4h0bakgmq2hgd1iamprngpr81ky3fd9446lh2ycd0xnk0a"))))))
 
 (define-public gimp
   (package
