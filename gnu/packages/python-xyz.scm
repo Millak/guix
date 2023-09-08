@@ -24763,19 +24763,25 @@ and corruption checks.")
 (define-public python-fasteners
   (package
     (name "python-fasteners")
-    (version "0.15")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "fasteners" version))
-       (sha256
-        (base32
-         "1vzmz1xh38b84dv0f4hlp7arwmx8wjlih6lf964bpy8dnyk6s5rs"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-monotonic python-six))
-    (native-inputs
-     (list python-testtools))
+    (version "0.17.3")
+    (source (origin
+              ;; No tests in the pypi tarball
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/harlowja/fasteners")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0m0dxv8ljpkq99s3d1mib1zfb0ppx3h74h5yr8809zsrq2klfn0m"))))
+    (build-system pyproject-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "pytest")))))))
+    (native-inputs (list python-diskcache python-more-itertools python-pytest))
     (home-page "https://github.com/harlowja/fasteners")
     (synopsis "Python package that provides useful locks")
     (description
