@@ -1997,7 +1997,7 @@ of people.")
                 "0ysqylpyv17s52634wn3vrwf7y9b5ig7fdfv8vwj1272lvv68qgk"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-nose2))
-    (propagated-inputs
+    (inputs
      (list python-jwcrypto
            python-numpy
            python-redis
