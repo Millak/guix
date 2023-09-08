@@ -74,7 +74,7 @@
 (define-public diffoscope
   (package
     (name "diffoscope")
-    (version "247")
+    (version "250")
     (source
      (origin
        (method git-fetch)
@@ -83,7 +83,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0c81pvdq0bz47sk3gcgpm2l3g5hxdi2s1jz05krv1cr2bd0sfq4j"))))
+        (base32 "12cdsgxlva1gcry16w9x44ji9asar1n8p9q6rv2jd1gr9fi6l0sz"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -188,6 +188,7 @@
             gnumeric
             gnupg
             hdf5
+            html2text
             imagemagick
             libarchive
             llvm
@@ -206,6 +207,7 @@
             sqlite
             squashfs-tools
             tcpdump
+            u-boot-tools
             unzip
             wabt
             xxd
