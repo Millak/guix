@@ -50,7 +50,9 @@
   #:use-module (gnu packages attr)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages code)
+  #:use-module (gnu packages coq)
   #:use-module (gnu packages enlightenment)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gawk)
@@ -449,6 +451,68 @@ trouble using them, because you do not have to remember each snippet name.")
        "@code{vim-context-filetype} is context filetype library for Vim script.")
       (home-page "https://github.com/Shougo/context_filetype.vim")
       (license license:expat)))) ; ??? check again
+
+(define-public vim-coqtail
+  (let ((commit "dfe3939c9caff69d9af76bfd74f1a40fb7dc5609")
+        (revision "0"))
+    (package
+      (name "vim-coqtail")
+      (version (git-version "1.7.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/whonore/Coqtail")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0av2m075n6z05ah9ndrgnp9s16yrz6n2lj0igd9fh3c5k41x5xks"))))
+      (build-system copy-build-system)
+      (arguments
+       '(#:install-plan
+         '(("autoload" "share/vim/vimfiles/")
+           ("doc" "share/vim/vimfiles/")
+           ("ftdetect" "share/vim/vimfiles/")
+           ("ftplugin" "share/vim/vimfiles/")
+           ("indent" "share/vim/vimfiles/")
+           ("python" "share/vim/vimfiles/")
+           ("syntax" "share/vim/vimfiles/"))
+         #:phases
+         (modify-phases %standard-phases
+           (add-before 'install 'check
+             (lambda* (#:key inputs native-inputs tests? #:allow-other-keys)
+               (when tests?
+                 (display "Running Python unit tests.\n")
+                 (setenv "PYTHONPATH" (string-append (getcwd) "/python"))
+                 (invoke "pytest" "-q" "tests/unit")
+
+                 (display "Running Python Coq tests.\n")
+                 (invoke "pytest" "-q" "tests/coq")
+
+                 (display "Running Vim unit tests.\n")
+                 (let* ((vim-vader (assoc-ref (or native-inputs inputs)
+                                              "vim-vader"))
+                        (vader-path (string-append vim-vader
+                                                   "/share/vim/vimfiles")))
+                   (with-directory-excursion "tests/vim"
+                     (setenv "VADER_PATH" vader-path)
+                     (invoke "vim" "-E" "-Nu" "vimrc"
+                             "-c" "Vader! *.vader")))
+
+                 ;; Remove __pycache__ files generated during testing so that
+                 ;; they don't get installed.
+                 (delete-file-recursively "python/__pycache__")))))))
+      (native-inputs
+       (list coq-for-coqtail
+             python-pytest
+             vim-full ;; Plugin needs Python 3.
+             vim-vader))
+      (propagated-inputs (list coq coq-ide-server))
+      (synopsis "Interactive Coq proofs in Vim")
+      (description "Coqtail enables interactive Coq proof development in Vim
+similar to CoqIDE or ProofGeneral.")
+      (home-page "https://github.com/whonore/Coqtail")
+      (license license:expat))))
 
 (define-public vim-fugitive
   (package
