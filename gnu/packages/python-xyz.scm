@@ -25144,7 +25144,8 @@ tool).")
        (snippet
         '(begin
            (delete-file-recursively "c-blosc")
-           (for-each delete-file '("numcodecs/blosc.c"
+           (for-each delete-file '("numcodecs/_shuffle.c"
+                                   "numcodecs/blosc.c"
                                    "numcodecs/compat_ext.c"
                                    "numcodecs/lz4.c"
                                    "numcodecs/vlen.c"
