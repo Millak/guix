@@ -385,9 +385,18 @@ interface and is based on GNU Guile.")
                (base32
                 "0v9ld9gbqdp5ya380fbkdsxa0iqr90gi6yk004ccz3n792nq6wlj"))))
     (native-inputs (modify-inputs (package-native-inputs shepherd-0.9)
-                     (replace "guile-fibers" guile-fibers-1.3)))
+                     (replace "guile-fibers"
+                       ;; Work around
+                       ;; <https://github.com/wingo/fibers/issues/89>.  This
+                       ;; affects any system without a functional real-time
+                       ;; clock (RTC), but in practice these are typically Arm
+                       ;; single-board computers.
+                       (if (target-arm?)
+                           guile-fibers-1.1
+                           guile-fibers-1.3))))
     (inputs (modify-inputs (package-inputs shepherd-0.9)
-              (replace "guile-fibers" guile-fibers-1.3)))))
+              (replace "guile-fibers"
+                (this-package-native-input "guile-fibers"))))))
 
 (define-public shepherd shepherd-0.9)
 
