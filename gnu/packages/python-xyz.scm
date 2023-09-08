@@ -12592,20 +12592,6 @@ cyclomatic complexity of Python source code.")
      "Flake8 is a wrapper around PyFlakes, pep8 and python-mccabe.")
     (license license:expat)))
 
-(define-public python-flake8-3.8
-  (package
-    (inherit python-flake8)
-    (version "3.8.4")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "flake8" version))
-              (sha256
-               (base32
-                "0fvcrsbyzjpcli8ldbpsdbpmf238nkvwc1dy4hy82lf63rvfinma"))))
-    (propagated-inputs
-     (list python-pycodestyle-2.6 python-entrypoints python-pyflakes-2.2
-           python-mccabe))))
-
 (define-public python-flake8-blind-except
   (package
     (name "python-flake8-blind-except")
