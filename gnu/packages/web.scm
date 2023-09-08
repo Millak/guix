@@ -1985,7 +1985,7 @@ of people.")
 (define-public websockify
   (package
     (name "websockify")
-    (version "0.8.0")
+    (version "0.11.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1994,15 +1994,16 @@ of people.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pcic8qs0gdwrfjgfaf893jyddaw97wcjm2mmvwn0xyhmy8mbmw1"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f)) ; FIXME: 2 out of 6 tests fail with "ImportError: No module
-     ; named 'stubout'". The tests can be run by replacing the check phase with
-     ; the command "python setup.py nosetests --verbosity=3".
-    (native-inputs (list ; Required for tests:
-                         python-mox3 python-nose))
-    (propagated-inputs (list python-numpy))
+                "0ysqylpyv17s52634wn3vrwf7y9b5ig7fdfv8vwj1272lvv68qgk"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-nose2))
+    (propagated-inputs
+     (list python-jwcrypto
+           python-numpy
+           python-redis
+           python-requests
+           ;; TODO: Remove simplejson for versions > 0.11.0.
+           python-simplejson))
     (home-page "https://github.com/novnc/websockify")
     (synopsis "WebSockets support for any application/server")
     (description "Websockify translates WebSockets traffic to normal socket
