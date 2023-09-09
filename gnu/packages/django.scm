@@ -54,16 +54,16 @@
   #:use-module (gnu packages time)
   #:use-module (gnu packages xml))
 
-(define-public python-django-4.0
+(define-public python-django-4.2
   (package
     (name "python-django")
-    (version "4.0.7")
+    (version "4.2.5")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Django" version))
               (sha256
                (base32
-                "0qblhh7s7fcznqr79919yp2d7wiz3ixv39navmifb677dg9mlvcw"))))
+                "1ha6c5j3pizbsfzw37r52lvdz8z5lblq4iwa99mpkdzz92aiqp2y"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -141,7 +141,7 @@ to the @dfn{don't repeat yourself} (DRY) principle.")
 
 (define-public python-django-3.2
   (package
-    (inherit python-django-4.0)
+    (inherit python-django-4.2)
     (version "3.2.21")
     (source (origin
               (method url-fetch)
@@ -151,7 +151,7 @@ to the @dfn{don't repeat yourself} (DRY) principle.")
                 "0g3zm2glh76g31q06g6fwkwvkrphjj3mnap5sgk1hx3v9r44rpm5"))))
     (native-search-paths '())           ;no need for TZDIR
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs python-django-4.0)
+     (modify-inputs (package-propagated-inputs python-django-4.2)
        ;; Django 4.0 deprecated pytz in favor of Pythons built-in zoneinfo.
        (append python-pytz)))))
 
