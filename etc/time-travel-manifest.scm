@@ -66,7 +66,8 @@
 
 (define %release-commits
   ;; Release commits: the list of version/commit pairs.
-  '(("1.3.0" . "a0178d34f582b50e9bdbb0403943129ae5b560ff")
+  '(("1.4.0" . "8e2f32cee982d42a79e53fc1e9aa7b8ff0514714")
+    ("1.3.0" . "a0178d34f582b50e9bdbb0403943129ae5b560ff")
     ("1.2.0" . "a099685659b4bfa6b3218f84953cbb7ff9e88063")
     ("1.1.0" . "d62c9b2671be55ae0305bebfda17b595f33797f2")
     ("1.0.1" . "d68de958b60426798ed62797ff7c96c327a672ac")
