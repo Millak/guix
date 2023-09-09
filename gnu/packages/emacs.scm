@@ -514,6 +514,7 @@ editor (with wide ints)" )
     (source source)))
 
 (define-public emacs-next (emacs->emacs-next emacs))
+(define-public emacs-next-pgtk (emacs->emacs-next emacs-pgtk))
 
 (define-public guile-emacs
   (let ((commit "41120e0f595b16387eebfbf731fff70481de1b4b")
