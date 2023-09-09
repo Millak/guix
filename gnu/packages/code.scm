@@ -200,6 +200,10 @@ highlighting your own code that seemed comprehensible when you wrote it.")
                    (string-append "--with-universal-ctags="
                                   #$(this-package-input "universal-ctags")
                                   "/bin/ctags")
+                   ;; Otherwise this gets overridden in the 'configure phase.
+                   (string-append "--with-python-interpreter="
+                                  #$(this-package-input "python-wrapper")
+                                  "/bin/python")
                    (string-append "--sysconfdir="
                                   #$output "/share/gtags")
                    "--localstatedir=/var" ; This needs to be a writable location.
