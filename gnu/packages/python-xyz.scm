@@ -15117,13 +15117,13 @@ systems, as a command line tool, and as a Python library.")
 (define-public python-bleach
   (package
     (name "python-bleach")
-    (version "5.0.1")
+    (version "6.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "bleach" version))
        (sha256
-        (base32 "0p089853pkwzf1j2zjlmw67pwbkk0whpzfx9dbrd56zb8xf2a0qd"))
+        (base32 "054lp46iymchq3np0nar3k2h4da3wq4rzw652kdxh1syb70qa6hs"))
        (snippet
         #~(begin
             (use-modules (guix build utils))
@@ -15131,7 +15131,7 @@ systems, as a command line tool, and as a Python library.")
               (("bleach\\._vendor\\.html5lib") "html5lib"))
             (delete-file-recursively "bleach/_vendor/html5lib")))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-html5lib python-tinycss2 python-webencodings))
+    (propagated-inputs (list python-html5lib python-tinycss2))
     (native-inputs (list python-pytest))
     (home-page "https://github.com/mozilla/bleach")
     (synopsis "Whitelist-based HTML-sanitizing tool")
