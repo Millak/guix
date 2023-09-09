@@ -224,6 +224,9 @@ gen_man =						\
   $(HELP2MANFLAGS)
 
 HELP2MANFLAGS = --source=GNU --info-page=$(PACKAGE_TARNAME)
+# help2man reproducibility
+SOURCE_DATE_EPOCH = $(shell git show HEAD --format=%ct --no-patch 2>/dev/null || echo 1)
+export SOURCE_DATE_EPOCH
 
 $(srcdir)/%D%/guix.1: scripts/guix.in $(sub_commands_mans)
 	-$(AM_V_HELP2MAN)$(gen_man) --output="$@" `basename "$@" .1`
