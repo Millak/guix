@@ -86,7 +86,8 @@
   #:use-module (gnu packages xorg)
   #:use-module (guix utils)
   #:use-module (ice-9 match)
-  #:use-module (srfi srfi-1))
+  #:use-module (srfi srfi-1)
+  #:export (emacs->emacs-next))
 
 (define (%emacs-modules build-system)
   (let ((which (build-system-name build-system)))
@@ -498,6 +499,21 @@ editor (with wide ints)" )
        (file-name (git-file-name name version))
        (sha256
         (base32 "00mwpq1msr3jij281w5piqmbwq968xr8dn9hqbf4r947ck754kn9")))))))
+
+(define* (emacs->emacs-next emacs #:optional name
+                            #:key (version (package-version emacs-next-minimal))
+                            (source (package-source emacs-next-minimal)))
+  (package
+    (inherit emacs)
+    (name (or name
+              (and (string-prefix? "emacs" (package-name emacs))
+                   (string-append "emacs-next"
+                                  (string-drop (package-name emacs)
+                                               (string-length "emacs"))))))
+    (version version)
+    (source source)))
+
+(define-public emacs-next (emacs->emacs-next emacs))
 
 (define-public guile-emacs
   (let ((commit "41120e0f595b16387eebfbf731fff70481de1b4b")
