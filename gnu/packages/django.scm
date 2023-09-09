@@ -171,21 +171,6 @@ to the @dfn{don't repeat yourself} (DRY) principle.")
        ;; Django 4.0 deprecated pytz in favor of Pythons built-in zoneinfo.
        (append python-pytz)))))
 
-(define-public python-django-2.2
-  (package
-    (inherit python-django-3.2)
-    (version "2.2.28")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "Django" version))
-              (sha256
-               (base32
-                "04vl7aivsshzsnn547lm4jdinr67afhdspc40f0c06xzmxbvc002"))))
-    (native-inputs
-     (modify-inputs (package-native-inputs python-django-3.2)
-       (prepend ;; 2.2 requires Selenium for the test suite.
-                python-selenium)))))
-
 ;; Use 3.2 LTS as the default until packages gain support for 4.x.
 (define-public python-django python-django-3.2)
 
