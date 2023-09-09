@@ -30,6 +30,8 @@
   #:use-module (gnu packages ncurses)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix gexp)
+  #:use-module (guix utils)
   #:use-module (guix build-system gnu))
 
 (define-public hexedit
@@ -68,6 +70,47 @@
 file can be a device as the file is read a piece at a time.  You can modify
 the file and search through it.")
     (home-page "http://rigaux.org/hexedit.html")
+    (license license:gpl2+)))
+
+(define-public dhex
+  (package
+    (name "dhex")
+    (version "0.69")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://www.dettus.net/dhex/dhex_"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "06y4lrp29f2fh303ijk1xhspa1d4x4dm6hnyw3dd8szi3k6hnwsj"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no tests provided
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure) ;no configure script
+          (replace 'install ;multiple issues with provided 'make install'
+            (lambda _
+              (let ((bin (string-append #$output "/bin"))
+                    (man1 (string-append #$output
+                                         "/share/man/man1"))
+                    (man5 (string-append #$output
+                                         "/share/man/man5")))
+                (install-file "dhex" bin)
+                (install-file "dhex.1" man1)
+                (install-file "dhexrc.5" man5)
+                (install-file "dhex_markers.5" man5)
+                (install-file "dhex_searchlog.5" man5)))))))
+    (inputs (list ncurses))
+    (home-page "https://www.dettus.net/dhex/")
+    (synopsis "View, edit, and diff files in hexadecimal")
+    (description
+     "Dhex is hex editor which includes a diff mode, which can be used to
+easily and conveniently compare two binary files.  It is based on Ncurses
+and is themeable.")
     (license license:gpl2+)))
 
 (define-public ht
