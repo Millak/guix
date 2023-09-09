@@ -68,11 +68,19 @@
   ;; Release commits: the list of version/commit pairs.
   '(("1.4.0" . "8e2f32cee982d42a79e53fc1e9aa7b8ff0514714")
     ("1.3.0" . "a0178d34f582b50e9bdbb0403943129ae5b560ff")
-    ("1.2.0" . "a099685659b4bfa6b3218f84953cbb7ff9e88063")
-    ("1.1.0" . "d62c9b2671be55ae0305bebfda17b595f33797f2")
-    ("1.0.1" . "d68de958b60426798ed62797ff7c96c327a672ac")
-    ("1.0.0" . "6298c3ffd9654d3231a6f25390b056483e8f407c")
-    ("0.16.0" . "4a0b87f0ec5b6c2dcf82b372dd20ca7ea6acdd9c")))
+
+    ;; FIXME: To merely compute the derivation of these revisions, we need to
+    ;; be able to build their dependencies.  However, pre-built binaries are
+    ;; currently missing and some of these no longer build from source due to
+    ;; time bombs like <https://issues.guix.gnu.org/58650>.  Thus, comment
+    ;; them output until we have substitutes for these old things.
+
+    ;; ("1.2.0" . "a099685659b4bfa6b3218f84953cbb7ff9e88063")
+    ;; ("1.1.0" . "d62c9b2671be55ae0305bebfda17b595f33797f2")
+    ;; ("1.0.1" . "d68de958b60426798ed62797ff7c96c327a672ac")
+    ;; ("1.0.0" . "6298c3ffd9654d3231a6f25390b056483e8f407c")
+    ;; ("0.16.0" . "4a0b87f0ec5b6c2dcf82b372dd20ca7ea6acdd9c")
+    ))
 
 (manifest
  (map (match-lambda
