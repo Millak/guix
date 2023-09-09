@@ -515,6 +515,7 @@ editor (with wide ints)" )
 
 (define-public emacs-next (emacs->emacs-next emacs))
 (define-public emacs-next-pgtk (emacs->emacs-next emacs-pgtk))
+(define-public emacs-next-pgtk-xwidgets (emacs->emacs-next emacs-pgtk-xwidgets))
 
 (define-public guile-emacs
   (let ((commit "41120e0f595b16387eebfbf731fff70481de1b4b")
