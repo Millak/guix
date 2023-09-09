@@ -530,6 +530,13 @@ used in the image."
                 (image-partition-table-type image)))
        (else "")))
 
+    (when (and (gpt-image? image)
+               (not
+                (memq (bootloader-name bootloader) '(grub-efi grub-efi32))))
+      (raise
+       (formatted-message
+        (G_ "EFI bootloader required with GPT partitioning"))))
+
     (let* ((format (image-format image))
            (image-type (format->image-type format))
            (image-type-options (genimage-type-options image-type image))
