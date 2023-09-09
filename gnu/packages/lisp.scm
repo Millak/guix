@@ -267,7 +267,7 @@ interface to the Tk widget system.")
 (define-public ecl
   (package
     (name "ecl")
-    (version "21.2.1")
+    (version "23.9.9")
     (source
      (origin
        (method url-fetch)
@@ -275,7 +275,7 @@ interface to the Tk widget system.")
              "https://ecl.common-lisp.dev/static/files/release/"
              name "-" version ".tgz"))
        (sha256
-        (base32 "000906nnq25177bgsfndiw3iqqgrjc9spk10hzk653sbz3f7anmi"))))
+        (base32 "107q6gmxlsya4yv38r1x1axrgyyfgdrfkkz97zfp64bcrasdl6y5"))))
     (build-system gnu-build-system)
     ;; src/configure uses 'which' to confirm the existence of 'gzip'.
     (native-inputs
