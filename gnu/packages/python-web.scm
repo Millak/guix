@@ -571,12 +571,12 @@ stream is an enhanced asynchronous iterable.")
 (define-public python-asgiref
   (package
     (name "python-asgiref")
-    (version "3.4.1")
+    (version "3.7.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "asgiref" version))
               (sha256
-               (base32 "1saqgpgbdvb8awzm0f0640j0im55hkrfzvcw683cgqw4ni3apwaf"))))
+               (base32 "1vdgj8mikd2j6ijlhf7b4n2nxkvq72r1c0hj8mdvl6d8jfmf634y"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -586,7 +586,9 @@ stream is an enhanced asynchronous iterable.")
              (when tests?
                (invoke "pytest" "-vv")))))))
     (native-inputs
-     (list python-pytest python-pytest-asyncio))
+     (list python-mypy python-pytest python-pytest-asyncio))
+    (propagated-inputs
+     (list python-typing-extensions))
     (home-page "https://github.com/django/asgiref/")
     (synopsis "ASGI specs, helper code, and adapters")
     (description
