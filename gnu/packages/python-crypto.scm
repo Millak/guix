@@ -2,7 +2,7 @@
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2015-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2016, 2017, 2019 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2016, 2017, 2020, 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2016, 2017, 2020, 2022, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Ben Sturmfels <ben@sturm.com.au>
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015 Cyril Roelandt <tipecaml@gmail.com>
@@ -441,6 +441,16 @@ blake3, a cryptographic hash function.")
         (base32
          "1yxqfb5131wahjyw9pxz03bq476rcfx62s6k53xx4cqbzzgdaqkq"))))
     (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'adjust-test
+                 (lambda _
+                   ;; Newer PyOpenSSL no longer separates extensions with
+                   ;; newline (this can be removed for >1.3.0).
+                   (substitute* "test/test_certauth.py"
+                     (("7334\\\\n, DNS")
+                      "7334, DNS")))))))
     (propagated-inputs
      (list python-pyopenssl python-tldextract))
     (native-inputs
