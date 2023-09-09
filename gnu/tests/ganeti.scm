@@ -165,9 +165,9 @@
             (marionette-eval
              '(begin
                 (setenv "PATH" "/run/current-system/profile/bin")
-                (invoke "herd" "stop" "ganeti-wconfd")
-                (invoke "herd" "disable" "ganeti-wconfd")
-                (invoke "herd" "force-start" "ganeti-wconfd"))
+                (and (zero? (system* "herd" "stop" "ganeti-wconfd"))
+                     (zero? (system* "herd" "disable" "ganeti-wconfd"))
+                     (zero? (system* "herd" "force-start" "ganeti-wconfd"))))
              marionette))
 
           ;; Verify that the cluster is healthy.
@@ -230,7 +230,8 @@
             "debootstrap+default\nguix+default\n"
             (marionette-eval
              '(begin
-                (use-modules (ice-9 popen))
+                (use-modules (ice-9 popen)
+                             (ice-9 textual-ports))
                 (let* ((port (open-pipe*
                               OPEN_READ
                               #$(file-append ganeti "/sbin/gnt-os")

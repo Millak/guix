@@ -1,0 +1,11 @@
+Description: GCC 11 now enforces that comparison objects be invocable as const.
+--- a/Rendering/Label/vtkLabelHierarchy.cxx
++++ b/Rendering/Label/vtkLabelHierarchy.cxx
+@@ -525,1 +525,1 @@
+-                    const vtkHierarchyNode & b)
++                    const vtkHierarchyNode & b) const
+--- a/Rendering/Label/vtkLabelHierarchyPrivate.h
++++ b/Rendering/Label/vtkLabelHierarchyPrivate.h
+@@ -66,1 +66,1 @@
+-    bool operator () ( const vtkIdType& a, const vtkIdType& b )
++    bool operator () ( const vtkIdType& a, const vtkIdType& b ) const

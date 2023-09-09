@@ -83,6 +83,7 @@
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages haskell-xyz)
+  #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages imagemagick)
@@ -1414,7 +1415,7 @@ virtual reality, scientific visualization and modeling.")
 (define-public gr-framework
   (package
     (name "gr-framework")
-    (version "0.58.1")
+    (version "0.69.1")
     (source
       (origin
         (method git-fetch)
@@ -1423,12 +1424,11 @@ virtual reality, scientific visualization and modeling.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0q1rz4iyxbh0dc22y4w28ry3hr0yypdwdm6pw2zlwgjya7wkbvsw"))
+         (base32 "0kllbj4bj3f5w4wzg29ilac66fd0bslqq5srj845ssmzp4ynqglh"))
         (modules '((guix build utils)))
         (snippet
          '(begin
-            (delete-file-recursively "3rdparty")
-            #t))))
+            (delete-file-recursively "3rdparty")))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))    ; no test target
@@ -1999,9 +1999,9 @@ and engineering community.")
   ;; https://skia.org/docs/user/release/release_notes/.  The commit used
   ;; should be the last commit, as recommended at
   ;; https://skia.org/docs/user/release/.
-  (let ((version "98")
+  (let ((version "112")
         (revision "0")
-        (commit "55c56abac381e1ae3f0116c410bed81b05e0a38a"))
+        (commit "6d0b93856303fcf3021a8b40654d7739fda4dfb0"))
     (package
       (name "skia")
       (version (git-version version revision commit))
@@ -2013,14 +2013,10 @@ and engineering community.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1ldns2j1g2wj2phlxr9zqkdgs5g64pisxhwxcrq9ijn8a3jhafr2"))))
+                  "0g07xlvpbbxqmr9igvy5d1hy11z7dz9nzp2fd3ka9y2jqciniyz6"))))
       (build-system gnu-build-system)   ;actually GN + Ninja
       (arguments
        (list
-        ;; Running the test suite would require 'dm'; unfortunately the tool
-        ;; can only be built for debug builds, which require fetching third
-        ;; party sources.
-        #:tests? #f
         #:phases
         #~(modify-phases %standard-phases
             (replace 'configure
@@ -2037,6 +2033,7 @@ and engineering community.")
                          "cc=\"gcc\" "              ;defaults to 'cc'
                          "is_official_build=true "  ;to use system libraries
                          "is_component_build=true " ;build as a shared library
+                         "skia_use_system_zlib=true " ; use system zlib library
                          ;; Specify where locate the harfbuzz and freetype
                          ;; includes.
                          (format #f "extra_cflags=[\"-I~a\",\"-I~a\"] "
@@ -2048,7 +2045,10 @@ and engineering community.")
                          "extra_ldflags=[\"-Wl,-rpath=" #$output "/lib\"] "
                          ;; Disabled, otherwise the build system attempts to
                          ;; download the SDK at build time.
-                         "skia_use_dng_sdk=false "))))
+                         "skia_use_dng_sdk=false "
+                         ;; Wuffs is a google language that may improve performance
+                         ;; disabled while unpackaged
+                         "skia_use_wuffs=false "))))
             (replace 'build
               (lambda* (#:key parallel-build? #:allow-other-keys)
                 (let ((job-count (if parallel-build?
@@ -2085,13 +2085,142 @@ Description: 2D graphic library for drawing text, geometries and images.
 URL: https://skia.org/
 Version: ~a
 Libs: -L${libdir} -lskia
-Cflags: -I${includedir}~%" #$output #$version))))))))
-      (native-inputs (list gn libjpeg-turbo ninja pkg-config python-wrapper))
-      (inputs (list expat fontconfig freetype harfbuzz mesa libwebp zlib))
-      (home-page "https://skia.org/")
-      (synopsis "2D graphics library")
-      (description
-       "Skia is a 2D graphics library for drawing text, geometries, and images.
+Cflags: -I${includedir}~%" #$output #$version)))))
+            (replace 'check
+              (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                (let ((icu #$(this-package-native-input "icu4c-for-skia")))
+                  ;; Unbundle SPIRV-Tools dependency.
+                  (substitute* "BUILD.gn"
+                    (("deps \\+= \\[ \"//third_party/externals/spirv-tools:spvtools_val\" \\]")
+                      "libs += [ \"SPIRV-Tools\" ]"))
+                  (substitute* "src/sksl/SkSLCompiler.cpp"
+                    (("\"spirv-tools/libspirv.hpp\"")
+                     "<libspirv.hpp>"))
+                  ;; Configure ICU dependency.
+                  (substitute* "third_party/icu/BUILD.gn"
+                    (("data_dir = \"\\.\\./externals/icu/\"")
+                     (string-append "data_dir = \"" icu "/share/data/\""))
+                    (("script = \"\\.\\./externals/icu/scripts/")
+                     (string-append "script = \"" icu "/share/scripts/"))
+                    (("\\.\\./externals/icu/common/icudtl\\.dat")
+                     (string-append icu "/share/data/icudtl.dat"))
+                    (("sources = icu_sources")
+                     "")
+                    (("sources \\+= \\[ \"\\$data_assembly\" \\]")
+                     "sources = [ \"$data_assembly\" ]"))
+                  ;; Enable system libraries without is_official_build=true.
+                  ;; This is necessary because is_official_build prevents from
+                  ;; building dm.
+                  (for-each
+                   (lambda (libname)
+                     (let ((snake (string-join (string-split libname #\-) "_")))
+                       (substitute*
+                           (string-append "third_party/" libname "/BUILD.gn")
+                         (((string-append "skia_use_system_"
+                                          snake
+                                          " = is_official_build.*"))
+                          (string-append "skia_use_system_" snake " = true")))))
+                   '("zlib" "libjpeg-turbo" "harfbuzz" "libpng" "libwebp"))
+                  ;; Configure with gn.
+                  (invoke "gn" "gen" "out/Debug"
+                          (string-append
+                           "--args="
+                           "cc=\"gcc\" "              ;defaults to 'cc'
+                           "skia_compile_sksl_tests=false " ; disable some tests
+                           "skia_use_perfetto=false " ; disable performance tests
+                           "skia_use_wuffs=false "  ; missing performance tool
+                           "skia_use_system_expat=true " ; use system expat library
+                           "skia_use_system_zlib=true " ; use system zlib library
+                           ;; Specify where to locate the includes.
+                           "extra_cflags=["
+                           (string-join
+                            (map
+                             (lambda (lib)
+                               (string-append
+                                "\"-I"
+                                (search-input-directory
+                                 inputs
+                                 (string-append "include/" lib)) "\""))
+                             '("harfbuzz"
+                               "freetype2"
+                               "spirv-tools"
+                               "spirv"
+                               "unicode"))
+                            ",")
+                           "] "
+                           ;; Otherwise the validate-runpath phase fails.
+                           "extra_ldflags=["
+                           "\"-Wl,-rpath=" #$output "/lib\""
+                           "] "
+                           ;; Disabled, otherwise the build system attempts to
+                           ;; download the SDK at build time.
+                           "skia_use_dng_sdk=false "
+                           "skia_use_runtime_icu=true "))
+                  ;; Build dm testing tool.
+                  (symlink
+                   (string-append #$(this-package-native-input "gn") "/bin/gn")
+                   "./bin/gn")
+                  (invoke "ninja" "-C" "out/Debug" "dm")
+                  ;; The test suite requires an X server.
+                  (let ((xvfb (search-input-file (or native-inputs inputs)
+                                                 "bin/Xvfb"))
+                        (display ":1"))
+                    (setenv "DISPLAY" display)
+                    (system (string-append xvfb " " display " &")))
+                  ;; Run tests.
+                  (invoke "out/Debug/dm" "-v"
+                          "-w" "dm_output"
+                          "--codecWritePath" "dm_output"
+                          "--simpleCodec"
+                          "--skip"
+                          ;; The underscores are part of the dm syntax for
+                          ;; skipping tests.
+                          ;; These tests fail with segmentation fault.
+                          "_" "_" "_" "Codec_trunc"
+                          "_" "_" "_" "AnimCodecPlayer"
+                          "_" "_" "_" "Codec_partialAnim"
+                          "_" "_" "_" "Codec_InvalidImages"
+                          "_" "_" "_" "Codec_GifInterlacedTruncated"
+                          "_" "_" "_" "SkText_UnicodeText_Flags"
+                          "_" "_" "_" "SkParagraph_FontStyle"
+                          "_" "_" "_" "flight_animated_image"
+                          ;; These tests fail because of Codec/Sk failure.
+                          "_" "_" "_" "AndroidCodec_computeSampleSize"
+                          "_" "_" "_" "AnimatedImage_invalidCrop"
+                          "_" "_" "_" "AnimatedImage_scaled"
+                          "_" "_" "_" "AnimatedImage_copyOnWrite"
+                          "_" "_" "_" "AnimatedImage"
+                          "_" "_" "_" "BRD_types"
+                          "_" "_" "_" "Codec_frames"
+                          "_" "_" "_" "Codec_partial"
+                          "_" "_" "_" "Codec_partialWuffs"
+                          "_" "_" "_" "Codec_requiredFrame"
+                          "_" "_" "_" "Codec_rewind"
+                          "_" "_" "_" "Codec_incomplete"
+                          "_" "_" "_" "Codec_InvalidAnimated"
+                          "_" "_" "_" "Codec_ossfuzz6274"
+                          "_" "_" "_" "Codec_gif_out_of_palette"
+                          "_" "_" "_" "Codec_xOffsetTooBig"
+                          "_" "_" "_" "Codec_gif"
+                          "_" "_" "_" "Codec_skipFullParse"
+                          "_" "_" "_" "AndroidCodec_animated_gif"
+                          ;; These fail for unknown reasons.
+                          "_" "_" "_" "Gif"
+                          "_" "_" "_" "Wuffs_seek_and_decode"
+                          "_" "_" "_" "Skottie_Shaper_ExplicitFontMgr"
+                          "8888" "skp" "_" "_"
+                          "8888" "lottie" "_" "_"
+                          "gl" "skp" "_" "_"
+                          "gl" "lottie" "_" "_"
+                          "_" "_" "_" "ES2BlendWithNoTexture")))))))
+  (native-inputs (list gn libjpeg-turbo ninja pkg-config python-wrapper
+                       spirv-tools spirv-headers
+                       icu4c-for-skia glu xorg-server-for-tests))
+  (inputs (list expat fontconfig freetype harfbuzz mesa libwebp zlib))
+  (home-page "https://skia.org/")
+  (synopsis "2D graphics library")
+  (description
+   "Skia is a 2D graphics library for drawing text, geometries, and images.
 It supports:
 @itemize
 @item 3x3 matrices with perspective
@@ -2099,7 +2228,7 @@ It supports:
 @item shaders, xfermodes, maskfilters, patheffects
 @item subpixel text
 @end itemize")
-      (license license:bsd-3))))
+  (license license:bsd-3))))
 
 (define-public superfamiconv
   (package
@@ -2525,6 +2654,80 @@ of the parser is a list of cubic bezier shapes.  The library suits well for
 anything from rendering scalable icons in an editor application to prototyping
 a game.")
       (license license:zlib))))
+
+(define-public asli
+  (package
+    (name "asli")
+    (version "0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tpms-lattice/ASLI")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02hwdavpsy3vmivd6prp03jn004ykrl11lbkvksy5i2zm38zbknr"))
+       (patches (search-patches "asli-use-system-libs.patch"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Remove bundled libraries except (the ones missing from Guix and)
+        ;; KU Leuven's mTT, which is an obscure (i.e., unfindable by searching
+        ;; online for “mTT KU Leuven”), BSD-3 licensed, header-only library.
+        #~(begin
+            ;;(delete-file-recursively "libs/AdaptTools") ; Missing from Guix
+            (delete-file-recursively "libs/CGAL")
+            ;;(delete-file-recursively "libs/alglib") ; Missing from Guix
+            (delete-file-recursively "libs/eigen")
+            (delete-file-recursively "libs/mmg")
+            ;;(delete-file-recursively "libs/tetgen") ; Missing from Guix
+            (delete-file-recursively "libs/yaml")))))
+    (build-system cmake-build-system)
+    (inputs
+     (list boost
+           cgal
+           eigen
+           gmp
+           `(,mmg "lib")
+           mpfr
+           tbb-2020
+           yaml-cpp))
+    (arguments
+     (list #:tests? #f                  ; No tests
+           #:configure-flags
+           #~(list "-DCGAL_ACTIVATE_CONCURRENT_MESH_3=ON"
+                   (string-append "-DEIGEN3_INCLUDE_DIR="
+                                  #$(this-package-input "eigen")
+                                  "/include/eigen3")
+                   (string-append "-DMMG_INCLUDE_DIR="
+                                  (ungexp (this-package-input "mmg") "lib")
+                                  "/include")
+                   (string-append "-DMMG_LIBRARY_DIR="
+                                  (ungexp (this-package-input "mmg") "lib")
+                                  "/lib"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'install        ; No install phase
+                 (lambda _
+                   (with-directory-excursion "../source/bin"
+                     (install-file "ASLI" (string-append #$output "/bin"))
+                     ;; The manual is included in the repository.
+                     ;; Building it requires -DASLI_DOC=ON, but this is marked
+                     ;; as unsupported (presumably for users).
+                     ;; Besides, some of the LaTeX packages it uses are
+                     ;; missing from Guix, for example emptypage, fvextra and
+                     ;; menukeys.
+                     (install-file "docs/ASLI [User Manual].pdf"
+                                   (string-append #$output "/share/doc/"
+                                                  #$name "-" #$version))))))))
+    (home-page "http://www.biomech.ulg.ac.be/ASLI/")
+    (synopsis "Create lattice infills with varying unit cell type, size and feature")
+    (description "ASLI (A Simple Lattice Infiller) is a command-line tool that
+allows users to fill any 3D geometry with a functionally graded lattice.  The
+lattice infill is constructed out of unit cells, described by implicit
+functions, whose type, size and feature can be varied locally to obtain the
+desired local properties.")
+    (license license:agpl3+)))
 
 (define-public f3d
   (package

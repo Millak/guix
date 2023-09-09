@@ -45,6 +45,8 @@
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;; Copyright © 2023 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
+;;; Copyright © 2023 Reza Housseini <reza@housseini.me>
+;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -67,6 +69,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
@@ -94,6 +97,7 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
@@ -108,7 +112,7 @@
 (define-public pict
   (package
     (name "pict")
-    (version "3.7.3")
+    (version "3.7.4")
     (source
      (origin
        (method git-fetch)
@@ -118,7 +122,7 @@
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0bpyl0zklw2fyxgynrc7shg0xamw8rr68zmh528niscrpavsmfpi"))))
+         "1f3xpcdwihlxd8lj5clzfiz4rybhzdib95nrsnjfl009gh6gbwh0"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -601,7 +605,7 @@ pattern.")
 (define-public catch2-3.3
   (package
     (name "catch2")
-    (version "3.3.2")
+    (version "3.4.0")
     (home-page "https://github.com/catchorg/Catch2")
     (source (origin
               (method git-fetch)
@@ -611,7 +615,7 @@ pattern.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0m6i3lr0qk303ashjpz5vpwmxf76n5d6s8jq6r6kcy6gph525zmp"))))
+                "1gdfsva6mnd66px85fmm3s65h8qzqnmgbmws2i3nygfav1y8d88f"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -812,6 +816,43 @@ and it supports a very flexible form of test discovery.")
      "doctest is a single-header testing framework for C++11 and later.  It
 has been designed to be fast, light and unintrusive.")
     (license license:expat)))
+
+(define-public ftest
+  ;; There aren't any releases and it looks more like a small side project.
+  ;; It is included for completness to run tests for package utfcpp.
+  (let ((commit "c4ad4af0946b73ce1a40cbc72205d15d196c7e06")
+        (revision "0"))
+    (package
+      (name "ftest")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/nemtrif/ftest")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1jcd76zjhx5f2nsi80hj7gmywgpz1f7vcw8lv5yf7gx0l99dn86x"))))
+      ;; No CMakeLists.txt file provided, only one to run tests
+      (build-system copy-build-system)
+      (arguments
+       (list #:install-plan
+             #~'(("ftest.h" "include/ftest/"))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-before 'install 'check
+                   (lambda _
+                     (with-directory-excursion "tests"
+                       (invoke "cmake" ".")
+                       (invoke "make")
+                       (invoke "ctest")))))))
+      (native-inputs (list cmake-minimal))
+      (home-page "https://github.com/nemtrif/ftest")
+      (synopsis "C++ testing framework")
+      (description
+       "This package provides a simple and limited unit-test framework for C++.")
+      (license license:boost1.0))))
 
 (define-public python-gixy
   ;; The 0.1.20 release is missing some important fixes.

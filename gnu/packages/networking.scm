@@ -256,7 +256,7 @@ protocols.")
 (define-public lcrq
   (package
     (name "lcrq")
-    (version "0.1.0")
+    (version "0.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -265,7 +265,7 @@ protocols.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13mfg866scvy557zrvjxjhkzam39h8d07s2w3fqbwhw6br6axkxk"))))
+                "1m29p4bsafzbchnkidyrnglfdf1c9pnq6akkmivi23qdv9kj51dg"))))
     (build-system gnu-build-system)
     (arguments
      `(#:parallel-tests? #f
@@ -289,7 +289,7 @@ the RFC.")
 (define-public lcsync
   (package
     (name "lcsync")
-    (version "0.0.1")
+    (version "0.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -298,45 +298,33 @@ the RFC.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0s038b4xg9nlzhrganzjyfvc6n6cgd6kilnpik4axp62j2n5q11q"))))
+                "0bsd3dkir2i647nmrmyb7skbv16v0f6f3gfwkpxz8g42978dlms5"))))
     (build-system gnu-build-system)
     (arguments
      `(#:parallel-tests? #f
+       #:configure-flags
+       (list
+        (string-append "--prefix="
+                       (assoc-ref %outputs "out")))
        #:make-flags (let ((target ,(%current-target-system)))
                       (list ,(string-append "CC="
-                                            (cc-for-target))
-                            ;; avoid running setcap in the install process
-                            "SETCAP_PROGRAM=true"
-                            (string-append "prefix="
-                                           (assoc-ref %outputs "out"))))
+                                            (cc-for-target))))
        #:test-target "test"
        #:phases (modify-phases %standard-phases
-                  (delete 'configure) ;no configure script
-                  (add-before 'check 'remove-network-tests
+                  (add-after 'unpack 'use-prefix-from-configure-in-doc-makefile
+                    ;; Use prefix from configure. Fixed upstream:
+                    ;; https://codeberg.org/librecast/lcsync/commit/4ba00f6
+                    ;; XXX: Remove for 0.2.2+
                     (lambda _
-                      ;; these tests require networking
-                      (delete-file "./test/0000-0027.c")
-                      (delete-file "./test/0000-0049.c")
-                      (delete-file "./test/0000-0074.c")))
-                  (add-after 'unpack 'remove-immintrin.h
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (substitute* "Makefile"
-                        (("CFLAGS :=")
-                         (string-append "CFLAGS := -I" (search-input-directory
-                                                         inputs "include/simde"))))
-                      (substitute* (find-files "src")
-                        ((".*immintrin\\.h.*")
-                         (string-append "#include <simde-features.h>\n"
-                                        "#include <x86/ssse3.h>\n"))
-                        (("__m128i") "simde__m128i"))))
+                      (substitute* "doc/Makefile.in"
+                        (("PREFIX .= /usr/local") "PREFIX ?= @prefix@"))))
                   (add-before 'build 'add-library-paths
                     (lambda* (#:key inputs #:allow-other-keys)
                       (let* ((librecast (assoc-ref inputs "librecast")))
                         (substitute* (list "./src/Makefile" "./test/Makefile")
                           (("-llibrecast")
                            (string-append "-L" librecast "/lib -llibrecast")))))))))
-    (inputs (list librecast libsodium))
-    (native-inputs (list simde))
+    (inputs (list lcrq librecast libsodium))
     (home-page "https://librecast.net/lcsync.html")
     (synopsis "Librecast file and data syncing tool")
     (description
@@ -487,7 +475,7 @@ GLib-based library, libnice, as well as GStreamer elements to use it.")
 (define-public librecast
   (package
     (name "librecast")
-    (version "0.6.1")
+    (version "0.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -496,7 +484,7 @@ GLib-based library, libnice, as well as GStreamer elements to use it.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1kixnm7pn8345wp0klhnpw5x992cqbqx3bhc01j8xhqf6irlzdm3"))))
+                "0y0km0fv39m3i227pyg7fcr7d94gbji51fkcywqyrjgmk4j1hp1n"))))
     (build-system gnu-build-system)
     (arguments
      `(#:parallel-tests? #f
@@ -505,26 +493,7 @@ GLib-based library, libnice, as well as GStreamer elements to use it.")
                                             (cc-for-target))
                             (string-append "PREFIX="
                                            (assoc-ref %outputs "out"))))
-       #:test-target "test"
-       #:phases (modify-phases %standard-phases
-                  (add-before 'check 'remove-network-tests
-                    (lambda _
-                      ;; these tests require networking
-                      (delete-file "./test/0000-0010.c")
-                      (delete-file "./test/0000-0012.c")
-                      (delete-file "./test/0000-0013.c")
-                      (delete-file "./test/0000-0014.c")
-                      (delete-file "./test/0000-0015.c")
-                      (delete-file "./test/0000-0016.c")
-                      (delete-file "./test/0000-0018.c")
-                      (delete-file "./test/0000-0019.c")
-                      (delete-file "./test/0000-0021.c")
-                      (delete-file "./test/0000-0028.c")
-                      (delete-file "./test/0000-0036.c")
-                      (delete-file "./test/0000-0037.c")
-                      (delete-file "./test/0000-0038.c")
-                      (delete-file "./test/0000-0039.c")
-                      (delete-file "./test/0000-0040.c"))))))
+       #:test-target "test"))
     (inputs (list libsodium lcrq))
     (synopsis "IPv6 multicast library")
     (description "Librecast is a C library which supports IPv6 multicast
@@ -1505,6 +1474,26 @@ containing both Producer and Consumer support.")
                (base32
                 "0ay0n0d85254zdmv8znmn399gfiqpk6ga0jwdwa7ylpbw9pbdzw8"))))
     (build-system gnu-build-system)
+    (native-inputs
+     (if (%current-target-system)
+         (list pkg-config
+               libtool
+               gettext-minimal
+               autoconf automake)
+         '()))
+    (arguments
+     (if (%current-target-system)
+         (list #:phases
+               #~(modify-phases %standard-phases
+                   ;; AC_FUNC_MALLOC and AC_FUNC_REALLOC usually unneeded
+                   ;; see https://lists.gnu.org/archive/html/autoconf/2003-02/msg00017.html
+                   (add-after 'unpack 'fix-rpl_malloc
+                     (lambda _
+                       (substitute* "configure.ac"
+                         (("AC_FUNC_MALLOC") ""))
+                       ;; let bootstrap phase run.
+                       (delete-file "./configure")))))
+         '()))
     (home-page "https://libndp.org/")
     (synopsis "Library for Neighbor Discovery Protocol")
     (description
@@ -1575,42 +1564,33 @@ intended as a substitute for the PPPStatus and EthStatus projects.")
 (define-public iputils
   (package
     (name "iputils")
-    (version "20190709")
+    (version "20221126")
     (home-page "https://github.com/iputils/iputils")
     (source (origin
               (method git-fetch)
-              (uri (git-reference (url home-page)
-                                  (commit (string-append "s" version))))
+              (uri (git-reference (url home-page) (commit version)))
               (file-name (git-file-name name version))
-              (patches (search-patches "iputils-libcap-compat.patch"))
               (sha256
                (base32
-                "04bp4af15adp79ipxmiakfp0ij6hx5qam266flzbr94pr8z8l693"))))
+                "1qfdvr60mlwh5kr4p27wjknz1cvrwfi6iadh9ny45661v22i0njx"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags '("-DBUILD_RARPD=true")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-docbook-url
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((docbook-xsl (assoc-ref inputs "docbook-xsl"))
-                    (uri (string-append docbook-xsl "/xml/xsl/docbook-xsl-"
-                                        ,(package-version docbook-xsl))))
-               (for-each
-                (lambda (file)
-                  (substitute* file
-                    (("http://docbook\\.sourceforge\\.net/release/xsl-ns/current")
-                     uri)))
-                (cons "doc/meson.build"
-                      (find-files "doc" "\\.xsl$")))
-               #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-ping-test
+            (lambda _
+              ;; Disable ping test, as it requires root or raw socket capabilities.
+              (substitute* "test/meson.build"
+                (("if build_ping == true")
+                 "if false")))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)
-       ("docbook-xsl" ,docbook-xsl)
-       ("docbook-xml" ,docbook-xml)
-       ("libxml2" ,libxml2)          ;for XML_CATALOG_FILES
-       ("xsltproc" ,libxslt)))
+     (list gettext-minimal
+           pkg-config
+           docbook-xsl
+           docbook-xml
+           libxml2                      ;for XML_CATALOG_FILES
+           libxslt))
     (inputs
      (list libcap libidn2 openssl))
     (synopsis "Collection of network utilities")
@@ -1622,20 +1602,15 @@ configuration, troubleshooting, or servers.  Utilities included are:
 @item @command{arping}: Ping hosts using the @dfn{Address Resolution Protocol}.
 @item @command{clockdiff}: Compute time difference between network hosts
 using ICMP TSTAMP messages.
-@item @command{ninfod}: Daemon that responds to IPv6 Node Information Queries.
 @item @command{ping}: Use ICMP ECHO messages to measure round-trip delays
 and packet loss across network paths.
-@item @command{rarpd}: Answer RARP requests from clients.
-@item @command{rdisc}: Populate network routing tables with information from
-the ICMP router discovery protocol.
-@item @command{tftpd}: Trivial file transfer protocol server.
 @item @command{tracepath}: Trace network path to an IPv4 or IPv6 address and
 discover MTU along the way.
 @end itemize")
     ;; The various utilities are covered by different licenses, see LICENSE
     ;; for details.
-    (license (list license:gpl2+  ;arping, rarpd, tracepath
-                   license:bsd-3  ;clockdiff, ninfod, ping, tftpd
+    (license (list license:gpl2+        ;arping, tracepath
+                   license:bsd-3        ;clockdiff, ping
                    (license:non-copyleft
                     "https://spdx.org/licenses/Rdisc.html"
                     "Sun Microsystems license, see rdisc.c for details")))))
@@ -2779,7 +2754,7 @@ procedure calls (RPCs).")
 (define-public openvswitch
   (package
     (name "openvswitch")
-    (version "3.0.3")
+    (version "3.2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2787,7 +2762,7 @@ procedure calls (RPCs).")
                     version ".tar.gz"))
               (sha256
                (base32
-                "0qwlpnwjcyb7fpw6yp65mdqg20i1851z70xmvzxwxwpifq56a1pm"))))
+                "1i0lb40lwbakmmqklmfcgr01l1ymsawgdi7k9a1zzp8ariw7x4ff"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
@@ -4389,7 +4364,7 @@ network.")
 (define-public yggdrasil
   (package
     (name "yggdrasil")
-    (version "0.4.3")
+    (version "0.4.7")
     (source
      (origin
        (method git-fetch)
@@ -4400,27 +4375,33 @@ network.")
          (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jp6998a45xi8pbi8p84chvpm1mhhcvcxm1avi1c1gjjp4jqm3vl"))
+        (base32 "01mllfrsr55lnfivxwa57cfrjas6w4shsvx9k81pw8jixc124myk"))
        (patches (search-patches "yggdrasil-extra-config.patch"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/yggdrasil-network/yggdrasil-go"
-       ;; TODO: figure out how tests are run
-       #:tests? #f
-       #:install-source? #f
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'build
-           (lambda* (#:key import-path build-flags #:allow-other-keys)
-             (for-each
-               (lambda (directory)
-                 ((assoc-ref %standard-phases 'build)
-                  #:build-flags build-flags
-                  #:import-path directory))
-               (list "github.com/yggdrasil-network/yggdrasil-go/cmd/yggdrasil"
-                     "github.com/yggdrasil-network/yggdrasil-go/cmd/yggdrasilctl"
-                     "github.com/yggdrasil-network/yggdrasil-go/cmd/genkeys"))
-             #t)))))
+     (list #:import-path "github.com/yggdrasil-network/yggdrasil-go"
+           ;; TODO: figure out how tests are run
+           #:tests? #f
+           #:install-source? #f
+           #:go go-1.20
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'build
+                 (lambda* (#:key import-path build-flags #:allow-other-keys)
+                   (let* ((pkgsrc "github.com/yggdrasil-network/yggdrasil-go/src/version")
+                          (ldflags (format #f
+                                           "-X ~a.buildName=yggdrasil -X ~a.buildVersion=~a"
+                                           pkgsrc
+                                           pkgsrc
+                                           #$version)))
+                     (for-each
+                      (lambda (directory)
+                        ((assoc-ref %standard-phases 'build)
+                         #:build-flags `("-ldflags" ,ldflags)
+                         #:import-path directory))
+                      (list "github.com/yggdrasil-network/yggdrasil-go/cmd/yggdrasil"
+                            "github.com/yggdrasil-network/yggdrasil-go/cmd/yggdrasilctl"
+                            "github.com/yggdrasil-network/yggdrasil-go/cmd/genkeys"))))))))
     ;; https://github.com/kardianos/minwinsvc is windows only
     (propagated-inputs
      (list ;;("go-golang-zx2c4-com-wireguard-windows"
@@ -4430,11 +4411,14 @@ network.")
            go-golang-org-x-sys
            go-golang-org-x-net
            go-golang-org-x-crypto
+           go-golang-org-x-tools
            go-netns
            go-netlink
+           go-github-com-olekukonko-tablewriter
            go-github-com-mitchellh-mapstructure
            go-github-com-mattn-go-runewidth
            go-github-com-mattn-go-isatty
+           go-github-com-mattn-go-colorable
            go-github-com-kardianos-minwinsvc
            go-github-com-hjson-hjson-go
            go-github-com-hashicorp-go-syslog
@@ -4502,7 +4486,7 @@ on hub/switched networks.  It is based on @acronym{ARP} packets, it will send
 (define-public phantomsocks
   (package
     (name "phantomsocks")
-    (version "0.0.0-20230405135900-a54ae9f3611e")
+    (version "0.0.0-20230811053544-53b995bdab83")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4511,7 +4495,7 @@ on hub/switched networks.  It is based on @acronym{ARP} packets, it will send
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1qgv8dcrsyzjzppvdk0n5kkyaypcjm1hcn9lb29ahvbhm70cpm6a"))))
+                "1jc9qldi4f9s6n4ggaphyilxjymrz95hwd060jhj260x2hkdywl9"))))
     (build-system go-build-system)
     (arguments
      (list #:install-source? #f
@@ -4519,13 +4503,12 @@ on hub/switched networks.  It is based on @acronym{ARP} packets, it will send
            #:build-flags #~'("-tags" #$(if (target-linux?)
                                            "rawsocket"
                                            "pcap"))))
-    (propagated-inputs
-     (list go-github-com-google-gopacket
-           go-github-com-macronut-go-tproxy))
     (inputs
-     (if (target-linux?)
-         '()
-         (list libpcap)))
+     (append (if (target-linux?)
+                 '()
+                 (list libpcap))
+             (list go-github-com-google-gopacket
+                   go-github-com-macronut-go-tproxy)))
     (home-page "https://github.com/macronut/phantomsocks")
     (synopsis "Internet censorship circumvention tool")
     (description

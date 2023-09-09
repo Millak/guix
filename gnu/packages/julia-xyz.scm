@@ -2626,7 +2626,7 @@ users; instead, you should use one of the packages that builds on
 (define-public julia-gr
   (package
     (name "julia-gr")
-    (version "0.58.1")
+    (version "0.69.5")
     (source
       (origin
         (method git-fetch)
@@ -2635,7 +2635,7 @@ users; instead, you should use one of the packages that builds on
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "18zxa1w2wmrf44c5l10qbh99zjdp7h94gxlymh47cf5kj5fc4xmx"))))
+         (base32 "0i4vb5y1m47x1ispr52h5a5gs544205vpiz4cypd4pr242f96dcb"))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-gr-jll))
@@ -4860,7 +4860,7 @@ everything from run time algorithm choice to code generation at compile time.")
 (define-public julia-prettytables
   (package
     (name "julia-prettytables")
-    (version "1.0.1")
+    (version "2.1.2")
     (source
       (origin
         (method git-fetch)
@@ -4869,20 +4869,28 @@ everything from run time algorithm choice to code generation at compile time.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1d1sd87kkwbar3l608h0adzws42cwdrmp1idxx7an6mfqcsdrijw"))))
+         (base32 "029niwxgql9rcyx0rxcyhmwkzxciccji4hb59g6752ixam65wxkh"))))
     (build-system julia-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'link-depot 'skip-color-tests
+          (add-after 'link-depot 'skip-tests-manipulating-terminal-display
             (lambda _
               (substitute* "test/text_backend.jl"
-                ((".*colors\\.jl.*") "")))))))
+                ((".*colors\\.jl.*") "")
+                ((".*custom_cells\\.jl.*") ""))
+              (substitute* "test/general.jl"
+                ((".*string\\.jl.*") ""))
+              (substitute* "test/text_backend/issues.jl"
+                (("testset.*161.*begin" all)
+                 (string-append all " return"))))))))
     (propagated-inputs
      (list julia-crayons
            julia-formatting
+           julia-offsetarrays
            julia-reexport
+           julia-stringmanipulation
            julia-tables))
     (home-page "https://github.com/ronisbr/PrettyTables.jl")
     (synopsis "Print data in formatted tables")
@@ -5168,7 +5176,7 @@ embedded in a real vector space.")
 (define-public julia-recipesbase
   (package
     (name "julia-recipesbase")
-    (version "1.1.1")
+    (version "1.2.1")
     (source
       (origin
         (method git-fetch)
@@ -5177,7 +5185,7 @@ embedded in a real vector space.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1b6m5rz6wprj30rwvlxz4r1jv5gl0ay0f52kfmy2w7lqly7zhap5"))))
+         (base32 "0icyn56b17bqlxqkc3h44ndn0f1g2g9wy2kjvl8b6pfqni4ybazm"))))
     (build-system julia-build-system)
     (home-page "https://github.com/JuliaPlots/RecipesBase.jl")
     (synopsis "Define transformation recipes on user types")
@@ -5192,7 +5200,7 @@ more complex visualizations.")
 (define-public julia-recipespipeline
   (package
     (name "julia-recipespipeline")
-    (version "0.3.4")
+    (version "0.6.6")
     (source
       (origin
         (method git-fetch)
@@ -5201,7 +5209,7 @@ more complex visualizations.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0zq4bzxvq36zr0va6iip3x97mgq5b4fwza8avszx1ryfqm3lg1f7"))))
+         (base32 "1lsjnlkmhcxngrcszfwmzb7hqg8bczi00mn7kbmwp5ffqb7fh0vv"))))
     (build-system julia-build-system)
     (arguments
      (list #:tests? #f))    ; Cycle with Plots.jl.
@@ -6028,6 +6036,26 @@ applied to any distance.")
     (description "This package provides support for decoding and encoding
 texts between multiple character encodings.  It is currently based on the
 @code{iconv} interface, and supports all major platforms using GNU libiconv.")
+    (license license:expat)))
+
+(define-public julia-stringmanipulation
+  (package
+    (name "julia-stringmanipulation")
+    (version "0.3.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/ronisbr/StringManipulation.jl")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "15ss8hkjyjs2x66j1krrrxaa1hdpwz0ygs3cg3bdpm336k7621q8"))))
+    (build-system julia-build-system)
+    (home-page "https://github.com/ronisbr/StringManipulation.jl")
+    (synopsis "Functions to manipulate strings with ANSI escape sequences")
+    (description "This package provides several functions to manipulate strings
+with ANSI escape sequences.")
     (license license:expat)))
 
 (define-public julia-structarrays

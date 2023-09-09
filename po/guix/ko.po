@@ -4,14 +4,14 @@
 # la snesne <lasnesne@lagunposprasihopre.org>, 2021.
 # simmon <simmon@nplob.com>, 2021, 2022.
 # Kim InSoo <simmon@nplob.com>, 2022.
-# 김인수 <simmon@nplob.com>, 2022.
+# 김인수 <simmon@nplob.com>, 2022, 2023.
 #: guix/diagnostics.scm:159
 msgid ""
 msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2023-06-19 03:18+0000\n"
-"PO-Revision-Date: 2022-11-25 07:19+0000\n"
+"PO-Revision-Date: 2023-08-06 02:40+0000\n"
 "Last-Translator: 김인수 <simmon@nplob.com>\n"
 "Language-Team: Korean <https://translate.fedoraproject.org/projects/guix/guix/ko/>\n"
 "Language: ko\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.14.2\n"
+"X-Generator: Weblate 4.18.2\n"
 
 #: gnu.scm:81
 #, scheme-format
@@ -9349,7 +9349,7 @@ msgstr ""
 #: guix/scripts/refresh.scm:320
 #, scheme-format
 msgid "Available updaters:~%"
-msgstr "사용 가능한 업데이트:~%"
+msgstr "사용 가능한 최신화:~%"
 
 #. TRANSLATORS: The parenthetical expression here is rendered
 #. like "(42% coverage)" and denotes the fraction of packages

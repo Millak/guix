@@ -11430,7 +11430,7 @@ and uncluttered interface for the management of password databases.")
 (define-public sound-juicer
   (package
     (name "sound-juicer")
-    (version "3.38.0")
+    (version "3.40.0")
     (source
      (origin
        (method url-fetch)
@@ -11439,15 +11439,25 @@ and uncluttered interface for the management of password databases.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "08d5d81rz9sj3m5paw8fwbgxmhlbr7bcjdzpmzj832qvg8smydxf"))))
+         "1rhxmvx2mr22zd5p0azc0svi0mbnzcjnh3sasv3b9gli8ds85s1f"))))
     (build-system meson-build-system)
     (arguments
      (list
       #:glib-or-gtk? #t
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'unpack 'disable-gtk-update-icon-cache
-                     (lambda _
-                       (setenv "DESTDIR" "/"))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-gtk-update-icon-cache
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false"))))
+          (add-after 'install 'wrap-program
+            (lambda _
+              (let ((prog (string-append #$output "/bin/sound-juicer"))
+                    (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
+                (wrap-program prog
+                  `("GST_PLUGIN_SYSTEM_PATH"
+                    ":" prefix (,gst-plugin-path)))))))))
     (native-inputs
      (list desktop-file-utils
            gettext-minimal
@@ -11457,7 +11467,8 @@ and uncluttered interface for the management of password databases.")
            pkg-config
            python))
     (inputs
-     (list brasero
+     (list bash-minimal
+           brasero
            gsettings-desktop-schemas
            gst-plugins-base
            gst-plugins-good

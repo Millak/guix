@@ -241,6 +241,12 @@ may also simplify input method development.")
                  #$flags))
        ((#:phases phases '%standard-phases)
         #~(modify-phases #$phases
+            (add-after 'unpack 'disable-registry-cache
+              ;; IBus registry cache depends on mtime, which doesn't work on
+              ;; Guix.
+              (lambda _
+                (substitute* "bus/main.c"
+                  (("ibus_init") "g_cache = \"none\"; ibus_init"))))
             (replace 'wrap-with-additional-paths
               (lambda* (#:key outputs #:allow-other-keys)
                 ;; Make sure 'ibus-setup' and 'ibus-daemon' runs with the
@@ -263,6 +269,13 @@ may also simplify input method development.")
                        python
                        python-dbus
                        python-pygobject)))
+    (native-search-paths
+     (cons (search-path-specification
+            (variable "GUIX_GTK3_IM_MODULE_FILE")
+            (file-type 'regular)
+            (separator #f)
+            (files '("lib/gtk-3.0/3.0.0/immodules-gtk3.cache")))
+           (package-native-search-paths ibus-minimal)))
     (properties (alist-delete 'hidden? (package-properties ibus-minimal)))))
 
 (define-public ibus-libpinyin

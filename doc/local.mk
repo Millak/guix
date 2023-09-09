@@ -230,7 +230,7 @@ $(srcdir)/%D%/guix.1: scripts/guix.in $(sub_commands_mans)
 # source script (the first prerequisite) has been changed.  The $(GOBJECTS)
 # prerequisite is solely meant to force these docs to be made only after all
 # Guile modules have been compiled.  We also need the guix script to exist.
-$(srcdir)/%D%/guix-%.1: scripts/guix guix/scripts/%.scm $(GOBJECTS)
+$(srcdir)/%D%/guix-%.1: guix/scripts/%.scm $(GOBJECTS) scripts/guix
 	-@case '$?' in \
 	  *$<*) $(AM_V_P) && set -x || echo "  HELP2MAN $@"; \
 	        $(gen_man) --output="$@" "guix $*";; \

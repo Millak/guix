@@ -5646,8 +5646,8 @@ RFC 1321 by R. Rivest, published April 1992.")
      (list ecl-flexi-streams))))
 
 (define-public sbcl-cl+ssl
-  (let ((commit "1e2ffc9511df4b1c25c23e0313a642a610dae352")
-        (revision "5"))
+  (let ((commit "17d5cdd65405f1d26e26f3e875e70027d0c8eedb")
+        (revision "6"))
     (package
       (name "sbcl-cl+ssl")
       (version (git-version "0.0.0" revision commit))
@@ -5659,7 +5659,7 @@ RFC 1321 by R. Rivest, published April 1992.")
                (commit commit)))
          (file-name (git-file-name "cl+ssl" version))
          (sha256
-          (base32 "0iwdh416ggzs2ig6i0ivrwfy21w7m39w464pc7j3p9pvq09837fy"))))
+          (base32 "0v0kx2m5355jkdshmj0z923c5rlvdl2n11rb3hjbv3kssdfsbs0s"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        '(#:phases
@@ -7982,51 +7982,54 @@ formats.")
   (sbcl-package->ecl-package sbcl-swap-bytes))
 
 (define-public sbcl-iolib
-  (package
-    (name "sbcl-iolib")
-    (version "0.8.4")
-    (home-page "https://github.com/sionescu/iolib")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url home-page)
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1f43jqqqwp9n7xksqxw91myapsdbc2dxck6nd6flakbnp9haylyq"))))
-    (build-system asdf-build-system/sbcl)
-    (inputs
-     `(("alexandria" ,sbcl-alexandria)
-       ("bordeaux-threads" ,sbcl-bordeaux-threads)
-       ("cffi" ,sbcl-cffi)
-       ("idna" ,sbcl-idna)
-       ("libfixposix" ,libfixposix)
-       ("split-sequence" ,sbcl-split-sequence)
-       ("swap-bytes" ,sbcl-swap-bytes)))
-    (arguments
-     '(#:asd-systems '("iolib"
-                       "iolib/os")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "src/syscalls/ffi-functions-unix.lisp"
-               (("\\(:default \"libfixposix\"\\)")
-                (string-append
-                 "(:default \""
-                 (assoc-ref inputs "libfixposix") "/lib/libfixposix\")")))
-             ;; Socket tests need Internet access, disable them.
-             (substitute* "iolib.asd"
-               (("\\(:file \"sockets\" :depends-on \\(\"pkgdcl\" \"defsuites\"\\)\\)")
-                "")))))))
-    (synopsis "Common Lisp I/O library")
-    (description "IOlib is to be a better and more modern I/O library than
+  (let ((commit "010b7a6bdd2e918ebf2ec85edd3853179f01cb30")
+        (revision "0"))
+    (package
+      (name "sbcl-iolib")
+      (version (git-version "0.8.4" revision commit))
+      (home-page "https://github.com/sionescu/iolib")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url home-page)
+               (commit commit)))
+         (file-name (git-file-name "cl-iolib" version))
+         (sha256
+          (base32 "1qqy2yhprkmdn2vmi69akf818q3n99gv8cacv6456af0wjm5p1ga"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list pkg-config sbcl-fiveam))
+      (inputs
+       (list libfixposix
+             sbcl-alexandria
+             sbcl-bordeaux-threads
+             sbcl-cffi
+             sbcl-idna
+             sbcl-split-sequence
+             sbcl-swap-bytes))
+      (arguments
+       '(#:asd-systems '("iolib"
+                         "iolib/os")
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-paths
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "src/syscalls/ffi-functions-unix.lisp"
+                 (("\\(:default \"libfixposix\"\\)")
+                  (string-append
+                   "(:default \""
+                   (assoc-ref inputs "libfixposix") "/lib/libfixposix\")")))
+               ;; Socket tests need Internet access, disable them.
+               (substitute* "iolib.asd"
+                 (("\\(:file \"sockets\" :depends-on \\(\"pkgdcl\" \"defsuites\"\\)\\)")
+                  "")))))))
+      (synopsis "Common Lisp I/O library")
+      (description "IOlib is to be a better and more modern I/O library than
 the standard Common Lisp library.  It contains a socket library, a DNS
 resolver, an I/O multiplexer(which supports @code{select(2)}, @code{epoll(4)}
 and @code{kqueue(2)}), a pathname library and file-system utilities.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public cl-iolib
   (let ((parent (sbcl-package->cl-source-package sbcl-iolib)))
@@ -9565,8 +9568,8 @@ function.")
   (sbcl-package->cl-source-package sbcl-specialization-store))
 
 (define-public sbcl-cl-gobject-introspection
-  (let ((commit "c4fef07d01cec7c830ce84ef150ed8e4da5959c4")
-        (revision "2"))
+  (let ((commit "83beec4492948b52aae4d4152200de5d5c7ac3e9")
+        (revision "3"))
     (package
       (name "sbcl-cl-gobject-introspection")
       (version (git-version "0.3" revision commit))
@@ -9579,7 +9582,7 @@ function.")
                (commit commit)))
          (file-name (git-file-name "cl-gobject-introspection" version))
          (sha256
-          (base32 "18n4wg93sf6cjmpcpr47bg2rd8mbm9ml9lykmjsxgvsf3nwr5vnw"))))
+          (base32 "0xwmj4b3whz12i474g54krp1v6h0fpvsx8lgwpk6rkli9xc71wc3"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list glib
@@ -26600,7 +26603,7 @@ instead of #'FOO.
 (define-public sbcl-njson
   (package
     (name "sbcl-njson")
-    (version "1.1.0")
+    (version "1.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -26609,7 +26612,7 @@ instead of #'FOO.
               (file-name (git-file-name "cl-njson" version))
               (sha256
                (base32
-                "02m9l77am2rlkg83dyp3jvb76ifw1y84xh3wpz6cx7h2wkxkjnl5"))))
+                "0zdf6mlbpc2j95qm000ljf642af18sfz45yxh6rnxrbf8m4laxxa"))))
     (build-system asdf-build-system/sbcl)
     (inputs (list sbcl-cl-json sbcl-jzon))
     (native-inputs (list sbcl-lisp-unit2))
@@ -26622,23 +26625,25 @@ instead of #'FOO.
 and process JSON data, in the minimum keystrokes/minutes possible.
 
 NJSON is parser-independent, with existing Common Lisp JSON parsers being
-loadable as additional system.  @code{jzon} and @code{cl-json} backends are
-included by default, though.  Conveniences that NJSON provides are:
+loadable as additional system.  @code{jzon} is included by default, though.
+Conveniences that NJSON provides are:
 
 @itemize
 @item @code{encode} and @code{decode} as single entry points for JSON reading
 and writing, be it from streams/string/files, or from those.
 
-@item @code{jget}, @code{jrem}, @code{jtruep}, and their aliases to
-access/delete the decoded objects' properties and check their truth value
-without the need to worry about the low-level details of how these values are
-decoded.
+@item @code{jget}, @code{jcopy}, @code{jkeys}, and their aliases to
+manipulate the decoded objects' properties without the need to worry
+about the low-level details of how these values are decoded.
 
 @item @code{jif}, @code{jwhen}, @code{jor}, @code{jand}, and other macros
 mimicking Lisp ones, while using truth values of JSON-decoded data.
 
+@item @code{jbind} and @code{jmatch} macros to destructure and
+validate parsed JSON.
+
 @item @code{njson/aliases} package to nickname to @code{j} for all the
-forms conveniently accessible as @code{j:rem}, @code{j:get},
+forms conveniently accessible as @code{j:get}, @code{j:copy},
 @code{j:if} etc.
 
 @end itemize\n")

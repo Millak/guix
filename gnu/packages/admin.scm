@@ -385,9 +385,18 @@ interface and is based on GNU Guile.")
                (base32
                 "0v9ld9gbqdp5ya380fbkdsxa0iqr90gi6yk004ccz3n792nq6wlj"))))
     (native-inputs (modify-inputs (package-native-inputs shepherd-0.9)
-                     (replace "guile-fibers" guile-fibers-1.3)))
+                     (replace "guile-fibers"
+                       ;; Work around
+                       ;; <https://github.com/wingo/fibers/issues/89>.  This
+                       ;; affects any system without a functional real-time
+                       ;; clock (RTC), but in practice these are typically Arm
+                       ;; single-board computers.
+                       (if (target-arm?)
+                           guile-fibers-1.1
+                           guile-fibers-1.3))))
     (inputs (modify-inputs (package-inputs shepherd-0.9)
-              (replace "guile-fibers" guile-fibers-1.3)))))
+              (replace "guile-fibers"
+                (this-package-native-input "guile-fibers"))))))
 
 (define-public shepherd shepherd-0.9)
 
@@ -3979,7 +3988,7 @@ you are running, what theme or icon set you are using, etc.")
 (define-public hyfetch
   (package
     (name "hyfetch")
-    (version "1.4.8")
+    (version "1.4.10")
     (source
      (origin
        (method git-fetch)
@@ -3989,7 +3998,7 @@ you are running, what theme or icon set you are using, etc.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "127nwgxcq0fs9wavs0sqv8zqdz7yfahw1nr9pgb6z5yjnc5cdcx3"))))
+         "1lf1vrasinda9j6yazznpx54gg5j24xvkjb68dxhby9dg8ql1h87"))))
     (build-system python-build-system)
     (arguments (list #:tests? #f))      ;no tests
     (inputs (list python-typing-extensions))
@@ -4275,6 +4284,28 @@ on systems running the Linux kernel.")
     ;; arm and aarch64 don't have cpuid.h.
     (supported-systems '("i686-linux" "x86_64-linux"))
     (license license:gpl2)))
+
+(define-public tcptrack
+  (package
+    (name "tcptrack")
+    (version "1.4.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/bchretien/tcptrack")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "08lh3l67wn4kq9q0nfspc7rj0jvp9dzwjgxpvqliwcif8cy5mi45"))))
+    (build-system gnu-build-system)
+    (inputs (list libpcap ncurses))
+    (synopsis "TCP connections sniffer")
+    (description
+     "Tcptrack is a sniffer which displays information about TCP connections
+it sees on a network interface.  This is a fork of Steve Benson’s tcptrack.")
+    (home-page "https://github.com/bchretien/tcptrack")
+    (license license:lgpl2.1+)))
 
 (define-public masscan
   (package

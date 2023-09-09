@@ -10,7 +10,7 @@
 ;;; Copyright © 2020 Timothy Sample <samplet@ngyro.com>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
-;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021, 2023 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -341,6 +341,36 @@
                             (arguments
                              `(#:tests? ,(not (%current-target-system)))))))
     (check-tests-true pkg)))
+
+(test-equal "compiler-for-target: unconditional CC=gcc is unacceptable"
+  "'CC' should be set to '(cc-for-target)' instead of 'gcc'"
+  (single-lint-warning-message
+   (check-compiler-for-target
+    (dummy-package "x" (arguments '(#:make-flags '("CC=gcc")))))))
+
+
+(test-equal "compiler-for-target: looks through G-expressions"
+  "'CC' should be set to '(cc-for-target)' instead of 'gcc'"
+  (single-lint-warning-message
+   (check-compiler-for-target
+    (dummy-package "x" (arguments '(#:make-flags #~'("CC=gcc")))))))
+
+(test-equal "compiler-for-target: (cc-for-target) is acceptable"
+  '()
+  (check-compiler-for-target
+   (dummy-package "x"
+		  (arguments
+		   (list #:make-flags
+			 #~(list (string-append "CC=" (cc-for-target))))))))
+
+(test-equal "compiler-for-target: CC=gcc is acceptable when target=#false"
+  '()
+  (check-compiler-for-target
+   ;; This (dummy) package consists purely of architecture-independent data.
+   (dummy-package "tzdata"
+		  (arguments
+		   (list #:target #false
+			 #:make-flags #~(list "CC=gcc"))))))
 
 ;; The emacs-build-system sets #:tests? #f by default.
 (test-equal "tests-true: #:tests? #t acceptable for emacs packages"

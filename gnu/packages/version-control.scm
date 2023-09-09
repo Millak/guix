@@ -2377,6 +2377,15 @@ reviewing large, complex patch files.")
                (substitute* "tests/prt/all-512.sh"
                  (("/bin/sh") (which "sh")))
 
+               (for-each
+                (lambda (file)
+                  (substitute* file (("egrep") "grep -E")))
+                '("tests/common/test-common"
+                  "tests/admin/comment.sh"
+                  "tests/cdc/2comment.sh"
+                  "tests/cdc/4order.sh"
+                  "tests/get/subst.sh"))
+
                ;; XXX: This test has no hope of passing until there is a "nogroup"
                ;; entry (or at least some group to which the guix builder does
                ;; not belong) in the /etc/group file of the build environment.
@@ -2872,14 +2881,14 @@ specific files and directories.")
 (define-public src
   (package
     (name "src")
-    (version "1.31")
+    (version "1.32")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "http://www.catb.org/~esr/src/src-" version ".tar.gz"))
               (sha256
                (base32
-                "1p8f5xc6k4jrli3iimi64ng11c246qqwsw9bqrrqkrmhvqdh4kcv"))))
+                "0r9i399kkagpwj08nwf1f7c6lr50xjzzgmzwyjjy6ppgcc53a809"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags

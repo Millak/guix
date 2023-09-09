@@ -1481,6 +1481,57 @@ to create databases that are optimized for rendering/tile/map-services.")
                license:bsd-2
                license:bsd-3))))
 
+(define-public python-metpy
+  (package
+    (name "python-metpy")
+    (version "1.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "MetPy" version))
+              (sha256
+               (base32
+                "0g9m8qb920mvi0kqw7vbagj08xvv96zj6gjyc7dawlvh15vb55qq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; Too many of the tests in the files below require online data.
+     (list
+      #:test-flags
+      #~(list "--ignore" "tests/io/test_nexrad.py"
+              "--ignore" "tests/plots/test_declarative.py"
+              "--ignore" "tests/io/test_gempak.py"
+              "--ignore" "tests/io/test_gini.py"
+              "--ignore" "tests/io/test_metar.py"
+              "--ignore" "tests/io/test_station_data.py"
+              "--ignore" "tests/interpolate/test_grid.py"
+              "--ignore" "tests/interpolate/test_points.py"
+              "--ignore" "tests/test_xarray.py"
+              "--ignore" "tests/calc/test_indices.py"
+              "--ignore" "tests/calc/test_kinematics.py"
+              "-k" (string-append       ; more tests that require online data
+                    "not test_parse_grid_arguments_xarray"
+                    " and not test_absolute_momentum_xarray_units_attr"
+                    " and not test_zoom_xarray"
+                    " and not test_parse_wpc_surface_bulletin"
+                    " and not test_add_timestamp_xarray"
+                    " and not test_parse_wpc_surface_bulletin_highres"))))
+    (propagated-inputs (list python-importlib-resources
+                             python-matplotlib
+                             python-numpy
+                             python-pandas
+                             python-pint
+                             python-pooch
+                             python-pyproj
+                             python-scipy
+                             python-traitlets
+                             python-xarray))
+    (native-inputs (list python-cartopy python-netcdf4 python-pytest
+                         python-pytest-mpl python-shapely))
+    (home-page "https://github.com/Unidata/MetPy")
+    (synopsis "Collection of tools to deal with weather data")
+    (description "MetPy is a collection of tools in Python for reading,
+visualizing and performing calculations with weather data.")
+    (license license:bsd-3)))
+
 (define-public libosmium
   (package
     (name "libosmium")

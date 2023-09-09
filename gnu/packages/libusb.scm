@@ -13,6 +13,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Jacob Hrbek <kreyren@rixotstudio.cz>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -101,11 +102,14 @@ devices on various operating systems.")
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
-           #~(list "--disable-static")))
-    (native-inputs
-     (list autoconf automake libtool pkg-config))
-    (inputs
-     (list libusb))
+           #~(list "--disable-static"
+                   ;; Provide the absolute file name of libusb-1.0.so so
+                   ;; dlopen works.
+                   (string-append "LIBUSB_1_0_SONAME="
+                                  #$(this-package-input "libusb")
+                                  "/lib/libusb-1.0.so"))))
+    (native-inputs (list autoconf automake libtool pkg-config))
+    (inputs (list libusb))
     (home-page "https://libusb.info")
     (synopsis "Compatibility shim for libusb")
     (description
@@ -561,14 +565,14 @@ over USB.")
 (define-public libmtp
   (package
     (name "libmtp")
-    (version "1.1.20")
+    (version "1.1.21")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://sourceforge/libmtp/libmtp/" version
                                  "/libmtp-" version ".tar.gz"))
              (sha256
               (base32
-               "1l2npk3b5v9cxhs2g01w3b13mxvin881cr085r0cyi2p5yn1s6f9"))))
+               "19vj10la88lrhdfdcpkad7aiii01q59y5wj700dwjj4gijmsbzy4"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -652,6 +656,42 @@ HID-Class devices.")
     (license (list license:gpl3
                    license:bsd-3
                    (license:non-copyleft "file://LICENSE-orig.txt")))))
+
+(define-public python-hid
+  (package
+    (name "python-hid")
+    (version "1.0.5")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "hid" version))
+              (sha256
+               (base32
+                "1s5hvfbmnlmifswr5514f4xxn5rcd429bdcdqzgwkdxrg9zlx58y"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; No tests present on the source tree, without this compilation fails
+     ;; because it "requires" the python-nose package, but it is not really
+     ;; necessary.
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'add-extra-library-paths
+                 (lambda _
+                   (let ((libhidapi-hidraw.so
+                           #$(file-append hidapi "/lib/libhidapi-hidraw.so"))
+                         (libhidapi-libusb.so
+                           #$(file-append hidapi "/lib/libhidapi-libusb.so")))
+                     (substitute* "hid/__init__.py"
+                       (("library_paths = \\(.*$" all)
+                        (string-append
+                          all
+                          "    '" libhidapi-hidraw.so "',\n"
+                          "    '" libhidapi-libusb.so "',\n")))))))))
+    (inputs (list hidapi))
+    (home-page "https://github.com/apmorton/pyhidapi")
+    (synopsis "Python @code{ctypes} bindings for HIDAPI library")
+    (description "Python @code{ctypes} bindings for HIDAPI library.")
+    (license license:expat)))
 
 (define-public python-hidapi
   (package

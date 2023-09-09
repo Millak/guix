@@ -140,6 +140,8 @@
 ;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
 ;;; Copyright © 2023 Ontje Lünsdorf <ontje.luensdorf@dlr.de>
 ;;; Copyright © 2023 Parnikkapore <poomklao@yahoo.com>
+;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
+;;; Copyright © c4droid <c4droid@foxmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -623,6 +625,25 @@ to create a well-documented piece of software.")
      "DotMap is a dot-access dictionary subclass that has dynamic
 hierarchy creation, can be initialized with keys, can be initialized from a
 dictionary, can be convert to a dictionary, and is ordered by insertion.")
+    (license license:expat)))
+
+(define-public python-dotty-dict
+  (package
+    (name "python-dotty-dict")
+    (version "1.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "dotty_dict" version))
+              (sha256
+               (base32
+                "058sah2nyg44xq5wxywlzc3abzcv9fifnlvsflwma9mfp01nw0ab"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-poetry-core))
+    (home-page "https://github.com/pawelzny/dotty_dict")
+    (synopsis "Python library for accessing dictionaries using a dot syntax")
+    (description "This package provides a library that wraps the traditional
+Python dictionaries and provides a syntax to access nested dictionaries values
+using a dot syntax, for example: @code{dictionary['deeply.nested.key']}.")
     (license license:expat)))
 
 (define-public python-twodict
@@ -1171,17 +1192,21 @@ Markdown.  All extensions are found under the module namespace of pymdownx.")
               (sha256
                (base32
                 "0rv0cbala7ibjbaf6kkcn0mdhqdbajnvlcw0f15gwzfwg10g0z1q"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     ;; This single test tries to write to $HOME/.cache/pint.
+     (list #:test-flags #~'("-k" "not test_auto")))
     (native-inputs
-     (list python-pytest                ;for pytest-subtests
+     (list python-dask
+           python-distributed
+           python-importlib-metadata
+           python-pytest                ;for pytest-subtests
            python-pytest-cov
            python-pytest-mpl
            python-pytest-subtests
            python-setuptools-scm
            python-sparse
-           python-dask
-           python-xarray
-           python-distributed))
+           python-xarray))
     (home-page "https://github.com/hgrecco/pint")
     (synopsis "Physical quantities module")
     (description
@@ -2015,13 +2040,13 @@ and a list of words that are easier to remember for humans (the
 (define-public python-bitarray
   (package
     (name "python-bitarray")
-    (version "2.6.1")
+    (version "2.8.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "bitarray" version))
               (sha256
                (base32
-                "0c4jli872nzix81n1xirnrghlq2fdsxb570d9rnfvxi1694sah44"))))
+                "1wy80bmhg33bpzn28g1n7s8r8f4drj7pcl4m2qb5sql8bbryx376"))))
     (build-system python-build-system)
     (arguments
      (list #:phases
@@ -2166,6 +2191,30 @@ complete wrapping of the HDF5 API, while the high-level component supports
 access to HDF5 files, datasets and groups using established Python and NumPy
 concepts.")
     (license license:bsd-3)))
+
+(define-public python-hjson
+  ;; Using commit from master branch as the PyPI version does not contain
+  ;; the hjson/tests/ directory.
+  (let ((revision "0")
+        (commit "1687b811fcbbc54b5ac71cfbaa99f805e406fbcb"))
+    (package
+      (name "python-hjson")
+      (version (git-version "3.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/hjson/hjson-py")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1qfqnhvfx5mm7bdajjnnagmvns1zxyksjzh3k5la2ag6a8bp5gki"))))
+      (build-system pyproject-build-system)
+      (home-page "https://github.com/hjson/hjson-py")
+      (synopsis "Python package to parse HJSON documents")
+      (description "This package provides a Python library and a command-line
+interface utility to parse @url{https://hjson.github.io/, HJSON}) documents.")
+      (license license:expat))))
 
 (define-public python-hnswlib
   (package
@@ -3437,17 +3486,17 @@ standard.")
 (define-public python-eventlet
   (package
     (name "python-eventlet")
-    (version "0.33.0")
+    (version "0.33.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "eventlet" version))
        (sha256
         (base32
-         "07qlyhcm0f28sxdizawvdf3d50m3hnbzz5kg3fjp7chvki44y540"))))
+         "1nngffz21afhfi266smf4s5mn5dfd0ykdnirfls9bwnzxbkh6a3j"))))
     (build-system python-build-system)
     (propagated-inputs
-     (list python-dnspython python-greenlet python-monotonic python-six))
+     (list python-dnspython python-greenlet python-six))
     (native-inputs
      (list python-nose))
     (arguments
@@ -3472,7 +3521,9 @@ standard.")
                 ;; <https://github.com/eventlet/eventlet/issues/730>.
                 "-e" "test_patcher_existing_locks_locked"
                 ;; And see <https://github.com/eventlet/eventlet/issues/739>.
-                "-e" "test_017_ssl_zeroreturnerror")))))))
+                "-e" "test_017_ssl_zeroreturnerror"
+                ;; This test is failing on some architectures
+                "-e" "test_fork_after_monkey_patch")))))))
     (home-page "https://eventlet.net")
     (synopsis "Concurrent networking library for Python")
     (description
@@ -4189,6 +4240,26 @@ package.")
     (synopsis "Useful extensions to the Python standard library")
     (description
      "Extras is a set of extensions to the Python standard library.")
+    (license license:expat)))
+
+(define-public python-milc
+  (package
+    (name "python-milc")
+    (version "1.6.8")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "milc" version))
+              (sha256
+               (base32
+                "1pnwdg2653lc82qsv6c0kv9qcydh2f6w5mx5l4227zy1f6kr7b52"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-appdirs python-argcomplete python-colorama
+                             python-halo python-spinners))
+    (home-page "https://github.com/clueboard/milc")
+    (synopsis "Python library for command line interface programs")
+    (description "MILC is a Python library for developing command line
+interface programs.  This library provides features to parse arguments,
+automatic tab-completion, color support, logging to @code{std}, etc.")
     (license license:expat)))
 
 (define-public python-mimeparse
@@ -7328,14 +7399,14 @@ objects.")
 (define-public python-sparse
   (package
     (name "python-sparse")
-    (version "0.13.0")
+    (version "0.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sparse" version))
        (sha256
         (base32
-         "05ar1lhq1yy4nb78s7vpb1wz4ac4kj0r4lrd7yrf23kpmaacjpb8"))))
+         "1600xad37mff46xg80cy6bi3l2n6jm69j7sl19rzdmkcgyijfn2z"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -7347,8 +7418,8 @@ objects.")
     (propagated-inputs
      (list python-numba python-numpy python-scipy))
     (native-inputs
-     (list python-dask python-pytest python-pytest-black
-           python-pytest-cov))
+     (list python-dask python-importlib-metadata python-pytest
+           python-pytest-black python-pytest-cov))
     (home-page "https://github.com/pydata/sparse/")
     (synopsis "Library for multi-dimensional sparse arrays")
     (description
@@ -7406,24 +7477,14 @@ color scales, and color space conversion easy.  It has support for:
 (define-public python-pyspnego
   (package
     (name "python-pyspnego")
-    (version "0.1.6")
-    (source
-     (origin
-       (method git-fetch)               ;no tests in PyPI release
-       (uri (git-reference
-             (url "https://github.com/jborean93/pyspnego")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0pfh2x0539f0k2qi2pbjm64b2fqp64c63xxpinvg1yfaw915kgpb"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "pytest")))))))
+    (version "0.8.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pyspnego" version))
+              (sha256
+               (base32
+                "1ps34laa0kvvp33az173hp5l0hnk8cr0bfqmlgw64ry5cv09qjg0"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest python-pytest-mock))
     (propagated-inputs
@@ -8296,17 +8357,6 @@ a simple netcat replacement with chaining support.")
 Python code against some of the style conventions in
 @url{http://www.python.org/dev/peps/pep-0008/,PEP 8}.")
     (license license:expat)))
-
-(define-public python-pycodestyle-2.6
-  (package
-    (inherit python-pycodestyle)
-    (version "2.6.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pycodestyle" version))
-              (sha256
-               (base32
-                "0bhr6ia0hmgx3nhgibc9pmkzhlh1zcqk707i5fbxgs702ll7v2n5"))))))
 
 (define-public python-multidict
   (package
@@ -12443,19 +12493,6 @@ file (e.g. @file{PKG-INFO}).")
       "Pyflakes statically checks Python source code for common errors.")
     (license license:expat)))
 
-(define-public python-pyflakes-2.2
-  (package
-    (inherit python-pyflakes)
-    (version "2.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pyflakes" version))
-              (sha256
-               (base32
-                "1j3zqbiwkyicvww499bblq33x0bjpzdrxajhaysr7sk7x5gdgcim"))
-              (patches
-               (search-patches "python-pyflakes-test-location.patch"))))))
-
 (define-public python-mccabe
   (package
     (name "python-mccabe")
@@ -12530,20 +12567,6 @@ cyclomatic complexity of Python source code.")
     (description
      "Flake8 is a wrapper around PyFlakes, pep8 and python-mccabe.")
     (license license:expat)))
-
-(define-public python-flake8-3.8
-  (package
-    (inherit python-flake8)
-    (version "3.8.4")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "flake8" version))
-              (sha256
-               (base32
-                "0fvcrsbyzjpcli8ldbpsdbpmf238nkvwc1dy4hy82lf63rvfinma"))))
-    (propagated-inputs
-     (list python-pycodestyle-2.6 python-entrypoints python-pyflakes-2.2
-           python-mccabe))))
 
 (define-public python-flake8-blind-except
   (package
@@ -21014,13 +21037,13 @@ Mustache templating language renderer.")
 (define-public python-duckdb
   (package
     (name "python-duckdb")
-    (version "0.8.0")
+    (version "0.8.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "duckdb" version))
               (sha256
                (base32
-                "13y1gs565q51li5fi9m7fpf0sqns8frsaii6v95acwjhmdds73f6"))))
+                "1sgfmii5xlkbx3hzyjxg80gl2ni1rxpabahl4gww9by2mgs3fkd5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -22945,6 +22968,57 @@ library.")
     (description
      "This is the Cython-coded accelerator module for PyOpenGL.")))
 
+(define-public python-glcontext
+  (package
+    (name "python-glcontext")
+    (version "2.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/moderngl/glcontext")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0zzpwyqg19y600n09xz07cxk4jimh9vjraszda7g7ipijq6iasac"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'build 'fix-lib-paths
+                          (lambda* (#:key inputs outputs #:allow-other-keys)
+                            (let ((mesa (assoc-ref inputs "mesa"))
+                                  (libx11 (assoc-ref inputs "libx11")))
+                              (substitute* '("glcontext/x11.cpp"
+                                             "glcontext/egl.cpp")
+                                (("\"libGL.so\"")
+                                 (string-append "\"" mesa "/lib/libGL.so\""))
+                                (("\"libEGL.so\"")
+                                 (string-append "\"" mesa "/lib/libEGL.so\""))
+                                (("\"libX11.so\"")
+                                 (string-append "\"" libx11 "/lib/libX11.so\"")))
+                              (substitute* '("glcontext/__init__.py")
+                                (("find_library\\('GL'\\)")
+                                 (string-append "'" mesa "/lib/libGL.so'"))
+                                (("find_library\\('EGL'\\)")
+                                 (string-append "'" mesa "/lib/libEGL.so'"))
+                                (("find_library\\(\"X11\"\\)")
+                                 (string-append "'" libx11 "/lib/libX11.so'"))))))
+                        (replace 'check
+                          (lambda* (#:key inputs outputs tests?
+                                    #:allow-other-keys)
+                            (when tests?
+                              (system "Xvfb :1 &")
+                              (setenv "DISPLAY" ":1")
+                              (add-installed-pythonpath inputs outputs)
+                              (invoke "pytest" "tests")))))))
+    (inputs (list libx11 mesa))
+    (native-inputs (list xorg-server-for-tests python-pytest python-psutil))
+    (home-page "https://github.com/moderngl/glcontext")
+    (synopsis "Portable OpenGL Context for ModernGL")
+    (description "Python-glcontext is a library providing an OpenGL
+implementation for ModernGL on multiple platforms.")
+    (license license:expat)))
+
 (define-public python-rencode
   (package
    (name "python-rencode")
@@ -24689,19 +24763,25 @@ and corruption checks.")
 (define-public python-fasteners
   (package
     (name "python-fasteners")
-    (version "0.15")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "fasteners" version))
-       (sha256
-        (base32
-         "1vzmz1xh38b84dv0f4hlp7arwmx8wjlih6lf964bpy8dnyk6s5rs"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-monotonic python-six))
-    (native-inputs
-     (list python-testtools))
+    (version "0.17.3")
+    (source (origin
+              ;; No tests in the pypi tarball
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/harlowja/fasteners")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0m0dxv8ljpkq99s3d1mib1zfb0ppx3h74h5yr8809zsrq2klfn0m"))))
+    (build-system pyproject-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "pytest")))))))
+    (native-inputs (list python-diskcache python-more-itertools python-pytest))
     (home-page "https://github.com/harlowja/fasteners")
     (synopsis "Python package that provides useful locks")
     (description
@@ -25069,8 +25149,16 @@ tool).")
        (modules '((guix build utils)))
        (snippet
         '(begin
+           ;; Only add CFLAGS on architectures where they are supported
+           (substitute* "setup.py"
+             (("import sys")
+              "import sys\nimport platform")
+             (("os\\.name == 'posix'")
+              (string-append "os.name + platform.machine() == 'posixx86_64' or"
+                             " os.name + platform.machine() == 'posixx86'")))
            (delete-file-recursively "c-blosc")
-           (for-each delete-file '("numcodecs/blosc.c"
+           (for-each delete-file '("numcodecs/_shuffle.c"
+                                   "numcodecs/blosc.c"
                                    "numcodecs/compat_ext.c"
                                    "numcodecs/lz4.c"
                                    "numcodecs/vlen.c"
@@ -32558,13 +32646,13 @@ message queues for Python.")
 (define-public python-itemadapter
   (package
     (name "python-itemadapter")
-    (version "0.5.0")
+    (version "0.8.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "itemadapter" version))
         (sha256
-          (base32 "083wp3h2brh8x19jbdr8rz3biqwp3jlqd0rfzcyrjyhssffsgdh5"))))
+          (base32 "1aa898gjgwy3axxfrgsh4kdvhp6n6wz3ccdishq0gh8azf2q8xbp"))))
     (build-system python-build-system)
     (home-page "https://github.com/scrapy/itemadapter")
     (synopsis "Common interface for data container classes")
@@ -32588,16 +32676,17 @@ implementing a pre-defined interface.")
 (define-public python-itemloaders
   (package
     (name "python-itemloaders")
-    (version "1.0.4")
+    (version "1.1.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "itemloaders" version))
         (sha256
-          (base32 "15hc78h90qhwass1bga1c3xar2dd6j8sxg61zg6jvh74lf6csxqj"))))
-    (build-system python-build-system)
+          (base32 "0j2aw4ipalj208594x80blpgkh1i63gqqa4nb67b823av9hirn11"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest))
     (propagated-inputs
-      (list python-itemadapter python-jmespath python-parsel python-w3lib))
+     (list python-itemadapter python-jmespath python-parsel python-w3lib))
     (home-page "https://github.com/scrapy/itemloaders")
     (synopsis "Base library for scrapy's ItemLoader")
     (description "Itemloaders is a library that helps you collect data

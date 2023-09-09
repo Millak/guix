@@ -881,7 +881,17 @@ commands part of the U-Boot project, such as Patman.")))
           (delete 'sanity-check)
           (add-after 'unpack 'chdir
             (lambda _
-              (chdir "tools/patman"))))))
+              (chdir "tools/patman")))
+          (add-after 'chdir 'patch-pyproject.toml
+            ;; There is no 'run_patman' procedure in the __main__.py script,
+            ;; which breaks execution
+            ;; Patch submitted upstream (see:
+            ;; https://patchwork.ozlabs.org/project/uboot/\
+            ;; patch/20230901050532.725-1-maxim.cournoyer@gmail.com/).
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("patman.__main__:run_patman")
+                 "patman.__main__")))))))
     (inputs (list python-pygit2 python-requests python-u-boot-pylib))
     (synopsis "Patch automation tool")
     (description "Patman is a patch automation script which:

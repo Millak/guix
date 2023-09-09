@@ -13,6 +13,7 @@
 ;;; Copyright © 2021 Tissevert <tissevert+guix@marvid.fr>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022, 2023 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
+;;; Copyright © 2023 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30,7 +31,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages vim)
-  #:use-module ((guix licenses) #:prefix license:)
+  #:use-module ((guix licenses) #:prefix license:)  
   #:use-module (guix packages)
   #:use-module (guix gexp)
   #:use-module (guix utils)
@@ -60,6 +61,7 @@
   #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages lisp-xyz)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
@@ -1112,6 +1114,58 @@ your code every time you make a change.  @code{Vim-slime} is an attempt at
 getting some of these features into Vim.  It works with any REPL and isn't tied
 to Lisp.")
       (license license:expat))))
+
+(define-public vim-vlime
+  ;; The last tag is very outdated.
+  (let ((commit "c1ac16c1a50bec4c30da87cd4ce2af12e26fb022")
+        (revision "1"))
+    (package
+    (name "vim-vlime")
+    (version (git-version "0.4.0" revision commit))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vlime/vlime")
+             (commit commit)))
+       (sha256
+        (base32 "1dfc1wyjsgkckrklkzvk4whaz3ahaka59rvm7rc724mabmk83pmp"))
+       (file-name (git-file-name name version))))
+    (build-system copy-build-system)
+    (arguments
+     '(#:install-plan
+       '(("vim/autoload" "share/vim/vimfiles/")
+         ("vim/doc" "share/vim/vimfiles/")
+         ("vim/ftplugin" "share/vim/vimfiles/")
+         ("vim/syntax" "share/vim/vimfiles/")
+         ("vim/test" "share/vim/vimfiles/")
+         ;; This is so the Vimscript part of Vlime can find the lisp files.
+         ("lisp" "share/vim/")
+         ;; This is so lisp can load Vlime without the Vim part.
+         ("lisp" "share/common-lisp/source/vlime"))
+       #:phases
+       (modify-phases %standard-phases
+         ;; Create a symbolic link to the .asd file so that
+         ;; (asdf:load-system "vlime") finds the system.
+         (add-after 'install 'link-asd
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (mkdir-p (string-append out "/share/common-lisp/systems/"))
+               (symlink (string-append out "/share/common-lisp/source/vlime/vlime.asd")
+                        (string-append out "/share/common-lisp/systems/vlime.asd"))))))))
+    (propagated-inputs
+     (list cl-alexandria
+           cl-slime-swank
+           cl-usocket
+           cl-vom
+           cl-yason))
+    (home-page "https://github.com/vlime/vlime")
+    (synopsis "Common Lisp dev environment for Vim (and Neovim)")
+    (description "Vlime is similar to SLIME for Emacs and SLIMV for Vim.  It
+provides REPL integration, as well as omni-completions, cross reference
+utilities, a nice inspector, debugger support, and many other great facilities
+to aid you in your glorious Common Lisp hacking quest.")
+    (license license:expat))))
 
 (define-public vim-paredit
   ;; The last tagged version is from August 2013.

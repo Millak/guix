@@ -172,14 +172,14 @@ different programming languages.")
 (define-public fmt-10
   (package
     (name "fmt")
-    (version "10.0.0")
+    (version "10.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/fmtlib/fmt/releases/download/"
                            version "/fmt-" version ".zip"))
        (sha256
-        (base32 "10f23avnpad8sakmq514w2bw6cw7xrb30kc3v8k7yn1zbwbcnhs9"))))
+        (base32 "06wxxn9yxw44nskdnpwyl6y4j27ssmw5d3d4rnb03df922imhkmq"))))
     (build-system cmake-build-system)
     (arguments '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")))
     (native-inputs (list unzip))
@@ -352,7 +352,7 @@ seen in a terminal.")
 (define-public highlight
   (package
     (name "highlight")
-    (version "4.7")
+    (version "4.8")
     (outputs (list "out" "gui"))
     (source (origin
               (method url-fetch)
@@ -360,7 +360,7 @@ seen in a terminal.")
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "1cl21qpgy92w1x53vrn1bgq84mkh6fgayc9k38mz4xmz2yw01nv1"))
+                "1iggdw4c8pfz1z1c51fyd6x79y1mnc82b6lfkg3vbb44739m5cjs"))
               (patches (search-patches "highlight-gui-data-dir.patch"))))
     (build-system gnu-build-system)
     (arguments

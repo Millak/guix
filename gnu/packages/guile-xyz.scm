@@ -728,7 +728,7 @@ you send to a FIFO file.")
 (define-public guile-dsv
   (package
     (name "guile-dsv")
-    (version "0.6.0")
+    (version "0.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -737,12 +737,19 @@ you send to a FIFO file.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0llivcgb7idglsapcmvb2qscds7768f2xfgr4lns8mzl2xf5hwvv"))))
+                "0shrzmbh6x3n3xzpcijkxk3f73z6m1i50zgc2dnnccwf4j1c78p2"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list autoconf automake pkg-config texinfo help2man))
-    (inputs (list guile-3.0))
-    (propagated-inputs (list guile-lib))
+    (native-inputs (list autoconf
+                         automake
+                         pkg-config
+                         texinfo
+                         help2man
+                         ;; needed when cross-compiling.
+                         guile-3.0
+                         guile-lib
+                         guile-smc))
+    (inputs (list bash-minimal guile-3.0))
+    (propagated-inputs (list guile-lib guile-smc))
     (arguments
      `(#:modules (((guix build guile-build-system)
                    #:select (target-guile-effective-version))
@@ -756,32 +763,41 @@ you send to a FIFO file.")
                              (bin (string-append out "/bin"))
                              (guile-lib (assoc-ref inputs "guile-lib"))
                              (version (target-guile-effective-version))
-                             (scm (string-append "/share/guile/site/"
-                                                 version))
-                             (go (string-append  "/lib/guile/"
-                                                 version "/site-ccache")))
+                             (scm (string-append "/share/guile/site/" version))
+                             (go (string-append "/lib/guile/" version
+                                                "/site-ccache")))
                         (wrap-program (string-append bin "/dsv")
                           `("GUILE_LOAD_PATH" prefix
-                            (,(string-append out scm)
-                             ,(string-append guile-lib scm)))
+                            (,(string-append out scm) ,(string-append
+                                                        guile-lib scm)))
                           `("GUILE_LOAD_COMPILED_PATH" prefix
-                            (,(string-append out go)
-                             ,(string-append guile-lib go)))))
-                      #t)))))
+                            (,(string-append out go) ,(string-append guile-lib
+                                                       go))))) #t)))))
     (home-page "https://github.com/artyom-poptsov/guile-dsv")
     (synopsis "DSV module for Guile")
     (description
-     "Guile-DSV is a GNU Guile module for working with the
-delimiter-separated values (DSV) data format.  Guile-DSV supports the
-Unix-style DSV format and RFC 4180 format.")
+     "Guile-DSV is a GNU Guile module for working with the delimiter-separated
+values (DSV) data format.  Guile-DSV supports the Unix-style DSV format and RFC 4180
+style format.  Also Guile-DSV includes a console program named @code{dsv} that allows
+to view and process DSV data, including such operations as delimiter change,
+conversion from one DSV standard to another and printing the data as pseudographics
+tables.")
     (license license:gpl3+)))
 
 (define-public guile2.2-dsv
   (package
     (inherit guile-dsv)
     (name "guile2.2-dsv")
-    (inputs (list guile-2.2))
-    (propagated-inputs `(("guile-lib" ,guile2.2-lib)))))
+    (native-inputs (modify-inputs (package-native-inputs guile-dsv)
+                     (replace "guile-smc" guile2.2-smc)
+                     (replace "guile" guile-2.2)
+                     (replace "guile-lib" guile2.2-lib)))
+    (inputs (modify-inputs (package-inputs guile-dsv)
+              (replace "guile"  guile-2.2)
+              (replace "guile-lib" guile2.2-lib)))
+    (propagated-inputs (modify-inputs (package-propagated-inputs guile-dsv)
+                         (replace "guile-lib" guile2.2-lib)
+                         (replace "guile-smc" guile2.2-smc)))))
 
 (define-public guile-fibers-1.3
   (package
@@ -1554,7 +1570,7 @@ tracker's SOAP service, such as @url{https://bugs.gnu.org}.")
 (define-public guile-email
   (package
     (name "guile-email")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method git-fetch)
@@ -1564,7 +1580,7 @@ tracker's SOAP service, such as @url{https://bugs.gnu.org}.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0q98r460yr75gyxg06zrrixwazncd9nxl2pgr68mff2wf41f291h"))))
+         "09r50zbkyxvg6f7qn37yibasw69ajxls3sgdnhy9j70mbvcmx9c4"))))
     (build-system gnu-build-system)
     (native-inputs
      (list texinfo))
@@ -2974,56 +2990,52 @@ is no support for parsing block and inline level HTML.")
     (inputs (list guile-2.0))))
 
 (define-public mcron
-  ;; Use the latest commits, as interesting changes haven't been released yet,
-  ;; such as improved logging.
-  (let ((revision "0")
-        (commit "5fd0ccde5a4cff70299999f988e6b5166584814d"))
-    (package
-      (name "mcron")
-      (version (git-version "1.2.1" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://git.savannah.gnu.org/git/mcron.git")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0jl2w67a5hkphzssdzq3q4jcwv2b174b11d3w5i3khxq2vhzd6kk"))))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        #:phases #~(modify-phases %standard-phases
-                     (add-before 'check 'adjust-tests
-                       (lambda _
-                         (substitute* "tests/job-specifier.scm"
-                           ;; (getpw) fails with "entry not found" in the build
-                           ;; environment, so pass an argument.
-                           (("\\(getpw\\)")
-                            "(getpwnam (getuid))")
-                           ;; The build environment lacks an entry for root in
-                           ;; /etc/passwd.
-                           (("\\(getpw 0\\)")
-                            "(getpwnam \"nobody\")")
-                           ;; FIXME: Skip the 4 faulty tests (see above).
-                           (("\\(test-equal \"next-year\"" all)
-                            (string-append "(test-skip 4)\n" all))))))))
-      (native-inputs (list autoconf
-                           automake
-                           guile-3.0    ;for 'guild compile'
-                           help2man
-                           pkg-config
-                           tzdata-for-tests
-                           texinfo))
-      (inputs (list guile-3.0))
-      (home-page "https://www.gnu.org/software/mcron/")
-      (synopsis "Run jobs at scheduled times")
-      (description
-       "GNU Mcron is a complete replacement for Vixie cron.  It is used to run
+  (package
+    (name "mcron")
+    (version "1.2.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.savannah.gnu.org/git/mcron.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "07gqwbjfsgf16ff624hkav0qhl10dv579y10fxas2kbjavqm4yx5"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'check 'adjust-tests
+                     (lambda _
+                       (substitute* "tests/job-specifier.scm"
+                         ;; (getpw) fails with "entry not found" in the build
+                         ;; environment, so pass an argument.
+                         (("\\(getpw\\)")
+                          "(getpwnam (getuid))")
+                         ;; The build environment lacks an entry for root in
+                         ;; /etc/passwd.
+                         (("\\(getpw 0\\)")
+                          "(getpwnam \"nobody\")")
+                         ;; FIXME: Skip the 4 faulty tests (see above).
+                         (("\\(test-equal \"next-year\"" all)
+                          (string-append "(test-skip 4)\n" all))))))))
+    (native-inputs (list autoconf
+                         automake
+                         guile-3.0    ;for 'guild compile'
+                         help2man
+                         pkg-config
+                         tzdata-for-tests
+                         texinfo))
+    (inputs (list guile-3.0))
+    (home-page "https://www.gnu.org/software/mcron/")
+    (synopsis "Run jobs at scheduled times")
+    (description
+     "GNU Mcron is a complete replacement for Vixie cron.  It is used to run
 tasks on a schedule, such as every hour or every Monday.  Mcron is written in
 Guile, so its configuration can be written in Scheme; the original cron
 format is also supported.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public guile-picture-language
   (let ((commit "a1322bf11945465241ca5b742a70893f24156d12")
@@ -5417,6 +5429,9 @@ with a FSM is being built (for example, from a Makefile.)")
   (package
     (inherit guile-smc)
     (name "guile2.2-smc")
+    (native-inputs (modify-inputs (package-native-inputs guile-smc)
+                     (replace "guile" guile-2.2)
+                     (replace "guile-lib" guile2.2-lib)))
     (inputs (modify-inputs (package-inputs guile-smc)
               (replace "guile" guile-2.2)
               (replace "guile-lib" guile2.2-lib)))))

@@ -61,6 +61,10 @@ Differences are hard to spot, e.g. in CLOS vs. GOOPS."))
   "The term API is not code, but @code{myAPI} might be."
   (beautify-description "The term API is not code, but myAPI might be."))
 
+(test-equal "beautify-description: do not include punctuation when wrapping in @code"
+  "Code (@code{DelayedMatrix}, @code{MaMa}, or @code{MeMe}) should be wrapped."
+  (beautify-description "Code (DelayedMatrix, MaMa, or MeMe) should be wrapped."))
+
 (test-equal "license->symbol"
   'license:lgpl2.0
   (license->symbol license:lgpl2.0))

@@ -786,6 +786,7 @@ Use '~/.config/guix/channels.scm' instead."))
                    (let ((url (or url (channel-url c))))
                      (match ref
                        ((or ('commit . commit)
+                            ('tag . commit)
                             ('tag-or-commit . commit))
                         (channel (inherit c)
                                  (url url) (commit commit) (branch #f)))

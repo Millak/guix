@@ -6,6 +6,7 @@
 ;;; Copyright © 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38,6 +39,23 @@
              (ice-9 rdelim)
              (guix ui)
              (git))
+
+(define-record-type <regexp*>
+  (%make-regexp* pat flag rx)
+  regexp*?
+  (pat regexp*-pattern)
+  (flag regexp*-flag)
+  (rx regexp*-rx))
+
+;;; Work around regexp implementation.
+;;; This record allows to track the regexp pattern and then display it.
+(define* (make-regexp* pat #:optional (flag regexp/extended))
+  "Alternative to `make-regexp' producing annotated <regexp*> objects."
+  (%make-regexp* pat flag (make-regexp pat flag)))
+
+(define (regexp*-exec rx* str)
+  "Execute the RX* regexp, a <regexp*> object."
+  (regexp-exec (regexp*-rx rx*) str))
 
 (define-record-type <team>
   (make-team id name description members scope)
@@ -99,7 +117,7 @@
         (list "gnu/packages/django.scm"
               "gnu/packages/jupyter.scm"
               ;; Match haskell.scm and haskell-*.scm.
-              (make-regexp "^gnu/packages/python(-.+|)\\.scm$")
+              (make-regexp* "^gnu/packages/python(-.+|)\\.scm$")
               "gnu/packages/sphinx.scm"
               "gnu/packages/tryton.scm"
               "guix/build/pyproject-build-system.scm"
@@ -119,7 +137,7 @@ the haskell-build-system."
         #:scope
         (list "gnu/packages/dhall.scm"
               ;; Match haskell.scm and haskell-*.scm.
-              (make-regexp "^gnu/packages/haskell(-.+|)\\.scm$")
+              (make-regexp* "^gnu/packages/haskell(-.+|)\\.scm$")
               "gnu/packages/purescript.scm"
               "guix/build/haskell-build-system.scm"
               "guix/build-system/haskell.scm"
@@ -174,6 +192,7 @@ and the r-build-system."
         "TeX, LaTeX, XeLaTeX, LuaTeX, TeXLive, the texlive-build-system, and
 the \"texlive\" importer."
         #:scope (list "gnu/packages/tex.scm"
+                      "gnu/packages/texlive.scm"
                       "guix/build/texlive-build-system.scm"
                       "guix/build-system/texlive.scm"
                       "guix/import/texlive.scm"
@@ -185,7 +204,7 @@ the \"texlive\" importer."
         #:name "Julia team"
         #:description
         "The Julia language, Julia packages, and the julia-build-system."
-        #:scope (list (make-regexp "^gnu/packages/julia(-.+|)\\.scm$")
+        #:scope (list (make-regexp* "^gnu/packages/julia(-.+|)\\.scm$")
                       "guix/build/julia-build-system.scm"
                       "guix/build-system/julia.scm")))
 
@@ -214,14 +233,14 @@ importer, and the ocaml-build-system."
 and the maven-build-system."
         #:scope
         (list ;; Match java.scm and java-*.scm.
-              (make-regexp "^gnu/packages/java(-.+|)\\.scm$")
+              (make-regexp* "^gnu/packages/java(-.+|)\\.scm$")
               ;; Match maven.scm and maven-*.scm
-              (make-regexp "^gnu/packages/maven(-.+|)\\.scm$")
+              (make-regexp* "^gnu/packages/maven(-.+|)\\.scm$")
               "guix/build/ant-build-system.scm"
               "guix/build/java-utils.scm"
               "guix/build/maven-build-system.scm"
               ;; The maven directory
-              (make-regexp "^guix/build/maven/")
+              (make-regexp* "^guix/build/maven/")
               "guix/build-system/ant.scm"
               "guix/build-system/maven.scm")))
 
@@ -241,7 +260,9 @@ packages (e.g. Astronomy, Chemistry, Math, Physics etc.)"
         #:name "Emacs team"
         #:description "The extensible, customizable text editor and its
 ecosystem."
-        #:scope (list (make-regexp "^gnu/packages/emacs(-.+|)\\.scm$")
+        #:scope (list "gnu/packages/aux-files/emacs/guix-emacs.el"
+                      (make-regexp* "^gnu/packages/emacs(-.+|)\\.scm$")
+                      "gnu/packages/tree-sitter.scm"
                       "guix/build/emacs-build-system.scm"
                       "guix/build/emacs-utils.scm"
                       "guix/build-system/emacs.scm"
@@ -255,7 +276,7 @@ ecosystem."
         #:description
         "Common Lisp and similar languages, Common Lisp packages and the
 asdf-build-system."
-        #:scope (list (make-regexp "^gnu/packages/lisp(-.+|)\\.scm$")
+        #:scope (list (make-regexp* "^gnu/packages/lisp(-.+|)\\.scm$")
                       "guix/build/asdf-build-system.scm"
                       "guix/build/lisp-utils.scm"
                       "guix/build-system/asdf.scm")))
@@ -294,7 +315,7 @@ asdf-build-system."
 (define-team rust
   (team 'rust
         #:name "Rust"
-        #:scope (list (make-regexp "^gnu/packages/(crates|rust)(-.+|)\\.scm$")
+        #:scope (list (make-regexp* "^gnu/packages/(crates|rust)(-.+|)\\.scm$")
                       "gnu/packages/sequoia.scm"
                       "guix/build/cargo-build-system.scm"
                       "guix/build/cargo-utils.scm"
@@ -393,9 +414,9 @@ asdf-build-system."
               "guix/upstream.scm"
               "guix/utils.scm"
               "guix/workers.scm"
-              (make-regexp "^guix/platforms/")
-              (make-regexp "^guix/scripts/")
-              (make-regexp "^guix/store/"))))
+              (make-regexp* "^guix/platforms/")
+              (make-regexp* "^guix/scripts/")
+              (make-regexp* "^guix/store/"))))
 
 (define-team games
   (team 'games
@@ -423,17 +444,17 @@ asdf-build-system."
   (team 'translations
         #:name "Translations"
         #:scope (list "etc/news.scm"
-                      (make-regexp "^po/"))))
+                      (make-regexp* "^po/"))))
 
 (define-team installer
   (team 'installer
         #:name "Installer script and system installer"
-        #:scope (list (make-regexp "^gnu/installer(\\.scm$|/)"))))
+        #:scope (list (make-regexp* "^gnu/installer(\\.scm$|/)"))))
 
 (define-team home
   (team 'home
         #:name "Team for \"Guix Home\""
-        #:scope (list (make-regexp "^(gnu|guix/scripts)/home(\\.scm$|/)")
+        #:scope (list (make-regexp* "^(gnu|guix/scripts)/home(\\.scm$|/)")
                       "tests/guix-home.sh"
                       "tests/home-import.scm"
                       "tests/home-services.scm")))
@@ -516,7 +537,7 @@ GLib/GIO, GTK, GStreamer and Webkit."
 
 (define-member (person "Andreas Enge"
                        "andreas@enge.fr")
-  lxqt science)
+  lxqt science tex)
 
 (define-member (person "Tobias Geerinckx-Rice"
                        "me@tobias.gr")
@@ -633,8 +654,8 @@ of file names as string."
                 (any (match-lambda
                        ((? string? scope)
                         (string=? scope file))
-                       ((? regexp? scope)
-                        (regexp-exec scope file)))
+                       ((? regexp*? scope)
+                        (regexp*-exec scope file)))
                      (team-scope team)))
               files)
          (cons team acc)
@@ -664,45 +685,55 @@ TEAMS when a patch is received by Debbugs."
                                 name)))
     (format #false "~a <~a>" quoted-name/maybe (person-email member))))
 
-(define* (list-members team #:optional port (prefix ""))
+(define* (list-members team #:key (prefix ""))
   "Print the members of the given TEAM."
-  (define port* (or port (current-output-port)))
-  (for-each
-   (lambda (member)
-     (format port* "~a~a~%" prefix (member->string member)))
-   (sort-members (team-members team))))
+  (for-each (lambda (member)
+              (format #t "~a~a~%" prefix (member->string member)))
+            (sort-members (team-members team))))
 
-(define (list-teams)
-  "Print all teams, their scope and their members."
-  (define port* (current-output-port))
-  (define width* (%text-width))
-  (for-each
-   (lambda (team)
-     (format port*
-             "\
+(define (print-team team)
+  "Print TEAM, a <team> record object."
+  (format #t
+          "\
 id: ~a
 name: ~a
 description: ~a
 ~amembers:
 "
-             (team-id team)
-             (team-name team)
-             (or (and=> (team-description team)
-                        (lambda (text)
-                          (string->recutils
-                           (fill-paragraph text width*
-                                           (string-length "description: ")))))
-                 "<none>")
-             (match (team-scope team)
-               (() "")
-               (scope (format #f "scope: ~{~s ~}~%" scope))))
-     (list-members team port* "+ ")
-     (newline))
-   (sort
-    (hash-map->list (lambda (key value) value) %teams)
-    (lambda (team1 team2)
-      (string<? (symbol->string (team-id team1))
-                (symbol->string (team-id team2)))))))
+          (team-id team)
+          (team-name team)
+          (or (and=> (team-description team)
+                     (lambda (text)
+                       (string->recutils
+                        (fill-paragraph text (%text-width)
+                                        (string-length "description: ")))))
+              "<none>")
+          (match (team-scope team)
+            (() "")
+            (scope (format #f "scope:~%~{+ ~a~^~%~}~%"
+                           (sort (map (match-lambda
+                                        ((? regexp*? rx)
+                                         (regexp*-pattern rx))
+                                        (item item))
+                                      scope)
+                                 string<?)))))
+  (list-members team #:prefix "+ ")
+  (newline))
+
+(define (sort-teams teams)
+  "Sort TEAMS, a list of <team> record objects."
+  (sort teams
+        (lambda (team1 team2)
+          (string<? (symbol->string (team-id team1))
+                    (symbol->string (team-id team2))))))
+
+(define* (list-teams #:optional team-names)
+  "Print all teams, their scope and their members."
+  (for-each print-team
+            (sort-teams
+             (if team-names
+                 (map find-team team-names)
+                 (hash-map->list (lambda (_ value) value) %teams)))))
 
 
 (define (diff-revisions rev-start rev-end)
@@ -782,6 +813,8 @@ and REV-END, two git revision strings."
       (lambda (team-name)
         (list-members (find-team team-name)))
       team-names))
+    (("show" . team-names)
+     (list-teams team-names))
     (anything
      (format (current-error-port)
              "Usage: etc/teams.scm <command> [<args>]
@@ -800,6 +833,8 @@ Commands:
   list-members <team-name>
       list members belonging to <team-name>
   get-maintainer <patch>
-      compatibility mode with Linux get_maintainer.pl~%"))))
+      compatibility mode with Linux get_maintainer.pl
+  show <team-name>
+      display <team-name> properties~%"))))
 
 (apply main (cdr (command-line)))

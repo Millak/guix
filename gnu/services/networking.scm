@@ -1709,6 +1709,7 @@ simulation."
          (ovs-vswitchd (file-append package "/sbin/ovs-vswitchd")))
     (list (shepherd-service
            (provision '(ovsdb))
+           (requirement '(user-processes))
            (documentation "Run the Open vSwitch database server.")
            (start #~(make-forkexec-constructor
                      (list #$ovsdb-server "--pidfile"

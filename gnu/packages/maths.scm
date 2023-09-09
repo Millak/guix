@@ -5916,7 +5916,7 @@ structured and unstructured grid problems.")))
 (define-public matio
   (package
     (name "matio")
-    (version "1.5.19")
+    (version "1.5.23")
     (source
      (origin
        (method url-fetch)
@@ -5924,7 +5924,7 @@ structured and unstructured grid problems.")))
                            "matio-" version ".tar.gz"))
        (sha256
         (base32
-         "0vr8c1mz1k6mz0sgh6n3scl5c3a71iqmy5fnydrgq504icj4vym4"))))
+         "0vjdkxn402gwrgbi5ii3n2ai01bjzzfb588iqd9ylinzc7kfm4cz"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -5935,7 +5935,7 @@ structured and unstructured grid problems.")))
               (install-file "src/matioConfig.h"
                             (string-append #$output "/include")))))))
     (inputs
-     (list zlib hdf5-1.8))
+     (list zlib hdf5))
     (home-page "http://matio.sourceforge.net/")
     (synopsis "Library for reading and writing MAT files")
     (description "Matio is a library for reading and writing MAT files.  It
@@ -8543,3 +8543,39 @@ statistical analysis, image enhancement, fluid dynamics simulations, numerical
 optimization, and modeling, simulation of explicit and implicit dynamical
 systems and symbolic manipulations.")
     (license license:cecill)))                    ;CeCILL v2.1
+
+(define-public ruy
+  (let ((commit "caa244343de289f913c505100e6a463d46c174de")
+        (version "0")
+        (revision "1"))
+    (package
+      (name "ruy")
+      (version (git-version version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/google/ruy")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0j2g90nzam4h52zwx2vpanj8m17068cfb1zi4hcy0pyk52kb11dy"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        #~(list "-DRUY_FIND_CPUINFO=ON"
+                ;; Needed to make sure code is relocatable for use in
+                ;; tensorflow.
+                "-DCMAKE_CXX_FLAGS=-fPIC ")))
+      (inputs (list cpuinfo))
+      (native-inputs (list googletest))
+      (home-page "https://github.com/google/ruy")
+      (synopsis "Matrix multiplication library")
+      (description
+       "Ruy is a matrix multiplication library.  Its focus is to cover the
+matrix multiplication needs of neural network inference engines.  Its initial
+user has been TensorFlow Lite, where it is used by default on the ARM CPU
+architecture.")
+      (license license:asl2.0))))
+

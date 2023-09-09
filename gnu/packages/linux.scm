@@ -74,6 +74,7 @@
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -140,6 +141,7 @@
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages lsof)
   #:use-module (gnu packages lua)
+  #:use-module (gnu packages m4)
   #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages multiprecision)
@@ -488,7 +490,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-6.4-version "6.4.11")
+(define-public linux-libre-6.4-version "6.4.14")
 (define-public linux-libre-6.4-gnu-revision "gnu")
 (define deblob-scripts-6.4
   (linux-libre-deblob-scripts
@@ -498,7 +500,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1rwm09anyn4py1g877f9vh6ya86y2hfvlqx51bpa53dci5k0b0ds")))
 (define-public linux-libre-6.4-pristine-source
   (let ((version linux-libre-6.4-version)
-        (hash (base32 "0609lhgc42j9id2vvdpv8n7djabp46p2mridf9s0sg3x16snhssl")))
+        (hash (base32 "1rjh0jrn5qvxwzmyg478n08vckkld8r52nkc102ppqvsfhiy7skm")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.4)))
@@ -506,7 +508,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-6.1-version "6.1.46")
+(define-public linux-libre-6.1-version "6.1.51")
 (define-public linux-libre-6.1-gnu-revision "gnu")
 (define deblob-scripts-6.1
   (linux-libre-deblob-scripts
@@ -516,12 +518,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1c73516nbhnz0cxjz38b5794dxygb8sznv9idiibw7ablmjbhd11")))
 (define-public linux-libre-6.1-pristine-source
   (let ((version linux-libre-6.1-version)
-        (hash (base32 "15m228bllks2p8gpsmvplx08yxzp7bij9fnmnafqszylrk7ppxpm")))
+        (hash (base32 "0fqhmb6v28rssd44z7jw57mwvvskpl4kabjylck0pg54irnl9c2q")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.1)))
 
-(define-public linux-libre-5.15-version "5.15.127")
+(define-public linux-libre-5.15-version "5.15.130")
 (define-public linux-libre-5.15-gnu-revision "gnu")
 (define deblob-scripts-5.15
   (linux-libre-deblob-scripts
@@ -531,27 +533,27 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1c3lm0j401lv2lk39dmr4mlf5ic173snm7cc0cckl6czyvxr5ysy")))
 (define-public linux-libre-5.15-pristine-source
   (let ((version linux-libre-5.15-version)
-        (hash (base32 "09lgj9hs1cjxg84hb7avras4rlsx18igr69mx433l9hv6issbl5d")))
+        (hash (base32 "0qix62jsn3z9yccakac7fvqnip19zi05qn0w5wkgb7rj0x0lwimb")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
 
-(define-public linux-libre-5.10-version "5.10.191")
+(define-public linux-libre-5.10-version "5.10.194")
 (define-public linux-libre-5.10-gnu-revision "gnu1")
 (define deblob-scripts-5.10
   (linux-libre-deblob-scripts
    linux-libre-5.10-version
    linux-libre-5.10-gnu-revision
-   (base32 "0hirc87hgyy9qhgiipp5iahmdk4wwhiml6rp1naphz9d1vw3kb35")
+   (base32 "1b33rkn32b923025iiz4xzxiy8y5ii9j5qk4021mg575890rl4ch")
    (base32 "0nnp46mn32yk436swd2qh34igmzinfgkwvbzp3lqyy45f06hbc2j")))
 (define-public linux-libre-5.10-pristine-source
   (let ((version linux-libre-5.10-version)
-        (hash (base32 "1hk2x5dgvfq9v6161v25wz5qpzgyvqbx34xbm7ww8z4ish76cm6b")))
+        (hash (base32 "15fr7krhpmqz0xqjg78m2xvfllbni3xh8xyhxh9ni31ppd3mw394")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.10)))
 
-(define-public linux-libre-5.4-version "5.4.254")
+(define-public linux-libre-5.4-version "5.4.256")
 (define-public linux-libre-5.4-gnu-revision "gnu1")
 (define deblob-scripts-5.4
   (linux-libre-deblob-scripts
@@ -561,12 +563,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0sw67b2pk3lng4y67diqqnhxaggnp3nbkx8dxc5fs27rinfxr4m1")))
 (define-public linux-libre-5.4-pristine-source
   (let ((version linux-libre-5.4-version)
-        (hash (base32 "1iyrm2xql15ifhy2b939ywrrc44yd41b79sjjim4vqxmc6lqsq2i")))
+        (hash (base32 "0fim5q9xakwnjfg48bpsic9r2r8dvrjlalqqkm9vh1rml9mhi967")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.4)))
 
-(define-public linux-libre-4.19-version "4.19.292")
+(define-public linux-libre-4.19-version "4.19.294")
 (define-public linux-libre-4.19-gnu-revision "gnu1")
 (define deblob-scripts-4.19
   (linux-libre-deblob-scripts
@@ -576,12 +578,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1425mhkfxn18vxn05bb4h3li7x1jl7l1hf1zi8xhnqv3wa31h9wl")))
 (define-public linux-libre-4.19-pristine-source
   (let ((version linux-libre-4.19-version)
-        (hash (base32 "0dr12v4jqmzxcqdghqqjny5zp3g4dx9lxqrl9d4fxz23s79ji5rl")))
+        (hash (base32 "03x0xsb8a369zdr81hg6xdl5n5v48k6iwnhj6r29725777lvvbfc")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.19)))
 
-(define-public linux-libre-4.14-version "4.14.323")
+(define-public linux-libre-4.14-version "4.14.325")
 (define-public linux-libre-4.14-gnu-revision "gnu1")
 (define deblob-scripts-4.14
   (linux-libre-deblob-scripts
@@ -591,7 +593,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1faagsj4i31z2bp83hflx3q9vrddjnn37a3ah2b47iaplva7z1nd")))
 (define-public linux-libre-4.14-pristine-source
   (let ((version linux-libre-4.14-version)
-        (hash (base32 "1g2fh0mn1sv0kq2hh3pynmx2fjai7hdwhf4fnaspl7j5n88902kg")))
+        (hash (base32 "117p1mdha57f6d3kdwac9jrbmib7g77q4xhir8ghl6fmrs1f2sav")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.14)))
@@ -1517,7 +1519,7 @@ and the notification, WiFi, and Bluetooth LED.")
 (define-public tuxedo-keyboard
   (package
     (name "tuxedo-keyboard")
-    (version "3.2.1")
+    (version "3.2.10")
     (source
      (origin
        (method git-fetch)
@@ -1526,7 +1528,7 @@ and the notification, WiFi, and Bluetooth LED.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13fncirqcci46zxmsrawsxpazip5k46i849dwkhkqlg0mg4vxxw5"))))
+        (base32 "1kbspr1vs6jpfsb3c4hbw2d8y06v2a3m4c27rhggkfksf4x82gip"))))
     (build-system linux-module-build-system)
     (arguments
      (list #:tests? #f))                ; no test suite
@@ -7255,48 +7257,50 @@ under OpenGL graphics workloads.")
     (license license:gpl3)))
 
 (define-public efivar
-  (package
-    (name "efivar")
-    (version "38")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/rhboot/" name
-                                  "/releases/download/" version "/" name
-                                  "-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0jaka7b4lccswjqiv4liclkj6w78gildg7vd6dnw3wf595pfs67h"))
-              (patches
-               (search-patches "efivar-211.patch"))))
-
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      ;; Tests require a UEFI system and is not detected in the chroot.
-       #:tests? #f
-       #:make-flags
-       #~(list (string-append "prefix=" #$output)
-               (string-append "libdir=" #$output "/lib")
-               (string-append "CC=" #$(cc-for-target))
-               (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
-       #:phases
-       #~(modify-phases %standard-phases
-           (add-after 'unpack 'build-deterministically
-             (lambda _
-               (substitute* "src/include/defaults.mk"
-                 ;; Don't use -march=native.
-                 (("-march=native")
-                  ""))))
-           (delete 'configure))))
-    (native-inputs
-     (list mandoc pkg-config))
-    (inputs
-     (list popt))
-    (home-page "https://github.com/rhboot/efivar")
-    (synopsis "Tool and library to manipulate EFI variables")
-    (description "This package provides a library and a command line
+  ;; XXX: 15622b7e5761f3dde3f0e42081380b2b41639a48 fixes compilation on i686.
+  ;; ca48d3964d26f5e3b38d73655f19b1836b16bd2d fixes cross-compilation.
+  (let ((commit "ca48d3964d26f5e3b38d73655f19b1836b16bd2d")
+        (revision "0"))
+    (package
+      (name "efivar")
+      (version (git-version "38" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/rhboot/efivar")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0zsab3hcv1v53cxwkvsk09ifnwhs48a6xa3kxlwvs87yxswspvi8"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        ;; Tests require a UEFI system and is not detected in the chroot.
+        #:tests? #f
+        #:make-flags #~(list (string-append "prefix="
+                                            #$output)
+                             (string-append "libdir="
+                                            #$output "/lib")
+                             (string-append "CC="
+                                            #$(cc-for-target)) "HOSTCC=gcc"
+                             (string-append "LDFLAGS=-Wl,-rpath="
+                                            #$output "/lib"))
+        #:phases #~(modify-phases %standard-phases
+                     (add-after 'unpack 'build-deterministically
+                       (lambda _
+                         (substitute* "src/include/defaults.mk"
+                           ;; Don't use -march=native.
+                           (("-march=native")
+                            ""))))
+                     (delete 'configure))))
+      (native-inputs (list mandoc pkg-config))
+      (inputs (list popt))
+      (home-page "https://github.com/rhboot/efivar")
+      (synopsis "Tool and library to manipulate EFI variables")
+      (description "This package provides a library and a command line
 interface to the variable facility of UEFI boot firmware.")
-    (license license:lgpl2.1+)))
+      (license license:lgpl2.1+))))
 
 (define-public efibootmgr
   (package
@@ -10360,3 +10364,39 @@ error detection and correction (EDAC).")
 against the several transient execution CVEs that were published since early
 2018, and gives guidance as to how to mitigate them.")
     (license license:gpl3)))
+
+(define-public csmith
+  (package
+    (name "csmith")
+    (version "2.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/csmith-project/csmith")
+                    (commit (string-append "csmith-" version))))
+              (sha256
+               (base32
+                "0nhrsnv6cny14xz68qb1h30fbwc05adkisk51p3x63mydm60ddl3"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf automake libtool m4 perl))
+    (arguments
+     (list
+      #:tests? #f                       ;no test suite
+      ;; Do not install headers under 'include/csmith-VERSION' but in
+      ;; 'include/csmith'.
+      #:phases
+      `(modify-phases %standard-phases
+         (add-after 'unpack 'patch-includedir
+           (lambda _
+             (substitute* "runtime/Makefile.am"
+               (("\\$\\(includedir\\)/\\$\\(PACKAGE\\)-\\$\\(VERSION\\)")
+                "$(includedir)/$(PACKAGE)"))))
+         (add-before 'bootstrap 'force-bootstrap
+           (lambda _
+             (delete-file "configure"))))))
+    (home-page "https://github.com/csmith-project/csmith")
+    (synopsis "Random generator of C programs")
+    (description "The primary purpose of Csmith is to find compiler bugs with
+random programs using differential testing.")
+    (license license:bsd-4)))

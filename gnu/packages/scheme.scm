@@ -555,17 +555,16 @@ in Scheme, and a runtime library which allows Pre-Scheme code to run as Scheme."
 (define-public gambit-c
   (package
     (name "gambit-c")
-    (version "4.9.4")
+    (version "4.9.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
-             "http://www.gambitscheme.org/"
-             version "/gambit-v"
+             "http://www.gambitscheme.org/" version "/gambit-v"
              (string-map (lambda (c) (if (char=? c #\.) #\_ c)) version)
              ".tgz"))
        (sha256
-        (base32 "025x8zi9176qwww4d3pk8aj9ab1fpqyxqz26q3v394k6bfk49yqr"))))
+        (base32 "1p61z1rp0ya4i61mq3hzmr67r3xbvi9h058cf9ci2yqfbzdzi3p2"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags

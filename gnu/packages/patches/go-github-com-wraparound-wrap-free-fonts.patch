@@ -1,0 +1,84 @@
+Index: wrap-source/pkg/pdf/fonts.go
+===================================================================
+--- wrap-source.orig/pkg/pdf/fonts.go
++++ wrap-source/pkg/pdf/fonts.go
+@@ -36,15 +36,15 @@ var (
+ 		BoldItalic:     []string{"Courier Prime Bold Italic.ttf"},
+ 	}
+ 
+-	CourierNew = Font{
+-		RomanName:      "Courier New",
+-		Roman:          []string{"Courier New.ttf", "cour.ttf"},
+-		BoldName:       "Courier New Bold",
+-		Bold:           []string{"Courier New Bold.ttf", "courbd.ttf"},
+-		ItalicName:     "Courier New Italic",
+-		Italic:         []string{"Courier New Italic.ttf", "couri.ttf"},
+-		BoldItalicName: "Courier New Bold Italic",
+-		BoldItalic:     []string{"Courier New Bold Italic.ttf", "courbi.ttf"},
++	LiberationMono = Font{
++		RomanName:      "Liberation Mono Regular",
++		Roman:          []string{"LiberationMono-Regular.ttf"},
++		BoldName:       "Liberation Mono Bold",
++		Bold:           []string{"LiberationMono-Bold.ttf"},
++		ItalicName:     "Liberation Mono Italic",
++		Italic:         []string{"LiberationMono-Italic.ttf"},
++		BoldItalicName: "Liberation Mono Bold Italic",
++		BoldItalic:     []string{"LiberationMono-BoldItalic.ttf"},
+ 	}
+ 
+ 	FreeMono = Font{
+@@ -151,9 +151,8 @@ func loadFonts() {
+ 		err := loadFont(CourierPrime)
+ 
+ 		if err != nil {
+-			// Courier New should be available on macOS and Windows
+ 			fmt.Fprintln(os.Stderr, "Warning: "+err.Error())
+-			err = loadFont(CourierNew)
++			err = loadFont(LiberationMono)
+ 
+ 			if err != nil {
+ 				// FreeMono as a final attempt
+Index: wrap-source/pkg/cli/pdf.go
+===================================================================
+--- wrap-source.orig/pkg/cli/pdf.go
++++ wrap-source/pkg/cli/pdf.go
+@@ -22,7 +22,7 @@ var pdfCmd = &cobra.Command{
+ var (
+ 	pdfProductionFlag bool
+ 	useCourierPrime   bool
+-	useCourierNew     bool
++	useLiberationMono     bool
+ 	useFreeMono       bool
+ 	pageSize          string
+ 	font              string
+@@ -31,7 +31,7 @@ var (
+ func init() {
+ 	pdfCmd.Flags().BoolVarP(&pdfProductionFlag, "production", "p", false, "add scene numbers and other production text")
+ 	pdfCmd.Flags().BoolVar(&useCourierPrime, "use-courier-prime", false, "force the usage of Courier Prime")
+-	pdfCmd.Flags().BoolVar(&useCourierNew, "use-courier-new", false, "force the usage of Courier New")
++	pdfCmd.Flags().BoolVar(&useLiberationMono, "use-courier-new", false, "force the usage of Liberation Mono")
+ 	pdfCmd.Flags().BoolVar(&useFreeMono, "use-freemono", false, "force the usage of GNU FreeMono")
+ 	pdfCmd.Flags().StringVar(&pageSize, "page-size", "", "choose page size (letter or a4)")
+ 	pdfCmd.RegisterFlagCompletionFunc("page-size", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+@@ -46,8 +46,8 @@ func pdfRun(cmd *cobra.Command, args []s
+ 	// Evaluate font selection
+ 	pdf.AutoFontSelection = false
+ 
+-	if (font != "" && atLeastOne(useCourierPrime, useCourierNew, useFreeMono)) ||
+-		moreThanOne(useCourierPrime, useCourierNew, useFreeMono) {
++	if (font != "" && atLeastOne(useCourierPrime, useLiberationMono, useFreeMono)) ||
++		moreThanOne(useCourierPrime, useLiberationMono, useFreeMono) {
+ 		// The fonts are mutualy exclusive so throw an error
+ 		handle(errors.New("tried to force multiple fonts at the same time"))
+ 	}
+@@ -77,8 +77,8 @@ func pdfRun(cmd *cobra.Command, args []s
+ 	} else if useCourierPrime {
+ 		pdf.SelectedFont = pdf.CourierPrime
+ 
+-	} else if useCourierNew {
+-		pdf.SelectedFont = pdf.CourierNew
++	} else if useLiberationMono {
++		pdf.SelectedFont = pdf.LiberationMono
+ 
+ 	} else if useFreeMono {
+ 		pdf.SelectedFont = pdf.FreeMono

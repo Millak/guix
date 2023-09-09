@@ -3,25 +3,26 @@
 # This file is distributed under the same license as the guix package.
 # Rafael Ferreira <rafael.f.f1@gmail.com>, 2013.
 # Thiago Jung Bauermann <bauermann@kolabnow.com>, 2021.
+# Camila Flores Granella <cgranell@redhat.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: guix 0.4-pre2\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2023-03-10 17:18+0000\n"
-"PO-Revision-Date: 2021-05-22 01:17+0000\n"
-"Last-Translator: Thiago Jung Bauermann <bauermann@kolabnow.com>\n"
+"PO-Revision-Date: 2023-08-30 06:09+0000\n"
+"Last-Translator: Camila Flores Granella <cgranell@redhat.com>\n"
 "Language-Team: Portuguese (Brazil) <https://translate.fedoraproject.org/projects/guix/packages/pt_BR/>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.6.2\n"
+"X-Generator: Weblate 4.18.2\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 #: gnu/packages/abiword.scm:124
 msgid "Word processing program"
-msgstr ""
+msgstr "Editor de texto"
 
 #. TRANSLATORS: Dear translator, We would like to inform you that package
 #. descriptions may occasionally include Texinfo markup.  Texinfo markup
@@ -33,10 +34,13 @@ msgid ""
 "becoming a state of the art word processor, with lots of features useful for\n"
 "your daily work, personal needs, or for just some good old typing fun."
 msgstr ""
+"AbiWord é um sistema de edição de texto.  Ele está rapidamente se convertendo \n"
+"em um editor de texto referência, com muitos recursos úteis para \n"
+"seu trabalho no dia-a-dia, necessidades pessoais, ou somente para sua diversão ao criar textos."
 
 #: gnu/packages/aspell.scm:90
 msgid "Spell checker"
-msgstr ""
+msgstr "Corretor ortográfico"
 
 #: gnu/packages/aspell.scm:92
 msgid ""
@@ -45,14 +49,18 @@ msgid ""
 "documents written in the UTF-8 encoding and its ability to use multiple\n"
 "dictionaries, including personal ones."
 msgstr ""
+"Aspell é um corretor ortográfico que pode ser usado tanto como biblioteca quanto como\n"
+"um programa autônomo. Alguns dos principais recursos do Aspell incluem seu suporte completo a\n"
+"documentos escritos na codificação UTF-8 e sua capacidade de usar vários\n"
+"dicionários, incluindo os pessoais."
 
 #: gnu/packages/aspell.scm:150
 msgid "This package provides a dictionary for the GNU Aspell spell checker."
-msgstr ""
+msgstr "Esse pacote fornece um dicionário para o corretor ortográfico GNU Aspell."
 
 #: gnu/packages/aspell.scm:446
 msgid "Interactive spell-checking tool for Unix"
-msgstr ""
+msgstr "Ferramenta de correção ortográfica para Unix"
 
 #: gnu/packages/aspell.scm:447
 msgid ""

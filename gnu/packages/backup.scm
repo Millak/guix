@@ -461,7 +461,8 @@ remain fully idle, saving power and producing less noise.")
     (inputs
      (list librsync-0.9))
     (arguments
-     `(#:make-flags `(,(string-append "PREFIX=" (assoc-ref %outputs "out"))
+     `(#:make-flags `("CFLAGS=-fcommon"
+                      ,(string-append "PREFIX=" (assoc-ref %outputs "out"))
                       ,(string-append "CC=" ,(cc-for-target)))
        #:tests? #f                      ;test input not distributed
        #:phases

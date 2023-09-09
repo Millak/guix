@@ -164,13 +164,20 @@ Execute COMMAND ARGS... in an older version of Guix.\n"))
        (define (validate-guix-channel channels)
          "Finds the Guix channel among CHANNELS, and validates that REF as
 captured from the closure, a git reference specification such as a commit hash
-or tag associated to CHANNEL, is valid and new enough to satisfy the 'guix
-time-machine' requirements.  A `formatted-message' condition is raised
-otherwise."
+or tag associated to the channel, is valid and new enough to satisfy the 'guix
+time-machine' requirements.  If the captured REF variable is #f, the reference
+validate is the one of the Guix channel found in CHANNELS.  A
+`formatted-message' condition is raised otherwise."
          (let* ((guix-channel (find guix-channel? channels))
+                (guix-channel-commit (channel-commit guix-channel))
+                (guix-channel-branch (channel-branch guix-channel))
+                (guix-channel-ref (if guix-channel-commit
+                                      `(tag-or-commit . ,guix-channel-commit)
+                                      `(branch . ,guix-channel-branch)))
+                (reference (or ref guix-channel-ref))
                 (checkout commit relation (update-cached-checkout
                                            (channel-url guix-channel)
-                                           #:ref (or ref '())
+                                           #:ref reference
                                            #:starting-commit
                                            %oldest-possible-commit)))
            (unless (memq relation '(ancestor self))

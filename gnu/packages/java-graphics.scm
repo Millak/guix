@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2023 Frank Pursel <frank.pursel@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -19,13 +20,134 @@
 (define-module (gnu packages java-graphics)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix modules)
   #:use-module (guix utils)
   #:use-module (guix build-system ant)
+  #:use-module (guix build utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages bash)
+  #:use-module (gnu packages batik)
   #:use-module (gnu packages java)
+  #:use-module (gnu packages java-xml)
+  #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module (ice-9 match))
+
+(define-public ditaa
+  (package
+    (name "ditaa")
+    (version "0.11.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/stathissideris/ditaa")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1y3g17wp1wvb05m56pp25avww2njpgh0gk0jsbsf25scj7hyyj26"))
+              (modules '((guix build utils)))
+              (snippet '(begin
+                          (format #t "~%~a~%"
+                                  "Finding and removing embedded jars.")
+                          (for-each (lambda (jarf)
+                                      (delete-file jarf)
+                                      (format #t "Deleted: ~a~%" jarf))
+                                    (find-files "." "\\.jar$"))))))
+    (build-system ant-build-system)
+    (inputs (list bash-minimal))
+    (native-inputs (list
+                    java-commons-cli
+                    java-jericho-html
+                    java-junit
+                    java-libbatik
+                    java-w3c-svg))
+    (arguments
+     `(#:build-target "release-all"
+       #:phases (modify-phases %standard-phases
+                  ;; Ant's buildfile and build tree need to be modified
+                  ;; to provide access to the guix builds of the
+                  ;; batik and the java-commons-cli
+                  ;; jar files.  Also some of the source requires java7.
+                  (add-before 'build 'build-prep
+                    (lambda* (#:key inputs outputs #:allow-other-keys)
+                      (let* ((batik-jar
+                              (search-input-file
+                               inputs
+                               "share/java/batik.jar"))
+                             (commons-cli-jar
+                              (search-input-file
+                               inputs
+                               "lib/m2/commons-cli/commons-cli/1.4/commons-cli-1.4.jar")))
+                        (mkdir-p "lib")
+                        (copy-file batik-jar "./lib/batik.jar")
+                        (copy-file commons-cli-jar "./lib/commons-cli.jar"))
+                      (with-directory-excursion "build"
+                        (substitute* "release.xml"
+                          (("source=\"1.6\"")
+                           "source=\"7\"")
+                          (("<file name=\"commons-cli-1.2.jar\"/>")
+                           (string-append "<file name=\"commons-cli.jar\"/>"
+                                          "\n" "<file name=\"batik.jar\"/>"))))))
+                  (replace 'build
+                    (lambda* _
+                      (setenv "ANT_OPTS"
+                              (string-append "-Dversion.string="
+                                             ,version))
+                      (with-directory-excursion "build"
+                        (invoke "ant" "-f" "release.xml" "release-jar"))))
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (if tests?
+                          (begin
+                            (setenv "ANT_OPTS"
+                                    (string-append "-Dversion.string="
+                                                   ,version))
+                            (mkdir-p "tests/testlib")
+                            (with-directory-excursion "build"
+                              (invoke "ant" "-f" "release.xml"
+                                      "generate-test-images")
+                              (invoke "ant" "test"))) #f)))
+                  (replace 'install
+                    (lambda* (#:key inputs outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (lib (string-append out "/lib"))
+                             (bin (string-append out "/bin"))
+                             (bash (search-input-file inputs "bin/bash"))
+                             (java (search-input-file inputs "bin/java"))
+                             (jre (search-input-directory inputs "jre"))
+                             (ditaa (string-append out "/bin/ditaa"))
+                             (jar-name (string-append ,name
+                                                      ,version ".jar")))
+                        (with-directory-excursion "releases"
+                          (install-file jar-name lib))
+                        (mkdir-p bin)
+                        (with-output-to-file ditaa
+                          (lambda _
+                            (format #t
+                                    "#!~a~%JAVA_HOME=~a ~a -jar ~a/~a $@~%"
+                                    bash
+                                    jre
+                                    java
+                                    lib
+                                    jar-name)))
+                        (chmod ditaa #o755))))
+                  (add-after 'install 'install-docs
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let ((doc (string-append (assoc-ref outputs "out")
+                                                "/share/doc/")))
+                        (for-each (lambda (filen)
+                                    (install-file filen doc))
+                                  (find-files "." ".*README\\.md"))))))))
+    (home-page "https://github.com/stathissideris/ditaa")
+    (synopsis "Create graphics from ascii art")
+    (description
+     "ditaa is a small command-line utility that converts diagrams drawn using
+ascii art drawings that contain characters that resemble lines like @samp{|}
+@samp{/} @samp{-}), into proper bitmap graphics.")
+    (license license:lgpl3)))
 
 (define-public java-piccolo2d-core
   (package

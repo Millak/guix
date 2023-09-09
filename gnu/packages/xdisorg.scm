@@ -1335,6 +1335,7 @@ compact configuration syntax.")
               (method url-fetch)
               (uri (string-append "http://dist.schmorp.de/rxvt-unicode/Attic/"
                                   name "-" version ".tar.bz2"))
+              (patches (search-patches "rxvt-unicode-fix-cursor-position.patch"))
               (sha256
                (base32
                 "1s3jcvac40zzp03fvmhjsdpsjx0gb1wk54qz74zhzzj9q75kz8da"))))

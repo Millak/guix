@@ -117,7 +117,7 @@
 (define-public capypdf
   (package
     (name "capypdf")
-    (version "0.4.0")
+    (version "0.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -125,18 +125,14 @@
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1kn46n3j5fygivmd6ldnv8vdwfv48ffaizq61yy4z9w2jm6fgxim"))))
+               (base32 "1mb3i0jq04gg5cm1l07mn9kal5s748miql97j6fpaf1x1j2lcrsx"))))
     (build-system meson-build-system)
     (arguments
      (list #:meson meson/newer
+           #:configure-flags #~(list "-Dcpp_std=c++23")
            #:test-options '(list "plainc")
            #:phases
            #~(modify-phases %standard-phases
-               (add-after 'unpack 'add-missing-header
-                 (lambda _
-                   (substitute* "src/pdfgen.cpp"
-                     (("#include <cassert>" all)
-                      (string-append all "\n#include <unistd.h>")))))
                (add-after 'unpack 'fix-glib-application-flags
                  (lambda _
                    ;; XXX: remove when bumping glib

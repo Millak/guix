@@ -2,6 +2,7 @@
 ;;; Copyright © 2019-2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -966,42 +967,39 @@ testing.")
     (name "ungoogled-chromium-wayland")
     (native-inputs '())
     (inputs
-     `(("bash" ,bash-minimal)
-       ("glibc-locales" ,glibc-utf8-locales)
-       ("ungoogled-chromium" ,ungoogled-chromium)))
+     (list bash-minimal glibc-utf8-locales ungoogled-chromium))
     (build-system trivial-build-system)
     (arguments
-     '(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils))
-         (let* ((bash (assoc-ref %build-inputs "bash"))
-                (chromium (assoc-ref %build-inputs "ungoogled-chromium"))
-                (locales (assoc-ref %build-inputs "glibc-locales"))
-                (out (assoc-ref %outputs "out"))
-                (exe (string-append out "/bin/chromium")))
+     (list
+      #:modules '((guix build utils))
+      #:builder
+      #~(begin
+          (use-modules (guix build utils))
+          (let* ((bash #$(this-package-input "bash-minimal"))
+                 (chromium #$(this-package-input "ungoogled-chromium"))
+                 (locales #$(this-package-input "glibc-utf8-locales"))
+                 (exe (string-append #$output "/bin/chromium")))
 
-           ;; Use a Unicode locale so we can substitute the file below.
-           (setenv "GUIX_LOCPATH" (string-append locales "/lib/locale"))
-           (setlocale LC_ALL "en_US.utf8")
+            ;; Use a Unicode locale so we can substitute the file below.
+            (setenv "GUIX_LOCPATH" (string-append locales "/lib/locale"))
+            (setlocale LC_ALL "en_US.utf8")
 
-           (mkdir-p (dirname exe))
-           (symlink (string-append chromium "/bin/chromedriver")
-                    (string-append out "/bin/chromedriver"))
+            (mkdir-p (dirname exe))
+            (symlink (string-append chromium "/bin/chromedriver")
+                     (string-append #$output "/bin/chromedriver"))
 
-           (call-with-output-file exe
-             (lambda (port)
-               (format port "#!~a
+            (call-with-output-file exe
+              (lambda (port)
+                (format port "#!~a
 exec ~a --enable-features=UseOzonePlatform --ozone-platform=wayland \
 --enable-features=WebRTCPipeWireCapturer $@"
-                       (string-append bash "/bin/bash")
-                       (string-append chromium "/bin/chromium"))))
-           (chmod exe #o555)
+                        (string-append bash "/bin/bash")
+                        (string-append chromium "/bin/chromium"))))
+            (chmod exe #o555)
 
-           ;; Provide the manual and .desktop file.
-           (copy-recursively (string-append chromium "/share")
-                             (string-append out "/share"))
-           (substitute* (string-append
-                         out "/share/applications/chromium.desktop")
-             ((chromium) out))
-           #t))))))
+            ;; Provide the manual and .desktop file.
+            (copy-recursively (string-append chromium "/share")
+                              (string-append #$output "/share"))
+            (substitute* (string-append
+                          #$output "/share/applications/chromium.desktop")
+              ((chromium) #$output))))))))

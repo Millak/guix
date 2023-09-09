@@ -6,6 +6,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Léo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2022 Christopher Baines <mail@cbaines.net>
+;;; Copyright © 2023 Frank Pursel <frank.pursel@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,10 +33,61 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix gexp)
   #:use-module (guix packages)
+  #:use-module (guix bzr-download)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system ant)
   #:use-module (guix utils))
+
+(define-public java-jericho-html
+  (package
+    (name "java-jericho-html")
+    (version "3.4")
+    (source (origin
+              (method bzr-fetch)
+              (uri (bzr-reference (url (string-append
+                                        "http://jerichohtml.bzr.sourceforge.net/"
+                                        "bzr/jerichohtml"))
+                                  (revision (string-append "tag:" version))))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "1zsf4i33jn05pma4y1658d6avhw7x4c12ggs96szhc06b7bxs8j0"))
+              (modules '((guix build utils)))
+              (snippet '(begin
+                          (format #t "~%~a~%" "Removing sourced jar files.")
+                          (for-each (lambda (jarf)
+                                      (delete-file jarf)
+                                      (format #t "Deleted: ~a~%" jarf))
+                                    (find-files "." "\\.jar$"))))))
+    (build-system ant-build-system)
+    (arguments
+     `(#:jar-name (string-append ,name ".jar")
+       #:phases (modify-phases %standard-phases
+                  (add-before 'build 'add-ant-env-options
+                    (lambda* _
+                      (setenv "ANT_OPTS" "-Dfile.encoding=iso-8859-1")
+                      (let ((match-str (string-append "jerichohtml-"
+                                                      ,version)))
+                        (substitute* "build.xml"
+                          ((match-str)
+                           "")))))
+                  (add-after 'build 'check-prep
+                    (lambda* (#:key source #:allow-other-keys)
+                      (mkdir-p "src/test/java"))))))
+    (native-inputs (list
+                    java-commons-logging-minimal
+                    java-junit
+                    java-log4j-api
+                    java-slf4j-api))
+    (home-page "http://jericho.htmlparser.net/docs/index.html")
+    (synopsis "Java HTML Parser library")
+    (description
+     "This Java library allowing analysis and manipulation of
+parts of an HTML document, including server-side tags, while
+reproducing verbatim any unrecognised or invalid HTML.  It also
+provides high-level HTML form manipulation functions.")
+    (license (list license:lgpl2.1+ license:asl2.0 license:epl1.0))))
 
 (define-public java-simple-xml
   (package

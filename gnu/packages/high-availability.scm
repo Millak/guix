@@ -34,6 +34,7 @@
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages hardware)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
@@ -43,12 +44,14 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages rsync)
+  #:use-module (gnu packages syncthing)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system go)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -189,6 +192,89 @@ applications.")
  recovery, FIPS compliant encryption (nss and/or openssl), automatic PMTUd and
  in general better performances compared to the old network protocol.")
     (license (list license:gpl2+ license:lgpl2.1+))))
+
+(define-public nsq
+  (package
+    (name "nsq")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nsqio/nsq")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ajqjwfn06zsmz21z9mkl4cblarypaf20228pqcd1293zl6y3ry8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/nsqio/nsq"
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (invoke "make"))))
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke #$@(if (target-x86?)
+                                 (list "go" "test" "-v" "-race" "./...")
+                                 (list "go" "test" "-v" "./...")))))))
+          (replace 'install
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (invoke "make" (string-append "PREFIX=" #$output)
+                        "install")))))))
+    (native-inputs
+     (list go-github-com-bitly-go-hostpool
+           go-github-com-bitly-timer-metrics
+           go-github-com-blang-semver
+           go-github-com-bmizerany-perks-quantile
+           go-github-com-burntsushi-toml
+           go-github-com-davecgh-go-spew
+           go-github-com-golang-snappy ; Move to (gnu packages golang)
+           go-github-com-julienschmidt-httprouter
+           go-github-com-mreiferson-go-options
+           go-github-com-mreiferson-go-svc
+           go-github-com-nsqio-go-diskqueue
+           go-github-com-nsqio-go-nsq
+           python-wrapper))
+    (home-page "https://nsq.io")
+    (synopsis "Realtime distributed messaging platform")
+    (description
+     "NSQ is a realtime distributed messaging platform designed to operate at
+scale, handling billions of messages per day.
+
+Key features:
+@itemize
+@item support distributed topologies without @acronym{SPOF, Single Point of
+Failure}
+@item scale horizontally (no brokers, seamlessly add more nodes to the
+cluster)
+@item low-latency push based message delivery (performance)
+@item combine load-balanced and multicast style message routing
+@item excel at both streaming (high-throughput) and job oriented
+(low-throughput) workloads
+@item primarily in-memory (beyond a high-water mark messages are transparently
+kept on disk)
+@item runtime discovery service for consumers to find producers (nsqlookupd)
+@item transport layer security (TLS)
+@item data format agnostic
+@item few dependencies (easy to deploy) and a sane, bounded, default
+configuration
+@item simple TCP protocol supporting client libraries in any language
+@item HTTP interface for stats, admin actions, and producers (no client
+library needed to publish)
+@item integrate with @acronym{StatsD, Stats aggregation Daemon} for realtime
+instrumentation
+@item robust cluster administration interface (nsqadmin)
+@end itemize")
+    (license license:expat)))
 
 (define-public corosync
   (package

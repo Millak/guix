@@ -162,14 +162,14 @@ owner-writable in HOME."
 group records) are all available."
   (define (make-home-directory user)
     (let ((home (user-account-home-directory user))
-          (home-permissions (user-account-home-directory-permissions user))
           (pwd  (getpwnam (user-account-name user))))
       (mkdir-p home)
 
       ;; Always set ownership and permissions for home directories of system
-      ;; accounts.
+      ;; accounts.  If a service needs looser permissions on its home
+      ;; directories, it can always chmod it in an activation snippet.
       (chown home (passwd:uid pwd) (passwd:gid pwd))
-      (chmod home home-permissions)))
+      (chmod home #o700)))
 
   (define system-accounts
     (filter (lambda (user)

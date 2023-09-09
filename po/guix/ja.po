@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2023-06-19 03:18+0000\n"
-"PO-Revision-Date: 2023-07-21 05:22+0000\n"
+"PO-Revision-Date: 2023-08-04 09:21+0000\n"
 "Last-Translator: ROCKTAKEY <rocktakey@gmail.com>\n"
 "Language-Team: Japanese <https://translate.fedoraproject.org/projects/guix/guix/ja/>\n"
 "Language: ja\n"
@@ -114,7 +114,7 @@ msgid ""
 "turn refers to everything the operating system needs: its kernel, initrd,\n"
 "system profile, boot script, and so on."
 msgstr ""
-"オペレーティングシステムをトップレベルディレクトリでビルドします。\n"
+"オペレーティングシステムをトップレベルディレクトリで構築します。\n"
 "これは、カーネル、initrd、システムプロファイル、ブートスクリプトなど、\n"
 "オペレーティングシステムが必要とする全てのものを参照しています。"
 
@@ -132,7 +132,7 @@ msgid ""
 "itself: the channels used when building the system, and its configuration\n"
 "file, when available."
 msgstr ""
-"ビルドしたときに利用したチャンネルや設定ファイルといった\n"
+"システムを構築したときに利用したチャンネルや設定ファイルといった\n"
 "システムの出自の情報があれば、それをシステム自身に保存します。"
 
 #: gnu/services.scm:649
@@ -219,7 +219,7 @@ msgid ""
 "with a function that accepts the current configuration and returns a new\n"
 "configuration."
 msgstr ""
-"linux-libreカーネルプロファイルをビルドします。\n"
+"linux-libreカーネルプロファイルを構築します。\n"
 "これはカーネル自身とあらゆるlinux-loadableなカーネルモジュールを含みます。\n"
 "現在の設定を受け取って新しい設定を返す関数を使って、\n"
 "これを拡張することができます。"
@@ -486,7 +486,7 @@ msgstr ""
 
 #: gnu/services/base.scm:2013
 msgid "Run the build daemon of GNU@tie{}Guix, aka. @command{guix-daemon}."
-msgstr "GNU@tie{}Guixのビルドデーモン、別名@command{guix-daemon}を実行します。"
+msgstr "GNU@tie{}Guixの構築デーモン、別名@command{guix-daemon}を実行します。"
 
 #: gnu/services/base.scm:2174
 msgid ""
@@ -494,7 +494,7 @@ msgid ""
 "command that allows you to share pre-built binaries with others over HTTP."
 msgstr ""
 "@command{guix publish}を実行するShepherdサービスを追加します。\n"
-"このコマンドはHTTPを通してビルド済みバイナリを他の人に共有できるようにします。"
+"このコマンドはHTTPを通して構築済みバイナリを他の人に共有できるようにします。"
 
 #: gnu/services/base.scm:2378
 msgid ""
@@ -930,7 +930,7 @@ msgid ""
 "which in turn refers to everything the home environment needs: its\n"
 "packages, configuration files, activation script, and so on."
 msgstr ""
-"ホーム環境のトップレベルのディレクトリをビルドします。\n"
+"ホーム環境のトップレベルのディレクトリを構築します。\n"
 "これにはパッケージ、設定ファイル、アクティベーションスクリプトなど、\n"
 "ホーム環境に必要な全てが含まれています。"
 
@@ -1075,7 +1075,7 @@ msgid ""
 "environment itself: the channels used when building the home\n"
 "environment, and its configuration file, when available."
 msgstr ""
-"ビルドしたときに利用したチャンネルや設定ファイルといった\n"
+"ホーム環境を構築したときに利用したチャンネルや設定ファイルといった\n"
 "ホーム環境の出自の情報があれば、それをホーム環境自身に保存します。"
 
 #: gnu/home/services/desktop.scm:187
@@ -3227,7 +3227,7 @@ msgid ""
 "Build the given PACKAGE-OR-DERIVATION and return their output paths.\n"
 msgstr ""
 "使い方: guix build [OPTION]... PACKAGE-OR-DERIVATION...\n"
-"PACKAGE-OR-DERIVATION(パッケージないしは導出子)をビルドし、出力のパスを返します。\n"
+"PACKAGE-OR-DERIVATION(パッケージないしは導出子)を構築し、出力のパスを返します。\n"
 
 #: guix/scripts/build.scm:432 guix/scripts/archive.scm:89
 msgid ""
@@ -5068,7 +5068,7 @@ msgstr "最新リビジョンのGuixをpullします"
 #, scheme-format
 msgid "Building from this channel:~%"
 msgid_plural "Building from these channels:~%"
-msgstr[0] "次のチャンネルを元にビルドします:~%"
+msgstr[0] "次のチャンネルを元に構築します:~%"
 
 #: guix/scripts/substitute.scm:83
 #, scheme-format
@@ -5114,7 +5114,7 @@ msgstr ""
 #: guix/scripts/substitute.scm:482
 #, scheme-format
 msgid "while fetching ~a: server is somewhat slow~%"
-msgstr ""
+msgstr "~aからの取得中: サーバーがやや遅いです~%"
 
 #: guix/scripts/substitute.scm:484
 #, scheme-format
@@ -5459,7 +5459,7 @@ msgid ""
 "Some ACTIONS support additional ARGS.\n"
 msgstr ""
 "使い方: guix system [OPTION ...] ACTION [ARG ...] [FILE]\n"
-"ACTIONに基づき、FILEで宣言されたオペレーティングシステムをビルドします。\n"
+"ACTIONに基づき、FILEで宣言されたオペレーティングシステムを構築します。\n"
 "ACTIONSによっては追加の引数ARGSが利用可能です。\n"
 
 #: guix/scripts/system.scm:957
@@ -7102,7 +7102,7 @@ msgid ""
 "Build and manipulate Linux containers.\n"
 msgstr ""
 "使い方: guix container ACTION ARGS...\n"
-"Linuxコンテナのビルド及び操作を行います。\n"
+"Linuxコンテナの構築及び操作を行います。\n"
 
 #: guix/scripts/container.scm:32
 msgid "   exec            execute a command inside of an existing container\n"
@@ -7740,7 +7740,7 @@ msgstr ""
 #, scheme-format
 msgid "The following derivation would be built:~%"
 msgid_plural "The following derivations would be built:~%"
-msgstr[0] "以下の導出子をビルドするでしょう:~%"
+msgstr[0] "以下の導出子を構築するでしょう:~%"
 
 #. TRANSLATORS: "MB" is for "megabyte"; it
 #. should be translated to the corresponding
@@ -7785,14 +7785,14 @@ msgstr[1] ""
 #, scheme-format
 msgid "The following derivation will be built:~%"
 msgid_plural "The following derivations will be built:~%"
-msgstr[0] "以下の導出子をビルドします:~%"
+msgstr[0] "以下の導出子を構築します:~%"
 
 #. TRANSLATORS: "MB" is for "megabyte"; it
 #. should be translated to the corresponding
 #. abbreviation.
 #: guix/ui.scm:1140
 msgid "~:[~,1h MB will be downloaded:~%~;~]"
-msgstr ""
+msgstr "~:[~,1h MB をダウンロードします:~%~;~]"
 
 #: guix/ui.scm:1149
 #, scheme-format
@@ -7827,7 +7827,7 @@ msgstr[0] "~:[~h項目をダウンロードします~%~;~]"
 
 #: guix/ui.scm:1297
 msgid "(dependencies or package changed)"
-msgstr ""
+msgstr "依存もしくはパッケージの変更"
 
 #: guix/ui.scm:1316
 #, scheme-format
@@ -8016,11 +8016,11 @@ msgstr ""
 
 #: guix/status.scm:386
 msgid "building directory of Info manuals..."
-msgstr "Infoマニュアルのディレクトリをビルドしています…"
+msgstr "Infoマニュアルのディレクトリを構築しています…"
 
 #: guix/status.scm:388
 msgid "building GHC package cache..."
-msgstr "GHCパッケージのキャッシュをビルドしています…"
+msgstr "GHCパッケージのキャッシュを構築しています…"
 
 #: guix/status.scm:390
 msgid "building CA certificate bundle..."
@@ -8102,7 +8102,7 @@ msgstr ""
 #, scheme-format
 msgid "The following build is still in progress:~%~{  ~a~%~}~%"
 msgid_plural "The following builds are still in progress:~%~{  ~a~%~}~%"
-msgstr[0] "以下のビルドはまだ実行中です:~%~{  ~a~%~}~%"
+msgstr[0] "以下の構築作業はまだ実行中です:~%~{  ~a~%~}~%"
 
 #: guix/status.scm:536
 #, scheme-format
@@ -8490,11 +8490,11 @@ msgstr ""
 
 #: guix/git.scm:146
 msgid "receiving objects"
-msgstr "オブジェクトを受信しています"
+msgstr "オブジェクトの受信"
 
 #: guix/git.scm:148
 msgid "indexing objects"
-msgstr "オブジェクトにインデックスを付けています"
+msgstr "オブジェクトへのインデックス作成"
 
 #: guix/git.scm:318
 #, scheme-format

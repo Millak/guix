@@ -34,6 +34,7 @@
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Aaron Covrig <aaron.covrig.us@ieee.org>
+;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -100,6 +101,7 @@
   #:use-module (gnu packages popt)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -1156,6 +1158,81 @@ strings")
     (description "Curtsies is a Python library for interacting with the
 terminal.  It features string-like objects which carry formatting information,
 per-line fullscreen terminal rendering, and keyboard input event reporting.")
+    (license license:expat)))
+
+(define-public python-halo
+  (package
+    (name "python-halo")
+    (version "0.0.31")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "halo" version))
+              (sha256
+               (base32
+                "1mn97h370ggbc9vi6x8r6akd5q8i512y6kid2nvm67g93r9a6rvv"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-colorama python-log-symbols python-six
+                             python-spinners python-termcolor))
+    (native-inputs (list python-coverage python-nose python-pylint python-tox
+                         python-twine))
+    (home-page "https://github.com/manrajgrover/halo")
+    (synopsis "Python library to display graphical spinners in the terminal")
+    (description "Halo is a Python library to display graphical spinners in
+the terminal.  It also supports IPython/Jupyter.")
+    (license license:expat)))
+
+(define-public python-log-symbols
+  (package
+    (name "python-log-symbols")
+    (version "0.0.14")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "log_symbols" version))
+              (sha256
+               (base32
+                "0mh5d0igw33libfmbsr1ri1p1y644p36nwaa2w6kzrd8w5pvq2yg"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'relax-requirements
+                 (lambda _
+                   (substitute* "requirements-dev.txt"
+                     (("(.*)==(.*)$" _ dep ver)
+                      (string-append dep ">=" ver))))))))
+    (propagated-inputs (list python-colorama))
+    (native-inputs (list python-coverage python-nose python-pylint python-tox))
+    (home-page "https://github.com/manrajgrover/py-log-symbols")
+    (synopsis "Python library with graphical symbols for logging on the terminal")
+    (description "This package provides a Python library with graphical symbols
+that can be displayed on the terminal, with color if possible, for logging
+purposes.")
+    (license license:expat)))
+
+(define-public python-spinners
+  (package
+    (name "python-spinners")
+    (version "0.0.24")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "spinners" version))
+              (sha256
+               (base32
+                "0zz2z6dpdjdq5z8m8w8dfi8by0ih1zrdq0caxm1anwhxg2saxdhy"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'relax-requirements
+                 (lambda _
+                   (substitute* "requirements-dev.txt"
+                     (("(.*)==(.*)$" _ dep ver)
+                      (string-append dep ">=" ver))))))))
+    (native-inputs (list python-coverage python-nose python-pylint python-tox))
+    (home-page "https://github.com/manrajgrover/py-spinners")
+    (synopsis "Python library with graphical spinners for the terminal")
+    (description "Spinners is a Python library that contains graphical spinners
+that can be displayed terminal.")
     (license license:expat)))
 
 (define-public tmate

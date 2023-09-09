@@ -271,11 +271,14 @@ This package includes the @command{tree-sitter} command-line tool.")
           (grammar-directories '("."))
           (article "a")
           (inputs '())
+          (get-cleanup-snippet tree-sitter-delete-generated-files)
           (license license:expat))
   "Returns a package for Tree-sitter grammar.  NAME will be used with
 tree-sitter- prefix to generate package name and also for generating
 REPOSITORY-URL value if it's not specified explicitly, TEXT is a string which
-will be used in description and synopsis."
+will be used in description and synopsis. GET-CLEANUP-SNIPPET is a function,
+it recieves GRAMMAR-DIRECTORIES as an argument and should return a G-exp,
+which will be used as a snippet in origin."
   (let* ((multiple? (> (length grammar-directories) 1))
          (grammar-names (string-append text " grammar" (if multiple? "s" "")))
          (synopsis (string-append "Tree-sitter " grammar-names))
@@ -296,7 +299,7 @@ will be used in description and synopsis."
                 (file-name (git-file-name name version))
                 (sha256 (base32 hash))
                 (snippet
-                 (tree-sitter-delete-generated-files grammar-directories))))
+                 (get-cleanup-snippet grammar-directories))))
       (build-system tree-sitter-build-system)
       (arguments (list #:grammar-directories grammar-directories))
       (inputs inputs)
@@ -358,6 +361,13 @@ will be used in description and synopsis."
        (git-version "0.20.0" revision commit)
        #:commit commit
        #:inputs (list tree-sitter-c))))
+
+(define-public tree-sitter-cmake
+  (tree-sitter-grammar
+   "cmake" "CMake"
+   "1z49jdachwxwbzrrapskpi2kxq3ydihfj45ab9892gbamfij2zp5"
+   "0.4.1"
+   #:repository-url "https://github.com/uyha/tree-sitter-cmake"))
 
 (define-public tree-sitter-elixir
   ;; No tags at all, version in the source code is 0.19.0
@@ -580,3 +590,20 @@ will be used in description and synopsis."
      (git-version "0.1.0" revision commit)
      #:repository-url "https://github.com/6cdh/tree-sitter-racket"
      #:commit commit)))
+
+(define-public tree-sitter-plantuml
+  ;; No tags
+  (let ((commit "bea443ef909484938cb0a9176ebda7b8a3d108f7")
+        (revision "0"))
+    (tree-sitter-grammar
+     "plantuml" "PlantUML"
+     "0swqq4blhlvvgrvsb0h4cjl3pnfmmdpfd5r5kg9rpdwk0sn98x3a"
+     (git-version "1.0.0" revision commit)
+     #:repository-url "https://github.com/Decodetalkers/tree_sitter_plantuml"
+     #:commit commit
+     #:get-cleanup-snippet
+     (lambda _
+       #~(begin
+           (use-modules (guix build utils))
+           (delete-file "binding.gyp")
+           (delete-file-recursively "bindings"))))))

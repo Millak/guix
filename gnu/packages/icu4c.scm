@@ -9,6 +9,7 @@
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -27,14 +28,17 @@
 
 (define-module (gnu packages icu4c)
   #:use-module (gnu packages)
+  #:use-module (gnu packages cpio)
   #:use-module (gnu packages java)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (guix gexp)
   #:use-module (guix licenses)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix build-system ant)
   #:use-module (guix build-system gnu))
 
@@ -240,3 +244,75 @@ C/C++ part.")
 globalisation support for software applications.  This package contains the
 Java part.")
     (license x11)))
+
+(define-public icu4c-for-skia
+  ;; The current version of skia needs this exact commit
+  ;; for its test dependencies.
+  (let ((commit "a0718d4f121727e30b8d52c7a189ebf5ab52421f")
+        (revision "0"))
+    (package
+      (inherit icu4c)
+      (name "icu4c-for-skia")
+      (version "skia")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://chromium.googlesource.com/chromium/deps/icu.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1qxws2p91f6dmhy7d3967r5ygz06r88pkmpm97px067x0zzdz384"))))
+      (arguments
+       (list
+        #:make-flags #~(list (string-append "DESTDIR=" #$output))
+        #:configure-flags #~(list "--prefix=" "--exec-prefix=")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'chdir-to-source
+              (lambda _ (chdir "source")))
+            (replace 'configure
+              (lambda* (#:key inputs parallel-build? configure-flags
+                        #:allow-other-keys)
+                (setenv "CONFIG_SHELL" (which "sh"))
+                (setenv "OPTS" (string-join configure-flags))
+                (invoke "./runConfigureICU" "Linux/gcc"
+                        "--disable-layout" "--disable-tests")))
+            (add-after 'install 'install-cleanup
+              (lambda* (#:key make-flags #:allow-other-keys)
+                (with-directory-excursion "data"
+                  (apply invoke "make" "clean" make-flags))))
+            (add-after 'install-cleanup 'configure-filtered-data
+              (lambda* (#:key configure-flags #:allow-other-keys)
+                (setenv "OPTS" (string-join configure-flags))
+                (setenv "ICU_DATA_FILTER_FILE"
+                        (string-append (getcwd) "/../filters/common.json"))
+                (invoke "./runConfigureICU" "Linux/gcc"
+                        "--disable-layout" "--disable-tests")))
+            (add-after 'configure-filtered-data 'build-filtered-data
+              (lambda* (#:key parallel-build? make-flags #:allow-other-keys)
+                (let ((job-count (if parallel-build?
+                                     (number->string (parallel-job-count))
+                                     "1")))
+                  (apply invoke "make" "-j" job-count make-flags)
+                  (setenv "DESTDIR" #$output)
+                  (invoke "bash" "../scripts/copy_data.sh" "common"))))
+            (add-after 'build-filtered-data 'install-scripts-and-data
+              (lambda _
+                (let* ((share (string-append #$output "/share"))
+                       (scripts (string-append share "/scripts"))
+                       (data (string-append share "/data/common")))
+                  ;; Install scripts.
+                  (mkdir-p scripts)
+                  (copy-recursively "../scripts/" scripts)
+                  ;; Install data.
+                  (mkdir-p data)
+                  (copy-recursively "./dataout/common/data/out/tmp" data)
+                  (symlink (string-append data "/icudt69l.dat")
+                           (string-append data "/icudtl.dat")))))
+            (add-before 'check 'disable-failing-uconv-test
+              (lambda _
+                (substitute* "extra/uconv/Makefile.in"
+                  (("check: check-local")
+                   "")))))))
+      (native-inputs (list cpio pkg-config python)))))

@@ -2154,6 +2154,41 @@ Python.")
     ;; licensed lgpl2.1+
     (license (list license:expat license:lgpl2.1+))))
 
+(define-public python-scdamandtools
+  (package
+    (name "python-scdamandtools")
+    (version "1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/KindLab/scDamAndTools")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1mblw6cn5jqik6ky8cv7ry99z6jm1i4r71pzdfl398vrwbda65gd"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))                ;there are none
+    (propagated-inputs (list python-h5py
+                             python-numpy
+                             python-sortedcontainers
+                             python-pandas
+                             python-pysam
+                             python-tqdm))
+    (native-inputs (list python-cython python-pytest))
+    (home-page "https://github.com/KindLab/scDamAndTools")
+    (synopsis "Functions for processing raw scDam&T-seq data")
+    (description
+     "This is a set of functions for processing raw scDam&T-seq data.
+scDam&T-seq is a method to simultaneously measure protein-DNA interactions and
+transcription from single cells (Rooijers et al., 2019).  It combines a
+DamID-based method to measure protein-DNA interactions and an adaptation of
+CEL-Seq to measure transcription.  The starting point of the workflow is raw
+sequencing data and the end result are tables of UMI-unique DamID and CEL-Seq
+counts.")
+    (license license:expat)))
+
 (define-public python-bioframe
   (package
     (name "python-bioframe")
@@ -9756,11 +9791,11 @@ tasks.")
       (license license:expat))))
 
 (define-public r-chromunity
-  (let ((commit "09fce8bc12cb84b45a6ea25bf8db6e5b75113d4f")
+  (let ((commit "712e56ccba64e8881dbb203546379a5c3c639bb2")
         (revision "1"))
     (package
       (name "r-chromunity")
-      (version (git-version "0.0.1" revision commit))
+      (version (git-version "0.0.2" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -9769,12 +9804,13 @@ tasks.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0lp0h614k8fq6h9gpbylk4chh7q6w4qda8lx03ajrpppxmg7al2d"))))
+                  "0sdja11l7bg5rmcbp2cl226cq9qrj3r8kq5lg49zbin83hya27vh"))))
       (properties `((upstream-name . "chromunity")))
       (build-system r-build-system)
       (propagated-inputs
        (list r-arrow
              r-biocgenerics
+             r-bsgenome-hsapiens-ucsc-hg38
              r-data-table
              r-gchain
              r-genomicranges
@@ -9786,7 +9822,6 @@ tasks.")
              r-pbmcapply
              r-plyr
              r-r6
-             r-skitools
              r-zoo))
       (home-page "https://github.com/mskilab/chromunity")
       (synopsis "Discovery of communities in Pore-C concatemers")
@@ -17867,7 +17902,7 @@ multiple experimental contexts.")
 (define-public vbz-compression
   (package
     (name "vbz-compression")
-    (version "1.0.1")
+    (version "1.0.3")
     (source
      (origin
        (method git-fetch)
@@ -17879,7 +17914,7 @@ multiple experimental contexts.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1c6wsrnw03vsc5cfp2rdakly5xy55m9chjmy6v685yapdwirdky0"))))
+         "1rn5d98flvjblhj4zjpcdqqh8qlgsh5cmb13i49fnm187p03097z"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags

@@ -811,6 +811,17 @@ game development and other performance-critical applications.")
                (base32
                 "1z3a6l8g2y53i5xzraswfs2i0i3kk52zv7nzc2q3fgisbyiri3pz"))))))
 
+(define-public flatbuffers-next-shared
+  (package
+    (inherit flatbuffers-next)
+    (name "flatbuffers-shared")
+    (version "23.1.21")
+    (arguments
+     (substitute-keyword-arguments (package-arguments flatbuffers-next)
+       ((#:configure-flags  flags)
+        ;; Compile with -fPIC, needed for shared lib.
+        #~(cons "-DFLATBUFFERS_CXX_FLAGS=-fPIC" #$flags))))))
+
 (define-public python-feather-format
   (package
     (name "python-feather-format")

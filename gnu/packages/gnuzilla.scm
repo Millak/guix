@@ -518,9 +518,9 @@ variable defined below.  It requires guile-json to be installed."
 ;; XXXX: Workaround 'snippet' limitations.
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
-(define %icecat-base-version "102.14.0")
+(define %icecat-base-version "102.15.0")
 (define %icecat-version (string-append %icecat-base-version "-guix0-preview1"))
-(define %icecat-build-id "20230801000000") ;must be of the form YYYYMMDDhhmmss
+(define %icecat-build-id "20230829000000") ;must be of the form YYYYMMDDhhmmss
 
 ;; 'icecat-source' is a "computed" origin that generates an IceCat tarball
 ;; from the corresponding upstream Firefox ESR tarball, using the 'makeicecat'
@@ -540,12 +540,12 @@ variable defined below.  It requires guile-json to be installed."
                   "firefox-" upstream-firefox-version ".source.tar.xz"))
             (sha256
              (base32
-              "1vpglmqm97ac3rs273qv7kldkrkawyhdnwwqhvyjqiwaq20m1f0s"))))
+              "1bs6hxfsb77cbi238wvizq2iw4mlgz29m0sd027sz8zm1025kyl1"))))
 
          ;; The upstream-icecat-base-version may be older than the
          ;; %icecat-base-version.
-         (upstream-icecat-base-version "102.14.0")
-         (gnuzilla-commit "ac19d793c76732f9e5623e25fbf31287255a4ae7")
+         (upstream-icecat-base-version "102.15.0")
+         (gnuzilla-commit "400fbfdbc0c1ac9c68c9f52fd2ab6899bc8e8bd0")
          (gnuzilla-source
           (origin
             (method git-fetch)
@@ -557,7 +557,7 @@ variable defined below.  It requires guile-json to be installed."
                                       (string-take gnuzilla-commit 8)))
             (sha256
              (base32
-              "0fghxy6d4102i4fsyj5x74v6q94kdfbszmirjbd63wlw1d8sy3cs"))))
+              "1fqrf94a5vnjq56zyyxlc1zsvbblgmzcks760nj1szpws4y91m8r"))))
 
          ;; 'search-patch' returns either a valid file name or #f, so wrap it
          ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.
@@ -1138,8 +1138,8 @@ standards of the IceCat project.")
     "ru" "sco" "si" "sk" "sl" "son" "sq" "sr" "sv-SE" "szl" "ta" "te" "th" "tl"
     "tr" "trs" "uk" "ur" "uz" "vi" "xh" "zh-CN" "zh-TW"))
 
-(define %icedove-build-id "20230705000000") ;must be of the form YYYYMMDDhhmmss
-(define %icedove-version "102.13.0")
+(define %icedove-build-id "20230830000000") ;must be of the form YYYYMMDDhhmmss
+(define %icedove-version "102.15.0")
 
 ;; Provides the "comm" folder which is inserted into the icecat source.
 ;; Avoids the duplication of Icecat's source tarball.
@@ -1148,11 +1148,11 @@ standards of the IceCat project.")
     (method hg-fetch)
     (uri (hg-reference
           (url "https://hg.mozilla.org/releases/comm-esr102")
-          (changeset "2bf94c4d195694485df5d632f2453888cf4f6657")))
+          (changeset "ac0b189e3bc07ee798d5ed84e99f874bc72204a6")))
     (file-name (string-append "thunderbird-" %icedove-version "-checkout"))
     (sha256
      (base32
-      "1nzbvw1n6wdjbsq0cvyq8av2xf775cp4gkvsjc7i5qzvhl84wg4l"))))
+      "0705grqr906rw3ps32yiw4d5iaiwlql8a1ikhr43k546szypn3wg"))))
 
 (define (comm-source->locales+changeset source)
   "Given SOURCE, a checkout of the Thunderbird 'comm' component, return the

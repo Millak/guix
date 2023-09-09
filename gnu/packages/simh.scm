@@ -19,62 +19,70 @@
 
 (define-module (gnu packages simh)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
-  #:use-module (gnu packages admin))
+  #:use-module (guix utils)
+  #:use-module (gnu packages admin)
+  #:use-module (gnu packages compression))
 
 (define-public simh
   (package
     (name "simh")
-    (version "3.9-0")
+    (version "3.12-4")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/simh/simh")
-             (commit (string-append "v" version))))
+       (method url-fetch)
+       (uri (list (string-append
+                   "http://simh.trailing-edge.com/sources/simhv"
+                   (string-delete #\. version) ".zip")
+                  (string-append
+                   "http://simh.trailing-edge.com/sources/archive/simhv"
+                   (string-delete #\. version) ".zip")))
        (sha256
-        (base32 "1jiq6shj6a9xvzacvmyhxxd6xdyica8q4006qqjh5mh96rxrp15c"))
-       (file-name (git-file-name name version))))
+        (base32 "1i78c1x8xjiwy9dd2ss0mk3f1v9pmcjb4zc37ikqnjarsfqj2nm0"))))
     (build-system gnu-build-system)
+    (native-inputs
+     (list unzip))
     (inputs
      (list libpcap))
     (arguments
-     '(#:tests? #f
-       #:make-flags (list
-                      "LDFLAGS=-lm"
-                      (string-append "INCPATH="
-                                     (assoc-ref %build-inputs "libpcap")
-                                     "/include")
-                      (string-append "LIBPATH="
-                                     (assoc-ref %build-inputs "libpcap")
-                                     "/lib"))
-       #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (add-before 'build 'prepare-build
-             (lambda _
-               (mkdir "BIN")))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin/"))
-                      (lib (string-append out "/lib/simh/")))
-                 (mkdir-p bin)
-                 (mkdir-p lib)
-                 (for-each
-                   (lambda (file)
-                     (copy-file file (string-append bin
-                                                    "simh-"
-                                                    (basename file))))
-                   (find-files "BIN"))
-                 (for-each
-                   (lambda (file)
-                     (copy-file file (string-append lib
-                                                    (basename file))))
-                   (find-files "VAX" "bin$"))))))))
+     (list #:tests? #f
+           #:make-flags
+           #~(list (string-append "GCC=" #$(cc-for-target) " -fcommon"))
+           #:modules `((ice-9 string-fun)
+                       ,@%gnu-build-system-modules)
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (add-before 'build 'prepare-build
+                 (lambda _
+                   (substitute* "makefile"
+                     (("LIBPATH:=/usr/lib")
+                      (string-append "LIBPATH:="
+                                     (string-replace-substring
+                                      (getenv "LIBRARY_PATH") ":" " ")))
+                     (("export LIBRARY_PATH = .*") ""))
+                   (mkdir "BIN")))
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (bin (string-append out "/bin/"))
+                          (lib (string-append out "/lib/simh/")))
+                     (mkdir-p bin)
+                     (mkdir-p lib)
+                     (for-each (lambda (file)
+                                 (copy-file file
+                                            (string-append bin "simh-"
+                                                           (basename file))))
+                               (find-files "BIN"))
+                     (for-each (lambda (file)
+                                 (copy-file file
+                                            (string-append lib
+                                                           (basename file))))
+                               (find-files "VAX" "bin$"))))))))
     (home-page "http://simh.trailing-edge.com")
     (synopsis "Collection of simulators from The Computer History Simulation
 Project")

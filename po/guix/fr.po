@@ -25,8 +25,8 @@ msgstr ""
 "Project-Id-Version: guix 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2023-06-19 03:18+0000\n"
-"PO-Revision-Date: 2023-07-30 12:21+0000\n"
-"Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
+"PO-Revision-Date: 2023-08-20 11:06+0000\n"
+"Last-Translator: Julien Lepiller <fedora-account@lepiller.eu>\n"
 "Language-Team: French <https://translate.fedoraproject.org/projects/guix/guix/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -123,7 +123,7 @@ msgstr "C'est un simple service."
 #: gnu/services.scm:341
 #, scheme-format
 msgid "modify-services: service '~a' not found in service list"
-msgstr ""
+msgstr "modify-services : le service « ~a » n'a pas été trouvé dans la liste des services"
 
 #: gnu/services.scm:422
 msgid ""
@@ -469,16 +469,12 @@ msgstr ""
 "Service Switch}, pour un exemple."
 
 #: gnu/services/base.scm:1572
-#, fuzzy
-#| msgid "Service transmission-daemon has been asked to reload its settings file."
 msgid "Service syslog has been asked to reload its settings file."
-msgstr "On a demandé au service transmission-daemon de recharger son fichier de configuration."
+msgstr "On a demandé au service syslog de recharger son fichier de configuration."
 
 #: gnu/services/base.scm:1574
-#, fuzzy
-#| msgid "Service transmission-daemon is not running."
 msgid "Service syslog is not running."
-msgstr "Le service transmission-daemon ne tourne pas actuellement."
+msgstr "Le service syslog ne tourne pas actuellement."
 
 #: gnu/services/base.scm:1591
 msgid ""
@@ -1231,24 +1227,22 @@ msgstr ""
 "une autre instance PulseAudio."
 
 #: gnu/home/services/ssh.scm:110
-#, fuzzy, scheme-format
-#| msgid "~a: invalid locale name"
+#, scheme-format
 msgid "~s: invalid address family value"
-msgstr "~a : nom d'environnement linguistique non valide"
+msgstr "~s : valeur de famille d'adresse non valide"
 
 #: gnu/home/services/ssh.scm:288
 msgid "define either 'name' or 'match-criteria', not both"
-msgstr ""
+msgstr "définissez soit « name » soit « match-criteria », pas les deux"
 
 #: gnu/home/services/ssh.scm:295
 msgid "define either 'name' or 'match-criteria' once"
-msgstr ""
+msgstr "définissez au moins soit « name » soit « match-criteria »"
 
 #: gnu/home/services/ssh.scm:336
-#, fuzzy, scheme-format
-#| msgid "~s: invalid package license~%"
+#, scheme-format
 msgid "~s: invalid 'add-keys-to-agent' value"
-msgstr "~s : licence du paquet invalide~%"
+msgstr "~s : la valeur de « add-keys-to-agent » est invalide"
 
 #: gnu/home/services/ssh.scm:407
 #, scheme-format
@@ -1342,25 +1336,13 @@ msgstr ""
 "ce fichier avant."
 
 #: gnu/home/services/xdg.scm:181
-#, fuzzy
-#| msgid ""
-#| "Configure XDG base directories.  This\n"
-#| "service introduces an additional @env{XDG_LOG_HOME} variable.  It's not\n"
-#| "a part of XDG specification, at least yet, but are convenient to have,\n"
-#| "it improves the consistency between different home services.  The\n"
-#| "services of this service-type is instantiated by default, to provide\n"
-#| "non-default value, extend the service-type (using @code{simple-service}\n"
-#| "for example)."
 msgid ""
 "Configure XDG base directories.  The\n"
 "services of this service-type is instantiated by default, to provide\n"
 "non-default value, extend the service-type (using @code{simple-service}\n"
 "for example)."
 msgstr ""
-"Configure les répertoires de base du GDX. Ce service introduit une variable\n"
-"@env{XDG_LOG_HOME} supplémentaire. Elle ne fait pas partie de la spécification\n"
-"du XDG, en tout cas pas pour le moment, mais est très pratique, elle améliore\n"
-"la cohérence entre les différents services personnels. Le service de ce type\n"
+"Configure les répertoires de base du GDX. Un service de ce type\n"
 "étant instancié par défaut, pour fournir une valeur qui n'existe pas par défaut,\n"
 "étendez le type de service (avec @code{simple-service}\n"
 "par exemple)."
@@ -1647,10 +1629,9 @@ msgid "~A: download failed~%"
 msgstr "~A : le téléchargement a échoué~%"
 
 #: guix/import/elpa.scm:271
-#, fuzzy, scheme-format
-#| msgid "Unsupported MELPA fetcher: ~a, falling back to unstable MELPA source.~%"
+#, scheme-format
 msgid "unsupported MELPA fetcher: ~a, falling back to unstable MELPA source~%"
-msgstr "Outil de téléchargement MELPA non pris en charge : ~a, utilisation de la source MELPA instable par défaut.~%"
+msgstr "outil de téléchargement MELPA non pris en charge : ~a, utilisation de la source MELPA instable par défaut~%"
 
 #: guix/import/elpa.scm:479
 msgid "Updater for ELPA packages"
@@ -4089,7 +4070,7 @@ msgstr "L'entrée Disarchive fait référence à un répertoire SWH inexistant �
 
 #: guix/lint.scm:1687
 msgid "source is not an origin, it cannot be archived"
-msgstr ""
+msgstr "la source n'est pas une origine, elle ne peut pas être archivée"
 
 #: guix/lint.scm:1697
 msgid "while connecting to Software Heritage"
@@ -4914,11 +4895,11 @@ msgstr "invoquer le ramasse-miette"
 
 #: guix/scripts/gc.scm:264
 msgid "already ~,2h MiBs available on ~a, nothing to do~%"
-msgstr "déjà ~,2h Mo disponibles sur ~a, rien à faire~%"
+msgstr "déjà ~,2h Mio disponibles sur ~a, rien à faire~%"
 
 #: guix/scripts/gc.scm:267
 msgid "freeing ~,2h MiBs~%"
-msgstr "libération de ~,2h Mo~%"
+msgstr "libération de ~,2h Mio~%"
 
 #: guix/scripts/gc.scm:307
 #, scheme-format
@@ -4927,7 +4908,7 @@ msgstr "arguments superflus : ~{~a ~}~%"
 
 #: guix/scripts/gc.scm:331 guix/scripts/gc.scm:334
 msgid "freed ~,2h MiBs~%"
-msgstr "~,2h Mo libérés~%"
+msgstr "~,2h Mio libérés~%"
 
 #: guix/scripts/git.scm:26
 msgid ""
@@ -5247,7 +5228,7 @@ msgstr ""
 #: guix/scripts/import/elpa.scm:99
 #, scheme-format
 msgid "this importer does not consider the version~%"
-msgstr ""
+msgstr "cet outil d'import ne prend pas en compte la version~%"
 
 #: guix/scripts/import/elpa.scm:106 guix/scripts/import/cpan.scm:83
 #: guix/scripts/import/crate.scm:98 guix/scripts/import/egg.scm:100
@@ -5549,10 +5530,9 @@ msgid "unsupported substitute URI scheme: ~a~%"
 msgstr "schéma de substitution d'URI non pris en charge : ~a~%"
 
 #: guix/scripts/substitute.scm:498
-#, fuzzy, scheme-format
-#| msgid "download from '~a' failed: ~a, ~s~%"
+#, scheme-format
 msgid "download from '~a' failed, trying next URL~%"
-msgstr "le téléchargement depuis « ~a » a échoué : ~a, ~s~%"
+msgstr "le téléchargement depuis « ~a » a échoué, essai de l'URL suivante~%"
 
 #: guix/scripts/substitute.scm:504
 #, scheme-format
@@ -5560,10 +5540,9 @@ msgid "Downloading ~a...~%"
 msgstr "Téléchargement de « ~a »...~%"
 
 #: guix/scripts/substitute.scm:507
-#, fuzzy, scheme-format
-#| msgid "Found valid signature for ~a~%"
+#, scheme-format
 msgid "no valid nar URLs for ~a at ~a~%"
-msgstr "Signature valide trouvée pour ~a~%"
+msgstr "aucune URL nar valide pour ~a sur ~a~%"
 
 #: guix/scripts/substitute.scm:618
 #, scheme-format
@@ -6311,86 +6290,76 @@ msgstr "valider les définitions des paquets"
 #: guix/scripts/locate.scm:238
 #, scheme-format
 msgid "schema version:\t~a~%"
-msgstr ""
+msgstr "version du schéma :\t~a~%"
 
 #: guix/scripts/locate.scm:240
-#, fuzzy
-#| msgid "wrong number of arguments~%"
 msgid "number of packages:\t~9h~%"
-msgstr "nombre d'arguments incorrect~%"
+msgstr "nombre de paquets :\t~9h~%"
 
 #: guix/scripts/locate.scm:242
 msgid "number of files:\t~9h~%"
-msgstr ""
+msgstr "nombre de fichiers :\t~9h~%"
 
 #: guix/scripts/locate.scm:244
 msgid "database size:\t~9h MiB~%"
-msgstr ""
+msgstr "taille de la base de données :\t~9h Mio~%"
 
 #: guix/scripts/locate.scm:371
-#, fuzzy
-#| msgid "  packages:\n"
 msgid "indexing ~h packages"
-msgstr "  paquets :\n"
+msgstr "indexation de ~h paquets"
 
 #: guix/scripts/locate.scm:444
 #, scheme-format
 msgid "traversing local profile manifests...~%"
-msgstr ""
+msgstr "traversée des manifestes du profil local…~%"
 
 #: guix/scripts/locate.scm:516
 msgid ""
 "Usage: guix locate [OPTIONS...] FILE...\n"
 "Locate FILE and return the list of packages that contain it.\n"
 msgstr ""
+"Utilisation : guix locate [OPTIONS…] FICHIER…\n"
+"Cherche FICHIER et renvoie la liste des paquets qui le contiennent.\n"
 
 #: guix/scripts/locate.scm:518
 msgid ""
 "\n"
 "  -g, --glob          interpret FILE as a glob pattern"
 msgstr ""
+"\n"
+"  -g, --glob          interprète FICHIER comme un motif glob"
 
 #: guix/scripts/locate.scm:520
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --stats            display commit signing statistics upon completion"
 msgid ""
 "\n"
 "      --stats         display database statistics"
 msgstr ""
 "\n"
-"      --stats            affiche les statistiques de signature à la fin"
+"      --stats         affiche les statistiques de la base de données"
 
 #: guix/scripts/locate.scm:522
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -u, --update           update source files in place"
 msgid ""
 "\n"
 "  -u, --update        force a database update"
 msgstr ""
 "\n"
-"  -u, --update           met à jour les fichiers en place"
+"  -u, --update        force la mise à jour de la base de données"
 
 #: guix/scripts/locate.scm:524
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --repair           repair the specified items"
 msgid ""
 "\n"
 "      --clear         clear the database"
 msgstr ""
 "\n"
-"      --repair           réparer les éléments spécifiés"
+"      --clear         efface la base de données"
 
 #: guix/scripts/locate.scm:526
 msgid ""
 "\n"
 "      --database=FILE store the database in FILE"
 msgstr ""
+"\n"
+"      --database=FICHIER stocke la base de données dans FICHIER"
 
 #: guix/scripts/locate.scm:529
 msgid ""
@@ -6398,67 +6367,56 @@ msgid ""
 "      --method=METHOD use METHOD to select packages to index; METHOD can\n"
 "                      be 'manifests' (fast) or 'store' (slower)"
 msgstr ""
+"\n"
+"      --method=MÉTHODE utilise MÉTHODE pour choisir les paquets à indexer ; MÉTHODE peut\n"
+"                      être « manifests » (rapide) ou « store » (plus lent)"
 
 #: guix/scripts/locate.scm:533
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -h, --help             display this help and exit"
 msgid ""
 "\n"
 "  -h, --help          display this help and exit"
 msgstr ""
 "\n"
-"  -h, --help             afficher cette aide et quitter"
+"  -h, --help          affiche cet aide et quitte"
 
 #: guix/scripts/locate.scm:535
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -V, --version          display version information and exit"
 msgid ""
 "\n"
 "  -V, --version       display version information and exit"
 msgstr ""
 "\n"
-"  -V, --version          afficher les informations sur la version et quitter"
+"  -V, --version       affiche les informations sur la version et quitte"
 
 #: guix/scripts/locate.scm:568 guix/scripts/locate.scm:626
-#, fuzzy, scheme-format
-#| msgid "~a: unknown diff mode~%"
+#, scheme-format
 msgid "~a: unknown indexing method~%"
-msgstr "~a : mode de différence inconnu~%"
+msgstr "~a : méthode d'indexation inconnue~%"
 
 #: guix/scripts/locate.scm:581
-#, fuzzy
-#| msgid "search for packages"
 msgid "search for packages providing a given file"
-msgstr "chercher des paquets"
+msgstr "chercher des paquets à partir du nom d'un fichier"
 
 #: guix/scripts/locate.scm:637
-#, fuzzy, scheme-format
-#| msgid "building XDG MIME database..."
+#, scheme-format
 msgid "clearing database...~%"
-msgstr "construction de la base de données MIME du XDG…"
+msgstr "effacement de la base de données…~%"
 
 #: guix/scripts/locate.scm:638
-#, fuzzy, scheme-format
-#| msgid "loading environment from '~a'...~%"
+#, scheme-format
 msgid "indexing files from ~a...~%"
-msgstr "chargement de l'environnement à partir de « ~a »...~%"
+msgstr "indexation des fichiers à partir de ~a…~%"
 
 #: guix/scripts/locate.scm:652
 #, scheme-format
 msgid "no files to search for~%"
-msgstr ""
+msgstr "aucun fichier à chercher~%"
 
 #: guix/scripts/locate.scm:653
-#, fuzzy, scheme-format
-#| msgid "file '~a' not found in search path ~s~%"
+#, scheme-format
 msgid "file~{ '~a'~} not found in database '~a'~%"
 msgid_plural "files~{ '~a'~} not found in database '~a'~%"
-msgstr[0] "fichier « ~a » pas trouvé dans le chemin de recherche ~s~%"
-msgstr[1] "fichier « ~a » pas trouvé dans le chemin de recherche ~s~%"
+msgstr[0] "fichier~{ « ~a »~} pas trouvé dans la base de données « ~a »~%"
+msgstr[1] "fichiers~{ « ~a »~} pas trouvés dans la base de données « ~a »~%"
 
 #: guix/scripts/publish.scm:81
 #, scheme-format
@@ -6697,7 +6655,7 @@ msgstr "lui-même"
 #: guix/scripts/size.scm:100
 #, scheme-format
 msgid "total: ~,1f MiB~%"
-msgstr "total : ~,1f MiB~%"
+msgstr "total : ~,1f Mio~%"
 
 #. TRANSLATORS: This is the title of a graph, meaning that the graph
 #. represents a profile of the store (the "store" being the place where
@@ -7390,15 +7348,15 @@ msgstr "  taille des substituts inconnue~%"
 
 #: guix/scripts/weather.scm:244
 msgid "  ~,1h MiB of nars (compressed)~%"
-msgstr "  ~,1h Mo de fichiers nar (compressés)~%"
+msgstr "  ~,1h Mio de fichiers nar (compressés)~%"
 
 #: guix/scripts/weather.scm:245
 msgid "  at least ~,1h MiB of nars (compressed)~%"
-msgstr "  au moins ~,1h Mo de fichiers nar (compressés)~%"
+msgstr "  au moins ~,1h Mio de fichiers nar (compressés)~%"
 
 #: guix/scripts/weather.scm:247
 msgid "  ~,1h MiB on disk (uncompressed)~%"
-msgstr "  ~,1h Mo sur le disque (décompressé)~%"
+msgstr "  ~,1h Mio sur le disque (décompressé)~%"
 
 #: guix/scripts/weather.scm:250
 msgid "  ~,3h seconds per request (~,1h seconds in total)~%"
@@ -7930,10 +7888,9 @@ msgid "tuning ~a for CPU ~a~%"
 msgstr "paramétrage de ~a pour les CPU ~a~%"
 
 #: guix/transformations.scm:704
-#, fuzzy, scheme-format
-#| msgid "~a: invalid package patch specification"
+#, scheme-format
 msgid "~a: invalid package configure flag specification"
-msgstr "~a : spécification de correctif de paquet invalide"
+msgstr "~a : spécification de drapeau de configuration de paquet invalide"
 
 #: guix/transformations.scm:785
 #, scheme-format
@@ -8055,21 +8012,18 @@ msgid ""
 "\n"
 "      --tune[=CPU]       tune relevant packages for CPU--e.g., \"skylake\""
 msgstr ""
+"\n"
+"      --tune[=CPU]       configure les paquets adéquats pour CPU — p. ex., « skylake »"
 
 #: guix/transformations.scm:1001
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --with-patch=PACKAGE=FILE\n"
-#| "                         add FILE to the list of patches of PACKAGE"
 msgid ""
 "\n"
 "      --with-configure-flag=PACKAGE=FLAG\n"
 "                         append FLAG to the configure flags of PACKAGE"
 msgstr ""
 "\n"
-"      --with-patch=PAQUET=FICHIER\n"
-"                         ajoute le FICHIER à la liste des correctifs de PAQUET"
+"      --with-configure-flag=PAQUET=DRAPEAU\n"
+"                         ajoute DRAPEAU aux drapeaux de configuration de PAQUET"
 
 #: guix/transformations.scm:1004
 msgid ""
@@ -8174,16 +8128,14 @@ msgid "updater failed to determine available releases for ~a~%"
 msgstr "le programme de mise à jour n'a pas pu déterminer les versions disponibles pour ~a~%"
 
 #: guix/upstream.scm:554
-#, fuzzy, scheme-format
-#| msgid "'~a' did not return a list of channels~%"
+#, scheme-format
 msgid "~a: '~a' field not found; leaving it unchanged~%"
-msgstr "« ~a » n'a pas renvoyé une liste de canaux~%"
+msgstr "~a : champ « ~a » introuvable ; non modifié~%"
 
 #: guix/upstream.scm:557
-#, fuzzy, scheme-format
-#| msgid "~A: unexpected argument~%"
+#, scheme-format
 msgid "~a: expected '~a' value: ~s~%"
-msgstr "~A: argument inattendu~%"
+msgstr "~a : valeur « ~a » attendue : ~s~%"
 
 #: guix/upstream.scm:672
 #, scheme-format
@@ -8413,6 +8365,8 @@ msgid ""
 "~a: dependency cycle detected:\n"
 "  ~a~{ -> ~a~}~%"
 msgstr ""
+"~a : dépendance cyclique détectée :\n"
+"  ~a~{ -> ~a~}~%"
 
 #: guix/ui.scm:738
 #, scheme-format
@@ -9050,7 +9004,7 @@ msgstr "format invalide du champ de signature : ~a~%"
 
 #: guix/channels.scm:257
 msgid "channel dependency has an invalid introduction field"
-msgstr ""
+msgstr "la dépendance de canal a un champ d'introduction invalide"
 
 #: guix/channels.scm:300
 msgid "unsupported '.guix-channel' version"
@@ -10632,16 +10586,14 @@ msgid "fixed-output derivation and output file name expected~%"
 msgstr "dérivation à sortie fixe et nom de fichier de sortie attendus~%"
 
 #: guix/scripts/refresh.scm:89
-#, fuzzy, scheme-format
-#| msgid "invalid number: ~a~%"
+#, scheme-format
 msgid "invalid module: ~a~%"
-msgstr "nombre non valide : ~a~%"
+msgstr "module non valide : ~a~%"
 
 #: guix/scripts/refresh.scm:92
-#, fuzzy, scheme-format
-#| msgid "~a: invalid selection; expected `core' or `non-core'~%"
+#, scheme-format
 msgid "~a: invalid selection; expected `core', `non-core' or `module:NAME'~%"
-msgstr "~a : choix invalide ; choisir « core » ou « non-core »~%"
+msgstr "~a : choix invalide ; choisir « core », « non-core » ou « module:NOM »~%"
 
 #: guix/scripts/refresh.scm:150
 msgid ""
@@ -10675,6 +10627,12 @@ msgid ""
 "                         the module can also be fully specified as\n"
 "                         'module:(gnu packages guile)'"
 msgstr ""
+"\n"
+"  -s, --select=SOUS-ENSEMBLE\n"
+"                         choisit tous les paquets du SOUS-ENSEMBLE, qui est soit « core »,\n"
+"                         « non-core » ou « module:NOM » (p. ex. « module:guile »)\n"
+"                         le module peut aussi être spécifié entièrement\n"
+"                         « module:(gnu packages guile) »"
 
 #: guix/scripts/refresh.scm:165
 msgid ""
@@ -11086,16 +11044,14 @@ msgid "would be edited~%"
 msgstr "serait modifié~%"
 
 #: guix/scripts/style.scm:438
-#, fuzzy, scheme-format
-#| msgid "~a: unsupported input style, bailing out~%"
+#, scheme-format
 msgid "unsupported argument style; bailing out~%"
-msgstr "~a : style d'entrée non pris en charge, ignorée~%"
+msgstr "style d'argument non pris en charge ; ignoré~%"
 
 #: guix/scripts/style.scm:444
-#, fuzzy, scheme-format
-#| msgid "~a: unsupported input style, bailing out~%"
+#, scheme-format
 msgid "unsupported argument field; bailing out~%"
-msgstr "~a : style d'entrée non pris en charge, ignorée~%"
+msgstr "champ d'argument non pris en charge ; ignoré~%"
 
 #: guix/scripts/style.scm:468
 #, scheme-format
@@ -11125,10 +11081,8 @@ msgid "- inputs: Rewrite package inputs to the “new style”\n"
 msgstr "- inputs : réécrit les entrées du paquet vers le « nouveau style »\n"
 
 #: guix/scripts/style.scm:564
-#, fuzzy
-#| msgid "- inputs: Rewrite package inputs to the “new style”\n"
 msgid "- arguments: Rewrite package arguments to G-expressions\n"
-msgstr "- inputs : réécrit les entrées du paquet vers le « nouveau style »\n"
+msgstr "- arguments : réécrit les arguments du paquet en G-expressions\n"
 
 #: guix/scripts/style.scm:567
 msgid ""

@@ -466,7 +466,7 @@ and 32-bit PowerPC architectures.")
   (package
     (inherit chez-scheme)
     (name "chez-scheme-for-racket")
-    (version "9.9.9-pre-release.16")
+    (version "9.9.9-pre-release.17")
     ;; The version should match `scheme-version`.
     ;; See racket/src/ChezScheme/s/cmacros.ss c. line 360.
     ;; It will always be different than the upstream version!
@@ -691,13 +691,7 @@ source.")))
                       #~(invoke
                          (search-input-file (or native-inputs inputs)
                                             "/opt/racket-vm/bin/racket")
-                         "../rktboot/main.rkt"
-                         ;; Temporary handling of builds on non-x86 architectures,
-                         ;; see https://github.com/racket/racket/issues/3948
-                         ;; Autodetect in rktboot only addresses x86 archs, so far.
-                         #$@(let ((m (or (racket-cs-native-supported-system?)
-                                         (nix-system->pbarch-machine-type))))
-                              #~("--machine" #$m))))))))))))
+                         "../rktboot/main.rkt"))))))))))
     (supported-systems
      (package-supported-systems chez-scheme-for-racket))
     (home-page "https://github.com/racket/ChezScheme")

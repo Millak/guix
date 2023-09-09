@@ -33,7 +33,7 @@ index 58b8230..b9df98a 100644
  		panic(err)
  	}
 +	if extraconffile != "" {
-+		extraconf, err = ioutil.ReadFile(extraconffile);
++		extraconf, err = os.ReadFile(extraconffile);
 +	}
 +	if err != nil {
 +		panic(err)

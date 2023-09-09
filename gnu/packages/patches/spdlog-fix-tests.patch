@@ -1,0 +1,26 @@
+Remove after next release and package update:
+https://github.com/gabime/spdlog/commit/2ee8bac78e6525a8ad9a9196e65d502ce390d83a
+
+From 2ee8bac78e6525a8ad9a9196e65d502ce390d83a Mon Sep 17 00:00:00 2001
+From: xvitaly <vitaly@easycoding.org>
+Date: Sun, 23 Jul 2023 10:15:25 +0200
+Subject: [PATCH] Added missing square bracket to fix the level_to_string_view
+ test. (#2827)
+
+---
+ tests/test_misc.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tests/test_misc.cpp b/tests/test_misc.cpp
+index 9f3cb1744..6199641ff 100644
+--- a/tests/test_misc.cpp
++++ b/tests/test_misc.cpp
+@@ -43,7 +43,7 @@ TEST_CASE("log_levels", "[log_levels]")
+     REQUIRE(log_info("Hello", spdlog::level::trace) == "Hello");
+ }
+ 
+-TEST_CASE("level_to_string_view", "[convert_to_string_view")
++TEST_CASE("level_to_string_view", "[convert_to_string_view]")
+ {
+     REQUIRE(spdlog::level::to_string_view(spdlog::level::trace) == "trace");
+     REQUIRE(spdlog::level::to_string_view(spdlog::level::debug) == "debug");

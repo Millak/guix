@@ -21,6 +21,8 @@
   #:use-module (gnu services)
   #:use-module (gnu services dict)
   #:use-module ((gnu system shadow) #:select (account-service-type))
+  ;; For the 'home-shepherd-service-type' mapping.
+  #:use-module (gnu home services shepherd)
   #:export (home-dicod-service-type)
   #:re-export (dicod-configuration))
 

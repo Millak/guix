@@ -60,6 +60,7 @@
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages containers)
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages digest)
@@ -400,7 +401,7 @@ older games.")
   ;; This is not a patch staging area for DOSBox, but an unaffiliated fork.
   (package
     (name "dosbox-staging")
-    (version "0.79.1")
+    (version "0.80.1")
     (source
      (origin
        (method git-fetch)
@@ -409,16 +410,14 @@ older games.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wdnkz3djjc514hn945fr9g9mnpnvk16fan84ny9g5wxak6dvsqp"))))
+        (base32 "1iqqrw95lpgjbmi777jdl5z1nizxgfy8xwpmy1fasjlb2yh2kp93"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags
            #~(list
               ;; These both try to git clone subprojects.
               "-Dunit_tests=disabled"   ; gtest
-              "-Duse_mt32emu=false"
-              ;; Not packaged.
-              "-Duse_slirp=false")
+              "-Duse_mt32emu=false")
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'fix-includes
@@ -426,7 +425,7 @@ older games.")
                    ;; This unnecessary file has an encoding error.
                    (delete-file "./src/libs/sdlcd/macosx/SDLOSXCAGuard.h")
                    (substitute* (find-files "." "\\.(cpp|h)")
-                     (("^(#include <)(SDL[_.])" _ include file)
+                     (("^(#[[:space:]]*include <)(SDL[_.])" _ include file)
                       (string-append include "SDL2/" file))))))))
     (native-inputs
      (list pkg-config))
@@ -435,9 +434,12 @@ older games.")
            fluidsynth
            iir
            libpng
+           libslirp
            mesa
            opusfile
-           (sdl-union (list sdl2 sdl2-net))
+           sdl2
+           sdl2-image
+           sdl2-net
            speexdsp
            zlib))
     (home-page "https://dosbox-staging.github.io")

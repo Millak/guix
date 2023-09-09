@@ -324,45 +324,64 @@ is the source location information."
     ((_)
      '())))
 
-(define (apply-clauses clauses services)
-  "Apply CLAUSES, an alist as returned by 'clause-alist', to SERVICES, a list
-of services.  Use each clause at most once; raise an error if a clause was not
-used."
-  (let loop ((services services)
-             (clauses clauses)
-             (result '()))
-    (match services
-      (()
-       (match clauses
-         (()                                      ;all clauses fired, good
-          (reverse result))
-         (((kind _ properties) _ ...)        ;one or more clauses didn't match
-          (raise (make-compound-condition
-                  (condition
-                   (&error-location
-                    (location (source-properties->location properties))))
-                  (formatted-message
-                   (G_ "modify-services: service '~a' not found in service list")
-                   (service-type-name kind)))))))
-      ((head . tail)
-       (let ((service clauses
-                      (fold2 (lambda (clause service remainder)
-                               (if service
-                                   (match clause
-                                     ((kind proc properties)
-                                      (if (eq? kind (service-kind service))
-                                          (values (proc service) remainder)
-                                          (values service
-                                                  (cons clause remainder)))))
-                                   (values #f (cons clause remainder))))
-                             head
+(define (apply-clauses clauses service deleted-services)
+  "Apply CLAUSES, an alist as returned by 'clause-alist', to SERVICE.  An
+exception is raised if a clause attempts to modify a service
+present in DELETED-SERVICES."
+  (define (raise-if-deleted kind properties)
+    (match (find (match-lambda
+                   ((deleted-kind _)
+                    (eq? kind deleted-kind)))
+                 deleted-services)
+      ((_ deleted-properties)
+       (raise (make-compound-condition
+               (condition
+                (&error-location
+                 (location (source-properties->location properties))))
+               (formatted-message
+                (G_ "modify-services: service '~a' was deleted here: ~a")
+                (service-type-name kind)
+                (source-properties->location deleted-properties)))))
+      (_ #t)))
+
+  (match clauses
+    (((kind proc properties) . rest)
+     (raise-if-deleted kind properties)
+     (if (eq? (and service (service-kind service)) kind)
+         (let ((new-service (proc service)))
+           (apply-clauses rest new-service
+                          (if new-service
+                              deleted-services
+                              (cons (list kind properties)
+                                    deleted-services))))
+         (apply-clauses rest service deleted-services)))
+    (()
+     service)))
+
+(define (%modify-services services clauses)
+  "Apply CLAUSES, an alist as returned by 'clause-alist', to SERVICES.  An
+exception is raised if a clause attempts to modify a missing service."
+  (define (raise-if-not-found clause)
+    (match clause
+      ((kind _ properties)
+       (unless (find (lambda (service)
+                       (eq? kind (service-kind service)))
+                     services)
+         (raise (make-compound-condition
+                 (condition
+                  (&error-location
+                   (location (source-properties->location properties))))
+                 (formatted-message
+                  (G_ "modify-services: service '~a' not found in service list")
+                  (service-type-name kind))))))))
+
+  (for-each raise-if-not-found clauses)
+  (reverse (filter-map identity
+                       (fold (lambda (service services)
+                               (cons (apply-clauses clauses service '())
+                                     services))
                              '()
-                             clauses)))
-         (loop tail
-               (reverse clauses)
-               (if service
-                   (cons service result)
-                   result)))))))
+                             services))))
 
 (define-syntax modify-services
   (syntax-rules ()
@@ -397,7 +416,7 @@ It changes the configuration of the GUIX-SERVICE-TYPE instance, and that of
 all the MINGETTY-SERVICE-TYPE instances, and it deletes instances of the
 UDEV-SERVICE-TYPE."
     ((_ services clauses ...)
-     (apply-clauses (clause-alist clauses ...) services))))
+     (%modify-services services (clause-alist clauses ...)))))
 
 
 ;;;

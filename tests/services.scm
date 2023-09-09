@@ -370,4 +370,72 @@
          (modify-services services
            (t2 value => 22)))))
 
+(test-error "modify-services: delete then modify"
+  #t
+  (let* ((t1 (service-type (name 't1)
+                           (extensions '())
+                           (description "")))
+         (t2 (service-type (name 't2)
+                           (extensions '())
+                           (description "")))
+         (t3 (service-type (name 't3)
+                           (extensions '())
+                           (description "")))
+         (services (list (service t1 1) (service t2 2) (service t3 3))))
+    (map service-value
+         (modify-services services
+           (delete t2)
+           (t2 value => 22)))))
+
+(test-equal "modify-services: modify then delete"
+  '(2 3)
+  (let* ((t1 (service-type (name 't1)
+                           (extensions '())
+                           (description "")))
+         (t2 (service-type (name 't2)
+                           (extensions '())
+                           (description "")))
+         (t3 (service-type (name 't3)
+                           (extensions '())
+                           (description "")))
+         (services (list (service t1 1) (service t2 2) (service t3 3))))
+    (map service-value
+         (modify-services services
+           (t1 value => 11)
+           (delete t1)))))
+
+(test-equal "modify-services: delete multiple services of the same type"
+  '(1 3)
+  (let* ((t1 (service-type (name 't1)
+                           (extensions '())
+                           (description "")))
+         (t2 (service-type (name 't2)
+                           (extensions '())
+                           (description "")))
+         (t3 (service-type (name 't3)
+                           (extensions '())
+                           (description "")))
+         (services (list (service t1 1) (service t2 2)
+                         (service t2 2) (service t3 3))))
+    (map service-value
+         (modify-services services
+           (delete t2)))))
+
+(test-equal "modify-services: modify multiple services of the same type"
+  '(1 12 13 4)
+  (let* ((t1 (service-type (name 't1)
+                           (extensions '())
+                           (description "")))
+         (t2 (service-type (name 't2)
+                           (extensions '())
+                           (description "")))
+         (t3 (service-type (name 't3)
+                           (extensions '())
+                           (description "")))
+         (services (list (service t1 1) (service t2 2)
+                         (service t2 3) (service t3 4))))
+    (map service-value
+         (modify-services services
+           (t2 value => (+ value 10))))))
+
 (test-end)

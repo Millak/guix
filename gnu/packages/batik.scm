@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2023 Frank Pursel <frank.pursel@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,7 +29,103 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages java)
   #:use-module (gnu packages java-xml)
-  #:use-module (gnu packages textutils))
+  #:use-module (gnu packages javascript)
+  #:use-module (gnu packages textutils)
+  #:use-module (gnu packages xml))
+
+(define-public java-libbatik
+  (package
+    (name "java-libbatik")
+    (version "1.16")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://dlcdn.apache.org/xmlgraphics/batik/source/batik-src-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "18ys0j7i861ydvimbm3a7dyvny48x5b37zfkvznlys7vcb2qz5z1"))
+              (modules '((guix build utils)))
+              (snippet '(begin
+                          ;; Identify and delete bundled jars.
+                          (format #t "~%~a~%" "Removing sourced jars")
+                          (for-each (lambda (f)
+                                      (delete-file f)
+                                      (format #t "Deleted: ~a~%" f))
+                                    (find-files "." "\\.jar$"))))))
+    (build-system ant-build-system)
+    (arguments
+     `(#:jar-name "batik.jar"
+       #:source-dir "sources/src/main/java"
+       #:test-dir "sources/src/test"
+       ;; Tests are successful -- exclusions in lieu of
+       ;; deleting duplicated util tests.
+       #:test-exclude (list "**/util/*.java")
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'src-consolidation
+                    (lambda _
+                      (mkdir-p "sources")
+                      (let ((cwd (getcwd))
+                            (sub-dirs (list "anim"
+                                            "awt-util"
+                                            "bridge"
+                                            "codec"
+                                            "constants"
+                                            "css"
+                                            "dom"
+                                            "ext"
+                                            "extension"
+                                            "gui-util"
+                                            "gvt"
+                                            "i18n"
+                                            "parser"
+                                            "script"
+                                            "slideshow"
+                                            "svgbrowser"
+                                            "svg-dom"
+                                            "svggen"
+                                            "svgpp"
+                                            "svgrasterizer"
+                                            "swing"
+                                            "test"
+                                            "test-svg"
+                                            "transcoder"
+                                            "ttf2svg"
+                                            "util"
+                                            "xml"
+                                            "test-swing")))
+                        (for-each (lambda (sdir)
+                                    (copy-recursively (string-append "batik-"
+                                                                     sdir)
+                                                      "sources/")) sub-dirs))
+                      ;; Test prep
+                      (copy-recursively "test-resources" "sources")
+                      ;; Remove scripting subdirs for jpython, and jacl.
+                      (for-each (lambda (rfile)
+                                  (delete-file rfile)
+                                  (format #t "Deleted: ~s\n" rfile))
+                                (append (find-files (string-append
+                                                     "sources/src/main/java/org/"
+                                                     "apache/batik/script/jpython"))
+                                        (find-files (string-append
+                                                     "sources/src/main/java/org/"
+                                                     "apache/batik/script/jacl")))))))))
+    (native-inputs (list java-jaxen
+                         java-jdom
+                         quickjs
+                         java-jaxp
+                         java-junit
+                         java-xerces
+                         java-xmlgraphics-commons
+                         libxslt
+                         rhino))
+    (home-page "https://xmlgraphics.apache.org/batik/")
+    (synopsis "Java based toolkit for Scalable Vector Graphics")
+    (description
+     "Batik is a Java-based toolkit for applications or
+applets that want to use images in the Scalable Vector Graphics (SVG)
+format for various purposes, such as display, generation or manipulation.")
+    (license license:asl2.0)))
 
 (define-public java-w3c-smil-3.0
   (package

@@ -230,8 +230,7 @@ firmware from it.")
        (snippet
         `(begin
            ;; Remove example flash files and teensy rebooter flash binaries.
-           (for-each delete-file (find-files "." "\\.(elf|hex)$"))
-           #t))
+           (for-each delete-file (find-files "." "\\.(elf|hex)$"))))
        (patches (search-patches "teensy-loader-cli-help.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -244,10 +243,8 @@ firmware from it.")
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (bin (string-append out "/bin")))
-               (install-file "teensy_loader_cli" bin)
-               #t))))))
-    (inputs
-     (list libusb-compat))
+               (install-file "teensy_loader_cli" bin)))))))
+    (inputs (list libusb-compat))       ;only compatible with libusb 0.1
     (synopsis "Command line firmware uploader for Teensy development boards")
     (description
      "The Teensy loader program communicates with your Teensy board when the

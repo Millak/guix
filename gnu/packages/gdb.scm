@@ -162,6 +162,19 @@ written in C, C++, Ada, Objective-C, Pascal and more.")
   ;; The "default" version.
   gdb-12)
 
+(define-public gdb-multiarch
+  (package/inherit gdb-12
+    (name "gdb-multiarch")
+    (arguments
+     `(#:configure-flags
+       (list "--enable-targets=all"
+             "--enable-multilib"
+             "--enable-interwork"
+             "--enable-languages=c,c++"
+             "--disable-nls")
+       ,@(package-arguments gdb-12)))
+    (synopsis "The GNU debugger (with all architectures enabled)")))
+
 (define-public gdb-minimal
   (package/inherit gdb-12
     (name "gdb-minimal")
