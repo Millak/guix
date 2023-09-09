@@ -286,6 +286,44 @@ strict standards compliance.  The code does, however, fairly closely follow
 the RFC.")
     (license (list license:gpl2 license:gpl3))))
 
+(define-public netperf
+  (let ((version "2.7.0")
+        (revision "1")
+        (commit "3bc455b23f901dae377ca0a558e1e32aa56b31c4"))
+    (package
+      (name "netperf")
+      (version (git-version version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/HewlettPackard/netperf")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1msbhbvf39r1a0c9b9myla5i6235fvnp7r6021fl8b5svxjbb0dk"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:configure-flags
+         ;; Without -fcommon the build fails on newer gcc.
+         ;; See: https://gcc.gnu.org/gcc-10/porting_to.html
+         (list "CFLAGS=-fcommon"
+               ;; --enable-demo is needed for flent (not yet packaged).
+               "--enable-demo")))
+      (native-inputs
+       (list autoconf
+             automake))
+      (home-page "https://hewlettpackard.github.io/netperf/")
+      (synopsis "Benchmarking tool to measure network performance")
+      (description
+       "Netperf is a benchmark that can be used to measure the performance of
+many different types of networking.  It provides tests for both unidirectional
+throughput, and end-to-end latency.  The environments currently measureable
+by netperf include: TCP and UDP via BSD Sockets for both IPv4 and IPv6, DLPI,
+Unix Domain Sockets, SCTP for both IPv4 and IPv6.")
+      (license license:expat))))
+
 (define-public lcsync
   (package
     (name "lcsync")
