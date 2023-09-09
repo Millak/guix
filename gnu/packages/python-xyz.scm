@@ -22702,23 +22702,23 @@ manipulation, or @code{stdout}.")
 (define-public python-flex
   (package
     (name "python-flex")
-    (version "6.10.0")
+    (version "6.14.1")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "flex" version))
       (sha256
        (base32
-        "00pamnwla3khk8nyla7y28dq9jnh69swd7f4jfsl7sn1izs8n8zk"))))
+        "1sr91f5sqywj4040jm3cq4333fp8hbmmr7v6v05a3h0sgyixcbi9"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-click
-           python-iso8601
            python-jsonpointer
            python-pyyaml
            python-requests
            python-rfc3987
            python-six
+           python-strict-rfc3339
            python-validate-email))
     (home-page "https://github.com/pipermerriam/flex")
     (synopsis "Validates Swagger schemata")
