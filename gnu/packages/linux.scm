@@ -1071,6 +1071,7 @@ ARCH and optionally VARIANT, or #f if there is no such configuration."
            elfutils                  ;needed to enable CONFIG_STACK_VALIDATION
            flex
            bison
+           util-linux                ;needed for hexdump
            ;; These are needed to compile the GCC plugins.
            gmp
            mpfr
