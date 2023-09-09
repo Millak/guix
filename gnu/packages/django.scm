@@ -795,7 +795,7 @@ applications with a @var{SEARCH_URL} variable.")
 (define-public python-django-picklefield
   (package
     (name "python-django-picklefield")
-    (version "3.0.1")
+    (version "3.1.0")
     (home-page "https://github.com/gintas/django-picklefield")
     ;; Use a git checkout because the PyPI release lacks tests.
     (source
@@ -807,7 +807,7 @@ applications with a @var{SEARCH_URL} variable.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "0ni7bc86k0ra4pc8zv451pzlpkhs1nyil1sq9jdb4m2mib87b5fk"))))
+          "00d8sm6cnkv5bxbs2a3qrm4g69nlaa1wari7mc697df8q91v6r0n"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -815,10 +815,7 @@ applications with a @var{SEARCH_URL} variable.")
                     (lambda _
                       (invoke "python" "-m" "django" "test" "-v2"
                               "--settings=tests.settings"))))))
-    (propagated-inputs
-     ;; XXX: Picklefield has not been updated in 10+ years and fails tests
-     ;; with Django 3.2.
-     `(("python-django@2.2" ,python-django-2.2)))
+    (propagated-inputs (list python-django))
     (synopsis "Pickled object field for Django")
     (description "Pickled object field for Django")
     (license license:expat)))
