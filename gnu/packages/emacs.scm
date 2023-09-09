@@ -482,6 +482,23 @@ editor (with wide ints)" )
        ((#:configure-flags flags)
         #~(cons "--with-wide-int" #$flags))))))
 
+(define-public emacs-next-minimal
+  (let ((commit "9d27b95b263473fb41a30e3f6ea5607c99e93a61")
+        (revision "1"))
+   (package
+    (inherit emacs-minimal)
+    (name "emacs-next-minimal")
+    (version (git-version "30.0.50" revision commit))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.savannah.gnu.org/git/emacs.git")
+             (commit commit)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00mwpq1msr3jij281w5piqmbwq968xr8dn9hqbf4r947ck754kn9")))))))
+
 (define-public guile-emacs
   (let ((commit "41120e0f595b16387eebfbf731fff70481de1b4b")
         (revision "0"))
