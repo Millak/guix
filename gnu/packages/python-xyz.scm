@@ -26,7 +26,7 @@
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Dylan Jeffers <sapientech@sapientech@openmailbox.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
-;;; Copyright © 2016-2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2016-2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2017, 2021, 2022 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2016, 2017, 2019 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2016–2018, 2021–2023 Arun Isaac <arunisaac@systemreboot.net>
@@ -8512,6 +8512,38 @@ capable of fixing most of the formatting issues that can be reported
 by pycodestyle.")
     (license (license:non-copyleft
               "https://github.com/hhatto/autopep8/blob/master/LICENSE"))))
+
+(define-public python-dirty-equals
+  (package
+    (name "python-dirty-equals")
+    (version "0.7.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/samuelcolvin/dirty-equals")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1hw044d6q0ij8hrrbp6wbdb49xbyjd22viansy817hpmd0yf85ja"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; This test requires pytest-examples, which in turn requires
+     ;; python-ruff, which is difficult to package because it is
+     ;; written in Rust (TODO: Enable when Ruff is in Guix!).
+     (list #:test-flags #~'("--ignore" "tests/test_docs.py")))
+    (native-inputs
+     (list python-hatchling
+           python-pydantic
+           python-pytest))
+    (propagated-inputs (list python-pytz))
+    (home-page "https://dirty-equals.helpmanual.io/")
+    (synopsis "Do dirty (but useful) things with equals")
+    (description
+     "@code{dirty-equals} is a Python library that (mis)uses the
+@code{__eq__} method to make code (generally unit tests) more declarative
+and therefore easier to read and write.")
+    (license license:expat)))
 
 (define-public python-distlib
   (package
