@@ -4496,7 +4496,7 @@ Python loading in HPC environments.")
   (let ((real-name "inxi"))
     (package
       (name "inxi-minimal")
-      (version "3.3.28-1")
+      (version "3.3.29-1")
       (source
        (origin
          (method git-fetch)
@@ -4505,7 +4505,7 @@ Python loading in HPC environments.")
                (commit version)))
          (file-name (git-file-name real-name version))
          (sha256
-          (base32 "0h00dasmw3crci8kwpa503jljy3c5r2fsdhpbbczhsgznhlr8pbi"))))
+          (base32 "05z0vydfmkva61kj14p6jxy7dr8qwd024a7nn8pib57q4qnjm4r8"))))
       (build-system trivial-build-system)
       (inputs
        (list bash-minimal
