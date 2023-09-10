@@ -1970,6 +1970,52 @@ medical image data, e.g. magnetic resonance image (MRI) and functional MRI
      "This is a tiny, header-only C++ library for manipulating INI files.")
     (license license:expat)))
 
+(define-public picket
+  (package
+    (name "picket")
+    (version "1.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rajter/picket")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1zhpynyakjx9nc51b1j80b4y3138p3l380kp1cqmmjx2n9430144"))
+              (snippet '(begin
+                          ;; bundled mINI header library.
+                          (delete-file "src/cfg/ini.h")))))
+    (native-inputs (list pkg-config))
+    (inputs (list gtkmm-3 mini))
+    (arguments
+     (list #:tests? #f
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'fix-mini-includes
+                          (lambda _
+                            (substitute* '("src/cfg/config.h"
+                                           "src/cfg/config.cpp")
+                              (("#include \"ini.h\"")
+                               "#include \"mini/ini.h\""))
+                            (substitute* "src/main.cpp"
+                              (("/usr")
+                               #$output))))
+                        (add-after 'unpack 'fix-cmake-paths
+                          (lambda* (#:key inputs #:allow-other-keys)
+                            (substitute* "CMakeLists.txt"
+                              (("src/cfg/ini.h")
+                               (search-input-file inputs
+                                                  "/include/mini/ini.h"))
+                              (("/usr/")
+                               #$output)))))))
+    (build-system cmake-build-system)
+    (home-page "https://github.com/rajter/picket")
+    (synopsis "Screen color picker with custom format output")
+    (description
+     "Picket is a screen color picker that includes a magnifier and supports
+custom formats for representing color values..")
+    (license license:gpl3+)))
+
 (define-public gpick
   (package
     (name "gpick")
