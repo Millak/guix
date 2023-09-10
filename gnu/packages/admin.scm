@@ -1271,13 +1271,13 @@ IPv6, proxies, and Unix sockets.")
 (define-public nmon
   (package
     (name "nmon")
-    (version "16n")
+    (version "16p")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/nmon/lmon" version ".c"))
        (sha256
-        (base32 "1wpm2f30414b87kpbr9hbidblr5cmfby5skwqd0fkpi5v712q0f0"))))
+        (base32 "0akbkv70zffdmc5p51r02rlxd8b3jvkgl64rjsd29qr5cxgh9ijx"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ; no test suite
