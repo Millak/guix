@@ -1,0 +1,34 @@
+Taken from https://salsa.debian.org/glibc-team/glibc/-/blob/5af8e3701c63ad202b652b5051bec592b8385820/debian/patches/hurd-i386/unsubmitted-getaux_at_secure.diff
+
+This fixes gdk-pixbuf, gobject-introspection.
+
+FIXME: sysdeps/mach/hurd/i386/init-first.c should instead pass an auxv
+to __libc_start_main
+
+Index: glibc-2.33/misc/getauxval.c
+===================================================================
+--- glibc-2.33.orig/misc/getauxval.c
++++ glibc-2.33/misc/getauxval.c
+@@ -19,6 +19,7 @@
+ #include <errno.h>
+ #include <ldsodefs.h>
+ #include <stdbool.h>
++#include <unistd.h>
+ 
+ bool
+ __getauxval2 (unsigned long int type, unsigned long int *result)
+@@ -27,6 +28,14 @@ __getauxval2 (unsigned long int type, un
+   ElfW(auxv_t) *p;
+ #endif
+ 
++#ifdef AT_SECURE
++  if (type == AT_SECURE)
++    {
++      *result = __libc_enable_secure;
++      return true;
++    }
++#endif
++
+   if (type == AT_HWCAP)
+     {
+       *result = GLRO(dl_hwcap);

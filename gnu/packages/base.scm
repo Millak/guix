@@ -1463,7 +1463,8 @@ command.")
                                      "glibc-2.37-hurd-clock_t_centiseconds.patch"
                                      "glibc-2.37-hurd-local-clock_gettime_MONOTONIC.patch"
                                      "glibc-hurd-mach-print.patch"
-                                     "glibc-hurd-gettyent.patch"))))
+                                     "glibc-hurd-gettyent.patch"
+                                     "glibc-hurd-getauxval.patch"))))
     (supported-systems %hurd-systems)))
 
 (define-public glibc/hurd-headers
