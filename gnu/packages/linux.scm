@@ -1548,20 +1548,19 @@ is also needed for the @code{tuxedo-control-center} (short tcc) package.")
 (define-public evdi
   (package
     (name "evdi")
-    (version "1.12.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/DisplayLink/evdi")
-                    (commit "bdc258b25df4d00f222fde0e3c5003bf88ef17b5")))
-              (file-name (git-file-name name version))
-              (patches (search-patches "evdi-fix-build-with-linux-6.2.patch"))
-              (sha256
-               (base32
-                "1yi7mbyvxm9lsx6i1xbwp2bihwgzhwxkydk1kbngw5a5kw9azpws"))))
+    (version "1.14.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/DisplayLink/evdi")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vfbph6bdb206zgdp0bvpqck2zvkx1367xdxbavv41qsmgkxhvbs"))))
     (build-system linux-module-build-system)
     (arguments
-     (list #:tests? #f ;no test suite
+     (list #:tests? #f                  ;no test suite
            #:phases #~(modify-phases %standard-phases
                         (add-after 'unpack 'chdir
                           (lambda _
