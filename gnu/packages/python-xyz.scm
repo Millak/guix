@@ -8537,42 +8537,30 @@ and therefore easier to read and write.")
 (define-public python-distlib
   (package
     (name "python-distlib")
-    (version "0.3.5")
+    (version "0.3.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "distlib" version))
        (sha256
         (base32
-         "1zmjraasgqkz0gfv4mc4w4fj4k2fxj62h1pf5dgb5qqbqwvmgxx7"))))
-    (build-system python-build-system)
+         "1a27f5p93j9i1l3324qgahs3g8ai91fmx783jpyyla506i5ybbwx"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'build
-            (lambda _
-              ;; ZIP does not support timestamps before 1980.
-              (setenv "SOURCE_DATE_EPOCH" "315532800")
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
           (add-before 'build 'no-/bin/sh
             (lambda _
               (substitute* '("distlib/scripts.py" "tests/test_scripts.py")
                 (("/bin/sh") (which "sh")))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
+          (add-before 'check 'prepare-test-environment
+            (lambda _
               (setenv "HOME" "/tmp")
               ;; NOTE: Any value works, the variable just has to be present.
-              (setenv "SKIP_ONLINE" "1")
-              (when tests?
-                (invoke "pytest" "-vv"))))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl)))))))
+              (setenv "SKIP_ONLINE" "1"))))))
     (native-inputs
-     (list python-pypa-build python-pytest))
+     (list python-pytest))
     (home-page "https://github.com/pypa/distlib")
     (synopsis "Distribution utilities")
     (description "Distlib is a library which implements low-level functions that
