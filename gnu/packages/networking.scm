@@ -1928,15 +1928,16 @@ transmission protocol (SCTP) in a Go application.")
 (define-public httping
   (package
     (name "httping")
-    (version "2.5")
+    (version "2.9")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://www.vanheusden.com/httping/httping-"
-                           version ".tgz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/folkertvanheusden/HTTPing")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1y7sbgkhgadmd93x1zafqc4yp26ssiv16ni5bbi9vmvvdl55m29y"))))
+        (base32 "1gbpirzih0zr93fm71scqjji9wwkfp64q8z36857blsngdfm6k38"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
