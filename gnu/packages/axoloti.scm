@@ -199,7 +199,7 @@
        ;; for compiling patches
        ("make" ,gnu-make)
        ;; for compiling firmware
-       ("cross-toolchain" ,arm-none-eabi-nano-toolchain-4.9)
+       ("cross-toolchain" ,(make-arm-none-eabi-nano-toolchain-4.9))
        ;; for uploading compiled patches and firmware
        ("dfu-util" ,dfu-util-for-axoloti)))
     (native-inputs
@@ -339,7 +339,7 @@ runtime.")
            (assoc-ref ant:%standard-phases 'strip-jar-timestamps)))))
     (inputs
      `(("icedtea" ,icedtea "jdk")
-       ("cross-toolchain" ,arm-none-eabi-nano-toolchain-4.9)
+       ("cross-toolchain" ,(make-arm-none-eabi-nano-toolchain-4.9))
        ("java-simple-xml" ,java-simple-xml)
        ("java-rsyntaxtextarea" ,java-rsyntaxtextarea)
        ("java-usb4java" ,java-usb4java)
@@ -572,7 +572,7 @@ patcher application.")))
            (assoc-ref ant:%standard-phases 'strip-jar-timestamps)))))
     (inputs
      `(("jdk" ,icedtea "jdk")
-       ("cross-toolchain" ,arm-none-eabi-nano-toolchain-7-2018-q2-update)
+       ("cross-toolchain" ,(make-arm-none-eabi-nano-toolchain-7-2018-q2-update))
        ;; for compiling patches
        ("make" ,gnu-make)
        ;; for uploading compiled patches and firmware
