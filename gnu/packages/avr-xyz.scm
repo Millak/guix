@@ -71,7 +71,7 @@
                            (string-append "PREFIX=" #$output)
                            (string-append "DESTDIR=" #$output))))
     (propagated-inputs
-     (list avr-toolchain))
+     (list (make-avr-toolchain)))
     (native-inputs
      (list autoconf
            which
