@@ -893,7 +893,7 @@ the C, C++, C++/CLI, Objective‑C, C#, and Java programming languages.")
 (define-public indent
   (package
    (name "indent")
-   (version "2.2.12")
+   (version "2.2.13")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/indent/indent-" version
