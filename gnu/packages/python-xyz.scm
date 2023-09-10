@@ -2576,8 +2576,7 @@ Python's built-in @code{re} module with compatible interfaces.")
         (base32
          "0ngzlvb5j8gqs2nxlp2b0jhzii792h66wsn694qm8kqixr225n0q"))))
     (build-system python-build-system)
-    (home-page
-     "https://github.com/benediktschmitt/py-filelock")
+    (home-page "https://github.com/tox-dev/py-filelock")
     (synopsis "Platform independent file lock")
     (description "@code{filelock} contains a single module implementing
 a platform independent file lock in Python, which provides a simple way of
