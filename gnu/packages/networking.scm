@@ -4525,7 +4525,7 @@ Further information on the usage could be found on the Wikibooks page
 (define-public putty
   (package
     (name "putty")
-    (version "0.77")
+    (version "0.79")
     (source
      (origin
        (method url-fetch)
@@ -4534,7 +4534,7 @@ Further information on the usage could be found on the Wikibooks page
                   (string-append "http://www.putty.be/" version
                                  "/putty-" version ".tar.gz")))
        (sha256
-        (base32 "1rgabc447a5aa9h16krpg3x78vh5jf4l6hkbqzr4bz9qabs7d6j1"))))
+        (base32 "1n7h1vprayfgjr21ccsv77g71k8dk10n69y99azqx4xvdxkci322"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
