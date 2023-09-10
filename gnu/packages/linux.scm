@@ -1720,7 +1720,7 @@ graphics card on Optimus laptops.")
 (define-public ddcci-driver-linux
   (package
     (name "ddcci-driver-linux")
-    (version "0.4.2")
+    (version "0.4.4")
     (source
      (origin
        (method git-fetch)
@@ -1730,7 +1730,7 @@ graphics card on Optimus laptops.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lww3mnqhxqzj0qbxzbwbq93v9zw49myp7p9ib873a5izbq8nadi"))))
+        (base32 "19vi7dk4jv5wm18cznz4lj2fb1c7m7j3ig62x4a6qy9djxf9z472"))))
     (build-system linux-module-build-system)
     (arguments
      (list #:tests? #f                  ; no tests
