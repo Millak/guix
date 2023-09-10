@@ -102,62 +102,62 @@
 
 (define-public glirc
   (package
-  (name "glirc")
-  (version "2.39.0.1")                  ; inherited by glirc-* extensions below
-  (source
-   (origin
-     (method url-fetch)
-     (uri (hackage-uri "glirc" version))
-     (sha256
-      (base32 "0jaywb43jfv6kzyz540k02mxdgw1shc6hn7kia21alssszkilh4r"))))
-  (build-system haskell-build-system)
-  (arguments
-   (list
-    #:phases
-    #~(modify-phases %standard-phases
-      (add-after 'install 'install-extra-documentation
-        (lambda _
-          (install-file "glirc.1"
-                        (string-append #$output "/share/man/man1"))
-          ;; The man page is very terse and punts to the GitHub wiki for real
-          ;; information.  Some of that is also in the README, so install it.
-          (install-file "README.md"
-                        (string-append #$output "/share/doc/"
-                                       #$name "-" #$version)))))))
-  (native-inputs
-   (list ghc-hunit))
-  (inputs
-   (list ghc-async
-         ghc-attoparsec
-         ghc-base64-bytestring
-         ghc-config-schema
-         ghc-config-value
-         ghc-curve25519
-         ghc-free
-         ghc-githash
-         ghc-hashable
-         ghc-hookup
-         ghc-hsopenssl
-         ghc-irc-core
-         ghc-kan-extensions
-         ghc-lens
-         ghc-network
-         ghc-psqueues
-         ghc-random
-         ghc-regex-tdfa
-         ghc-split
-         ghc-unordered-containers
-         ghc-vector
-         ghc-vty))
-  (home-page "https://github.com/glguy/irc-core")
-  (synopsis "Console IRC client")
-  (description
-   "Glirc is a console IRC client that focuses on providing both high-detail
+    (name "glirc")
+    (version "2.39.0.1")               ; inherited by glirc-* extensions below
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "glirc" version))
+       (sha256
+        (base32 "0jaywb43jfv6kzyz540k02mxdgw1shc6hn7kia21alssszkilh4r"))))
+    (build-system haskell-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-extra-documentation
+            (lambda _
+              (install-file "glirc.1"
+                            (string-append #$output "/share/man/man1"))
+              ;; The man page is very terse and punts to the GitHub wiki for real
+              ;; information.  Some of that is also in the README, so install it.
+              (install-file "README.md"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version)))))))
+    (native-inputs
+     (list ghc-hunit))
+    (inputs
+     (list ghc-async
+           ghc-attoparsec
+           ghc-base64-bytestring
+           ghc-config-schema
+           ghc-config-value
+           ghc-curve25519
+           ghc-free
+           ghc-githash
+           ghc-hashable
+           ghc-hookup
+           ghc-hsopenssl
+           ghc-irc-core
+           ghc-kan-extensions
+           ghc-lens
+           ghc-network
+           ghc-psqueues
+           ghc-random
+           ghc-regex-tdfa
+           ghc-split
+           ghc-unordered-containers
+           ghc-vector
+           ghc-vty))
+    (home-page "https://github.com/glguy/irc-core")
+    (synopsis "Console IRC client")
+    (description
+     "Glirc is a console IRC client that focuses on providing both high-detail
 and concise views of an IRC connection.  All views and transformation are
 dynamic and don't change the underlying model.  It also provides advanced
 line-editing features including syntax-highlighting, multi-line buffering,
 and argument placeholders.")
-  (license license:isc)))
+    (license license:isc)))
 
 (define-public glirc-lua
   (package
