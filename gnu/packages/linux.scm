@@ -1636,7 +1636,7 @@ registers of the @acronym{EC, Embedded Controller} supported by the
 (define-public lkrg
   (package
     (name "lkrg")
-    (version "0.9.3")
+    (version "0.9.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1645,7 +1645,7 @@ registers of the @acronym{EC, Embedded Controller} supported by the
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0yirb7n4mqv8cn0gziz1m7ymq00dhhy79j59jdgrx00b8rj57cfw"))))
+                "0k0z9caj48nqjwk3bapgfcdzi1lkizxcjj4r1dvkvwsk38mbk1c4"))))
     (build-system linux-module-build-system)
     (arguments
      (list #:linux linux-libre
