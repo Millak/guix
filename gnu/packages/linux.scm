@@ -9977,20 +9977,20 @@ libraries are found or why they cannot be located.")
 (define-public libevdi
   (package
     (name "libevdi")
-    (version "1.12.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/DisplayLink/evdi")
-                    (commit "bdc258b25df4d00f222fde0e3c5003bf88ef17b5")))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1yi7mbyvxm9lsx6i1xbwp2bihwgzhwxkydk1kbngw5a5kw9azpws"))))
+    (version "1.14.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/DisplayLink/evdi")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vfbph6bdb206zgdp0bvpqck2zvkx1367xdxbavv41qsmgkxhvbs"))))
     (build-system gnu-build-system)
     (inputs (list libdrm))
     (arguments
-     (list #:tests? #f ;no test suite
+     (list #:tests? #f                  ;no test suite
            #:make-flags #~'("CC=gcc")
            #:phases #~(modify-phases %standard-phases
                         (delete 'configure)
