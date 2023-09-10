@@ -481,14 +481,14 @@ errors.")
 (define-public rdiff-backup
   (package
     (name "rdiff-backup")
-    (version "2.2.5")
+    (version "2.2.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/rdiff-backup/rdiff-backup/releases/"
                            "download/v" version "/rdiff-backup-" version ".tar.gz"))
        (sha256
-        (base32 "13m0kq9y6rzgaq0zlzh7qhi789qmbzp3dnc7y57fmhsfg1mq5ql6"))))
+        (base32 "1ksqjkqadhxzp83zdfs80dvb494vn9q4anppnwxm3ikb4rbq6xyh"))))
     (build-system python-build-system)
     (native-inputs
      (list python-setuptools-scm))
