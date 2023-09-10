@@ -49,7 +49,6 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages ed)
-  #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages multiprecision)

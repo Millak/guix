@@ -22,16 +22,10 @@
 (define-module (gnu packages mingw)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
-  #:use-module (gnu packages base)
   #:use-module (gnu packages cross-base)
-  #:use-module (gnu packages gcc)
-  #:use-module (gnu packages compression)
-  #:use-module (gnu packages multiprecision)
   #:use-module (guix build-system gnu)
   #:use-module (guix packages)
   #:use-module (guix download)
-  #:use-module (guix utils)
-  #:use-module (ice-9 match)
   #:export (make-mingw-w64))
 
 (define* (make-mingw-w64 machine
