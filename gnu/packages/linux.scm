@@ -1587,7 +1587,8 @@ display settings applets in graphical environments")
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ;no test suite
-           #:make-flags #~'("CC=gcc")
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target)))
            #:phases #~(modify-phases %standard-phases
                         (delete 'configure)
                         (add-after 'unpack 'chdir
