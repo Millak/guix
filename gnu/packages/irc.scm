@@ -103,7 +103,7 @@
 (define-public glirc
   (package
   (name "glirc")
-  (version "2.39.0.1")
+  (version "2.39.0.1")                  ; inherited by glirc-* extensions below
   (source
    (origin
      (method url-fetch)
@@ -158,6 +158,98 @@ dynamic and don't change the underlying model.  It also provides advanced
 line-editing features including syntax-highlighting, multi-line buffering,
 and argument placeholders.")
   (license license:isc)))
+
+(define-public glirc-lua
+  (package
+    (name "glirc-lua")
+    (version (package-version glirc))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/glguy/irc-core")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hadxsahl30jhgk8vvcg7lwndzc282iybcjam87xx5c0lh0mfzan"))))
+    (build-system meson-build-system)
+    (arguments
+       (list
+        #:modules
+        '((guix build meson-build-system)
+          (guix build utils)
+          (ice-9 match))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'enter-subdirectory
+              (lambda _
+                (chdir "lua-extension")))
+            (replace 'install
+              (lambda _
+                (install-file "glirc-lua.so" (string-append #$output "/lib"))))
+            (add-after 'install 'set-lua-paths
+              (lambda _
+                (let ((x.y       #$(version-major+minor
+                                    (package-version
+                                     (this-package-native-input "lua"))))
+                      (libraries (filter (match-lambda
+                                           ((label . _)
+                                            (string-prefix? "lua-" label)))
+                                         '#$(package-native-inputs
+                                             this-package))))
+                  (setenv "LUA_PATH"
+                          (string-join
+                           (map (match-lambda
+                                  ((_ dir)
+                                   (string-append
+                                    dir "/share/lua/" x.y "/?.lua;"
+                                    dir "/share/lua/" x.y "/?/?.lua")))
+                                libraries)
+                           ";"))
+                  (setenv "LUA_CPATH"
+                          (string-join
+                           (map (match-lambda
+                                  ((_ dir)
+                                   (string-append
+                                    dir "/lib/lua/" x.y "/?.so;"
+                                    dir "/lib/lua/" x.y "/?/?.so")))
+                                libraries)
+                           ";")))))
+            (add-after 'set-lua-paths 'document
+              (lambda _
+                (with-directory-excursion "../lua-extension/doc"
+                  ;; Guix's ldoc command is a shell script without a shebang.
+                  (invoke "sh" "ldoc" ".")
+                  (let ((doc (string-append #$output "/share/doc/" #$name)))
+                    (mkdir-p doc)
+                    (copy-recursively "api" doc)))))
+            (add-after 'document 'leave-subdirectory
+              ;; Let default phases like 'install-license-files do their thing.
+              (lambda _
+                (chdir ".."))))))
+    (native-inputs
+     (list pkg-config
+           ;; For building the API documentation.
+           lua lua-filesystem lua-ldoc lua-penlight))
+    (inputs
+     (list lua))
+    (home-page (package-home-page glirc))
+    (synopsis "Lua scripting extension to the glirc IRC client")
+    (description
+     "This extension lets you script the glirc IRC client using Lua.
+To use it, you must tell @command{glirc} exactly where to find
+@file{glirc-lua.so} by adding something like this to your
+@file{~/.config/glirc/config}:
+
+@example
+extensions:
+  * path: \"../../.guix-profile/lib/glirc-lua.so\"
+    args: [\"example.lua\", @dots{}]
+@end example
+
+Also ensure that @file{example.lua} finds any Lua libraries it needs, e.g., by
+setting @env{LUA_PATH} and @env{LUA_CPATH} in glirc's run-time environment.")
+    (license (package-license glirc))))
 
 (define-public quassel
   (package
