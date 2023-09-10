@@ -1931,6 +1931,45 @@ medical image data, e.g. magnetic resonance image (MRI) and functional MRI
     (home-page "https://niftilib.sourceforge.net")
     (license license:public-domain)))
 
+(define-public mini
+  (package
+    (name "mini")
+    (version "0.9.14")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pulzed/mINI")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "01wn7h9rjz9h6cr11dd62jsb3315d1h6c33pdmwi2l7d8a4n3h8d"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (delete 'build)
+               (delete 'configure)
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (with-directory-excursion "tests"
+                       (for-each (lambda (test)
+                                   (let ((test-name (basename test
+                                                              ".cpp")))
+                                     (invoke "./build.sh" test-name)
+                                     (invoke "./run.sh" test-name)))
+                                 (find-files "." ".cpp"))))))
+               (replace 'install
+                 (lambda _
+                   (install-file "src/mini/ini.h"
+                                 (string-append #$output "/include/mini")))))))
+    (home-page "https://github.com/pulzed/mINI")
+    (synopsis "INI file reader and writer header library")
+    (description
+     "This is a tiny, header-only C++ library for manipulating INI files.")
+    (license license:expat)))
+
 (define-public gpick
   (package
     (name "gpick")
