@@ -119,13 +119,13 @@ for configuration, scripting, and rapid prototyping.")
 
 (define-public lua-5.4
   (package (inherit lua)
-           (version "5.4.3")
+           (version "5.4.6")
            (source (origin
                      (method url-fetch)
                      (uri (string-append "https://www.lua.org/ftp/lua-"
                                          version ".tar.gz"))
                      (sha256
-                      (base32 "1yxvjvnbg4nyrdv10bq42gz6dr66pyan28lgzfygqfwy2rv24qgq"))
+                      (base32 "125dncwz8syhxk034m4fpahq7vsprfnwdqfxlffbb83arfws2pkx"))
                      (patches (search-patches "lua-5.4-pkgconfig.patch"
                                               "lua-5.4-liblua-so.patch"))))))
 
