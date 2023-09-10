@@ -4252,14 +4252,14 @@ cables.")
 (define-public lldpd
   (package
     (name "lldpd")
-    (version "1.0.16")
+    (version "1.0.17")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://media.luffy.cx/files/lldpd/lldpd-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1ab5hkgi2iwqpfw6xy2wxjhqmz6pnkynfkg85zm7r9kv1ijr3cz3"))
+        (base32 "1ki7c7ffys42s2wy5c94qriicgwx0wl9bm83xxkclasx2izifhwk"))
        (modules '((guix build utils)))
        (snippet
         '(begin
