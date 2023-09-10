@@ -9611,7 +9611,7 @@ modification of BPF objects on the system.")
 (define-public bpftrace
   (package
     (name "bpftrace")
-    (version "0.18.0")
+    (version "0.18.1")
     (source
      (origin
        (method git-fetch)
@@ -9620,7 +9620,7 @@ modification of BPF objects on the system.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0n0mm5vlaildilq5nmjymmq8ijif1lcyfin76wcmhzwfriq4n87r"))
+        (base32 "0j8ba2j98d3j8lilgx3z2n162r26ryg7zw5ldwd9m36xnjp40347"))
        (patches (search-patches "bpftrace-disable-bfd-disasm.patch"))))
     (build-system cmake-build-system)
     (native-inputs
