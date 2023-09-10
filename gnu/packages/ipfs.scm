@@ -4,6 +4,7 @@
 ;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -220,7 +221,7 @@ written in Go.")
 (define-public go-ipfs
   (package
     (name "go-ipfs")
-    (version "0.11.0")
+    (version "0.13.0")
     (source
      (origin
        (method url-fetch/tarbomb)
@@ -228,7 +229,7 @@ written in Go.")
              "https://dist.ipfs.io/go-ipfs/v" version
              "/go-ipfs-source.tar.gz"))
        (sha256
-        (base32 "13pmj83hwpz6mk7x52qn0cjnfqxqw2qri3r0k4b270w3bafcccwm"))
+        (base32 "1cx47ais2zn62c0r7lmrpfzia2gjyr61qi8my5wg3pj3dfr0fhkq"))
        (file-name (string-append name "-" version "-source"))
        (modules '((guix build utils)))
        (snippet '(for-each delete-file-recursively
@@ -350,6 +351,8 @@ written in Go.")
                   go-golang-org-x-term
                   go-golang-org-x-tools
                   go-golang-org-x-xerrors
+                  go-golang-org-x-exp
+                  go-golang-org-x-text
                   go-lukechampine-com-blake3))
     (native-inputs
      (append (if (%current-target-system)
