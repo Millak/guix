@@ -1194,7 +1194,7 @@ or server shell scripts with network connections.")
 (define-public mbuffer
   (package
     (name "mbuffer")
-    (version "20220418")
+    (version "20230301")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1202,7 +1202,7 @@ or server shell scripts with network connections.")
                     version ".tgz"))
               (sha256
                (base32
-                "1iq0lcl350r7qja7yyv911aay26d0dd8n0h33mfl84gzypwh2n3f"))))
+                "009d4m48yjidb91vdnrfv84nnd76n0i57g607llan3y0vq4n5xsk"))))
     (build-system gnu-build-system)
     (native-inputs
      (list which))
