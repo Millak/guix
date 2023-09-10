@@ -373,7 +373,7 @@ always possible.")
 (define-public exfat-utils
   (package
     (name "exfat-utils")
-    (version "1.3.0")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
@@ -381,7 +381,7 @@ always possible.")
              "https://github.com/relan/exfat/releases/download/v"
              version "/exfat-utils-" version ".tar.gz"))
        (sha256
-        (base32 "0da8f8mm1sbwqp7prh78qk33xm0b8kk2d5is7mh2szlhgdxd1syz"))))
+        (base32 "0sdzflmwcxjjliq1yqhidy46kbkvj16kxrbrgsj0ci0hjgx7a594"))))
     (build-system gnu-build-system)
     (home-page "https://github.com/relan/exfat")
     (synopsis "Utilities to manipulate exFAT file systems")
