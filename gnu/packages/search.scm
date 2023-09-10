@@ -390,7 +390,7 @@ queries.  A subset of VQL (Verity Query Language) is supported.")
 (define-public fsearch
   (package
     (name "fsearch")
-    (version "0.2.2")
+    (version "0.2.3")
     (source
      (origin
        (method git-fetch)
@@ -399,7 +399,7 @@ queries.  A subset of VQL (Verity Query Language) is supported.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "126sg0fa96vxwinih120riqhj42jlxs2h1bp373r6ml7jwkvlyyn"))))
+        (base32 "12vj1ymvg561594vdq852ianbkgnvrq585qp5jrrv2kq307jh5sl"))))
     (build-system meson-build-system)
     (native-inputs
      (list autoconf
