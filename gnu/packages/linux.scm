@@ -7837,14 +7837,14 @@ re-use code and to avoid re-inventing the wheel.")
 (define-public libnftnl
   (package
     (name "libnftnl")
-    (version "1.2.4")
+    (version "1.2.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://netfilter.org/libnftnl/"
-                           "libnftnl-" version ".tar.bz2"))
+                           "libnftnl-" version ".tar.xz"))
        (sha256
-        (base32 "0zs7c8swlirxnbhl8q1b0p8g3jrzns7fyxsrglz71zfdwhxj7zn0"))))
+        (base32 "1x3pqxclpxcw8x5qx0vyi7znf9xwlkqsfd9sy4cxlir1v4nfmsnf"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
