@@ -1599,11 +1599,12 @@ display settings applets in graphical environments")
                               (mkdir-p lib)
                               (install-file "libevdi.so" lib)))))))
     (inputs (list libdrm))
-    (synopsis "User-space EVDI library")
+    (synopsis
+     "@acronym{EVDI, Extensible Virtual Display Interface} user-space library")
     (description
      "Libevdi is a library that gives applications easy access to
-@acronym{EVDI, Extensible Virtual Display Interface} devices on
-various operating systems.")
+@acronym{EVDI, Extensible Virtual Display Interface} devices provided by the
+@code{evdi} driver package.  ")
     (license license:lgpl2.1)))
 
 (define-public ec
