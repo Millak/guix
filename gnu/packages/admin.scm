@@ -2442,14 +2442,14 @@ network, which causes enabled computers to power on.")
 (define-public dmidecode
   (package
     (name "dmidecode")
-    (version "3.4")
+    (version "3.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://savannah/dmidecode/dmidecode-"
                            version ".tar.xz"))
        (sha256
-        (base32 "04i2ahvqinkrnzfsbswplv9wff36xf9b3snvriwrjz26v18sijs3"))))
+        (base32 "0wy0khw02sr59f43fdahh6as1xc3jv7n8abj59p1j9cfxqsngmvr"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ; no 'check' target
@@ -2458,7 +2458,7 @@ network, which causes enabled computers to power on.")
                    (string-append "prefix=" #$output))
            #:phases
            #~(modify-phases %standard-phases
-               (delete 'configure))))                   ; no configure script
+               (delete 'configure))))   ; no configure script
     (home-page "https://www.nongnu.org/dmidecode/")
     (synopsis "Read hardware information from the BIOS")
     (description
