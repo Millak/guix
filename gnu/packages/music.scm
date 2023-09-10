@@ -5517,7 +5517,7 @@ for the DSSI Soft Synth Interface.  A brief list of features:
 (define-public libdiscid
   (package
     (name "libdiscid")
-    (version "0.6.2")
+    (version "0.6.4")
     (source
      (origin
        (method url-fetch)
@@ -5525,8 +5525,7 @@ for the DSSI Soft Synth Interface.  A brief list of features:
              "http://ftp.musicbrainz.org/pub/musicbrainz/libdiscid/libdiscid-"
              version ".tar.gz"))
        (sha256
-        (base32
-         "1f9irlj3dpb5gyfdnb1m4skbjvx4d4hwiz2152f83m0d9jn47r7r"))))
+        (base32 "10mj1hwv1598nsi7jw5di0pfcwk36g4rr6kl7gi45m7ak8f8ypnx"))))
     (arguments `(#:test-target "check"))
     (build-system cmake-build-system)
     (home-page "https://musicbrainz.org/doc/libdiscid")
