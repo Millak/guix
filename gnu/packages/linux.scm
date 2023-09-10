@@ -1548,7 +1548,7 @@ is also needed for the @code{tuxedo-control-center} (short tcc) package.")
 (define-public evdi
   (package
     (name "evdi")
-    (version "1.14.1")
+    (version "1.14.1")                  ;inherited by libevdi
     (source
      (origin
        (method git-fetch)
@@ -1572,6 +1572,32 @@ is also needed for the @code{tuxedo-control-center} (short tcc) package.")
 that enables management of multiple screens, allowing user-space programs to
 take control over what happens with the image.")
     (license license:gpl2)))
+
+(define-public libevdi
+  (package
+    (inherit evdi)
+    (name "libevdi")
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ;no test suite
+           #:make-flags #~'("CC=gcc")
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure)
+                        (add-after 'unpack 'chdir
+                          (lambda _
+                            (chdir "library")))
+                        (replace 'install
+                          (lambda* _
+                            (let* ((lib (string-append #$output "/lib")))
+                              (mkdir-p lib)
+                              (install-file "libevdi.so" lib)))))))
+    (inputs (list libdrm))
+    (synopsis "User-space EVDI library")
+    (description
+     "Libevdi is a library that gives applications easy access to
+@acronym{EVDI, Extensible Virtual Display Interface} devices on
+various operating systems.")
+    (license license:lgpl2.1)))
 
 (define-public ec
   (package
@@ -9973,42 +9999,6 @@ system.")
      "This tool turns @command{ldd} into a tree and explains how shared
 libraries are found or why they cannot be located.")
     (license license:expat)))
-
-(define-public libevdi
-  (package
-    (name "libevdi")
-    (version "1.14.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/DisplayLink/evdi")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0vfbph6bdb206zgdp0bvpqck2zvkx1367xdxbavv41qsmgkxhvbs"))))
-    (build-system gnu-build-system)
-    (inputs (list libdrm))
-    (arguments
-     (list #:tests? #f                  ;no test suite
-           #:make-flags #~'("CC=gcc")
-           #:phases #~(modify-phases %standard-phases
-                        (delete 'configure)
-                        (add-after 'unpack 'chdir
-                          (lambda _
-                            (chdir "library")))
-                        (replace 'install
-                          (lambda* _
-                            (let* ((lib (string-append #$output "/lib")))
-                              (mkdir-p lib)
-                              (install-file "libevdi.so" lib)))))))
-    (home-page "https://github.com/DisplayLink/evdi")
-    (synopsis "User-space EVDI library")
-    (description
-     "Libevdi is a library that gives applications easy access to
-@acronym{EVDI, Extensible Virtual Display Interface} devices on
-various operating systems.")
-    (license license:lgpl2.1)))
 
 (define-public touchegg
   (package
