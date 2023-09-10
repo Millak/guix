@@ -1566,11 +1566,18 @@ is also needed for the @code{tuxedo-control-center} (short tcc) package.")
                           (lambda _
                             (chdir "module"))))))
     (home-page "https://github.com/DisplayLink/evdi")
-    (synopsis "EVDI Linux kernel module")
+    (synopsis
+     "@acronym{EVDI, Extensible Virtual Display Interface} Linux kernel module")
     (description
-     "The @acronym{EVDI, Extensible Virtual Display Interface} is a Linux kernel module
-that enables management of multiple screens, allowing user-space programs to
-take control over what happens with the image.")
+     "The @acronym{EVDI, Extensible Virtual Display Interface} is a Linux kernel
+module that enables management of multiple screens, allowing user-space programs
+to take control over what happens with the image.  It is essentially a virtual
+display for which applications using the @code{libevdi} library can add, remove,
+and receive screen updates.
+
+The EVDI driver uses the standard Linux @acronym{DRM, Direct Rendering Manager}.
+Its displays can be controlled by standard tools such as @command{xrandr} and
+display settings applets in graphical environments")
     (license license:gpl2)))
 
 (define-public libevdi
