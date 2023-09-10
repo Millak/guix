@@ -568,14 +568,14 @@ conflict with slocate compatibility.")
 (define-public plocate
   (package
     (name "plocate")
-    (version "1.1.18")
+    (version "1.1.19")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://plocate.sesse.net/download/"
                            "plocate-" version ".tar.gz"))
        (sha256
-        (base32 "0b71chcnl0xymwpcg8ixsnh64017cj5irz04rq0rnwbh1c2mg5lk"))))
+        (base32 "0rb15sifsmcm756bifs3y8wj282vp0zzagg6kkvbjyczibpchnyr"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
