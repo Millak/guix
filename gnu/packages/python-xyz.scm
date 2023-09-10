@@ -8551,9 +8551,10 @@ and therefore easier to read and write.")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'no-/bin/sh
-            (lambda _
-              (substitute* '("distlib/scripts.py" "tests/test_scripts.py")
-                (("/bin/sh") (which "sh")))))
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((/bin/sh (search-input-file inputs "bin/sh")))
+                (substitute* '("distlib/scripts.py" "tests/test_scripts.py")
+                  (("/bin/sh") /bin/sh)))))
           (add-before 'check 'prepare-test-environment
             (lambda _
               (setenv "HOME" "/tmp")
@@ -8561,6 +8562,8 @@ and therefore easier to read and write.")
               (setenv "SKIP_ONLINE" "1"))))))
     (native-inputs
      (list python-pytest))
+    (inputs
+     (list bash-minimal))
     (home-page "https://github.com/pypa/distlib")
     (synopsis "Distribution utilities")
     (description "Distlib is a library which implements low-level functions that
