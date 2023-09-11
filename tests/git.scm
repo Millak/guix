@@ -21,7 +21,6 @@
   #:use-module (git)
   #:use-module (guix git)
   #:use-module (guix tests git)
-  #:use-module (guix build utils)
   #:use-module ((guix utils) #:select (call-with-temporary-directory))
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-64)
@@ -33,8 +32,6 @@
 
 (test-begin "git")
 
-;; 'with-temporary-git-repository' relies on the 'git' command.
-(unless (which (git-command)) (test-skip 1))
 (test-assert "commit-difference, linear history"
   (with-temporary-git-repository directory
       '((add "a.txt" "A")
@@ -61,7 +58,6 @@
              ;; empty list.
              (null? (commit-difference commit1 commit4)))))))
 
-(unless (which (git-command)) (test-skip 1))
 (test-assert "commit-difference, fork"
   (with-temporary-git-repository directory
       '((add "a.txt" "A")
@@ -101,7 +97,6 @@
              (lset= eq? (commit-difference master4 master2)
                     (list master4 merge master3 devel1 devel2)))))))
 
-(unless (which (git-command)) (test-skip 1))
 (test-assert "commit-difference, excluded commits"
   (with-temporary-git-repository directory
       '((add "a.txt" "A")
@@ -126,7 +121,6 @@
                     (list commit4))
              (null? (commit-difference commit4 commit1 (list commit5))))))))
 
-(unless (which (git-command)) (test-skip 1))
 (test-equal "commit-relation"
   '(self                                          ;master3 master3
     ancestor                                      ;master1 master3
@@ -166,7 +160,6 @@
               (commit-relation master1 merge)
               (commit-relation merge master1))))))
 
-(unless (which (git-command)) (test-skip 1))
 (test-equal "commit-descendant?"
   '((master3 master3 => #t)
     (master1 master3 => #f)
@@ -216,7 +209,6 @@
                   (master1 merge)
                   (merge master1)))))))
 
-(unless (which (git-command)) (test-skip 1))
 (test-equal "remote-refs"
   '("refs/heads/develop" "refs/heads/master"
     "refs/tags/v1.0" "refs/tags/v1.1")
@@ -231,7 +223,6 @@
         (tag "v1.1" "release-1.1"))
     (remote-refs directory)))
 
-(unless (which (git-command)) (test-skip 1))
 (test-equal "remote-refs: only tags"
  '("refs/tags/v1.0" "refs/tags/v1.1")
   (with-temporary-git-repository directory
@@ -243,7 +234,6 @@
         (tag "v1.1" "Release 1.1"))
     (remote-refs directory #:tags? #t)))
 
-(unless (which (git-command)) (test-skip 1))
 (test-assert "update-cached-checkout, tag"
   (call-with-temporary-directory
    (lambda (cache)

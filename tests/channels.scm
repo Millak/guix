@@ -50,7 +50,7 @@
   #:use-module (ice-9 match))
 
 (define (gpg+git-available?)
-  (and (which (git-command))
+  (and #t                                         ;'git' is always available
        (which (gpg-command)) (which (gpgconf-command))))
 
 (define commit-id-string
@@ -196,7 +196,6 @@
                                           "abc1234")))
                          instances)))))))
 
-(unless (which (git-command)) (test-skip 1))
 (test-equal "latest-channel-instances #:validate-pull"
   'descendant
 
@@ -306,7 +305,6 @@
                (depends? drv3
                          (list drv2 drv0) (list))))))))
 
-(unless (which (git-command)) (test-skip 1))
 (test-equal "channel-news, no news"
   '()
   (with-temporary-git-repository directory
@@ -318,7 +316,6 @@
             (latest  (reference-name->oid repository "HEAD")))
         (channel-news-for-commit channel (oid->string latest))))))
 
-(unless (which (git-command)) (test-skip 1))
 (test-assert "channel-news, one entry"
   (with-temporary-git-repository directory
       `((add ".guix-channel"
@@ -406,7 +403,6 @@
                          (channel-news-for-commit channel commit5 commit1))
                     '(#f "tag-for-first-news-entry")))))))
 
-(unless (which (git-command)) (test-skip 1))
 (test-assert "channel-news, annotated tag"
   (with-temporary-git-repository directory
       `((add ".guix-channel"
@@ -453,7 +449,6 @@
                          (channel-news-for-commit channel commit2))
                     (list commit1)))))))
 
-(unless (which (git-command)) (test-skip 1))
 (test-assert "latest-channel-instances, missing introduction for 'guix'"
   (with-temporary-git-repository directory
       '((add "a.txt" "A")

@@ -29,7 +29,7 @@
   #:use-module (guix tests git)
   #:use-module (guix tests http)
   #:use-module ((guix packages) #:select (package-derivation base32))
-  #:use-module ((guix build utils) #:select (executable-file? which))
+  #:use-module ((guix build utils) #:select (executable-file?))
   #:use-module ((guix hash) #:select (file-hash*))
   #:use-module ((git oid) #:select (oid->string))
   #:use-module ((git reference) #:select (reference-name->oid))
@@ -295,8 +295,6 @@
                          get-string-all)
                        text))))))
 
-;; 'with-temporary-git-repository' relies on the 'git' command.
-(unless (which (git-command)) (test-skip 1))
 (test-equal "'git-download' built-in builder"
   `(("/a.txt" . "AAA")
     ("/b.scm" . "#t"))
@@ -325,7 +323,6 @@
         (build-derivations %store (list drv))
         (directory-contents (derivation->output-path drv) get-string-all)))))
 
-(unless (which (git-command)) (test-skip 1))
 (test-assert "'git-download' built-in builder, invalid hash"
   (with-temporary-git-repository directory
       `((add "a.txt" "AAA")
@@ -349,7 +346,6 @@
         (build-derivations %store (list drv))
         #f))))
 
-(unless (which (git-command)) (test-skip 1))
 (test-assert "'git-download' built-in builder, invalid commit"
   (with-temporary-git-repository directory
       `((add "a.txt" "AAA")
