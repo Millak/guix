@@ -9032,7 +9032,7 @@ devices using the GNOME desktop.")
 (define-public gnome-control-center
   (package
     (name "gnome-control-center")
-    (version "42.4")
+    (version "44.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -9040,7 +9040,10 @@ devices using the GNOME desktop.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1ln5rch6zbfh3vl2nnnmw39bylgg38rin6xp7ra0ra4ay3wv3gvs"))))
+                "0yhcm0c0ghkfqswqlkwcln3jpaz6jzvqaph2c3lgmv635w2nash6"))
+              (patches
+               (search-patches
+                "gnome-control-center-firmware-security.patch"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -9064,19 +9067,32 @@ devices using the GNOME desktop.")
                              "panels/network/connection-editor/net-connection-editor.c")
                 (("\"nm-connection-editor")
                  (string-append "\"" (search-input-file
-                                      inputs "bin/nm-connection-editor"))))
-              (substitute* "panels/user-accounts/run-passwd.c"
-                (("/usr/bin/passwd")
-                 "/run/setuid-programs/passwd"))
-              (substitute* "panels/info-overview/cc-info-overview-panel.c"
-                (("DATADIR \"/gnome/gnome-version.xml\"")
-                 (format #f "~s" (search-input-file
-                                  inputs "share/gnome/gnome-version.xml"))))))
+                                      inputs "bin/nm-connection-editor"))))))
           (add-after 'unpack 'skip-gtk-update-icon-cache
             ;; Don't create 'icon-theme.cache'.
             (lambda _
-              (substitute* "build-aux/meson/meson_post_install.py"
-                (("gtk-update-icon-cache") (which "true"))))))))
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false"))))
+          (replace 'check
+            (lambda* (#:key parallel-tests? tests? #:allow-other-keys)
+              (when tests?
+                ;; Tests require a running X server.
+                (system "Xvfb :1 &")
+                (setenv "DISPLAY" ":1")
+                ;; For the missing /var/lib/dbus/machine-id
+                (setenv "DBUS_FATAL_WARNINGS" "0")
+                (setenv "NO_AT_BRIDGE" "1")
+                (setenv "HOME" "/tmp")
+                (setenv "XDG_RUNTIME_DIR" (string-append (getcwd) "/runtime-dir"))
+                (mkdir (getenv "XDG_RUNTIME_DIR"))
+                (chmod (getenv "XDG_RUNTIME_DIR") #o700)
+                (setenv "MESON_TESTTHREADS"
+                        (if parallel-tests?
+                            (number->string (parallel-job-count))
+                            "1"))
+                (invoke "dbus-run-session" "--"
+                        "meson" "test" "-t" "0")))))))
     (native-inputs
      (list docbook-xsl
            gettext-minimal
@@ -9085,7 +9101,8 @@ devices using the GNOME desktop.")
            pkg-config
            python
            python-dbusmock
-           xorg-server-for-tests))
+           xorg-server-for-tests
+           setxkbmap))
     (inputs
      (list accountsservice
            colord-gtk
