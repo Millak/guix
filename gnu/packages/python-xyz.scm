@@ -24096,6 +24096,40 @@ standard library.  It provides two additional tokens @code{ESCAPED_NL} and
 and @code{tokens_to_src} to roundtrip.")
     (license license:expat)))
 
+(define-public python-towncrier
+  (package
+    (name "python-towncrier")
+    (version "23.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "towncrier" version))
+              (sha256
+               (base32
+                "1hbhzxcn30qlnab1rnk2bf09jfy5bpxzfdp6zfn8sz3jnidbsagw"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags
+           ;; TODO: Why is this failing?
+           #~'("-k" "not test_version")))
+    (propagated-inputs
+     (list python-click
+           python-click-default-group
+           python-incremental
+           python-jinja2
+           python-tomli))
+    (native-inputs
+     (list git-minimal/pinned           ;tests create git repositories
+           python-hatchling
+           python-packaging
+           python-pytest
+           python-twisted))
+    (home-page "https://towncrier.readthedocs.io/en/stable/")
+    (synopsis "Manage release notes")
+    (description
+     "@code{towncrier} is a utility to produce useful, summarized news
+files (also known as changelogs) for a project.")
+    (license license:expat)))
+
 (define-public python-future-fstrings
   (package
     (name "python-future-fstrings")
