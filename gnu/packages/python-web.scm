@@ -1725,6 +1725,26 @@ C, yielding parse times that can be a thirtieth of the html5lib parse times.")
     ;; indicate ASL2.0, including the LICENSE file for the whole project.
     (license (list license:asl2.0 license:gpl3))))
 
+(define-public python-html5tagger
+  (package
+    (name "python-html5tagger")
+    (version "1.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "html5tagger" version))
+              (sha256
+               (base32
+                "1acd1a4f66gi4plqnsml7cf33qp83mxsnmnqpdwkpj7597xkvyl4"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools-scm))
+    (home-page "https://github.com/sanic-org/html5tagger")
+    (synopsis "Create HTML documents from Python")
+    (description
+     "@code{html5tagger} provides a simplified HTML5 syntax that can
+be written directly in Python without templates.")
+    (license license:unlicense)))
+
 (define-public python-minio
   (package
     (name "python-minio")
