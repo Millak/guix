@@ -23,6 +23,7 @@
   #:use-module ((guix store) #:select (derivation-path? store-path?))
   #:autoload   (guix build download) (url-fetch)
   #:autoload   (guix build git) (git-fetch-with-fallback)
+  #:autoload   (guix config) (%git)
   #:use-module (ice-9 match)
   #:export (guix-perform-download))
 
@@ -108,7 +109,8 @@ Note: OUTPUT may differ from the 'out' value of DRV, notably for 'bmCheck' or
            (algo       (derivation-output-hash-algo drv-output))
            (hash       (derivation-output-hash drv-output)))
       (git-fetch-with-fallback url commit output
-                               #:recursive? recursive?))))
+                               #:recursive? recursive?
+                               #:git-command %git))))
 
 (define (assert-low-privileges)
   (when (zero? (getuid))
