@@ -1,5 +1,5 @@
 /* GNU Guix --- Functional package management for GNU
-   Copyright (C) 2016, 2017, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
+   Copyright (C) 2016-2019, 2023 Ludovic Courtès <ludo@gnu.org>
 
    This file is part of GNU Guix.
 
@@ -58,7 +58,8 @@ static void builtinDownload(const Derivation &drv,
 
 static const std::map<std::string, derivationBuilder> builtins =
 {
-    { "download", builtinDownload }
+    { "download", builtinDownload },
+    { "git-download", builtinDownload }
 };
 
 derivationBuilder lookupBuiltinBuilder(const std::string & name)

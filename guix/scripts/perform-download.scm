@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2018, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2018, 2020, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,7 +21,8 @@
   #:use-module (guix scripts)
   #:use-module (guix derivations)
   #:use-module ((guix store) #:select (derivation-path? store-path?))
-  #:use-module (guix build download)
+  #:autoload   (guix build download) (url-fetch)
+  #:autoload   (guix build git) (git-fetch-with-fallback)
   #:use-module (ice-9 match)
   #:export (guix-perform-download))
 
@@ -61,10 +62,6 @@ Note: OUTPUT may differ from the 'out' value of DRV, notably for 'bmCheck' or
            (drv-output (assoc-ref (derivation-outputs drv) "out"))
            (algo       (derivation-output-hash-algo drv-output))
            (hash       (derivation-output-hash drv-output)))
-      (unless (and algo hash)
-        (leave (G_ "~a is not a fixed-output derivation~%")
-               (derivation-file-name drv)))
-
       ;; We're invoked by the daemon, which gives us write access to OUTPUT.
       (when (url-fetch url output
                        #:print-build-trace? print-build-trace?
@@ -88,6 +85,30 @@ Note: OUTPUT may differ from the 'out' value of DRV, notably for 'bmCheck' or
                        #:verify-certificate? #f)
         (when (and executable (string=? executable "1"))
           (chmod output #o755))))))
+
+(define* (perform-git-download drv output
+                               #:key print-build-trace?)
+  "Perform the download described by DRV, a fixed-output derivation, to
+OUTPUT.
+
+Note: OUTPUT may differ from the 'out' value of DRV, notably for 'bmCheck' or
+'bmRepair' builds."
+  (derivation-let drv ((url "url")
+                       (commit "commit")
+                       (recursive? "recursive?"))
+    (unless url
+      (leave (G_ "~a: missing Git URL~%") (derivation-file-name drv)))
+    (unless commit
+      (leave (G_ "~a: missing Git commit~%") (derivation-file-name drv)))
+
+    (let* ((url        (call-with-input-string url read))
+           (recursive? (and recursive?
+                            (call-with-input-string recursive? read)))
+           (drv-output (assoc-ref (derivation-outputs drv) "out"))
+           (algo       (derivation-output-hash-algo drv-output))
+           (hash       (derivation-output-hash drv-output)))
+      (git-fetch-with-fallback url commit output
+                               #:recursive? recursive?))))
 
 (define (assert-low-privileges)
   (when (zero? (getuid))
@@ -117,8 +138,20 @@ Note: OUTPUT may differ from the 'out' value of DRV, notably for 'bmCheck' or
     (match args
       (((? derivation-path? drv) (? store-path? output))
        (assert-low-privileges)
-       (let ((drv (read-derivation-from-file drv)))
-         (perform-download drv output #:print-build-trace? print-build-trace?)))
+       (let* ((drv (read-derivation-from-file drv))
+              (download (match (derivation-builder drv)
+                          ("builtin:download" perform-download)
+                          ("builtin:git-download" perform-git-download)
+                          (unknown (leave (G_ "~a: unknown builtin builder")
+                                          unknown))))
+              (drv-output (assoc-ref (derivation-outputs drv) "out"))
+              (algo       (derivation-output-hash-algo drv-output))
+              (hash       (derivation-output-hash drv-output)))
+         (unless (and hash algo)
+           (leave (G_ "~a is not a fixed-output derivation~%")
+                  (derivation-file-name drv)))
+
+         (download drv output #:print-build-trace? print-build-trace?)))
       (("--version")
        (show-version-and-exit))
       (x
