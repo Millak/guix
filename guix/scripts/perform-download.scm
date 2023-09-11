@@ -42,16 +42,14 @@
     (module-use! module (resolve-interface '(guix base32)))
     module))
 
-(define* (perform-download drv #:optional output
+(define* (perform-download drv output
                            #:key print-build-trace?)
   "Perform the download described by DRV, a fixed-output derivation, to
 OUTPUT.
 
-Note: Unless OUTPUT is #f, we don't read the value of 'out' in DRV since the
-actual output is different from that when we're doing a 'bmCheck' or
-'bmRepair' build."
+Note: OUTPUT may differ from the 'out' value of DRV, notably for 'bmCheck' or
+'bmRepair' builds."
   (derivation-let drv ((url "url")
-                       (output* "out")
                        (executable "executable")
                        (mirrors "mirrors")
                        (content-addressed-mirrors "content-addressed-mirrors")
@@ -59,8 +57,7 @@ actual output is different from that when we're doing a 'bmCheck' or
     (unless url
       (leave (G_ "~a: missing URL~%") (derivation-file-name drv)))
 
-    (let* ((output     (or output output*))
-           (url        (call-with-input-string url read))
+    (let* ((url        (call-with-input-string url read))
            (drv-output (assoc-ref (derivation-outputs drv) "out"))
            (algo       (derivation-output-hash-algo drv-output))
            (hash       (derivation-output-hash drv-output)))
@@ -120,13 +117,8 @@ actual output is different from that when we're doing a 'bmCheck' or
     (match args
       (((? derivation-path? drv) (? store-path? output))
        (assert-low-privileges)
-       (perform-download (read-derivation-from-file drv)
-                         output
-                         #:print-build-trace? print-build-trace?))
-      (((? derivation-path? drv))                 ;backward compatibility
-       (assert-low-privileges)
-       (perform-download (read-derivation-from-file drv)
-                         #:print-build-trace? print-build-trace?))
+       (let ((drv (read-derivation-from-file drv)))
+         (perform-download drv output #:print-build-trace? print-build-trace?)))
       (("--version")
        (show-version-and-exit))
       (x
