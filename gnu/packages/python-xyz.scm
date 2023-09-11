@@ -23337,6 +23337,26 @@ stack traces of Python programs.  It exactly mimics the behavior of the Python
 interpreter when it prints a stack trace.")
     (license license:psfl)))
 
+(define-public python-tracerite
+  (package
+    (name "python-tracerite")
+    (version "1.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "tracerite" version))
+              (sha256
+               (base32
+                "0jwy5wwl0rcsgnx7hhq4z7ji3lx271sar4v2a1rmyh5vsj7sn784"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools-scm))
+    (propagated-inputs (list python-html5tagger))
+    (home-page "https://github.com/sanic-org/tracerite")
+    (synopsis "Human-readable HTML tracebacks")
+    (description
+     "@code{tracerite} converts Python tracebacks into useful error messages
+in human-readable HTML format.")
+    (license license:unlicense)))
+
 (define-public python-ratelimiter
   (package
     (name "python-ratelimiter")
