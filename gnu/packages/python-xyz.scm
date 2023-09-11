@@ -6155,7 +6155,7 @@ software version simply.")
 (define-public python-deprecated
   (package
     (name "python-deprecated")
-    (version "1.2.13")
+    (version "1.2.14")
     (source
      (origin
        (method git-fetch)
@@ -6165,14 +6165,8 @@ software version simply.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0v4ys9xr8lski2r98da99spsj6hjlnnqgnhhmyhrm66myiix885c"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "pytest")))))))
+         "0knjsacv0r4gyz6ngjn3ih6352yz05r63ll73y2cg162bzcak48z"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-wrapt))
     (native-inputs
