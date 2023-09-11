@@ -23252,16 +23252,16 @@ design and layout.")
 (define-public python-pkginfo
   (package
     (name "python-pkginfo")
-    (version "1.8.3")
+    (version "1.9.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pkginfo" version))
        (sha256
-        (base32 "0z46w559hrl79gf7navgzimj21ma821wka27jh58fvyqilqs8kd8"))))
-    (build-system python-build-system)
+        (base32 "0inh57664sx2vlbd3913dsc9nz21ysb9vk591qpkg90qhxp8kmcg"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-wheel))
+     (list python-pytest))
     (home-page "https://code.launchpad.net/~tseaver/pkginfo/trunk")
     (synopsis "Query metadatdata from sdists, bdists, and installed packages")
     (description
