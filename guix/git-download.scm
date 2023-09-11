@@ -28,6 +28,7 @@
   #:use-module (guix packages)
   #:use-module (guix modules)
   #:autoload   (guix build-system gnu) (standard-packages)
+  #:autoload   (guix download) (%download-fallback-test)
   #:autoload   (git bindings)   (libgit2-init!)
   #:autoload   (git repository) (repository-open
                                  repository-close!
@@ -161,7 +162,11 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
                       ;; downloads.
                       #:script-name "git-download"
                       #:env-vars
-                      `(("git url" . ,(git-reference-url ref))
+                      `(("git url" . ,(match (%download-fallback-test)
+                                        ('content-addressed-mirrors
+                                         "https://example.org/does-not-exist")
+                                        (_
+                                         (git-reference-url ref))))
                         ("git commit" . ,(git-reference-commit ref))
                         ("git recursive?" . ,(object->string
                                               (git-reference-recursive? ref))))
