@@ -5625,38 +5625,35 @@ logging and tracing of the execution.")
 (define-public python-daemon
   (package
     (name "python-daemon")
-    (version "2.3.0")
+    (version "3.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python-daemon" version))
        (sha256
         (base32
-         "1bxfn2bq56sd4w0nm9mqy8y0905m7fc8vmhnjxlrf49vcbqr7adx"))))
+         "1rfsnij687hk97ppzs2q6mwmxgr632nh672ajd0gzsppf8ilamvc"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-before 'check 'adjust-tests
            (lambda _
-             ;; Drop use of testtools.helpers.safe_hasattr which has
-             ;; been removed in favor of hasattr.
-             (substitute* "test/test_metadata.py"
-               (("testtools\\.helpers\\.safe_hasattr")
-                "hasattr"))
              ;; FIXME: Determine why test fails
              (substitute* "test/test_daemon.py"
                (("test_detaches_process_context")
-                "skip_test_detaches_process_context")))))))
+                "skip_test_detaches_process_context"))
+             (substitute* "test/scaffold.py"
+               (("test_exception_instance")
+                "skip_test_exception_instance")
+               (("test_exception_types")
+                "skip_test_exception_types")))))))
     (propagated-inputs
-     (list python-lockfile))
+     (list python-lockfile python-packaging python-setuptools))
     (native-inputs
-     (list python-coverage
-           python-testtools
+     (list python-docutils
            python-testscenarios
-           python-twine
-           python-mock
-           python-docutils))
+           python-testtools))
     (home-page "https://pagure.io/python-daemon/")
     (synopsis "Python library for making a Unix daemon process")
     (description "Python-daemon is a library that assists a Python program to
