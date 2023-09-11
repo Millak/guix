@@ -27,11 +27,13 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages package-management)
+  #:use-module (gnu packages pcre)
   #:use-module (gnu packages photo)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages web)
+  #:use-module (gnu packages xorg)
   #:use-module (gnu packages)
   #:use-module (guix build-system meson)
   #:use-module (guix git-download)
@@ -129,6 +131,57 @@ in apps built for the Pantheon desktop.")
 arithmetic.  It is the default calculator application in the Pantheon
 desktop.")
     (license license:gpl3)))
+
+(define-public pantheon-terminal
+  (package
+    (name "pantheon-terminal")
+    (version "6.1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/elementary/terminal")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0x3gzghnfx4a1q2zhra4dysc0pm1zvlfdxj96qhfb627pz16iv4k"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:tests? #f      ; Tests invole launching the terminal.
+       #:glib-or-gtk? #t
+       #:phases (modify-phases %standard-phases
+                  (add-before 'install 'set-environment-variables
+                    (lambda _
+                      ;; Disable compiling schemas and updating desktop databases
+                      (setenv "DESTDIR" "/")))
+                  (add-after 'install 'install-symlinks
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (bin (string-append out
+                                   "/bin/io.elementary.terminal"))
+                             (link (string-append out "/bin/pantheon-terminal")))
+                        (symlink bin link)))))))
+    (native-inputs (list appstream
+                         desktop-file-utils     ;required for tests
+                         gettext-minimal        ;for msgfmt
+                         `(,glib "bin")         ;for glib-compile-resources
+                         gobject-introspection
+                         pkg-config
+                         vala
+                         xvfb-run))
+    (inputs (list granite-6
+                  gtk+
+                  libgee
+                  libhandy
+                  pcre2
+                  vte))
+    (synopsis "Terminal emulator from elementaryOS")
+    (description "pantheon-terminal is a lightweight, beautiful and simple
+terminal.  It comes with sane defaults, browser-class tabs, sudo paste
+protection, smart copy/paste, and little to no configuration.  It is the default
+terminal in the Pantheon desktop.")
+    (home-page "https://elementary.io/open-source")
+    (license license:lgpl3)))
 
 (define-public sideload
   (package
