@@ -19315,6 +19315,30 @@ in Python.  It allows you to declare the libraries your project depends on and
 it will manage (install/update) them for you.")
     (license license:expat)))
 
+(define-public python-pyproject-hooks
+  (package
+    (name "python-pyproject-hooks")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pyproject_hooks" version))
+              (sha256
+               (base32
+                "1xaf4sharvacqlav6w3b38nc4j0rzg0p4axi7zamanbzp6cb4wgj"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-flit-core
+           python-testpath
+           python-pytest))
+    (propagated-inputs (list python-tomli))
+    (home-page "https://github.com/pypa/pyproject-hooks")
+    (synopsis "Low-level library for calling @file{pyproject.toml} backends")
+    (description
+     "@code{pyproject-hooks} is a low-level library for calling build backends
+in @file{pyproject.toml}-based projects.  It provides basic functionality to
+write tooling that generates distribution files from Python projects.")
+    (license license:expat)))
+
 (define-public python-lark-parser
   (package
     (name "python-lark-parser")
