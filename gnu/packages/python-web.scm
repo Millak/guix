@@ -653,6 +653,30 @@ allows mocking or testing ASGI applications without having to spin up an
 ASGI server.")
     (license license:expat)))
 
+(define-public python-a2wsgi
+  (package
+    (name "python-a2wsgi")
+    (version "1.7.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "a2wsgi" version))
+              (sha256
+               (base32
+                "1cmsbgfg0vp8pwqz8nmkbmdi0axis1yl34qb280h5ssh08ngc1m9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:build-backend "pdm.backend"
+           ;; Tests have a circular dependency on uvicorn.
+           #:tests? #f))
+    (native-inputs
+     (list python-pdm-backend))
+    (home-page "https://github.com/abersheeran/a2wsgi")
+    (synopsis "Convert WSGI to ASGI or vice versa")
+    (description
+     "This program converts a WSGI program to an ASGI program or the other
+way around.  It depends only on the Python standard library.")
+    (license license:asl2.0)))
+
 (define-public python-css-html-js-minify
   (package
     (name "python-css-html-js-minify")
