@@ -116,19 +116,16 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
   (define modules
     (delete '(guix config)
             (source-module-closure '((guix build git)
-                                     (guix build utils)
-                                     (guix build download-nar)
-                                     (guix swh)))))
+                                     (guix build utils)))))
 
   (define build
     (with-imported-modules modules
-      (with-extensions (list guile-json gnutls   ;for (guix swh)
+      (with-extensions (list guile-json gnutls    ;for (guix swh)
                              guile-lzlib)
         #~(begin
             (use-modules (guix build git)
-                         (guix build utils)
-                         (guix build download-nar)
-                         (guix swh)
+                         ((guix build utils)
+                          #:select (set-path-environment-variable))
                          (ice-9 match))
 
             (define recursive?
@@ -151,38 +148,10 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
             (setvbuf (current-output-port) 'line)
             (setvbuf (current-error-port) 'line)
 
-            (or (git-fetch (getenv "git url") (getenv "git commit")
-                           #$output
-                           #:recursive? recursive?
-                           #:git-command "git")
-                (download-nar #$output)
-
-                ;; As a last resort, attempt to download from Software Heritage.
-                ;; Disable X.509 certificate verification to avoid depending
-                ;; on nss-certs--we're authenticating the checkout anyway.
-                ;; XXX: Currently recursive checkouts are not supported.
-                (and (not recursive?)
-                     (parameterize ((%verify-swh-certificate? #f))
-                       (format (current-error-port)
-                               "Trying to download from Software Heritage...~%")
-
-                       (swh-download (getenv "git url") (getenv "git commit")
-                                     #$output)
-                       (when (file-exists?
-                              (string-append #$output "/.gitattributes"))
-                         ;; Perform CR/LF conversion and other changes
-                         ;; specificied by '.gitattributes'.
-                         (invoke "git" "-C" #$output "init")
-                         (invoke "git" "-C" #$output "config" "--local"
-                                 "user.email" "you@example.org")
-                         (invoke "git" "-C" #$output "config" "--local"
-                                 "user.name" "Your Name")
-                         (invoke "git" "-C" #$output "add" ".")
-                         (invoke "git" "-C" #$output "commit" "-am" "init")
-                         (invoke "git" "-C" #$output "read-tree" "--empty")
-                         (invoke "git" "-C" #$output "reset" "--hard")
-                         (delete-file-recursively
-                          (string-append #$output "/.git"))))))))))
+            (git-fetch-with-fallback (getenv "git url") (getenv "git commit")
+                                     #$output
+                                     #:recursive? recursive?
+                                     #:git-command "git")))))
 
   (mlet %store-monad ((guile (package->derivation guile system)))
     (gexp->derivation (or name "git-checkout") build
