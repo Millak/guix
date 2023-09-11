@@ -742,13 +742,13 @@ from a docstring rather than the other way around.")
 (define-public python-cachetools
   (package
     (name "python-cachetools")
-    (version "4.2.2")
+    (version "5.3.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "cachetools" version))
               (sha256
                (base32
-                "1zqc098gk6y614lxwqd9z2gm8lldgvrpid133pnlm4m048gfvdb1"))))
+                "0azn5c4nkwpq7s5wjzs605if9nxjzblghjnlihm767sfkcnkzs6w"))))
     (build-system python-build-system)
     (home-page "https://github.com/tkem/cachetools/")
     (synopsis "Extensible memoizing collections and decorators")
