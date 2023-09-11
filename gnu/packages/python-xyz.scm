@@ -6176,8 +6176,7 @@ software version simply.")
     (propagated-inputs
      (list python-wrapt))
     (native-inputs
-     (list python-bumpversion python-pytest python-pytest-cov
-           python-sphinx python-tox))
+     (list python-bumpversion python-pytest))
     (home-page "https://github.com/tantale/deprecated")
     (synopsis "Python decorator to deprecate classes, functions or methods")
     (description "The @code{deprecated} decorator provides a convenient way to deprecate
