@@ -1861,6 +1861,36 @@ Linux kernel module, it also contains a modprobe configuration and udev rules,
 which need to be installed separately.")
     (license license:gpl3+)))
 
+(define-public vendor-reset-linux-module
+  (let ((commit "4b466e92a2d9f76ce1082cde982c7be0be91e248")
+        (revision "0"))
+    (package
+      (name "vendor-reset-linux-module")
+      (version (git-version "0.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/gnif/vendor-reset")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1gaf4j20grng689c9fylcqri3j9ycnhr2bsva2z6qcdqvzl6yxbi"))))
+      (build-system linux-module-build-system)
+      (arguments
+       (list #:tests? #f)) ;no test suite
+      (home-page "https://github.com/gnif/vendor-reset")
+      (synopsis
+       "Kernel module that resets GPUs that are affected by the reset bug")
+      (description
+       "This package provides a kernel module that is capable of
+resetting hardware devices into a state where they can be
+re-initialized or passed through into a virtual machine (VFIO).
+While it would be great to have these in the kernel as PCI quirks,
+some of the reset procedures are very complex and would never be
+accepted as a quirk (ie AMD Vega 10).")
+      (license license:gpl2))))
+
 
 ;;;
 ;;; Pluggable authentication modules (PAM).
