@@ -2779,7 +2779,7 @@ can solve two kinds of problems:
 (define-public octave-cli
   (package
     (name "octave-cli")
-    (version "8.2.0")
+    (version "8.3.0")
     (source
      (origin
        (method url-fetch)
@@ -2787,7 +2787,7 @@ can solve two kinds of problems:
                            version ".tar.xz"))
        (sha256
         (base32
-         "1pkh4vmq4hcrmyl2gybd54i3qamyvmcjmpgy1i2kkw2g03jxdfdp"))))
+         "1aav8i88y2yl11g5d44wpjngkpldvzk90ja7wghkb91cy2a9974i"))))
     (build-system gnu-build-system)
     (inputs
      (list alsa-lib
