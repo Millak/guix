@@ -18304,11 +18304,12 @@ in Emacs.")
   (package
     (name "emacs-php-mode")
     (version "1.25.0")
+    (home-page "https://github.com/emacs-php/php-mode")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ejmr/php-mode")
+             (url home-page)
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
@@ -18331,7 +18332,6 @@ in Emacs.")
             (lambda _
               (chdir "lisp"))))))
     (propagated-inputs (list emacs-projectile))
-    (home-page "https://github.com/ejmr/php-mode")
     (synopsis "Major mode for editing PHP code")
     (description
      "PHP mode is a major mode for editing PHP source code.  It's an extension
