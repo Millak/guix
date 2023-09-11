@@ -109,6 +109,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
+  #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-xyz)
@@ -478,6 +479,28 @@ aiohttp.  It supports SOCKS4(a) and SOCKS5.")
 asynchronous DNS resolutions with a synchronous looking interface by
 using @url{https://github.com/saghul/pycares,pycares}.")
     (license license:expat)))
+
+(define-public python-aioquic
+  (package
+    (name "python-aioquic")
+    (version "0.9.21")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "aioquic" version))
+              (sha256
+               (base32
+                "1xbfa4gmlmyj6bihdl5p4mr7nd6z79rfi92wcqkmcy4f643frivr"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest))
+    (inputs (list openssl))
+    (propagated-inputs
+     (list python-certifi python-pylsqpack python-pyopenssl))
+    (home-page "https://github.com/aiortc/aioquic")
+    (synopsis "QUIC and HTTP3 implementation in Python")
+    (description
+     "@code{aioquic} is a library for the QUIC network protocol in Python.
+It features a minimal TLS 1.3 implementation, a QUIC stack and an HTTP/3 stack.")
+    (license license:bsd-3)))
 
 (define-public python-aiorpcx
   (package
