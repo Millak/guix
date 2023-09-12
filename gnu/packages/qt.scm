@@ -365,7 +365,7 @@ system, and the core design of Django is reused in Grantlee.")
                (base32
                 "1fcg3kx5akvj0kqxd99h5lv3kv4pw2cj0makmpvhpw90inqnrl60"))
               ;; Use TZDIR to avoid depending on package "tzdata".
-              (patches (search-patches "qtbase-use-TZDIR.patch"
+              (patches (search-patches "qtbase-5-use-TZDIR.patch"
                                        "qtbase-moc-ignore-gcc-macro.patch"
                                        "qtbase-absolute-runpath.patch"))
               (modules '((guix build utils)))
@@ -747,7 +747,8 @@ developers using C++ or QML, a CSS & JavaScript like language.")
               (assoc-ref %standard-phases 'configure))
             (delete 'check)             ;move after patch-prl-files
             (add-after 'patch-prl-files 'check
-              (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+              (lambda* (#:key tests? parallel-tests?
+                        native-inputs inputs #:allow-other-keys)
                 (when tests?
                   ;; The tests expect to find the modules provided by this
                   ;; package; extend the environment variables needed to do so.
@@ -770,6 +771,18 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                   ;; /tree/src/testlib/qtestblacklist.cpp).
                   (setenv "QTEST_ENVIRONMENT" "linux ci 32bit")
                   (setenv "HOME" "/tmp") ;some tests require a writable HOME
+
+                  ;; Note: the search path specified for TZDIR is only
+                  ;; effective for users of the package, not while it's being
+                  ;; built.
+                  (setenv "TZDIR" (search-input-directory
+                                   (or native-inputs inputs) "share/zoneinfo"))
+
+                  ;; This is to avoid QTimeZone::systemTimeZone() returning
+                  ;; invalid QDate objects due to missing /etc/timezone or
+                  ;; /etc/localtime.
+                  (setenv "TZ" "Etc/UTC")
+
                   (invoke
                    "xvfb-run" "ctest" "--output-on-failure"
                    "-j" (if parallel-tests?
@@ -782,11 +795,6 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                      (list
                       ;; The 'tst_moc' test fails with "'fi.exists()' returned FALSE".
                       "tst_moc"
-
-                      ;; The 'tst_qdate' test fails because the current time
-                      ;; is reported as an invalid date (see:
-                      ;; https://bugreports.qt.io/browse/QTBUG-116017).
-                      "tst_qdate"
 
                       ;; The qgraphicsview and qopenglwidget tests fail with a
                       ;; segfault for unknown reasons (see:
@@ -826,14 +834,6 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                       ;; The 'test_import_plugins' fails with "Could NOT find
                       ;; Qt6MockPlugins1".
                       "test_import_plugins"
-                      ;; The 'tst_QTimeZone::systemZone' validates the
-                      ;; currently set timezone and fails.
-                      "tst_qtimezone"
-                      ;; The 'tst_qdatetime' fails with:
-                      ;; FAIL!  : tst_QDateTime::offsetFromUtc() Compared values are not the same
-                      ;; Actual   (dt5.offsetFromUtc()): 0
-                      ;; Expected (46800)              : 46800
-                      "tst_qdatetime"
                       ;; The tst_QObjectRace::destroyRace is flaky (see:
                       ;; https://bugreports.qt.io/browse/QTBUG-103489).
                       "tst_qobjectrace"
@@ -910,7 +910,8 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                     (("\\$\\$\\[QT_HOST_DATA/src\\]") archdata)))))))))
     (native-inputs
      (modify-inputs (package-native-inputs qtbase-5)
-       (prepend wayland-protocols
+       (prepend tzdata-for-tests
+                wayland-protocols
                 xvfb-run)))
     (inputs
      (modify-inputs (package-inputs qtbase-5)
