@@ -8,7 +8,7 @@
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2016, 2017, 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Pjotr Prins <pjotr.guix@thebird.nl>
-;;; Copyright © 2016, 2017 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2017, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Peter Feigl <peter.feigl@nexoid.at>
 ;;; Copyright © 2016 John J. Foerch <jjfoerch@earthlink.net>
@@ -153,6 +153,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages openldap)
+  #:use-module (gnu packages package-management)
   #:use-module (gnu packages patchutils)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages pcre)
@@ -406,6 +407,43 @@ interface and is based on GNU Guile.")
     (name "guile2.2-shepherd")
     (native-inputs (list pkg-config guile-2.2))
     (inputs (list guile-2.2 guile2.2-fibers))))
+
+(define-public swineherd
+  (package
+    (name "swineherd")
+    (version "0.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/BIMSBbioinfo/swineherd")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "18nk0sy5s0dm2rhxnrrn8g0m098b110mxnnxa2vnl1dnvfdzszw8"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:configure-flags '("--localstatedir=/var")
+       #:make-flags '("GUILE_AUTO_COMPILE=0")))
+    (native-inputs
+     (list autoconf automake guile-3.0 pkg-config texinfo))
+    (inputs
+     (list btrfs-progs
+           guile-config
+           guile-fibers-1.3
+           guile-netlink
+           guile-3.0
+           guix
+           shepherd-0.10))
+    (home-page "https://github.com/BIMSBbioinfo/swineherd")
+    (synopsis "System container manager")
+    (description
+     "This project aims to provide an extension to the Shepherd, retraining it
+as a swineherd, a manager of crude system containers.  It does this by
+providing a Shepherd service @code{swineherd} that talks to the Shepherd
+process to create Guix System containers as Shepherd services.  It also comes
+with an optional HTTP API server.")
+    (license license:gpl3+)))
 
 (define-public cfm
   (package
