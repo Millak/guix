@@ -5,10 +5,12 @@
      (tab-width   .  8)
      (sentence-end-double-space . t)
 
-     ;; For use with 'bug-reference-prog-mode'.
+     ;; For use with 'bug-reference-prog-mode'.  Extra bug-reference
+     ;; configuration should be done in your Emacs user configuration file;
+     ;; refer to (info (guix) The Perfect Setup).
      (bug-reference-bug-regexp
       . "\\(<https?://\\bugs\\.gnu\\.org/\\([0-9]+\\)>\\)")
-     (bug-reference-url-format . "https://bugs.gnu.org/%s")
+     (bug-reference-url-format . "https://issues.guix.gnu.org/%s")
 
      (eval . (add-to-list 'completion-ignored-extensions ".go"))
 
