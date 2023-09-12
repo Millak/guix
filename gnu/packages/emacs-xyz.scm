@@ -1464,10 +1464,10 @@ libgit2 bindings for Emacs, intended to boost the performance of Magit.")
       (license license:gpl2+))))
 
 (define-public emacs-magit
-    ;; Use this unreleased commit to benefit from a recent change needed to
-    ;; add Reviewed-by: tags for any contributor in commit messages.
-  (let ((commit "186414ae418a07a46c413f05c68413a76256a05e")
-        (revision "5"))
+    ;; Use this unreleased commit to benefit from a recent improvements with
+    ;; regard to adding git trailers such as "Reviewed-by".
+  (let ((commit "7a1d50347086678217cf90a32dda277b76ea3081")
+        (revision "6"))
     (package
       (name "emacs-magit")
       (version (git-version "3.3.0" revision commit))
@@ -1479,7 +1479,7 @@ libgit2 bindings for Emacs, intended to boost the performance of Magit.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0rhsbcjfjw0z3vy2ix30y4h55c0cx4lyvz6mbijwbbjryln71kpj"))))
+          (base32 "1yn3v24w0sx6r8jqw8blfvyjdjfz5xa7c3x8p6xw1lj7b81l8i0l"))))
       (build-system emacs-build-system)
       (arguments
        (list
