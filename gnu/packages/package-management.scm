@@ -1771,7 +1771,7 @@ in an isolated environment, in separate namespaces.")
              guile-gnutls
 
              ;; Guile libraries are needed here for cross-compilation.
-             (car (assoc-ref (package-native-inputs guix) "guile"))
+             guile-next
              guile-json-4
              guile-gcrypt
              guix
@@ -1783,7 +1783,7 @@ in an isolated environment, in separate namespaces.")
              guile-sqlite3))
       (inputs
        (list bash-minimal
-             (car (assoc-ref (package-native-inputs guix) "guile"))))
+             guile-next))
       (propagated-inputs
        (list guile-json-4
              guile-gcrypt
