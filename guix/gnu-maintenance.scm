@@ -975,17 +975,24 @@ updater."
       ((url-predicate http-url?) package)))
 
 (define* (import-html-updatable-release package #:key (version #f))
-  "Return the latest release of PACKAGE.  Do that by crawling the HTML page of
-the directory containing its source tarball.  Optionally include a VERSION
-string to fetch a specific version."
-  (let* ((uri       (string->uri
-                     (match (origin-uri (package-source package))
-                       ((and (? string?)
-                             (? (cut string-prefix? "mirror://" <>) url))
-                        ;; Retrieve the authoritative HTTP URL from a mirror.
-                        (http-url? url))
-                       ((? string? url) url)
-                       ((url _ ...) url))))
+  "Return the latest release of PACKAGE else #f.  Do that by crawling the HTML
+page of the directory containing its source tarball.  Optionally include a
+VERSION string to fetch a specific version."
+
+  (define (expand-uri uri)
+    (match uri
+      ((and (? string?) (? (cut string-prefix? "mirror://" <>) url))
+       ;; Retrieve the authoritative HTTP URL from a mirror.
+       (http-url? url))
+      ((? string? url)
+       url)
+      ((url _ ...)
+       ;; This case is for when the URI is a list of possibly
+       ;; mirror URLs as well as HTTP URLs.
+       (expand-uri url))))
+
+  (let* ((uri (string->uri
+               (expand-uri (origin-uri (package-source package)))))
          (custom    (assoc-ref (package-properties package)
                                'release-monitoring-url))
          (base      (or custom
