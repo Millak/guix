@@ -34,6 +34,7 @@
   #:use-module (guix gexp)
   #:use-module (guix build-system python)
   #:use-module (guix deprecation)
+  #:use-module (guix search-paths)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
@@ -126,9 +127,7 @@
      ;; Set TZDIR when 'tzdata' is available so that timezone functionality
      ;; works (mostly) out of the box in containerized environments.
      ;; Note: This search path actually belongs to 'glibc'.
-     (list (search-path-specification
-            (variable "TZDIR")
-            (files '("share/zoneinfo")))))
+     (list $TZDIR))
     (home-page "https://www.djangoproject.com/")
     (synopsis "High-level Python Web framework")
     (description
