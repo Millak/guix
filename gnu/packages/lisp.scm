@@ -438,14 +438,14 @@ an interpreter, a compiler, a debugger, and much more.")
 (define-public sbcl
   (package
     (name "sbcl")
-    (version "2.3.8")
+    (version "2.3.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/sbcl/sbcl/" version "/sbcl-"
                            version "-source.tar.bz2"))
        (sha256
-        (base32 "0a8dranh15gsbq51ssnvccl91mzqmgs5xsmwisz5hvlimjr725a2"))
+        (base32 "1xwr1pnwd3xj375ainlad7mm479rk2mrks8dc6d92cash3xl90b9"))
        (modules '((guix build utils)))
        (snippet
         '(begin
