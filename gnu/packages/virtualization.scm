@@ -385,6 +385,14 @@
                                                  (cut string-suffix?
                                                       "-linux-user" <>))))))))
 
+          (add-before 'check 'set-SOCK_DIR
+            (lambda _
+              ;; The default value for SOCK_DIR is TMPDIR, which can be long
+              ;; in the build chroot (e.g.:
+              ;; /tmp/guix-build-qemu-minimal-drv-0); set it to SOCK_DIR to
+              ;; avoid using more than 109 characters for socket files (the
+              ;; limit when using the kernel Linux).
+              (setenv "SOCK_DIR" "/tmp")))
           (add-after 'install 'delete-firmwares
             (lambda _
               ;; Delete firmares that are accessible on --firmwarepath.
@@ -542,14 +550,7 @@ server and embedded PowerPC, and S390 guests.")
         #~(modify-phases #$phases
             (delete 'configure-user-static)
             (delete 'build-user-static)
-            (delete 'install-user-static)
-            (add-after 'disable-unusable-tests 'disable-extra-tests
-              (lambda _
-                ;; Interesting, the iothreads-commit-active test only fails in
-                ;; qemu-minimal, not the complete variant (see:
-                ;; https://gitlab.com/qemu-project/qemu/-/issues/1855).
-                (delete-file
-                 "tests/qemu-iotests/tests/iothreads-commit-active")))))))
+            (delete 'install-user-static)))))
 
     ;; Remove dependencies on optional libraries, notably GUI libraries.
     (native-inputs (filter (lambda (input)
