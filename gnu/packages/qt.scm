@@ -60,6 +60,7 @@
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix deprecation)
+  #:use-module (guix search-paths)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages bash)
@@ -933,6 +934,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
            (search-path-specification
             (variable "QT_PLUGIN_PATH")
             (files '("lib/qt6/plugins")))
+           $TZDIR
            (search-path-specification
             (variable "XDG_DATA_DIRS")
             (files '("share")))
