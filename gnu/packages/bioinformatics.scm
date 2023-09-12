@@ -1945,6 +1945,42 @@ matplotlib Axes objects, making them easy to style and incorporate into
 multi-panel figures.")
     (license license:expat)))
 
+(define-public python-peaks2utr
+  (package
+    (name "python-peaks2utr")
+    (version "1.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "peaks2utr" version))
+              (sha256
+               (base32
+                "1idp9cgwqxvryf4qqrc1xjsamfqn3jmr56kmjp2h1ysmckwmhw4v"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; These two tests fail because file names are not URLs.
+      '(list "-k" "not test_annotation.py")))
+    (propagated-inputs
+     (list python-asgiref
+           python-gffutils
+           python-importlib-resources
+           macs
+           python-numpy
+           python-psutil
+           python-pybedtools
+           python-pysam
+           python-requests
+           python-tqdm
+           python-typing-extensions
+           python-zipp))
+    (home-page "https://github.com/haessar/peaks2utr")
+    (synopsis "Python CLI for annotating three prime UTR")
+    (description
+     "This package provides a robust, parallelized Python CLI for annotating
+three prime UTR.")
+    (license license:gpl3+)))
+
 (define-public python-pegasusio
   (package
     (name "python-pegasusio")
