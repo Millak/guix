@@ -219,7 +219,7 @@ This package produces a native @command{ocamlc} and a bytecode @command{ocamllex
     (arguments
      `(#:configure-flags '("--enable-ocamltest")
        #:test-target "tests"
-       #:make-flags '("world.opt")
+       #:make-flags '("defaultentry")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-/bin/sh-references
