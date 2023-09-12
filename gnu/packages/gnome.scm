@@ -812,7 +812,7 @@ tomorrow, the rest of the week and for special occasions.")
 (define-public gnome-photos
   (package
     (name "gnome-photos")
-    (version "43.beta")                 ;for geocode-glib 2 support
+    (version "43.1")
     (source
      (origin
        (method url-fetch)
@@ -822,7 +822,7 @@ tomorrow, the rest of the week and for special occasions.")
                        name "-" version ".tar.xz"))
        (sha256
         (base32
-         "1pry45dy4sjw8y63vxw2b499brcxzpkd4hmg2vbqy538r79ah2g9"))))
+         "1axhabxrrmf4r2xw2hvrzwj62inkckpmrc0gfbjcrwic04d6gqgk"))))
     (build-system meson-build-system)
     (arguments
      (list
