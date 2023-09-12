@@ -1592,7 +1592,7 @@ environments.")
              guile-gcrypt
              guix
              guile-prometheus
-             guile-fibers-1.3
+             guile-fibers
              guile-lib
              (first (assoc-ref (package-native-inputs guix) "guile"))))
       (inputs
@@ -1610,7 +1610,7 @@ environments.")
              guile-sqlite3
              guix
              guile-gnutls
-             guile-fibers-1.3))
+             guile-fibers))
       (home-page "https://git.cbaines.net/guix/build-coordinator/")
       (synopsis "Tool to help build derivations")
       (description
@@ -1826,7 +1826,7 @@ in an isolated environment, in separate namespaces.")
              guile-json-4
              guile-gcrypt
              guix
-             guile-fibers-1.3
+             guile-fibers
              guile-prometheus
              guile-lib
              guile-lzlib
@@ -1839,7 +1839,7 @@ in an isolated environment, in separate namespaces.")
        (list guile-json-4
              guile-gcrypt
              guix
-             guile-fibers-1.3
+             guile-fibers
              guile-prometheus
              guile-lib
              guile-lzlib

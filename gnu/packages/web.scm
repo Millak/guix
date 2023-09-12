@@ -5010,7 +5010,7 @@ Cloud.")
              bash-minimal))
       (propagated-inputs
        (list guix
-             guile-fibers-1.3
+             guile-fibers
              guile-json-4
              guile-email
              guile-prometheus

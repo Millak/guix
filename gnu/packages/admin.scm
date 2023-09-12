@@ -389,7 +389,7 @@ interface and is based on GNU Guile.")
                        ;; single-board computers.
                        (if (target-arm?)
                            guile-fibers-1.1
-                           guile-fibers-1.3))))
+                           guile-fibers))))
     (inputs (modify-inputs (package-inputs shepherd-0.9)
               (replace "guile-fibers"
                 (this-package-native-input "guile-fibers"))))))
