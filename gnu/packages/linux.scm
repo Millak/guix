@@ -3101,6 +3101,40 @@ Both commands are targeted at system administrators.")
      '((release-monitoring-url . "https://www.netfilter.org/pub/iptables/")))
     (license license:gpl2+)))
 
+(define-public iptables-nft
+  (package
+    (inherit iptables)
+    (name "iptables-nft")
+    (source #f)
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'unpack)
+          (replace 'install
+            (lambda* (#:key inputs #:allow-other-keys)
+              (for-each
+               (lambda (command-path)
+                 (let ((link-path (string-append #$output command-path)))
+                   (mkdir-p (dirname link-path))
+                   (symlink (search-input-file inputs "sbin/xtables-nft-multi")
+                            link-path)))
+               (apply append
+                      '("/bin/iptables-xml")
+                      (map (lambda (xtables)
+                             (list (string-append "/sbin/" xtables)
+                                   (string-append "/sbin/" xtables "-restore")
+                                   (string-append "/sbin/" xtables "-save")))
+                           '("arptables"
+                             "ebtables"
+                             "iptables"
+                             "ip6tables")))))))))
+    (inputs (list iptables))
+    (native-inputs '())
+    (synopsis
+     "Programs to configure Linux IP packet filtering rules (nftables API)")))
+
 (define-public bolt
   (package
     (name "bolt")
