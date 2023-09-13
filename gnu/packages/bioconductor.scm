@@ -12649,14 +12649,14 @@ abnormal copy number.")
 (define-public r-htscluster
   (package
     (name "r-htscluster")
-    (version "2.0.10")
+    (version "2.0.11")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "HTSCluster" version))
        (sha256
         (base32
-         "0scn4fsfmlkzxibfhsh6krm2cl9c8hsmyjgn48k9dyjf0ylyxg9n"))))
+         "0x9shhyla9bldkkh367gfdmf0k72l1ppixb8gzsa6nf8jx8qdpbp"))))
     (properties `((upstream-name . "HTSCluster")))
     (build-system r-build-system)
     (propagated-inputs
