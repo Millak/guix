@@ -37260,13 +37260,13 @@ data you need the @code{pdftools} package.")
 (define-public r-pbdmpi
   (package
     (name "r-pbdmpi")
-    (version "0.4-6")
+    (version "0.5-0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "pbdMPI" version))
               (sha256
                (base32
-                "0r6kbrvc0z4mb2dhrz1iqdyx0c03f682b5xfi1igp7z3rszd1va1"))))
+                "0wfx33jhdrwp97chsp9v8z2yf49shycvky8dwl9pgwqd9l69aw7x"))))
     (properties `((upstream-name . "pbdMPI")))
     (build-system r-build-system)
     (arguments
@@ -37275,7 +37275,7 @@ data you need the @code{pdftools} package.")
          (add-before 'install 'mpi-setup
            ,%openmpi-setup))))
     (inputs (list openmpi))
-    (propagated-inputs (list r-float r-rlecuyer))
+    (propagated-inputs (list r-float))
     (native-inputs (list pkg-config))
     (home-page "https://pbdr.org/")
     (synopsis "Programming with Big Data -- Interface to MPI")
