@@ -1303,6 +1303,9 @@ corresponding layout." layout))
 (define-public ergodox-firmware-dvorak-kinesis-mod
   (make-ergodox-firmware "dvorak-kinesis-mod"))
 
+(define-public ergodox-firmware-qwerty-kinesis-mod
+  (make-ergodox-firmware "qwerty-kinesis-mod"))
+
 
 ;;;
 ;;; QMK Firmware.
