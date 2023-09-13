@@ -37443,23 +37443,18 @@ light-weight geometry library used by @url{http://postgis.net/,PostGIS}.")
 (define-public r-stars
   (package
     (name "r-stars")
-    (version "0.6-3")
+    (version "0.6-4")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "stars" version))
         (sha256
           (base32
-            "08i5m46plkwkxwgzpy6srvn69jchp364vj3sg1isp2lj9pxhzfwc"))))
+            "0mqd2dfa8jhxjmfphvv3rkw2lri5sz49042asj5lyln3wkylqjj2"))))
     (properties `((upstream-name . "stars")))
     (build-system r-build-system)
     (propagated-inputs
-      (list r-abind
-            r-classint
-            r-lwgeom
-            r-rlang
-            r-sf
-            r-units))
+      (list r-abind r-classint r-rlang r-sf r-units))
     (native-inputs (list r-knitr))
     (home-page "https://r-spatial.github.io/stars/")
     (synopsis
