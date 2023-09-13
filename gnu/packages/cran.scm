@@ -39191,14 +39191,14 @@ large datasets.")
 (define-public r-mlearning
   (package
     (name "r-mlearning")
-    (version "1.1.1")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mlearning" version))
        (sha256
         (base32
-         "1zjnh4gcw068li1bks60gazn3205xhmqz67hbkb1san33lmlxya3"))))
+         "0fh28i36smpybhzd2kni435m7wf20i3yib6h7jy173r1v5adzkba"))))
     (properties `((upstream-name . "mlearning")))
     (build-system r-build-system)
     (propagated-inputs
@@ -39207,7 +39207,8 @@ large datasets.")
            r-ipred
            r-mass
            r-nnet
-           r-randomforest))
+           r-randomforest
+           r-rpart))
     (home-page "https://www.sciviews.org/zooimage")
     (synopsis "Machine learning algorithms with unified interface")
     (description
