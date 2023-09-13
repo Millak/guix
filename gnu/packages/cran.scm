@@ -3168,14 +3168,14 @@ large-scale hypothesis testing and false discovery rate estimation.")
 (define-public r-askpass
   (package
     (name "r-askpass")
-    (version "1.1")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "askpass" version))
        (sha256
         (base32
-         "07q0ik8jzk44vpwh48rr3fnpd7dzsdhjjsl4l850rffv3dyq4h6v"))))
+         "1vrcb69gf5hc8rggc9m7wv19crz5mkl7f08cipy0ykckh6bkc8mr"))))
     (build-system r-build-system)
     (propagated-inputs (list r-sys))
     (home-page "https://github.com/jeroen/askpass")
