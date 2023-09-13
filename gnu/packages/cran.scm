@@ -38764,14 +38764,14 @@ service, and more.")
 (define-public r-paws-cost-management
   (package
     (name "r-paws-cost-management")
-    (version "0.3.1")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws.cost.management" version))
        (sha256
         (base32
-         "0v0s8wwx2j3a6s0pl9vnvbpgdyhn3jlxri0b2fl3gc3zx6qh07dl"))))
+         "1j9zi73y9ng5m6wlws4crfv4j6b8qxk1m9g1hd286g4gg852g80y"))))
     (properties
      `((upstream-name . "paws.cost.management")))
     (build-system r-build-system)
