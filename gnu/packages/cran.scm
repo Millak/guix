@@ -27821,14 +27821,14 @@ and may be used to generate realistic data sets with known truth.")
 (define-public r-acopula
   (package
     (name "r-acopula")
-    (version "0.9.3")
+    (version "0.9.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "acopula" version))
        (sha256
         (base32
-         "0vvbbw8pfs9jwfz5c57lw48pr0qj661r0ys007q6zf9jmlrhx1ln"))))
+         "0asxfcjrsr9d7ab59pdajs0zvdjgwfswk9rdlpfdr51535wpjrfy"))))
     (properties `((upstream-name . "acopula")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/acopula/")
