@@ -5826,18 +5826,18 @@ showing the progress is useful e.g. bootstrap.")
 (define-public r-minqa
   (package
     (name "r-minqa")
-    (version "1.2.5")
+    (version "1.2.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "minqa" version))
        (sha256
         (base32
-         "1gpli7f3piz3jqjj63a6bk9v1jlygjdaqqqvqsr083crj0imd0wv"))))
+         "0421b4ysslaqmdgwlz080abis8m4xkcvjq7lx1wywbsz1s2vi9si"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp))
-    (inputs
+    (native-inputs
      (list gfortran))
     (home-page "https://optimizer.r-forge.r-project.org")
     (synopsis "Derivative-free optimization algorithms by quadratic approximation")
