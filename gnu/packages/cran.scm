@@ -17669,13 +17669,13 @@ Anderson-Darling Distribution\".")
 (define-public r-adimpro
   (package
     (name "r-adimpro")
-    (version "0.9.5")
+    (version "0.9.6")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "adimpro" version))
               (sha256
                (base32
-                "1w3zcazbxkn1vq37vm4zz4mcmmk1bhxy22gkmv1v9bkv63b46kzm"))))
+                "0d5viz9ayywpp1pas1yzmhllzn9rjrl8a3k7bj7h46f95l5x1586"))))
     (properties `((upstream-name . "adimpro")))
     (build-system r-build-system)
     (propagated-inputs
