@@ -15405,13 +15405,13 @@ were influenced by the drake R package by Will Landau (2018)
 (define-public r-targets
   (package
     (name "r-targets")
-    (version "1.2.2")
+    (version "1.3.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "targets" version))
               (sha256
                (base32
-                "13znvv0qxdmad4rdxjm7zv1wayzj71m35vj8xxshf4fy55a1d59f"))))
+                "146ylh76sc5vzfgh2xp5mfpgdxvm3j9b2hzh0wqgih6d9d11n8pk"))))
     (properties `((upstream-name . "targets")))
     (build-system r-build-system)
     (propagated-inputs (list r-base64url
