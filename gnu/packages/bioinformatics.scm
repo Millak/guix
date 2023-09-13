@@ -16232,11 +16232,7 @@ includes operations like compartment, insulation or peak calling.")
          (add-after 'unpack 'remove-invalid-syntax
            (lambda _
              (substitute* "setup.py"
-               ((".\\*\"") "\""))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "pytest" "-v")))))))
+               ((".\\*\"") "\"")))))))
     (propagated-inputs
      (list python-cooler
            python-intervaltree
