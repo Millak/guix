@@ -35088,14 +35088,14 @@ functions or computational engines (e.g. R, Spark, Stan, etc).")
 (define-public r-infer
   (package
     (name "r-infer")
-    (version "1.0.4")
+    (version "1.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "infer" version))
        (sha256
         (base32
-         "1s4q0nslykl0pb2w1i6ni6hkpp7awvp0wks79br3gk5wa1qkvs19"))))
+         "1zs1c22zc255m23in99cqp2chpdkski002rywmkdzwf6nd96mly7"))))
     (properties `((upstream-name . "infer")))
     (build-system r-build-system)
     (propagated-inputs
@@ -35109,7 +35109,8 @@ functions or computational engines (e.g. R, Spark, Stan, etc).")
            r-purrr
            r-rlang
            r-tibble
-           r-tidyr))
+           r-tidyr
+           r-vctrs))
     (native-inputs
      (list r-knitr))
     (home-page "https://github.com/tidymodels/infer")
