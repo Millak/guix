@@ -1447,3 +1447,21 @@ shortcuts and can be interpreted by your window managher.  This layout only
 makes use of the 42 keys that the Atreus also has for the main functionality.
 See the @file{keyboards/atreus/keymaps/dvorak_42_key/keymap.c} source file for
 the keymap definition."))
+
+(define-public qmk-udev-rules
+  (package
+    (inherit qmk-firmware-ergodox-ez-default)
+    (name "qmk-udev-rules")
+    (build-system copy-build-system)
+    (arguments
+     '(#:install-plan '(("./util/udev" "lib/udev/rules.d"
+                         #:include-regexp ("rules$")))))
+    (native-inputs '())
+    (inputs '())
+    (propagated-inputs '())
+    (synopsis "Udev rules for QMK Firmware")
+    (description
+     "This package provides a set of udev rules to specify the proper
+privileges for flashing QMK compatible devices without needing root.  The
+rules require the group @code{plugdev} to be added to each user that needs
+this.")))
