@@ -18278,13 +18278,13 @@ while other are highly specific for the special data format used for
 (define-public r-qmri
   (package
     (name "r-qmri")
-    (version "1.2")
+    (version "1.2.6")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "qMRI" version))
               (sha256
                (base32
-                "10x59g8awxjib5j5mc1yd5wsibk3z6ki6zifxsg8azl0zblxbscf"))))
+                "1laslvp1h6xh73lbxvjysznazafcbl7bz0pw4h85n6mp3gsnlvcj"))))
     (properties `((upstream-name . "qMRI")))
     (build-system r-build-system)
     (propagated-inputs (list r-adimpro r-aws r-awsmethods r-oro-nifti
