@@ -11,6 +11,7 @@
 ;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2023 B. Wilson <x@wilsonb.com>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,6 +37,7 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
@@ -64,7 +66,8 @@
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages tls)
-  #:use-module (gnu packages xml))
+  #:use-module (gnu packages xml)
+  #:use-module (srfi srfi-26))
 
 (define-public flashrom
   (package
@@ -256,6 +259,44 @@ You need to add the udev rules to make the Teensy update available for
 non-root users.")
     (home-page "https://www.pjrc.com/teensy/loader_cli.html")
     (license license:gpl3+)))
+
+(define-public teensy-udev-rules
+  (package
+    (name "teensy-udev-rules")
+    (version "20230913")      ;no version whatsoever -- use the current date
+    (source (origin
+              (method url-fetch)
+              (uri "https://www.pjrc.com/teensy/00-teensy.rules")
+              (sha256
+               (base32
+                "1yxczxvwi0s31g7lfa4v13yvvpv6gcsfs7r9mv6y4w9jc1inpx8p"))))
+    (build-system copy-build-system)
+    (arguments
+     (let ((rules-file "lib/udev/rules.d/70-teensy.rules"))
+       (list
+        #:install-plan
+        #~(list `(,#$source #$rules-file))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'install 'patch-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* (string-append #$output "/" #$rules-file)
+                  (("/bin/stty")
+                   (search-input-file inputs "bin/stty")))))))))
+    (inputs (list coreutils-minimal))
+    (home-page "https://www.pjrc.com/teensy/loader_cli.html")
+    (synopsis "udev rules for the Teensy family of micro-controllers")
+    (description "This package provides a udev rules file that allows
+unprivileged users communication with the Teensy family of micro-controllers.
+ModemManager (part of NetworkManager) can interfere with USB Serial devices,
+which includes the Teensy.  In case of problems, see the @file{.rules} file
+for possible workarounds.")
+    ;; FIXME: The file lacks an explicit license, so the license of
+    ;; teensy-cli-loader is *assumed* to hold (see:
+    ;; https://github.com/PaulStoffregen/teensy_loader_cli/issues/84).
+    (license license:gpl3+)
+    (supported-systems (filter (cut string-suffix? "-linux" <>)
+                               %supported-systems))))
 
 (define-public rkflashtool
   (let ((commit "8966c4e277de8148290554aaaa4146a3a84a3c53")
