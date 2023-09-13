@@ -1297,6 +1297,9 @@ corresponding layout." layout))
 (define-public ergodox-firmware-colemak-jc-mod
   (make-ergodox-firmware "colemak-jc-mod"))
 
+(define-public ergodox-firmware-colemak-symbol-mod
+  (make-ergodox-firmware "colemak-symbol-mod"))
+
 
 ;;;
 ;;; QMK Firmware.
