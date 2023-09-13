@@ -10939,14 +10939,14 @@ local smoothers and many more.")
 (define-public r-radiant-data
   (package
     (name "r-radiant-data")
-    (version "1.5.6")
+    (version "1.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "radiant.data" version))
        (sha256
         (base32
-         "1dd18brwgcpkqbnxg6jqk4r7aw1i2d7lg9mnfw59q95n6jk86lr5"))
+         "00bjq3zpxhd6yjq3jwizgiyzp2qf557ms6mhlz74d0wcm0l3vd72"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -10978,15 +10978,16 @@ local smoothers and many more.")
                                        (string-append "--outfile=" target)))
                              sources targets)))))))))
     (propagated-inputs
-     (list r-base64enc
+     (list r-arrow
+           r-base64enc
            r-broom
            r-bslib
            r-car
            r-curl
            r-dplyr
            r-dt
-           r-glue
            r-ggplot2
+           r-glue
            r-import
            r-jsonlite
            r-knitr
@@ -11006,8 +11007,8 @@ local smoothers and many more.")
            r-rstudioapi
            r-scales
            r-shiny
-           r-shinyfiles
            r-shinyace
+           r-shinyfiles
            r-stringi
            r-tibble
            r-tidyr
