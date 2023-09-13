@@ -21157,14 +21157,14 @@ user-defined patterns.")
 (define-public r-minpack-lm
   (package
     (name "r-minpack-lm")
-    (version "1.2-3")
+    (version "1.2-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "minpack.lm" version))
        (sha256
         (base32
-         "1w7f9zhqjzayppbd5r6wmlkzlv72nvg74cdjajd2qfq2kxkh59xz"))))
+         "0cg7arnmb7x6v5x487gkc2k4i5gchgdwblrrd0k0vw1w6pza83z3"))))
     (properties `((upstream-name . "minpack.lm")))
     (build-system r-build-system)
     (native-inputs (list gfortran))
