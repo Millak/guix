@@ -1300,6 +1300,9 @@ corresponding layout." layout))
 (define-public ergodox-firmware-colemak-symbol-mod
   (make-ergodox-firmware "colemak-symbol-mod"))
 
+(define-public ergodox-firmware-dvorak-kinesis-mod
+  (make-ergodox-firmware "dvorak-kinesis-mod"))
+
 
 ;;;
 ;;; QMK Firmware.
