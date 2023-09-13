@@ -37190,14 +37190,14 @@ functionalities in strex.")
 (define-public r-readods
   (package
     (name "r-readods")
-    (version "2.0.0")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "readODS" version))
        (sha256
         (base32
-         "09b0z5fbl09inygbmbgprj8v6cd8z8zw9r3j68rlmi7mivxzbqk4"))))
+         "1znp039wfbq8bbjj9pdkl8hwnhm9x5n8c7y5b53xmpnaqxx5agiz"))))
     (properties `((upstream-name . "readODS")))
     (build-system r-build-system)
     (propagated-inputs
@@ -37207,7 +37207,6 @@ functionalities in strex.")
            r-stringi
            r-tibble
            r-vctrs
-           r-xml2
            r-zip))
     (native-inputs (list r-knitr))
     (home-page
