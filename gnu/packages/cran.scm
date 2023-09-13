@@ -38491,14 +38491,14 @@ carrying out economic experiments.")
 (define-public r-distributionutils
   (package
     (name "r-distributionutils")
-    (version "0.6-0")
+    (version "0.6-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "DistributionUtils" version))
        (sha256
         (base32
-         "08vq54pyqxlqsj6q6gsg5ikqa0z3x842j52ld5dxaq272p6xchvl"))))
+         "1mv3p7hm02q3mhrw5165gc2d77ighnykyfn6ibxvkc3ii2m9xrri"))))
     (properties
      `((upstream-name . "DistributionUtils")))
     (build-system r-build-system)
