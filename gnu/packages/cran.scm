@@ -31098,16 +31098,29 @@ Haberman's interaction model when all items are dichotomously scored.")
 (define-public r-iheatmapr
   (package
     (name "r-iheatmapr")
-    (version "0.5.1")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "iheatmapr" version))
        (sha256
         (base32
-         "1pwkwh7ljlpr6zyz6j8knpz3iw60xzkw8amc98x4pc2mw148jvzx"))))
+         "0ym796kf6d8cwd7nmgzy3ga7r8fyywddl3rr2hbn4cfmwhggv02l"))
+       (snippet
+        '(delete-file
+          "inst/htmlwidgets/lib/plotlyjs/plotly-latest.min.js"))))
     (properties `((upstream-name . "iheatmapr")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'process-javascript
+           (lambda* (#:key inputs #:allow-other-keys)
+             (with-directory-excursion "inst/htmlwidgets/lib/plotlyjs/"
+               (invoke "esbuild" (assoc-ref inputs "js-plotly")
+                       "--minify"
+                       "--outfile=plotly-latest.min.js")))))))
     (propagated-inputs
      (list r-fastcluster
            r-ggdendro
@@ -31118,7 +31131,17 @@ Haberman's interaction model when all items are dichotomously scored.")
            r-rcolorbrewer
            r-scales))
     (native-inputs
-     (list r-knitr))
+     `(("esbuild" ,esbuild)
+       ("r-knitr" ,r-knitr)
+       ("js-plotly"
+        ,(let ((version "2.10.1"))
+           (origin
+             (method url-fetch)
+             (uri (string-append "https://raw.githubusercontent.com/plotly/plotly.js/v"
+                                 version "/dist/plotly.js"))
+             (sha256
+              (base32
+               "1cg2q681yjsrpjmm4nkfia7752wxnszi3c94nq9a91zpnfkm22yb")))))))
     (home-page "https://docs.ropensci.org/iheatmapr")
     (synopsis "Interactive, Complex Heatmaps")
     (description
