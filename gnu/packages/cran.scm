@@ -24724,14 +24724,14 @@ batch correction, and data correction.")
 (define-public r-styler
   (package
     (name "r-styler")
-    (version "1.10.1")
+    (version "1.10.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "styler" version))
        (sha256
         (base32
-         "0rswg2habyk38hcx0gn9hnvb200bq0dc4fy4k3gqhfhwjq9l7a1b"))))
+         "043v9xwm72jqrrzzmjgrkf34lncjnn69650ks72z7rjb1wqmbh56"))))
     (build-system r-build-system)
     ;; This is needed by R.cache.
     (arguments
