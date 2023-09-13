@@ -57,6 +57,7 @@
   #:use-module (gnu packages elf)
   #:use-module (gnu packages flashing-tools)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
@@ -1241,19 +1242,31 @@ AR100.")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'wrap 'wrap-path
+            ;; Wrap all the tools needed for the 'setup' and 'compile' actions
+            ;; (tested with the 'ergodox_ez' keyboard).
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (wrap-program (search-input-file outputs "bin/qmk")
                 `("PATH" prefix
                   ,(map (compose dirname
                                  (cut search-input-file inputs <>))
-                        '("bin/avr-gcc"
+                        '("bin/avr-ar"
+                          "bin/avr-gcc"
                           "bin/avrdude"
+                          "bin/awk"
+                          "bin/cmp"
                           "bin/dfu-programmer"
+                          "bin/dfu-util"
                           "bin/git"
+                          "bin/grep"
+                          "bin/make"
+                          "bin/python3"
+                          "bin/sh"
                           ;; TODO: Remove after git is wrapped with these.
                           "bin/basename"
                           "bin/sed"
-                          "bin/uname")))))))))
+                          "bin/uname")))
+                `("CROSS_C_INCLUDE_PATH" = (,(getenv "CROSS_C_INCLUDE_PATH")))
+                `("CROSS_LIBRARY_PATH" = (,(getenv "CROSS_LIBRARY_PATH")))))))))
     ;; The inputs are not propagated since qmk is to be used strictly as a
     ;; command.
     (inputs
@@ -1261,8 +1274,15 @@ AR100.")
      ;; compilation errors in some firmware otherwise.
      (list (make-avr-toolchain #:xgcc gcc-8)
            avrdude
+           bash-minimal
            dfu-programmer
+           dfu-util
+           diffutils
            git-minimal                  ;for the clone action
+           gawk
+           gnu-make
+           grep
+           python
            python-dotty-dict
            python-hid
            python-hjson
