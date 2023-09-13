@@ -782,13 +782,13 @@ text annotations.")
 (define-public r-ggfittext
   (package
     (name "r-ggfittext")
-    (version "0.10.0")
+    (version "0.10.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggfittext" version))
               (sha256
                (base32
-                "06xfv552nhw13wc8dixyqhhmw5zh8hphrabw090nzb33cpfwzin8"))))
+                "1z06q55igv6nibc72hll93cpp80mfg3yqfqbi967832nfj7wll7a"))))
     (properties `((upstream-name . "ggfittext")))
     (build-system r-build-system)
     (propagated-inputs (list r-ggplot2 r-gridtext r-shades r-stringi))
