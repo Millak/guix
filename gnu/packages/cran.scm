@@ -5558,18 +5558,17 @@ Docstrings (PEP-0257) and Julia's Triple-Quoted String Literals.")
 (define-public r-glmnetutils
   (package
     (name "r-glmnetutils")
-    (version "1.1.8")
+    (version "1.1.9")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "glmnetUtils" version))
               (sha256
                (base32
-                "1k8ivzjgpkm2a948qxx3wmkhlppbk31qc76spv2pscmp24x0lxyn"))))
+                "0rh07i9j6bxiqcl84d8jnn7dzqdwfdzak7w8bf4j4521r24mwm01"))))
     (properties `((upstream-name . "glmnetUtils")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-glmnet
-           r-matrix))
+     (list r-glmnet r-matrix))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/hongooi73/glmnetUtils")
     (synopsis
