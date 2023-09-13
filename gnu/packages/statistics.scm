@@ -4876,13 +4876,13 @@ package instead.")
 (define-public r-hmisc
   (package
     (name "r-hmisc")
-    (version "5.1-0")
+    (version "5.1-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Hmisc" version))
        (sha256
-        (base32 "0y10hnglid78gnaapmdy3ihjih4i2kvaycn2c60r2wr43nv7wl0q"))))
+        (base32 "0laan26ja6m9k3spkk1ymalwb181ramzjq6ii3b0404xv2kfywa9"))))
     (properties `((upstream-name . "Hmisc")))
     (build-system r-build-system)
     (native-inputs
@@ -4897,9 +4897,9 @@ package instead.")
            r-ggplot2
            r-gridextra
            r-gtable
-           r-knitr
            r-htmltable
            r-htmltools
+           r-knitr
            r-nnet
            r-rmarkdown
            r-rpart
