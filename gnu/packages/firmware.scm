@@ -85,7 +85,8 @@
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
 
-  #:export (make-qmk-firmware))
+  #:export (make-ergodox-firmware
+            make-qmk-firmware))
 
 (define-public ath9k-htc-firmware
   (package
@@ -1221,6 +1222,80 @@ AR100.")
 
 (define-public crust-pine64-plus
   (make-crust-package "pine64_plus"))
+
+
+;;;
+;;; ErgoDox firmware.
+;;;
+
+(define* (make-ergodox-firmware/implementation layout #:key override.c
+                                               override.h)
+  "Return an ergodox-firmware package for LAYOUT, optionally using OVERRIDE.C,
+a C source file-like object to override LAYOUT which may be accompanied by
+OVERRIDE.H, to also override the corresponding layout include file."
+  (let ((revision "0")
+        (commit "89b7e2bfdafb2a87e0248846d5c95cc5e9a27858"))
+    (package
+      (name (string-append "ergodox-firmware-" layout))
+      (version (git-version "1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/benblazak/ergodox-firmware")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1z28frxyb21nz90frycrpsbxjp09374wawayvjphnwc8njlvkkpy"))
+                (patches
+                 (search-patches "ergodox-firmware-fix-json-target.patch"
+                                 "ergodox-firmware-fix-numpad.patch"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f                   ;no test suite
+        #:make-flags
+        #~(list (string-append "LAYOUT=" #$layout)
+                ;; Simplify the output directory name.
+                "ROOT=output")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'copy-override-files
+              (lambda _
+                (when #$override.c
+                  (copy-file #$override.c
+                             (format #f "src/keyboard/ergodox/layout/~a.c"
+                                     #$layout)))
+                (when #$override.h
+                  (copy-file #$override.h
+                             (format #f "src/keyboard/ergodox/layout/~a.h"
+                                     #$layout)))))
+            ;; The Makefile-based build system lacks configure
+            ;; and install targets.
+            (delete 'configure)
+            (replace 'install
+              (lambda _
+                (with-directory-excursion "output"
+                  (install-file "firmware.hex" #$output)
+                  (install-file "firmware.eep" #$output)
+                  (install-file "firmware--layout.html" #$output)))))))
+      (native-inputs (list (make-avr-toolchain) python))
+      (home-page "https://www.ergodox.io")
+      (synopsis "Firmware for the ErgoDox keyboard")
+      (description (format #f "This package contains the original firmware for
+the ErgoDox keyboard, built using the ~a layout (as defined in the
+@file{src/keyboard/ergodox/layout/~@*~a.c} source file).  It contains the
+@file{firmware.hex} and the @file{firmware.eep} files, which can be loaded to
+a target using the @code{teensy-loader-cli} package as well as a
+@file{firmware--layout.html} file, useful to easily visualize the
+corresponding layout." layout))
+      (license license:expat))))
+
+(define make-ergodox-firmware
+  (memoize make-ergodox-firmware/implementation))
+
+(define-public ergodox-firmware-colemak-jc-mod
+  (make-ergodox-firmware "colemak-jc-mod"))
 
 
 ;;;
