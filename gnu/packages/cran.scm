@@ -24566,14 +24566,14 @@ provided.")
 (define-public r-cyclocomp
   (package
     (name "r-cyclocomp")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "cyclocomp" version))
        (sha256
         (base32
-         "0gky3svk02wiajw7nfjh30684h3qxili4bvsab0m7b6cggw6bgyd"))))
+         "0kdinnn6cgkfc94japyyp5qr7imjxddajds3qqxf4q5higahdzws"))))
     (properties `((upstream-name . "cyclocomp")))
     (build-system r-build-system)
     (propagated-inputs
