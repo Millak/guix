@@ -16229,6 +16229,10 @@ includes operations like compartment, insulation or peak calling.")
      (list
       #:phases
       '(modify-phases %standard-phases
+         (add-after 'unpack 'remove-invalid-syntax
+           (lambda _
+             (substitute* "setup.py"
+               ((".\\*\"") "\""))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
