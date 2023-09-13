@@ -892,11 +892,10 @@ to aid in debugging.")
     (home-page "https://www.gnu.org/software/ddd/")
     (license license:gpl3+)))
 
-
 (define-public delve
   (package
     (name "delve")
-    (version "1.9.1")
+    (version "1.21.0")
     (source
      (origin
        (method git-fetch)
@@ -906,14 +905,13 @@ to aid in debugging.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "07jch3yd1pgqviyy18amn23gazbzi7l51f210c3vmc707v3vbbqr"))))
+         "1gdynx4gp02lj47znnf638kkbmmsl24a9fis81a2fg3pdrg6jg3c"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/go-delve/delve/cmd/dlv"
            #:unpack-path "github.com/go-delve/delve"
            #:install-source? #f
            #:phases #~(modify-phases %standard-phases (delete 'check))))
-    (propagated-inputs (list go))
     (home-page "https://github.com/go-delve/delve")
     (synopsis "Debugger for the Go programming language")
     (description "Delve is a debugger for the Go programming language.")
