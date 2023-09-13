@@ -21193,14 +21193,14 @@ on the plot.")
 (define-public r-abn
   (package
     (name "r-abn")
-    (version "2.7-5")
+    (version "3.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "abn" version))
        (sha256
         (base32
-         "0ibznjhy7vmh2myarvmxy06rvddbpbarbp201px62mig2pb9aq4y"))))
+         "100nafmyddz0c1h01fbqw5q6pji7zhg2196rkyak88za6s5ms0s4"))))
     (build-system r-build-system)
     (inputs
      (list gsl))
@@ -21209,11 +21209,13 @@ on the plot.")
            r-foreach
            r-graph
            r-lme4
+           r-mclogit
            r-nnet
            r-rcpp
            r-rcpparmadillo
            r-rgraphviz
-           r-rjags))
+           r-rjags
+           r-stringi))
     (native-inputs
      (list r-r-rsp))
     (home-page "https://r-bayesian-networks.org/")
