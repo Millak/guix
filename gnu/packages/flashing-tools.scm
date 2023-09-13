@@ -255,7 +255,7 @@ HalfKay bootloader is running, so you can upload new programs and run them.
 You need to add the udev rules to make the Teensy update available for
 non-root users.")
     (home-page "https://www.pjrc.com/teensy/loader_cli.html")
-    (license license:gpl3)))
+    (license license:gpl3+)))
 
 (define-public rkflashtool
   (let ((commit "8966c4e277de8148290554aaaa4146a3a84a3c53")
