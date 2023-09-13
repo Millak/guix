@@ -34222,14 +34222,14 @@ coerce and verify the types and shapes of values for input checking.")
 (define-public r-config
   (package
     (name "r-config")
-    (version "0.3.1")
+    (version "0.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "config" version))
        (sha256
         (base32
-         "0l2zp7v6qaz72dclcbjrlis633zlwp8rsi5azr7iw127iyz7i26l"))))
+         "0r8hjg7jrhr9lncb82xmq2slygv3slacd2w8ds6shnvdp3122p3v"))))
     (properties `((upstream-name . "config")))
     (build-system r-build-system)
     (propagated-inputs
