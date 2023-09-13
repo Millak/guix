@@ -9912,20 +9912,19 @@ information between package updates.")
 (define-public r-leaflet
   (package
     (name "r-leaflet")
-    (version "2.1.2")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "leaflet" version))
        (sha256
-        (base32 "0fa0f9fcrxbqhmcm45l0byws56d8gg0bi3vx4m65mn4rihg6gn16"))
+        (base32 "0k0zplbhmvld6q1id17s827z1230kvnz16c4hlvp6jn9g26yy0dq"))
        (snippet
         '(for-each
           delete-file
           (list "inst/htmlwidgets/lib/leaflet/leaflet.js"
                 "inst/htmlwidgets/lib/leaflet-measure/leaflet-measure.min.js"
                 "inst/htmlwidgets/lib/leaflet-omnivore/leaflet-omnivore.min.js"
-                "inst/htmlwidgets/lib/jquery/jquery.min.js"
                 "inst/htmlwidgets/plugins/Leaflet-MiniMap/Control.MiniMap.min.js"
                 "inst/htmlwidgets/plugins/Leaflet.awesome-markers/bootstrap.min.js"
                 "inst/htmlwidgets/plugins/Leaflet.awesome-markers/leaflet.awesome-markers.min.js"
@@ -9956,8 +9955,6 @@ information between package updates.")
                          "htmlwidgets/lib/leaflet-measure/leaflet-measure.min.js")
                         (,(assoc-ref inputs "js-leaflet-omnivore")
                          "htmlwidgets/lib/leaflet-omnivore/leaflet-omnivore.min.js")
-                        (,(assoc-ref inputs "js-jquery")
-                         "htmlwidgets/lib/jquery/jquery.min.js")
                         ("htmlwidgets/plugins/Leaflet-MiniMap/Control.MiniMap.js"
                          "htmlwidgets/plugins/Leaflet-MiniMap/Control.MiniMap.min.js")
                         (,(assoc-ref inputs "js-bootstrap3")
@@ -9992,13 +9989,6 @@ information between package updates.")
            (sha256
             (base32
              "1j1qjagwj0m3q322z9wxxnpkd8zbk6g3kl047dsbmqad6gmqvgha"))))
-       ("js-jquery"
-        ,(origin
-           (method url-fetch)
-           (uri "https://code.jquery.com/jquery-1.12.4.js")
-           (sha256
-            (base32
-             "0x9mrc1668icvhpwzvgafm8xm11x9lfai9nwr66aw6pjnpwkc3s3"))))
        ("js-leaflet"
         ,(origin
            (method url-fetch)
@@ -10061,19 +10051,19 @@ information between package updates.")
             (base32
              "0vyrbf6gv2lyh4c2bzp5349ivwvvg28gpn87y52a7jdb13rlkpab"))))))
     (propagated-inputs
-     (list r-base64enc
-           r-crosstalk
+     (list r-crosstalk
            r-htmltools
            r-htmlwidgets
+           r-jquerylib
            r-leaflet-providers
            r-magrittr
-           r-markdown
            r-png
            r-raster
            r-rcolorbrewer
            r-scales
            r-sp
-           r-viridis))
+           r-viridis
+           r-xfun))
     (home-page "https://rstudio.github.io/leaflet/")
     (synopsis "Create interactive web maps with the JavaScript Leaflet library")
     (description
