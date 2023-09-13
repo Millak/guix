@@ -1257,7 +1257,9 @@ AR100.")
     ;; The inputs are not propagated since qmk is to be used strictly as a
     ;; command.
     (inputs
-     (list (make-avr-toolchain)
+     ;; The 'qmk setup' command advises to use GCC at version 8, and there are
+     ;; compilation errors in some firmware otherwise.
+     (list (make-avr-toolchain #:xgcc gcc-8)
            avrdude
            dfu-programmer
            git-minimal                  ;for the clone action
