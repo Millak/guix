@@ -237,16 +237,15 @@ firmware from it.")
        (patches (search-patches "teensy-loader-cli-help.patch"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f ;; Makefile has no test target
-       #:make-flags (list "CC=gcc" (string-append "PREFIX=" %output))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               (install-file "teensy_loader_cli" bin)))))))
+     (list
+      #:tests? #f ;; Makefile has no test target
+      #:make-flags #~(list "CC=gcc" (string-append "PREFIX=" #$output))
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)
+                   (replace 'install
+                     (lambda _
+                       (install-file "teensy_loader_cli"
+                                     (string-append #$output "/bin")))))))
     (inputs (list libusb-compat))       ;only compatible with libusb 0.1
     (synopsis "Command line firmware uploader for Teensy development boards")
     (description
