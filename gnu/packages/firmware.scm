@@ -1306,6 +1306,9 @@ corresponding layout." layout))
 (define-public ergodox-firmware-qwerty-kinesis-mod
   (make-ergodox-firmware "qwerty-kinesis-mod"))
 
+(define-public ergodox-firmware-workman-p-kinesis-mod
+  (make-ergodox-firmware "workman-p-kinesis-mod"))
+
 
 ;;;
 ;;; QMK Firmware.
