@@ -4717,14 +4717,14 @@ distribution).")
 (define-public r-rematch
   (package
     (name "r-rematch")
-    (version "1.0.1")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rematch" version))
        (sha256
         (base32
-         "0y3mshvpvz9csmq8hk8jbabx4nxlv5sckvfzvm6920ndg34xw2d4"))))
+         "09jwg3glp32q4ml4khhzi8j7bzg9zhqqdg1m6r8gibh756zzgnhm"))))
     (build-system r-build-system)
     (home-page "https://github.com/MangoTheCat/rematch")
     (synopsis "Match regular expressions with a nicer API")
