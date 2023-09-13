@@ -5938,13 +5938,13 @@ safely be interrupted from R.")
 (define-public r-rcppnumerical
   (package
     (name "r-rcppnumerical")
-    (version "0.5-0")
+    (version "0.6-0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RcppNumerical" version))
               (sha256
                (base32
-                "15hb08vwdvjrhzq1pyalv3qv946jnlk0w77nn654zcmmsns2fqar"))))
+                "11nph9fz1bzb0pcvh6xx4cb94090ahwpj21zmbi06m4pibb1a1rg"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp r-rcppeigen))
