@@ -15583,6 +15583,27 @@ estimation problem.")
     ;; The CRAN page only says GPL-3.
     (license license:gpl3+)))
 
+(define-public r-quickjsr
+  (package
+    (name "r-quickjsr")
+    (version "1.0.6")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "QuickJSR" version))
+              (sha256
+               (base32
+                "1n09jivw1qvsniyap0ki5ablvkwgggh981hcs7k5wx3lp3qxxlnk"))))
+    (properties `((upstream-name . "QuickJSR")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-jsonlite r-r6 r-rcpp))
+    (home-page "https://cran.r-project.org/package=QuickJSR")
+    (synopsis "Interface for the QuickJS lightweight JavaScript engine")
+    (description
+     "This package provides an R interface to the @code{QuickJS} portable
+@code{JavaScript} engine.  The engine is bundled entirely within the package,
+requiring no external system dependencies beyond a C compiler.")
+    (license license:expat)))
+
 (define-public r-abundant
   (package
     (name "r-abundant")
