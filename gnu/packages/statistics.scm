@@ -7553,16 +7553,16 @@ generating and manipulating colors in R.")
 (define-public r-reghelper
   (package
     (name "r-reghelper")
-    (version "1.1.1")
+    (version "1.1.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "reghelper" version))
               (sha256
                (base32
-                "0v1987rs6kcpizfhrp3hxsyx9arn5vsbapjfgj9478j73mm844ji"))))
+                "1vd8kd719kyjp65zym6zx3vax1q2kbhpl6la71d5aa59s54ylri3"))))
     (properties `((upstream-name . "reghelper")))
     (build-system r-build-system)
-    (propagated-inputs (list r-ggplot2 r-lme4 r-mass r-nlme))
+    (propagated-inputs (list r-ggplot2 r-lme4 r-mass r-nlme r-rlang))
     (home-page "https://github.com/jeff-hughes/reghelper")
     (synopsis "Helper Functions for Regression Analysis")
     (description
