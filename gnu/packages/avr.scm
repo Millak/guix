@@ -6,6 +6,7 @@
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -58,115 +59,122 @@
       (inherit (cross-binutils "avr"))
       (name "avr-binutils"))))
 
-(define make-avr-gcc
-  (mlambda ()
-    (let ((xgcc (cross-gcc "avr" #:xbinutils (make-avr-binutils))))
-      (package
-        (inherit xgcc)
-        (name "avr-gcc")
-        (arguments
-         (substitute-keyword-arguments (package-arguments xgcc)
-           ((#:phases phases)
-            #~(modify-phases #$phases
-                (add-after 'set-paths 'augment-CPLUS_INCLUDE_PATH
-                  (lambda* (#:key inputs #:allow-other-keys)
-                    (let ((gcc (assoc-ref inputs  "gcc")))
-                      ;; Remove the default compiler from CPLUS_INCLUDE_PATH
-                      ;; to prevent header conflict with the GCC from
-                      ;; native-inputs.
-                      (setenv "CPLUS_INCLUDE_PATH"
-                              (string-join
-                               (delete (string-append gcc "/include/c++")
-                                       (string-split (getenv "CPLUS_INCLUDE_PATH")
-                                                     #\:))
-                               ":"))
-                      (format #t
-                              "environment variable `CPLUS_INCLUDE_PATH' \
+(define* (make-avr-gcc/implementation #:key (xgcc gcc))
+  "Return a XGCC-base cross-compiler for the AVR target."
+  (let ((xgcc (cross-gcc "avr" #:xgcc xgcc #:xbinutils (make-avr-binutils))))
+    (package
+      (inherit xgcc)
+      (name "avr-gcc")
+      (arguments
+       (substitute-keyword-arguments (package-arguments xgcc)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'set-paths 'augment-CPLUS_INCLUDE_PATH
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((gcc (assoc-ref inputs  "gcc")))
+                    ;; Remove the default compiler from CPLUS_INCLUDE_PATH
+                    ;; to prevent header conflict with the GCC from
+                    ;; native-inputs.
+                    (setenv "CPLUS_INCLUDE_PATH"
+                            (string-join
+                             (delete (string-append gcc "/include/c++")
+                                     (string-split (getenv "CPLUS_INCLUDE_PATH")
+                                                   #\:))
+                             ":"))
+                    (format #t
+                            "environment variable `CPLUS_INCLUDE_PATH' \
 changed to ~a~%"
-                              (getenv "CPLUS_INCLUDE_PATH")))))
-                ;; Without a working multilib build, the resulting GCC lacks
-                ;; support for nearly every AVR chip.
-                (add-after 'unpack 'fix-genmultilib
-                  (lambda _
-                    ;; patch-shebang doesn't work here because there are
-                    ;; actually several scripts inside this script, each with
-                    ;; a #!/bin/sh that needs patching.
-                    (substitute* "gcc/genmultilib"
-                      (("#!/bin/sh") (string-append "#!" (which "sh"))))))))
-           ((#:configure-flags flags)
-            #~(delete "--disable-multilib" #$flags))))
-        (native-search-paths
-         (list (search-path-specification
-                (variable "CROSS_C_INCLUDE_PATH")
-                (files '("avr/include")))
-               (search-path-specification
-                (variable "CROSS_CPLUS_INCLUDE_PATH")
-                (files '("avr/include")))
-               (search-path-specification
-                (variable "CROSS_OBJC_INCLUDE_PATH")
-                (files '("avr/include")))
-               (search-path-specification
-                (variable "CROSS_OBJCPLUS_INCLUDE_PATH")
-                (files '("avr/include")))
-               (search-path-specification
-                (variable "CROSS_LIBRARY_PATH")
-                (files '("avr/lib")))))
-        (native-inputs
-         `(("gcc" ,gcc)
-           ,@(package-native-inputs xgcc)))))))
+                            (getenv "CPLUS_INCLUDE_PATH")))))
+              ;; Without a working multilib build, the resulting GCC lacks
+              ;; support for nearly every AVR chip.
+              (add-after 'unpack 'fix-genmultilib
+                (lambda _
+                  ;; patch-shebang doesn't work here because there are
+                  ;; actually several scripts inside this script, each with
+                  ;; a #!/bin/sh that needs patching.
+                  (substitute* "gcc/genmultilib"
+                    (("#!/bin/sh") (string-append "#!" (which "sh"))))))))
+         ((#:configure-flags flags)
+          #~(delete "--disable-multilib" #$flags))))
+      (native-search-paths
+       (list (search-path-specification
+              (variable "CROSS_C_INCLUDE_PATH")
+              (files '("avr/include")))
+             (search-path-specification
+              (variable "CROSS_CPLUS_INCLUDE_PATH")
+              (files '("avr/include")))
+             (search-path-specification
+              (variable "CROSS_OBJC_INCLUDE_PATH")
+              (files '("avr/include")))
+             (search-path-specification
+              (variable "CROSS_OBJCPLUS_INCLUDE_PATH")
+              (files '("avr/include")))
+             (search-path-specification
+              (variable "CROSS_LIBRARY_PATH")
+              (files '("avr/lib")))))
+      (native-inputs
+       `(("gcc" ,gcc)
+         ,@(package-native-inputs xgcc))))))
+
+(define make-avr-gcc
+  (memoize make-avr-gcc/implementation))
+
+(define* (make-avr-libc/implementation #:key (xgcc gcc))
+  (package
+    (name "avr-libc")
+    (version "2.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://savannah//avr-libc/avr-libc-"
+                                  version ".tar.bz2"))
+              (sha256
+               (base32
+                "15svr2fx8j6prql2il2fc0ppwlv50rpmyckaxx38d3gxxv97zpdj"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:out-of-source? #t
+       #:configure-flags '("--host=avr")))
+    (native-inputs `(("avr-binutils" ,(make-avr-binutils))
+                     ("avr-gcc" ,(make-avr-gcc #:xgcc xgcc))))
+    (home-page "https://www.nongnu.org/avr-libc/")
+    (synopsis "The AVR C Library")
+    (description
+     "AVR Libc is a project whose goal is to provide a high quality C library
+for use with GCC on Atmel AVR microcontrollers.")
+    (license
+     (license:non-copyleft "http://www.nongnu.org/avr-libc/LICENSE.txt"))))
 
 (define make-avr-libc
-  (mlambda ()
-    (package
-      (name "avr-libc")
-      (version "2.0.0")
-      (source (origin
-                (method url-fetch)
-                (uri (string-append "mirror://savannah//avr-libc/avr-libc-"
-                                    version ".tar.bz2"))
-                (sha256
-                 (base32
-                  "15svr2fx8j6prql2il2fc0ppwlv50rpmyckaxx38d3gxxv97zpdj"))))
-      (build-system gnu-build-system)
-      (arguments
-       '(#:out-of-source? #t
-         #:configure-flags '("--host=avr")))
-      (native-inputs `(("avr-binutils" ,(make-avr-binutils))
-                       ("avr-gcc" ,(make-avr-gcc))))
-      (home-page "https://www.nongnu.org/avr-libc/")
-      (synopsis "The AVR C Library")
-      (description
-       "AVR Libc is a project whose goal is to provide a high quality C
-library for use with GCC on Atmel AVR microcontrollers.")
-      (license
-       (license:non-copyleft "http://www.nongnu.org/avr-libc/LICENSE.txt")))))
+  (memoize make-avr-libc/implementation))
 
-(define make-avr-toolchain
-  (mlambda ()
-    (let ((avr-binutils (make-avr-binutils))
-          (avr-libc (make-avr-libc))
-          (avr-gcc (make-avr-gcc)))
-      ;; avr-libc checks the compiler version and passes "--enable-device-lib"
-      ;; for avr-gcc > 5.1.0.  It wouldn't install the library for atmega32u4
-      ;; etc if we didn't use the corret avr-gcc.
-      (package
-        (name "avr-toolchain")
-        (version (package-version avr-gcc))
-        (source #f)
-        (build-system trivial-build-system)
-        (arguments '(#:builder (begin (mkdir %output) #t)))
-        (propagated-inputs
-         `(("avrdude" ,avrdude)
-           ("binutils" ,avr-binutils)
-           ("gcc" ,avr-gcc)
-           ("libc" ,avr-libc)))
-        (synopsis "Complete GCC tool chain for AVR microcontroller development")
-        (description "This package provides a complete GCC tool chain for AVR
+(define* (make-avr-toolchain/implementation #:key (xgcc gcc))
+  (let ((avr-binutils (make-avr-binutils))
+        (avr-libc (make-avr-libc #:xgcc xgcc))
+        (avr-gcc (make-avr-gcc #:xgcc xgcc)))
+    ;; avr-libc checks the compiler version and passes "--enable-device-lib"
+    ;; for avr-gcc > 5.1.0.  It wouldn't install the library for atmega32u4
+    ;; etc if we didn't use the corret avr-gcc.
+    (package
+      (name "avr-toolchain")
+      (version (package-version avr-gcc))
+      (source #f)
+      (build-system trivial-build-system)
+      (arguments '(#:builder (begin (mkdir %output) #t)))
+      (propagated-inputs
+       `(("avrdude" ,avrdude)
+         ("binutils" ,avr-binutils)
+         ("gcc" ,avr-gcc)
+         ("libc" ,avr-libc)))
+      (synopsis "Complete GCC tool chain for AVR microcontroller development")
+      (description "This package provides a complete GCC tool chain for AVR
 microcontroller development.  This includes the GCC AVR cross compiler and
 avrdude for firmware flashing.  The supported programming languages are C and
 C++.")
-        (home-page (package-home-page avr-libc))
-        (license (package-license avr-gcc))))))
+      (home-page (package-home-page avr-libc))
+      (license (package-license avr-gcc)))))
+
+(define make-avr-toolchain
+  (memoize make-avr-toolchain/implementation))
 
 (define-public microscheme
   (package
