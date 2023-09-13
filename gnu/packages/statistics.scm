@@ -3837,13 +3837,13 @@ using the multicore functionality of the parallel package.")
                           extensions)))))
     (package
       (name "r-dt")
-      (version "0.28")
+      (version "0.29")
       (source (origin
                 (method url-fetch)
                 (uri (cran-uri "DT" version))
                 (sha256
                  (base32
-                  "0khdl21kvgi9k7dlpfshk1xz9bkly5lq6p41plfh4g2jv1yxaxfr"))
+                  "1b9qshrjv9xaak92rvg65vkak4pyci9js4j7nkfcg0p19ghnvlm8"))
                 (modules '((guix build utils)
                            (ice-9 match)))
                 (snippet
@@ -3917,6 +3917,7 @@ using the multicore functionality of the parallel package.")
        (list r-crosstalk
              r-htmltools
              r-htmlwidgets
+             r-httpuv
              r-jquerylib
              r-jsonlite
              r-magrittr
