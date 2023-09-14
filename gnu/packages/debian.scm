@@ -226,6 +226,12 @@ contains the archive keys used for that.")
                  (substitute* "debootstrap"
                    (("=/usr") (string-append "=" #$output))
                    (("/usr/bin/dpkg") (search-input-file inputs "/bin/dpkg")))
+                 ;; Include the keyring locations by default.
+                 (substitute* (find-files "scripts")
+                   (("keyring.*(debian-archive-keyring.gpg)"_ keyring)
+                    (string-append "keyring " debian "/share/keyrings/" keyring))
+                   (("keyring.*(ubuntu-archive-keyring.gpg)" _ keyring)
+                    (string-append "keyring " ubuntu "/share/keyrings/" keyring)))
                  ;; Ensure PATH works both in guix and within the debian chroot
                  ;; workaround for: https://bugs.debian.org/929889
                  (substitute* "functions"
