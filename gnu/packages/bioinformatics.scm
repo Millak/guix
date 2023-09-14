@@ -19246,77 +19246,77 @@ large-scale data-analysis.")
                 "1dvh23fx52m59y6304xi2j2pl2hiqadlqg8jyv2pm14j1hy71ych"))))
     (build-system perl-build-system)
     (arguments
-     `(#:modules ((guix build perl-build-system)
+     (list
+      #:modules '((guix build perl-build-system)
                   (guix build utils)
                   (srfi srfi-26))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'hardcode-references
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((bedtools (assoc-ref inputs "bedtools"))
-                   (r (assoc-ref inputs "r-minimal")))
-               (substitute* '("scripts/python/getEigenVectors.py"
-                              "scripts/python/matrix2EigenVectors.py")
-                 (("bedtools intersect")
-                  (string-append bedtools "/bin/bedtools intersect")))
-               (substitute* "lib/cworld/dekker.pm"
-                 (("bedtools --version")
-                  (string-append bedtools "/bin/bedtools --version")))
-               (substitute* '("scripts/perl/correlateMatrices.pl"
-                              "scripts/perl/matrix2scaling.pl"
-                              "scripts/perl/matrix2distance.pl"
-                              "scripts/perl/coverageCorrect.pl"
-                              "scripts/perl/matrix2anchorPlot.pl"
-                              "scripts/python/matrix2EigenVectors.py"
-                              "scripts/python/matrix2insulation-lite.py"
-                              "scripts/perl/matrix2compartment.pl"
-                              "scripts/perl/anchorPurge.pl"
-                              "scripts/perl/applyCorrection.pl"
-                              "scripts/perl/compareInsulation.pl"
-                              "scripts/perl/fillMissingData.pl"
-                              "scripts/perl/matrix2loess.pl"
-                              "scripts/python/getEigenVectors.py"
-                              "scripts/perl/aggregateBED.pl"
-                              "scripts/perl/collapseMatrix.pl"
-                              "scripts/perl/matrix2direction.pl"
-                              "scripts/perl/singletonRemoval.pl"
-                              "lib/cworld/dekker.pm"
-                              "scripts/perl/matrix2insulation.pl")
-                 (("(`|\")Rscript" _ pre)
-                  (string-append pre r "/bin/Rscript"))))))
-         (add-after 'install 'install-scripts
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out   (assoc-ref outputs "out"))
-                    (share (string-append out "/share/cworld-dekker")))
-               (mkdir-p share)
-               (copy-recursively "scripts" share)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'hardcode-references
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((bedtools #$(this-package-input "bedtools"))
+                    (r #$(this-package-input "r-minimal")))
+                (substitute* '("scripts/python/getEigenVectors.py"
+                               "scripts/python/matrix2EigenVectors.py")
+                  (("bedtools intersect")
+                   (string-append bedtools "/bin/bedtools intersect")))
+                (substitute* "lib/cworld/dekker.pm"
+                  (("bedtools --version")
+                   (string-append bedtools "/bin/bedtools --version")))
+                (substitute* '("scripts/perl/correlateMatrices.pl"
+                               "scripts/perl/matrix2scaling.pl"
+                               "scripts/perl/matrix2distance.pl"
+                               "scripts/perl/coverageCorrect.pl"
+                               "scripts/perl/matrix2anchorPlot.pl"
+                               "scripts/python/matrix2EigenVectors.py"
+                               "scripts/python/matrix2insulation-lite.py"
+                               "scripts/perl/matrix2compartment.pl"
+                               "scripts/perl/anchorPurge.pl"
+                               "scripts/perl/applyCorrection.pl"
+                               "scripts/perl/compareInsulation.pl"
+                               "scripts/perl/fillMissingData.pl"
+                               "scripts/perl/matrix2loess.pl"
+                               "scripts/python/getEigenVectors.py"
+                               "scripts/perl/aggregateBED.pl"
+                               "scripts/perl/collapseMatrix.pl"
+                               "scripts/perl/matrix2direction.pl"
+                               "scripts/perl/singletonRemoval.pl"
+                               "lib/cworld/dekker.pm"
+                               "scripts/perl/matrix2insulation.pl")
+                  (("(`|\")Rscript" _ pre)
+                   (string-append pre r "/bin/Rscript"))))))
+          (add-after 'install 'install-scripts
+            (lambda _
+              (let ((share (string-append #$output "/share/cworld-dekker")))
+                (mkdir-p share)
+                (copy-recursively "scripts" share)
 
-               ;; Make all scripts executable and wrap them.
-               (let ((r     (find-files share "\\.R$"))
-                     (py    (find-files share "\\.py$"))
-                     (pl    (find-files share "\\.pl$"))
-                     (wrap  (lambda* (script var #:optional (extra ""))
-                              (let ((path (string-append (getenv var)
-                                                         extra)))
-                                (wrap-program script
-                                  `(,var ":" prefix (,path)))))))
-                 (for-each (cut chmod <> #o555) (append r py pl))
-                 (for-each (cut wrap <> "PERL5LIB"
-                                (string-append ":" out
-                                               "/lib/perl5/site_perl"))
-                           pl)
-                 (for-each (cut wrap <> "GUIX_PYTHONPATH") py))))))))
+                ;; Make all scripts executable and wrap them.
+                (let ((r     (find-files share "\\.R$"))
+                      (py    (find-files share "\\.py$"))
+                      (pl    (find-files share "\\.pl$"))
+                      (wrap  (lambda* (script var #:optional (extra ""))
+                               (let ((path (string-append (getenv var)
+                                                          extra)))
+                                 (wrap-program script
+                                   `(,var ":" prefix (,path)))))))
+                  (for-each (cut chmod <> #o555) (append r py pl))
+                  (for-each (cut wrap <> "PERL5LIB"
+                                 (string-append ":" #$output
+                                                "/lib/perl5/site_perl"))
+                            pl)
+                  (for-each (cut wrap <> "GUIX_PYTHONPATH") py))))))))
     (inputs
-     `(("libgd" ,gd)
-       ("perl-gd" ,perl-gd)
-       ("bedtools" ,bedtools)
-       ("python" ,python-wrapper)
-       ("python-scipy" ,python-scipy)
-       ("python-numpy" ,python-numpy)
-       ("python-matplotlib" ,python-matplotlib)
-       ("python-h5py" ,python-h5py)
-       ("python-scikit-learn" ,python-scikit-learn)
-       ("r-minimal" ,r-minimal)))
+     (list gd
+           perl-gd
+           bedtools
+           python-wrapper
+           python-scipy
+           python-numpy
+           python-matplotlib
+           python-h5py
+           python-scikit-learn
+           r-minimal))
     (native-inputs
      (list perl-module-build))
     (home-page "https://github.com/dekkerlab/cworld-dekker")
