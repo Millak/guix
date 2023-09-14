@@ -341,7 +341,7 @@ distributions such as Debian and Trisquel.")
 (define-public dpkg
   (package
     (name "dpkg")
-    (version "1.21.22")
+    (version "1.22.0")
     (source
       (origin
         (method git-fetch)
@@ -350,7 +350,7 @@ distributions such as Debian and Trisquel.")
                (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0b5czgif5g6pdjzcw60hzzj0i1llxvajf3nlx115axmpa3y4iynd"))))
+         (base32 "1p7f2mgrn2iy0xfysxfq4pjbbhbhb2rp649bsik0x25jrck4if83"))))
     (build-system gnu-build-system)
     (arguments
      (list #:modules
@@ -388,6 +388,7 @@ distributions such as Debian and Trisquel.")
                           `("PATH" ":" prefix (,(string-append #$output
                                                                "/bin")))))
                       (list "dpkg-architecture"
+                            "dpkg-buildapi"
                             "dpkg-buildflags"
                             "dpkg-buildpackage"
                             "dpkg-checkbuilddeps"
