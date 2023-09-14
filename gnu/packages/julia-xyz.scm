@@ -6084,7 +6084,8 @@ with ANSI escape sequences.")
                                  "test/runtests.jl")
                     (("Int64") "Int32"))))))))
     (propagated-inputs
-     (list julia-dataapi
+     (list julia-adapt
+           julia-dataapi
            julia-staticarrays
            julia-tables))
     (native-inputs
