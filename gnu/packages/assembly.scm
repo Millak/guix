@@ -14,6 +14,7 @@
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Andy Tai <atai@atai.org>
 ;;; Copyright © 2023 Simon South <simon@simonsouth.net>
+;;; Copyright © 2023 B. Wilson <elaexuotee@wilsonb.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -644,3 +645,37 @@ intrinsics as defined in the @file{arm_neon.h} header and x86 SSE (up to
 SSE4.2) intrinsic functions as defined in corresponding x86 compilers headers
 files.")
       (license license:bsd-2))))
+
+(define-public blinkenlights
+  (package
+    (name "blinkenlights")
+    (version "1.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jart/blink")
+                    (commit version)))
+              (sha256
+               (base32
+                "0dgfqy5z1vbpgbf39f14ngkqmw4gi3hsyihi4sh1qcbp9gnqpg2v"))
+              (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                           ;Tests require network access
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; Call ./configure without --enable-fast-install argument, which
+               ;; causes the script to fail with an "unsupported option" error.
+               (replace 'configure
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (invoke "./configure"
+                           (string-append "CC=" #$(cc-for-target))
+                           (string-append "--prefix="
+                                          (assoc-ref outputs "out"))))))))
+    (home-page "https://justine.lol/blinkenlights/")
+    (synopsis "Emulator for x86_64-linux programs with a text user interface")
+    (description
+     "Blinkenlights is a command-line debugger that focuses on visualizing how
+software changes memory.  It can emulate statically-linked i8086 and
+x86_64-pc-linux-gnu programs.")
+    (license license:isc)))
