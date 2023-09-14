@@ -59,6 +59,7 @@
 # Copyright © 2023 Zheng Junjie <873216071@qq.com>
 # Copyright © 2023 Ivana Drazovic <iv.dra@hotmail.com>
 # Copyright © 2023 Andy Tai <atai@atai.org>
+# Copyright © 2023 B. Wilson <elaexuotee@wilsonb.com>
 #
 # This file is part of GNU Guix.
 #
@@ -126,6 +127,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/anthy.scm			\
   %D%/packages/antivirus.scm			\
   %D%/packages/apl.scm				\
+  %D%/packages/apple.scm			\
   %D%/packages/apparmor.scm			\
   %D%/packages/apr.scm				\
   %D%/packages/arcan.scm			\
