@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
+;;; Copyright © 2023 B. Wilson <elaexuotee@wilsonb.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -18,11 +19,14 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages forth)
+  #:use-module (guix build-system gnu)
+  #:use-module (guix build-system trivial)
+  #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
-  #:use-module (guix download)
-  #:use-module (guix build-system gnu)
-  #:use-module (gnu packages m4))
+  #:use-module (gnu packages m4)
+  #:use-module (gnu packages vim))
 
 (define-public gforth
   (package
@@ -58,3 +62,53 @@ and history.  A generic virtual machine environment, vmgen, is also
 included.")
     (home-page "https://www.gnu.org/software/gforth/")
     (license license:gpl3+)))
+
+(define-public smithforth
+  (package
+    (name "smithforth")
+    (version "220711")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "https://dacvs.neocities.org/SF/SForth"
+                            version "dmp.txt"))
+        (sha256
+          (base32 "0a39pv7529llsa3f48fmvwvlcp3f9v8qkn5ziw2l6kxf0qvli3lm"))))
+    (build-system trivial-build-system)
+    (native-inputs (list xxd))
+    (arguments
+      (list
+        #:modules '((guix build utils))
+        #:builder
+        #~(begin
+            (use-modules (guix build utils)
+                         (ice-9 textual-ports))
+            (let* ((sforth.dmp #$(package-source this-package))
+                   (system.fs  #$(origin
+                                   (method url-fetch)
+                                   (uri (string-append
+                                          "https://dacvs.neocities.org/SF/system"
+                                          version "fs.txt"))
+                                   (sha256
+                                    (base32
+                                     "17v1pp64s6n8q8w3kg48nd7zdcx2208y4svr5fpfms5lkyzg7z1m"))))
+                   (xxd        (string-append (assoc-ref %build-inputs "xxd")
+                                              "/bin/xxd"))
+                   (bin        (string-append (assoc-ref %outputs "out") "/bin")))
+              (copy-file sforth.dmp "sforth.dmp")
+              (substitute* "sforth.dmp" (("#.*$") "\n"))
+              (with-output-to-file "sforth"
+                (lambda _
+                  (invoke xxd "-p" "-r" "sforth.dmp")
+                  (call-with-input-file system.fs
+                    (lambda (port) (display (get-string-all port)))))
+                #:binary #t)
+              (chmod "sforth" #o755)
+              (install-file "sforth" bin)))))
+    (home-page "https://dacvs.neocities.org/SF/")
+    (synopsis "Forth programming language for x86-64 desktop computers")
+    (description "SmithForth is an implementation of the Forth programming
+language for x86-64 desktop computers. SmithForth is a text interpreter that
+runs in a Linux text console.")
+    (supported-systems '("x86_64-linux"))
+    (license license:expat-0)))
