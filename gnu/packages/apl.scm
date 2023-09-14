@@ -28,8 +28,11 @@
   #:use-module (guix packages)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
+  #:use-module (gnu packages bash)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages java)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages readline)
@@ -120,3 +123,86 @@ single line drawing characters, as well as the full Unicode APL range,
 including both uppercase and lowercase underscored alphabets, as-of-yet unused
 symbols, and almost all Latin-1 accented letters.")
       (license license:unlicense))))
+
+(define-public dzaima-apl
+  (package
+    (name "dzaima-apl")
+    (version "0.2.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/dzaima/APL.git")
+               (commit (string-append "v" version))))
+        (sha256
+          (base32 "1hnrq0mlff6b9c9129afphcnmzd05wdyyfs905n421diyd5xa0il"))
+        (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (inputs (list bash-minimal openjdk18))
+    (native-inputs (list `(,openjdk18 "jdk") zip))
+    (arguments
+     (list
+       #:imported-modules `(,@%gnu-build-system-modules
+                            (guix build ant-build-system))
+       #:modules `((guix build gnu-build-system)
+                   ((guix build ant-build-system) #:prefix ant:)
+                   (guix build utils)
+                   (ice-9 ftw)
+                   (ice-9 regex)
+                   (srfi srfi-26))
+       #:phases
+       `(modify-phases %standard-phases
+         (delete 'configure)
+         (replace 'build
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let* ((javac   (search-input-file inputs "/bin/javac"))
+                    (jar     (search-input-file inputs "/bin/jar")))
+               (mkdir-p "src/build")
+               (apply invoke javac "-encoding" "UTF-8" "-d" "src/build"
+                      (let ((files '()))
+                        (ftw "src/APL/"
+                          (lambda (filename statinfo flags)
+                            (if (string-match ".*\\.java" filename)
+                              (set! files (cons filename files)))
+                            #t))
+                        files))
+               (with-directory-excursion "src/build"
+                 (invoke jar "--create" "--verbose"
+                             "--file=dzaima-apl.jar"
+                             "--main-class=APL.Main"
+                             "APL")))))
+         (delete 'check) ;; Upstream implements no tests
+         (replace 'install
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out     (assoc-ref outputs "out"))
+                    (bin     (string-append out "/bin"))
+                    (share   (string-append out "/share/java"))
+                    (wrapper (string-append bin "/dzaima-apl")))
+               (mkdir-p share)
+               (mkdir-p bin)
+               (install-file "src/build/dzaima-apl.jar" share)
+               (with-output-to-file wrapper
+                 (lambda _
+                   (display (string-append
+                              "#!" (search-input-file inputs "/bin/sh") "\n"
+                              (search-input-file inputs "/bin/java")
+                              " -jar " share "/dzaima-apl.jar \"$@\""))))
+               (chmod wrapper #o555))))
+         (add-after 'install 'reorder-jar-content
+           (lambda* (#:key outputs #:allow-other-keys)
+              (apply (assoc-ref ant:%standard-phases 'reorder-jar-content)
+                     #:outputs (list outputs))))
+         (add-after 'reorder-jar-content 'generate-jar-indices
+           (lambda* (#:key outputs #:allow-other-keys)
+              (apply (assoc-ref ant:%standard-phases 'generate-jar-indices)
+                     #:outputs (list outputs))))
+         (add-after 'generate-jar-indices 'reorder-jar-content
+           (lambda* (#:key outputs #:allow-other-keys)
+              (apply (assoc-ref ant:%standard-phases 'reorder-jar-content)
+                     #:outputs (list outputs)))))))
+    (home-page "https://github.com/dzaima/APL")
+    (synopsis "Implementation of the APL programming language in Java")
+    (description
+     "This package provides an implementation of APL in Java, extended from
+Dyalog APL.")
+    (license license:expat)))
