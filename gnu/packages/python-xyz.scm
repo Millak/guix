@@ -142,6 +142,7 @@
 ;;; Copyright © 2023 Parnikkapore <poomklao@yahoo.com>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © c4droid <c4droid@foxmail.com>
+;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -7128,6 +7129,11 @@ provides additional functionality on the produced Mallard documents.")
                        ;; <https://github.com/cython/cython/issues/2807>.
                        ,@(if (not (target-64bit?))
                              '("-x" "run.parallel")
+                             '())
+                       ,@(if (system-hurd?)
+                             '("-x" "test_class_ref"
+                               "-x" "test_compiler_directives"
+                               "-x" "test_lang_version")
                              '())
                        ;; This test fails when running on 24 cores.
                        "-x" "cpp_stl_conversion")))))))
