@@ -10,6 +10,7 @@
 ;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
+;;; Copyright © 2023 B. Wilson <x@wilsonb.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -59,9 +60,11 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages libftdi)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages qt)
-  #:use-module (gnu packages tls))
+  #:use-module (gnu packages tls)
+  #:use-module (gnu packages xml))
 
 (define-public flashrom
   (package
@@ -581,3 +584,32 @@ formats, and can perform many different manipulations.")
     (description "@code{uuu} is a command line tool, evolved out of MFGTools.
 It can be used to upload images to I.MX SoC's using at least their boot ROM.")
     (license license:bsd-3)))
+
+(define-public qdl
+  (let ((commit "13681fcb359c9f9c32a17a91d3dd20df2e413b6d")
+        (revision "1"))
+    (package
+      (name "qdl")
+      (version (git-version "1.0" revision commit))
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                 (url "https://git.linaro.org/landing-teams/working/qualcomm/qdl.git")
+                 (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+            (base32 "0m6wdhfwbf7gzlckxx21bvbv33qjahpzqbg1pdqdd1lifx5f51mj"))))
+      (build-system gnu-build-system)
+      (native-inputs (list libxml2))
+      (inputs (list eudev))
+      (arguments
+       `(#:tests? #f  ; No tests implemented
+         #:make-flags (list (string-append "CC=" ,(cc-for-target))
+                            (string-append "prefix=" %output))
+         #:phases (modify-phases %standard-phases (delete 'configure))))
+      (home-page "https://git.linaro.org/landing-teams/working/qualcomm/qdl")
+      (synopsis "Qualcomm EDL mode flashing tool")
+      (description "This tool communicates with USB devices of id 05c6:9008 to
+upload a flash loader and use this to flash images.")
+      (license license:bsd-3))))
