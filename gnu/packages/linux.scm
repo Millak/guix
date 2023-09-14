@@ -10509,6 +10509,46 @@ against the several transient execution CVEs that were published since early
 random programs using differential testing.")
     (license license:bsd-4)))
 
+(define-public ipvsadm
+  (package
+    (name "ipvsadm")
+    (version "1.31")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://kernel.org/pub/linux/utils/kernel"
+                           "/ipvsadm/ipvsadm-" version ".tar.xz"))
+       (sha256
+        (base32 "1nyzpv1hx75k9lh0vfxfhc0p2fpqaqb38xpvs8sn88m1nljmw2hs"))))
+    (build-system gnu-build-system)
+    (native-inputs (list linux-libre-headers pkg-config which))
+    (inputs (list libnl popt))
+    (arguments
+     (list #:tests? #f
+           #:parallel-build? #f               ;build fails randomly with '-j'
+           #:make-flags
+           #~(list (string-join
+                    (list "CFLAGS="
+                          (string-append "-I"
+                                         #$(this-package-input "libnl")
+                                         "/include/libnl3")
+                          (string-append "-L" #$(this-package-input "libnl")
+                                         "/lib")
+                          "-fPIC")
+                    " ")
+                   (string-append "CC=" #$(cc-for-target))
+                   (string-append "SBIN=" #$output "/sbin")
+                   (string-append "INIT=" #$output "/etc/init.d")
+                   (string-append "MANDIR=" #$output "/share/man"))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure))))
+    (home-page "http://www.linuxvirtualserver.org/software/ipvs.html")
+    (synopsis "IP virtual server administration utility")
+    (description "@code{ipvsadm(8)} is used to set up, maintain or inspect the
+virtual server table in the Linux kernel.  The Linux Virtual Server can be used
+to build scalable network services based on a cluster of two or more nodes.")
+    (license license:gpl2+)))
+
 (define-public ryzen-smu
   (package
     (name "ryzen-smu")
