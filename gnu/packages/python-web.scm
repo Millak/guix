@@ -3215,17 +3215,17 @@ HTTP via a UNIX domain socket.")
 (define-public python-requests_ntlm
   (package
     (name "python-requests_ntlm")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "requests_ntlm" version))
        (sha256
         (base32
-         "0wgbqzaq9w7bas16b7brdb75f91bh3275fb459093bk1ihpck2ci"))))
+         "1a0np7lk8ma1plv1s4aw5q9h2z3aljprkl9qsfypqcaf0zsqbhik"))))
     (build-system python-build-system)
     (propagated-inputs
-     (list python-cryptography python-ntlm-auth python-requests))
+     (list python-cryptography python-pyspnego python-requests))
     (home-page "https://github.com/requests/requests-ntlm")
     (synopsis
      "NTLM authentication support for Requests")
