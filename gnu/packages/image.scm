@@ -1475,7 +1475,7 @@ channels.")
   (package
     (inherit libwebp)
     (name "libwebp")
-    (version "1.3.1")
+    (version "1.3.2")
     (source
      (origin
        (method git-fetch)
@@ -1485,7 +1485,7 @@ channels.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1aas6gwy7kfcq34cil781kcsl286khh9grwcx7k4d2n1g7zcpl3m"))))))
+         "1x37795gpc63g1ma9kqw4q3dikwhrjklixqzjjsj6viqksa19z41"))))))
 
 (define-public libmng
   (package
