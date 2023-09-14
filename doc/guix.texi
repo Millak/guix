@@ -16834,23 +16834,36 @@ instance to support new system services.
 The operating system is configured by providing an
 @code{operating-system} declaration in a file that can then be passed to
 the @command{guix system} command (@pxref{Invoking guix system}).  A
-simple setup, with the default system services, the default Linux-Libre
-kernel, initial RAM disk, and boot loader looks like this:
+simple setup, with the default Linux-Libre
+kernel, initial RAM disk, and a couple of system services added to those
+provided by default looks like this:
 
 @findex operating-system
 @lisp
 @include os-config-bare-bones.texi
 @end lisp
 
-This example should be self-describing.  Some of the fields defined
+The configuration is declarative and hopefully mostly self-describing.
+It is actually code in the Scheme programming language; the whole
+@code{(operating-system @dots{})} expression produces a @dfn{record}
+with a number of @dfn{fields}.
+Some of the fields defined
 above, such as @code{host-name} and @code{bootloader}, are mandatory.
 Others, such as @code{packages} and @code{services}, can be omitted, in
-which case they get a default value.
+which case they get a default value.  @xref{operating-system Reference},
+for details about all the available fields.
 
-Below we discuss the effect of some of the most important fields
-(@pxref{operating-system Reference}, for details about all the available
-fields), and how to @dfn{instantiate} the operating system using
+Below we discuss the effect of some of the most important fields,
+and how to @dfn{instantiate} the operating system using
 @command{guix system}.
+
+@quotation Do not panic
+@cindex Scheme programming language, getting started
+Intimidated by the Scheme language or curious about it?  The Cookbook
+has a short section to get started that explains the fundamentals, which
+you will find helpful when hacking your configuration.  @xref{A Scheme
+Crash Course,,, guix-cookbook, GNU Guix Cookbook}.
+@end quotation
 
 @unnumberedsubsec Bootloader
 
@@ -17024,14 +17037,6 @@ Alternatively, the @code{modify-services} macro can be used:
 (modify-services %desktop-services
   (delete avahi-service-type))
 @end lisp
-
-@quotation Do not panic
-@cindex Scheme programming language, getting started
-Intimidated by the Scheme language or curious about it?  The Cookbook
-has a short section to get started that explains the fundamentals, which
-you will find helpful when hacking your configuration.  @xref{A Scheme
-Crash Course,,, guix-cookbook, GNU Guix Cookbook}.
-@end quotation
 
 @unnumberedsubsec Instantiating the System
 
