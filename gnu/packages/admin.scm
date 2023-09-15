@@ -4074,15 +4074,15 @@ you are running, what theme or icon set you are using, etc.")
       #~(modify-phases %standard-phases
           (delete 'configure)
           (add-before 'build 'patch-source-paths
-            (lambda _
-              (substitute* "fetch.c"
-                (("grep")
-                 #$(file-append grep "/bin/grep"))
-                (("awk")
-                 #$(file-append gawk "/bin/awk")))
-              (substitute* "uwufetch.c"
-                (("(/usr(/local)?)(.*;)" all _ _ rest)
-                 (string-append #$output rest)))))
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((grep (search-input-file inputs "/bin/grep"))
+                    (awk (search-input-file inputs "/bin/awk")))
+                (substitute* "fetch.c"
+                  (("grep") grep)
+                  (("awk") awk))
+                (substitute* "uwufetch.c"
+                  (("(/usr(/local)?)(.*;)" all _ _ rest)
+                   (string-append #$output rest))))))
           ;; TODO this will be fixed in the next release of uwufetch
           (add-before 'install 'make-include-dir
             (lambda _
