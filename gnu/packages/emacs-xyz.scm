@@ -31014,7 +31014,25 @@ definition-jumping and type-checking on demand.")
      (list emacs-js2-mode))
     (arguments
      `(#:tests? #t
-       #:test-command '("make" "test")))
+       #:test-command '("make" "test")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'js2-number-tests
+           (lambda _
+             ((lambda (file test-name)     ; variant of ert-number-tests
+                (emacs-batch-edit-file file
+                  `(let ((i 0))
+                     (while (re-search-forward
+                             ,(string-append "js2-deftest-parse "
+                                             test-name)
+                             nil t)
+                       (goto-char (match-beginning 0))
+                       (kill-region (match-beginning 0) (match-end 0))
+                       (insert (format "xt-deftest %s-%d" ,test-name i))
+                       (setq i (+ i 1)))
+                     (basic-save-buffer))))
+                "rjsx-tests.el.el"
+                "no-attr-no-children-self-closing"))))))
     (home-page "https://github.com/felipeochoa/rjsx-mode")
     (synopsis "Major mode for JSX files")
     (description "This package extends the parser of @code{js2-mode} to
