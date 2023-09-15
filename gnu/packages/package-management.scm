@@ -992,8 +992,6 @@ transactions from C or Python.")
              guile-fibers-1.3
              guile-prometheus
              guile-lib))
-      (inputs
-       (list guile-next))
       (propagated-inputs
        (list guile-gnutls
              guile-json-4
