@@ -3855,7 +3855,7 @@ with the @code{psycopg} PostgreSQL driver.")
 (define-public python-psycopg
   (package
     (name "python-psycopg")
-    (version "3.0.8")
+    (version "3.1.10")
     (source (origin
               ;; Fetch from git because PyPI contains only cythonized sources.
               (method git-fetch)
@@ -3865,7 +3865,7 @@ with the @code{psycopg} PostgreSQL driver.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "16i19jqd9lg9r7bc63ssh527cccrpf49g1nlayikk5qlswpzp75y"))))
+                "0hqk45wlaflz69cy1r0hbv11bwb89p6hjb7zmgqas26gdhg37n0r"))))
     (build-system python-build-system)
     (arguments
      (list #:phases
@@ -3907,13 +3907,19 @@ with the @code{psycopg} PostgreSQL driver.")
                                "-o" "asyncio_mode=auto"
                                ;; FIXME: Many of the typing tests are failing,
                                ;; conveniently tagged as slow...
-                               "-k" "not slow"))))))))
+                               "-k" "not slow")))))
+               ;; The sanity check phase attempts loading the C extension
+               ;; before the Python library, which results in the following:
+               ;;   <ImportError: the psycopg package should be imported
+               ;;    before psycopg_c>.
+               (delete 'sanity-check))))
     (native-inputs
      (list python-cython-3
            python-mypy
            python-psycopg-pool
            python-pytest
            python-pytest-asyncio
+           python-anyio
            python-tenacity
            pproxy
            tzdata-for-tests))
