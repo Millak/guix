@@ -4944,7 +4944,7 @@ libxml to ease remote use of the RESTful API.")
 (define-public libshumate
   (package
     (name "libshumate")
-    (version "1.0.0.beta")              ;no stable release yet
+    (version "1.0.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -4952,25 +4952,35 @@ libxml to ease remote use of the RESTful API.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "13xrc07fm0967gzbqab8k0l3dnknh00p0a6f2dm7k0aa56q41sda"))))
+                "0v4m07vxm3m4a2vqkp2wfsc3zsf92fpigc1k8yq49vkpj7gxikx8"))))
     (build-system meson-build-system)
-    (arguments (list #:configure-flags #~(list "-Dlibsoup3=true")
-                     #:phases #~(modify-phases %standard-phases
-                                  (add-before 'check 'pre-check
-                                    (lambda _
-                                      ;; The 'coordinate' test requires a
-                                      ;; writable HOME.
-                                      (setenv "HOME" "/tmp")
+    (arguments
+     (list #:configure-flags #~(list "-Dlibsoup3=true")
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? test-options #:allow-other-keys)
+                   (when tests?
+                     ;; Some tests expect to write to $HOME.
+                     (setenv "HOME" "/tmp")
+                     (setenv "XDG_RUNTIME_DIR" "/tmp/run")
+                     (setenv "XDG_CACHE_HOME" "/tmp/cache")
 
-                                      ;; Tests require a running X server.
-                                      (system "Xvfb :1 &")
-                                      (setenv "DISPLAY" ":1"))))))
+                     ;; Tests require a running X server.
+                     (system "Xvfb :1 &")
+                     (setenv "DISPLAY" ":1")
+
+                     (apply invoke "dbus-run-session" "--" "meson" "test"
+                            "--print-errorlogs" test-options)))))))
     (native-inputs
      (list gi-docgen
            `(,glib "bin")
            gobject-introspection
            pkg-config
-           xorg-server-for-tests))
+           ;; For tests:
+           xorg-server-for-tests
+           dbus
+           at-spi2-core))
     (propagated-inputs
      ;; All the libraries are listed as "Requires' in the .pc file.
      (list cairo
