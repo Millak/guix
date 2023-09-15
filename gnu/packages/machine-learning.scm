@@ -2997,7 +2997,7 @@ advanced research.")
 (define-public tensorflow-lite
   (package
     (name "tensorflow-lite")
-    (version "2.12.1")
+    (version "2.13.0")
     (source
      (origin
        (method git-fetch)
@@ -3007,7 +3007,8 @@ advanced research.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0jkgljdagdqllnxygl35r5bh3f9qmbczymfj357gm9krh59g2kmd"))))
+         "07g6vlrs0aayrg2mfdl15gxg5dy103wx2xlqkran15dib40nkbj6"))
+       (patches (search-patches "tensorflow-lite-unbundle.patch"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -3050,6 +3051,7 @@ advanced research.")
          "-DTFLITE_ENABLE_XNNPACK=OFF"
 
          ;; Don't fetch the sources.  We have these already
+         "-Dgemmlowp_POPULATED=TRUE"
          "-Degl_headers_POPULATED=TRUE"
          "-Dfp16_headers_POPULATED=TRUE"
          "-Dopencl_headers_POPULATED=TRUE"
@@ -3062,7 +3064,7 @@ advanced research.")
 
          "-DFFT2D_SOURCE_DIR=/tmp/fft2d"
          "-DFARMHASH_SOURCE_DIR=/tmp/farmhash"
-         "-Dgemmlowp_SOURCE_DIR=/tmp/gemmlowp")
+         (string-append "-Dgemmlowp_ROOT=" #$(this-package-input "gemmlowp")))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'chdir
@@ -3092,11 +3094,7 @@ advanced research.")
               (mkdir-p "/tmp/fft2d")
               (with-directory-excursion "/tmp/fft2d"
                 (invoke "tar" "--strip-components=1"
-                        "-xf" (assoc-ref inputs "fft2d-src")))
-
-              (copy-recursively (assoc-ref inputs "gemmlowp-src")
-                                "/tmp/gemmlowp/")))
-
+                        "-xf" (assoc-ref inputs "fft2d-src")))))
           (add-after 'build 'build-shared-library
             (lambda* (#:key configure-flags #:allow-other-keys)
               (mkdir-p "c")
@@ -3126,7 +3124,7 @@ advanced research.")
        ("eigen" ,eigen)
        ("fp16" ,fp16)
        ("flatbuffers-shared" ,flatbuffers-next-shared)
-       ;;("gemmlowp" ,gemmlowp)  ; TODO
+       ("gemmlowp" ,gemmlowp)
        ("mesa-headers" ,mesa-headers)
        ("neon2sse" ,neon2sse)
        ("nsync" ,nsync)
@@ -3142,19 +3140,6 @@ advanced research.")
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("googletest" ,googletest)
-       ("gemmlowp-src"
-        ;; The commit hash is taken from
-        ;; "tensorflow/lite/tools/cmake/modules/gemmlowp.cmake".
-        ,(let ((commit "fda83bdc38b118cc6b56753bd540caa49e570745"))
-           (origin
-             (method git-fetch)
-             (uri (git-reference
-                   (url "https://github.com/google/gemmlowp")
-                   (commit commit)))
-             (file-name (git-file-name "gemmlowp" (string-take commit 8)))
-             (sha256
-              (base32
-               "1sbp8kmr2azwlvfbzryy1frxi99jhsh1nc93bdbxdf8zdgpv0kxl")))))
        ("farmhash-src"
         ,(let ((commit "816a4ae622e964763ca0862d9dbd19324a1eaf45"))
            (origin
@@ -3176,7 +3161,7 @@ advanced research.")
            (sha256
             (base32
              "1jfflzi74fag9z4qmgwvp90aif4dpbr1657izmxlgvf4hy8fk9xd"))))))
-    (home-page "https://tensorflow.org")
+    (home-page "https://www.tensorflow.org")
     (synopsis "Machine learning framework")
     (description
      "TensorFlow is a flexible platform for building and training machine
