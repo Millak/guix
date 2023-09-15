@@ -240,7 +240,10 @@ the system.")
        (list (string-append "-DCLANG_LIBRARY_DIR="
                             (assoc-ref %build-inputs "clang@3.7") "/lib")
              "-DENABLE_GL_SHARING=ON"
-             "-DEXPERIMENTAL_DOUBLE=ON")
+             "-DEXPERIMENTAL_DOUBLE=ON"
+             ;; disable OCL ICD, which is probably this project:
+             ;; https://github.com/OCL-dev/ocl-icd
+             "-DOCLICD_COMPAT=0")
 
        #:phases
        (modify-phases %standard-phases
