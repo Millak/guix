@@ -5482,7 +5482,7 @@ keyboard shortcuts.")
 (define-public gnome-text-editor
   (package
     (name "gnome-text-editor")
-    (version "42.2")
+    (version "44.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gnome-text-editor/"
@@ -5490,7 +5490,7 @@ keyboard shortcuts.")
                                   "gnome-text-editor-" version ".tar.xz"))
               (sha256
                (base32
-                "1nn53iv2a82kkqkg5jy0bqh2b2wzg7g4a6w8q3qsis5wvj64lvg5"))))
+                "1jii59hw31baira2psl1kx2lxljmnnkxmif4zhasizrl0xwc6yzn"))))
     (build-system meson-build-system)
     (arguments
      (list #:glib-or-gtk? #t))
@@ -5502,7 +5502,12 @@ keyboard shortcuts.")
                          `(,glib "bin")
                          `(,gtk "bin")
                          itstool))
-    (inputs (list gtk gtksourceview libadwaita enchant pcre2))
+    (inputs (list gtk gtksourceview libadwaita enchant pcre2
+                  ;; cyclic module dependency
+                  (module-ref
+                   (resolve-interface
+                    '(gnu packages text-editors))
+                   'editorconfig-core-c)))
     (home-page "https://gitlab.gnome.org/GNOME/gnome-text-editor")
     (synopsis "GNOME text editor")
     (description
