@@ -30321,10 +30321,10 @@ comfort of Magit and the rest of Emacs.")
      (license license:gpl3+)))
 
 (define-public emacs-matcha
-  (let ((commit "c7df5cf5cdac9ae369e241342389ccda0205eab9"))
+  (let ((commit "dc4a940b3360aadeb2d9eaab7bd0c85e1e85ab76"))
     (package
       (name "emacs-matcha")
-      (version (git-version "0.0.1" "1" commit)) ;no upstream release
+      (version (git-version "0.0.1" "2" commit)) ;no upstream release
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -30333,7 +30333,7 @@ comfort of Magit and the rest of Emacs.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1lfnh1glg6al677m7ci0x8g5wjdhjxlfl3nv1f1ppsw4dpnwsj9b"))))
+                  "1bljnv5z289hxn73y7krbd0wya6acnwphabxwfajilpc118qz3lp"))))
       (propagated-inputs (list emacs-hydra))
       (build-system emacs-build-system)
       (home-page "https://github.com/jojojames/matcha/")
