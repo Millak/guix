@@ -3830,13 +3830,13 @@ libraries with SQLALchemy.")
     (name "python-psycopg-pool")
     ;; The connection pooling code is on a different release cadence
     ;; from the driver code, so fetch the latest PyPI release.
-    (version "3.0.3")
+    (version "3.1.7")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "psycopg-pool" version))
               (sha256
                (base32
-                "1nx139pwzsgrz253zjxw2sf8h713s79h4cp1falmpc39j08djb46"))))
+                "1pkx7nj1mhacwpna7ldzqfqxd1xg8826600r0bs9ad1h93f429yh"))))
     (build-system python-build-system)
     (arguments
      (list #:tests? #f                  ;run for psycopg below
