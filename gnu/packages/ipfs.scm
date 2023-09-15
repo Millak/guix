@@ -221,15 +221,15 @@ written in Go.")
 (define-public go-ipfs
   (package
     (name "go-ipfs")
-    (version "0.13.0")
+    (version "0.14.0")
     (source
      (origin
        (method url-fetch/tarbomb)
        (uri (string-append
-             "https://dist.ipfs.io/go-ipfs/v" version
-             "/go-ipfs-source.tar.gz"))
+             "https://dist.ipfs.io/kubo/v" version
+             "/kubo-source.tar.gz"))
        (sha256
-        (base32 "1cx47ais2zn62c0r7lmrpfzia2gjyr61qi8my5wg3pj3dfr0fhkq"))
+        (base32 "0n7nfiymh6knj3h672gdrb24g9vz9j15x3vn6aml2nk7pv9dsy7p"))
        (file-name (string-append name "-" version "-source"))
        (modules '((guix build utils)))
        (snippet '(for-each delete-file-recursively
@@ -282,8 +282,8 @@ written in Go.")
     (build-system go-build-system)
     (arguments
      (list
-      #:unpack-path "github.com/ipfs/go-ipfs"
-      #:import-path "github.com/ipfs/go-ipfs/cmd/ipfs"
+      #:unpack-path "github.com/ipfs/kubo"
+      #:import-path "github.com/ipfs/kubo/cmd/ipfs"
       #:phases
       #~(modify-phases %standard-phases
           ;; https://github.com/ipfs/kubo/blob/master/docs/command-completion.md
