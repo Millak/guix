@@ -5502,7 +5502,7 @@ keyboard shortcuts.")
                          `(,glib "bin")
                          `(,gtk "bin")
                          itstool))
-    (inputs (list gtk gtksourceview libadwaita enchant))
+    (inputs (list gtk gtksourceview libadwaita enchant pcre2))
     (home-page "https://gitlab.gnome.org/GNOME/gnome-text-editor")
     (synopsis "GNOME text editor")
     (description
