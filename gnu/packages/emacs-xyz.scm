@@ -7437,7 +7437,14 @@ blocks with @code{org-babel} in @code{org-mode}.")
         #:test-command #~(list "emacs" "--batch" "-L" "."
                                "--eval=(require 'ob-go)"
                                "-l" "test-ob-go.el"
-                               "-f" "ert-run-tests-batch-and-exit")))
+                               "-f" "ert-run-tests-batch-and-exit")
+        #:phases #~(modify-phases %standard-phases
+                     (add-after 'unpack 'ert-number-tests
+                       (lambda _
+                         (ert-number-tests "test-ob-go.el"
+                                           "ob-go/string-variables")
+                         (ert-number-tests "test-ob-go.el"
+                                           "ob-go/imports"))))))
       (home-page "https://github.com/pope/ob-go")
       (synopsis "Org Babel support for evaluating Go code")
       (description "@code{ob-go} enables Org Babel support for evaluating Go
