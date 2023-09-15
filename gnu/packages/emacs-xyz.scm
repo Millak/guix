@@ -12753,11 +12753,16 @@ navigate code in a tree-like fashion.")
             (add-before 'check 'make-test-writable
               (lambda _
                 (make-file-writable "lispy-test.el")))
-            (add-before 'check 'remove-failing-test
+            (add-before 'check 'fix-tests
               (lambda _
+                (ert-number-tests "lispy-test.el" "lispy-outline-add")
+                (ert-number-tests "lispy-test.el" "lispy-ace-subword")
                 (emacs-batch-edit-file "lispy-test.el"
                   `(progn
-                    (dolist (test '("lispy-eval-python-str" "lispy--clojure-dot-object"))
+                    (dolist (test '("lispy-eval-python-str"
+                                    "lispy-outline-add-0"
+                                    "lispy--clojure-dot-object"
+                                    "lispy--pretty-args"))
                             (goto-char (point-min))
                             (re-search-forward
                              (concat "ert-deftest " test))
