@@ -1780,9 +1780,10 @@ background agent taking care of maintaining the necessary state.")
          "1ci85bp8xwqrk8nqr8sh6yj8njgd98nhgnhaks2g00c77wwyra41"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f             ; virtual manifest
+     `(#:rust ,rust-1.64
+       #:install-source? #f             ; virtual manifest
        #:cargo-test-flags
-       '("--release" "--"
+       '("--release" "--lib" "--tests" "--"
          "--skip=tests::test_version_check" ;it need rustc's version
          ;; FIXME: Guix's rust does not install source in
          ;; %out/lib/rustlib/src/rust so "can't load standard library from
@@ -1793,18 +1794,25 @@ background agent taking care of maintaining the necessary state.")
          "--skip=tests::sourcegen::sourcegen_assists_docs" ;need rustfmt
          "--skip=tests::sourcegen_ast::sourcegen_ast"      ;same
 
-         "--skip=tidy::cargo_files_are_tidy"    ;not needed
          "--skip=tidy::check_licenses"          ;it runs cargo metadata
          "--skip=tidy::check_merge_commits"     ;it runs git rev-list
          "--skip=tidy::check_code_formatting"   ;need rustfmt as cargo fmt
-         "--skip=tidy::generate_grammar"        ;same
-         "--skip=tidy::generate_assists_tests") ;same
+
+         ;; These tests require rust <= 1.60 and too many packages
+         ;; has as dependency rust-serde-json-1 that use indexmap2
+         ;; and it need rust >= 1.64
+         "--skip=tests::list_test_macros"
+         "--skip=tests::test_derive_empty"
+         "--skip=tests::test_attr_macro"
+         "--skip=tests::test_fn_like_macro"
+         "--skip=tests::test_fn_like_macro2"
+         "--skip=tests::test_derive_error")
        #:cargo-development-inputs
        (("rust-arbitrary" ,rust-arbitrary-1)
         ("rust-derive-arbitrary" ,rust-derive-arbitrary-1)
         ("rust-expect-test" ,rust-expect-test-1)
         ("rust-oorandom" ,rust-oorandom-11.1)
-        ("rust-quote" ,rust-quote-1)
+        ("rust-quote" ,rust-quote-1.0.10)
         ("rust-rayon" ,rust-rayon-1)
         ("rust-tracing" ,rust-tracing-0.1)
         ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3)
@@ -1815,7 +1823,6 @@ background agent taking care of maintaining the necessary state.")
         ("rust-anyhow" ,rust-anyhow-1)
         ("rust-anymap" ,rust-anymap-0.12)
         ("rust-arrayvec" ,rust-arrayvec-0.7)
-        ("rust-backtrace" ,rust-backtrace-0.3)
         ("rust-cargo-metadata" ,rust-cargo-metadata-0.14)
         ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-chalk-ir" ,rust-chalk-ir-0.75)
@@ -1824,17 +1831,16 @@ background agent taking care of maintaining the necessary state.")
         ("rust-countme" ,rust-countme-3)
         ("rust-cov-mark" ,rust-cov-mark-2)
         ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
-        ("rust-dashmap" ,rust-dashmap-4)
         ("rust-dissimilar" ,rust-dissimilar-1)
         ("rust-dot" ,rust-dot-0.1)
         ("rust-drop-bomb" ,rust-drop-bomb-0.1)
-        ("rust-either" ,rust-either-1)
+        ("rust-either" ,rust-either-1.6.0)
         ("rust-ena" ,rust-ena-0.14)
         ("rust-env-logger" ,rust-env-logger-0.8)
         ("rust-flate2" ,rust-flate2-1)
         ("rust-fst" ,rust-fst-0.4)
         ("rust-home" ,rust-home-0.5)
-        ("rust-indexmap" ,rust-indexmap-1)
+        ("rust-indexmap" ,rust-indexmap-1.7)
         ("rust-itertools" ,rust-itertools-0.10)
         ("rust-jod-thread" ,rust-jod-thread-0.1)
         ("rust-libc" ,rust-libc-0.2)
@@ -1845,12 +1851,12 @@ background agent taking care of maintaining the necessary state.")
         ("rust-memmap2" ,rust-memmap2-0.5)
         ("rust-mimalloc" ,rust-mimalloc-0.1)
         ("rust-miow" ,rust-miow-0.4)
-        ("rust-notify" ,rust-notify-5)
+        ("rust-notify" ,rust-notify-5-pre.13)
         ("rust-object" ,rust-object-0.28)
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-parking-lot" ,rust-parking-lot-0.11)
         ("rust-perf-event" ,rust-perf-event-0.4)
-        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1.0.34)
         ("rust-pulldown-cmark" ,rust-pulldown-cmark-0.8)
         ("rust-pulldown-cmark-to-cmark" ,rust-pulldown-cmark-to-cmark-7)
         ("rust-rowan" ,rust-rowan-0.15)
@@ -1859,7 +1865,7 @@ background agent taking care of maintaining the necessary state.")
         ("rust-salsa" ,rust-salsa-0.17)
         ("rust-scoped-tls" ,rust-scoped-tls-1)
         ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-serde-json" ,rust-serde-json-1.0.73)
         ("rust-serde-path-to-error" ,rust-serde-path-to-error-0.1)
         ("rust-typed-arena" ,rust-typed-arena-2)
         ("rust-smallvec" ,rust-smallvec-1)
@@ -1927,7 +1933,7 @@ exec -a \"$0\" \"~a\" \"$@\""
                (chdir "../..")
                (install-file "LICENSE-MIT" doc)
                (install-file "LICENSE-APACHE" doc)))))))
-    (native-inputs (list rust-src))
+    (native-inputs (list rust-src-1.64))
     (home-page "https://rust-analyzer.github.io/")
     (synopsis "Experimental Rust compiler front-end for IDEs")
     (description "Rust-analyzer is a modular compiler frontend for the Rust

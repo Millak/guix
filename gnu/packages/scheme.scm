@@ -42,8 +42,8 @@
 (define-module (gnu packages scheme)
   #:use-module (gnu packages)
   #:use-module ((guix licenses)
-                #:select (gpl2+ lgpl2.0+ lgpl2.1 lgpl2.1+ lgpl3+ asl2.0 bsd-3
-                          cc-by-sa4.0 non-copyleft expat public-domain))
+                #:select (gpl2 gpl2+ lgpl2.0+ lgpl2.1 lgpl2.1+ lgpl3+ asl2.0
+                          bsd-3 cc-by-sa4.0 non-copyleft expat public-domain))
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -1235,3 +1235,44 @@ time compilation and compiled macros.")
     (description
      "Gerbil mode provides font-lock, indentation, navigation, and REPL for
 Gerbil code within Emacs.")))
+
+(define-public stklos
+  (package
+    (name "stklos")
+    (version "1.70")
+    (source (origin
+              (method url-fetch)
+              ;; TODO: Unbundle pcre, libgc, and libffi.
+              (uri (string-append "https://stklos.net/download/stklos-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1iw3pgycjz3kz3jd1855v2ngf8ib2almpf8v058n1mkj1qd2b88m"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:modules `((ice-9 ftw)
+                  ,@%gnu-build-system-modules)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'patch-sh-references
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((bash (which "bash")))
+                (substitute* "configure"
+                  (("/bin/sh") bash)))))
+          (add-after 'configure 'patch-rm-references
+            (lambda _
+              (let ((rm (which "rm")))
+                (substitute* (find-files "." "^Makefile$")
+                  (("/bin/rm") rm))))))))
+    (properties
+     '((release-monitoring-url . "https://stklos.net/download.html")))
+    (home-page "https://stklos.net")
+    (synopsis "R7RS Scheme with CLOS-like object system")
+    (description
+     "STklos is a free Scheme system mostly compliant with the languages
+features defined in R7RS small.  The aim of this implementation is to be fast
+as well as light.  The implementation is based on an ad-hoc Virtual
+Machine.  STklos can also be compiled as a library and embedded in an
+application.")
+    (license gpl2+)))

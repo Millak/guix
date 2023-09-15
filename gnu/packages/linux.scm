@@ -490,7 +490,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-6.4-version "6.4.14")
+(define-public linux-libre-6.4-version "6.4.15")
 (define-public linux-libre-6.4-gnu-revision "gnu")
 (define deblob-scripts-6.4
   (linux-libre-deblob-scripts
@@ -500,7 +500,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1rwm09anyn4py1g877f9vh6ya86y2hfvlqx51bpa53dci5k0b0ds")))
 (define-public linux-libre-6.4-pristine-source
   (let ((version linux-libre-6.4-version)
-        (hash (base32 "1rjh0jrn5qvxwzmyg478n08vckkld8r52nkc102ppqvsfhiy7skm")))
+        (hash (base32 "1phlx375ln5pslw5vjqm029cdv6pzf4ang10xlrf90x5sb4fgy93")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.4)))
@@ -508,7 +508,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-6.1-version "6.1.51")
+(define-public linux-libre-6.1-version "6.1.52")
 (define-public linux-libre-6.1-gnu-revision "gnu")
 (define deblob-scripts-6.1
   (linux-libre-deblob-scripts
@@ -518,12 +518,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1c73516nbhnz0cxjz38b5794dxygb8sznv9idiibw7ablmjbhd11")))
 (define-public linux-libre-6.1-pristine-source
   (let ((version linux-libre-6.1-version)
-        (hash (base32 "0fqhmb6v28rssd44z7jw57mwvvskpl4kabjylck0pg54irnl9c2q")))
+        (hash (base32 "0lis73mxnl7hxz8lyja6sfgmbym944l3k1h7dab6b4mw1nckfxsn")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.1)))
 
-(define-public linux-libre-5.15-version "5.15.130")
+(define-public linux-libre-5.15-version "5.15.131")
 (define-public linux-libre-5.15-gnu-revision "gnu")
 (define deblob-scripts-5.15
   (linux-libre-deblob-scripts
@@ -533,7 +533,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1c3lm0j401lv2lk39dmr4mlf5ic173snm7cc0cckl6czyvxr5ysy")))
 (define-public linux-libre-5.15-pristine-source
   (let ((version linux-libre-5.15-version)
-        (hash (base32 "0qix62jsn3z9yccakac7fvqnip19zi05qn0w5wkgb7rj0x0lwimb")))
+        (hash (base32 "0sacnbw48lblnqaj56nybh588sq4k84gwf0r5zinzyrryj8k6z4r")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
@@ -739,6 +739,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                    (format p "~a-default~%" ,version)))))))
        #:allowed-references ()
        #:tests? #f))
+    (supported-systems (delete "i586-gnu" %supported-systems))
     (home-page "https://www.gnu.org/software/linux-libre/")
     (synopsis "GNU Linux-Libre kernel headers")
     (description "Headers of the Linux-Libre kernel.")
@@ -1071,6 +1072,7 @@ ARCH and optionally VARIANT, or #f if there is no such configuration."
            elfutils                  ;needed to enable CONFIG_STACK_VALIDATION
            flex
            bison
+           util-linux                ;needed for hexdump
            ;; These are needed to compile the GCC plugins.
            gmp
            mpfr
@@ -5547,7 +5549,7 @@ arrays when needed.")
 (define-public multipath-tools
   (package
     (name "multipath-tools")
-    (version "0.9.3")
+    (version "0.9.6")
     (home-page "https://github.com/opensvc/multipath-tools")
     (source (origin
               (method git-fetch)
@@ -5555,7 +5557,7 @@ arrays when needed.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0zcnr1135znizbnfqhqv3by9i2qwn5vg6kgmj6ma3yy1x1krx0d4"))
+                "1933iqh9r54pdl95yck0n4bw7jiiblymc964vlc1787qd4q012sz"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -5573,7 +5575,7 @@ arrays when needed.")
                            (string-append "prefix=" #$output)
                            ;; Install Udev rules below this directory, relative
                            ;; to the prefix.
-                           "SYSTEMDPATH=lib")
+                           (string-append "systemd_prefix=" #$output))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-source
@@ -5605,6 +5607,16 @@ arrays when needed.")
                 (("CFLAGS \\+= " match)
                  (string-append match "-Wno-error=unused-function ")))))
           (delete 'configure)           ;no configure script
+          (add-before 'build 'no-fortify-3
+            (lambda _
+              ;; NOTE: The check made seems to wrongly assume the
+              ;; FORTIFY_SOURCE=3 is valid.  However, when compiling, warnings
+              ;; are emitted from glibc, resulting in failed build.  Fix this
+              ;; by forcing the usage of FORTIFY_SOURCE=2.
+              (substitute* "create-config.mk"
+                (("FORTIFY_SOURCE=3")
+                 "FORTIFY_SOURCE=2"))
+              ))
           (add-before 'build 'set-LDFLAGS
             (lambda _
               ;; Note: this cannot be passed as a make flag because that will
@@ -5622,7 +5634,9 @@ arrays when needed.")
            liburcu
            lvm2
            readline
-           eudev))
+           eudev
+           ;; For libmount.
+           `(,util-linux "lib")))
     (synopsis "Access block devices through multiple paths")
     (description
      "This package provides the following binaries to drive the

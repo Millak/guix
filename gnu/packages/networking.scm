@@ -1564,42 +1564,33 @@ intended as a substitute for the PPPStatus and EthStatus projects.")
 (define-public iputils
   (package
     (name "iputils")
-    (version "20190709")
+    (version "20221126")
     (home-page "https://github.com/iputils/iputils")
     (source (origin
               (method git-fetch)
-              (uri (git-reference (url home-page)
-                                  (commit (string-append "s" version))))
+              (uri (git-reference (url home-page) (commit version)))
               (file-name (git-file-name name version))
-              (patches (search-patches "iputils-libcap-compat.patch"))
               (sha256
                (base32
-                "04bp4af15adp79ipxmiakfp0ij6hx5qam266flzbr94pr8z8l693"))))
+                "1qfdvr60mlwh5kr4p27wjknz1cvrwfi6iadh9ny45661v22i0njx"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags '("-DBUILD_RARPD=true")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-docbook-url
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((docbook-xsl (assoc-ref inputs "docbook-xsl"))
-                    (uri (string-append docbook-xsl "/xml/xsl/docbook-xsl-"
-                                        ,(package-version docbook-xsl))))
-               (for-each
-                (lambda (file)
-                  (substitute* file
-                    (("http://docbook\\.sourceforge\\.net/release/xsl-ns/current")
-                     uri)))
-                (cons "doc/meson.build"
-                      (find-files "doc" "\\.xsl$")))
-               #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-ping-test
+            (lambda _
+              ;; Disable ping test, as it requires root or raw socket capabilities.
+              (substitute* "test/meson.build"
+                (("if build_ping == true")
+                 "if false")))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)
-       ("docbook-xsl" ,docbook-xsl)
-       ("docbook-xml" ,docbook-xml)
-       ("libxml2" ,libxml2)          ;for XML_CATALOG_FILES
-       ("xsltproc" ,libxslt)))
+     (list gettext-minimal
+           pkg-config
+           docbook-xsl
+           docbook-xml
+           libxml2                      ;for XML_CATALOG_FILES
+           libxslt))
     (inputs
      (list libcap libidn2 openssl))
     (synopsis "Collection of network utilities")
@@ -1611,20 +1602,15 @@ configuration, troubleshooting, or servers.  Utilities included are:
 @item @command{arping}: Ping hosts using the @dfn{Address Resolution Protocol}.
 @item @command{clockdiff}: Compute time difference between network hosts
 using ICMP TSTAMP messages.
-@item @command{ninfod}: Daemon that responds to IPv6 Node Information Queries.
 @item @command{ping}: Use ICMP ECHO messages to measure round-trip delays
 and packet loss across network paths.
-@item @command{rarpd}: Answer RARP requests from clients.
-@item @command{rdisc}: Populate network routing tables with information from
-the ICMP router discovery protocol.
-@item @command{tftpd}: Trivial file transfer protocol server.
 @item @command{tracepath}: Trace network path to an IPv4 or IPv6 address and
 discover MTU along the way.
 @end itemize")
     ;; The various utilities are covered by different licenses, see LICENSE
     ;; for details.
-    (license (list license:gpl2+  ;arping, rarpd, tracepath
-                   license:bsd-3  ;clockdiff, ninfod, ping, tftpd
+    (license (list license:gpl2+        ;arping, tracepath
+                   license:bsd-3        ;clockdiff, ping
                    (license:non-copyleft
                     "https://spdx.org/licenses/Rdisc.html"
                     "Sun Microsystems license, see rdisc.c for details")))))
@@ -2012,14 +1998,14 @@ TCP connection, TLS handshake and so on) in the terminal.")
 (define-public squid
   (package
     (name "squid")
-    (version "4.17")
+    (version "6.3")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://www.squid-cache.org/Versions/v4/squid-"
+       (uri (string-append "http://www.squid-cache.org/Versions/v6/squid-"
                            version ".tar.xz"))
        (sha256
-        (base32 "060lwghn6q982bay11ia38c86kd8w6mjgy68n58v31kwik08m4nb"))))
+        (base32 "1yj869jnbdv1fb604j6g602dyvfnw7ahh9sh7mbqjpbsd9cgb83l"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
@@ -2768,7 +2754,7 @@ procedure calls (RPCs).")
 (define-public openvswitch
   (package
     (name "openvswitch")
-    (version "3.0.3")
+    (version "3.2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2776,7 +2762,7 @@ procedure calls (RPCs).")
                     version ".tar.gz"))
               (sha256
                (base32
-                "0qwlpnwjcyb7fpw6yp65mdqg20i1851z70xmvzxwxwpifq56a1pm"))))
+                "1i0lb40lwbakmmqklmfcgr01l1ymsawgdi7k9a1zzp8ariw7x4ff"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags

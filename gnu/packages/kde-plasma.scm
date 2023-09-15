@@ -1210,6 +1210,7 @@ KDE Frameworks components.")
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version "/"
                                   name "-" version ".tar.xz"))
+              (patches (search-patches "kwin-unwrap-executable-name-for-dot-desktop-search.patch"))
               (sha256
                (base32
                 "0bssp76lzqqlan5pfg6wjf4z9c6pl6p66ri8p82vqqw406x5bzyb"))))

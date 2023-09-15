@@ -46,14 +46,14 @@
 (define-public drbd-utils
   (package
     (name "drbd-utils")
-    (version "9.22.0")
+    (version "9.25.0")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://pkg.linbit.com/downloads/drbd"
                                         "/utils/drbd-utils-" version ".tar.gz")))
               (sha256
                (base32
-                "02zdfd9xg5xdxps2bg9ch3vkrs800whsycazkvgi29p80nihq1vm"))
+                "01vbghs4vyl3jvxkid59bqv73dya98k6jx5zhni2yx2xf8msynvf"))
               (modules '((guix build utils)))
               (snippet
                '(begin

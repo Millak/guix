@@ -134,6 +134,7 @@
 ;;; Copyright © 2023 Ahmad Draidi <a.r.draidi@redscript.org>
 ;;; Copyright © 2023 Sergiu Ivanov <sivanov@colimite.fr>
 ;;; Copyright © 2023 Camilo Q.S. (Distopico) <distopico@riseup.net>
+;;; Copyright © 2023 Thanos Apollo <public@thanosapollo.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -181,6 +182,7 @@
   #:use-module (gnu packages djvu)
   #:use-module (gnu packages ebook)
   #:use-module (gnu packages emacs)
+  #:use-module (gnu packages enchant)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages games)
@@ -491,6 +493,25 @@ dependencies.  It can interact with ChatGPT from any Emacs buffer with ChatGPT
 responses encoded in Markdown or Org markup.  It supports conversations, not
 just one-off queries and multiple independent sessions.  It requires an OpenAI
 API key.")
+    (license license:gpl3+)))
+
+(define-public emacs-chatgpt-shell
+  (package
+    (name "emacs-chatgpt-shell")
+    (version "0.74.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/xenodium/chatgpt-shell")
+                    (commit "1de7bfa6a34f20cca813006282d9a8f2ef291f95")))
+              (sha256
+               (base32
+                "1rabpp70qlmc47lmp2v7ckvfjhy6wkk881fxpbv2dchzhn77qk5r"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/xenodium/chatgpt-shell")
+    (synopsis "ChatGPT and DALL-E Emacs shells + Org Babel")
+    (description
+     "chatgpt-shell is a comint-based ChatGPT shell for Emacs.")
     (license license:gpl3+)))
 
 (define-public emacs-geiser-guile
@@ -1443,10 +1464,10 @@ libgit2 bindings for Emacs, intended to boost the performance of Magit.")
       (license license:gpl2+))))
 
 (define-public emacs-magit
-    ;; Use this unreleased commit to benefit from a recent change needed to
-    ;; add Reviewed-by: tags for any contributor in commit messages.
-  (let ((commit "186414ae418a07a46c413f05c68413a76256a05e")
-        (revision "5"))
+    ;; Use this unreleased commit to benefit from a recent improvements with
+    ;; regard to adding git trailers such as "Reviewed-by".
+  (let ((commit "7a1d50347086678217cf90a32dda277b76ea3081")
+        (revision "6"))
     (package
       (name "emacs-magit")
       (version (git-version "3.3.0" revision commit))
@@ -1458,7 +1479,7 @@ libgit2 bindings for Emacs, intended to boost the performance of Magit.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0rhsbcjfjw0z3vy2ix30y4h55c0cx4lyvz6mbijwbbjryln71kpj"))))
+          (base32 "1yn3v24w0sx6r8jqw8blfvyjdjfz5xa7c3x8p6xw1lj7b81l8i0l"))))
       (build-system emacs-build-system)
       (arguments
        (list
@@ -10330,6 +10351,66 @@ insertion mode.  When enabled all keys are implicitly prefixed with
 sgml/html integration, and indentation (working with sgml).")
     (license license:gpl3+)))
 
+(define-public emacs-jinx
+  (package
+    (name "emacs-jinx")
+    (version "0.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/minad/jinx")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1y097rnf9zg26jf4vh74a0laddfp4x6pp1fjqs3xqgwc0cmdq59w"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'expand-load-path 'build-jinx-mod
+            (lambda* _
+              (invoke
+               "emacs" "--batch" "-L" "."
+               "-l" "jinx.el"
+               "-f" "jinx--load-module")))
+          (add-after 'expand-load-path 'build-info
+            (lambda _
+              (invoke "emacs" "--batch"
+                      "--eval=(require 'ox-texinfo)"
+                      "--eval=(find-file \"README.org\")"
+                      "--eval=(org-texinfo-export-to-info)")))
+          (add-after 'build-jinx-mod 'patch-path-to-jinx-mod
+            (lambda _
+              (let ((file "jinx.el"))
+                (make-file-writable file)
+                (emacs-substitute-sexps file
+                  ("\"Compile and load dynamic module.\""
+                   `(module-load
+                     ,(string-append #$output
+                                     "/lib/emacs/jinx-mod.so")))))))
+          (add-after 'install 'install-jinx-mod
+            (lambda _
+              (install-file "jinx-mod.so"
+                            (string-append #$output "/lib/emacs"))))
+          (add-after 'install 'install-info
+            (lambda _
+              (install-file "jinx.info"
+                            (string-append #$output "/share/info")))))))
+    (inputs (list enchant))
+    (propagated-inputs (list emacs-compat))
+    (native-inputs (list emacs-compat enchant pkg-config texinfo))
+    (home-page "https://github.com/minad/jinx")
+    (synopsis "Emacs Enchanted Spell Checker")
+    (description "Jinx is a just-in-time spell-checker for Emacs
+based on the enchant library.  It lazily highlights misspelled words in the
+text of the visible portion of the buffer by honouring window boundaries as
+well as text folding, if any.")
+    (license license:gpl3+)))
+
 (define-public emacs-jit-spell
   (package
     (name "emacs-jit-spell")
@@ -12359,30 +12440,27 @@ The following completions are currently available:
     (license license:gpl3+)))
 
 (define-public emacs-sway
-  ;; Commit from Nicola's fork (dash free version with various improvments)
-  (let ((commit "838ef531a30fe616f0141adbdabc132d4edfd374")
-        (revision "0"))
-    (package
-      (name "emacs-sway")
-      (version (git-version "0.6.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/thblt/sway.el")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0ddaz8my3z4ca2z81kf1h8773pyx8h0l0ra3ssqd1rq5j0041wdh"))))
-      (build-system emacs-build-system)
-      (home-page "https://github.com/thblt/sway.el")
-      (synopsis "Communication with the Sway window manager")
-      (description
-       "This is a basic library to control the Sway window manager from Emacs.
+  (package
+    (name "emacs-sway")
+    (version "0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/thblt/sway.el")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1w29dkl7s835zgwnc4jx1cp84s6mmwbvlil8z2c31psy0rlajc6i"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/thblt/sway.el")
+    (synopsis "Communication with the Sway window manager")
+    (description
+     "This is a basic library to control the Sway window manager from Emacs.
 Its main use case is in combination with popup managers like Shackle, to
 use frames instead of windows while still giving focus to existing frames
 instead of duplicating them.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-sweet-theme
   (let ((commit "78f741806ecebe01224bf54d09ad80e306652508")
@@ -18223,11 +18301,12 @@ in Emacs.")
   (package
     (name "emacs-php-mode")
     (version "1.25.0")
+    (home-page "https://github.com/emacs-php/php-mode")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ejmr/php-mode")
+             (url home-page)
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
@@ -18250,7 +18329,6 @@ in Emacs.")
             (lambda _
               (chdir "lisp"))))))
     (propagated-inputs (list emacs-projectile))
-    (home-page "https://github.com/ejmr/php-mode")
     (synopsis "Major mode for editing PHP code")
     (description
      "PHP mode is a major mode for editing PHP source code.  It's an extension
@@ -27816,6 +27894,33 @@ as playing them in some video player, or downloading them.")
 and comments.")
       (license license:gpl3+))))
 
+(define-public emacs-yeetube
+  (package
+   (name "emacs-yeetube")
+   (version "1.4.2")
+   (source
+    (origin
+     (method git-fetch)
+     (uri (git-reference
+           (url "https://git.sr.ht/~thanosapollo/yeetube.el")
+           (commit version)))
+     (sha256
+      (base32
+       "0vfap6sri6qnswrjsp6qvmrp98bvrfh58gwdqbjiakq1fzvcrm03"))
+     (file-name (git-file-name name version))))
+   (build-system emacs-build-system)
+   (inputs
+    (list mpv yt-dlp))
+   (home-page "https://sr.ht/~thanosapollo/yeetube.el")
+   (synopsis "Youtube & Invidious front-end for Emacs")
+   (description
+    "This package offers an Emacs interface that allows you to search YouTube
+or an Invidious instance for a specific query.  The search results are shown as
+links in an org-mode buffer.  The videos can be opened to a user-defined video
+player(by default mpv) or downloaded using yt-dlp.  This package also includes
+a yt-dlp front-end.")
+   (license license:gpl3+)))
+
 (define-public emacs-org-web-tools
   (package
     (name "emacs-org-web-tools")
@@ -30192,6 +30297,27 @@ workspaces with a LSP-compliant server running.")
      "This package can be used to search emails in Emacs, searching result
 displays as you type thanks to Helm, though @command{notmuch-search} does the
 real search.")
+    (license license:gpl3+)))
+
+(define-public emacs-notmuch-indicator
+  (package
+    (name "emacs-notmuch-indicator")
+    (version "1.0.1")
+    (home-page "https://git.sr.ht/~protesilaos/notmuch-indicator")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://elpa.gnu.org/packages/notmuch-indicator-" version
+                    ".tar"))
+              (sha256
+               (base32
+                "1n5k2ikk93mdwqqysf6l7gd8i6iazk8yvbqpf8xnz5zny248cc2x"))))
+    (build-system emacs-build-system)
+    (synopsis "Display a mode line indicator with @code{notmuch-count} output")
+    (description "This package renders an indicator with an email count of the
+@code{notmuch} index on the Emacs mode line.  The underlying mechanism is that of
+@code{notmuch-count}, which is used to find the number of items that match the
+given search terms.")
     (license license:gpl3+)))
 
 (define-public emacs-notmuch-maildir
@@ -32665,37 +32791,40 @@ time.")
     (license license:gpl3+)))
 
 (define-public emacs-mastodon
-  (package
-    (name "emacs-mastodon")
-    (version "1.0.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://codeberg.org/martianh/mastodon.el")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "13swcbvwhjl8ksrgzvmfafkgd3iz8znk49bs1n48w3g9qvh097w7"))))
-    (build-system emacs-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               ;; Move the source files to the top level, which is included in
-               ;; the EMACSLOADPATH.
-               (add-after 'unpack 'move-source-files
-                 (lambda _
-                   (let ((el-files (find-files "./lisp" ".*\\.el$")))
-                     (for-each (lambda (f)
-                                 (rename-file f (basename f)))
-                               el-files)))))))
-    (propagated-inputs
-     (list emacs-request))
-    (home-page "https://codeberg.org/martianh/mastodon.el")
-    (synopsis "Emacs client for Mastodon")
-    (description "@code{mastodon.el} is an Emacs client for Mastodon, the
+  ;; No release in ~1 year, hence this snapshot.
+  (let ((commit "20dec8871c9bb5f5e418bfc197e7533b5e3065e3")
+        (revision "1"))
+    (package
+      (name "emacs-mastodon")
+      (version (git-version "1.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://codeberg.org/martianh/mastodon.el")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "15cfjny99yw5frdp8nlyazlwgscvfvbinsj0fbdfprxf50k2zjs6"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 ;; Move the source files to the top level, which is included in
+                 ;; the EMACSLOADPATH.
+                 (add-after 'unpack 'move-source-files
+                   (lambda _
+                     (let ((el-files (find-files "./lisp" ".*\\.el$")))
+                       (for-each (lambda (f)
+                                   (rename-file f (basename f)))
+                                 el-files)))))))
+      (propagated-inputs
+       (list emacs-request emacs-ts emacs-persist))
+      (home-page "https://codeberg.org/martianh/mastodon.el")
+      (synopsis "Emacs client for Mastodon")
+      (description "@code{mastodon.el} is an Emacs client for Mastodon, the
 federated microblogging social network.")
-    (license license:gpl3+)))
+	  (license license:gpl3+))))
 
 (define-public emacs-ebdb
   (package

@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -232,7 +233,8 @@ a hash-prefixed comment, or a blank line."
                                            (port-line port)
                                            (port-column port))))
                         (warning loc (G_ "ignoring invalid file name: '~a'~%")
-                                 line))))))))))
+                                 line)
+                        (loop))))))))))
     (const #f)))
 
 (define (options-with-caching opts)

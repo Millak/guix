@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2019, 2020 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2013, 2014, 2015, 2016, 2019, 2020, 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2016, 2017 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2014-2022 Eric Bavier <bavier@posteo.net>
@@ -1322,18 +1322,16 @@ computations.")
 (define-public hdf4
   (package
     (name "hdf4")
-    (version "4.2.14")
+    (version "4.2.16-2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://support.hdfgroup.org/ftp/HDF/releases/HDF"
                            version "/src/hdf-" version ".tar.bz2"))
        (sha256
-        (base32 "0n29klrrbwan9307np0d9hr128dlpc4nnlf57a140080ll3jmp8l"))
-       (patches (search-patches "hdf4-architectures.patch"
-                                "hdf4-reproducibility.patch"
-                                "hdf4-shared-fortran.patch"
-                                "hdf4-tirpc.patch"))))
+        (base32 "0b395czhqr43mmbiifmg2mhb488wnd4zccj45vpql98ja15j7hy5"))
+       (patches (search-patches "hdf4-reproducibility.patch"
+                                "hdf4-shared-fortran.patch"))))
     (build-system gnu-build-system)
     (native-inputs
      (list gfortran bison flex))
@@ -1346,9 +1344,7 @@ computations.")
        #:configure-flags (list "--enable-shared"
                                "FCFLAGS=-fallow-argument-mismatch"
                                "FFLAGS=-fallow-argument-mismatch"
-                               (string-append "CPPFLAGS=-I"
-                                              (assoc-ref %build-inputs "libtirpc")
-                                              "/include/tirpc"))
+                               "--enable-hdf4-xdr")
        #:phases
        (modify-phases %standard-phases
          ;; This is inspired by two of Debian's patches.
@@ -1363,14 +1359,7 @@ computations.")
              (substitute*
                  '("mfhdf/hdfimport/testutil.sh.in" "hdf/util/testutil.sh.in")
                (("/bin/rm") "rm")
-               (("/bin/mkdir") "mkdir"))
-             (substitute* (find-files "." "^Makefile\\.in$")
-               (("@HDF_BUILD_XDR_TRUE@XDR_ADD = \
--R\\$\\(abs_top_builddir\\)/mfhdf/xdr/\\.libs") "")
-               (("@HDF_BUILD_SHARED_TRUE@AM_LDFLAGS = \
--R\\$\\(abs_top_builddir\\)/mfhdf/libsrc/\\.libs \
--R\\$\\(abs_top_builddir\\)/hdf/src/\\.libs \\$\\(XDR_ADD\\)") ""))
-             #t))
+               (("/bin/mkdir") "mkdir"))))
          (add-after 'configure 'patch-settings
            (lambda _
              ;; libhdf4.settings contains the full path of the
@@ -1390,8 +1379,7 @@ computations.")
                ;; files.  Fix it manually to avoid having to propagate it.
                (substitute* (find-files (string-append out "/lib") "\\.la$")
                  (("-ljpeg")
-                  (string-append "-L" libjpeg "/lib -ljpeg")))
-               #t))))))
+                  (string-append "-L" libjpeg "/lib -ljpeg")))))))))
     (home-page "https://www.hdfgroup.org/products/hdf4/")
     (synopsis
      "Library and multi-object file format for storing and managing data")
@@ -2792,7 +2780,7 @@ can solve two kinds of problems:
 (define-public octave-cli
   (package
     (name "octave-cli")
-    (version "8.2.0")
+    (version "8.3.0")
     (source
      (origin
        (method url-fetch)
@@ -2800,7 +2788,7 @@ can solve two kinds of problems:
                            version ".tar.xz"))
        (sha256
         (base32
-         "1pkh4vmq4hcrmyl2gybd54i3qamyvmcjmpgy1i2kkw2g03jxdfdp"))))
+         "1aav8i88y2yl11g5d44wpjngkpldvzk90ja7wghkb91cy2a9974i"))))
     (build-system gnu-build-system)
     (inputs
      (list alsa-lib
@@ -8544,3 +8532,39 @@ statistical analysis, image enhancement, fluid dynamics simulations, numerical
 optimization, and modeling, simulation of explicit and implicit dynamical
 systems and symbolic manipulations.")
     (license license:cecill)))                    ;CeCILL v2.1
+
+(define-public ruy
+  (let ((commit "caa244343de289f913c505100e6a463d46c174de")
+        (version "0")
+        (revision "1"))
+    (package
+      (name "ruy")
+      (version (git-version version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/google/ruy")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0j2g90nzam4h52zwx2vpanj8m17068cfb1zi4hcy0pyk52kb11dy"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        #~(list "-DRUY_FIND_CPUINFO=ON"
+                ;; Needed to make sure code is relocatable for use in
+                ;; tensorflow.
+                "-DCMAKE_CXX_FLAGS=-fPIC ")))
+      (inputs (list cpuinfo))
+      (native-inputs (list googletest))
+      (home-page "https://github.com/google/ruy")
+      (synopsis "Matrix multiplication library")
+      (description
+       "Ruy is a matrix multiplication library.  Its focus is to cover the
+matrix multiplication needs of neural network inference engines.  Its initial
+user has been TensorFlow Lite, where it is used by default on the ARM CPU
+architecture.")
+      (license license:asl2.0))))
+

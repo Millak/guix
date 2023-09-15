@@ -1154,38 +1154,6 @@ features, and more.")
                  (substitute* "test/CMakeLists.txt"
                    (("ei_add_test\\(stddeque") "#")))))))))))
 
-(define-public eigen-for-tensorflow-lite
-  ;; This commit was taken from
-  ;; tensorflow/lite/tools/cmake/modules/eigen.cmake
-  (let ((commit "d10b27fe37736d2944630ecd7557cefa95cf87c9")
-        (revision "1"))
-    (package (inherit eigen)
-      (name "eigen-for-tensorflow-lite")
-      (version (git-version "3.3.7" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://gitlab.com/libeigen/eigen")
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "0v8a20cwvwmp3hw4275b37frw33v92z0mr8f4dn6y8k0rz92hrrf"))
-                (file-name (git-file-name name version))
-                (modules '((guix build utils)))
-                (snippet
-                 ;; Ther are test failures in the "unsupported" directory, but
-                 ;; maintainers say it's unsupported anyway, so just skip
-                 ;; them.
-                 '(begin
-                    (substitute* "unsupported/CMakeLists.txt"
-                      (("add_subdirectory\\(test.*")
-                       "# Do not build the tests for unsupported features.\n"))))))
-      (arguments
-       (substitute-keyword-arguments (package-arguments eigen)
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (delete 'disable-some-tests))))))))
-
 (define-public xtensor
   (package
     (name "xtensor")

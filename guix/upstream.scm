@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2010-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Alex Kost <alezost@gmail.com>
-;;; Copyright © 2019, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2019, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -534,7 +534,8 @@ specified in SOURCE, an <upstream-source>."
     (define old
       (match (package-inputs package)
         (((labels (? package? packages)) ...)
-         labels)
+         labels
+         (map string->symbol labels))
         (_
          '())))
 

@@ -12,7 +12,7 @@
 ;;; Copyright © 2020 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2020 Timothy Sample <samplet@ngyro.com>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
-;;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021-2023 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -114,6 +114,7 @@
             check-profile-collisions
             check-haskell-stackage
             check-tests-true
+            check-compiler-for-target
 
             lint-warning
             lint-warning?
@@ -310,6 +311,55 @@ superfluous when building natively and incorrect when cross-compiling."
                           (G_ "#:tests? must not be explicitly set to #t")
                           #:field 'arguments))
       '()))
+
+(define (check-compiler-for-target package)
+  "Check that cross-compilers are used when cross-compiling, by inspecting
+#:make-flags."
+  (define (make-compiler-warning variable=value)
+    (define =-index (string-index variable=value #\=))
+    (define variable (substring variable=value 0 =-index))
+    (define value (substring variable=value (+ =-index 1)))
+    (make-warning package
+                  (G_ "'~0@*~a' should be set to '~1@*~a' instead of '~2@*~a'")
+                  (list variable
+                        (match variable
+                          ("AR" "(ar-for-target)")
+                          ("AS" "(as-for-target)")
+                          ("CC" "(cc-for-target)")
+                          ("CXX" "(cxx-for-target)")
+                          ("LD" "(ld-for-target)")
+                          ("PKG_CONFIG" "(pkg-config-for-target)"))
+                        value)
+                  #:field 'arguments))
+  (define (find-incorrect-compilers l)
+    (match l
+      ((or "AR=ar"
+           "AS=as"
+           ;; 'cc' doesn't actually exist in Guix, but if it did,
+           ;; it would be incorrect to use it w.r.t. cross-compilation.
+           "CC=cc" "CC=gcc" "CC=clang"
+           "CXX=g++"
+           "LD=ld"
+           "PKG_CONFIG=pkg-config")
+       (list (make-compiler-warning l)))
+      ((x . y)
+       (append (find-incorrect-compilers x)
+               (find-incorrect-compilers y)))
+      (_ '())))
+  (parameterize ((%current-target-system "aarch64-linux-gnu"))
+    (apply (lambda* (#:key (target 'not-set)
+		     make-flags #:allow-other-keys)
+             (define make-flags/sexp
+               (if (gexp? make-flags/sexp)
+                   (gexp->approximate-sexp make-flags)
+                   make-flags))
+	     ;; Some packages like 'tzdata' are never cross-compiled;
+	     ;; the compilers are only used to build tools for
+	     ;; compiling the rest of the package.
+	     (if (eq? target '#false)
+		 '()
+		 (find-incorrect-compilers make-flags/sexp)))
+           (package-arguments package))))
 
 (define (properly-starts-sentence? s)
   (string-match "^[(\"'`[:upper:][:digit:]]" s))
@@ -1864,6 +1914,10 @@ them for PACKAGE."
      (name        'tests-true)
      (description "Check if tests are explicitly enabled")
      (check       check-tests-true))
+   (lint-checker
+     (name        'compiler-for-target)
+     (description "Check that cross-compilers are used when cross-compiling")
+     (check       check-compiler-for-target))
    (lint-checker
      (name        'description)
      (description "Validate package descriptions")

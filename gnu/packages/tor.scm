@@ -63,18 +63,20 @@
 (define-public tor
   (package
     (name "tor")
-    (version "0.4.7.14")
+    (version "0.4.8.5")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://dist.torproject.org/tor-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "1y2xwrji1rvk6h0k15705yra5s74h72h2g84x02zr0338vv6gb55"))))
+               "06g1awb4piqvgxa97pyswxgjzkpj8rx3iy2jbiaygvi99b8wymv9"))
+             (patches (search-patches "tor-remove-defensive-assert.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
-           #~(list "--enable-lzma"
+           #~(list "--enable-gpl"
+                   "--enable-lzma"
                    "--enable-zstd")
            #:phases
            #~(modify-phases %standard-phases

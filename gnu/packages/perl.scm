@@ -76,7 +76,6 @@
   #:use-module (gnu packages gd)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages gtk)
-  #:use-module (gnu packages hurd)
   #:use-module (gnu packages image)
   #:use-module (gnu packages language)
   #:use-module (gnu packages less)

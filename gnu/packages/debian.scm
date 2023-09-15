@@ -190,7 +190,7 @@ contains the archive keys used for that.")
 (define-public debootstrap
   (package
     (name "debootstrap")
-    (version "1.0.128")
+    (version "1.0.132")
     (source
       (origin
         (method git-fetch)
@@ -199,7 +199,7 @@ contains the archive keys used for that.")
               (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0hc7xc6qvnmjlpf3j6bm25kf0j1ifvv5j7a0iljfmbag4idxc9jv"))))
+         (base32 "1l6mc3i2wqfhmhj85x9qiiqchqp9br6gg54hv1xs08h8xndmfchf"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -226,6 +226,12 @@ contains the archive keys used for that.")
                  (substitute* "debootstrap"
                    (("=/usr") (string-append "=" #$output))
                    (("/usr/bin/dpkg") (search-input-file inputs "/bin/dpkg")))
+                 ;; Include the keyring locations by default.
+                 (substitute* (find-files "scripts")
+                   (("keyring.*(debian-archive-keyring.gpg)"_ keyring)
+                    (string-append "keyring " debian "/share/keyrings/" keyring))
+                   (("keyring.*(ubuntu-archive-keyring.gpg)" _ keyring)
+                    (string-append "keyring " ubuntu "/share/keyrings/" keyring)))
                  ;; Ensure PATH works both in guix and within the debian chroot
                  ;; workaround for: https://bugs.debian.org/929889
                  (substitute* "functions"
@@ -335,7 +341,7 @@ distributions such as Debian and Trisquel.")
 (define-public dpkg
   (package
     (name "dpkg")
-    (version "1.21.22")
+    (version "1.22.0")
     (source
       (origin
         (method git-fetch)
@@ -344,7 +350,7 @@ distributions such as Debian and Trisquel.")
                (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0b5czgif5g6pdjzcw60hzzj0i1llxvajf3nlx115axmpa3y4iynd"))))
+         (base32 "1p7f2mgrn2iy0xfysxfq4pjbbhbhb2rp649bsik0x25jrck4if83"))))
     (build-system gnu-build-system)
     (arguments
      (list #:modules
@@ -382,6 +388,7 @@ distributions such as Debian and Trisquel.")
                           `("PATH" ":" prefix (,(string-append #$output
                                                                "/bin")))))
                       (list "dpkg-architecture"
+                            "dpkg-buildapi"
                             "dpkg-buildflags"
                             "dpkg-buildpackage"
                             "dpkg-checkbuilddeps"

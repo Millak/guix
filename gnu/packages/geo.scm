@@ -2775,6 +2775,7 @@ growing set of geoscientific methods.")
                              "ProcessingGrass7AlgorithmsRasterTestPt1"
                              "ProcessingGrass7AlgorithmsRasterTestPt2"
                              "ProcessingGrass7AlgorithmsVectorTest"
+                             "test_core_authconfig"
                              "test_core_authmanager"
                              "test_core_compositionconverter"
                              "test_core_expression"

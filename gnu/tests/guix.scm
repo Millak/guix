@@ -37,7 +37,8 @@
   #:use-module (ice-9 match)
   #:export (%test-guix-build-coordinator
             %test-guix-data-service
-            %test-nar-herder))
+            %test-nar-herder
+            %test-bffe))
 
 ;;;
 ;;; Guix Build Coordinator
@@ -325,3 +326,81 @@ host	all	all	::1/128 	trust"))))))
    (name "nar-herder")
    (description "Connect to a running Nar Herder server.")
    (value (run-nar-herder-test))))
+
+
+;;;
+;;; Build Farm Front-end
+;;;
+
+(define %bffe-os
+  (simple-operating-system
+   (service dhcp-client-service-type)
+   (service guix-build-coordinator-service-type)
+   (service bffe-service-type
+            (bffe-configuration
+             (arguments
+              #~(list
+                 #:web-server-args
+                 '(#:port 8767
+                   #:controller-args
+                   (#:title "Test title"))))))))
+
+(define (run-bffe-test)
+  (define os
+    (marionette-operating-system
+     %bffe-os
+     #:imported-modules '((gnu services herd)
+                          (guix combinators))))
+
+  (define forwarded-port 8767)
+
+  (define vm
+    (virtual-machine
+     (operating-system os)
+     (memory-size 1024)
+     (port-forwardings `((,forwarded-port . 8767)))))
+
+  (define test
+    (with-imported-modules '((gnu build marionette))
+      #~(begin
+          (use-modules (srfi srfi-11) (srfi srfi-64)
+                       (gnu build marionette)
+                       (web uri)
+                       (web client)
+                       (web response))
+
+          (define marionette
+            (make-marionette (list #$vm)))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin "bffe")
+
+          (test-assert "service running"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (match (start-service 'bffe)
+                  (#f #f)
+                  (('service response-parts ...)
+                   (match (assq-ref response-parts 'running)
+                     ((pid) (number? pid))))))
+             marionette))
+
+          (test-equal "http-get"
+            200
+            (let-values
+                (((response text)
+                  (http-get #$(simple-format
+                               #f "http://localhost:~A/" forwarded-port)
+                            #:decode-body? #t)))
+              (response-code response)))
+
+          (test-end))))
+
+  (gexp->derivation "bffe-test" test))
+
+(define %test-bffe
+  (system-test
+   (name "bffe")
+   (description "Connect to a running Build Farm Front-end.")
+   (value (run-bffe-test))))

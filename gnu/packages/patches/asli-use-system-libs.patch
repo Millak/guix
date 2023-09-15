@@ -1,0 +1,72 @@
+Adjust CMakeLists.txt to use system-provided mmg and yaml-cpp libraries.
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index b11c5ba..702423e 100755
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -122,28 +122,8 @@ if(MMG_MESH)
+   add_definitions(-DMMG_MESH)
+ 
+   # MMG
+-  set(MMG_PREFIX mmg3d)
+-  set(MMG_PREFIX_DIR ${CMAKE_CURRENT_BINARY_DIR}/${MMG_PREFIX})
+-  set(MMG_INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/${MMG_PREFIX})
+-  ExternalProject_Add(${MMG_PREFIX}
+-    PREFIX       ${MMG_PREFIX_DIR}
+-    SOURCE_DIR   ${CMAKE_CURRENT_SOURCE_DIR}/libs/mmg
+-
+-    BUILD_ALWAYS OFF
+-    INSTALL_DIR  ${MMG_INSTALL_DIR}
+-
+-    CMAKE_ARGS(-DCMAKE_BUILD_TYPE=Release -DBUILD=MMG3D -DLIBMMG3D_STATIC=ON
+-               -DLIBMMG3D_SHARED=OFF -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>)
+-
+-    BUILD_COMMAND   make
+-    INSTALL_COMMAND make install
+-  )
+-  set(MMG3D_INCLUDE_DIRS "${MMG_INSTALL_DIR}/include")
+-  set(MMG3D_LIBRARIES "${MMG_INSTALL_DIR}/${CMAKE_INSTALL_LIBDIR}/${CMAKE_STATIC_LIBRARY_PREFIX}${MMG_PREFIX}${CMAKE_STATIC_LIBRARY_SUFFIX}")
+-
+-  include_directories(${MMG3D_INCLUDE_DIRS})
+-  #add_library(MMG3D STATIC IMPORTED)
+-  #set_target_properties(MMG3D PROPERTIES IMPORTED_LOCATION "${MMG3D_LIBRARIES}")
++  include_directories(${MMG_INCLUDE_DIR})
++  set(MMG3D_LIBRARIES ${MMG_LIBRARY_DIR}/libmmg3d.so)
+ 
+   # MshMet
+   set(MSHMET_PREFIX mshmet)
+@@ -192,14 +172,8 @@ target_include_directories(tet PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/libs/tetgen)
+ target_compile_definitions(tet PUBLIC TETLIBRARY) # -DTETLIBRARY: flag to compile tetgen as a library
+ 
+ # yaml
+-file(GLOB yaml_SRC CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/libs/yaml/src/*.cpp) # Using file GLOB is not recomended!
+-add_library(yaml STATIC)
+-target_include_directories(yaml
+-  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/libs/yaml/include 
+-  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/libs/yaml/src
+-)
+-target_sources(yaml PRIVATE ${yaml_SRC})
+-set_target_properties(yaml PROPERTIES CXX_STANDARD 11)
++find_package(yaml-cpp REQUIRED)
++include_directories(${YAML_CPP_INCLUDE_DIRS})
+ 
+ # Compile options for debuging
+ if(CMAKE_BUILD_TYPE MATCHES Debug)
+@@ -259,7 +233,7 @@ if(MARCH_NATIVE)
+ endif()
+ 
+ # Create entries for C++ files in "ASLI" routine
+-target_link_libraries(ASLI PUBLIC alg tet yaml)
++target_link_libraries(ASLI PUBLIC alg tet ${YAML_CPP_LIBRARIES})
+ if(NOT MSVC)
+   target_link_libraries(ASLI PUBLIC stdc++fs)
+ endif()
+@@ -272,7 +246,7 @@ if(CGAL_MESH)
+ endif()
+ 
+ if(MMG_MESH)
+-  add_dependencies(ASLI ${MMG_PREFIX} ${MSHMET_PREFIX})
++  add_dependencies(ASLI ${MSHMET_PREFIX})
+   target_link_libraries(ASLI PUBLIC ${MMG3D_LIBRARIES} ${MSHMET_LIBRARIES})
+   if(SCOTCH_FOUND)
+     target_link_libraries(ASLI PUBLIC ${SCOTCH_LIBRARIES} scotch)

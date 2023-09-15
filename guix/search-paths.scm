@@ -37,6 +37,7 @@
             $PKG_CONFIG_PATH
             $SSL_CERT_DIR
             $SSL_CERT_FILE
+            $TZDIR
 
             search-path-specification->sexp
             sexp->search-path-specification
@@ -104,15 +105,21 @@
 (define $SSL_CERT_DIR
   (search-path-specification
    (variable "SSL_CERT_DIR")
-   (separator #f)              ;single entry
+   (separator #f)                       ;single entry
    (files '("etc/ssl/certs"))))
 
 (define $SSL_CERT_FILE
   (search-path-specification
    (variable "SSL_CERT_FILE")
    (file-type 'regular)
-   (separator #f)              ;single entry
+   (separator #f)                       ;single entry
    (files '("etc/ssl/certs/ca-certificates.crt"))))
+
+(define $TZDIR
+  (search-path-specification
+   (variable "TZDIR")
+   (files '("share/zoneinfo"))
+   (separator #f)))                     ;single entry
 
 (define (search-path-specification->sexp spec)
   "Return an sexp representing SPEC, a <search-path-specification>.  The sexp

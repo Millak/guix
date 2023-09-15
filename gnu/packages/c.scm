@@ -17,6 +17,7 @@
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2022 ( <paren@disroot.org>
+;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2023 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;;
@@ -1494,6 +1495,34 @@ string.h, but with a utf8* prefix instead of the str* prefix.")
       (description
        "This package provides a header-only unit testing library for C/C++.")
       (license license:unlicense))))
+
+(define-public nsync
+  (package
+    (name "nsync")
+    (version "1.26.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/google/nsync")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0qg58kkcbm4zqkql8j5yvrb7fpx09qsf7j93dwqb9s1y69l70kx4"))))
+    (build-system cmake-build-system)
+    (home-page "https://github.com/google/nsync")
+    (synopsis "C library for synchronization primitives")
+    (description
+     "nsync is a C library that exports various synchronization primitives:
+@enumerate
+@item locks,
+@item condition variables,
+@item run-once initialization,
+@item waitable counter (useful for barriers),
+@item waitable bit (useful for cancellation, or other conditions).
+@end enumerate
+")
+    (license license:asl2.0)))
 
 (define-public ispc
   (package

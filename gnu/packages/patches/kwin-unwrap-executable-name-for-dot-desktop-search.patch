@@ -1,0 +1,89 @@
+origin patch from nixos.
+
+see https://github.com/NixOS/nixpkgs/blob/2457551a54ffbd93b7d8f84af8b8fb3aac5cbdd5/pkgs/desktops/plasma-5/kwin/0001-NixOS-Unwrap-executable-name-for-.desktop-search.patch
+
+---
+ src/guix_utils.h     | 41 +++++++++++++++++++++++++++++++++++++++++
+ src/service_utils.h   |  4 +++-
+ src/waylandwindow.cpp |  5 ++++-
+ 3 files changed, 48 insertions(+), 2 deletions(-)
+ create mode 100644 src/guix_utils.h
+
+diff a/src/guix_utils.h b/src/guix_utils.h
+new file mode 100644
+index 0000000..726065d
+--- /dev/null
++++ b/src/guix_utils.h
+@@ -0,0 +1,24 @@
++#ifndef GUIX_UTILS_H
++#define GUIX_UTILS_H
++
++// kwin
++#include <kwinglobals.h>
++
++namespace KWin
++{
++
++static QString unwrapExecutablePath(const QString &in_executablePath)
++{
++    QString executablePath(in_executablePath);
++
++    while (executablePath.endsWith("-real") && executablePath[executablePath.lastIndexOf("/")+1] == QChar('.')) {
++        executablePath.remove(executablePath.length() - 5, 5);
++        executablePath.remove(executablePath.lastIndexOf("/")+1, 1);
++    }
++
++    return executablePath;
++}
++
++}// namespace
++
++#endif // GUIX_UTILS_H
+diff a/src/utils/serviceutils.h b/src/utils/serviceutils.h
+index 8a70c1f..475b15d 100644
+--- a/src/utils/serviceutils.h
++++ b/src/utils/serviceutils.h
+@@ -19,6 +19,7 @@
+ #include <QLoggingCategory>
+ //KF
+ #include <KApplicationTrader>
++#include "guix_utils.h"
+ 
+ namespace KWin
+ {
+@@ -26,8 +27,9 @@ namespace KWin
+ const static QString s_waylandInterfaceName = QStringLiteral("X-KDE-Wayland-Interfaces");
+ const static QString s_dbusRestrictedInterfaceName = QStringLiteral("X-KDE-DBUS-Restricted-Interfaces");
+ 
+-static QStringList fetchProcessServiceField(const QString &executablePath, const QString &fieldName)
++static QStringList fetchProcessServiceField(const QString &in_executablePath, const QString &fieldName)
+ {
++    const QString executablePath = unwrapExecutablePath(in_executablePath);
+     // needed to be able to use the logging category in a header static function
+     static QLoggingCategory KWIN_UTILS ("KWIN_UTILS", QtWarningMsg);
+     const auto servicesFound = KApplicationTrader::query([&executablePath] (const KService::Ptr &service) {
+diff a/src/waylandwindow.cpp b/src/waylandwindow.cpp
+index fd2c0c1..ae8cf96 100644
+--- a/src/waylandwindow.cpp
++++ b/src/waylandwindow.cpp
+@@ -10,6 +10,7 @@
+ #include "screens.h"
+ #include "wayland_server.h"
+ #include "workspace.h"
++#include "guix_utils.h"
+ 
+ #include <KWaylandServer/display.h>
+ #include <KWaylandServer/clientbuffer.h>
+@@ -173,7 +174,9 @@ void WaylandWindow::updateIcon()
+ 
+ void WaylandWindow::updateResourceName()
+ {
+-    const QFileInfo fileInfo(surface()->client()->executablePath());
++    const QString in_path = surface()->client()->executablePath();
++    const QString path = unwrapExecutablePath(in_path);
++    const QFileInfo fileInfo(path);
+     if (fileInfo.exists()) {
+         const QByteArray executableFileName = fileInfo.fileName().toUtf8();
+         setResourceClass(executableFileName, executableFileName);
+-- 
+2.32.0

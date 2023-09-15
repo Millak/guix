@@ -6517,7 +6517,7 @@ curl/include/curl/curl.h")
 (define-public dpf-plugins
   (package
     (name "dpf-plugins")
-    (version "1.4")
+    (version "1.7")
     (source
      (origin
        (method git-fetch)
@@ -6527,7 +6527,7 @@ curl/include/curl/curl.h")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0y7qvpfm34g6f7d786c6c9043dlbg5c4h71l2s24dsc9m8i7x2ww"))))
+        (base32 "082f3f78x6k58j78mqr57qhw40f5s8fmcbkhl36nn3vbcsa07bzg"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no "check" target

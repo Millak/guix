@@ -385,16 +385,16 @@ volume levels of the sinks (get, set, decrease, increase, toggle mute, etc).")
 (define-public pasystray
   (package
     (name "pasystray")
-    (version "0.7.1")
+    (version "0.8.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/christophgysin/pasystray")
-             (commit (string-append name "-" version))))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xx1bm9kimgq11a359ikabdndqg5q54pn1d1dyyjnrj0s41168fk"))))
+        (base32 "1zf79pfmm7wa1l9yyab2g6lf0j81v1mrp406262rd21g4prx1921"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases

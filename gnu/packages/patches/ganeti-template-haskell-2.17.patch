@@ -1,0 +1,69 @@
+Handle GHC 9 changes in a backwards compatible manner.
+
+Taken from upstream:
+
+  https://github.com/ganeti/ganeti/commit/b279fa738fd5b30320584f79f4d2f0e894315aab
+
+diff --git a/src/Ganeti/THH.hs b/src/Ganeti/THH.hs
+index 818c11f84..9ab93d5e3 100644
+--- a/src/Ganeti/THH.hs
++++ b/src/Ganeti/THH.hs
+@@ -884,7 +884,7 @@ genLoadOpCode opdefs fn = do
+                   ) $ zip mexps opdefs
+       defmatch = Match WildP (NormalB fails) []
+       cst = NoBindS $ CaseE (VarE opid) $ mpats++[defmatch]
+-      body = DoE [st, cst]
++      body = mkDoE [st, cst]
+   -- include "OP_ID" to the list of used keys
+   bodyAndOpId <- [| $(return body)
+                     <* tell (mkUsedKeys . S.singleton . T.pack $ opidKey) |]
+@@ -1541,7 +1541,7 @@ loadExcConstructor inname sname fields = do
+                 [x] -> BindS (ListP [VarP x])
+                 _   -> BindS (TupP (map VarP f_names))
+       cval = appCons name $ map VarE f_names
+-  return $ DoE [binds read_args, NoBindS (AppE (VarE 'return) cval)]
++  return $ mkDoE [binds read_args, NoBindS (AppE (VarE 'return) cval)]
+ 
+ {-| Generates the loadException function.
+ 
+diff --git a/src/Ganeti/THH/Compat.hs b/src/Ganeti/THH/Compat.hs
+index d29e30d18..1f51e49d7 100644
+--- a/src/Ganeti/THH/Compat.hs
++++ b/src/Ganeti/THH/Compat.hs
+@@ -40,9 +40,11 @@ module Ganeti.THH.Compat
+   , extractDataDConstructors
+   , myNotStrict
+   , nonUnaryTupE
++  , mkDoE
+   ) where
+ 
+ import Language.Haskell.TH
++import Language.Haskell.TH.Syntax
+ 
+ -- | Convert Names to DerivClauses
+ --
+@@ -61,7 +63,11 @@ derivesFromNames names = map ConT names
+ --
+ -- Handle TH 2.11 and 2.12 changes in a transparent manner using the pre-2.11
+ -- API.
++#if MIN_VERSION_template_haskell(2,17,0)
++gntDataD :: Cxt -> Name -> [TyVarBndr ()] -> [Con] -> [Name] -> Dec
++#else
+ gntDataD :: Cxt -> Name -> [TyVarBndr] -> [Con] -> [Name] -> Dec
++#endif
+ gntDataD x y z a b =
+ #if MIN_VERSION_template_haskell(2,12,0)
+     DataD x y z Nothing a $ derivesFromNames b
+@@ -114,3 +120,12 @@ nonUnaryTupE es = TupE $ map Just es
+ #else
+ nonUnaryTupE es = TupE $ es
+ #endif
++
++-- | DoE is now qualified with an optional ModName
++mkDoE :: [Stmt] -> Exp
++mkDoE s =
++#if MIN_VERSION_template_haskell(2,17,0)
++    DoE Nothing s
++#else
++    DoE s
++#endif

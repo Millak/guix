@@ -484,7 +484,7 @@ takes advantage of modern hardware using OpenGL.")
 (define-public portfolio
   (package
     (name "portfolio")
-    (version "0.9.14")
+    (version "1.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -493,7 +493,7 @@ takes advantage of modern hardware using OpenGL.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0h09v8lhz3kv6qmwjhx3gr7rp6ccfhrzm54gjnaixl4dcg9zddls"))))
+                "1ai9mx801m5lngkljg42vrpvhbvc3071sp4jypsvbzw55hxnn5ba"))))
     (arguments
      (list #:glib-or-gtk? #t
            #:imported-modules `(,@%meson-build-system-modules
@@ -508,6 +508,10 @@ takes advantage of modern hardware using OpenGL.")
                             (with-directory-excursion (string-append #$output
                                                                      "/bin")
                               (symlink "dev.tchx84.Portfolio" "portfolio"))))
+                        (add-after 'unpack 'skip-gtk-update-icon-cache
+                          (lambda _
+                            (substitute* "build-aux/meson/postinstall.py"
+                              (("gtk-update-icon-cache") "true"))))
                         (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
                           (lambda* (#:key inputs outputs #:allow-other-keys)
                             (wrap-program (search-input-file outputs
@@ -519,12 +523,12 @@ takes advantage of modern hardware using OpenGL.")
                               `("GI_TYPELIB_PATH" =
                                 (,(getenv "GI_TYPELIB_PATH")))))))))
     (build-system meson-build-system)
-    (inputs (list bash-minimal python-pygobject gtk+ libhandy))
+    (inputs (list bash-minimal python-pygobject gtk libadwaita))
     (native-inputs
      (list desktop-file-utils
            gettext-minimal
            `(,glib "bin")
-           `(,gtk+ "bin")
+           pkg-config
            python))
     (home-page "https://github.com/tchx84/Portfolio")
     (synopsis "Minimalist file manager for Linux mobile devices")

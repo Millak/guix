@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Cyril Roelandt <tipecaml@gmail.com>
-;;; Copyright © 2015, 2016 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2019, 2021 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2022 Marius Bakke <marius@gnu.org>
@@ -138,26 +138,23 @@ manner.")
 (define-public python-hacking
   (package
     (name "python-hacking")
-    (version "4.1.0")
+    (version "5.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "hacking" version))
        (sha256
         (base32
-         "0fg19rlcky3n1y1ri61xyjp7534yzf8r102z9dw3zqg93f4kj20m"))))
+         "09p0avmz914asszvdknc46n43bl070f369wmjmppl51zmw4b4ddb"))))
     (build-system python-build-system)
-     (propagated-inputs
-     (list python-flake8-3.8))
+    (propagated-inputs
+     (list python-flake8))
     (native-inputs
      (list ;; Tests
            python-coverage
            python-ddt
-           python-dnspython
-           python-fixtures
            python-eventlet
-           python-mock
-           python-monotonic
+           python-fixtures
            python-subunit
            python-stestr
            python-testscenarios

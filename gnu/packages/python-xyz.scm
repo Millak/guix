@@ -141,6 +141,8 @@
 ;;; Copyright © 2023 Ontje Lünsdorf <ontje.luensdorf@dlr.de>
 ;;; Copyright © 2023 Parnikkapore <poomklao@yahoo.com>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
+;;; Copyright © c4droid <c4droid@foxmail.com>
+;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2039,13 +2041,13 @@ and a list of words that are easier to remember for humans (the
 (define-public python-bitarray
   (package
     (name "python-bitarray")
-    (version "2.6.1")
+    (version "2.8.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "bitarray" version))
               (sha256
                (base32
-                "0c4jli872nzix81n1xirnrghlq2fdsxb570d9rnfvxi1694sah44"))))
+                "1wy80bmhg33bpzn28g1n7s8r8f4drj7pcl4m2qb5sql8bbryx376"))))
     (build-system python-build-system)
     (arguments
      (list #:phases
@@ -3485,17 +3487,17 @@ standard.")
 (define-public python-eventlet
   (package
     (name "python-eventlet")
-    (version "0.33.0")
+    (version "0.33.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "eventlet" version))
        (sha256
         (base32
-         "07qlyhcm0f28sxdizawvdf3d50m3hnbzz5kg3fjp7chvki44y540"))))
+         "1nngffz21afhfi266smf4s5mn5dfd0ykdnirfls9bwnzxbkh6a3j"))))
     (build-system python-build-system)
     (propagated-inputs
-     (list python-dnspython python-greenlet python-monotonic python-six))
+     (list python-dnspython python-greenlet python-six))
     (native-inputs
      (list python-nose))
     (arguments
@@ -3520,7 +3522,9 @@ standard.")
                 ;; <https://github.com/eventlet/eventlet/issues/730>.
                 "-e" "test_patcher_existing_locks_locked"
                 ;; And see <https://github.com/eventlet/eventlet/issues/739>.
-                "-e" "test_017_ssl_zeroreturnerror")))))))
+                "-e" "test_017_ssl_zeroreturnerror"
+                ;; This test is failing on some architectures
+                "-e" "test_fork_after_monkey_patch")))))))
     (home-page "https://eventlet.net")
     (synopsis "Concurrent networking library for Python")
     (description
@@ -7126,6 +7130,11 @@ provides additional functionality on the produced Mallard documents.")
                        ,@(if (not (target-64bit?))
                              '("-x" "run.parallel")
                              '())
+                       ,@(if (system-hurd?)
+                             '("-x" "test_class_ref"
+                               "-x" "test_compiler_directives"
+                               "-x" "test_lang_version")
+                             '())
                        ;; This test fails when running on 24 cores.
                        "-x" "cpp_stl_conversion")))))))
     (home-page "https://cython.org/")
@@ -7474,24 +7483,14 @@ color scales, and color space conversion easy.  It has support for:
 (define-public python-pyspnego
   (package
     (name "python-pyspnego")
-    (version "0.1.6")
-    (source
-     (origin
-       (method git-fetch)               ;no tests in PyPI release
-       (uri (git-reference
-             (url "https://github.com/jborean93/pyspnego")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0pfh2x0539f0k2qi2pbjm64b2fqp64c63xxpinvg1yfaw915kgpb"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "pytest")))))))
+    (version "0.8.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pyspnego" version))
+              (sha256
+               (base32
+                "1ps34laa0kvvp33az173hp5l0hnk8cr0bfqmlgw64ry5cv09qjg0"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest python-pytest-mock))
     (propagated-inputs
@@ -8364,17 +8363,6 @@ a simple netcat replacement with chaining support.")
 Python code against some of the style conventions in
 @url{http://www.python.org/dev/peps/pep-0008/,PEP 8}.")
     (license license:expat)))
-
-(define-public python-pycodestyle-2.6
-  (package
-    (inherit python-pycodestyle)
-    (version "2.6.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pycodestyle" version))
-              (sha256
-               (base32
-                "0bhr6ia0hmgx3nhgibc9pmkzhlh1zcqk707i5fbxgs702ll7v2n5"))))))
 
 (define-public python-multidict
   (package
@@ -12511,19 +12499,6 @@ file (e.g. @file{PKG-INFO}).")
       "Pyflakes statically checks Python source code for common errors.")
     (license license:expat)))
 
-(define-public python-pyflakes-2.2
-  (package
-    (inherit python-pyflakes)
-    (version "2.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pyflakes" version))
-              (sha256
-               (base32
-                "1j3zqbiwkyicvww499bblq33x0bjpzdrxajhaysr7sk7x5gdgcim"))
-              (patches
-               (search-patches "python-pyflakes-test-location.patch"))))))
-
 (define-public python-mccabe
   (package
     (name "python-mccabe")
@@ -12598,20 +12573,6 @@ cyclomatic complexity of Python source code.")
     (description
      "Flake8 is a wrapper around PyFlakes, pep8 and python-mccabe.")
     (license license:expat)))
-
-(define-public python-flake8-3.8
-  (package
-    (inherit python-flake8)
-    (version "3.8.4")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "flake8" version))
-              (sha256
-               (base32
-                "0fvcrsbyzjpcli8ldbpsdbpmf238nkvwc1dy4hy82lf63rvfinma"))))
-    (propagated-inputs
-     (list python-pycodestyle-2.6 python-entrypoints python-pyflakes-2.2
-           python-mccabe))))
 
 (define-public python-flake8-blind-except
   (package
@@ -14359,7 +14320,7 @@ specification.")
 (define-public python-libsass
   (package
     (name "python-libsass")
-    (version "0.20.1")
+    (version "0.22.0")
     (source
      (origin
        ;; PyPI tarball is missing some test files.
@@ -14369,7 +14330,7 @@ specification.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1r0kgl7i6nnhgjl44sjw57k08gh2qr7l8slqih550dyxbf1akbxh"))))
+        (base32 "0j6c7jb1bnpmz76gs5za41qwgrs7v1yd1jkgvsy5ql6dg2ph9vp4"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -14377,6 +14338,17 @@ specification.")
          ;; Use Guix package of libsass instead of compiling from a checkout.
          (add-before 'build 'set-libsass
            (lambda _ (setenv "SYSTEM_SASS" "indeed")))
+         ;; XXX: Silent 2 failing tests, reported to upstream (closed), see
+         ;; https://github.com/sass/libsass-python/issues/440.  It passed with
+         ;; libsass@3.6.5 which requires rebuild the world (1200+ packages),
+         ;; remove when v3.6.5 is available.
+         (add-before 'check 'silent-failing-tests
+           (lambda _
+             (substitute* "sasstests.py"
+               (("def test_build_one")
+                "def __off_test_build_one")
+               (("def test_stack_trace_formatting")
+                "def __off_test_stack_trace_formatting"))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
@@ -24808,19 +24780,25 @@ and corruption checks.")
 (define-public python-fasteners
   (package
     (name "python-fasteners")
-    (version "0.15")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "fasteners" version))
-       (sha256
-        (base32
-         "1vzmz1xh38b84dv0f4hlp7arwmx8wjlih6lf964bpy8dnyk6s5rs"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-monotonic python-six))
-    (native-inputs
-     (list python-testtools))
+    (version "0.17.3")
+    (source (origin
+              ;; No tests in the pypi tarball
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/harlowja/fasteners")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0m0dxv8ljpkq99s3d1mib1zfb0ppx3h74h5yr8809zsrq2klfn0m"))))
+    (build-system pyproject-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "pytest")))))))
+    (native-inputs (list python-diskcache python-more-itertools python-pytest))
     (home-page "https://github.com/harlowja/fasteners")
     (synopsis "Python package that provides useful locks")
     (description
@@ -25188,8 +25166,16 @@ tool).")
        (modules '((guix build utils)))
        (snippet
         '(begin
+           ;; Only add CFLAGS on architectures where they are supported
+           (substitute* "setup.py"
+             (("import sys")
+              "import sys\nimport platform")
+             (("os\\.name == 'posix'")
+              (string-append "os.name + platform.machine() == 'posixx86_64' or"
+                             " os.name + platform.machine() == 'posixx86'")))
            (delete-file-recursively "c-blosc")
-           (for-each delete-file '("numcodecs/blosc.c"
+           (for-each delete-file '("numcodecs/_shuffle.c"
+                                   "numcodecs/blosc.c"
                                    "numcodecs/compat_ext.c"
                                    "numcodecs/lz4.c"
                                    "numcodecs/vlen.c"
@@ -29998,7 +29984,7 @@ applications and daemons.")
 (define-public python-qtsass
   (package
     (name "python-qtsass")
-    (version "0.3.0")
+    (version "0.4.0")
     (source
      (origin
        ;; There are no tests in the PyPI tarball.
@@ -30008,7 +29994,7 @@ applications and daemons.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09s04aa14d8jqbh71clrb5y7vcmkxlp94mwmvzrkxahry3bk03cb"))))
+        (base32 "1skdihfby2f41zxgwa5zv44vdxjrw301rh88rjmzj4xbdlix6cig"))))
     (build-system python-build-system)
     (arguments
      `(#:test-target "pytest"
@@ -30020,7 +30006,7 @@ applications and daemons.")
              (for-each make-file-writable (find-files "."))
              #t)))))
     (native-inputs
-     (list python-pytest python-pytest-cov python-pytest-runner))
+     (list python-flaky python-pytest python-pytest-cov python-pytest-runner))
     (propagated-inputs
      (list python-libsass))
     (home-page "https://github.com/spyder-ide/qtsass")

@@ -1,0 +1,130 @@
+From 5446e36e0685ec5c7b4f812dec5bf7959db4f906 Mon Sep 17 00:00:00 2001
+From: Efraim Flashner <efraim@flashner.co.il>
+Date: Thu, 20 Jul 2023 15:56:21 +0300
+Subject: [PATCH 1/2] rktboot: Add support for riscv64.
+
+(cherry picked from commit f80c5d001d5235556ae9cde617b1e3a1322d0505)
+---
+ racket/src/rktboot/machine-def.rkt | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/racket/src/rktboot/machine-def.rkt b/racket/src/rktboot/machine-def.rkt
+index 8ff0688652..59ebfc88d8 100644
+--- a/racket/src/rktboot/machine-def.rkt
++++ b/racket/src/rktboot/machine-def.rkt
+@@ -25,6 +25,7 @@
+                                      [(regexp-match? #rx"^t?arm32" target-machine) "arm32"]
+                                      [(regexp-match? #rx"^t?arm64" target-machine) "arm64"]
+                                      [(regexp-match? #rx"^t?ppc32" target-machine) "ppc32"]
++                                     [(regexp-match? #rx"^t?rv64" target-machine) "rv64"]
+                                      [(regexp-match? #rx"^t?pb" target-machine) "pb"]
+                                      [else (error "machine.def: cannot infer architecture")]))]
+                [s (regexp-replace* #rx"[$][(]Mend[)]" s
+
+base-commit: b10ecfb8311fca2d42636eea2ca12aff0b76b208
+-- 
+2.41.0
+
+
+From 6261c3582c386e770d654ca6a36f112834f35aef Mon Sep 17 00:00:00 2001
+From: Philip McGrath <philip@philipmcgrath.com>
+Date: Sun, 16 Jul 2023 15:47:14 -0400
+Subject: [PATCH 2/2] rktboot: improve machene type inference
+
+Related to https://issues.guix.gnu.org/62231
+Related to https://github.com/racket/racket/issues/3948
+
+(cherry picked from commit 005488491cee89e7db38109de4c9dcf2d8d5aef0)
+---
+ racket/src/rktboot/config.rkt | 73 +++++++++++++++++++++++++++++------
+ 1 file changed, 61 insertions(+), 12 deletions(-)
+
+diff --git a/racket/src/rktboot/config.rkt b/racket/src/rktboot/config.rkt
+index 7a969017ed..2b411e002c 100644
+--- a/racket/src/rktboot/config.rkt
++++ b/racket/src/rktboot/config.rkt
+@@ -15,20 +15,69 @@
+                                (path->complete-path scheme-dir))))))
+ (hash-set! ht 'make-boot-scheme-dir scheme-dir)
+ 
++(define (infer-target-machine)
++  ;; Compute a native or pbarch machine string for the current platform.
++  ;; Some caveats:
++  ;;  1. A pbarch Racket will always infer a pbarch machine,
++  ;;     even if a native machine exists. Hopefully this is an
++  ;;     unlikely scenario: if you're running Racket CS, you've
++  ;;     bootstrapped Chez somehow, so you could use `re.boot`.
++  ;;  2. A `tpb` or `pb` Racket on a 32-bit platform would still return
++  ;;     64 from `(system-type 'word)`, but, in addition to the above,
++  ;;     it is not currently possible or desired to build Racket as
++  ;;     `tpb` or `pb` (as opposed to pbarch variants):
++  ;;     see <https://github.com/racket/racket/issues/4692>.
++  ;;  3. On a hypothetical platform where Chez supported both the
++  ;;     architecture and the OS, but not the combination of the two,
++  ;;     (e.g. riscv64 Windows) this code would currently return a
++  ;;     non-existent native machine (e.g. trv64nt) instead of a
++  ;;     working pbarch machine. Presumably this could be fixed if
++  ;;     such a platform came into existence.
++  (define s (path->string (system-library-subpath #f)))
++  (define arch+os
++    (cond
++      [(regexp-match #rx"^([^\\]+)\\\\([^\\]+)$" s)
++       => (λ (m)
++            (reverse (cdr m)))]
++      [(regexp-match #rx"^([^-]+)-(.+)$" s)
++       => cdr]
++      [else
++       (error 'infer-target-machine "unknown format for system library subpath"
++              "produced" (system-library-subpath #f))]))
++  (define arch
++    (case (car arch+os)
++      [("x86_64" "amd64") "a6"] ; https://github.com/racket/racket/issues/4691
++      [("i386") "i3"]
++      [("aarch64") "arm64"]
++      [("arm") "arm32"]
++      [("ppc") "ppc32"]
++      [("riscv64") "rv64"]
++      [("unknown") #f] ; pb machine types
++      [else #f]))
++  (define os
++    (case (cadr arch+os)
++      [("macosx" "darwin" "ios") "osx"]
++      [("win32" "cygwin") "nt"]
++      [("linux" "android") "le"]
++      [("gnu-hurd") "gnu"]
++      [("freebsd") "fb"]
++      [("openbsd") "ob"]
++      [("netbsd") "nb"]
++      [("solaris") "s2"] ; NOT "sunos4" (I think)
++      [("qnx") "qnx"]
++      [("unknown") #f] ; pb machine types
++      [else #f]))
++  (if (and arch os)
++      (string-append "t" arch os)
++      (format "tpb~a~a"
++              (system-type 'word)
++              (if (system-big-endian?)
++                  "b"
++                  "l"))))
++
+ (define target-machine (or (hash-ref ht 'make-boot-targate-machine #f)
+                            (getenv "MACH")
+-                           (case (system-type)
+-                             [(macosx) (if (eqv? 64 (system-type 'word))
+-                                           "ta6osx"
+-                                           "ti3osx")]
+-                             [(windows) (if (eqv? 64 (system-type 'word))
+-                                           "ta6nt"
+-                                           "ti3nt")]
+-                             [else
+-                              (case (path->string (system-library-subpath #f))
+-                                [("x86_64-linux") "ta6le"]
+-                                [("i386-linux") "ti3le"]
+-                                [else #f])])))
++                           (infer-target-machine)))
+ (hash-set! ht 'make-boot-targate-machine target-machine)
+ 
+ (define optimize-level-init 3)
+-- 
+2.41.0
+

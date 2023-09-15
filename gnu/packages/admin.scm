@@ -8,7 +8,7 @@
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2016, 2017, 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Pjotr Prins <pjotr.guix@thebird.nl>
-;;; Copyright © 2016, 2017 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2017, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Peter Feigl <peter.feigl@nexoid.at>
 ;;; Copyright © 2016 John J. Foerch <jjfoerch@earthlink.net>
@@ -36,7 +36,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2021, 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Hyunseok Kim <lasnesne@lagunposprasihopre.org>
@@ -153,6 +153,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages openldap)
+  #:use-module (gnu packages package-management)
   #:use-module (gnu packages patchutils)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages pcre)
@@ -385,9 +386,18 @@ interface and is based on GNU Guile.")
                (base32
                 "0v9ld9gbqdp5ya380fbkdsxa0iqr90gi6yk004ccz3n792nq6wlj"))))
     (native-inputs (modify-inputs (package-native-inputs shepherd-0.9)
-                     (replace "guile-fibers" guile-fibers-1.3)))
+                     (replace "guile-fibers"
+                       ;; Work around
+                       ;; <https://github.com/wingo/fibers/issues/89>.  This
+                       ;; affects any system without a functional real-time
+                       ;; clock (RTC), but in practice these are typically Arm
+                       ;; single-board computers.
+                       (if (target-arm?)
+                           guile-fibers-1.1
+                           guile-fibers-1.3))))
     (inputs (modify-inputs (package-inputs shepherd-0.9)
-              (replace "guile-fibers" guile-fibers-1.3)))))
+              (replace "guile-fibers"
+                (this-package-native-input "guile-fibers"))))))
 
 (define-public shepherd shepherd-0.9)
 
@@ -397,6 +407,43 @@ interface and is based on GNU Guile.")
     (name "guile2.2-shepherd")
     (native-inputs (list pkg-config guile-2.2))
     (inputs (list guile-2.2 guile2.2-fibers))))
+
+(define-public swineherd
+  (package
+    (name "swineherd")
+    (version "0.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/BIMSBbioinfo/swineherd")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "18nk0sy5s0dm2rhxnrrn8g0m098b110mxnnxa2vnl1dnvfdzszw8"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:configure-flags '("--localstatedir=/var")
+       #:make-flags '("GUILE_AUTO_COMPILE=0")))
+    (native-inputs
+     (list autoconf automake guile-3.0 pkg-config texinfo))
+    (inputs
+     (list btrfs-progs
+           guile-config
+           guile-fibers-1.3
+           guile-netlink
+           guile-3.0
+           guix
+           shepherd-0.10))
+    (home-page "https://github.com/BIMSBbioinfo/swineherd")
+    (synopsis "System container manager")
+    (description
+     "This project aims to provide an extension to the Shepherd, retraining it
+as a swineherd, a manager of crude system containers.  It does this by
+providing a Shepherd service @code{swineherd} that talks to the Shepherd
+process to create Guix System containers as Shepherd services.  It also comes
+with an optional HTTP API server.")
+    (license license:gpl3+)))
 
 (define-public cfm
   (package
@@ -1931,7 +1978,11 @@ at once based on a Perl regular expression.")
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "rc/rc"
                 (("/usr/sbin/sendmail")
-                 (search-input-file inputs "/bin/mail")))))
+                 (search-input-file inputs "/bin/mail")))
+              (with-fluids ((%default-port-encoding "ISO-8859-1"))
+                (substitute* "src/rottlog"
+                  (("awk")
+                   (search-input-file inputs "/bin/awk"))))))
           (add-after 'build 'set-packdir
             (lambda _
               ;; Set a default location for archived logs.
@@ -1950,7 +2001,7 @@ at once based on a Perl regular expression.")
             (lambda _
               (invoke "make" "install-info"))))))
     (native-inputs (list autoconf automake texinfo util-linux)) ; for 'cal'
-    (inputs (list coreutils mailutils))
+    (inputs (list coreutils gawk mailutils))
     (home-page "https://www.gnu.org/software/rottlog/")
     (synopsis "Log rotation and management")
     (description
@@ -3961,12 +4012,12 @@ Intel DRM Driver.")
                 "0i7wpisipwzk0j62pzaigbiq42y1mn4sbraz4my2jlz6ahwf00kv"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; there are no tests
-       #:make-flags
-       (list (string-append "PREFIX=" %output))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))         ; no configure script
+     (list #:tests? #f                      ; there are no tests
+           #:make-flags
+           #~(list (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))         ; no configure script
     (home-page "https://github.com/dylanaraps/neofetch")
     (synopsis "System information script")
     (description "Neofetch is a command-line system information tool written in

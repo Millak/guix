@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Jesse Gibbons <jgibbons2357+guix@gmail.com>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,6 +21,7 @@
 (define-module (gnu packages piet)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system gnu)
@@ -43,14 +45,17 @@
                 "0nl59fhdqqr7nslxdirdn8nvlq5wws67c7jyx2ckbmxbc9h8bv9d"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-binaries
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-program (string-append out "/bin/npietedit")
-                 `("PATH" ":" prefix (,(dirname (which "wish")))))
-               #t))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'wrap-binaries
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (let ((out (assoc-ref outputs "out")))
+                     (wrap-program (string-append out
+                                                  "/bin/npietedit")
+                       `("PATH" ":" prefix
+                         (,(dirname
+                            (search-input-file
+                             inputs "bin/wish")))))))))))
     (inputs
      (list gd giflib libpng tk))
     (native-inputs (list groff))

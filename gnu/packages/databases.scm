@@ -59,7 +59,8 @@
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;; Copyright © 2021, 2022 jgart <jgart@dismail.de>
-;;; Copyright © 2023 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2023 Felix Gruber <felgru@posteo.ne
+;;; Copyright © 2023 Munyoki Kilyungi <me@bonfacemunyoki.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3706,7 +3707,7 @@ PickleShare.")
 (define-public python-apsw
   (package
     (name "python-apsw")
-    (version "3.40.0.0")
+    (version "3.42.0.1")
     ;; The compressed release has fetching functionality disabled.
     (source
      (origin
@@ -3716,11 +3717,11 @@ PickleShare.")
              version "/apsw-" version ".zip"))
        (sha256
         (base32
-         "02sgja00azvd08wi2wm105apmhp2644s7aw9b1zdg3dkcwjnsiad"))))
+         "0dr7zymn45x2793cilr709rnwn9g1c4n4vzln57y2lhj7420ykic"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-cython unzip))
-    (inputs (list sqlite-next))         ;SQLite 3.40 required.
+    (inputs (list sqlite-next))         ;SQLite 3.42 required.
     (arguments
      (list
       #:phases
@@ -3963,7 +3964,7 @@ database).")
 (define-public yoyo-migrations
   (package
     (name "yoyo-migrations")
-    (version "7.2.0")
+    (version "8.2.0")
     (source
      (origin
        ;; We use the upstream repository, as the tests are not included in the
@@ -3974,14 +3975,14 @@ database).")
              (changeset (string-append "v" version "-release"))))
        (file-name (string-append name "-" version "-checkout"))
        (sha256
-        (base32 "0q2z9bgdj3wyix7yvqsayfs21grp5av8ilh411lgmjhigszkvhcq"))))
+        (base32 "1al030ix0w63hr4s3mqry6s0mlqdj8p242pdqks06br7c25nx3yj"))))
     (build-system python-build-system)
     (arguments
      ;; XXX: Tests require a connection to some pgsql database and psycopg
      ;; fails to connect to it.
      '(#:tests? #f))
     (propagated-inputs
-     (list python-sqlparse python-tabulate))
+     (list python-sqlparse python-tabulate python-importlib-metadata))
     (home-page "https://ollycope.com/software/yoyo/latest/")
     (synopsis "Database migrations with SQL")
     (description
@@ -4304,7 +4305,7 @@ the SQL language using a syntax that reflects the resulting query.")
 (define-public apache-arrow
   (package
     (name "apache-arrow")
-    (version "12.0.1")
+    (version "13.0.0")
     (source
      (origin
        (method git-fetch)
@@ -4314,7 +4315,7 @@ the SQL language using a syntax that reflects the resulting query.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "03flvb4xj6a7mfphx68ndrqr6g5jphmzb75m16fx7rnbzira2zpz"))))
+         "03ykynzz01ar2y4blhcxjh6xsi0gqv380h5m669dddfz2isplsf8"))))
     (build-system cmake-build-system)
     (arguments
      (list
