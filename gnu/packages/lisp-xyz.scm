@@ -26528,7 +26528,7 @@ in a native template application).")
 (define-public sbcl-nkeymaps
   (package
     (name "sbcl-nkeymaps")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
@@ -26537,11 +26537,12 @@ in a native template application).")
              (commit version)))
        (file-name (git-file-name "cl-nkeymaps" version))
        (sha256
-        (base32 "1f7s9g5s9riyyrbj8lyvzlvymdbh9x9sknxmjzfrkbz3iqlpanc3"))))
+        (base32 "08q3bmb3i7mjpm83msp1qgpifpzf019ggikbxwc2dk04i3c2w0vv"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      (list sbcl-alexandria
            sbcl-fset
+           sbcl-cl-str
            sbcl-trivial-package-local-nicknames))
     (native-inputs
      (list sbcl-lisp-unit2))
