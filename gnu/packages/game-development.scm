@@ -1646,53 +1646,61 @@ games.")
     (license license:expat)))
 
 (define-public python-pyxel
-  (package
-    (name "python-pyxel")
-    (version "1.4.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://github.com/kitao/pyxel")
-         (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0bwsgb5yq5s479cnf046v379zsn5ybp5195kbfvzr9l11qbaicm9"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           (delete-file-recursively "pyxel/core/bin")))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f ; "Tests" are actually example programs that never halt.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-build-files
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "setup.py"
-               (("\"pyxel\\.core\\.bin\\.(.*)\"," all arch)
-                (if (string=? arch "linux")
-                    all
-                    "")))
-             (substitute* "pyxel/core/Makefile"
-               (("`sdl2-config")
-                (string-append "`sdl2-config --prefix="
-                               (assoc-ref inputs "sdl2"))))))
-         (add-before 'build 'prebuild
-           (lambda _
-             (invoke "make" "-C" "pyxel/core"))))))
-    (inputs
-     `(("gifsicle" ,gifsicle)
-       ("sdl2" ,(sdl-union (list sdl2 sdl2-image)))))
-    (home-page "https://github.com/kitao/pyxel")
-    (synopsis "Retro game engine for Python")
-    (description "Pyxel is a game engine inspired by retro gaming consoles.
+  ;; Note to updaters: Use commit and revision even if you're bumping
+  ;; to a release, as upstream is known to "reuse" tags.
+  ;; See <https://bugs.gnu.org/66015> for more information.
+  (let ((commit "be75b724cae9e10e56a82a5421f9dd65390f1a06")
+        (revision "2"))
+    (package
+      (name "python-pyxel")
+      ;; This is the latest version to not require Rust…
+      (version (git-version "1.4.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/kitao/pyxel")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "03ch79cmh9fxvq6c2f3zc2snzczhqi2n01f254lsigckc7d5wz08"))
+         (modules '((guix build utils)))
+         (snippet
+          #~(begin
+              (substitute* "pyxel/__init__.py"
+                (("from collections import MutableSequence")
+                 "from collections.abc import MutableSequence"))))))
+      (build-system python-build-system)
+      (arguments
+       `(#:tests? #f ; "Tests" are actually example programs that never halt.
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'patch-build-files
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "setup.py"
+                 (("\"pyxel\\.core\\.bin\\.(.*)\"," all arch)
+                  (if (string=? arch "linux")
+                      all
+                      "")))
+               (substitute* "pyxel/core/Makefile"
+                 (("`sdl2-config")
+                  (string-append "`sdl2-config --prefix="
+                                 (assoc-ref inputs "sdl2"))))))
+           (add-before 'build 'prebuild
+             (lambda _
+               (invoke "make" "-C" "pyxel/core"))))))
+      (inputs
+       `(("gifsicle" ,gifsicle)
+         ("sdl2" ,(sdl-union (list sdl2 sdl2-image)))))
+      (home-page "https://github.com/kitao/pyxel")
+      (synopsis "Retro game engine for Python")
+      (description "Pyxel is a game engine inspired by retro gaming consoles.
 It has a fixed 16-color palette, can hold up to 3 image banks and 8 tilemaps
 (256x256 pixels each) and 4 sound channels with 64 definable sounds.  It
 also comes with a built-in image and sound editor.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public grafx2
   (package
