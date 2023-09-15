@@ -14124,7 +14124,11 @@ another window.")
        (modify-phases %standard-phases
          ;; This phase incorrectly attempts to substitute "activate" and fails
          ;; doing so.
-         (delete 'patch-el-files))
+         (delete 'patch-el-files)
+         (add-after 'unpack 'ert-number-tests
+             (lambda _
+               (ert-number-tests "test/pyvenv-hook-dir-test.el"
+                                 "pyvenv-hook-dir"))))
        #:tests? #t
        #:test-command '("ert-runner")))
     (native-inputs
