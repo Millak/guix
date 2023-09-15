@@ -4873,7 +4873,9 @@ current match, total matches and exit status.
                   (make-file-writable test-file)
                   (substitute* test-file
                     (("testdata/indentation_tests/" all)
-                     (string-append "test/" all)))))))))
+                     (string-append "test/" all)))
+                  (ert-number-tests "test/go-fill-paragraph-test.el"
+                                    "go--fill-paragraph-block-region")))))))
       (build-system emacs-build-system)
       (native-inputs (list emacs-ert-runner))
       (home-page "https://github.com/dominikh/go-mode.el")
