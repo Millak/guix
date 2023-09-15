@@ -13840,7 +13840,22 @@ A function to toggle the @code{*elfeed-log*} buffer in a popup window.
          (modify-phases %standard-phases
            (add-before 'check 'chmod
              (lambda _
-               (chmod "test/fixture-mark-feed-ignore.org" #o644))))))
+               (chmod "test/fixture-mark-feed-ignore.org" #o644)))
+           (add-before 'check 'xt-number-tests
+             (lambda _
+               ((lambda (file test-name)     ; variant of ert-number-tests
+                  (emacs-batch-edit-file file
+                    `(let ((i 0))
+                       (while (re-search-forward ,(string-append "xt-deftest "
+                                                                 test-name)
+                                                 nil t)
+                         (goto-char (match-beginning 0))
+                         (kill-region (match-beginning 0) (match-end 0))
+                         (insert (format "xt-deftest %s-%d" ,test-name i))
+                         (setq i (+ i 1)))
+                       (basic-save-buffer))))
+                "test/elfeed-org-test.el"
+                "rmh-elfeed-org-convert-headline-to-tagger-params"))))))
       (propagated-inputs
        (list emacs-elfeed emacs-org emacs-dash emacs-s))
       (native-inputs
