@@ -28,6 +28,7 @@
   #:use-module (gnu image)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages gdb)
+  #:autoload   (gnu packages gnupg) (guile-gcrypt)
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages virtualization)
@@ -50,6 +51,7 @@
   #:use-module (guix records)
   #:use-module (guix store)
   #:use-module (guix utils)
+  #:autoload   (guix self) (make-config.scm)
 
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-26)
@@ -1271,6 +1273,50 @@ is added to the OS specified in CONFIG."
 
   (program-file "initialize-hurd-vm-substitutes" run))
 
+(define (authorize-guest-substitutes-on-host)
+  "Return a program that authorizes the guest's archive signing key (passed as
+an argument) on the host."
+  (define not-config?
+    (match-lambda
+      ('(guix config) #f)
+      (('guix _ ...) #t)
+      (('gnu _ ...) #t)
+      (_ #f)))
+
+  (define run
+    (with-extensions (list guile-gcrypt)
+      (with-imported-modules `(((guix config) => ,(make-config.scm))
+                               ,@(source-module-closure
+                                  '((guix pki)
+                                    (guix build utils))
+                                  #:select? not-config?))
+        #~(begin
+            (use-modules (ice-9 match)
+                         (ice-9 textual-ports)
+                         (gcrypt pk-crypto)
+                         (guix pki)
+                         (guix build utils))
+
+            (match (command-line)
+              ((_ guest-config-directory)
+               (let ((guest-key (string-append guest-config-directory
+                                               "/signing-key.pub")))
+                 (if (file-exists? guest-key)
+                     ;; Add guest key to the host's ACL.
+                     (let* ((key (string->canonical-sexp
+                                  (call-with-input-file guest-key
+                                    get-string-all)))
+                            (acl (public-keys->acl
+                                  (cons key (acl->public-keys (current-acl))))))
+                       (with-atomic-file-replacement %acl-file
+                         (lambda (_ port)
+                           (write-acl acl port))))
+                     (format (current-error-port)
+                             "warning: guest key missing from '~a'~%"
+                             guest-key)))))))))
+
+  (program-file "authorize-guest-substitutes-on-host" run))
+
 (define (hurd-vm-activation config)
   "Return a gexp to activate the Hurd VM according to CONFIG."
   (with-imported-modules '((guix build utils))
@@ -1294,7 +1340,10 @@ is added to the OS specified in CONFIG."
 
         (unless (file-exists? guix-directory)
           (invoke #$(initialize-hurd-vm-substitutes)
-                  guix-directory)))))
+                  guix-directory))
+
+        ;; Authorize the archive signing key from GUIX-DIRECTORY in the host.
+        (invoke #$(authorize-guest-substitutes-on-host) guix-directory))))
 
 (define hurd-vm-service-type
   (service-type
