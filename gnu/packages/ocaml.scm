@@ -5325,11 +5325,12 @@ necessary set of rewriters.")
 
 (define-public bap
   (let (;; Let pin one commit because -alpha is subject to change.
+        ;; The last stable release v2.5.0 is from July 2022.
         (revision "0")
-        (commit "a972f8a419294dfb21847db5172ba58c5d7767eb"))
+        (commit "f995d28a4a34abb4cef8e0b3bd3c41cd710ccf1a"))
     (package
       (name "bap")
-      (version (git-version "2.5.0-alpha" revision commit))
+      (version (git-version "2.6.0-alpha" revision commit))
       (home-page "https://github.com/BinaryAnalysisPlatform/bap")
       (source (origin
                 (method git-fetch)
@@ -5339,7 +5340,7 @@ necessary set of rewriters.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1fw9pp0xnssc08qqfkcafffap4f46hw7zmk80gif5yc4nazga8w5"))))
+                  "1zfkc8nagf8kvxbypalbhf6gs0c7i48zx53hlpak2ipjwhvm5im5"))))
       (build-system ocaml-build-system)
       (arguments
        (list
