@@ -1485,6 +1485,14 @@ name, and they will be scheduled on matching build machines.
 @end table
 @end deftp
 
+@quotation Note
+On Guix System, instead of managing @file{/etc/guix/machines.scm}
+independently, you can choose to specify build machines directly in the
+@code{operating-system} declaration, in the @code{build-machines} field
+of @code{guix-configuration}.  @xref{guix-configuration-build-machines,
+@code{build-machines} field of @code{guix-configuration}}.
+@end quotation
+
 The @command{guix} command must be in the search path on the build
 machines.  You can check whether this is the case by running:
 
@@ -19263,6 +19271,28 @@ The type of compression used for build logs---one of @code{gzip},
 Whether to discover substitute servers on the local network using mDNS
 and DNS-SD.
 
+@anchor{guix-configuration-build-machines}
+@item @code{build-machines} (default: @code{#f})
+This field must be either @code{#f} or a list of gexps evaluating to a
+@code{build-machine} record (@pxref{Daemon Offload Setup}).
+
+When it is @code{#f}, the @file{/etc/guix/machines.scm} file is left
+untouched.  Otherwise, the list of of gexps is written to
+@file{/etc/guix/machines.scm}; if a previously-existing file is found,
+it is backed up as @file{/etc/guix/machines.scm.bak}.  This allows you
+to declare build machines for offloading directly in the operating
+system declaration, like so:
+
+@lisp
+(guix-configuration
+  (build-machines
+    (list #~(build-machine (name "foo.example.org") @dots{})
+          #~(build-machine (name "bar.example.org") @dots{}))))
+@end lisp
+
+Additional build machines may be added @i{via} the @code{guix-extension}
+mechanism (see below).
+
 @item @code{extra-options} (default: @code{'()})
 List of extra command-line options for @command{guix-daemon}.
 
@@ -19300,7 +19330,6 @@ Environment variables to be set before starting the daemon, as a list of
 @end deftp
 
 @deftp {Data Type} guix-extension
-
 This data type represents the parameters of the Guix build daemon that
 are extendable. This is the type of the object that must be used within
 a guix service extension.
@@ -19312,6 +19341,16 @@ A list of file-like objects where each element contains a public key.
 
 @item @code{substitute-urls} (default: @code{'()})
 A list of strings where each element is a substitute URL.
+
+@item @code{build-machines} (default: @code{'()})
+A list of gexps that evaluate to @code{build-machine} records
+(@pxref{Daemon Offload Setup}).
+
+Using this field, a service may add new build machines to receive builds
+offloaded by the daemon.  This is useful for a service such as
+@code{hurd-vm-service-type}, which can make a GNU/Hurd virtual machine
+directly usable for offloading (@pxref{hurd-vm,
+@code{hurd-vm-service-type}}).
 
 @item @code{chroot-directories} (default: @code{'()})
 A list of file-like objects or strings pointing to additional directories the build daemon can use.
@@ -35654,6 +35693,7 @@ host.  If empty, QEMU uses a default file name.
 @end deftp
 
 
+@anchor{hurd-vm}
 @subsubheading The Hurd in a Virtual Machine
 
 @cindex @code{hurd}
