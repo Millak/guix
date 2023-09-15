@@ -6593,7 +6593,7 @@ discovery protocols.")
 (define-public totem
   (package
     (name "totem")
-    (version "42.0")
+    (version "43.0")
     (source
      (origin
        (method url-fetch)
@@ -6601,7 +6601,7 @@ discovery protocols.")
                            (version-major version) "/"
                            "totem-" version ".tar.xz"))
        (sha256
-        (base32 "1az6ay7zhz2naqrzcfldx1yv2ylw1yjx76g3mqrqppwmvcflkw2a"))))
+        (base32 "07m4jiry78m85sqcx7f9r7dkfvfnd8xzhfad5939cn4bj9akcvdk"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config
@@ -6655,8 +6655,9 @@ discovery protocols.")
           (add-after 'unpack 'skip-gtk-update-icon-cache
             ;; Don't create 'icon-theme.cache'.
             (lambda _
-              (substitute* "meson_post_install.py"
-                (("gtk-update-icon-cache") "true"))))
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false"))))
          (add-before 'install 'disable-cache-generation
            (lambda _
              (setenv "DESTDIR" "/")))
