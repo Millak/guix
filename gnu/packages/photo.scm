@@ -370,7 +370,18 @@ overlapping images, as well as some command line tools.")
                                   name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0j5x011ilalb47ssah50ag0a4phgh1b0wdgxdbbp1gcyjcjf60w7"))))
+                "0j5x011ilalb47ssah50ag0a4phgh1b0wdgxdbbp1gcyjcjf60w7"))
+              (patches
+               ;; TODO: Remove when updating.
+               ;; Fixed upstream with a98e00eed893f62dd8349fc2894abca3aff4b33a.
+               (search-patches "enblend-enfuse-reproducible.patch"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; TODO: Remove when updating.
+               ;; Fixed upstream with 81e25afe71146aaaf5058c604034f35d57e3be9d.
+               #~(substitute* "src/minimizer.cc"
+                   (("^#include <gsl/gsl_errno\\.h>" all)
+                    (string-append all "\n#include <limits>"))))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config
@@ -395,16 +406,8 @@ overlapping images, as well as some command line tools.")
            vigra
            zlib))
     (arguments
-     (list #:configure-flags
-           #~(list "--enable-openmp")
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'add-missing-include
-                 (lambda _
-                   (substitute* "src/minimizer.h"
-                     ;; Fix error: ‘numeric_limits’ is not a member of ‘std’.
-                     (("#include <vector>" line)
-                      (string-append line "\n#include <limits>"))))))))
+     (list
+      #:configure-flags #~(list "--enable-openmp")))
     (home-page "https://enblend.sourceforge.net/")
     (synopsis "Tools for combining and blending images")
     (description
