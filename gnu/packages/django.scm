@@ -714,6 +714,24 @@ settings from URLs.")
                    license:cc-by4.0     ;documentation
                    license:cc0))))      ;configuration and data
 
+(define-public python-dj-search-url
+  (package
+    (name "python-dj-search-url")
+    (version "0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "dj-search-url" version))
+              (sha256
+               (base32
+                "0h7vshhglym6af2pplkyivk6y0g0ncq0xpdzi88kq2sha9c1lka2"))))
+    (build-system pyproject-build-system)
+    (home-page "https://github.com/dstufft/dj-search-url")
+    (synopsis "Configure Haystack search from URLs")
+    (description
+     "This package provides a facility for configuring Django Haystack
+applications with a @var{SEARCH_URL} variable.")
+    (license license:bsd-2)))
+
 (define-public python-django-picklefield
   (package
     (name "python-django-picklefield")
