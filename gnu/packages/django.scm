@@ -673,14 +673,16 @@ example, explicit calls to callables from templates and better performance.")
 (define-public python-dj-database-url
   (package
     (name "python-dj-database-url")
-    (version "0.5.0")
+    (version "2.1.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "dj-database-url" version))
               (sha256
                (base32
-                "0qs16g5y3lflxibsl8gwkwap21crhmmv98l60rdq6x1wawgypsja"))))
+                "0pqkifl5zradgsznjpk6g6zp64gnsxdav7x3knf56vh8w7pjq17j"))))
     (build-system python-build-system)
+    (propagated-inputs
+     (list python-django python-typing-extensions))
     (home-page "https://github.com/kennethreitz/dj-database-url")
     (synopsis "Use Database URLs in your Django Application")
     (description
@@ -690,7 +692,7 @@ DATABASE_URL environment variable to configure your Django application.
 The dj_database_url.config method returns a Django database connection
 dictionary, populated with all the data specified in your URL.  There is also a
 conn_max_age argument to easily enable Django’s connection pool.")
-    (license license:bsd-2)))
+    (license license:bsd-3)))
 
 (define-public python-dj-email-url
   (package
