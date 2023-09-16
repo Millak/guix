@@ -1844,6 +1844,7 @@ table inet filter {
     (let ((nft (file-append package "/sbin/nft")))
       (shepherd-service
        (documentation "Packet filtering and classification")
+       (actions (list (shepherd-configuration-action ruleset)))
        (provision '(nftables))
        (start #~(lambda _
                   (invoke #$nft "--file" #$ruleset)))
