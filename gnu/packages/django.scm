@@ -209,6 +209,46 @@ to the @dfn{don't repeat yourself} (DRY) principle.")
 with a @var{CACHE_URL} environment variable.")
     (license license:expat)))
 
+(define-public python-django-configurations
+  (package
+    (name "python-django-configurations")
+    (version "2.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "django-configurations" version))
+              (sha256
+               (base32
+                "11chll26iqqy5chyx62hya20cadk10nm2la7sch7pril70a5rhm6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     ;; Taken from tox.ini.
+                     (setenv "DJANGO_SETTINGS_MODULE" "tests.settings.main")
+                     (setenv "DJANGO_CONFIGURATION" "Test")
+                     (setenv "PYTHONPATH"
+                             (string-append ".:" (getenv "GUIX_PYTHONPATH")))
+                     (invoke "django-cadmin" "test" "-v2")))))))
+    (propagated-inputs
+     (list python-django))
+    (native-inputs
+     (list python-dj-database-url
+           python-dj-email-url
+           python-dj-search-url
+           python-django-cache-url
+           python-setuptools-scm))
+    (home-page "https://django-configurations.readthedocs.io/")
+    (synopsis "Helper module for organizing Django settings")
+    (description
+     "@code{django-configurations} helps you organize the configuration of
+your Django project by providing glue code to bridge between Django'smodule
+based settings system and programming patterns like mixins, facades, factories
+and adapters that are useful for non-trivial configuration scenarios.")
+    (license license:bsd-3)))
+
 (define-public python-django-extensions
   (package
     (name "python-django-extensions")
