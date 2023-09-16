@@ -53,7 +53,7 @@
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2021 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2021, 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2022 cage <cage-dev@twistfold.it>
 ;;; Copyright © 2022 Pradana Aumars <paumars@courrier.dev>
@@ -8707,7 +8707,7 @@ of Geminispace, but it defaults to a specific domain.")
 (define-public libzim
   (package
     (name "libzim")
-    (version "8.0.0")
+    (version "8.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8715,7 +8715,7 @@ of Geminispace, but it defaults to a specific domain.")
                     (commit version)))
               (sha256
                (base32
-                "1a7wj8kmpx5aqx0wsfcnaqlfsf1gr66iqxyn24cgjnk4d1rjsahm"))
+                "1g735aqw0vlxqgyjv02lvq24dr5shydp4y8mqianf8720s5fs73f"))
               (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (arguments
