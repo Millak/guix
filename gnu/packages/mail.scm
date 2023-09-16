@@ -1625,14 +1625,14 @@ system, written in the Mercury language.")
 (define-public muchsync
   (package
     (name "muchsync")
-    (version "6")
+    (version "7")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://www.muchsync.org/src/"
-                           "muchsync-" version ".tar.gz"))
+       (uri (string-append "https://www.muchsync.org/src/" "muchsync-"
+                           version ".tar.gz"))
        (sha256
-        (base32 "1s799kx16nm5ry1fcqcc0grgxrwnnp4cnzd0hzwbkvc5v2sf6g8b"))))
+        (base32 "1b5ylf0xgb59x6hna5gllm6nb1jn50wqvp7xfls83x0frmpjygpq"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pandoc pkg-config))
