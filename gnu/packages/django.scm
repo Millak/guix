@@ -6,7 +6,7 @@
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Vijayalakshmi Vedantham <vijimay12@gmail.com>
 ;;; Copyright © 2019 Sam <smbaines8@gmail.com>
-;;; Copyright © 2020, 2021, 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2020, 2021, 2022, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
 ;;; Copyright © 2022 Pradana Aumars <paumars@courrier.dev>
@@ -32,6 +32,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix gexp)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix deprecation)
   #:use-module (guix search-paths)
@@ -690,6 +691,26 @@ The dj_database_url.config method returns a Django database connection
 dictionary, populated with all the data specified in your URL.  There is also a
 conn_max_age argument to easily enable Django’s connection pool.")
     (license license:bsd-2)))
+
+(define-public python-dj-email-url
+  (package
+    (name "python-dj-email-url")
+    (version "1.0.6")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "dj-email-url" version))
+              (sha256
+               (base32
+                "16k91rvd9889xxrrf84a3zb0jpinizhfqdmafn54zxa8kqrf7zsm"))))
+    (build-system pyproject-build-system)
+    (home-page "https://github.com/migonzalvar/dj-email-url")
+    (synopsis "Configure email settings from URLs")
+    (description
+     "This package provides a facility for configuring Django email backend
+settings from URLs.")
+    (license (list license:bsd-2        ;source code
+                   license:cc-by4.0     ;documentation
+                   license:cc0))))      ;configuration and data
 
 (define-public python-django-picklefield
   (package
