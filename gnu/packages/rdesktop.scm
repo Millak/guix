@@ -55,6 +55,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages pulseaudio)
+  #:use-module (gnu packages security-token)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
@@ -95,7 +96,7 @@ to remotely control a user's Windows desktop.")
 (define-public freerdp
   (package
     (name "freerdp")
-    (version "2.10.0")
+    (version "2.11.1")
     (source
      (origin
        (method git-fetch)
@@ -104,7 +105,7 @@ to remotely control a user's Windows desktop.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0j5waq4h7l5f0vrh7wmrv6r27p537qwbg7ab8j0n0ia5p4nvgjp2"))))
+        (base32 "1mxx711phzsaa6l022xnn41dq1315y81cgxka3rxy0fg638wipn7"))))
     (build-system cmake-build-system)
     (native-inputs
      (list docbook-xml
@@ -139,6 +140,7 @@ to remotely control a user's Windows desktop.")
            openh264
            opensles
            openssl
+           pcsc-lite ; for smartcard support
            pulseaudio
            zlib))
     (propagated-inputs (list libxkbcommon openssl wayland))
