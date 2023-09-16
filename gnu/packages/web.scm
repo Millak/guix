@@ -8786,7 +8786,7 @@ It contains the code shared by all Kiwix ports.")
 (define-public kiwix-desktop
   (package
     (name "kiwix-desktop")
-    (version "2.2.2")
+    (version "2.3.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -8795,7 +8795,8 @@ It contains the code shared by all Kiwix ports.")
                     ".tar.gz"))
               (sha256
                (base32
-                "0ani12d91azcwwys499848ws7rx0m7c23nalcm5fanjak76bg6n6"))))
+                "0hlk05gcb3fmnxhwj6gan51v98rdq3iv2lklwbpmm1bazmz8i7br"))
+              (patches (search-patches "kiwix-desktop-newer-libkiwix.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
