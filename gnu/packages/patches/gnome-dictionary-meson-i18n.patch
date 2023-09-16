@@ -1,0 +1,52 @@
+From 71933f6586475b36c70ef325373fe6d50c7a034f Mon Sep 17 00:00:00 2001
+From: Jan Beich <jbeich@FreeBSD.org>
+Date: Mon, 24 Jan 2022 11:13:54 +0000
+Subject: [PATCH] meson: drop unused argument for i18n.merge_file()
+
+Ignored in Meson < 0.60.0, deprecated since 0.60.1 and fatal since 0.61.0.
+
+data/appdata/meson.build:3:5: ERROR: Function does not take positional arguments.
+data/meson.build:6:5: ERROR: Function does not take positional arguments.
+data/meson.build:49:5: ERROR: Function does not take positional arguments.
+---
+ data/appdata/meson.build | 2 +-
+ data/meson.build         | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/data/appdata/meson.build b/data/appdata/meson.build
+index 1dc4ed7..e44a58e 100644
+--- a/data/appdata/meson.build
++++ b/data/appdata/meson.build
+@@ -1,6 +1,6 @@
+ appdata_conf = configuration_data()
+ appdata_conf.set('application_id', application_id)
+-i18n.merge_file('appdata',
++appdata_file = i18n.merge_file(
+   input: configure_file(
+     input: 'org.gnome.Dictionary.appdata.xml.in.in',
+     output: 'org.gnome.Dictionary.appdata.xml.in',
+diff --git a/data/meson.build b/data/meson.build
+index 660e6b8..7ec7251 100644
+--- a/data/meson.build
++++ b/data/meson.build
+@@ -3,7 +3,7 @@ subdir('appdata')
+ desktop_conf = configuration_data()
+ desktop_conf.set('icon', application_id)
+ desktop_conf.set('application_id', application_id)
+-i18n.merge_file('desktop',
++desktop_file = i18n.merge_file(
+   input: configure_file(
+     input: 'org.gnome.Dictionary.desktop.in.in',
+     output: 'org.gnome.Dictionary.desktop.in',
+@@ -45,7 +45,7 @@ sources = [
+ ]
+ 
+ foreach s: sources
+-  i18n.merge_file('sources',
++  i18n.merge_file(
+     input: '@0@.in'.format(s),
+     output: s,
+     install: true,
+-- 
+2.41.0
+

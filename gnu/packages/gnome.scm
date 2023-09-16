@@ -10497,7 +10497,9 @@ like automatic language detection, text-to-speech and clipboard buttons.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1d8dhcfys788vv27v34i3s3x3jdvdi2kqn2a5p8c937a9hm0qr9f"))))
+                "1d8dhcfys788vv27v34i3s3x3jdvdi2kqn2a5p8c937a9hm0qr9f"))
+              (patches
+               (search-patches "gnome-dictionary-meson-i18n.patch"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
