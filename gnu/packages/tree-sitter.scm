@@ -607,3 +607,10 @@ which will be used as a snippet in origin."
            (use-modules (guix build utils))
            (delete-file "binding.gyp")
            (delete-file-recursively "bindings"))))))
+
+(define-public tree-sitter-lua
+  (tree-sitter-grammar
+   "lua" "Lua"
+   "05irhg6gg11r9cnzh0h3691pnxjhd396sa1x8xrgqjz2fd09brf3"
+   "0.0.19"
+   #:repository-url "https://github.com/MunifTanjim/tree-sitter-lua"))
