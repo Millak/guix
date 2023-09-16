@@ -424,13 +424,13 @@ size and quality.")
 (define-public python-pytest-django
   (package
     (name "python-pytest-django")
-    (version "4.4.0")
+    (version "4.5.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pytest-django" version))
               (sha256
                (base32
-                "0mglnz0w6k7dgw1jn6giv56pmdjd6a3zwwkhxb2kyzmzk0viw5xm"))))
+                "1hp61jbnnhnjxzdrz9ni08lzrv8q7iiycnnxvcwnkhxpkdsny1yr"))))
     (build-system python-build-system)
     (arguments
      ;; The test suite is disabled because there are many test failures (see:
@@ -454,7 +454,7 @@ size and quality.")
                                         " and not test_urls_cache_is_cleared")))
                (format #t "test suite not run~%")))))))
     (native-inputs
-     (list python-django python-setuptools-scm python-pytest-xdist))
+     (list python-setuptools-scm))
     (propagated-inputs
      (list python-pytest))
     (home-page "https://pytest-django.readthedocs.org/")
