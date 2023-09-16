@@ -669,6 +669,7 @@ an interpreter, a compiler, a debugger, and much more.")
             (variable "XDG_CONFIG_DIRS")
             (files '("etc")))))
     (home-page "https://www.sbcl.org/")
+    (supported-systems (delete "i586-gnu" %supported-systems))
     (synopsis "Common Lisp implementation")
     (description "Steel Bank Common Lisp (SBCL) is a high performance Common
 Lisp compiler.  In addition to the compiler and runtime system for ANSI Common
