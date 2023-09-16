@@ -962,8 +962,8 @@ transactions from C or Python.")
     (license license:gpl2+)))
 
 (define-public bffe
-  (let ((commit "634d3444c094dd594bdf2b15b9a71055462ae676")
-        (revision "1"))
+  (let ((commit "722c37ec8a23835edfc85cba3d89868592a2ed2d")
+        (revision "2"))
     (package
       (name "bffe")
       (version (git-version "0" revision commit))
@@ -974,7 +974,7 @@ transactions from C or Python.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0z13hyaq6bs2j3hnr7ys2vsyx2554zy69ka21savywx0ci3hhfk3"))
+                  "05i4awyirp440pk4vwa0sf46gi801zv839qm1i2z7jipm1xfwaxx"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (native-inputs
