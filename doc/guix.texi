@@ -35770,8 +35770,8 @@ permissive OpenSSH secure shell daemon listening on port 2222
 The QEMU package to use.
 
 @item @code{image} (default: @var{hurd-vm-disk-image})
-The procedure used to build the disk-image built from this
-configuration.
+The image object representing the disk image of this virtual machine
+(@pxref{System Images}).
 
 @item @code{disk-size} (default: @code{'guess})
 The size of the disk image.

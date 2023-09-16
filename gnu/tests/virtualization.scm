@@ -230,12 +230,11 @@
   (let ((os ((@@ (gnu services virtualization) secret-service-operating-system)
              (hurd-vm-configuration-os config)))
         (disk-size (hurd-vm-configuration-disk-size config)))
-    (system-image
-     (image
-      (inherit hurd-disk-image)
-      (format 'disk-image)
-      (size disk-size)
-      (operating-system os)))))
+    (image
+     (inherit hurd-disk-image)
+     (format 'disk-image)
+     (size disk-size)
+     (operating-system os))))
 
 (define %childhurd-os
   (simple-operating-system

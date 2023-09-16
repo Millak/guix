@@ -1101,7 +1101,7 @@ that will be listening to receive secret keys on port 1004, TCP."
                (default %hurd-vm-operating-system))
   (qemu        hurd-vm-configuration-qemu               ;file-like
                (default qemu-minimal))
-  (image       hurd-vm-configuration-image              ;string
+  (image       hurd-vm-configuration-image              ;<image>
                (thunked)
                (default (hurd-vm-disk-image this-record)))
   (disk-size   hurd-vm-configuration-disk-size          ;number or 'guess
@@ -1126,9 +1126,8 @@ is added to the OS specified in CONFIG."
          (disk-size (hurd-vm-configuration-disk-size config))
          (type      (lookup-image-type-by-name 'hurd-qcow2))
          (os->image (image-type-constructor type)))
-    (system-image
-     (image (inherit (os->image os))
-            (size disk-size)))))
+    (image (inherit (os->image os))
+           (size disk-size))))
 
 (define (hurd-vm-port config base)
   "Return the forwarded vm port for this childhurd config."
@@ -1170,7 +1169,7 @@ is added to the OS specified in CONFIG."
                       "-m" (number->string #$memory-size)
                       #$@net-options
                       #$@options
-                      "--hda" #+image
+                      "--hda" #+(system-image image)
 
                       ;; Cause the service to be respawned if the guest
                       ;; reboots (it can reboot for instance if it did not
