@@ -189,6 +189,26 @@ to the @dfn{don't repeat yourself} (DRY) principle.")
 ;; Use 3.2 LTS as the default until packages gain support for 4.x.
 (define-public python-django python-django-3.2)
 
+(define-public python-django-cache-url
+  (package
+    (name "python-django-cache-url")
+    (version "3.4.4")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "django-cache-url" version))
+              (sha256
+               (base32
+                "0dpx2wmcclmd3jkprdljz3makq12vd0sjv3xnvlj5vk1lg7glb7g"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-django))
+    (home-page "https://github.com/epicserve/django-cache-url")
+    (synopsis "Configure Django cache settings from URLs")
+    (description
+     "This package provides a facility for configuring Django cache settings
+with a @var{CACHE_URL} environment variable.")
+    (license license:expat)))
+
 (define-public python-django-extensions
   (package
     (name "python-django-extensions")
