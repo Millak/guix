@@ -26,6 +26,7 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages certs)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages file)
@@ -72,7 +73,7 @@
   (list shepherd-0.8 hurd netdde bash coreutils file findutils grep sed
         diffutils patch gawk tar gzip bzip2 xz lzip
         guile-3.0-latest guile-colorized guile-readline
-        net-base inetutils less procps shadow sudo which
+        net-base nss-certs inetutils less procps shadow sudo which
         info-reader))
 
 (define %base-services/hurd
