@@ -897,6 +897,36 @@ used to attach comments to any model, so you can use it for comments on blog
 entries, photos, book chapters, or anything else.")
     (license license:bsd-3)))
 
+(define-public python-django-ninja
+  (package
+    (name "python-django-ninja")
+    (version "0.22.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "django_ninja" version))
+              (sha256
+               (base32
+                "0b19w7nvw7c3z19dbza49m24c3384j59w2xcr5l6jshxazkvsgli"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; FIXME: How to configure this test properly?
+     (list #:test-flags #~'("-k" "not test_improperly_configured")))
+    (propagated-inputs
+     (list python-django python-pydantic))
+    (native-inputs
+     (list python-flit-core
+           python-psycopg2
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-django))
+    (home-page "https://django-ninja.rest-framework.com")
+    (synopsis "REST framework for Django")
+    (description
+     "Django Ninja is a web framework for building APIs with Django
+and Python type hints.  It is designed to be fast and easy to use thanks
+to asyncio and Pydantic.")
+    (license license:expat)))
+
 (define-public python-django-pipeline
   (package
     (name "python-django-pipeline")
