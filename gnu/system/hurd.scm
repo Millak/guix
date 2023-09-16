@@ -129,6 +129,7 @@
     (file-systems '())
     (packages %base-packages/hurd)
     (timezone "GNUrope")
+    (locale-libcs (list glibc/hurd))
     (name-service-switch #f)
     (essential-services (hurd-default-essential-services this-operating-system))
     (setuid-programs %setuid-programs/hurd)))
