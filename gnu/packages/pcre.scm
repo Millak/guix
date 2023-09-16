@@ -102,6 +102,7 @@ POSIX regular expression API.")
                (base32
                 "0s4x2l6g0sb9piwkr3sxqwdswz2g6bk1hhwngv0kv4w38wybir0l"))))
     (build-system gnu-build-system)
+    (outputs '("out" "static"))
     (inputs (list bzip2 readline zlib))
     (arguments
      (list #:configure-flags
@@ -114,14 +115,23 @@ POSIX regular expression API.")
                ;; riscv64-linux is an unsupported architecture.
                #$@(if (target-riscv64?)
                       #~()
-                      #~("--enable-jit"))
-               "--disable-static")
+                      #~("--enable-jit")))
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'patch-paths
                  (lambda _
                    (substitute* "RunGrepTest"
-                     (("/bin/echo") (which "echo"))))))))
+                     (("/bin/echo") (which "echo")))))
+               (add-after 'install 'move-static-libs
+                 (lambda _
+                   (let ((source (string-append #$output "/lib"))
+                         (static (string-append #$output:static "/lib")))
+                     (mkdir-p static)
+                     (for-each (lambda (lib)
+                                 (link lib (string-append static "/"
+                                                          (basename lib)))
+                                 (delete-file lib))
+                               (find-files source "\\.a$"))))))))
     (synopsis "Perl Compatible Regular Expressions")
     (description
      "The PCRE library is a set of functions that implement regular expression
