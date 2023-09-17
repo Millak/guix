@@ -836,7 +836,8 @@ fdatasync(2) on the underlying file descriptor."
 (define-syntax fsword                             ;fsword_t
   (identifier-syntax long))
 
-(define linux? (string-contains %host-type "linux-gnu"))
+(define musl-libc? (string-contains %host-type "linux-musl"))
+(define linux? (string-contains %host-type "linux-"))
 
 (define-syntax define-statfs-flags
   (syntax-rules (linux hurd)
@@ -905,7 +906,7 @@ fdatasync(2) on the underlying file descriptor."
   (spare            (array fsword 4)))
 
 (define statfs
-  (let ((proc (syscall->procedure int "statfs64" '(* *))))
+  (let ((proc (syscall->procedure int (if musl-libc? "statfs" "statfs64") '(* *))))
     (lambda (file)
       "Return a <file-system> data structure describing the file system
 mounted at FILE."
@@ -1232,7 +1233,7 @@ system to PUT-OLD."
 
 (define (readdir-procedure name-field-offset sizeof-dirent-header
                            read-dirent-header)
-  (let ((proc (syscall->procedure '* "readdir64" '(*))))
+  (let ((proc (syscall->procedure '* (if musl-libc? "readdir" "readdir64") '(*))))
     (lambda* (directory #:optional (pointer->string pointer->string/utf-8))
       (let ((ptr (proc directory)))
         (and (not (null-pointer? ptr))
