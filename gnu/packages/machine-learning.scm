@@ -5127,6 +5127,54 @@ linear algebra routines needed for structured matrices (or operators).")
      "GPyTorch is a Gaussian process library implemented using PyTorch.")
     (license license:expat)))
 
+(define-public python-botorch
+  (package
+    (name "python-botorch")
+    (version "0.11.0")
+    (source (origin
+              (method git-fetch) ;no tests in PyPI
+              (uri (git-reference
+                    (url "https://github.com/pytorch/botorch")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1b10xydxl6x5y5kzvf0561da5374zh00nwq7fcmdw6mb1axipgbq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'lo-version
+                 (lambda _
+                   (substitute* "requirements.txt"
+                     ;; Linear Operator 0.5.2 is a bug-fix release.
+                     (("linear_operator==0.5.1")
+                      "linear_operator==0.5.2")
+                     ;; We have PyTorch 1.13.1, but the reported
+                     ;; version is 1.13.0a0+gitunknown.
+                     (("torch>=1.13.1") "torch"))))
+               (add-before 'build 'pretend-version
+                 ;; The version string is usually derived via setuptools-scm,
+                 ;; but without the git metadata available, the version string
+                 ;; is set to '0.0.0'.
+                 (lambda _
+                   (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                           #$(package-version this-package)))))))
+    (propagated-inputs (list python-gpytorch
+                             python-linear-operator
+                             python-multipledispatch
+                             python-pyro-ppl
+                             python-pytorch
+                             python-scipy))
+    (native-inputs (list python-pytest
+                         python-pytest-cov
+                         python-setuptools-scm))
+    (home-page "https://botorch.org")
+    (synopsis "Bayesian Optimization in PyTorch")
+    (description
+     "BoTorch is a library for Bayesian Optimization built on PyTorch.")
+    (license license:expat)))
+
 (define-public vosk-api
   (let* ((openfst openfst-for-vosk)
          (kaldi kaldi-for-vosk))
