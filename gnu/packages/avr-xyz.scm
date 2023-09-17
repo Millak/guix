@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,6 +30,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages avr)
+  #:use-module (gnu packages documentation)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages pkg-config)
@@ -95,3 +97,84 @@ directly, and there is even a way to specify simulation parameterps directly
 in the emulated code using an @code{.elf} section.  You can also load
 multipart HEX files.")
     (license license:gpl3)))
+
+(define-public lufa
+  (package
+    (name "lufa")
+    (version "210130")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/abcminiuser/lufa")
+                    (commit (string-append "LUFA-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ylr7qsiikcy827k18zj1vdzf0kb8hb0gjmifd75y8krkhhar49g"))))
+    (outputs '("bootloaders" "demos" "projects" "doc"))
+    (build-system gnu-build-system)
+    (arguments
+     ;; There are tests, but even LUFA's own CI doesn't run them (they are
+     ;; only built).
+     (list
+      #:tests? #f
+      #:modules '((guix build gnu-build-system)
+                  (guix build utils)
+                  (ice-9 match)
+                  (srfi srfi-26))
+      #:make-flags
+      #~(list (string-append "SHELL="(search-input-file %build-inputs
+                                                        "bin/sh")))
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)
+                   (add-before 'build 'build-documentation
+                     (lambda* (#:key make-flags #:allow-other-keys)
+                       (apply invoke "make" "-j" (number->string
+                                                  (or (parallel-job-count)
+                                                      1))
+                              "doxygen"
+                              ;; Ignore errors (see:
+                              ;; https://github.com/abcminiuser/lufa/issues/90).
+                              "-i"
+                              make-flags)))
+                   (replace 'install
+                     ;; There is no default install target as the library is
+                     ;; intended to be integrated in source form in a
+                     ;; project.  Install the example projects and demos
+                     ;; binaries as well as the documentation.
+                     (lambda _
+                       (let ((doc (string-append #$output:doc
+                                                 "/share/doc/lufa/"))
+                             (html-dirs (find-files "."  "^html$"
+                                                    #:directories? #t)))
+                         (for-each (cut install-file <> #$output:bootloaders)
+                                   (find-files "Bootloaders" "\\.hex$"))
+                         (for-each (cut install-file <> #$output:demos)
+                                   (find-files "Demos" "\\.hex$"))
+                         (for-each (cut install-file <> #$output:projects)
+                                   (find-files "Projects" "\\.hex$"))
+                         ;; Install Doxygen generated HTML documentation.
+                         (for-each
+                          (lambda (html)
+                            (let* ((suffix "Documentation/html")
+                                   (l (string-length suffix))
+                                   (dest (string-append
+                                          doc
+                                          (string-drop
+                                           (if (string-suffix? suffix html)
+                                               (string-drop-right html l)
+                                               (error "unexpected path" html))
+                                           1)))) ;drop leading "."
+                              (mkdir-p dest)
+                              (copy-recursively html dest)))
+                          html-dirs)))))))
+    (native-inputs (list doxygen (make-avr-toolchain)))
+    (home-page "https://www.lufa-lib.org/")
+    (synopsis "Lightweight USB Framework for AVRs")
+    (description "UFA is a simple to use, lightweight framework which sits
+atop the hardware USB controller in specific AVR microcontroller models, and
+allows for the quick and easy creation of complex USB devices and hosts.  This
+package contains the user-submitted projects and bootloaders for use with
+compatible microcontroller models, as well as the demos and the
+documentation.")
+    (license license:expat)))           ;see LUFA/License.txt
