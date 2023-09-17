@@ -4635,7 +4635,10 @@ parts of it.")
     (arguments
      (substitute-keyword-arguments (package-arguments openblas)
        ((#:make-flags flags #~'())
-        #~(append (list "INTERFACE64=1" "LIBNAMESUFFIX=ilp64")
+        ;; These should be '64' but julia hardcodes '64_'.
+        #~(append (list "INTERFACE64=1"
+                        "SYMBOLSUFFIX=64_"
+                        "LIBPREFIX=libopenblas64_")
                  #$flags))))
     (synopsis "Optimized BLAS library based on GotoBLAS (ILP64 version)")
     (license license:bsd-3)))
