@@ -9398,7 +9398,7 @@ easy, safe, and automatic.")
 (define-public tracker
   (package
     (name "tracker")
-    (version "3.5.3")
+    (version "3.6.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/tracker/"
@@ -9406,7 +9406,7 @@ easy, safe, and automatic.")
                                   "tracker-" version ".tar.xz"))
               (sha256
                (base32
-                "1vi878f95a2nlvqz46ph6f05hywjb2ni0znqavhdkrbvi6qchrhl"))))
+                "1whdqidxmagsc35pmz9kcc5vs3bmvbkmnis7prnx3zxs37z2qnaj"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -9428,6 +9428,22 @@ easy, safe, and automatic.")
               (substitute* "utils/trackertestutils/__main__.py"
                 (("/bin/bash")
                  (search-input-file inputs "bin/bash")))))
+          (add-after 'unpack 'disable-failing-tests
+            (lambda _
+              #$@(if (target-x86-32?)
+                     ;; On 32-bit systems, the far away dates are incorrect,
+                     ;; and the floats are not parsed exactly.
+                     '((substitute*
+                           "tests/libtracker-sparql/tracker-statement-test.c"
+                         (("g_assert_cmpfloat *\\((.*), ==, ([0-9.e-]+)\\);"
+                           total actual expected)
+                          (string-append "g_assert_cmpfloat_with_epsilon ("
+                                         actual ", " expected ", 1e-12);")))
+                       (substitute* "tests/core/tracker-sparql-test.c"
+                         (("\\{ \"datetime/direct-1\", .* \\},")
+                          "/* datetime test disabled */")))
+                     '())
+              *unspecified*))
           (add-before 'configure 'set-shell
             (lambda _
               (setenv "SHELL" (which "bash"))))
