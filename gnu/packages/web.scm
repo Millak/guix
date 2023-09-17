@@ -5134,21 +5134,19 @@ It uses the uwsgi protocol for all the networking/interprocess communications.")
 (define-public jq
   (package
     (name "jq")
-    (version "1.6")
+    (version "1.7")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://github.com/stedolan/jq"
+       (uri (string-append "https://github.com/jqlang/jq"
                            "/releases/download/jq-" version
                            "/jq-" version ".tar.gz"))
        (sha256
-        (base32 "0wmapfskhzfwranf6515nzmm84r7kwljgfs7dg6bjgxakbicis2x"))
+        (base32 "0qnv8k9x8i6i24n9vx3cxgw0yjj1411silc4wksfcinrfmlhsaj0"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           ;; Remove bundled onigurama.
-           (delete-file-recursively "modules")
-           #t))))
+        ;; Remove bundled onigurama.
+        '(delete-file-recursively "modules"))))
     (inputs
      (list oniguruma))
     (native-inputs
@@ -5161,7 +5159,7 @@ It uses the uwsgi protocol for all the networking/interprocess communications.")
          (list valgrind)
          '())))
     (build-system gnu-build-system)
-    (home-page "https://stedolan.github.io/jq/")
+    (home-page "https://jqlang.github.io/jq/")
     (synopsis "Command-line JSON processor")
     (description "jq is like sed for JSON data – you can use it to slice and
 filter and map and transform structured data with the same ease that sed, awk,
