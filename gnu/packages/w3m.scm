@@ -78,9 +78,7 @@
            openssl
            zlib))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal perl pkg-config))
     (home-page "https://w3m.sourceforge.net/")
     (synopsis "Text-mode web browser")
     (description
