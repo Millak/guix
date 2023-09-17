@@ -269,7 +269,10 @@ libraries.  It is also a bit like @code{ldd} and @code{otool -L}.")
                (substitute* (jlpath "nghttp2")
                  (((from "libnghttp2")) (to "libnghttp2" "libnghttp2")))
                (substitute* (jlpath "OpenBLAS")
-                 (((from "libopenblas")) (to "openblas" "libopenblas")))
+                 (((from "libopenblas"))
+                  ,@(if (target-x86-64?)
+                      `((to "openblas" "libopenblas64_" "libopenblas"))
+                      `((to "openblas" "libopenblas")))))
                (substitute* (jlpath "OpenLibm")
                  (((from "libopenlibm")) (to "openlibm" "libopenlibm")))
                (substitute* (jlpath "PCRE2")
@@ -479,12 +482,13 @@ using Dates: @dateformat_str, Date, DateTime, DateFormat, Time"))
          "NO_GIT=1"             ; build from release tarball.
          "USE_GPL_LIBS=1"       ; proudly
 
-         ,@(if (target-aarch64?)
-             `("USE_BLAS64=0")
-             '())
-
-         "LIBBLAS=-lopenblas"
-         "LIBBLASNAME=libopenblas"
+         ,@(if (target-x86-64?)
+             `("USE_BLAS64=1"
+               "LIBBLAS=-lopenblas64_"
+               "LIBBLASNAME=libopenblas64_")
+             `("USE_BLAS64=0"
+               "LIBBLAS=-lopenblas"
+               "LIBBLASNAME=libopenblas"))
 
          (string-append "UTF8PROC_INC="
                         (assoc-ref %build-inputs "utf8proc")
@@ -513,7 +517,9 @@ using Dates: @dateformat_str, Date, DateTime, DateFormat, Time"))
        ("llvm" ,llvm-julia)
        ("mbedtls-apache" ,mbedtls-apache)
        ("mpfr" ,mpfr)
-       ("openblas" ,openblas)
+       ,@(if (target-x86-64?)
+             `(("openblas" ,openblas-ilp64))
+             `(("openblas" ,openblas)))
        ("openlibm" ,openlibm)
        ("p7zip" ,p7zip)
        ("pcre2" ,pcre2)
