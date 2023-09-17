@@ -316,8 +316,7 @@ console.")
                               "/lib/libX11.so")
                "-DX11_FOUND=1")))
       (native-inputs
-       `(("pkg-config" ,pkg-config)
-         ("gettext" ,gettext-minimal)))
+       (list gettext-minimal pkg-config))
       (inputs
        (list alsa-lib
              ao
