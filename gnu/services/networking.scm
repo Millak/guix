@@ -304,7 +304,7 @@
                 (default isc-dhcp))
   (shepherd-requirement dhcp-client-configuration-shepherd-requirement
                         (default '()))
-  (shepherd-provision   dhcp-client-configuration-provision
+  (shepherd-provision   dhcp-client-configuration-shepherd-provision
                         (default '(networking)))
   (interfaces   dhcp-client-configuration-interfaces
                 (default 'all)))                  ;'all | list of strings
