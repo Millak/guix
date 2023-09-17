@@ -11,6 +11,7 @@
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2023 Iliya Tikhonenko <tikhonenko@mpe.mpg.de>
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -737,6 +738,21 @@ defines keywords and usage that provide for the description of astronomical
 coordinate systems in a @dfn{FITS} (Flexible Image Transport System) image
 header.")
     (license license:lgpl3+)))
+
+;;; The version is required for julia-wcs-jll and julia-wcs.  They do not
+;;; support version higher than 7.x.
+(define-public wcslib-7.12
+  (package
+    (inherit wcslib)
+    (version "7.12")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.atnf.csiro.au/people/mcalabre/WCS/"
+                           "wcslib-" version ".tar.bz2"))
+       (sha256
+        (base32 "1m3bx6gh5w3c7vvsqcki0x20mg8lilg13m0i8nh7za89w58dxy4w"))))
+    (properties '((hidden? . #t)))))
 
 (define-public weightwatcher
   (package
