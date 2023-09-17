@@ -242,14 +242,6 @@ no issues with the upgrade.")
         (sha256
          (base32 "1j11jid4scw9icrbr8g6myp17nabjzmf4f40cichb20lzf1agz8l"))))
     (build-system julia-build-system)
-    (arguments
-     (list
-       #:phases
-       #~(modify-phases %standard-phases
-           (add-after 'unpack 'adjust-tests
-             (lambda _
-               (substitute* "test/test_layoutarray.jl"
-                 (("@test all\\(B") "@test_broken all(B")))))))
     (propagated-inputs
      (list julia-fillarrays))
     (native-inputs
