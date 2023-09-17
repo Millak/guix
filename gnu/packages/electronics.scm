@@ -132,9 +132,9 @@ to take care of the OS-specific details when writing software that uses serial p
               (sha256
                (base32
                 "0fyfd82mvrcf55v5a3afq1mh1kfswk4c37qrbln6x92jm3b41x53"))))
+    (build-system gnu-build-system)
     (native-inputs
      (list sdcc))
-    (build-system gnu-build-system)
     (home-page "https://www.sigrok.org/wiki/Fx2lafw")
     (synopsis "Firmware for Cypress FX2 chips")
     (description "Fx2lafw is free firmware for Cypress FX2 chips which makes them usable
