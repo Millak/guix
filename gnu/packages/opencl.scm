@@ -161,9 +161,6 @@ implementation.  The ICD Loader is responsible for:
 This package contains the Khronos official OpenCL ICD Loader.")
     (license license:asl2.0)))
 
-(define-public ocl-icd
-  (deprecated-package "ocl-icd" opencl-icd-loader))
-
 (define-public clinfo
   (package
     (name "clinfo")
