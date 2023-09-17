@@ -133,6 +133,8 @@ to take care of the OS-specific details when writing software that uses serial p
                (base32
                 "0fyfd82mvrcf55v5a3afq1mh1kfswk4c37qrbln6x92jm3b41x53"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f))                ; no test suite
     (native-inputs
      (list sdcc))
     (home-page "https://www.sigrok.org/wiki/Fx2lafw")
