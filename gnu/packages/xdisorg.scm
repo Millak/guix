@@ -326,7 +326,7 @@ used to further tweak the behaviour of the different profiles.")
 (define-public bemenu
   (package
     (name "bemenu")
-    (version "0.6.15")
+    (version "0.6.16")
     (source
      (origin
        (method git-fetch)
@@ -335,11 +335,11 @@ used to further tweak the behaviour of the different profiles.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1g4z1ml5ldk0hxpxs2pa091cpw0kry6cdr6n3dni1avimdm8vmw1"))))
+        (base32 "0q3i9blcw5i793m1rxf5dqp773hssdpifrz820psr90x982vvmib"))))
     (build-system gnu-build-system)
     (arguments
      (list
-      #:tests? #f
+      #:tests? #f ; there are no tests
       #:make-flags
       #~(list (string-append "CC=" #$(cc-for-target))
               "CFLAGS=-O2 -fPIC"
