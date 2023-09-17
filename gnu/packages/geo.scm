@@ -1596,43 +1596,44 @@ based on the Osmium library.")
 (define-public osm2pgsql
   (package
     (name "osm2pgsql")
-    (version "1.8.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/openstreetmap/osm2pgsql")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0ssz7ny4wx8dzl3027p37xc5h7m1aj6bzxzdc6g8fbp7q57ykvxz"))
-       (modules '((guix build utils)))
-       (snippet
-        ;; Remove bundled libraries.
-        '(delete-file-recursively "contrib"))))
+    (version "1.9.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/openstreetmap/osm2pgsql")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "198qcgl42pb8lk1bn41ncp8hc9gcg9k2p0ny42vak019w5l6jcj7"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Remove bundled libraries.
+               '(delete-file-recursively "contrib"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f; tests fail because we need to setup a database
-       #:configure-flags
-       (list "-DEXTERNAL_LIBOSMIUM=ON"
-             "-DEXTERNAL_PROTOZERO=ON"
-             "-DEXTERNAL_FMT=ON")))
-    (inputs
-     (list boost
-           bzip2
-           expat
-           fmt-8
-           libosmium
-           lua
-           postgresql
-           proj
-           protozero
-           zlib))
-    (native-inputs
-     (list python python-psycopg2))
-    (home-page "https://github.com/openstreetmap/osm2pgsql")
-    (synopsis "OSM data importer to postgresql")
-    (description "Osm2pgsql is a tool for loading OpenStreetMap data into a
+     (list #:tests? #f ;tests fail because we need to setup a database
+           #:configure-flags #~(list "-DUSE_PROJ_LIB=4" ;use API version 4
+                                     "-DWITH_LUAJIT=ON"
+                                     "-DEXTERNAL_LIBOSMIUM=ON"
+                                     "-DEXTERNAL_PROTOZERO=ON"
+                                     "-DEXTERNAL_FMT=ON")))
+    (inputs (list boost
+                  bzip2
+                  expat
+                  fmt-8
+                  libosmium
+                  luajit
+                  nlohmann-json
+                  postgresql
+                  proj-7
+                  protozero
+                  zlib))
+    (native-inputs (list pandoc python python-argparse-manpage))
+    (home-page "https://osm2pgsql.org/")
+    (synopsis "OSM data importer to PostgreSQL")
+    (description
+     "Osm2pgsql is a tool for loading OpenStreetMap data into a
 PostgreSQL / PostGIS database suitable for applications like rendering into a
 map, geocoding with Nominatim, or general analysis.")
     (license license:gpl2+)))
