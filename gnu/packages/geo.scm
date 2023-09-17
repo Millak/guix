@@ -89,6 +89,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gps)
   #:use-module (gnu packages graphics)
+  #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages haskell-apps)
   #:use-module (gnu packages haskell-xyz)
@@ -1535,34 +1536,31 @@ visualizing and performing calculations with weather data.")
 (define-public libosmium
   (package
     (name "libosmium")
-    (version "2.18.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/osmcode/libosmium")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0fh57mpii1ksacwfx5rz213j896aklib53jbybld2i517q2mmxr0"))))
+    (version "2.19.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/osmcode/libosmium")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0d69xzd29hk846g049y2g668mr8kaf05f6a26s3qn6az062hxfa7"))))
     (build-system cmake-build-system)
-    (propagated-inputs
-     (list boost
-           bzip2
-           expat
-           gdal
-           geos
-           lz4
-           proj
-           protozero
-           sparsehash
-           utfcpp
-           zlib))
-    (native-inputs
-     (list doxygen))
+    (propagated-inputs (list boost
+                             bzip2
+                             expat
+                             gdal
+                             geos
+                             lz4
+                             proj-7
+                             protozero
+                             zlib))
+    (native-inputs (list doxygen graphviz-minimal))
     (home-page "https://osmcode.org/libosmium/")
     (synopsis "C++ library for working with OpenStreetMap data")
-    (description "Libosmium is a fast and flexible C++ library for working with
+    (description
+     "Libosmium is a fast and flexible C++ library for working with
 OpenStreetMap data.")
     (license license:boost1.0)))
 
