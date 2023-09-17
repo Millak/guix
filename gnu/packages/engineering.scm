@@ -2604,7 +2604,7 @@ measurement devices and test equipment via GPIB, RS232, Ethernet or USB.")
 (define-public python-scikit-rf
   (package
     (name "python-scikit-rf")
-    (version "0.28.0")
+    (version "0.29.1")
     (source (origin
               (method git-fetch) ;PyPI misses some files required for tests
               (uri (git-reference
@@ -2612,7 +2612,7 @@ measurement devices and test equipment via GPIB, RS232, Ethernet or USB.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "11pxl8q356f6q4cvadasg52js3k446l87hwmc87b1n9cy8sxcfvi"))
+                "11pbcgbq34xyjv5gjwi3a8cpgqqwmd73ps1fwyjajl26q2nkmcdh"))
               (file-name (git-file-name name version))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-matplotlib
@@ -2630,6 +2630,7 @@ measurement devices and test equipment via GPIB, RS232, Ethernet or USB.")
                          python-networkx
                          python-pytest
                          python-pytest-cov
+                         python-pytest-mock
                          python-pyvisa))
     (home-page "https://scikit-rf.org/")
     (synopsis "Radio frequency and Microwave Engineering Scikit")
