@@ -1789,7 +1789,14 @@ set of plugins for interacting with pulseaudio and GStreamer.")
                                    "m_waitingFrameCallbacks\\.empty\\(\\)\\);"))
                    "")
                   (("QTRY_COMPARE\\(bufferSpy\\.count\\(\\), 1\\);")
-                   ""))))
+                   ""))
+                #$@(if (target-aarch64?)
+                       ;; The tst_surface::createSubsurface test fails on
+                       ;; aarch64 (see:
+                       ;; https://bugreports.qt.io/browse/QTBUG-117112).
+                       #~((substitute* "tests/auto/client/client.pro"
+                            ((".*surface.*") "")))
+                       #~())))
             (add-before 'check 'set-test-environment
               (lambda _
                 ;; Do not fail just because /etc/machine-id is missing.
