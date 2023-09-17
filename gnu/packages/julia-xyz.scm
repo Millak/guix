@@ -5530,7 +5530,7 @@ a loadable module.")
 (define-public julia-scanbyte
   (package
     (name "julia-scanbyte")
-    (version "0.3.2")
+    (version "0.4.0")
     (source
       (origin
         (method git-fetch)
@@ -5539,7 +5539,7 @@ a loadable module.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1c18hkcb0h6l437v2s02kijjkyly91mqark84czvh8yzxm19hr7k"))))
+         (base32 "1ww7bbh02s4l917dwkzg9pq71xk0db2rba247vz1xfm24msi8lwj"))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-simd))
