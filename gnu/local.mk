@@ -1320,6 +1320,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/gmp-faulty-test.patch			\
   %D%/packages/patches/gnash-fix-giflib-version.patch	        \
   %D%/packages/patches/gnome-2048-fix-positional-argument.patch	\
+  %D%/packages/patches/gnome-control-center-firmware-security.patch	\
   %D%/packages/patches/gnome-control-center-libexecdir.patch	\
   %D%/packages/patches/gnome-dictionary-meson-i18n.patch	\
   %D%/packages/patches/gnome-online-miners-tracker-3.patch	\
