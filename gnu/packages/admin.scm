@@ -4204,8 +4204,8 @@ everyone's screenshots nowadays.")
       (license license:expat))))
 
 (define-public pfetch
-  (let ((commit "e18a0959ab98b963744755ec4687e59dc11db3c5")
-        (revision "0"))
+  (let ((commit "a906ff89680c78cec9785f3ff49ca8b272a0f96b")
+        (revision "1"))
     (package
       (name "pfetch")
       (version (git-version "0.7.0" revision commit))
@@ -4217,7 +4217,7 @@ everyone's screenshots nowadays.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1md40av6i3xvvwig5jzhy4kf3s5sgxxk35r0vcyrjd8qyndk927l"))))
+                  "1yhf8mxjn58gjfdii3bpn8522gfaicd8jxjxvmwi2jz7fgvp0zpn"))))
       (build-system trivial-build-system)
       (inputs (list bash))
       (arguments
@@ -4234,8 +4234,7 @@ everyone's screenshots nowadays.")
              (install-file (source "pfetch") (string-append output "/bin"))
              (patch-shebang
               (string-append output "/bin/pfetch")
-              (list (string-append (assoc-ref %build-inputs "bash") "/bin")))
-             #t))))
+              (list (string-append (assoc-ref %build-inputs "bash") "/bin")))))))
       (home-page "https://github.com/dylanaraps/pfetch")
       (synopsis "System information tool")
       (description "This package provides a simple, configurable system
