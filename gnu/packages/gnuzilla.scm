@@ -518,7 +518,7 @@ variable defined below.  It requires guile-json to be installed."
 ;; XXXX: Workaround 'snippet' limitations.
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
-(define %icecat-base-version "102.15.0")
+(define %icecat-base-version "102.15.1")
 (define %icecat-version (string-append %icecat-base-version "-guix0-preview1"))
 (define %icecat-build-id "20230829000000") ;must be of the form YYYYMMDDhhmmss
 
@@ -540,7 +540,7 @@ variable defined below.  It requires guile-json to be installed."
                   "firefox-" upstream-firefox-version ".source.tar.xz"))
             (sha256
              (base32
-              "1bs6hxfsb77cbi238wvizq2iw4mlgz29m0sd027sz8zm1025kyl1"))))
+              "04q1fjninm9lw721xgv0c2fknicc24s8iaimkabwcfwmcnvly689"))))
 
          ;; The upstream-icecat-base-version may be older than the
          ;; %icecat-base-version.
