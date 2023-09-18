@@ -1245,14 +1245,13 @@ containing MODULE-FILES and possibly other files as well."
                     (* 100. (/ completed total)) total)
             (force-output))
 
-          (define (process-directory directory files output)
-            (let* ((size 25)                      ;compile max 25 files a time
-                   (chunks (unfold
-                            (lambda (seed) (< (length seed) size)) ;p
-                            (cute take <> size)                    ;f
-                            (cute drop <> size)                    ;g
-                            files                                  ;seed
-                            list)))                                ;tail
+          (define* (process-directory directory files output #:key (size 25))
+            (let ((chunks (unfold
+                           (lambda (seed) (< (length seed) size)) ;p
+                           (cute take <> size)                    ;f
+                           (cute drop <> size)                    ;g
+                           files                                  ;seed
+                           list)))                                ;tail
               (for-each
                (lambda (chunk)
                  ;; Hide compilation warnings.
@@ -1290,7 +1289,8 @@ containing MODULE-FILES and possibly other files as well."
 
           (mkdir #$output)
           (chdir #+module-tree)
-          (process-directory "." '#+module-files #$output)
+          (let ((size (if (equal? #$name "guix-packages-base") 10 25)))
+            (process-directory "." '#+module-files #$output #:size size))
           (newline))))
 
   (computed-file name build
