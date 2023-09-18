@@ -391,7 +391,7 @@ them in order to efficiently transfer a minimal amount of data.")
     (build-system meson-build-system)
     (outputs '("out" "doc" "gst" "tools"))
     (arguments
-     (list #:glib-or-gtk? #t ; To wrap binaries and/or compile schemas
+     (list #:glib-or-gtk? #t         ; To wrap binaries and/or compile schemas
            #:configure-flags
            #~(list (string-append "-Dbindir="
                                   (assoc-ref %outputs "tools") "/bin")
@@ -400,6 +400,16 @@ them in order to efficiently transfer a minimal amount of data.")
                    "-Dpycamera=disabled")
            #:phases
            #~(modify-phases %standard-phases
+               #$@(if (target-aarch64?)
+                      ;; The 'log_process' test fails on aarch64-linux with a
+                      ;; SIGinvalid error (see:
+                      ;; https://bugs.libcamera.org/show_bug.cgi?id=173).
+                      #~((add-after 'unpack 'disable-problematic-tests
+                           (lambda _
+                             (substitute* "test/log/meson.build"
+                               ((".*'name': 'log_process'.*")
+                                "")))))
+                      #~())
                (add-after 'install 'move-doc-and-gst
                  (lambda* (#:key outputs #:allow-other-keys)
                    (let* ((out (assoc-ref outputs "out"))
