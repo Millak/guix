@@ -406,6 +406,20 @@ inappropriate content.")
                (base32
                 "1dkjxvfxg56hfy70j6ibfklfyv57jiha4vgc3ggl60r5kjx65s5b"))))
     (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; The Ft_MIMPluginManager::testPluginDescriptions test fails
+                ;; with a QFATAL error: received signal 11, while
+                ;; ut_mimpluginmanager fails at least on powerpc64le with a
+                ;; subprocess aborted error (see:
+                ;; https://github.com/maliit/framework/issues/120).
+                (invoke "ctest" "-E"
+                        "(ft_mimpluginmanager|ut_mimpluginmanager)")))))))
     (native-inputs (list extra-cmake-modules
                          wayland-protocols
                          pkg-config
