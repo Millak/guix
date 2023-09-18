@@ -26603,7 +26603,7 @@ instead of #'FOO.
 (define-public sbcl-njson
   (package
     (name "sbcl-njson")
-    (version "1.2.0")
+    (version "1.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -26612,7 +26612,7 @@ instead of #'FOO.
               (file-name (git-file-name "cl-njson" version))
               (sha256
                (base32
-                "1zsf7sm88wjrd4da5bvpxi8fvsx01cv51p8820fnj062x6hlhg38"))))
+                "0p3zvn3jfzcdzpvikdaw3g14wfsklq0msw0rjaxin3aa7vmqpyqk"))))
     (build-system asdf-build-system/sbcl)
     (inputs (list sbcl-cl-json sbcl-jzon))
     (native-inputs (list sbcl-lisp-unit2))
