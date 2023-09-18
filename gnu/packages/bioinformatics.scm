@@ -16431,7 +16431,11 @@ genomic scores), long range contacts and the visualization of viewpoints.")
            (lambda _
              (substitute* "setup.py"
                (("matplotlib ==3.1.1")
-                "matplotlib >=3.1.1")))))))
+                "matplotlib >=3.1.1"))))
+         (add-after 'unpack 'remove-invalid-syntax
+           (lambda _
+             (substitute* "setup.py"
+               ((".\\*,") ",")))))))
     (propagated-inputs
      (list python-future
            python-gffutils
