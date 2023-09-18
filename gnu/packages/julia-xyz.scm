@@ -1591,6 +1591,8 @@ to represent missing data.")
         (sha256
          (base32 "1gsbxb1d67g05h5bvzz3swdfih6404jrydy724a8dvbdgqvm3sds"))))
     (build-system julia-build-system)
+    ;; This package seems unmaintained but still has dependant packages.
+    (arguments (list #:tests? #f))
     (home-page "https://github.com/ssfrr/DeepDiffs.jl")
     (synopsis "Compute and pretty-print diffs for data structures")
     (description "@code{DeepDiffs.jl} provides the @code{deepdiff} function,
