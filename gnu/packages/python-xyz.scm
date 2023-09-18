@@ -582,6 +582,14 @@ and variables you'll need already imported and created.
                (base32
                 "12v8l5i35vjbpvh5i4lw29ys6vpr3z7pysyrx33hxaq09zr015mx"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'remove-invalid-syntax
+           (lambda _
+             (substitute* "setup.py"
+               ((".\\*\"") "\"")))))))
     (propagated-inputs (list python-numpy python-scipy))
     (home-page "https://github.com/joachimwolff/fit_nbinom")
     (synopsis "Negative binomial maximum likelihood estimator")
