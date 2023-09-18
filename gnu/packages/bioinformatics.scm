@@ -3787,6 +3787,13 @@ UCSC genome browser.")
                       "-xf" (assoc-ref inputs "test-data"))
               ;; This one requires bowtie-build
               (delete-file "plastid/test/functional/test_crossmap.py")))
+          (add-after 'unpack 'patch-for-python-3.10
+            (lambda _
+              ;; Some classes were moved from collections to collections.abc
+              ;; in Python 3.10.
+              (substitute* "plastid/readers/bigbed.pyx"
+                ((", Iterable")
+                 "\nfrom collections.abc import Iterable"))))
           (add-before 'check 'build-extensions
             (lambda _
               ;; Cython extensions have to be built before running the tests.
