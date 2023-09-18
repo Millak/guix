@@ -422,7 +422,7 @@ interface and is based on GNU Guile.")
        #:make-flags '("GUILE_AUTO_COMPILE=0")))
     (native-inputs
      (list autoconf automake guile-3.0 pkg-config texinfo))
-    (inputs
+    (propagated-inputs
      (list btrfs-progs
            guile-config
            guile-fibers-1.3
