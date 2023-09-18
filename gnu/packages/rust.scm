@@ -726,6 +726,23 @@ safety and thread safety guarantees.")
               (for-each delete-file
                         (find-files "vendor" "\\.(a|dll|exe|lib)$")))))))))
 
+(define rust-1.70
+  (let ((base-rust
+         (rust-bootstrapped-package
+          rust-1.69 "1.70.0"
+                      "0z6j7d0ni0rmfznv0w3mrf882m11kyh51g2bxkj40l3s1c0axgxj")))
+   (package
+     (inherit base-rust)
+     (source
+      (origin
+        (inherit (package-source base-rust))
+        ;; Rust 1.70 adds the rustix library which depends on the vendored
+        ;; fd-lock crate.  The fd-lock crate uses Outline assembly which expects
+        ;; a precompiled static library.  Enabling the "cc" feature tells the
+        ;; build.rs script to compile the assembly files instead of searching
+        ;; for a precompiled library.
+        (patches (search-patches "rust-1.70-fix-rustix-build.patch")))))))
+
 ;;; Note: Only the latest version of Rust is supported and tested.  The
 ;;; intermediate rusts are built for bootstrapping purposes and should not
 ;;; be relied upon.  This is to ease maintenance and reduce the time
