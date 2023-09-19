@@ -98,6 +98,7 @@
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system scons)
   #:use-module (guix build-system trivial)
@@ -4806,6 +4807,31 @@ http://opensearch.a9.com} compatible search engines.")
 /robots.txt file to forbid conforming robots from accessing parts of
 their web site.")
     (home-page "https://metacpan.org/release/WWW-RobotRules")))
+
+(define-public python-lambda-4dn
+  (package
+    (name "python-lambda-4dn")
+    (version "0.12.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "python-lambda-4dn" version))
+              (sha256
+               (base32
+                "1p5i8wsi8q5fpq63i7n7ri1w1lnh4gpn17f88vhkbh14aah5wxj1"))))
+    (properties '(("upstream-name" . "python-lambda-4dn")))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-boto3 python-botocore python-docutils
+           python-six))
+    (home-page "https://github.com/4dn-dcic/python-lambda")
+    (synopsis
+     "Toolkit for developing and deploying Python code in AWS Lambda")
+    (description
+     "This is a toolset for developing and deploying serverless Python code in
+AWS Lambda.  This is a fork of Nick Ficano's Python-lambda package.  It is
+frozen for the needs of projects at the 4D Nucleome Data Coordination and
+Integration Center (4DN-DCIC).")
+    (license (list license:isc license:expat))))
 
 (define-public python-feedparser
   (package
