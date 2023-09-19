@@ -1357,12 +1357,11 @@ these identified regions.
 (define-public stcgal
   (package
     (name "stcgal")
-    (version "1.6")
+    (version "1.10")
     (source (origin
-              ;; Neither the unit tests nor the "doc" subdirectory referred to
-              ;; by stcgal's setup.py is present in the source distribution on
-              ;; PyPI, so we fetch directly from the project's git repository
-              ;; instead.
+              ;; The "doc" subdirectory referred to by stcgal's setup.py is
+              ;; missing from the source distribution on PyPI so we fetch
+              ;; directly from the project's git repository instead.
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/grigorig/stcgal")
@@ -1370,14 +1369,7 @@ these identified regions.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1d10qxyghz66zp7iqpm8q8rfv9jz9n609gxmfcav1lssmf1dlyk3"))
-              (modules '((guix build utils)))
-              (snippet
-               ;; Make tests compatible with PyYAML 6 and later.
-               '(substitute* '("tests/test_program.py"
-                               "tests/test_fuzzing.py")
-                  (("yaml\\.load\\(test_file\\.read\\(\\)\\)")
-                   "yaml.load(test_file.read(), Loader=yaml.SafeLoader)")))))
+                "04hsj49sw5mb6swhd3sdsm7dzwp1frnzpmq70wgsn5vmjavb1ka8"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-pyserial python-pyusb python-tqdm))
@@ -1388,7 +1380,7 @@ these identified regions.
     (synopsis "Programmer for STC 8051-compatible microcontrollers")
     (description "stcgal is a command-line flash-programming tool for STC
 MCU's line of Intel 8051-compatible microcontrollers, including those in the
-STC89, STC90, STC10, STC11, STC12, STC15 and STC8 series.")
+STC89, STC90, STC10, STC11, STC12, STC15, STC8 and STC32 series.")
     (license license:expat)))
 
 (define-public stlink
