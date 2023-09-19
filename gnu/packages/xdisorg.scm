@@ -2751,7 +2751,7 @@ Wayland and @code{wlroots} by leveraging @command{grim} and @command{slurp}.")
 (define-public wl-clipboard
   (package
     (name "wl-clipboard")
-    (version "2.2.0")
+    (version "2.2.1")
     (source
      (origin
        (method git-fetch)
@@ -2760,7 +2760,7 @@ Wayland and @code{wlroots} by leveraging @command{grim} and @command{slurp}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0r45k6fk9k26qs88s2sjlgjjamhj2jqghdivlh2xjqknws63d29g"))))
+        (base32 "09l6dv3qsqscbr98vxi4wg4rkx0wlhnsc40n21mx3ds6balmg105"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags
