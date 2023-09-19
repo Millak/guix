@@ -17319,6 +17319,27 @@ It is maintained by the Celery project, and used by kombu as a pure python
 alternative when librabbitmq is not available.")
     (license license:lgpl2.1+)))
 
+(define-public python-benchmark-4dn
+  (package
+    (name "python-benchmark-4dn")
+    (version "0.5.23")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "Benchmark-4dn" version))
+              (sha256
+               (base32
+                "0z3vxrkap59sk394ynvp0457mdvb201idcswlrpgjscnrp2h4ypi"))))
+    (properties '(("upstream-name" . "Benchmark-4dn")))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-poetry-core))
+    (home-page "https://github.com/SooLee/Benchmark/")
+    (synopsis "Benchmark functions for CWL workflows")
+    (description
+     "This package provides benchmark functions that return total space, memory,
+CPUs required per given input size, and parameters for CWL workflows.")
+    (license license:expat)))
+
 (define-public python-beniget
   (package
     (name "python-beniget")
