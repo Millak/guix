@@ -15207,9 +15207,9 @@ e.g., the expression you've just evaluated would briefly flash and so on.")
       (license license:gpl3+))))
 
 (define-public emacs-sly
-  ;; Update together with sbcl-slynk.
-  (let ((commit "82b20a9a83209b4dbfbfb62a1536896aed5f85f7")
-        (revision "7"))
+  ;; Update together with sbcl-slynk .
+  (let ((commit "df62abae73bd511885c9c7ec0ea7ea1469a00923")
+        (revision "8"))
     ;; Versions are not always tagged.  Besides, latest master contains
     ;; important fixes.
     (package
@@ -15224,7 +15224,7 @@ e.g., the expression you've just evaluated would briefly flash and so on.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0dvr36qvb490gml0znay0slw63czp7azvajnv7srh8s0j8pqpcaj"))))
+           "1nxijv52bja6la2i3asq7kklpj5li25454n52sgsc6xnnfvakbsv"))))
       (build-system emacs-build-system)
       (native-inputs
        (list texinfo))
