@@ -2157,43 +2157,40 @@ The API also works with MaxMind’s free GeoLite2 databases.")
 
 (define-public routino
   (package
-   (name "routino")
-   (version "3.3.3")
-   (source
-    (origin
-     (method url-fetch)
-     (uri (string-append "http://www.routino.org/download/routino-"
-                         version ".tgz"))
-     (sha256
-      (base32 "1xa7l2bjn832nk6bc7b481nv8hd2gj41jwhg0d2qy10lqdvjpn5b"))))
-   (build-system gnu-build-system)
-   (native-inputs
-    (list perl))
-   (inputs
-    (list bzip2 xz zlib))
-   (arguments
-    `(#:test-target "test"
-      #:phases
-      (modify-phases %standard-phases
-        (replace 'configure
-          (lambda* (#:key outputs #:allow-other-keys)
-            (substitute* "Makefile.conf"
-              (("prefix=/usr/local")
-               (string-append "prefix=" (assoc-ref outputs "out")))
-              (("LDFLAGS_LDSO=-Wl,-R\\.")
-               "LDFLAGS_LDSO=-Wl,-R$(libdir)")
-              (("#CFLAGS\\+=-DUSE_XZ")
-               "CFLAGS+=-DUSE_XZ")
-              (("#LDFLAGS\\+=-llzma")
-               "LDFLAGS+=-llzma"))
-            #t)))))
-   (synopsis "Routing application for OpenStreetMap data")
-   (description
-    "Routino is an application for finding a route between two points
+    (name "routino")
+    (version "3.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://www.routino.org/download/routino-"
+                                  version ".tgz"))
+              (sha256
+               (base32
+                "0aw5idqz7nv458llgwp5wcgikf34xcblpq46mq7msxfib0m8vahb"))))
+    (build-system gnu-build-system)
+    (native-inputs (list perl))
+    (inputs (list bzip2 xz zlib))
+    (arguments
+     (list #:test-target "test"
+           #:phases #~(modify-phases %standard-phases
+                        (replace 'configure
+                          (lambda* (#:key outputs #:allow-other-keys)
+                            (substitute* "Makefile.conf"
+                              (("prefix=/usr/local")
+                               (string-append "prefix="
+                                              (assoc-ref outputs "out")))
+                              (("LDFLAGS_LDSO=-Wl,-R\\.")
+                               "LDFLAGS_LDSO=-Wl,-R$(libdir)")
+                              (("#CFLAGS\\+=-DUSE_XZ")
+                               "CFLAGS+=-DUSE_XZ")
+                              (("#LDFLAGS\\+=-llzma")
+                               "LDFLAGS+=-llzma")))))))
+    (synopsis "Routing application for OpenStreetMap data")
+    (description
+     "Routino is an application for finding a route between two points
 using the dataset of topographical information collected by
 @url{https://www.OpenStreetMap.org}.")
-   (home-page "https://www.routino.org/")
-   (license license:agpl3+)))
+    (home-page "https://www.routino.org/")
+    (license license:agpl3+)))
 
 (define-public r-rnaturalearthhires
   (let ((commit "c3785a8c44738de6ae8f797080c0a337ebed929d")
