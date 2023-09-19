@@ -20463,7 +20463,7 @@ based on the pairwise alignment of hidden Markov models (HMMs).")
 (define-public wfmash
   (package
     (name "wfmash")
-    (version "0.8.1")
+    (version "0.10.5")
     (source
      (origin
        (method url-fetch)
@@ -20471,7 +20471,7 @@ based on the pairwise alignment of hidden Markov models (HMMs).")
                            version "/wfmash-v" version ".tar.gz"))
        (sha256
         (base32
-         "031cm1arpfckvihb28vlk69mirpnmlag81zcscfba1bac58wvr7c"))
+         "1jsvnnh14h3ir4l13qhmglhd25kzwvni9apgvr1lbikqwgrpkiq4"))
        (snippet
         #~(begin
             (use-modules (guix build utils))
@@ -20482,14 +20482,12 @@ based on the pairwise alignment of hidden Markov models (HMMs).")
                "<atomic_queue/atomic_queue.h>"))
             ;; Remove compiler optimizations.
             (substitute* (find-files "." "CMakeLists\\.txt")
-              (("-mcx16 ") "")
-              (("-march=native ") ""))
-            ;; Allow building on architectures other than x86_64.
-            (substitute* "src/common/dset64.hpp"
-              (("!__x86_64__") "0"))))))
+              (("-march=native ") ""))))))
     (build-system cmake-build-system)
     (arguments
      (list
+       #:configure-flags
+       #~(list "-DWFA_PNG_AND_TSV=ON")
        #:phases
        #~(modify-phases %standard-phases
            (replace 'check
@@ -20602,7 +20600,8 @@ based on the pairwise alignment of hidden Markov models (HMMs).")
            jemalloc
            zlib))
     (native-inputs
-     (list samtools))
+     (list pkg-config
+           samtools))
     (synopsis "Base-accurate DNA sequence aligner")
     (description "@code{wfmash} is a DNA sequence read mapper based on mash
 distances and the wavefront alignment algorithm.  It is a fork of MashMap that
