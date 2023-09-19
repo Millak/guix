@@ -5727,7 +5727,7 @@ faster results and to avoid unnecessary server load.")
 (define-public upower
   (package
     (name "upower")
-    (version "1.90.0")
+    (version "1.90.2")
     (source
      (origin
        (method git-fetch)
@@ -5736,7 +5736,7 @@ faster results and to avoid unnecessary server load.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1g17rm91p8vfpjyb0k2shylrs55nccn3fa890vlk4n9s71sghbzq"))
+        (base32 "13xp423ycv8imf2cmgf6lii9f01p7x2v19cny7acrmczkc0cqv7d"))
        (modules '((guix build utils)))
        (snippet
         ;; Upstream commit <https://cgit.freedesktop.org/upower/commit/
@@ -5759,19 +5759,25 @@ faster results and to avoid unnecessary server load.")
               ;; If not specified, udev will try putting history information
               ;; in /gnu/store.
               "-Dhistorydir=/var/lib/upower"
-              (string-append "-Dudevrulesdir=" #$output "/bin/udev/rules.d"))
-      #:phases (if (target-x86-32?)
-                   #~(modify-phases %standard-phases
-                       (add-after 'unpack 'adjust-test-for-excess-precision
-                         (lambda _
-                           ;; Address test failure caused by excess precision
-                           ;; on i686:
-                           ;; <https://gitlab.freedesktop.org/upower/upower/-/issues/214>.
-                           (substitute* "src/linux/integration-test.py"
-                             (("assertEqual(.*)40\\.0" _ middle)
-                              (string-append
-                               "assertAlmostEqual" middle "40.0"))))))
-                   #~%standard-phases)))
+              (string-append "-Dudevrulesdir=" #$output "/bin/udev/rules.d")
+              (string-append "-Dudevhwdbdir=" #$output "/lib/udev/hwdb.d"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'adjust-test-suite
+            (lambda _
+              ;; This test calls an unimplemented bluez dbus method.
+              (substitute* "src/linux/integration-test.py"
+                (("test_bluetooth_hidpp_mouse")
+                 "disabled_test_bluetooth_hidpp_mouse"))
+              #$@(if (target-x86-32?)
+                     ;; Address test failure caused by excess precision
+                     ;; on i686:
+                     ;; <https://gitlab.freedesktop.org/upower/upower/-/issues/214>.
+                     '((substitute* "src/linux/integration-test.py"
+                         (("assertEqual(.*)40\\.0" _ middle)
+                          (string-append
+                           "assertAlmostEqual" middle "40.0"))))
+                     '()))))))
     (native-inputs
      (list `(,glib "bin")               ; for gdbus-codegen
            gobject-introspection
@@ -5785,12 +5791,13 @@ faster results and to avoid unnecessary server load.")
            python-packaging
            python-pygobject
            umockdev
+           dbus
            ;; For man pages.
            docbook-xsl
            libxslt                      ; for 'xsltproc'
            libxml2))                    ; for 'XML_CATALOG_FILES'
     (inputs
-     (list dbus-glib libgudev libusb))
+     (list libgudev libusb))
     (propagated-inputs
      ;; In Requires of upower-glib.pc.
      (list glib))
