@@ -19,6 +19,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2023 c4droid <c4droid@foxmail.com>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
+;;; Copyright © 2023 Hendursaga <hendursaga@aol.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -46,6 +47,7 @@
   #:use-module (guix hg-download)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages admin)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages audio)
@@ -219,28 +221,39 @@ console.")
 (define-public desmume
   (package
     (name "desmume")
-    (version "0.9.11")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "mirror://sourceforge/desmume/desmume/"
-             version "/desmume-" version ".tar.gz"))
-       (sha256
-        (base32
-         "15l8wdw3q61fniy3h93d84dnm6s4pyadvh95a0j6d580rjk4pcrs"))
-       (patches (search-patches "desmume-gcc6-fixes.patch"
-                                "desmume-gcc7-fixes.patch"))))
-    (build-system gnu-build-system)
+    (version "0.9.13")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/TASEmulators/desmume")
+                    (commit (string-append "release_"
+                                           (string-replace-substring version
+                                                                     "." "_")))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ylxv0gjcxwj6dgwly2fjhyr0wrs5yazkim9nvqb8p72mxfwls5y"))))
+    (build-system meson-build-system)
     (arguments
-     ;; Enable support for WiFi and microphone.
-     `(#:configure-flags '("--enable-wifi"
-                           "--enable-openal")))
-    (native-inputs
-     (list pkg-config intltool))
-    (inputs
-     (list zlib sdl glib gtk+-2 glu))
-    (home-page "http://desmume.org/")
+     (list #:configure-flags #~(list "-Dfrontend-cli=true"
+                                     "-Dfrontend-gtk=true"
+                                     "-Dgdb-stub=true"
+                                     "-Dopenal=true")
+           #:phases #~(modify-phases %standard-phases
+                        ;; meson.build is in a subdirectory.
+                        (add-after 'unpack 'chdir
+                          (lambda _
+                            (chdir "desmume/src/frontend/posix"))))))
+    (native-inputs (list `(,glib "bin") gettext-minimal intltool pkg-config))
+    (inputs (list agg
+                  alsa-lib
+                  gtk+
+                  libpcap
+                  openal
+                  sdl2
+                  soundtouch
+                  zlib))
+    (home-page "https://desmume.org/")
     (synopsis "Nintendo DS emulator")
     (description
      "DeSmuME is an emulator for the Nintendo DS handheld gaming console.")
