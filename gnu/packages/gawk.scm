@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012, 2013, 2014, 2015, 2016 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2018, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;;
@@ -39,13 +39,13 @@
 (define-public gawk
   (package
    (name "gawk")
-   (version "5.2.1")
+   (version "5.2.2")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/gawk/gawk-" version
                                 ".tar.xz"))
             (sha256
-             (base32 "0kvy78jdv6lww1s6y2jm1w2cj46mz1fhflgdj9bwq64y3ywm6db7"))))
+             (base32 "1sahl9jsjcsyw39iqirp2pv8jzf89g37xgbks8ffxjxl8qacw7rw"))))
    (build-system gnu-build-system)
    (arguments
     (list #:phases
