@@ -31,7 +31,7 @@
              (srfi srfi-1))
 
 (use-package-modules
- base bootloaders commencement compression file gawk gdb gettext guile
+ base bootloaders commencement compression file gawk gdb gettext gtk guile
  hurd less m4 package-management python ssh version-control)
 
 (define (input->package input)
@@ -71,6 +71,9 @@
 
   ;; system
   grub-minimal grub
+
+  ;; system reconfigure
+  gdk-pixbuf
 
   (append
    guix-dependencies
