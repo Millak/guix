@@ -6899,14 +6899,14 @@ side panel;
 (define-public libgudev
   (package
     (name "libgudev")
-    (version "236")
+    (version "238")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
                                   version "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "094mgjmwgsgqrr1i0vd20ynvlkihvs3vgbmpbrhswjsrdp86j0z5"))))
+                "1laxgdkgmr30aw44sm4rgpsdybwxx5rszcm8c2y3vmy9myqnl9k1"))))
     (build-system meson-build-system)
     (native-inputs
      `(("glib:bin" ,glib "bin") ; for glib-genmarshal, etc.
