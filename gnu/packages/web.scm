@@ -4863,6 +4863,36 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
     (license (list license:bsd-2           ; source code
                    license:freebsd-doc)))) ; documentation
 
+(define-public python-tibanna
+  (package
+    (name "python-tibanna")
+    (version "4.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "tibanna" version))
+              (sha256
+               (base32
+                "185jr5b1dfgh82xcjal0y9wbzds37s0yhx0hp8awlvw26v72awv2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; Tests require AWS credentials and access to the internet.
+     (list #:tests? #false))
+    (propagated-inputs
+     (list python-benchmark-4dn
+           python-boto3 python-botocore
+           python-lambda-4dn python-tomlkit))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest
+           python-pytest-cov
+           python-pytest-mock))
+    (home-page "https://github.com/4dn-dcic/tibanna")
+    (synopsis "Tibanna runs portable workflows on the AWS Cloud")
+    (description
+     "Tibanna runs portable pipelines (in CWL/WDL and Snakemake) on the AWS
+Cloud.")
+    (license license:expat)))
+
 (define-public guix-data-service
   (let ((commit "1c7539418743e0dfe3a9cad22c414fd732daef8f")
         (revision "42"))
