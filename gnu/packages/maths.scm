@@ -9705,3 +9705,88 @@ user has been TensorFlow Lite, where it is used by default on the ARM CPU
 architecture.")
       (license license:asl2.0))))
 
+(define-public bliss
+  (package
+    (name "bliss")
+    (version "0.77")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://users.aalto.fi/~tjunttil/bliss/downloads/bliss-"
+                    version ".zip"))
+              (sha256
+               (base32
+                "193jb63kdwfas2cf61xj3fgkvhb6v2mnbwwpr0jas3zk6j0bkj5c"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      ;; There are no tests
+      #:tests? #f
+      #:configure-flags #~(list "-DUSE_GMP=ON") ; Used by igraph
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Ensure that GMP is used, otherwise the BigNum type changes.
+          (add-after 'unpack 'define-use-gmp
+            (lambda _
+              (substitute* "src/bignum.hh"
+                (("#pragma once.*" all)
+                 (string-append all "#define BLISS_USE_GMP")))))
+          ;; Move headers under the bliss/ prefix. This is a Guix choice,
+          ;; since there are no upstream installation instructions and the
+          ;; header names are sufficiently generic to cause confusions with
+          ;; other packages (e.g. "heap.hh").
+          (add-after 'define-use-gmp 'move-headers
+            (lambda _
+              (substitute* (find-files "src")
+                (("#include \"(.*)\"" _ path)
+                 (string-append "#include <bliss/" path ">")))
+              (mkdir-p "include/bliss")
+              (for-each
+               (lambda (file)
+                 (rename-file file
+                              (string-append "include/bliss/" (basename file))))
+               (find-files "src" "\\.(h|hh)$"))
+              (substitute* "Doxyfile"
+                (("INPUT *=.*") "INPUT = bliss"))))
+          (add-after 'move-headers 'patch-cmake
+            (lambda _
+              (let ((port (open-file "CMakeLists.txt" "a")))
+                (display
+                 (apply
+                  string-append
+                  ;; Install the executable and the shared library.
+                  "install(TARGETS bliss)\n"
+                  "install(TARGETS bliss-executable)\n"
+                  "install(DIRECTORY include/bliss DESTINATION include)\n"
+                  "target_link_libraries(bliss PUBLIC ${GMP_LIBRARIES})\n"
+                  ;; Missing include directories.
+                  (map
+                   (lambda (name)
+                     (string-append
+                      "target_include_directories(" name " PUBLIC\n"
+                      "${CMAKE_CURRENT_SOURCE_DIR}/include"
+                      " ${GMP_INCLUDE_DIR})\n"))
+                   '("bliss" "bliss_static" "bliss-executable")))
+                 port)
+                (close-port port))))
+          (add-after 'build 'build-doc
+            (lambda _
+              (mkdir "doc")
+              (with-directory-excursion "doc"
+                (let ((srcdir (string-append "../../bliss-" #$version)))
+                  (copy-recursively (string-append srcdir "/include/bliss")
+                                    "bliss")
+                  (invoke "doxygen" (string-append srcdir "/Doxyfile"))))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (copy-recursively
+               "doc/html" (string-append #$output "/share/doc/"
+                                     #$name "-" #$version "/html")))))))
+    (native-inputs (list doxygen graphviz unzip))
+    (propagated-inputs (list gmp))
+    (home-page "https://users.aalto.fi/~tjunttil/bliss/index.html")
+    (synopsis "Tool for computing automorphism groups and canonical labelings of graphs")
+    (description "@code{bliss} is a library for computing automorphism groups
++and canonical forms of graphs.  It has both a command line user interface as
++well as C++ and C programming language APIs.")
+    (license license:lgpl3)))
