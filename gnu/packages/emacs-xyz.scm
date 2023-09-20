@@ -5068,6 +5068,30 @@ This buffer is typically shown as a sidebar (Emacs vertically splits the
 window).")
       (license license:gpl3+))))
 
+(define-public emacs-imenu-anywhere
+  (package
+    (name "emacs-imenu-anywhere")
+    (version "1.1.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/vspinu/imenu-anywhere")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0lbwfhcl40ayxskvmsvdrg8p63qp086xpzw61bqk4b3fxndxl04h"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/vspinu/imenu-anywhere")
+    (synopsis
+     "Imenu tag selection across buffers with the same mode/project")
+    (description
+     "This Emacs package provides navigation for imenu tags across all buffers
+that satisfy a filtering criteria.  Available criteria are all buffers with
+the same major mode, same project buffers, and user-defined list of friendly
+mode buffers.")
+    (license license:gpl3+)))
+
 (define-public emacs-mmm-mode
   (package
     (name "emacs-mmm-mode")
