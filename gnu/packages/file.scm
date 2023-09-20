@@ -31,14 +31,14 @@
 (define-public file
   (package
     (name "file")
-    (version "5.44")
+    (version "5.45")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://ftp.astron.com/pub/file/file-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0fsz8wld09qai2qghphmwn69ni9m23razj3wip5k3j6vm3xwfl9p"))))
+                "10jdg2fd19h2q3jrsaw7xqwy1w3qyvdfzzrv9sgjq3mv548gb5zw"))))
    (build-system gnu-build-system)
 
    ;; When cross-compiling, this package depends upon a native install of
