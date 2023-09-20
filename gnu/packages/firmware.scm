@@ -1436,3 +1436,14 @@ Layer 2 contains multimedia and mouse keys.  See the
 keymap definition, or the
 @url{https://configure.ergodox-ez.com/ergodox-ez/layouts/JwwW/latest/0,
 ErgoDox EZ Configurator} page."))
+
+(define-public qmk-firmware-ergodox-ez-dvorak-42-key
+  (make-qmk-firmware "ergodox_ez" "dvorak_42_key" #:description "\
+This is a Dvorak-based layout for the ErgoDox EZ.  Its basic key layout is
+similar to the Atreus @samp{dvorak_42_key} layout; in fact this layout was
+created for seamless switching between the ErgoDox EZ and Atreus keyboards.
+On the base layer, the keys that don't exist on the Atreus are mapped to MEH
+shortcuts and can be interpreted by your window managher.  This layout only
+makes use of the 42 keys that the Atreus also has for the main functionality.
+See the @file{keyboards/atreus/keymaps/dvorak_42_key/keymap.c} source file for
+the keymap definition."))
