@@ -288,24 +288,23 @@ wrapper for accessing libusb-1.0.")
          "1fg7knfzybzija2b01pzrzhzsj989scl12sb2ra4f503l8279k54"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:modules ((srfi srfi-1)
-                  (srfi srfi-26)
-                  (guix build utils)
-                  (guix build python-build-system))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-libusb-reference
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "usb/libloader.py"
-               (("lib = locate_library\\(candidates, find_library\\)")
-                (string-append
-                 "lib = \""
-                 (find (negate symbolic-link?)
-                       (find-files (assoc-ref inputs "libusb")
-                                   "^libusb-.*\\.so\\..*"))
-                 "\"")))
-             #t)))))
+     (list #:tests? #f                      ; no tests
+           #:modules '((srfi srfi-1)
+                       (srfi srfi-26)
+                       (guix build utils)
+                       (guix build python-build-system))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-libusb-reference
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "usb/libloader.py"
+                     (("lib = locate_library\\(candidates, find_library\\)")
+                      (string-append
+                       "lib = \""
+                       (find (negate symbolic-link?)
+                             (find-files (assoc-ref inputs "libusb")
+                                         "^libusb-.*\\.so\\..*"))
+                       "\""))))))))
 
     (native-inputs
      (list python-setuptools-scm))
