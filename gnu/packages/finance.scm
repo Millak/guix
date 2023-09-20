@@ -34,6 +34,7 @@
 ;;; Copyright © 2022 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2023 Frank Pursel <frank.pursel@gmail.com>
 ;;; Copyright © 2023 Skylar Hill <stellarskylark@posteo.net>
+;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -76,6 +77,7 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
@@ -1810,36 +1812,70 @@ a Qt GUI.")
 (define-public fulcrum
   (package
     (name "fulcrum")
-    (version "1.1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://gitlab.com/FloweeTheHub/fulcrum/-/archive/v"
-                           version "/fulcrum-v" version ".tar.gz"))
-       (sha256
-        (base32 "04w5gw02d39caa8a0l6wkn87kc43zzad2prqsyrcq97vlbkdx6x6"))))
+    (version "1.9.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/cculianu/Fulcrum")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (modules '((guix build utils)))
+              (snippet
+                #~(for-each delete-file-recursively
+                            '("src/Json/simdjson"
+                              "src/bitcoin/secp256k1"
+                              "src/robin_hood"
+                              "src/zmq"
+                              "staticlibs")))
+              (sha256
+               (base32
+                "1110vanl6aczlq25i4ck9j4vr81in5icw4z383wyhjpcy6rwxsw2"))
+              (patches
+               (search-patches "fulcrum-1.9.1-unbundled-libraries.patch"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; Call qmake instead of configure to create a Makefile.
-         (replace 'configure
-           (lambda _
-             (invoke
-              "qmake"
-              (string-append "PREFIX=" %output)
-              "features="))))))
-    (native-inputs
-     (list qttools-5))
+     (list #:configure-flags
+           #~(list "CONFIG+=config_without_bundled_cppzmq"
+                   "CONFIG+=config_without_bundled_robin_hood"
+                   "CONFIG+=config_without_bundled_secp256k1"
+                   "LIBS+=-lrocksdb"
+                   #$@(if (target-64bit?) '("LIBS+=-lsimdjson") '())
+                   (format #f "DEFINES+=GIT_COMMIT=\"\\\\\\~s\\\\\\\""
+                           #$version)
+                   (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'configure
+                 (lambda* (#:key configure-flags #:allow-other-keys)
+                   (apply invoke "qmake" configure-flags))))))
+    (native-inputs (list pkg-config qttools-5))
     (inputs
-     (list python qtbase-5 rocksdb zlib))
-    (home-page "https://gitlab.com/FloweeTheHub/fulcrum/")
-    (synopsis "Fast and nimble SPV server for Bitcoin Cash")
+     (append (list cppzmq
+                   jemalloc
+                   python
+                   qtbase-5
+                   robin-hood-hashing
+                   rocksdb
+                   zeromq
+                   zlib)
+             (if (target-64bit?)
+                 (list simdjson-0.6)
+                 '())))
+    (home-page "https://github.com/cculianu/Fulcrum")
+    (synopsis "Payment verification server for Bitcoin-like crypto-currencies")
     (description
-     "Flowee Fulcrum is a server that is the back-end for @acronym{SPV,
-Simplified Payment Verification} wallets, it provides the full API for those
-walets in a fast and small server.  The full data is stored in a full node,
-like Flowee the Hub, which Fulcrum connects to over RPC.")
+     "Fulcrum is a @acronym{SPV, Simplified Payment Verification} server for
+Bitcoin-like crypto-currencies.  The server indexes the blockchain of the
+crypto-currency used, and the resulting index can be used by wallets to
+perform queries to keep real-time track of balances.
+
+Supported crypto-currencies:
+
+@itemize
+@item Bitcoin Core.
+@item Bitcoin Cash-like.
+@item Litecoin.
+@end itemize")
     (license license:gpl3+)))
 
 (define-public flowee
