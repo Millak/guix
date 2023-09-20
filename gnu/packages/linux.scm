@@ -75,6 +75,7 @@
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 dan <i@dan.games>
+;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -188,6 +189,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (guix build-system linux-module)
@@ -4962,6 +4964,29 @@ SMBus access.")
        ((#:make-flags _)
         #~(list (string-append "prefix=" #$output)
                 (string-append "CC=" #$(cc-for-target))))))))
+
+(define-public python-smbus
+  (package
+    (inherit i2c-tools)
+    (name "python-smbus")
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f ;; No test suite.
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'change-directory
+                 (lambda _ (chdir "py-smbus")))
+               (add-after 'change-directory 'set-library-path
+                 (lambda _
+                   (substitute* "setup.py"
+                     (("-L\\.\\./lib")
+                      (string-append "-L" #$(this-package-input "i2c-tools")
+                                     "/lib"))))))))
+    (inputs (list i2c-tools))
+    (synopsis "I2C/SMBus access for Python")
+    (description "This package provides a Python library to access
+@acronym{I2C, Inter-Integrated Circuit} and @acronym{SMBus, System
+Management Bus} devices on Linux.")))
 
 (define-public xsensors
   (package
