@@ -4,6 +4,9 @@
 
 (use-modules (gnu))
 (use-service-modules networking ssh)
+;; If you want to use HTTPS, you most likely want to include
+;; "certs" in the line below.  Also read the comment about
+;; "nss-certs" later in this file.
 (use-package-modules screen ssh)
 
 (operating-system
@@ -43,10 +46,12 @@
                %base-user-accounts))
 
   ;; Globally-installed packages.
+  ;; Add "nss-certs" for Mozilla's approved CA certs.  You would
+  ;; have to have included "certs" in use-package-modules above.
   (packages (cons screen %base-packages))
 
-  ;; Add services to the baseline: a DHCP client and
-  ;; an SSH server.
+  ;; Add services to the baseline: a DHCP client and an SSH
+  ;; server.  You may wish to add an NTP service here.
   (services (append (list (service dhcp-client-service-type)
                           (service openssh-service-type
                                    (openssh-configuration
