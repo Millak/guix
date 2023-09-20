@@ -37,6 +37,7 @@
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -222,6 +223,34 @@ range-v3 ranges are an abstraction layer on top of iterators.")
       license:ncsa
       ;; Others
       license:boost1.0))))
+
+(define-public robin-hood-hashing
+  (package
+    (name "robin-hood-hashing")
+    (version "3.11.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/martinus/robin-hood-hashing")
+                    (commit version)))
+              (modules '((guix build utils)))
+              (snippet #~(delete-file-recursively "src/test/thirdparty"))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1qx6i09sp8c3l89mhyaql144nzh2h26ky9ms3n5l85qplx1vv2r7"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f ;; Needs bundled libraries for tests.
+           ;; By default this option is set to ON and removes the ability to
+           ;; install the library.
+           #:configure-flags
+           #~(list "-DRH_STANDALONE_PROJECT=OFF")))
+    (home-page "https://github.com/martinus/robin-hood-hashing")
+    (synopsis "Unordered set and map data structures library")
+    (description "This library provides a header-only unordered set and map
+data structures for C++.")
+    (license license:expat)))
 
 (define-public c++-gsl
   (package
