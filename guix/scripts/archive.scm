@@ -123,8 +123,7 @@ Export/import one or more packages from/to the store.\n"))
                    (exit 0)))
          (option '(#\V "version") #f #f
                  (lambda args
-                   (show-version-and-exit "guix build")))
-
+                   (show-version-and-exit "guix archive")))
          (option '("export") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'export #t result)))
