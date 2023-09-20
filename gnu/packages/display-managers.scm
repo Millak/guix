@@ -35,6 +35,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system glib-or-gtk)
@@ -141,6 +142,31 @@ create smooth, animated user interfaces.")
     (home-page "https://github.com/sddm/sddm")
     ;; QML files are MIT licensed and images are CC BY 3.0.
     (license (list license:gpl2+ license:expat license:cc-by3.0))))
+
+(define-public abstractdark-sddm-theme
+  (let ((commit "e817d4b27981080cd3b398fe928619ffa16c52e7")
+        (revision "0"))
+    (package
+      (name "abstractdark-sddm-theme")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/3ximus/abstractdark-sddm-theme")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1si141hnp4lr43q36mbl3anlx0a81r8nqlahz3n3l7zmrxb56s2y"))))
+      (build-system copy-build-system)
+      (arguments
+       `(#:install-plan '(("." "/share/sddm/themes/abstractdark"))))
+      (home-page "https://github.com/3ximus/abstractdark-sddm-theme")
+      (synopsis "Abstract Dark theme for SDDM")
+      (description
+       "This package provides a minimalistic dark theme for SDDM, black
+background with abstract shapes. Inspired by solarized-sddm-theme.")
+      (license license:gpl3+))))
 
 (define-public guix-simplyblack-sddm-theme
   (package
