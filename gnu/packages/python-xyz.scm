@@ -21446,14 +21446,14 @@ system.")
 (define-public python-incremental
   (package
     (name "python-incremental")
-    (version "17.5.0")
+    (version "22.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "incremental" version))
        (sha256
         (base32
-         "1cylxdz1cnkm5g3pklna3h2n0i0rks95ir1pnpxfnvpkmab1cxbv"))))
+         "1l0b9k158n04cmcccdq9phdy20h08lpis922dy71iq7pw2sywbwi"))))
     (build-system python-build-system)
     (home-page "https://github.com/hawkowl/incremental")
     (synopsis "Library for versioning Python projects")
