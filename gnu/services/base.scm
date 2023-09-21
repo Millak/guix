@@ -62,8 +62,9 @@
                           util-linux xfsprogs))
   #:use-module (gnu packages bash)
   #:use-module ((gnu packages base)
-                #:select (coreutils glibc glibc-utf8-locales tar
-                          canonical-package))
+                #:select (coreutils glibc glibc/hurd
+                          glibc-utf8-locales make-glibc-utf8-locales
+                          tar canonical-package))
   #:use-module ((gnu packages compression) #:select (gzip))
   #:use-module (gnu packages fonts)
   #:autoload   (gnu packages guile-xyz) (guile-netlink)
@@ -87,6 +88,7 @@
   #:use-module ((guix self) #:select (make-config.scm))
   #:use-module (guix diagnostics)
   #:use-module (guix i18n)
+  #:autoload   (guix utils) (target-hurd?)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
@@ -1831,6 +1833,12 @@ proxy of 'guix-daemon'...~%")
 
 (define (guix-shepherd-service config)
   "Return a <shepherd-service> for the Guix daemon service with CONFIG."
+  (define locales
+    (let-system (system target)
+      (if (target-hurd? (or target system))
+          (make-glibc-utf8-locales glibc/hurd)
+          glibc-utf8-locales)))
+
   (match-record config <guix-configuration>
     (guix build-group build-accounts authorize-key? authorized-keys
           use-substitutes? substitute-urls max-silent-time timeout
@@ -1912,8 +1920,7 @@ proxy of 'guix-daemon'...~%")
                                  ;; 'nss-certs'.  See
                                  ;; <https://bugs.gnu.org/32942>.
                                  (string-append "GUIX_LOCPATH="
-                                                #$glibc-utf8-locales
-                                                "/lib/locale")
+                                                #$locales "/lib/locale")
                                  "LC_ALL=en_US.utf8"
                                  ;; Make 'tar' and 'gzip' available so
                                  ;; that 'guix perform-download' can use
