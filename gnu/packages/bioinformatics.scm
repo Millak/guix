@@ -17816,8 +17816,10 @@ pycisTarget and SCENIC.")
      (list python-bokeh
            python-dask
            python-distributed
+           python-lz4
            python-numpy
            python-pandas
+           python-pyarrow
            python-scikit-learn
            python-scipy
            python-tornado-6))
