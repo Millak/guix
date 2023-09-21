@@ -1410,47 +1410,52 @@ to the @code{share/locale} sub-directory of this package.")
 (define*-public (make-glibc-utf8-locales glibc #:key
                                          (locales %default-utf8-locales)
                                          (name "glibc-utf8-locales"))
-  (define default-locales? (equal? locales %default-utf8-locales))
+  (define default-locales?
+    (equal? locales %default-utf8-locales))
+
   (package
     (name name)
     (version (package-version glibc))
     (source #f)
     (build-system trivial-build-system)
     (arguments
-     `(#:modules ((guix build utils))
-       #:builder (begin
-                   (use-modules (guix build utils))
+     (list #:modules '((guix build utils))
+           #:builder
+           #~(begin
+               (use-modules (guix build utils))
 
-                   (let* ((libc      (assoc-ref %build-inputs "glibc"))
-                          (gzip      (assoc-ref %build-inputs "gzip"))
-                          (out       (assoc-ref %outputs "out"))
-                          (localedir (string-append out "/lib/locale/"
-                                                    ,(version-major+minor version))))
-                     ;; 'localedef' needs 'gzip'.
-                     (setenv "PATH" (string-append libc "/bin:" gzip "/bin"))
+               (let* ((libc      (dirname
+                                  (search-input-file %build-inputs
+                                                     "/bin/localedef")))
+                      (gzip      (dirname
+                                  (search-input-file %build-inputs
+                                                     "/bin/gzip")))
+                      (out       #$output)
+                      (localedir (string-append out "/lib/locale/"
+                                                #$(version-major+minor
+                                                   (package-version this-package)))))
+                 ;; 'localedef' needs 'gzip'.
+                 (setenv "PATH" (string-append libc ":" gzip ""))
 
-                     (mkdir-p localedir)
-                     (for-each (lambda (locale)
-                                 (define file
-                                   ;; Use the "normalized codeset" by
-                                   ;; default--e.g., "en_US.utf8".
-                                   (string-append localedir "/" locale ".utf8"))
+                 (mkdir-p localedir)
+                 (for-each (lambda (locale)
+                             (define file
+                               ;; Use the "normalized codeset" by
+                               ;; default--e.g., "en_US.utf8".
+                               (string-append localedir "/" locale ".utf8"))
 
-                                 (invoke "localedef" "--no-archive"
-                                         "--prefix" localedir
-                                         "-i" locale
-                                         "-f" "UTF-8" file)
+                             (invoke "localedef" "--no-archive"
+                                     "--prefix" localedir
+                                     "-i" locale
+                                     "-f" "UTF-8" file)
 
-                                 ;; For backward compatibility with Guix
-                                 ;; <= 0.8.3, add "xx_YY.UTF-8".
-                                 (symlink (string-append locale ".utf8")
-                                          (string-append localedir "/"
-                                                         locale ".UTF-8")))
-                               ',locales)
-                     #t))))
-    (native-inputs
-     `(("glibc" ,glibc)
-       ("gzip" ,gzip)))
+                             ;; For backward compatibility with Guix
+                             ;; <= 0.8.3, add "xx_YY.UTF-8".
+                             (symlink (string-append locale ".utf8")
+                                      (string-append localedir "/"
+                                                     locale ".UTF-8")))
+                           '#$locales)))))
+    (native-inputs (list glibc gzip))
     (synopsis (if default-locales?
                   (P_ "Small sample of UTF-8 locales")
                   (P_ "Customized sample of UTF-8 locales")))
