@@ -51,7 +51,7 @@
 ;;; Copyright © 2016, 2018 Tomáš Čech <sleep_walker@gnu.org>
 ;;; Copyright © 2018-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2018, 2019, 2021 Clément Lassieur <clement@lassieur.org>
+;;; Copyright © 2018, 2019, 2021, 2023 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018, 2019, 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2018 Luther Thompson <lutheroto@gmail.com>
 ;;; Copyright © 2018 Vagrant Cascadian <vagrant@debian.org>
@@ -28915,14 +28915,14 @@ at import time.")
 (define-public python-bashlex
   (package
     (name "python-bashlex")
-    (version "0.14")
+    (version "0.18")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "bashlex" version))
        (sha256
         (base32
-         "1z9g96fgsfpdwawp4sb5x6hbdhmda7kgmcrqlf9xx4bs1f8f14js"))))
+         "1vln4zszzdqkypiir2hxsvkhgbf816005lbgqcw66rymqq0kmc2v"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
