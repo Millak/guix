@@ -1471,6 +1471,14 @@ normally.  It defines 10 layers:
 The complete keymap can be inspected at the ErgoDox EZ Configurator web site:
 @url{https://configure.ergodox-ez.com/ergodox-ez/layouts/Wadz/latest/0}."))
 
+(define-public qmk-firmware-ergodox-ez-dvorak
+  (make-qmk-firmware
+   "ergodox_ez" "dvorak" #:description
+   "This is a rather plain Dvorak layout for the ErgoDox EZ, containing
+function and symbols on layer 1 and media and and mouse keys on layer 2.  See
+the @file{layouts/community/ergodox/dvorak/keymap.c} source file for the
+keymap definition."))
+
 (define-public qmk-udev-rules
   (package
     (inherit qmk-firmware-ergodox-ez-default)
