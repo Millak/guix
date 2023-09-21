@@ -15422,6 +15422,41 @@ conversion factors for even more numerous measurement units (meter, kilometer, f
 mile, ...).")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-cradle-0.2
+  (package
+    (name "rust-cradle")
+    (version "0.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "cradle" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "16n04y60jps91dsw5fs6p8zash052y82aclg57kkvm9320n155kh"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin (substitute* "Cargo.toml"
+                         (("version = \"=") "version = \"^"))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f          ; Not all files included.
+       #:cargo-inputs
+       (("rust-executable-path" ,rust-executable-path-1)
+        ("rust-gag" ,rust-gag-0.1)
+        ("rust-nix" ,rust-nix-0.22)
+        ("rust-rustversion" ,rust-rustversion-1))
+       #:cargo-development-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-executable-path" ,rust-executable-path-1)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-unindent" ,rust-unindent-0.1))))
+    (home-page "https://github.com/soenkehahn/cradle")
+    (synopsis "Execute child processes with ease")
+    (description "Execute child processes with ease.")
+    (license license:cc0)))
+
 (define-public rust-crates-index-0.18
   (package
     (name "rust-crates-index")
