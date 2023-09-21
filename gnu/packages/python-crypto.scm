@@ -1149,25 +1149,32 @@ none of them have everything that I'd like, so here's one more.  It uses
 (define-public python-libnacl
   (package
     (name "python-libnacl")
-    (version "1.7.2")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "libnacl" version))
        (sha256
         (base32
-         "0srx7i264v4dq9and8y6gpzzhrg8jpxs5iy9ggw4plimfj0rjfdm"))))
-    (build-system python-build-system)
+         "0q18j8kfibhi5qckakhf0b0psf8nkll91nfp3yqxkri9vykqshgk"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'locate-libsodium
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "libnacl/__init__.py"
-               (("/usr/local/lib/libsodium.so")
-                (search-input-file inputs "/lib/libsodium.so"))))))))
+               (("ctypes\\.util\\.find_library\\('sodium'\\)")
+                (string-append "'"
+                               (search-input-file inputs "/lib/libsodium.so")
+                               "'")))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python" "-m" "unittest" "discover"
+                       "--start-directory" "tests" "-v")))))))
     (native-inputs
-     (list python-pyhamcrest))
+     (list python-poetry-core))
     (inputs
      (list libsodium))
     (home-page "https://libnacl.readthedocs.org/")
