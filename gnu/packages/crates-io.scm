@@ -31,6 +31,7 @@
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Paul Alesius <paul@unnservice.com>
+;;; Copyright © 2023 Arnav Andrew Jose <arnav.jose@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23178,6 +23179,23 @@ ecosystem.")
 You can use this crate to turn non-blocking data structures into async or
 blocking data structures.")
     (license (list license:asl2.0 license:expat))))
+
+(define-public rust-executable-path-1
+  (package
+    (name "rust-executable-path")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "executable-path" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0y0lhhrx9f9q1f81am3b20f8znixjcvqfg7kx220pjg3i5nmmg1y"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/casey/rust-executable-path")
+    (synopsis "Get the path of a binary target's executable")
+    (description "Get the path of a binary target's executable.")
+    (license license:cc0)))
 
 (define-public rust-executors-0.9
   (package
