@@ -35722,11 +35722,6 @@ guix shell tigervnc-client -- vncviewer localhost:5900
 The default configuration (see @code{hurd-vm-configuration} below)
 spawns a secure shell (SSH) server in your GNU/Hurd system, which QEMU
 (the virtual machine emulator) redirects to port 10222 on the host.
-Thus, you can connect over SSH to the childhurd with:
-
-@example
-ssh root@@localhost -p 10022
-@end example
 
 The childhurd is volatile and stateless: it starts with a fresh root
 file system every time you restart it.  By default though, all the files

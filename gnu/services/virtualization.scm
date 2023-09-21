@@ -1080,7 +1080,7 @@ that will be listening to receive secret keys on port 1004, TCP."
                         (openssh-configuration
                          (openssh openssh-sans-x)
                          (use-pam? #f)
-                         (permit-root-login #t)
+                         (permit-root-login 'prohibit-password)
                          (allow-empty-passwords? #t)
                          (password-authentication? #t)))
 

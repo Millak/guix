@@ -31,6 +31,7 @@
   #:use-module (gnu services)
   #:use-module (gnu services dbus)
   #:use-module (gnu services networking)
+  #:use-module (gnu services ssh)
   #:use-module (gnu services virtualization)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages virtualization)
@@ -228,7 +229,19 @@
 (define %childhurd-os
   (simple-operating-system
    (service dhcp-client-service-type)
-   (service hurd-vm-service-type)))
+   (service hurd-vm-service-type
+            (hurd-vm-configuration
+             ;; Allow root login with an empty password to simplify the test
+             ;; below.
+             (os (operating-system
+                   (inherit %hurd-vm-operating-system)
+                   (services
+                    (modify-services (operating-system-user-services
+                                      %hurd-vm-operating-system)
+                      (openssh-service-type
+                       config => (openssh-configuration
+                                  (inherit config)
+                                  (permit-root-login #t)))))))))))
 
 (define (run-childhurd-test)
   (define os
