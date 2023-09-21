@@ -1550,6 +1550,23 @@ blacklisted.certs.pem"
   (make-openjdk openjdk19 "20"
                 "0pk5lpwijfv9qv7vwpsq2xfklbnqdfs6xbdhc5aamrpar4xi4ykx"))
 
+(define-public openjdk21
+  (make-openjdk openjdk20 "21"
+                "06wjfwrkqykjdkis2s1nh91cy8vwincnmc699cxvyk3fc12jf3vw"
+   (source (origin
+             (inherit (package-source base))
+             (patches (search-patches "openjdk-21-fix-rpath.patch"
+                                      "openjdk-15-xcursor-no-dynamic.patch"))))
+   (arguments
+    (substitute-keyword-arguments (package-arguments base)
+      ((#:phases phases)
+       #~(modify-phases #$phases
+           (replace 'fix-java-shebangs
+             (lambda _
+               ;; 'blacklisted' was renamed back to 'blocked'.
+               (substitute* "src/java.base/share/data/blockedcertsconverter/blocked.certs.pem"
+                 (("^#!.*") "#! java BlockedCertsConverter SHA-256\n"))))))))))
+
 ;;; Convenience alias to point to the latest version of OpenJDK.
 (define-public openjdk openjdk19)
 
