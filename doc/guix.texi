@@ -35722,6 +35722,15 @@ guix shell tigervnc-client -- vncviewer localhost:5900
 The default configuration (see @code{hurd-vm-configuration} below)
 spawns a secure shell (SSH) server in your GNU/Hurd system, which QEMU
 (the virtual machine emulator) redirects to port 10222 on the host.
+By default, the service enables @dfn{offloading} such that the host
+@code{guix-daemon} automatically offloads GNU/Hurd builds to the
+childhurd (@pxref{Daemon Offload Setup}).  This is what happens when
+running a command like the following one, where @code{i586-gnu} is the
+system type of 32-bit GNU/Hurd:
+
+@example
+guix build emacs-minimal -s i586-gnu
+@end example
 
 The childhurd is volatile and stateless: it starts with a fresh root
 file system every time you restart it.  By default though, all the files
@@ -35855,6 +35864,41 @@ with forwarded ports:
 @var{vnc-port}: @code{(+ 15900 (* 1000 @var{ID}))}
 @end example
 
+@cindex childhurd, offloading
+@cindex Hurd, offloading
+@item @code{offloading?} (default: @code{#t})
+Whether to automatically set up offloading of builds to the childhurd.
+
+When enabled, this lets you run GNU/Hurd builds on the host and have
+them transparently offloaded to the VM, for instance when running a
+command like this:
+
+@example
+guix build coreutils -s i586-gnu
+@end example
+
+This option automatically sets up offloading like so:
+
+@enumerate
+@item
+Authorizing the childhurd's key on the host so that the host accepts
+build results coming from the childhurd, which can be done like so
+(@pxref{Invoking guix archive, @command{guix archive --authorize}}, for
+more on that).
+
+@item
+Creating a user account called @code{offloading} dedicated to offloading
+in the childhurd.
+
+@item
+Creating an SSH key pair on the host and making it an authorized key of
+the @code{offloading} account in the childhurd.
+
+@item
+Adding the childhurd to @file{/etc/guix/machines.scm} (@pxref{Daemon
+Offload Setup}).
+@end enumerate
+
 @item @code{secret-root} (default: @file{/etc/childhurd})
 The root directory with out-of-band secrets to be installed into the
 childhurd once it runs.  Childhurds are volatile which means that on
@@ -35872,38 +35916,13 @@ with the following non-volatile secrets, unless they already exist:
 /etc/childhurd/etc/guix/acl
 /etc/childhurd/etc/guix/signing-key.pub
 /etc/childhurd/etc/guix/signing-key.sec
+/etc/childhurd/etc/ssh/authorized_keys.d/offloading
 /etc/childhurd/etc/ssh/ssh_host_ed25519_key
 /etc/childhurd/etc/ssh/ssh_host_ecdsa_key
 /etc/childhurd/etc/ssh/ssh_host_ed25519_key.pub
 /etc/childhurd/etc/ssh/ssh_host_ecdsa_key.pub
 @end example
 
-These files are automatically sent to the guest Hurd VM when it boots,
-including permissions.
-
-@cindex childhurd, offloading
-@cindex Hurd, offloading
-Having these files in place means that only a couple of things are
-missing to allow the host to offload @code{i586-gnu} builds to the
-childhurd:
-
-@enumerate
-@item
-Authorizing the childhurd's key on the host so that the host accepts
-build results coming from the childhurd, which can be done like so:
-
-@example
-guix archive --authorize < \
-  /etc/childhurd/etc/guix/signing-key.pub
-@end example
-
-@item
-Adding the childhurd to @file{/etc/guix/machines.scm} (@pxref{Daemon
-Offload Setup}).
-@end enumerate
-
-We're working towards making that happen automatically---get in touch
-with us at @email{guix-devel@@gnu.org} to discuss it!
 @end table
 @end deftp
 

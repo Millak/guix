@@ -27,6 +27,7 @@
   #:use-module (gnu bootloader grub)
   #:use-module (gnu image)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages gdb)
   #:autoload   (gnu packages gnupg) (guile-gcrypt)
   #:use-module (gnu packages package-management)
@@ -52,6 +53,7 @@
   #:use-module (guix store)
   #:use-module (guix utils)
   #:autoload   (guix self) (make-config.scm)
+  #:autoload   (guix platform) (platform-system)
 
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-26)
@@ -1063,6 +1065,26 @@ that will be listening to receive secret keys on port 1004, TCP."
 ;;; The Hurd in VM service: a Childhurd.
 ;;;
 
+(define (operating-system-with-offloading-account os)
+  (define accounts
+    (list (user-group
+           (name "offloading")
+           (system? #t))
+          (user-account
+           (name "offloading")
+           (group "offloading")
+           (system? #t)
+           (comment "Offloading privilege separation user")
+           (home-directory "/var/run/offloading")
+           (shell (file-append bash-minimal "/bin/sh")))))
+
+  (operating-system
+    (inherit os)
+    (services (cons (simple-service 'offloading-account
+                                    account-service-type
+                                    accounts)
+                    (operating-system-user-services os)))))
+
 (define %hurd-vm-operating-system
   (operating-system
     (inherit %hurd-default-operating-system)
@@ -1115,14 +1137,21 @@ that will be listening to receive secret keys on port 1004, TCP."
   (net-options hurd-vm-configuration-net-options        ;list of string
                (thunked)
                (default (hurd-vm-net-options this-record)))
+  (offloading? hurd-vm-configuration-offloading?        ;Boolean
+               (default #t))
   (secret-root hurd-vm-configuration-secret-root        ;string
                (default "/etc/childhurd")))
 
 (define (hurd-vm-disk-image config)
   "Return a disk-image for the Hurd according to CONFIG.  The secret-service
 is added to the OS specified in CONFIG."
-  (let* ((os        (secret-service-operating-system
-                     (hurd-vm-configuration-os config)))
+  (define transform
+    (compose secret-service-operating-system
+             (if (hurd-vm-configuration-offloading? config)
+                 operating-system-with-offloading-account
+                 identity)))
+
+  (let* ((os        (transform (hurd-vm-configuration-os config)))
          (disk-size (hurd-vm-configuration-disk-size config))
          (type      (lookup-image-type-by-name 'hurd-qcow2))
          (os->image (image-type-constructor type)))
@@ -1331,18 +1360,71 @@ an argument) on the host."
         (define guix-directory
           (string-append secret-directory "/etc/guix"))
 
+        (define offloading-ssh-key
+          #$(hurd-vm-configuration-offloading-ssh-key config))
+
         (unless (file-exists? ssh-directory)
           ;; Generate SSH host keys under SSH-DIRECTORY.
           (mkdir-p ssh-directory)
           (invoke #$(file-append openssh "/bin/ssh-keygen")
                   "-A" "-f" secret-directory))
 
+        (unless (or (not #$(hurd-vm-configuration-offloading? config))
+                    (file-exists? offloading-ssh-key))
+          ;; Generate a user SSH key pair for the host to use when offloading
+          ;; to the guest.
+          (mkdir-p (dirname offloading-ssh-key))
+          (invoke #$(file-append openssh "/bin/ssh-keygen")
+                  "-t" "ed25519" "-N" ""
+                  "-f" offloading-ssh-key)
+
+          ;; Authorize it in the guest for user 'offloading'.
+          (let ((authorizations
+                 (string-append ssh-directory
+                                "/authorized_keys.d/offloading")))
+            (mkdir-p (dirname authorizations))
+            (copy-file (string-append offloading-ssh-key ".pub")
+                       authorizations)
+            (chmod (dirname authorizations) #o555)))
+
         (unless (file-exists? guix-directory)
           (invoke #$(initialize-hurd-vm-substitutes)
                   guix-directory))
 
-        ;; Authorize the archive signing key from GUIX-DIRECTORY in the host.
-        (invoke #$(authorize-guest-substitutes-on-host) guix-directory))))
+        (when #$(hurd-vm-configuration-offloading? config)
+          ;; Authorize the archive signing key from GUIX-DIRECTORY in the host.
+          (invoke #$(authorize-guest-substitutes-on-host) guix-directory)))))
+
+(define (hurd-vm-configuration-offloading-ssh-key config)
+  "Return the name of the file containing the SSH key of user 'offloading'."
+  (string-append "/etc/guix/offload/ssh/childhurd"
+                 (or (and=> (hurd-vm-configuration-id config)
+                            number->string)
+                     "")))
+
+(define (hurd-vm-guix-extension config)
+  "When offloading is enabled, add this childhurd to the list of offlading
+machines in /etc/guix/machines.scm."
+  (if (hurd-vm-configuration-offloading? config)
+      (let* ((image (hurd-vm-configuration-image config))
+             (platform (image-platform image))
+             (system (platform-system platform))
+             (vm-ssh-key (string-append
+                          (hurd-vm-configuration-secret-root config)
+                          "/etc/ssh/ssh_host_ed25519_key.pub"))
+             (host-ssh-key (hurd-vm-configuration-offloading-ssh-key config)))
+        (guix-extension
+         (build-machines
+          (list #~(build-machine
+                   (name "localhost")
+                   (port #$(hurd-vm-port config %hurd-vm-ssh-port))
+                   (systems '(#$system))
+                   (host-key (call-with-input-file #$vm-ssh-key
+                               (@ (ice-9 textual-ports)
+                                  get-string-all)))
+                   (user "offloading")
+                   (private-key #$host-ssh-key))))))
+      (guix-extension)))
 
 (define hurd-vm-service-type
   (service-type
@@ -1351,6 +1433,8 @@ an argument) on the host."
                                         hurd-vm-shepherd-service)
                      (service-extension account-service-type
                                         (const %hurd-vm-accounts))
+                     (service-extension guix-service-type
+                                        hurd-vm-guix-extension)
                      (service-extension activation-service-type
                                         hurd-vm-activation)))
    (default-value (hurd-vm-configuration))

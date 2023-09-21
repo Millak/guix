@@ -38,6 +38,7 @@
   #:use-module (guix gexp)
   #:use-module (guix records)
   #:use-module (guix store)
+  #:use-module (guix modules)
   #:export (%test-libvirt
             %test-qemu-guest-agent
             %test-childhurd))
@@ -244,11 +245,19 @@
                                   (permit-root-login #t)))))))))))
 
 (define (run-childhurd-test)
+  (define (import-module? module)
+    ;; This module is optional and depends on Guile-Gcrypt, do skip it.
+    (and (guix-module-name? module)
+         (not (equal? module '(guix store deduplication)))))
+
   (define os
     (marionette-operating-system
      %childhurd-os
-     #:imported-modules '((gnu services herd)
-                          (guix combinators))))
+     #:imported-modules (source-module-closure
+                         '((gnu services herd)
+                           (guix combinators)
+                           (gnu build install))
+                         #:select? import-module?)))
 
   (define vm
     (virtual-machine
@@ -372,6 +381,31 @@
               (and (string-suffix? ".drv"
                                    (pk 'drv (string-trim-right drv)))
                    drv)))
+
+          (test-assert "copy-on-write store"
+            ;; Set up a writable store.  The root partition is already an
+            ;; overlayfs, which is not suitable as the bottom part of this
+            ;; additional overlayfs; thus, create a tmpfs for the backing
+            ;; store.
+            ;; TODO: Remove this when <virtual-machine> creates a writable
+            ;; store.
+            (marionette-eval
+             '(begin
+                (use-modules (gnu build install)
+                             (guix build syscalls))
+
+                (mkdir "/run/writable-store")
+                (mount "none" "/run/writable-store" "tmpfs")
+                (mount-cow-store "/run/writable-store" "/backing-store")
+                (system* "df" "-hT"))
+             marionette))
+
+          (test-equal "offloading"
+            0
+            (marionette-eval
+             '(and (file-exists? "/etc/guix/machines.scm")
+                   (system* "guix" "offload" "test"))
+             marionette))
 
           (test-end))))
 
