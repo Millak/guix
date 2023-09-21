@@ -26504,17 +26504,17 @@ and dates in \"human readable\" forms.  For example, it would display
 (define-public python-txaio
   (package
     (name "python-txaio")
-    (version "18.8.1")
+    (version "23.1.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "txaio" version))
         (sha256
          (base32
-          "1zmpdph6zddgrnkkcykh6qk5s46l7s5mzfqrh82m4b5iffn61qv7"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-twisted python-six))
+          "017p9x0bssf7g9slmf30ddh1baawsmxas4nivx334pkfjxp23agr"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-twisted))
     (home-page "https://github.com/crossbario/txaio")
     (synopsis "Compatibility layer between Python asyncio and Twisted")
     (description "Txaio provides a compatibility layer between the Python
