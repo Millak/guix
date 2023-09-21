@@ -66864,6 +66864,27 @@ memory all at once.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-target-2
+  (package
+    (name "rust-target")
+    (version "2.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "target" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0p5hi5vxcs8w95qmg9hsv985g8kaxjrzjlgsybmf4h13a1qjx1ds"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-executable-path" ,rust-executable-path-1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-0.7))))
+    (home-page "https://github.com/casey/target")
+    (synopsis "Get information on compilation target")
+    (description "Get information on compilation target.")
+    (license license:cc0)))
+
 (define-public rust-target-build-utils-0.3
   (package
     (name "rust-target-build-utils")
