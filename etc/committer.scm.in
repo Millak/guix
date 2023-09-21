@@ -358,6 +358,7 @@ modifying."
         (_
          (apply change-commit-message file-name old new rest)))))
 
+  (read-disable 'positions)
   (match (diff-info)
     (()
      (display "Nothing to be done.\n" (current-error-port)))
