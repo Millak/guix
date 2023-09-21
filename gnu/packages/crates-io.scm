@@ -67727,6 +67727,26 @@ directories.")
      "This package provides support for Linux-specific tempfile extensions.")
     (license license:expat)))
 
+(define-public rust-temptree-0.2
+  (package
+    (name "rust-temptree")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "temptree" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0c461j4xrjp1mz89fb3rmv8w36m1dm1nymv9ny60hh0v4pc99nlg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/casey/temptree")
+    (synopsis "Temporary trees of files")
+    (description "Temporary trees of files.")
+    (license license:cc0)))
+
 (define-public rust-tendril-0.4
   (package
     (name "rust-tendril")
