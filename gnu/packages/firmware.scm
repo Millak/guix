@@ -1488,6 +1488,14 @@ contains a single extra layer that includes function and multimedia keys.  A
 graphical representation of the keymap is available in the
 @file{layouts/community/ergodox/dvorak_emacs/readme.md} source file."))
 
+(define-public qmk-firmware-ergodox-ez-dvorak-emacs-software
+  (make-qmk-firmware
+   "ergodox_ez" "dvorak_emacs_software" #:description
+   "This is the same layout as that of the
+@code{qmk-firmware-ergodox-ez-dvorak-emacs}, but designed to be used with a
+Dvorak-configured operating system (instead of a US QWERTY one, which is the
+default assumption for QMK firmware keymaps)."))
+
 (define-public qmk-udev-rules
   (package
     (inherit qmk-firmware-ergodox-ez-default)
