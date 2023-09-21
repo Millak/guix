@@ -34552,6 +34552,23 @@ a no_std environment.  This does not depend on any standard library features,
 nor a system allocator.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-lexiclean-0.0.1
+  (package
+    (name "rust-lexiclean")
+    (version "0.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "lexiclean" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1rb8sky7gi75a7xxn6xrfkrbqkp465npm54p5s89ysqhgc0ja4j4"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/casey/lexiclean")
+    (synopsis "Lexically clean paths")
+    (description "Lexically clean paths")
+    (license license:cc0)))
+
 (define-public rust-lexopt-0.3
   (package
     (name "rust-lexopt")
