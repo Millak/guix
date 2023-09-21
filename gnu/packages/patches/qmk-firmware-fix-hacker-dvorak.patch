@@ -1,0 +1,15 @@
+Submitted upstream: https://github.com/qmk/qmk_firmware/pull/22102
+
+diff --git a/keyboards/ergodox_ez/keymaps/hacker_dvorak/user/layer_set_state_user.c b/keyboards/ergodox_ez/keymaps/hacker_dvorak/user/layer_set_state_user.c
+index bd4fd10ad1..5ce5f5298f 100644
+--- a/keyboards/ergodox_ez/keymaps/hacker_dvorak/user/layer_set_state_user.c
++++ b/keyboards/ergodox_ez/keymaps/hacker_dvorak/user/layer_set_state_user.c
+@@ -4,7 +4,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
+ 
+     switch (layer) {
+         case DVORAK:
+-            rgblight_sethsv_noeeprom(GREEN);
++            rgblight_sethsv_noeeprom(HSV_GREEN);
+             rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
+ 
+             if (PLOVER_MODE) {

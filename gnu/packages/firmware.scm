@@ -1340,7 +1340,9 @@ provided."
               (file-name (git-file-name "qmk-firmware" version))
               (sha256
                (base32
-                "0s1lcnv7cddpn768p7mrc5bkxhx0ba5p77ya007dnkbk36c33d0w"))))
+                "0s1lcnv7cddpn768p7mrc5bkxhx0ba5p77ya007dnkbk36c33d0w"))
+              (patches
+               (search-patches "qmk-firmware-fix-hacker-dvorak.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1447,6 +1449,27 @@ shortcuts and can be interpreted by your window managher.  This layout only
 makes use of the 42 keys that the Atreus also has for the main functionality.
 See the @file{keyboards/atreus/keymaps/dvorak_42_key/keymap.c} source file for
 the keymap definition."))
+
+(define-public qmk-firmware-ergodox-ez-hacker-dvorak
+  (make-qmk-firmware "ergodox_ez" "hacker_dvorak" #:description "\
+This is a Dvorak layout for the ErgoDox EZ.  It is inspired by the
+@url{https://www.kaufmann.no/roland/dvorak, Programmer Dvorak}.  The operating
+system keyboard layout should be set to US for this keymap to function
+normally.  It defines 10 layers:
+@enumerate
+@item Dvorak
+@item Querty
+@item Gaming
+@item Arrows
+@item Mouse
+@item Numpad
+@item Hyper Fn
+@item Media Fn
+@item Meh Fn
+@item Meh Fn +
+@end enumerate
+The complete keymap can be inspected at the ErgoDox EZ Configurator web site:
+@url{https://configure.ergodox-ez.com/ergodox-ez/layouts/Wadz/latest/0}."))
 
 (define-public qmk-udev-rules
   (package
