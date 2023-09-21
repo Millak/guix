@@ -196,21 +196,34 @@ LINE-NO in PORT."
                 (string-ref line 0)))
              (hunk-diff-lines hunk))))
 
+(define %original-file-cache
+  (make-hash-table))
+
+(define (read-original-file file-name)
+  "Return the contents of FILE-NAME prior to any changes."
+  (let* ((port (open-pipe* OPEN_READ
+                           "git" "cat-file" "-p" (string-append
+                                                  "HEAD:" file-name)))
+         (contents (get-string-all port)))
+    (close-pipe port)
+    contents))
+
+(define (read-original-file* file-name)
+  "Caching variant of READ-ORIGINAL-FILE."
+  (or (hashv-ref %original-file-cache file-name)
+      (let ((value (read-original-file file-name)))
+        (hashv-set! %original-file-cache file-name value)
+        value)))
+
 (define (old-sexp hunk)
   "Using the diff information in HUNK return the unmodified S-expression
 corresponding to the top-level definition containing the staged changes."
   ;; TODO: We can't seek with a pipe port...
-  (let* ((port (open-pipe* OPEN_READ
-                           "git" "cat-file" "-p" (string-append
-                                                  "HEAD:"
-                                                  (hunk-file-name hunk))))
-         (contents (get-string-all port)))
-    (close-pipe port)
-    (call-with-input-string contents
-      (lambda (port)
-        (surrounding-sexp port
-                          (+ (lines-to-first-change hunk)
-                             (hunk-old-line-number hunk)))))))
+  (call-with-input-string (read-original-file* (hunk-file-name hunk))
+    (lambda (port)
+      (surrounding-sexp port
+                        (+ (lines-to-first-change hunk)
+                           (hunk-old-line-number hunk))))))
 
 (define (new-sexp hunk)
   "Using the diff information in HUNK return the modified S-expression
