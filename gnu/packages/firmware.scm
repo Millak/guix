@@ -1479,6 +1479,15 @@ function and symbols on layer 1 and media and and mouse keys on layer 2.  See
 the @file{layouts/community/ergodox/dvorak/keymap.c} source file for the
 keymap definition."))
 
+(define-public qmk-firmware-ergodox-ez-dvorak-emacs
+  (make-qmk-firmware
+   "ergodox_ez" "dvorak_emacs" #:description
+   "This is a Dvorak-based keymap optimized for Emacs usage, with the
+frequently used Control and Meta (Alt) keys mapped to the thumb buttons.  It
+contains a single extra layer that includes function and multimedia keys.  A
+graphical representation of the keymap is available in the
+@file{layouts/community/ergodox/dvorak_emacs/readme.md} source file."))
+
 (define-public qmk-udev-rules
   (package
     (inherit qmk-firmware-ergodox-ez-default)
