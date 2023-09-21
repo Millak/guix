@@ -1078,7 +1078,6 @@ that will be listening to receive secret keys on port 1004, TCP."
                         (openssh-configuration
                          (openssh openssh-sans-x)
                          (use-pam? #f)
-                         (port-number 2222)
                          (permit-root-login #t)
                          (allow-empty-passwords? #t)
                          (password-authentication? #t)))
@@ -1146,7 +1145,7 @@ is added to the OS specified in CONFIG."
                     "-:1004"
                     ",hostfwd=tcp:127.0.0.1:"
                     (number->string (hurd-vm-port config %hurd-vm-ssh-port))
-                    "-:2222"
+                    "-:22"
                     ",hostfwd=tcp:127.0.0.1:"
                     (number->string (hurd-vm-port config %hurd-vm-vnc-port))
                     "-:5900")))
