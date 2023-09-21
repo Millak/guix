@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021, 2022 Olivier Dion <olivier.dion@polymtl.ca>
 ;;; Copyright © 2023 Andy Tai <atai@atai.org>
+;;; Copyright © 2023 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,7 +25,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
-  #:use-module (gnu packages commencement)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpio)
   #:use-module (gnu packages datastructures)
@@ -47,6 +48,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages sphinx)
@@ -58,6 +60,7 @@
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system linux-module)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -141,21 +144,38 @@ bindings, and the command-line tool @command{babeltrace2}.")
 (define-public barectf
   (package
     (name "barectf")
-    (version "3.1.1")
+    (version "3.1.2")
     (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "barectf" version))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/efficios/barectf")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0zhc9d4qnnl4fjj6354qb4bng4ykywn8x3l3acpv6sx439q6ylwd"))))
-    (build-system python-build-system)
-    (native-inputs (list gcc-toolchain
-                         gnu-make
-                         python-jinja2
-                         python-jsonschema
-                         python-pyyaml-5
-                         python-termcolor
-                         python-tox))
+                "0v7w830dqi46bq753x84d0z75dw4cf4r93gpfrv4sjynvmylbs95"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'relax-requirements
+                 (lambda _
+                   ;; Remove version constraints as the program appears
+                   ;; to work (tests pass!) with later versions.
+                   ;; Try removing these when updating barectf.
+                   (substitute* "pyproject.toml"
+                     (("pyyaml = '\\^5")
+                      "pyyaml = '>=5")
+                     (("jsonschema = '\\^3")
+                      "jsonschema = '>=3"))))
+               (add-before 'check 'set-CC
+                 (lambda _
+                   ;; Some tests invoke a compiler.
+                   (setenv "CC" "gcc"))))))
+    (native-inputs
+     (list python-poetry-core python-pytest))
+    (propagated-inputs
+     (list python-jinja2 python-jsonschema python-pyyaml python-termcolor))
     (home-page "https://barectf.org")
     (synopsis "CTF tracer generator")
     (description
