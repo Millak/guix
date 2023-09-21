@@ -18,7 +18,7 @@
 ;;; Copyright © 2020 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2020 Tom Zander <tomz@freedommail.ch>
-;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Carlo Holl <carloholl@gmail.com>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
@@ -1378,14 +1378,14 @@ Luhn and family of ISO/IEC 7064 check digit algorithms.")
 (define-public python-duniterpy
   (package
     (name "python-duniterpy")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "duniterpy" version))
        (sha256
-        (base32 "18i5bqz58vjp740pxb4wb4ixg1g2d73cwi0d8gp85fmj5p8f2gx7"))))
-    (build-system python-build-system)
+        (base32 "0h0fsawsrjd50lb1bkysb21ph39qlhmiymd3r5vs695qxvbwaqaa"))))
+    (build-system pyproject-build-system)
     (arguments
      ;; FIXME: Tests fail with: "TypeError: block_uid() missing 1 required
      ;; positional argument: 'value'".
@@ -1393,19 +1393,34 @@ Luhn and family of ISO/IEC 7064 check digit algorithms.")
        #:phases (modify-phases %standard-phases
                   (add-after 'unpack 'loosen-requirements
                     (lambda _
-                      (substitute* "setup.py"
-                        (("mnemonic>=0\\.19,<0.20")
-                         "mnemonic>=0.19")))))))
+                      (substitute* "pyproject.toml"
+                        (("mnemonic = \"\\^0\\.19")
+                         "mnemonic = \">=0.19")
+                        (("jsonschema = \"\\^3\\.2")
+                         "jsonschema = \">=3.2"))))
+                  (add-after 'unpack 'adjust-for-new-libnacl
+                    (lambda _
+                      ;; Mimic upstream commit ad8f6a26e9e7067; remove
+                      ;; for newer versions of duniterpy.
+                      (substitute* "pyproject.toml"
+                        (("libnacl = \"1\\.8")
+                         "libnacl = \">=1.9"))
+                      (substitute* "duniterpy/key/ascii_armor.py"
+                        (("from libnacl\\.version import version as libnacl_version")
+                         "import importlib.metadata
+libnacl_version = importlib.metadata.version('libnacl')")))))))
+    (native-inputs
+     (list python-poetry-core))
     (propagated-inputs
      (list python-attrs
            python-base58
+           python-graphql-core
            python-jsonschema
            python-libnacl
-           python-pyaes
-           python-graphql-core
            python-mnemonic
-           python-websocket-client
-           python-pypeg2))
+           python-pyaes
+           python-pypeg2
+           python-websocket-client))
     (home-page "https://git.duniter.org/clients/python/duniterpy")
     (synopsis "Python implementation of Duniter API")
     (description "@code{duniterpy} is an implementation of
