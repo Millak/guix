@@ -5311,15 +5311,24 @@ ecosystem.")
 (define-public python-hyperlink
   (package
     (name "python-hyperlink")
-    (version "19.0.0")
+    (version "21.0.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "hyperlink" version))
         (sha256
          (base32
-          "0m2nhi0j8wmgfscf974wd5v1xfq8mah286hil6npy1ys0m3y7222"))))
-    (build-system python-build-system)
+          "0sx50lkivsfjxx9zr4yh7l9gll2l9kvl0v0w8w4wk2x5v9bzjyj2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'pretend-to-be-CI
+                 (lambda _
+                   ;; Pretend to be a CI system to skip flaky tests.
+                   (setenv "CI" "true"))))))
+    (native-inputs
+     (list python-pytest))
     (propagated-inputs
      (list python-idna))
     (home-page "https://github.com/python-hyper/hyperlink")
