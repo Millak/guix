@@ -388,41 +388,46 @@ modifying."
               (unless (eqv? 0 (status:exit-val (close-pipe port)))
                 (error "Cannot commit"))))
           (usleep %delay))
-        definitions))
+        definitions)
 
-     ;; Changes.
-     (for-each
-      (match-lambda
-        ((new old . hunks)
-         (for-each (lambda (hunk)
-                     (let ((port (open-pipe* OPEN_WRITE
-                                             "git" "apply"
-                                             "--cached"
-                                             "--unidiff-zero")))
-                       (hunk->patch hunk port)
-                       (unless (eqv? 0 (status:exit-val (close-pipe port)))
-                         (error "Cannot apply")))
-                     (usleep %delay))
-                   hunks)
-         (define copyright-line
-           (any (lambda (line) (and=> (string-prefix? "+;;; Copyright ©" line)
-                                      (const line)))
-                (hunk-diff-lines (first hunks))))
-         (cond
-          (copyright-line
-           (add-copyright-line copyright-line))
-          (else
-           (let ((port (open-pipe* OPEN_WRITE "git" "commit" "-F" "-")))
-             (change-commit-message* (hunk-file-name (first hunks))
-                                     old new)
-             (change-commit-message* (hunk-file-name (first hunks))
-                                     old new
-                                     port)
-             (usleep %delay)
-             (unless (eqv? 0 (status:exit-val (close-pipe port)))
-               (error "Cannot commit")))))))
-      ;; XXX: we recompute the hunks here because previous
-      ;; insertions lead to offsets.
-      (new+old+hunks (diff-info))))))
+       ;; Changes.
+       (for-each
+        (match-lambda
+          ((new old . hunks)
+           (for-each (lambda (hunk)
+                       (let ((port (open-pipe* OPEN_WRITE
+                                               "git" "apply"
+                                               "--cached"
+                                               "--unidiff-zero")))
+                         (hunk->patch hunk port)
+                         (unless (eqv? 0 (status:exit-val (close-pipe port)))
+                           (error "Cannot apply")))
+                       (usleep %delay))
+                     hunks)
+           (define copyright-line
+             (any (lambda (line) (and=> (string-prefix? "+;;; Copyright ©" line)
+                                   (const line)))
+                  (hunk-diff-lines (first hunks))))
+           (cond
+            (copyright-line
+             (add-copyright-line copyright-line))
+            (else
+             (let ((port (open-pipe* OPEN_WRITE "git" "commit" "-F" "-")))
+               (change-commit-message* (hunk-file-name (first hunks))
+                                       old new)
+               (change-commit-message* (hunk-file-name (first hunks))
+                                       old new
+                                       port)
+               (usleep %delay)
+               (unless (eqv? 0 (status:exit-val (close-pipe port)))
+                 (error "Cannot commit")))))))
+        (new+old+hunks (match definitions
+                         ('() changes) ;reuse
+                         (_
+                          ;; XXX: we recompute the hunks here because previous
+                          ;; insertions lead to offsets.
+                          (let-values (((definitions changes)
+                                        (partition hunk-type (diff-info))))
+                            changes)))))))))
 
 (apply main (cdr (command-line)))
