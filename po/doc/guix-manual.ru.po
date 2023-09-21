@@ -14078,7 +14078,7 @@ msgstr ""
 
 #. type: Plain text
 #: guix-git/doc/guix.texi:5599
-msgid "The output of @command{guix describe} above shows that we're now running Generation@tie{}19 and that it includes both Guix and packages from the @code{variant-personal-packages} channel (@pxref{Invoking guix describe})."
+msgid "The output of @command{guix describe} above shows that we're now running Generation@tie{}19 and that it includes both Guix and packages from the @code{variant-packages} channel (@pxref{Invoking guix describe})."
 msgstr ""
 
 #. type: Plain text
@@ -85393,7 +85393,7 @@ msgstr "fdl-1.3.texi"
 #~ msgid "@code{user} (default: @samp{\"root\"})"
 #~ msgstr "@code{port} (default: @code{22})"
 
-#~ msgid "The output of @command{guix pull} above shows that Generation@tie{}19 includes both Guix and packages from the @code{variant-personal-packages} channel.  Among the new and upgraded packages that are listed, some like @code{variant-gimp} and @code{variant-emacs-with-cool-features} might come from @code{variant-packages}, while others come from the Guix default channel."
+#~ msgid "The output of @command{guix pull} above shows that Generation@tie{}19 includes both Guix and packages from the @code{variant-packages} channel.  Among the new and upgraded packages that are listed, some like @code{variant-gimp} and @code{variant-emacs-with-cool-features} might come from @code{variant-packages}, while others come from the Guix default channel."
 #~ msgstr "Результат @command{guix pull} выше показывает, что поколение Generation@tie{}19 включает как репозиторий Guix, так и пакеты из канала @code{my-personal-packages}. Вместе с новыми и обновлёнными пакетами, которые присутствуют в списке, что-нибудь типа @code{my-gimp} и @code{my-emacs-with-cool-features} может прийти из @code{my-personal-packages}, когда остальные идут из канала Guix по умолчанию."
 
 #~ msgid "At this point the two machines run the @emph{exact same Guix}, with access to the @emph{exact same packages}.  The output of @command{guix build gimp} on one machine will be exactly the same, bit for bit, as the output of the same command on the other machine.  It also means both machines have access to all the source code of Guix and, transitively, to all the source code of every package it defines."
