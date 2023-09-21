@@ -61,6 +61,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages freedesktop) ; wayland
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
@@ -1624,6 +1625,44 @@ OpenJDK.")
               (patches (search-patches "jbr-17-xcursor-no-dynamic.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments openjdk17)
+       ((#:configure-flags configure-flags)
+        #~(append #$configure-flags
+                  (list "--with-jvm-features=shenandoahgc"
+                        "--enable-cds=yes"
+                        "--with-vendor-name=JetBrains s.r.o"
+                        "--with-vendor-url=https://www.jetbrains.com/"
+                        "--with-vendor-bug-url=https://youtrack.jetbrains.com/issues/JBR")))))
+    (synopsis "JetBrains Java Runtime")
+    (description "This package provides a Java runtime environment for
+and Java development kit.  It supports enhanced class redefinition (DCEVM),
+includes a number of improvements in font rendering, keyboards support,
+windowing/focus subsystems, HiDPI, accessibility, and performance,
+provides better desktop integration and bugfixes not yet present in
+OpenJDK.")
+    (home-page "https://www.jetbrains.com/")
+    (license license:gpl2+)))
+
+(define-public jbr21
+  (package
+    (inherit openjdk21)
+    (name "jbr")
+    (version "21-b240.22")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/JetBrains/JetBrainsRuntime.git")
+                     (commit (string-append "jb" version))))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "1sx48mm5vap4ab1qr6hy25wlgxljmhvpvrqiqiq692izr8dh7j4c"))
+              (patches (search-patches "openjdk-21-fix-rpath.patch"
+                                       "jbr-17-xcursor-no-dynamic.patch"))))
+    (inputs
+     `(("wayland" ,wayland)
+       ,@(package-inputs openjdk21)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments openjdk21)
        ((#:configure-flags configure-flags)
         #~(append #$configure-flags
                   (list "--with-jvm-features=shenandoahgc"
