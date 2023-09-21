@@ -1546,6 +1546,10 @@ blacklisted.certs.pem"
                ;; Fix for "valid range 1980-01-01T00:00:02Z to 2099-12-31T23:59:59Z".
                (setenv "SOURCE_DATE_EPOCH" "1234567890")))))))))
 
+(define-public openjdk20
+  (make-openjdk openjdk19 "20"
+                "0pk5lpwijfv9qv7vwpsq2xfklbnqdfs6xbdhc5aamrpar4xi4ykx"))
+
 ;;; Convenience alias to point to the latest version of OpenJDK.
 (define-public openjdk openjdk19)
 
