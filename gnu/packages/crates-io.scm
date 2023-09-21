@@ -20967,6 +20967,37 @@ Rust.")
         ("rust-regex" ,rust-regex-0.2)
         ("rust-syn" ,rust-syn-0.11))))))
 
+(define-public rust-dotenvy-0.15
+  (package
+    (name "rust-dotenvy")
+    (version "0.15.7")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "dotenvy" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "16s3n973n5aqym02692i1npb079n5mb0fwql42ikmwn8wnrrbbqs"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       ;; Not all files included.
+       '("--release" "--"
+         "--skip=dotenv"
+         "--skip=dotenv_iter"
+         "--skip=dotenv_override"
+         "--skip=from_filename"
+         "--skip=from_filename_override")
+       #:cargo-inputs
+       (("rust-clap" ,rust-clap-3))
+       #:cargo-development-inputs
+       (("rust-once-cell" ,rust-once-cell-1)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/allan2/dotenvy")
+    (synopsis "Fork of the dotenv crate")
+    (description "This package provides a fork of the dotenv crate.")
+    (license license:expat)))
+
 (define-public rust-draw-state-0.8
   (package
     (name "rust-draw-state")
