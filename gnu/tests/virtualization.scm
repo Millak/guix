@@ -225,23 +225,10 @@
 ;;; GNU/Hurd virtual machines, aka. childhurds.
 ;;;
 
-;; Copy of `hurd-vm-disk-image', using plain disk-image for test
-(define (hurd-vm-disk-image-raw config)
-  (let ((os ((@@ (gnu services virtualization) secret-service-operating-system)
-             (hurd-vm-configuration-os config)))
-        (disk-size (hurd-vm-configuration-disk-size config)))
-    (image
-     (inherit hurd-disk-image)
-     (format 'disk-image)
-     (size disk-size)
-     (operating-system os))))
-
 (define %childhurd-os
   (simple-operating-system
    (service dhcp-client-service-type)
-   (service hurd-vm-service-type
-            (hurd-vm-configuration
-             (image (hurd-vm-disk-image-raw this-record))))))
+   (service hurd-vm-service-type)))
 
 (define (run-childhurd-test)
   (define os
@@ -292,7 +279,10 @@
                        (ice-9 match))
 
           (define marionette
-            (make-marionette (list #$vm)))
+            ;; Emulate the host CPU so that KVM is available inside as well
+            ;; ("nested KVM"), provided
+            ;; /sys/module/kvm_intel/parameters/nested (or similar) allows it.
+            (make-marionette (list #$vm "-cpu" "host")))
 
           (test-runner-current (system-test-runner #$output))
           (test-begin "childhurd")
