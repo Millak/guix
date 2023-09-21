@@ -62820,8 +62820,33 @@ monotone matrix.")
 clone.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-snafu-derive-0.7
+  (package
+    (name "rust-snafu-derive")
+    (version "0.7.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "snafu-derive" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1gzy9rzggs090zf7hfvgp4lm1glrmg9qzh796686jnq7bxk7j04r"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-heck" ,rust-heck-0.4)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/shepmaster/snafu")
+    (synopsis "Ergonomic error handling library")
+    (description "Snafu aims to be an ergonomic error handling library.  This
+package provides derive macros.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-snafu-derive-0.6
   (package
+    (inherit rust-snafu-derive-0.7)
     (name "rust-snafu-derive")
     (version "0.6.10")
     (source
@@ -62831,17 +62856,11 @@ clone.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0nri7ma06g5kimpcdcm8359a55nmps5f3kcngy0j6bin7jhfy20m"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/shepmaster/snafu")
-    (synopsis "Ergonomic error handling library")
-    (description "Snafu aims to be an ergonomic error handling library.  This
-package provides derive macros.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-snafu-0.6
   (package
