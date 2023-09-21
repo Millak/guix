@@ -19855,7 +19855,7 @@ sequences")
     (inputs
      (list zlib))
     (home-page "https://github.com/ACEnglish/bwapy")
-    (synopsis "Python bindings to bwa alinger")
+    (synopsis "Python bindings to bwa aligner")
     (description "This package provides Python bindings to the bwa mem
 aligner.")
     ;; These Python bindings are licensed under Mozilla Public License 2.0,
