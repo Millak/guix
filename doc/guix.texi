@@ -35731,6 +35731,57 @@ initialize ``secrets'' inside the VM: SSH host keys, authorized
 substitute keys, and so on---see the explanation of @code{secret-root}
 below.
 
+You will probably find it useful to create an account for you in the
+GNU/Hurd virtual machine and to authorize logins with your SSH key.  To
+do that, you can define the GNU/Hurd system in the usual way
+(@pxref{Using the Configuration System}), and then pass that operating
+system as the @code{os} field of @code{hurd-vm-configuration}, as in
+this example:
+
+@lisp
+(define childhurd-os
+  ;; Definition of my GNU/Hurd system, derived from the default one.
+  (operating-system
+    (inherit %hurd-vm-operating-system)
+
+    ;; Add a user account.
+    (users (cons (user-account
+                  (name "charlie")
+                  (comment "This is me!")
+                  (group "users")
+                  (supplementary-groups '("wheel"))) ;for 'sudo'
+                 %base-user-accounts))
+
+    (services
+     ;; Modify the SSH configuration to allow login as "root"
+     ;; and as "charlie" using public key authentication.
+     (modify-services (operating-system-user-services
+                       %hurd-vm-operating-system)
+       (openssh-service-type
+        config => (openssh-configuration
+                   (inherit config)
+                   (authorized-keys
+                    `(("root"
+                       ,(local-file
+                         "/home/charlie/.ssh/id_rsa.pub"))
+                      ("charlie"
+                       ,(local-file
+                         "/home/charlie/.ssh/id_rsa.pub"))))))))))
+
+(operating-system
+  ;; @dots{}
+  (services
+    ;; Add the 'hurd-vm' service, configured to use the
+    ;; operating system configuration above.
+    (append (list (service hurd-vm-service-type
+                           (hurd-vm-configuration
+                             (os %childhurd-os))))
+            %base-services)))
+@end lisp
+
+That's it!  The remainder of this section provides the reference of the
+service configuration.
+
 @defvar hurd-vm-service-type
 This is the type of the Hurd in a Virtual Machine service.  Its value
 must be a @code{hurd-vm-configuration} object, which specifies the
