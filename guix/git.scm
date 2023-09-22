@@ -5,6 +5,7 @@
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2023 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -360,21 +361,16 @@ dynamic extent of EXP."
 (define (reference-available? repository ref)
   "Return true if REF, a reference such as '(commit . \"cabba9e\"), is
 definitely available in REPOSITORY, false otherwise."
-  ;; Note: this must not rely on 'resolve-reference', as that procedure always
-  ;; resolves the references for branch names such as master.  The semantic we
-  ;; want here is that unless the reference is exact (e.g. a commit), the
-  ;; reference should not be considered available, as it could have changed on
-  ;; the remote.
   (match ref
-    ((or ('commit . commit)
-         ('tag-or-commit . (? commit-id? commit)))
-     (let ((len (string-length commit))
-           (oid (string->oid commit)))
-       (false-if-git-not-found
-        (->bool (if (< len 40)
-                    (object-lookup-prefix repository oid len OBJ-COMMIT)
-                    (commit-lookup repository oid))))))
+    (('commit . (? commit-id? commit))
+     (let ((oid (string->oid commit)))
+       (->bool (commit-lookup repository oid))))
+    ((or ('tag . str)
+         ('tag-or-commit . str))
+     (false-if-git-not-found
+      (->bool (resolve-reference repository ref))))
     (_
+     ;; For the others REF as branch or symref, the REF cannot be available
      #f)))
 
 (define (clone-from-swh url tag-or-commit output)

@@ -692,6 +692,7 @@ EXTRA_DIST +=						\
   ROADMAP						\
   TODO							\
   bootstrap						\
+  manifest.scm						\
   build-aux/build-self.scm				\
   build-aux/check-channel-news.scm			\
   build-aux/check-final-inputs-self-contained.scm	\

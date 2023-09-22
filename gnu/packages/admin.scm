@@ -8,7 +8,7 @@
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2016, 2017, 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Pjotr Prins <pjotr.guix@thebird.nl>
-;;; Copyright © 2016, 2017 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2017, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Peter Feigl <peter.feigl@nexoid.at>
 ;;; Copyright © 2016 John J. Foerch <jjfoerch@earthlink.net>
@@ -36,7 +36,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2021, 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Hyunseok Kim <lasnesne@lagunposprasihopre.org>
@@ -101,7 +101,6 @@
   #:use-module (gnu packages acl)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages attr)
-  #:use-module (gnu packages autogen)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -112,7 +111,6 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crates-graphics)
   #:use-module (gnu packages crates-io)
-  #:use-module (gnu packages cross-base)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages cryptsetup)
   #:use-module (gnu packages curl)
@@ -140,7 +138,6 @@
   #:use-module (gnu packages inkscape)
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages libbsd)
-  #:use-module (gnu packages libftdi)
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
@@ -153,6 +150,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages openldap)
+  #:use-module (gnu packages package-management)
   #:use-module (gnu packages patchutils)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages pcre)
@@ -160,11 +158,9 @@
   #:use-module (gnu packages perl-check)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages polkit)
-  #:use-module (gnu packages popt)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
-  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
@@ -406,6 +402,43 @@ interface and is based on GNU Guile.")
     (name "guile2.2-shepherd")
     (native-inputs (list pkg-config guile-2.2))
     (inputs (list guile-2.2 guile2.2-fibers))))
+
+(define-public swineherd
+  (package
+    (name "swineherd")
+    (version "0.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/BIMSBbioinfo/swineherd")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "18nk0sy5s0dm2rhxnrrn8g0m098b110mxnnxa2vnl1dnvfdzszw8"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:configure-flags '("--localstatedir=/var")
+       #:make-flags '("GUILE_AUTO_COMPILE=0")))
+    (native-inputs
+     (list autoconf automake guile-3.0 pkg-config texinfo))
+    (propagated-inputs
+     (list btrfs-progs
+           guile-config
+           guile-fibers-1.3
+           guile-netlink
+           guile-3.0
+           guix
+           shepherd-0.10))
+    (home-page "https://github.com/BIMSBbioinfo/swineherd")
+    (synopsis "System container manager")
+    (description
+     "This project aims to provide an extension to the Shepherd, retraining it
+as a swineherd, a manager of crude system containers.  It does this by
+providing a Shepherd service @code{swineherd} that talks to the Shepherd
+process to create Guix System containers as Shepherd services.  It also comes
+with an optional HTTP API server.")
+    (license license:gpl3+)))
 
 (define-public cfm
   (package
@@ -1233,13 +1266,13 @@ IPv6, proxies, and Unix sockets.")
 (define-public nmon
   (package
     (name "nmon")
-    (version "16n")
+    (version "16p")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/nmon/lmon" version ".c"))
        (sha256
-        (base32 "1wpm2f30414b87kpbr9hbidblr5cmfby5skwqd0fkpi5v712q0f0"))))
+        (base32 "0akbkv70zffdmc5p51r02rlxd8b3jvkgl64rjsd29qr5cxgh9ijx"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ; no test suite
@@ -1940,7 +1973,11 @@ at once based on a Perl regular expression.")
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "rc/rc"
                 (("/usr/sbin/sendmail")
-                 (search-input-file inputs "/bin/mail")))))
+                 (search-input-file inputs "/bin/mail")))
+              (with-fluids ((%default-port-encoding "ISO-8859-1"))
+                (substitute* "src/rottlog"
+                  (("awk")
+                   (search-input-file inputs "/bin/awk"))))))
           (add-after 'build 'set-packdir
             (lambda _
               ;; Set a default location for archived logs.
@@ -1959,7 +1996,7 @@ at once based on a Perl regular expression.")
             (lambda _
               (invoke "make" "install-info"))))))
     (native-inputs (list autoconf automake texinfo util-linux)) ; for 'cal'
-    (inputs (list coreutils mailutils))
+    (inputs (list coreutils gawk mailutils))
     (home-page "https://www.gnu.org/software/rottlog/")
     (synopsis "Log rotation and management")
     (description
@@ -2400,14 +2437,14 @@ network, which causes enabled computers to power on.")
 (define-public dmidecode
   (package
     (name "dmidecode")
-    (version "3.4")
+    (version "3.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://savannah/dmidecode/dmidecode-"
                            version ".tar.xz"))
        (sha256
-        (base32 "04i2ahvqinkrnzfsbswplv9wff36xf9b3snvriwrjz26v18sijs3"))))
+        (base32 "0wy0khw02sr59f43fdahh6as1xc3jv7n8abj59p1j9cfxqsngmvr"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ; no 'check' target
@@ -2416,7 +2453,7 @@ network, which causes enabled computers to power on.")
                    (string-append "prefix=" #$output))
            #:phases
            #~(modify-phases %standard-phases
-               (delete 'configure))))                   ; no configure script
+               (delete 'configure))))   ; no configure script
     (home-page "https://www.nongnu.org/dmidecode/")
     (synopsis "Read hardware information from the BIOS")
     (description
@@ -3970,12 +4007,12 @@ Intel DRM Driver.")
                 "0i7wpisipwzk0j62pzaigbiq42y1mn4sbraz4my2jlz6ahwf00kv"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; there are no tests
-       #:make-flags
-       (list (string-append "PREFIX=" %output))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))         ; no configure script
+     (list #:tests? #f                      ; there are no tests
+           #:make-flags
+           #~(list (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))         ; no configure script
     (home-page "https://github.com/dylanaraps/neofetch")
     (synopsis "System information script")
     (description "Neofetch is a command-line system information tool written in
@@ -4037,15 +4074,15 @@ you are running, what theme or icon set you are using, etc.")
       #~(modify-phases %standard-phases
           (delete 'configure)
           (add-before 'build 'patch-source-paths
-            (lambda _
-              (substitute* "fetch.c"
-                (("grep")
-                 #$(file-append grep "/bin/grep"))
-                (("awk")
-                 #$(file-append gawk "/bin/awk")))
-              (substitute* "uwufetch.c"
-                (("(/usr(/local)?)(.*;)" all _ _ rest)
-                 (string-append #$output rest)))))
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((grep (search-input-file inputs "/bin/grep"))
+                    (awk (search-input-file inputs "/bin/awk")))
+                (substitute* "fetch.c"
+                  (("grep") grep)
+                  (("awk") awk))
+                (substitute* "uwufetch.c"
+                  (("(/usr(/local)?)(.*;)" all _ _ rest)
+                   (string-append #$output rest))))))
           ;; TODO this will be fixed in the next release of uwufetch
           (add-before 'install 'make-include-dir
             (lambda _
@@ -4167,8 +4204,8 @@ everyone's screenshots nowadays.")
       (license license:expat))))
 
 (define-public pfetch
-  (let ((commit "e18a0959ab98b963744755ec4687e59dc11db3c5")
-        (revision "0"))
+  (let ((commit "a906ff89680c78cec9785f3ff49ca8b272a0f96b")
+        (revision "1"))
     (package
       (name "pfetch")
       (version (git-version "0.7.0" revision commit))
@@ -4180,7 +4217,7 @@ everyone's screenshots nowadays.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1md40av6i3xvvwig5jzhy4kf3s5sgxxk35r0vcyrjd8qyndk927l"))))
+                  "1yhf8mxjn58gjfdii3bpn8522gfaicd8jxjxvmwi2jz7fgvp0zpn"))))
       (build-system trivial-build-system)
       (inputs (list bash))
       (arguments
@@ -4197,8 +4234,7 @@ everyone's screenshots nowadays.")
              (install-file (source "pfetch") (string-append output "/bin"))
              (patch-shebang
               (string-append output "/bin/pfetch")
-              (list (string-append (assoc-ref %build-inputs "bash") "/bin")))
-             #t))))
+              (list (string-append (assoc-ref %build-inputs "bash") "/bin")))))))
       (home-page "https://github.com/dylanaraps/pfetch")
       (synopsis "System information tool")
       (description "This package provides a simple, configurable system
@@ -4208,14 +4244,14 @@ information tool.")
 (define-public nnn
   (package
     (name "nnn")
-    (version "4.7")
+    (version "4.9")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/jarun/nnn/releases/download/v"
                            version "/nnn-v" version ".tar.gz"))
        (sha256
-        (base32 "0dbm54m3iv8hzar38dsfxh77z4mlpjj649ga82s0wwms4vlrm5pg"))))
+        (base32 "0d8apcichwbmsqgbs0kay3k63898x6xdxpb9hn1nvv5qwxxdq59b"))))
     (build-system gnu-build-system)
     (inputs
      (list ncurses readline))
@@ -4454,7 +4490,7 @@ Python loading in HPC environments.")
   (let ((real-name "inxi"))
     (package
       (name "inxi-minimal")
-      (version "3.3.28-1")
+      (version "3.3.29-1")
       (source
        (origin
          (method git-fetch)
@@ -4463,7 +4499,7 @@ Python loading in HPC environments.")
                (commit version)))
          (file-name (git-file-name real-name version))
          (sha256
-          (base32 "0h00dasmw3crci8kwpa503jljy3c5r2fsdhpbbczhsgznhlr8pbi"))))
+          (base32 "05z0vydfmkva61kj14p6jxy7dr8qwd024a7nn8pib57q4qnjm4r8"))))
       (build-system trivial-build-system)
       (inputs
        (list bash-minimal
@@ -5953,7 +5989,7 @@ Discover other RouterOS devices or @command{mactelnetd} hosts.
 (define-public bfs
   (package
     (name "bfs")
-    (version "3.0.1")
+    (version "3.0.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5962,7 +5998,7 @@ Discover other RouterOS devices or @command{mactelnetd} hosts.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ffma9p82bl0ai4h439cnhvcyyy8x593m27xlf16gsg6knpldm58"))))
+                "055qn2bhnyk9k96w8aviz7v4wip9hwsv7ak1m3yygm1x3fhdyhyz"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags #~(list (string-append "CC="

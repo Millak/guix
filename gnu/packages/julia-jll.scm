@@ -401,7 +401,7 @@ build tree Yggdrasil.")
 (define-public julia-freetype2-jll
   (package
     (name "julia-freetype2-jll")
-    (version "2.10.4+0")
+    (version "2.13.1+0")
     (source
      (origin
        (method git-fetch)
@@ -410,7 +410,7 @@ build tree Yggdrasil.")
              (commit (string-append "FreeType2-v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03lgmb59lipc3bi7z22j4a53bbjmcwkf0xzpwan889p1ix3ry1lr"))))
+        (base32 "1kngkk3kkf6dam8g4g2ajvzvydzxbgpgxlcpsg7nm7q6r5b4b4db"))))
     (build-system julia-build-system)
     (arguments
      '(#:tests? #f                      ; No runtests.jl
@@ -426,8 +426,7 @@ build tree Yggdrasil.")
                     "generate_wrapper_header(\"FreeType2\", \""
                     (assoc-ref inputs "freetype") "\")\n"))))
               ;; There's a Julia file for each platform, override them all
-              (find-files "src/wrappers/" "\\.jl$"))
-             #t)))))
+              (find-files "src/wrappers/" "\\.jl$")))))))
     (inputs
      (list freetype))
     (propagated-inputs

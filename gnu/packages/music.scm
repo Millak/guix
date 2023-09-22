@@ -2371,7 +2371,7 @@ perform creative live mixes with digital music files.")
 (define-public synthv1
   (package
     (name "synthv1")
-    (version "0.9.31")
+    (version "0.9.32")
     (source (origin
               (method url-fetch)
               (uri
@@ -2379,7 +2379,7 @@ perform creative live mixes with digital music files.")
                               "/synthv1-" version ".tar.gz"))
               (sha256
                (base32
-                "06yfiwnxdawyby63zqm1jv4ihi4fxzabpkba7v4d8lgwvhxa014k"))))
+                "1i76d4w2anccyp70vylxxrmqgf1i3znl98ag82wz8lxb5sh34i4x"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -2403,7 +2403,7 @@ oscillators and stereo effects.")
 (define-public drumkv1
   (package
     (name "drumkv1")
-    (version "0.9.31")
+    (version "0.9.32")
     (source (origin
               (method url-fetch)
               (uri
@@ -2411,7 +2411,7 @@ oscillators and stereo effects.")
                               "/drumkv1-" version ".tar.gz"))
               (sha256
                (base32
-                "0cw0lqxd4igkb25vlivbi0hamn33d26nl96mzm59cda158r0jayl"))))
+                "15csm09wjgzdkvy2wqq1jzq7b1m8zzchl5s8fb4ir5rg395jkxai"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -2436,7 +2436,7 @@ effects.")
 (define-public samplv1
   (package
     (name "samplv1")
-    (version "0.9.31")
+    (version "0.9.32")
     (source (origin
               (method url-fetch)
               (uri
@@ -2444,7 +2444,7 @@ effects.")
                               "/samplv1-" version ".tar.gz"))
               (sha256
                (base32
-                "1jqblmb24vbnpm4a4wlvasz45h3zy00rrpf850yxaplyf0qb8klx"))))
+                "17w5m5sk8fcnnph1njz9sz031kk0aid8mhs64myc2jvpvwm5snlb"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -2469,7 +2469,7 @@ effects.")
 (define-public padthv1
   (package
     (name "padthv1")
-    (version "0.9.31")
+    (version "0.9.32")
     (source (origin
               (method url-fetch)
               (uri
@@ -2477,7 +2477,7 @@ effects.")
                               "/padthv1-" version ".tar.gz"))
               (sha256
                (base32
-                "1iqmjdxihil039c8g9kywd5dx3rd47ph2fs6f6kcyfwj9jz4aprh"))))
+                "0qpdyczgqblf3sxjkvxn2g8qyx1hm0pmiqhncncrijbaalazsp7m"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -3482,14 +3482,14 @@ from the command line.")
 (define-public qtractor
   (package
     (name "qtractor")
-    (version "0.9.34")
+    (version "0.9.35")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://downloads.sourceforge.net/qtractor/"
                                   "qtractor-" version ".tar.gz"))
               (sha256
                (base32
-                "0w6g51jhj9c72j6qjjkjhiq0vwklb6q4cr3xgj4mzp0iw279hbjz"))))
+                "1v3w8x9dfqldfa8gjxxszzclnhqlgyanpr7b4dhva68qyxmp4m7v"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no "check" target
@@ -5517,7 +5517,7 @@ for the DSSI Soft Synth Interface.  A brief list of features:
 (define-public libdiscid
   (package
     (name "libdiscid")
-    (version "0.6.2")
+    (version "0.6.4")
     (source
      (origin
        (method url-fetch)
@@ -5525,8 +5525,7 @@ for the DSSI Soft Synth Interface.  A brief list of features:
              "http://ftp.musicbrainz.org/pub/musicbrainz/libdiscid/libdiscid-"
              version ".tar.gz"))
        (sha256
-        (base32
-         "1f9irlj3dpb5gyfdnb1m4skbjvx4d4hwiz2152f83m0d9jn47r7r"))))
+        (base32 "10mj1hwv1598nsi7jw5di0pfcwk36g4rr6kl7gi45m7ak8f8ypnx"))))
     (arguments `(#:test-target "check"))
     (build-system cmake-build-system)
     (home-page "https://musicbrainz.org/doc/libdiscid")
@@ -6517,7 +6516,7 @@ curl/include/curl/curl.h")
 (define-public dpf-plugins
   (package
     (name "dpf-plugins")
-    (version "1.4")
+    (version "1.7")
     (source
      (origin
        (method git-fetch)
@@ -6527,7 +6526,7 @@ curl/include/curl/curl.h")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0y7qvpfm34g6f7d786c6c9043dlbg5c4h71l2s24dsc9m8i7x2ww"))))
+        (base32 "082f3f78x6k58j78mqr57qhw40f5s8fmcbkhl36nn3vbcsa07bzg"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no "check" target

@@ -3,7 +3,7 @@
 ;;; Copyright © 2015, 2017, 2019, 2020, 2021, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2016-2019, 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2016-2019, 2022, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2017, 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Frederick M. Muriithi <fredmanglis@gmail.com>
@@ -203,6 +203,24 @@ sources.")
      "@code{sphinxcontrib-applehelp} is a Sphinx extension which outputs
 Apple help books.")
     (license license:bsd-2)))
+
+(define-public python-sphinx-basic-ng
+  (package
+    (name "python-sphinx-basic-ng")
+    (version "1.0.0b2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "sphinx_basic_ng" version))
+              (sha256
+               (base32
+                "1jaihs22d8jfvk1fnv5j7hcza89hxj979ib0b4mh130cr53mmicy"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-sphinx))
+    (home-page "https://github.com/pradyunsg/sphinx-basic-ng")
+    (synopsis "Modernised skeleton for Sphinx themes")
+    (description
+     "This package provides a modern skeleton for Sphinx themes.")
+    (license license:expat)))
 
 (define-public python-sphinx-click
   (package
@@ -1068,19 +1086,17 @@ widgets, and supports thebelab for live code execution with minimal effort.")
 (define-public python-sphinxcontrib-autoprogram
   (package
     (name "python-sphinxcontrib-autoprogram")
-    (version "0.1.7")
+    (version "0.1.8")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sphinxcontrib-autoprogram" version))
        (sha256
         (base32
-         "06hzim0d3fd72kf30fyjbbm5n8ibyybic0kf62gm79qp50zjwr5w"))))
+         "02pi450qml429disph075jyqwjrawrhbsjfkqvjf10yjp6fp4sas"))))
     (build-system python-build-system)
     (propagated-inputs
-     (list python-six))
-    (native-inputs
-     (list python-sphinx))
+     (list python-six python-sphinx))
     (home-page "https://github.com/sphinx-contrib/autoprogram")
     (synopsis "Documenting CLI programs")
     (description

@@ -346,6 +346,7 @@ interface to the Tk widget system.")
             (files '("etc")))))
     (home-page "https://ecl.common-lisp.dev/")
     (synopsis "Embeddable Common Lisp")
+    (supported-systems (delete "i586-gnu" %supported-systems))
     (description "ECL is an implementation of the Common Lisp language as
 defined by the ANSI X3J13 specification.  Its most relevant features are: a
 bytecode compiler and interpreter, being able to compile Common Lisp with any
@@ -668,6 +669,7 @@ an interpreter, a compiler, a debugger, and much more.")
             (variable "XDG_CONFIG_DIRS")
             (files '("etc")))))
     (home-page "https://www.sbcl.org/")
+    (supported-systems (delete "i586-gnu" %supported-systems))
     (synopsis "Common Lisp implementation")
     (description "Steel Bank Common Lisp (SBCL) is a high performance Common
 Lisp compiler.  In addition to the compiler and runtime system for ANSI Common

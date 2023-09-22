@@ -1163,7 +1163,9 @@ is added to the OS specified in CONFIG."
         (provisions  '(hurd-vm childhurd)))
 
     (define vm-command
-      #~(append (list #$(file-append qemu "/bin/qemu-system-i386")
+      ;; XXX: Use the x86_64 emulator instead of the i386 one to work around
+      ;; "Bad ram pointer" issues: <https://issues.guix.gnu.org/66053>.
+      #~(append (list #$(file-append qemu "/bin/qemu-system-x86_64")
                       "-m" (number->string #$memory-size)
                       #$@net-options
                       #$@options

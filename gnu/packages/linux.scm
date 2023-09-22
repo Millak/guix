@@ -490,17 +490,17 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-6.4-version "6.4.14")
+(define-public linux-libre-6.4-version "6.4.16")
 (define-public linux-libre-6.4-gnu-revision "gnu")
 (define deblob-scripts-6.4
   (linux-libre-deblob-scripts
    linux-libre-6.4-version
    linux-libre-6.4-gnu-revision
    (base32 "012d16rjprxdv9frf7kcakpikvw7l0s3kvj4kkp9flzdg3j8wxpz")
-   (base32 "1rwm09anyn4py1g877f9vh6ya86y2hfvlqx51bpa53dci5k0b0ds")))
+   (base32 "02zizxf0dp4291hbvjrif04m19h8rrc55c11qinlrm0p19s9srcx")))
 (define-public linux-libre-6.4-pristine-source
   (let ((version linux-libre-6.4-version)
-        (hash (base32 "1rjh0jrn5qvxwzmyg478n08vckkld8r52nkc102ppqvsfhiy7skm")))
+        (hash (base32 "0zgj1z97jyx7wf12zrnlcp0mj4cl43ais9qsy6dh1jwylf2fq9ln")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.4)))
@@ -508,7 +508,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-6.1-version "6.1.51")
+(define-public linux-libre-6.1-version "6.1.53")
 (define-public linux-libre-6.1-gnu-revision "gnu")
 (define deblob-scripts-6.1
   (linux-libre-deblob-scripts
@@ -518,12 +518,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1c73516nbhnz0cxjz38b5794dxygb8sznv9idiibw7ablmjbhd11")))
 (define-public linux-libre-6.1-pristine-source
   (let ((version linux-libre-6.1-version)
-        (hash (base32 "0fqhmb6v28rssd44z7jw57mwvvskpl4kabjylck0pg54irnl9c2q")))
+        (hash (base32 "0zpdg3fcc12iyjhfs5w7cw75700z4i8m9jcg38mlzlhh92hf0msz")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.1)))
 
-(define-public linux-libre-5.15-version "5.15.130")
+(define-public linux-libre-5.15-version "5.15.131")
 (define-public linux-libre-5.15-gnu-revision "gnu")
 (define deblob-scripts-5.15
   (linux-libre-deblob-scripts
@@ -533,7 +533,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1c3lm0j401lv2lk39dmr4mlf5ic173snm7cc0cckl6czyvxr5ysy")))
 (define-public linux-libre-5.15-pristine-source
   (let ((version linux-libre-5.15-version)
-        (hash (base32 "0qix62jsn3z9yccakac7fvqnip19zi05qn0w5wkgb7rj0x0lwimb")))
+        (hash (base32 "0sacnbw48lblnqaj56nybh588sq4k84gwf0r5zinzyrryj8k6z4r")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
@@ -739,6 +739,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                    (format p "~a-default~%" ,version)))))))
        #:allowed-references ()
        #:tests? #f))
+    (supported-systems (delete "i586-gnu" %supported-systems))
     (home-page "https://www.gnu.org/software/linux-libre/")
     (synopsis "GNU Linux-Libre kernel headers")
     (description "Headers of the Linux-Libre kernel.")
@@ -1071,6 +1072,7 @@ ARCH and optionally VARIANT, or #f if there is no such configuration."
            elfutils                  ;needed to enable CONFIG_STACK_VALIDATION
            flex
            bison
+           util-linux                ;needed for hexdump
            ;; These are needed to compile the GCC plugins.
            gmp
            mpfr
@@ -1546,31 +1548,65 @@ is also needed for the @code{tuxedo-control-center} (short tcc) package.")
 (define-public evdi
   (package
     (name "evdi")
-    (version "1.12.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/DisplayLink/evdi")
-                    (commit "bdc258b25df4d00f222fde0e3c5003bf88ef17b5")))
-              (file-name (git-file-name name version))
-              (patches (search-patches "evdi-fix-build-with-linux-6.2.patch"))
-              (sha256
-               (base32
-                "1yi7mbyvxm9lsx6i1xbwp2bihwgzhwxkydk1kbngw5a5kw9azpws"))))
+    (version "1.14.1")                  ;inherited by libevdi
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/DisplayLink/evdi")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vfbph6bdb206zgdp0bvpqck2zvkx1367xdxbavv41qsmgkxhvbs"))))
     (build-system linux-module-build-system)
     (arguments
-     (list #:tests? #f ;no test suite
+     (list #:tests? #f                  ;no test suite
            #:phases #~(modify-phases %standard-phases
                         (add-after 'unpack 'chdir
                           (lambda _
                             (chdir "module"))))))
     (home-page "https://github.com/DisplayLink/evdi")
-    (synopsis "EVDI Linux kernel module")
+    (synopsis
+     "@acronym{EVDI, Extensible Virtual Display Interface} Linux kernel module")
     (description
-     "The @acronym{EVDI, Extensible Virtual Display Interface} is a Linux kernel module
-that enables management of multiple screens, allowing user-space programs to
-take control over what happens with the image.")
+     "The @acronym{EVDI, Extensible Virtual Display Interface} is a Linux kernel
+module that enables management of multiple screens, allowing user-space programs
+to take control over what happens with the image.  It is essentially a virtual
+display for which applications using the @code{libevdi} library can add, remove,
+and receive screen updates.
+
+The EVDI driver uses the standard Linux @acronym{DRM, Direct Rendering Manager}.
+Its displays can be controlled by standard tools such as @command{xrandr} and
+display settings applets in graphical environments")
     (license license:gpl2)))
+
+(define-public libevdi
+  (package
+    (inherit evdi)
+    (name "libevdi")
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ;no test suite
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target)))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure)
+                        (add-after 'unpack 'chdir
+                          (lambda _
+                            (chdir "library")))
+                        (replace 'install
+                          (lambda* _
+                            (let* ((lib (string-append #$output "/lib")))
+                              (mkdir-p lib)
+                              (install-file "libevdi.so" lib)))))))
+    (inputs (list libdrm))
+    (synopsis
+     "@acronym{EVDI, Extensible Virtual Display Interface} user-space library")
+    (description
+     "Libevdi is a library that gives applications easy access to
+@acronym{EVDI, Extensible Virtual Display Interface} devices provided by the
+@code{evdi} driver package.  ")
+    (license license:lgpl2.1)))
 
 (define-public ec
   (package
@@ -1600,7 +1636,7 @@ registers of the @acronym{EC, Embedded Controller} supported by the
 (define-public lkrg
   (package
     (name "lkrg")
-    (version "0.9.3")
+    (version "0.9.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1609,7 +1645,7 @@ registers of the @acronym{EC, Embedded Controller} supported by the
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0yirb7n4mqv8cn0gziz1m7ymq00dhhy79j59jdgrx00b8rj57cfw"))))
+                "0k0z9caj48nqjwk3bapgfcdzi1lkizxcjj4r1dvkvwsk38mbk1c4"))))
     (build-system linux-module-build-system)
     (arguments
      (list #:linux linux-libre
@@ -1684,7 +1720,7 @@ graphics card on Optimus laptops.")
 (define-public ddcci-driver-linux
   (package
     (name "ddcci-driver-linux")
-    (version "0.4.2")
+    (version "0.4.4")
     (source
      (origin
        (method git-fetch)
@@ -1694,7 +1730,7 @@ graphics card on Optimus laptops.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lww3mnqhxqzj0qbxzbwbq93v9zw49myp7p9ib873a5izbq8nadi"))))
+        (base32 "19vi7dk4jv5wm18cznz4lj2fb1c7m7j3ig62x4a6qy9djxf9z472"))))
     (build-system linux-module-build-system)
     (arguments
      (list #:tests? #f                  ; no tests
@@ -2062,19 +2098,25 @@ deviation, and minimum and maximum values.  It can show a nice histogram too.")
        (base32 "12z5786dnf37n8wvv73wdcqp3nvsqzhwdk3ajna0mag4yz1fqdyw"))))
     (build-system gnu-build-system)
     (arguments
-     `(,@(if (%current-target-system)
-             '(#:configure-flags
-               (list
-                "ac_cv_func_malloc_0_nonnull=yes"
-                "ac_cv_func_realloc_0_nonnull=yes"))
-             '())))
+     (list
+      #:configure-flags
+      (if (%current-target-system)
+          #~(list "ac_cv_func_malloc_0_nonnull=yes"
+                  "ac_cv_func_realloc_0_nonnull=yes")
+          #~'())))
     (inputs (list ncurses))
     (home-page "https://gitlab.com/psmisc/psmisc")
     (synopsis "Small utilities that use the proc file system")
     (description
-     "This PSmisc package is a set of some small useful utilities that
-use the proc file system.  We're not about changing the world, but
-providing the system administrator with some help in common tasks.")
+     "psmisc is a set of small utilities that use the proc file system.
+@itemize @bullet
+@item @command{fuser} identifies processes using files or sockets;
+@item @command{killall} kills processes by name;
+@item @command{prtstat} prints statistics of a process;
+@item @command{pslog} prints the log file(s) of a process;
+@item @command{pstree} shows the currently running processes as a tree;
+@item @command{peekfd} shows the data travelling over a file descriptor.
+@end itemize")
     (license license:gpl2+)))
 
 (define-public util-linux
@@ -5547,7 +5589,7 @@ arrays when needed.")
 (define-public multipath-tools
   (package
     (name "multipath-tools")
-    (version "0.9.3")
+    (version "0.9.6")
     (home-page "https://github.com/opensvc/multipath-tools")
     (source (origin
               (method git-fetch)
@@ -5555,7 +5597,7 @@ arrays when needed.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0zcnr1135znizbnfqhqv3by9i2qwn5vg6kgmj6ma3yy1x1krx0d4"))
+                "1933iqh9r54pdl95yck0n4bw7jiiblymc964vlc1787qd4q012sz"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -5573,7 +5615,7 @@ arrays when needed.")
                            (string-append "prefix=" #$output)
                            ;; Install Udev rules below this directory, relative
                            ;; to the prefix.
-                           "SYSTEMDPATH=lib")
+                           (string-append "systemd_prefix=" #$output))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-source
@@ -5605,6 +5647,16 @@ arrays when needed.")
                 (("CFLAGS \\+= " match)
                  (string-append match "-Wno-error=unused-function ")))))
           (delete 'configure)           ;no configure script
+          (add-before 'build 'no-fortify-3
+            (lambda _
+              ;; NOTE: The check made seems to wrongly assume the
+              ;; FORTIFY_SOURCE=3 is valid.  However, when compiling, warnings
+              ;; are emitted from glibc, resulting in failed build.  Fix this
+              ;; by forcing the usage of FORTIFY_SOURCE=2.
+              (substitute* "create-config.mk"
+                (("FORTIFY_SOURCE=3")
+                 "FORTIFY_SOURCE=2"))
+              ))
           (add-before 'build 'set-LDFLAGS
             (lambda _
               ;; Note: this cannot be passed as a make flag because that will
@@ -5622,7 +5674,9 @@ arrays when needed.")
            liburcu
            lvm2
            readline
-           eudev))
+           eudev
+           ;; For libmount.
+           `(,util-linux "lib")))
     (synopsis "Access block devices through multiple paths")
     (description
      "This package provides the following binaries to drive the
@@ -7102,7 +7156,7 @@ the @code{mce-inject} module loaded if it exists.")
 (define-public mcelog
   (package
     (name "mcelog")
-    (version "191")
+    (version "195")
     (source
      (origin
        (method git-fetch)
@@ -7111,7 +7165,7 @@ the @code{mce-inject} module loaded if it exists.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vx0lziw6g20vh42ngs66fiq2bm714llx5xx6f0m1hbjcihi1afy"))
+        (base32 "1bg2bj8flybd8kzmmaaslisc6lc1fs9nbv09im6r32dq48skx5aj"))
        (modules '((guix build utils)))
        (snippet
         `(begin
@@ -7783,14 +7837,14 @@ re-use code and to avoid re-inventing the wheel.")
 (define-public libnftnl
   (package
     (name "libnftnl")
-    (version "1.2.4")
+    (version "1.2.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://netfilter.org/libnftnl/"
-                           "libnftnl-" version ".tar.bz2"))
+                           "libnftnl-" version ".tar.xz"))
        (sha256
-        (base32 "0zs7c8swlirxnbhl8q1b0p8g3jrzns7fyxsrglz71zfdwhxj7zn0"))))
+        (base32 "1x3pqxclpxcw8x5qx0vyi7znf9xwlkqsfd9sy4cxlir1v4nfmsnf"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -7829,7 +7883,7 @@ used by nftables.")
 (define-public nftables
   (package
     (name "nftables")
-    (version "1.0.6")
+    (version "1.0.8")
     (source
      (origin
        (method url-fetch)
@@ -7838,7 +7892,7 @@ used by nftables.")
                   (string-append "https://www.nftables.org/projects/nftables"
                                  "/files/nftables-" version ".tar.xz")))
        (sha256
-        (base32 "0k2y03dz77b0inqlmh5yg8qaifl0walzvhldwiq7d642vl6l61r4"))))
+        (base32 "0l1xpwr9qfbl3bxa97v8s2lbibiz0xma9q0qi34xp0hswh6p8wwk"))))
     (build-system gnu-build-system)
     (arguments `(#:configure-flags
                  '("--disable-static"
@@ -8340,14 +8394,14 @@ available in the kernel Linux.")
 (define-public cpuid
   (package
     (name "cpuid")
-    (version "20221201")
+    (version "20230614")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://www.etallen.com/cpuid/cpuid-"
                                   version ".src.tar.gz"))
               (sha256
                (base32
-                "0vlg5zc0dayyn9bzyb25fcaxid9svrsjjza11afplrhh50wdrzh8"))))
+                "1s54qc1j10d765r05kw9pzwzaxq2b0nndq2ifwq7cq62xx2k1j5i"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
@@ -9557,7 +9611,7 @@ modification of BPF objects on the system.")
 (define-public bpftrace
   (package
     (name "bpftrace")
-    (version "0.18.0")
+    (version "0.18.1")
     (source
      (origin
        (method git-fetch)
@@ -9566,7 +9620,7 @@ modification of BPF objects on the system.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0n0mm5vlaildilq5nmjymmq8ijif1lcyfin76wcmhzwfriq4n87r"))
+        (base32 "0j8ba2j98d3j8lilgx3z2n162r26ryg7zw5ldwd9m36xnjp40347"))
        (patches (search-patches "bpftrace-disable-bfd-disasm.patch"))))
     (build-system cmake-build-system)
     (native-inputs
@@ -9960,42 +10014,6 @@ system.")
      "This tool turns @command{ldd} into a tree and explains how shared
 libraries are found or why they cannot be located.")
     (license license:expat)))
-
-(define-public libevdi
-  (package
-    (name "libevdi")
-    (version "1.12.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/DisplayLink/evdi")
-                    (commit "bdc258b25df4d00f222fde0e3c5003bf88ef17b5")))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1yi7mbyvxm9lsx6i1xbwp2bihwgzhwxkydk1kbngw5a5kw9azpws"))))
-    (build-system gnu-build-system)
-    (inputs (list libdrm))
-    (arguments
-     (list #:tests? #f ;no test suite
-           #:make-flags #~'("CC=gcc")
-           #:phases #~(modify-phases %standard-phases
-                        (delete 'configure)
-                        (add-after 'unpack 'chdir
-                          (lambda _
-                            (chdir "library")))
-                        (replace 'install
-                          (lambda* _
-                            (let* ((lib (string-append #$output "/lib")))
-                              (mkdir-p lib)
-                              (install-file "libevdi.so" lib)))))))
-    (home-page "https://github.com/DisplayLink/evdi")
-    (synopsis "User-space EVDI library")
-    (description
-     "Libevdi is a library that gives applications easy access to
-@acronym{EVDI, Extensible Virtual Display Interface} devices on
-various operating systems.")
-    (license license:lgpl2.1)))
 
 (define-public touchegg
   (package

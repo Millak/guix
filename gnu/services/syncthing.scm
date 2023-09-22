@@ -63,7 +63,7 @@
                      (list (string->symbol
                             (string-append "syncthing-" user)))))
       (documentation "Run syncthing.")
-      (requirement (if home-service? '() '(loopback)))
+      (requirement (if home-service? '() '(loopback user-processes)))
       (start #~(make-forkexec-constructor
                 (append (list (string-append #$syncthing "/bin/syncthing")
                               "--no-browser"

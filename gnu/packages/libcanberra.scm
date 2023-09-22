@@ -25,10 +25,8 @@
   #:use-module (gnu packages)
   #:use-module (guix packages)
   #:use-module (guix download)
-  #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
-  #:use-module (guix utils)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
@@ -36,9 +34,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages pkg-config)
-  #:use-module (gnu packages python)
-  #:use-module (gnu packages xiph)
-  #:use-module ((srfi srfi-1) #:select (alist-delete)))
+  #:use-module (gnu packages xiph))
 
 (define-public libcanberra
   (package

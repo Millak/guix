@@ -7,8 +7,8 @@
 
 (use-modules (gnu) (guix) (srfi srfi-1))
 (use-service-modules desktop mcron networking spice ssh xorg sddm)
-(use-package-modules bootloaders certs fonts nvi
-                     package-management wget xorg)
+(use-package-modules bootloaders certs fonts
+                     package-management xorg)
 
 (define vm-image-motd (plain-file "motd" "
 \x1b[1;37mThis is the GNU system.  Welcome!\x1b[0m
@@ -77,7 +77,7 @@ accounts.\x1b[0m
 root ALL=(ALL) ALL
 %wheel ALL=NOPASSWD: ALL\n"))
 
-  (packages (append (list font-bitstream-vera nss-certs nvi wget)
+  (packages (append (list font-bitstream-vera nss-certs)
                     %base-packages))
 
   (services

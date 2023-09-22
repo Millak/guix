@@ -117,10 +117,8 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
-  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages check)
-  #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages crates-io)
@@ -131,7 +129,6 @@
   #:use-module (gnu packages dns)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
-  #:use-module (gnu packages elf)
   #:use-module (gnu packages file)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fonts)
@@ -157,9 +154,7 @@
   #:use-module (gnu packages libidn)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
-  #:use-module (gnu packages llvm)
   #:use-module (gnu packages lua)
-  #:use-module (gnu packages m4)
   #:use-module (gnu packages man)
   #:use-module (gnu packages markup)
   #:use-module (gnu packages maths)
@@ -188,7 +183,6 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
-  #:use-module (gnu packages rdesktop)
   #:use-module (gnu packages re2c)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages rust-apps)
@@ -208,7 +202,6 @@
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages vulkan)
   #:use-module (gnu packages web)
-  #:use-module (gnu packages webkit)
   #:use-module (gnu packages wget)
   #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xdisorg)
@@ -5255,7 +5248,7 @@ transcode or reformat the videos in any way, producing perfect backups.")
 (define-public svt-av1
   (package
     (name "svt-av1")
-    (version "1.3.0")
+    (version "1.7.0")
     (source
      (origin
        (method git-fetch)
@@ -5264,7 +5257,7 @@ transcode or reformat the videos in any way, producing perfect backups.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0blnla32yz665bx0xyx8lrjs2wqd2xhpbqwwpz72mq7zf341j8vv"))))
+        (base32 "1308g0nqxq65h76a7h91999cbglkwihgrpid64kdn0r9vh6399sq"))))
     (build-system cmake-build-system)
     (arguments
       ;; The test suite tries to download test data and git clone a 3rd-party

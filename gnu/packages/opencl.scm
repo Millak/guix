@@ -161,9 +161,6 @@ implementation.  The ICD Loader is responsible for:
 This package contains the Khronos official OpenCL ICD Loader.")
     (license license:asl2.0)))
 
-(define-public ocl-icd
-  (deprecated-package "ocl-icd" opencl-icd-loader))
-
 (define-public clinfo
   (package
     (name "clinfo")
@@ -196,6 +193,31 @@ This package contains the Khronos official OpenCL ICD Loader.")
 possible (known) properties of the OpenCL platform and devices available on
 the system.")
     (license license:cc0)))
+
+(define-public ocl-icd
+  (package
+    (name "ocl-icd")
+    (version "2.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/OCL-dev/ocl-icd")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0y0lnxb6zlhfb5vxxib5n1vvxa4b23qc0j3lsih6yjz9j37mj7wz"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf automake libtool ruby))
+    (home-page "https://github.com/OCL-dev/ocl-icd")
+    (synopsis "Generic OpenCL @acronym{ICD, Installable Client Driver} loader")
+    (description
+     "This package provides an OpenCL @acronym{ICD, Installable Client Driver}
+loader.  It maintains a YAML database of all known and guessed function pointers
+from vendor-specific drivers.  It also delivers a skeleton of bindings to
+incorporate inside an OpenCL implementation to give it ICD functionalities.")
+    (license license:bsd-2)))
 
 (define-public beignet
   (package
@@ -230,6 +252,7 @@ the system.")
               ("libxext" ,libxext)
               ("mesa-utils" ,mesa-utils)
               ("ncurses" ,ncurses)
+              ("ocl-icd" ,ocl-icd)
               ("opencl-icd-loader" ,opencl-icd-loader)
               ("opencl-headers" ,opencl-headers)
               ("xextproto" ,xextproto)

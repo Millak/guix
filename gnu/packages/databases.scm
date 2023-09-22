@@ -59,7 +59,8 @@
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;; Copyright © 2021, 2022 jgart <jgart@dismail.de>
-;;; Copyright © 2023 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2023 Felix Gruber <felgru@posteo.ne
+;;; Copyright © 2023 Munyoki Kilyungi <me@bonfacemunyoki.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -487,14 +488,14 @@ mapping from string keys to string values.")
 (define-public memcached
   (package
     (name "memcached")
-    (version "1.6.18")
+    (version "1.6.21")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "https://memcached.org/files/memcached-" version ".tar.gz"))
        (sha256
-        (base32 "0n21svnjw8j7bdbwrn0apnfql7ckraqgrl7wj9fsqj86h6w6mpfb"))))
+        (base32 "1vm27la2yanjhwwdwabci4c21yv9hy5iqas47kcxaza1zh79i267"))))
     (build-system gnu-build-system)
     (inputs
      (list libevent cyrus-sasl))
@@ -3706,7 +3707,7 @@ PickleShare.")
 (define-public python-apsw
   (package
     (name "python-apsw")
-    (version "3.40.0.0")
+    (version "3.42.0.1")
     ;; The compressed release has fetching functionality disabled.
     (source
      (origin
@@ -3716,11 +3717,11 @@ PickleShare.")
              version "/apsw-" version ".zip"))
        (sha256
         (base32
-         "02sgja00azvd08wi2wm105apmhp2644s7aw9b1zdg3dkcwjnsiad"))))
+         "0dr7zymn45x2793cilr709rnwn9g1c4n4vzln57y2lhj7420ykic"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-cython unzip))
-    (inputs (list sqlite-next))         ;SQLite 3.40 required.
+    (inputs (list sqlite-next))         ;SQLite 3.42 required.
     (arguments
      (list
       #:phases
@@ -3829,13 +3830,13 @@ libraries with SQLALchemy.")
     (name "python-psycopg-pool")
     ;; The connection pooling code is on a different release cadence
     ;; from the driver code, so fetch the latest PyPI release.
-    (version "3.0.3")
+    (version "3.1.7")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "psycopg-pool" version))
               (sha256
                (base32
-                "1nx139pwzsgrz253zjxw2sf8h713s79h4cp1falmpc39j08djb46"))))
+                "1pkx7nj1mhacwpna7ldzqfqxd1xg8826600r0bs9ad1h93f429yh"))))
     (build-system python-build-system)
     (arguments
      (list #:tests? #f                  ;run for psycopg below
@@ -3854,7 +3855,7 @@ with the @code{psycopg} PostgreSQL driver.")
 (define-public python-psycopg
   (package
     (name "python-psycopg")
-    (version "3.0.8")
+    (version "3.1.10")
     (source (origin
               ;; Fetch from git because PyPI contains only cythonized sources.
               (method git-fetch)
@@ -3864,7 +3865,7 @@ with the @code{psycopg} PostgreSQL driver.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "16i19jqd9lg9r7bc63ssh527cccrpf49g1nlayikk5qlswpzp75y"))))
+                "0hqk45wlaflz69cy1r0hbv11bwb89p6hjb7zmgqas26gdhg37n0r"))))
     (build-system python-build-system)
     (arguments
      (list #:phases
@@ -3906,13 +3907,19 @@ with the @code{psycopg} PostgreSQL driver.")
                                "-o" "asyncio_mode=auto"
                                ;; FIXME: Many of the typing tests are failing,
                                ;; conveniently tagged as slow...
-                               "-k" "not slow"))))))))
+                               "-k" "not slow")))))
+               ;; The sanity check phase attempts loading the C extension
+               ;; before the Python library, which results in the following:
+               ;;   <ImportError: the psycopg package should be imported
+               ;;    before psycopg_c>.
+               (delete 'sanity-check))))
     (native-inputs
      (list python-cython-3
            python-mypy
            python-psycopg-pool
            python-pytest
            python-pytest-asyncio
+           python-anyio
            python-tenacity
            pproxy
            tzdata-for-tests))
@@ -3963,7 +3970,7 @@ database).")
 (define-public yoyo-migrations
   (package
     (name "yoyo-migrations")
-    (version "7.2.0")
+    (version "8.2.0")
     (source
      (origin
        ;; We use the upstream repository, as the tests are not included in the
@@ -3974,14 +3981,14 @@ database).")
              (changeset (string-append "v" version "-release"))))
        (file-name (string-append name "-" version "-checkout"))
        (sha256
-        (base32 "0q2z9bgdj3wyix7yvqsayfs21grp5av8ilh411lgmjhigszkvhcq"))))
+        (base32 "1al030ix0w63hr4s3mqry6s0mlqdj8p242pdqks06br7c25nx3yj"))))
     (build-system python-build-system)
     (arguments
      ;; XXX: Tests require a connection to some pgsql database and psycopg
      ;; fails to connect to it.
      '(#:tests? #f))
     (propagated-inputs
-     (list python-sqlparse python-tabulate))
+     (list python-sqlparse python-tabulate python-importlib-metadata))
     (home-page "https://ollycope.com/software/yoyo/latest/")
     (synopsis "Database migrations with SQL")
     (description
@@ -4304,7 +4311,7 @@ the SQL language using a syntax that reflects the resulting query.")
 (define-public apache-arrow
   (package
     (name "apache-arrow")
-    (version "12.0.1")
+    (version "13.0.0")
     (source
      (origin
        (method git-fetch)
@@ -4314,7 +4321,7 @@ the SQL language using a syntax that reflects the resulting query.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "03flvb4xj6a7mfphx68ndrqr6g5jphmzb75m16fx7rnbzira2zpz"))))
+         "03ykynzz01ar2y4blhcxjh6xsi0gqv380h5m669dddfz2isplsf8"))))
     (build-system cmake-build-system)
     (arguments
      (list

@@ -44,7 +44,7 @@
 (define-public drpm
   (package
     (name "drpm")
-    (version "0.5.1")
+    (version "0.5.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -53,7 +53,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0czg69crs2idnd8zsr7p01cd02f981gb5hq15m3qkwd25zxxd1l0"))))
+                "0jnbj5c9yf46bpbkq6gax4lfpq54c3xjyl0sa8psya7c1kzn44fx"))))
     (build-system cmake-build-system)
     (native-inputs
      (list cmocka pkg-config))

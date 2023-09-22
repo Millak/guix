@@ -4,7 +4,7 @@
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2013, 2014, 2015, 2016, 2020 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2016, 2017, 2019-2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2016, 2017, 2019-2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2017, 2020 Julien Lepiller <julien@lepiller.eu>
@@ -109,6 +109,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
+  #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-xyz)
@@ -479,6 +480,28 @@ asynchronous DNS resolutions with a synchronous looking interface by
 using @url{https://github.com/saghul/pycares,pycares}.")
     (license license:expat)))
 
+(define-public python-aioquic
+  (package
+    (name "python-aioquic")
+    (version "0.9.21")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "aioquic" version))
+              (sha256
+               (base32
+                "1xbfa4gmlmyj6bihdl5p4mr7nd6z79rfi92wcqkmcy4f643frivr"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest))
+    (inputs (list openssl))
+    (propagated-inputs
+     (list python-certifi python-pylsqpack python-pyopenssl))
+    (home-page "https://github.com/aiortc/aioquic")
+    (synopsis "QUIC and HTTP3 implementation in Python")
+    (description
+     "@code{aioquic} is a library for the QUIC network protocol in Python.
+It features a minimal TLS 1.3 implementation, a QUIC stack and an HTTP/3 stack.")
+    (license license:bsd-3)))
+
 (define-public python-aiorpcx
   (package
     (name "python-aiorpcx")
@@ -548,12 +571,12 @@ stream is an enhanced asynchronous iterable.")
 (define-public python-asgiref
   (package
     (name "python-asgiref")
-    (version "3.4.1")
+    (version "3.7.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "asgiref" version))
               (sha256
-               (base32 "1saqgpgbdvb8awzm0f0640j0im55hkrfzvcw683cgqw4ni3apwaf"))))
+               (base32 "1vdgj8mikd2j6ijlhf7b4n2nxkvq72r1c0hj8mdvl6d8jfmf634y"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -563,7 +586,9 @@ stream is an enhanced asynchronous iterable.")
              (when tests?
                (invoke "pytest" "-vv")))))))
     (native-inputs
-     (list python-pytest python-pytest-asyncio))
+     (list python-mypy python-pytest python-pytest-asyncio))
+    (propagated-inputs
+     (list python-typing-extensions))
     (home-page "https://github.com/django/asgiref/")
     (synopsis "ASGI specs, helper code, and adapters")
     (description
@@ -652,6 +677,30 @@ used in combination with an ASGI-capable HTTP client such as HTTPX, this
 allows mocking or testing ASGI applications without having to spin up an
 ASGI server.")
     (license license:expat)))
+
+(define-public python-a2wsgi
+  (package
+    (name "python-a2wsgi")
+    (version "1.7.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "a2wsgi" version))
+              (sha256
+               (base32
+                "1cmsbgfg0vp8pwqz8nmkbmdi0axis1yl34qb280h5ssh08ngc1m9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:build-backend "pdm.backend"
+           ;; Tests have a circular dependency on uvicorn.
+           #:tests? #f))
+    (native-inputs
+     (list python-pdm-backend))
+    (home-page "https://github.com/abersheeran/a2wsgi")
+    (synopsis "Convert WSGI to ASGI or vice versa")
+    (description
+     "This program converts a WSGI program to an ASGI program or the other
+way around.  It depends only on the Python standard library.")
+    (license license:asl2.0)))
 
 (define-public python-css-html-js-minify
   (package
@@ -1250,6 +1299,25 @@ JSON Web Algorithms (JWA) - collectively can be used to encrypt and/or sign
 content using a variety of algorithms.")
     (license license:expat)))
 
+(define-public python-jwcrypto
+  (package
+    (name "python-jwcrypto")
+    (version "1.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "jwcrypto" version))
+              (sha256
+               (base32
+                "138bh6x1yy0qpk63bxa7mxnd97gfdm1fkpwm8wrdz3g3z0fca79c"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-cryptography python-deprecated))
+    (home-page "https://github.com/latchset/jwcrypto")
+    (synopsis "Implementation of JOSE Web standards")
+    (description
+     "WCrypto is an implementation of the @dfn{Javascript Object Signing and
+Encryption} (JOSE) Web Standards.")
+    (license license:lgpl3+)))
+
 (define-public python-pyscss
   (package
     (name "python-pyscss")
@@ -1681,6 +1749,26 @@ C, yielding parse times that can be a thirtieth of the html5lib parse times.")
     ;; src/as-python-tree.[c|h] are licensed GPL3.  The other files
     ;; indicate ASL2.0, including the LICENSE file for the whole project.
     (license (list license:asl2.0 license:gpl3))))
+
+(define-public python-html5tagger
+  (package
+    (name "python-html5tagger")
+    (version "1.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "html5tagger" version))
+              (sha256
+               (base32
+                "1acd1a4f66gi4plqnsml7cf33qp83mxsnmnqpdwkpj7597xkvyl4"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools-scm))
+    (home-page "https://github.com/sanic-org/html5tagger")
+    (synopsis "Create HTML documents from Python")
+    (description
+     "@code{html5tagger} provides a simplified HTML5 syntax that can
+be written directly in Python without templates.")
+    (license license:unlicense)))
 
 (define-public python-minio
   (package
@@ -3215,17 +3303,17 @@ HTTP via a UNIX domain socket.")
 (define-public python-requests_ntlm
   (package
     (name "python-requests_ntlm")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "requests_ntlm" version))
        (sha256
         (base32
-         "0wgbqzaq9w7bas16b7brdb75f91bh3275fb459093bk1ihpck2ci"))))
+         "1a0np7lk8ma1plv1s4aw5q9h2z3aljprkl9qsfypqcaf0zsqbhik"))))
     (build-system python-build-system)
     (propagated-inputs
-     (list python-cryptography python-ntlm-auth python-requests))
+     (list python-cryptography python-pyspnego python-requests))
     (home-page "https://github.com/requests/requests-ntlm")
     (synopsis
      "NTLM authentication support for Requests")
@@ -5223,15 +5311,24 @@ ecosystem.")
 (define-public python-hyperlink
   (package
     (name "python-hyperlink")
-    (version "19.0.0")
+    (version "21.0.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "hyperlink" version))
         (sha256
          (base32
-          "0m2nhi0j8wmgfscf974wd5v1xfq8mah286hil6npy1ys0m3y7222"))))
-    (build-system python-build-system)
+          "0sx50lkivsfjxx9zr4yh7l9gll2l9kvl0v0w8w4wk2x5v9bzjyj2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'pretend-to-be-CI
+                 (lambda _
+                   ;; Pretend to be a CI system to skip flaky tests.
+                   (setenv "CI" "true"))))))
+    (native-inputs
+     (list python-pytest))
     (propagated-inputs
      (list python-idna))
     (home-page "https://github.com/python-hyper/hyperlink")
@@ -5696,7 +5793,7 @@ and fairly speedy.")
 (define-public python-uvicorn
   (package
     (name "python-uvicorn")
-    (version "0.17.6")
+    (version "0.23.2")
     (source
      (origin
        ;; PyPI tarball has no tests.
@@ -5706,23 +5803,21 @@ and fairly speedy.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0npwls02nhna2lyw2nksxij16l9agf12c9f42pvxb5yrpi9l16c8"))))
-    (build-system python-build-system)
+        (base32 "1qa4cwifss9cnasfr0ffn76rvh7wcfjkl6nw99yz43rjmdpj3h7p"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv" "-o" "asyncio_mode=auto"
-                       "-k"
-                       (string-append
-                        ;; These error or fail due to networking.
-                        "not test_keepalive "
-                        "and not test_bind_unix_socket_works_with_"
-                        "reload_or_workers "))))))))
+     (list #:test-flags
+           #~(list "-o" "asyncio_mode=auto"
+                   "-k"
+                   (string-join
+                    ;; These error or fail due to networking.
+                    '("not test_keepalive"
+                      "not test_bind_unix_socket_works_with_reload_or_workers")
+                    " and "))))
     (native-inputs
-     (list python-httpx-bootstrap
+     (list python-a2wsgi
+           python-hatchling
+           python-httpx-bootstrap
            python-pytest
            python-pytest-asyncio
            python-pytest-mock
@@ -5730,8 +5825,7 @@ and fairly speedy.")
            python-trustme
            python-wsproto))
     (propagated-inputs
-     (list python-asgiref
-           python-click
+     (list python-click
            python-dotenv
            python-h11
            python-httptools
@@ -6023,7 +6117,7 @@ Some things HTTP Core does do:
 (define-public python-httpx
   (package
     (name "python-httpx")
-    (version "0.24.0")
+    (version "0.24.1")
     (source
      (origin
        ;; PyPI tarball does not contain tests.
@@ -6033,7 +6127,7 @@ Some things HTTP Core does do:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1b35ywrbdk8kcsfvr39gvfp7bvx00scqfigi8b19a1czhacsmc3q"))))
+        (base32 "121cnzp5jq638wrvfmxa9q0rwank7q6v5fi1lnih50fd5219yvm8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -6211,7 +6305,7 @@ files.")
 (define-public python-websockets
   (package
     (name "python-websockets")
-    (version "10.3")
+    (version "11.0.3")
     (source
      (origin
        (method git-fetch)
@@ -6221,7 +6315,7 @@ files.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1vk7g5z977mi89hamwiqawpmibwvv9ghrf3pqva1waxmyc7gyjb5"))))
+         "1hn1qzpk1fvhi5j5nz4xlvzwkj9y16c9gryrb4n4dza84qi1pna5"))))
     (build-system python-build-system)
     (arguments
      (list #:phases

@@ -268,7 +268,7 @@ otherwise use the IMAGE name."
     (if (member system %guix-system-supported-systems)
         `(,(image->job store
                        (image
-                        (inherit efi-disk-image)
+                        (inherit mbr-hybrid-disk-image)
                         (operating-system installation-os))
                        #:name "usb-image"
                        #:system system)

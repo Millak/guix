@@ -3330,6 +3330,38 @@ buffers, and audio capture.")
     (home-page "https://kcat.strangesoft.net/openal.html")
     (license license:lgpl2.0)))
 
+(define-public alure
+  (package
+    (name "alure")
+    (version "1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://kcat.tomasu.net/alure-releases/"
+                                  "alure-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "0w8gsyqki21s1qb2s5ac1kj08i6nc937c0rr08xbw9w9wvd6lpj6"))
+              (patches (search-patches "alure-dumb-2.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f ;no tests
+       #:configure-flags '("-DMODPLUG=ON")))
+    (native-inputs (list pkg-config))
+    (inputs (list dumb
+                  flac
+                  mpg123
+                  libmodplug
+                  libsndfile
+                  libvorbis
+                  openal))
+    (home-page "https://kcat.tomasu.net/alure.html")
+    (synopsis "OpenAL utility library")
+    (description
+     "ALURE is a utility library to help manage common tasks with OpenAL applications.
+This includes device enumeration and initialization, file loading, and
+streaming.")
+    (license license:expat)))
+
 (define-public patchage
   (package
     (name "patchage")
@@ -6287,7 +6319,7 @@ and DSD streams.")
 (define-public qpwgraph
   (package
     (name "qpwgraph")
-    (version "0.5.2")
+    (version "0.5.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6296,9 +6328,10 @@ and DSD streams.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "186c3s56py8xjasbp4380m9sqdba9mf7mppqz8hkli1nhbspbix9"))))
+                "1i9p8gqm9swa2szr7i8rf3dhqxlaqjslb6yd5s9z1rs1jdb9lhp7"))))
     (build-system cmake-build-system)
-    (arguments (list #:tests? #f)) ;; no tests
+    (arguments
+     (list #:tests? #f))                ; no tests
     (inputs (list alsa-lib
                   libxkbcommon
                   pipewire

@@ -19,6 +19,7 @@
 ;;; Copyright © 2022 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
 ;;; Copyright © 2022 Leo Nikkilä <hello@lnikki.la>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
+;;; Copyright © 2023 Valter Nazianzeno <manipuladordedados@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -50,14 +51,18 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages build-tools)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages gperf)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libffi)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
+  #:use-module (gnu packages rdf)
   #:use-module (gnu packages re2c)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages tls)
@@ -114,13 +119,13 @@ for configuration, scripting, and rapid prototyping.")
 
 (define-public lua-5.4
   (package (inherit lua)
-           (version "5.4.3")
+           (version "5.4.6")
            (source (origin
                      (method url-fetch)
                      (uri (string-append "https://www.lua.org/ftp/lua-"
                                          version ".tar.gz"))
                      (sha256
-                      (base32 "1yxvjvnbg4nyrdv10bq42gz6dr66pyan28lgzfygqfwy2rv24qgq"))
+                      (base32 "125dncwz8syhxk034m4fpahq7vsprfnwdqfxlffbb83arfws2pkx"))
                      (patches (search-patches "lua-5.4-pkgconfig.patch"
                                               "lua-5.4-liblua-so.patch"))))))
 
@@ -1129,63 +1134,101 @@ shell command executions.")
 
 (define-public emilua
   (package
-   (name "emilua")
-   (version "0.3.2")
-   (source (origin
-            (method git-fetch)
-            (uri (git-reference
-                  (url "https://gitlab.com/emilua/emilua.git")
-                  (commit (string-append "v" version))
-                  ;; Current version requires Trial.Protocol and the HTTP lib
-                  ;; developed as part of GSoC 2014 for Boost, and these are
-                  ;; dependencies unlikely to be "unbundled" in future releases.
-                  (recursive? #t)))
-            (file-name (git-file-name name version))
-            (sha256
-             (base32
-              "1999bgrh52124a5g4qizav3x257ff2brjr855srpm1jv1nxzbygv"))))
-   (build-system meson-build-system)
-   (arguments
-    `(;; Tests are disabled for now due to an issue that affecs guix:
-      ;; <https://gitlab.com/emilua/emilua/-/issues/22>
+    (name "emilua")
+    (version "0.4.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/emilua/emilua.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1dwag2pyqc0g86rris4w4fzafmz9a6kiqd47vdq7hl3a1lyi74mx"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/emilua_gperf.awk"
+                (("/usr/bin/env") (which "env")))
+              (substitute* "src/system.cpp"
+                (("P_PIDFD") "P_PID"))
+
+              (copy-recursively
+               (assoc-ref inputs "emilua-http")
+               "emilua-http")
+              (copy-recursively
+               (assoc-ref inputs "trial-protocol")
+               "trial-protocol")
+
+              (with-directory-excursion "subprojects"
+                (symlink "../emilua-http" "emilua-http")
+                (copy-file "packagefiles/emilua-http/meson.build"
+                           "emilua-http/meson.build")
+                (symlink "../trial-protocol" "trial-protocol")
+                (copy-file "packagefiles/trial.protocol/meson.build"
+                           "trial-protocol/meson.build")))))
       #:configure-flags
-      (list "-Denable_http=true"
-            "-Denable_tests=false"
-            "-Denable_manpages=false"
-            "-Dversion_suffix=-guix1")))
-   (native-inputs
-    (list luajit-lua52-openresty
-          pkg-config
-          re2c
-          xxd))
-   (inputs
-    (list boost
-          boost-static
-          fmt-7
-          ;; LuaJIT has a 2GiB addressing limit[1] that has been fixed on OpenResty
-          ;; fork. Emilua is severely affected by this limit, so the upstream package
-          ;; is avoided. Emilua also depends on the -DLUAJIT_ENABLE_LUA52COMPAT
-          ;; configure flag[2] for some features to work (e.g. __pairs on HTTP
-          ;; headers).
-          ;;
-          ;; [1] <http://hacksoflife.blogspot.com/2012/12/integrating-luajit-with-x-plane-64-bit.html>
-          ;; [2] <http://luajit.org/extensions.html#lua52>
-          luajit-lua52-openresty
-          ncurses
-          openssl))
-   (native-search-paths
-    (list
-     (search-path-specification
-      (variable "EMILUA_PATH")
-      (files
-       (list (string-append "lib/emilua-" (version-major+minor version)))))))
-   (home-page "https://gitlab.com/emilua/emilua")
-   (synopsis "Lua execution engine")
-   (description
-    "Emilua is a LuaJIT-based Lua execution engine that supports async IO,
+      #~(list "-Denable_http=true"
+              "-Denable_file_io=true"
+              "-Denable_io_uring=true"
+              ;; TODO: Linux namespaces are disabled for now due to conflict
+              ;; with some packages in guix.
+              "-Denable_linux_namespaces=false"
+              "-Denable_manpages=false"
+              "-Dversion_suffix=-guix1")))
+    (native-inputs
+     (list luajit-lua52-openresty
+           re2c
+           gperf
+           xxd
+           pkg-config))
+    (inputs
+     `(("emilua-http"
+        ,(origin
+           (method git-fetch)
+           (uri (git-reference
+                 (url "https://github.com/BoostGSoC14/boost.http")
+                 (commit "93ae527c89ffc517862e1f5f54c8a257278f1195")))
+           (sha256
+            (base32
+             "0jm7fw0cjd3s9zkkvyh6mcj6z32hcy7l9bszv74l92qk15ivvp9h"))))
+       ("trial-protocol"
+        ,(origin
+           (method git-fetch)
+           (uri (git-reference
+                 (url "https://github.com/breese/trial.protocol")
+                 (commit "79149f604a49b8dfec57857ca28aaf508069b669")))
+           (sha256
+            (base32
+             "0k42i5b4v3zz5x0r3dssiymgmn2x8zg4fzdksya9aggxgigippsx"))))
+       ("boost" ,boost)
+       ("boost-static" ,boost-static)
+       ("fmt" ,fmt-8)
+       ("gcc" ,gcc-12)
+       ("luajit-lua52-openresty" ,luajit-lua52-openresty)
+       ("ncurses" ,ncurses)
+       ("serd" ,serd)
+       ("sord" ,sord)
+       ("libcap" ,libcap)
+       ("liburing" ,liburing)
+       ("openssl" ,openssl)))
+    (native-search-paths
+     (list
+      (search-path-specification
+       (variable "EMILUA_PATH")
+       (files
+        (list (string-append "lib/emilua-" (version-major+minor version)))))))
+    (home-page "https://gitlab.com/emilua/emilua")
+    (synopsis "Lua execution engine")
+    (description
+     "Emilua is a LuaJIT-based Lua execution engine that supports async IO,
 fibers and actor-inspired threading.  The experimental builtin HTTP module is
 enabled.")
-   (license license:boost1.0)))
+    (license license:boost1.0)))
 
 (define-public fennel
   (package

@@ -35,6 +35,7 @@
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Aaron Covrig <aaron.covrig.us@ieee.org>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -102,7 +103,6 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-check)
-  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages serialization)
@@ -629,23 +629,29 @@ should be thread-safe.")
 (define-public libvterm
   (package
     (name "libvterm")
-    (version "0.3.1")
+    (version "0.3.3")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://www.leonerd.org.uk/code/libvterm/"
-                           "libvterm-" version ".tar.gz"))
+       (uri (string-append
+             "https://launchpad.net/libvterm/trunk/v"
+             (version-major+minor version)
+             "/+download/libvterm-" version ".tar.gz"))
        (sha256
-        (base32 "15y3y23kfpcda7n79ym3gp1abzn8mshxrad8s3gnhls82nfava15"))))
+        (base32 "1q16fbznm54p24hqvw8c9v3347apk86ybsxyghsbsa11vm1ny589"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list "CC=gcc"
-             (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:test-target "test"
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+     (list #:make-flags
+           #~(list
+              ;; FIXME: cross build fails.
+              ;; ld: src/.libs/encoding.o: error adding symbols: file in wrong format
+              ;; collect2: error: ld returned 1 exit status
+              (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+           #:test-target "test"
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))
     (native-inputs
      (list libtool perl))
     (home-page "https://www.leonerd.org.uk/code/libvterm/")
@@ -826,7 +832,7 @@ eye-candy, customizable, and reasonably lightweight.")
 (define-public foot
   (package
     (name "foot")
-    (version "1.15.2")
+    (version "1.15.3")
     (home-page "https://codeberg.org/dnkl/foot")
     (source (origin
               (method git-fetch)
@@ -834,7 +840,7 @@ eye-candy, customizable, and reasonably lightweight.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1iz9l01fpryc335pb0c3qi67fmmfplizv5pbc9s578mxl5j9dxg4"))))
+                "1a224i2i7qk170kf2rzyxqcv3lnx9f548lwa37jgjr7i339x4zwf"))))
     (build-system meson-build-system)
     (arguments
      `(;; Using a "release" build is recommended both for performance, and

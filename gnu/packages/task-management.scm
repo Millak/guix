@@ -271,7 +271,7 @@ time to a logfile.")
 (define-public dstask
   (package
     (name "dstask")
-    (version "0.25")
+    (version "0.26")
     (source
      (origin
        (method git-fetch)
@@ -280,7 +280,7 @@ time to a logfile.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1m83zc2zqvpcbjng92jvlnk0biw4krv12wjvjas66jbbk3sjghcy"))))
+        (base32 "10q0524gfc76k0v9cy0j60cbgmmwkpnkbvl6w0pn1j5y690514f5"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/naggie/dstask"

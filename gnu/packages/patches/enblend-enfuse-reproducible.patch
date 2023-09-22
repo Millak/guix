@@ -1,0 +1,44 @@
+# HG changeset patch
+# User Bernhard M. Wiedemann <bwiedemann@suse.de>
+# Date 1502609999 -7200
+#      Sun Aug 13 09:39:59 2017 +0200
+# Node ID a98e00eed893f62dd8349fc2894abca3aff4b33a
+# Parent  41ce01b7d413b3654211da0147857e7d6a1495de
+Facilitate reproducible builds
+by allowing to externally hold constant the build date and time.
+See
+        https://reproducible-builds.org/specs/source-date-epoch/
+
+Backport asap.
+
+diff -r 41ce01b7d413 -r a98e00eed893 NEWS
+--- a/NEWS	Sun Aug 13 09:39:56 2017 +0200
++++ b/NEWS	Sun Aug 13 09:39:59 2017 +0200
+@@ -48,6 +48,12 @@
+           https://github.com/akrzemi1/Optional
+   where only "optional.hpp" is needed.
+ 
++- The environment variable SOURCE_DATE_EPOCH overrides the build
++  timestamp as recorded by the signatures.  See
++          https://reproducible-builds.org/specs/source-date-epoch/
++  for details.
++
++
+ 
+ * Version 4.2  "Compressor Road"
+ 
+diff -r 41ce01b7d413 -r a98e00eed893 src/DefaultSig.pm
+--- a/src/DefaultSig.pm	Sun Aug 13 09:39:56 2017 +0200
++++ b/src/DefaultSig.pm	Sun Aug 13 09:39:59 2017 +0200
+@@ -109,9 +109,10 @@
+ sub update_date_and_time {
+     my $self = shift;
+ 
++    my $now = $ENV{SOURCE_DATE_EPOCH} || time;
+     my ($second, $minute, $hour,
+         $day_of_month, $month, $year,
+-        $day_of_week) = $self->is_using_gmt() ? gmtime : localtime;
++        $day_of_week) = $self->is_using_gmt() ? gmtime($now) : localtime($now);
+ 
+     $self->{DATE} = $self->format_date($day_of_month, $month, $year + 1900, $day_of_week,
+                                        $self->weekdays->[$day_of_week],

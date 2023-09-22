@@ -820,7 +820,7 @@ strongSwan.")))
                     (format #f "~@[ListenPort = ~a~]" #$port)
                     #$@(if (null? dns)
                            '()
-                           (list (format #f "~{DNS = ~{~a~^, ~}" dns)))))
+                           (list (format #f "DNS = ~{~a~^, ~}" dns)))))
 
                  (mkdir #$output)
                  (chdir #$output)

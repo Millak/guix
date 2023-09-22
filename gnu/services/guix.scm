@@ -140,7 +140,17 @@
             nar-herder-cached-compression-configuration-type
             nar-herder-cached-compression-configuration-level
             nar-herder-cached-compression-configuration-directory
-            nar-herder-cached-compression-configuration-directory-max-size))
+            nar-herder-cached-compression-configuration-directory-max-size
+
+            bffe-configuration
+            bffe-configuration?
+            bffe-configuration-package
+            bffe-configuration-user
+            bffe-configuration-group
+            bffe-configuration-arguments
+            bffe-configuration-extra-environment-variables
+
+            bffe-service-type))
 
 ;;;; Commentary:
 ;;;
@@ -1030,3 +1040,118 @@ ca-certificates.crt file in the system profile."
                         nar-herder-account)))
    (description
     "Run a Nar Herder server.")))
+
+
+;;;
+;;; Build Farm Front-end (BFFE)
+;;;
+
+(define-record-type* <bffe-configuration>
+  bffe-configuration make-bffe-configuration
+  bffe-configuration?
+  (package       bffe-configuration-package
+                 (default bffe))
+  (user          bffe-configuration-user
+                 (default "bffe"))
+  (group         bffe-configuration-group
+                 (default "bffe"))
+  (arguments     bffe-configuration-arguments)
+  (extra-environment-variables
+   bffe-configuration-extra-environment-variables
+   (default '())))
+
+(define (bffe-shepherd-services config)
+  (define bffe-package
+    (bffe-configuration-package config))
+
+  (define start-script
+    (program-file
+     "run-bffe"
+     (with-extensions (cons
+                       bffe-package
+                       ;; This is a poorly constructed Guile load path,
+                       ;; since it contains things that aren't Guile
+                       ;; libraries, but it means that the Guile
+                       ;; libraries needed for BFFE don't need to be
+                       ;; individually specified here.
+                       (map second (package-transitive-propagated-inputs
+                                    bffe-package)))
+       #~(begin
+           (use-modules (bffe)
+                        (bffe manage-builds))
+
+           (setvbuf (current-output-port) 'line)
+           (setvbuf (current-error-port) 'line)
+
+           (simple-format #t "starting the bffe:\n  ~A\n"
+                          (current-filename))
+
+           (apply run-bffe-service
+                  (append
+                   (list #:pid-file "/var/run/bffe/pid")
+                   #$(bffe-configuration-arguments config)))))
+     #:guile (lookup-package-native-input bffe-package "guile-next")))
+
+  (match-record config <bffe-configuration>
+    (package user group arguments extra-environment-variables)
+
+    (list
+     (shepherd-service
+      (documentation "Build Farm Front-end")
+      (provision '(bffe))
+      (requirement '(networking))
+      (start #~(make-forkexec-constructor
+                (list #$start-script)
+                #:user #$user
+                #:group #$group
+                #:pid-file "/var/run/bffe/pid"
+                #:directory "/var/lib/bffe"
+                #:environment-variables
+                `(,(string-append
+                    "GUIX_LOCPATH=" #$glibc-utf8-locales "/lib/locale")
+                  "LC_ALL=en_US.utf8"
+                  #$@extra-environment-variables)
+                #:log-file "/var/log/bffe/server.log"))
+      (stop #~(make-kill-destructor))))))
+
+(define (bffe-activation config)
+  #~(begin
+      (use-modules (guix build utils))
+
+      (define %user
+        (getpw #$(bffe-configuration-user config)))
+
+      (chmod "/var/lib/bffe" #o755)
+
+      (mkdir-p "/var/log/bffe")
+
+      ;; Allow writing the PID file
+      (mkdir-p "/var/run/bffe")
+      (chown "/var/run/bffe" (passwd:uid %user) (passwd:gid %user))))
+
+(define (bffe-account config)
+  (match-record config <bffe-configuration>
+    (user group)
+    (list (user-group
+           (name group)
+           (system? #t))
+          (user-account
+           (name user)
+           (group group)
+           (system? #t)
+           (comment "BFFE user")
+           (home-directory "/var/lib/bffe")
+           (shell (file-append shadow "/sbin/nologin"))))))
+
+(define bffe-service-type
+  (service-type
+   (name 'bffe)
+   (extensions
+    (list (service-extension shepherd-root-service-type
+                             bffe-shepherd-services)
+          (service-extension activation-service-type
+                             bffe-activation)
+          (service-extension account-service-type
+                             bffe-account)))
+   (description
+    "Run the Build Farm Front-end.")))

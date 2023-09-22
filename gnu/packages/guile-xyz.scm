@@ -3856,7 +3856,7 @@ debugging code.")
 (define-public guile-png
   (package
     (name "guile-png")
-    (version "0.7.0")
+    (version "0.7.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3865,10 +3865,13 @@ debugging code.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0nkim662lb48y8n5hik8rrj76600v2inwaxwnfpdny7h2j0yq1wm"))))
+                "0y65795s9bs69msqvdbq8h34n00bkfs5v1d44wz21nwdffvq6557"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags '("GUILE_AUTO_COMPILE=0"))) ;to prevent guild warnings
+     (list
+      #:make-flags #~(list "GUILE_AUTO_COMPILE=0") ;to prevent guild warnings
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'strip))))
     (native-inputs (list autoconf
                          automake
                          pkg-config
@@ -3884,9 +3887,9 @@ debugging code.")
     (synopsis "PNG file parsing library for Guile")
     (description
      "@code{guile-png} is a GNU Guile library for working with the
-@url{https://en.wikipedia.org/wiki/PNG, PNG format}.  This library provides
-API for reading and writing PNG data, as well as some basic image processing
-filters.")
+@url{https://en.wikipedia.org/wiki/PNG, PNG format}.  This library provides API for
+reading and writing PNG data, as well as some graphic primitives and basic image
+processing filters.")
     (license license:gpl3+)))
 
 (define-public nomad

@@ -21557,6 +21557,24 @@ signing, and verification in pure Rust.")
 @code{Right} is a general purpose sum type with two cases.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-either-1.6.0
+  (package
+    (inherit rust-either-1)
+    (name "rust-either")
+    (version "1.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "either" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0mwl9vngqf5jvrhmhn9x60kr5hivxyjxbmby2pybncxfqhf4z3g7"))))
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1.0.73))))))
+
 (define-public rust-elf-0.0.10
   (package
     (name "rust-elf")
@@ -41724,6 +41742,19 @@ with all line endings.")
 notification library.")
     (license (list license:cc0 license:artistic2.0))))
 
+(define-public rust-notify-5-pre.13
+  (package
+    (inherit rust-notify-5)
+    (name "rust-notify")
+    (version "5.0.0-pre.13")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "notify" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0za8mpacxkr62fii5h7ny4h396y0m8myd3hf08njqdg2h21kap94"))))))
+
 (define-public rust-notify-4
   (package
     (inherit rust-notify-5)
@@ -49388,6 +49419,27 @@ in your code.")
 in terms of the upstream unstable API.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-proc-macro2-1.0.34
+  (package
+    (inherit rust-proc-macro2-1)
+    (name "rust-proc-macro2")
+    (version "1.0.34")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "proc-macro2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1c93jhwl8lv3hiqqvdhd2d2xhjryh5bqb9w5icr5i7bw1wnfk11g"))))
+    (arguments
+     `(#:cargo-test-flags '("--lib")
+       #:cargo-inputs
+       (("rust-unicode-ident" ,rust-unicode-ident-1))
+       #:cargo-development-inputs
+       (("rust-quote" ,rust-quote-1.0.10)
+        ("rust-rustversion" ,rust-rustversion-1))))))
+
 (define-public rust-proc-macro2-0.4
   (package
     (inherit rust-proc-macro2-1)
@@ -51587,6 +51639,25 @@ transport protocol in Rust.")
     (synopsis "Quasi-quoting macro quote!(...)")
     (description "Quasi-quoting macro quote!(...)")
     (license (list license:asl2.0 license:expat))))
+
+(define-public rust-quote-1.0.10
+  (package
+    (inherit rust-quote-1)
+    (name "rust-quote")
+    (version "1.0.10")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "quote" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "01ff7a76f871ggnby57iagw6499vci4bihcr11g6bqzjlp38rg1q"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1.0.34))
+       #:cargo-development-inputs
+       (("rust-rustversion" ,rust-rustversion-1)
+        ("rust-trybuild" ,rust-trybuild-1.0.19))))))
 
 (define-public rust-quote-0.6
   (package
@@ -57489,7 +57560,7 @@ in pure Rust.")
        #:cargo-inputs
        (("rust-crossbeam-utils"
          ,rust-crossbeam-utils-0.8)
-        ("rust-indexmap" ,rust-indexmap-1)
+        ("rust-indexmap" ,rust-indexmap-1.7)
         ("rust-lock-api" ,rust-lock-api-0.4)
         ("rust-log" ,rust-log-0.4)
         ("rust-oorandom" ,rust-oorandom-11.1)
@@ -59795,6 +59866,32 @@ data.  This crate provides a wrapper that works with any existing Serde
      "This package provides a JSON serialization file format.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-serde-json-1.0.73
+  (package
+    (inherit rust-serde-json-1)
+    (name "rust-serde-json")
+    (version "1.0.73")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serde-json" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xbwmzc5j6r1nz62a20w6l9bkwbhzd11vwbdqmzbqcv5pi207gdw"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-indexmap" ,rust-indexmap-1.7)
+        ("rust-itoa" ,rust-itoa-1)
+        ("rust-ryu" ,rust-ryu-1)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-automod" ,rust-automod-1)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-serde-bytes" ,rust-serde-bytes-0.11)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-stacker" ,rust-serde-stacker-0.1)
+        ("rust-trybuild" ,rust-trybuild-1))))))
+
 (define-public rust-serde-json-0.9
   (package
     (inherit rust-serde-json-1)
@@ -59863,7 +59960,7 @@ programs in rust.")
         (("rust-serde" ,rust-serde-1))
         #:cargo-development-inputs
         (("rust-serde-derive" ,rust-serde-derive-1)
-         ("rust-serde-json" ,rust-serde-json-1))))
+         ("rust-serde-json" ,rust-serde-json-1.0.73))))
     (home-page
       "https://github.com/dtolnay/path-to-error")
     (synopsis
@@ -59921,14 +60018,14 @@ commonly used by Ruby on Rails via Rack.")
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
+       (("rust-proc-macro2" ,rust-proc-macro2-1.0.34)
+        ("rust-quote" ,rust-quote-1.0.10)
         ("rust-syn" ,rust-syn-1))
        #:cargo-development-inputs
        (("rust-rustversion" ,rust-rustversion-1)
         ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-trybuild" ,rust-trybuild-1))))
+        ("rust-serde-json" ,rust-serde-json-1.0.73)
+        ("rust-trybuild" ,rust-trybuild-1.0.19))))
     (home-page "https://github.com/dtolnay/serde-repr")
     (synopsis "Serialize and deserialize C-like enum as underlying repr")
     (description
@@ -73147,6 +73244,29 @@ the Trust-DNS client to use rustls for TLS.")
     (description
      "Test harness for ui tests of compiler diagnostics.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-trybuild-1.0.19
+  (package
+    (inherit rust-trybuild-1)
+    (name "rust-trybuild")
+    (version "1.0.19")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "trybuild" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ab7ahdx563n6kbm14pm3qnxq4fp06pz42nh5ii4acvlzycnwdh4"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-toml" ,rust-toml-0.5)
+        ("rust-dissimilar" ,rust-dissimilar-1)
+        ("rust-glob" ,rust-glob-0.3)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1.0.73)
+        ("rust-termcolor" ,rust-termcolor-1))
+       #:cargo-development-inputs (("rust-automod" ,rust-automod-1))))))
 
 (define-public rust-trybuild2-1
   (package

@@ -494,7 +494,7 @@
          (member "boo" keys))))
 
 (test-equal "package-transitive-supported-systems, implicit inputs"
-  %supported-systems
+  (filter target-linux? %supported-systems)
 
   ;; Here GNU-BUILD-SYSTEM adds implicit inputs that build only on
   ;; %SUPPORTED-SYSTEMS.  Thus the others must be ignored.

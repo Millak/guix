@@ -6117,7 +6117,7 @@ the fingerprint of the OpenPGP used to sign it.
 @end enumerate
 
 Before pushing to your public Git repository, you can run @command{guix
-git-authenticate} to verify that you did sign all the commits you are
+git authenticate} to verify that you did sign all the commits you are
 about to push with an authorized key:
 
 @example
@@ -16837,23 +16837,36 @@ instance to support new system services.
 The operating system is configured by providing an
 @code{operating-system} declaration in a file that can then be passed to
 the @command{guix system} command (@pxref{Invoking guix system}).  A
-simple setup, with the default system services, the default Linux-Libre
-kernel, initial RAM disk, and boot loader looks like this:
+simple setup, with the default Linux-Libre
+kernel, initial RAM disk, and a couple of system services added to those
+provided by default looks like this:
 
 @findex operating-system
 @lisp
 @include os-config-bare-bones.texi
 @end lisp
 
-This example should be self-describing.  Some of the fields defined
+The configuration is declarative and hopefully mostly self-describing.
+It is actually code in the Scheme programming language; the whole
+@code{(operating-system @dots{})} expression produces a @dfn{record}
+with a number of @dfn{fields}.
+Some of the fields defined
 above, such as @code{host-name} and @code{bootloader}, are mandatory.
 Others, such as @code{packages} and @code{services}, can be omitted, in
-which case they get a default value.
+which case they get a default value.  @xref{operating-system Reference},
+for details about all the available fields.
 
-Below we discuss the effect of some of the most important fields
-(@pxref{operating-system Reference}, for details about all the available
-fields), and how to @dfn{instantiate} the operating system using
+Below we discuss the effect of some of the most important fields,
+and how to @dfn{instantiate} the operating system using
 @command{guix system}.
+
+@quotation Do not panic
+@cindex Scheme programming language, getting started
+Intimidated by the Scheme language or curious about it?  The Cookbook
+has a short section to get started that explains the fundamentals, which
+you will find helpful when hacking your configuration.  @xref{A Scheme
+Crash Course,,, guix-cookbook, GNU Guix Cookbook}.
+@end quotation
 
 @unnumberedsubsec Bootloader
 
@@ -17027,14 +17040,6 @@ Alternatively, the @code{modify-services} macro can be used:
 (modify-services %desktop-services
   (delete avahi-service-type))
 @end lisp
-
-@quotation Do not panic
-@cindex Scheme programming language, getting started
-Intimidated by the Scheme language or curious about it?  The Cookbook
-has a short section to get started that explains the fundamentals, which
-you will find helpful when hacking your configuration.  @xref{A Scheme
-Crash Course,,, guix-cookbook, GNU Guix Cookbook}.
-@end quotation
 
 @unnumberedsubsec Instantiating the System
 
@@ -20459,10 +20464,16 @@ non-loopback interfaces that can be activated.  Otherwise the DHCP
 client listens only on the specified interfaces.
 
 @item @code{shepherd-requirement} (default: @code{'()})
+@itemx @code{shepherd-provision} (default: @code{'(networking)})
 This option can be used to provide a list of symbols naming Shepherd services
 that this service will depend on, such as @code{'wpa-supplicant} or
 @code{'iwd} if you require authenticated access for encrypted WiFi or Ethernet
 networks.
+
+Likewise, @code{shepherd-provision} is a list of Shepherd service names
+(symbols) provided by this service.  You might want to change the
+default value if you intend to run several DHCP clients, only one of
+which provides the @code{networking} Shepherd service.
 @end table
 @end deftp
 
@@ -38086,6 +38097,65 @@ File name of the file system key for the target volume.
 @node Guix Services
 @subsection Guix Services
 
+@subsubheading Build Farm Front-End (BFFE)
+The @uref{https://git.cbaines.net/guix/bffe/,Build Farm Front-End}
+assists with building Guix packages in bulk.  It's responsible for
+submitting builds and displaying the status of the build farm.
+
+@defvar bffe-service-type
+Service type for the Build Farm Front-End.  Its value must be a
+@code{bffe-configuration} object.
+@end defvar
+
+@deftp {Data Type} bffe-configuration
+Data type representing the configuration of the Build Farm Front-End.
+
+@table @asis
+@item @code{package} (default: @code{bffe})
+The Build Farm Front-End package to use.
+
+@item @code{user} (default: @code{"bffe"})
+The system user to run the service as.
+
+@item @code{group} (default: @code{"bffe"})
+The system group to run the service as.
+
+@item @code{arguments}
+A list of arguments to the Build Farm Front-End.  These are passed to
+the @code{run-bffe-service} procedure when starting the service.
+
+For example, the following value directs the Build Farm Front-End to
+submit builds for derivations available from @code{data.guix.gnu.org} to
+the Build Coordinator instance assumed to be running on the same
+machine.
+
+@example
+(list
+ #:build
+ (list
+  (build-from-guix-data-service
+   (data-service-url "https://data.guix.gnu.org")
+   (build-coordinator-url "http://127.0.0.1:8746")
+   (branches '("master"))
+   (systems '("x86_64-linux" "i686-linux"))
+   (systems-and-targets
+    (map (lambda (target)
+           (cons "x86_64-linux" target))
+         '("aarch64-linux-gnu"
+           "i586-pc-gnu")))
+   (build-priority (const 0))))
+ #:web-server-args
+ '(#:event-source "https://example.com"
+   #:controller-args
+   (#:title "example.com build farm")))
+@end example
+
+@item @code{extra-environment-variables} (default: @var{'()})
+Extra environment variables to set via the shepherd service.
+
+@end table
+@end deftp
+
 @subsubheading Guix Build Coordinator
 The @uref{https://git.cbaines.net/guix/build-coordinator/,Guix Build
 Coordinator} aids in distributing derivation builds among machines
@@ -40915,8 +40985,8 @@ QEMU monitor and the VM.
 @cindex image, creating disk images
 The @code{image} command can produce various image types.  The image
 type can be selected using the @option{--image-type} option.  It
-defaults to @code{mbr-raw}.  When its value is @code{iso9660}, the
-@option{--label} option can be used to specify a volume ID with
+defaults to @code{mbr-hybrid-raw}.  When its value is @code{iso9660},
+the @option{--label} option can be used to specify a volume ID with
 @code{image}.  By default, the root file system of a disk image is
 mounted non-volatile; the @option{--volatile} option can be provided to
 make it volatile instead.  When using @code{image}, the bootloader
@@ -40934,8 +41004,8 @@ qemu-system-x86_64 -enable-kvm -hda /tmp/my-image.qcow2 -m 1000 \
                    -bios $(guix build ovmf)/share/firmware/ovmf_x64.bin
 @end example
 
-When using the @code{mbr-raw} image type, a raw disk image is produced;
-it can be copied as is to a USB stick, for instance.  Assuming
+When using the @code{mbr-hybrid-raw} image type, a raw disk image is
+produced; it can be copied as is to a USB stick, for instance.  Assuming
 @code{/dev/sdc} is the device corresponding to a USB stick, one can copy
 the image to it using the following command:
 
@@ -41072,7 +41142,7 @@ of the image.
 For the @code{image} action, create an image with given @var{type}.
 
 When this option is omitted, @command{guix system} uses the
-@code{mbr-raw} image type.
+@code{mbr-hybrid-raw} image type.
 
 @cindex ISO-9660 format
 @cindex CD image format
@@ -45280,7 +45350,7 @@ then directly boot from it, without any kind of installation procedure.
 
 The @command{guix system image} command is able to turn an operating
 system definition into a bootable image.  This command supports
-different image types, such as @code{mbr-raw}, @code{iso9660} and
+different image types, such as @code{mbr-hybrid-raw}, @code{iso9660} and
 @code{docker}.  Any modern @code{x86_64} machine will probably be able
 to boot from an @code{iso9660} image.  However, there are a few machines
 out there that require specific image types.  Those machines, in general
@@ -45544,8 +45614,24 @@ from them to simplify the @code{image} definition.  The @code{(gnu
 system image)} module provides the following @code{image} definition
 variables.
 
+@defvar mbr-disk-image
+An MBR disk-image composed of a single ROOT partition.  The ROOT
+partition starts at a 1@tie{}MiB offset so that the bootloader can
+install itself in the post-MBR gap.
+@end defvar
+
+@defvar mbr-hybrid-disk-image
+An MBR disk-image composed of two partitions: a 64 bits ESP partition
+and a ROOT boot partition.  The ESP partition starts at a 1@tie{}MiB
+offset so that a BIOS compatible bootloader can install itself in the
+post-MBR gap.  The image can be used by @code{x86_64} and @code{i686}
+machines supporting only legacy BIOS booting.  The ESP partition ensures
+that it can also be used by newer machines relying on UEFI booting,
+hence the @emph{hybrid} denomination.
+@end defvar
+
 @defvar efi-disk-image
-A MBR disk-image composed of two partitions: a 64 bits ESP partition and
+A GPT disk-image composed of two partitions: a 64 bits ESP partition and
 a ROOT boot partition.  This image can be used on most @code{x86_64} and
 @code{i686} machines, supporting BIOS or UEFI booting.
 @end defvar
@@ -45634,6 +45720,10 @@ system image)} and the @code{(gnu system images @dots{})} modules.
 
 @defvar mbr-raw-image-type
 Build an image based on the @code{mbr-disk-image} image.
+@end defvar
+
+@defvar mbr-hybrid-raw-image-type
+Build an image based on the @code{mbr-hybrid-disk-image} image.
 @end defvar
 
 @defvar efi-raw-image-type

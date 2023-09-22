@@ -3673,7 +3673,7 @@ per-goroutine.")
 (define-public go-github-com-tdewolff-minify-v2
   (package
     (name "go-github-com-tdewolff-minify-v2")
-    (version "2.12.6")
+    (version "2.12.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3682,7 +3682,7 @@ per-goroutine.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0h006wpfkl0ls0skqxblwcanrhmphgq5q0ii26l2ayh7s99cgmy3"))))
+                "0qhslaq885zbqs83nvbi29yh09b89kkb6ycami8lz28wkwrlayap"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/tdewolff/minify/v2"

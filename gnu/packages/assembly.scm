@@ -13,6 +13,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Andy Tai <atai@atai.org>
+;;; Copyright © 2023 Simon South <simon@simonsouth.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -33,6 +34,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module ((guix build utils) #:select (parallel-job-count))
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
@@ -55,9 +57,68 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages shells)
+  #:use-module (gnu packages tex)
   #:use-module (gnu packages xml)
   #:use-module ((guix utils)
                 #:select (%current-system cc-for-target)))
+
+(define-public asl
+  (let ((build "247"))
+    (package
+      (name "asl")
+      (version (string-append "1.42-beta-" build))
+      (source
+       (origin
+         (method url-fetch)
+         (uri (string-append
+               "http://john.ccac.rwth-aachen.de:8000/ftp/as/source/c_version/"
+               "asl-current-142-bld" build ".tar.bz2"))
+         (sha256
+          (base32 "1qgz5yzg50vpwzrjqvw8bgnvm67dqhfb8ldxyqwaqmrj3icshp5s"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:make-flags #~(list "V=1")     ; ensures output during "check" phase
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'bootstrap)
+            (replace 'configure
+              (lambda* (#:key target #:allow-other-keys)
+                (copy-file "Makefile.def-samples/Makefile.def-unknown-linux"
+                           "Makefile.def")
+
+                ;; Use the cross-compilation tools when cross-compiling.
+                (when #$(%current-target-system)
+                  (substitute* "Makefile.def"
+                    (("^(TARG_(CC|LD) = ).*" all prefix)
+                     (string-append prefix target "-gcc\n"))))
+
+                ;; Set the output directories appropriately.
+                (substitute* "Makefile.def"
+                  (("^(DOCDIR = ).*" all prefix)
+                   (string-append prefix #$output:doc "/share/doc/" #$name))
+                  (("/usr/local")
+                   #$output))))
+            (add-after 'check 'build-doc
+              (lambda* (#:key parallel-build? #:allow-other-keys)
+                (invoke "make"
+                        "-j" (if parallel-build?
+                                 (number->string (parallel-job-count))
+                                 "1")
+                        "docs"))))
+        #:test-target "test"))
+      (native-inputs
+       (list (texlive-updmap.cfg (list texlive-german texlive-hyperref))))
+      (outputs '("out" "doc"))
+      (home-page "http://john.ccac.rwth-aachen.de:8000/as/")
+      (synopsis
+       "AS macro cross-assembler for microprocessors and microcontrollers")
+      (description
+       "AS is a portable macro cross-assembler targeting a wide range of
+microprocessors and microcontrollers, including devices from Intel, Motorola,
+MOS Technology, Hitachi, Fujitsu, NEC, Texas Instruments, Zilog and many other
+manufacturers.")
+      (license (list license:gpl2 license:gpl3)))))
 
 (define-public nasm
   (package
@@ -134,14 +195,14 @@ debugging information in STABS, DWARF 2, and CodeView 8 formats.")
 (define-public lightning
   (package
     (name "lightning")
-    (version "2.2.1")
+    (version "2.2.2")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/lightning/lightning-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "1aiwx9cl9c7swqcgrsjnvd5laah3iwxzl1van3670iv8sn0icrwq"))))
+               "1qmkfg7br543kqy82hhpr1n8bsm9wrwb1z5w2whxc5xdvr185jha"))))
     (build-system gnu-build-system)
     (native-inputs (list zlib))
     (arguments

@@ -902,6 +902,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/akonadi-not-relocatable.patch		\
   %D%/packages/patches/akonadi-timestamps.patch		\
   %D%/packages/patches/allegro-mesa-18.2.5-and-later.patch	\
+  %D%/packages/patches/alure-dumb-2.patch			\
   %D%/packages/patches/ibus-anthy-fix-tests.patch		\
   %D%/packages/patches/ibus-table-paths.patch			\
   %D%/packages/patches/anki-mpv-args.patch			\
@@ -1116,6 +1117,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/emacs-kv-fix-tests.patch	\
   %D%/packages/patches/emacs-pgtk-super-key-fix.patch	\
   %D%/packages/patches/emacs-xelb-ignore-length-element.patch	\
+  %D%/packages/patches/enblend-enfuse-reproducible.patch	\
   %D%/packages/patches/enjarify-setup-py.patch			\
   %D%/packages/patches/enlightenment-fix-setuid-path.patch	\
   %D%/packages/patches/erlang-man-path.patch			\
@@ -1123,7 +1125,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/esmini-use-pkgconfig.patch		\
   %D%/packages/patches/esmtp-add-lesmtp.patch		\
   %D%/packages/patches/eudev-rules-directory.patch		\
-  %D%/packages/patches/evdi-fix-build-with-linux-6.2.patch	\
   %D%/packages/patches/exercism-disable-self-update.patch	\
   %D%/packages/patches/extempore-unbundle-external-dependencies.patch	\
   %D%/packages/patches/extundelete-e2fsprogs-1.44.patch		\
@@ -1290,6 +1291,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/glibc-2.37-hurd-local-clock_gettime_MONOTONIC.patch	\
   %D%/packages/patches/glibc-2.37-versioned-locpath.patch	\
   %D%/packages/patches/glibc-hurd-clock_t_centiseconds.patch	\
+  %D%/packages/patches/glibc-hurd-getauxval.patch		\
   %D%/packages/patches/glibc-hurd-gettyent.patch		\
   %D%/packages/patches/glibc-hurd-mach-print.patch		\
   %D%/packages/patches/glibc-hurd-signal-sa-siginfo.patch	\
@@ -1309,6 +1311,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/gnash-fix-giflib-version.patch	        \
   %D%/packages/patches/gnome-2048-fix-positional-argument.patch	\
   %D%/packages/patches/gnome-control-center-libexecdir.patch	\
+  %D%/packages/patches/gnome-dictionary-meson-i18n.patch	\
   %D%/packages/patches/gnome-online-miners-tracker-3.patch	\
   %D%/packages/patches/gnome-settings-daemon-gc.patch		\
   %D%/packages/patches/gnome-session-support-elogind.patch	\
@@ -1375,10 +1378,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/gtksourceview-2-add-default-directory.patch \
   %D%/packages/patches/gzdoom-search-in-installed-share.patch	\
   %D%/packages/patches/gzdoom-find-system-libgme.patch	\
-  %D%/packages/patches/hdf4-architectures.patch 		\
   %D%/packages/patches/hdf4-reproducibility.patch 		\
   %D%/packages/patches/hdf4-shared-fortran.patch 		\
-  %D%/packages/patches/hdf4-tirpc.patch 			\
   %D%/packages/patches/hdf5-config-date.patch			\
   %D%/packages/patches/hdf-eos2-build-shared.patch 		\
   %D%/packages/patches/hdf-eos2-remove-gctp.patch		\
@@ -1454,6 +1455,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/json-c-0.12-CVE-2020-12762.patch		\
   %D%/packages/patches/julia-SOURCE_DATE_EPOCH-mtime.patch	\
   %D%/packages/patches/julia-Use-MPFR-4.2.patch	                \
+  %D%/packages/patches/libftdi-fix-paths-when-FTDIPP-set.patch	\
   %D%/packages/patches/libgeotiff-fix-tests-with-proj-9.1.1.patch	\
   %D%/packages/patches/libobjc2-unbundle-robin-map.patch	\
   %D%/packages/patches/librime-fix-build-with-gcc10.patch	\
@@ -1484,6 +1486,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/kobodeluxe-midicon-segmentation-fault.patch	\
   %D%/packages/patches/kobodeluxe-graphics-window-signed-char.patch	\
   %D%/packages/patches/kodi-set-libcurl-ssl-parameters.patch		\
+  %D%/packages/patches/kwin-unwrap-executable-name-for-dot-desktop-search.patch\
   %D%/packages/patches/kodi-mesa-eglchromium.patch		\
   %D%/packages/patches/laby-make-install.patch			\
   %D%/packages/patches/laby-use-tmpdir-from-runtime.patch	\
@@ -1641,6 +1644,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/mutter-fix-inverted-test.patch		\
   %D%/packages/patches/mutt-store-references.patch		\
   %D%/packages/patches/m17n-lib-1.8.0-use-pkg-config-for-freetype.patch	\
+  %D%/packages/patches/nanosvg-prusa-slicer.patch		\
   %D%/packages/patches/nautilus-extension-search-path.patch	\
   %D%/packages/patches/ncompress-fix-softlinks.patch		\
   %D%/packages/patches/ncftp-reproducible.patch			\
@@ -1696,6 +1700,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/openjdk-10-pointer-comparison.patch      \
   %D%/packages/patches/openjdk-10-setsignalhandler.patch        \
   %D%/packages/patches/openjdk-15-xcursor-no-dynamic.patch	\
+  %D%/packages/patches/openjdk-21-fix-rpath.patch		\
   %D%/packages/patches/openmpi-mtl-priorities.patch		\
   %D%/packages/patches/openmw-assume-nonconst-SIGSTKSZ.patch    \
   %D%/packages/patches/openssh-trust-guix-store-directory.patch	\
@@ -2004,6 +2009,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/tcsh-fix-autotest.patch			\
   %D%/packages/patches/teensy-loader-cli-help.patch		\
   %D%/packages/patches/tensorflow-c-api-fix.patch		\
+  %D%/packages/patches/tensorflow-lite-unbundle.patch 		\
   %D%/packages/patches/texinfo-headings-single.patch		\
   %D%/packages/patches/texinfo-5-perl-compat.patch		\
   %D%/packages/patches/telegram-desktop-allow-disable-libtgvoip.patch   \

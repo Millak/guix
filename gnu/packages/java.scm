@@ -61,6 +61,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages freedesktop) ; wayland
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
@@ -1546,6 +1547,27 @@ blacklisted.certs.pem"
                ;; Fix for "valid range 1980-01-01T00:00:02Z to 2099-12-31T23:59:59Z".
                (setenv "SOURCE_DATE_EPOCH" "1234567890")))))))))
 
+(define-public openjdk20
+  (make-openjdk openjdk19 "20"
+                "0pk5lpwijfv9qv7vwpsq2xfklbnqdfs6xbdhc5aamrpar4xi4ykx"))
+
+(define-public openjdk21
+  (make-openjdk openjdk20 "21"
+                "06wjfwrkqykjdkis2s1nh91cy8vwincnmc699cxvyk3fc12jf3vw"
+   (source (origin
+             (inherit (package-source base))
+             (patches (search-patches "openjdk-21-fix-rpath.patch"
+                                      "openjdk-15-xcursor-no-dynamic.patch"))))
+   (arguments
+    (substitute-keyword-arguments (package-arguments base)
+      ((#:phases phases)
+       #~(modify-phases #$phases
+           (replace 'fix-java-shebangs
+             (lambda _
+               ;; 'blacklisted' was renamed back to 'blocked'.
+               (substitute* "src/java.base/share/data/blockedcertsconverter/blocked.certs.pem"
+                 (("^#!.*") "#! java BlockedCertsConverter SHA-256\n"))))))))))
+
 ;;; Convenience alias to point to the latest version of OpenJDK.
 (define-public openjdk openjdk19)
 
@@ -1603,6 +1625,44 @@ OpenJDK.")
               (patches (search-patches "jbr-17-xcursor-no-dynamic.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments openjdk17)
+       ((#:configure-flags configure-flags)
+        #~(append #$configure-flags
+                  (list "--with-jvm-features=shenandoahgc"
+                        "--enable-cds=yes"
+                        "--with-vendor-name=JetBrains s.r.o"
+                        "--with-vendor-url=https://www.jetbrains.com/"
+                        "--with-vendor-bug-url=https://youtrack.jetbrains.com/issues/JBR")))))
+    (synopsis "JetBrains Java Runtime")
+    (description "This package provides a Java runtime environment for
+and Java development kit.  It supports enhanced class redefinition (DCEVM),
+includes a number of improvements in font rendering, keyboards support,
+windowing/focus subsystems, HiDPI, accessibility, and performance,
+provides better desktop integration and bugfixes not yet present in
+OpenJDK.")
+    (home-page "https://www.jetbrains.com/")
+    (license license:gpl2+)))
+
+(define-public jbr21
+  (package
+    (inherit openjdk21)
+    (name "jbr")
+    (version "21-b240.22")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/JetBrains/JetBrainsRuntime.git")
+                     (commit (string-append "jb" version))))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "1sx48mm5vap4ab1qr6hy25wlgxljmhvpvrqiqiq692izr8dh7j4c"))
+              (patches (search-patches "openjdk-21-fix-rpath.patch"
+                                       "jbr-17-xcursor-no-dynamic.patch"))))
+    (inputs
+     `(("wayland" ,wayland)
+       ,@(package-inputs openjdk21)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments openjdk21)
        ((#:configure-flags configure-flags)
         #~(append #$configure-flags
                   (list "--with-jvm-features=shenandoahgc"

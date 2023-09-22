@@ -49,6 +49,7 @@
                       (substitute* "Makefile"
                         (("\\$\\(wildcard src/lib\\*/\\*.c\\)")
                          "$(sort $(wildcard src/lib*/*.c))")))))))
+    (supported-systems (delete "i586-gnu" %supported-systems))
     (home-page "https://skarnet.org/software/skalibs/")
     (synopsis "Platform abstraction libraries for skarnet.org software")
     (description

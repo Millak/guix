@@ -85,6 +85,7 @@
             %elogind-file-systems
 
             %base-file-systems
+            %base-live-file-systems
             %container-file-systems
 
             <file-system-mapping>
@@ -494,6 +495,26 @@ TARGET in the other system."
         %shared-memory-file-system
         %efivars-file-system
         %immutable-store))
+
+(define %base-live-file-systems
+  ;; This is the bare minimum to use live file-systems.
+  ;; Used in installation-os.
+  (list (file-system
+          (mount-point "/")
+          (device (file-system-label "Guix_image"))
+          (type "ext4"))
+
+        ;; Make /tmp a tmpfs instead of keeping the overlayfs.  This
+        ;; originally was used for unionfs because FUSE creates
+        ;; '.fuse_hiddenXYZ' files for each open file, and this confuses
+        ;; Guix's test suite, for instance (see
+        ;; <http://bugs.gnu.org/23056>).  We keep this for overlayfs to be
+        ;; on the safe side.
+        (file-system
+          (mount-point "/tmp")
+          (device "none")
+          (type "tmpfs")
+          (check? #f))))
 
 ;; File systems for Linux containers differ from %base-file-systems in that
 ;; they impose additional restrictions such as no-exec or need different

@@ -529,8 +529,9 @@ system that builds code for MICRO-ARCHITECTURE; otherwise raise an error."
     ;; leading to an obscure build error, check whether the compiler is known
     ;; to support MICRO-ARCHITECTURE.  If not, bail out.
     (let* ((lowered      (apply lower args))
-           (architecture (match (string-tokenize (bag-system lowered)
-                                                 %not-hyphen)
+           (target (or (bag-target lowered)
+                       (bag-system lowered)))
+           (architecture (match (string-tokenize target %not-hyphen)
                            ((arch _ ...) arch)))
            (compiler     (any (match-lambda
                                 ((label (? package? p) . _)

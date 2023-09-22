@@ -49,7 +49,6 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages ed)
-  #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages multiprecision)
@@ -1463,7 +1462,8 @@ command.")
                                      "glibc-2.37-hurd-clock_t_centiseconds.patch"
                                      "glibc-2.37-hurd-local-clock_gettime_MONOTONIC.patch"
                                      "glibc-hurd-mach-print.patch"
-                                     "glibc-hurd-gettyent.patch"))))
+                                     "glibc-hurd-gettyent.patch"
+                                     "glibc-hurd-getauxval.patch"))))
     (supported-systems %hurd-systems)))
 
 (define-public glibc/hurd-headers

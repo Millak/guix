@@ -25824,12 +25824,11 @@ change since last write.
     (inputs
      (cons (list "iolib" cl-iolib)
            (package-inputs sbcl-nfiles)))))
-
 (define-public sbcl-nasdf
-  (let ((commit "dd9fb2df7174464b54561b2a2f3c3e00fdd5d4f7"))
+  (let ((commit "ab7a018f3a67a999c72710644b10b4545130c139"))
     (package
       (name "sbcl-nasdf")
-      (version "0.1.7")
+      (version "0.1.8")
       (source
        (origin
          (method git-fetch)
@@ -25838,7 +25837,7 @@ change since last write.
                (commit commit)))
          (file-name (git-file-name "cl-ntemplate" version))
          (sha256
-          (base32 "1q8ky8hz8xrr37h7yyc6ysvrcwlsp1i6r2x44c060drspgjbqj70"))))
+          (base32 "15j7kqxvn0blr0i2xgk0il0ia91p28clfqxdh00vlp423v9a2wbx"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        `(#:phases
@@ -26529,7 +26528,7 @@ in a native template application).")
 (define-public sbcl-nkeymaps
   (package
     (name "sbcl-nkeymaps")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
@@ -26538,11 +26537,12 @@ in a native template application).")
              (commit version)))
        (file-name (git-file-name "cl-nkeymaps" version))
        (sha256
-        (base32 "1f7s9g5s9riyyrbj8lyvzlvymdbh9x9sknxmjzfrkbz3iqlpanc3"))))
+        (base32 "08q3bmb3i7mjpm83msp1qgpifpzf019ggikbxwc2dk04i3c2w0vv"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      (list sbcl-alexandria
            sbcl-fset
+           sbcl-cl-str
            sbcl-trivial-package-local-nicknames))
     (native-inputs
      (list sbcl-lisp-unit2))
@@ -26603,7 +26603,7 @@ instead of #'FOO.
 (define-public sbcl-njson
   (package
     (name "sbcl-njson")
-    (version "1.1.1")
+    (version "1.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -26612,7 +26612,7 @@ instead of #'FOO.
               (file-name (git-file-name "cl-njson" version))
               (sha256
                (base32
-                "0zdf6mlbpc2j95qm000ljf642af18sfz45yxh6rnxrbf8m4laxxa"))))
+                "0p3zvn3jfzcdzpvikdaw3g14wfsklq0msw0rjaxin3aa7vmqpyqk"))))
     (build-system asdf-build-system/sbcl)
     (inputs (list sbcl-cl-json sbcl-jzon))
     (native-inputs (list sbcl-lisp-unit2))

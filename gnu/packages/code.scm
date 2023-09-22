@@ -17,6 +17,7 @@
 ;;; Copyright © 2021 lu hui <luhuins@163.com>
 ;;; Copyright © 2021, 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -200,6 +201,10 @@ highlighting your own code that seemed comprehensible when you wrote it.")
                    (string-append "--with-universal-ctags="
                                   #$(this-package-input "universal-ctags")
                                   "/bin/ctags")
+                   ;; Otherwise this gets overridden in the 'configure phase.
+                   (string-append "--with-python-interpreter="
+                                  #$(this-package-input "python-wrapper")
+                                  "/bin/python")
                    (string-append "--sysconfdir="
                                   #$output "/share/gtags")
                    "--localstatedir=/var" ; This needs to be a writable location.
@@ -769,11 +774,13 @@ produce colored output.")
         (base32 "1gjfk3d8qg3cla7qd2y7r9s03whlfwy83q8k76xfcnqrjjfavdgk"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:test-target "test"
-       #:make-flags (list "CC=gcc" (string-append "prefix=" %output))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+     (list
+      #:test-target "test"
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                           (string-append "prefix=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
     (native-inputs
      (list graphviz))
     (home-page "https://github.com/lindenb/makefile2graph")
@@ -787,7 +794,7 @@ independent targets.")
 (define-public uncrustify
   (package
     (name "uncrustify")
-    (version "0.75.1")
+    (version "0.77.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -796,22 +803,20 @@ independent targets.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mzzzd4alajjdshbjd2a5mddqcpag8yyss72n09mfpialzyf7g60"))))
+                "17x9p5pqgzjchi9xhskp4kq7ag4chmsgbkvwym5m2b9zwm6qykpm"))))
     (build-system cmake-build-system)
-    (native-inputs
-     `(("python" ,python-wrapper)))
+    (native-inputs (list python-wrapper))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'unpack-etc
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Configuration samples are not installed by default.
-             (let* ((output (assoc-ref outputs "out"))
-                    (etcdir (string-append output "/etc")))
-               (for-each (lambda (l)
-                           (install-file l etcdir))
-                         (find-files "etc" "\\.cfg$")))
-             #t)))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'unpack-etc
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   ;; Configuration samples are not installed by default.
+                   (let* ((output (assoc-ref outputs "out"))
+                          (etcdir (string-append output "/etc")))
+                     (for-each (lambda (l)
+                                 (install-file l etcdir))
+                               (find-files "etc" "\\.cfg$"))))))))
     (home-page "https://uncrustify.sourceforge.net/")
     (synopsis "Code formatter for C and other related languages")
     (description
@@ -888,13 +893,13 @@ the C, C++, C++/CLI, Objective‑C, C#, and Java programming languages.")
 (define-public indent
   (package
    (name "indent")
-   (version "2.2.12")
+   (version "2.2.13")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/indent/indent-" version
                                 ".tar.gz"))
             (sha256
-             (base32 "12xvcd16cwilzglv9h7sgh4h1qqjd1h8s48ji2dla58m4706hzg7"))))
+             (base32 "15c0ayp9rib7hzvrcxm5ijs0mpagw5y8kf5w0jr9fryfqi7n6r4y"))))
    (build-system gnu-build-system)
    (arguments
     `(#:phases

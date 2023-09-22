@@ -286,6 +286,44 @@ strict standards compliance.  The code does, however, fairly closely follow
 the RFC.")
     (license (list license:gpl2 license:gpl3))))
 
+(define-public netperf
+  (let ((version "2.7.0")
+        (revision "1")
+        (commit "3bc455b23f901dae377ca0a558e1e32aa56b31c4"))
+    (package
+      (name "netperf")
+      (version (git-version version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/HewlettPackard/netperf")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1msbhbvf39r1a0c9b9myla5i6235fvnp7r6021fl8b5svxjbb0dk"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:configure-flags
+         ;; Without -fcommon the build fails on newer gcc.
+         ;; See: https://gcc.gnu.org/gcc-10/porting_to.html
+         (list "CFLAGS=-fcommon"
+               ;; --enable-demo is needed for flent (not yet packaged).
+               "--enable-demo")))
+      (native-inputs
+       (list autoconf
+             automake))
+      (home-page "https://hewlettpackard.github.io/netperf/")
+      (synopsis "Benchmarking tool to measure network performance")
+      (description
+       "Netperf is a benchmark that can be used to measure the performance of
+many different types of networking.  It provides tests for both unidirectional
+throughput, and end-to-end latency.  The environments currently measureable
+by netperf include: TCP and UDP via BSD Sockets for both IPv4 and IPv6, DLPI,
+Unix Domain Sockets, SCTP for both IPv4 and IPv6.")
+      (license license:expat))))
+
 (define-public lcsync
   (package
     (name "lcsync")
@@ -1194,7 +1232,7 @@ or server shell scripts with network connections.")
 (define-public mbuffer
   (package
     (name "mbuffer")
-    (version "20220418")
+    (version "20230301")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1202,7 +1240,7 @@ or server shell scripts with network connections.")
                     version ".tgz"))
               (sha256
                (base32
-                "1iq0lcl350r7qja7yyv911aay26d0dd8n0h33mfl84gzypwh2n3f"))))
+                "009d4m48yjidb91vdnrfv84nnd76n0i57g607llan3y0vq4n5xsk"))))
     (build-system gnu-build-system)
     (native-inputs
      (list which))
@@ -1928,15 +1966,16 @@ transmission protocol (SCTP) in a Go application.")
 (define-public httping
   (package
     (name "httping")
-    (version "2.5")
+    (version "2.9")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://www.vanheusden.com/httping/httping-"
-                           version ".tgz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/folkertvanheusden/HTTPing")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1y7sbgkhgadmd93x1zafqc4yp26ssiv16ni5bbi9vmvvdl55m29y"))))
+        (base32 "1gbpirzih0zr93fm71scqjji9wwkfp64q8z36857blsngdfm6k38"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
@@ -1998,14 +2037,14 @@ TCP connection, TLS handshake and so on) in the terminal.")
 (define-public squid
   (package
     (name "squid")
-    (version "4.17")
+    (version "6.3")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://www.squid-cache.org/Versions/v4/squid-"
+       (uri (string-append "http://www.squid-cache.org/Versions/v6/squid-"
                            version ".tar.xz"))
        (sha256
-        (base32 "060lwghn6q982bay11ia38c86kd8w6mjgy68n58v31kwik08m4nb"))))
+        (base32 "1yj869jnbdv1fb604j6g602dyvfnw7ahh9sh7mbqjpbsd9cgb83l"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
@@ -2654,7 +2693,7 @@ that block port 22.")
 (define-public iperf
   (package
     (name "iperf")
-    (version "3.14")
+    (version "3.15")
     (source
      (origin
        (method git-fetch)
@@ -2663,7 +2702,7 @@ that block port 22.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xy7q508yrraa8q3bxdsc2fwacc6qm7l6p44a07jp7ki8bwdcs8z"))))
+        (base32 "10fzz3j2kx36yhqd0mvwlawvhdbcm0qc41i3f6jf6a5whm70177q"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -3426,14 +3465,14 @@ Features:
 (define-public net-snmp
   (package
     (name "net-snmp")
-    (version "5.9.3")
+    (version "5.9.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/net-snmp/net-snmp/"
                                   version "/net-snmp-" version ".tar.gz"))
               (sha256
                (base32
-                "02pgl89s8qll5zhdp61rbn6vpl084gx55bjb1cqg3wqvgsdz55r0"))
+                "0i05bds30jazb2wq0hn3mh1zmmnnl9hkkd5y2iq3qkp7j49y0kcb"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -4252,14 +4291,14 @@ cables.")
 (define-public lldpd
   (package
     (name "lldpd")
-    (version "1.0.16")
+    (version "1.0.17")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://media.luffy.cx/files/lldpd/lldpd-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1ab5hkgi2iwqpfw6xy2wxjhqmz6pnkynfkg85zm7r9kv1ijr3cz3"))
+        (base32 "1ki7c7ffys42s2wy5c94qriicgwx0wl9bm83xxkclasx2izifhwk"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -4524,7 +4563,7 @@ Further information on the usage could be found on the Wikibooks page
 (define-public putty
   (package
     (name "putty")
-    (version "0.77")
+    (version "0.79")
     (source
      (origin
        (method url-fetch)
@@ -4533,7 +4572,7 @@ Further information on the usage could be found on the Wikibooks page
                   (string-append "http://www.putty.be/" version
                                  "/putty-" version ".tar.gz")))
        (sha256
-        (base32 "1rgabc447a5aa9h16krpg3x78vh5jf4l6hkbqzr4bz9qabs7d6j1"))))
+        (base32 "1n7h1vprayfgjr21ccsv77g71k8dk10n69y99azqx4xvdxkci322"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
