@@ -18422,6 +18422,7 @@ Cflags: -I${includedir}~%"
     (description "The wavefront alignment (WFA) algorithm is an exact
 gap-affine algorithm that takes advantage of homologous regions between the
 sequences to accelerate the alignment process.")
+    (properties `((tunable? . #t)))
     (license license:expat)))
 
 (define-public vcflib
