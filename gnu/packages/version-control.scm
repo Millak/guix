@@ -425,13 +425,16 @@ Python 3.3 and later, rather than on Python 2.")
                             "t/t9141-git-svn-multiple-branches.sh")))))
           (add-after 'install 'install-shell-completion
             (lambda _
-              (let ((completions (string-append #$output
-                                                "/etc/bash_completion.d")))
-                ;; TODO: Install the tcsh and zsh completions in the right
-                ;; place.
-                (mkdir-p completions)
+              (let ((bash (string-append #$output "/etc/bash_completion.d"))
+                    (zsh  (string-append #$output "/share/zsh/site-functions")))
+                ;; TODO: Install the tcsh completions in the right place.
+                (for-each mkdir-p (list bash zsh))
                 (copy-file "contrib/completion/git-completion.bash"
-                           (string-append completions "/git")))))
+                           (string-append bash "/git"))
+                (copy-file "contrib/completion/git-prompt.sh"
+                           (string-append #$output "/bin/git-prompt"))
+                (copy-file "contrib/completion/git-completion.zsh"
+                           (string-append zsh "/_git")))))
           (add-after 'install 'remove-unusable-perl-commands
             (lambda _
               (let ((bin     (string-append #$output "/bin"))
