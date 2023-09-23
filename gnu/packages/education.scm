@@ -11,6 +11,7 @@
 ;;; Copyright © 2020 Prafulla Giri <pratheblackdiamond@gmail.com>
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2022 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -266,47 +267,24 @@ frequently used words in American English.")
 (define-public tipp10
   (package
     (name "tipp10")
-    (version "2.1.0")
+    (version "3.3.0")
     (source (origin
-              (method url-fetch)
-              ;; guix download is not able to handle the download links on the
-              ;; home-page, which use '<meta http-equiv="refresh" …>'
-              (uri (string-append "mirror://debian/pool/main/"
-                                  "t/tipp10/tipp10_2.1.0.orig.tar.gz"))
+              (method git-fetch)
+              ;; Use the community maintained Qt 6 fork of the project, as the
+              ;; original software is now developed as a web application.  The
+              ;; latest official version was 2.1.0.
+              (uri (git-reference
+                    (url "https://gitlab.com/tipp10/tipp10.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0d387b404j88gsv6kv0rb7wxr23v5g5vl6s5l7602x8pxf7slbbx"))
-              ;; Apply patches in the order determined by Debian
-              (patches (search-patches "tipp10-fix-compiling.patch"
-                                       "tipp10-remove-license-code.patch"
-                                       "tipp10-disable-downloader.patch"
-                                       "tipp10-qt5.patch"))))
-    (build-system cmake-build-system)
-    (arguments
-     `(#:tests? #f ; packages has no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-new-version-check
-           (lambda _
-             ;; Make new version check to default to false.
-             ;; TODO: Remove the checkbox from the dialog and the check itself
-             (substitute* '("widget/settingspages.cpp" "widget/mainwindow.cpp")
-               (("settings.value(\"check_new_version\", true)")
-                "settings.value(\"check_new_version\", false)"))
-             #t))
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               ;; Make program honor $PREFIX
-               (substitute* "tipp10.pro"
-                 (("\\.path = /usr/") (string-append ".path = " out "/")))
-               (substitute* "def/defines.h"
-                 (("\"/usr/") (string-append "\"" out "/")))
-               ;; Recreate Makefile
-               (invoke "qmake")))))))
-    (inputs
-     (list qtbase-5 qtmultimedia-5))
-    (home-page "https://www.tipp10.com/")
+                "138xf55csnq53mlkhj50g9bacay8kxz6p9vnzd7jyv6rq1xch5nq"))))
+    (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase    ;qtbase 6
+                     #:tests? #f))      ;packages has no tests
+    (inputs (list qtbase qtmultimedia))
+    (home-page "https://www.tipp10.com/en/")
     (synopsis "Touch typing tutor")
     (description "Tipp10 is a touch typing tutor.  The ingenious thing about
 the software is its intelligence feature: characters that are mistyped are
@@ -316,6 +294,9 @@ they can start practicing without a hitch.
 Useful support functions and an extensive progress tracker, topical lessons
 and the ability to create your own practice lessons make learning to type
 easy.")
+    ;; XXX: The LICENSE file mentions 'or later', but the source license
+    ;; headers have been modified to mention only "either version 2 of the
+    ;; License", which is not quite clear.
     (license license:gpl2)))
 
 (define-public snap
