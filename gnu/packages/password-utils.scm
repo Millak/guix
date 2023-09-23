@@ -63,6 +63,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -154,14 +155,9 @@ human.")
                            version "-src.tar.xz"))
        (sha256
         (base32 "0w6nh2lnzfqcxasfsppmh4q309p1flzgfiv25hahzsd8kx879055"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
      (list
-      #:modules '((guix build cmake-build-system)
-                  (guix build qt-utils)
-                  (guix build utils))
-      #:imported-modules `(,@%cmake-build-system-modules
-                           (guix build qt-utils))
       #:configure-flags
       #~(append
           (list "-DWITH_XC_ALL=YES"
@@ -175,13 +171,10 @@ human.")
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
-                ;; Fails with "TestCli::testClip() Compared values are not the
-                ;; same".  That test also requires a phase with (setenv
-                ;; "QT_QPA_PLATFORM" "offscreen") in order to work.
-                (invoke "ctest" "--exclude-regex" "testcli"))))
-          (add-after 'install 'wrap-qt
-            (lambda* (#:key inputs #:allow-other-keys)
-              (wrap-qt-program "keepassxc" #:output #$output #:inputs inputs))))))
+                ;; "TestCli::testClip() Compared values are not the same".
+                ;;   Actual   (((clipboard->text()))): ""
+                ;;   Expected (QString("Password"))  : "Password"
+                (invoke "ctest" "--exclude-regex" "testcli")))))))
     (native-inputs
      (append
        (list qttools-5)
@@ -201,7 +194,6 @@ human.")
            minizip
            pcsc-lite
            qrencode
-           qtbase-5
            qtsvg-5
            qtwayland-5
            qtx11extras
