@@ -1281,27 +1281,40 @@ timeouts.")
 (define-public sbcl-bordeaux-threads
   (package
     (name "sbcl-bordeaux-threads")
-    (version "0.8.8")
+    (version "0.9.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/sionescu/bordeaux-threads")
                     (commit (string-append "v" version))))
               (sha256
-               (base32 "19i443fz3488v1pbbr9x24y8h8vlyhny9vj6c9jk5prm702awrp6"))
-              (file-name
-               (git-file-name "bordeaux-threads" version))))
-    (inputs (list sbcl-alexandria))
+               (base32 "0d9sd7pm91yhln95z8nclhn6n4l5b2cp3pxpggpmpv7rsq84ssmh"))
+              (file-name (git-file-name "cl-bordeaux-threads" version))))
+    (inputs (list sbcl-alexandria
+                  sbcl-global-vars
+                  sbcl-trivial-features
+                  sbcl-trivial-garbage))
     (native-inputs (list sbcl-fiveam))
     (build-system asdf-build-system/sbcl)
     (arguments
      (list
        #:phases
        #~(modify-phases %standard-phases
+           (add-after 'unpack 'silence-deprecation-warning
+             (lambda _
+               ;; The deprecation warning for APIv1 makes the build of some
+               ;; of the dependents of bordeaux-threads fail because they
+               ;; interpret it as an error instead of a simple indication.
+               ;; Let's silence this warning for now.
+               (substitute* (cons* "apiv1/default-implementations.lisp"
+                                   (find-files "apiv1" "impl-.*\\.lisp"))
+                 (("\\(warn \"Bordeaux-Threads APIv1 is deprecated\\. Please migrate to APIv2\\.\"\\)")
+                  ""))))
            (add-after 'unpack 'adjust-test-sleep
              (lambda _
                ;; 0.001 is too short for some slower machines.
-               (substitute* "test/bordeaux-threads-test.lisp"
+               (substitute* '("test/tests-v1.lisp"
+                              "test/tests-v2.lisp")
                  (("sleep 0\\.001") "sleep 0.002")))))))
     (synopsis "Portable shared-state concurrency library for Common Lisp")
     (description "BORDEAUX-THREADS is a proposed standard for a minimal
@@ -22181,58 +22194,67 @@ fit together as required by any particular game.")
   (sbcl-package->cl-source-package sbcl-trial))
 
 (define-public sbcl-virality
-  (package
-    (name "sbcl-virality")
-    (version "0.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/bufferswap/ViralityEngine")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name "cl-virality" version))
-       (sha256
-        (base32 "0hvjcvyd628jh4if6swk1wrfb9qdlnpk9ax1y3jarr8ms7ghfcdb"))))
-    (build-system asdf-build-system/sbcl)
-    (arguments
-     `(#:asd-systems '("virality"
-                       "vorigin"
-                       "vorigin.test"
-                       "vshadow"
-                       "vumbra"
-                       "vutils")
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'delete-examples
-                    (lambda _
-                      ;; Don't install the big "examples" directory.
-                      (delete-file-recursively "examples"))))))
-    (inputs
-     (list sbcl-3b-bmfont
-           sbcl-babel
-           sbcl-cl-cpus
-           sbcl-cl-graph
-           sbcl-cl-opengl
-           sbcl-cl-ppcre
-           sbcl-cl-slug
-           sbcl-closer-mop
-           sbcl-fast-io
-           sbcl-global-vars
-           sbcl-glsl-packing
-           sbcl-jsown
-           sbcl-lparallel
-           sbcl-pngload
-           sbcl-printv
-           sbcl-queues
-           sbcl-sdl2
-           sbcl-serapeum
-           sbcl-split-sequence
-           sbcl-static-vectors
-           sbcl-trivial-features
-           sbcl-varjo))
-    (home-page "https://github.com/bufferswap/ViralityEngine")
-    (synopsis "Component-based game engine written in Common Lisp")
-    (description
-     "Virality Engine provides a system and workflow that helps describe the
+  (let ((commit "cdc19cca9b028f0c30d14ed8b3e51359dd46069a")
+        (revision "1"))
+    (package
+      (name "sbcl-virality")
+      (version (git-version "0.3.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/bufferswap/ViralityEngine")
+               (commit commit)))
+         (file-name (git-file-name "cl-virality" version))
+         (sha256
+          (base32 "1s25aapkqcr8fxi0i9wjw0n4jax7r4a9d9wflpr3sqz2vgrg2lz6"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       `(#:asd-systems '("virality"
+                         "vorigin"
+                         "vorigin.test"
+                         "vshadow"
+                         "vumbra"
+                         "vutils")
+         #:phases (modify-phases %standard-phases
+                    (add-after 'unpack 'delete-examples
+                      (lambda _
+                        ;; Don't install the big "examples" directory.
+                        (delete-file-recursively "examples")
+                        ;; Remove example asd files that cause issues during
+                        ;; the 'copy-source' phase because they have the same
+                        ;; names.
+                        (for-each
+                         delete-file
+                         (find-files "."
+                                     "^xXx-SYSTEM-NAME-xXx\\.asd$")))))))
+      (inputs
+       (list sbcl-3b-bmfont
+             sbcl-babel
+             sbcl-cl-cpus
+             sbcl-cl-graph
+             sbcl-cl-opengl
+             sbcl-cl-ppcre
+             sbcl-cl-slug
+             sbcl-closer-mop
+             sbcl-fast-io
+             sbcl-global-vars
+             sbcl-glsl-packing
+             sbcl-jsown
+             sbcl-lparallel
+             sbcl-pngload
+             sbcl-printv
+             sbcl-queues
+             sbcl-sdl2
+             sbcl-serapeum
+             sbcl-split-sequence
+             sbcl-static-vectors
+             sbcl-trivial-features
+             sbcl-varjo))
+      (home-page "https://github.com/bufferswap/ViralityEngine")
+      (synopsis "Component-based game engine written in Common Lisp")
+      (description
+       "Virality Engine provides a system and workflow that helps describe the
 elements needed to write 2D or 3D games.  It was designed with several domain
 specific languages that make it easier to describe, manipulate, and use assets
 commonly found in game making.  Such assets include (but are not limited to)
@@ -22246,7 +22268,7 @@ can be used with them.  Components are added to Actors which represent game
 concepts like players, scenery, effects, etc.  We define a component protocol
 invoked by Virality Engine to move your components to the next state and
 render them each frame.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public cl-virality
   (sbcl-package->cl-source-package sbcl-virality))

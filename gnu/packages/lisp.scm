@@ -17,7 +17,7 @@
 ;;; Copyright © 2019-2023 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
-;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021, 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2021 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2022 Joeke de Graaf <joeke@posteo.net>
@@ -25,6 +25,7 @@
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
+;;; Copyright © 2023 Andrew Kravchuk <awkravchuk@gmail.com.
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -266,7 +267,7 @@ interface to the Tk widget system.")
 (define-public ecl
   (package
     (name "ecl")
-    (version "21.2.1")
+    (version "23.9.9")
     (source
      (origin
        (method url-fetch)
@@ -274,7 +275,7 @@ interface to the Tk widget system.")
              "https://ecl.common-lisp.dev/static/files/release/"
              name "-" version ".tgz"))
        (sha256
-        (base32 "000906nnq25177bgsfndiw3iqqgrjc9spk10hzk653sbz3f7anmi"))))
+        (base32 "107q6gmxlsya4yv38r1x1axrgyyfgdrfkkz97zfp64bcrasdl6y5"))))
     (build-system gnu-build-system)
     ;; src/configure uses 'which' to confirm the existence of 'gzip'.
     (native-inputs
@@ -381,6 +382,10 @@ supporting ASDF, Sockets, Gray streams, MOP, and other useful components.")
                                                      (%current-target-system)))
                                  '("CFLAGS=-falign-functions=4")
                                  '())
+                           ,@(if (target-x86-64?)
+                                 '("--enable-portability"
+                                   "--with-threads=POSIX_THREADS")
+                                 '())
                             "--with-dynamic-ffi"
                             "--with-dynamic-modules"
                             "--with-ffcall"
@@ -434,17 +439,15 @@ an interpreter, a compiler, a debugger, and much more.")
 (define-public sbcl
   (package
     (name "sbcl")
-    (version "2.3.5")
+    (version "2.3.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/sbcl/sbcl/" version "/sbcl-"
                            version "-source.tar.bz2"))
        (sha256
-        (base32 "11ji5n65l31249r0v7hm0wc0yk2ila0y746nj36xn1cxrwh0gjc9"))
+        (base32 "1xwr1pnwd3xj375ainlad7mm479rk2mrks8dc6d92cash3xl90b9"))
        (modules '((guix build utils)))
-       ;; backport from upstream.
-       (patches (search-patches "sbcl-riscv-Make-contribs-build-again.patch"))
        (snippet
         '(begin
            ;; Don't force ARMv5.
