@@ -11009,7 +11009,7 @@ play; it will look for them at @file{~/.local/share/fheroes2} folder.")
 (define-public vcmi
   (package
     (name "vcmi")
-    (version "1.3.1")
+    (version "1.3.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -11018,7 +11018,7 @@ play; it will look for them at @file{~/.local/share/fheroes2} folder.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0jq84i6lxp96xkzq9mq8n2bbmincjzi39vijj9ws8i59c7xvjw5f"))
+                "1x1bzd89h0j4xci91d2v5aj5vgkx6vm12iml805wkia4hy1jp4ff"))
               (patches (search-patches "vcmi-disable-privacy-breach.patch"))))
     (build-system cmake-build-system)
     (arguments
