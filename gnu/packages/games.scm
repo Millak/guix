@@ -10419,15 +10419,14 @@ protect you.")
 (define-public 7kaa
   (package
     (name "7kaa")
-    (version "2.15.5")
+    (version "2.15.6")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://github.com/the3dfxdude/7kaa/"
-                           "releases/download/v" version "/"
-                           "7kaa-" version ".tar.xz"))
+       (uri (string-append "mirror://sourceforge/skfans/"
+                           "7KAA%20" version "/7kaa-" version ".tar.gz"))
        (sha256
-        (base32 "0axbv14fh87hwjabrb3zv7ivj88rs6kd2xq6s9qlpsszk20jc2im"))))
+        (base32 "15a0cl55bg479gw880yz48myg336q5lwp2zpyxyyhyadq26vjy9c"))))
     (build-system gnu-build-system)
     (native-inputs
      (list gettext-minimal pkg-config))
