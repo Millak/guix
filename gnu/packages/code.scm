@@ -835,15 +835,14 @@ Objective@tie{}C, D, Java, Pawn, and Vala).  Features:
 (define-public astyle
   (package
     (name "astyle")
-    (version "3.1")
+    (version "3.4.8")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/astyle/astyle/astyle%20"
                            version "/astyle_"  version "_linux.tar.gz"))
        (sha256
-        (base32
-         "1ms54wcs7hg1bsywqwf2lhdfizgbk7qxc9ghasxk8i99jvwlrk6b"))))
+        (base32 "1ms54wcs7hg1bsywqwf2lhdfizgbk7qxc9ghasxk8i99jvwlrk6b"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ;no tests
@@ -856,7 +855,7 @@ Objective@tie{}C, D, Java, Pawn, and Vala).  Features:
        #:phases
        (modify-phases %standard-phases
          (replace 'configure
-           (lambda _ (chdir "build/gcc") #t))
+           (lambda _ (chdir "build/gcc")))
          (add-after 'install 'install-libs
            (lambda* (#:key outputs #:allow-other-keys)
              ;; Libraries and includes are not installed by default
@@ -881,8 +880,7 @@ Objective@tie{}C, D, Java, Pawn, and Vala).  Features:
                 (lambda (sofile)
                   (make-so-link sofile "(\\.[0-9]){3}$")  ;; link .so
                   (make-so-link sofile "(\\.[0-9]){2}$")) ;; link .so.3
-                (find-files libdir "lib.*\\.so\\..*")))
-             #t)))))
+                (find-files libdir "lib.*\\.so\\..*"))))))))
     (home-page "https://astyle.sourceforge.net/")
     (synopsis "Source code indenter, formatter, and beautifier")
     (description
