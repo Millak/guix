@@ -109,12 +109,12 @@
            ;; Remaining packages are test requirements taken from
            ;; tests/requirements/py3.txt
            python-docutils
-           ;; optional for tests: ("python-geoip2" ,python-geoip2)
-           ;; optional for tests: ("python-memcached" ,python-memcached)
+           ;; optional for tests: python-geoip2
+           ;; optional for tests: python-memcached
            python-numpy
            python-pillow
            python-pyyaml
-           ;; optional for tests: ("python-selenium" ,python-selenium)
+           ;; optional for tests: python-selenium
            python-tblib))
     (propagated-inputs
      (list python-asgiref
