@@ -5054,21 +5054,22 @@ entries, providing commands to add, remove, comment, and search.")
         (base32 "183nvxqdn8klin5f14f4cv9vjymj0izy0qmj1l76igmlcq7ravwx"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; none exist
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'install 'prepare-install
+            (lambda _
+              (mkdir-p (string-append #$output "/bin")))))))
     (native-inputs
      (list pkg-config))
     (inputs
      (list libnl libpcap))
-    (arguments
-     `(#:tests? #f ; None exist
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-before 'install 'prepare-install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (mkdir-p (string-append (assoc-ref outputs "out") "/bin")))))))
     (home-page "https://github.com/jclehner/nmrpflash")
     (synopsis "Reflash (``unbrick'') Netgear devices with corrupted firmware")
     (description "This package provides a utility to flash a new firmware
