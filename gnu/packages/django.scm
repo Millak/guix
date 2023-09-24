@@ -89,7 +89,7 @@
              ;; harmless, so just ignore this test.
              (substitute* "tests/settings_tests/tests.py"
                ((".*def test_incorrect_timezone.*" all)
-                (string-append "    @unittest.skipIf(True, 'Disabled by Guix')\n"
+                (string-append "    @unittest.skip('Disabled by Guix')\n"
                                all)))))
          (replace 'check
            (lambda* (#:key tests? test-flags #:allow-other-keys)
