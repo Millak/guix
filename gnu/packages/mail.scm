@@ -3171,14 +3171,14 @@ from the Cyrus IMAP project.")
 (define-public opensmtpd
   (package
     (name "opensmtpd")
-    (version "7.3.0p1")
+    (version "7.3.0p2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.opensmtpd.org/archives/"
                            "opensmtpd-" version ".tar.gz"))
        (sha256
-        (base32 "01ss6j1jadnd3ckgf9zpvrbdpipkf7m4l3isribqfwy2l50wsihv"))))
+        (base32 "0kjs5cxbh9lq51b8p20hxmiah61cfm8yzkcwpw9005cdp72zpkgw"))))
     (build-system gnu-build-system)
     (inputs
      (list bdb
