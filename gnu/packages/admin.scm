@@ -5042,7 +5042,7 @@ entries, providing commands to add, remove, comment, and search.")
 (define-public nmrpflash
   (package
     (name "nmrpflash")
-    (version "0.9.19")
+    (version "0.9.21")
     (source
      (origin
        (method git-fetch)
@@ -5051,7 +5051,7 @@ entries, providing commands to add, remove, comment, and search.")
          (url "https://github.com/jclehner/nmrpflash")
          (commit (string-append "v" version))))
        (sha256
-        (base32 "02r2z3mnbj8dfka7adw1l76zq1jh1l13mmkns93c54ychs44jz3d"))
+        (base32 "183nvxqdn8klin5f14f4cv9vjymj0izy0qmj1l76igmlcq7ravwx"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
