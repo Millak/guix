@@ -359,10 +359,11 @@ expressions and blanks that were read."
   ;; the context in which they must appear.  This is similar to a special form
   ;; of 1, except that indent is 1 instead of 2 columns.
   (vhashq
-   ('arguments '(package))
-   ('sha256 '(origin source package))
-   ('base32 '(sha256 origin))
+   ('source '(package))
    ('git-reference '(uri origin source))
+   ('sha256 '(origin source package))
+   ('arguments '(package))
+   ('list '(arguments package))
    ('search-paths '(package))
    ('native-search-paths '(package))
    ('search-path-specification '())
