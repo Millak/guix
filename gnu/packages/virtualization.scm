@@ -2467,7 +2467,7 @@ override CC = " (assoc-ref inputs "cross-gcc") "/bin/i686-linux-gnu-gcc"))
                (commit "0b4b7897e08b967a09bed2028a79fabff82342dd")))
          (sha256
           (base32 "1i8pcl19n60i2m9vlg79q3nknpj209c9ic5x10wxaicx45kc107f"))
-         (file-name "mini-os-git-checkout")))
+         (file-name (string-append name "-" version "-mini-os-git-checkout"))))
        ("perl" ,perl)
        ; TODO: markdown
        ("pkg-config" ,pkg-config)
