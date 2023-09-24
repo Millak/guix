@@ -1,0 +1,37 @@
+From: Tobias Geerinckx-Rice <me@tobias.gr>
+Date: Sun Sep 24 02:00:00 2023 +0200
+Subject: xen: docs: Use predictable ordering.
+
+What follows was taken verbatim from Debian.  See:
+https://sources.debian.org/patches/xen/4.14.5%2B94-ge49571868d-1/
+
+From: =?utf-8?b?IkZyw6lkw6lyaWMgUGllcnJldCAoZmVwaXRyZSki?=
+ <frederic.pierret@qubes-os.org>
+Date: Wed, 4 Nov 2020 09:24:40 +0100
+Subject: xen: don't have timestamp inserted in config.gz
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+This is for improving reproducible builds.
+
+Signed-off-by: Frédéric Pierret (fepitre) <frederic.pierret@qubes-os.org>
+Acked-by: Jan Beulich <jbeulich@suse.com>
+(cherry picked from commit 5816d327e44ab37ae08730f4c54a80835998f31f)
+---
+ xen/common/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/xen/common/Makefile b/xen/common/Makefile
+index 06881d0..32cd650 100644
+--- a/xen/common/Makefile
++++ b/xen/common/Makefile
+@@ -77,7 +77,7 @@ obj-$(CONFIG_HAS_DEVICE_TREE) += libfdt/
+ 
+ CONF_FILE := $(if $(patsubst /%,,$(KCONFIG_CONFIG)),$(XEN_ROOT)/xen/)$(KCONFIG_CONFIG)
+ config.gz: $(CONF_FILE)
+-	gzip -c $< >$@
++	gzip -n -c $< >$@
+ 
+ config_data.o: config.gz
+ 

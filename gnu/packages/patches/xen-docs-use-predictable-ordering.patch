@@ -1,0 +1,34 @@
+From: Tobias Geerinckx-Rice <me@tobias.gr>
+Date: Sun Sep 24 02:00:00 2023 +0200
+Subject: xen: docs: Use predictable ordering.
+
+What follows was taken verbatim from Debian.  See:
+https://sources.debian.org/patches/xen/4.14.5%2B94-ge49571868d-1/
+
+From: Maximilian Engelhardt <maxi@daemonizer.de>
+Date: Fri, 18 Dec 2020 21:42:34 +0100
+Subject: docs: use predictable ordering in generated documentation
+
+When the seq number is equal, sort by the title to get predictable
+output ordering. This is useful for reproducible builds.
+
+Signed-off-by: Maximilian Engelhardt <maxi@daemonizer.de>
+Acked-by: Andrew Cooper <andrew.cooper3@citrix.com>
+(cherry picked from commit e18dadc5b709290b8038a1cacb52bc3b3b69cf21)
+---
+ docs/xen-headers | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/docs/xen-headers b/docs/xen-headers
+index 5415563..8c434d7 100755
+--- a/docs/xen-headers
++++ b/docs/xen-headers
+@@ -331,7 +331,7 @@ sub output_index () {
+ <h2>Starting points</h2>
+ <ul>
+ END
+-    foreach my $ic (sort { $a->{Seq} <=> $b->{Seq} } @incontents) {
++    foreach my $ic (sort { $a->{Seq} <=> $b->{Seq} or $a->{Title} cmp $b->{Title} } @incontents) {
+         $o .= "<li><a href=\"$ic->{Href}\">$ic->{Title}</a></li>\n";
+     }
+     $o .= "</ul>\n";

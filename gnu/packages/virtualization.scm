@@ -2288,7 +2288,10 @@ DOS or Microsoft Windows.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1cdzpxbihkdn4za8ly0lgkbxrafjzbxjflhfn83kyg4bam1vv7mn"))))
+                "1cdzpxbihkdn4za8ly0lgkbxrafjzbxjflhfn83kyg4bam1vv7mn"))
+              (patches
+               (search-patches "xen-docs-use-predictable-ordering.patch"
+                               "xen-remove-config.gz-timestamp.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -2409,7 +2412,13 @@ DOS or Microsoft Windows.")
               (apply invoke "make" "world"
                      "-j" (number->string
                            (if parallel-build? (parallel-job-count) 1))
-                     make-flags))))))
+                     make-flags)))
+          (add-after 'install 'remove-cruft
+            (lambda _
+              (with-directory-excursion #$output
+                ;; Delete useless (and irreproducible) build-time left-overs.
+                (for-each delete-file
+                          (find-files "share/doc" "^\\.deps$"))))))))
     (inputs
      (list acpica                       ; TODO: patch iasl invocation
            bridge-utils                 ; TODO: patch invocations
