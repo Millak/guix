@@ -9776,7 +9776,7 @@ kernel side implementation.")
 (define-public erofs-utils
   (package
     (name "erofs-utils")
-    (version "1.5")
+    (version "1.7")
     (source
      (origin
        (method git-fetch)
@@ -9785,11 +9785,12 @@ kernel side implementation.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rgkw3b924xdg49v3qi8a10w41zfk276wb6fp71lb9q9cfc81idw"))))
+        (base32 "0bi8n1kb263v1gvis21pa9dxsf3p96d1nasm21icmv3rd9g2xh6p"))))
     (build-system gnu-build-system)
     (inputs
      (list lz4
-           `(,util-linux "lib")))
+           `(,util-linux "lib")
+           zlib))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (home-page "https://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs-utils.git/")
