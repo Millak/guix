@@ -6721,7 +6721,11 @@ name/ID compression and quality score compression derived from fqzcomp.")
                     version "/htslib-" version ".tar.bz2"))
               (sha256
                (base32
-                "093r1n4s134k50m9a925yn95gyi90ps5dlgc6gq4qwvkzxx7qsv0"))))
+                "093r1n4s134k50m9a925yn95gyi90ps5dlgc6gq4qwvkzxx7qsv0"))
+              (snippet
+               #~(begin
+                   (use-modules (guix build utils))
+                   (delete-file-recursively "htscodecs")))))
     (build-system gnu-build-system)
     ;; Let htslib translate "gs://" and "s3://" to regular https links with
     ;; "--enable-gcs" and "--enable-s3". For these options to work, we also
@@ -6729,12 +6733,13 @@ name/ID compression and quality score compression derived from fqzcomp.")
     (arguments
      `(#:configure-flags '("--enable-gcs"
                            "--enable-libcurl"
-                           "--enable-s3")))
+                           "--enable-s3"
+                           "--with-external-htscodecs")))
     (inputs
      (list bzip2 curl openssl xz))
     ;; This is referred to in the pkg-config file as a required library.
     (propagated-inputs
-     (list zlib))
+     (list htscodecs zlib))
     (native-inputs
      (list perl))
     (home-page "https://www.htslib.org")
@@ -6757,7 +6762,14 @@ data.  It also provides the @command{bgzip}, @command{htsfile}, and
                     version "/htslib-" version ".tar.bz2"))
               (sha256
                (base32
-                "0pwk8yhhvb85mi1d2qhwsb4samc3rmbcrq7b1s0jz0glaa7in8pd"))))))
+                "0pwk8yhhvb85mi1d2qhwsb4samc3rmbcrq7b1s0jz0glaa7in8pd"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments htslib)
+       ((#:configure-flags cf #~'())
+        #~(delete "--with-external-htscodecs" #$cf))))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs htslib)
+                    (delete "htscodecs")))))
 
 (define-public htslib-1.12
   (package/inherit htslib
@@ -6769,7 +6781,14 @@ data.  It also provides the @command{bgzip}, @command{htsfile}, and
                     version "/htslib-" version ".tar.bz2"))
               (sha256
                (base32
-                "1jplnvizgr0fyyvvmkfmnsywrrpqhid3760vw15bllz98qdi9012"))))))
+                "1jplnvizgr0fyyvvmkfmnsywrrpqhid3760vw15bllz98qdi9012"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments htslib)
+       ((#:configure-flags cf #~'())
+        #~(delete "--with-external-htscodecs" #$cf))))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs htslib)
+                    (delete "htscodecs")))))
 
 (define-public htslib-1.10
   (package/inherit htslib
