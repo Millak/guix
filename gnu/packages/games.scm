@@ -413,48 +413,6 @@ enemy, ally, weapon and mission types.  Features include simulated 4D texturing,
 mouse and joystick control, and original music.")
       (license license:gpl2))))
 
-(define-public alex4
-  (package
-    (name "alex4")
-    (version "1.2.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/carstene1ns/alex4")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "098wy72mh4lsvq3gm0rhamjssf9l1hp6hhkpzrv7klpb97cwwc3h"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f                      ; no check target
-       #:make-flags
-       (list "CC=gcc"
-             "CFLAGS=-D_FILE_OFFSET_BITS=64 -fcommon"
-             (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (add-after 'install 'install-data
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((share (string-append (assoc-ref outputs "out")
-                                         "/share/" ,name)))
-               (install-file "alex4.ini" share)
-               #t))))))
-    (inputs
-     `(("allegro" ,allegro-4)
-       ("dumb" ,dumb-allegro4)))
-    (home-page "https://allegator.sourceforge.net/")
-    (synopsis "Retro platform game")
-    (description
-     "Guide Alex the Allegator through the jungle in order to save his
-girlfriend Lola from evil humans who want to make a pair of shoes out of her.
-Plenty of classic platforming in four nice colors guaranteed!
-
-The game includes a built-in editor so you can design and share your own maps.")
-    (license license:gpl2+)))
-
 (define-public anarch
   (let ((commit "2d78d0c69a3aac14dbd8f8aca62d0cbd9d27c860")
         (revision "1"))
