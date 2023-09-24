@@ -40434,7 +40434,7 @@ glossaries, ...)  should be correctly managed.
 
 @item @file{figlatex.sty}: a LaTeX package to easily insert Xfig figures.  It
 can interact with LaTeX.mk so that the latter automatically invokes
-@command{transfig} if needed.
+@command{fig2dev} if needed.
 
 @end itemize")
     (license license:gpl3+)))
