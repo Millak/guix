@@ -2279,7 +2279,7 @@ DOS or Microsoft Windows.")
 (define-public xen
   (package
     (name "xen")
-    (version "4.14.1")               ; please update the mini-os input as well
+    (version "4.14.6")               ; please update the mini-os input as well
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2288,7 +2288,7 @@ DOS or Microsoft Windows.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1r90rvypw76ya9clqw5p02gm1k8hxz73f7gr95ca778nnzvb7xjw"))))
+                "1cdzpxbihkdn4za8ly0lgkbxrafjzbxjflhfn83kyg4bam1vv7mn"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -2340,8 +2340,7 @@ DOS or Microsoft Windows.")
        (modify-phases %standard-phases
         (add-after 'unpack 'unpack-mini-os
           (lambda* (#:key inputs #:allow-other-keys)
-            (copy-recursively (assoc-ref inputs "mini-os") "extras/mini-os")
-            #t))
+            (copy-recursively (assoc-ref inputs "mini-os") "extras/mini-os")))
         (add-after 'unpack-mini-os 'patch
           (lambda* (#:key inputs outputs #:allow-other-keys)
             (substitute* "tools/firmware/Rules.mk"
@@ -2374,13 +2373,7 @@ override CC = " (assoc-ref inputs "cross-gcc") "/bin/i686-linux-gnu-gcc"))
               ; TODO: extra_link_args = ['-Wl,-rpath=/opt/foo'],
               (string-append "runtime_library_dirs = ['"
                              (assoc-ref outputs "out")
-                             "/lib'],\nlibrary_dirs =")))
-
-            ;; This needs to be quoted:
-            ;; <https://lists.gnu.org/archive/html/guix-devel/2022-03/msg00113.html>.
-            (substitute* "xen/arch/x86/xen.lds.S"
-              ((".note.gnu.build-id")
-               "\".note.gnu.build-id\""))))
+                             "/lib'],\nlibrary_dirs =")))))
         (add-before 'configure 'patch-xen-script-directory
           (lambda* (#:key outputs #:allow-other-keys)
             (substitute* '("configure"
@@ -2389,8 +2382,7 @@ override CC = " (assoc-ref inputs "cross-gcc") "/bin/i686-linux-gnu-gcc"))
              (("XEN_SCRIPT_DIR=.*")
               (string-append "XEN_SCRIPT_DIR="
                              (assoc-ref outputs "out")
-                             "/etc/xen/scripts")))
-            #t))
+                             "/etc/xen/scripts")))))
         (add-before 'configure 'set-environment-up
           (lambda* (#:key make-flags #:allow-other-keys)
              (define (cross? x)
@@ -2425,8 +2417,7 @@ override CC = " (assoc-ref inputs "cross-gcc") "/bin/i686-linux-gnu-gcc"))
                                       "mini-os-git-checkout")))
               '("C_INCLUDE_PATH" "CPLUS_INCLUDE_PATH"
                 "LIBRARY_PATH"))
-            (setenv "EFI_VENDOR" "guix")
-             #t))
+            (setenv "EFI_VENDOR" "guix")))
         (replace 'build
           (lambda* (#:key make-flags #:allow-other-keys)
             (apply invoke "make" "world" make-flags))))))
@@ -2463,10 +2454,11 @@ override CC = " (assoc-ref inputs "cross-gcc") "/bin/i686-linux-gnu-gcc"))
                (url "https://xenbits.xen.org/git-http/mini-os.git")
                ;; This corresponds to (string-append "xen-RELEASE-" version))
                ;; at time of packaging, but upstream has unfortunately modified
-               ;; existing tags in the past.
-               (commit "0b4b7897e08b967a09bed2028a79fabff82342dd")))
+               ;; existing tags in the past.  Also, not all Xen releases get a
+               ;; new tag.  See <https://xenbits.xen.org/gitweb/?p=mini-os.git>.
+               (commit "f57858b7e8ef8dd48394dd08cec2bef3c9fb92f5")))
          (sha256
-          (base32 "1i8pcl19n60i2m9vlg79q3nknpj209c9ic5x10wxaicx45kc107f"))
+          (base32 "04y7grxs47amvjcq1rq4jgk174rhid5m2z9w8wrv7rfd2xhazxy1"))
          (file-name (string-append name "-" version "-mini-os-git-checkout"))))
        ("perl" ,perl)
        ; TODO: markdown
