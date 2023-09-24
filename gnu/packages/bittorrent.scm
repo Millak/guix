@@ -494,11 +494,11 @@ qBittorrent is fast, stable and provides unicode support as well as many
 features.")
     (license l:gpl2+)))
 
-(define-public qbittorrent-nox
+(define-public qbittorrent-no-x
   (let ((base qbittorrent))
     (package
       (inherit base)
-      (name "qbittorrent-nox")
+      (name "qbittorrent-no-x")
       (arguments
        (substitute-keyword-arguments (package-arguments base)
          ((#:configure-flags configure-flags)
@@ -506,6 +506,9 @@ features.")
       (inputs
        (modify-inputs (package-inputs base)
          (delete "qtsvg-5"))))))
+
+(define-public qbittorrent-nox
+  (deprecated-package "qbittorrent-nox" qbittorrent-no-x))
 
 (define-public qbittorrent-enhanced
   (package
