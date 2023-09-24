@@ -64,7 +64,7 @@
               (sha256
                (base32
                 "1ha6c5j3pizbsfzw37r52lvdz8z5lblq4iwa99mpkdzz92aiqp2y"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      '(#:test-flags
        (list
