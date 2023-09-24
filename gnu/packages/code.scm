@@ -850,7 +850,7 @@ Objective@tie{}C, D, Java, Pawn, and Vala).  Features:
       #:make-flags
       #~(list (string-append "prefix=" #$output)
               "INSTALL=install"
-              "all")
+              "release" "shared")
       #:modules '((guix build gnu-build-system) ;FIXME use %default-modules
                   (guix build utils)
                   (ice-9 regex))
