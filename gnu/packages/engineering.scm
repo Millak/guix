@@ -1487,7 +1487,7 @@ replacement for the OpenDWG libraries.")
 (define-public minicom
   (package
     (name "minicom")
-    (version "2.8")
+    (version "2.9")
     (source
      (origin
        (method git-fetch)
@@ -1495,7 +1495,7 @@ replacement for the OpenDWG libraries.")
              (url "https://salsa.debian.org/minicom-team/minicom.git")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "0kfihxbh9qkjk9m1932ajyqx384c2aj3d9yaphh3i9i7y1shxlpx"))
+        (base32 "18k0hiljsiq80x93c3qrd1cmcjjvsk1ymin03vncjp1v35xn8248"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -1508,15 +1508,13 @@ replacement for the OpenDWG libraries.")
          (replace 'bootstrap
            ;; autogen.sh needlessly hard-codes aclocal-1.14.
            (lambda _
-             (invoke "autoreconf" "-vif")
-             #t))
+             (invoke "autoreconf" "-vif")))
          (add-before 'configure 'patch-lock-check
            (lambda _
              (substitute* "configure"
-               (("test -d [$]UUCPLOCK") "true"))
-             #t)))))
+               (("test -d [$]UUCPLOCK") "true")))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
+     `(("autoconf" ,autoconf-2.71)
        ("automake" ,automake)
        ("gettext" ,gettext-minimal)
        ("pkg-config" ,pkg-config)))
