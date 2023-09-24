@@ -4287,7 +4287,7 @@ form, numpad.
            zlib
            libmspack))
     (home-page "https://rizin.re")
-    (synopsis "Disasm, debug, analyze and manipulate binary files")
+    (synopsis "Disassemble, debug, analyze, and manipulate binary files")
     (description
      "Rizin is a reverse engineering framework and a set of small command-line
 utilities, providing a complete binary analysis experience with features like
