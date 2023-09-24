@@ -1105,7 +1105,7 @@ tarballs.")
 (define-public libjcat
   (package
     (name "libjcat")
-    (version "0.1.12")
+    (version "0.1.14")
     (source
      (origin
        (method git-fetch)
@@ -1115,7 +1115,7 @@ tarballs.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fbcmnpc0y7s2ls3q829dv3ardhv0m5gxqqmbn0dnkzgkh42vv7p"))))
+        (base32 "0dhyqhs2lg9ka47n8d1lalvic2m3rn5k6mya9bjyw242smkgzpjw"))))
     (build-system meson-build-system)
     (native-inputs
      (list gobject-introspection help2man pkg-config))
