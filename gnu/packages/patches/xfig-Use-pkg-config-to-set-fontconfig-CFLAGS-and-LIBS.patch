@@ -1,0 +1,89 @@
+From 4320b1d82da1bfe1519800ae3ac35b6b59a9da56 Mon Sep 17 00:00:00 2001
+From: Thomas Loimer <thomas.loimer@tuwien.ac.at>
+Date: Fri, 8 Sep 2023 18:43:00 +0200
+Subject: [PATCH 2/3] Use pkg-config to set fontconfig CFLAGS and LIBS
+
+---
+ configure.ac      | 16 +++++++++++++---
+ src/Makefile.am   |  8 +++-----
+ tests/Makefile.am |  4 ++--
+ 3 files changed, 18 insertions(+), 10 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 47452c5..3113db8 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -81,11 +81,23 @@ AC_PROG_SED
+ AM_PROG_AR
+ 
+ # Search for pkg-config and set PKG_CONFIG to the path found, else empty.
+-# PKG_PROG_PKG_CONFIG
++PKG_PROG_PKG_CONFIG
+ # On debian, pkg-config does not find xaw3d. On archlinux, pkg-config
+ # --libs xaw3d yields -lXaw3d -lXmu -lXt -lX11 -- but -lXmu is not
+ # strictly necessary. Use hard-coded paths instead of pkg-config.
+ 
++# First try pkg-config, as a side-effect this might set flags that are
++# useful later, e.g., for libpng.
++dnl Under archlinux, PKG_CHECK_MODULES(FT, fontconfig) would write during
++dnl ./configure "checking for FT...", under debian the line is
++dnl "checking for fontconfig...". Stay on the comprehensible side.
++AS_IF([test "x$PKG_CONFIG" != x],
++    [PKG_CHECK_MODULES([fontconfig], [fontconfig])],
++    [fontconfig_CFLAGS='-I$(oldincludedir)/freetype2 '
++     AC_SEARCH_LIBS([FcInit], [fontconfig])])
++AC_SUBST([fontconfig_CFLAGS])
++AC_SUBST([fontconfig_LIBS])
++
+ dnl Not useful for packagers.
+ dnl AC_CHECK_PROG(XDG_ICON, [xdg-icon-resource], [xdg-icon-resource])
+ dnl AC_CHECK_PROG(XDG_MENU, [xdg-desktop-menu], [xdg-desktop-menu])
+@@ -93,8 +105,6 @@ dnl AC_CHECK_PROG(XDG_MENU, [xdg-desktop-menu], [xdg-desktop-menu])
+ 
+ # Checks for libraries.
+ AC_SEARCH_LIBS([pow], [m])dnl
+-dnl AC_SEARCH_LIBS([deflate], [z])  # libz is not needed.
+-AC_SEARCH_LIBS([FcInit], [fontconfig])
+ 
+ 
+ # Checks for header files.
+diff --git a/src/Makefile.am b/src/Makefile.am
+index 3cbd5ee..73d5132 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -23,13 +23,11 @@
+ # "`u' modifier ignored since `D' is the default...".
+ ARFLAGS = cr
+ 
+-# Xft #includes <ft2build.h>, not <freetype2/ft2build.h>, hence freetype2
+-# must be put into the search path.
+-
+-AM_CPPFLAGS = -I$(oldincludedir)/freetype2 $(XCPPFLAGS) -DNDEBUG -DXFIGLIBDIR="\"$(compkeydbdir)\"" \
++AM_CPPFLAGS = $(fontconfig_CFLAGS) $(XCPPFLAGS) -DNDEBUG	\
++	-DXFIGLIBDIR="\"$(compkeydbdir)\""			\
+ 	-DOBJLIBDIR="\"$(pkgdatadir)/Libraries\"" -DXFIGDOCDIR="\"$(docdir)\""
+ 
+-AM_LDFLAGS = $(XLDFLAGS)
++AM_LDFLAGS = $(fontconfig_LIBS) $(XLDFLAGS)
+ 
+ # LIBOBJS must be placed in LDADD or xfig_LDADD - otherwise, the
+ # lib-dir is not distributed
+diff --git a/tests/Makefile.am b/tests/Makefile.am
+index 2f529ac..c158806 100644
+--- a/tests/Makefile.am
++++ b/tests/Makefile.am
+@@ -39,9 +39,9 @@ $(srcdir)/package.m4: $(top_srcdir)/configure.ac
+ 	  echo 'm4_define([AT_PACKAGE_URL], [@PACKAGE_URL@])'; \
+ 	} >'$(srcdir)/package.m4'
+ 
+-AM_CPPFLAGS = -I$(top_srcdir)/src -I$(oldincludedir)/freetype2 $(XCPPFLAGS)
++AM_CPPFLAGS = -I$(top_srcdir)/src $(fontconfig_CFLAGS) $(XCPPFLAGS)
+ 
+-AM_LDFLAGS = $(XLDFLAGS)
++AM_LDFLAGS = $(fontconfig_LIBS) $(XLDFLAGS)
+ LDADD = $(top_builddir)/src/libxfig.a $(XLIBS)
+ 
+ check_PROGRAMS = test1 test2 test3 test4
+-- 
+2.40.1
+

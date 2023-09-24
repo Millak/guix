@@ -28,9 +28,11 @@
   #:use-module (guix gexp)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages xorg)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages image)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages imagemagick)
@@ -98,7 +100,7 @@ variety of environments.")
 (define-public xfig
   (package
     (name "xfig")
-    (version "3.2.8b")
+    (version "3.2.9")
     (source
      (origin
        (method url-fetch)
@@ -106,22 +108,55 @@ variety of environments.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "0fndgbm1mkqb1sn2v2kj3nx9mxj70jbp31y2bjvzcmmkry0q3k5j"))
+         "1xy2zqbd1wn2fij95kgnj39850r7xk74kvx7kp0dxhmvs429vv8k"))
+       ;; TODO: Remove these patches and snippet when updating,
+       ;; upstreamed since commit `84375ac05e923b46bbacc8b336b0dfbe29497b6b'.
+       (patches
+        (search-patches "xfig-Enable-error-message-for-missing-libraries.patch"
+                        "xfig-Use-pkg-config-to-set-fontconfig-CFLAGS-and-LIBS.patch"
+                        "xfig-Fix-double-free-when-requesting-MediaBox.patch"))
        (modules '((guix build utils)))
        (snippet
         ;; The patch-dot-desktop-files phase requires a relative name.
-        #~(substitute* "xfig.desktop"
-            (("^(Exec=)/usr/bin/" _ key) key)))))
+        #~(begin
+            (substitute* "xfig.desktop"
+              (("^(Exec=)/usr/bin/" _ key) key))
+            ;; This forces autoreconf to be invoked, needed for patches
+            ;; to be effective.
+            (delete-file "configure")))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:modules '((guix build gnu-build-system)
+                  (guix build utils)
+                  (srfi srfi-26))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-program
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((path
+                     (search-path-as-list
+                      '("bin")
+                      (map (cut assoc-ref inputs <>)
+                           (list "ghostscript" "fig2dev")))))
+                (wrap-program (string-append #$output "/bin/xfig")
+                  `("PATH" ":" prefix ,path))))))))
     (native-inputs
-     ;; For tests.
-     (list desktop-file-utils ghostscript))
+     (list pkg-config
+           ;; TODO: Remove the import on (gnu packages autotools)
+           ;; and related packages in the next update.
+           autoconf automake libtool
+           ;; For tests.
+           desktop-file-utils))
     (inputs
-     (list libxaw3d
+     (list ghostscript
+           fig2dev
+           libxaw3d
            libjpeg-turbo
            libpng
            libxpm
            libx11
+           libxft
            libxt))
     (home-page "https://mcj.sourceforge.net/")
     (synopsis "Interactive drawing tool")
@@ -132,4 +167,6 @@ spline curves, text, etc.  It is also possible to import images in formats
 such as GIF, JPEG, EPSF (PostScript), etc.  Those objects can be created,
 deleted, moved or modified.  Attributes such as colors or line styles can be
 selected in various ways.  For text, 35 fonts are available.")
-    (license license:bsd-2)))
+    (license
+     (license:non-copyleft "file://Makefile.am"
+                           "See <https://spdx.org/licenses/Xfig.html>."))))

@@ -2125,6 +2125,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/xf86-video-nouveau-fixup-ABI.patch	\
   %D%/packages/patches/xf86-video-savage-xorg-compat.patch 	\
   %D%/packages/patches/xf86-video-siliconmotion-fix-ftbfs.patch \
+  %D%/packages/patches/xfig-Enable-error-message-for-missing-libraries.patch		\
+  %D%/packages/patches/xfig-Fix-double-free-when-requesting-MediaBox.patch		\
+  %D%/packages/patches/xfig-Use-pkg-config-to-set-fontconfig-CFLAGS-and-LIBS.patch	\
   %D%/packages/patches/xfce4-panel-plugins.patch		\
   %D%/packages/patches/xfce4-settings-defaults.patch		\
   %D%/packages/patches/xgboost-use-system-dmlc-core.patch       \
