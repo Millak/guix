@@ -875,7 +875,7 @@ Objective@tie{}C, D, Java, Pawn, and Vala).  Features:
                (for-each (lambda (l)
                            (copy-file
                             l (string-append libdir "/" (basename l))))
-                         (find-files "bin" "lib*"))
+                         (find-files "bin" "^lib.*\\.so"))
                (for-each
                 (lambda (sofile)
                   (make-so-link sofile "(\\.[0-9]){3}$")  ;; link .so
