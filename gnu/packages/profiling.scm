@@ -30,6 +30,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)      ;for "which"
+  #:use-module (gnu packages bash)      ;for "which"
   #:use-module (gnu packages bison)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages documentation)
@@ -463,3 +464,18 @@ high-performance computing (HPC) applications.")
      "A real time, nanosecond resolution, remote telemetry, hybrid frame and
 sampling profiler for games and other applications.")
     (license license:bsd-3)))
+
+(define-public tracy
+  (package;xb
+    (inherit tracy-wayland)
+    (name "tracy")
+    (arguments
+     (substitute-keyword-arguments (package-arguments tracy-wayland)
+       ((#:make-flags flags #~'())
+        #~(append #$flags
+                  ;; The LEGACY flag indicate we want to build tracy with glfw.
+                  (list "LEGACY=1")))))
+    (inputs (modify-inputs (package-inputs tracy-wayland)
+              (delete "libxkbcommon" "wayland")
+              (prepend glfw)))
+    (synopsis "Frame profiler (X11 version)")))
