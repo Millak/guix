@@ -575,18 +575,20 @@ from a mounted file system.")
     (license license:gpl2+)))
 
 (define-public bcachefs-tools
+  (let ((commit "1e358401ecdf1963e5799de19ab69111e82e5ebc")
+        (revision "0"))
     (package
       (name "bcachefs-tools")
-      (version "1.2")
+      (version (git-version "1.2" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://evilpiepirate.org/git/bcachefs-tools.git")
-               (commit (string-append "v" version))))
+               (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0wgqclkkdkqis3aq6wp0kcn1bsynybm3dnpcf7vlcvx85kdmcxg8"))))
+          (base32 "0bflgqb3q9jikyyrv6hywv6m1fapzzn874hlhf86pn6abxrlf5fa"))))
       (build-system gnu-build-system)
       (arguments
        (list #:make-flags
@@ -662,7 +664,7 @@ multiple block devices for replication and/or performance, similar to RAID.
 In addition, bcachefs provides all the functionality of bcache, a block-layer
 caching system, and lets you assign different roles to each device based on its
 performance and other characteristics.")
-      (license license:gpl2+)))
+      (license license:gpl2+))))
 
 (define-public bcachefs-tools/static
   (package
