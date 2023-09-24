@@ -11212,6 +11212,85 @@ for display, and used by the program to implement Thorp's \"Complete Point
 System\" (high-low system).")
     (license (license:x11-style "" "See file headers."))))
 
+(define-public xevil
+  ;; This game is old.  Use a maintained fork that builds with modern toolchains
+  ;; on modern, 64-bit hardware.
+  (let ((commit "9ca85059d5195be0eb15e107de3bb9d1b49e5f99")
+        (revision "0"))
+    (package
+      (name "xevil")
+      (version (git-version "2.02" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/lvella/xevil")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "14hsmw9ll2asnp1s0zvniyp31kjw8ynm7vnycg74lpqf28h2rric"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:modules `(,@%default-gnu-imported-modules
+                    (srfi srfi-26))
+        #:make-flags
+        #~(list "SHELL=sh"
+                "DEBUG_OPT=-g -DNDEBUG")
+        #:tests? #f                     ;no test suite
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'rename-licence-file
+              (lambda _ (rename-file "gpl.txt" "COPYING")))
+            (add-after 'unpack 'redefine
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "cmn/game.cpp"
+                  (("(#define VERSION ).*" _ define)
+                   (string-append define "\"" #$version "\"\n")))
+                (substitute* "cmn/utils.cpp"
+                  (("[^\"]*/(bin/uname)" _ command)
+                   (search-input-file inputs command)))
+                (substitute* "x11/ui.cpp"
+                  ;; Neither DEFAULT_BIG_FONT_NAME nor BACKUP_FONT_NAME are
+                  ;; available from most Guix X11 servers, making the game
+                  ;; unplayable by default.  Substitute the closest match.
+                  (("9x15") "6x13")
+                  ;; ‘For fast machines’ need no longer default to False in C21.
+                  (("(smoothScroll = )False" _ assign)
+                   (string-append assign "True")))))
+            (delete 'configure)         ;no configure script
+            (replace 'install
+              (lambda _
+                (with-directory-excursion "x11/REDHAT_LINUX" ;yeah
+                  (for-each (cut install-file <>
+                                 (string-append #$output "/bin"))
+                            (list "xevil" "serverping")))
+                (let ((doc (string-append #$output "/share/doc/"
+                                          #$name "-" #$version)))
+                  (mkdir-p doc)
+                  (for-each (lambda (file)
+                              (copy-recursively file
+                                                (string-append
+                                                 doc "/" (basename file))))
+                            (list "instructions" "x11/app-defaults"))))))))
+      (inputs
+       (list coreutils-minimal          ;for uname
+             libx11 libxpm))
+      ;; The current home page has been ‘subtly’ vandalised with spam and is
+      ;; missing a lot of content from this older snapshot.
+      (home-page (string-append "https://web.archive.org/web/20060410005819/"
+                                "http://www.xevil.com/"))
+      (synopsis
+       "Third-person, side-scrolling, fast-action, kill-everything game")
+      (description
+       "XEvil is a violent third-person, side-scrolling, fast-action deathmatch.
+You run around a randomly generated two-dimensional map composed of walls,
+floors, ladders, doors, and horizontal and vertical elevators.  Your only object
+is to explore this world to find weapons and items, killing everything in sight
+before they kill you.  You can fight against either computer-controlled enemies
+or against other people.")
+      (license license:gpl2+))))
+
 (define-public azimuth
   (package
     (name "azimuth")
