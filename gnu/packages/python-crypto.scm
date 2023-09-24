@@ -2,7 +2,7 @@
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2015-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2016, 2017, 2019 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2016, 2017, 2020, 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2016, 2017, 2020, 2022, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Ben Sturmfels <ben@sturm.com.au>
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015 Cyril Roelandt <tipecaml@gmail.com>
@@ -441,6 +441,16 @@ blake3, a cryptographic hash function.")
         (base32
          "1yxqfb5131wahjyw9pxz03bq476rcfx62s6k53xx4cqbzzgdaqkq"))))
     (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'adjust-test
+                 (lambda _
+                   ;; Newer PyOpenSSL no longer separates extensions with
+                   ;; newline (this can be removed for >1.3.0).
+                   (substitute* "test/test_certauth.py"
+                     (("7334\\\\n, DNS")
+                      "7334, DNS")))))))
     (propagated-inputs
      (list python-pyopenssl python-tldextract))
     (native-inputs
@@ -1139,25 +1149,32 @@ none of them have everything that I'd like, so here's one more.  It uses
 (define-public python-libnacl
   (package
     (name "python-libnacl")
-    (version "1.7.2")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "libnacl" version))
        (sha256
         (base32
-         "0srx7i264v4dq9and8y6gpzzhrg8jpxs5iy9ggw4plimfj0rjfdm"))))
-    (build-system python-build-system)
+         "0q18j8kfibhi5qckakhf0b0psf8nkll91nfp3yqxkri9vykqshgk"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'locate-libsodium
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "libnacl/__init__.py"
-               (("/usr/local/lib/libsodium.so")
-                (search-input-file inputs "/lib/libsodium.so"))))))))
+               (("ctypes\\.util\\.find_library\\('sodium'\\)")
+                (string-append "'"
+                               (search-input-file inputs "/lib/libsodium.so")
+                               "'")))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python" "-m" "unittest" "discover"
+                       "--start-directory" "tests" "-v")))))))
     (native-inputs
-     (list python-pyhamcrest))
+     (list python-poetry-core))
     (inputs
      (list libsodium))
     (home-page "https://libnacl.readthedocs.org/")

@@ -11,6 +11,7 @@
 ;;; Copyright © 2020. 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -60,6 +61,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages graphics)
+  #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
@@ -70,8 +72,10 @@
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages lua)
+  #:use-module (gnu packages m4)
   #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages ocaml)
   #:use-module (gnu packages opencl)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -89,7 +93,6 @@
   #:use-module (gnu packages video)
   #:use-module (gnu packages web)
   #:use-module (gnu packages wxwidgets)
-  #:use-module (gnu packages xfig)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages xml)
   #:use-module ((srfi srfi-1) #:hide (zip))
@@ -370,20 +373,51 @@ overlapping images, as well as some command line tools.")
                                   name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0j5x011ilalb47ssah50ag0a4phgh1b0wdgxdbbp1gcyjcjf60w7"))))
+                "0j5x011ilalb47ssah50ag0a4phgh1b0wdgxdbbp1gcyjcjf60w7"))
+              (patches
+               ;; TODO: Remove when updating.
+               ;; Fixed upstream with a98e00eed893f62dd8349fc2894abca3aff4b33a.
+               (search-patches "enblend-enfuse-reproducible.patch"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; TODO: Remove when updating.
+               ;; Fixed upstream with 81e25afe71146aaaf5058c604034f35d57e3be9d.
+               #~(substitute* "src/minimizer.cc"
+                   (("^#include <gsl/gsl_errno\\.h>" all)
+                    (string-append all "\n#include <limits>"))))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config
            perl
            perl-timedate
+           help2man
            ;; For building the documentation.
            gnuplot
-           help2man
-           imagemagick
-           libxml2
-           (texlive-updmap.cfg)
-           tidy-html
-           transfig))
+           graphviz-minimal  ; for 'dot'
+           font-ghostscript
+           imagemagick/stable
+           librsvg
+           m4
+           perl-readonly
+           texlive-texloganalyser
+           (texlive-updmap.cfg
+            (list texlive-bold-extra
+                  texlive-cm-mf-extra-bold
+                  texlive-comment
+                  texlive-float
+                  texlive-enumitem
+                  texlive-mdwtools
+                  texlive-hyphenat
+                  texlive-index
+                  texlive-listings
+                  texlive-microtype
+                  texlive-etoolbox  ;used but not propagated by microtype
+                  texlive-nag
+                  texlive-ragged2e
+                  texlive-shorttoc
+                  texlive-bigfoot
+                  texlive-xstring))
+           hevea))
     (inputs
      (list boost
            gsl
@@ -395,16 +429,51 @@ overlapping images, as well as some command line tools.")
            vigra
            zlib))
     (arguments
-     (list #:configure-flags
-           #~(list "--enable-openmp")
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'add-missing-include
-                 (lambda _
-                   (substitute* "src/minimizer.h"
-                     ;; Fix error: ‘numeric_limits’ is not a member of ‘std’.
-                     (("#include <vector>" line)
-                      (string-append line "\n#include <limits>"))))))))
+     (list
+      #:configure-flags #~(list "--enable-openmp")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'fontconfig-cache
+            (lambda _
+              (setenv "XDG_CACHE_HOME" (mkdtemp "/tmp/cache-XXXXXX"))))
+          ;; XXX: There's some extreme sillyness when building the
+          ;; documentation. It gets rebuilt thrice, during build, check and
+          ;; install, possibly due to the effects of the invocation of
+          ;; UPDATED_ON in doc/Makefile.
+          ;; Reported: <URL:https://bugs.launchpad.net/enblend/+bug/2036319>
+          (add-after 'configure 'exclude-doc-from-check
+            (lambda _
+              (substitute* "doc/Makefile"
+                (("^(check:).+$" _ rule)
+                 (string-append rule "\n")))))
+          ;; XXX: Skip building the docs since they're rebuilt again
+          ;; during install.
+          (replace 'build
+            (lambda args
+              (with-directory-excursion "src"
+                (apply (assoc-ref %standard-phases 'build) args))))
+          ;; XXX: Save another doc rebuild when installing.
+          (replace 'install
+            ;; Intercept and insert a make-flag for this phase only.
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (apply invoke "make" "install"
+                     (cons "MAYBE_DOC=" make-flags))))
+          ;; XXX: 'make install' doesn't install the docs.
+          (add-after 'install 'install-doc
+            (lambda* (#:key make-flags #:allow-other-keys)
+              ;; Install examples first, for which the 'install' rule works.
+              (with-directory-excursion "doc/examples"
+                (apply invoke "make" "install" make-flags))
+              ;; The docs have to be installed with specific rules.
+              (with-directory-excursion "doc"
+                (apply invoke "make"
+                       "install-ps-local"
+                       "install-html-local"
+                       "install-dvi-local"
+                       ;; Do not overwhelm the console by printing the source
+                       ;; to stdout.
+                       (cons "V=0" make-flags))))))))
+    (outputs '("out" "doc"))
     (home-page "https://enblend.sourceforge.net/")
     (synopsis "Tools for combining and blending images")
     (description

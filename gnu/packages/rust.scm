@@ -544,6 +544,7 @@ ar = \"" binutils "/bin/ar" "\"
            (search-path-specification
             (variable "LIBRARY_PATH")
             (files '("lib" "lib64")))))
+    (supported-systems (delete "i586-gnu" %supported-systems))
     (synopsis "Compiler for the Rust programming language")
     (description "Rust is a systems programming language that provides memory
 safety and thread safety guarantees.")

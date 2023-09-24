@@ -56,7 +56,6 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
-  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
@@ -72,7 +71,6 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages fribidi)
   #:use-module (gnu packages game-development)
-  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
@@ -102,7 +100,6 @@
   #:use-module (gnu packages upnp)
   #:use-module (gnu packages video)
   #:use-module (gnu packages vulkan)
-  #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
@@ -253,8 +250,8 @@ console.")
 ;; Following commits and revision numbers of beta versions listed at
 ;; https://dolphin-emu.org/download/.
 (define-public dolphin-emu
-  (let ((commit "a34823df61df65168aa40ef5e82e44defd4a0138")
-        (revision "13178"))
+  (let ((commit "f9deb68aee962564b1495ff04c54c015e58d086f")
+        (revision "13669"))
     (package
       (name "dolphin-emu")
       (version (git-version "5.0" revision commit))
@@ -265,6 +262,8 @@ console.")
                (url "https://github.com/dolphin-emu/dolphin")
                (commit commit)))
          (file-name (git-file-name name version))
+         (sha256
+          (base32 "1p8qsxlabgmz3nic0a9ghh9d3lzl5f8i3kmdrrvx6w8kdlp33018"))
          (modules '((guix build utils)))
          (snippet
           '(begin
@@ -276,11 +275,8 @@ console.")
                          "gettext" "hidapi" "libpng" "libusb" "mbedtls"
                          "miniupnpc" "MoltenVK" "zlib"))
              ;; Clean up source.
-             (for-each delete-file (find-files "." ".*\\.(bin|dsy|exe|jar|rar)$"))
-             #t))
-         (sha256
-          (base32
-           "0j6hnj60iai366kl0kdbn1jkwc183l02g65mp2vq4qb2yd4399l1"))))
+             (for-each delete-file
+                       (find-files "." ".*\\.(bin|dsy|exe|jar|rar)$"))))))
       (build-system cmake-build-system)
       (arguments
        '(#:tests? #f
@@ -304,8 +300,7 @@ console.")
                  (substitute* "Source/Core/VideoBackends/Vulkan/VulkanLoader.cpp"
                    (("\"vulkan\", 1") (string-append "\"vulkan\""))
                    (("\"vulkan\"") (string-append "\"" libvulkan "\""))
-                   (("Common::DynamicLibrary::GetVersionedFilename") ""))
-                 #t))))
+                   (("Common::DynamicLibrary::GetVersionedFilename") ""))))))
 
          ;; The FindGTK2 cmake script only checks hardcoded directories for
          ;; glib/gtk headers.
@@ -319,8 +314,7 @@ console.")
                               "/lib/libX11.so")
                "-DX11_FOUND=1")))
       (native-inputs
-       `(("pkg-config" ,pkg-config)
-         ("gettext" ,gettext-minimal)))
+       (list gettext-minimal pkg-config))
       (inputs
        (list alsa-lib
              ao

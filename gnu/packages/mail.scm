@@ -52,6 +52,7 @@
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
+;;; Copyright © 2023 Arjan Adriaanse <arjan@adriaan.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -600,7 +601,7 @@ aliasing facilities to work just as they would on normal mail.")
 (define-public mutt
   (package
     (name "mutt")
-    (version "2.2.10")
+    (version "2.2.12")
     (source (origin
              (method url-fetch)
              (uri (list
@@ -610,7 +611,7 @@ aliasing facilities to work just as they would on normal mail.")
                                    version ".tar.gz")))
              (sha256
               (base32
-               "121xrns9b0n5cdjb7nv5a6idjjk58pp7pdclgdphjy9g88i3yxsd"))
+               "0f6f32xlfp36axj5in8b0fcc9m05la27zxqbzpvmd3jbyq9g6fh4"))
              (patches (search-patches "mutt-store-references.patch"))))
     (build-system gnu-build-system)
     (inputs
@@ -1202,14 +1203,14 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
 (define-public mu
   (package
     (name "mu")
-    (version "1.10.5")
+    (version "1.10.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/djcb/mu/releases/download/v"
                            version "/mu-" version ".tar.xz"))
        (sha256
-        (base32 "0bfclmffcqpb7hsgzvg7ailnnrcpvfv4ljcq7ds0z66n37f97xhs"))))
+        (base32 "089w1m6sd0nk9l9j40d357fjym8kxmz7kwh3bclk58jxa6xckapa"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config
@@ -1368,7 +1369,10 @@ invoking @command{notifymuch} from the post-new hook.")
        (uri (string-append "https://notmuchmail.org/releases/notmuch-"
                            version ".tar.xz"))
        (sha256
-        (base32 "1xl64xh0ijfkx265lcj9cqv1wkzha8gsn9jn4fw4xgvqigr6sxhf"))))
+        (base32 "1xl64xh0ijfkx265lcj9cqv1wkzha8gsn9jn4fw4xgvqigr6sxhf"))
+       (patches
+        ;; Output for some tests varies slightly in Emacs 29.
+        (search-patches "notmuch-emacs-test-output.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1989,7 +1993,7 @@ facilities for checking incoming mail.")
   (package
     (name "dovecot")
     ;; Also update dovecot-pigeonhole when updating to a new minor version.
-    (version "2.3.20")
+    (version "2.3.21")
     (source
      (origin
        (method url-fetch)
@@ -1997,7 +2001,7 @@ facilities for checking incoming mail.")
                            (version-major+minor version) "/"
                            "dovecot-" version ".tar.gz"))
        (sha256
-        (base32 "0ll546dldhxqk8yr2jnfq0rag7vp9d9hz7gf6pgsnj41jvmk5a6a"))
+        (base32 "0bah6rn5ihczai8q50p6pqxwj73j21smib89ycp7q8qwly9i1c85"))
        (patches
         (search-patches "dovecot-opensslv3.patch"))))
     (build-system gnu-build-system)
@@ -2059,7 +2063,7 @@ It supports mbox/Maildir and its own dbox/mdbox formats.")
   (let ((dovecot-version (version-major+minor (package-version dovecot))))
     (package
       (name "dovecot-pigeonhole")
-      (version "0.5.20")
+      (version "0.5.21")
       (source
        (origin
          (method url-fetch)
@@ -2067,7 +2071,7 @@ It supports mbox/Maildir and its own dbox/mdbox formats.")
                "https://pigeonhole.dovecot.org/releases/" dovecot-version "/"
                "dovecot-" dovecot-version "-pigeonhole-" version ".tar.gz"))
          (sha256
-          (base32 "163wc5spzvy9pcpsbz3adl22h8f1krp21fh9mql16b7af14bscmf"))
+          (base32 "09zd7n6ljqaj3i3m6r1hn1vb1cjhy64040vji82i4rq7b4k1v9qw"))
          (modules '((guix build utils)))
          (snippet
           '(begin

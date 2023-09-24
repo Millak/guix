@@ -1146,6 +1146,7 @@ want what you have.")
              qtsvg-5
              qttools-5
              qtwebsockets-5
+             qtwayland-5
              xz
              zlib))
       (home-page "https://cockatrice.github.io")
@@ -3312,7 +3313,7 @@ that beneath its ruins lay buried an ancient evil.")
 (define-public angband
   (package
     (name "angband")
-    (version "4.2.4")
+    (version "4.2.5")
     (source
      (origin
        (method git-fetch)
@@ -3321,7 +3322,7 @@ that beneath its ruins lay buried an ancient evil.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1x0qqsv7xa3figcl4v35sin64ffgz32652vk541d8qaq4qcc378n"))
+        (base32 "0kg6npbfy42mhggsqvs04khc8198i980z52xm59pws29698qazaw"))
        (modules '((guix build utils)))
        (snippet
         ;; So, some of the sounds/graphics/tilesets are under different

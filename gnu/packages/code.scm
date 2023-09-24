@@ -893,13 +893,13 @@ the C, C++, C++/CLI, Objective‑C, C#, and Java programming languages.")
 (define-public indent
   (package
    (name "indent")
-   (version "2.2.12")
+   (version "2.2.13")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/indent/indent-" version
                                 ".tar.gz"))
             (sha256
-             (base32 "12xvcd16cwilzglv9h7sgh4h1qqjd1h8s48ji2dla58m4706hzg7"))))
+             (base32 "15c0ayp9rib7hzvrcxm5ijs0mpagw5y8kf5w0jr9fryfqi7n6r4y"))))
    (build-system gnu-build-system)
    (arguments
     `(#:phases

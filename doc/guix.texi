@@ -2167,12 +2167,15 @@ which they are installed.  The Elisp libraries are made available to
 Emacs through the @env{EMACSLOADPATH} environment variable, which is
 set when installing Emacs itself.
 
+@cindex guix-emacs-autoload-packages, refreshing Emacs packages
 Additionally, autoload definitions are automatically evaluated at the
 initialization of Emacs, by the Guix-specific
-@code{guix-emacs-autoload-packages} procedure.  If, for some reason, you
-want to avoid auto-loading the Emacs packages installed with Guix, you
-can do so by running Emacs with the @option{--no-site-file} option
-(@pxref{Init File,,, emacs, The GNU Emacs Manual}).
+@code{guix-emacs-autoload-packages} procedure.  This procedure can be
+interactively invoked to have newly installed Emacs packages discovered,
+without having to restart Emacs.  If, for some reason, you want to avoid
+auto-loading the Emacs packages installed with Guix, you can do so by
+running Emacs with the @option{--no-site-file} option (@pxref{Init
+File,,, emacs, The GNU Emacs Manual}).
 
 @quotation Note
 Emacs can now compile packages natively.  Under the default
@@ -6114,7 +6117,7 @@ the fingerprint of the OpenPGP used to sign it.
 @end enumerate
 
 Before pushing to your public Git repository, you can run @command{guix
-git-authenticate} to verify that you did sign all the commits you are
+git authenticate} to verify that you did sign all the commits you are
 about to push with an authorized key:
 
 @example
@@ -20461,10 +20464,16 @@ non-loopback interfaces that can be activated.  Otherwise the DHCP
 client listens only on the specified interfaces.
 
 @item @code{shepherd-requirement} (default: @code{'()})
+@itemx @code{shepherd-provision} (default: @code{'(networking)})
 This option can be used to provide a list of symbols naming Shepherd services
 that this service will depend on, such as @code{'wpa-supplicant} or
 @code{'iwd} if you require authenticated access for encrypted WiFi or Ethernet
 networks.
+
+Likewise, @code{shepherd-provision} is a list of Shepherd service names
+(symbols) provided by this service.  You might want to change the
+default value if you intend to run several DHCP clients, only one of
+which provides the @code{networking} Shepherd service.
 @end table
 @end deftp
 
@@ -40976,8 +40985,8 @@ QEMU monitor and the VM.
 @cindex image, creating disk images
 The @code{image} command can produce various image types.  The image
 type can be selected using the @option{--image-type} option.  It
-defaults to @code{mbr-raw}.  When its value is @code{iso9660}, the
-@option{--label} option can be used to specify a volume ID with
+defaults to @code{mbr-hybrid-raw}.  When its value is @code{iso9660},
+the @option{--label} option can be used to specify a volume ID with
 @code{image}.  By default, the root file system of a disk image is
 mounted non-volatile; the @option{--volatile} option can be provided to
 make it volatile instead.  When using @code{image}, the bootloader
@@ -40995,8 +41004,8 @@ qemu-system-x86_64 -enable-kvm -hda /tmp/my-image.qcow2 -m 1000 \
                    -bios $(guix build ovmf)/share/firmware/ovmf_x64.bin
 @end example
 
-When using the @code{mbr-raw} image type, a raw disk image is produced;
-it can be copied as is to a USB stick, for instance.  Assuming
+When using the @code{mbr-hybrid-raw} image type, a raw disk image is
+produced; it can be copied as is to a USB stick, for instance.  Assuming
 @code{/dev/sdc} is the device corresponding to a USB stick, one can copy
 the image to it using the following command:
 
@@ -41133,7 +41142,7 @@ of the image.
 For the @code{image} action, create an image with given @var{type}.
 
 When this option is omitted, @command{guix system} uses the
-@code{mbr-raw} image type.
+@code{mbr-hybrid-raw} image type.
 
 @cindex ISO-9660 format
 @cindex CD image format
@@ -45341,7 +45350,7 @@ then directly boot from it, without any kind of installation procedure.
 
 The @command{guix system image} command is able to turn an operating
 system definition into a bootable image.  This command supports
-different image types, such as @code{mbr-raw}, @code{iso9660} and
+different image types, such as @code{mbr-hybrid-raw}, @code{iso9660} and
 @code{docker}.  Any modern @code{x86_64} machine will probably be able
 to boot from an @code{iso9660} image.  However, there are a few machines
 out there that require specific image types.  Those machines, in general
@@ -45605,8 +45614,24 @@ from them to simplify the @code{image} definition.  The @code{(gnu
 system image)} module provides the following @code{image} definition
 variables.
 
+@defvar mbr-disk-image
+An MBR disk-image composed of a single ROOT partition.  The ROOT
+partition starts at a 1@tie{}MiB offset so that the bootloader can
+install itself in the post-MBR gap.
+@end defvar
+
+@defvar mbr-hybrid-disk-image
+An MBR disk-image composed of two partitions: a 64 bits ESP partition
+and a ROOT boot partition.  The ESP partition starts at a 1@tie{}MiB
+offset so that a BIOS compatible bootloader can install itself in the
+post-MBR gap.  The image can be used by @code{x86_64} and @code{i686}
+machines supporting only legacy BIOS booting.  The ESP partition ensures
+that it can also be used by newer machines relying on UEFI booting,
+hence the @emph{hybrid} denomination.
+@end defvar
+
 @defvar efi-disk-image
-A MBR disk-image composed of two partitions: a 64 bits ESP partition and
+A GPT disk-image composed of two partitions: a 64 bits ESP partition and
 a ROOT boot partition.  This image can be used on most @code{x86_64} and
 @code{i686} machines, supporting BIOS or UEFI booting.
 @end defvar
@@ -45695,6 +45720,10 @@ system image)} and the @code{(gnu system images @dots{})} modules.
 
 @defvar mbr-raw-image-type
 Build an image based on the @code{mbr-disk-image} image.
+@end defvar
+
+@defvar mbr-hybrid-raw-image-type
+Build an image based on the @code{mbr-hybrid-disk-image} image.
 @end defvar
 
 @defvar efi-raw-image-type

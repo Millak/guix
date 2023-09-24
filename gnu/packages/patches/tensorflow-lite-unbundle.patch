@@ -1,0 +1,27 @@
+Disable local CMake build code for bundled 3rdparty components.
+
+diff --git a/tensorflow/lite/CMakeLists.txt b/tensorflow/lite/CMakeLists.txt
+index 0476170e075..90abea00e8c 100644
+--- a/tensorflow/lite/CMakeLists.txt
++++ b/tensorflow/lite/CMakeLists.txt
+@@ -564,7 +564,7 @@ set(_ALL_TFLITE_HDRS ${_ALL_TFLITE_SRCS})
+ list(FILTER _ALL_TFLITE_HDRS INCLUDE REGEX ".*\\.h$")
+ target_include_directories(tensorflow-lite
+   PUBLIC $<BUILD_INTERFACE:${TENSORFLOW_SOURCE_DIR}> $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+-  ${CMAKE_BINARY_DIR}/gemmlowp
++  ${gemmlowp_ROOT}/include/gemmlowp
+ )
+ target_link_libraries(tensorflow-lite
+   PUBLIC
+diff --git a/tensorflow/lite/tools/cmake/modules/Findgemmlowp.cmake b/tensorflow/lite/tools/cmake/modules/Findgemmlowp.cmake
+index 70331ad0a69..a9bd8a0f3bd 100644
+--- a/tensorflow/lite/tools/cmake/modules/Findgemmlowp.cmake
++++ b/tensorflow/lite/tools/cmake/modules/Findgemmlowp.cmake
+@@ -18,7 +18,6 @@
+ include(gemmlowp)
+ if(gemmlowp_POPULATED)
+   set(GEMMLOWP_FOUND TRUE)
+-  get_target_property(GEMMLOWP_INCLUDE_DIRS gemmlowp INTERFACE_DIRECTORIES)
+   set(GEMMLOWP_LIBRARIES
+     gemmlowp
+     gemmlowp_fixedpoint

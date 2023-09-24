@@ -48,6 +48,7 @@
 ;;; Copyright © 2022 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;; Copyright © 2015, 2022 David Thompson <davet@gnu.org>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2023 Kjartan Oli Agustsson <kjartanoli@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -79,6 +80,7 @@
   #:use-module (guix build-system go)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages apr)
   #:use-module (gnu packages autotools)
@@ -115,7 +117,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages web)
-  #:use-module (gnu packages openstack)
+  #:use-module (gnu packages patchutils)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages perl-check)
@@ -128,7 +130,6 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
-  #:use-module (gnu packages rsync)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages texinfo)
@@ -1297,7 +1298,7 @@ and additionally allows you to access the Git repository more directly using
 either a pure Python implementation, or the faster, but more resource intensive
  @command{git} command implementation.")
      (license license:bsd-3)))
- 
+
 (define-public savane
   (package
     (name "savane")
@@ -3554,6 +3555,40 @@ has tools for tagging, merging, checking in/out, and other user operations.
 TkDiff is included for browsing and merging your changes.")
     (license license:gpl2+)))
 
+(define-public qgit
+  (package
+    (name "qgit")
+    (version "2.10")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/tibirna/qgit")
+                     (commit (string-append "qgit-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "10j5xll7ai1rb2ybyblbgqm762bqspffpf33fdr61qdchnp2gkf4"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:tests? #f)) ;no tests
+    (propagated-inputs
+     (list git))
+    (home-page "https://github.com/tibirna/qgit")
+    (synopsis "Graphical front-end for git")
+    (description
+     "Qgit is a graphical front-end for git, with features to:
+@itemize
+@item view revisions, diffs, files history, files annotation and archive tree,
+@item commit changes visually cherry picking modified files,
+@item apply or save patch series from selected commits, drag and drop commits,
+@item associate commands sequences, scripts and anything else executable to a
+ custom action,
+@item push/pop commits,
+@item apply/save/create patches
+@item and cherry pick single modified files.
+@end itemize")
+    (license license:gpl3+)))
+
 (define-public git-filter-repo
   (package
     (name "git-filter-repo")
@@ -3689,3 +3724,34 @@ create and manage trackers, tickets
 interact with GraphQL APIs directly
 @end table")
     (license license:agpl3)))
+
+(define-public commit-patch
+  (package
+    (name "commit-patch")
+    (version "2.6.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/caldwell/commit-patch/releases/download/"
+                    version "/commit-patch-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0v11vjyisk243zi0ym90bnqb229j7iaqx1lwqdkszxzn1yxwq4ck"))))
+    (build-system copy-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'fix-paths
+                          (lambda* (#:key inputs #:allow-other-keys)
+                            (patch-shebang "commit-patch"))))
+           #:install-plan ''(("commit-patch" "bin/")
+                             ("commit-patch-buffer.el"
+                              "share/emacs/site-lisp/"))))
+    (inputs (list perl))
+    (propagated-inputs (list patchutils))
+    (synopsis "Commit parts of changes to VCS repositories")
+    (description
+     "commit-patch is a utility that lets you check in select portions of a
+file into Darcs, Git, Mercurial, Bazaar, Subversion, or CVS repositories.  It
+comes as a command line app and also an Emacs interface.")
+    (home-page "https://porkrind.org/commit-patch/")
+    (license license:gpl2+)))

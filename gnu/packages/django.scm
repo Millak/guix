@@ -6,7 +6,7 @@
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Vijayalakshmi Vedantham <vijimay12@gmail.com>
 ;;; Copyright © 2019 Sam <smbaines8@gmail.com>
-;;; Copyright © 2020, 2021, 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2020, 2021, 2022, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
 ;;; Copyright © 2022 Pradana Aumars <paumars@courrier.dev>
@@ -32,6 +32,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix gexp)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix deprecation)
   #:use-module (guix search-paths)
@@ -53,16 +54,16 @@
   #:use-module (gnu packages time)
   #:use-module (gnu packages xml))
 
-(define-public python-django-4.0
+(define-public python-django-4.2
   (package
     (name "python-django")
-    (version "4.0.7")
+    (version "4.2.5")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Django" version))
               (sha256
                (base32
-                "0qblhh7s7fcznqr79919yp2d7wiz3ixv39navmifb677dg9mlvcw"))))
+                "1ha6c5j3pizbsfzw37r52lvdz8z5lblq4iwa99mpkdzz92aiqp2y"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -140,17 +141,17 @@ to the @dfn{don't repeat yourself} (DRY) principle.")
 
 (define-public python-django-3.2
   (package
-    (inherit python-django-4.0)
-    (version "3.2.18")
+    (inherit python-django-4.2)
+    (version "3.2.21")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Django" version))
               (sha256
                (base32
-                "1fikqpf75zjlx7dgdrrrz4212cajp6rl79rw0zzlzdifi7z8s808"))))
+                "0g3zm2glh76g31q06g6fwkwvkrphjj3mnap5sgk1hx3v9r44rpm5"))))
     (native-search-paths '())           ;no need for TZDIR
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs python-django-4.0)
+     (modify-inputs (package-propagated-inputs python-django-4.2)
        ;; Django 4.0 deprecated pytz in favor of Pythons built-in zoneinfo.
        (append python-pytz)))))
 
@@ -170,23 +171,68 @@ to the @dfn{don't repeat yourself} (DRY) principle.")
        ;; Django 4.0 deprecated pytz in favor of Pythons built-in zoneinfo.
        (append python-pytz)))))
 
-(define-public python-django-2.2
-  (package
-    (inherit python-django-3.2)
-    (version "2.2.28")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "Django" version))
-              (sha256
-               (base32
-                "04vl7aivsshzsnn547lm4jdinr67afhdspc40f0c06xzmxbvc002"))))
-    (native-inputs
-     (modify-inputs (package-native-inputs python-django-3.2)
-       (prepend ;; 2.2 requires Selenium for the test suite.
-                python-selenium)))))
-
 ;; Use 3.2 LTS as the default until packages gain support for 4.x.
 (define-public python-django python-django-3.2)
+
+(define-public python-django-cache-url
+  (package
+    (name "python-django-cache-url")
+    (version "3.4.4")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "django-cache-url" version))
+              (sha256
+               (base32
+                "0dpx2wmcclmd3jkprdljz3makq12vd0sjv3xnvlj5vk1lg7glb7g"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-django))
+    (home-page "https://github.com/epicserve/django-cache-url")
+    (synopsis "Configure Django cache settings from URLs")
+    (description
+     "This package provides a facility for configuring Django cache settings
+with a @var{CACHE_URL} environment variable.")
+    (license license:expat)))
+
+(define-public python-django-configurations
+  (package
+    (name "python-django-configurations")
+    (version "2.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "django-configurations" version))
+              (sha256
+               (base32
+                "11chll26iqqy5chyx62hya20cadk10nm2la7sch7pril70a5rhm6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     ;; Taken from tox.ini.
+                     (setenv "DJANGO_SETTINGS_MODULE" "tests.settings.main")
+                     (setenv "DJANGO_CONFIGURATION" "Test")
+                     (setenv "PYTHONPATH"
+                             (string-append ".:" (getenv "GUIX_PYTHONPATH")))
+                     (invoke "django-cadmin" "test" "-v2")))))))
+    (propagated-inputs
+     (list python-django))
+    (native-inputs
+     (list python-dj-database-url
+           python-dj-email-url
+           python-dj-search-url
+           python-django-cache-url
+           python-setuptools-scm))
+    (home-page "https://django-configurations.readthedocs.io/")
+    (synopsis "Helper module for organizing Django settings")
+    (description
+     "@code{django-configurations} helps you organize the configuration of
+your Django project by providing glue code to bridge between Django'smodule
+based settings system and programming patterns like mixins, facades, factories
+and adapters that are useful for non-trivial configuration scenarios.")
+    (license license:bsd-3)))
 
 (define-public python-django-extensions
   (package
@@ -378,13 +424,13 @@ size and quality.")
 (define-public python-pytest-django
   (package
     (name "python-pytest-django")
-    (version "4.4.0")
+    (version "4.5.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pytest-django" version))
               (sha256
                (base32
-                "0mglnz0w6k7dgw1jn6giv56pmdjd6a3zwwkhxb2kyzmzk0viw5xm"))))
+                "1hp61jbnnhnjxzdrz9ni08lzrv8q7iiycnnxvcwnkhxpkdsny1yr"))))
     (build-system python-build-system)
     (arguments
      ;; The test suite is disabled because there are many test failures (see:
@@ -408,7 +454,7 @@ size and quality.")
                                         " and not test_urls_cache_is_cleared")))
                (format #t "test suite not run~%")))))))
     (native-inputs
-     (list python-django python-setuptools-scm python-pytest-xdist))
+     (list python-setuptools-scm))
     (propagated-inputs
      (list python-pytest))
     (home-page "https://pytest-django.readthedocs.org/")
@@ -672,14 +718,16 @@ example, explicit calls to callables from templates and better performance.")
 (define-public python-dj-database-url
   (package
     (name "python-dj-database-url")
-    (version "0.5.0")
+    (version "2.1.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "dj-database-url" version))
               (sha256
                (base32
-                "0qs16g5y3lflxibsl8gwkwap21crhmmv98l60rdq6x1wawgypsja"))))
+                "0pqkifl5zradgsznjpk6g6zp64gnsxdav7x3knf56vh8w7pjq17j"))))
     (build-system python-build-system)
+    (propagated-inputs
+     (list python-django python-typing-extensions))
     (home-page "https://github.com/kennethreitz/dj-database-url")
     (synopsis "Use Database URLs in your Django Application")
     (description
@@ -689,12 +737,50 @@ DATABASE_URL environment variable to configure your Django application.
 The dj_database_url.config method returns a Django database connection
 dictionary, populated with all the data specified in your URL.  There is also a
 conn_max_age argument to easily enable Django’s connection pool.")
+    (license license:bsd-3)))
+
+(define-public python-dj-email-url
+  (package
+    (name "python-dj-email-url")
+    (version "1.0.6")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "dj-email-url" version))
+              (sha256
+               (base32
+                "16k91rvd9889xxrrf84a3zb0jpinizhfqdmafn54zxa8kqrf7zsm"))))
+    (build-system pyproject-build-system)
+    (home-page "https://github.com/migonzalvar/dj-email-url")
+    (synopsis "Configure email settings from URLs")
+    (description
+     "This package provides a facility for configuring Django email backend
+settings from URLs.")
+    (license (list license:bsd-2        ;source code
+                   license:cc-by4.0     ;documentation
+                   license:cc0))))      ;configuration and data
+
+(define-public python-dj-search-url
+  (package
+    (name "python-dj-search-url")
+    (version "0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "dj-search-url" version))
+              (sha256
+               (base32
+                "0h7vshhglym6af2pplkyivk6y0g0ncq0xpdzi88kq2sha9c1lka2"))))
+    (build-system pyproject-build-system)
+    (home-page "https://github.com/dstufft/dj-search-url")
+    (synopsis "Configure Haystack search from URLs")
+    (description
+     "This package provides a facility for configuring Django Haystack
+applications with a @var{SEARCH_URL} variable.")
     (license license:bsd-2)))
 
 (define-public python-django-picklefield
   (package
     (name "python-django-picklefield")
-    (version "3.0.1")
+    (version "3.1.0")
     (home-page "https://github.com/gintas/django-picklefield")
     ;; Use a git checkout because the PyPI release lacks tests.
     (source
@@ -706,7 +792,7 @@ conn_max_age argument to easily enable Django’s connection pool.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "0ni7bc86k0ra4pc8zv451pzlpkhs1nyil1sq9jdb4m2mib87b5fk"))))
+          "00d8sm6cnkv5bxbs2a3qrm4g69nlaa1wari7mc697df8q91v6r0n"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -714,10 +800,7 @@ conn_max_age argument to easily enable Django’s connection pool.")
                     (lambda _
                       (invoke "python" "-m" "django" "test" "-v2"
                               "--settings=tests.settings"))))))
-    (propagated-inputs
-     ;; XXX: Picklefield has not been updated in 10+ years and fails tests
-     ;; with Django 3.2.
-     `(("python-django@2.2" ,python-django-2.2)))
+    (propagated-inputs (list python-django))
     (synopsis "Pickled object field for Django")
     (description "Pickled object field for Django")
     (license license:expat)))
@@ -795,6 +878,36 @@ separated to a separate project.  This is that project.  This framework can be
 used to attach comments to any model, so you can use it for comments on blog
 entries, photos, book chapters, or anything else.")
     (license license:bsd-3)))
+
+(define-public python-django-ninja
+  (package
+    (name "python-django-ninja")
+    (version "0.22.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "django_ninja" version))
+              (sha256
+               (base32
+                "0b19w7nvw7c3z19dbza49m24c3384j59w2xcr5l6jshxazkvsgli"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; FIXME: How to configure this test properly?
+     (list #:test-flags #~'("-k" "not test_improperly_configured")))
+    (propagated-inputs
+     (list python-django python-pydantic))
+    (native-inputs
+     (list python-flit-core
+           python-psycopg2
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-django))
+    (home-page "https://django-ninja.rest-framework.com")
+    (synopsis "REST framework for Django")
+    (description
+     "Django Ninja is a web framework for building APIs with Django
+and Python type hints.  It is designed to be fast and easy to use thanks
+to asyncio and Pydantic.")
+    (license license:expat)))
 
 (define-public python-django-pipeline
   (package

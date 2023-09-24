@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
-;;; Copyright © 2020-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2020-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
@@ -301,7 +301,9 @@
           (test-assert "service running"
             (marionette-eval
              '(begin
-                (use-modules (gnu services herd))
+                (use-modules (gnu services herd)
+                             (ice-9 match))
+
                 (match (start-service 'childhurd)
                   (#f #f)
                   (('service response-parts ...)
@@ -316,7 +318,8 @@
             ;; to the host won't work because QEMU listens on 127.0.0.1.
             (marionette-eval
              '(begin
-                (use-modules (ice-9 match))
+                (use-modules (ice-9 match)
+                             (ice-9 textual-ports))
 
                 (let loop ((n 60))
                   (if (zero? n)

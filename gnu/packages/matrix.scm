@@ -171,6 +171,13 @@ homeserver and generally help bootstrap the ecosystem.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "pyproject.toml"
+               ;; Remove upper bounds of cachetool pin.
+               (("cachetools (.*version = )\"\\^4" _ match)
+                (string-append "cachetools " match
+                               "\">=4")))))
          (add-before 'check 'install-tests
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (copy-recursively (string-append

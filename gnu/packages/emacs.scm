@@ -54,6 +54,7 @@
   #:use-module (gnu packages acl)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
@@ -85,7 +86,8 @@
   #:use-module (gnu packages xorg)
   #:use-module (guix utils)
   #:use-module (ice-9 match)
-  #:use-module (srfi srfi-1))
+  #:use-module (srfi srfi-1)
+  #:export (emacs->emacs-next))
 
 (define (%emacs-modules build-system)
   (let ((which (build-system-name build-system)))
@@ -94,20 +96,21 @@
       (srfi srfi-1)
       (ice-9 ftw))))
 
-(define-public emacs
+(define-public emacs-minimal
   (package
-    (name "emacs")
-    (version "28.2")
+    (name "emacs-minimal")
+    (version "29.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/emacs/emacs-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "12144dcaihv2ymfm7g2vnvdl4h71hqnsz1mljzf34cpg6ci1h8gf"))
+                "009f7q08vg919b90k2jrsznq73s3n224avz80dd2y7i3rjjq3y6j"))
               (patches (search-patches "emacs-exec-path.patch"
                                        "emacs-fix-scheme-indent-function.patch"
-                                       "emacs-source-date-epoch.patch"))
+                                       "emacs-native-comp-driver-options.patch"
+                                       "emacs-pgtk-super-key-fix.patch"))
               (modules '((guix build utils)))
               (snippet
                '(with-directory-excursion "lisp"
@@ -138,37 +141,14 @@
                             "\"~/.guix-profile/include\""
                             "\"/var/guix/profiles/system/profile/include\"")
                       " ")))))))
-    (build-system glib-or-gtk-build-system)
+    (build-system gnu-build-system)
     (arguments
      (list
-      #:tests? #f                      ; no check target
+      #:tests? #f                       ; no check target
       #:modules (%emacs-modules build-system)
-      #:configure-flags #~(list "--with-modules"
-                                "--with-cairo"
-                                "--with-native-compilation"
-                                "--disable-build-details")
-      #:make-flags #~(list "NATIVE_FULL_AOT=1")
+      #:configure-flags #~(list "--with-gnutls=no" "--disable-build-details")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'set-paths 'set-libgccjit-path
-            (lambda* (#:key inputs #:allow-other-keys)
-              (define (first-subdirectory/absolute directory)
-                (let ((files (scandir
-                              directory
-                              (lambda (file)
-                                (and (not (member file '("." "..")))
-                                     (file-is-directory? (string-append
-                                                          directory "/"
-                                                          file)))))))
-                  (and (not (null? files))
-                       (string-append directory "/" (car files)))))
-              (let* ((libgccjit-libdir
-                      (first-subdirectory/absolute ;; version
-                       (first-subdirectory/absolute ;; host type
-                        (search-input-directory inputs "lib/gcc")))))
-                (setenv "LIBRARY_PATH"
-                        (string-append (getenv "LIBRARY_PATH")
-                                       ":" libgccjit-libdir)))))
           (add-after 'unpack 'enable-elogind
             (lambda _
               (substitute* "configure.ac"
@@ -199,20 +179,6 @@
                 (("\\(tramp-compat-process-running-p \"(.*)\"\\)" all process)
                  (format #f "(or ~a (tramp-compat-process-running-p ~s))"
                          all (string-append "." process "-real"))))))
-          (add-after 'unpack 'patch-compilation-driver
-            (lambda _
-              (substitute* "lisp/emacs-lisp/comp.el"
-                (("\\(defcustom native-comp-driver-options nil")
-                 (format
-                  #f "(defcustom native-comp-driver-options '(~@{~s~^ ~})"
-                  (string-append
-                   "-B" #$(this-package-input "binutils") "/bin/")
-                  (string-append
-                   "-B" #$(this-package-input "glibc") "/lib/")
-                  (string-append
-                   "-B" #$(this-package-input "libgccjit") "/lib/")
-                  (string-append
-                   "-B" #$(this-package-input "libgccjit") "/lib/gcc/"))))))
           (add-before 'configure 'fix-/bin/pwd
             (lambda _
               ;; Use `pwd', not `/bin/pwd'.
@@ -244,7 +210,7 @@
                     (display
                      (string-append
                       "(when (require 'guix-emacs nil t)\n"
-                      "  (guix-emacs-autoload-packages)\n"
+                      "  (guix-emacs-autoload-packages 'no-reload)\n"
                       "  (advice-add 'package-load-all-descriptors"
                       " :after #'guix-emacs-load-package-descriptors))"))))
                 ;; Remove the extraneous subdirs.el file, as it causes Emacs to
@@ -254,29 +220,7 @@
                 (delete-file (string-append lisp-dir "/subdirs.el"))
                 ;; Byte compile the site-start files.
                 (emacs-byte-compile-directory lisp-dir))))
-          (add-after 'glib-or-gtk-wrap 'restore-emacs-pdmp
-            ;; restore the dump file that Emacs installs somewhere in
-            ;; libexec/ to its original state
-            (lambda* (#:key outputs target #:allow-other-keys)
-              (let* ((libexec (string-append (assoc-ref outputs "out")
-                                             "/libexec"))
-                     ;; each of these ought to only match a single file,
-                     ;; but even if not (find-files) sorts by string<,
-                     ;; so the Nth element in one maps to the Nth element of
-                     ;; the other
-                     (pdmp (find-files libexec "\\.pdmp$"))
-                     (pdmp-real (find-files libexec "\\.pdmp-real$")))
-                (for-each rename-file pdmp-real pdmp))))
-          (add-after 'glib-or-gtk-wrap 'strip-double-wrap
-            (lambda* (#:key outputs #:allow-other-keys)
-              ;; Directly copy emacs-X.Y to emacs, so that it is not wrapped
-              ;; twice.  This also fixes a minor issue, where WMs would not be
-              ;; able to track emacs back to emacs.desktop.
-              (with-directory-excursion (assoc-ref outputs "out")
-                (copy-file
-                 (car (find-files "bin" "^emacs-([0-9]+\\.)+[0-9]+$"))
-                 "bin/emacs"))))
-          (add-after 'strip-double-wrap 'wrap-emacs-paths
+          (add-after 'install 'wrap-emacs-paths
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (let* ((out (assoc-ref outputs "out"))
                      (lisp-dirs (find-files (string-append out "/share/emacs")
@@ -285,9 +229,9 @@
                 (for-each
                  (lambda (prog)
                    (wrap-program prog
-                     ;; emacs-next and variants rely on uname being in PATH for
-                     ;; Tramp.  Tramp paths can't be hardcoded, because they
-                     ;; need to be portable.
+                     ;; Some variants rely on uname being in PATH for Tramp.
+                     ;; Tramp paths can't be hardcoded, because they need to
+                     ;; be portable.
                      `("PATH" suffix
                        ,(map dirname
                              (list (search-input-file inputs "/bin/gzip")
@@ -300,64 +244,30 @@
                              ;; environment variables from emacs.
                              ;; Likewise, we don't need to patch helper binaries
                              ;; like etags, ctags or ebrowse.
-                             "^emacs(-[0-9]+(\\.[0-9]+)*)?$"))))))))
-    (inputs
-     (list gnutls
-           ncurses
-
-           ;; To "unshadow" ld-wrapper in native builds
-           (make-ld-wrapper "ld-wrapper" #:binutils binutils)
-
-           ;; For native compilation
-           binutils
-           (libc-for-target)
-           libgccjit
-
-           ;; Required for "core" functionality, such as dired and compression.
-           coreutils
-           gzip
-
-           ;; Avoid Emacs's limited movemail substitute that retrieves POP3
-           ;; email only via insecure channels.
-           ;; This is not needed for (modern) IMAP.
-           mailutils
-
-           gpm
-           libx11
-           gtk+
-           cairo
-           pango
-           harfbuzz
-           libxft
-           libtiff
-           giflib
-           lcms
-           libjpeg-turbo
-           libselinux
-           acl
-           jansson
-           gmp
-           ghostscript
-           poppler
-           elogind
-
-           ;; When looking for libpng `configure' links with `-lpng -lz', so we
-           ;; must also provide zlib as an input.
-           libpng
-           zlib
-           (librsvg-for-system)
-           libxpm
-           libxml2
-           libice
-           libsm
-           alsa-lib
-           dbus
-
-           ;; multilingualization support
-           libotf
-           m17n-lib))
-    (native-inputs
-     (list autoconf pkg-config texinfo))
+                             "^emacs(-[0-9]+(\\.[0-9]+)*)?$")))))
+          (add-after 'wrap-emacs-paths 'undo-double-wrap
+            (lambda* (#:key outputs #:allow-other-keys)
+              ;; Directly copy emacs-X.Y to emacs, so that it is not wrapped
+              ;; twice.  This also fixes a minor issue, where WMs would not be
+              ;; able to track emacs back to emacs.desktop.
+              (with-directory-excursion (assoc-ref outputs "out")
+                (copy-file
+                 (car (find-files "bin" "^emacs-([0-9]+\\.)+[0-9]+$"))
+                 "bin/emacs")))))))
+    (inputs (list bash-minimal coreutils gzip ncurses))
+    (native-inputs (list autoconf pkg-config texinfo))
+    (home-page "https://www.gnu.org/software/emacs/")
+    (synopsis "The extensible text editor (minimal build for byte-compilation)")
+    (description
+     "GNU Emacs is an extensible and highly customizable text editor.  It is
+based on an Emacs Lisp interpreter with extensions for text editing.  Emacs
+has been extended in essentially all areas of computing, giving rise to a
+vast array of packages supporting, e.g., email, IRC and XMPP messaging,
+spreadsheets, remote server editing, and much more.  Emacs includes extensive
+documentation on all aspects of the system, from basic editing to writing
+large Lisp programs.  It has full Unicode support for nearly all human
+languages.")
+    (license license:gpl3+)
     (native-search-paths
      (list (search-path-specification
             (variable "EMACSLOADPATH")
@@ -368,200 +278,200 @@
            (search-path-specification
             (variable "INFOPATH")
             (files '("share/info")))
-           ;; tree-sitter support is not yet available in emacs 28, but this
-           ;; search path won't harm and also will be beneficial for
-           ;; emacs-next and other emacs-* packages, which have tree-sitter
-           ;; support enabled.  Please, remove this comment, when emacs
-           ;; package is updated to 29.
+           ;; Most variants support tree-sitter, so let's include it here.
            (search-path-specification
             (variable "TREE_SITTER_GRAMMAR_PATH")
-            (files '("lib/tree-sitter")))))
+            (files '("lib/tree-sitter")))))))
 
-    (home-page "https://www.gnu.org/software/emacs/")
+(define-public emacs-no-x
+  (package/inherit emacs-minimal
+    (name "emacs-no-x")
+    (synopsis "The extensible, customizable, self-documenting text
+editor (console only)")
+    (arguments
+     (substitute-keyword-arguments (package-arguments emacs-minimal)
+       ((#:configure-flags flags #~'())
+        #~(cons* "--with-modules" "--with-native-compilation=aot"
+                 (delete "--with-gnutls=no" #$flags)))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-after 'set-paths 'set-libgccjit-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                (define (first-subdirectory/absolute directory)
+                  (let ((files (scandir
+                                directory
+                                (lambda (file)
+                                  (and (not (member file '("." "..")))
+                                       (file-is-directory? (string-append
+                                                            directory "/"
+                                                            file)))))))
+                    (and (not (null? files))
+                         (string-append directory "/" (car files)))))
+                (let* ((libgccjit-libdir
+                        (first-subdirectory/absolute ;; version
+                         (first-subdirectory/absolute ;; host type
+                          (search-input-directory inputs "lib/gcc")))))
+                  (setenv "LIBRARY_PATH"
+                          (string-append (getenv "LIBRARY_PATH")
+                                         ":" libgccjit-libdir)))))
+            (add-after 'unpack 'patch-compilation-driver
+              (lambda _
+                (substitute* "lisp/emacs-lisp/comp.el"
+                  (("\\(defcustom native-comp-driver-options nil")
+                   (format
+                    #f "(defcustom native-comp-driver-options '(~@{~s~^ ~})"
+                    (string-append
+                     "-B" #$(this-package-input "binutils") "/bin/")
+                    (string-append
+                     "-B" #$(this-package-input "glibc") "/lib/")
+                    (string-append
+                     "-B" #$(this-package-input "libgccjit") "/lib/")
+                    (string-append
+                     "-B" #$(this-package-input "libgccjit") "/lib/gcc/"))))))))))
+    (inputs
+     (modify-inputs (package-inputs emacs-minimal)
+       (prepend gnutls
+                ;; To "unshadow" ld-wrapper in native builds
+                (make-ld-wrapper "ld-wrapper" #:binutils binutils)
+                ;; For native compilation
+                binutils
+                (libc-for-target)
+                libgccjit
+
+                ;; Avoid Emacs's limited movemail substitute that retrieves POP3
+                ;; email only via insecure channels.
+                ;; This is not needed for (modern) IMAP.
+                mailutils
+
+                acl
+                alsa-lib
+                elogind
+                ghostscript
+                gpm
+                jansson
+                lcms
+                libice
+                libselinux
+                libsm
+                libxml2
+                m17n-lib
+                sqlite
+                tree-sitter
+                zlib)))))
+
+(define-public emacs
+  (package/inherit emacs-no-x
+    (name "emacs")
     (synopsis "The extensible, customizable, self-documenting text editor")
-    (description
-     "GNU Emacs is an extensible and highly customizable text editor.  It is
-based on an Emacs Lisp interpreter with extensions for text editing.  Emacs
-has been extended in essentially all areas of computing, giving rise to a
-vast array of packages supporting, e.g., email, IRC and XMPP messaging,
-spreadsheets, remote server editing, and much more.  Emacs includes extensive
-documentation on all aspects of the system, from basic editing to writing
-large Lisp programs.  It has full Unicode support for nearly all human
-languages.")
-    (license license:gpl3+)))
-
-(define-public emacs-next
-  (package
-    (inherit emacs)
-    (name "emacs-next")
-    (version "29.0.92")
-    (source
-     (origin
-       (inherit (package-source emacs))
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://git.savannah.gnu.org/git/emacs.git/")
-             (commit (string-append "emacs-" version))))
-       (file-name (git-file-name name version))
-       ;; emacs-source-date-epoch.patch is no longer necessary
-       (patches (search-patches "emacs-exec-path.patch"
-                                "emacs-fix-scheme-indent-function.patch"
-                                "emacs-native-comp-driver-options.patch"))
-       (sha256
-        (base32
-         "1h3p325859svcy43iv7wr27dp68049j9d44jq5akcynqdkxz4jjn"))))
-    (inputs
-     (modify-inputs (package-inputs emacs)
-       (prepend sqlite)))
-    (native-inputs
-     (modify-inputs (package-native-inputs emacs)
-       (prepend autoconf)))))
-
-(define-public emacs-next-tree-sitter
-  (package
-    (inherit emacs-next)
-    (name "emacs-next-tree-sitter")
-    (inputs
-     (modify-inputs (package-inputs emacs-next)
-       (prepend sqlite tree-sitter)))
-    (synopsis "Emacs text editor with @code{tree-sitter} support")
-    (description "This Emacs build supports tree-sitter.")))
-
-(define-public emacs-next-pgtk
-  (package
-    (inherit emacs-next-tree-sitter)
-    (name "emacs-next-pgtk")
-    (source
-     (origin
-       (inherit (package-source emacs-next-tree-sitter))
-       (patches
-        (append (search-patches "emacs-pgtk-super-key-fix.patch")
-                (origin-patches (package-source emacs-next-tree-sitter))))))
+    (build-system glib-or-gtk-build-system)
     (arguments
-     (substitute-keyword-arguments (package-arguments emacs-next-tree-sitter)
+     (substitute-keyword-arguments (package-arguments emacs-no-x)
+       ((#:modules _) (%emacs-modules build-system))
        ((#:configure-flags flags #~'())
-        #~(cons* "--with-pgtk" #$flags))))
-    (synopsis "Emacs text editor with @code{pgtk} and @code{tree-sitter} support")
-    (description "This Emacs build implements graphical UI purely in terms
-of GTK and supports tree-sitter.")))
+        #~(cons* "--with-cairo" #$flags))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            ;; Note: due to the changed #:modules, %standard-phases in #$phases
+            ;; refers to glib-or-gtk:%standard-phases, so we don't need to add
+            ;; them ourselves.
+            (add-after 'glib-or-gtk-wrap 'restore-emacs-pdmp
+              ;; Restore the dump file that Emacs installs somewhere in
+              ;; libexec/ to its original state.
+              (lambda* (#:key outputs target #:allow-other-keys)
+                (let* ((libexec (string-append (assoc-ref outputs "out")
+                                               "/libexec"))
+                       ;; each of these ought to only match a single file,
+                       ;; but even if not (find-files) sorts by string<,
+                       ;; so the Nth element in one maps to the Nth element of
+                       ;; the other
+                       (pdmp (find-files libexec "\\.pdmp$"))
+                       (pdmp-real (find-files libexec "\\.pdmp-real$")))
+                  (for-each rename-file pdmp-real pdmp))))))))
+    (inputs (modify-inputs (package-inputs emacs-no-x)
+              (prepend
+               cairo
+               dbus
+               gtk+
+               giflib
+               harfbuzz
+               libjpeg-turbo
+               libotf
+               libpng
+               (librsvg-for-system)
+               libtiff
+               libx11
+               libxft
+               libxpm
+               pango
+               poppler)))))
 
-(define-public emacs-next-pgtk-xwidgets
-  (package
-    (inherit emacs-next-pgtk)
-    (name "emacs-next-pgtk-xwidgets")
-    (synopsis "Emacs text editor with @code{xwidgets} and @code{pgtk} support")
-    (arguments
-     (substitute-keyword-arguments (package-arguments emacs-next-pgtk)
-       ((#:configure-flags flags #~'())
-        #~(cons "--with-xwidgets" #$flags))))
-    (inputs
-     (modify-inputs (package-inputs emacs-next-pgtk)
-       (prepend gsettings-desktop-schemas webkitgtk-with-libsoup2)))))
-
-(define-public emacs-minimal
-  ;; This is the version that you should use as an input to packages that just
-  ;; need to byte-compile .el files.
+(define-public emacs-pgtk
   (package/inherit emacs
-    (name "emacs-minimal")
-    (synopsis "The extensible text editor (used only for byte-compilation)")
-    (build-system gnu-build-system)
+    (name "emacs-pgtk")
     (arguments
      (substitute-keyword-arguments (package-arguments emacs)
        ((#:configure-flags flags #~'())
-        #~(list "--with-gnutls=no" "--disable-build-details"))
-       ((#:modules _) (%emacs-modules build-system))
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (delete 'set-libgccjit-path)
-            (delete 'patch-compilation-driver)
-            (delete 'restore-emacs-pdmp)
-            (delete 'strip-double-wrap)))))
-    (inputs (list ncurses coreutils gzip))
-    (native-inputs (list autoconf pkg-config))))
+        #~(cons* "--with-pgtk" #$flags))))
+    (synopsis "Emacs text editor with @code{pgtk} frames")
+    (description "This Emacs build implements graphical UI purely in terms
+of GTK.")))
 
 (define-public emacs-xwidgets
   (package/inherit emacs
     (name "emacs-xwidgets")
     (synopsis "The extensible, customizable, self-documenting text
 editor (with xwidgets support)")
-    (build-system gnu-build-system)
     (arguments
      (substitute-keyword-arguments (package-arguments emacs)
        ((#:configure-flags flags #~'())
-        #~(cons "--with-xwidgets" #$flags))
-       ((#:modules _) (%emacs-modules build-system))
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (delete 'restore-emacs-pdmp)
-            (delete 'strip-double-wrap)))))
+        #~(cons "--with-xwidgets" #$flags))))
     (inputs
      (modify-inputs (package-inputs emacs)
        (prepend webkitgtk-with-libsoup2 libxcomposite)))))
 
+(define-public emacs-pgtk-xwidgets
+  (package
+    (inherit emacs-pgtk)
+    (name "emacs-pgtk-xwidgets")
+    (synopsis "Emacs text editor with @code{xwidgets} and @code{pgtk} support")
+    (arguments
+     (substitute-keyword-arguments (package-arguments emacs-pgtk)
+       ((#:configure-flags flags #~'())
+        #~(cons "--with-xwidgets" #$flags))))
+    (inputs
+     (modify-inputs (package-inputs emacs-pgtk)
+       (prepend gsettings-desktop-schemas webkitgtk-with-libsoup2)))))
+
 (define-public emacs-motif
-  (package/inherit emacs
+  (package/inherit emacs-no-x
     (name "emacs-motif")
     (synopsis
      "The extensible, customizable, self-documenting text editor (with Motif
 toolkit)")
-    (build-system gnu-build-system)
+    ;; Using emacs' inputs as base, since it has all the graphical stuff
     (inputs (modify-inputs (package-inputs emacs)
               (delete "gtk+")
               (prepend inotify-tools motif)))
     (arguments
      (substitute-keyword-arguments
-         (package-arguments
-          emacs)
+         (package-arguments emacs-no-x)
        ((#:configure-flags flags #~'())
         #~(cons "--with-x-toolkit=motif"
-                #$flags))
-       ((#:modules _)
-        (%emacs-modules build-system))
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (delete 'restore-emacs-pdmp)
-            (delete 'strip-double-wrap)))))))
-
-(define-public emacs-no-x
-  (package/inherit emacs
-    (name "emacs-no-x")
-    (synopsis "The extensible, customizable, self-documenting text
-editor (console only)")
-    (build-system gnu-build-system)
-    (inputs (modify-inputs (package-inputs emacs)
-              (delete "libx11" "gtk+" "libxft" "libtiff" "giflib" "libjpeg"
-                      "imagemagick" "libpng" "librsvg" "libxpm" "libice"
-                      "libsm" "cairo" "pango" "harfbuzz"
-                      ;; These depend on libx11, so remove them as well.
-                      "libotf" "m17n-lib" "dbus")))
-    (arguments
-     (substitute-keyword-arguments (package-arguments emacs)
-       ((#:configure-flags flags #~'())
-        #~(delete "--with-cairo" #$flags))
-       ((#:modules _) (%emacs-modules build-system))
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (delete 'restore-emacs-pdmp)
-            (delete 'strip-double-wrap)))))))
+                #$flags))))))
 
 (define-public emacs-no-x-toolkit
-  (package/inherit emacs
+  (package/inherit emacs-no-x
     (name "emacs-no-x-toolkit")
     (synopsis "The extensible, customizable, self-documenting text
 editor (without an X toolkit)" )
-    (build-system gnu-build-system)
+    ;; Using emacs' inputs as base, since it has all the graphical stuff
     (inputs (modify-inputs (package-inputs emacs)
               (delete "gtk+")
               (prepend inotify-tools)))
     (arguments
-     (substitute-keyword-arguments (package-arguments emacs)
+     (substitute-keyword-arguments (package-arguments emacs-no-x)
        ((#:configure-flags flags #~'())
-        #~(cons "--with-x-toolkit=no" #$flags))
-       ((#:modules _) (%emacs-modules build-system))
-       ((#:phases phases)
-        #~(modify-phases #$phases
-           (delete 'restore-emacs-pdmp)
-           (delete 'strip-double-wrap)))))))
+        #~(cons "--with-x-toolkit=no" #$flags))))))
 
 (define-public emacs-wide-int
   (package/inherit emacs
@@ -572,6 +482,42 @@ editor (with wide ints)" )
      (substitute-keyword-arguments (package-arguments emacs)
        ((#:configure-flags flags)
         #~(cons "--with-wide-int" #$flags))))))
+
+(define-public emacs-next-minimal
+  (let ((commit "9d27b95b263473fb41a30e3f6ea5607c99e93a61")
+        (revision "1"))
+   (package
+    (inherit emacs-minimal)
+    (name "emacs-next-minimal")
+    (version (git-version "30.0.50" revision commit))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.savannah.gnu.org/git/emacs.git")
+             (commit commit)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00mwpq1msr3jij281w5piqmbwq968xr8dn9hqbf4r947ck754kn9")))))))
+
+(define* (emacs->emacs-next emacs #:optional name
+                            #:key (version (package-version emacs-next-minimal))
+                            (source (package-source emacs-next-minimal)))
+  (package
+    (inherit emacs)
+    (name (or name
+              (and (string-prefix? "emacs" (package-name emacs))
+                   (string-append "emacs-next"
+                                  (string-drop (package-name emacs)
+                                               (string-length "emacs"))))))
+    (version version)
+    (source source)))
+
+(define-public emacs-next (emacs->emacs-next emacs))
+(define-public emacs-next-pgtk (emacs->emacs-next emacs-pgtk))
+(define-public emacs-next-pgtk-xwidgets (emacs->emacs-next emacs-pgtk-xwidgets))
+(define-public emacs-next-tree-sitter
+  (deprecated-package "emacs-next-tree-sitter" emacs-next))
 
 (define-public guile-emacs
   (let ((commit "41120e0f595b16387eebfbf731fff70481de1b4b")

@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
+;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1210,7 +1211,8 @@ containing MODULE-FILES and possibly other files as well."
                             '((guix build compile)
                               (guix build utils)))
       #~(begin
-          (use-modules (srfi srfi-26)
+          (use-modules (srfi srfi-1)
+                       (srfi srfi-26)
                        (ice-9 match)
                        (ice-9 format)
                        (ice-9 threads)
@@ -1243,13 +1245,23 @@ containing MODULE-FILES and possibly other files as well."
                     (* 100. (/ completed total)) total)
             (force-output))
 
-          (define (process-directory directory files output)
-            ;; Hide compilation warnings.
-            (parameterize ((current-warning-port (%make-void-port "w")))
-              (compile-files directory #$output files
-                             #:workers (parallel-job-count)
-                             #:report-load report-load
-                             #:report-compilation report-compilation)))
+          (define* (process-directory directory files output #:key (size 25))
+            (let ((chunks (unfold
+                           (lambda (seed) (< (length seed) size)) ;p
+                           (cute take <> size)                    ;f
+                           (cute drop <> size)                    ;g
+                           files                                  ;seed
+                           list)))                                ;tail
+              (for-each
+               (lambda (chunk)
+                 ;; Hide compilation warnings.
+                 (parameterize ((current-warning-port (%make-void-port "w")))
+                   (compile-files directory output chunk
+                                  #:workers (parallel-job-count)
+                                  #:report-load report-load
+                                  #:report-compilation report-compilation)
+                   (gc)))
+               chunks)))
 
           (setvbuf (current-output-port) 'line)
           (setvbuf (current-error-port) 'line)
@@ -1277,7 +1289,8 @@ containing MODULE-FILES and possibly other files as well."
 
           (mkdir #$output)
           (chdir #+module-tree)
-          (process-directory "." '#+module-files #$output)
+          (let ((size (if (equal? #$name "guix-packages-base") 10 25)))
+            (process-directory "." '#+module-files #$output #:size size))
           (newline))))
 
   (computed-file name build

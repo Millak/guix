@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014-2017, 2019-2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Mark H Weaver <mhw@netris.org>
+;;; Copyright © 2023 Janneke Nieuwenhuizen <jannek@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -147,7 +148,9 @@ data format changes between libc versions."
 
 (define %default-locale-libcs
   ;; The libcs for which we build locales by default.
-  (list glibc-2.33 glibc))
+  (if (system-hurd?)
+      (list glibc/hurd)
+      (list glibc-2.33 glibc)))
 
 (define %default-locale-definitions
   ;; Arbitrary set of locales that are built by default.  They are here mostly

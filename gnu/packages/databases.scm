@@ -488,14 +488,14 @@ mapping from string keys to string values.")
 (define-public memcached
   (package
     (name "memcached")
-    (version "1.6.18")
+    (version "1.6.21")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "https://memcached.org/files/memcached-" version ".tar.gz"))
        (sha256
-        (base32 "0n21svnjw8j7bdbwrn0apnfql7ckraqgrl7wj9fsqj86h6w6mpfb"))))
+        (base32 "1vm27la2yanjhwwdwabci4c21yv9hy5iqas47kcxaza1zh79i267"))))
     (build-system gnu-build-system)
     (inputs
      (list libevent cyrus-sasl))
@@ -3830,13 +3830,13 @@ libraries with SQLALchemy.")
     (name "python-psycopg-pool")
     ;; The connection pooling code is on a different release cadence
     ;; from the driver code, so fetch the latest PyPI release.
-    (version "3.0.3")
+    (version "3.1.7")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "psycopg-pool" version))
               (sha256
                (base32
-                "1nx139pwzsgrz253zjxw2sf8h713s79h4cp1falmpc39j08djb46"))))
+                "1pkx7nj1mhacwpna7ldzqfqxd1xg8826600r0bs9ad1h93f429yh"))))
     (build-system python-build-system)
     (arguments
      (list #:tests? #f                  ;run for psycopg below
@@ -3855,7 +3855,7 @@ with the @code{psycopg} PostgreSQL driver.")
 (define-public python-psycopg
   (package
     (name "python-psycopg")
-    (version "3.0.8")
+    (version "3.1.10")
     (source (origin
               ;; Fetch from git because PyPI contains only cythonized sources.
               (method git-fetch)
@@ -3865,7 +3865,7 @@ with the @code{psycopg} PostgreSQL driver.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "16i19jqd9lg9r7bc63ssh527cccrpf49g1nlayikk5qlswpzp75y"))))
+                "0hqk45wlaflz69cy1r0hbv11bwb89p6hjb7zmgqas26gdhg37n0r"))))
     (build-system python-build-system)
     (arguments
      (list #:phases
@@ -3907,13 +3907,19 @@ with the @code{psycopg} PostgreSQL driver.")
                                "-o" "asyncio_mode=auto"
                                ;; FIXME: Many of the typing tests are failing,
                                ;; conveniently tagged as slow...
-                               "-k" "not slow"))))))))
+                               "-k" "not slow")))))
+               ;; The sanity check phase attempts loading the C extension
+               ;; before the Python library, which results in the following:
+               ;;   <ImportError: the psycopg package should be imported
+               ;;    before psycopg_c>.
+               (delete 'sanity-check))))
     (native-inputs
      (list python-cython-3
            python-mypy
            python-psycopg-pool
            python-pytest
            python-pytest-asyncio
+           python-anyio
            python-tenacity
            pproxy
            tzdata-for-tests))

@@ -3787,6 +3787,13 @@ UCSC genome browser.")
                       "-xf" (assoc-ref inputs "test-data"))
               ;; This one requires bowtie-build
               (delete-file "plastid/test/functional/test_crossmap.py")))
+          (add-after 'unpack 'patch-for-python-3.10
+            (lambda _
+              ;; Some classes were moved from collections to collections.abc
+              ;; in Python 3.10.
+              (substitute* "plastid/readers/bigbed.pyx"
+                ((", Iterable")
+                 "\nfrom collections.abc import Iterable"))))
           (add-before 'check 'build-extensions
             (lambda _
               ;; Cython extensions have to be built before running the tests.
@@ -17809,8 +17816,10 @@ pycisTarget and SCENIC.")
      (list python-bokeh
            python-dask
            python-distributed
+           python-lz4
            python-numpy
            python-pandas
+           python-pyarrow
            python-scikit-learn
            python-scipy
            python-tornado-6))
@@ -18413,6 +18422,7 @@ Cflags: -I${includedir}~%"
     (description "The wavefront alignment (WFA) algorithm is an exact
 gap-affine algorithm that takes advantage of homologous regions between the
 sequences to accelerate the alignment process.")
+    (properties `((tunable? . #t)))
     (license license:expat)))
 
 (define-public vcflib
@@ -19846,7 +19856,7 @@ sequences")
     (inputs
      (list zlib))
     (home-page "https://github.com/ACEnglish/bwapy")
-    (synopsis "Python bindings to bwa alinger")
+    (synopsis "Python bindings to bwa aligner")
     (description "This package provides Python bindings to the bwa mem
 aligner.")
     ;; These Python bindings are licensed under Mozilla Public License 2.0,
@@ -20456,7 +20466,7 @@ based on the pairwise alignment of hidden Markov models (HMMs).")
 (define-public wfmash
   (package
     (name "wfmash")
-    (version "0.8.1")
+    (version "0.10.5")
     (source
      (origin
        (method url-fetch)
@@ -20464,7 +20474,7 @@ based on the pairwise alignment of hidden Markov models (HMMs).")
                            version "/wfmash-v" version ".tar.gz"))
        (sha256
         (base32
-         "031cm1arpfckvihb28vlk69mirpnmlag81zcscfba1bac58wvr7c"))
+         "1jsvnnh14h3ir4l13qhmglhd25kzwvni9apgvr1lbikqwgrpkiq4"))
        (snippet
         #~(begin
             (use-modules (guix build utils))
@@ -20475,14 +20485,12 @@ based on the pairwise alignment of hidden Markov models (HMMs).")
                "<atomic_queue/atomic_queue.h>"))
             ;; Remove compiler optimizations.
             (substitute* (find-files "." "CMakeLists\\.txt")
-              (("-mcx16 ") "")
-              (("-march=native ") ""))
-            ;; Allow building on architectures other than x86_64.
-            (substitute* "src/common/dset64.hpp"
-              (("!__x86_64__") "0"))))))
+              (("-march=native ") ""))))))
     (build-system cmake-build-system)
     (arguments
      (list
+       #:configure-flags
+       #~(list "-DWFA_PNG_AND_TSV=ON")
        #:phases
        #~(modify-phases %standard-phases
            (replace 'check
@@ -20595,7 +20603,8 @@ based on the pairwise alignment of hidden Markov models (HMMs).")
            jemalloc
            zlib))
     (native-inputs
-     (list samtools))
+     (list pkg-config
+           samtools))
     (synopsis "Base-accurate DNA sequence aligner")
     (description "@code{wfmash} is a DNA sequence read mapper based on mash
 distances and the wavefront alignment algorithm.  It is a fork of MashMap that

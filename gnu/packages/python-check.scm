@@ -2023,6 +2023,31 @@ valid Python syntax that are likely to be commented out code.")
 behavior-driven development (TDD and BDD).")
     (license license:expat)))
 
+(define-public python-slotscheck
+  (package
+    (name "python-slotscheck")
+    (version "0.17.0")
+    (home-page "https://github.com/ariebovenberg/slotscheck")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference (url home-page)
+                                  (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0k5jjabd219ndlssfqcdb5sn891ffrxzw84l5r8pirzy74i7znr4"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-poetry-core
+           python-pydantic
+           python-pytest
+           python-pytest-mock))
+    (propagated-inputs (list python-click python-tomli))
+    (synopsis "Ensure @code{__slots__} are working properly")
+    (description
+     "@code{slotscheck} is a tool to validate Python class @code{__slots__}.")
+    (license license:expat)))
+
 (define-public python-stestr
   (package
     (name "python-stestr")

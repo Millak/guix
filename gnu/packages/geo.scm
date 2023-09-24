@@ -89,6 +89,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gps)
   #:use-module (gnu packages graphics)
+  #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages haskell-apps)
   #:use-module (gnu packages haskell-xyz)
@@ -1535,60 +1536,54 @@ visualizing and performing calculations with weather data.")
 (define-public libosmium
   (package
     (name "libosmium")
-    (version "2.18.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/osmcode/libosmium")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0fh57mpii1ksacwfx5rz213j896aklib53jbybld2i517q2mmxr0"))))
+    (version "2.19.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/osmcode/libosmium")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0d69xzd29hk846g049y2g668mr8kaf05f6a26s3qn6az062hxfa7"))))
     (build-system cmake-build-system)
-    (propagated-inputs
-     (list boost
-           bzip2
-           expat
-           gdal
-           geos
-           lz4
-           proj
-           protozero
-           sparsehash
-           utfcpp
-           zlib))
-    (native-inputs
-     (list doxygen))
+    (propagated-inputs (list boost
+                             bzip2
+                             expat
+                             gdal
+                             geos
+                             lz4
+                             proj-7
+                             protozero
+                             zlib))
+    (native-inputs (list doxygen graphviz-minimal))
     (home-page "https://osmcode.org/libosmium/")
     (synopsis "C++ library for working with OpenStreetMap data")
-    (description "Libosmium is a fast and flexible C++ library for working with
+    (description
+     "Libosmium is a fast and flexible C++ library for working with
 OpenStreetMap data.")
     (license license:boost1.0)))
 
 (define-public osmium-tool
   (package
     (name "osmium-tool")
-    (version "1.14.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/osmcode/osmium-tool")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0zgyqyrs89vch0qnkh9m5xq079sr2wmydy5zz4l8xbysbjf6xry5"))
-       (modules '((guix build utils)))
-       (snippet
-        ;; Remove bundled libraries.
-        '(delete-file-recursively "include/rapidjson"))))
+    (version "1.15.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/osmcode/osmium-tool")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0d90vz316xdl3c416nicgdw7ybw17l2125wgxglbzl7jaqngapy5"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Remove bundled libraries.
+               '(delete-file-recursively "include/rapidjson"))))
     (build-system cmake-build-system)
-    (inputs
-     (list libosmium
-           rapidjson))
-    (native-inputs
-     (list pandoc))
+    (inputs (list libosmium rapidjson))
+    (native-inputs (list pandoc))
     (home-page "https://osmcode.org/osmium-tool/")
     (synopsis "Osmium command-line tool")
     (description "Command line tool for working with OpenStreetMap data
@@ -1598,43 +1593,44 @@ based on the Osmium library.")
 (define-public osm2pgsql
   (package
     (name "osm2pgsql")
-    (version "1.8.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/openstreetmap/osm2pgsql")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0ssz7ny4wx8dzl3027p37xc5h7m1aj6bzxzdc6g8fbp7q57ykvxz"))
-       (modules '((guix build utils)))
-       (snippet
-        ;; Remove bundled libraries.
-        '(delete-file-recursively "contrib"))))
+    (version "1.9.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/openstreetmap/osm2pgsql")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "198qcgl42pb8lk1bn41ncp8hc9gcg9k2p0ny42vak019w5l6jcj7"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Remove bundled libraries.
+               '(delete-file-recursively "contrib"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f; tests fail because we need to setup a database
-       #:configure-flags
-       (list "-DEXTERNAL_LIBOSMIUM=ON"
-             "-DEXTERNAL_PROTOZERO=ON"
-             "-DEXTERNAL_FMT=ON")))
-    (inputs
-     (list boost
-           bzip2
-           expat
-           fmt-8
-           libosmium
-           lua
-           postgresql
-           proj
-           protozero
-           zlib))
-    (native-inputs
-     (list python python-psycopg2))
-    (home-page "https://github.com/openstreetmap/osm2pgsql")
-    (synopsis "OSM data importer to postgresql")
-    (description "Osm2pgsql is a tool for loading OpenStreetMap data into a
+     (list #:tests? #f ;tests fail because we need to setup a database
+           #:configure-flags #~(list "-DUSE_PROJ_LIB=4" ;use API version 4
+                                     "-DWITH_LUAJIT=ON"
+                                     "-DEXTERNAL_LIBOSMIUM=ON"
+                                     "-DEXTERNAL_PROTOZERO=ON"
+                                     "-DEXTERNAL_FMT=ON")))
+    (inputs (list boost
+                  bzip2
+                  expat
+                  fmt-8
+                  libosmium
+                  luajit
+                  nlohmann-json
+                  postgresql
+                  proj-7
+                  protozero
+                  zlib))
+    (native-inputs (list pandoc python python-argparse-manpage))
+    (home-page "https://osm2pgsql.org/")
+    (synopsis "OSM data importer to PostgreSQL")
+    (description
+     "Osm2pgsql is a tool for loading OpenStreetMap data into a
 PostgreSQL / PostGIS database suitable for applications like rendering into a
 map, geocoding with Nominatim, or general analysis.")
     (license license:gpl2+)))
@@ -2161,43 +2157,40 @@ The API also works with MaxMind’s free GeoLite2 databases.")
 
 (define-public routino
   (package
-   (name "routino")
-   (version "3.3.3")
-   (source
-    (origin
-     (method url-fetch)
-     (uri (string-append "http://www.routino.org/download/routino-"
-                         version ".tgz"))
-     (sha256
-      (base32 "1xa7l2bjn832nk6bc7b481nv8hd2gj41jwhg0d2qy10lqdvjpn5b"))))
-   (build-system gnu-build-system)
-   (native-inputs
-    (list perl))
-   (inputs
-    (list bzip2 xz zlib))
-   (arguments
-    `(#:test-target "test"
-      #:phases
-      (modify-phases %standard-phases
-        (replace 'configure
-          (lambda* (#:key outputs #:allow-other-keys)
-            (substitute* "Makefile.conf"
-              (("prefix=/usr/local")
-               (string-append "prefix=" (assoc-ref outputs "out")))
-              (("LDFLAGS_LDSO=-Wl,-R\\.")
-               "LDFLAGS_LDSO=-Wl,-R$(libdir)")
-              (("#CFLAGS\\+=-DUSE_XZ")
-               "CFLAGS+=-DUSE_XZ")
-              (("#LDFLAGS\\+=-llzma")
-               "LDFLAGS+=-llzma"))
-            #t)))))
-   (synopsis "Routing application for OpenStreetMap data")
-   (description
-    "Routino is an application for finding a route between two points
+    (name "routino")
+    (version "3.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://www.routino.org/download/routino-"
+                                  version ".tgz"))
+              (sha256
+               (base32
+                "0aw5idqz7nv458llgwp5wcgikf34xcblpq46mq7msxfib0m8vahb"))))
+    (build-system gnu-build-system)
+    (native-inputs (list perl))
+    (inputs (list bzip2 xz zlib))
+    (arguments
+     (list #:test-target "test"
+           #:phases #~(modify-phases %standard-phases
+                        (replace 'configure
+                          (lambda* (#:key outputs #:allow-other-keys)
+                            (substitute* "Makefile.conf"
+                              (("prefix=/usr/local")
+                               (string-append "prefix="
+                                              (assoc-ref outputs "out")))
+                              (("LDFLAGS_LDSO=-Wl,-R\\.")
+                               "LDFLAGS_LDSO=-Wl,-R$(libdir)")
+                              (("#CFLAGS\\+=-DUSE_XZ")
+                               "CFLAGS+=-DUSE_XZ")
+                              (("#LDFLAGS\\+=-llzma")
+                               "LDFLAGS+=-llzma")))))))
+    (synopsis "Routing application for OpenStreetMap data")
+    (description
+     "Routino is an application for finding a route between two points
 using the dataset of topographical information collected by
 @url{https://www.OpenStreetMap.org}.")
-   (home-page "https://www.routino.org/")
-   (license license:agpl3+)))
+    (home-page "https://www.routino.org/")
+    (license license:agpl3+)))
 
 (define-public r-rnaturalearthhires
   (let ((commit "c3785a8c44738de6ae8f797080c0a337ebed929d")

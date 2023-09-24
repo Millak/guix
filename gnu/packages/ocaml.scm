@@ -219,7 +219,7 @@ This package produces a native @command{ocamlc} and a bytecode @command{ocamllex
     (arguments
      `(#:configure-flags '("--enable-ocamltest")
        #:test-target "tests"
-       #:make-flags '("world.opt")
+       #:make-flags '("defaultentry")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-/bin/sh-references
@@ -5324,82 +5324,86 @@ necessary set of rewriters.")
     (license license:expat)))
 
 (define-public bap
-  (package
-    (name "bap")
-    (version "2.5.0-alpha")
-    (home-page "https://github.com/BinaryAnalysisPlatform/bap")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url home-page)
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1fw9pp0xnssc08qqfkcafffap4f46hw7zmk80gif5yc4nazga8w5"))))
-   (build-system ocaml-build-system)
-   (arguments
-    (list
-      #:use-make? #t
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'configure 'fix-ncurses
-            (lambda _
-              (substitute* "oasis/llvm"
-                (("-lcurses") "-lncurses"))
-              #t))
-          (replace 'configure
-            (lambda* (#:key outputs inputs #:allow-other-keys)
-              (for-each make-file-writable (find-files "." "."))
-              ;; Package name changed
-              (substitute* "oasis/elf-loader"
-                (("bitstring.ppx") "ppx_bitstring"))
-              ;; We don't have a monolithic llvm
-              (substitute* "oasis/llvm.setup.ml.in"
-                (("llvm_static = \"true\"") "true"))
-              (invoke "./configure" "--prefix"
-                      (assoc-ref outputs "out")
-                      "--libdir"
-                      (string-append
+  (let (;; Let pin one commit because -alpha is subject to change.
+        ;; The last stable release v2.5.0 is from July 2022.
+        (revision "0")
+        (commit "f995d28a4a34abb4cef8e0b3bd3c41cd710ccf1a"))
+    (package
+      (name "bap")
+      (version (git-version "2.6.0-alpha" revision commit))
+      (home-page "https://github.com/BinaryAnalysisPlatform/bap")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url home-page)
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1zfkc8nagf8kvxbypalbhf6gs0c7i48zx53hlpak2ipjwhvm5im5"))))
+      (build-system ocaml-build-system)
+      (arguments
+       (list
+        #:use-make? #t
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'configure 'fix-ncurses
+              (lambda _
+                (substitute* "oasis/llvm"
+                  (("-lcurses") "-lncurses"))
+                #t))
+            (replace 'configure
+              (lambda* (#:key outputs inputs #:allow-other-keys)
+                (for-each make-file-writable (find-files "." "."))
+                ;; Package name changed
+                (substitute* "oasis/elf-loader"
+                  (("bitstring.ppx") "ppx_bitstring"))
+                ;; We don't have a monolithic llvm
+                (substitute* "oasis/llvm.setup.ml.in"
+                  (("llvm_static = \"true\"") "true"))
+                (invoke "./configure" "--prefix"
                         (assoc-ref outputs "out")
-                        "/lib/ocaml/site-lib")
-                      (string-append "--with-llvm-version=" #$(package-version llvm))
-                      "--with-llvm-config=llvm-config"
-                      "--disable-ghidra"
-                      "--disable-llvm-static"
-                      "--enable-llvm"
-                      "--enable-everything"))))))
-   (native-inputs (list clang ocaml-oasis ocaml-ounit))
-   (propagated-inputs
-     (list
-       camlzip
-       ocaml-bitstring
-       ocaml-cmdliner
-       ocaml-core-kernel
-       ocaml-ezjsonm
-       ocaml-fileutils
-       ocaml-frontc
-       ocaml-graph
-       ocaml-linenoise
-       ocaml-ocurl
-       ocaml-piqi
-       ocaml-ppx-bap
-       ocaml-ppx-bitstring
-       ocaml-re
-       ocaml-uri
-       ocaml-utop
-       ocaml-uuidm
-       ocaml-yojson
-       ocaml-z3
-       ocaml-zarith))
-   (inputs
-    (list gmp llvm ncurses))
-   (synopsis "Binary Analysis Platform")
-   (description "Binary Analysis Platform is a framework for writing program
+                        "--libdir"
+                        (string-append
+                         (assoc-ref outputs "out")
+                         "/lib/ocaml/site-lib")
+                        (string-append "--with-llvm-version=" #$(package-version llvm))
+                        "--with-llvm-config=llvm-config"
+                        "--disable-ghidra"
+                        "--disable-llvm-static"
+                        "--enable-llvm"
+                        "--enable-everything"))))))
+      (native-inputs (list clang ocaml-oasis ocaml-ounit))
+      (propagated-inputs
+       (list
+        camlzip
+        ocaml-bitstring
+        ocaml-cmdliner
+        ocaml-core-kernel
+        ocaml-ezjsonm
+        ocaml-fileutils
+        ocaml-frontc
+        ocaml-graph
+        ocaml-linenoise
+        ocaml-ocurl
+        ocaml-piqi
+        ocaml-ppx-bap
+        ocaml-ppx-bitstring
+        ocaml-re
+        ocaml-uri
+        ocaml-utop
+        ocaml-uuidm
+        ocaml-yojson
+        ocaml-z3
+        ocaml-zarith))
+      (inputs
+       (list gmp llvm ncurses))
+      (synopsis "Binary Analysis Platform")
+      (description "Binary Analysis Platform is a framework for writing program
 analysis tools, that target binary files.  The framework consists of a plethora
 of libraries, plugins, and frontends.  The libraries provide code reusability,
 the plugins facilitate extensibility, and the frontends serve as entry points.")
-   (license license:expat)))
+      (license license:expat))))
 
 (define-public ocaml-camomile
   (package

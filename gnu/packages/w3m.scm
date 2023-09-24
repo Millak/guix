@@ -61,7 +61,8 @@
      '(#:tests? #f  ; no check target
        ;; Use $EDITOR instead of a hard-coded value.
        #:configure-flags (list "--with-editor="
-                               "--with-imagelib=imlib2")
+                               "--with-imagelib=imlib2"
+                               "--enable-image=fb,x11")
        #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'fix-perl
@@ -77,9 +78,7 @@
            openssl
            zlib))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal perl pkg-config))
     (home-page "https://w3m.sourceforge.net/")
     (synopsis "Text-mode web browser")
     (description

@@ -481,14 +481,14 @@ errors.")
 (define-public rdiff-backup
   (package
     (name "rdiff-backup")
-    (version "2.2.5")
+    (version "2.2.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/rdiff-backup/rdiff-backup/releases/"
                            "download/v" version "/rdiff-backup-" version ".tar.gz"))
        (sha256
-        (base32 "13m0kq9y6rzgaq0zlzh7qhi789qmbzp3dnc7y57fmhsfg1mq5ql6"))))
+        (base32 "1ksqjkqadhxzp83zdfs80dvb494vn9q4anppnwxm3ikb4rbq6xyh"))))
     (build-system python-build-system)
     (native-inputs
      (list python-setuptools-scm))
@@ -635,13 +635,13 @@ detection, and lossless compression.")
 (define-public borg
   (package
     (name "borg")
-    (version "1.2.4")
+    (version "1.2.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "borgbackup" version))
        (sha256
-        (base32 "1a2d6z2ln476l0fcnkl4rpciij5b2lql44b71aivg0cy8vlm9gd4"))
+        (base32 "178klb3pglhhz553frf928v7zvaiqvri9fbhj33yx7h3hvqgi9mp"))
        (modules '((guix build utils)))
        (snippet
         #~(begin

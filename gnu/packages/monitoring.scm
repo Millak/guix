@@ -454,14 +454,14 @@ and persisting them to disk using the Whisper time-series library.")
 (define-public graphite-web
   (package
     (name "graphite-web")
-    (version "1.1.7")
+    (version "1.1.10")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "graphite-web" version))
        (sha256
         (base32
-         "1l5a5rry9cakqxamvlx4xq63jifmncb6815bg9vy7fg1zyd3pjxk"))))
+         "0nnk3kwn0b6bq9xnmv9bac6hpcbdgpgwf283c1ck5nm80panh61z"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f               ;XXX: not in PyPI release & requires database
@@ -471,22 +471,20 @@ and persisting them to disk using the Whisper time-series library.")
            (lambda _
              (substitute* "setup.py"
                ;; Allow newer versions of django-tagging.
-               (("django-tagging==")
-                "django-tagging>="))
-             #t))
+               (("django-tagging==") "django-tagging>=")
+               ;; And Django.
+               (("Django>=1\\.8,<3\\.1") "Django>=1.8,<4"))))
          ;; Don't install to /opt
          (add-after 'unpack 'do-not-install-to-/opt
            (lambda _ (setenv "GRAPHITE_NO_PREFIX" "1") #t)))))
     (propagated-inputs
      (list python-cairocffi
-           python-pytz
-           python-whisper
-           python-django-2.2
+           python-django-3.2
            python-django-tagging
-           python-scandir
-           python-urllib3
            python-pyparsing
-           python-txamqp))
+           python-pytz
+           python-six
+           python-urllib3))
     (home-page "https://graphiteapp.org/")
     (synopsis "Scalable realtime graphing system")
     (description "Graphite is a scalable real-time graphing system that does

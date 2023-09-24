@@ -390,7 +390,7 @@ queries.  A subset of VQL (Verity Query Language) is supported.")
 (define-public fsearch
   (package
     (name "fsearch")
-    (version "0.2.2")
+    (version "0.2.3")
     (source
      (origin
        (method git-fetch)
@@ -399,7 +399,7 @@ queries.  A subset of VQL (Verity Query Language) is supported.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "126sg0fa96vxwinih120riqhj42jlxs2h1bp373r6ml7jwkvlyyn"))))
+        (base32 "12vj1ymvg561594vdq852ianbkgnvrq585qp5jrrv2kq307jh5sl"))))
     (build-system meson-build-system)
     (native-inputs
      (list autoconf
@@ -568,14 +568,14 @@ conflict with slocate compatibility.")
 (define-public plocate
   (package
     (name "plocate")
-    (version "1.1.18")
+    (version "1.1.19")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://plocate.sesse.net/download/"
                            "plocate-" version ".tar.gz"))
        (sha256
-        (base32 "0b71chcnl0xymwpcg8ixsnh64017cj5irz04rq0rnwbh1c2mg5lk"))))
+        (base32 "0rb15sifsmcm756bifs3y8wj282vp0zzagg6kkvbjyczibpchnyr"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags

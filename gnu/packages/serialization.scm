@@ -52,8 +52,6 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
-  #:use-module (gnu packages cmake)
-  #:use-module (gnu packages cpp)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages gcc)
@@ -64,8 +62,7 @@
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-science)
-  #:use-module (gnu packages python-xyz)
-  #:use-module (gnu packages perl))
+  #:use-module (gnu packages python-xyz))
 
 (define-public avro-cpp-1.9
   (package

@@ -266,6 +266,9 @@ directory comparison and more.")
     (arguments
      `(#:make-flags
        (list (string-append "CC=" ,(cc-for-target))
+             ;; Work around, e.g., “ssl.c:149:7: error: ‘EC_KEY_free’ is
+             ;; deprecated: Since OpenSSL 3.0 [-Werror=deprecated-declarations]”
+             "CFLAGS=-Wno-deprecated-declarations"
              ;; vsf_findlibs.sh looks only for hard-coded {/usr,}/lib file names
              ;; that will never exist on Guix.  Manage libraries ourselves.
              "LDFLAGS=-lcap -lpam"

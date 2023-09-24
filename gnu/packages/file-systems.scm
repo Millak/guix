@@ -373,7 +373,7 @@ always possible.")
 (define-public exfat-utils
   (package
     (name "exfat-utils")
-    (version "1.3.0")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
@@ -381,7 +381,7 @@ always possible.")
              "https://github.com/relan/exfat/releases/download/v"
              version "/exfat-utils-" version ".tar.gz"))
        (sha256
-        (base32 "0da8f8mm1sbwqp7prh78qk33xm0b8kk2d5is7mh2szlhgdxd1syz"))))
+        (base32 "0sdzflmwcxjjliq1yqhidy46kbkvj16kxrbrgsj0ci0hjgx7a594"))))
     (build-system gnu-build-system)
     (home-page "https://github.com/relan/exfat")
     (synopsis "Utilities to manipulate exFAT file systems")
@@ -394,7 +394,7 @@ ones.")
 (define-public fsarchiver
   (package
     (name "fsarchiver")
-    (version "0.8.6")
+    (version "0.8.7")
     (source
      (origin
        (method git-fetch)
@@ -404,7 +404,7 @@ ones.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ry2sdkfbg4bwcldk42g1i3wa3z4pr9yh9dil6ilhwcvhqiw41zc"))))
+        (base32 "1vy8ay0fn32i298bx9scqghi7xm9z2101zxk5xshbrkl00b2m4nm"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake pkg-config))
@@ -716,7 +716,7 @@ from the bcachefs-tools package.  It is meant to be used in initrds.")
 (define-public exfatprogs
   (package
     (name "exfatprogs")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method git-fetch)
@@ -725,7 +725,7 @@ from the bcachefs-tools package.  It is meant to be used in initrds.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02a6178brikg12wl80h9qgxyhpm6mly0jnml0rs9phb7lkbv9kzh"))))
+        (base32 "1g5aqhjz0l58kvmis1j5b5qkn58hjs582f36ygiqkgxvp4njkny4"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -1922,7 +1922,7 @@ and rewritable media that wears out (DVD/CD-RW).")
 (define-public fuse-overlayfs
   (package
     (name "fuse-overlayfs")
-    (version "1.10")
+    (version "1.13")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1930,7 +1930,7 @@ and rewritable media that wears out (DVD/CD-RW).")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "085hrz0nrdsjfjci0z2qfyqrydn8wwdp790dx2x67hwdw1kib3wp"))
+                "03gqb4czswqhx6zrv9jj88mf3mczk4m7azcjgr785c2lmga442ly"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs

@@ -5,7 +5,7 @@
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018-2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2020, 2022, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -205,6 +205,26 @@ compression algorithm.")
     (description
      "This package aims to provide faster zlib and gzip compatible compression
 and decompression by implementing Python bindings for the ISA-L library.")
+    (license license:expat)))
+
+(define-public python-pylsqpack
+  (package
+    (name "python-pylsqpack")
+    (version "0.3.17")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pylsqpack" version))
+              (sha256
+               (base32
+                "1qiwmavmxy6ba89mrdkzk52hqrd4awnp4yca395pxp2np66pf81g"))))
+    ;; FIXME: Unbundle ls-qpack and xxhash!
+    (build-system pyproject-build-system)
+    (home-page "https://github.com/aiortc/pylsqpack")
+    (synopsis "Python bindings for @code{ls-qpack}")
+    (description
+     "@code{pylsqpack} is a wrapper around the @code{ls-qpack} library.
+It provides Python Decoder and Encoder objects to read or write HTTP/3
+headers compressed with QPACK.")
     (license license:expat)))
 
 (define-public python-pyppmd

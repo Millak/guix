@@ -253,13 +253,13 @@ implementation.
 (define-public python-cmarkgfm
   (package
     (name "python-cmarkgfm")
-    (version "0.8.0")
+    (version "2022.10.27")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "cmarkgfm" version))
               (sha256
                (base32
-                "1jxk9cdir4q1bpjla7b7y1qfjmr7mkd0f802b2sb88njk079p1gy"))
+                "16875bazqd7p7qiky343w0fzasqziyvf72nipyh1r47a2rvsrnck"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -270,13 +270,6 @@ implementation.
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
-               (add-after 'unpack 'relax-requirements
-                 (lambda _
-                   ;; Don't depend on bleeding-edge CFFI, as it is
-                   ;; apparently only needed for Python >= 3.10.
-                   (substitute* "setup.py"
-                     (("cffi>=1\\.15\\.0")
-                      "cffi>=1.0"))))
                (add-after 'unpack 'copy-cmark-gfm
                  (lambda _
                    ;; This package needs the cmark-gfm source files

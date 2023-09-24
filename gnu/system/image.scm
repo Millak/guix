@@ -77,6 +77,7 @@
             root-partition
 
             mbr-disk-image
+            mbr-hybrid-disk-image
             efi-disk-image
             iso9660-image
             docker-image
@@ -86,6 +87,7 @@
 
             image-with-os
             mbr-raw-image-type
+            mbr-hybrid-raw-image-type
             efi-raw-image-type
             efi32-raw-image-type
             qcow2-image-type
@@ -156,6 +158,13 @@ parent image record."
            (inherit root-partition)
            (offset root-offset))))))
 
+(define mbr-hybrid-disk-image
+  (image-without-os
+   (format 'disk-image)
+   (partition-table-type 'mbr)
+   (partitions
+    (list esp-partition root-partition))))
+
 (define efi-disk-image
   (image-without-os
    (format 'disk-image)
@@ -216,6 +225,11 @@ set to the given OS."
   (image-type
    (name 'mbr-raw)
    (constructor (cut image-with-os mbr-disk-image <>))))
+
+(define mbr-hybrid-raw-image-type
+  (image-type
+   (name 'mbr-hybrid-raw)
+   (constructor (cut image-with-os mbr-hybrid-disk-image <>))))
 
 (define efi-raw-image-type
   (image-type
@@ -515,6 +529,13 @@ used in the image."
         (format #f "~%~/~/partition-table-type = \"~a\"~%~/"
                 (image-partition-table-type image)))
        (else "")))
+
+    (when (and (gpt-image? image)
+               (not
+                (memq (bootloader-name bootloader) '(grub-efi grub-efi32))))
+      (raise
+       (formatted-message
+        (G_ "EFI bootloader required with GPT partitioning"))))
 
     (let* ((format (image-format image))
            (image-type (format->image-type format))

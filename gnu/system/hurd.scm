@@ -26,6 +26,7 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages certs)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages file)
@@ -34,6 +35,7 @@
   #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages hurd)
   #:use-module (gnu packages less)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu services)
   #:use-module (gnu services base)
@@ -71,7 +73,7 @@
   (list shepherd-0.8 hurd netdde bash coreutils file findutils grep sed
         diffutils patch gawk tar gzip bzip2 xz lzip
         guile-3.0-latest guile-colorized guile-readline
-        net-base inetutils less shadow sudo which
+        net-base nss-certs inetutils less procps shadow sudo which
         info-reader))
 
 (define %base-services/hurd
@@ -127,6 +129,7 @@
     (file-systems '())
     (packages %base-packages/hurd)
     (timezone "GNUrope")
+    (locale-libcs (list glibc/hurd))
     (name-service-switch #f)
     (essential-services (hurd-default-essential-services this-operating-system))
     (setuid-programs %setuid-programs/hurd)))

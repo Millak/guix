@@ -63,6 +63,7 @@
 ;;; Copyright © 2022 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 David Thompson <dthompson2@worcester.edu>
 ;;; Copyright © 2023 Christopher Howard <christopher@librehacker.com>
+;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -98,6 +99,7 @@
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system scons)
   #:use-module (guix build-system trivial)
@@ -1709,6 +1711,42 @@ other systems that want to manipulate WebAssembly files.")
     (description "WASM3 is a fast WebAssembly interpreter.")
     (license license:expat)))
 
+(define-public wasm-micro-runtime
+  (package
+    (name "wasm-micro-runtime")
+    (version "1.2.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/bytecodealliance/wasm-micro-runtime")
+                    (commit (string-append "WAMR-" version))))
+              (file-name (git-file-name "WAMR" version))
+              (sha256
+               (base32
+                "1s7r8vfxixf737jp12cf7as68fd63lrmqdxj7fiqdla2wk89ly3f"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      ;; Running the tests is difficult.  The test script in
+      ;; tests/wamr-test-suites insists on downloading and building wabt (even
+      ;; if we provide it) and it has a hard time accepting a separately
+      ;; provided clone of the https://github.com/WebAssembly/spec repository.
+      ;; Future releases provide unit tests which may be easier to run.
+      #:tests? #false
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _
+             (chdir "product-mini/platforms/linux"))))))
+    (home-page "https://bytecodealliance.github.io/wamr.dev")
+    (synopsis "WebAssembly Micro Runtime")
+    (description "WebAssembly Micro Runtime (WAMR) is a lightweight standalone
+WebAssembly (Wasm) runtime with small footprint, high performance and highly
+configurable features for applications cross from embedded, IoT, edge to
+Trusted Execution Environment (TEE), smart contract, cloud native and other
+features.")
+    (license license:asl2.0)))
+
 (define-public websocketpp
   (package
     (name "websocketpp")
@@ -1947,7 +1985,7 @@ of people.")
 (define-public websockify
   (package
     (name "websockify")
-    (version "0.8.0")
+    (version "0.11.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1956,15 +1994,16 @@ of people.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pcic8qs0gdwrfjgfaf893jyddaw97wcjm2mmvwn0xyhmy8mbmw1"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f)) ; FIXME: 2 out of 6 tests fail with "ImportError: No module
-     ; named 'stubout'". The tests can be run by replacing the check phase with
-     ; the command "python setup.py nosetests --verbosity=3".
-    (native-inputs (list ; Required for tests:
-                         python-mox3 python-nose))
-    (propagated-inputs (list python-numpy))
+                "0ysqylpyv17s52634wn3vrwf7y9b5ig7fdfv8vwj1272lvv68qgk"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-nose2))
+    (inputs
+     (list python-jwcrypto
+           python-numpy
+           python-redis
+           python-requests
+           ;; TODO: Remove simplejson for versions > 0.11.0.
+           python-simplejson))
     (home-page "https://github.com/novnc/websockify")
     (synopsis "WebSockets support for any application/server")
     (description "Websockify translates WebSockets traffic to normal socket
@@ -4807,6 +4846,31 @@ http://opensearch.a9.com} compatible search engines.")
 their web site.")
     (home-page "https://metacpan.org/release/WWW-RobotRules")))
 
+(define-public python-lambda-4dn
+  (package
+    (name "python-lambda-4dn")
+    (version "0.12.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "python-lambda-4dn" version))
+              (sha256
+               (base32
+                "1p5i8wsi8q5fpq63i7n7ri1w1lnh4gpn17f88vhkbh14aah5wxj1"))))
+    (properties '(("upstream-name" . "python-lambda-4dn")))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-boto3 python-botocore python-docutils
+           python-six))
+    (home-page "https://github.com/4dn-dcic/python-lambda")
+    (synopsis
+     "Toolkit for developing and deploying Python code in AWS Lambda")
+    (description
+     "This is a toolset for developing and deploying serverless Python code in
+AWS Lambda.  This is a fork of Nick Ficano's Python-lambda package.  It is
+frozen for the needs of projects at the 4D Nucleome Data Coordination and
+Integration Center (4DN-DCIC).")
+    (license (list license:isc license:expat))))
+
 (define-public python-feedparser
   (package
     (name "python-feedparser")
@@ -4836,6 +4900,36 @@ their web site.")
 CDF, Atom 0.3, and Atom 1.0 feeds.")
     (license (list license:bsd-2           ; source code
                    license:freebsd-doc)))) ; documentation
+
+(define-public python-tibanna
+  (package
+    (name "python-tibanna")
+    (version "4.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "tibanna" version))
+              (sha256
+               (base32
+                "185jr5b1dfgh82xcjal0y9wbzds37s0yhx0hp8awlvw26v72awv2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; Tests require AWS credentials and access to the internet.
+     (list #:tests? #false))
+    (propagated-inputs
+     (list python-benchmark-4dn
+           python-boto3 python-botocore
+           python-lambda-4dn python-tomlkit))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest
+           python-pytest-cov
+           python-pytest-mock))
+    (home-page "https://github.com/4dn-dcic/tibanna")
+    (synopsis "Tibanna runs portable workflows on the AWS Cloud")
+    (description
+     "Tibanna runs portable pipelines (in CWL/WDL and Snakemake) on the AWS
+Cloud.")
+    (license license:expat)))
 
 (define-public guix-data-service
   (let ((commit "1c7539418743e0dfe3a9cad22c414fd732daef8f")

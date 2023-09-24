@@ -36,8 +36,6 @@
 
 (define-module (gnu packages bootloaders)
   #:use-module (gnu packages)
-  #:use-module (gnu packages admin)
-  #:use-module (gnu packages algebra)
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages base)
   #:use-module (gnu packages disk)

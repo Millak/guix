@@ -104,7 +104,7 @@ chart.")
 (define-public boxes
   (package
     (name "boxes")
-    (version "2.2.0")
+    (version "2.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -113,7 +113,7 @@ chart.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0vv2gaav1m4z2xdk0k3ragmv4kcnzv7p3v97lkjl1wbfmk5nhz07"))))
+                "1blni7kjskg6y9ycvhwq3srfvh891xhfnjbh5h2zl0pb5szpllqi"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -685,7 +685,7 @@ city, state, zip, or area code, it will check out.")
 (define-public conflict
   (package
     (name "conflict")
-    (version "20210108")
+    (version "20221002")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -693,7 +693,7 @@ city, state, zip, or area code, it will check out.")
                     version ".tgz"))
               (sha256
                (base32
-                "0mls4climvp7v9hnc3zh01mh270kqcj797ng0xslwb027lipis4h"))))
+                "1z6z61yiss9m45m3agqs92l569r55w9nsqaap56kh568mcy3y64c"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
