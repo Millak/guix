@@ -1430,6 +1430,10 @@ on stdout instead of using a socket as the Emacsclient does.")
                 (substitute* "test/submodule-test.el"
                   (("\\(ert-deftest (status|ids) .*" all)
                    (string-append all " (skip-unless nil)")))))
+            (add-after 'unpack 'ert-number-tests
+              (lambda _
+                (ert-number-tests "test/repository-test.el"
+                                  "repository-head-for-worktree")))
             (add-before 'install 'prepare-for-install
               (lambda _
                 (let ((s "../source"))
@@ -2324,7 +2328,9 @@ replacement.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03j94fgw1bljbjqmikbn9mnrfifxf7g9zrb727zmnnrjwyi0wd4n"))))
+        (base32 "03j94fgw1bljbjqmikbn9mnrfifxf7g9zrb727zmnnrjwyi0wd4n"))
+       (patches
+        (search-patches "emacs-haskell-mode-no-redefine-builtin.patch"))))
     (propagated-inputs
      (list emacs-dash))
     (native-inputs
@@ -4888,7 +4894,9 @@ current match, total matches and exit status.
                   (make-file-writable test-file)
                   (substitute* test-file
                     (("testdata/indentation_tests/" all)
-                     (string-append "test/" all)))))))))
+                     (string-append "test/" all)))
+                  (ert-number-tests "test/go-fill-paragraph-test.el"
+                                    "go--fill-paragraph-block-region")))))))
       (build-system emacs-build-system)
       (native-inputs (list emacs-ert-runner))
       (home-page "https://github.com/dominikh/go-mode.el")
@@ -7450,7 +7458,14 @@ blocks with @code{org-babel} in @code{org-mode}.")
         #:test-command #~(list "emacs" "--batch" "-L" "."
                                "--eval=(require 'ob-go)"
                                "-l" "test-ob-go.el"
-                               "-f" "ert-run-tests-batch-and-exit")))
+                               "-f" "ert-run-tests-batch-and-exit")
+        #:phases #~(modify-phases %standard-phases
+                     (add-after 'unpack 'ert-number-tests
+                       (lambda _
+                         (ert-number-tests "test-ob-go.el"
+                                           "ob-go/string-variables")
+                         (ert-number-tests "test-ob-go.el"
+                                           "ob-go/imports"))))))
       (home-page "https://github.com/pope/ob-go")
       (synopsis "Org Babel support for evaluating Go code")
       (description "@code{ob-go} enables Org Babel support for evaluating Go
@@ -12823,11 +12838,16 @@ navigate code in a tree-like fashion.")
             (add-before 'check 'make-test-writable
               (lambda _
                 (make-file-writable "lispy-test.el")))
-            (add-before 'check 'remove-failing-test
+            (add-before 'check 'fix-tests
               (lambda _
+                (ert-number-tests "lispy-test.el" "lispy-outline-add")
+                (ert-number-tests "lispy-test.el" "lispy-ace-subword")
                 (emacs-batch-edit-file "lispy-test.el"
                   `(progn
-                    (dolist (test '("lispy-eval-python-str" "lispy--clojure-dot-object"))
+                    (dolist (test '("lispy-eval-python-str"
+                                    "lispy-outline-add-0"
+                                    "lispy--clojure-dot-object"
+                                    "lispy--pretty-args"))
                             (goto-char (point-min))
                             (re-search-forward
                              (concat "ert-deftest " test))
@@ -13905,7 +13925,22 @@ A function to toggle the @code{*elfeed-log*} buffer in a popup window.
          (modify-phases %standard-phases
            (add-before 'check 'chmod
              (lambda _
-               (chmod "test/fixture-mark-feed-ignore.org" #o644))))))
+               (chmod "test/fixture-mark-feed-ignore.org" #o644)))
+           (add-before 'check 'xt-number-tests
+             (lambda _
+               ((lambda (file test-name)     ; variant of ert-number-tests
+                  (emacs-batch-edit-file file
+                    `(let ((i 0))
+                       (while (re-search-forward ,(string-append "xt-deftest "
+                                                                 test-name)
+                                                 nil t)
+                         (goto-char (match-beginning 0))
+                         (kill-region (match-beginning 0) (match-end 0))
+                         (insert (format "xt-deftest %s-%d" ,test-name i))
+                         (setq i (+ i 1)))
+                       (basic-save-buffer))))
+                "test/elfeed-org-test.el"
+                "rmh-elfeed-org-convert-headline-to-tagger-params"))))))
       (propagated-inputs
        (list emacs-elfeed emacs-org emacs-dash emacs-s))
       (native-inputs
@@ -14167,7 +14202,11 @@ another window.")
        (modify-phases %standard-phases
          ;; This phase incorrectly attempts to substitute "activate" and fails
          ;; doing so.
-         (delete 'patch-el-files))
+         (delete 'patch-el-files)
+         (add-after 'unpack 'ert-number-tests
+             (lambda _
+               (ert-number-tests "test/pyvenv-hook-dir-test.el"
+                                 "pyvenv-hook-dir"))))
        #:tests? #t
        #:test-command '("ert-runner")))
     (native-inputs
@@ -14377,6 +14416,12 @@ completion, interactive development and more.")
                     (url "https://github.com/Fanael/rainbow-delimiters")
                     (commit version)))
               (file-name (git-file-name name version))
+              ;; Fix tests for Emacs 29
+              ;; https://github.com/Fanael/rainbow-delimiters/pull/78
+              (modules '((guix build utils)))
+              (snippet '(substitute* "rainbow-delimiters-test.el"
+                          (("category c-type " all)
+                           (string-append all "c-<>-c-types-set "))))
               (sha256
                (base32
                 "179mzsd8nvlr0ym9zf9fgdngsgxj3kdgbjblynliirsyk05ssrwc"))))
@@ -17323,7 +17368,8 @@ the Emacs TempEl package.")
        (sha256
         (base32 "0via9dzw8m5lzymg1h78xkwjssh39zr3g6ccyamlf1rjzjsyxknv"))
        (patches
-        (search-patches "emacs-yasnippet-fix-tests.patch"))))
+        (search-patches "emacs-yasnippet-fix-empty-snippet-next.patch"
+                        "emacs-yasnippet-fix-tests.patch"))))
     (build-system emacs-build-system)
     (arguments
      `(#:tests? #t
@@ -22110,8 +22156,8 @@ object has been freed.")
   (license license:unlicense)))
 
 (define-public emacs-emacsql
-  (let ((commit "e1baaf2f874df7f9259a8ecca978e03d3ddae5b5")
-        (revision "0"))
+  (let ((commit "29194a63ede3ee24c7457c2fde03b0f1320ca4b1")
+        (revision "1"))
     (package
       (name "emacs-emacsql")
       (version (git-version "3.1.1" revision commit))
@@ -22123,7 +22169,7 @@ object has been freed.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0dvqs1jg5zqn0i3r67sn1a40h5rm961q9vxvmqxbgvdhkjvip8fn"))))
+          (base32 "14yj53xxqi3009bdj39k2fqwyc896yp2m7gdkgyv47wlkh1xwzxh"))))
       (build-system emacs-build-system)
       (arguments
        (list
@@ -22139,12 +22185,6 @@ object has been freed.")
                     (srfi srfi-26))
         #:phases
         #~(modify-phases %standard-phases
-            (add-before 'install 'remove-sqlite-builtin
-              ;; Current emacs 28.2 doesn't have sqlite feature and compilation
-              ;; of this file fails.  This phase should be removed, when emacs
-              ;; package is updated to 29.
-              (lambda _
-                (delete-file "emacsql-sqlite-builtin.el")))
             (add-before 'install 'patch-elisp-shell-shebangs
               (lambda _
                 (substitute* (find-files "." "\\.el")
@@ -22180,47 +22220,6 @@ object has been freed.")
 including numbers, strings, symbols, lists, vectors, and closures.  EmacSQL
 has no concept of @code{TEXT} values; it's all just Lisp objects.  The Lisp
 object @code{nil} corresponds 1:1 with @code{NULL} in the database.")
-      (license license:gpl3+))))
-
-(define-public emacs-emacsql-sqlite3
-  ;; This commit contains changes necessary for Sqlite 3.38+.
-  (let ((commit "2113618732665f2112cb932a66c0e89c404d8777")
-        (revision "1"))
-    (package
-      (name "emacs-emacsql-sqlite3")
-      (version (git-version "1.0.2" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/cireu/emacsql-sqlite3")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0r8svrd0d4cflx8a8gkynnhafcpv3ksn9rds8dhyx5yibximbzsw"))))
-      (build-system emacs-build-system)
-      (arguments
-       `(#:tests? #t
-         #:test-command '("emacs" "-Q" "--batch" "-L" "."
-                          "--load" "emacsql-sqlite3-test.el"
-                          "-f" "ert-run-tests-batch-and-exit")
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'embed-path-to-sqlite3
-             (lambda _
-               (substitute* "emacsql-sqlite3.el"
-                 (("\\(executable-find \"sqlite3\"\\)")
-                  (string-append "\"" (which "sqlite3") "\""))))))))
-      (native-inputs
-       (list emacs-ert-runner))
-      (inputs
-       (list sqlite))
-      (propagated-inputs
-       (list emacs-emacsql))
-      (home-page "https://github.com/cireu/emacsql-sqlite3")
-      (synopsis "EmacSQL backend for SQLite")
-      (description "This is yet another EmacSQL backend for SQLite which uses
-official @command{sqlite3} executable to access SQL database.")
       (license license:gpl3+))))
 
 (define-public emacs-closql
@@ -24648,7 +24647,8 @@ downloading manager for Emacs.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03afgdbs5nmhw833svrqky7fmfs1zlvqzcj7j5g29sakivs60xqc"))))
+        (base32 "03afgdbs5nmhw833svrqky7fmfs1zlvqzcj7j5g29sakivs60xqc"))
+       (patches (search-patches "emacs-helpful-fix-tests.patch"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-dash emacs-elisp-refs emacs-f emacs-s))
@@ -28058,6 +28058,8 @@ files are easily readable and they work nicely with version control systems.")
              (url "https://github.com/domtronn/all-the-icons.el")
              (commit version)))
        (file-name (git-file-name name version))
+       (patches
+        (search-patches "emacs-all-the-icons-remove-duplicate-rs.patch"))
        (sha256
         (base32 "0lwgvgnqf7vihglm0c5bwsxbl4x7f641289cji5s7jwy2dbsqk7g"))))
     (build-system emacs-build-system)
@@ -28078,10 +28080,12 @@ files are easily readable and they work nicely with version control systems.")
                  (install-file "octicons.ttf" fonts)
                  (install-file "weathericons.ttf" fonts)))))
          (replace 'check
-           (lambda* (#:key outputs #:allow-other-keys)
-             (apply invoke "ert-runner" "-l"
-                    (append (find-files "data" "\\.el")
-                            '("all-the-icons-faces.el"))))))))
+           (lambda* (#:key tests? outputs #:allow-other-keys)
+             (if tests?
+                 (apply invoke "ert-runner" "-l"
+                        (append (find-files "data" "\\.el")
+                                '("all-the-icons-faces.el")))
+                 (format #t "test suite not run~%")))))))
     (native-inputs
      (list emacs-f emacs-ert-runner))
     (propagated-inputs
@@ -30454,10 +30458,10 @@ comfort of Magit and the rest of Emacs.")
      (license license:gpl3+)))
 
 (define-public emacs-matcha
-  (let ((commit "c7df5cf5cdac9ae369e241342389ccda0205eab9"))
+  (let ((commit "dc4a940b3360aadeb2d9eaab7bd0c85e1e85ab76"))
     (package
       (name "emacs-matcha")
-      (version (git-version "0.0.1" "1" commit)) ;no upstream release
+      (version (git-version "0.0.1" "2" commit)) ;no upstream release
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -30466,7 +30470,7 @@ comfort of Magit and the rest of Emacs.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1lfnh1glg6al677m7ci0x8g5wjdhjxlfl3nv1f1ppsw4dpnwsj9b"))))
+                  "1bljnv5z289hxn73y7krbd0wya6acnwphabxwfajilpc118qz3lp"))))
       (propagated-inputs (list emacs-hydra))
       (build-system emacs-build-system)
       (home-page "https://github.com/jojojames/matcha/")
@@ -30645,7 +30649,6 @@ JavaScript.")
           (base32 "0cbchri4117wjcnlk3npi4x1sfx248vck1q61cis8drrrz4c8jyp"))
          (file-name (git-file-name name version))))
       (build-system emacs-build-system)
-      (arguments (list #:emacs emacs-next))
       (propagated-inputs
        (list emacs-dash
              emacs-s
@@ -31137,7 +31140,25 @@ definition-jumping and type-checking on demand.")
      (list emacs-js2-mode))
     (arguments
      `(#:tests? #t
-       #:test-command '("make" "test")))
+       #:test-command '("make" "test")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'js2-number-tests
+           (lambda _
+             ((lambda (file test-name)     ; variant of ert-number-tests
+                (emacs-batch-edit-file file
+                  `(let ((i 0))
+                     (while (re-search-forward
+                             ,(string-append "js2-deftest-parse "
+                                             test-name)
+                             nil t)
+                       (goto-char (match-beginning 0))
+                       (kill-region (match-beginning 0) (match-end 0))
+                       (insert (format "xt-deftest %s-%d" ,test-name i))
+                       (setq i (+ i 1)))
+                     (basic-save-buffer))))
+                "rjsx-tests.el.el"
+                "no-attr-no-children-self-closing"))))))
     (home-page "https://github.com/felipeochoa/rjsx-mode")
     (synopsis "Major mode for JSX files")
     (description "This package extends the parser of @code{js2-mode} to
@@ -35603,7 +35624,7 @@ go directly to where they belong.")
        (list texinfo))
       (propagated-inputs
        (list emacs-dash
-             emacs-emacsql-sqlite3
+             emacs-emacsql
              emacs-f
              emacs-magit
              emacs-org

@@ -1,0 +1,89 @@
+From e9e779ead4d703ad423e46c23abd0c9afd7d5ed2 Mon Sep 17 00:00:00 2001
+From: Arjan Adriaanse <arjan@adriaan.se>
+Date: Tue, 15 Aug 2023 00:00:05 +0200
+Subject: [PATCH] test: fix expected output for Emacs 29
+
+---
+ test/T453-emacs-reply.sh                                 | 1 -
+ test/T454-emacs-dont-reply-names.sh                      | 9 +++------
+ .../notmuch-reply-duplicate-4                            | 1 -
+ 3 files changed, 3 insertions(+), 8 deletions(-)
+
+diff --git a/test/T453-emacs-reply.sh b/test/T453-emacs-reply.sh
+index 0a27d066..de400b85 100755
+--- a/test/T453-emacs-reply.sh
++++ b/test/T453-emacs-reply.sh
+@@ -17,7 +17,6 @@ cat <<EOF > EXPECTED
+ From: Notmuch Test Suite <test_suite@notmuchmail.org>
+ To: Antoine Beaupré <anarcat@orangeseeds.org>
+ Subject: Re: bug: "no top level messages" crash on Zen email loops
+-In-Reply-To: <874llc2bkp.fsf@curie.anarc.at>
+ Fcc: MAIL_DIR/sent
+ --text follows this line--
+ Antoine Beaupré <anarcat@orangeseeds.org> writes:
+diff --git a/test/T454-emacs-dont-reply-names.sh b/test/T454-emacs-dont-reply-names.sh
+index 3a770177..9ed4f18b 100755
+--- a/test/T454-emacs-dont-reply-names.sh
++++ b/test/T454-emacs-dont-reply-names.sh
+@@ -17,13 +17,12 @@ test_emacs '(let ((message-dont-reply-to-names "notmuchmail\\|noreply\\|harvard"
+ 	      (test-visible-output "OUTPUT-FULL.raw"))'
+ 
+ notmuch_dir_sanitize < OUTPUT-FULL.raw > OUTPUT-FULL
+-head -6 OUTPUT-FULL > OUTPUT
++head -5 OUTPUT-FULL > OUTPUT
+ 
+ cat <<EOF > EXPECTED
+ From: Notmuch Test Suite <test_suite@notmuchmail.org>
+ To: Mikhail Gusarov <dottedmag@dottedmag.net>
+ Subject: Re: [notmuch] Working with Maildir storage?
+-In-Reply-To: <20091117203301.GV3165@dottiness.seas.harvard.edu>
+ Fcc: MAIL_DIR/sent
+ --text follows this line--
+ EOF
+@@ -38,14 +37,13 @@ test_emacs '(let ((message-dont-reply-to-names
+ 	      (test-visible-output "OUTPUT-FULL-PRED.raw"))'
+ 
+ notmuch_dir_sanitize < OUTPUT-FULL-PRED.raw > OUTPUT-FULL-PRED
+-head -7 OUTPUT-FULL-PRED > OUTPUT-PRED
++head -6 OUTPUT-FULL-PRED > OUTPUT-PRED
+ 
+ cat <<EOF > EXPECTED-PRED
+ From: Notmuch Test Suite <test_suite@notmuchmail.org>
+ To: Lars Kellogg-Stedman <lars@seas.harvard.edu>
+ Cc: notmuch@notmuchmail.org
+ Subject: Re: [notmuch] Working with Maildir storage?
+-In-Reply-To: <20091117203301.GV3165@dottiness.seas.harvard.edu>
+ Fcc: MAIL_DIR/sent
+ --text follows this line--
+ EOF
+@@ -59,14 +57,13 @@ test_emacs '(let ((message-dont-reply-to-names nil))
+ 	      (test-visible-output "OUTPUT-FULL-NIL.raw"))'
+ 
+ notmuch_dir_sanitize < OUTPUT-FULL-NIL.raw > OUTPUT-FULL-NIL
+-head -7 OUTPUT-FULL-NIL > OUTPUT-NIL
++head -6 OUTPUT-FULL-NIL > OUTPUT-NIL
+ 
+ cat <<EOF > EXPECTED-NIL
+ From: Notmuch Test Suite <test_suite@notmuchmail.org>
+ To: Lars Kellogg-Stedman <lars@seas.harvard.edu>, Mikhail Gusarov <dottedmag@dottedmag.net>
+ Cc: notmuch@notmuchmail.org
+ Subject: Re: [notmuch] Working with Maildir storage?
+-In-Reply-To: <20091117203301.GV3165@dottiness.seas.harvard.edu>
+ Fcc: MAIL_DIR/sent
+ --text follows this line--
+ EOF
+diff --git a/test/emacs-reply.expected-output/notmuch-reply-duplicate-4 b/test/emacs-reply.expected-output/notmuch-reply-duplicate-4
+index 836f77b1..44b8c7a6 100644
+--- a/test/emacs-reply.expected-output/notmuch-reply-duplicate-4
++++ b/test/emacs-reply.expected-output/notmuch-reply-duplicate-4
+@@ -1,7 +1,6 @@
+ From: Notmuch Test Suite <test_suite@notmuchmail.org>
+ To: Sean Whitton <spwhitton@spwhitton.name>, 916811@bugs.debian.org, 916805@bugs.debian.org, 916807@bugs.debian.org, 916808@bugs.debian.org, 916809@bugs.debian.org, 916811@bugs.debian.org, 916867@bugs.debian.org, 916869@bugs.debian.org, 916872@bugs.debian.org, 916875@bugs.debian.org, 916876@bugs.debian.org
+ Subject: Re: [Pkg-emacsen-addons] Bug#916811: Increase severity to 'serious'
+-In-Reply-To: <87r2ecrr6x.fsf@zephyr.silentflame.com>
+ Fcc: MAIL_DIR/sent
+ --text follows this line--
+ Sean Whitton <spwhitton@spwhitton.name> writes:
+-- 
+2.41.0
+

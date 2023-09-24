@@ -40,6 +40,7 @@
             emacs-byte-compile-directory
             emacs-compile-directory
             emacs-header-parse
+            ert-number-tests
 
             as-display
             emacs-substitute-sexps
@@ -138,7 +139,7 @@ If native code is not supported, compile to bytecode instead."
            (files (directory-files-recursively ,dir "\\.el$")))
        (mapc
         (lambda (file)
-          (let (byte-to-native-output-file
+          (let (byte-to-native-output-buffer-file
                 ;; First entry is the eln-cache of the homeless shelter,
                 ;; second entry is the install directory.
                 (eln-dir (and (native-comp-available-p)
@@ -147,13 +148,9 @@ If native code is not supported, compile to bytecode instead."
                 (native-compile file
                                 (comp-el-to-eln-filename file eln-dir))
                 (byte-compile-file file))
-            ;; Sadly, we can't use pcase because quasiquote works different in
-            ;; Emacs.  See `batch-byte+native-compile' in comp.el for the
-            ;; actual shape of byte-to-native-output-file.
-            (unless (null byte-to-native-output-file)
-              (rename-file (car byte-to-native-output-file)
-                           (cdr byte-to-native-output-file)
-                           t))))
+            ;; After native compilation, write the bytecode file.
+            (unless (null byte-to-native-output-buffer-file)
+              (comp-write-bytecode-file nil))))
        files))
     #:dynamic? #t))
 
@@ -182,6 +179,19 @@ If native code is not supported, compile to bytecode instead."
              (kill-sexp)
              (insert " ")
              (insert ,(format #f "~s" replacement))))))
+
+(define (ert-number-tests file test-name)
+  "Add a numerically increasing suffix to tests of the same name.
+This fixes test errors of the pattern \"Test TEST_NAME redefined\"."
+  (emacs-batch-edit-file file
+    `(let ((i 0))
+       (while (re-search-forward ,(string-append "ert-deftest " test-name)
+                                 nil t)
+         (goto-char (match-beginning 0))
+         (kill-region (match-beginning 0) (match-end 0))
+         (insert (format "ert-deftest %s-%d" ,test-name i))
+         (setq i (+ i 1)))
+       (basic-save-buffer))))
 
 (define-syntax emacs-substitute-sexps
   (syntax-rules ()
