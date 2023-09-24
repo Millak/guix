@@ -164,14 +164,14 @@
 (define-public qemu
   (package
     (name "qemu")
-    (version "8.1.0")
+    (version "8.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.qemu.org/qemu-"
                            version ".tar.xz"))
        (sha256
-        (base32 "0m8fbyr3xv6gi95ma0sksxfqmyj3pi4zcrgg5rvd8d73k08i033i"))
+        (base32 "1vvxmd7xbkl083anpqm797m070qi8n5wc5qid0ppbyq0wpsjxkip"))
        (patches (search-patches "qemu-disable-some-qtests-tests.patch"
                                 "qemu-fix-agent-paths.patch"))
        (modules '((guix build utils)))
