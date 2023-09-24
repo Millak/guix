@@ -1553,7 +1553,6 @@ connection alive.")
                       (coreutils (assoc-ref inputs "coreutils*"))
                       (inetutils (assoc-ref inputs "inetutils"))
                       (grep      (assoc-ref inputs "grep*"))
-                      (net-tools (assoc-ref inputs "net-tools"))
                       (sed       (assoc-ref inputs "sed*")))
                  (substitute* "client/scripts/linux"
                    (("/sbin/ip")
@@ -1569,16 +1568,16 @@ connection alive.")
                      ,(map (lambda (dir)
                              (string-append dir "/bin:"
                                             dir "/sbin"))
-                           (list inetutils net-tools coreutils grep sed))))))))))
+                           (list inetutils coreutils grep sed))))))))))
 
       (native-inputs
        (list config perl file))
 
       (inputs `(("inetutils" ,inetutils)
                 ("bash" ,bash-minimal)
-                ,@(if (target-hurd?) '()
-                      `(("net-tools" ,net-tools)
-                        ("iproute" ,iproute)))
+                ,@(if (target-hurd?)
+                      '()
+                      `(("iproute" ,iproute)))
 
                 ;; isc-dhcp bundles a copy of BIND, which has proved vulnerable
                 ;; in the past.  Use a BIND-VERSION of our choosing instead.
