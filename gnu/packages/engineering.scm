@@ -1499,25 +1499,24 @@ replacement for the OpenDWG libraries.")
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--enable-lock-dir=/var/lock")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'make-git-checkout-writable
-           (lambda _
-             (for-each make-file-writable (find-files "."))))
-         (replace 'bootstrap
-           ;; autogen.sh needlessly hard-codes aclocal-1.14.
-           (lambda _
-             (invoke "autoreconf" "-vif")))
-         (add-before 'configure 'patch-lock-check
-           (lambda _
-             (substitute* "configure"
-               (("test -d [$]UUCPLOCK") "true")))))))
+     (list
+      #:configure-flags
+      #~(list "--enable-lock-dir=/var/lock")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'make-git-checkout-writable
+            (lambda _
+              (for-each make-file-writable (find-files "."))))
+          (replace 'bootstrap
+            ;; autogen.sh needlessly hard-codes aclocal-1.14.
+            (lambda _
+              (invoke "autoreconf" "-vif")))
+          (add-before 'configure 'patch-lock-check
+            (lambda _
+              (substitute* "configure"
+                (("test -d [$]UUCPLOCK") "true")))))))
     (native-inputs
-     `(("autoconf" ,autoconf-2.71)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf-2.71 automake gettext-minimal pkg-config))
     (inputs
      (list ncurses))
     (home-page "https://salsa.debian.org/minicom-team/minicom")
