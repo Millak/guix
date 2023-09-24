@@ -4,6 +4,7 @@
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Ivan Vilata i Balaguer <ivan@selidor.net>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,6 +25,7 @@
   #:use-module (guix packages)
   #:use-module ((guix licenses) #:select (bsd-2))
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages)
   #:use-module (gnu packages freedesktop)
@@ -43,27 +45,23 @@
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "0fndgbm1mkqb1sn2v2kj3nx9mxj70jbp31y2bjvzcmmkry0q3k5j"))))
+         "0fndgbm1mkqb1sn2v2kj3nx9mxj70jbp31y2bjvzcmmkry0q3k5j"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; The patch-dot-desktop-files phase requires a relative name.
+        #~(substitute* "xfig.desktop"
+            (("^(Exec=)/usr/bin/" _ key) key)))))
     (build-system gnu-build-system)
     (native-inputs
      ;; For tests.
      (list desktop-file-utils ghostscript))
     (inputs
-     `(("libxaw3d" ,libxaw3d)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libxpm" ,libxpm)
-       ("libx11" ,libx11)
-       ("libxt" ,libxt)))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'install 'strip-bogus-exec-prefix
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "xfig.desktop"
-               ;; The patch-dot-desktop-files phase requires a relative name.
-               (("Exec=/usr/bin/xfig") "Exec=xfig"))
-             #t)))))
+     (list libxaw3d
+           libjpeg-turbo
+           libpng
+           libxpm
+           libx11
+           libxt))
     (home-page "https://mcj.sourceforge.net/")
     (synopsis "Interactive drawing tool")
     (description
