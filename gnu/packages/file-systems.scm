@@ -619,7 +619,24 @@ from a mounted file system.")
                                                "not test_fsck and "
                                                "not test_list and "
                                                "not test_list_inodes and "
-                                               "not test_list_dirent"))))))))
+                                               "not test_list_dirent")))))
+                 (add-after 'install 'promote-mount.bcachefs.sh
+                   ;; The (optional) ‘mount.bcachefs’ requires rust:cargo.
+                   ;; This shell alternative does the job well enough for now.
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (define (whence file)
+                       (dirname (search-input-file inputs file)))
+                     (let ((mount (string-append #$output
+                                                 "/sbin/mount.bcachefs")))
+                       (delete-file mount) ; symlink to ‘bcachefs’
+                       (copy-file "mount.bcachefs.sh" mount)
+                       ;; WRAP-SCRIPT causes bogus ‘Insufficient arguments’ errors.
+                       (wrap-program mount
+                         `("PATH" ":" prefix
+                           ,(list (getcwd)
+                                  (whence "bin/tail")
+                                  (whence "bin/awk")
+                                  (whence "bin/mount"))))))))))
       (native-inputs
        (cons* pkg-config
               ;; For generating documentation with rst2man.
@@ -640,7 +657,12 @@ from a mounted file system.")
              `(,util-linux "lib")
              lz4
              zlib
-             `(,zstd "lib")))
+             `(,zstd "lib")
+
+             ;; Only for mount.bcachefs.sh.
+             coreutils-minimal
+             gawk
+             util-linux))
       (home-page "https://bcachefs.org/")
       (synopsis "Tools to create and manage bcachefs file systems")
       (description
