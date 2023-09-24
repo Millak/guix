@@ -8276,7 +8276,7 @@ users.")
     (name "network-manager")
     ;; Note: NetworkManager still follows the odd/even major version number
     ;; for development/stable releases scheme; be sure to use a stable one.
-    (version "1.42.6")
+    (version "1.44.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/NetworkManager/"
@@ -8286,7 +8286,7 @@ users.")
                                        "network-manager-meson.patch"))
               (sha256
                (base32
-                "0y82xl84dyhdkyl98y86wspiq9iy5jz23bjzc3mvrijsfz1qlf4c"))))
+                "17zvg63jjbqdw8xyc6narirvvbbv7micbn0j7dmq0bqqgmihkjpd"))))
     (build-system meson-build-system)
     (outputs '("out"
                "doc"))                  ; 8 MiB of gtk-doc HTML
@@ -8308,6 +8308,7 @@ users.")
          "-Ddhcpcanon=no"
          "-Dcrypto=gnutls"
          "-Diwd=true"
+         "-Dnm_cloud_setup=false"
          "-Dlibaudit=yes"
          "-Dqt=false"
          "-Ddocs=true"
@@ -8319,7 +8320,7 @@ users.")
                         #$output "/etc/dbus-1/system.d")
 
          (string-append "-Ddhclient=" (search-input-file %build-inputs
-                                                         "/sbin/dhclient")))
+                                                         "sbin/dhclient")))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-modprobe-path
