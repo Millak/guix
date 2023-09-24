@@ -70,7 +70,9 @@
        (list
         ;; By default tests run in parallel, which may cause various race
         ;; conditions.  Run sequentially for consistent results.
-        "--parallel=1")
+        "--parallel=1"
+        ;; The test suite fails as soon as a single test fails.
+        "--failfast")
        #:phases
        (modify-phases %standard-phases
          (add-before 'check 'pre-check
