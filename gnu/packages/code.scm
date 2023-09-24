@@ -640,10 +640,9 @@ results and determine build stability.")
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-/bin/bash-references
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((bash (assoc-ref inputs "bash")))
              (substitute* (find-files "src" ".*\\.cc?$")
                (("/bin/(bash|sh)" shell)
-                (string-append (assoc-ref inputs "bash") shell)))))))))
+                (search-input-file inputs shell))))))))
     (inputs
      (list curl elfutils libelf openssl zlib))
     (native-inputs
