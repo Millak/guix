@@ -4232,7 +4232,7 @@ form, numpad.
 (define-public rizin
   (package
     (name "rizin")
-    (version "0.6.1")
+    (version "0.6.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4240,7 +4240,7 @@ form, numpad.
                     version "/rizin-src-v" version ".tar.xz"))
               (sha256
                (base32
-                "14bcmjx64pgi9zj4zb7yppx69l1ykjwgf2q41s5672m7z354f1kn"))))
+                "0szq3wr7i7gwm8llgbhssjb63q70rjqqdlj6078vs110waih16p2"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -4276,7 +4276,16 @@ form, numpad.
                 (("'hash',\n") "")))))))
     (native-inputs (list pkg-config))
     (inputs
-     (list capstone file libuv libzip lz4 openssl tree-sitter xxhash zlib libmspack))
+     (list capstone
+           file
+           libuv
+           libzip
+           lz4
+           openssl
+           tree-sitter
+           xxhash
+           zlib
+           libmspack))
     (home-page "https://rizin.re")
     (synopsis "Disasm, debug, analyze and manipulate binary files")
     (description
