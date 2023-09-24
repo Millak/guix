@@ -66,7 +66,12 @@
                 "1ha6c5j3pizbsfzw37r52lvdz8z5lblq4iwa99mpkdzz92aiqp2y"))))
     (build-system python-build-system)
     (arguments
-     '(#:phases
+     '(#:test-flags
+       (list
+        ;; By default tests run in parallel, which may cause various race
+        ;; conditions.  Run sequentially for consistent results.
+        "--parallel=1")
+       #:phases
        (modify-phases %standard-phases
          (add-before 'check 'pre-check
            (lambda* (#:key inputs #:allow-other-keys)
@@ -85,16 +90,12 @@
                 (string-append "    @unittest.skipIf(True, 'Disabled by Guix')\n"
                                all)))))
          (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
+           (lambda* (#:key tests? test-flags #:allow-other-keys)
              (if tests?
                  (with-directory-excursion "tests"
                    ;; Tests expect PYTHONPATH to contain the root directory.
                    (setenv "PYTHONPATH" "..")
-                   (invoke "python" "runtests.py"
-                           ;; By default tests run in parallel, which may cause
-                           ;; various race conditions.  Run sequentially for
-                           ;; consistent results.
-                           "--parallel=1"))
+                   (apply invoke "python" "runtests.py" test-flags))
                  (format #t "test suite not run~%"))))
          ;; XXX: The 'wrap' phase adds native inputs as runtime dependencies,
          ;; see <https://bugs.gnu.org/25235>.  The django-admin script typically
