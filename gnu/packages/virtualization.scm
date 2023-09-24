@@ -2309,8 +2309,7 @@ DOS or Microsoft Windows.")
                              (search-input-file %build-inputs
                                                 "share/firmware/ovmf_ia32.bin")))
       #:make-flags
-      #~(list "-j" "1"
-              "XEN_BUILD_DATE=Thu Jan  1 01:00:01 CET 1970"
+      #~(list "XEN_BUILD_DATE=Thu Jan  1 01:00:01 CET 1970"
               "XEN_BUILD_TIME=01:00:01"
               "XEN_BUILD_HOST="
               "ETHERBOOT_NICS="
@@ -2406,8 +2405,11 @@ DOS or Microsoft Windows.")
                                      "LIBRARY_PATH"))
               (setenv "EFI_VENDOR" "guix")))
           (replace 'build
-            (lambda* (#:key make-flags #:allow-other-keys)
-              (apply invoke "make" "world" make-flags))))))
+            (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+              (apply invoke "make" "world"
+                     "-j" (number->string
+                           (if parallel-build? (parallel-job-count) 1))
+                     make-flags))))))
     (inputs
      (list acpica                       ; TODO: patch iasl invocation
            bridge-utils                 ; TODO: patch invocations
