@@ -2974,6 +2974,47 @@ position fixes) the signals of the BeiDou, Galileo, GLONASS and GPS Global
 Navigation Satellite System.")
     (license license:gpl3+)))
 
+(define-public satdump
+  (package
+    (name "satdump")
+    (version "1.1.0")
+    (source
+     ;; TODO: The sources embed some libraries (in src-core/libs).
+     ;; Using regular packaged shared libraries instead will require big
+     ;; changes in CMakeList files.
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/SatDump/SatDump")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mz665h02v4hg0v6kb1b3lj7vd2kp7wgasasm10q6qwqr7c133p4"))))
+    (build-system cmake-build-system)
+    (native-inputs (list pkg-config))
+    (inputs
+     (list airspy
+           airspyhf
+           fftwf
+           glew
+           glfw
+           hackrf
+           libpng
+           luajit
+           nng
+           portaudio
+           rtl-sdr
+           volk
+           (list zstd "lib")))
+    (arguments
+     (list #:tests? #f)) ; No test suite
+    (home-page "https://www.satdump.org/")
+    (synopsis "Satellite data processing software")
+    (description "SatDump is a generic satellite data processing software.
+For example, it can decode the telemetry and images sent by some meteorological
+satellites.")
+    (license license:gpl3)))
+
 (define-public qdmr
   (package
     (name "qdmr")
