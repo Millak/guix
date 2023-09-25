@@ -2499,7 +2499,7 @@ voice formats.")
 (define-public sdrangel
   (package
     (name "sdrangel")
-    (version "7.10.0")
+    (version "7.16.0")
     (source
      (origin
        (method git-fetch)
@@ -2508,7 +2508,7 @@ voice formats.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rl2qnc9s8cjwv77vfwgj66rz5zbxmixqh0gg6b29s4667pjvil6"))))
+        (base32 "1c2pdxw2a3pysqlmr42gghg0ga33afwdp6wc97h7s6gwc5km6zlk"))))
     (build-system qt-build-system)
     (native-inputs
      (list doxygen graphviz pkg-config))
@@ -2535,6 +2535,7 @@ voice formats.")
            qtbase-5
            qtcharts
            qtdeclarative-5
+           qtgamepad
            qtlocation
            qtmultimedia-5
            qtquickcontrols2-5
@@ -2567,6 +2568,11 @@ voice formats.")
                                #$(this-package-input "soapysdr")))
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-unrecognized-compiler-option
+           (lambda _
+             (substitute* "cmake/Modules/CompilerOptions.cmake"
+               (("-Wno-inconsistent-missing-override")
+                "-fpermissive"))))
          (add-after 'unpack 'fix-CPU-extension-detection
            ;; ‘Fix’ in the static sense.  TODO: Make this -tune'able.
            (lambda _
