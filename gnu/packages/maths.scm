@@ -61,6 +61,7 @@
 ;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
 ;;; Copyright © 2023 Camilo Q.S. (Distopico) <distopico@riseup.net>
+;;; Copyright © 2023 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -8575,112 +8576,186 @@ computation is supported via MPI.")
 (define-public scilab
   (package
     (name "scilab")
-    (version "5.5.2")
+    (version "2023.1.0")
     (source
      (origin
-       (method url-fetch)
-       (uri
-        (string-append "https://www.scilab.org/download/"
-                       version "/scilab-" version "-src.tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/scilab/scilab")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0phg9pn24yw98hbh475ik84dnikf1225b2knh7qbhdbdx6fm2d57"))))
+        (base32
+         "0hbqsnc67b4f8zc690kl79bwhjaasykjlmqbln8iymnjcn3l5ypd"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)))
+       (patches (search-patches "scilab-hdf5-1.8-api.patch"))
+       (snippet
+        #~(begin
+            ;; Delete everything except for scilab itself:
+            (for-each (lambda (file)
+                        (unless (member file '("." ".." "scilab"))
+                          (delete-file-recursively file)))
+                      (scandir "."))
+            (for-each (lambda (file)
+                        (unless (member file '("." ".."))
+                          (rename-file (string-append "scilab/" file) file)))
+                      (scandir "scilab"))
+
+            ;; Some clean-up in scilab:
+            (for-each delete-file-recursively
+                      '("scilab"
+                        "config"
+                        "libs/GetWindowsVersion"))
+            (for-each delete-file
+                      (cons* "aclocal.m4"
+                             "configure"
+                             "m4/ax_cxx_compile_stdcxx.m4"
+                             "m4/lib-ld.m4"
+                             "m4/libtool.m4"
+                             "m4/ltoptions.m4"
+                             "m4/ltsugar.m4"
+                             "m4/ltversion.m4"
+                             "m4/lt~obsolete.m4"
+                             "m4/pkg.m4"
+                             (find-files "." "^Makefile\\.in$")))
+
+            ;; And finally some files in the modules directory:
+            (for-each
+              (lambda (file)
+                (delete-file
+                  (string-append "modules/dynamic_link/src/scripts/" file)))
+              '("aclocal.m4"
+                "configure"
+                "compile"
+                "config.guess"
+                "config.sub"
+                "ltmain.sh"
+                "depcomp"
+                "install-sh"
+                "missing"))
+            (delete-file-recursively "modules/dynamic_link/src/scripts/m4")
+            (for-each delete-file
+                      '("modules/ast/src/cpp/parse/scanscilab.cpp"
+                        "modules/ast/src/cpp/parse/bison/parsescilab.output"
+                        "modules/ast/includes/parse/parsescilab.hxx"
+                        "modules/ast/src/cpp/parse/parsescilab.cpp"))))))
     (build-system gnu-build-system)
-    (native-inputs (list pkg-config gfortran))
-    (inputs (list libxml2
-                  `(,pcre "bin")
+    (native-inputs
+     (list autoconf
+           autoconf-archive
+           automake
+           bison
+           eigen
+           flex
+           gfortran
+           libtool
+           ocaml
+           ocaml-findlib
+           pkg-config))
+    (inputs (list `(,pcre "bin")
                   `(,pcre "out")
-                  readline
-                  hdf5-1.8
-                  curl
-                  openblas
-                  lapack
                   arpack-ng
+                  curl
                   fftw
                   gettext-minimal
-                  suitesparse-3
-                  tcl
-                  tk
+                  hdf5-1.14
+                  lapack
                   libx11
-                  matio))
+                  libxml2
+                  matio
+                  ocaml-num
+                  openblas
+                  readline
+                  suitesparse
+                  tcl
+                  tk))
     (arguments
-     `(#:tests? #f
-       #:configure-flags
-       ,#~(list
-           "--enable-relocatable"
-           "--disable-static-system-lib"
-           ;; Disable all java code.
-           "--without-gui"
-           "--without-javasci"
-           "--disable-build-help"
-           "--with-external-scirenderer"
-           ;; Tcl and Tk library locations.
-           (string-append "--with-tcl-include="
-                          (string-drop-right
-                           (search-input-file %build-inputs "include/tcl.h")
-                           (string-length "/tcl.h")))
-           (string-append "--with-tcl-library="
-                          (string-drop-right
-                           (search-input-directory %build-inputs "lib/tcl8")
-                           (string-length "/tcl8")))
-           (string-append "--with-tk-include="
-                          (string-drop-right
-                           (search-input-file %build-inputs "include/tk.h")
-                           (string-length "/tk.h")))
-           (string-append "--with-tk-library="
-                          (string-drop-right
-                           (search-input-directory %build-inputs "lib/tk8.6")
-                           (string-length "/tk8.6")))
-           ;; There are some 2018-fortran errors that are ignored
-           ;; with this fortran compiler flag.
-           "FFLAGS=-fallow-argument-mismatch")
-       #:phases
-       ,#~(modify-phases %standard-phases
-            (add-before 'build 'pre-build
-              (lambda _
-                ;; Fix scilab script.
-                (substitute* "bin/scilab"
-                  (("\\/bin\\/ls")
-                   (which "ls")))
-                ;; Fix core.start.
-                (substitute* "modules/core/etc/core.start"
-                  (("'SCI/modules")
-                   "SCI+'/modules"))
-                ;; Fix fortran compilation error.
-                (substitute*
-                    "modules/differential_equations/src/fortran/twodq.f"
-                  (("node\\(10\\),node1\\(10\\),node2\\(10\\),coef")
-                   "node(9),node1(9),node2(9),coef"))
-                ;; Fix C compilation errors.
-                ;; remove &
-                (substitute* "modules/hdf5/src/c/h5_readDataFromFile_v1.c"
-                  (("(H5Rdereference\\(_iDatasetId, H5R_OBJECT, )&(.*)\\);$"
-                    all common ref)
-                   (string-append common ref)))
-                ;; fix multiple definitions
-                (substitute* "modules/tclsci/src/c/TCL_Command.h"
-                  (("^__thread")
-                   "extern __thread"))
-                (substitute* "modules/tclsci/src/c/InitTclTk.c"
-                  (("BOOL TK_Started = FALSE;" all)
-                   (string-append all "\n"
-                                  "__threadId TclThread;" "\n"
-                                  "__threadSignal InterpReady;" "\n"
-                                  "__threadSignalLock InterpReadyLock;"
-                                  "\n")))
-                ;; Fix CPP compilation errors.
-                (substitute* "modules/output_stream/src/cpp/diary_manager.cpp"
-                  (("if \\(array_size > 0\\)")
-                   "if (*array_size > 0)"))
-                ;; Set SCIHOME to /tmp before macros compilation.
-                (setenv "SCIHOME" "/tmp"))))))
-    (home-page "https://scilab.org")
+     (list
+      ;; The tests require java code.
+      #:tests? #f
+      #:configure-flags
+      #~(list
+         "--enable-relocatable"
+         "--disable-static-system-lib"
+         "--enable-build-parser"
+         ;; Disable all java code.
+         "--without-gui"
+         "--without-javasci"
+         "--disable-build-help"
+         "--with-external-scirenderer"
+         ;; Tcl and Tk library locations.
+         (string-append "--with-tcl-include="
+                        (dirname
+                          (search-input-file %build-inputs "include/tcl.h")))
+         (string-append "--with-tcl-library="
+                        (dirname
+                          (search-input-directory %build-inputs "lib/tcl8")))
+         (string-append "--with-tk-include="
+                        (dirname
+                          (search-input-file %build-inputs "include/tk.h")))
+         (string-append "--with-tk-library="
+                        (dirname
+                          (search-input-directory %build-inputs "lib/tk8.6")))
+         (string-append "--with-eigen-include="
+                        (search-input-directory %build-inputs "include/eigen3"))
+         ;; Find and link to the OCaml Num package
+         "OCAMLC=ocamlfind ocamlc -package num"
+         "OCAMLOPT=ocamlfind ocamlopt -package num -linkpkg"
+         ;; There are some 2018-fortran errors that are ignored
+         ;; with this fortran compiler flag.
+         "FFLAGS=-fallow-argument-mismatch")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The Num library is specified with the OCAMLC and
+          ;; OCAMLOPT variables above.
+          (add-after 'unpack 'fix-ocaml-num
+            (lambda _
+              (substitute*
+                '("modules/scicos/Makefile.modelica.am"
+                  "modules/scicos/src/translator/makefile.mak"
+                  "modules/scicos/src/modelica_compiler/makefile.mak")
+                (("nums\\.cmx?a") ""))))
+          ;; Install only scilab-cli.desktop
+          (add-after 'unpack 'remove-desktop-files
+            (lambda _
+              (substitute* "desktop/Makefile.am"
+                (("desktop_DATA =")
+                 "desktop_DATA = scilab-cli.desktop\nDUMMY ="))))
+          ;; These generated files are assumed to be present during
+          ;; the build.
+          (add-after 'bootstrap 'bootstrap-dynamic_link-scripts
+            (lambda _
+              (with-directory-excursion "modules/dynamic_link/src/scripts"
+                ((assoc-ref %standard-phases 'bootstrap)))))
+          (add-before 'build 'pre-build
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Fix scilab script.
+              (substitute* "bin/scilab"
+                (("\\/bin\\/ls")
+                 (search-input-file inputs "bin/ls")))
+              ;; Fix core.start.
+              (substitute* "modules/core/etc/core.start"
+                (("'SCI/modules")
+                 "SCI+'/modules"))
+              ;; Set SCIHOME to /tmp before macros compilation.
+              (setenv "SCIHOME" "/tmp")))
+          ;; Prevent race condition
+          (add-after 'pre-build 'build-parsers
+            (lambda* (#:key (make-flags #~'()) #:allow-other-keys)
+              (with-directory-excursion "modules/ast"
+                (apply invoke "make"
+                       "src/cpp/parse/parsescilab.cpp"
+                       "src/cpp/parse/scanscilab.cpp"
+                       make-flags)))))))
+    (home-page "https://www.scilab.org/")
     (synopsis "Software for engineers and scientists")
     (description "This package provides the non-graphical version of the Scilab
-software for engineers and scientists. Scilab is used for signal processing,
+software for engineers and scientists.  Scilab is used for signal processing,
 statistical analysis, image enhancement, fluid dynamics simulations, numerical
 optimization, and modeling, simulation of explicit and implicit dynamical
 systems and symbolic manipulations.")
-    (license license:cecill)))                    ;CeCILL v2.1
+    (license (list license:gpl2 license:bsd-3))))
 
 (define-public ruy
   (let ((commit "caa244343de289f913c505100e6a463d46c174de")
