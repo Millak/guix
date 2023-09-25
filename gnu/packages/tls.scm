@@ -200,6 +200,7 @@ living in the same process.")
   (package
     (name "gnutls")
     (version "3.7.7")
+    (replacement gnutls-3.8.1)
     (source (origin
               (method url-fetch)
               ;; Note: Releases are no longer on ftp.gnu.org since the
@@ -302,6 +303,22 @@ required structures.")
                   (ftp-directory . "/gcrypt/gnutls")))))
 
 (define-deprecated/public-alias gnutls-latest gnutls)
+
+;; Replacement for gnutls@3.7.7 to address GNUTLS-SA-2020-07-14 /
+;; CVE-2023-0361
+(define-public gnutls-3.8.1
+  (package
+    (inherit gnutls)
+    (version "3.8.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnupg/gnutls/v"
+                                  (version-major+minor version)
+                                  "/gnutls-" version ".tar.xz"))
+              (patches (search-patches "gnutls-skip-trust-store-test.patch"))
+              (sha256
+               (base32
+                "1742jiigwsfhx7nj5rz7dwqr8d46npsph6b68j7siar0mqarx2xs"))))))
 
 (define-public gnutls/dane
   ;; GnuTLS with build libgnutls-dane, implementing DNS-based
