@@ -798,7 +798,7 @@ at the link-layer level.")
 (define-public nng
   (package
     (name "nng")
-    (version "1.3.2")
+    (version "1.5.2")
     (source
      (origin
        (method git-fetch)
@@ -807,7 +807,7 @@ at the link-layer level.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0a4jg8alh2h0rw6fb4dqpvk4hgl2a7h76mq7g34fy89qh9sgg1a4"))))
+        (base32 "1sap0iny3z9lhmaiassv8jc399md1307y32xxx3mrr74jcpcrf59"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -821,13 +821,18 @@ at the link-layer level.")
              ;; These tests require network access.
              (substitute* "tests/CMakeLists.txt"
                (("add_nng_test1\\(httpclient 60 NNG_SUPP_HTTP\\)") "")
-               (("add_nng_test1\\(resolv 10 NNG_STATIC_LIB\\)") "")
                (("add_nng_test\\(tls 60\\)") ""))
-             #t)))))
-    (native-inputs
-     `(("ksh" ,oksh)))
-    (inputs
-     `(("mbedtls" ,mbedtls-apache)))
+             (substitute* "src/platform/CMakeLists.txt"
+               (("nng_test\\(platform_test\\)") "")
+               (("nng_test\\(resolver_test\\)") ""))
+             (substitute* "src/sp/transport/tcp/CMakeLists.txt"
+               (("nng_test\\(tcp_test\\)") ""))
+             (substitute* "src/sp/transport/ws/CMakeLists.txt"
+               (("nng_test_if\\(WS_ON ws_test\\)") ""))
+             (substitute* "src/supplemental/websocket/CMakeLists.txt"
+               (("nng_test\\(wssfile_test\\)") "")))))))
+    (native-inputs (list oksh))
+    (inputs (list mbedtls-apache))
     (synopsis "Lightweight messaging library")
     (description "NNG project is a rewrite of the scalability protocols library
 known as libnanomsg, and adds significant new capabilities, while retaining
