@@ -542,7 +542,7 @@ than gzip and 15 % smaller output than bzip2.")
 (define-public lhasa
   (package
     (name "lhasa")
-    (version "0.3.1")
+    (version "0.4.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -550,26 +550,25 @@ than gzip and 15 % smaller output than bzip2.")
                     version "/lhasa-" version ".tar.gz"))
               (sha256
                (base32
-                "092zi9av18ma20c6h9448k0bapvx2plnp292741dvfd9hmgqxc1z"))))
+                "1cy5429c7h1dp4l5y9ncdy40qarl9ix31ylkzdi8al2c60y8iz57"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'set-up-test-environment
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "TZDIR"
-                     (search-input-directory inputs
-                                             "share/zoneinfo")))))))
-    (native-inputs
-     (list tzdata-for-tests))
-    (home-page "https://fragglet.github.com/lhasa/")
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'check 'set-up-test-environment
+                          (lambda* (#:key inputs #:allow-other-keys)
+                            (setenv "TZDIR"
+                                    (search-input-directory inputs
+                                                            "share/zoneinfo")))))))
+    (native-inputs (list tzdata-for-tests))
+    (home-page "https://fragglet.github.io/lhasa/")
     (synopsis "LHA archive decompressor")
-    (description "Lhasa is a replacement for the Unix LHA tool, for
-decompressing .lzh (LHA / LHarc) and .lzs (LArc) archives.  The backend for the
-tool is a library, so that it can be reused for other purposes.  Lhasa aims to
-be compatible with as many types of lzh/lzs archives as possible.  It also aims
-to generate the same output as the (non-free) Unix LHA tool, so that it will
-act as a free drop-in replacement.")
+    (description
+     "Lhasa is a replacement for the Unix LHa tool, for decompressing
+@file{.lzh} (LHA / LHarc) and .lzs (LArc) archives.  The backend for the tool is
+a library, so that it can be reused for other purposes.  Lhasa aims to be
+compatible with as many types of @file{.lzh}/@file{lzs} archives as possible.
+It also aims to generate the same output as the (non-free) Unix @command{lha}
+tool, so that it will act as a free drop-in replacement.")
     (license license:isc)))
 
 (define-public lzo
