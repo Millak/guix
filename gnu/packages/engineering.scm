@@ -1801,7 +1801,7 @@ analyzer (FFT) and frequency sweep plot.")
 (define-public capstone
   (package
     (name "capstone")
-    (version "4.0.2")
+    (version "5.0.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1810,7 +1810,7 @@ analyzer (FFT) and frequency sweep plot.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0y5g74yjyliciawpn16zhdwya7bd3d7b1cccpcccc2wg8vni1k2w"))))
+                "1j4a6w8p3z5qrkzf0h5aklrnlpvscv6nlq7d3abbpxlyqvk8pach"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f
