@@ -789,9 +789,18 @@ suite of the @code{psautohint} package.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; The CJKSparseVar.subset.hinted.otf test fails with slightly different
-      ;; output caused by the newer fonttools version used in Guix.
-      #:test-flags #~(list "-k" "not CJKSparseVar.subset.hinted.otf")
+      #:test-flags
+      #~(list "-k"
+              (string-join
+               '(;; The CJKSparseVar.subset.hinted.otf test fails with slightly
+                 ;; different output caused by the newer fonttools version used
+                 ;; in Guix.
+                 "not CJKSparseVar.subset.hinted.otf"
+                 ;; These tests fails underministically, See also:
+                 ;; https://github.com/adobe-type-tools/afdko/issues/1678
+                 "not test_hashmap_no_version"
+                 "not test_hashmap_old_version")
+               " and "))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'copy-font-data
