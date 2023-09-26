@@ -1405,6 +1405,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/hwloc-1-test-btrfs.patch			\
   %D%/packages/patches/i7z-gcc-10.patch				\
   %D%/packages/patches/icecat-makeicecat.patch			\
+  %D%/packages/patches/icecat-102-makeicecat.patch		\
   %D%/packages/patches/icecat-avoid-bundled-libraries.patch	\
   %D%/packages/patches/icecat-use-system-graphite2+harfbuzz.patch	\
   %D%/packages/patches/icecat-use-system-media-libs.patch	\
