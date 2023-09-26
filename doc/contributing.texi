@@ -397,13 +397,12 @@ configuration file:
 
 @lisp
 ;;; Bug references.
+(require 'bug-reference)
 (add-hook 'prog-mode-hook #'bug-reference-prog-mode)
 (add-hook 'gnus-mode-hook #'bug-reference-mode)
 (add-hook 'erc-mode-hook #'bug-reference-mode)
-(add-hook 'bug-reference-mode-hook 'debbugs-browse-mode)
-(add-hook 'bug-reference-prog-mode-hook 'debbugs-browse-mode)
-(add-hook 'gnus-summary-mode-hook 'bug-reference-mode)
-(add-hook 'gnus-article-mode-hook 'bug-reference-mode)
+(add-hook 'gnus-summary-mode-hook #'bug-reference-mode)
+(add-hook 'gnus-article-mode-hook #'bug-reference-mode)
 
 ;;; This extends the default expression (the top-most, first expression
 ;;; provided to 'or') to also match URLs such as
@@ -431,6 +430,12 @@ configuration file:
                      (seq "<https://bugs.gnu.org/"
                           (group-n 2 (one-or-more (char "0-9")))
                           ">")))))
+(setq bug-reference-url-format "https://issues.guix.gnu.org/%s")
+
+(require 'debbugs)
+(require 'debbugs-browse)
+(add-hook 'bug-reference-mode-hook #'debbugs-browse-mode)
+(add-hook 'bug-reference-prog-mode-hook #'debbugs-browse-mode)
 
 ;; The following allows Emacs Debbugs user to open the issue directly within
 ;; Emacs.
