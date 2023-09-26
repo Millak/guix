@@ -44,6 +44,7 @@
             apsl2
             arphic-1999
             asl1.1 asl2.0
+            blue-oak1.0.0
             boost1.0
             bsd-0 bsd-1 bsd-2 bsd-3 bsd-4
             non-copyleft
@@ -215,6 +216,11 @@ cases, reduces to #t at macro-expansion time."
   (license "ASL 2.0"
            "http://directory.fsf.org/wiki/License:Apache2.0"
            "https://www.gnu.org/licenses/license-list#apache2"))
+
+(define blue-oak1.0.0
+  (license "BlueOak-1.0.0"
+           "https://blueoakcouncil.org/license/1.0.0"
+           "https://opensource.org/license/blue-oak-model-license"))
 
 (define boost1.0
   (license "Boost 1.0"

@@ -183,6 +183,7 @@ thrown."
     ("Apache-1.1"                 . license:asl1.1)
     ("Apache-2.0"                 . license:asl2.0)
     ("APSL-2.0"                   . license:apsl2)
+    ("BlueOak-1.0.0"              . license:blue-oak1.0.0)
     ("BSL-1.0"                    . license:boost1.0)
     ("0BSD"                       . license:bsd-0)
     ("BSD-2-Clause"               . license:bsd-2)
