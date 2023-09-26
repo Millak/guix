@@ -11751,7 +11751,7 @@ replacement for strverscmp.")
                  (copy-recursively (assoc-ref inputs "tests") "/tmp/tests")
                  (with-directory-excursion "/tmp/tests"
                    (invoke "multiqc" "data" "--ignore" "data/modules")))))))))
-    (propagated-inputs
+    (inputs
      (list python-click
            python-coloredlogs
            python-future
