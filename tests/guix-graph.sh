@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2015-2016, 2019-2020, 2022 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2015-2016, 2019-2020, 2022-2023 Ludovic Courtès <ludo@gnu.org>
 # Copyright © 2019 Simon Tournier <zimon.toutoune@gmail.com>
 #
 # This file is part of GNU Guix.
@@ -86,8 +86,8 @@ guix graph --path emacs vim && false
 
 path="\
 emacs
-gnutls
-p11-kit
+cairo
+gobject-introspection
 libffi"
 test "`guix graph --path emacs libffi | cut -d '@' -f1`" = "$path"
 
