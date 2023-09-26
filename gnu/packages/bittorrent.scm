@@ -17,6 +17,7 @@
 ;;; Copyright © 2022 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2022 Jacob Hart <hartja1@yahoo.com>
 ;;; Copyright © 2022 Simon Streit <simon@netpanic.org>
+;;; Copyright © 2023 Clément Lassieur <clement@lassieur.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -127,7 +128,7 @@
                 (lambda (dir)
                   (rename-file (string-append #$output "/share/" dir)
                                (string-append #$output:gui "/share/" dir)))
-                '("applications" "icons" "metainfo" "transmission"))
+                '("applications" "icons" "metainfo"))
               (rename-file
                (string-append #$output "/share/man/man1/transmission-gtk.1")
                (string-append #$output:gui "/share/man/man1/transmission-gtk.1"))))
