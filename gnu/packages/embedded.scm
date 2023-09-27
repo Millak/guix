@@ -1610,15 +1610,14 @@ handling communication with eBUS devices connected to a 2-wire bus system
           (add-after 'unpack 'patch-makefiles
             (lambda _
               (substitute* (find-files "." "(\\.mk$|\\.in$)")
-                (("/bin/sh") (which "sh"))))))))
+                (("/bin/sh") (which "sh"))))))
+      ;; μCsim's regression-test suite is of little use in this context since
+      ;; it doesn't stop or return an error code when it encounters a problem.
+      #:tests? #f))
     (inputs
      (list ncurses))
     (native-inputs
-     (append (list bison flex)
-             ;; Certain tests use assemblers provided by SDCC.
-             (if (not (%current-target-system))
-                 (list sdcc)
-                 '())))
+     (list bison flex))
     (home-page "http://mazsola.iit.uni-miskolc.hu/ucsim/")
     (synopsis "Simulators for various microcontroller families")
     (description "μCsim is a collection of software simulators for
