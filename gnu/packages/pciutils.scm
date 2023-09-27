@@ -39,7 +39,7 @@
 (define-public hwdata
   (package
     (name "hwdata")
-    (version "0.365")                   ;updated monthly
+    (version "0.374")                   ;updated monthly
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -48,25 +48,15 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00gqx24dyy9l98ygnvx8i087xq8pl9d2393h4d2cm4d5nnvr51d4"))))
+                "1fcmg06lfzqrpq4z4gp12qpk7rd3s0phz4qyhq39ks43r1vxiy26"))))
     (build-system gnu-build-system)
-    (outputs '("out" "iab" "oui" "pci" "pnp" "usb"))
     (arguments
      ;; Tests require pciutils, python, podman. Disable to avoid recursive dep.
      (list
       #:tests? #f
       ;; Do not cross-compile, since the package only contains data.
       #:target #f
-      #:configure-flags #~(list (string-append "--datadir=" #$output "/share"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'install
-            (lambda _
-              (install-file "iab.txt" (string-append #$output:iab "/share/hwdata"))
-              (install-file "oui.txt" (string-append #$output:oui "/share/hwdata"))
-              (install-file "pci.ids" (string-append #$output:pci "/share/hwdata"))
-              (install-file "pnp.ids" (string-append #$output:pnp "/share/hwdata"))
-              (install-file "usb.ids" (string-append #$output:usb "/share/hwdata")))))))
+      #:configure-flags #~(list (string-append "--datadir=" #$output "/share"))))
     (home-page "https://github.com/vcrhonek/hwdata")
     (synopsis "Hardware identification and configuration data")
     (description "@code{hwdata} contains various hardware identification and
@@ -159,7 +149,7 @@ Each database is contained in a specific package output, such as the
        ;; No test suite.
        #:tests? #f))
     (native-inputs
-     (list `(,hwdata "pci") pkg-config which))
+     (list hwdata pkg-config which))
     (inputs
      `(,@(if (not (target-hurd?))
              `(("kmod" ,kmod))
