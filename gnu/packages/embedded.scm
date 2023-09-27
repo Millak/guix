@@ -1592,16 +1592,16 @@ handling communication with eBUS devices connected to a 2-wire bus system
 (define-public ucsim
   (package
     (name "ucsim")
-    (version "0.7.1")
+    (version "0.8.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "http://mazsola.iit.uni-miskolc.hu/ucsim/download/unix/"
-                    "source/v" (version-major+minor version) ".x/"
-                    "ucsim-" version ".tar.gz"))
+                    "http://mazsola.iit.uni-miskolc.hu/ucsim/download/"
+                    "v" (version-major+minor version) ".x/"
+                    "ucsim_" version "_orig.tar.gz"))
               (sha256
                (base32
-                "080471wvkjdzxz5j3zdaq1apjcj84ql50kn26b7p4ansixnimml4"))))
+                "0qyrrna2ssvwla15al183r9zqnqdxxlqawyhx9c86a10m8q8qqlz"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1628,10 +1628,10 @@ handling communication with eBUS devices connected to a 2-wire bus system
     (home-page "http://mazsola.iit.uni-miskolc.hu/ucsim/")
     (synopsis "Simulators for various microcontroller families")
     (description "μCsim is a collection of software simulators for
-microcontrollers in the Atmel AVR; Intel MCS-51 (8051); MOS Technology 6502;
-Motorola 6800, 68HC08 and 6809; P1516; Padauk PDK13, PDK14 and PDK15;
-STMicroelectronics ST7 and STM8; Xilinx PicoBlaze; and Zilog Z80 families,
-plus many of their variants.")
+microcontrollers in the Atmel AVR; Fairchild F8; Intel MCS-51 (8051) and 8085;
+MOS Technology 6502; Motorola 6800, 6809, 68HC08, 68HC11 and 68HC12; P1516;
+Padauk PDK13, PDK14 and PDK15; STMicroelectronics ST7 and STM8; Xilinx
+PicoBlaze; and Zilog Z80 families, plus many of their variants.")
     (license license:gpl2+)))
 
 (define-public sdcc
