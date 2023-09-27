@@ -1110,7 +1110,7 @@ distills complex, animated scenes into a set of baked geometric results.")
     (inputs
      (list dbus
            glslang
-           `(,hwdata "pci")
+           hwdata
            imgui-1.86
            libx11
            mesa
