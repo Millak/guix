@@ -27556,6 +27556,39 @@ definition.")
 (define-public ecl-slot-extra-options
   (sbcl-package->ecl-package sbcl-slot-extra-options))
 
+(define-public sbcl-slite
+  (let ((commit "942a95330592d30be5ac02fb1b697fb14ccbf1af")
+        (revision "0"))
+    (package
+      (name "sbcl-slite")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/tdrhq/slite/")
+               (commit commit)))
+         (file-name (git-file-name "slite" version))
+         (sha256
+          (base32 "0b4c4vs1zlhcvr9flv8bx76v9hrwc9qmazmp60407q7cghn0k8zk"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-cl-str
+             sbcl-fiveam
+             sbcl-parachute
+             sbcl-lisp-unit2))
+      (home-page "https://github.com/tdrhq/slite")
+      (synopsis "Common Lisp system for Slite ")
+      (description
+       "This package provides the Common Lisp part of the emacs-slite test runner.")
+      (license license:asl2.0))))
+
+(define-public cl-slite
+  (sbcl-package->cl-source-package sbcl-slite))
+
+(define-public ecl-slite
+  (sbcl-package->ecl-package sbcl-slite))
+
 (define-public sbcl-parseq
   (package
     (name "sbcl-parseq")
