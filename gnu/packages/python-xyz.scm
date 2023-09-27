@@ -143,6 +143,7 @@
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © c4droid <c4droid@foxmail.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2023 Attila Lendvai <attila@lendvai.name>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -832,6 +833,31 @@ names for 256 color terminal setups.")
     (synopsis "Terminal string styling")
     (description "Colorful provides an array of text styles, that can be used
 as functions or string constants to form colored terminal output.")
+    (license license:expat)))
+
+(define-public python-construct-classes
+  (package
+    (name "python-construct-classes")
+    (version "0.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/matejcik/construct-classes")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fmr8nfg543lyqk4164a52jb6lwpq98radicbkhhdfckq9lib2wp"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-construct))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest))
+    (home-page "https://github.com/matejcik/construct-classes")
+    (synopsis "Parse binary structs into dataclasses")
+    (description "This package provides a parser to parse binary structs
+into dataclasses.")
     (license license:expat)))
 
 (define-public python-yaspin
