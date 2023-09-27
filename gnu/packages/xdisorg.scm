@@ -1842,14 +1842,14 @@ Saver extension) library.")
       (inputs
        (list libxt))
       (home-page "https://www.vergenet.net/~conrad/software/xsel/")
-      (synopsis "Manipulate X selection")
+      (synopsis "Manipulate X selection and/or clipboard from the command line")
       (description
        "XSel is a command-line program for getting and setting the contents of
-the X selection.  Normally this is only accessible by manually highlighting
-information and pasting it with the middle mouse button.
+the X selection and/or clipboard.  Normally this is only accessible by manually
+highlighting information and pasting it with the middle mouse button.
 
-XSel reads from standard input and writes to standard output by default,
-but can also follow a growing file, display contents, delete entries and more.")
+XSel reads from standard input and writes to standard output by default, but can
+also follow a growing file, display contents, delete entries and more.")
       (license (license:x11-style "file://COPYING"
                                   "See COPYING in the distribution.")))))
 
