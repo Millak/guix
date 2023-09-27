@@ -1,18 +1,32 @@
+Distribution specific patch, not going upstream
+
 This workaround for Gentoo interferes with our use of --no-compile during
 the 'install stage.
 
---- a/setup.py	2022-01-04 10:10:05.039825000 +0100
-+++ b/setup.py	2022-01-06 15:10:31.952656039 +0100
-@@ -589,8 +589,6 @@
-         })
+diff --git a/setup.py b/setup.py
+index e254bf99c..90db55c3f 100755
+--- a/setup.py
++++ b/setup.py
+@@ -663,8 +663,6 @@ if modules_ENABLED:
+ # Utility methods for building with Cython
  
  def add_cython_ext(*args, **kwargs):
 -    if "--no-compile" in sys.argv and not ("build" in sys.argv and "install" in sys.argv):
 -        return
-     assert cython_ENABLED, "cython compilation is disabled"
+     if not cython_ENABLED:
+         raise ValueError(f"cannot build {args}: cython compilation is disabled")
      if cython_tracing_ENABLED:
-         kwargs["define_macros"] = [
-@@ -1703,14 +1701,6 @@
+@@ -1809,9 +1807,6 @@ else:
+             if root_prefix.endswith("/usr"):
+                 #ie: "/" or "/usr/src/rpmbuild/BUILDROOT/xpra-0.18.0-0.20160513r12573.fc23.x86_64/"
+                 root_prefix = root_prefix[:-4]
+-            for x in sys.argv:
+-                if x.startswith("--root="):
+-                    root_prefix = x[len("--root="):]
+             print(f"install_data_override.run() root_prefix={root_prefix}")
+             build_xpra_conf(root_prefix)
+ 
+@@ -1955,13 +1950,6 @@ else:
              if uinput_ENABLED:
                  add_data_files("lib/udev/rules.d/", ["fs/lib/udev/rules.d/71-xpra-virtual-pointer.rules"])
  
@@ -23,7 +37,6 @@ the 'install stage.
 -    #otherwise we use the flags to skip pkgconfig
 -    if ("--no-compile" in sys.argv or "--skip-build" in sys.argv) and not ("build" in sys.argv and "install" in sys.argv):
 -        pkgconfig = no_pkgconfig
--
+ 
      if OSX and "py2app" in sys.argv:
          import py2app    #@UnresolvedImport
-         assert py2app is not None
