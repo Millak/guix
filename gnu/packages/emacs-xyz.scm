@@ -13856,7 +13856,16 @@ and tooling.")
     (build-system emacs-build-system)
     (arguments
      `(#:tests? #t
-       #:test-command '("make" "test")))
+       #:test-command '("make" "test")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-program-calls
+           (lambda* (#:key inputs #:allow-other-keys)
+             (emacs-substitute-variables "elfeed-curl.el"
+               ("elfeed-curl-program-name"
+                (search-input-file inputs "/bin/curl"))))))))
+    (inputs
+     (list curl))
     (home-page "https://github.com/skeeto/elfeed")
     (synopsis "Atom/RSS feed reader for Emacs")
     (description
