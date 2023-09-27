@@ -1610,7 +1610,13 @@ handling communication with eBUS devices connected to a 2-wire bus system
           (add-after 'unpack 'patch-makefiles
             (lambda _
               (substitute* (find-files "." "(\\.mk$|\\.in$)")
-                (("/bin/sh") (which "sh"))))))
+                (("/bin/sh") (which "sh")))
+
+              ;; Ensure the documentation is installed to the correct path,
+              ;; without a duplicate "ucsim" segment (necessary as we are
+              ;; building μCsim outside of SDCC).
+              (substitute* "doc/Makefile.in"
+                (("@docdir@/ucsim") "@docdir@")))))
       ;; μCsim's regression-test suite is of little use in this context since
       ;; it doesn't stop or return an error code when it encounters a problem.
       #:tests? #f))
@@ -1618,6 +1624,7 @@ handling communication with eBUS devices connected to a 2-wire bus system
      (list ncurses))
     (native-inputs
      (list bison flex))
+    (outputs '("out" "doc"))
     (home-page "http://mazsola.iit.uni-miskolc.hu/ucsim/")
     (synopsis "Simulators for various microcontroller families")
     (description "μCsim is a collection of software simulators for
