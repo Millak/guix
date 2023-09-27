@@ -58,6 +58,7 @@
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2023 chris <chris@bumblehead.com>
+;;; Copyright © 2023 Luis Felipe López Acevedo <sirgazil@zoho.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3457,3 +3458,29 @@ interfaces.")
 is to provide fonts that conform to existing standards and recommendations, so
 that it can be a reference implementation.")
    (license license:gpl2+)))
+
+(define-public font-orbitron
+  (let ((version "0")
+        (commit "13e6a5222aa6818d81c9acd27edd701a2d744152")
+        (revision "0"))
+    (package
+      (name "font-orbitron")
+      (version (git-version version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/theleagueof/orbitron")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1c6jb7ayr07j1pbnzf3jxng9x9bbqp3zydf8mqdw9ifln1b4ycyf"))))
+      (build-system font-build-system)
+      (home-page "https://github.com/theleagueof/orbitron")
+      (synopsis "Futuristic geometric sans-serif")
+      (description "Orbitron is a geometric sans-serif typeface intended
+for display purposes.  It features four weights (light, medium, bold,
+and black), a stylistic alternative, small caps, and many alternate
+glyphs.")
+      (license license:silofl1.1))))
