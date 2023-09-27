@@ -1604,12 +1604,13 @@ handling communication with eBUS devices connected to a 2-wire bus system
                 "080471wvkjdzxz5j3zdaq1apjcj84ql50kn26b7p4ansixnimml4"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-makefiles
-           (lambda _
-             (substitute* (find-files "." "(\\.mk$|\\.in$)")
-               (("/bin/sh") (which "sh"))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-makefiles
+            (lambda _
+              (substitute* (find-files "." "(\\.mk$|\\.in$)")
+                (("/bin/sh") (which "sh"))))))))
     (inputs
      (list ncurses))
     (native-inputs
