@@ -35,6 +35,7 @@
 ;;; Copyright © 2023 Frank Pursel <frank.pursel@gmail.com>
 ;;; Copyright © 2023 Skylar Hill <stellarskylark@posteo.net>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
+;;; Copyright © 2023 Attila Lendvai <attila@lendvai.name>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1208,21 +1209,21 @@ the KeepKey Hardware Wallet.")
 (define-public trezor-agent
   (package
     (name "trezor-agent")
-    (version "0.14.4")
+    ;; There are multiple Python apps/packages in the same git repo.  The git
+    ;; tag seems to track libagent's version (which is called
+    ;; python-trezor-agent in the Guix namespace). Currently trezor-agent's
+    ;; version is set in `agents/trezor/setup.py` to a different value than
+    ;; libagent, but as discussed with upstream in issue
+    ;; https://github.com/romanz/trezor-agent/issues/369, we are copying our
+    ;; version from that of libagent.
+    (version (package-version python-trezor-agent))
     (source
      (origin
        (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/romanz/trezor-agent")
-             ;; The version mismatch is not a mistake.  Multiple Python
-             ;; apps/packages are in the same git repo, and they have
-             ;; different versions.  The git tag seems to track libagent,
-             ;; i.e. python-trezor-agent in the Guix namespace.  See
-             ;; e.g. ./agents/trezor/setup.py.
-             (commit "v0.14.4")))
+       (uri (origin-uri (package-source python-trezor-agent)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ksv494xpga27ifrjyn1bkqaya5h769lqb9rx1ng0n4kvmnrqr3l"))
+        (base32 "04dds5bbw73nk36zm8d02qw6qr92nrlcf8r1cq8ba96mzi34jbk0"))
        (modules
         '((guix build utils)
           (ice-9 ftw)
@@ -1241,13 +1242,16 @@ the KeepKey Hardware Wallet.")
                                     (string-append "./" file-name)))
                      (scandir "./agents/trezor/"
                               (negate (cut member <> '("." "..") string=))))
-           (delete-file-recursively "./agents")))))
+           (delete-file-recursively "./agents")
+           ;; Without deleting ./contrib the sanity-check phase fails. Reported
+           ;; upstream as https://github.com/romanz/trezor-agent/issues/429.
+           (delete-file-recursively "./contrib")
+           ;; Without deleting ./libagent setuptools complains as follows:
+           ;; "error: Multiple top-level packages discovered in a flat-layout: ['contrib', 'libagent']."
+           (delete-file-recursively "./libagent")))))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         ;; This package only has a Python script, not a Python module, so the
-         ;; sanity-check phase can't work.
-         (delete 'sanity-check)
          (add-after 'unpack 'relax-requirements
            (lambda _
              (substitute* "setup.py"
@@ -1270,8 +1274,10 @@ the KeepKey Hardware Wallet.")
     (build-system python-build-system)
     (inputs
      (list python-trezor python-trezor-agent))
-    (native-inputs
-     (list python-attrs))
+    (native-inputs ; Only needed for running the tests
+     (list python-attrs
+           python-bech32
+           python-simple-rlp))
     (home-page "https://github.com/romanz/trezor-agent")
     (synopsis "Using Trezor as hardware SSH/GPG agent")
     (description "This package allows using Trezor as a hardware SSH/GPG
