@@ -3323,14 +3323,14 @@ Memory-Mapped Database} (LMDB), a high-performance key-value store.")
 (define-public virtuoso-ose
   (package
     (name "virtuoso-ose")
-    (version "7.2.10")
+    (version "7.2.11")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/virtuoso/virtuoso/" version "/"
                            "virtuoso-opensource-" version ".tar.gz"))
        (sha256
-        (base32 "03vznas39valis02zk0hnli7x5asiam4rxzqhr58agzkdyb0lay0"))
+        (base32 "0mk25gr1pafmps4nsydjprwswbzwch8b583nlwh7x2031sz7ald1"))
        (patches (search-patches "virtuoso-ose-remove-pre-built-jar-files.patch"))
        (modules '((guix build utils)))
        ;; This snippet removes pre-built Java archives.
