@@ -1094,7 +1094,7 @@ Nano dongle.")
 (define-public python-trezor
   (package
     (name "python-trezor")
-    (version "0.13.0")
+    (version "0.13.7")
     (source
      (origin
        (method git-fetch)
@@ -1103,7 +1103,7 @@ Nano dongle.")
              (commit (string-append "python/v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wy584bxx5p2av4lv1bx9hl1q0b5n7hqz0hnqb9shjriarvl5ckd"))
+        (base32 "13wyl9b15c8iscfakprwfvh2akw180hfqdjww79b78ywz51y7hdh"))
        (modules
         '((guix build utils)
           (srfi srfi-26)
@@ -1129,25 +1129,24 @@ Nano dongle.")
     (build-system python-build-system)
     (propagated-inputs
      (list python-attrs
-           ;; TOOD: Use the latest click version after release 0.13.1 or later
-           ;; is made (see:
-           ;; https://github.com/trezor/trezor-firmware/issues/2199).
-           python-click-7
-           python-construct
+           python-click
+           python-construct-classes
            python-ecdsa
            python-hidapi
            python-libusb1
            python-mnemonic
            python-requests
            python-typing-extensions))
-    (native-inputs
-     ;; For tests.
+    (native-inputs ; Only needed for running the tests
      (list protobuf
            python-black
            python-isort
+           python-pillow
            python-protobuf
            python-pyqt
-           python-pytest))
+           python-pytest
+           python-simple-rlp
+           python-wheel))
     (home-page "https://github.com/trezor/python-trezor")
     (synopsis "Python library for communicating with TREZOR Hardware Wallet")
     (description "@code{trezor} is a Python library for communicating with
