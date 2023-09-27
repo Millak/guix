@@ -136,7 +136,14 @@
              (lambda* (#:key outputs #:allow-other-keys #:rest args)
                (apply (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)
                       #:glib-or-gtk-wrap-excluded-outputs (list "out")
-                      args))))))
+                      args)))
+           (add-after 'glib-or-gtk-wrap 'wrap-program
+             (lambda* (#:key outputs #:allow-other-keys)
+               (wrap-program (string-append #$output:gui "/bin/transmission-gtk")
+                 ;; Wrapping GDK_PIXBUF_MODULE_FILE allows Transmission to load
+                 ;; its own icons in pure environments.
+                 `("GDK_PIXBUF_MODULE_FILE" =
+                   (,(getenv "GDK_PIXBUF_MODULE_FILE")))))))))
     (inputs (list curl
                   (list glib "bin")
                   gtkmm
