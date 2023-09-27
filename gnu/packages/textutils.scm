@@ -692,7 +692,7 @@ spreadsheets and outputs it in comma-separated-value format, and
 (define-public utfcpp
   (package
     (name "utfcpp")
-    (version "3.2.4")
+    (version "3.2.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -709,7 +709,7 @@ spreadsheets and outputs it in comma-separated-value format, and
                      "<ftest/ftest.h>"))))
               (sha256
                (base32
-                "0p18cbdk57ilbgcgprgqp7fgysb5i0nidczbhc5rnxkiiw4jvxgn"))))
+                "195n47dblx765xas54vkgyin3xsvfnvcdc614njzqmcxybfpvix2"))))
     (build-system cmake-build-system)
     (native-inputs (list ftest))
     (home-page "https://github.com/nemtrif/utfcpp")
