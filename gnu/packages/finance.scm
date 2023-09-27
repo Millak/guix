@@ -1666,7 +1666,7 @@ trezord as a regular user instead of needing to it run as root.")
 (define-public trezord
   (package
     (name "trezord")
-    (version "2.0.31")
+    (version "2.0.33")
     (source
      (origin
        (method git-fetch)
@@ -1674,11 +1674,13 @@ trezord as a regular user instead of needing to it run as root.")
              (url "https://github.com/trezor/trezord-go")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "130nhk1pnr3xx9qkcij81mm3jxrl5zvvdqhvrgvrikqg3zlb6v5b"))
+        (base32 "0nnfh9qkb8ljajkxwrn3nn85zrsw10hp7c5i4zh60qgfyl0djppw"))
        (file-name (git-file-name name version))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/trezor/trezord-go"))
+     `(#:import-path "github.com/trezor/trezord-go"
+       ;; Requires go 1.18 or later: https://github.com/trezor/trezord-go/commit/f559ee5079679aeb5f897c65318d3310f78223ca
+       #:go ,go-1.20))
     (native-inputs
      `(("github.com/gorilla-csrf" ,go-github-com-gorilla-csrf)
        ("github.com/gorilla/handlers" ,go-github-com-gorilla-handlers)
