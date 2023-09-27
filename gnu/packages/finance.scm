@@ -925,7 +925,7 @@ Bech32 and segwit addresses.")
   ;; the toplevel app called trezor-agent.
   (package
     (name "python-trezor-agent")
-    (version "0.14.4")
+    (version "0.14.7")
     (source
      (origin
        (method git-fetch)
@@ -934,7 +934,7 @@ Bech32 and segwit addresses.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ksv494xpga27ifrjyn1bkqaya5h769lqb9rx1ng0n4kvmnrqr3l"))))
+        (base32 "04dds5bbw73nk36zm8d02qw6qr92nrlcf8r1cq8ba96mzi34jbk0"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -962,8 +962,12 @@ Bech32 and segwit addresses.")
            python-semver
            python-unidecode
            python-wheel))
-    (native-inputs
-     (list gnupg python-mock python-pytest))
+    (native-inputs ; Only needed for running the tests
+     (list gnupg
+           python-bech32
+           python-cryptography
+           python-mock
+           python-pytest))
     (home-page "https://github.com/romanz/trezor-agent")
     (synopsis "Use hardware wallets as SSH and GPG agent")
     (description
