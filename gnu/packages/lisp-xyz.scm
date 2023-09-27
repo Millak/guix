@@ -74,6 +74,7 @@
   #:use-module (guix build-system asdf)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
+  #:use-module (guix build-system emacs)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages base)
   #:use-module (gnu packages c)
@@ -27588,6 +27589,21 @@ definition.")
 
 (define-public ecl-slite
   (sbcl-package->ecl-package sbcl-slite))
+
+(define-public emacs-slite
+  (package
+    (inherit sbcl-slite)
+    (name "emacs-slite")
+    (build-system emacs-build-system)
+    (synopsis "SLIme-based TEst runner for FiveAM and Parachute Tests")
+    (description
+     "Slite interactively runs your Common Lisp tests (currently only FiveAM
+and Parachute are supported). It allows you to see the summary of test
+failures, jump to test definitions, rerun tests with debugger all from inside
+Emacs.
+
+In order to work, this also requires the slite Common Lisp system to be
+present. See the code@{*cl-slite packages}.")))
 
 (define-public sbcl-parseq
   (package
