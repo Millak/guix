@@ -1684,6 +1684,11 @@ command to submit patches.  To list the available actions of the script,
 you can invoke it via the @command{etc/teams.scm help} command.  For
 more information regarding teams, @pxref{Teams}.
 
+@quotation Note
+On foreign distros, you might have to use @command{./pre-inst-env git
+send-email} for @file{etc/teams.scm} to work.
+@end quotation
+
 @unnumberedsubsubsec Multiple Patches
 @anchor{Multiple Patches}
 @cindex cover letter
