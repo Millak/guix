@@ -801,7 +801,12 @@ bar.  It is also compatible with sway.")
                (("/usr/bin/env")
                 (search-input-file inputs "/bin/env"))
                (("/bin/echo")
-                (search-input-file inputs "/bin/echo"))))))))
+                (search-input-file inputs "/bin/echo")))))
+         (add-after 'install 'install-manpage
+           (lambda* (#:key outputs #:allow-other-keys)
+             (install-file "man/just.1"
+                           (string-append (assoc-ref outputs "out")
+                                          "/share/man/man1")))))))
     (home-page "https://github.com/casey/just")
     (synopsis "Just a command runner")
     (description "This package provides @code{just}, a command runner.
