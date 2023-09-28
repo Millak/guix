@@ -1680,9 +1680,18 @@ PicoBlaze; and Zilog Z80 families, plus many of their variants.")
                 (("debugger/mcs51" line)
                  (string-append line  "\n"
                                 "TARGETS += sdcc-misc\n"
-                                "PKGS += $(SDCC_MISC)"))))))))
+                                "PKGS += $(SDCC_MISC)")))))
+          (add-after 'patch-makefiles 'embed-absolute-ucsim-reference
+            (lambda _
+              ;; Embed in the debugger an absolute reference to the MCS-51
+              ;; simulator from Guix's μCsim package to ensure it is always
+              ;; available.
+              (substitute* "debugger/mcs51/sdcdb.c"
+                (("s51")
+                 (string-append #$(this-package-input "ucsim")
+                                "/bin/s51"))))))))
     (inputs
-     (list readline))
+     (list readline ucsim))
     (native-inputs
      (list bison boost flex python-2 texinfo zlib))
     (home-page "https://sdcc.sourceforge.net/")
