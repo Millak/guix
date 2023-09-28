@@ -1649,24 +1649,26 @@ PicoBlaze; and Zilog Z80 families, plus many of their variants.")
               (modules '((guix build utils)))
               (snippet
                #~(begin
-                   ;; Remove non-free source files
+                   ;; Remove non-free source files.
                    (delete-file-recursively "device/non-free")
-                   ;; Remove bundled μCsim source
+                   ;; Remove bundled μCsim source.
                    (delete-file-recursively "sim")))
               (patches (search-patches "sdcc-disable-non-free-code.patch"))))
     (build-system gnu-build-system)
-    (inputs
-     (list readline))
-    (native-inputs
-     (list bison boost flex python-2 texinfo zlib))
     (arguments
      (list
-      ;; GPUTILS is required for the PIC ports, but the licensing status of
-      ;; some of the files contained in its distribution is unclear (see
-      ;; https://issues.guix.gnu.org/44557).  For this reason it is not yet
-      ;; available as a package in Guix.
       #:configure-flags
-      #~(list "--disable-pic14-port" "--disable-pic16-port" "--disable-ucsim")
+      #~(list
+         ;; GPUTILS is required for the PIC ports, but the licensing status of
+         ;; some of the files contained in its distribution is unclear (see
+         ;; https://issues.guix.gnu.org/44557).  For this reason it is not yet
+         ;; available as a package in Guix.
+         "--disable-pic14-port"
+         "--disable-pic16-port"
+
+         ;; Do not build or install the bundled copy of μCsim, for which Guix
+         ;; has its own package.
+         "--disable-ucsim")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-makefiles
@@ -1679,7 +1681,11 @@ PicoBlaze; and Zilog Z80 families, plus many of their variants.")
                  (string-append line  "\n"
                                 "TARGETS += sdcc-misc\n"
                                 "PKGS += $(SDCC_MISC)"))))))))
-    (home-page "https://sdcc.sourceforge.net")
+    (inputs
+     (list readline))
+    (native-inputs
+     (list bison boost flex python-2 texinfo zlib))
+    (home-page "https://sdcc.sourceforge.net/")
     (synopsis "C compiler suite for 8-bit microcontrollers")
     (description "SDCC is a retargetable, optimizing Standard C compiler suite
 that targets 8-bit microcontrollers in the Intel MCS-51 (8051); MOS Technology
