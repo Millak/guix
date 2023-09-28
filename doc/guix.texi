@@ -16944,6 +16944,23 @@ version:
                     %base-packages)))
 @end lisp
 
+@findex specification->package+output
+When a package has more than one output it can be a challenge to refer to a
+specific output instead of just to the standard @code{out} output.  For these
+situations one can use the @code{specification->package+output} procedure from
+the @code{(gnu packages)} module.  For example:
+
+@lisp
+(use-modules (gnu packages))
+
+(operating-system
+  ;; ...
+  (packages (append (map specification->package+output
+                         '("nss-certs" "git" "git:send-email"))
+                    %base-packages)))
+
+@end lisp
+
 @unnumberedsubsec System Services
 
 @cindex services
