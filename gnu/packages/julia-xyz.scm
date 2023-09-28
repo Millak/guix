@@ -242,6 +242,17 @@ no issues with the upgrade.")
         (sha256
          (base32 "11h0w1bqw2md5gh4dfmm1aazifcs2ydrc47hqzvav1xrx25b57z5"))))
     (build-system julia-build-system)
+    (arguments
+     (if (not (target-x86-64?))
+         ;; This test is only broken when using openblas, not openblas-ilp64.
+         (list
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'adjust-tests
+                 (lambda _
+                   (substitute* "test/test_layoutarray.jl"
+                     (("test all\\(B") "test_broken all(B"))))))
+         '()))
     (propagated-inputs
      (list julia-fillarrays))
     (native-inputs
