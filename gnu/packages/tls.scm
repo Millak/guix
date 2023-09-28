@@ -426,6 +426,7 @@ OpenSSL for TARGET."
   (package
     (name "openssl")
     (version "1.1.1q")
+    (replacement openssl/fixed)
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://www.openssl.org/source/openssl-"
