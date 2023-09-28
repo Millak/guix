@@ -354,6 +354,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/java-compression.scm		\
   %D%/packages/java-graphics.scm		\
   %D%/packages/java-maths.scm			\
+  %D%/packages/java-rdf.scm			\
   %D%/packages/java-xml.scm			\
   %D%/packages/javascript.scm			\
   %D%/packages/jemalloc.scm			\
