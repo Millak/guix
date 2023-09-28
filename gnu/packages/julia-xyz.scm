@@ -2475,7 +2475,7 @@ update step.")
 (define-public julia-genericlinearalgebra
   (package
     (name "julia-genericlinearalgebra")
-    (version "0.2.5")
+    (version "0.3.0")
     (source
       (origin
         (method git-fetch)
@@ -2484,16 +2484,8 @@ update step.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0ndwypa397z3pwzdgc3s9plaqlqf63g3d4px5pvym5psgr6lnm3l"))))
+         (base32 "16k1r02w5qivvr99n5a9impbnnzygpj705irf5ypy208np91xyyd"))))
     (build-system julia-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'link-depot 'adjust-test-suite
-            (lambda _
-              (substitute* "test/runtests.jl"
-                ((".*lapack.*") "")))))))
     (native-inputs
      (list julia-quaternions))
     (home-page "https://github.com/JuliaLinearAlgebra/GenericLinearAlgebra.jl")
