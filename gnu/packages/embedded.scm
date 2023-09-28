@@ -1648,12 +1648,11 @@ PicoBlaze; and Zilog Z80 families, plus many of their variants.")
                 "0ly0m3q9vzjb9kcfjh79s77wpl4w7xhybzy4h9x0bmmw4cfsx6xl"))
               (modules '((guix build utils)))
               (snippet
-               '(begin
-                  ;; Remove non-free source files
-                  (delete-file-recursively "device/non-free")
-                  ;; Remove bundled μCsim source
-                  (delete-file-recursively "sim")
-                  #t))
+               #~(begin
+                   ;; Remove non-free source files
+                   (delete-file-recursively "device/non-free")
+                   ;; Remove bundled μCsim source
+                   (delete-file-recursively "sim")))
               (patches (search-patches "sdcc-disable-non-free-code.patch"))))
     (build-system gnu-build-system)
     (inputs
@@ -1661,25 +1660,25 @@ PicoBlaze; and Zilog Z80 families, plus many of their variants.")
     (native-inputs
      (list bison boost flex python-2 texinfo zlib))
     (arguments
-     `(;; GPUTILS is required for the PIC ports, but the licensing status of
-       ;; some of the files contained in its distribution is unclear (see
-       ;; https://issues.guix.gnu.org/44557).  For this reason it is not yet
-       ;; available as a package in Guix.
-       #:configure-flags
-       '("--disable-pic14-port" "--disable-pic16-port" "--disable-ucsim")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-makefiles
-           (lambda _
-             (substitute* (find-files "." "(\\.mk$|\\.in$)")
-               (("/bin/sh") (which "sh")))
-             ;; --disable-ucsim disables sdcc-misc, patch it back in.
-             (substitute* "Makefile.in"
-               (("debugger/mcs51" line)
-                (string-append line  "\n"
-                               "TARGETS += sdcc-misc\n"
-                               "PKGS += $(SDCC_MISC)")))
-             #t)))))
+     (list
+      ;; GPUTILS is required for the PIC ports, but the licensing status of
+      ;; some of the files contained in its distribution is unclear (see
+      ;; https://issues.guix.gnu.org/44557).  For this reason it is not yet
+      ;; available as a package in Guix.
+      #:configure-flags
+      #~(list "--disable-pic14-port" "--disable-pic16-port" "--disable-ucsim")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-makefiles
+            (lambda _
+              (substitute* (find-files "." "(\\.mk$|\\.in$)")
+                (("/bin/sh") (which "sh")))
+              ;; --disable-ucsim disables sdcc-misc, patch it back in.
+              (substitute* "Makefile.in"
+                (("debugger/mcs51" line)
+                 (string-append line  "\n"
+                                "TARGETS += sdcc-misc\n"
+                                "PKGS += $(SDCC_MISC)"))))))))
     (home-page "https://sdcc.sourceforge.net")
     (synopsis "C compiler suite for 8-bit microcontrollers")
     (description "SDCC is a retargetable, optimizing Standard C compiler suite
