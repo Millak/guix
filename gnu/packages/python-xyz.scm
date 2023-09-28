@@ -1830,6 +1830,28 @@ It can handle tasks such as scanning, tracerouting, probing, unit tests,
 attacks or network discovery.")
     (license license:gpl2)))
 
+(define-public python-icmplib
+  (package
+    (name "python-icmplib")
+    (version "3.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "icmplib" version))
+       (sha256
+        (base32 "1phnlgbb5di79ijm55pyd5jj1ggss4b6nn6mw701h501vcn8z1jp"))))
+    (arguments
+     '(#:tests? #f)) ;test data not present
+    (build-system python-build-system)
+    (home-page "https://github.com/ValentinBELYN/icmplib")
+    (synopsis
+     "Python implementation of the Internet Control Message Protocol (ICMP)")
+    (description
+     "@code{icmplib} is a supporting library for both IPv4 and IPv6 networks.
+ICMP is typically used for diagnostic or control purposes - well known from
+utilities such as ping(1).")
+    (license license:lgpl3)))
+
 (define-public python-rasterio
   (package
     (name "python-rasterio")
