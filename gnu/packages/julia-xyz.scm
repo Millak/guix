@@ -379,7 +379,17 @@ axes, allowing column names or interval selections.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0nrcasjdpwf15z7l2lzyhxjqxlnqk5if78s15sh4gdgxf9kzj3a6"))))
+         (base32 "0nrcasjdpwf15z7l2lzyhxjqxlnqk5if78s15sh4gdgxf9kzj3a6"))
+        (snippet
+         #~(begin
+             (use-modules (guix build utils))
+             ;; From upstream commit 8bbf901bb7fb417fe90be26e0cd9a141cfdfe19c,
+             ;; included in 0.17.34.
+             (substitute* "src/BandedMatrices.jl"
+               (("const libblas = Base\\.libblas_name")
+                "const libblas = LinearAlgebra.BLAS.libblas")
+               (("const liblapack = Base\\.liblapack_name")
+                "const liblapack = LinearAlgebra.BLAS.liblapack"))))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-aqua
