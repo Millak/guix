@@ -11519,6 +11519,26 @@ GA4GH Task Execution API.")
 algorithm.")
     (license license:asl2.0)))
 
+(define-public python-altgraph
+  (package
+    (name "python-altgraph")
+    (version "0.17.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "altgraph" version))
+       (sha256
+        (base32 "01j48np3g50g6insjkszsz0vifwlm6gspria5vdwlkbciywznnhv"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest))
+    (home-page "https://altgraph.readthedocs.io")
+    (synopsis "Python graph network package")
+    (description
+"This package provides tools for constructing graphs, BFS and DFS
+traversals, topological sort, shortest paths, and more with graphviz
+output.")
+    (license license:expat)))
+
 (define-public python-three-merge
   (package
     (name "python-three-merge")
