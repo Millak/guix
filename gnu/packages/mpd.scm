@@ -246,7 +246,16 @@ protocol.")
                  ;; actually invoked.
                  (lambda _
                    (substitute* "doc/meson.build"
-                     (("rsync") "ls")))))))
+                     (("rsync") "ls"))))
+               (add-after 'install 'move-completion
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (contrib (string-append out "/share/doc/mpc/contrib"))
+                          (completion
+                           (string-append out "/etc/bash-completion.d/")))
+                     (mkdir-p completion)
+                     (rename-file (string-append contrib "/mpc-completion.bash")
+                                  (string-append completion "/mpc"))))))))
     (inputs (list libmpdclient))
     (native-inputs
      (list pkg-config python-sphinx))
