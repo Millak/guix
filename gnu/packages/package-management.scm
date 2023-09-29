@@ -215,6 +215,13 @@
                             ;; system installation image.)
                             "ac_cv_path_DOT_USER_PROGRAM=dot"
 
+                            ;; When cross-compiling, 'git' is not in $PATH
+                            ;; (because it's not a native input).  Thus,
+                            ;; always explicitly pass its file name.
+                            (string-append "ac_cv_path_GIT="
+                                           (search-input-file %build-inputs
+                                                              "/bin/git"))
+
                             ;; To avoid problems with the length of shebangs,
                             ;; choose a fixed-width and short directory name
                             ;; for tests.
