@@ -28541,23 +28541,6 @@ common set-up and tear-down code, and allows the programmer to \"spy\" on
 functions to ensure they are called with the right arguments during testing.")
     (license license:gpl3+)))
 
-;;; Required by emacs-lua-mode
-(define emacs-buttercup-1.25
-  (package
-    (inherit emacs-buttercup)
-    (name "emacs-buttercup")
-    (version "1.25")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/jorgenschaefer/emacs-buttercup")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0fsysvsypda6b7azc15bpaprq3bwx4gb6rlq2mj6f8rgwdqc8153"))))))
-
 (define-public emacs-cort
   (package
     (name "emacs-cort")
