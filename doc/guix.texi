@@ -20453,19 +20453,74 @@ IP address (a string) through which traffic is routed.
 
 @deftp {Data Type} network-link
 Data type for a network link (@pxref{Link,,, guile-netlink,
-Guile-Netlink Manual}).
+Guile-Netlink Manual}).  During startup, network links are employed to
+construct or modify existing or virtual ethernet links.  These ethernet
+links can be identified by their @var{name} or @var{mac-address}.  If
+there is a need to create virtual interface, @var{name} and @var{type}
+fields are required.
 
 @table @code
 @item name
-The name of the link---e.g., @code{"v0p0"}.
+The name of the link---e.g., @code{"v0p0"} (default: @code{#f}).
 
 @item type
-A symbol denoting the type of the link---e.g., @code{'veth}.
+A symbol denoting the type of the link---e.g., @code{'veth} (default: @code{#f}).
+
+@item mac-address
+The mac-address of the link---e.g., @code{"98:11:22:33:44:55"} (default: @code{#f}).
 
 @item arguments
 List of arguments for this type of link.
 @end table
 @end deftp
+
+Consider a scenario where a server equipped with a network interface
+which has multiple ports.  These ports are connected to a switch, which
+supports @uref{https://en.wikipedia.org/wiki/Link_aggregation, link
+aggregation} (also known as bonding or NIC teaming).  The switch uses
+port channels to consolidate multiple physical interfaces into one
+logical interface to provide higher bandwidth, load balancing, and link
+redundancy.  When a port is added to a LAG (or link aggregation group),
+it inherits the properties of the port-channel.  Some of these
+properties are VLAN membership, trunk status, and so on.
+
+@uref{https://en.wikipedia.org/wiki/Virtual_LAN, VLAN} (or virtual local
+area network) is a logical network that is isolated from other VLANs on
+the same physical network.  This can be used to segregate traffic,
+improve security, and simplify network management.
+
+With all that in mind let's configure our static network for the server.
+We will bond two existing interfaces together using 802.3ad schema and on
+top of it, build a VLAN interface with id 1055.  We assign a static ip
+to our new VLAN interface.
+
+@lisp
+(static-networking
+ (links (list (network-link
+               (name "bond0")
+               (type 'bond)
+               (arguments '((mode . "802.3ad")
+                            (miimon . 100)
+                            (lacp-active . "on")
+                            (lacp-rate . "fast"))))
+
+              (network-link
+               (mac-address "98:11:22:33:44:55")
+               (arguments '((master . "bond0"))))
+
+              (network-link
+               (mac-address "98:11:22:33:44:56")
+               (arguments '((master . "bond0"))))
+
+              (network-link
+               (name "bond0.1055")
+               (type 'vlan)
+               (arguments '((id . 1055)
+                            (link . "bond0"))))))
+ (addresses (list (network-address
+                   (value "192.168.1.4/24")
+                   (device "bond0.1055")))))
+@end lisp
 
 @cindex loopback device
 @defvar %loopback-static-networking

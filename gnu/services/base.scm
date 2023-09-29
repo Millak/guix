@@ -2692,6 +2692,33 @@ Write, say, @samp{\"~a/24\"} for a 24-bit network mask.")
                                 address)))))))
   address)
 
+(define (mac-address? str)
+  "Return true if STR is a valid MAC address."
+  (let ((pattern (make-regexp "^([0-9A-Fa-f]{2}:?){6}$")))
+    (false-if-exception (vector? (regexp-exec pattern str)))))
+
+(define-compile-time-procedure (assert-network-link-mac-address (value identity))
+  (cond
+   ((eq? value #f) value)
+   ((and (string? value) (mac-address? value)) value)
+   (else (raise
+          (make-compound-condition
+           (formatted-message (G_ "Value (~S) is not a valid mac address.~%")
+                              value)
+           (condition (&error-location
+                       (location (source-properties->location procedure-call-location)))))))))
+
+(define-compile-time-procedure (assert-network-link-type (value identity))
+  (match value
+    (#f value)
+    (('quote _) (datum->syntax #'value value))
+    (else
+     (raise
+      (make-compound-condition
+       (formatted-message (G_ "Value (~S) is not a symbol.~%") value)
+       (condition (&error-location
+                   (location (source-properties->location procedure-call-location)))))))))
+
 (define-record-type* <static-networking>
   static-networking make-static-networking
   static-networking?
@@ -2719,8 +2746,14 @@ Write, say, @samp{\"~a/24\"} for a 24-bit network mask.")
 (define-record-type* <network-link>
   network-link make-network-link
   network-link?
-  (name      network-link-name)                   ;string--e.g, "v0p0"
-  (type      network-link-type)                   ;symbol--e.g.,'veth
+  (name      network-link-name
+             (default #f))                   ;string or #f --e.g, "v0p0"
+  (type      network-link-type
+             (sanitize assert-network-link-type)
+             (default #f))                   ;symbol or #f--e.g.,'veth, 'bond
+  (mac-address network-link-mac-address
+               (sanitize assert-network-link-mac-address)
+               (default #f))
   (arguments network-link-arguments))             ;list
 
 (define-record-type* <network-route>
@@ -2845,7 +2878,77 @@ to CONFIG."
     (scheme-file "set-up-network"
                  (with-extensions (list guile-netlink)
                    #~(begin
-                       (use-modules (ip addr) (ip link) (ip route))
+                       (use-modules (ip addr) (ip link) (ip route)
+                                    (srfi srfi-1)
+                                    (ice-9 format)
+                                    (ice-9 match))
+
+                       (define (match-link-by field-accessor value)
+                         (fold (lambda (link result)
+                                 (if (equal? (field-accessor link) value)
+                                     link
+                                     result))
+                               #f
+                               (get-links)))
+
+                       (define (alist->keyword+value alist)
+                         (fold (match-lambda*
+                                 (((k . v) r)
+                                  (cons* (symbol->keyword k) v r))) '() alist))
+
+                       ;; FIXME: It is interesting that "modprobe bonding" creates an
+                       ;; interface bond0 straigt away.  If we won't have bonding
+                       ;; module, and execute `ip link add name bond0 type bond' we
+                       ;; will get
+                       ;;
+                       ;; RTNETLINK answers: File exists
+                       ;;
+                       ;; This breaks our configuration if we want to
+                       ;; use `bond0' name.  Create (force modprobe
+                       ;; bonding) and delete the interface to free up
+                       ;; bond0 name.
+                       #$(let lp ((links links))
+                           (cond
+                            ((null? links) #f)
+                            ((and (network-link? (car links))
+                                  ;; Type is not mandatory
+                                  (false-if-exception
+                                   (eq? (network-link-type (car links)) 'bond)))
+                             #~(begin
+                                 (false-if-exception (link-add "bond0" "bond"))
+                                 (link-del "bond0")))
+                            (else (lp (cdr links)))))
+
+                       #$@(map (match-lambda
+                                 (($ <network-link> name type mac-address arguments)
+                                  (cond
+                                   ;; Create a new interface
+                                   ((and (string? name) (symbol? type))
+                                    #~(begin
+                                        (link-add #$name (symbol->string '#$type) #:type-args '#$arguments)
+                                        ;; XXX: If we add routes, addresses must be
+                                        ;; already assigned, and interfaces must be
+                                        ;; up. It doesn't matter if they won't have
+                                        ;; carrier or anything.
+                                        (link-set #$name #:up #t)))
+
+                                   ;; Amend an existing interface
+                                   ((and (string? name)
+                                         (eq? type #f))
+                                    #~(let ((link (match-link-by link-name #$name)))
+                                        (if link
+                                            (apply link-set
+                                                   (link-id link)
+                                                   (alist->keyword+value '#$arguments))
+                                            (format #t (G_ "Interface with name '~a' not found~%") #$name))))
+                                   ((string? mac-address)
+                                    #~(let ((link (match-link-by link-addr #$mac-address)))
+                                        (if link
+                                            (apply link-set
+                                                   (link-id link)
+                                                   (alist->keyword+value '#$arguments))
+                                            (format #t (G_ "Interface with mac-address '~a' not found~%") #$mac-address)))))))
+                                        links)
 
                        #$@(map (lambda (address)
                                  #~(begin
@@ -2864,11 +2967,7 @@ to CONFIG."
                                                #:multicast-on #t
                                                #:up #t)))
                                addresses)
-                       #$@(map (match-lambda
-                                 (($ <network-link> name type arguments)
-                                  #~(link-add #$name #$type
-                                              #:type-args '#$arguments)))
-                               links)
+
                        #$@(map (lambda (route)
                                  #~(route-add #$(network-route-destination route)
                                               #:device
@@ -2912,11 +3011,9 @@ to CONFIG."
                                                #:src
                                                #$(network-route-source route))))
                                routes)
-                       #$@(map (match-lambda
-                                 (($ <network-link> name type arguments)
-                                  #~(false-if-netlink-error
-                                     (link-del #$name))))
-                               links)
+
+                       ;; Cleanup addresses first, they might be assigned to
+                       ;; created bonds, vlans or bridges.
                        #$@(map (lambda (address)
                                  #~(false-if-netlink-error
                                     (addr-del #$(network-address-device
@@ -2925,6 +3022,17 @@ to CONFIG."
                                               #:ipv6?
                                               #$(network-address-ipv6? address))))
                                addresses)
+
+                       ;; It is now safe to delete some links
+                       #$@(map (match-lambda
+                                 (($ <network-link> name type mac-address arguments)
+                                  (cond
+                                   ;; We delete interfaces that were created
+                                   ((and (string? name) (symbol? type))
+                                    #~(false-if-netlink-error
+                                       (link-del #$name)))
+                                   (else #t))))
+                               links)
                        #f)))))
 
 (define (static-networking-shepherd-service config)
