@@ -757,7 +757,7 @@ safety and thread safety guarantees.")
 ;;; Here we take the latest included Rust, make it public, and re-enable tests
 ;;; and extra components such as rustfmt.
 (define-public rust
-  (let ((base-rust rust-1.68))
+  (let ((base-rust rust-1.70))
     (package
       (inherit base-rust)
       (outputs (cons "rustfmt" (package-outputs base-rust)))
@@ -781,52 +781,36 @@ safety and thread safety guarantees.")
                  (substitute* "src/tools/compiletest/src/runtest.rs"
                    (("\"-nx\".as_ref\\(\\), ")
                     ""))))
-             (add-after 'unpack 'patch-cargo-env-shebang
-               (lambda _
-                 (substitute* '("src/tools/cargo/tests/testsuite/build.rs"
-                                "src/tools/cargo/tests/testsuite/fix.rs")
-                   ;; The cargo *_wrapper tests set RUSTC.*WRAPPER environment
-                   ;; variable which points to /usr/bin/env.  Since it's not a
-                   ;; shebang, it needs to be manually patched.
-                   (("/usr/bin/env")
-                    (which "env")))))
              (add-after 'unpack 'disable-tests-requiring-git
                (lambda _
-                 (substitute* "src/tools/cargo/tests/testsuite/new.rs"
-                   (("fn author_prefers_cargo")
-                    "#[ignore]\nfn author_prefers_cargo")
-                   (("fn finds_author_git")
-                    "#[ignore]\nfn finds_author_git")
-                   (("fn finds_local_author_git")
-                    "#[ignore]\nfn finds_local_author_git"))))
+                 (substitute* "src/tools/cargo/tests/testsuite/git.rs"
+                   ,@(make-ignore-test-list
+                      '("fn fetch_downloads_with_git2_first_")))))
              (add-after 'unpack 'disable-tests-requiring-mercurial
                (lambda _
-                 (substitute*
-                   "src/tools/cargo/tests/testsuite/init/simple_hg_ignore_exists/mod.rs"
-                   (("fn simple_hg_ignore_exists")
-                    "#[ignore]\nfn simple_hg_ignore_exists"))
-                 (substitute*
-                   "src/tools/cargo/tests/testsuite/init/mercurial_autodetect/mod.rs"
-                   (("fn mercurial_autodetect")
-                    "#[ignore]\nfn mercurial_autodetect"))))
+                 (with-directory-excursion "src/tools/cargo/tests/testsuite/init"
+                   (substitute* '("mercurial_autodetect/mod.rs"
+                                  "simple_hg_ignore_exists/mod.rs")
+                     ,@(make-ignore-test-list
+                        '("fn case"))))))
              (add-after 'unpack 'disable-tests-broken-on-aarch64
                (lambda _
                  (with-directory-excursion "src/tools/cargo/tests/testsuite/"
                    (substitute* "build_script_extra_link_arg.rs"
-                     (("^fn build_script_extra_link_arg_bin_single" m)
-                      (string-append "#[ignore]\n" m)))
+                     ,@(make-ignore-test-list
+                        '("fn build_script_extra_link_arg_bin_single")))
                    (substitute* "build_script.rs"
-                     (("^fn env_test" m)
-                      (string-append "#[ignore]\n" m)))
+                     ,@(make-ignore-test-list
+                        '("fn env_test")))
                    (substitute* "collisions.rs"
-                     (("^fn collision_doc_profile_split" m)
-                      (string-append "#[ignore]\n" m)))
+                     ,@(make-ignore-test-list
+                        '("fn collision_doc_profile_split")))
                    (substitute* "concurrent.rs"
-                     (("^fn no_deadlock_with_git_dependencies" m)
-                      (string-append "#[ignore]\n" m)))
+                     ,@(make-ignore-test-list
+                        '("fn no_deadlock_with_git_dependencies")))
                    (substitute* "features2.rs"
-                     (("^fn dep_with_optional_host_deps_activated" m)
-                      (string-append "#[ignore]\n" m))))))
+                     ,@(make-ignore-test-list
+                        '("fn dep_with_optional_host_deps_activated"))))))
              (add-after 'unpack 'patch-command-exec-tests
                ;; This test suite includes some tests that the stdlib's
                ;; `Command` execution properly handles in situations where
@@ -834,16 +818,14 @@ safety and thread safety guarantees.")
                ;; since we don't have `echo` available at its usual FHS
                ;; location.
                (lambda _
-                 (substitute* (match (find-files "." "^command-exec.rs$")
-                                ((file) file))
+                 (substitute* "tests/ui/command/command-exec.rs"
                    (("Command::new\\(\"echo\"\\)")
                     (format #f "Command::new(~s)" (which "echo"))))))
              (add-after 'unpack 'patch-command-uid-gid-test
                (lambda _
-                 (substitute* (match (find-files "." "^command-uid-gid.rs$")
-                                ((file) file))
-                   (("/bin/sh")
-                    (which "sh")))))
+                 (substitute* "tests/ui/command/command-uid-gid.rs"
+                   (("/bin/sh") (which "sh"))
+                   (("/bin/ls") (which "ls")))))
              (add-after 'unpack 'skip-shebang-tests
                ;; This test make sure that the parser behaves properly when a
                ;; source file starts with a shebang. Unfortunately, the
@@ -855,26 +837,28 @@ safety and thread safety guarantees.")
              (add-after 'unpack 'patch-process-tests
                (lambda* (#:key inputs #:allow-other-keys)
                  (let ((bash (assoc-ref inputs "bash")))
-                   (substitute* "library/std/src/process/tests.rs"
-                     (("\"/bin/sh\"")
-                      (string-append "\"" bash "/bin/sh\"")))
-                   ;; The three tests which are known to fail upstream on QEMU
-                   ;; emulation on aarch64 and riscv64 also fail on x86_64 in Guix's
-                   ;; build system. Skip them on all builds.
-                   (substitute* "library/std/src/sys/unix/process/process_common/tests.rs"
-                     (("target_arch = \"arm\",") "target_os = \"linux\",")))))
+                   (with-directory-excursion "library/std/src"
+                     (substitute* "process/tests.rs"
+                       (("\"/bin/sh\"")
+                        (string-append "\"" bash "/bin/sh\"")))
+                     ;; The three tests which are known to fail upstream on QEMU
+                     ;; emulation on aarch64 and riscv64 also fail on x86_64 in
+                     ;; Guix's build system.  Skip them on all builds.
+                     (substitute* "sys/unix/process/process_common/tests.rs"
+                       ,@(make-ignore-test-list
+                          '("fn test_process_mask"
+                            "fn test_process_group_posix_spawn"
+                            "fn test_process_group_no_posix_spawn")))))))
              (add-after 'unpack 'disable-interrupt-tests
                (lambda _
                  ;; This test hangs in the build container; disable it.
-                 (substitute* (match (find-files "." "^freshness.rs$")
-                                ((file) file))
-                   (("fn linking_interrupted")
-                    "#[ignore]\nfn linking_interrupted"))
+                 (substitute* "src/tools/cargo/tests/testsuite/freshness.rs"
+                   ,@(make-ignore-test-list
+                      '("fn linking_interrupted")))
                  ;; Likewise for the ctrl_c_kills_everyone test.
-                 (substitute* (match (find-files "." "^death.rs$")
-                                ((file) file))
-                   (("fn ctrl_c_kills_everyone")
-                    "#[ignore]\nfn ctrl_c_kills_everyone"))))
+                 (substitute* "src/tools/cargo/tests/testsuite/death.rs"
+                   ,@(make-ignore-test-list
+                      '("fn ctrl_c_kills_everyone")))))
              (add-after 'unpack 'adjust-rpath-values
                ;; This adds %output:out to rpath, allowing us to install utilities in
                ;; different outputs while reusing the shared libraries.
