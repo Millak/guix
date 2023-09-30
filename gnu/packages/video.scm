@@ -1940,6 +1940,39 @@ thumbnailer uses ffmpeg to decode frames from the video files, so supported
 videoformats depend on the configuration flags of ffmpeg.")
     (license license:gpl2+)))
 
+(define-public ffmpeg-progress-yield
+  (package
+    (name "ffmpeg-progress-yield")
+    (version "0.7.8")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "ffmpeg-progress-yield" version))
+              (sha256
+               (base32
+                "07j6m8p8z8ybl75h0d4xzjl1pvkfzr0i73siysqcgrrahdgsxrls"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; Not sure if the test file actually does anything.
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "python" "test/test.py"))))
+                        (add-after 'wrap 'wrap-program
+                          ;; Wrap ffmpeg on the executable.
+                          (lambda* (#:key inputs outputs #:allow-other-keys)
+                            (let ((fpy "bin/ffmpeg-progress-yield")
+                                  (ffm "bin/ffmpeg"))
+                              (wrap-program (search-input-file outputs fpy)
+                                `("PATH" ":" prefix
+                                  (,(search-input-file inputs ffm))))))))))
+    (inputs (list bash-minimal ffmpeg))
+    (home-page "https://github.com/slhck/ffmpeg-progress-yield")
+    (synopsis "Run an ffmpeg command with progress")
+    (description "This package allows an ffmpeg command to run with progress.
+It is usually a complement to @code{ffmpeg-normalize}.")
+    (license license:expat)))
+
 (define-public vlc
   (package
     (name "vlc")
