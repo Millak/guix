@@ -2686,6 +2686,7 @@ various hardware.")
        (list airspy
              airspyhf
              alsa-lib
+             bladerf
              codec2
              fftwf
              glew
@@ -2701,7 +2702,8 @@ various hardware.")
              (list zstd "lib")))
       (arguments
        (list #:tests? #f ; No test suite.
-             #:configure-flags #~(list "-DOPT_BUILD_PLUTOSDR_SOURCE=OFF"
+             #:configure-flags #~(list "-DOPT_BUILD_BLADERF_SOURCE=ON"
+                                       "-DOPT_BUILD_PLUTOSDR_SOURCE=OFF"
                                        "-DOPT_BUILD_M17_DECODER=ON")
              #:phases
              #~(modify-phases %standard-phases
