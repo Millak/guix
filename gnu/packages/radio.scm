@@ -503,6 +503,30 @@ library.  It also adds hamlib support, which provides basic gain and frequency
 controls for certain tuners which may be paired with an audio device.")
       (license license:expat))))
 
+(define-public soapybladerf
+  (let ((commit "85f6dc554ed4c618304d99395b19c4e1523675b0")
+        (revision "1"))
+    (package
+      (name "soapybladerf")
+      (version (git-version "0.4.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/pothosware/SoapyBladeRF")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "05c5mv1b55jv7dcr740hv4b3gplfaqryflfvprhlkm7bycr8pp16"))))
+      (build-system cmake-build-system)
+      (inputs (list bladerf soapysdr))
+      (arguments (list #:tests? #f))  ; No test suite
+      (home-page "https://github.com/pothosware/SoapyBladeRF/wiki")
+      (synopsis "SoapySDR BladeRF module")
+      (description "This package provides BladeRF devices support to the
+SoapySDR library.")
+      (license license:lgpl2.1+))))
+
 (define-public soapyhackrf
   ;; Some fixes are not yet in a tagged release.
   (let ((commit "6c0c33f0aa44c3080674e6bca0273184d3e9eb44")
