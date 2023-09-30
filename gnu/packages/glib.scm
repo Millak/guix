@@ -1138,6 +1138,11 @@ libraries.  Examples include gtk+, webkit, libsoup and many more.")
        ;;   EOFError: EOF read where object expected
        ;;   make[2]: *** [Makefile:1906: _gen/register-dbus-glib-marshallers-body.h] Error 1
        #:parallel-build? #f
+       ;; When spawned in parallel, the dbus daemons may fail to shut down
+       ;; cleanly.  This issue appears to have been closed upstream due to low
+       ;; information, but still continues to haunt folks.  See also
+       ;; <https://gitlab.freedesktop.org/telepathy/telepathy-glib/-/issues/134>.
+       #:parallel-tests? #f
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'disable-failing-tests
