@@ -966,10 +966,12 @@ environment.")
       (inputs
        (list airspy
              airspyhf
+             bladerf
              boost
              fftwf
              gmp
              gnuradio
+             gr-iqbal
              hackrf
              libsndfile
              log4cpp
@@ -981,15 +983,22 @@ environment.")
              spdlog
              volk))
       (arguments
-       `(#:modules ((guix build cmake-build-system)
-                    ((guix build python-build-system) #:prefix python:)
-                    (guix build utils))
-         #:imported-modules (,@%cmake-build-system-modules
-                             (guix build python-build-system))
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'install 'wrap-python
-             (assoc-ref python:%standard-phases 'wrap)))))
+       (list #:modules '((guix build cmake-build-system)
+                         ((guix build python-build-system) #:prefix python:)
+                         (guix build utils))
+             #:imported-modules `(,@%cmake-build-system-modules
+                                  (guix build python-build-system))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-gnuradio-iqbalance-detection
+                   (lambda _
+                     (substitute* "CMakeLists.txt"
+                       (("find_package\\(gnuradio-iqbalance PATHS \\$\\{Gnuradio_DIR\\}\\)")
+                        (string-append "find_package(gnuradio-iqbalance PATHS "
+                                       #$(this-package-input "gr-iqbal")
+                                       "/lib/cmake/gnuradio)")))))
+                 (add-after 'install 'wrap-python
+                   (assoc-ref python:%standard-phases 'wrap)))))
       (synopsis "GNU Radio block for interfacing with various radio hardware")
       (description "This is a block for GNU Radio allowing to use a common API
 to access different radio hardware.")
