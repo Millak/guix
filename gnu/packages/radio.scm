@@ -3071,6 +3071,7 @@ Navigation Satellite System.")
     (inputs
      (list airspy
            airspyhf
+           bladerf
            fftwf
            glew
            glfw
