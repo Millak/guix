@@ -1973,6 +1973,48 @@ videoformats depend on the configuration flags of ffmpeg.")
 It is usually a complement to @code{ffmpeg-normalize}.")
     (license license:expat)))
 
+(define-public ffmpeg-normalize
+  (package
+    (name "ffmpeg-normalize")
+    (version "1.27.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "ffmpeg-normalize" version))
+              (sha256
+               (base32
+                "0idqqgsr3p840vx2x3idn851qwghjdbm6v4yrq2kprppyfvglni7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "python" "-m" "pytest"
+                             "test/test.py"))))
+               (add-after 'wrap 'wrap-ffmpeg
+                 ;; Wrap ffmpeg on the executable.
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (let ((ffn (search-input-file outputs
+                                                 "bin/ffmpeg-normalize"))
+                         (ffm (search-input-file inputs "bin/ffmpeg")))
+                     (wrap-program ffn
+                       `("FFMPEG_PATH" = (,ffm)))))))))
+    (native-inputs (list python-pytest))
+    (inputs (list bash-minimal ffmpeg))
+    (propagated-inputs (list ffmpeg-progress-yield
+                             python-colorama
+                             python-colorlog
+                             python-tqdm))
+    (home-page "https://github.com/slhck/ffmpeg-normalize")
+    (synopsis "Normalize audio via ffmpeg")
+    (description "This program normalizes media files to a certain loudness
+level using the EBU R128 loudness normalization procedure.  It can also
+perform RMS-based normalization (where the mean is lifted or attenuated),
+or peak normalization to a certain target level.  Batch processing of several
+input files is possible, including video files.")
+    (license license:expat)))
+
 (define-public vlc
   (package
     (name "vlc")
