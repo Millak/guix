@@ -1865,13 +1865,12 @@ gain and standing wave ratio.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list hackrf libusb ncurses rtl-sdr))
+     (list bladerf hackrf libusb ncurses rtl-sdr))
     (arguments
      (list
       #:test-target "test"
       #:make-flags
-      #~(list (string-append "CC=" #$(cc-for-target))
-              "BLADERF=no")
+      #~(list (string-append "CC=" #$(cc-for-target)))
       #:phases
       #~(modify-phases %standard-phases
           (delete 'configure)
