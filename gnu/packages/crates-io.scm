@@ -23920,21 +23920,22 @@ floats.")
 (define-public rust-fd-lock-3
   (package
     (name "rust-fd-lock")
-    (version "3.0.0")
+    (version "3.0.12")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "fd-lock" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0dif8wk9xrqkjyfgqqy3zfg4ckmkpyzzk5p5m01s99q63bcnv05q"))))
+        (base32 "0hlnn1302p37qlc9xl2k5y0vw8q8id5kg59an6riy89hjlynpbir"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-winapi" ,rust-winapi-0.3))))
+        ("rust-rustix" ,rust-rustix-0.37)
+        ("rust-windows-sys" ,rust-windows-sys-0.48))
+       #:cargo-development-inputs
+       (("rust-tempfile" ,rust-tempfile-3))))
     (home-page "https://github.com/yoshuawuyts/fd-lock")
     (synopsis "Advisory lock on a file")
     (description
