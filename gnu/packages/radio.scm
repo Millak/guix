@@ -69,10 +69,12 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages javascript)
+  #:use-module (gnu packages libedit)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages logging)
   #:use-module (gnu packages lua)
+  #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages multiprecision)
@@ -1415,6 +1417,43 @@ userspace hackrf utilities and C library.  To install the hackrf udev rules,
 you must extend 'udev-service-type' with this package.  E.g.:
 @code{(udev-rules-service 'hackrf hackrf #:groups '(\"dialout\"))}.")
     (license license:gpl2)))
+
+(define-public bladerf
+  (package
+    (name "bladerf")
+    (version "2023.02")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Nuand/bladeRF")
+             (commit version)
+             (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "038v9qdmrwx9mxsrq4l36bap0bsypyg4i8hs7l7srv4b0c2s7ynp"))))
+    (build-system cmake-build-system)
+    (native-inputs (list doxygen help2man pkg-config))
+    (inputs (list libedit libusb))
+    (arguments
+     (list #:configure-flags #~(list "-DTAGGED_RELEASE=ON"
+                                     (string-append "-DUDEV_RULES_PATH="
+                                                    #$output
+                                                    "/lib/udev/rules.d")
+                                     "-DBLADERF_GROUP=dialout"
+                                     "-DBUILD_DOCUMENTATION=ON")
+           #:tests? #f)) ; No test suite
+    (home-page "https://www.nuand.com/")
+    (synopsis "User-space library and utilities for BladeRF SDR")
+    (description
+     "This package contains a library and command line utilities for
+controlling the BladeRF Software Defined Radio (SDR) over USB.  To install the
+bladerf udev rules, you must extend 'udev-service-type' with this package.
+E.g.: @code{(udev-rules-service 'bladerf bladerf)}.")
+    (license (list license:bsd-3
+                   license:expat
+                   license:gpl2+
+                   license:lgpl2.1+))))
 
 (define-public hamlib
   (package
