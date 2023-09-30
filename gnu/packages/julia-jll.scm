@@ -1792,7 +1792,7 @@ build tree Yggdrasil.")
               ;; There's a Julia file for each platform, override them all
               (find-files "src/wrappers/" "\\.jl$")))))))
     (inputs
-     (list wcslib))
+     (list wcslib-7.12))
     (propagated-inputs
      (list julia-jllwrappers))
     (home-page "https://github.com/JuliaBinaryWrappers/WCS_jll.jl")

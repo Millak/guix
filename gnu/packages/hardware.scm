@@ -16,6 +16,7 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023 Spencer Skylar Chan <schan12@umd.edu>
+;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -80,6 +81,7 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -99,6 +101,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -797,6 +800,42 @@ specific SMBIOS tables.")
     (home-page "https://github.com/dell/libsmbios")
     (license
      (list license:osl2.1 license:gpl2+ license:bsd-3 license:boost1.0))))
+
+(define-public liquidctl
+  (package
+    (name "liquidctl")
+    (version "1.13.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/liquidctl/liquidctl")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0hpxkrfxm9c4v5ld7bh6qs9fmq9imz8s5i9l0l78l47bcm12nkrd"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'set-runtime-dir
+                 (lambda _
+                   (setenv "XDG_RUNTIME_DIR" "/tmp"))))))
+    (native-inputs (list python-pytest))
+    (propagated-inputs
+     (list python-colorlog
+           python-crcmod
+           python-docopt
+           python-hidapi
+           python-pillow
+           python-pyusb
+           python-smbus))
+    (home-page "https://github.com/liquidctl/liquidctl")
+    (synopsis "Drivers and tools for liquid cooling equipment")
+    (description "Liquidctl is a package with tools, drivers and a Python
+library to work with liquid cooling equipment such as @acronym{AIO, All-In-One}
+coolers, fan controllers and other devices.")
+    (license license:gpl3+)))
 
 ;; Distinct from memtest86, which is obsolete.
 (define-public memtest86+

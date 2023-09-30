@@ -364,7 +364,8 @@ definitely available in REPOSITORY, false otherwise."
   (match ref
     (('commit . (? commit-id? commit))
      (let ((oid (string->oid commit)))
-       (->bool (commit-lookup repository oid))))
+       (false-if-git-not-found
+        (->bool (commit-lookup repository oid)))))
     ((or ('tag . str)
          ('tag-or-commit . str))
      (false-if-git-not-found

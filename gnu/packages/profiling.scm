@@ -2,6 +2,7 @@
 ;;; Copyright © 2017 Dave Love <fx@gnu.org>
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2023 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,6 +22,7 @@
 (define-module (gnu packages profiling)
   #:use-module (guix packages)
   #:use-module (guix gexp)
+  #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:) ; avoid zlib, expat clashes
   #:use-module (guix download)
   #:use-module (guix utils)
@@ -28,22 +30,28 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)      ;for "which"
+  #:use-module (gnu packages bash)      ;for "which"
   #:use-module (gnu packages bison)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages engineering)
   #:use-module (gnu packages fabric-management)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
-  #:use-module (gnu packages perl)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
-  #:use-module (gnu packages qt))
+  #:use-module (gnu packages qt)
+  #:use-module (gnu packages xdisorg))
 
 ;; Fixme: Separate out lib and fix resulting cycle errors; separate libpfm
 ;; output(?); build libmsr and add that component.
@@ -389,3 +397,85 @@ high-performance computing (HPC) applications.")
     (license license:cpl1.0)))
 
 (define-public scorep-openmpi (make-scorep openmpi))
+
+(define-public tracy-wayland
+  (package
+    (name "tracy-wayland")
+    (version "0.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/wolfpld/tracy")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32
+         "1znw1r1c4vrb9vrsr08gcwynpjda8xxmb3923yykpymw2hsm0n9b"))
+       (file-name (git-file-name "tracy" version))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; XXX: Sadly, the ImGui loaders appear to have been customized by
+           ;; the project and the build fails when using the 'imgui' Guix
+           ;; package due to a missing GL_TEXTURE_WRAP_S definition, so keep
+           ;; the bundled copy.
+
+           ;; Unbundle Zstd.
+           (delete-file-recursively "zstd")
+           ;; Adjust the include directives.
+           (substitute* (find-files "server" "\\.(c|h)pp$")
+             (("#include \".*zstd/(zstd|zdict).h\"" _ header)
+              (format #f "#include \"~a.h\"" header)))
+           ;; De-register source files from Visual Code project.
+           (substitute* "profiler/build/win32/Tracy.vcxproj"
+             ((".*Include=\"..\\\\..\\\\..\\\\zstd\\\\.*") ""))))))
+    ;; Note: There is also CMake and Meson support, but only to build the
+    ;; tracy library, not the profiler command.
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no test for the profiler
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "CFLAGS=-lzstd"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'chdir
+            (lambda _
+              (chdir "profiler/build/unix")))
+          (delete 'configure)           ;the profiler has no configure script
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin"))
+                    (tracy (string-append #$output "/bin/tracy")))
+                (mkdir-p bin)
+                (copy-file "Tracy-release" tracy)))))))
+    (inputs (list capstone
+                  dbus
+                  freetype
+                  libxkbcommon
+                  mesa
+                  wayland
+                  `(,zstd "lib")))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/wolfpld/tracy")
+    (synopsis "Frame profiler")
+    (description
+     "A real time, nanosecond resolution, remote telemetry, hybrid frame and
+sampling profiler for games and other applications.")
+    (license license:bsd-3)))
+
+(define-public tracy
+  (package;xb
+    (inherit tracy-wayland)
+    (name "tracy")
+    (arguments
+     (substitute-keyword-arguments (package-arguments tracy-wayland)
+       ((#:make-flags flags #~'())
+        #~(append #$flags
+                  ;; The LEGACY flag indicate we want to build tracy with glfw.
+                  (list "LEGACY=1")))))
+    (inputs (modify-inputs (package-inputs tracy-wayland)
+              (delete "libxkbcommon" "wayland")
+              (prepend glfw)))
+    (synopsis "Frame profiler (X11 version)")))

@@ -1524,7 +1524,7 @@ for scientific computing and data science (e.g. BLAS and OpenMP).")
 (define-public python-tslearn
   (package
     (name "python-tslearn")
-    (version "0.6.1")
+    (version "0.6.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1533,7 +1533,7 @@ for scientific computing and data science (e.g. BLAS and OpenMP).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1fhs8c28hdqsyj8kdhzrmrxrh4w92x6nf3gm026xapp9divvljd6"))))
+                "0l9l21jy78mhajdfwyx8rskw08597vg55ff22bjkv6xrjjr9g4ac"))))
     (build-system pyproject-build-system)
     (arguments
      (list

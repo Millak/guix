@@ -288,29 +288,56 @@ wrapper for accessing libusb-1.0.")
          "1fg7knfzybzija2b01pzrzhzsj989scl12sb2ra4f503l8279k54"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:modules ((srfi srfi-1)
-                  (srfi srfi-26)
-                  (guix build utils)
-                  (guix build python-build-system))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-libusb-reference
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "usb/libloader.py"
-               (("lib = locate_library\\(candidates, find_library\\)")
-                (string-append
-                 "lib = \""
-                 (find (negate symbolic-link?)
-                       (find-files (assoc-ref inputs "libusb")
-                                   "^libusb-.*\\.so\\..*"))
-                 "\"")))
-             #t)))))
-
+     (list #:modules '((srfi srfi-1)
+                       (srfi srfi-26)
+                       (guix build utils)
+                       (guix build python-build-system))
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; Repurpose the candidates parameter to be the path to the
+               ;; library, then on each backend we substitute the candidates
+               ;; with the full path to the .so library or with None if not
+               ;; supported.
+               ;;
+               ;; While most applications could use a single back-end this
+               ;; library allows to manually select the back-end so it is
+               ;; appropriate to provide as much back-ends as possible.
+               (add-after 'unpack 'fix-libusb-reference
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((libusb0 (find
+                                    (negate symbolic-link?)
+                                    (find-files (assoc-ref inputs "libusb-compat")
+                                                "^libusb-.*\\.so\\..*")))
+                         (libusb1 (find
+                                    (negate symbolic-link?)
+                                    (find-files (assoc-ref inputs "libusb")
+                                                "^libusb-.*\\.so\\..*"))))
+                     (substitute* "usb/libloader.py"
+                       (("lib = locate_library\\(candidates, find_library\\)")
+                        "lib = candidates"))
+                     (substitute* "usb/backend/libusb0.py"
+                       (("\\('usb-0\\.1', 'usb', 'libusb0'\\)")
+                        (format #f "~s" libusb0)))
+                     (substitute* "usb/backend/libusb1.py"
+                       (("\\('usb-1\\.0', 'libusb-1\\.0', 'usb'\\)")
+                        (format #f "~s" libusb1)))
+                     ;; FIXME: OpenUSB is not packaged for GNU Guix.
+                     (substitute* "usb/backend/openusb.py"
+                       (("\\('openusb',\\)") "None")))))
+               ;; Note: tests seems to succeed with libusb-compat as libusb
+               ;; fails because it doesn't have a usbfs present in the build
+               ;; environment.
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (with-directory-excursion "tests"
+                       (setenv "PYUSB_DEBUG" "debug")
+                       (setenv "LIBUSB_DEBUG" "4")
+                       (invoke "python" "testall.py"))))))))
     (native-inputs
      (list python-setuptools-scm))
     (inputs
-     (list libusb))
+     (list libusb libusb-compat))
     (home-page "https://pyusb.github.io/pyusb/")
     (synopsis "Python bindings to the libusb library")
     (description

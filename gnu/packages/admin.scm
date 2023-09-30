@@ -389,7 +389,7 @@ interface and is based on GNU Guile.")
                        ;; single-board computers.
                        (if (target-arm?)
                            guile-fibers-1.1
-                           guile-fibers-1.3))))
+                           guile-fibers))))
     (inputs (modify-inputs (package-inputs shepherd-0.9)
               (replace "guile-fibers"
                 (this-package-native-input "guile-fibers"))))))
@@ -4490,7 +4490,7 @@ Python loading in HPC environments.")
   (let ((real-name "inxi"))
     (package
       (name "inxi-minimal")
-      (version "3.3.29-1")
+      (version "3.3.30-1")
       (source
        (origin
          (method git-fetch)
@@ -4499,7 +4499,7 @@ Python loading in HPC environments.")
                (commit version)))
          (file-name (git-file-name real-name version))
          (sha256
-          (base32 "05z0vydfmkva61kj14p6jxy7dr8qwd024a7nn8pib57q4qnjm4r8"))))
+          (base32 "0k27m4a19p32c00w4jpmqy17v0ca4g5zixyw97yy12932c73d0dy"))))
       (build-system trivial-build-system)
       (inputs
        (list bash-minimal
@@ -5042,7 +5042,7 @@ entries, providing commands to add, remove, comment, and search.")
 (define-public nmrpflash
   (package
     (name "nmrpflash")
-    (version "0.9.19")
+    (version "0.9.21")
     (source
      (origin
        (method git-fetch)
@@ -5051,24 +5051,25 @@ entries, providing commands to add, remove, comment, and search.")
          (url "https://github.com/jclehner/nmrpflash")
          (commit (string-append "v" version))))
        (sha256
-        (base32 "02r2z3mnbj8dfka7adw1l76zq1jh1l13mmkns93c54ychs44jz3d"))
+        (base32 "183nvxqdn8klin5f14f4cv9vjymj0izy0qmj1l76igmlcq7ravwx"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; none exist
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'install 'prepare-install
+            (lambda _
+              (mkdir-p (string-append #$output "/bin")))))))
     (native-inputs
      (list pkg-config))
     (inputs
      (list libnl libpcap))
-    (arguments
-     `(#:tests? #f ; None exist
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-before 'install 'prepare-install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (mkdir-p (string-append (assoc-ref outputs "out") "/bin")))))))
     (home-page "https://github.com/jclehner/nmrpflash")
     (synopsis "Reflash (``unbrick'') Netgear devices with corrupted firmware")
     (description "This package provides a utility to flash a new firmware

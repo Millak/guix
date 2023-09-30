@@ -27,7 +27,9 @@
   #:use-module (guix records)
   #:use-module (guix packages)
   #:use-module (guix modules)
+  #:use-module ((guix derivations) #:select (raw-derivation))
   #:autoload   (guix build-system gnu) (standard-packages)
+  #:autoload   (guix download) (%download-fallback-test)
   #:autoload   (git bindings)   (libgit2-init!)
   #:autoload   (git repository) (repository-open
                                  repository-close!
@@ -77,15 +79,19 @@
   (let ((distro (resolve-interface '(gnu packages version-control))))
     (module-ref distro 'git-minimal)))
 
-(define* (git-fetch ref hash-algo hash
-                    #:optional name
-                    #:key (system (%current-system)) (guile (default-guile))
-                    (git (git-package)))
-  "Return a fixed-output derivation that fetches REF, a <git-reference>
-object.  The output is expected to have recursive hash HASH of type
-HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
+(define* (git-fetch/in-band ref hash-algo hash
+                            #:optional name
+                            #:key (system (%current-system))
+                            (guile (default-guile))
+                            (git (git-package)))
+  "Return a fixed-output derivation that performs a Git checkout of REF, using
+GIT and GUILE (thus, said derivation depends on GIT and GUILE).
+
+This method is deprecated in favor of the \"builtin:git-download\" builder.
+It will be removed when versions of guix-daemon implementing
+\"builtin:git-download\" will be sufficiently widespread."
   (define inputs
-    `(("git" ,git)
+    `(("git" ,(or git (git-package)))
 
       ;; When doing 'git clone --recursive', we need sed, grep, etc. to be
       ;; available so that 'git submodule' works.
@@ -116,19 +122,16 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
   (define modules
     (delete '(guix config)
             (source-module-closure '((guix build git)
-                                     (guix build utils)
-                                     (guix build download-nar)
-                                     (guix swh)))))
+                                     (guix build utils)))))
 
   (define build
     (with-imported-modules modules
-      (with-extensions (list guile-json gnutls   ;for (guix swh)
+      (with-extensions (list guile-json gnutls    ;for (guix swh)
                              guile-lzlib)
         #~(begin
             (use-modules (guix build git)
-                         (guix build utils)
-                         (guix build download-nar)
-                         (guix swh)
+                         ((guix build utils)
+                          #:select (set-path-environment-variable))
                          (ice-9 match))
 
             (define recursive?
@@ -151,40 +154,13 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
             (setvbuf (current-output-port) 'line)
             (setvbuf (current-error-port) 'line)
 
-            (or (git-fetch (getenv "git url") (getenv "git commit")
-                           #$output
-                           #:recursive? recursive?
-                           #:git-command "git")
-                (download-nar #$output)
+            (git-fetch-with-fallback (getenv "git url") (getenv "git commit")
+                                     #$output
+                                     #:recursive? recursive?
+                                     #:git-command "git")))))
 
-                ;; As a last resort, attempt to download from Software Heritage.
-                ;; Disable X.509 certificate verification to avoid depending
-                ;; on nss-certs--we're authenticating the checkout anyway.
-                ;; XXX: Currently recursive checkouts are not supported.
-                (and (not recursive?)
-                     (parameterize ((%verify-swh-certificate? #f))
-                       (format (current-error-port)
-                               "Trying to download from Software Heritage...~%")
-
-                       (swh-download (getenv "git url") (getenv "git commit")
-                                     #$output)
-                       (when (file-exists?
-                              (string-append #$output "/.gitattributes"))
-                         ;; Perform CR/LF conversion and other changes
-                         ;; specificied by '.gitattributes'.
-                         (invoke "git" "-C" #$output "init")
-                         (invoke "git" "-C" #$output "config" "--local"
-                                 "user.email" "you@example.org")
-                         (invoke "git" "-C" #$output "config" "--local"
-                                 "user.name" "Your Name")
-                         (invoke "git" "-C" #$output "add" ".")
-                         (invoke "git" "-C" #$output "commit" "-am" "init")
-                         (invoke "git" "-C" #$output "read-tree" "--empty")
-                         (invoke "git" "-C" #$output "reset" "--hard")
-                         (delete-file-recursively
-                          (string-append #$output "/.git"))))))))))
-
-  (mlet %store-monad ((guile (package->derivation guile system)))
+  (mlet %store-monad ((guile (package->derivation (or guile (default-guile))
+                                                  system)))
     (gexp->derivation (or name "git-checkout") build
 
                       ;; Use environment variables and a fixed script name so
@@ -192,7 +168,11 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
                       ;; downloads.
                       #:script-name "git-download"
                       #:env-vars
-                      `(("git url" . ,(git-reference-url ref))
+                      `(("git url" . ,(match (%download-fallback-test)
+                                        ('content-addressed-mirrors
+                                         "https://example.org/does-not-exist")
+                                        (_
+                                         (git-reference-url ref))))
                         ("git commit" . ,(git-reference-commit ref))
                         ("git recursive?" . ,(object->string
                                               (git-reference-recursive? ref))))
@@ -206,6 +186,54 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
                       #:hash hash
                       #:recursive? #t
                       #:guile-for-build guile)))
+
+(define* (git-fetch/built-in ref hash-algo hash
+                             #:optional name
+                             #:key (system (%current-system)))
+  "Return a fixed-output derivation that performs a Git checkout of REF, using
+the \"builtin:git-download\" derivation builder.
+
+This is an \"out-of-band\" download in that the returned derivation does not
+explicitly depend on Git, Guile, etc.  Instead, the daemon performs the
+download by itself using its own dependencies."
+  (raw-derivation (or name "git-checkout") "builtin:git-download" '()
+                  #:system system
+                  #:hash-algo hash-algo
+                  #:hash hash
+                  #:recursive? #t
+                  #:env-vars
+                  `(("url" . ,(object->string
+                               (match (%download-fallback-test)
+                                 ('content-addressed-mirrors
+                                  "https://example.org/does-not-exist")
+                                 (_
+                                  (git-reference-url ref)))))
+                    ("commit" . ,(git-reference-commit ref))
+                    ("recursive?" . ,(object->string
+                                      (git-reference-recursive? ref))))
+                  #:leaked-env-vars '("http_proxy" "https_proxy"
+                                      "LC_ALL" "LC_MESSAGES" "LANG"
+                                      "COLUMNS")
+                  #:local-build? #t))
+
+(define built-in-builders*
+  (store-lift built-in-builders))
+
+(define* (git-fetch ref hash-algo hash
+                    #:optional name
+                    #:key (system (%current-system))
+                    guile git)
+  "Return a fixed-output derivation that fetches REF, a <git-reference>
+object.  The output is expected to have recursive hash HASH of type
+HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
+  (mlet %store-monad ((builtins (built-in-builders*)))
+    (if (member "git-download" builtins)
+        (git-fetch/built-in ref hash-algo hash name
+                            #:system system)
+        (git-fetch/in-band ref hash-algo hash name
+                           #:system system
+                           #:guile guile
+                           #:git git))))
 
 (define (git-version version revision commit)
   "Return the version string for packages using git-download."

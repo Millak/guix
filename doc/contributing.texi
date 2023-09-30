@@ -397,13 +397,12 @@ configuration file:
 
 @lisp
 ;;; Bug references.
+(require 'bug-reference)
 (add-hook 'prog-mode-hook #'bug-reference-prog-mode)
 (add-hook 'gnus-mode-hook #'bug-reference-mode)
 (add-hook 'erc-mode-hook #'bug-reference-mode)
-(add-hook 'bug-reference-mode-hook 'debbugs-browse-mode)
-(add-hook 'bug-reference-prog-mode-hook 'debbugs-browse-mode)
-(add-hook 'gnus-summary-mode-hook 'bug-reference-mode)
-(add-hook 'gnus-article-mode-hook 'bug-reference-mode)
+(add-hook 'gnus-summary-mode-hook #'bug-reference-mode)
+(add-hook 'gnus-article-mode-hook #'bug-reference-mode)
 
 ;;; This extends the default expression (the top-most, first expression
 ;;; provided to 'or') to also match URLs such as
@@ -431,6 +430,12 @@ configuration file:
                      (seq "<https://bugs.gnu.org/"
                           (group-n 2 (one-or-more (char "0-9")))
                           ">")))))
+(setq bug-reference-url-format "https://issues.guix.gnu.org/%s")
+
+(require 'debbugs)
+(require 'debbugs-browse)
+(add-hook 'bug-reference-mode-hook #'debbugs-browse-mode)
+(add-hook 'bug-reference-prog-mode-hook #'debbugs-browse-mode)
 
 ;; The following allows Emacs Debbugs user to open the issue directly within
 ;; Emacs.
@@ -518,6 +523,7 @@ needed is to review and apply the patch.
 * Version Numbers::             When the name is not enough.
 * Synopses and Descriptions::   Helping users find the right package.
 * Snippets versus Phases::      Whether to use a snippet, or a build phase.
+* Cyclic Module Dependencies::   Going full circle.
 * Emacs Packages::              Your Elisp fix.
 * Python Modules::              A touch of British comedy.
 * Perl Modules::                Little pearls.
@@ -788,6 +794,61 @@ the corresponding source).  In particular, origin snippets must not
 embed store items in the sources; such patching should rather be done
 using build phases.  Refer to the @code{origin} record documentation for
 more information (@pxref{origin Reference}).
+
+@node Cyclic Module Dependencies
+@subsection Cyclic Module Dependencies
+
+While there cannot be circular dependencies between packages, Guile's
+lax module loading mechanism allows circular dependencies between Guile
+modules, which doesn't cause problems as long as the following
+conditions are followed for two modules part of a dependency cycle:
+
+@cindex rules to cope with circular module dependencies
+@enumerate
+@item
+Macros are not shared between the co-dependent modules
+@item
+Top-level variables are only referenced in delayed (@i{thunked}) package
+fields: @code{arguments}, @code{native-inputs}, @code{inputs},
+@code{propagated-inputs} or @code{replacement}
+@item
+Procedures referencing top-level variables from another module are not
+called at the top level of a module themselves.
+@end enumerate
+
+Straying away from the above rules may work while there are no
+dependency cycles between modules, but given such cycles are confusing
+and difficult to troubleshoot, it is best to follow the rules to avoid
+introducing problems down the line.
+
+@noindent
+Here is a common trap to avoid:
+
+@lisp
+(define-public avr-binutils
+  (package
+    (inherit (cross-binutils "avr"))
+    (name "avr-binutils")))
+@end lisp
+
+In the above example, the @code{avr-binutils} package was defined in the
+module @code{(gnu packages avr)}, and the @code{cross-binutils}
+procedure in @code{(gnu packages cross-base)}.  Because the
+@code{inherit} field is not delayed (thunked), it is evaluated at the
+top level at load time, which is problematic in the presence of module
+dependency cycles.  This could be resolved by turning the package into a
+procedure instead, like:
+
+@lisp
+(define (make-avr-binutils)
+  (package
+    (inherit (cross-binutils "avr"))
+    (name "avr-binutils")))
+@end lisp
+
+Care would need to be taken to ensure the above procedure is only ever
+used in a package delayed fields or within another procedure also not
+called at the top level.
 
 @node Emacs Packages
 @subsection Emacs Packages

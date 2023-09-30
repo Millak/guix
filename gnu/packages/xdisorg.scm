@@ -326,7 +326,7 @@ used to further tweak the behaviour of the different profiles.")
 (define-public bemenu
   (package
     (name "bemenu")
-    (version "0.6.15")
+    (version "0.6.16")
     (source
      (origin
        (method git-fetch)
@@ -335,11 +335,11 @@ used to further tweak the behaviour of the different profiles.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1g4z1ml5ldk0hxpxs2pa091cpw0kry6cdr6n3dni1avimdm8vmw1"))))
+        (base32 "0q3i9blcw5i793m1rxf5dqp773hssdpifrz820psr90x982vvmib"))))
     (build-system gnu-build-system)
     (arguments
      (list
-      #:tests? #f
+      #:tests? #f ; there are no tests
       #:make-flags
       #~(list (string-append "CC=" #$(cc-for-target))
               "CFLAGS=-O2 -fPIC"
@@ -1842,14 +1842,14 @@ Saver extension) library.")
       (inputs
        (list libxt))
       (home-page "https://www.vergenet.net/~conrad/software/xsel/")
-      (synopsis "Manipulate X selection")
+      (synopsis "Manipulate X selection and/or clipboard from the command line")
       (description
        "XSel is a command-line program for getting and setting the contents of
-the X selection.  Normally this is only accessible by manually highlighting
-information and pasting it with the middle mouse button.
+the X selection and/or clipboard.  Normally this is only accessible by manually
+highlighting information and pasting it with the middle mouse button.
 
-XSel reads from standard input and writes to standard output by default,
-but can also follow a growing file, display contents, delete entries and more.")
+XSel reads from standard input and writes to standard output by default, but can
+also follow a growing file, display contents, delete entries and more.")
       (license (license:x11-style "file://COPYING"
                                   "See COPYING in the distribution.")))))
 
@@ -3575,7 +3575,7 @@ keyboard input, mouse actions, etc.  programmatically or manually.")
 (define-public wvkbd
   (package
     (name "wvkbd")
-    (version "0.13")
+    (version "0.14.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3584,7 +3584,7 @@ keyboard input, mouse actions, etc.  programmatically or manually.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "15jzmgydhbkdn1r885p9wm5sqnj4h7znkqk71f7d3x359l051sh7"))))
+                "1aha9ylzbkhbf45172l3wyp65kqj6zs5gxqyj62ahj3gp944wmbb"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f ;no tests

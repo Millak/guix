@@ -24,10 +24,15 @@
   #:use-module (guix utils)
   #:use-module ((gcrypt hash) #:prefix gcrypt:)
   #:use-module (guix base32)
+  #:use-module ((guix git) #:select (with-repository))
   #:use-module (guix tests)
+  #:use-module (guix tests git)
   #:use-module (guix tests http)
   #:use-module ((guix packages) #:select (package-derivation base32))
   #:use-module ((guix build utils) #:select (executable-file?))
+  #:use-module ((guix hash) #:select (file-hash*))
+  #:use-module ((git oid) #:select (oid->string))
+  #:use-module ((git reference) #:select (reference-name->oid))
   #:use-module (gnu packages bootstrap)
   #:use-module ((gnu packages guile) #:select (guile-1.8))
   #:use-module (srfi srfi-1)
@@ -195,7 +200,7 @@
                    (stat:ino (lstat file2))))))))
 
 (test-equal "built-in-builders"
-  '("download")
+  '("download" "git-download")
   (built-in-builders %store))
 
 (test-assert "unknown built-in builder"
@@ -289,6 +294,93 @@
              (string=? (call-with-input-file (derivation->output-path drv)
                          get-string-all)
                        text))))))
+
+(test-equal "'git-download' built-in builder"
+  `(("/a.txt" . "AAA")
+    ("/b.scm" . "#t"))
+  (let ((nonce (random-text)))
+    (with-temporary-git-repository directory
+        `((add "a.txt" "AAA")
+          (add "b.scm" "#t")
+          (commit ,nonce))
+      (let* ((commit (with-repository directory repository
+                       (oid->string
+                        (reference-name->oid repository "HEAD"))))
+             (drv (derivation %store "git-download"
+                              "builtin:git-download" '()
+                              #:env-vars
+                              `(("url"
+                                 . ,(object->string
+                                     (string-append "file://" directory)))
+                                ("commit" . ,commit))
+                              #:hash-algo 'sha256
+                              #:hash (file-hash* directory
+                                                 #:algorithm
+                                                 (gcrypt:hash-algorithm
+                                                  gcrypt:sha256)
+                                                 #:recursive? #t)
+                              #:recursive? #t)))
+        (build-derivations %store (list drv))
+        (directory-contents (derivation->output-path drv) get-string-all)))))
+
+(test-assert "'git-download' built-in builder, invalid hash"
+  (with-temporary-git-repository directory
+      `((add "a.txt" "AAA")
+        (add "b.scm" "#t")
+        (commit "Commit!"))
+    (let* ((commit (with-repository directory repository
+                     (oid->string
+                      (reference-name->oid repository "HEAD"))))
+           (drv (derivation %store "git-download"
+                            "builtin:git-download" '()
+                            #:env-vars
+                            `(("url"
+                               . ,(object->string
+                                   (string-append "file://" directory)))
+                              ("commit" . ,commit))
+                            #:hash-algo 'sha256
+                            #:hash (gcrypt:sha256 #vu8())
+                            #:recursive? #t)))
+      (guard (c ((store-protocol-error? c)
+                 (string-contains (store-protocol-error-message c) "failed")))
+        (build-derivations %store (list drv))
+        #f))))
+
+(test-assert "'git-download' built-in builder, invalid commit"
+  (with-temporary-git-repository directory
+      `((add "a.txt" "AAA")
+        (add "b.scm" "#t")
+        (commit "Commit!"))
+    (let* ((drv (derivation %store "git-download"
+                            "builtin:git-download" '()
+                            #:env-vars
+                            `(("url"
+                               . ,(object->string
+                                   (string-append "file://" directory)))
+                              ("commit"
+                               . "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"))
+                            #:hash-algo 'sha256
+                            #:hash (gcrypt:sha256 #vu8())
+                            #:recursive? #t)))
+      (guard (c ((store-protocol-error? c)
+                 (string-contains (store-protocol-error-message c) "failed")))
+        (build-derivations %store (list drv))
+        #f))))
+
+(test-assert "'git-download' built-in builder, not found"
+  (let* ((drv (derivation %store "git-download"
+                          "builtin:git-download" '()
+                          #:env-vars
+                          `(("url" . "file:///does-not-exist.git")
+                            ("commit"
+                             . "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"))
+                          #:hash-algo 'sha256
+                          #:hash (gcrypt:sha256 #vu8())
+                          #:recursive? #t)))
+    (guard (c ((store-protocol-error? c)
+               (string-contains (store-protocol-error-message c) "failed")))
+      (build-derivations %store (list drv))
+      #f)))
 
 (test-equal "derivation-name"
   "foo-0.0"

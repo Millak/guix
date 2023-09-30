@@ -796,7 +796,7 @@ after an operating system boots.")
 (define-public edk2-tools
   (package
     (name "edk2-tools")
-    (version "202211")
+    (version "202308")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -805,11 +805,12 @@ after an operating system boots.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1264542mm0mffjcmw5sw34h94n405swz5z56rw1ragp3j62144iy"))))
+                "19g3g94hayvcwmn6sjs6mghq0qf5nsd785k5j8szcrj2p0vjh54f"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
-           #~(list (string-append "BUILD_CC=" #$(cc-for-target)))
+           #~(list (string-append "BUILD_CC=" #$(cc-for-target))
+                   (string-append "CC=" #$(cc-for-target)))
            #:test-target "Tests"
            #:phases
            #~(modify-phases %standard-phases

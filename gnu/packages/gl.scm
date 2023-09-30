@@ -12,7 +12,7 @@
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
-;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
 ;;; Copyright © 2021, 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
@@ -760,7 +760,7 @@ OpenGL graphics API.")
 (define-public libglvnd
   (package
     (name "libglvnd")
-    (version "1.5.0")
+    (version "1.7.0")
     (home-page "https://gitlab.freedesktop.org/glvnd/libglvnd")
     (source (origin
               (method git-fetch)
@@ -770,7 +770,7 @@ OpenGL graphics API.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1nvlcwzivrdchp70i2l7ic7qdlsdmlsb0ckydscr43rhqldswx69"))))
+                "07v3bmwzmg0d4g2zp835v1g7j22j8vz7hjfmqrdqjgxjj6v4jkyr"))))
     (build-system meson-build-system)
     (arguments
      '(#:configure-flags '("-Dx11=enabled")
@@ -883,12 +883,50 @@ OpenGL.")
                 "1kcrpl4d6b6h23ib5j9q670d9w3knd07whgbanbmwwhbcqnc9lmv"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:tests? #f ; no test target
-       #:configure-flags '("-DBUILD_SHARED_LIBS=ON")))
-    (native-inputs
-     (list doxygen unzip))
+     (list
+      #:modules '((guix build cmake-build-system)
+                  (guix build utils)
+                  (ice-9 format))
+      #:tests? #f                       ;no test target
+      #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-sonames
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let-syntax ((patch-sonames
+                            (syntax-rules ()
+                              ((_ (file ...) soname ...)
+                               (substitute* (list file ...)
+                                 (((format #f "(~@{~a~^|~})" soname ...) lib)
+                                  (search-input-file
+                                   inputs (string-append
+                                           "lib/" lib))))))))
+                ;; Avoid looking in LD_LIBRARY_PATH for dlopen calls.
+                (patch-sonames ("src/egl_context.c"
+                                "src/glx_context.c"
+                                "src/vulkan.c"
+                                "src/wl_init.c"
+                                "src/x11_init.c")
+                               "libEGL.so.1"
+                               "libGL.so"
+                               "libGL.so.1"
+                               "libGLESv1_CM.so.1"
+                               "libGLESv2.so.2"
+                               "libvulkan.so.1"
+                               "libwayland-cursor.so.0"
+                               "libwayland-egl.so.1"
+                               "libxkbcommon.so.0"
+                               "libXxf86vm.so.1"
+                               "libXi.so.6"
+                               "libXrandr.so.2"
+                               "libXcursor.so.1"
+                               "libXinerama.so.1"
+                               "libX11-xcb.so.1"
+                               "libXrender.so.1")))))))
+    (native-inputs (list doxygen unzip))
+    (inputs (list libxkbcommon wayland vulkan-loader))
     (propagated-inputs
-     (list mesa ;included in public headers
+     (list mesa              ;included in public headers
            ;; These are in 'Requires.private' of 'glfw3.pc'.
            libx11
            libxrandr

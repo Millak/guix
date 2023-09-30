@@ -1,13 +1,16 @@
+Distriction specific patch, not going upstream
+
 Disable systemd-run if the command is not found.
 
-diff -ru xpra-4.2~/xpra/scripts/main.py xpra-4.2/xpra/scripts/main.py
---- xpra-4.2~/xpra/scripts/main.py	2021-06-06 08:51:13.756815842 -0700
-+++ xpra-4.2/xpra/scripts/main.py	2021-06-06 16:07:13.371024486 -0700
-@@ -331,23 +331,26 @@
-     if not is_systemd_pid1():
-         return False    # pragma: no cover
-     #test it:
--    cmd = ["systemd-run", "--quiet", "--user", "--scope", "--", "true"]
+diff --git a/xpra/scripts/main.py b/xpra/scripts/main.py
+index 3813331a5..46e2c83a6 100755
+--- a/xpra/scripts/main.py
++++ b/xpra/scripts/main.py
+@@ -337,23 +337,26 @@ def use_systemd_run(s) -> bool:
+     cmd = ["systemd-run", "--quiet"]
+     if getuid()!=0:
+         cmd += ["--user"]
+-    cmd += ["--scope", "--", "true"]
 -    proc = Popen(cmd, stdout=PIPE, stderr=PIPE, shell=False)
      try:
 -        proc.communicate(timeout=2)
@@ -15,13 +18,13 @@ diff -ru xpra-4.2~/xpra/scripts/main.py xpra-4.2/xpra/scripts/main.py
 -    except TimeoutExpired:  # pragma: no cover
 -        r = None
 -    if r is None:
-+        cmd = ["systemd-run", "--quiet", "--user", "--scope", "--", "true"]
-+        proc = Popen(cmd, stdout=PIPE, stderr=PIPE, shell=False)
-         try:
+-        try:
 -            proc.terminate()
 -        except Exception:
 -            pass
--        try:
++        cmd = ["systemd-run", "--quiet", "--user", "--scope", "--", "true"]
++        proc = Popen(cmd, stdout=PIPE, stderr=PIPE, shell=False)
+         try:
 -            proc.communicate(timeout=1)
 +            proc.communicate(timeout=2)
 +            r = proc.returncode
@@ -41,5 +44,5 @@ diff -ru xpra-4.2~/xpra/scripts/main.py xpra-4.2/xpra/scripts/main.py
 +    except FileNotFoundError:
 +        return False
  
- 
- def run_mode(script_file, error_cb, options, args, mode, defaults):
+ def verify_gir():
+     try:

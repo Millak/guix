@@ -23,6 +23,7 @@
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2023 Arnav Andrew Jose <arnav.jose@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -736,6 +737,102 @@ replacement for i3status, written in pure Rust.  It provides a way to display
 @code{blocks} of system information (time, battery status, volume, etc) on the i3
 bar.  It is also compatible with sway.")
     (license license:gpl3)))
+
+(define-public just
+  (package
+    (name "just")
+    (version "1.14.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "just" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0kafd87zmjf7wswyiqakqd2r5b8q3a761ipsihmrg9wr57k5zlis"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=functions::env_var_functions"
+         "--skip=string::shebang_backtick")
+       #:install-source? #f
+       #:cargo-inputs
+       (("rust-ansi-term" ,rust-ansi-term-0.12)
+        ("rust-atty" ,rust-atty-0.2)
+        ("rust-camino" ,rust-camino-1)
+        ("rust-clap" ,rust-clap-2)
+        ("rust-ctrlc" ,rust-ctrlc-3)
+        ("rust-derivative" ,rust-derivative-2)
+        ("rust-dotenvy" ,rust-dotenvy-0.15)
+        ("rust-edit-distance" ,rust-edit-distance-2)
+        ("rust-env-logger" ,rust-env-logger-0.10)
+        ("rust-heck" ,rust-heck-0.4)
+        ("rust-lexiclean" ,rust-lexiclean-0.0.1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-sha2" ,rust-sha2-0.10)
+        ("rust-similar" ,rust-similar-2)
+        ("rust-snafu" ,rust-snafu-0.7)
+        ("rust-strum" ,rust-strum-0.24)
+        ("rust-target" ,rust-target-2)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-typed-arena" ,rust-typed-arena-2)
+        ("rust-unicode-width" ,rust-unicode-width-0.1)
+        ("rust-uuid" ,rust-uuid-1))
+       #:cargo-development-inputs
+       (("rust-cradle" ,rust-cradle-0.2)
+        ("rust-executable-path" ,rust-executable-path-1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-temptree" ,rust-temptree-0.2)
+        ("rust-which" ,rust-which-4)
+        ("rust-yaml-rust" ,rust-yaml-rust-0.4))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'replace-hardcoded-paths
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* (cons "src/justfile.rs"
+                                (find-files "tests/" "\\.rs$"))
+               (("/bin/sh")
+                (search-input-file inputs "/bin/sh"))
+               (("/usr/bin/env sh")
+                (search-input-file inputs "/bin/sh"))
+               (("/usr/bin/env")
+                (search-input-file inputs "/bin/env"))
+               (("/bin/echo")
+                (search-input-file inputs "/bin/echo")))))
+         (add-after 'install 'install-manpage
+           (lambda* (#:key outputs #:allow-other-keys)
+             (install-file "man/just.1"
+                           (string-append (assoc-ref outputs "out")
+                                          "/share/man/man1"))))
+         (add-after 'install 'install-completions
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (share (string-append out "/share"))
+                    (just (string-append out "/bin/just")))
+               (mkdir-p (string-append share "/bash-completion/completions"))
+               (with-output-to-file
+                 (string-append share "/bash-completion/completions/just")
+                 (lambda _ (invoke just "--completions" "bash")))
+               (mkdir-p (string-append share "/fish/vendor_completions.d"))
+               (with-output-to-file
+                 (string-append share "/fish/vendor_completions.d/just.fish")
+                 (lambda _ (invoke just "--completions" "fish")))
+               (mkdir-p (string-append share "/zsh/site-functions"))
+               (with-output-to-file
+                 (string-append share "/zsh/site-functions/_just")
+                 (lambda _ (invoke just "--completions" "zsh")))
+               (mkdir-p (string-append share "/elvish/lib"))
+               (with-output-to-file
+                 (string-append share "/elvish/lib/just")
+                 (lambda _ (invoke just "--completions" "elvish")))))))))
+    (home-page "https://github.com/casey/just")
+    (synopsis "Just a command runner")
+    (description "This package provides @code{just}, a command runner.
+@code{just} is a handy way to save and run project-specific commands.")
+    (license license:cc0)))
 
 (define-public maturin
   (package

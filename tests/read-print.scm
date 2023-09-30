@@ -258,13 +258,13 @@ mnopqrstuvwxyz.\")"
 
 (test-pretty-print "\
 (package
-  ;; Here 'sha256', 'base32', and 'arguments' must be
+  ;; Here 'source', 'sha256', and 'arguments' must be
   ;; immediately followed by a newline.
-  (source (origin
-            (method url-fetch)
-            (sha256
-             (base32
-              \"not a real base32 string\"))))
+  (source
+   (origin
+     (method url-fetch)
+     (sha256
+      (base32 \"not a real base32 string\"))))
   (arguments
    '(#:phases %standard-phases
      #:tests? #f)))")
@@ -274,12 +274,13 @@ mnopqrstuvwxyz.\")"
 (package
   (name \"keyword-value-same-line\")
   (arguments
-   (list #:phases #~(modify-phases %standard-phases
-                      (add-before 'x 'y
-                        (lambda* (#:key inputs #:allow-other-keys)
-                          (foo bar baz))))
-         #:make-flags #~'(\"ANSWER=42\")
-         #:tests? #f)))")
+   (list
+    #:phases #~(modify-phases %standard-phases
+                 (add-before 'x 'y
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (foo bar baz))))
+    #:make-flags #~'(\"ANSWER=42\")
+    #:tests? #f)))")
 
 (test-pretty-print "\
 (let ((x 1)

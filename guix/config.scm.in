@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2016, 2018-2019, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Caleb Ristvedt <caleb.ristvedt@cune.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -35,6 +35,7 @@
             %config-directory
 
             %system
+            %git
             %gzip
             %bzip2
             %xz))
@@ -108,6 +109,9 @@
 
 (define %system
   "@guix_system@")
+
+(define %git
+  "@GIT@")
 
 (define %gzip
   "@GZIP@")

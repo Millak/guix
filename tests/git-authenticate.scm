@@ -44,7 +44,6 @@
 
 (test-begin "git-authenticate")
 
-(unless (which (git-command)) (test-skip 1))
 (test-assert "unsigned commits"
   (with-temporary-git-repository directory
       '((add "a.txt" "A")

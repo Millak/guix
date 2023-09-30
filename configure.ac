@@ -201,6 +201,13 @@ AC_SUBST([GZIP])
 AC_SUBST([BZIP2])
 AC_SUBST([XZ])
 
+dnl Git is now required for the "builtin:git-download" derivation builder.
+AC_PATH_PROG([GIT], [git])
+if test "x$GIT" = "x"; then
+  AC_MSG_ERROR([Git is missing; please install it.])
+fi
+AC_SUBST([GIT])
+
 LIBGCRYPT_LIBDIR="no"
 LIBGCRYPT_PREFIX="no"
 

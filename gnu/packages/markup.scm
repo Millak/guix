@@ -332,28 +332,28 @@ convert HTML to Markdown.")
 (define-public cmark
   (package
     (name "cmark")
-    (version "0.30.2")
+    (version "0.30.3")
     (source (origin
-             (method git-fetch)
-             (uri (git-reference
-                    (url "https://github.com/jgm/cmark")
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/commonmark/cmark")
                     (commit version)))
-             (file-name (git-file-name name version))
-             (sha256
-              (base32
-               "1426snw3mq8qmpdxznkhsyy75xd9v9nwlc7sph08qpdz8xnp4hr2"))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "07d30s5v893nb1m7qbam5c3x9b3d84m80kzlj7fmkwhgjrlz7d7z"))))
     (build-system cmake-build-system)
     (arguments
      '(#:test-target "test"))
     (native-inputs (list python))
     (synopsis "CommonMark Markdown reference implementation")
-    (description "CommonMark is a strongly defined, highly compatible
-specification of Markdown.  cmark is the C reference implementation of
-CommonMark.  It provides @code{libcmark} shared library for parsing
-CommonMark to an abstract syntax tree (@dfn{AST}) and rendering the document
-as HTML, groff man, LaTeX, CommonMark, or an XML representation of the
-AST.  The package also provides the command-line program @command{cmark}
-for parsing and rendering CommonMark.")
+    (description
+     "CommonMark is a strongly defined, highly compatible specification of
+Markdown.  @code{cmark} is the C reference implementation of CommonMark.  It
+provides the @code{libcmark} shared library for parsing CommonMark to an
+abstract syntax tree (@dfn{AST}) and rendering the document as HTML, groff man,
+LaTeX, CommonMark, or an XML representation of the AST.  It also provides the
+command-line program @command{cmark} for parsing and rendering CommonMark.")
     (home-page "https://commonmark.org")
     ;; cmark is distributed with a BSD-2 license, but some components are Expat
     ;; licensed. The CommonMark specification is Creative Commons CC-BY-SA 4.0

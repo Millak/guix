@@ -34,7 +34,6 @@
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
-  #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages c)
   #:use-module (gnu packages check)
@@ -42,7 +41,6 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages embedded)
   #:use-module (gnu packages fontutils)
-  #:use-module (gnu packages gawk)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages graphviz)
@@ -123,35 +121,34 @@ to take care of the OS-specific details when writing software that uses serial p
       (license license:gpl3+))))
 
 (define-public sigrok-firmware-fx2lafw
-  (package
-    (name "sigrok-firmware-fx2lafw")
-    (version "0.1.7")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "http://sigrok.org/download/source/sigrok-firmware-fx2lafw/"
-                    "sigrok-firmware-fx2lafw-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0fyfd82mvrcf55v5a3afq1mh1kfswk4c37qrbln6x92jm3b41x53"))))
-    (arguments
-     `(#:implicit-inputs? #f))
-    (native-inputs
-     `(("awk" ,gawk)
-       ("bash" ,bash)
-       ("coreutils" ,coreutils)
-       ("grep" ,grep)
-       ("gzip" ,gzip)
-       ("make" ,gnu-make)
-       ("sdcc" ,sdcc)
-       ("sed" ,sed)
-       ("tar" ,tar)))
-    (build-system gnu-build-system)
-    (home-page "https://www.sigrok.org/wiki/Fx2lafw")
-    (synopsis "Firmware for Cypress FX2 chips")
-    (description "Fx2lafw is free firmware for Cypress FX2 chips which makes them usable
-as simple logic analyzer and/or oscilloscope hardware.")
-    (license license:gpl2+)))
+  ;; The project's last formal release was in 2019.
+  ;;
+  ;; The changes since then allow it to build with the latest version of SDCC,
+  ;; 4.3.0.
+  (let ((commit "96b0b476522c3f93a47ff8f479ec08105ba6a2a5")
+        (revision "1"))
+    (package
+      (name "sigrok-firmware-fx2lafw")
+      (version (git-version "0.1.7" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "git://sigrok.org/sigrok-firmware-fx2lafw")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1n5nj2g2m5ih59591ny2drrv25zviqcwyx1cfdhy8ijl82yxjkmb"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f))              ; no test suite
+      (native-inputs
+       (list autoconf automake sdcc))
+      (home-page "https://www.sigrok.org/wiki/Fx2lafw")
+      (synopsis "Firmware for Cypress FX2 chips")
+      (description "Fx2lafw is free firmware for Cypress FX2 chips which makes
+them usable as simple logic analyzer and/or oscilloscope hardware.")
+      (license license:gpl2+))))
 
 (define-public libsigrok
   (let ((commit "a7e919a3a6b7fd511acbe1a280536b76c70c28d2")

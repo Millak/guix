@@ -164,14 +164,14 @@
 (define-public qemu
   (package
     (name "qemu")
-    (version "8.1.0")
+    (version "8.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.qemu.org/qemu-"
                            version ".tar.xz"))
        (sha256
-        (base32 "0m8fbyr3xv6gi95ma0sksxfqmyj3pi4zcrgg5rvd8d73k08i033i"))
+        (base32 "1vvxmd7xbkl083anpqm797m070qi8n5wc5qid0ppbyq0wpsjxkip"))
        (patches (search-patches "qemu-disable-some-qtests-tests.patch"
                                 "qemu-fix-agent-paths.patch"))
        (modules '((guix build utils)))
@@ -2279,7 +2279,7 @@ DOS or Microsoft Windows.")
 (define-public xen
   (package
     (name "xen")
-    (version "4.14.1")               ; please update the mini-os input as well
+    (version "4.14.6")               ; please update the mini-os input as well
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2288,196 +2288,185 @@ DOS or Microsoft Windows.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1r90rvypw76ya9clqw5p02gm1k8hxz73f7gr95ca778nnzvb7xjw"))))
+                "1cdzpxbihkdn4za8ly0lgkbxrafjzbxjflhfn83kyg4bam1vv7mn"))
+              (patches
+               (search-patches "xen-docs-use-predictable-ordering.patch"
+                               "xen-remove-config.gz-timestamp.patch"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list "--enable-rpath"
-             "--disable-qemu-traditional" ; It tries to do "git clone"
-             "--disable-rombios" ; would try to "git clone" via etherboot.
-             ;; TODO: Re-enable stubdom (it's "more secure" to use it).
-             "--disable-stubdom" ; tries to "git clone" old patched newlib.
-             (string-append "--with-initddir="
-                            (assoc-ref %outputs "out")
-                            "/etc/init.d")
-             (string-append "--with-system-qemu="
-                            (assoc-ref %build-inputs "qemu")
-                            "/bin/qemu-system-i386")
-             (string-append "--with-system-seabios="
-                            (assoc-ref %build-inputs "seabios")
-                            "/share/firmware/bios.bin")
-             (string-append "--with-system-ovmf="
-                            (assoc-ref %build-inputs "ovmf")
-                            "/share/firmware/ovmf_ia32.bin"))
-       #:make-flags (list "-j" "1"
-                          "XEN_BUILD_DATE=Thu Jan  1 01:00:01 CET 1970"
-                          "XEN_BUILD_TIME=01:00:01"
-                          "XEN_BUILD_HOST="
-                          "ETHERBOOT_NICS="
-                          "SMBIOS_REL_DATE=01/01/1970"
-                          "VGABIOS_REL_DATE=01 Jan 1970"
-                          ; QEMU_TRADITIONAL_LOC
-                          ; QEMU_UPSTREAM_LOC
-                          "SYSCONFIG_DIR=/tmp/etc/default"
-                          (string-append "BASH_COMPLETION_DIR="
-                                         (assoc-ref %outputs "out")
-                                         "/etc/bash_completion.d")
-                          (string-append "BOOT_DIR="
-                                         (assoc-ref %outputs "out")
-                                         "/boot")
-                          (string-append "DEBUG_DIR="
-                                         (assoc-ref %outputs "out")
-                                         "/lib/debug")
-                          (string-append "EFI_DIR="
-                                         (assoc-ref %outputs "out")
-                                         "/lib/efi") ; TODO lib64 ?
-                          "MINIOS_UPSTREAM_URL="
-                          ;(string-append "DISTDIR="
-                          ;               (assoc-ref %outputs "out"))
-)
-       #:test-target "test"
-       #:phases
-       (modify-phases %standard-phases
-        (add-after 'unpack 'unpack-mini-os
-          (lambda* (#:key inputs #:allow-other-keys)
-            (copy-recursively (assoc-ref inputs "mini-os") "extras/mini-os")
-            #t))
-        (add-after 'unpack-mini-os 'patch
-          (lambda* (#:key inputs outputs #:allow-other-keys)
-            (substitute* "tools/firmware/Rules.mk"
-             (("override XEN_TARGET_ARCH = x86_32")
-              (string-append "override XEN_TARGET_ARCH = x86_32
-override CC = " (assoc-ref inputs "cross-gcc") "/bin/i686-linux-gnu-gcc"))
-             (("^CFLAGS =$")
-              (string-append "CFLAGS=-I" (assoc-ref inputs "cross-libc")
-                             "/include\n")))
-            (substitute* "config/x86_32.mk"
-             (("CFLAGS += -m32 -march=i686")
-              (string-append "CFLAGS += -march=i686 -I"
-                             (assoc-ref inputs "cross-libc")
-                             "/include")))
-            ;; /var is not in /gnu/store , so don't try to create it.
-            (substitute* '("tools/Makefile"
-                           "tools/xenstore/Makefile"
-                           "tools/xenpaging/Makefile")
-             (("\\$\\(INSTALL_DIR\\) .*XEN_(DUMP|LOG|RUN|LIB|PAGING)_DIR.*")
-              "\n")
-             (("\\$\\(INSTALL_DIR\\) .*XEN_(RUN|LIB)_STORED.*")
-              "\n"))
-            ;; Prevent xen from creating /etc .
-            (substitute* "tools/examples/Makefile"
-             ((" install-readmes") "")
-             ((" install-configs") ""))
-            ;; Set rpath.
-            (substitute* "tools/pygrub/setup.py"
-             (("library_dirs =")
-              ; TODO: extra_link_args = ['-Wl,-rpath=/opt/foo'],
-              (string-append "runtime_library_dirs = ['"
-                             (assoc-ref outputs "out")
-                             "/lib'],\nlibrary_dirs =")))
-
-            ;; This needs to be quoted:
-            ;; <https://lists.gnu.org/archive/html/guix-devel/2022-03/msg00113.html>.
-            (substitute* "xen/arch/x86/xen.lds.S"
-              ((".note.gnu.build-id")
-               "\".note.gnu.build-id\""))))
-        (add-before 'configure 'patch-xen-script-directory
-          (lambda* (#:key outputs #:allow-other-keys)
-            (substitute* '("configure"
-                           "tools/configure"
-                           "docs/configure")
-             (("XEN_SCRIPT_DIR=.*")
-              (string-append "XEN_SCRIPT_DIR="
-                             (assoc-ref outputs "out")
-                             "/etc/xen/scripts")))
-            #t))
-        (add-before 'configure 'set-environment-up
-          (lambda* (#:key make-flags #:allow-other-keys)
-             (define (cross? x)
-               (string-contains x "cross-i686-linux"))
-             (define (filter-environment! filter-predicate
-                                          environment-variable-names)
-               (for-each
-                (lambda (env-name)
-                  (let* ((env-value (getenv env-name))
-                         (search-path (search-path-as-string->list env-value))
-                         (new-search-path (filter filter-predicate
-                                                  search-path))
-                         (new-env-value (list->search-path-as-string
-                                         new-search-path ":")))
-                    (setenv env-name new-env-value)))
-                environment-variable-names))
-             (setenv "CROSS_C_INCLUDE_PATH" (getenv "C_INCLUDE_PATH"))
-             (setenv "CROSS_CPLUS_INCLUDE_PATH" (getenv "CPLUS_INCLUDE_PATH"))
-             (setenv "CROSS_LIBRARY_PATH" (getenv "LIBRARY_PATH"))
-             (filter-environment! cross?
-              '("CROSS_C_INCLUDE_PATH" "CROSS_CPLUS_INCLUDE_PATH"
-                "CROSS_LIBRARY_PATH"))
-             (filter-environment! (lambda (e) (not (cross? e)))
-              '("C_INCLUDE_PATH" "CPLUS_INCLUDE_PATH"
-                "LIBRARY_PATH"))
-             ;; Guix tries to be helpful and automatically adds
-             ;; mini-os-git-checkout/include to the include path,
-             ;; but actually we don't want it to be there (yet).
-             (filter-environment! (lambda (e)
-                                    (not
-                                     (string-contains e
-                                      "mini-os-git-checkout")))
-              '("C_INCLUDE_PATH" "CPLUS_INCLUDE_PATH"
-                "LIBRARY_PATH"))
-            (setenv "EFI_VENDOR" "guix")
-             #t))
-        (replace 'build
-          (lambda* (#:key make-flags #:allow-other-keys)
-            (apply invoke "make" "world" make-flags))))))
+     (list
+      #:configure-flags
+      #~(list "--enable-rpath"
+              "--disable-qemu-traditional" ; tries to "git clone"
+              "--disable-rombios"       ; tries to "git clone" via etherboot
+              ;; TODO: Re-enable stubdom (it's "more secure" to use it).
+              "--disable-stubdom"    ; tries to "git clone" old patched newlib
+              (string-append "--with-initddir=" #$output "/etc/init.d")
+              (string-append "--with-system-qemu="
+                             (search-input-file %build-inputs
+                                                "bin/qemu-system-i386"))
+              (string-append "--with-system-seabios="
+                             (search-input-file %build-inputs
+                                                "share/firmware/bios.bin"))
+              (string-append "--with-system-ovmf="
+                             (search-input-file %build-inputs
+                                                "share/firmware/ovmf_ia32.bin")))
+      #:make-flags
+      #~(list "XEN_BUILD_DATE=Thu Jan  1 01:00:01 CET 1970"
+              "XEN_BUILD_TIME=01:00:01"
+              "XEN_BUILD_HOST="
+              "ETHERBOOT_NICS="
+              "SMBIOS_REL_DATE=01/01/1970"
+              "VGABIOS_REL_DATE=01 Jan 1970"
+              ;; QEMU_TRADITIONAL_LOC
+              ;; QEMU_UPSTREAM_LOC
+              "SYSCONFIG_DIR=/tmp/etc/default"
+              (string-append "BASH_COMPLETION_DIR=" #$output
+                             "/etc/bash_completion.d")
+              (string-append "BOOT_DIR=" #$output "/boot")
+              (string-append "DEBUG_DIR=" #$output "/lib/debug")
+              (string-append "EFI_DIR=" #$output "/lib/efi")
+              "MINIOS_UPSTREAM_URL=")
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unpack-mini-os
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((mini-os (dirname (search-input-file inputs "minios.mk"))))
+                (copy-recursively mini-os "extras/mini-os"))))
+          (add-after 'unpack-mini-os 'patch
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "tools/firmware/Rules.mk"
+                (("override XEN_TARGET_ARCH = x86_32" match)
+                 (string-append match "\noverride CC = "
+                                (search-input-file inputs
+                                                   "bin/i686-linux-gnu-gcc")))
+                (("^CFLAGS =$" match)
+                 (string-append match " -I" (assoc-ref inputs "cross-libc")
+                                "/include\n")))
+              (substitute* "config/x86_32.mk"
+                (("(CFLAGS += )-m32 -march=i686" _ match)
+                 (string-append match "-march=i686 -I"
+                                (assoc-ref inputs "cross-libc") "/include")))
+              ;; /var is not in /gnu/store, so don't try to create it.
+              (substitute* '("tools/Makefile"
+                             "tools/xenstore/Makefile"
+                             "tools/xenpaging/Makefile")
+                (("\\$\\(INSTALL_DIR\\) .*XEN_(DUMP|LOG|RUN|LIB|PAGING)_DIR.*")
+                 "\n")
+                (("\\$\\(INSTALL_DIR\\) .*XEN_(RUN|LIB)_STORED.*") "\n"))
+              ;; Prevent xen from creating /etc.
+              (substitute* "tools/examples/Makefile"
+                ((" install-(configs|readmes)") ""))
+              ;; Set rpath.
+              (substitute* "tools/pygrub/setup.py"
+                (("library_dirs =" match)
+                 ;; TODO: extra_link_args = ['-Wl,-rpath=/opt/foo'],
+                 (string-append "runtime_library_dirs = ['" #$output "/lib'],"
+                                "\n" match)))))
+          (add-before 'configure 'patch-xen-script-directory
+            (lambda _
+              (substitute* '("configure"
+                             "tools/configure"
+                             "docs/configure")
+                (("(XEN_SCRIPT_DIR=).*" _ match)
+                 (string-append match #$output "/etc/xen/scripts")))))
+          (add-before 'configure 'set-environment-up
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (define (cross? x)
+                (string-contains x "cross-i686-linux"))
+              (define (filter-environment! filter-predicate
+                                           environment-variable-names)
+                (for-each
+                 (lambda (env-name)
+                   (let* ((env-value (getenv env-name))
+                          (search-path (search-path-as-string->list env-value))
+                          (new-search-path (filter filter-predicate
+                                                   search-path))
+                          (new-env-value (list->search-path-as-string
+                                          new-search-path ":")))
+                     (setenv env-name new-env-value)))
+                 environment-variable-names))
+              (setenv "CROSS_C_INCLUDE_PATH" (getenv "C_INCLUDE_PATH"))
+              (setenv "CROSS_CPLUS_INCLUDE_PATH" (getenv "CPLUS_INCLUDE_PATH"))
+              (setenv "CROSS_LIBRARY_PATH" (getenv "LIBRARY_PATH"))
+              (filter-environment! cross?
+                                   '("CROSS_C_INCLUDE_PATH"
+                                     "CROSS_CPLUS_INCLUDE_PATH"
+                                     "CROSS_LIBRARY_PATH"))
+              (filter-environment! (lambda (e) (not (cross? e)))
+                                   '("C_INCLUDE_PATH" "CPLUS_INCLUDE_PATH"
+                                     "LIBRARY_PATH"))
+              ;; Guix tries to be helpful and automatically adds
+              ;; mini-os-git-checkout/include to the include path,
+              ;; but actually we don't want it to be there (yet).
+              (filter-environment! (lambda (e)
+                                     (not
+                                      (string-contains e
+                                                       "mini-os-git-checkout")))
+                                   '("C_INCLUDE_PATH" "CPLUS_INCLUDE_PATH"
+                                     "LIBRARY_PATH"))
+              (setenv "EFI_VENDOR" "guix")))
+          (replace 'build
+            (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+              (apply invoke "make" "world"
+                     "-j" (number->string
+                           (if parallel-build? (parallel-job-count) 1))
+                     make-flags)))
+          (add-after 'install 'remove-cruft
+            (lambda _
+              (with-directory-excursion #$output
+                ;; Delete useless (and irreproducible) build-time left-overs.
+                (for-each delete-file
+                          (find-files "share/doc" "^\\.deps$"))))))))
     (inputs
-     `(("acpica" ,acpica) ; TODO: patch iasl invocation.
-       ("bridge-utils" ,bridge-utils) ; TODO: patch invocations.
-       ("glib" ,glib)
-       ("iproute" ,iproute) ; TODO: patch invocations.
-       ("libaio" ,libaio)
-       ("libx11" ,libx11)
-       ("yajl" ,yajl)
-       ("ncurses" ,ncurses)
-       ("openssl" ,openssl)
-       ("ovmf" ,ovmf)
-       ("pixman" ,pixman)
-       ("qemu" ,qemu-minimal)
-       ("seabios" ,seabios)
-       ("util-linux" ,util-linux "lib") ; uuid
-       ; TODO: ocaml-findlib, ocaml-nox.
-       ("xz" ,xz) ; for liblzma
-       ("zlib" ,zlib)))
+     (list acpica                       ; TODO: patch iasl invocation
+           bridge-utils                 ; TODO: patch invocations
+           glib
+           iproute                      ; TODO: patch invocations
+           libaio
+           libx11
+           yajl
+           ncurses
+           openssl
+           ovmf
+           pixman
+           qemu-minimal
+           seabios
+           `(,util-linux "lib")         ; uuid
+           ;; TODO: ocaml-findlib, ocaml-nox.
+           xz                           ; for liblzma
+           zlib))
     (native-inputs
-     `(("dev86" ,dev86)
-       ("bison" ,bison)
-       ("cmake" ,cmake-minimal)
-       ("figlet" ,figlet)
-       ("flex" ,flex)
-       ("gettext" ,gettext-minimal)
-       ("libnl" ,libnl)
-       ("mini-os"
-       ,(origin
+     (list dev86
+       bison
+       cmake-minimal
+       figlet
+       flex
+       gettext-minimal
+       libnl
+       (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://xenbits.xen.org/git-http/mini-os.git")
                ;; This corresponds to (string-append "xen-RELEASE-" version))
                ;; at time of packaging, but upstream has unfortunately modified
-               ;; existing tags in the past.
-               (commit "0b4b7897e08b967a09bed2028a79fabff82342dd")))
+               ;; existing tags in the past.  Also, not all Xen releases get a
+               ;; new tag.  See <https://xenbits.xen.org/gitweb/?p=mini-os.git>.
+               (commit "f57858b7e8ef8dd48394dd08cec2bef3c9fb92f5")))
          (sha256
-          (base32 "1i8pcl19n60i2m9vlg79q3nknpj209c9ic5x10wxaicx45kc107f"))
-         (file-name "mini-os-git-checkout")))
-       ("perl" ,perl)
-       ; TODO: markdown
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-2)
-       ("wget" ,wget)
-       ("cross-gcc" ,(cross-gcc "i686-linux-gnu"
-                                #:xbinutils (cross-binutils "i686-linux-gnu")
-                                #:libc (cross-libc "i686-linux-gnu")))
-       ("cross-libc" ,(cross-libc "i686-linux-gnu")) ; header files
-       ("cross-libc-static" ,(cross-libc "i686-linux-gnu") "static")))
+          (base32 "04y7grxs47amvjcq1rq4jgk174rhid5m2z9w8wrv7rfd2xhazxy1"))
+         (file-name (string-append name "-" version "-mini-os-git-checkout")))
+       perl
+       ;; TODO: markdown.
+       pkg-config
+       python-2
+       wget
+       (cross-gcc "i686-linux-gnu"
+                  #:xbinutils (cross-binutils "i686-linux-gnu")
+                  #:libc (cross-libc "i686-linux-gnu"))
+       (cross-libc "i686-linux-gnu") ; header files
+       `(,(cross-libc "i686-linux-gnu") "static")))
     (home-page "https://xenproject.org/")
     (synopsis "Xen Virtual Machine Monitor")
     (description "This package provides the Xen Virtual Machine Monitor

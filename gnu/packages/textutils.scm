@@ -83,14 +83,14 @@
 (define-public dos2unix
   (package
     (name "dos2unix")
-    (version "7.5.0")
+    (version "7.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://waterlan.home.xs4all.nl/dos2unix/"
                            "dos2unix-" version ".tar.gz"))
        (sha256
-        (base32 "1bwmxgb6z9pgaq1lqvjnhnijiiyxw293lk70ng164k913v802fvs"))))
+        (base32 "05gwq7asks48l4iliw9cvbcaqa45yrkd2wb47zbb0ag0na5ph1ys"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
@@ -692,7 +692,7 @@ spreadsheets and outputs it in comma-separated-value format, and
 (define-public utfcpp
   (package
     (name "utfcpp")
-    (version "3.2.4")
+    (version "3.2.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -709,7 +709,7 @@ spreadsheets and outputs it in comma-separated-value format, and
                      "<ftest/ftest.h>"))))
               (sha256
                (base32
-                "0p18cbdk57ilbgcgprgqp7fgysb5i0nidczbhc5rnxkiiw4jvxgn"))))
+                "195n47dblx765xas54vkgyin3xsvfnvcdc614njzqmcxybfpvix2"))))
     (build-system cmake-build-system)
     (native-inputs (list ftest))
     (home-page "https://github.com/nemtrif/utfcpp")

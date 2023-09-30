@@ -174,8 +174,8 @@
   ;; Note: the 'update-guix-package.scm' script expects this definition to
   ;; start precisely like this.
   (let ((version "1.4.0")
-        (commit "4dfdd822102690b5687acf28365ab707b68d9476")
-        (revision 10))
+        (commit "d0438fcf658cb8c95b32381fac44b0a6278459ed")
+        (revision 11))
     (package
       (name "guix")
 
@@ -191,7 +191,7 @@
                       (commit commit)))
                 (sha256
                  (base32
-                  "1p21gz2lr7iqvma1m83k2r04w201rzvk31d5kfn2qkr9l0gds4cx"))
+                  "05i32m7cxs7vhl54hvs0f9g84jhnn2dbc9qcgaqvqnqc4i8yhhxr"))
                 (file-name (string-append "guix-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -214,6 +214,13 @@
                             ;; closure is pretty big (too big for the Guix
                             ;; system installation image.)
                             "ac_cv_path_DOT_USER_PROGRAM=dot"
+
+                            ;; When cross-compiling, 'git' is not in $PATH
+                            ;; (because it's not a native input).  Thus,
+                            ;; always explicitly pass its file name.
+                            (string-append "ac_cv_path_GIT="
+                                           (search-input-file %build-inputs
+                                                              "/bin/git"))
 
                             ;; To avoid problems with the length of shebangs,
                             ;; choose a fixed-width and short directory name
@@ -514,6 +521,8 @@ $(prefix)/etc/openrc\n")))
 
          ("disarchive" ,disarchive)               ;for 'guix perform-download'
          ("guile-lzma" ,guile-lzma)               ;for Disarchive
+
+         ("git-minimal" ,git-minimal)             ;for 'guix perform-download'
 
          ("glibc-utf8-locales" ,glibc-utf8-locales)))
       (propagated-inputs
@@ -1592,7 +1601,7 @@ environments.")
              guile-gcrypt
              guix
              guile-prometheus
-             guile-fibers-1.3
+             guile-fibers
              guile-lib
              (first (assoc-ref (package-native-inputs guix) "guile"))))
       (inputs
@@ -1610,7 +1619,7 @@ environments.")
              guile-sqlite3
              guix
              guile-gnutls
-             guile-fibers-1.3))
+             guile-fibers))
       (home-page "https://git.cbaines.net/guix/build-coordinator/")
       (synopsis "Tool to help build derivations")
       (description
@@ -1826,7 +1835,7 @@ in an isolated environment, in separate namespaces.")
              guile-json-4
              guile-gcrypt
              guix
-             guile-fibers-1.3
+             guile-fibers
              guile-prometheus
              guile-lib
              guile-lzlib
@@ -1839,7 +1848,7 @@ in an isolated environment, in separate namespaces.")
        (list guile-json-4
              guile-gcrypt
              guix
-             guile-fibers-1.3
+             guile-fibers
              guile-prometheus
              guile-lib
              guile-lzlib

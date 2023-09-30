@@ -50,7 +50,7 @@
 ;;; Copyright © 2021 Alexey Abramov <levenson@mmer.org>
 ;;; Copyright © 2021, 2022, 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 David Wilson <david@daviwil.com>
-;;; Copyright © 2021,2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Thiago Jung Bauermann <bauermann@kolabnow.com>
@@ -741,36 +741,19 @@ stream decoding")
                (base32
                 "1vkh19gb76agvh4h87ysbrgy82hrw88lnsvhynjf4vng629dmpgv"))))
     (build-system gnu-build-system)
-    (native-inputs
-     `(("config" ,config)
-       ("makeinfo" ,texinfo)))
-    (inputs
-     (list ncurses))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'update-config-scripts
-           (lambda* (#:key inputs native-inputs #:allow-other-keys)
-             ;; Replace outdated config.guess and config.sub.
-             (for-each (lambda (file)
-                         (install-file
-                          (search-input-file
-                           (or native-inputs inputs)
-                           (string-append "/bin/" file)) "."))
-                       '("config.guess" "config.sub"))))
-         (replace 'configure
-                  (lambda* (#:key build inputs outputs #:allow-other-keys)
-                    ;; This old `configure' script doesn't support
-                    ;; variables passed as arguments.
-                    (let ((out     (assoc-ref outputs "out"))
-                          (ncurses (assoc-ref inputs "ncurses")))
-                      (setenv "CONFIG_SHELL" (which "bash"))
-                      (invoke "./configure"
-                              "--disable-static"
-                              (string-append "--prefix=" out)
-                              (string-append "--build=" build)
-                              (string-append "--with-ncurses="
-                                             ncurses))))))))
+     (list
+      #:configure-flags
+      #~(list "--disable-static"
+              (string-append "--with-ncurses="
+                             #$(this-package-input "ncurses")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'force-autoreconf
+            (lambda _
+              (delete-file "configure"))))))
+    (native-inputs (list autoconf automake libtool texinfo))
+    (inputs (list ncurses))
     (home-page "https://aa-project.sourceforge.net/aalib/")
     (synopsis "ASCII-art library")
     (description
@@ -2412,6 +2395,7 @@ To load this plugin, specify the following option when starting mpv:
   (package
     (name "libvpx")
     (version "1.12.0")
+    (replacement libvpx/fixed)
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2449,6 +2433,15 @@ To load this plugin, specify the following option when starting mpv:
     (description "libvpx is a codec for the VP8/VP9 video compression format.")
     (license license:bsd-3)
     (home-page "https://www.webmproject.org/")))
+
+(define libvpx/fixed
+  (package
+    (inherit libvpx)
+    (source
+     (origin
+       (inherit (package-source libvpx))
+       (patches (search-patches "libvpx-CVE-2016-2818.patch"
+                                "libvpx-CVE-2023-5217.patch"))))))
 
 (define-public orf-dl
   (let ((commit "2dbbe7ef4e0efe0f3c1d59c503108e22d9065999")
@@ -2614,7 +2607,7 @@ YouTube.com and many more sites.")
 (define-public yt-dlp
   (package/inherit youtube-dl
     (name "yt-dlp")
-    (version "2023.07.06")
+    (version "2023.09.24")
     (source
      (origin
        (method git-fetch)
@@ -2623,7 +2616,7 @@ YouTube.com and many more sites.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14g3qc3j4px5jiv292yj5hh8vxlnnd5bzvsq7h37jvhmrn5r4bsw"))))
+        (base32 "15ngsg3cadf2bv700fa1k5az5xpsm0wqr0cixbz8fcbhwdflfq6f"))))
     (arguments
      (substitute-keyword-arguments (package-arguments youtube-dl)
        ((#:tests? _) (not (%current-target-system)))

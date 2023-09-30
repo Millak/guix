@@ -643,6 +643,10 @@ GLib/GIO, GTK, GStreamer and Webkit."
                        "marius@gnu.org")
   python)
 
+(define-member (person "Munyoki Kilyungi"
+                       "me@bonfacemunyoki.com")
+  python lisp)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))

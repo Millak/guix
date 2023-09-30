@@ -32,7 +32,7 @@
 (define-public imgui
   (package
     (name "imgui")
-    (version "1.89.4")
+    (version "1.89.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -41,7 +41,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1j79gsg9i969slygrwm0dp5mkzagglawxxagjpi3009wyp6lj6l8"))
+                "0db11pin6kdzyd07dnwch8sf0z3386h42ibki1lnzb2ln8m66kyj"))
               (modules '((guix build utils)))
               (snippet
                ;; Remove bundled fonts.
@@ -62,6 +62,7 @@
       ;; it would fail with the "Too many vertices in ImDrawList using 16-bit
       ;; indices".
       #~(list "-DImDrawIdx=unsigned int"
+              "-DIMGUI_ENABLE_FREETYPE"
               "-I" (string-append (getcwd) "/source")
               "-I" (search-input-directory %build-inputs "include/freetype2")
               "-g" "-O2" "-fPIC" "-shared"
@@ -122,7 +123,7 @@
                 (copy-recursively "examples"
                                   (string-append #$output:doc
                                                  "/share/imgui/examples"))))))))
-    (inputs (list fontconfig glfw mesa sdl2))
+    (inputs (list fontconfig freetype glfw mesa sdl2))
     (home-page "https://github.com/ocornut/imgui")
     (synopsis "Immediate-mode C++ GUI library with minimal dependencies")
     (description "@code{dear imgui} (also know as ImGui) is a graphical user

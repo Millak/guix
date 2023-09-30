@@ -72,6 +72,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cups)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages flex)
@@ -6110,16 +6111,16 @@ basic eye-candy effects.")
 (define-public xpra
   (package
     (name "xpra")
-    (version "4.4.6")
+    (version "5.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.xpra.org/src/xpra-"
                            version ".tar.xz"))
        (sha256
-        (base32 "0d3s13wqbn9jwqp4i55mn4chgjkrckq3jx4jrq1bcjjz5agzfrq5"))
-       (patches (search-patches "xpra-4.2-systemd-run.patch"
-                                "xpra-4.2-install_libs.patch"))))
+        (base32 "0gxv0h1spg2jl3g9cc6qxxkq6a7prmb92dqqwk0s6pvrj8w3izlk"))
+       (patches (search-patches "xpra-5.0-systemd-run.patch"
+                                "xpra-5.0-install_libs.patch"))))
     (build-system python-build-system)
     (inputs
      (list bash-minimal                 ; for wrap-program
@@ -6158,7 +6159,8 @@ basic eye-candy effects.")
            python-dbus                  ; For desktop notifications.
            dbus                         ; For dbus-launch command.
            python-lz4                   ; Faster compression than zlib.
-           python-netifaces))
+           python-netifaces
+           python-pycups))
     (native-inputs (list pkg-config pandoc python-cython))
     (arguments
      (list
@@ -6193,7 +6195,7 @@ basic eye-candy effects.")
                  (format #f "~s" (search-input-file inputs "bin/xauth"))))
               ;; Fix directory of config files.
               (substitute* '("xpra/scripts/config.py"
-                             "xpra/platform/xposix/paths.py")
+                             "xpra/platform/posix/paths.py")
                 (("\"/etc/xpra/?\"")
                  (string-append "\"" #$output "/etc/xpra/\"")))
               ;; XXX: Stolen from (gnu packages linux)

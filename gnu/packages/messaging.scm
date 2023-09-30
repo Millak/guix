@@ -148,6 +148,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
@@ -1089,21 +1090,27 @@ simultaneously and therefore appear under the same nickname on IRC.")
 (define-public python-nbxmpp
   (package
     (name "python-nbxmpp")
-    (version "3.1.0")
+    (version "4.2.2")
     (source
      (origin
        (method url-fetch)
-       (uri
-        (pypi-uri "nbxmpp" version))
+       (uri (pypi-uri "nbxmpp" version))
        (sha256
-        (base32 "0c32090gr1fiy7hkn73dcj4ad9gfdpks8hivl1dl8bql01jsfdnj"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list `(,glib "bin")))
+         (base32 "095nyy6vjildhrqigxk6vsh49in6mx17bvb3z5zpjmzhv9b8ix46"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: This probably should be an option for pyproject-build-system
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests? (invoke "python" "-m" "unittest" "-v")))))))
+    (native-inputs (list `(,glib "bin")))
     (inputs
      (list glib
            glib-networking
-           libsoup-minimal-2
+           libsoup-minimal
            python-gssapi
            python-idna
            python-precis-i18n
@@ -1118,71 +1125,85 @@ of xmpppy.")
 (define-public gajim
   (package
     (name "gajim")
-    (version "1.4.7")
+    (version "1.7.3")
     (source
      (origin
        (method url-fetch)
-       (uri
-        (string-append "https://gajim.org/downloads/"
-                       (version-major+minor version)
-                       "/gajim-" version ".tar.gz"))
+       (uri (string-append "https://gajim.org/downloads/"
+                           (version-major+minor version)
+                           "/gajim-" version ".tar.gz"))
        (sha256
-        (base32 "1ww46qlxr14nq0ka8wsf8qpn5qfi5dvgyksfh9411crl7azhfj0s"))
-       (patches (search-patches "gajim-honour-GAJIM_PLUGIN_PATH.patch"))))
+         (base32 "066kvkjw3qcdanr3nczy0wgcwihk9jc9zhzfr5bwlqvcyxcv7k5p"))
+       (patches
+         (search-patches "gajim-honour-GAJIM_PLUGIN_PATH.patch"))))
     (build-system python-build-system)
     (arguments
-     `(#:imported-modules
-       (,@%python-build-system-modules
+     (list
+      #:imported-modules
+      `(,@%python-build-system-modules
         (guix build glib-or-gtk-build-system))
-       #:modules
-       ((guix build python-build-system)
-        ((guix build glib-or-gtk-build-system)
-         #:prefix glib-or-gtk:)
+      #:modules
+      '((guix build python-build-system)
+        ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
         (guix build utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-failing-tests
-           (lambda _
-             ;; XXX Gajim builds fine on some (my) machines but fails elsewhere:
-             ;; ModuleNotFoundError: No module named 'gajim.gui.emoji_data'
-             ;; https://dev.gajim.org/gajim/gajim/-/issues/11041
-             (delete-file "test/no_gui/test_styling.py")))
-         (replace 'check
-           (lambda _
-             ;; Tests require a running X server.
-             (system "Xvfb :1 +extension GLX &")
-             (setenv "DISPLAY" ":1")
-             ;; For missing '/etc/machine-id'.
-             (setenv "DBUS_FATAL_WARNINGS" "0")
-             (invoke "dbus-launch" "python" "./setup.py" "test")))
-         ;; Loading gajim_remote require running session bus,
-         ;; which in-turn requires running elogind for XDG_RUNTIME_DIR;
-         ;; neither of which are possible inside build environment.
-         (delete 'sanity-check)
-         (add-after 'install 'glib-or-gtk-compile-schemas
-           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
-         (add-after 'install 'glib-or-gtk-wrap
-           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
-         (add-after 'install 'wrap-env
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (for-each
-                (lambda (name)
-                  (let ((file (string-append out "/bin/" name))
-                        (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH"))
-                        (gi-typelib-path (getenv "GI_TYPELIB_PATH")))
-                    (wrap-program file
-                      `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))
-                      `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))
-                '("gajim" "gajim-remote"))))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
+            (assoc-ref glib-or-gtk:%standard-phases
+                       'generate-gdk-pixbuf-loaders-cache-file))
+          (add-before 'build 'build-metadata
+            (lambda _
+              (invoke "./pep517build/build_metadata.py"
+                      "-o" "dist/metadata")))
+          ;; TODO: Change to pyproject-build-system once it supports
+          ;; in-tree build backends.
+          (replace 'build
+            (lambda _
+              (invoke "python" "-m" "build" "--wheel" "--no-isolation"
+                      ".")))
+          (replace 'install
+            (lambda _
+              (apply invoke "pip" "--no-cache-dir" "--no-input"
+                     "install" "--no-deps" "--prefix" #$output
+                     (find-files "dist" "\\.whl$"))))
+          (add-after 'install 'install-metadata
+            (lambda _
+              (invoke "./pep517build/install_metadata.py" "dist/metadata"
+                      (string-append "--prefix=" #$output))))
+          (replace 'check
+            (lambda _
+              ;; Tests require a running X server.
+              (system "Xvfb :1 +extension GLX &")
+              (setenv "DISPLAY" ":1")
+              ;; For missing '/etc/machine-id'.
+              (setenv "DBUS_FATAL_WARNINGS" "0")
+              (invoke "dbus-launch" "python" "-m" "unittest"
+                      "discover" "-s" "test")))
+          (add-after 'install 'glib-or-gtk-compile-schemas
+            (assoc-ref glib-or-gtk:%standard-phases
+                       'glib-or-gtk-compile-schemas))
+          (add-after 'install 'glib-or-gtk-wrap
+            (assoc-ref glib-or-gtk:%standard-phases
+                       'glib-or-gtk-wrap))
+          (add-after 'install 'wrap-env
+            (lambda _
+              (for-each
+               (lambda (name)
+                 (let ((file (string-append #$output "/bin/" name))
+                       (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH"))
+                       (gi-typelib-path (getenv "GI_TYPELIB_PATH"))
+                       (pixbuf-module-file (getenv "GDK_PIXBUF_MODULE_FILE")))
+                   (wrap-program file
+                     `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))
+                     `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))
+                     `("GDK_PIXBUF_MODULE_FILE" = (,pixbuf-module-file)))))
+               '("gajim" "gajim-remote")))))))
     (native-search-paths
      (list
       (search-path-specification
        (variable "GAJIM_PLUGIN_PATH")
-       (separator #f)                   ;single entry
-       (files
-        (list
-         "share/gajim/plugins")))
+       (separator #f) ; single entry
+       (files (list "share/gajim/plugins")))
       ;; Gajim needs to use the propagated inputs of its plugins.
       (search-path-specification
        (variable "GUIX_PYTHONPATH")
@@ -1193,7 +1214,7 @@ of xmpppy.")
           ;; FIXME: Cannot use this expression as it would
           ;; introduce a circular dependency at the top level.
           ;; (version-major+minor (package-version python))
-          "3.9"
+          "3.10"
           "/site-packages"))))))
     (native-inputs
      (list gettext-minimal
@@ -1201,6 +1222,7 @@ of xmpppy.")
            gobject-introspection
            `(,gtk+ "bin")
            python-distutils-extra
+           python-pypa-build
            python-setuptools
            xorg-server-for-tests))
     (inputs
@@ -1248,7 +1270,7 @@ and OpenPGP) and available in 29 languages.")
 (define-public gajim-omemo
   (package
     (name "gajim-omemo")
-    (version "2.8.15")
+    (version "2.9.0")
     (source
      (origin
        (method url-fetch/zipbomb)
@@ -1257,7 +1279,7 @@ and OpenPGP) and available in 29 languages.")
          "https://ftp.gajim.org/plugins/master/omemo/omemo_"
          version ".zip"))
        (sha256
-        (base32 "1hf148ywr8knk5y3y5xvvwgw74ld1pcfjkp78g514ikcnzfycfcn"))))
+        (base32 "0yy9r9fsrlgdywiln8bskhi8faj9hnz7b19jcap5nkhv8jn9cqq7"))))
     (build-system trivial-build-system)
     (arguments
      `(#:modules ((guix build utils))
@@ -1284,7 +1306,7 @@ multi-client end-to-end encryption.")
 (define-public gajim-openpgp
   (package
     (name "gajim-openpgp")
-    (version "1.4.9")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch/zipbomb)
@@ -1293,7 +1315,7 @@ multi-client end-to-end encryption.")
          "https://ftp.gajim.org/plugins/master/openpgp/openpgp_"
          version ".zip"))
        (sha256
-        (base32 "1xwmf6ai1z7z9x6p1ysglxji73r7d27c0gzc8ykab29cjhjyv0dq"))))
+        (base32 "193pbh9iri7bkamvjwp236i8g5zxxiqgsv64kll5sy76vx4q73c4"))))
     (build-system trivial-build-system)
     (arguments
      `(#:modules ((guix build utils))

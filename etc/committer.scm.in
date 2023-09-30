@@ -85,21 +85,39 @@ the expression."
     (seek port start SEEK_SET)
     result))
 
-(define (surrounding-sexp port line-no)
+(define (lines+offsets-with-opening-parens port)
+  "Record all line numbers (and their offsets) where an opening parenthesis is
+found in column 0.  The resulting list is in reverse order."
+  (let loop ((acc '())
+             (number 0))
+    (let ((line (read-line port)))
+      (cond
+       ((eof-object? line) acc)
+       ((string-prefix? "(" line)
+        (loop (cons (cons number                      ;line number
+                          (- (ftell port)
+                             (string-length line) 1)) ;offset
+                    acc)
+              (1+ number)))
+       (else (loop acc (1+ number)))))))
+
+(define (surrounding-sexp port target-line-no)
   "Return the top-level S-expression surrounding the change at line number
-LINE-NO in PORT."
-  (let loop ((i (1- line-no))
-             (last-top-level-sexp #f))
-    (if (zero? i)
-        last-top-level-sexp
-        (match (peek-char port)
-          (#\(
-           (let ((sexp (read-excursion port)))
-             (read-line port)
-             (loop (1- i) sexp)))
-          (_
-           (read-line port)
-           (loop (1- i) last-top-level-sexp))))))
+TARGET-LINE-NO in PORT."
+  (let* ((line-numbers+offsets
+          (lines+offsets-with-opening-parens port))
+         (closest-offset
+          (or (and=> (list-index (match-lambda
+                                   ((line-number . offset)
+                                    (< line-number target-line-no)))
+                                 line-numbers+offsets)
+                     (lambda (index)
+                       (match (list-ref line-numbers+offsets index)
+                         ((line-number . offset) offset))))
+              (error "Could not find surrounding S-expression for line"
+                     target-line-no))))
+    (seek port closest-offset SEEK_SET)
+    (read port)))
 
 ;;; Whether the hunk contains a newly added package (definition), a removed
 ;;; package (removal) or something else (#false).
@@ -196,21 +214,34 @@ LINE-NO in PORT."
                 (string-ref line 0)))
              (hunk-diff-lines hunk))))
 
+(define %original-file-cache
+  (make-hash-table))
+
+(define (read-original-file file-name)
+  "Return the contents of FILE-NAME prior to any changes."
+  (let* ((port (open-pipe* OPEN_READ
+                           "git" "cat-file" "-p" (string-append
+                                                  "HEAD:" file-name)))
+         (contents (get-string-all port)))
+    (close-pipe port)
+    contents))
+
+(define (read-original-file* file-name)
+  "Caching variant of READ-ORIGINAL-FILE."
+  (or (hashv-ref %original-file-cache file-name)
+      (let ((value (read-original-file file-name)))
+        (hashv-set! %original-file-cache file-name value)
+        value)))
+
 (define (old-sexp hunk)
   "Using the diff information in HUNK return the unmodified S-expression
 corresponding to the top-level definition containing the staged changes."
   ;; TODO: We can't seek with a pipe port...
-  (let* ((port (open-pipe* OPEN_READ
-                           "git" "cat-file" "-p" (string-append
-                                                  "HEAD:"
-                                                  (hunk-file-name hunk))))
-         (contents (get-string-all port)))
-    (close-pipe port)
-    (call-with-input-string contents
-      (lambda (port)
-        (surrounding-sexp port
-                          (+ (lines-to-first-change hunk)
-                             (hunk-old-line-number hunk)))))))
+  (call-with-input-string (read-original-file* (hunk-file-name hunk))
+    (lambda (port)
+      (surrounding-sexp port
+                        (+ (lines-to-first-change hunk)
+                           (hunk-old-line-number hunk))))))
 
 (define (new-sexp hunk)
   "Using the diff information in HUNK return the modified S-expression
@@ -358,6 +389,7 @@ modifying."
         (_
          (apply change-commit-message file-name old new rest)))))
 
+  (read-disable 'positions)
   (match (diff-info)
     (()
      (display "Nothing to be done.\n" (current-error-port)))
@@ -388,41 +420,46 @@ modifying."
               (unless (eqv? 0 (status:exit-val (close-pipe port)))
                 (error "Cannot commit"))))
           (usleep %delay))
-        definitions))
+        definitions)
 
-     ;; Changes.
-     (for-each
-      (match-lambda
-        ((new old . hunks)
-         (for-each (lambda (hunk)
-                     (let ((port (open-pipe* OPEN_WRITE
-                                             "git" "apply"
-                                             "--cached"
-                                             "--unidiff-zero")))
-                       (hunk->patch hunk port)
-                       (unless (eqv? 0 (status:exit-val (close-pipe port)))
-                         (error "Cannot apply")))
-                     (usleep %delay))
-                   hunks)
-         (define copyright-line
-           (any (lambda (line) (and=> (string-prefix? "+;;; Copyright ©" line)
-                                      (const line)))
-                (hunk-diff-lines (first hunks))))
-         (cond
-          (copyright-line
-           (add-copyright-line copyright-line))
-          (else
-           (let ((port (open-pipe* OPEN_WRITE "git" "commit" "-F" "-")))
-             (change-commit-message* (hunk-file-name (first hunks))
-                                     old new)
-             (change-commit-message* (hunk-file-name (first hunks))
-                                     old new
-                                     port)
-             (usleep %delay)
-             (unless (eqv? 0 (status:exit-val (close-pipe port)))
-               (error "Cannot commit")))))))
-      ;; XXX: we recompute the hunks here because previous
-      ;; insertions lead to offsets.
-      (new+old+hunks (diff-info))))))
+       ;; Changes.
+       (for-each
+        (match-lambda
+          ((new old . hunks)
+           (for-each (lambda (hunk)
+                       (let ((port (open-pipe* OPEN_WRITE
+                                               "git" "apply"
+                                               "--cached"
+                                               "--unidiff-zero")))
+                         (hunk->patch hunk port)
+                         (unless (eqv? 0 (status:exit-val (close-pipe port)))
+                           (error "Cannot apply")))
+                       (usleep %delay))
+                     hunks)
+           (define copyright-line
+             (any (lambda (line) (and=> (string-prefix? "+;;; Copyright ©" line)
+                                   (const line)))
+                  (hunk-diff-lines (first hunks))))
+           (cond
+            (copyright-line
+             (add-copyright-line copyright-line))
+            (else
+             (let ((port (open-pipe* OPEN_WRITE "git" "commit" "-F" "-")))
+               (change-commit-message* (hunk-file-name (first hunks))
+                                       old new)
+               (change-commit-message* (hunk-file-name (first hunks))
+                                       old new
+                                       port)
+               (usleep %delay)
+               (unless (eqv? 0 (status:exit-val (close-pipe port)))
+                 (error "Cannot commit")))))))
+        (new+old+hunks (match definitions
+                         ('() changes) ;reuse
+                         (_
+                          ;; XXX: we recompute the hunks here because previous
+                          ;; insertions lead to offsets.
+                          (let-values (((definitions changes)
+                                        (partition hunk-type (diff-info))))
+                            changes)))))))))
 
 (apply main (cdr (command-line)))

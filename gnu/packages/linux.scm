@@ -75,6 +75,7 @@
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 dan <i@dan.games>
+;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -188,6 +189,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (guix build-system linux-module)
@@ -4962,6 +4964,29 @@ SMBus access.")
        ((#:make-flags _)
         #~(list (string-append "prefix=" #$output)
                 (string-append "CC=" #$(cc-for-target))))))))
+
+(define-public python-smbus
+  (package
+    (inherit i2c-tools)
+    (name "python-smbus")
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f ;; No test suite.
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'change-directory
+                 (lambda _ (chdir "py-smbus")))
+               (add-after 'change-directory 'set-library-path
+                 (lambda _
+                   (substitute* "setup.py"
+                     (("-L\\.\\./lib")
+                      (string-append "-L" #$(this-package-input "i2c-tools")
+                                     "/lib"))))))))
+    (inputs (list i2c-tools))
+    (synopsis "I2C/SMBus access for Python")
+    (description "This package provides a Python library to access
+@acronym{I2C, Inter-Integrated Circuit} and @acronym{SMBus, System
+Management Bus} devices on Linux.")))
 
 (define-public xsensors
   (package
@@ -9751,7 +9776,7 @@ kernel side implementation.")
 (define-public erofs-utils
   (package
     (name "erofs-utils")
-    (version "1.5")
+    (version "1.7")
     (source
      (origin
        (method git-fetch)
@@ -9760,11 +9785,12 @@ kernel side implementation.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rgkw3b924xdg49v3qi8a10w41zfk276wb6fp71lb9q9cfc81idw"))))
+        (base32 "0bi8n1kb263v1gvis21pa9dxsf3p96d1nasm21icmv3rd9g2xh6p"))))
     (build-system gnu-build-system)
     (inputs
      (list lz4
-           `(,util-linux "lib")))
+           `(,util-linux "lib")
+           zlib))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (home-page "https://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs-utils.git/")

@@ -799,7 +799,7 @@ tables.")
                          (replace "guile-lib" guile2.2-lib)
                          (replace "guile-smc" guile2.2-smc)))))
 
-(define-public guile-fibers-1.3
+(define-public guile-fibers
   (package
     (name "guile-fibers")
     (version "1.3.1")
@@ -856,9 +856,11 @@ is not available for Guile 2.0.")
     (properties '((upstream-name . "fibers")))
     (license license:lgpl3+)))
 
+(define-public guile-fibers-1.3 guile-fibers)
+
 (define-public guile-fibers-1.1
   (package
-    (inherit guile-fibers-1.3)
+    (inherit guile-fibers)
     (version "1.1.1")
     (source (origin
               (method git-fetch)
@@ -886,7 +888,7 @@ is not available for Guile 2.0.")
      ;; <https://github.com/wingo/fibers/pull/53>.
      (filter (cut string-suffix? "-linux" <>) %supported-systems))))
 
-(define-public guile-fibers
+(define-public guile-fibers-1.0
   (package
     (inherit guile-fibers-1.1)
     (version "1.0.0")

@@ -13856,7 +13856,16 @@ and tooling.")
     (build-system emacs-build-system)
     (arguments
      `(#:tests? #t
-       #:test-command '("make" "test")))
+       #:test-command '("make" "test")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-program-calls
+           (lambda* (#:key inputs #:allow-other-keys)
+             (emacs-substitute-variables "elfeed-curl.el"
+               ("elfeed-curl-program-name"
+                (search-input-file inputs "/bin/curl"))))))))
+    (inputs
+     (list curl))
     (home-page "https://github.com/skeeto/elfeed")
     (synopsis "Atom/RSS feed reader for Emacs")
     (description
@@ -15207,9 +15216,9 @@ e.g., the expression you've just evaluated would briefly flash and so on.")
       (license license:gpl3+))))
 
 (define-public emacs-sly
-  ;; Update together with sbcl-slynk.
-  (let ((commit "82b20a9a83209b4dbfbfb62a1536896aed5f85f7")
-        (revision "7"))
+  ;; Update together with sbcl-slynk .
+  (let ((commit "df62abae73bd511885c9c7ec0ea7ea1469a00923")
+        (revision "8"))
     ;; Versions are not always tagged.  Besides, latest master contains
     ;; important fixes.
     (package
@@ -15224,7 +15233,7 @@ e.g., the expression you've just evaluated would briefly flash and so on.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0dvr36qvb490gml0znay0slw63czp7azvajnv7srh8s0j8pqpcaj"))))
+           "1nxijv52bja6la2i3asq7kklpj5li25454n52sgsc6xnnfvakbsv"))))
       (build-system emacs-build-system)
       (native-inputs
        (list texinfo))
@@ -15523,7 +15532,7 @@ using package inferred style.")
      `(#:tests? #t
        #:test-command '("buttercup" "-l" "lua-mode.el")))
     (native-inputs
-     (list emacs-buttercup-1.25 lua))
+     (list emacs-buttercup lua))
     (synopsis "Major mode for lua")
     (description
      "This Emacs package provides a mode for @uref{https://www.lua.org/,
@@ -28520,16 +28529,6 @@ targets the Emacs based IDEs (CIDER, ESS, Geiser, Robe, SLIME etc.)")
       #:test-command #~(list "make" "test")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-spy-on-test
-            (lambda _
-              (substitute* "buttercup.el"
-                ;; The spy-on test fails with native compilation, which was
-                ;; fixed in v1.30 but with a variable name for Emacs newer
-                ;; than 28.2.  Add in the same fix with the current variable
-                ;; name.  Upstream bug and fix:
-                ;; <https://github.com/jorgenschaefer/emacs-buttercup/issues/236>
-                (("\\(native-comp-enable-subr-trampolines nil\\)" all)
-                 (string-append all " (comp-enable-subr-trampolines nil)")))))
           (add-after 'install 'install-bin
             (lambda _
               (install-file "bin/buttercup"
@@ -28541,23 +28540,6 @@ testing Emacs Lisp code.  It groups related tests so they can share
 common set-up and tear-down code, and allows the programmer to \"spy\" on
 functions to ensure they are called with the right arguments during testing.")
     (license license:gpl3+)))
-
-;;; Required by emacs-lua-mode
-(define emacs-buttercup-1.25
-  (package
-    (inherit emacs-buttercup)
-    (name "emacs-buttercup")
-    (version "1.25")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/jorgenschaefer/emacs-buttercup")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0fsysvsypda6b7azc15bpaprq3bwx4gb6rlq2mj6f8rgwdqc8153"))))))
 
 (define-public emacs-cort
   (package

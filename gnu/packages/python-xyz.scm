@@ -813,7 +813,7 @@ names for 256 color terminal setups.")
 (define-public python-colorful
   (package
     (name "python-colorful")
-    (version "0.5.4")
+    (version "0.5.5")
     (source
      (origin
        (method git-fetch)   ; no tests data in PyPi package
@@ -822,7 +822,7 @@ names for 256 color terminal setups.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fcz5v8b318a3dsdha4c874jsf3wmcw3f25bv2csixclyzacli98"))))
+        (base32 "0kyy9qhvrb5m9h8xmri7c88i0k1g5qc7017anw39gx44an7mn33y"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-coverage python-flake8 python-pytest))
@@ -32599,13 +32599,13 @@ than trying to just split strings.")
 (define-public python-srsly
   (package
     (name "python-srsly")
-    (version "2.4.7")
+    (version "2.4.8")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "srsly" version))
               (sha256
                (base32
-                "022x0djlkl6pgh9yrd4avlai1n6y4hxm9l1xnb6630kpi12wrhlk"))))
+                "14ca3gwmhr24axxdhn73157wzzjkmi1s1ka91dz49hh9a2k9akdj"))))
     (build-system pyproject-build-system)
     (arguments
      (list

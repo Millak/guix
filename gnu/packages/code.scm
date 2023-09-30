@@ -623,7 +623,7 @@ results and determine build stability.")
 (define-public kcov
   (package
     (name "kcov")
-    (version "40")
+    (version "42")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -632,7 +632,7 @@ results and determine build stability.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0zayhmx6s377bxmkmvl9d9vjzfbpvh1k9ba6np4zdjvjjq327xag"))))
+                "14pyahpgadh845q2p1gjw2yrlqcan4n870icrn2yqdpf33cprzgk"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; no test target
@@ -640,10 +640,9 @@ results and determine build stability.")
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-/bin/bash-references
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((bash (assoc-ref inputs "bash")))
              (substitute* (find-files "src" ".*\\.cc?$")
                (("/bin/(bash|sh)" shell)
-                (string-append (assoc-ref inputs "bash") shell)))))))))
+                (search-input-file inputs shell))))))))
     (inputs
      (list curl elfutils libelf openssl zlib))
     (native-inputs
@@ -835,54 +834,54 @@ Objective@tie{}C, D, Java, Pawn, and Vala).  Features:
 (define-public astyle
   (package
     (name "astyle")
-    (version "3.1")
+    (version "3.4.8")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/astyle/astyle/astyle%20"
                            version "/astyle_"  version "_linux.tar.gz"))
        (sha256
-        (base32
-         "1ms54wcs7hg1bsywqwf2lhdfizgbk7qxc9ghasxk8i99jvwlrk6b"))))
+        (base32 "1ms54wcs7hg1bsywqwf2lhdfizgbk7qxc9ghasxk8i99jvwlrk6b"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ;no tests
-       #:make-flags (list (string-append "prefix=" %output)
-                          "INSTALL=install"
-                          "all")
-       #:modules ((guix build gnu-build-system) ;; FIXME use %default-modules
+     (list
+      #:tests? #f                       ;no tests
+      #:make-flags
+      #~(list (string-append "prefix=" #$output)
+              "INSTALL=install"
+              "release" "shared")
+      #:modules '((guix build gnu-build-system) ;FIXME use %default-modules
                   (guix build utils)
                   (ice-9 regex))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda _ (chdir "build/gcc") #t))
-         (add-after 'install 'install-libs
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Libraries and includes are not installed by default
-             (let* ((output (assoc-ref outputs "out"))
-                    (incdir (string-append output "/include"))
-                    (libdir (string-append output "/lib")))
-               (define (make-so-link sofile strip-pattern)
-                 (symlink
-                  (basename sofile)
-                  (regexp-substitute #f
-                                     (string-match strip-pattern sofile)
-                                     'pre)))
-               (mkdir-p incdir)
-               (copy-file "../../src/astyle.h"
-                          (string-append incdir "/astyle.h"))
-               (mkdir-p libdir)
-               (for-each (lambda (l)
-                           (copy-file
-                            l (string-append libdir "/" (basename l))))
-                         (find-files "bin" "lib*"))
-               (for-each
-                (lambda (sofile)
-                  (make-so-link sofile "(\\.[0-9]){3}$")  ;; link .so
-                  (make-so-link sofile "(\\.[0-9]){2}$")) ;; link .so.3
-                (find-files libdir "lib.*\\.so\\..*")))
-             #t)))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (chdir "build/gcc")))
+          (add-after 'install 'install-more
+            (lambda* (#:key outputs #:allow-other-keys)
+              ;; Libraries and headers aren't installed by default.
+              (let ((include (string-append #$output "/include"))
+                    (lib     (string-append #$output "/lib")))
+                (define (link.so file strip-pattern)
+                  (symlink
+                   (basename file)
+                   (regexp-substitute #f
+                                      (string-match strip-pattern file)
+                                      'pre)))
+                (mkdir-p include)
+                (copy-file "../../src/astyle.h"
+                           (string-append include "/astyle.h"))
+                (mkdir-p lib)
+                (for-each (lambda (l)
+                            (copy-file
+                             l (string-append lib "/" (basename l))))
+                          (find-files "bin" "^lib.*\\.so"))
+                (for-each
+                 (lambda (file)
+                   (link.so file "(\\.[0-9]+){3}$")  ;.so
+                   (link.so file "(\\.[0-9]+){2}$")) ;.so.3
+                 (find-files lib "lib.*\\.so\\..*"))))))))
     (home-page "https://astyle.sourceforge.net/")
     (synopsis "Source code indenter, formatter, and beautifier")
     (description

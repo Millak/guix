@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2015, 2018-2019, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -20,6 +20,7 @@
 
 (define-module (tests builders)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix build-system)
   #:use-module (guix build-system gnu)
   #:use-module (guix build gnu-build-system)
@@ -31,9 +32,12 @@
   #:use-module (guix base32)
   #:use-module (guix derivations)
   #:use-module (gcrypt hash)
+  #:use-module ((guix hash) #:select (file-hash*))
   #:use-module (guix tests)
+  #:use-module (guix tests git)
   #:use-module (guix packages)
   #:use-module (gnu packages bootstrap)
+  #:use-module ((ice-9 ftw) #:select (scandir))
   #:use-module (ice-9 match)
   #:use-module (ice-9 textual-ports)
   #:use-module (srfi srfi-1)
@@ -83,6 +87,29 @@
                            'sha256 hash)))
     (and (file-exists? out)
          (valid-path? %store out))))
+
+(test-equal "git-fetch, file URI"
+  '("." ".." "a.txt" "b.scm")
+  (let ((nonce (random-text)))
+    (with-temporary-git-repository directory
+        `((add "a.txt" ,nonce)
+          (add "b.scm" "#t")
+          (commit "Commit.")
+          (tag "v1.0.0" "The tag."))
+      (run-with-store %store
+        (mlet* %store-monad ((hash
+                              -> (file-hash* directory
+                                             #:algorithm (hash-algorithm sha256)
+                                             #:recursive? #t))
+                             (drv (git-fetch
+                                   (git-reference
+                                    (url (string-append "file://" directory))
+                                    (commit "v1.0.0"))
+                                   'sha256 hash
+                                   "git-fetch-test")))
+          (mbegin %store-monad
+            (built-derivations (list drv))
+            (return (scandir (derivation->output-path drv)))))))))
 
 (test-assert "gnu-build-system"
   (build-system? gnu-build-system))

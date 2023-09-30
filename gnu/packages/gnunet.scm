@@ -409,14 +409,14 @@ services.")
                       "faketime -m -f '1970-01-01 00:00:00' $(TEXMACS_CONVERT)")))))))
     (inputs (list guile-3.0)) ;for pkg-config
     (propagated-inputs (list guile-bytestructures guile-gcrypt guile-pfds
-                             guile-fibers-1.3))
+                             guile-fibers))
     (native-inputs (list guile-3.0 ;as a compiler
                          ;; for cross-compilation, the guile inputs need to be
                          ;; native-inputs as well.
                          guile-bytestructures
                          guile-gcrypt
                          guile-pfds
-                         guile-fibers-1.3
+                         guile-fibers
                          libfaketime
                          automake
                          autoconf

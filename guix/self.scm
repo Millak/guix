@@ -69,6 +69,7 @@
       ("gzip"               . ,(ref 'compression 'gzip))
       ("bzip2"              . ,(ref 'compression 'bzip2))
       ("xz"                 . ,(ref 'compression 'xz))
+      ("git-minimal"        . ,(ref 'version-control 'git-minimal))
       ("po4a"               . ,(ref 'gettext 'po4a))
       ("gettext-minimal"    . ,(ref 'gettext 'gettext-minimal))
       ("gcc-toolchain"      . ,(ref 'commencement 'gcc-toolchain))
@@ -826,6 +827,9 @@ itself."
   (define guile-lzma
     (specification->package "guile-lzma"))
 
+  (define git
+    (specification->package "git-minimal"))
+
   (define dependencies
     (append-map transitive-package-dependencies
                 (list guile-gcrypt guile-gnutls guile-git guile-avahi
@@ -999,6 +1003,7 @@ itself."
                     => ,(make-config.scm #:gzip gzip
                                          #:bzip2 bzip2
                                          #:xz xz
+                                         #:git git
                                          #:package-name
                                          %guix-package-name
                                          #:package-version
@@ -1104,7 +1109,7 @@ itself."
     (%storedir . "/gnu/store")
     (%sysconfdir . "/etc")))
 
-(define* (make-config.scm #:key gzip xz bzip2
+(define* (make-config.scm #:key gzip xz bzip2 git
                           (package-name "GNU Guix")
                           (package-version "0")
                           (channel-metadata #f)
@@ -1134,6 +1139,7 @@ itself."
                                %state-directory
                                %store-database-directory
                                %config-directory
+                               %git
                                %gzip
                                %bzip2
                                %xz))
@@ -1176,6 +1182,8 @@ itself."
                      ;; information is used by (guix describe).
                      '#$channel-metadata)
 
+                   (define %git
+                     #+(and git (file-append git "/bin/git")))
                    (define %gzip
                      #+(and gzip (file-append gzip "/bin/gzip")))
                    (define %bzip2

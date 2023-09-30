@@ -783,6 +783,28 @@ It also includes runtime support libraries for these languages.")
        ("x86_64" ,@%gcc-12-x86_64-micro-architectures))
       ,@(package-properties gcc-11)))))
 
+(define-public gcc-13
+  (package
+    (inherit gcc-11)
+    (version "13.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/gcc/gcc-"
+                                  version "/gcc-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1nj3qyswcgc650sl3h0480a171ixp33ca13zl90p61m689jffxg2"))
+              (patches (search-patches "gcc-12-strmov-store-file-names.patch"
+                                       "gcc-5.0-libvtv-runpath.patch"))
+              (modules '((guix build utils)))
+              (snippet gcc-canadian-cross-objdump-snippet)))
+    (properties
+     `((compiler-cpu-architectures
+        ("aarch64" ,@%gcc-13-aarch64-micro-architectures)
+        ("armhf" ,@%gcc-13-armhf-micro-architectures)
+        ("x86_64" ,@%gcc-13-x86_64-micro-architectures))
+       ,@(package-properties gcc-11)))))
+
 
 ;; Note: When changing the default gcc version, update
 ;;       the gcc-toolchain-* definitions.

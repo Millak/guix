@@ -177,7 +177,7 @@ used in the Raspberry Pi")
                #t))))))
     (native-inputs
      `(("binutils" ,(cross-binutils "arm-none-eabi"))
-       ("gcc" ,gcc-arm-none-eabi-6)))
+       ("gcc" ,(make-gcc-arm-none-eabi-6))))
     (inputs
      `())
     (synopsis "Raspberry Pi ARM bootloader")

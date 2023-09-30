@@ -355,6 +355,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/java-compression.scm		\
   %D%/packages/java-graphics.scm		\
   %D%/packages/java-maths.scm			\
+  %D%/packages/java-rdf.scm			\
   %D%/packages/java-xml.scm			\
   %D%/packages/javascript.scm			\
   %D%/packages/jemalloc.scm			\
@@ -1176,6 +1177,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/freedink-engine-fix-sdl-hints.patch	\
   %D%/packages/patches/freeimage-libtiff-compat.patch		\
   %D%/packages/patches/freeimage-unbundle.patch		\
+  %D%/packages/patches/fulcrum-1.9.1-unbundled-libraries.patch	\
   %D%/packages/patches/fuse-glibc-2.34.patch			\
   %D%/packages/patches/fuse-overlapping-headers.patch		\
   %D%/packages/patches/fuzzylite-relative-path-in-tests.patch	\
@@ -1408,6 +1410,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/hwloc-1-test-btrfs.patch			\
   %D%/packages/patches/i7z-gcc-10.patch				\
   %D%/packages/patches/icecat-makeicecat.patch			\
+  %D%/packages/patches/icecat-102-makeicecat.patch		\
   %D%/packages/patches/icecat-avoid-bundled-libraries.patch	\
   %D%/packages/patches/icecat-use-system-graphite2+harfbuzz.patch	\
   %D%/packages/patches/icecat-use-system-media-libs.patch	\
@@ -1481,6 +1484,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/kio-search-smbd-on-PATH.patch		\
   %D%/packages/patches/kismet-unbundle-boost.patch		\
   %D%/packages/patches/kitty-fix-wayland-protocols.patch	\
+  %D%/packages/patches/kiwix-desktop-newer-libkiwix.patch	\
   %D%/packages/patches/kmod-module-directory.patch		\
   %D%/packages/patches/kmscon-runtime-keymap-switch.patch	\
   %D%/packages/patches/kobodeluxe-paths.patch			\
@@ -1562,6 +1566,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/libutils-remove-damaging-includes.patch	\
   %D%/packages/patches/libvdpau-va-gl-unbundle.patch		\
   %D%/packages/patches/libvpx-CVE-2016-2818.patch		\
+  %D%/packages/patches/libvpx-CVE-2023-5217.patch		\
   %D%/packages/patches/libxml2-xpath0-Add-option-xpath0.patch	\
   %D%/packages/patches/libwpd-gcc-compat.patch			\
   %D%/packages/patches/libxslt-generated-ids.patch		\
@@ -2122,6 +2127,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/wpa-supplicant-dbus-group-policy.patch		\
   %D%/packages/patches/x265-arm-flags.patch			\
   %D%/packages/patches/xdg-desktop-portal-wlr-harcoded-length.patch\
+  %D%/packages/patches/xen-docs-use-predictable-ordering.patch	\
+  %D%/packages/patches/xen-remove-config.gz-timestamp.patch	\
   %D%/packages/patches/xf86-video-ark-remove-mibstore.patch	\
   %D%/packages/patches/xf86-video-nouveau-fixup-ABI.patch	\
   %D%/packages/patches/xf86-video-savage-xorg-compat.patch 	\
@@ -2135,8 +2142,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/xplanet-1.3.1-libdisplay_DisplayOutput.cpp.patch	\
   %D%/packages/patches/xplanet-1.3.1-libimage_gif.c.patch	\
   %D%/packages/patches/xplanet-1.3.1-xpUtil-Add2017LeapSecond.cpp.patch	\
-  %D%/packages/patches/xpra-4.2-systemd-run.patch		\
-  %D%/packages/patches/xpra-4.2-install_libs.patch		\
+  %D%/packages/patches/xpra-5.0-systemd-run.patch		\
+  %D%/packages/patches/xpra-5.0-install_libs.patch		\
   %D%/packages/patches/xsane-fix-memory-leak.patch		\
   %D%/packages/patches/xsane-fix-pdf-floats.patch		\
   %D%/packages/patches/xsane-fix-snprintf-buffer-length.patch	\

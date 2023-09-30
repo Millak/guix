@@ -17,6 +17,7 @@
 ;;; Copyright © 2022 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2022 Jacob Hart <hartja1@yahoo.com>
 ;;; Copyright © 2022 Simon Streit <simon@netpanic.org>
+;;; Copyright © 2023 Clément Lassieur <clement@lassieur.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -127,7 +128,7 @@
                 (lambda (dir)
                   (rename-file (string-append #$output "/share/" dir)
                                (string-append #$output:gui "/share/" dir)))
-                '("applications" "icons" "metainfo" "transmission"))
+                '("applications" "icons" "metainfo"))
               (rename-file
                (string-append #$output "/share/man/man1/transmission-gtk.1")
                (string-append #$output:gui "/share/man/man1/transmission-gtk.1"))))
@@ -135,7 +136,14 @@
              (lambda* (#:key outputs #:allow-other-keys #:rest args)
                (apply (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)
                       #:glib-or-gtk-wrap-excluded-outputs (list "out")
-                      args))))))
+                      args)))
+           (add-after 'glib-or-gtk-wrap 'wrap-program
+             (lambda* (#:key outputs #:allow-other-keys)
+               (wrap-program (string-append #$output:gui "/bin/transmission-gtk")
+                 ;; Wrapping GDK_PIXBUF_MODULE_FILE allows Transmission to load
+                 ;; its own icons in pure environments.
+                 `("GDK_PIXBUF_MODULE_FILE" =
+                   (,(getenv "GDK_PIXBUF_MODULE_FILE")))))))))
     (inputs (list curl
                   (list glib "bin")
                   gtkmm
@@ -452,7 +460,7 @@ desktops.")
 (define-public qbittorrent
   (package
     (name "qbittorrent")
-    (version "4.5.4")
+    (version "4.5.5")
     (source
      (origin
        (method git-fetch)
@@ -461,7 +469,7 @@ desktops.")
              (commit (string-append "release-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1r4vqlwmvg7b0ibq53m7ascyykv3v66qxlwfi0zmmi1ig7rlkxkk"))))
+        (base32 "1ngvvwhafi9mi05r2l9dk9x05za8x35y12p230wpzprydhlgwsxd"))))
     (build-system qt-build-system)
     (arguments
      (list #:configure-flags #~(list "-DTESTING=ON")
@@ -486,11 +494,11 @@ qBittorrent is fast, stable and provides unicode support as well as many
 features.")
     (license l:gpl2+)))
 
-(define-public qbittorrent-nox
+(define-public qbittorrent-no-x
   (let ((base qbittorrent))
     (package
       (inherit base)
-      (name "qbittorrent-nox")
+      (name "qbittorrent-no-x")
       (arguments
        (substitute-keyword-arguments (package-arguments base)
          ((#:configure-flags configure-flags)
@@ -499,11 +507,14 @@ features.")
        (modify-inputs (package-inputs base)
          (delete "qtsvg-5"))))))
 
+(define-public qbittorrent-nox
+  (deprecated-package "qbittorrent-nox" qbittorrent-no-x))
+
 (define-public qbittorrent-enhanced
   (package
     (inherit qbittorrent)
     (name "qbittorrent-enhanced")
-    (version "4.5.4.10")
+    (version "4.5.5.10")
     (source
      (origin
        (method git-fetch)
@@ -513,7 +524,7 @@ features.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0qwk69mgcyh7fij4nsi4ndd17aa61p2c6cxn9l402w4cf1dy6hfs"))))
+         "029crx8yd8apssg2k4alnc0py5i2sp3bhjkwki5fvvnpgkrhfqf0"))))
     (home-page "https://github.com/c0re100/qBittorrent-Enhanced-Edition")
     (description
      "qBittorrent Enhanced is a bittorrent client based on qBittorrent with

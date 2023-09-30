@@ -24,7 +24,6 @@
   #:use-module (guix import git)
   #:use-module (guix git-download)
   #:use-module (guix tests git)
-  #:use-module (guix build utils)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-64))
 
@@ -46,7 +45,6 @@
         (base32
          "0000000000000000000000000000000000000000000000000000"))))))
 
-(unless (which (git-command)) (test-skip 1))
 (test-equal "latest-git-tag-version: no custom prefix, suffix, and delimiter"
   "1.0.1"
   (with-temporary-git-repository directory
@@ -56,7 +54,6 @@
     (let ((package (make-package directory "1.0.0")))
       (latest-git-tag-version package))))
 
-(unless (which (git-command)) (test-skip 1))
 (test-equal "latest-git-tag-version: custom prefix, no suffix and delimiter"
   "1.0.1"
   (with-temporary-git-repository directory
@@ -67,7 +64,6 @@
                                  '((release-tag-prefix . "prefix-")))))
       (latest-git-tag-version package))))
 
-(unless (which (git-command)) (test-skip 1))
 (test-equal "latest-git-tag-version: custom suffix, no prefix and delimiter"
   "1.0.1"
   (with-temporary-git-repository directory
@@ -78,7 +74,6 @@
                                  '((release-tag-suffix . "-suffix-[0-9]*")))))
       (latest-git-tag-version package))))
 
-(unless (which (git-command)) (test-skip 1))
 (test-equal "latest-git-tag-version: custom delimiter, no prefix and suffix"
   "2021.09.07"
   (with-temporary-git-repository directory
@@ -89,7 +84,6 @@
                                  '((release-tag-version-delimiter . "-")))))
       (latest-git-tag-version package))))
 
-(unless (which (git-command)) (test-skip 1))
 (test-equal "latest-git-tag-version: empty delimiter, no prefix and suffix"
   "20210907"
   (with-temporary-git-repository directory
@@ -100,7 +94,6 @@
                                  '((release-tag-version-delimiter . "")))))
       (latest-git-tag-version package))))
 
-(unless (which (git-command)) (test-skip 1))
 (test-equal "latest-git-tag-version: custom prefix and suffix, no delimiter"
   "2.0.0"
   (with-temporary-git-repository directory
@@ -112,7 +105,6 @@
                                    (release-tag-suffix . "suffix-[0-9]")))))
       (latest-git-tag-version package))))
 
-(unless (which (git-command)) (test-skip 1))
 (test-equal "latest-git-tag-version: custom prefix, suffix, and delimiter"
   "2.0.0"
   (with-temporary-git-repository directory
@@ -125,7 +117,6 @@
                                    (release-tag-version-delimiter . "_")))))
       (latest-git-tag-version package))))
 
-(unless (which (git-command)) (test-skip 1))
 (test-equal "latest-git-tag-version: only pre-releases available"
   #f
   (with-temporary-git-repository directory
@@ -135,7 +126,6 @@
     (let ((package (make-package directory "1.0.0")))
       (latest-git-tag-version package))))
 
-(unless (which (git-command)) (test-skip 1))
 (test-equal "latest-git-tag-version: accept pre-releases"
   "2.0.0-rc1"
   (with-temporary-git-repository directory
@@ -146,7 +136,6 @@
                                  '((accept-pre-releases? . #t)))))
       (latest-git-tag-version package))))
 
-(unless (which (git-command)) (test-skip 1))
 (test-equal "latest-git-tag-version: accept pre-releases, and custom prefix"
   "2.0.0-rc1"
   (with-temporary-git-repository directory
@@ -158,7 +147,6 @@
                                    (release-tag-prefix . "version-")))))
       (latest-git-tag-version package))))
 
-(unless (which (git-command)) (test-skip 1))
 (test-equal "latest-git-tag-version: accept pre-releases, and custom suffix"
   "2.0.0-rc1"
   (with-temporary-git-repository directory
@@ -170,7 +158,6 @@
                                    (release-tag-suffix . "-suffix")))))
       (latest-git-tag-version package))))
 
-(unless (which (git-command)) (test-skip 1))
 (test-equal "latest-git-tag-version: accept pre-releases, delimiter conflicts with pre-release part"
   "2.0.0_alpha"
   (with-temporary-git-repository directory
@@ -182,7 +169,6 @@
                                    (release-tag-version-delimiter . "_")))))
       (latest-git-tag-version package))))
 
-(unless (which (git-command)) (test-skip 1))
 (test-equal "latest-git-tag-version: accept pre-releases, and custom suffix and prefix"
   "2.0.0-alpha"
   (with-temporary-git-repository directory
@@ -195,7 +181,6 @@
                                    (release-tag-suffix . "-suffix")))))
       (latest-git-tag-version package))))
 
-(unless (which (git-command)) (test-skip 1))
 (test-equal "latest-git-tag-version: accept pre-releases, and custom suffix, prefix, and delimiter"
   "2.0.0-alpha"
   (with-temporary-git-repository directory
@@ -209,7 +194,6 @@
                                    (release-tag-version-delimiter . "-")))))
       (latest-git-tag-version package))))
 
-(unless (which (git-command)) (test-skip 1))
 (test-equal "latest-git-tag-version: accept pre-releases, no delimiter, and custom suffix, prefix"
   "2alpha"
   (with-temporary-git-repository directory
@@ -223,7 +207,6 @@
                                    (release-tag-version-delimiter . "")))))
       (latest-git-tag-version package))))
 
-(unless (which (git-command)) (test-skip 1))
 (test-equal "latest-git-tag-version: no tags found"
   #f
   (with-temporary-git-repository directory
@@ -232,7 +215,6 @@
     (let ((package (make-package directory "1.0.0")))
       (latest-git-tag-version package))))
 
-(unless (which (git-command)) (test-skip 1))
 (test-equal "latest-git-tag-version: no valid tags found"
   #f
   (with-temporary-git-repository directory

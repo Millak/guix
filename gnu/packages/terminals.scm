@@ -414,14 +414,14 @@ combining, and so on, with a simple interface.")
 (define-public mlterm
   (package
     (name "mlterm")
-    (version "3.9.2")
+    (version "3.9.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/mlterm/01release/mlterm-"
                            version "/mlterm-" version ".tar.gz"))
        (sha256
-        (base32 "0br1sdpxw3r7qv814b3qjb8mpigljr9wd5c5422ah76f09zh0h5r"))))
+        (base32 "1nah3fn055njwpr2nfl8zkr5r02n89mxxdxgcjyk9q8x74hngdxm"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
@@ -1487,7 +1487,7 @@ terminal are replicated to the others.
 (define-public tio
   (package
     (name "tio")
-    (version "2.5")
+    (version "2.7")
     (source
      (origin
        (method url-fetch)
@@ -1495,7 +1495,7 @@ terminal are replicated to the others.
              "https://github.com/tio/tio/releases/download/v"
              version "/tio-" version ".tar.xz"))
        (sha256
-        (base32 "19s41i8f3kxchlaibp7wkq8gqgbpfdn0srkf1wcfx357j3p54f86"))))
+        (base32 "19fswmyiwlify269h6nwdlbnhq4q7i8442xg81jinb4chhsf93xz"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config))
     (inputs (list libinih))

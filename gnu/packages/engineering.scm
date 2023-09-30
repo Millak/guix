@@ -1487,7 +1487,7 @@ replacement for the OpenDWG libraries.")
 (define-public minicom
   (package
     (name "minicom")
-    (version "2.8")
+    (version "2.9")
     (source
      (origin
        (method git-fetch)
@@ -1495,31 +1495,28 @@ replacement for the OpenDWG libraries.")
              (url "https://salsa.debian.org/minicom-team/minicom.git")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "0kfihxbh9qkjk9m1932ajyqx384c2aj3d9yaphh3i9i7y1shxlpx"))
+        (base32 "18k0hiljsiq80x93c3qrd1cmcjjvsk1ymin03vncjp1v35xn8248"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--enable-lock-dir=/var/lock")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'make-git-checkout-writable
-           (lambda _
-             (for-each make-file-writable (find-files "."))))
-         (replace 'bootstrap
-           ;; autogen.sh needlessly hard-codes aclocal-1.14.
-           (lambda _
-             (invoke "autoreconf" "-vif")
-             #t))
-         (add-before 'configure 'patch-lock-check
-           (lambda _
-             (substitute* "configure"
-               (("test -d [$]UUCPLOCK") "true"))
-             #t)))))
+     (list
+      #:configure-flags
+      #~(list "--enable-lock-dir=/var/lock")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'make-git-checkout-writable
+            (lambda _
+              (for-each make-file-writable (find-files "."))))
+          (replace 'bootstrap
+            ;; autogen.sh needlessly hard-codes aclocal-1.14.
+            (lambda _
+              (invoke "autoreconf" "-vif")))
+          (add-before 'configure 'patch-lock-check
+            (lambda _
+              (substitute* "configure"
+                (("test -d [$]UUCPLOCK") "true")))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf-2.71 automake gettext-minimal pkg-config))
     (inputs
      (list ncurses))
     (home-page "https://salsa.debian.org/minicom-team/minicom")
@@ -1801,7 +1798,7 @@ analyzer (FFT) and frequency sweep plot.")
 (define-public capstone
   (package
     (name "capstone")
-    (version "4.0.2")
+    (version "5.0.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1810,7 +1807,7 @@ analyzer (FFT) and frequency sweep plot.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0y5g74yjyliciawpn16zhdwya7bd3d7b1cccpcccc2wg8vni1k2w"))))
+                "1j4a6w8p3z5qrkzf0h5aklrnlpvscv6nlq7d3abbpxlyqvk8pach"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f
@@ -4235,7 +4232,7 @@ form, numpad.
 (define-public rizin
   (package
     (name "rizin")
-    (version "0.6.1")
+    (version "0.6.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4243,7 +4240,7 @@ form, numpad.
                     version "/rizin-src-v" version ".tar.xz"))
               (sha256
                (base32
-                "14bcmjx64pgi9zj4zb7yppx69l1ykjwgf2q41s5672m7z354f1kn"))))
+                "0szq3wr7i7gwm8llgbhssjb63q70rjqqdlj6078vs110waih16p2"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -4279,9 +4276,18 @@ form, numpad.
                 (("'hash',\n") "")))))))
     (native-inputs (list pkg-config))
     (inputs
-     (list capstone file libuv libzip lz4 openssl tree-sitter xxhash zlib libmspack))
+     (list capstone
+           file
+           libuv
+           libzip
+           lz4
+           openssl
+           tree-sitter
+           xxhash
+           zlib
+           libmspack))
     (home-page "https://rizin.re")
-    (synopsis "Disasm, debug, analyze and manipulate binary files")
+    (synopsis "Disassemble, debug, analyze, and manipulate binary files")
     (description
      "Rizin is a reverse engineering framework and a set of small command-line
 utilities, providing a complete binary analysis experience with features like

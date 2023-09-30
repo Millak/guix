@@ -1625,14 +1625,14 @@ system, written in the Mercury language.")
 (define-public muchsync
   (package
     (name "muchsync")
-    (version "6")
+    (version "7")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://www.muchsync.org/src/"
-                           "muchsync-" version ".tar.gz"))
+       (uri (string-append "https://www.muchsync.org/src/" "muchsync-"
+                           version ".tar.gz"))
        (sha256
-        (base32 "1s799kx16nm5ry1fcqcc0grgxrwnnp4cnzd0hzwbkvc5v2sf6g8b"))))
+        (base32 "1b5ylf0xgb59x6hna5gllm6nb1jn50wqvp7xfls83x0frmpjygpq"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pandoc pkg-config))
@@ -3171,14 +3171,14 @@ from the Cyrus IMAP project.")
 (define-public opensmtpd
   (package
     (name "opensmtpd")
-    (version "7.3.0p1")
+    (version "7.3.0p2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.opensmtpd.org/archives/"
                            "opensmtpd-" version ".tar.gz"))
        (sha256
-        (base32 "01ss6j1jadnd3ckgf9zpvrbdpipkf7m4l3isribqfwy2l50wsihv"))))
+        (base32 "0kjs5cxbh9lq51b8p20hxmiah61cfm8yzkcwpw9005cdp72zpkgw"))))
     (build-system gnu-build-system)
     (inputs
      (list bdb

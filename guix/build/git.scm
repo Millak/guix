@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2016, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014, 2016, 2019, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -18,9 +18,12 @@
 
 (define-module (guix build git)
   #:use-module (guix build utils)
+  #:autoload   (guix build download-nar) (download-nar)
+  #:autoload   (guix swh) (%verify-swh-certificate? swh-download)
   #:use-module (srfi srfi-34)
   #:use-module (ice-9 format)
-  #:export (git-fetch))
+  #:export (git-fetch
+            git-fetch-with-fallback))
 
 ;;; Commentary:
 ;;;
@@ -75,5 +78,42 @@ recursively.  Return #t on success, #f otherwise."
       ;; directory needs to be taken out.
       (delete-file-recursively ".git")
       #t)))
+
+
+(define* (git-fetch-with-fallback url commit directory
+                                  #:key (git-command "git") recursive?)
+  "Like 'git-fetch', fetch COMMIT from URL into DIRECTORY, but fall back to
+alternative methods when fetching from URL fails: attempt to download a nar,
+and if that also fails, download from the Software Heritage archive."
+  (or (git-fetch url commit directory
+                 #:recursive? recursive?
+                 #:git-command git-command)
+      (download-nar directory)
+
+      ;; As a last resort, attempt to download from Software Heritage.
+      ;; Disable X.509 certificate verification to avoid depending
+      ;; on nss-certs--we're authenticating the checkout anyway.
+      ;; XXX: Currently recursive checkouts are not supported.
+      (and (not recursive?)
+           (parameterize ((%verify-swh-certificate? #f))
+             (format (current-error-port)
+                     "Trying to download from Software Heritage...~%")
+
+             (swh-download url commit directory)
+             (when (file-exists?
+                    (string-append directory "/.gitattributes"))
+               ;; Perform CR/LF conversion and other changes
+               ;; specificied by '.gitattributes'.
+               (invoke git-command "-C" directory "init")
+               (invoke git-command "-C" directory "config" "--local"
+                       "user.email" "you@example.org")
+               (invoke git-command "-C" directory "config" "--local"
+                       "user.name" "Your Name")
+               (invoke git-command "-C" directory "add" ".")
+               (invoke git-command "-C" directory "commit" "-am" "init")
+               (invoke git-command "-C" directory "read-tree" "--empty")
+               (invoke git-command "-C" directory "reset" "--hard")
+               (delete-file-recursively
+                (string-append directory "/.git")))))))
 
 ;;; git.scm ends here

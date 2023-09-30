@@ -1765,23 +1765,22 @@ PNG, and performs PNG integrity checks and corrections.")
 (define-public imgp
   (package
     (name "imgp")
-    (version "2.8")
+    (version "2.9")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "imgp" version))
        (sha256
-        (base32 "0q99h9wv9rynig0s0flnr9mxi541zzl0gw8vh4y6m5x132diilri"))))
+        (base32 "0avdgr4fx643jg9wzwm65y14s56bnrn3hmkw7v0mcyvxn88vxwiq"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f ;there are no tests
+     `(#:tests? #f                      ;there are no tests
        #:phases
        (modify-phases %standard-phases
          ;; setup.py expects the file to be named 'imgp'.
          (add-after 'unpack 'rename-imgp
            (lambda _
-             (rename-file "imgp.py" "imgp")
-             #t)))))
+             (rename-file "imgp.py" "imgp"))))))
     (inputs
      (list python-pillow))
     (home-page "https://github.com/jarun/imgp")
