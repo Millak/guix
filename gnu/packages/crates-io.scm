@@ -56869,7 +56869,24 @@ rustc compiler.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0gb12rp992bh2h5msqcbpdsx6h1gslsb0zpp5hdnyxj2hnfp5y5c"))))
+                "0gb12rp992bh2h5msqcbpdsx6h1gslsb0zpp5hdnyxj2hnfp5y5c"))
+              (snippet
+               #~(begin
+                   (use-modules (guix build utils))
+                   (for-each delete-file (find-files "." "\\.a$"))
+                   (delete-file "Cargo.toml")
+                   (substitute* "Cargo.toml.orig"
+                     ;; Depend unconditionally on the cc crate
+                     (("(cc = .*), optional = true.*" _ cc)
+                      (string-append cc " }\n"))
+                     ;; Disable using the linux_raw backend
+                     (("not\\(rustic_use_libc\\)") "miri"))
+                   (substitute* "build.rs"
+                     ;; Always use the 'feature = "cc"' path
+                     (("not\\(feature = \"cc\"\\)") "feature = \"foobar\"")
+                     (("#\\[cfg\\(feature = \"cc\"\\)\\]" all)
+                      (string-append "//" all)))
+                   (copy-file "Cargo.toml.orig" "Cargo.toml")))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -56908,6 +56925,7 @@ rustc compiler.")
     (name "rust-rustix")
     (version "0.36.13")
     (source (origin
+              (inherit (package-source rust-rustix-0.37))
               (method url-fetch)
               (uri (crate-uri "rustix" version))
               (file-name (string-append name "-" version ".tar.gz"))
@@ -56945,6 +56963,7 @@ rustc compiler.")
     (name "rust-rustix")
     (version "0.35.13")
     (source (origin
+              (inherit (package-source rust-rustix-0.36))
               (method url-fetch)
               (uri (crate-uri "rustix" version))
               (file-name (string-append name "-" version ".tar.gz"))
