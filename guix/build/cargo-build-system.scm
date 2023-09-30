@@ -111,6 +111,13 @@ Cargo.toml file present at its root."
 (define (rust-package? name)
   (string-prefix? "rust-" name))
 
+(define* (check-for-pregenerated-files #:rest _)
+  "Check the source code for files which are known to generally be bundled
+libraries or executables."
+  (let ((pregenerated-files (find-files "." "\\.(a|dll|exe|lib)$")))
+    (when (not (null-list? pregenerated-files))
+      (error "Possible pre-generated files found:" pregenerated-files))))
+
 (define* (configure #:key inputs
                     (vendor-dir "guix-vendor")
                     #:allow-other-keys)
@@ -285,7 +292,8 @@ directory = '" port)
     (replace 'check check)
     (replace 'install install)
     (add-after 'build 'package package)
-    (add-after 'unpack 'unpack-rust-crates unpack-rust-crates)
+    (add-after 'unpack 'check-for-pregenerated-files check-for-pregenerated-files)
+    (add-after 'check-for-pregenerated-files 'unpack-rust-crates unpack-rust-crates)
     (add-after 'patch-generated-file-shebangs 'patch-cargo-checksums patch-cargo-checksums)))
 
 (define* (cargo-build #:key inputs (phases %standard-phases)
