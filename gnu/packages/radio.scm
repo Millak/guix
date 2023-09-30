@@ -2588,6 +2588,7 @@ voice formats.")
            airspyhf
            alsa-lib
            aptdec
+           bladerf
            boost
            cm256cc
            codec2
