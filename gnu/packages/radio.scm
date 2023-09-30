@@ -2940,7 +2940,9 @@ of devices than RTL-SDR.")
            python-pytest
            xorg-server-for-tests))
     (inputs
-     (list gnuradio
+     (list airspy
+           bladerf
+           gnuradio
            gr-osmosdr
            hackrf
            python-numpy
