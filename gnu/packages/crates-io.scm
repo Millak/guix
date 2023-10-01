@@ -46580,6 +46580,24 @@ Format (MCF).")
      "Implementation detail of the paste crate.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-paste-test-suite-0.0.0
+  (package
+    (name "rust-paste-test-suite")
+    (version "0.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "paste-test-suite" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0mllghv41sz978ymxym8nm6yh1qljshsbjk6iaycbk6zlw7gqagh"))))
+    (build-system cargo-build-system)
+    (arguments `(#:skip-build? #t)) ; Not meant to be used individually.
+    (home-page "https://github.com/dtolnay/paste")
+    (synopsis "Test suite of the paste crate")
+    (description "Test suite of the paste crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-path-abs-0.5
   (package
     (name "rust-path-abs")
