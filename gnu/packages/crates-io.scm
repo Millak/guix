@@ -34205,7 +34205,7 @@ JSON-RPC 2.0 specification.")
 (define-public rust-js-sys-0.3
   (package
     (name "rust-js-sys")
-    (version "0.3.61")
+    (version "0.3.64")
     (source
      (origin
        (method url-fetch)
@@ -34213,12 +34213,12 @@ JSON-RPC 2.0 specification.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0c075apyc5fxp2sbgr87qcvq53pcjxmp05l47lzlhpn5a0hxwpa4"))
+        (base32 "0nlkiwpm8dyqcf1xyc6qmrankcgdd3fpzc0qyfq2sw3z97z9bwf5"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           (substitute* "Cargo.toml"
-             (("=0\\.3\\.34") "^0.3.34"))))))
+        '(begin (substitute* "Cargo.toml"
+                  (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
