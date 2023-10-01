@@ -17830,7 +17830,7 @@ attributes.")
 (define-public rust-cxx-1
   (package
     (name "rust-cxx")
-    (version "1.0.86")
+    (version "1.0.107")
     (source
       (origin
         (method url-fetch)
@@ -17839,7 +17839,7 @@ attributes.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0yc5gz723hiwqk7waygj63655fh5vzq3551p1j2wyzc06xf0glai"))))
+          "1gpz9si4nn236rqbmrsxd0dl4ksdfwrf1rdyncyznmlxg2hqpsdv"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; Cannot compile cxx-test-suite.
