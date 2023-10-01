@@ -59976,8 +59976,40 @@ macOS and iOS.")
        (("rust-core-foundation-sys" ,rust-core-foundation-sys-0.2)
         ("rust-libc" ,rust-libc-0.2))))))
 
+(define-public rust-selectors-0.24
+  (package
+    (name "rust-selectors")
+    (version "0.24.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "selectors" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05il06smqbhf7p18fawm5fd0pmdkysvmyih455lh17cnh20mfdqc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-cssparser" ,rust-cssparser-0.29)
+        ("rust-derive-more" ,rust-derive-more-0.99)
+        ("rust-fxhash" ,rust-fxhash-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-phf" ,rust-phf-0.8)
+        ("rust-phf-codegen" ,rust-phf-codegen-0.8)
+        ("rust-precomputed-hash" ,rust-precomputed-hash-0.1)
+        ("rust-servo-arc" ,rust-servo-arc-0.2)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-to-shmem" ,rust-to-shmem-0.0.0)
+        ("rust-to-shmem-derive" ,rust-to-shmem-derive-0.0.0))))
+    (home-page "https://github.com/servo/servo")
+    (synopsis "CSS Selectors matching for Rust")
+    (description "This package provides CSS Selectors matching for Rust.")
+    (license license:mpl2.0)))
+
 (define-public rust-selectors-0.23
   (package
+    (inherit rust-selectors-0.24)
     (name "rust-selectors")
     (version "0.23.0")
     (source
@@ -59988,7 +60020,6 @@ macOS and iOS.")
         (sha256
          (base32
           "17w7slv2bkksvbq6pggx3db23vh1g022hxv06smilwmyhv38gspx"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
@@ -60000,11 +60031,7 @@ macOS and iOS.")
         ("rust-phf-codegen" ,rust-phf-codegen-0.8)
         ("rust-precomputed-hash" ,rust-precomputed-hash-0.1)
         ("rust-servo-arc" ,rust-servo-arc-0.1)
-        ("rust-smallvec" ,rust-smallvec-1))))
-    (home-page "https://github.com/servo/servo")
-    (synopsis "CSS Selectors matching for Rust")
-    (description "This package provides CSS Selectors matching for Rust.")
-    (license license:mpl2.0)))
+        ("rust-smallvec" ,rust-smallvec-1))))))
 
 (define-public rust-selectors-0.22
   (package
