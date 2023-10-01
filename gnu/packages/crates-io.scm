@@ -17734,6 +17734,33 @@ ristretto255 and Curve25519.")
 ristretto255 and Curve25519.")
     (license license:bsd-3)))
 
+(define-public rust-cust-core-0.1
+  (package
+    (name "rust-cust-core")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cust-core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "01jzjwywsngqm8d1vxk3zr9klvidab6iis1myg5r1y5q5ik7k7q3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `cust`
+       #:cargo-inputs
+       (("rust-cust-derive" ,rust-cust-derive-0.2)
+        ("rust-glam" ,rust-glam-0.20)
+        ("rust-half" ,rust-half-1)
+        ("rust-mint" ,rust-mint-0.5)
+        ("rust-num-complex" ,rust-num-complex-0.4)
+        ("rust-vek" ,rust-vek-0.15))))
+    (home-page "https://github.com/Rust-GPU/Rust-CUDA")
+    (synopsis "Core library for cust that can be shared across CPU and GPU")
+    (description "This package provices the core library for cust that can be
+shared across CPU and GPU.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-cust-derive-0.2
   (package
     (name "rust-cust-derive")
