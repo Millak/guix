@@ -19316,7 +19316,7 @@ database, file, dict stores.  Cachy supports python versions 2.7+ and 3.2+.")
            python-pexpect
            python-pip
            python-pkginfo
-           python-poetry-core
+           python-poetry-core-1.0
            python-requests
            python-requests-toolbelt
            python-shellingham
