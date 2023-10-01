@@ -28232,6 +28232,19 @@ graphics.")
        (sha256
         (base32 "05c8r639hz3ydlhbhv6d9z6193iivi8276zz2fq3hqw6ci8am3si"))))))
 
+(define-public rust-glam-0.20
+  (package
+    (inherit rust-glam-0.22)
+    (name "rust-glam")
+    (version "0.20.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "glam" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0pv7n634vw2hn9fmi915pzgangyljgsp4m5505c3zq2bfiz9agpl"))))))
+
 (define-public rust-glam-0.17
   (package
     (inherit rust-glam-0.24)
