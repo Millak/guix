@@ -18572,8 +18572,32 @@ for Rust.")
 hexadecimal, base32, and base64.")
     (license license:expat)))
 
+(define-public rust-data-url-0.2
+  (package
+    (name "rust-data-url")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "data-url" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19828d6jby17ghi7vr0zia9sy3hlvvjbngrcsllmfh2zfg1kjx4d"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-tester" ,rust-tester-0.9))))
+    (home-page "https://github.com/servo/rust-url")
+    (synopsis "Processing of data: URL according to WHATWG's Fetch Standard")
+    (description
+     "Processing of data: URL according to WHATWG's Fetch Standard.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-data-url-0.1
   (package
+    (inherit rust-data-url-0.2)
     (name "rust-data-url")
     (version "0.1.1")
     (source
@@ -18585,19 +18609,13 @@ hexadecimal, base32, and base64.")
         (sha256
          (base32
           "14z15yiyklp5dv0k0q6pd83irrn0y8hj9y3fj17akkrbf37byc1s"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-matches" ,rust-matches-0.1))
        #:cargo-development-inputs
        (("rust-rustc-test" ,rust-rustc-test-0.3)
         ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://github.com/servo/rust-url")
-    (synopsis "Processing of data: URL according to WHATWG's Fetch Standard")
-    (description
-     "Processing of data: URL according to WHATWG's Fetch Standard.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-datetime-0.5
   (package
