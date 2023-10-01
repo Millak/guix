@@ -77981,7 +77981,7 @@ applications.")
 (define-public rust-web-sys-0.3
   (package
     (name "rust-web-sys")
-    (version "0.3.61")
+    (version "0.3.64")
     (source
      (origin
        (method url-fetch)
@@ -77989,7 +77989,7 @@ applications.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "15qbbdbhyz02srvm01p0cvlh0pvmbbin9hislp0yx8rvnbs9jfz3"))))
+        (base32 "16r4fww3l99kxhb66hka3kxkmhhgzhnqkzdf0ay6l2i2ikpwp1cv"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
