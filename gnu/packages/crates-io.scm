@@ -25057,6 +25057,30 @@ traits.")
         (base32
          "0036jb8ry4h83n319jb20b5yvyfyq8mx8dkxnyjm22nq8fl8yjhk"))))))
 
+(define-public rust-float-eq-1
+  (package
+    (name "rust-float-eq")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "float-eq" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0lxqxkvdy5zh3qsksavpcazg57cbyjy9p54m16x13bfq8lqhxa18"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-float-eq-derive" ,rust-float-eq-derive-1)
+        ("rust-num-complex" ,rust-num-complex-0.4))
+       #:cargo-development-inputs
+       (("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://jtempest.github.io/float_eq-rs/")
+    (synopsis "Compare IEEE floating point primitives, structs and collections")
+    (description "Compare IEEE floating point primitives, structs and
+collections for equality.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-float-eq-derive-1
   (package
     (name "rust-float-eq-derive")
