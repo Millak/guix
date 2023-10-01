@@ -77669,7 +77669,7 @@ attribute that is not in the shared backend crate.")
 (define-public rust-wasm-bindgen-test-0.3
   (package
     (name "rust-wasm-bindgen-test")
-    (version "0.3.34")
+    (version "0.3.37")
     (source
      (origin
        (method url-fetch)
@@ -77677,16 +77677,17 @@ attribute that is not in the shared backend crate.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "02x3agz7jn517fbbvnhncajvanr0w055jhinzf49w87vz706zcvd"))
+        (base32 "0w86d3ykwxfh495c4a98pj3b39wwgpfffy4ys2k86kx9gqm30vkf"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           (substitute* "Cargo.toml"
-             (("=0\\.3\\.34") "^0.3.34"))))))
+        '(begin (substitute* "Cargo.toml"
+                  (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-console-error-panic-hook" ,rust-console-error-panic-hook-0.1)
+        ("rust-gg-alloc" ,rust-gg-alloc-1)
         ("rust-js-sys" ,rust-js-sys-0.3)
         ("rust-scoped-tls" ,rust-scoped-tls-1)
         ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
