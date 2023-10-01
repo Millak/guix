@@ -59171,16 +59171,14 @@ for browser-grade parsing and querying.")
 (define-public rust-scratch-1
   (package
     (name "rust-scratch")
-    (version "1.0.0")
+    (version "1.0.7")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "scratch" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "0sff4rvfalp0ip98pl3xa32n7lhzcr4zqn8fgamaalbb64v4a4by"))))
+         (base32 "0lk160986gamss2rxi746nj747xx7gg8r2hfskrr9fccqc8prkx3"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
