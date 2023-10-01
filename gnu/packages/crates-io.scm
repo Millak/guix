@@ -28191,6 +28191,34 @@ graphics.")
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))))
 
+(define-public rust-glam-0.22
+  (package
+    (inherit rust-glam-0.24)
+    (name "rust-glam")
+    (version "0.22.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "glam" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0x57gyrxyfs409b3f5i64yy2pbcgkr2qkq8v3a0mmm8vdkargx8j"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-approx" ,rust-approx-0.5)
+        ("rust-bytecheck" ,rust-bytecheck-0.6)
+        ("rust-bytemuck" ,rust-bytemuck-1)
+        ("rust-mint" ,rust-mint-0.5)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rkyv" ,rust-rkyv-0.7)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-rand-xoshiro" ,rust-rand-xoshiro-0.6)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))))
+
 (define-public rust-glam-0.17
   (package
     (inherit rust-glam-0.24)
