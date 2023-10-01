@@ -1,0 +1,32 @@
+From 0f822190360a99bac6b532058beb5e20cb2673c3 Mon Sep 17 00:00:00 2001
+From: Nicolas Graves <ngraves@ngraves.fr>
+Date: Sun, 1 Oct 2023 20:20:03 +0200
+Subject: [PATCH] test: Change `pretty' test regexp to pass tests on emacs 30.
+
+---
+ tests/test-buttercup.el | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/tests/test-buttercup.el b/tests/test-buttercup.el
+index d68787b..a2e3ba7 100644
+--- a/tests/test-buttercup.el
++++ b/tests/test-buttercup.el
+@@ -2009,9 +2009,15 @@ text properties using `ansi-color-apply'."
+                   "suite bc-bt-backtrace\n"
+                   "\n"
+                   "Traceback (most recent call last):\n"
+-                  "λ (bc-bt-foo \"" (regex ,long-string) "\")\n"
+-                  "λ (bc-bt-bar \"" (regex ,long-string) "\")\n"
+-                  "λ (bc-bt-baz \"" (regex ,long-string) "\")\n"
++                  (seq
++                   "λ (bc-bt-foo \"" (regex ,long-string) "\")"
++                   (optional "\n"))
++                  (seq
++                   "λ (bc-bt-bar \"" (regex ,long-string) "\")"
++                   (optional "\n"))
++                  (seq
++                   "λ (bc-bt-baz \"" (regex ,long-string) "\")"
++                   (optional "\n"))
+                   (* (seq (or ?M ?λ) " (" (* not-newline) ; frame start
+                           (*? (seq "\n   " (* not-newline))) ; any number of pp lines
+                           (* not-newline) ")\n")) ;; frame end

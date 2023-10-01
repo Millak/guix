@@ -1095,6 +1095,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/elm-reactor-static-files.patch		\
   %D%/packages/patches/elogind-fix-rpath.patch			\
   %D%/packages/patches/emacs-all-the-icons-remove-duplicate-rs.patch	\
+  %D%/packages/patches/emacs-buttercup-fix-native-comp-pretty-test.patch	\
   %D%/packages/patches/emacs-deferred-fix-number-of-arguments.patch	\
   %D%/packages/patches/emacs-exec-path.patch			\
   %D%/packages/patches/emacs-ess-fix-obsolete-function-alias.patch	\
