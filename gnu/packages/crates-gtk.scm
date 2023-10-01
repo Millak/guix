@@ -168,8 +168,42 @@
        #:cargo-development-inputs
        (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
+(define-public rust-cairo-rs-0.17
+  (package
+    (name "rust-cairo-rs")
+    (version "0.17.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cairo-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02lz7kvml4m6fx02hy1pgk6ysils9di8n75m166kcpla0b206dmb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-cairo-sys-rs" ,rust-cairo-sys-rs-0.17)
+        ("rust-freetype-rs" ,rust-freetype-rs-0.32)
+        ("rust-glib" ,rust-glib-0.17)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-float-eq" ,rust-float-eq-1)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list cairo))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "Rust bindings for the Cairo library")
+    (description "Rust bindings for the Cairo library")
+    (license license:expat)))
+
 (define-public rust-cairo-rs-0.15
   (package
+    (inherit rust-cairo-rs-0.17)
     (name "rust-cairo-rs")
     (version "0.15.12")
     (source
@@ -179,7 +213,6 @@
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1g396fdz8crf74dmmjarcsdbsm8qgxy3a5x9kw6m2d9xn28y6vn7"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
@@ -189,15 +222,7 @@
         ("rust-libc" ,rust-libc-0.2)
         ("rust-thiserror" ,rust-thiserror-1))
        #:cargo-development-inputs
-       (("rust-tempfile" ,rust-tempfile-3))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list cairo))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "Rust bindings for the Cairo library")
-    (description "Rust bindings for the Cairo library")
-    (license license:expat)))
+       (("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-cairo-rs-0.14
   (package
