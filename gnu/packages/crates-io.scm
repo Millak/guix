@@ -75644,14 +75644,14 @@ membership for characters in Rust.")
 (define-public rust-unicode-ident-1
   (package
     (name "rust-unicode-ident")
-    (version "1.0.8")
+    (version "1.0.12")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "unicode-ident" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1x4v4v95fv9gn5zbpm23sa9awjvmclap1wh1lmikmw9rna3llip5"))))
+                "0jzf1znfpb2gx8nr8mvmyqs1crnv79l57nxnbiszc7xf7ynbjm1k"))))
     (build-system cargo-build-system)
     ;; Most development inputs are competing implementations
     ;; for benchmarks.
