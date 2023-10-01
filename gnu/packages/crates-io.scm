@@ -76170,7 +76170,7 @@ comparable to calling @code{unwrap_err()}.")
 (define-public rust-url-2
   (package
     (name "rust-url")
-    (version "2.4.0")
+    (version "2.4.1")
     (source
      (origin
        (method url-fetch)
@@ -76179,7 +76179,7 @@ comparable to calling @code{unwrap_err()}.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1jw89ack5ldvajpzsvhq9sy12y2xqa2x0cbin62hl80r3s1zggsh"))))
+         "1rbsx1nvz5ardf0x815639z1bxbbgjjjhj0mmnfaqzr5327m6fql"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -76189,8 +76189,7 @@ comparable to calling @code{unwrap_err()}.")
         ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
        (("rust-bencher" ,rust-bencher-0.1)
-        ("rust-debugger-test" ,rust-debugger-test-0.1)
-        ("rust-debugger-test-parser" ,rust-debugger-test-parser-0.1)
+        ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1))))
     (home-page "https://github.com/servo/rust-url")
     (synopsis "URL library for Rust, based on the WHATWG URL Standard")
