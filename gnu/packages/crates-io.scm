@@ -17734,6 +17734,28 @@ ristretto255 and Curve25519.")
 ristretto255 and Curve25519.")
     (license license:bsd-3)))
 
+(define-public rust-cust-derive-0.2
+  (package
+    (name "rust-cust-derive")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cust-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0rigqx5d1941cbpbd76i455ifh4yzz6fcga2na9fv6k2zsavr8z8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/Rust-GPU/Rust-CUDA")
+    (synopsis "Macros for cust")
+    (description "This package provices macros for cust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-custom-derive-0.1
   (package
     (name "rust-custom-derive")
