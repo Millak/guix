@@ -36357,16 +36357,14 @@ to count the number of lines in a file.")
 (define-public rust-link-cplusplus-1
   (package
     (name "rust-link-cplusplus")
-    (version "1.0.8")
+    (version "1.0.9")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "link-cplusplus" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1x84vvg7gn94x9zrvd67602h3ricmhlv19cpl2alzhqkqz4hglpc"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "link-cplusplus" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jc56xf51f3fn5hvppsj9c2pa0fxm7k79xs90a5s58qvgrphq94x"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-cc" ,rust-cc-1))))
