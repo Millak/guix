@@ -760,7 +760,7 @@ safety and thread safety guarantees.")
   (let ((base-rust rust-1.70))
     (package
       (inherit base-rust)
-      (outputs (cons "rustfmt" (package-outputs base-rust)))
+      (outputs (cons "tools" (package-outputs base-rust)))
       (arguments
        (substitute-keyword-arguments (package-arguments base-rust)
          ((#:tests? _ #f)
@@ -878,18 +878,20 @@ safety and thread safety guarantees.")
                       (string-append all
                                      "gdb = \"" gdb "/bin/gdb\"\n"))))))
              (replace 'build
-               ;; Phase overridden to also build rustfmt.
+               ;; Phase overridden to also build more tools.
                (lambda* (#:key parallel-build? #:allow-other-keys)
                  (let ((job-spec (string-append
                                   "-j" (if parallel-build?
                                            (number->string (parallel-job-count))
                                            "1"))))
                    (invoke "./x.py" job-spec "build"
-                           "library/std" ;rustc
+                           "library/std"    ;rustc
                            "src/tools/cargo"
+                           "src/tools/clippy"
+                           "src/tools/rust-analyzer"
                            "src/tools/rustfmt"))))
              (replace 'check
-               ;; Phase overridden to also test rustfmt.
+               ;; Phase overridden to also test more tools.
                (lambda* (#:key tests? parallel-build? #:allow-other-keys)
                  (when tests?
                    (let ((job-spec (string-append
@@ -899,9 +901,11 @@ safety and thread safety guarantees.")
                      (invoke "./x.py" job-spec "test" "-vv"
                              "library/std"
                              "src/tools/cargo"
+                             "src/tools/clippy"
+                             "src/tools/rust-analyzer"
                              "src/tools/rustfmt")))))
              (replace 'install
-               ;; Phase overridden to also install rustfmt.
+               ;; Phase overridden to also install more tools.
                (lambda* (#:key outputs #:allow-other-keys)
                  (invoke "./x.py" "install")
                  (substitute* "config.toml"
@@ -910,9 +914,11 @@ safety and thread safety guarantees.")
                     (format #f "prefix = ~s" (assoc-ref outputs "cargo"))))
                  (invoke "./x.py" "install" "cargo")
                  (substitute* "config.toml"
-                   ;; Adjust the prefix to the 'rustfmt' output.
+                   ;; Adjust the prefix to the 'tools' output.
                    (("prefix = \"[^\"]*\"")
-                    (format #f "prefix = ~s" (assoc-ref outputs "rustfmt"))))
+                    (format #f "prefix = ~s" (assoc-ref outputs "tools"))))
+                 (invoke "./x.py" "install" "clippy")
+                 (invoke "./x.py" "install" "rust-analyzer")
                  (invoke "./x.py" "install" "rustfmt")))))))
       ;; Add test inputs.
       (native-inputs (cons* `("gdb" ,gdb/pinned)
