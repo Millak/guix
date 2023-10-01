@@ -27578,6 +27578,24 @@ getters and setters on fields.")
 @acronym{GFA, Graphical Fragment Assembly} format.")
     (license license:expat)))
 
+(define-public rust-gg-alloc-1
+  (package
+    (name "rust-gg-alloc")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gg-alloc" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1fi2z9p5klgqbhgqxqxwz03j4axz4vf0s58mlndrxddy397i7r8y"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/Badel2/gg-alloc")
+    (synopsis "Custom allocator that only returns pointers above 2G")
+    (description "This package provides a custom allocator that only returns
+pointers above 2G.")
+    (license license:gpl3)))
+
 (define-public rust-ghash-0.5
   (package
     (name "rust-ghash")
