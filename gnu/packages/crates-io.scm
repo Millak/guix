@@ -53894,8 +53894,27 @@ Rust.")
         ("rust-webpki" ,rust-webpki-0.22)
         ("rust-x509-parser" ,rust-x509-parser-0.12))))))
 
+(define-public rust-rctree-0.5
+  (package
+    (name "rust-rctree")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rctree" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0kvzahkwriawhjjb08ai7rfi77px7rpx5h83hjcx6dccyxzf4hiv"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/RazrFalcon/rctree")
+    (synopsis "DOM-like tree implemented using reference counting")
+    (description "This package provides a @code{DOM-like} tree implemented using
+reference counting.")
+    (license license:expat)))
+
 (define-public rust-rctree-0.4
   (package
+    (inherit rust-rctree-0.5)
     (name "rust-rctree")
     (version "0.4.0")
     (source
@@ -53905,13 +53924,7 @@ Rust.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1s92472lniqn2c0b5ln8ssl014x0raiyzkk0hagrvsd6far2iq4s"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/RazrFalcon/rctree")
-    (synopsis "DOM-like tree implemented using reference counting")
-    (description "This package provides a @code{DOM-like} tree implemented using
-reference counting.")
-    (license license:expat)))
+          "1s92472lniqn2c0b5ln8ssl014x0raiyzkk0hagrvsd6far2iq4s"))))))
 
 (define-public rust-rdrand-0.4
   (package
