@@ -28219,6 +28219,19 @@ graphics.")
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))))
 
+(define-public rust-glam-0.21
+  (package
+    (inherit rust-glam-0.22)
+    (name "rust-glam")
+    (version "0.21.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "glam" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05c8r639hz3ydlhbhv6d9z6193iivi8276zz2fq3hqw6ci8am3si"))))))
+
 (define-public rust-glam-0.17
   (package
     (inherit rust-glam-0.24)
