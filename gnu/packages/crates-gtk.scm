@@ -2187,8 +2187,43 @@ library.")
        (("rust-shell-words" ,rust-shell-words-0.1)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-pangocairo-0.17
+  (package
+    (name "rust-pangocairo")
+    (version "0.17.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pangocairo" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kr2b31034b8zif4r3lf4rniqphk2bxi2q7n8iwq2wrf3k5jkgw6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(;; FIXME: error[E0277]: `Errors` doesn't implement `std::fmt::Display`
+       #:tests? #f
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-cairo-rs" ,rust-cairo-rs-0.17)
+        ("rust-glib" ,rust-glib-0.17)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-pango" ,rust-pango-0.17)
+        ("rust-pangocairo-sys" ,rust-pangocairo-sys-0.17))
+       #:cargo-development-inputs
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list pango))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "Rust bindings for the PangoCairo library")
+    (description
+     "This package provides Rust bindings for the @code{PangoCairo} library.")
+    (license license:expat)))
+
 (define-public rust-pangocairo-0.15
   (package
+    (inherit rust-pangocairo-0.17)
     (name "rust-pangocairo")
     (version "0.15.1")
     (source
@@ -2199,7 +2234,6 @@ library.")
         (sha256
          (base32
           "0rjk0clrjxah4kc0kybn7l7bxa5m5kpxkihxc2i7a6hx3xfa8xkq"))))
-    (build-system cargo-build-system)
     (arguments
      `(;; FIXME: error[E0277]: `Errors` doesn't implement `std::fmt::Display`
        #:tests? #f
@@ -2211,16 +2245,7 @@ library.")
         ("rust-pango" ,rust-pango-0.15)
         ("rust-pangocairo-sys" ,rust-pangocairo-sys-0.15))
        #:cargo-development-inputs
-       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list pango))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "Rust bindings for the PangoCairo library")
-    (description
-     "Rust bindings for the PangoCairo library.")
-    (license license:expat)))
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
 (define-public rust-pangocairo-sys-0.17
   (package
