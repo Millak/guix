@@ -17890,7 +17890,7 @@ attributes.")
 (define-public rust-cxx-build-1
   (package
     (name "rust-cxx-build")
-    (version "1.0.86")
+    (version "1.0.107")
     (source
       (origin
         (method url-fetch)
@@ -17899,17 +17899,17 @@ attributes.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0w5a2wdkdh44gmi0psynaazx4j7d1947sr7nyaccayxjc4gjhi2h"))))
+          "18sy8llakggzyahmr7c25l16i63hd2agpb8x3f2a8ga3p3v21kn4"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-cc" ,rust-cc-1)
         ("rust-codespan-reporting" ,rust-codespan-reporting-0.11)
-        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-once-cell" ,rust-once-cell-1)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-scratch" ,rust-scratch-1)
-        ("rust-syn" ,rust-syn-1))
+        ("rust-syn" ,rust-syn-2))
        #:cargo-development-inputs
        (("rust-cxx" ,rust-cxx-1)
         ("rust-cxx-gen" ,rust-cxx-gen-0.7)
