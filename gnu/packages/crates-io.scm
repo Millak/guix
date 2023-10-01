@@ -17951,7 +17951,7 @@ crate into a Cargo build.")
 (define-public rust-cxx-gen-0.7
   (package
     (name "rust-cxx-gen")
-    (version "0.7.86")
+    (version "0.7.107")
     (source
       (origin
         (method url-fetch)
@@ -17960,14 +17960,14 @@ crate into a Cargo build.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1z08a3c4xpnz91a4nc2b4f2kbmadjrrimr8awx1k4g0rmjdmq5mr"))))
+          "1lv2fs3s51lqipbpzrv2dmhm0mwcw5205sq7x3cmcb3skia64l6b"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-codespan-reporting" ,rust-codespan-reporting-0.11)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
+        ("rust-syn" ,rust-syn-2))))
     (home-page "https://cxx.rs")
     (synopsis "C++ code generator")
     (description
