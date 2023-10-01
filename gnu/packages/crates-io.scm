@@ -77468,7 +77468,7 @@ result.")
 (define-public rust-wasm-bindgen-0.2
   (package
     (name "rust-wasm-bindgen")
-    (version "0.2.84")
+    (version "0.2.87")
     (source
      (origin
        (method url-fetch)
@@ -77476,12 +77476,12 @@ result.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0fx5gh0b4n6znfa3blz92wn1k4bbiysyq9m95s7rn3gk46ydry1i"))
+        (base32 "0hm3k42gcnrps2jh339h186scx1radqy1w7v1zwb333dncmaf1kp"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           (substitute* "Cargo.toml"
-             (("=0\\.3\\.34") "^0.3.34"))))))
+        '(begin (substitute* "Cargo.toml"
+                  (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
