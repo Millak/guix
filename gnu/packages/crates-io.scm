@@ -53795,24 +53795,20 @@ Rust.")
 (define-public rust-rayon-core-1
   (package
     (name "rust-rayon-core")
-    (version "1.10.1")
+    (version "1.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rayon-core" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1lvavqk42lmll47q008j8y6nw54f3sfvcjlbaa26iaq0bnpi1i6a"))))
+        (base32 "1vaq0q71yfvcwlmia0iqf6ixj2fibjcf2xjy92n1m1izv1mgpqsw"))))
     (build-system cargo-build-system)
     (arguments
-     ;; One of the tests attempts to overflow the stack, but the compiler has
-     ;; since gotten smarter and the test became defective.
-     `(#:tests? #f
+     `(#:tests? #f  ; `Sender<usize>` cannot be shared between threads safely
        #:cargo-inputs
-       (("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
-        ("rust-crossbeam-deque" ,rust-crossbeam-deque-0.8)
-        ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
-        ("rust-num-cpus" ,rust-num-cpus-1))
+       (("rust-crossbeam-deque" ,rust-crossbeam-deque-0.8)
+        ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8))
        #:cargo-development-inputs
        (("rust-libc" ,rust-libc-0.2)
         ("rust-rand" ,rust-rand-0.8)
