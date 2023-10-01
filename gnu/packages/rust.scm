@@ -760,7 +760,7 @@ safety and thread safety guarantees.")
   (let ((base-rust rust-1.70))
     (package
       (inherit base-rust)
-      (outputs (cons "tools" (package-outputs base-rust)))
+      (outputs (cons* "rust-src" "tools" (package-outputs base-rust)))
       (arguments
        (substitute-keyword-arguments (package-arguments base-rust)
          ((#:tests? _ #f)
@@ -919,7 +919,21 @@ safety and thread safety guarantees.")
                     (format #f "prefix = ~s" (assoc-ref outputs "tools"))))
                  (invoke "./x.py" "install" "clippy")
                  (invoke "./x.py" "install" "rust-analyzer")
-                 (invoke "./x.py" "install" "rustfmt")))))))
+                 (invoke "./x.py" "install" "rustfmt")))
+             (add-after 'install 'install-rust-src
+               (lambda* (#:key outputs #:allow-other-keys)
+                 (let ((out (assoc-ref outputs "rust-src"))
+                       (dest "/lib/rustlib/src/rust"))
+                   (mkdir-p (string-append out dest))
+                   (copy-recursively "library" (string-append out dest "/library"))
+                   (copy-recursively "src" (string-append out dest "/src")))))
+             (add-after 'install-rust-src 'wrap-rust-analyzer
+               (lambda* (#:key outputs #:allow-other-keys)
+                 (wrap-program (string-append (assoc-ref outputs "tools")
+                                              "/bin/rust-analyzer")
+                   `("RUST_SRC_PATH" ":" =
+                     (,(string-append (assoc-ref outputs "rust-src")
+                                      "/lib/rustlib/src/rust/library"))))))))))
       ;; Add test inputs.
       (native-inputs (cons* `("gdb" ,gdb/pinned)
                             `("procps" ,procps)
