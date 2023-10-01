@@ -13493,6 +13493,37 @@ reading and writing MessagePack data.")
                (base32
                 "1109s2yynrahwi64ikax68hx0mbclz8p35afmpphw5dwynb49q7s"))))))
 
+;; This msgpack library's name changed from "python-msgpack" to "msgpack" with
+;; release 0.5. Some packages like borg still call it by the old name for now.
+;; <https://bugs.gnu.org/30662>
+(define-public python-msgpack-transitional
+  (package
+    (inherit python-msgpack)
+    (name "python-msgpack-transitional")
+    (version "0.5.6")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "msgpack" version))
+              (sha256
+               (base32
+                "1hz2dba1nvvn52afg34liijsm7kn65cmn06dl0xbwld6bb4cis0f"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-msgpack)
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (add-after 'unpack 'configure-transitional
+             (lambda _
+               ;; Keep using the old name.
+               (substitute* "setup.py"
+                 (("TRANSITIONAL = False")
+                   "TRANSITIONAL = 1"))
+               ;; This old version is not compatible with Python 3.9
+               (substitute* '("test/test_buffer.py" "test/test_extension.py")
+                 ((".tostring\\(") ".tobytes("))
+               (substitute* '("test/test_buffer.py" "test/test_extension.py")
+                 ((".fromstring\\(") ".frombytes("))
+               #t))))))))
+
 (define-public python-netaddr
   (package
     (name "python-netaddr")
@@ -19251,26 +19282,25 @@ database, file, dict stores.  Cachy supports python versions 2.7+ and 3.2+.")
 (define-public poetry
   (package
     (name "poetry")
-    (version "1.4.2")
+    (version "1.1.12")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "poetry" version))
        (sha256
         (base32
-         "0g0vczn6qa4b2bdkq4k7fm1g739vyxp2iiblwwsrcmw24jj81m8b"))))
+         "0rr54mvcfcv9cv6vw2122y28xvd2pwqpv2x8c8j5ayz3gwsy4rjw"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f                      ;PyPI does not have tests
-       ;; #:phases
-       ;; (modify-phases %standard-phases
-       ;;   (add-before 'build 'patch-setup-py
-       ;;     (lambda _
-       ;;       (substitute* "setup.py"
-       ;;         ;; Relax some of the requirements.
-       ;;         (("(keyring>=21.2.0),<22.0.0" _ keyring) keyring)
-       ;;         (("(packaging>=20.4),<21.0" _ packaging) packaging)))))
-       ))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'patch-setup-py
+           (lambda _
+             (substitute* "setup.py"
+               ;; Relax some of the requirements.
+               (("(keyring>=21.2.0),<22.0.0" _ keyring) keyring)
+               (("(packaging>=20.4),<21.0" _ packaging) packaging)))))))
     (propagated-inputs
      (list python-cachecontrol
            python-cachy
@@ -19279,7 +19309,9 @@ database, file, dict stores.  Cachy supports python versions 2.7+ and 3.2+.")
            python-entrypoints
            python-html5lib
            python-keyring
-           python-msgpack
+           ; Use of deprecated version of msgpack reported upstream:
+           ; https://github.com/python-poetry/poetry/issues/3607
+           python-msgpack-transitional
            python-packaging
            python-pexpect
            python-pip
