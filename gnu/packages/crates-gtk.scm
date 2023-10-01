@@ -858,8 +858,50 @@
        (("rust-shell-words" ,rust-shell-words-0.1)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-gio-0.17
+  (package
+    (name "rust-gio")
+    (version "0.17.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gio" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02nkqpq1a6ikzhv5x4nyfvzx8zk5dkjsjm50ns4qdybwjf93x5x6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; `Errors` doesn't implement `std::fmt::Display`
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-futures-channel" ,rust-futures-channel-0.3)
+        ("rust-futures-core" ,rust-futures-core-0.3)
+        ("rust-futures-io" ,rust-futures-io-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-gio-sys" ,rust-gio-sys-0.17)
+        ("rust-glib" ,rust-glib-0.17)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-futures" ,rust-futures-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-gir-format-check" ,rust-gir-format-check-0.1)
+        ("rust-serial-test" ,rust-serial-test-1))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list glib))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "Rust bindings for the Gio library")
+    (description "Rust bindings for the Gio library")
+    (license license:expat)))
+
 (define-public rust-gio-0.15
   (package
+    (inherit rust-gio-0.17)
     (name "rust-gio")
     (version "0.15.12")
     (source
@@ -869,7 +911,6 @@
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0fr8qiqjf9yzl8867kgqdsxpkcx2jrns3xwmlf0jfiid668brzb8"))))
-    (build-system cargo-build-system)
     (arguments
      `(;; FIXME: error[E0277]: `Errors` doesn't implement `std::fmt::Display`
        #:tests? #f
@@ -887,15 +928,7 @@
        #:cargo-development-inputs
        (("rust-futures-util" ,rust-futures-util-0.3)
         ("rust-gir-format-check" ,rust-gir-format-check-0.1)
-        ("rust-serial-test" ,rust-serial-test-0.6))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list glib))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "Rust bindings for the Gio library")
-    (description "Rust bindings for the Gio library")
-    (license license:expat)))
+        ("rust-serial-test" ,rust-serial-test-0.6))))))
 
 (define-public rust-gio-0.14
   (package
