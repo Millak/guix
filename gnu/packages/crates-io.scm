@@ -80919,17 +80919,17 @@ library.")
        #:cargo-development-inputs
        (("rust-num-traits" ,rust-num-traits-0.2))))))
 
-(define-public rust-yeslogic-fontconfig-sys-3
+(define-public rust-yeslogic-fontconfig-sys-4
   (package
     (name "rust-yeslogic-fontconfig-sys")
-    (version "3.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "yeslogic-fontconfig-sys" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "11n3126s717rjqxhf5js3hc0qq8qv7jbicbiyszyp5yk6s8ddfzj"))))
+    (version "4.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "yeslogic-fontconfig-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wsgzlvgknvkjw3m02nvp3x47ccmvfri13mwqzssxgmw5g9pyrgc"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -80947,6 +80947,25 @@ library.")
      "This package provides a wrapper around the @code{Fontconfig} library,
 for locating fonts.")
     (license license:expat)))
+
+(define-public rust-yeslogic-fontconfig-sys-3
+  (package
+    (inherit rust-yeslogic-fontconfig-sys-4)
+    (name "rust-yeslogic-fontconfig-sys")
+    (version "3.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "yeslogic-fontconfig-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "11n3126s717rjqxhf5js3hc0qq8qv7jbicbiyszyp5yk6s8ddfzj"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-const-cstr" ,rust-const-cstr-0.3)
+        ("rust-dlib" ,rust-dlib-0.5)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-pkg-config" ,rust-pkg-config-0.3))))))
 
 (define-public rust-yeslogic-fontconfig-sys-2
   (package
