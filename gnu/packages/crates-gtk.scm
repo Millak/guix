@@ -508,8 +508,41 @@
        #:cargo-development-inputs
        (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
+(define-public rust-gdk-pixbuf-0.17
+  (package
+    (name "rust-gdk-pixbuf")
+    (version "0.17.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gdk-pixbuf" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05q7ajsp2z8xi355h26k7lvq7n3lj9xm61vhn045g3238v46npb9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; `Errors` doesn't implement `std::fmt::Display`
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-gdk-pixbuf-sys" ,rust-gdk-pixbuf-sys-0.17)
+        ("rust-gio" ,rust-gio-0.17)
+        ("rust-glib" ,rust-glib-0.17)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-once-cell" ,rust-once-cell-1))
+       #:cargo-development-inputs
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list gdk-pixbuf))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "Rust bindings for the GdkPixbuf library")
+    (description "Rust bindings for the @code{GdkPixbuf} library")
+    (license license:expat)))
+
 (define-public rust-gdk-pixbuf-0.15
   (package
+    (inherit rust-gdk-pixbuf-0.17)
     (name "rust-gdk-pixbuf")
     (version "0.15.11")
     (source
@@ -519,7 +552,6 @@
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "16k1z21r76m620z61kfmgid1n6s8dnxpa4zlrppcr6dhr2fdsf5d"))))
-    (build-system cargo-build-system)
     (arguments
      `(;; FIXME: error[E0277]: `Errors` doesn't implement `std::fmt::Display`
        #:tests? #f
@@ -530,15 +562,7 @@
         ("rust-glib" ,rust-glib-0.15)
         ("rust-libc" ,rust-libc-0.2))
        #:cargo-development-inputs
-       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list gdk-pixbuf))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "Rust bindings for the GdkPixbuf library")
-    (description "Rust bindings for the GdkPixbuf library")
-    (license license:expat)))
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
 (define-public rust-gdk-pixbuf-0.14
   (package
