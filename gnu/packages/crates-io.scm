@@ -80452,19 +80452,18 @@ extended attributes.")
 (define-public rust-xdg-2
   (package
     (name "rust-xdg")
-    (version "2.5.0")
+    (version "2.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "xdg" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1vkzfsy3n85qnn1076h9111jg3h7k9r99jqi8nnrq3kmbbdrg1b8"))))
+        (base32 "0im5nzmywxjgm2pmb48k0cc9hkalarz57f1d9d0x4lvb6cj76fr1"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-home" ,rust-home-0.5)
-        ("rust-serde" ,rust-serde-1))
+       (("rust-serde" ,rust-serde-1))
        #:phases
        (modify-phases %standard-phases
          (add-before 'check 'pre-check
