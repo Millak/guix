@@ -70699,6 +70699,25 @@ to a style defined by John Gruber for post titles on his website ``Daring
 Fireball''.")
     (license license:expat)))
 
+(define-public rust-to-shmem-0.0.0
+  (package
+    (name "rust-to-shmem")
+    (version "0.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "to-shmem" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12k69c7zknzmza1mkqpmd86cialbsvazz7zr4hscm0dnfzy2bvmi"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/servo/servo")
+    (synopsis
+     "Trait for cloning data into a shared memory buffer (dummy package)")
+    (description
+     "Trait for cloning data into a shared memory buffer (dummy package).")
+    (license license:mpl2.0)))
+
 (define-public rust-to-shmem-derive-0.0.0
   (package
     (name "rust-to-shmem-derive")
