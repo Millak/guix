@@ -39403,14 +39403,14 @@ streaming API for miniz_oxide.")
   (package
     (inherit rust-miniz-oxide-0.6)
     (name "rust-miniz-oxide")
-    (version "0.5.3")
+    (version "0.5.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "miniz_oxide" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1k1wfxb35v129mhqy14yqhrj3wvknafrwygiq7zvi0m5iml7ap3g"))))
+        (base32 "0d2xcypr8s0skd81dhlrylas1j794qyz74snm11jc8kmy6l0nncn"))))
     (arguments
      `(#:cargo-inputs
        (("rust-adler" ,rust-adler-1)
