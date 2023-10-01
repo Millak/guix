@@ -45993,14 +45993,14 @@ synchronization primitives.")
 (define-public rust-parking-lot-core-0.9
   (package
     (name "rust-parking-lot-core")
-    (version "0.9.7")
+    (version "0.9.8")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "parking_lot_core" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "08cm5gg3a4jmr683x9dgih8vj66yn772kjvc8y1m0flyz6wwnsch"))))
+                "0ixlak319bpzldq20yvyfqk0y1vi736zxbw101jvzjp7by30rw4k"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -46008,10 +46008,10 @@ synchronization primitives.")
         ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-petgraph" ,rust-petgraph-0.6)
-        ("rust-redox-syscall" ,rust-redox-syscall-0.2)
+        ("rust-redox-syscall" ,rust-redox-syscall-0.3)
         ("rust-smallvec" ,rust-smallvec-1)
         ("rust-thread-id" ,rust-thread-id-4)
-        ("rust-windows-sys" ,rust-windows-sys-0.45))))
+        ("rust-windows-sys" ,rust-windows-sys-0.48))))
     (home-page "https://github.com/Amanieu/parking_lot")
     (synopsis "API for creating custom synchronization primitives")
     (description "This package provides an advanced API for creating custom
