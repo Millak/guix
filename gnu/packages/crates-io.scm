@@ -77775,7 +77775,7 @@ attribute that is not in the shared backend crate.")
 (define-public rust-wasm-bindgen-test-macro-0.3
   (package
     (name "rust-wasm-bindgen-test-macro")
-    (version "0.3.34")
+    (version "0.3.37")
     (source
      (origin
        (method url-fetch)
@@ -77783,12 +77783,15 @@ attribute that is not in the shared backend crate.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1s9vnkrmmq5fiv0j0ifvbs7q5ffgxwbg1r0zcryp3cdkwsd7ad07"))))
+        (base32 "0xd5245xixdhj33nf6xbzg85vrmjv5vhw0hf2gnk0sc3ikfr7fgc"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f          ; could not find `wasm_bindgen_test`
+       #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1))))
+        ("rust-quote" ,rust-quote-1))
+       #:cargo-development-inputs
+       (("rust-trybuild" ,rust-trybuild-1))))
     (home-page "https://github.com/rustwasm/wasm-bindgen")
     (synopsis "Internal testing macro for wasm-bindgen")
     (description
