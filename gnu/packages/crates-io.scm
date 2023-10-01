@@ -18020,7 +18020,7 @@ crate into higher level tools.")
 (define-public rust-cxxbridge-flags-1
   (package
     (name "rust-cxxbridge-flags")
-    (version "1.0.86")
+    (version "1.0.107")
     (source
       (origin
         (method url-fetch)
@@ -18029,7 +18029,7 @@ crate into higher level tools.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "073qx3gnf8df9xzfy9xfcz9b79m0638x4a0isfq2fb527g4hpdb1"))))
+          "18hxm7dp8k58zsxniaspg11nw0ymwzpk1viw8zzy56123ng8v210"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/dtolnay/cxx")
     (synopsis "Compiler configuration of the `cxx` crate")
