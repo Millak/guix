@@ -60402,7 +60402,7 @@ fragment of code.")
 (define-public rust-serde-1
   (package
     (name "rust-serde")
-    (version "1.0.171")
+    (version "1.0.188")
     (source
      (origin
        (method url-fetch)
@@ -60410,13 +60410,12 @@ fragment of code.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1a9lvibgi42mhmgafp747mvshsq6ybx6rzcjqh398rfp9wg7vqih"))))
+         "17jlqzfhimsk8w37ifjwnm86nwjzawlbgwmwc7nhwdwslv5hz7ng"))))
     (build-system cargo-build-system)
     (arguments
-     ;; XXX: three test failures, e.g.:
-     ;; error: cannot find derive macro `Deserialize` in this scope
-     `(#:tests? #false
-       #:cargo-inputs
+     `(#:cargo-inputs
+       (("rust-serde-derive" ,rust-serde-derive-1))
+       #:cargo-development-inputs
        (("rust-serde-derive" ,rust-serde-derive-1))))
     (home-page "https://serde.rs")
     (synopsis "Generic serialization/deserialization framework")
