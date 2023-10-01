@@ -24036,8 +24036,35 @@ floats.")
     (description "This package provides a parser for fastq files.")
     (license license:expat)))
 
+(define-public rust-fastrand-2
+  (package
+    (name "rust-fastrand")
+    (version "2.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fastrand" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19flpv5zbzpf0rk4x77z4zf25in0brg8l7m304d3yrf47qvwxjr5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-getrandom" ,rust-getrandom-0.2))
+       #:cargo-development-inputs
+       (("rust-getrandom" ,rust-getrandom-0.2)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3)
+        ("rust-wyhash" ,rust-wyhash-0.5))))
+    (home-page "https://github.com/smol-rs/fastrand")
+    (synopsis "Simple and fast random number generator")
+    (description
+     "This package provides a simple and fast random number generator.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-fastrand-1
   (package
+    (inherit rust-fastrand-2)
     (name "rust-fastrand")
     (version "1.9.0")
     (source
@@ -24047,7 +24074,6 @@ floats.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1gh12m56265ihdbzh46bhh0jf74i197wm51jg1cw75q7ggi96475"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-instant" ,rust-instant-0.1))
@@ -24056,12 +24082,7 @@ floats.")
         ("rust-instant" ,rust-instant-0.1)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3)
-        ("rust-wyhash" ,rust-wyhash-0.5))))
-    (home-page "https://github.com/stjepang/fastrand")
-    (synopsis "Simple and fast random number generator")
-    (description
-     "This package provides a simple and fast random number generator.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-wyhash" ,rust-wyhash-0.5))))))
 
 (define-public rust-fat-macho-0.4
   (package
