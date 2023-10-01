@@ -48740,7 +48740,7 @@ with additional support for PKCS#8v2 asymmetric key packages (RFC 5958).")
 (define-public rust-pkg-config-0.3
   (package
     (name "rust-pkg-config")
-    (version "0.3.26")
+    (version "0.3.27")
     (source
      (origin
        (method url-fetch)
@@ -48748,20 +48748,19 @@ with additional support for PKCS#8v2 asymmetric key packages (RFC 5958).")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0q2i61dhqvawc51zfzl3jich57w0cjgfa894hn6ings7ffgsbjba"))))
+         "0r39ryh1magcq4cz5g9x88jllsnxnhcqr753islvyk4jp9h2h1r6"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
        (("rust-lazy-static" ,rust-lazy-static-1))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'hardcode-pkg-config-loation
+         (add-after 'unpack 'hardcode-pkg-config-location
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "src/lib.rs"
                (("\"pkg-config\"")
                 (string-append "\"" (assoc-ref inputs "pkg-config")
-                               "/bin/pkg-config\"")))
-             #t)))))
+                               "/bin/pkg-config\""))))))))
     (native-inputs
      (list pkg-config))
     (home-page "https://github.com/rust-lang/pkg-config-rs")
