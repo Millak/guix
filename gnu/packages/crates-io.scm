@@ -61585,19 +61585,17 @@ for data that potentially contains secrets (e.g. cryptographic keys).")
        (("rust-quote" ,rust-quote-0.6)
         ("rust-syn" ,rust-syn-0.15))))))
 
-(define-public rust-servo-arc-0.1
+(define-public rust-servo-arc-0.2
   (package
     (name "rust-servo-arc")
-    (version "0.1.1")
+    (version "0.2.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "servo-arc" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0cjljr9znwahry6p95xvd3p4pmy24wlf6gbfidnmglg002w3i0nr"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "servo-arc" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hgp453zvrj7ry501jhxlcph0hc42gc26zyfwn8ys3yziwps8anm"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -61610,6 +61608,26 @@ for data that potentially contains secrets (e.g. cryptographic keys).")
      "This package provides a fork of @code{std::sync::Arc} with some extra
 functionality and without weak references.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-servo-arc-0.1
+  (package
+    (inherit rust-servo-arc-0.2)
+    (name "rust-servo-arc")
+    (version "0.1.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "servo-arc" version))
+        (file-name
+         (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "0cjljr9znwahry6p95xvd3p4pmy24wlf6gbfidnmglg002w3i0nr"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-nodrop" ,rust-nodrop-0.1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))))
 
 (define-public rust-serial-test-derive-0.4
   (package
