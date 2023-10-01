@@ -24965,16 +24965,14 @@ test multiple times.")
 (define-public rust-flate2-1
   (package
     (name "rust-flate2")
-    (version "1.0.25")
+    (version "1.0.27")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "flate2" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0hg8ih51lx5xkz2zlzpsy1j1xka8gs8vhk2964ppgj5ighwxp8m8"))))
+        (base32 "045hvzdv3159qqjlgr5i3p4d346briddkipwyb5iv7ay17l8xjf6"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -24982,7 +24980,7 @@ test multiple times.")
         ("rust-crc32fast" ,rust-crc32fast-1)
         ("rust-libz-ng-sys" ,rust-libz-ng-sys-1)
         ("rust-libz-sys" ,rust-libz-sys-1)
-        ("rust-miniz-oxide" ,rust-miniz-oxide-0.6))
+        ("rust-miniz-oxide" ,rust-miniz-oxide-0.7))
        #:cargo-development-inputs
        (("rust-quickcheck" ,rust-quickcheck-1)
         ("rust-rand" ,rust-rand-0.8))))
