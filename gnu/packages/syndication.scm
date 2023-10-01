@@ -224,14 +224,14 @@ cards.")
 (define-public newsboat
   (package
     (name "newsboat")
-    (version "2.32")
+    (version "2.33")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://newsboat.org/releases/" version
                            "/newsboat-" version ".tar.xz"))
        (sha256
-        (base32 "1rp67fqsnsknlhlq75vgdjg9rggx8j7wbmixvps967m2f92m2qsv"))))
+        (base32 "1yilrfa8h63x24mcl8a6a17fsaa12imhl337br7g2dw3c1g0v78p"))))
     (build-system cargo-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)
@@ -252,7 +252,6 @@ cards.")
      `(#:modules ((guix build cargo-build-system)
                   (guix build utils)
                   ((guix build gnu-build-system) #:prefix gnu:))
-       #:vendor-dir "vendor"
        #:install-source? #f
        #:cargo-inputs
        (("rust-backtrace" ,rust-backtrace-0.3)
@@ -261,7 +260,7 @@ cards.")
         ("rust-curl-sys" ,rust-curl-sys-0.4)
         ("rust-cxx" ,rust-cxx-1)
         ("rust-cxx-build" ,rust-cxx-build-1)
-        ("rust-fastrand" ,rust-fastrand-1)
+        ("rust-fastrand" ,rust-fastrand-2)
         ("rust-gettext-rs" ,rust-gettext-rs-0.7)
         ("rust-lexopt" ,rust-lexopt-0.3)
         ("rust-libc" ,rust-libc-0.2)
