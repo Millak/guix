@@ -37015,8 +37015,44 @@ explosion.")
 image together with its neighboring pixels.")
     (license license:expat)))
 
+(define-public rust-lopdf-0.29
+  (package
+    (name "rust-lopdf")
+    (version "0.29.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lopdf" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1p59fkn9rkas0jywm7z24970k3lpv71sxxabmkmnig3d1p26j3yy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-chrono" ,rust-chrono-0.4)
+        ("rust-encoding" ,rust-encoding-0.2)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-image" ,rust-image-0.24)
+        ("rust-itoa" ,rust-itoa-1)
+        ("rust-linked-hash-map" ,rust-linked-hash-map-0.5)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-nom" ,rust-nom-6)
+        ("rust-pom" ,rust-pom-3)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-time" ,rust-time-0.2)
+        ("rust-weezl" ,rust-weezl-0.1))
+       #:cargo-development-inputs
+       (("rust-env-logger" ,rust-env-logger-0.9)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/J-F-Liu/lopdf")
+    (synopsis "Rust library for PDF document manipulation")
+    (description
+     "This package provides a Rust library for PDF document manipulation.")
+    (license license:expat)))
+
 (define-public rust-lopdf-0.26
   (package
+    (inherit rust-lopdf-0.29)
     (name "rust-lopdf")
     (version "0.26.0")
     (source
@@ -37027,7 +37063,6 @@ image together with its neighboring pixels.")
           (string-append name "-" version ".tar.gz"))
         (sha256
          (base32 "1wqnmibs8qzi6pr3ig4h3sg6bfkkgyv4ngdng81x069725r056ml"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-chrono" ,rust-chrono-0.4)
@@ -37042,12 +37077,7 @@ image together with its neighboring pixels.")
         ("rust-nom" ,rust-nom-6)
         ("rust-pom" ,rust-pom-3)
         ("rust-rayon" ,rust-rayon-1)
-        ("rust-time" ,rust-time-0.2))))
-    (home-page "https://github.com/J-F-Liu/lopdf")
-    (synopsis "Rust library for PDF document manipulation")
-    (description
-     "This package provides a Rust library for PDF document manipulation.")
-    (license license:expat)))
+        ("rust-time" ,rust-time-0.2))))))
 
 (define-public rust-lru-0.7
   (package
