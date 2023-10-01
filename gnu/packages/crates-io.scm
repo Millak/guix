@@ -40456,8 +40456,35 @@ statically-sized or dynamically-sized matrices.")
        (("rust-rand-xorshift" ,rust-rand-xorshift-0.2)
         ("rust-serde-json" ,rust-serde-json-1))))))
 
+(define-public rust-nalgebra-macros-0.2
+  (package
+    (name "rust-nalgebra-macros")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nalgebra-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "166rzbzi1hcyjfvwxmrdimrcmflvxxifjfkqxxkdjfnhcznilxli"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-nalgebra" ,rust-nalgebra-0.32)
+        ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://nalgebra.org")
+    (synopsis "Procedural macros for nalgebra")
+    (description "This package provides procedural macros for the nalgebra
+linear algebra library.")
+    (license license:asl2.0)))
+
 (define-public rust-nalgebra-macros-0.1
   (package
+    (inherit rust-nalgebra-macros-0.2)
     (name "rust-nalgebra-macros")
     (version "0.1.0")
     (source
@@ -40473,7 +40500,6 @@ statically-sized or dynamically-sized matrices.")
            (substitute* "Cargo.toml"
              ;; The resolver feature is not supported by our versions of Cargo.
              (("resolver = \"2\".*") ""))))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -40481,12 +40507,7 @@ statically-sized or dynamically-sized matrices.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))
        #:cargo-development-inputs
-       (("rust-nalgebra" ,rust-nalgebra-0.26))))
-    (home-page "https://nalgebra.org")
-    (synopsis "Procedural macros for nalgebra")
-    (description "This package provides procedural macros for the nalgebra
-linear algebra library.")
-    (license license:asl2.0)))
+       (("rust-nalgebra" ,rust-nalgebra-0.26))))))
 
 (define-public rust-napi-0.5
   (package
