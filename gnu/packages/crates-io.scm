@@ -45407,7 +45407,7 @@ signing/verification, and general purpose curve arithmetic support.")
 (define-public rust-packed-simd-0.3
   (package
     (name "rust-packed-simd")
-    (version "0.3.8")
+    (version "0.3.9")
     (source
      (origin
        (method url-fetch)
@@ -45416,7 +45416,7 @@ signing/verification, and general purpose curve arithmetic support.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "17xih19yr6izg1d065d2ax29axs7bmywnxa3qps0l6d3bd4nbybc"))
+         "0bck71ngyhx9icy7q3xzgmjxkylysxm6hgif5rqp2xc71jphi7qz"))
        (modules '((guix build utils)))
        (snippet
         '(begin (substitute* "Cargo.toml"
@@ -45424,11 +45424,12 @@ signing/verification, and general purpose curve arithmetic support.")
                    (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
+     ;; `#![feature]` may not be used on the stable release channel
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-core-arch" ,rust-core-arch-0.1)
-        ("rust-libm" ,rust-libm-0.1)
+        ("rust-num-traits" ,rust-num-traits-0.2)
         ("rust-sleef-sys" ,rust-sleef-sys-0.1))
        #:cargo-development-inputs
        (("rust-arrayvec" ,rust-arrayvec-0.5)
