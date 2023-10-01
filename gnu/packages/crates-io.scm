@@ -18055,7 +18055,7 @@ crate (implementation detail).")
 (define-public rust-cxxbridge-macro-1
   (package
     (name "rust-cxxbridge-macro")
-    (version "1.0.86")
+    (version "1.0.107")
     (source
       (origin
         (method url-fetch)
@@ -18064,7 +18064,7 @@ crate (implementation detail).")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "19c7pjvjll72yb9wyrmpdylwqglizn8kayww8qcm24b2gvd1zrir"))))
+          "116d3i750nknl6jw9vmvyxrndrmwn5gm7zzxzx6rw4jqvmq6m89g"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -18074,8 +18074,9 @@ crate (implementation detail).")
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-syn" ,rust-syn-1))
+        ("rust-syn" ,rust-syn-2))
        #:cargo-development-inputs
        (("rust-cxx" ,rust-cxx-1))))
     (home-page "https://cxx.rs")
