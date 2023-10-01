@@ -29226,23 +29226,25 @@ IEEE 754-2008 binary16 type.")
   (package
     (inherit rust-half-2)
     (name "rust-half")
-    (version "1.7.1")
+    (version "1.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "half" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1wzavaaaa2jwkm4i1dbglmwjfsdhn4n73wrkbdzllaynlams5b32"))))
+        (base32 "1mqbmx2m9qd4lslkb42fzgldsklhv9c4bxsc8j82r80d8m24mfza"))))
     (arguments
      `(#:cargo-inputs
-       (("rust-serde" ,rust-serde-1))
+       (("rust-bytemuck" ,rust-bytemuck-1)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-zerocopy" ,rust-zerocopy-0.6))
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.3)
-        ("rust-quickcheck" ,rust-quickcheck-0.9)
-        ("rust-quickcheck-macros" ,rust-quickcheck-macros-0.9)
-        ("rust-rand" ,rust-rand-0.7)
-        ("rust-version-sync" ,rust-version-sync-0.8))))))
+        ("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-quickcheck-macros" ,rust-quickcheck-macros-1)
+        ("rust-rand" ,rust-rand-0.8))))))
 
 (define-public rust-home-0.5
   (package
