@@ -77535,7 +77535,7 @@ result.")
 (define-public rust-wasm-bindgen-futures-0.4
   (package
     (name "rust-wasm-bindgen-futures")
-    (version "0.4.34")
+    (version "0.4.37")
     (source
      (origin
        (method url-fetch)
@@ -77543,7 +77543,7 @@ result.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0m0lnnnhs9ni4dn9vz74prsjz8bdcf8dvnznd5ljch5s279f06gj"))))
+        (base32 "00zagjk39g4jjjnvfh35s7w6s0p6sy88i5c7y421z7vga4hvqbf0"))))
     (build-system cargo-build-system)
     (arguments
       `(#:cargo-inputs
