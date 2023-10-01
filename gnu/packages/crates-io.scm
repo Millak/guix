@@ -77592,7 +77592,7 @@ result.")
 (define-public rust-wasm-bindgen-macro-0.2
   (package
     (name "rust-wasm-bindgen-macro")
-    (version "0.2.84")
+    (version "0.2.87")
     (source
      (origin
        (method url-fetch)
@@ -77600,7 +77600,7 @@ result.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1idlq28awqhq8rclb22rn5xix82w9a4rgy11vkapzhzd1dygf8ac"))))
+        (base32 "07cg0b6zkcxa1yg1n10h62paid59s9zr8yss214bv8w2b7jrbr6y"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; 'Async blocks are unstable'
