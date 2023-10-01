@@ -61498,8 +61498,34 @@ for data that potentially contains secrets (e.g. cryptographic keys).")
      `(#:cargo-inputs
        (("rust-lazy-static" ,rust-lazy-static-1))))))
 
+(define-public rust-serial-test-derive-1
+  (package
+    (name "rust-serial-test-derive")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serial-test-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0scscldvlz3an9v0spcizaqp5wa2y4w15bk4ink8jpgq2pgq76h7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-env-logger" ,rust-env-logger-0.9))))
+    (home-page "https://github.com/palfrey/serial_test")
+    (synopsis "Helper crate for serial_test")
+    (description
+     "This package is an helper crate for @code{rust-serial-test}.")
+    (license license:expat)))
+
 (define-public rust-serial-test-derive-0.6
   (package
+    (inherit rust-serial-test-derive-1)
     (name "rust-serial-test-derive")
     (version "0.6.0")
     (source
@@ -61509,7 +61535,6 @@ for data that potentially contains secrets (e.g. cryptographic keys).")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1s6aj2bs0rr8hnralx16bvbqlbrihmii7cyplggk5yv0gp6vr098"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro-error" ,rust-proc-macro-error-1)
@@ -61519,12 +61544,7 @@ for data that potentially contains secrets (e.g. cryptographic keys).")
         ("rust-syn" ,rust-syn-1))
        #:cargo-development-inputs
        (("rust-env-logger" ,rust-env-logger-0.7)
-        ("rust-trybuild" ,rust-trybuild-1))))
-    (home-page "https://github.com/palfrey/serial_test")
-    (synopsis "Helper crate for serial_test")
-    (description
-     "This package is an helper crate for @code{rust-serial-test}.")
-    (license license:expat)))
+        ("rust-trybuild" ,rust-trybuild-1))))))
 
 (define-public rust-serial-test-derive-0.5
   (package
