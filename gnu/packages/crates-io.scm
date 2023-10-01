@@ -11965,24 +11965,24 @@ usage.")
 (define-public rust-clang-ast-0.1
   (package
     (name "rust-clang-ast")
-    (version "0.1.6")
+    (version "0.1.20")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "clang-ast" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "1sfqyxszas78s78nga88fl0i5qlr87qsj22vlxarhvx96q86impf"))))
+         (base32 "04qf9kpc2r3ca7c5x8bjp1daj42k69q12q8mz7bhajbm9rpafb8m"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t     ; Uses unstable features.
+     `(#:tests? #f      ; Fails to build clang-ast-test-suite.
        #:cargo-inputs
-       (("rust-serde" ,rust-serde-1))
+       (("rust-rustc-hash" ,rust-rustc-hash-1)
+        ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
        (("rust-clang-ast-test-suite" ,rust-clang-ast-test-suite-0.0.0)
-        ("rust-serde" ,rust-serde-1)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1))))
     (home-page "https://github.com/dtolnay/clang-ast")
     (synopsis "Data structures for processing Clang's ast format")
