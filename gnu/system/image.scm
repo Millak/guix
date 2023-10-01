@@ -246,7 +246,7 @@ set to the given OS."
    (name 'qcow2)
    (constructor (cut image-with-os
                  (image
-                  (inherit mbr-disk-image)
+                  (inherit mbr-hybrid-disk-image)
                   (name 'image.qcow2)
                   (format 'compressed-qcow2))
                  <>))))
