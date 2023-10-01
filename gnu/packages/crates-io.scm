@@ -17545,6 +17545,28 @@ re-exported cipher crate.")
 use with bindgen.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-cuda-std-macros-0.2
+  (package
+    (name "rust-cuda-std-macros")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cuda-std-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hlakxn9pz8233pwsh44j8gzqzf078a3lnnq3v2cadmb4c4l1mlz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/Rust-GPU/Rust-CUDA")
+    (synopsis "Macros for cuda_std")
+    (description "This package provides macros for cuda_std.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-curl-0.4
   (package
     (name "rust-curl")
