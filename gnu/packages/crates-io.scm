@@ -25057,6 +25057,28 @@ traits.")
         (base32
          "0036jb8ry4h83n319jb20b5yvyfyq8mx8dkxnyjm22nq8fl8yjhk"))))))
 
+(define-public rust-float-eq-derive-1
+  (package
+    (name "rust-float-eq-derive")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "float-eq-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0mkg635lmr0nwjlxz6f5k8g60hrd800i061hrlmpvhdkl96d74j2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://jtempest.github.io/float_eq-rs/")
+    (synopsis "Derive macro support for float_eq")
+    (description "This package provides the derive macro support for float_eq.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-float-ord-0.3
   (package
     (name "rust-float-ord")
