@@ -25524,8 +25524,47 @@ values to other threads.")
     (description "This package provides bindings for FreeType font library.")
     (license license:expat)))
 
+(define-public rust-freetype-sys-0.17
+  (package
+    (name "rust-freetype-sys")
+    (version "0.17.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "freetype-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "127z6hbsfhsw0fg110zy9s65fzald0cvwbxmhk1vxmmsdk54hcb4"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            (delete-file-recursively "freetype2")
+            ;; Inspired by Debian's patch for bzip2-sys.
+            (substitute* "Cargo.toml.orig"
+              (("cc = .*") "pkg-config = \"0.3\"\n"))
+            (copy-file "Cargo.toml.orig" "Cargo.toml")
+            (delete-file "build.rs")
+            (with-output-to-file "build.rs"
+              (lambda _
+                (format #t "fn main() {~@
+                        println!(\"cargo:rustc-link-lib=freetype\");~@
+                        }~%")))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (inputs
+     (list freetype))
+    (home-page "https://github.com/PistonDevelopers/freetype-sys")
+    (synopsis "Low level binding for FreeType font library")
+    (description
+     "This package provides low level binding for FreeType font library.")
+    (license license:expat)))
+
 (define-public rust-freetype-sys-0.13
   (package
+    (inherit rust-freetype-sys-0.17)
     (name "rust-freetype-sys")
     (version "0.13.1")
     (source
@@ -25539,21 +25578,13 @@ values to other threads.")
         #~(begin
             (use-modules (guix build utils))
             (delete-file-recursively "freetype2")))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-cmake" ,rust-cmake-0.1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-pkg-config" ,rust-pkg-config-0.3))))
-    (inputs
-     (list freetype))
     (native-inputs
-     (list pkg-config))
-    (home-page "https://github.com/PistonDevelopers/freetype-sys")
-    (synopsis "Low level binding for FreeType font library")
-    (description
-     "This package provides low level binding for FreeType font library.")
-    (license license:expat)))
+     (list pkg-config))))
 
 (define-public rust-fs2-0.4
   (package
