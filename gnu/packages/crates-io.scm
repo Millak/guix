@@ -17545,6 +17545,31 @@ re-exported cipher crate.")
 use with bindgen.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-cuda-std-0.2
+  (package
+    (name "rust-cuda-std")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cuda-std" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "174237dj152dvndvykcn17nz2d0kdzsyyxnb6fsdz3i7xa8lfcgn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Test suite can't find attribute 'kernel'.
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-cuda-std-macros" ,rust-cuda-std-macros-0.2)
+        ("rust-half" ,rust-half-1)
+        ("rust-paste" ,rust-paste-1)
+        ("rust-vek" ,rust-vek-0.15))))
+    (home-page "https://github.com/Rust-GPU/Rust-CUDA")
+    (synopsis "Standard library for CUDA with rustc_codegen_nvvm")
+    (description "Standard library for CUDA with rustc_codegen_nvvm.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-cuda-std-macros-0.2
   (package
     (name "rust-cuda-std-macros")
