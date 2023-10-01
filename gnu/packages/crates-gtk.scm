@@ -2222,26 +2222,24 @@ library.")
      "Rust bindings for the PangoCairo library.")
     (license license:expat)))
 
-(define-public rust-pangocairo-sys-0.15
+(define-public rust-pangocairo-sys-0.17
   (package
     (name "rust-pangocairo-sys")
-    (version "0.15.1")
+    (version "0.17.10")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "pangocairo-sys" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "154llaawy60zh8fkw2yq0r31ynpmqlsr7brryzaq2v4ijijp9kvq"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pangocairo-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ymr4aqrdpysz0rh383s4h6hj8nbkyj7n4723f45zzzqkf6x7pwl"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-cairo-sys-rs" ,rust-cairo-sys-rs-0.15)
-        ("rust-glib-sys" ,rust-glib-sys-0.15)
+       (("rust-cairo-sys-rs" ,rust-cairo-sys-rs-0.17)
+        ("rust-glib-sys" ,rust-glib-sys-0.17)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-pango-sys" ,rust-pango-sys-0.15)
+        ("rust-pango-sys" ,rust-pango-sys-0.17)
         ("rust-system-deps" ,rust-system-deps-6))
        #:cargo-development-inputs
        (("rust-shell-words" ,rust-shell-words-1)
@@ -2253,8 +2251,33 @@ library.")
      (list cairo glib pango))
     (home-page "https://gtk-rs.org/")
     (synopsis "FFI bindings to libgtk-3")
-    (description "This package provides FFI bindings to libgtk-3.")
+    (description "This package provides FFI bindings to @code{PangoCairo}.")
     (license license:expat)))
+
+(define-public rust-pangocairo-sys-0.15
+  (package
+    (inherit rust-pangocairo-sys-0.17)
+    (name "rust-pangocairo-sys")
+    (version "0.15.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "pangocairo-sys" version))
+        (file-name
+         (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "154llaawy60zh8fkw2yq0r31ynpmqlsr7brryzaq2v4ijijp9kvq"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cairo-sys-rs" ,rust-cairo-sys-rs-0.15)
+        ("rust-glib-sys" ,rust-glib-sys-0.15)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-pango-sys" ,rust-pango-sys-0.15)
+        ("rust-system-deps" ,rust-system-deps-6))
+       #:cargo-development-inputs
+       (("rust-shell-words" ,rust-shell-words-1)
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-soup-sys-0.10
   (package
