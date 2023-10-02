@@ -41805,21 +41805,30 @@ while still providing platform specific APIs.")
   (package
     (inherit rust-nix-0.26)
     (name "rust-nix")
-    (version "0.24.2")
+    (version "0.24.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nix" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1z35n1bhzslr7zawy2c0fl90jjy9l5b3lnsidls3908vfk0xnp0r"))))
+        (base32 "0sc0yzdl51b49bqd9l9cmimp1sw1hxb8iyv4d35ww6d7m5rfjlps"))))
     (arguments
-     (list #:skip-build? #t
+     (list #:tests? #f      ; Test suite hangs.
            #:cargo-inputs
            `(("rust-bitflags" ,rust-bitflags-1)
              ("rust-cfg-if" ,rust-cfg-if-1)
              ("rust-libc" ,rust-libc-0.2)
-             ("rust-memoffset" ,rust-memoffset-0.6))))))
+             ("rust-memoffset" ,rust-memoffset-0.6))
+           #:cargo-development-inputs
+           `(("rust-assert-impl" ,rust-assert-impl-0.1)
+             ("rust-caps" ,rust-caps-0.5)
+             ("rust-lazy-static" ,rust-lazy-static-1)
+             ("rust-parking-lot" ,rust-parking-lot-0.11)
+             ("rust-rand" ,rust-rand-0.8)
+             ("rust-semver" ,rust-semver-1)
+             ("rust-sysctl" ,rust-sysctl-0.1)
+             ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-nix-0.23
   (package
