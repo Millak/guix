@@ -165,7 +165,7 @@ files."
                             (ice-9 popen) ;for the 'schedule' action
                             (ice-9 rdelim)
                             (ice-9 match)
-                            ((shepherd support) #:select (%user-log-dir))
+                            (shepherd support)    ;for '%user-log-dir'
                             ,@%default-modules))
                  (start #~(make-forkexec-constructor
                            (list #$(file-append mcron "/bin/mcron")
