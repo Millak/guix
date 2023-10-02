@@ -32,7 +32,7 @@
          (fr "Déclaration du déchargement dans Guix System et childhurds"))
         (body
          (en "When configuring Guix System, it is now possible to declare
-builds machines to offload to directly from the @code{operating-system}
+build machines to offload to directly from the @code{operating-system}
 declaration by specifying the @code{build-machines} field of
 @code{guix-configuration}.  When you do this, @command{guix system} generates
 a @file{/etc/guix/machines.scm} file by concatenating the @code{(build-machine
