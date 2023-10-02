@@ -1624,6 +1624,37 @@ encompassing software system for the operations and analysis of the ESA satelite
 Herschel.")
     (license license:gpl3+)))
 
+(define-public python-casa-formats-io
+  (package
+    (name "python-casa-formats-io")
+    (version "0.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "casa-formats-io" version))
+              (sha256
+               (base32
+                "07cchih2ws6jf6q1a4xhkv0jk96s3w08kzxx9l1911wzqk0pw9pj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'build-extensions
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (native-inputs
+     (list python-pytest python-pytest-cov python-pytest-openfiles))
+    (propagated-inputs
+     (list python-astropy python-click python-dask python-numpy))
+    (home-page "https://casa-formats-io.readthedocs.io/")
+    (synopsis "Dask-based reader for CASA data")
+    (description
+     "The @code{casa-formats-io} package is a small package which implements
+functionality to read data stored in @acronym{CASA, Common Astronomy Software
+Applications} formats (such as @file{.image} datasets).  This implementation
+is independent of and does not use @code{casacore}.")
+    (license license:lgpl2.0)))
+
 (define-public python-ccdproc
   (package
     (name "python-ccdproc")
