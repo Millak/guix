@@ -64439,8 +64439,32 @@ It is also flexible enough to build your own test harness like @code{trycmd}.")
 benchmarking.")
     (license license:bsd-3)))
 
+(define-public rust-socket2-0.5
+  (package
+    (name "rust-socket2")
+    (version "0.5.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "socket2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17lqx8w2b3nysrkdbdz8y7fkikz5v77c052q57lxwajmxchfhca0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-windows-sys" ,rust-windows-sys-0.48))))
+    (home-page "https://github.com/rust-lang/socket2")
+    (synopsis "Networking sockets in Rust")
+    (description
+     "This package provides utilities for handling networking sockets with a
+maximal amount of configuration possible intended.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-socket2-0.4
   (package
+    (inherit rust-socket2-0.5)
     (name "rust-socket2")
     (version "0.4.7")
     (source
@@ -64450,18 +64474,10 @@ benchmarking.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32 "1gaf57dc16s1lfyv388w9vdl9qay15xds78jcwakml9kj3dx5qh2"))))
-    (build-system cargo-build-system)
     (arguments
      (list #:cargo-inputs
            `(("rust-libc" ,rust-libc-0.2)
-             ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/rust-lang/socket2")
-    (synopsis "Networking sockets in Rust")
-    (description
-     "This package provides utilities for handling networking sockets with a
-maximal amount of configuration possible intended.")
-    (license (list license:asl2.0
-                   license:expat))))
+             ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-socket2-0.3
   (package
