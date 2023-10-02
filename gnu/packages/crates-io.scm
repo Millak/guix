@@ -39526,23 +39526,23 @@ streaming API for miniz_oxide.")
 (define-public rust-mio-0.8
   (package
     (name "rust-mio")
-    (version "0.8.6")
+    (version "0.8.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "mio" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ygx5chq81k3vk2bx722xwcwf2qydmm337jsnijgzd7mxx39m7av"))))
+        (base32 "1lhrdgcmcy8f0qy1n7357q0aprfkm5gld5mjcrp209pwsdf7cylj"))))
     (build-system cargo-build-system)
     (arguments
      (list #:cargo-inputs
            `(("rust-libc" ,rust-libc-0.2)
              ("rust-log" ,rust-log-0.4)
              ("rust-wasi" ,rust-wasi-0.11)
-             ("rust-windows-sys" ,rust-windows-sys-0.45))
+             ("rust-windows-sys" ,rust-windows-sys-0.48))
            #:cargo-development-inputs
-           `(("rust-env-logger" ,rust-env-logger-0.8)
+           `(("rust-env-logger" ,rust-env-logger-0.9)
              ("rust-rand" ,rust-rand-0.8))))
     (home-page "https://github.com/tokio-rs/mio")
     (synopsis "Lightweight non-blocking IO")
