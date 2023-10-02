@@ -57547,8 +57547,67 @@ rustc compiler.")
         `(("rust-failure" ,rust-failure-0.1)
           ,@(alist-delete "rust-anyhow" cargo-inputs)))))))
 
+(define-public rust-rustix-0.38
+  (package
+    (name "rust-rustix")
+    (version "0.38.15")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustix" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0cg5jsfx8lf5npjf2v5ac8fca5443hq8iqqlg2gg1yc8pl6dmyfj"))
+       (snippet
+               #~(begin
+                   (use-modules (guix build utils))
+                   (for-each delete-file (find-files "." "\\.a$"))
+                   (delete-file "Cargo.toml")
+                   (substitute* "Cargo.toml.orig"
+                     ;; Depend unconditionally on the cc crate
+                     (("(cc = .*), optional = true.*" _ cc)
+                      (string-append cc " }\n"))
+                     ;; Disable using the linux_raw backend
+                     (("not\\(rustic_use_libc\\)") "miri"))
+                   (substitute* "build.rs"
+                     ;; Always use the 'feature = "cc"' path
+                     (("not\\(feature = \"cc\"\\)") "feature = \"foobar\"")
+                     (("#\\[cfg\\(feature = \"cc\"\\)\\]" all)
+                      (string-append "//" all)))
+                   (copy-file "Cargo.toml.orig" "Cargo.toml")))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-2)
+        ("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+        ("rust-errno" ,rust-errno-0.3)
+        ("rust-itoa" ,rust-itoa-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-linux-raw-sys" ,rust-linux-raw-sys-0.4)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
+        ("rust-windows-sys" ,rust-windows-sys-0.48))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4)
+        ("rust-ctor" ,rust-ctor-0.2)
+        ("rust-errno" ,rust-errno-0.3)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-memoffset" ,rust-memoffset-0.9)
+        ("rust-serial-test" ,rust-serial-test-2)
+        ("rust-static-assertions" ,rust-static-assertions-1)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/bytecodealliance/rustix")
+    (synopsis "Safe Rust bindings to POSIX syscalls")
+    (description
+     "This package provides safe Rust bindings to POSIX syscalls.")
+    ;; Apache 2.0, Apache 2.0 with LLVM exception, or Expat.
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-rustix-0.37
   (package
+    (inherit rust-rustix-0.38)
     (name "rust-rustix")
     (version "0.37.19")
     (source (origin
@@ -57575,7 +57634,6 @@ rustc compiler.")
                      (("#\\[cfg\\(feature = \"cc\"\\)\\]" all)
                       (string-append "//" all)))
                    (copy-file "Cargo.toml.orig" "Cargo.toml")))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
@@ -57599,13 +57657,7 @@ rustc compiler.")
         ("rust-libc" ,rust-libc-0.2)
         ("rust-memoffset" ,rust-memoffset-0.8)
         ("rust-serial-test" ,rust-serial-test-0.6)
-        ("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/bytecodealliance/rustix")
-    (synopsis "Safe Rust bindings to POSIX syscalls")
-    (description
-     "This package provides safe Rust bindings to POSIX syscalls.")
-    ;; Apache 2.0, Apache 2.0 with LLVM exception, or Expat.
-    (license (list license:asl2.0 license:expat))))
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-rustix-0.36
   (package
