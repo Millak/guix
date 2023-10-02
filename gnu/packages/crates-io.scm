@@ -39606,6 +39606,35 @@ possible over the OS abstractions.")
         ("rust-env-logger" ,rust-env-logger-0.4)
         ("rust-tempdir" ,rust-tempdir-0.3))))))
 
+(define-public rust-mio-aio-0.7
+  (package
+    (name "rust-mio-aio")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mio-aio" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07y7wnkd4xvj48fyxgnfm9jqjldgqfd39k3ydfmaqc76mw36pagq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ; no variant named `SigevKevent` found for enum `SigevNotify`
+       #:cargo-inputs
+       (("rust-mio" ,rust-mio-0.8)
+        ("rust-nix" ,rust-nix-0.24))
+       #:cargo-development-inputs
+       (("rust-assert-impl" ,rust-assert-impl-0.1)
+        ("rust-log" ,rust-log-0.3)
+        ("rust-mio" ,rust-mio-0.8)
+        ("rust-nix" ,rust-nix-0.24)
+        ("rust-sysctl" ,rust-sysctl-0.1)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/asomers/mio-aio")
+    (synopsis "POSIX AIO bindings for mio")
+    (description "This package provides POSIX AIO bindings for mio.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-mio-anonymous-pipes-0.2
   (package
     (name "rust-mio-anonymous-pipes")
