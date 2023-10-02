@@ -4204,8 +4204,32 @@ Askama.")
 library for Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-asn1-derive-0.15
+  (package
+    (name "rust-asn1-derive")
+    (version "0.15.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "asn1-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1771kfjycjs4g2acqvxpjy3igfcgg8hychczl1lsqq64za4gj6l6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/alex/rust-asn1")
+    (synopsis "#[derive] support for asn1")
+    (description
+     "This package provides #[derive] support for @code{asn1}.")
+    (license license:bsd-3)))
+
 (define-public rust-asn1-derive-0.13
   (package
+    (inherit rust-asn1-derive-0.15)
     (name "rust-asn1-derive")
     (version "0.13.0")
     (source (origin
@@ -4215,18 +4239,12 @@ library for Rust.")
               (sha256
                (base32
                 "1bvqriazb23gysygpzng1dhzjgnlv274q2yj5gpmlpl7jp0pkaxz"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/alex/rust-asn1")
-    (synopsis "#[derive] support for asn1")
-    (description
-     "This package provides #[derive] support for @code{asn1}.")
-    (license license:bsd-3)))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-asn1-0.15
   (package
