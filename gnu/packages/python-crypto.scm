@@ -569,6 +569,8 @@ ciphers, message digests and key derivation functions.")
                   (srfi srfi-1)
                   (ice-9 match))
       #:install-source? #f
+      ;; As seen in noxfile.py
+      #:cargo-test-flags ''("--release" "--no-default-features")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'chdir
@@ -586,11 +588,6 @@ ciphers, message digests and key derivation functions.")
               (apply (assoc-ref %standard-phases 'configure)
                      (append args
                              (list #:inputs (alist-delete "source" inputs))))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                ;; As seen in tox.ini
-                (invoke "cargo" "test" "--no-default-features"))))
           (add-after 'install 'install-shared-library
             (lambda _
               (install-file "target/release/libcryptography_rust.so"
