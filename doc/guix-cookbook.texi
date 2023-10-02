@@ -22,7 +22,7 @@ Copyright @copyright{} 2020 André Batista@*
 Copyright @copyright{} 2020 Christine Lemmer-Webber@*
 Copyright @copyright{} 2021 Joshua Branson@*
 Copyright @copyright{} 2022, 2023 Maxim Cournoyer@*
-Copyright @copyright{} 2023 Ludovic Courtès
+Copyright @copyright{} 2023 Ludovic Courtès@*
 Copyright @copyright{} 2023 Thomas Ieong
 
 Permission is granted to copy, distribute and/or modify this document
@@ -78,6 +78,7 @@ manual}).
 * System Configuration::        Customizing the GNU System
 * Containers::                  Isolated environments and nested systems
 * Advanced package management::  Power to the users!
+* Software Development::         Environments, continuous integration, etc.
 * Environment management::      Control environment
 * Installing Guix on a Cluster::  High-performance computing.
 
@@ -4098,6 +4099,654 @@ mkdir -p "$GUIX_EXTRA_PROFILES/my-project"
 
 It's safe to delete the Guix channel profile you've just installed with the
 channel specification, the project profile does not depend on it.
+
+@node Software Development
+@chapter Software Development
+
+@cindex development, with Guix
+@cindex software development, with Guix
+Guix is a handy tool for developers; @command{guix shell}, in
+particular, gives a standalone development environment for your package,
+no matter what language(s) it's written in (@pxref{Invoking guix
+shell,,, guix, GNU Guix Reference Manual}).  To benefit from it, you
+have to initially write a package definition and have it either in Guix
+proper, or in a channel, or directly in your project's source tree as a
+@file{guix.scm} file.  This last option is appealing: all developers
+have to do to get set up is clone the project's repository and run
+@command{guix shell}, with no arguments.
+
+Development needs go beyond development environments though.  How can
+developers perform continuous integration of their code in Guix build
+environments? How can they deliver their code straight to adventurous
+users? This chapter describes a set of files developers can add to their
+repository to set up Guix-based development environments, continuous
+integration, and continuous delivery---all at once@footnote{This chapter
+is adapted from a
+@uref{https://guix.gnu.org/en/blog/2023/from-development-environments-to-continuous-integrationthe-ultimate-guide-to-software-development-with-guix/,
+blog post} published in June 2023 on the Guix web site.}.
+
+@menu
+* Getting Started::             Step 0: using `guix shell'.
+* Building with Guix::          Step 1: building your code.
+* The Repository as a Channel::  Step 2: turning the repo in a channel.
+* Package Variants::            Bonus: Defining variants.
+* Setting Up Continuous Integration::  Step 3: continuous integration.
+* Build Manifest::              Bonus: Manifest.
+* Wrapping Up::                 Recap.
+@end menu
+
+@node Getting Started
+@section Getting Started
+
+How do we go about ``Guixifying'' a repository? The first step, as we've
+seen, will be to add a @file{guix.scm} at the root of the repository in
+question. We'll take @uref{https://www.gnu.org/software/guile,Guile} as
+an example in this chapter: it's written in Scheme (mostly) and C, and
+has a number of dependencies---a C compilation tool chain, C libraries,
+Autoconf and its friends, LaTeX, and so on. The resulting
+@file{guix.scm} looks like the usual package definition (@pxref{Defining
+Packages,,, guix, GNU Guix Reference Manual}), just without the
+@code{define-public} bit:
+
+@lisp
+;; The ‘guix.scm’ file for Guile, for use by ‘guix shell’.
+
+(use-modules (guix)
+             (guix build-system gnu)
+             ((guix licenses) #:prefix license:)
+             (gnu packages autotools)
+             (gnu packages base)
+             (gnu packages bash)
+             (gnu packages bdw-gc)
+             (gnu packages compression)
+             (gnu packages flex)
+             (gnu packages gdb)
+             (gnu packages gettext)
+             (gnu packages gperf)
+             (gnu packages libffi)
+             (gnu packages libunistring)
+             (gnu packages linux)
+             (gnu packages pkg-config)
+             (gnu packages readline)
+             (gnu packages tex)
+             (gnu packages texinfo)
+             (gnu packages version-control))
+
+(package
+  (name "guile")
+  (version "3.0.99-git")                          ;funky version number
+  (source #f)                                     ;no source
+  (build-system gnu-build-system)
+  (native-inputs
+   (append (list autoconf
+                 automake
+                 libtool
+                 gnu-gettext
+                 flex
+                 texinfo
+                 texlive-base                 ;for "make pdf"
+                 texlive-epsf
+                 gperf
+                 git
+                 gdb
+                 strace
+                 readline
+                 lzip
+                 pkg-config)
+
+           ;; When cross-compiling, a native version of Guile itself is
+           ;; needed.
+           (if (%current-target-system)
+               (list this-package)
+               '())))
+  (inputs
+   (list libffi bash-minimal))
+  (propagated-inputs
+   (list libunistring libgc))
+
+  (native-search-paths
+   (list (search-path-specification
+          (variable "GUILE_LOAD_PATH")
+          (files '("share/guile/site/3.0")))
+         (search-path-specification
+          (variable "GUILE_LOAD_COMPILED_PATH")
+          (files '("lib/guile/3.0/site-ccache")))))
+  (synopsis "Scheme implementation intended especially for extensions")
+  (description
+   "Guile is the GNU Ubiquitous Intelligent Language for Extensions,
+and it's actually a full-blown Scheme implementation!")
+  (home-page "https://www.gnu.org/software/guile/")
+  (license license:lgpl3+))
+@end lisp
+
+Quite a bit of boilerplate, but now someone who'd like to hack on Guile
+now only needs to run:
+
+@lisp
+guix shell
+@end lisp
+
+That gives them a shell containing all the dependencies of Guile: those
+listed above, but also @emph{implicit dependencies} such as the GCC tool
+chain, GNU@ Make, sed, grep, and so on.  @xref{Invoking guix shell,,,
+guix, GNU Guix Reference Manual}, for more info on @command{guix shell}.
+
+@quotation The chef's recommendation
+Our suggestion is to create development environments like this:
+
+@example
+guix shell --container --link-profile
+@end example
+
+@noindent
+... or, for short:
+
+@example
+guix shell -CP
+@end example
+
+That gives a shell in an isolated container, and all the dependencies
+show up in @code{$HOME/.guix-profile}, which plays well with caches such
+as @file{config.cache} (@pxref{Cache Files,,, autoconf, Autoconf}) and
+absolute file names recorded in generated @code{Makefile}s and the
+likes. The fact that the shell runs in a container brings peace of mind:
+nothing but the current directory and Guile's dependencies is visible
+inside the container; nothing from the system can possibly interfere
+with your development.
+@end quotation
+
+@node Building with Guix
+@section Level 1: Building with Guix
+
+Now that we have a package definition (@pxref{Getting Started}), why not
+also take advantage of it so we can build Guile with Guix? We had left
+the @code{source} field empty, because @command{guix shell} above only
+cares about the @emph{inputs} of our package---so it can set up the
+development environment---not about the package itself.
+
+To build the package with Guix, we'll need to fill out the @code{source}
+field, along these lines:
+
+@lisp
+(use-modules (guix)
+             (guix git-download)  ;for ‘git-predicate’
+             @dots{})
+
+(define vcs-file?
+  ;; Return true if the given file is under version control.
+  (or (git-predicate (current-source-directory))
+      (const #t)))                                ;not in a Git checkout
+
+(package
+  (name "guile")
+  (version "3.0.99-git")                          ;funky version number
+  (source (local-file "." "guile-checkout"
+                      #:recursive? #t
+                      #:select? vcs-file?))
+  @dots{})
+@end lisp
+
+Here's what we changed compared to the previous section:
+
+@enumerate 
+@item
+We added @code{(guix git-download)} to our set of imported modules, so
+we can use its @code{git-predicate} procedure.
+@item
+We defined @code{vcs-file?} as a procedure that returns true when passed
+a file that is under version control. For good measure, we add a
+fallback case for when we're not in a Git checkout: always return true.
+@item
+We set @code{source} to a
+@uref{https://guix.gnu.org/manual/devel/en/html_node/G_002dExpressions.html#index-local_002dfile,@code{local-file}}---a
+recursive copy of the current directory (@code{"."}), limited to files
+under version control (the @code{#:select?} bit).
+@end enumerate
+
+From there on, our @file{guix.scm} file serves a second purpose: it lets
+us build the software with Guix. The whole point of building with Guix
+is that it's a ``clean'' build---you can be sure nothing from your
+working tree or system interferes with the build result---and it lets
+you test a variety of things. First, you can do a plain native build:
+
+@example
+guix build -f guix.scm
+@end example
+
+But you can also build for another system (possibly after setting up
+@pxref{Daemon Offload Setup, offloading,, guix, GNU Guix Reference Manual}
+or
+@pxref{Virtualization Services, transparent emulation,, guix, GNU Guix
+Reference Manual}):
+
+@lisp
+guix build -f guix.scm -s aarch64-linux -s riscv64-linux
+@end lisp
+
+@noindent
+@dots{} or cross-compile:
+
+@lisp
+guix build -f guix.scm --target=x86_64-w64-mingw32
+@end lisp
+
+You can also use @dfn{package transformations} to test package variants
+(@pxref{Package Transformations,,, guix, GNU Guix Reference Manual}):
+
+@example
+# What if we built with Clang instead of GCC?
+guix build -f guix.scm \
+  --with-c-toolchain=guile@@3.0.99-git=clang-toolchain
+
+# What about that under-tested configure flag?
+guix build -f guix.scm \
+  --with-configure-flag=guile@@3.0.99-git=--disable-networking
+@end example
+
+Handy!
+
+@node The Repository as a Channel
+@section Level 2: The Repository as a Channel
+
+We now have a Git repository containing (among other things) a package
+definition (@pxref{Building with Guix}).  Can't we turn it into a
+@dfn{channel} (@pxref{Channels,,, guix, GNU Guix Reference Manual})?
+After all, channels are designed to ship package definitions to users,
+and that's exactly what we're doing with our @file{guix.scm}.
+
+Turns out we can indeed turn it into a channel, but with one caveat: we
+must create a separate directory for the @code{.scm} file(s) of our
+channel so that @command{guix pull} doesn't load unrelated @code{.scm}
+files when someone pulls the channel---and in Guile, there are lots of
+them! So we'll start like this, keeping a top-level @file{guix.scm}
+symlink for the sake of @command{guix shell}:
+
+@lisp
+mkdir -p .guix/modules
+mv guix.scm .guix/modules/guile-package.scm
+ln -s .guix/modules/guile-package.scm guix.scm
+@end lisp
+
+To make it usable as part of a channel, we need to turn our
+@file{guix.scm} file into a @dfn{package module} (@pxref{Package
+Modules,,, guix, GNU Guix Reference Manual}):
+we do that by changing the @code{use-modules} form at the top to a
+@code{define-module} form. We also need to actually @emph{export} a
+package variable, with @code{define-public}, while still returning the
+package value at the end of the file so we can still use
+@command{guix shell} and @command{guix build -f guix.scm}. The end result
+looks like this (not repeating things that haven't changed):
+
+@lisp
+(define-module (guile-package)
+  #:use-module (guix)
+  #:use-module (guix git-download)   ;for ‘git-predicate’
+  @dots{})
+
+(define vcs-file?
+  ;; Return true if the given file is under version control.
+  (or (git-predicate (dirname (dirname (current-source-directory))))
+      (const #t)))                                ;not in a Git checkout
+
+(define-public guile
+  (package
+    (name "guile")
+    (version "3.0.99-git")                          ;funky version number
+    (source (local-file "../.." "guile-checkout"
+                        #:recursive? #t
+                        #:select? vcs-file?))
+    @dots{}))
+
+;; Return the package object define above at the end of the module.
+guile
+@end lisp
+
+We need one last thing: a
+@uref{https://guix.gnu.org/manual/devel/en/html_node/Package-Modules-in-a-Sub_002ddirectory.html,@code{.guix-channel}
+file} so Guix knows where to look for package modules in our repository:
+
+@lisp
+;; This file lets us present this repo as a Guix channel.
+
+(channel
+  (version 0)
+  (directory ".guix/modules"))  ;look for package modules under .guix/modules/
+@end lisp
+
+To recap, we now have these files:
+
+@lisp
+.
+├── .guix-channel
+├── guix.scm → .guix/modules/guile-package.scm
+└── .guix
+    └── modules
+       └── guile-package.scm
+@end lisp
+
+And that's it: we have a channel! (We could do better and support
+@uref{https://guix.gnu.org/manual/devel/en/html_node/Specifying-Channel-Authorizations.html,@emph{channel
+authentication}} so users know they're pulling genuine code. We'll spare
+you the details here but it's worth considering!) Users can pull from
+this channel by
+@uref{https://guix.gnu.org/manual/devel/en/html_node/Specifying-Additional-Channels.html,adding
+it to @code{~/.config/guix/channels.scm}}, along these lines:
+
+@lisp
+(append (list (channel
+                (name 'guile)
+                (url "https://git.savannah.gnu.org/git/guile.git")
+                (branch "main")))
+        %default-channels)
+@end lisp
+
+After running @command{guix pull}, we can see the new package:
+
+@example
+$ guix describe
+Generation 264  May 26 2023 16:00:35    (current)
+  guile 36fd2b4
+    repository URL: https://git.savannah.gnu.org/git/guile.git
+    branch: main
+    commit: 36fd2b4920ae926c79b936c29e739e71a6dff2bc
+  guix c5bc698
+    repository URL: https://git.savannah.gnu.org/git/guix.git
+    commit: c5bc698e8922d78ed85989985cc2ceb034de2f23
+$ guix package -A ^guile$
+guile   3.0.99-git      out,debug       guile-package.scm:51:4
+guile   3.0.9           out,debug       gnu/packages/guile.scm:317:2
+guile   2.2.7           out,debug       gnu/packages/guile.scm:258:2
+guile   2.2.4           out,debug       gnu/packages/guile.scm:304:2
+guile   2.0.14          out,debug       gnu/packages/guile.scm:148:2
+guile   1.8.8           out             gnu/packages/guile.scm:77:2
+$ guix build guile@@3.0.99-git
+[@dots{}]
+/gnu/store/axnzbl89yz7ld78bmx72vpqp802dwsar-guile-3.0.99-git-debug
+/gnu/store/r34gsij7f0glg2fbakcmmk0zn4v62s5w-guile-3.0.99-git
+@end example
+
+That's how, as a developer, you get your software delivered directly
+into the hands of users! No intermediaries, yet no loss of transparency
+and provenance tracking.
+
+With that in place, it also becomes trivial for anyone to create Docker
+images, Deb/RPM packages, or a plain tarball with @command{guix pack}
+(@pxref{Invoking guix pack,,, guix, GNU Guix Reference Manual}):
+
+@example
+# How about a Docker image of our Guile snapshot?
+guix pack -f docker -S /bin=bin guile@@3.0.99-git
+
+# And a relocatable RPM?
+guix pack -f rpm -R -S /bin=bin guile@@3.0.99-git
+@end example
+
+@node Package Variants
+@section Bonus: Package Variants
+
+We now have an actual channel, but it contains only one package
+(@pxref{The Repository as a Channel}).  While we're at it, we can define
+@dfn{package variants} (@pxref{Defining Package Variants,,, guix, GNU
+Guix Reference Manual}) in our @file{guile-package.scm} file, variants
+that we want to be able to test as Guile developers---similar to what we
+did above with transformation options. We can add them like so:
+
+@lisp
+;; This is the ‘.guix/modules/guile-package.scm’ file.
+
+(define-module (guile-package)
+  @dots{})
+
+(define-public guile
+  @dots{})
+
+(define (package-with-configure-flags p flags)
+  "Return P with FLAGS as additional 'configure' flags."
+  (package/inherit p
+    (arguments
+     (substitute-keyword-arguments (package-arguments p)
+       ((#:configure-flags original-flags #~(list))
+        #~(append #$original-flags #$flags))))))
+
+(define-public guile-without-threads
+  (package
+    (inherit (package-with-configure-flags guile
+                                           #~(list "--without-threads")))
+    (name "guile-without-threads")))
+
+(define-public guile-without-networking
+  (package
+    (inherit (package-with-configure-flags guile
+                                           #~(list "--disable-networking")))
+    (name "guile-without-networking")))
+
+
+;; Return the package object defined above at the end of the module.
+guile
+@end lisp
+
+We can build these variants as regular packages once we've pulled the
+channel. Alternatively, from a checkout of Guile, we can run a command
+like this one from the top level:
+
+@lisp
+guix build -L $PWD/.guix/modules guile-without-threads
+@end lisp
+
+@node Setting Up Continuous Integration
+@section Level 3: Setting Up Continuous Integration
+
+@cindex continuous integration (CI)
+The channel we defined above (@pxref{The Repository as a Channel})
+becomes even more interesting once we set up
+@uref{https://en.wikipedia.org/wiki/Continuous_integration,
+@dfn{continuous integration}} (CI). There are several ways to do that.
+
+You can use one of the mainstream continuous integration tools, such as
+GitLab-CI. To do that, you need to make sure you run jobs in a Docker
+image or virtual machine that has Guix installed. If we were to do that
+in the case of Guile, we'd have a job that runs a shell command like
+this one:
+
+@lisp
+guix build -L $PWD/.guix/modules guile@@3.0.99-git
+@end lisp
+
+Doing this works great and has the advantage of being easy to achieve on
+your favorite CI platform.
+
+That said, you'll really get the most of it by using
+@uref{https://guix.gnu.org/en/cuirass,Cuirass}, a CI tool designed for
+and tightly integrated with Guix. Using it is more work than using a
+hosted CI tool because you first need to set it up, but that setup phase
+is greatly simplified if you use its Guix System service
+(@pxref{Continuous Integration,,, guix, GNU Guix Reference Manual}).
+Going back to our example, we give Cuirass a spec file that goes like
+this:
+
+@lisp
+;; Cuirass spec file to build all the packages of the ‘guile’ channel.
+(list (specification
+        (name "guile")
+        (build '(channels guile))
+        (channels
+         (append (list (channel
+                         (name 'guile)
+                         (url "https://git.savannah.gnu.org/git/guile.git")
+                         (branch "main")))
+                 %default-channels))))
+@end lisp
+
+It differs from what you'd do with other CI tools in two important ways:
+
+@itemize
+@item
+Cuirass knows it's tracking @emph{two} channels, @code{guile} and
+@code{guix}. Indeed, our own @code{guile} package depends on many
+packages provided by the @code{guix} channel---GCC, the GNU libc,
+libffi, and so on. Changes to packages from the @code{guix} channel can
+potentially influence our @code{guile} build and this is something we'd
+like to see as soon as possible as Guile developers.
+@item
+Build results are not thrown away: they can be distributed as
+@dfn{substitutes} so that users of our @code{guile} channel
+transparently get pre-built binaries!  (@pxref{Substitutes,,, guix, GNU
+Guix Reference Manual}, for background info on substitutes.)
+@end itemize
+
+From a developer's viewpoint, the end result is this
+@uref{https://ci.guix.gnu.org/jobset/guile,status page} listing
+@emph{evaluations}: each evaluation is a combination of commits of the
+@code{guix} and @code{guile} channels providing a number of
+@emph{jobs}---one job per package defined in @file{guile-package.scm}
+times the number of target architectures.
+
+As for substitutes, they come for free! As an example, since our
+@code{guile} jobset is built on ci.guix.gnu.org, which runs
+@command{guix publish} (@pxref{Invoking guix publish,,, guix, GNU Guix
+Reference Manual}) in addition to Cuirass, one automatically gets
+substitutes for @code{guile} builds from ci.guix.gnu.org; no additional
+work is needed for that.
+
+@node Build Manifest
+@section Bonus: Build manifest
+
+The Cuirass spec above is convenient: it builds every package in our
+channel, which includes a few variants (@pxref{Setting Up Continuous
+Integration}).  However, this might be insufficiently expressive in some
+cases: one might want specific cross-compilation jobs, transformations,
+Docker images, RPM/Deb packages, or even system tests.
+
+To achieve that, you can write a @dfn{manifest} (@pxref{Writing
+Manifests,,, guix, GNU Guix Reference Manual}).  The one we have for
+Guile has entries for the package variants we defined above, as well as
+additional variants and cross builds:
+
+@lisp
+;; This is ‘.guix/manifest.scm’.
+
+(use-modules (guix)
+             (guix profiles)
+             (guile-package))   ;import our own package module
+
+(define* (package->manifest-entry* package system
+                                   #:key target)
+  "Return a manifest entry for PACKAGE on SYSTEM, optionally cross-compiled to
+TARGET."
+  (manifest-entry
+    (inherit (package->manifest-entry package))
+    (name (string-append (package-name package) "." system
+                         (if target
+                             (string-append "." target)
+                             "")))
+    (item (with-parameters ((%current-system system)
+                            (%current-target-system target))
+            package))))
+
+(define native-builds
+  (manifest
+   (append (map (lambda (system)
+                  (package->manifest-entry* guile system))
+
+                '("x86_64-linux" "i686-linux"
+                  "aarch64-linux" "armhf-linux"
+                  "powerpc64le-linux"))
+           (map (lambda (guile)
+                  (package->manifest-entry* guile "x86_64-linux"))
+                (cons (package
+                        (inherit (package-with-c-toolchain
+                                  guile
+                                  `(("clang-toolchain"
+                                     ,(specification->package
+                                       "clang-toolchain")))))
+                        (name "guile-clang"))
+                      (list guile-without-threads
+                            guile-without-networking
+                            guile-debug
+                            guile-strict-typing))))))
+
+(define cross-builds
+  (manifest
+   (map (lambda (target)
+          (package->manifest-entry* guile "x86_64-linux"
+                                    #:target target))
+        '("i586-pc-gnu"
+          "aarch64-linux-gnu"
+          "riscv64-linux-gnu"
+          "i686-w64-mingw32"
+          "x86_64-linux-gnu"))))
+
+(concatenate-manifests (list native-builds cross-builds))
+@end lisp
+
+We won't go into the details of this manifest; suffice to say that it
+provides additional flexibility. We now need to tell Cuirass to build
+this manifest, which is done with a spec slightly different from the
+previous one:
+
+@lisp
+;; Cuirass spec file to build all the packages of the ‘guile’ channel.
+(list (specification
+        (name "guile")
+        (build '(manifest ".guix/manifest.scm"))
+        (channels
+         (append (list (channel
+                         (name 'guile)
+                         (url "https://git.savannah.gnu.org/git/guile.git")
+                         (branch "main")))
+                 %default-channels))))
+@end lisp
+
+We changed the @code{(build @dots{})} part of the spec to
+@code{'(manifest ".guix/manifest.scm")} so that it would pick our
+manifest, and that's it!
+
+@node Wrapping Up
+@section Wrapping Up
+
+We picked Guile as the running example in this chapter and you can see
+the result here:
+
+@itemize
+@item
+@uref{https://git.savannah.gnu.org/cgit/guile.git/tree/.guix-channel?id=cd57379b3df636198d8cd8e76c1bfbc523762e79,@code{.guix-channel}};
+@item
+@uref{https://git.savannah.gnu.org/cgit/guile.git/tree/.guix/modules/guile-package.scm?id=cd57379b3df636198d8cd8e76c1bfbc523762e79,@code{.guix/modules/guile-package.scm}}
+with the top-level @file{guix.scm} symlink;
+@item
+@uref{https://git.savannah.gnu.org/cgit/guile.git/tree/.guix/manifest.scm?id=cd57379b3df636198d8cd8e76c1bfbc523762e79,@code{.guix/manifest.scm}}.
+@end itemize
+
+These days, repositories are commonly peppered with dot files for
+various tools: @code{.envrc}, @code{.gitlab-ci.yml},
+@code{.github/workflows}, @code{Dockerfile}, @code{.buildpacks},
+@code{Aptfile}, @code{requirements.txt}, and whatnot. It may sound like
+we're proposing a bunch of @emph{additional} files, but in fact those
+files are expressive enough to @emph{supersede} most or all of those
+listed above.
+
+With a couple of files, we get support for:
+
+@itemize
+@item
+development environments (@command{guix shell});
+@item
+pristine test builds, including for package variants and for
+cross-compilation (@command{guix build});
+@item
+continuous integration (with Cuirass or with some other tool);
+@item
+continuous delivery to users (@emph{via} the channel and with pre-built
+binaries);
+@item
+generation of derivative build artifacts such as Docker images or
+Deb/RPM packages (@command{guix pack}).
+@end itemize
+
+This a nice (in our view!) unified tool set for reproducible software
+deployment, and an illustration of how you as a developer can benefit
+from it!
+
 
 @c *********************************************************************
 @node Environment management
