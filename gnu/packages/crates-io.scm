@@ -71015,31 +71015,45 @@ tinyobjloader.")
 (define-public rust-tokio-1
   (package
     (name "rust-tokio")
-    (version "1.26.0")
+    (version "1.32.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tokio" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0r3gnz0zh669q9jm7xh8dz7irbnxjddbbrfflp42jyn2qc0is803"))))
+        (base32 "1yck1349q23l22bgxcbqd3wkaffw2vmkf7z26m3wgmkcxmvn1v8p"))))
     (build-system cargo-build-system)
     (arguments
-     (list #:skip-build? #t
+     (list #:tests? #f  ; unresolved imports `crate::runtime::task`
            #:cargo-inputs
-           `(("rust-autocfg" ,rust-autocfg-1)
+           `(("rust-backtrace" ,rust-backtrace-0.3)
              ("rust-bytes" ,rust-bytes-1)
              ("rust-libc" ,rust-libc-0.2)
-             ("rust-memchr" ,rust-memchr-2)
              ("rust-mio" ,rust-mio-0.8)
              ("rust-num-cpus" ,rust-num-cpus-1)
              ("rust-parking-lot" ,rust-parking-lot-0.12)
              ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
              ("rust-signal-hook-registry" ,rust-signal-hook-registry-1)
-             ("rust-socket2" ,rust-socket2-0.4)
-             ("rust-tokio-macros" ,rust-tokio-macros-1)
+             ("rust-socket2" ,rust-socket2-0.5)
+             ("rust-tokio-macros" ,rust-tokio-macros-2)
              ("rust-tracing" ,rust-tracing-0.1)
-             ("rust-windows-sys" ,rust-windows-sys-0.45))))
+             ("rust-windows-sys" ,rust-windows-sys-0.48))
+           #:cargo-development-inputs
+           `(("rust-async-stream" ,rust-async-stream-0.3)
+             ("rust-futures" ,rust-futures-0.3)
+             ("rust-libc" ,rust-libc-0.2)
+             ("rust-loom" ,rust-loom-0.7)
+             ("rust-mio-aio" ,rust-mio-aio-0.7)
+             ("rust-mockall" ,rust-mockall-0.11)
+             ("rust-nix" ,rust-nix-0.26)
+             ("rust-rand" ,rust-rand-0.8)
+             ("rust-socket2" ,rust-socket2-0.5)
+             ("rust-tempfile" ,rust-tempfile-3)
+             ("rust-tokio-stream" ,rust-tokio-stream-0.1)
+             ("rust-tokio-test" ,rust-tokio-test-0.4)
+             ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3)
+             ("rust-windows-sys" ,rust-windows-sys-0.48))))
     (home-page "https://tokio.rs")
     (synopsis "Event-driven, non-blocking I/O platform")
     (description
