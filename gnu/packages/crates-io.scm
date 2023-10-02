@@ -36899,17 +36899,17 @@ by inspecting the system for user preference.")
      `(#:cargo-inputs
        (("rust-log" ,rust-log-0.4))))))
 
-(define-public rust-loom-0.5
+(define-public rust-loom-0.7
   (package
     (name "rust-loom")
-    (version "0.5.6")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "loom" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1x9hmiv00ir79kypcg0jdw0j0fkd3ymq6rpv6pli6q5qifrfql7z"))))
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "loom" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gqrw1d0kqdkjvb11ziniwhngd66awk40dr67s6wyfh7wmipk8c6"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -36920,7 +36920,9 @@ by inspecting the system for user preference.")
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-tracing" ,rust-tracing-0.1)
-        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))
+       #:cargo-development-inputs
+       (("rust-futures-util" ,rust-futures-util-0.3))))
     (home-page "https://github.com/tokio-rs/loom")
     (synopsis "Permutation testing for concurrent code")
     (description
@@ -36929,6 +36931,29 @@ times, permuting the possible concurrent executions of that test under the C11
 memory model.  It uses state reduction techniques to avoid combinatorial
 explosion.")
     (license license:expat)))
+
+(define-public rust-loom-0.5
+  (package
+    (inherit rust-loom-0.7)
+    (name "rust-loom")
+    (version "0.5.6")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "loom" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1x9hmiv00ir79kypcg0jdw0j0fkd3ymq6rpv6pli6q5qifrfql7z"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-generator" ,rust-generator-0.7)
+        ("rust-pin-utils" ,rust-pin-utils-0.1)
+        ("rust-scoped-tls" ,rust-scoped-tls-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))))
 
 (define-public rust-loom-0.4
   (package
