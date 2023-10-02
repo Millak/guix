@@ -44725,22 +44725,29 @@ system for OpenSSL.")
 (define-public rust-openssl-sys-0.9
   (package
     (name "rust-openssl-sys")
-    (version "0.9.87")
+    (version "0.9.93")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "openssl-sys" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "0znc0q7a2gi2pmkscv0d6wzpfd64mgmy3w4lmrvrv05jcj9ga5wf"))
-        (patches (search-patches "rust-openssl-sys-no-vendor.patch"))))
+         (base32 "078vnn4s18kj8m5sd7b684frhjnxjcjc9z7s7h4871s7q2j5ckfv"))
+        (snippet
+         #~(begin
+             (use-modules (guix build utils))
+             ;; Remove dependency on boringssl and vendor openssl source.
+             (substitute* "Cargo.toml.orig"
+               (("vendored = .*") "vendored = []\n")
+               ((".*bssl.*") "")
+               ((".*openssl-src.*") ""))
+             (copy-file "Cargo.toml.orig" "Cargo.toml")))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ;; Build dependencies:
-        ("rust-bindgen" ,rust-bindgen-0.64)
+       (("rust-bindgen" ,rust-bindgen-0.64)
         ("rust-cc" ,rust-cc-1)
+        ("rust-libc" ,rust-libc-0.2)
         ("rust-pkg-config" ,rust-pkg-config-0.3)
         ("rust-vcpkg" ,rust-vcpkg-0.2))))
     (native-inputs
