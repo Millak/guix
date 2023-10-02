@@ -44611,18 +44611,22 @@ crate.")
 (define-public rust-openssl-0.10
   (package
     (name "rust-openssl")
-    (version "0.10.52")
+    (version "0.10.57")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "openssl" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0mldyz9w6d5bf3004m7kyjry7944m0pkkifzbywgg06z0935gf01"))))
+                "0z0f8g84y0lvnbc60586ibjpf8r1q1dv672vfqan5d5bk7imxhms"))
+              (snippet
+               #~(begin (use-modules (guix build utils))
+                        (substitute* "Cargo.toml"
+                          ((".*boringssl.*") ""))))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1)
+       (("rust-bitflags" ,rust-bitflags-2)
         ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-foreign-types" ,rust-foreign-types-0.3)
         ("rust-libc" ,rust-libc-0.2)
