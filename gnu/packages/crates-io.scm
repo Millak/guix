@@ -71480,8 +71480,34 @@ futures efficiently")
 operations.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-tokio-macros-2
+  (package
+    (name "rust-tokio-macros")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tokio-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0pk7y9dfanab886iaqwcbri39jkw33kgl7y07v0kg1pp8prdq2v3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--lib")
+       #:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs
+       (("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://tokio.rs")
+    (synopsis "Tokio's proc macros")
+    (description "This package provides Tokio's proc macros.")
+    (license license:expat)))
+
 (define-public rust-tokio-macros-1
   (package
+    (inherit rust-tokio-macros-2)
     (name "rust-tokio-macros")
     (version "1.7.0")
     (source
@@ -71492,17 +71518,12 @@ operations.")
        (sha256
         (base32
          "1ds34qsfvgf63cjgdx3gr4pl7i76fifyar15ksbillcc8hpzfmxm"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://tokio.rs")
-    (synopsis "Tokio's proc macros")
-    (description "This package provides Tokio's proc macros.")
-    (license license:expat)))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-tokio-macros-0.3
   (package
