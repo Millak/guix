@@ -486,15 +486,16 @@ is used by the Requests library to verify HTTPS requests.")
 (define-public python-cryptography-vectors
   (package
     (name "python-cryptography-vectors")
-    (version "40.0.2")
+    (version "41.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cryptography_vectors" version))
        (sha256
         (base32
-         "16hcprw919f2rl3jipsy2996bnsz170inway3lishqi30xwqf6x8"))))
-    (build-system python-build-system)
+         "17m1azxfc3w0390jp9mkx1v0k3xfv4v1lrgch4hvbbm77s0z42j4"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))  ; No tests included.
     (home-page "https://github.com/pyca/cryptography")
     (synopsis "Test vectors for the cryptography package")
     (description
