@@ -22540,7 +22540,7 @@ for defining recurring tasks and easily scheduling them.")
         (base32 "07fv4zgmfc8ppppbr7ylhx89wcw6r6vmz4a6pg0iy4v7sn5pp1wa"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:tests? #f                  ;FIXNE: Tests try to read "~/org/test.org"
+     `(#:tests? #true
        #:test-command '("test/run" "--debug")
        #:phases
        (modify-phases %standard-phases
@@ -22550,10 +22550,9 @@ for defining recurring tasks and easily scheduling them.")
              (emacs-substitute-variables "test/test.el"
                ("org-super-agenda-test-results-file"
                 (string-append (getcwd) "/test/results.el")))
-             ;; The following tests fail (see:
-             ;; https://github.com/alphapapa/org-super-agenda/issues/183).
+             ;; The following tests fail.
              (substitute* "test/test.el"
-               ((".*org-super-agenda-test--:auto-(map|tags).*" all)
+               ((".* org-super-agenda-test--with-retained-sorting .*" all)
                 (string-append all "  (skip-unless nil)\n"))))))))
     (native-inputs
      (list emacs-f util-linux))
