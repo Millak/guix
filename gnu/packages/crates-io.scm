@@ -18028,13 +18028,13 @@ terminals.")
 (define-public rust-crossterm-winapi-0.9
   (package
     (name "rust-crossterm-winapi")
-    (version "0.9.0")
+    (version "0.9.1")
     (source (origin
               (method url-fetch)
-              (uri (crate-uri "crossterm-winapi" version))
+              (uri (crate-uri "crossterm_winapi" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "075z15gxm4rn5yywq46khbg29bf504ix0f06zq3hx8aa91db7q9a"))))
+               (base32 "0axbfb2ykbwbpf1hmxwpawwfs8wvmkcka5m561l7yp36ldi7rpdc"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
