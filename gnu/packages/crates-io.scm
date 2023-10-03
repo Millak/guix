@@ -69958,23 +69958,32 @@ into mod, giving clear and readable test results.")
   (package
     (inherit rust-test-case-2)
     (name "rust-test-case")
-    (version "1.0.0")
+    (version "1.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "test-case" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1j33njgyr4cjhil14va909sg8s6ahzpgcmiaigdg7g22ica6950r"))))
+        (base32 "0siwpm8g40g5gcvwcn6g4iq0bdhm6lb3dq6wcspfhhsb814g1rg9"))))
     (arguments
-     `(#:tests? #false               ;XXX: a single test fails, cannot skip it
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; Not all files included.
+         "--skip=acceptance::async_tests"
+         "--skip=acceptance::hamcrest_assertions"
+         "--skip=acceptance::basic"
+         "--skip=acceptance::allow_result_check"
+         "--skip=acceptance::return_check")
        #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1)
         ("rust-version-check" ,rust-version-check-0.9))
        #:cargo-development-inputs
-       (("rust-insta" ,rust-insta-0.12)
+       (("rust-indexmap" ,rust-indexmap-1.7)
+        ("rust-insta" ,rust-insta-0.16)
+        ("rust-itertools" ,rust-itertools-0.10)
         ("rust-lazy-static" ,rust-lazy-static-1))))))
 
 (define-public rust-test-case-core-3
