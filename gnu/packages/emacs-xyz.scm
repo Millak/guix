@@ -13972,7 +13972,7 @@ much easier.")
 (define-public emacs-elfeed-protocol
   (package
     (name "emacs-elfeed-protocol")
-    (version "0.8.1")
+    (version "0.9.0")
     (source
      (origin
        (method git-fetch)
@@ -13981,7 +13981,7 @@ much easier.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0k9rkghp9rg7aidmx7q0n4wpb9z5cwr7j8z167yzaqgf9s3y4jj2"))))
+        (base32 "0cgq280gxw40vxn2pvax9k5k22gd1kwsjw4yl35206d3mb9wb0fa"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-elfeed))
