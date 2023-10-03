@@ -613,14 +613,14 @@ ciphers, message digests and key derivation functions.")
 (define-public python-pyopenssl
   (package
     (name "python-pyopenssl")
-    (version "23.1.1")
+    (version "23.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyOpenSSL" version))
        (sha256
         (base32
-         "1dxhip610zw1j2bz35g1w1h7vh374g0bnzn4nsqj65n6pswrh544"))))
+         "1b4bkcpzhmablf592g21rq3l8apbhklp6wcwlvgfflm4algr6vr7"))))
     (build-system python-build-system)
     (arguments
      (list
