@@ -43381,6 +43381,19 @@ framework.")
 macros used in ntest.")
     (license license:expat)))
 
+(define-public rust-ntest-proc-macro-helper-0.7
+  (package
+    (inherit rust-ntest-proc-macro-helper-0.8)
+    (name "rust-ntest-proc-macro-helper")
+    (version "0.7.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ntest-proc-macro-helper" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0lkyfx97aynbm7cnhzyc9cr0rpq1xzng1hwmzizbf1a6855y6llg"))))))
+
 (define-public rust-ntex-bytes-0.1
   (package
     (name "rust-ntex-bytes")
