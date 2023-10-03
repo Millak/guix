@@ -14837,8 +14837,33 @@ generation.")
      "This package provides a sha1 implementation for use in const contexts.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-constant-time-eq-0.3
+  (package
+    (name "rust-constant-time-eq")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "constant-time-eq" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1hl0y8frzlhpr58rh8rlg4bm53ax09ikj2i5fk7gpyphvhq4s57p"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-count-instructions" ,rust-count-instructions-0.1)
+        ("rust-criterion" ,rust-criterion-0.5))))
+    (home-page "https://github.com/cesarb/constant_time_eq")
+    (synopsis
+     "Compares two equal-sized byte strings in constant time")
+    (description
+     "This package compares two equal-sized byte strings in constant time.
+It is inspired by the Linux kernel's @code{crypto_memneq}.")
+    (license (list license:cc0 license:expat-0 license:asl2.0))))
+
 (define-public rust-constant-time-eq-0.2
   (package
+    (inherit rust-constant-time-eq-0.3)
     (name "rust-constant-time-eq")
     (version "0.2.5")
     (source (origin
@@ -14848,16 +14873,8 @@ generation.")
               (sha256
                (base32
                 "0sy7bs12dfa2d5hw7759b0mvjqcs85giajg4qyg39xq8a1s8wh8k"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.4))))
-    (home-page "https://github.com/cesarb/constant_time_eq")
-    (synopsis
-     "Compares two equal-sized byte strings in constant time")
-    (description
-     "This package compares two equal-sized byte strings in constant time.
-It is inspired by the Linux kernel's @code{crypto_memneq}.")
-    (license (list license:cc0 license:expat-0 license:asl2.0))))
+     `(#:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.4))))))
 
 (define-public rust-constant-time-eq-0.1
   (package
