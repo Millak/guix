@@ -33987,23 +33987,23 @@ stream runs in a TTY.")
     (description "Parsing ISO8601 dates using nom.")
     (license license:expat)))
 
-(define-public rust-itertools-0.10
+(define-public rust-itertools-0.11
   (package
     (name "rust-itertools")
-    (version "0.10.5")
+    (version "0.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "itertools" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ww45h7nxx5kj6z2y6chlskxd1igvs4j507anr6dzg99x1h25zdh"))))
+        (base32 "0mzyqcc59azx9g5cg6fs8k529gvh4463smmka6jvzs3cd2jp7hdi"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-either" ,rust-either-1))
        #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.3)
+       (("rust-criterion" ,rust-criterion-0.4)
         ("rust-paste" ,rust-paste-1)
         ("rust-permutohedron" ,rust-permutohedron-0.2)
         ("rust-quickcheck" ,rust-quickcheck-0.9)
@@ -34014,6 +34014,28 @@ stream runs in a TTY.")
      "This package provides extra iterator adaptors, iterator methods, free
 functions, and macros.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-itertools-0.10
+  (package
+    (inherit rust-itertools-0.11)
+    (name "rust-itertools")
+    (version "0.10.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "itertools" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ww45h7nxx5kj6z2y6chlskxd1igvs4j507anr6dzg99x1h25zdh"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-either" ,rust-either-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-paste" ,rust-paste-1)
+        ("rust-permutohedron" ,rust-permutohedron-0.2)
+        ("rust-quickcheck" ,rust-quickcheck-0.9)
+        ("rust-rand" ,rust-rand-0.7))))))
 
 (define-public rust-itertools-0.9
   (package
