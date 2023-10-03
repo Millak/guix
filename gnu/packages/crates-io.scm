@@ -19127,6 +19127,30 @@ debugger and run commands while verifying the output.")
 verifying the contents.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-debugid-0.8
+  (package
+    (name "rust-debugid")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "debugid" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13f15dfvn07fa7087pmacixqqv0lmj4hv93biw4ldr48ypk55xdy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-serde" ,rust-serde-1)
+        ("rust-uuid" ,rust-uuid-1))
+       #:cargo-development-inputs
+       (("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://sentry.io/")
+    (synopsis "Common reusable types for implementing the sentry.io protocol")
+    (description
+     "Common reusable types for implementing the sentry.io protocol.")
+    (license license:asl2.0)))
+
 (define-public rust-decimal-2
   (package
     (name "rust-decimal")
