@@ -43320,6 +43320,19 @@ enhances the built-in library with some useful features.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-ntest-test-cases-0.7
+  (package
+    (inherit rust-ntest-test-cases-0.8)
+    (name "rust-ntest-test-cases")
+    (version "0.7.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ntest-test-cases" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ghal2rb03cnj7ciqgdq0dvifdf8qp2hnmi9z1ip1j5b02s1xa4r"))))))
+
 (define-public rust-ntest-timeout-0.9
   (package
     (name "rust-ntest-timeout")
