@@ -41058,8 +41058,28 @@ linear algebra library.")
     (description "This package provides N-API procedural macros.")
     (license license:expat)))
 
+(define-public rust-napi-sys-2
+  (package
+    (name "rust-napi-sys")
+    (version "2.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "napi-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qxs0wxlax3nj3b1q1vgr5ihzp8c0d58vzm98x85gd9s5bsmwsqn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libloading" ,rust-libloading-0.7))))
+    (home-page "https://github.com/napi-rs/napi-rs")
+    (synopsis "NodeJS N-API raw binding")
+    (description "This package provides a NodeJS N-API raw binding.")
+    (license license:expat)))
+
 (define-public rust-napi-sys-0.4
   (package
+    (inherit rust-napi-sys-2)
     (name "rust-napi-sys")
     (version "0.4.7")
     (source
@@ -41070,7 +41090,6 @@ linear algebra library.")
        (sha256
         (base32
          "0cjirf6n4i2lw65iaww8d4hahv3cbfm5ka9hlansvnbfgzwadzq9"))))
-    (build-system cargo-build-system)
     (inputs
      (list openssl))
     (native-inputs
@@ -41084,11 +41103,7 @@ linear algebra library.")
        (("rust-flate2" ,rust-flate2-1)
         ("rust-glob" ,rust-glob-0.3)
         ("rust-regex" ,rust-regex-1)
-        ("rust-reqwest" ,rust-reqwest-0.10))))
-    (home-page "https://github.com/napi-rs/napi-rs")
-    (synopsis "NodeJS N-API raw binding")
-    (description "This package provides a NodeJS N-API raw binding.")
-    (license license:expat)))
+        ("rust-reqwest" ,rust-reqwest-0.10))))))
 
 (define-public rust-native-tls-0.2
   (package
