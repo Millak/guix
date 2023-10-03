@@ -5906,33 +5906,38 @@ file or files to several hosts.")
 (define-public du-dust
   (package
     (name "du-dust")
-    (version "0.8.3")
+    (version "0.8.6")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "du-dust" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1daif13rdd7wb8m5fbp6zif5b8znqcvmkxrjpp2w2famsp36sahx"))))
+                "1w52xdz1vi6awsvf4lph791zv13phjvz4ypmxr7f6pgxd3crr77c"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-ansi-term" ,rust-ansi-term-0.12)
-                       ("rust-clap" ,rust-clap-3)
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             "--skip=test_apparent_size")
+       #:install-source? #f
+       #:cargo-inputs (("rust-ansi-term" ,rust-ansi-term-0.12)
+                       ("rust-atty" ,rust-atty-0.2)
                        ("rust-clap" ,rust-clap-3)
                        ("rust-clap-complete" ,rust-clap-complete-3)
+                       ("rust-clap-mangen" ,rust-clap-mangen-0.1)
                        ("rust-config-file" ,rust-config-file-0.2)
                        ("rust-directories" ,rust-directories-4)
-                       ("rust-lscolors" ,rust-lscolors-0.7)
+                       ("rust-lscolors" ,rust-lscolors-0.13)
                        ("rust-rayon" ,rust-rayon-1)
                        ("rust-regex" ,rust-regex-1)
                        ("rust-serde" ,rust-serde-1)
                        ("rust-stfu8" ,rust-stfu8-0.2)
-                       ("rust-sysinfo" ,rust-sysinfo-0.15)
-                       ("rust-terminal-size" ,rust-terminal-size-0.1)
+                       ("rust-sysinfo" ,rust-sysinfo-0.27)
+                       ("rust-terminal-size" ,rust-terminal-size-0.2)
                        ("rust-thousands" ,rust-thousands-0.2)
                        ("rust-unicode-width" ,rust-unicode-width-0.1)
                        ("rust-winapi-util" ,rust-winapi-util-0.1))
-       #:cargo-development-inputs (("rust-assert-cmd" ,rust-assert-cmd-1)
+       #:cargo-development-inputs (("rust-assert-cmd" ,rust-assert-cmd-2)
                                    ("rust-tempfile" ,rust-tempfile-3))))
     (home-page "https://github.com/bootandy/dust")
     (synopsis "Graphical disk usage analyzer")
