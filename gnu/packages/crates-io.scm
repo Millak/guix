@@ -19074,6 +19074,27 @@ type.")
 the Debug trait manually.")
     (license license:expat)))
 
+(define-public rust-debug-unreachable-0.1
+  (package
+    (name "rust-debug-unreachable")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "debug-unreachable" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cx4vh1d0bxdpb8l9lyiv03az4527lykxy39s4a958swf2n2w0ws"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-unreachable" ,rust-unreachable-0.1))))
+    (home-page "https://github.com/reem/rust-debug-unreachable.git")
+    (synopsis
+     "unreachable!() in debug, std::intrinsics::unreachable() in release")
+    (description
+     "unreachable!() in debug, std::intrinsics::unreachable() in release.")
+    (license license:expat)))
+
 (define-public rust-debugger-test-0.1
   (package
     (name "rust-debugger-test")
