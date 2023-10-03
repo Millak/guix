@@ -27920,21 +27920,21 @@ and comments.")
 (define-public emacs-yeetube
   (package
    (name "emacs-yeetube")
-   (version "1.4.2")
+   (version "2.0.4")
    (source
     (origin
      (method git-fetch)
      (uri (git-reference
-           (url "https://git.sr.ht/~thanosapollo/yeetube.el")
+           (url "https://git.thanosapollo.com/yeetube")
            (commit version)))
      (sha256
       (base32
-       "0vfap6sri6qnswrjsp6qvmrp98bvrfh58gwdqbjiakq1fzvcrm03"))
+       "175yz46gql27y2v02apa1zyzgparzpgrsmw1mbb1nlx0cnf7an79"))
      (file-name (git-file-name name version))))
    (build-system emacs-build-system)
    (inputs
     (list mpv yt-dlp))
-   (home-page "https://sr.ht/~thanosapollo/yeetube.el")
+   (home-page "https://thanosapollo.com/blog/yeetube/")
    (synopsis "Youtube & Invidious front-end for Emacs")
    (description
     "This package offers an Emacs interface that allows you to search YouTube
