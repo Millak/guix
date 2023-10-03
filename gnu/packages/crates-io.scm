@@ -52326,14 +52326,14 @@ they were parsed from")
 (define-public rust-pyo3-build-config-0.19
   (package
     (name "rust-pyo3-build-config")
-    (version "0.19.1")
+    (version "0.19.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "pyo3-build-config" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1c4n6dvv79p5mb558nz1cb0ifgxbhw9gjs0j1ff0l61w1d7v4kam"))))
+                "19bb7aqyvr4kmh8b2lnrmcv9251j8yxw7l7xyr77m3s3pk876v07"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -52410,14 +52410,14 @@ ecosystem.")
 (define-public rust-pyo3-ffi-0.19
   (package
     (name "rust-pyo3-ffi")
-    (version "0.19.1")
+    (version "0.19.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "pyo3-ffi" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "193hg837vk0c9b4fxxx4bp2vjm4n4m0sx59ivba0lq78b63xwblj"))))
+                "1nc4696k03ydyiy1f69l3ywknavjzxzag2mscrh2bgkywx1fwg75"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -52495,14 +52495,14 @@ extension to python.")
 (define-public rust-pyo3-macros-backend-0.19
   (package
     (name "rust-pyo3-macros-backend")
-    (version "0.19.1")
+    (version "0.19.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "pyo3-macros-backend" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "12zs1vx0h4hainb0lpnw8knd9i9l0g2rdzdnrmb1bnv0n75qrdz0"))))
+                "0dlm4pg29hjmlqx15gcy9cmnabvc8ycy60hcvjg8hm62flhw2zcl"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -52576,14 +52576,14 @@ extension to python.")
 (define-public rust-pyo3-macros-0.19
   (package
     (name "rust-pyo3-macros")
-    (version "0.19.1")
+    (version "0.19.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "pyo3-macros" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "18n57jpi3292jhzmg5bjr1343zl93gmvxz21m1j5jdfxl73awp4a"))))
+                "1lggr5pnpmdj0cznlhw7ykm1qka3wlymwzfxqql6a4vyb6clrsyz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -52676,14 +52676,14 @@ extension to python.")
 (define-public rust-pyo3-0.19
   (package
     (name "rust-pyo3")
-    (version "0.19.1")
+    (version "0.19.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "pyo3" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0nca4p22jxwcg5dvg907j9m9618bvi8lmb20vvy4nsrhbzh8mf7z"))))
+                "0f1aqx947mzsrk05zdm9w2702lj5k9s97y9w9lxwkp2avk7sd0g6"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -52691,8 +52691,8 @@ extension to python.")
         ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-chrono" ,rust-chrono-0.4)
         ("rust-eyre" ,rust-eyre-0.6)
-        ("rust-hashbrown" ,rust-hashbrown-0.12)
-        ("rust-indexmap" ,rust-indexmap-1)
+        ("rust-hashbrown" ,rust-hashbrown-0.14)
+        ("rust-indexmap" ,rust-indexmap-2)
         ("rust-indoc" ,rust-indoc-1)
         ("rust-inventory" ,rust-inventory-0.3)
         ("rust-libc" ,rust-libc-0.2)
@@ -52709,7 +52709,6 @@ extension to python.")
        #:cargo-development-inputs
        (("rust-assert-approx-eq" ,rust-assert-approx-eq-1)
         ("rust-chrono" ,rust-chrono-0.4)
-        ("rust-criterion" ,rust-criterion-0.3)
         ("rust-proptest" ,rust-proptest-0.10)
         ("rust-rayon" ,rust-rayon-1)
         ("rust-rust-decimal" ,rust-rust-decimal-1)
