@@ -153,6 +153,109 @@ rasterizing OpenType font glyphs.")
 cubic beziers.")
     (license license:asl2.0)))
 
+(define-public rust-abi-stable-0.10
+  (package
+    (name "rust-abi-stable")
+    (version "0.10.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "abi-stable" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "03vg0cl0727whv7nxyvm8g9xfwxnfcdn8p872jqw1z6n84yjix7s"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (((string-append ">=([[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+),"
+                                   " <([[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+)")
+                    _ version _)
+                   (string-append ">=" version)))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; tests must be run with the "testing" feature
+       #:cargo-inputs
+       (("rust-abi-stable-derive" ,rust-abi-stable-derive-0.10)
+        ("rust-abi-stable-shared" ,rust-abi-stable-shared-0.10)
+        ("rust-core-extensions" ,rust-core-extensions-1)
+        ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+        ("rust-generational-arena" ,rust-generational-arena-0.2)
+        ("rust-libloading" ,rust-libloading-0.7)
+        ("rust-lock-api" ,rust-lock-api-0.4)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-parking-lot" ,rust-parking-lot-0.11)
+        ("rust-paste" ,rust-paste-1)
+        ("rust-repr-offset" ,rust-repr-offset-0.2)
+        ("rust-rustc-version" ,rust-rustc-version-0.4)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1))
+       #:cargo-development-inputs
+       (("rust-bincode" ,rust-bincode-1)
+        ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
+        ("rust-fnv" ,rust-fnv-1)
+        ("rust-hashbrown" ,rust-hashbrown-0.11)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/rodrimati1992/abi_stable_crates/")
+    (synopsis "Rust-to-Rust ffi,writing libraries loaded at program startup")
+    (description
+     "This package contains code for doing Rust-to-Rust ffi,writing libraries
+loaded at program startup.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-abi-stable-derive-0.10
+  (package
+    (name "rust-abi-stable-derive")
+    (version "0.10.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "abi-stable-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1w503n9rxja3h8ls6p5xsly8aclbp30dm4hd0525bvpbippi161v"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=sabi_trait::tests::sabi_trait_test_cases"
+         "--skip=stable_abi::tests::test_cases")
+       #:cargo-inputs
+       (("rust-abi-stable-shared" ,rust-abi-stable-shared-0.10)
+        ("rust-as-derive-utils" ,rust-as-derive-utils-0.10)
+        ("rust-core-extensions" ,rust-core-extensions-1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-rustc-version" ,rust-rustc-version-0.2)
+        ("rust-syn" ,rust-syn-1)
+        ("rust-typed-arena" ,rust-typed-arena-2))
+       #:cargo-development-inputs
+       (("rust-as-derive-utils" ,rust-as-derive-utils-0.10))))
+    (home-page "https://github.com/rodrimati1992/abi_stable_crates/")
+    (synopsis "Implementation detail of abi_stable.")
+    (description "This package contains an implementation detail of abi_stable.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-abi-stable-shared-0.10
+  (package
+    (name "rust-abi-stable-shared")
+    (version "0.10.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "abi-stable-shared" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0psaz0vghdz84vrb311g4b74d2nhrlbmwxa8if88s0bf0s4xmsgc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-core-extensions" ,rust-core-extensions-1))))
+    (home-page "https://github.com/rodrimati1992/abi_stable_crates/")
+    (synopsis "Implementation detail of abi_stable")
+    (description "This package contains an implementation detail of abi_stable.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-abomonation-0.7
   (package
     (name "rust-abomonation")
