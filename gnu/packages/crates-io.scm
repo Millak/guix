@@ -43280,6 +43280,25 @@ enhances the built-in library with some useful features.")
        #:cargo-development-inputs
        (("rust-tokio" ,rust-tokio-1))))))
 
+(define-public rust-ntest-0.7
+  (package
+    (inherit rust-ntest-0.8)
+    (name "rust-ntest")
+    (version "0.7.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ntest" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0i4xsvx52hmcnga2xbjl74hdylz4jy8bc2swcichlvw1di4lwm2w"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ntest-proc-macro-helper" ,rust-ntest-proc-macro-helper-0.7)
+        ("rust-ntest-test-cases" ,rust-ntest-test-cases-0.7)
+        ("rust-ntest-timeout" ,rust-ntest-timeout-0.7))
+       #:cargo-development-inputs (("rust-tokio" ,rust-tokio-1))))))
+
 (define-public rust-ntest-test-cases-0.9
   (package
     (name "rust-ntest-test-cases")
