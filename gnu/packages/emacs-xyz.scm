@@ -35184,7 +35184,7 @@ state to and restoring it from a file, with auto-saving and backups.")
 (define-public emacs-company-emoji
   (package
     (name "emacs-company-emoji")
-    (version "2.7.0")
+    (version "2.8.0")
     (source
      (origin
        (method git-fetch)
@@ -35193,7 +35193,7 @@ state to and restoring it from a file, with auto-saving and backups.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1prcjdqm4djp5nr93m2axddhhdmn1s0y157px9zsk7g5yi36dn6q"))))
+        (base32 "0j35z7hjcg3dkwgd7mdx1yaxcmxkn00h91y9kl8qdci7m4lja460"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-company))
