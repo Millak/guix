@@ -50648,21 +50648,21 @@ functions.")
 (define-public rust-predicates-tree-1
   (package
     (name "rust-predicates-tree")
-    (version "1.0.0")
+    (version "1.0.9")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "predicates-tree" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "090148qjilm2c722l873z7g31fhzj5j4qhd2xiv8mcqkj22w8qwf"))))
+         (base32 "1kyfq3r0s2vg94a9r59n7ar5gv66zvpa0s1fd6mm4l4czcas72rn"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-predicates-core" ,rust-predicates-core-1)
-        ("rust-treeline" ,rust-treeline-0.1))))
+        ("rust-termtree" ,rust-termtree-0.4))
+       #:cargo-development-inputs
+       (("rust-predicates" ,rust-predicates-3))))
     (home-page
      "https://github.com/assert-rs/predicates-rs/tree/master/predicates-tree")
     (synopsis
