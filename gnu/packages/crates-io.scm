@@ -76815,6 +76815,21 @@ clear display in the output.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-unreachable-0.1
+  (package
+    (inherit rust-unreachable-1)
+    (name "rust-unreachable")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "unreachable" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14gzpm329nrfgjvxf6zh77sp7plxakcnsq8p8xk9474fn7fyaahz"))))
+    (arguments
+     `(#:cargo-inputs (("rust-void" ,rust-void-1))))))
+
 (define-public rust-unsafe-any-0.4
   (package
     (name "rust-unsafe-any")
