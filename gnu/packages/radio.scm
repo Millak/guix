@@ -945,66 +945,62 @@ environment.")
     (license license:gpl3+)))
 
 (define-public gr-osmosdr
-  ;; No tag for version supporting Gnuradio 3.9; use commit.
-  (let ((commit "a100eb024c0210b95e4738b6efd836d48225bd03")
-        (revision "0"))
-    (package
-      (name "gr-osmosdr")
-      (version (git-version "0.2.3" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://git.osmocom.org/gr-osmosdr")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1pk5gnyznfyy510lbqzg9ijcb1fnhmn547n24aiqyrxd6i6vv1ki"))))
-      (build-system cmake-build-system)
-      (native-inputs
-       (list doxygen pkg-config pybind11 python-mako python-six))
-      (inputs
-       (list airspy
-             airspyhf
-             bladerf
-             boost
-             fftwf
-             gmp
-             gnuradio
-             gr-iqbal
-             hackrf
-             libsndfile
-             log4cpp
-             python
-             python-numpy
-             python-pyqt
-             rtl-sdr
-             soapysdr
-             spdlog
-             volk))
-      (arguments
-       (list #:modules '((guix build cmake-build-system)
-                         ((guix build python-build-system) #:prefix python:)
-                         (guix build utils))
-             #:imported-modules `(,@%cmake-build-system-modules
-                                  (guix build python-build-system))
-             #:phases
-             #~(modify-phases %standard-phases
-                 (add-after 'unpack 'fix-gnuradio-iqbalance-detection
-                   (lambda _
-                     (substitute* "CMakeLists.txt"
-                       (("find_package\\(gnuradio-iqbalance PATHS \\$\\{Gnuradio_DIR\\}\\)")
-                        (string-append "find_package(gnuradio-iqbalance PATHS "
-                                       #$(this-package-input "gr-iqbal")
-                                       "/lib/cmake/gnuradio)")))))
-                 (add-after 'install 'wrap-python
-                   (assoc-ref python:%standard-phases 'wrap)))))
-      (synopsis "GNU Radio block for interfacing with various radio hardware")
-      (description "This is a block for GNU Radio allowing to use a common API
+  (package
+    (name "gr-osmosdr")
+    (version "0.2.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.osmocom.org/gr-osmosdr")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qpa908bb7iagvaa7h541k1x092mb6dfrmw5ayy4p51qks45nj3p"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list doxygen pkg-config pybind11 python-mako python-six))
+    (inputs
+     (list airspy
+           airspyhf
+           bladerf
+           boost
+           fftwf
+           gmp
+           gnuradio
+           gr-iqbal
+           hackrf
+           libsndfile
+           log4cpp
+           python
+           python-numpy
+           python-pyqt
+           rtl-sdr
+           soapysdr
+           spdlog
+           volk))
+    (arguments
+     (list #:modules '((guix build cmake-build-system)
+                       ((guix build python-build-system) #:prefix python:)
+                       (guix build utils))
+           #:imported-modules `(,@%cmake-build-system-modules
+                                (guix build python-build-system))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-gnuradio-iqbalance-detection
+                 (lambda _
+                   (substitute* "CMakeLists.txt"
+                     (("find_package\\(gnuradio-iqbalance PATHS \\$\\{Gnuradio_DIR\\}\\)")
+                      (string-append "find_package(gnuradio-iqbalance PATHS "
+                                     #$(this-package-input "gr-iqbal")
+                                     "/lib/cmake/gnuradio)")))))
+               (add-after 'install 'wrap-python
+                 (assoc-ref python:%standard-phases 'wrap)))))
+    (synopsis "GNU Radio block for interfacing with various radio hardware")
+    (description "This is a block for GNU Radio allowing to use a common API
 to access different radio hardware.")
-      (home-page "https://osmocom.org/projects/gr-osmosdr/wiki/GrOsmoSDR")
-      (license license:gpl3+))))
-(deprecated-package "gnuradio-osmosdr" gr-osmosdr)
+    (home-page "https://osmocom.org/projects/gr-osmosdr/wiki/GrOsmoSDR")
+    (license license:gpl3+)))
 
 (define-public libosmo-dsp
   (package
