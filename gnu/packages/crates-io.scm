@@ -9215,6 +9215,50 @@ and kernels.")
 decompression and compression to Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-browserslist-rs-0.6
+  (package
+    (name "rust-browserslist-rs")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "browserslist-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19l0prgnbx0cyqvjsf30ni7d87nkn8j0fj56fg259yvfh50if1ri"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs
+       (("rust-ahash" ,rust-ahash-0.7)
+        ("rust-anyhow" ,rust-anyhow-1)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-either" ,rust-either-1)
+        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-js-sys" ,rust-js-sys-0.3)
+        ("rust-napi" ,rust-napi-2)
+        ("rust-napi-build" ,rust-napi-build-1)
+        ("rust-napi-derive" ,rust-napi-derive-2)
+        ("rust-nom" ,rust-nom-7)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-wasm-bindgen" ,rust-serde-wasm-bindgen-0.3)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-string-cache" ,rust-string-cache-0.8)
+        ("rust-string-cache-codegen" ,rust-string-cache-codegen-0.5)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2))
+       #:cargo-development-inputs
+       (("rust-clap" ,rust-clap-2)
+        ("rust-criterion" ,rust-criterion-0.3)
+        ("rust-test-case" ,rust-test-case-1))))
+    (home-page "https://github.com/browserslist/browserslist-rs")
+    (synopsis "Rust-ported Browserslist")
+    (description "Rust-ported Browserslist.")
+    (license license:expat)))
+
 (define-public rust-bs58-0.2
   (package
     (name "rust-bs58")
