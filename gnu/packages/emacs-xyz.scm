@@ -6772,7 +6772,7 @@ then refine or modify the search results.")
 (define-public emacs-inf-ruby
   (package
     (name "emacs-inf-ruby")
-    (version "2.5.2")
+    (version "2.8.0")
     (source
      (origin
        (method git-fetch)
@@ -6781,7 +6781,7 @@ then refine or modify the search results.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0a1hhvfbl6mq8rjsi77fg9fh5a91hi5scjrg9rjqc5ffbql67y0v"))))
+        (base32 "0dxjcr34xsa0m25yw8pp4iwjq8cqdgs6r8ls4lwfb69rnii7jmn5"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/nonsequitur/inf-ruby")
     (synopsis "Provides a REPL buffer connected to a Ruby subprocess in Emacs")
