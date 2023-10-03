@@ -11416,40 +11416,39 @@ them easier to distinguish from other, less important buffers.")
     (license license:expat)))
 
 (define-public emacs-embark
-  (let ((commit "c914efe881df2bc6a2bd35cc7ee975d3e9d4a418")) ;version bump
-    (package
-      (name "emacs-embark")
-      (version "0.22.1")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/oantolin/embark")
-               (commit commit)))
-         (sha256
-          (base32 "1l288w27wav0r71hprqi74r77042d1fx3p1zmi05vl6z6230h48b"))
-         (file-name (git-file-name name version))))
-      (build-system emacs-build-system)
-      (arguments
-       (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'install 'makeinfo
-              (lambda* (#:key outputs #:allow-other-keys)
-                (invoke "emacs"
-                        "--batch"
-                        "--eval=(require 'ox-texinfo)"
-                        "--eval=(find-file \"README.org\")"
-                        "--eval=(org-texinfo-export-to-info)")
-                (install-file "embark.info"
-                              (string-append #$output "/share/info")))))))
-      (native-inputs (list texinfo))
-      (propagated-inputs
-       (list emacs-avy emacs-consult))
-      (home-page "https://github.com/oantolin/embark")
-      (synopsis "Emacs mini-buffer actions rooted in keymaps")
-      (description
-       "This package provides a sort of right-click contextual menu for Emacs
+  (package
+    (name "emacs-embark")
+    (version "0.23")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/oantolin/embark")
+             (commit version)))
+       (sha256
+        (base32 "1dmsaw1m819kzmai45c4cqh5lyyha451f7dxzwwfz9crmzg2w5sf"))
+       (file-name (git-file-name name version))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'makeinfo
+            (lambda* (#:key outputs #:allow-other-keys)
+              (invoke "emacs"
+                      "--batch"
+                      "--eval=(require 'ox-texinfo)"
+                      "--eval=(find-file \"README.org\")"
+                      "--eval=(org-texinfo-export-to-info)")
+              (install-file "embark.info"
+                            (string-append #$output "/share/info")))))))
+    (native-inputs (list texinfo))
+    (propagated-inputs
+     (list emacs-avy emacs-consult))
+    (home-page "https://github.com/oantolin/embark")
+    (synopsis "Emacs mini-buffer actions rooted in keymaps")
+    (description
+     "This package provides a sort of right-click contextual menu for Emacs
 offering you relevant @emph{actions} to use on a @emph{target} determined by
 the context.
 
@@ -11463,7 +11462,7 @@ get offered actions like deleting, copying, renaming, visiting in another
 window, running a shell command on the file, etc.  For buffers the actions
 include switching to or killing the buffer.  For package names the actions
 include installing, removing or visiting the homepage.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-prescient
   (package
