@@ -46628,8 +46628,33 @@ formatters with per-field documentation generated for each structure.
       "This package provides a library for padding strings at runtime.")
     (license license:expat)))
 
+(define-public rust-page-size-0.6
+  (package
+    (name "rust-page-size")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "page-size" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1nj0rrwpvagagssljbm29ww1iyrrg15p1q4sk70r2cfi9qcv5m9h"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-spin" ,rust-spin-0.9)
+        ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/Elzair/page_size_rs")
+    (synopsis "Retrieve the memory page size")
+    (description
+     "This package provides an easy, fast, cross-platform way to retrieve the
+memory page size.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-page-size-0.4
   (package
+    (inherit rust-page-size-0.6)
     (name "rust-page-size")
     (version "0.4.2")
     (source
@@ -46639,18 +46664,11 @@ formatters with per-field documentation generated for each structure.
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1kgdv7f626jy4i2pq8czp4ppady4g4kqfa5ik4dah7mzzd4fbggf"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
         ("rust-spin" ,rust-spin-0.5)
-        ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/Elzair/page_size_rs")
-    (synopsis "Retrieve the memory page size")
-    (description
-     "This package provides an easy, fast, cross-platform way to retrieve the
-memory page size.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-pager-0.16
   (package
