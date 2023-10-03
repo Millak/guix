@@ -4209,6 +4209,44 @@ the web.")
     ;; No copyright headers in the source code.  LICENSE indicates gpl3.
     (license license:gpl3)))
 
+(define-public rust-as-derive-utils-0.10
+  (package
+    (name "rust-as-derive-utils")
+    (version "0.10.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "as-derive-utils" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "16qxh5q7gn6vnzk20g7vaj76f4dd74zkn66fv638ryyfjnj6z8p0"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (((string-append ">=([[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+),"
+                                   " <([[:digit:]]+\\.[[:digit:]]+\\.[[:digit:]]+)")
+                    _ version _)
+                   (string-append ">=" version)))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f              ; Only doc tests, which fail.
+       #:cargo-inputs
+       (("rust-aho-corasick" ,rust-aho-corasick-0.7)
+        ("rust-bitflags" ,rust-bitflags-1)
+        ("rust-core-extensions" ,rust-core-extensions-1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-ron" ,rust-ron-0.6)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/rodrimati1992/abi_stable_crates/")
+    (synopsis "Private derive utilities used by abi_stable and structural")
+    (description "This package contains private derive utilities used by
+the abi_stable and structural crates.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-askama-escape-0.10
   (package
     (name "rust-askama-escape")
