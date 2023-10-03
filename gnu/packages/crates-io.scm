@@ -55497,15 +55497,14 @@ Rust.")
 (define-public rust-retain-mut-0.1
   (package
     (name "rust-retain-mut")
-    (version "0.1.1")
+    (version "0.1.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "retain_mut" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0cgmm1q7sr31r9wk7syh53ipgqpl37jzsvahdhmwrsi6mmcdc1g0"))))
+        (base32 "1c0jfxzba0mcw8q4z7dnc4ypwzxgqkdggngb55hazvwvg3az32a3"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/upsuper/retain_mut")
     (synopsis "Mutable borrow for the retain predicate")
