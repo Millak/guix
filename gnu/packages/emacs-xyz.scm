@@ -27932,6 +27932,18 @@ and comments.")
        "175yz46gql27y2v02apa1zyzgparzpgrsmw1mbb1nlx0cnf7an79"))
      (file-name (git-file-name name version))))
    (build-system emacs-build-system)
+   (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'locate-binaries
+            (lambda* (#:key inputs #:allow-other-keys)
+              (emacs-substitute-variables "yeetube.el"
+                ("yeetube-yt-dlp"
+                 (search-input-file inputs "/bin/yt-dlp")))
+              (substitute* "yeetube-mpv.el"
+                (("\\(executable-find \"mpv\"\\)")
+                 (search-input-file inputs "/bin/mpv"))))))))
    (inputs
     (list mpv yt-dlp))
    (home-page "https://thanosapollo.com/blog/yeetube/")
