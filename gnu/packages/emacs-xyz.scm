@@ -27919,20 +27919,20 @@ and comments.")
 
 (define-public emacs-yeetube
   (package
-   (name "emacs-yeetube")
-   (version "2.0.4")
-   (source
-    (origin
-     (method git-fetch)
-     (uri (git-reference
-           (url "https://git.thanosapollo.com/yeetube")
-           (commit version)))
-     (sha256
-      (base32
-       "175yz46gql27y2v02apa1zyzgparzpgrsmw1mbb1nlx0cnf7an79"))
-     (file-name (git-file-name name version))))
-   (build-system emacs-build-system)
-   (arguments
+    (name "emacs-yeetube")
+    (version "2.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.thanosapollo.com/yeetube")
+             (commit version)))
+       (sha256
+        (base32
+         "175yz46gql27y2v02apa1zyzgparzpgrsmw1mbb1nlx0cnf7an79"))
+       (file-name (git-file-name name version))))
+    (build-system emacs-build-system)
+    (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
@@ -27944,17 +27944,16 @@ and comments.")
               (substitute* "yeetube-mpv.el"
                 (("\\(executable-find \"mpv\"\\)")
                  (search-input-file inputs "/bin/mpv"))))))))
-   (inputs
-    (list mpv yt-dlp))
-   (home-page "https://thanosapollo.com/blog/yeetube/")
-   (synopsis "Youtube & Invidious front-end for Emacs")
-   (description
-    "This package offers an Emacs interface that allows you to search YouTube
-or an Invidious instance for a specific query.  The search results are shown as
-links in an org-mode buffer.  The videos can be opened to a user-defined video
-player(by default mpv) or downloaded using yt-dlp.  This package also includes
-a yt-dlp front-end.")
-   (license license:gpl3+)))
+    (inputs (list mpv yt-dlp))
+    (home-page "https://thanosapollo.com/blog/yeetube/")
+    (synopsis "Youtube and Invidious front-end for Emacs")
+    (description
+     "This package offers an Emacs interface that allows you to search YouTube
+or an Invidious instance for a specific query.  The search results are shown
+as links in an Org mode buffer.  The videos can be opened to a user-defined
+video player (by default @command{mpv}) or downloaded using @command{yt-dlp}.
+This package also includes a @code{yt-dlp} front-end.")
+    (license license:gpl3+)))
 
 (define-public emacs-org-web-tools
   (package
