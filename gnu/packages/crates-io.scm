@@ -77863,6 +77863,25 @@ updated when the crate version changes.")
         ("rust-toml" ,rust-toml-0.4)
         ("rust-url" ,rust-url-1))))))
 
+(define-public rust-vlq-0.5
+  (package
+    (name "rust-vlq")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "vlq" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zygijgl47gasi0zx34ak1jq2n4qmk0cx2zpn13shba157npxpb5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-quickcheck" ,rust-quickcheck-0.5))))
+    (home-page "https://github.com/tromey/vlq")
+    (synopsis "Sourcemap-style VLQ encoder and decoder")
+    (description "Sourcemap-style VLQ encoder and decoder.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-void-1
   (package
     (name "rust-void")
