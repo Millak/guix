@@ -4274,6 +4274,12 @@ searches.  Unlike code@{emacs-wiki.el}, it can be combined with any format.")
        (sha256
         (base32 "1a47dcda196sb6qx45w94d0vfzyfprfs3g7yj0scjmna79rr3fqa"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #true
+      #:test-command #~(list "emacs" "-Q" "--batch"
+                             "-l" "bm-tests.el"
+                             "-f" "ert-run-tests-batch-and-exit")))
     (home-page "https://github.com/joodland/bm")
     (synopsis "Visual bookmarks for Emacs")
     (description "This package provides visible, buffer local bookmarks and
