@@ -62,6 +62,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages avahi)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages c)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
@@ -39340,6 +39341,74 @@ embedded migrations.")
     (synopsis "Performance and security oriented drop-in allocator")
     (description "This package provides a performance and security oriented
 drop-in allocator.")
+    (license license:expat)))
+
+(define-public rust-mimalloc-rust-0.1
+  (package
+    (name "rust-mimalloc-rust")
+    (version "0.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mimalloc-rust" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wj4hkspsmlgm6lh5bf2blzalgjcc356bpkh4k5vcnyvvzwhvhxw"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "Cargo.toml"
+                   (("1\\.7\\.3-source") "1.7.2"))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f          ; Test suite is flakey.
+       #:cargo-inputs
+       (("rust-cty" ,rust-cty-0.2)
+        ("rust-mimalloc-rust-sys" ,rust-mimalloc-rust-sys-1))
+       #:cargo-development-inputs
+       (("rust-lazy-static" ,rust-lazy-static-1))))
+    (inputs
+     (list mimalloc))
+    (home-page "https://github.com/lemonhx/mimalloc-rust")
+    (synopsis "Binding for mimalloc in rust")
+    (description "This package provides a binding for mimalloc in rust.")
+    (license license:expat)))
+
+(define-public rust-mimalloc-rust-sys-1
+  (package
+    (name "rust-mimalloc-rust-sys")
+    (version "1.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mimalloc-rust-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "144m1va3dmbr6c5nj1aqnnfrp0fc4yyqn10n25w7ksvsrhnz7xwn"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            (delete-file-recursively "c_src")
+            ;; Inspired by Debian's patch for bzip2-sys.
+            (substitute* "Cargo.toml.orig"
+              (("cc = .*") "pkg-config = \"0.3\"\n"))
+            (copy-file "Cargo.toml.orig" "Cargo.toml")
+            (delete-file "build.rs")
+            (with-output-to-file "build.rs"
+              (lambda _
+                (format #t "fn main() {~@
+                        println!(\"cargo:rustc-link-lib=mimalloc\");~@
+                        }~%")))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cty" ,rust-cty-0.2)
+        ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (inputs
+     (list mimalloc))
+    (home-page "https://docs.rs/mimalloc-rust-sys/1.7.2")
+    (synopsis "@code{mimalloc_rust} hand written sys binding")
+    (description
+     "This package provides @code{mimalloc_rust} hand written sys bindings.")
     (license license:expat)))
 
 (define-public rust-mime-0.3
