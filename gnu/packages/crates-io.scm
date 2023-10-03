@@ -64195,16 +64195,16 @@ implementation in Rust.")
 (define-public rust-simdutf8-0.1
   (package
     (name "rust-simdutf8")
-    (version "0.1.3")
+    (version "0.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "simdutf8" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0nama0xqzbl8x72fqd8nhgvwjhg2vqj0gkv1la8gm0n6wwbdlw69"))))
+        (base32 "0fi6zvnldaw7g726wnm9vvpv4s89s5jsk7fgp3rg2l99amw64zzj"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
+    (arguments `(#:tests? #f))
     (home-page "https://github.com/rusticstuff/simdutf8")
     (synopsis "SIMD-accelerated UTF-8 validation")
     (description
