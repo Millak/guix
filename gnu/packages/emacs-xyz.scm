@@ -22528,7 +22528,7 @@ for defining recurring tasks and easily scheduling them.")
 (define-public emacs-org-super-agenda
   (package
     (name "emacs-org-super-agenda")
-    (version "1.2")
+    (version "1.3")
     (source
      (origin
        (method git-fetch)
@@ -22537,7 +22537,7 @@ for defining recurring tasks and easily scheduling them.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10l9h2n09cql4ih7nc0ma3ghdsq9l5v9xlj1lg7kq67icdwjlsvy"))))
+        (base32 "07fv4zgmfc8ppppbr7ylhx89wcw6r6vmz4a6pg0iy4v7sn5pp1wa"))))
     (build-system emacs-build-system)
     (arguments
      `(#:tests? #f                  ;FIXNE: Tests try to read "~/org/test.org"
