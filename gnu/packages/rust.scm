@@ -845,10 +845,11 @@ safety and thread safety guarantees.")
                      ;; emulation on aarch64 and riscv64 also fail on x86_64 in
                      ;; Guix's build system.  Skip them on all builds.
                      (substitute* "sys/unix/process/process_common/tests.rs"
-                       ,@(make-ignore-test-list
-                          '("fn test_process_mask"
-                            "fn test_process_group_posix_spawn"
-                            "fn test_process_group_no_posix_spawn")))))))
+                       ;; We can't use make-ignore-test-list because we will get
+                       ;; build errors due to the double [ignore] block.
+                       (("target_arch = \"arm\"" arm)
+                        (string-append "target_os = \"linux\",\n"
+                                       "        " arm)))))))
              (add-after 'unpack 'disable-interrupt-tests
                (lambda _
                  ;; This test hangs in the build container; disable it.
