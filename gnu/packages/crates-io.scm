@@ -35333,12 +35333,12 @@ sending emails from Rust applications.")
         ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-dtoa" ,rust-dtoa-0.4)
         ("rust-libm" ,rust-libm-0.2)
+        ("rust-proptest" ,rust-proptest-0.10)
+        ("rust-quickcheck" ,rust-quickcheck-1)
         ("rust-ryu" ,rust-ryu-1)
         ("rust-static-assertions" ,rust-static-assertions-1))
        #:cargo-development-inputs
-       (("rust-approx" ,rust-approx-0.4)
-        ("rust-proptest" ,rust-proptest-0.10)
-        ("rust-quickcheck" ,rust-quickcheck-1))))))
+       (("rust-approx" ,rust-approx-0.4))))))
 
 (define-public rust-lexical-parse-float-0.8
   (package
