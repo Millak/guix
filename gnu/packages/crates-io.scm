@@ -50931,27 +50931,26 @@ property-based testing and fuzzing.")
 (define-public rust-proptest-1
   (package
     (name "rust-proptest")
-    (version "1.1.0")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "proptest" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0w5s3wwchd3i6m15lsbsk3r3y25d1gwn13m6a185ks8w06cbiw99"))))
+        (base32 "03n213yppl8lpw94cms2bb6rns3ahg78n6az9yvppc3wqz43l03w"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bit-set" ,rust-bit-set-0.5)
-        ("rust-bitflags" ,rust-bitflags-1)
-        ("rust-byteorder" ,rust-byteorder-1)
+        ("rust-bit-vec" ,rust-bit-vec-0.6)
+        ("rust-bitflags" ,rust-bitflags-2)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-num-traits" ,rust-num-traits-0.2)
-        ("rust-quick-error" ,rust-quick-error-2)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-rand-chacha" ,rust-rand-chacha-0.3)
         ("rust-rand-xorshift" ,rust-rand-xorshift-0.3)
-        ("rust-regex-syntax" ,rust-regex-syntax-0.6)
+        ("rust-regex-syntax" ,rust-regex-syntax-0.7)
         ("rust-rusty-fork" ,rust-rusty-fork-0.3)
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-unarray" ,rust-unarray-0.1)
