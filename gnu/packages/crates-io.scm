@@ -33526,15 +33526,14 @@ or not without much fuss.")
 (define-public rust-is-macro-0.1
   (package
     (name "rust-is-macro")
-    (version "0.1.8")
+    (version "0.1.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "is-macro" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1vjh4sdpvx1kdf1znyk3b54gkyk7f8lsasc47ypkksp3r4ypz004"))))
+        (base32 "0pq1x1r8pk6fv0qf9vpxw60jw2jg3961nm1gv71j5qv0v4bds8m3"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
