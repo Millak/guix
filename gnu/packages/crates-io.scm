@@ -12973,6 +12973,26 @@ stream of tokens.")
     (description "This package provides a manpage generator for clap.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-clap-mangen-0.1
+  (package
+    (inherit rust-clap-mangen-0.2)
+    (name "rust-clap-mangen")
+    (version "0.1.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "clap-mangen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0zrpsp2lfrm1cgwsi7vlv9xlk4nbxrwnqksfbrgqsf3jbb080l8h"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-clap" ,rust-clap-3)
+        ("rust-roff" ,rust-roff-0.2))
+       #:cargo-development-inputs
+       (("rust-clap" ,rust-clap-3)
+        ("rust-snapbox" ,rust-snapbox-0.2))))))
+
 (define-public rust-clearscreen-1
   (package
     (name "rust-clearscreen")
