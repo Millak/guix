@@ -14812,8 +14812,43 @@ to guess the type of content.")
 semantics than those provided by @code{as} or @code{From}/@code{Into}.")
     (license license:expat)))
 
+(define-public rust-convert-case-0.6
+  (package
+    (name "rust-convert-case")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "convert-case" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jn1pq6fp3rri88zyw6jlhwwgf6qiyc08d6gjv0qypgkl862n67c"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"~([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             "--skip=case::Case::PseudoRandom"
+             "--skip=case::Case::Random"
+             "--skip=pattern::Pattern::PseudoRandom")
+       #:cargo-inputs
+       (("rust-rand" ,rust-rand-0.7)
+        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1))
+       #:cargo-development-inputs
+       (("rust-strum" ,rust-strum-0.18)
+        ("rust-strum-macros" ,rust-strum-macros-0.18))))
+    (home-page "https://github.com/rutrum/convert-case")
+    (synopsis "Convert strings into any case")
+    (description "Convert strings into any case.")
+    (license license:expat)))
+
 (define-public rust-convert-case-0.4
   (package
+    (inherit rust-convert-case-0.6)
     (name "rust-convert-case")
     (version "0.4.0")
     (source
@@ -14823,15 +14858,10 @@ semantics than those provided by @code{as} or @code{From}/@code{Into}.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "03jaf1wrsyqzcaah9jf8l1iznvdw5mlsca2qghhzr9w27sddaib2"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
-       (("rust-rand" ,rust-rand-0.7))))
-    (home-page "https://github.com/rutrum/convert-case")
-    (synopsis "Convert strings into any case")
-    (description "Convert strings into any case.")
-    (license license:expat)))
+       (("rust-rand" ,rust-rand-0.7))))))
 
 (define-public rust-cookie-0.17
   (package
