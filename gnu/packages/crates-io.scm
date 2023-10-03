@@ -4247,6 +4247,36 @@ the web.")
 the abi_stable and structural crates.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-as-derive-utils-0.8
+  (package
+    (inherit rust-as-derive-utils-0.10)
+    (name "rust-as-derive-utils")
+    (version "0.8.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "as-derive-utils" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1rjmbasb2spxdmm47kzw2zmr8icbdrcr0wa9kyn7lim5c0idh69b"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"~([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-aho-corasick" ,rust-aho-corasick-0.7)
+        ("rust-bitflags" ,rust-bitflags-1)
+        ("rust-core-extensions" ,rust-core-extensions-0.1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-ron" ,rust-ron-0.5)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-syn" ,rust-syn-1))))))
+
 (define-public rust-askama-escape-0.10
   (package
     (name "rust-askama-escape")
