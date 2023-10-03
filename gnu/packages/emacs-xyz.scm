@@ -16864,14 +16864,14 @@ such files while providing facilities to link between them.")
 (define-public emacs-denote-menu
   (package
     (name "emacs-denote-menu")
-    (version "1.1.1")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "denote-menu-" version ".tar"))
        (sha256
-        (base32 "12ry0rv45hv1vrwx9wih72s9h0f3r18xssnkzfa9ilp77kgbas5q"))))
+        (base32 "1zm68bz6hya360g5zvs4r5naznykamgzqxhvfhpfyxb70hsnmx5w"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-denote))
     (home-page "https://www.scss.tcd.ie/~sulimanm/posts/denote-menu.html")
