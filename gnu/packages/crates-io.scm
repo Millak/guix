@@ -41035,8 +41035,34 @@ linear algebra library.")
     (description "This package provides N-API build support.")
     (license license:expat)))
 
+(define-public rust-napi-derive-2
+  (package
+    (name "rust-napi-derive")
+    (version "2.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "napi-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0rz3plhps1i1p5m02ffy97lcd3mzf8ihdkcgf2l9lm2dm27nl76s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-convert-case" ,rust-convert-case-0.6)
+        ("rust-napi-derive-backend" ,rust-napi-derive-backend-1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/napi-rs/napi-rs")
+    (synopsis "N-API procedural macros")
+    (description "This package provides N-API procedural macros.")
+    (license license:expat)))
+
 (define-public rust-napi-derive-0.5
   (package
+    (inherit rust-napi-derive-2)
     (name "rust-napi-derive")
     (version "0.5.1")
     (source
@@ -41047,16 +41073,11 @@ linear algebra library.")
        (sha256
         (base32
          "0kkgpzw4i6f0zkg80v9vhr7y5rg25q3kv67029i1gcgsrxlqx4zi"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/napi-rs/napi-rs")
-    (synopsis "N-API procedural macros")
-    (description "This package provides N-API procedural macros.")
-    (license license:expat)))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-napi-derive-backend-1
   (package
