@@ -32832,14 +32832,14 @@ federated microblogging social network.")
 (define-public emacs-ebdb
   (package
     (name "emacs-ebdb")
-    (version "0.8.17")
+    (version "0.8.18")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "ebdb-" version ".tar"))
        (sha256
-        (base32 "0d2csc7b4mhaqcj8g3v46j11f5xcvbvgx06wxxfq2w0p2nzz1sik"))))
+        (base32 "1mb1qsw3dfaa6x52vsg73by6w7x5i6w5l7b0d2jr667y006q2vvf"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/girzel/ebdb")
     (synopsis "EIEIO port of BBDB, Emacs's contact-management package")
