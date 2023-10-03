@@ -43364,6 +43364,26 @@ framework.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-ntest-timeout-0.7
+  (package
+    (inherit rust-ntest-timeout-0.8)
+    (name "rust-ntest-timeout")
+    (version "0.7.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ntest-timeout" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "08v3r6hggh43qabl887pkz88k6lg6hrc62mppxyabb0pw44v03di"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ntest-proc-macro-helper" ,rust-ntest-proc-macro-helper-0.7)
+        ("rust-proc-macro-crate" ,rust-proc-macro-crate-1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))))
+
 (define-public rust-ntest-proc-macro-helper-0.8
   (package
     (name "rust-ntest-proc-macro-helper")
