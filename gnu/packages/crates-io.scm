@@ -15729,6 +15729,27 @@ intrinsics.")
     (description "This package provides a Manual coverage marks.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-count-instructions-0.1
+  (package
+    (name "rust-count-instructions")
+    (version "0.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "count-instructions" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ps0254pvx3nmnxs2v60kv7fqayh82r3jqypb4l3ql3i7s3rzr1n"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-rustix" ,rust-rustix-0.38))))
+    (home-page "https://github.com/cesarb/count_instructions")
+    (synopsis "Counts the instructions executed within a single function")
+    (description "Counts the instructions executed within a single function.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-countme-3
   (package
     (name "rust-countme")
