@@ -5997,6 +5997,30 @@ they're not available.")
      "Automatically implement traits for common smart pointers and closures.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-auto-impl-0.4
+  (package
+    (inherit rust-auto-impl-0.5)
+    (name "rust-auto-impl")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "auto-impl" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0f0aildq7rl7imgl6x6xw8jg4m08xz9q1bpcrmf5xnhar23gbjs2"))))
+    (arguments
+     `(#:cargo-test-flags
+       (list "--release" "--" "--skip=ui")
+       #:cargo-inputs
+       (("rust-proc-macro-error" ,rust-proc-macro-error-1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-rustversion" ,rust-rustversion-1)
+        ("rust-trybuild" ,rust-trybuild-1))))))
+
 (define-public rust-autocompress-0.2
   (package
     (name "rust-autocompress")
