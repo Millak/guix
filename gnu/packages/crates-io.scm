@@ -29226,8 +29226,35 @@ and loading crate.")
         ("rust-plain" ,rust-plain-0.2)
         ("rust-log" ,rust-log-0.4))))))
 
+(define-public rust-greetd-ipc-0.9
+  (package
+    (name "rust-greetd-ipc")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "greetd-ipc" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xl2cix3jv4sgigl5ijayab7rchr6v02za2qd87fv1z8dl1r14w3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-async-trait" ,rust-async-trait-0.1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://kl.wtf/projects/greetd")
+    (synopsis "@command{greetd} IPC protocol library for Rust")
+    (description
+     "This package provides library that helps you use the
+@command{greetd} JSON-based IPC protocol from Rust.")
+    (license license:gpl3)))
+
 (define-public rust-greetd-ipc-0.8
   (package
+    (inherit rust-greetd-ipc-0.9)
     (name "rust-greetd-ipc")
     (version "0.8.0")
     (source (origin
@@ -29237,20 +29264,13 @@ and loading crate.")
               (sha256
                (base32
                 "1dscriv3adjyaxfaax3cmqrzx6q2vwwchbh86dhll783wjc4ivw0"))))
-    (build-system cargo-build-system)
     (arguments
      (list #:cargo-inputs
            `(("rust-async-trait" ,rust-async-trait-0.1)
              ("rust-serde" ,rust-serde-1)
              ("rust-serde-json" ,rust-serde-json-1)
              ("rust-thiserror" ,rust-thiserror-1)
-             ("rust-tokio" ,rust-tokio-1))))
-    (home-page "https://kl.wtf/projects/greetd")
-    (synopsis "@command{greetd} IPC protocol library for Rust")
-    (description
-     "This package provides library that helps you use the
-@command{greetd} JSON-based IPC protocol from Rust.")
-    (license license:gpl3)))
+             ("rust-tokio" ,rust-tokio-1))))))
 
 (define-public rust-grep-0.2
   (package
