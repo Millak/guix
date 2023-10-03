@@ -22830,7 +22830,7 @@ interactive commands and functions, such as @code{completing-read}.")
 (define-public emacs-org-ql
   (package
     (name "emacs-org-ql")
-    (version "0.7")
+    (version "0.7.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -22838,7 +22838,7 @@ interactive commands and functions, such as @code{completing-read}.")
                     (commit version)))
               (sha256
                (base32
-                "092ckddjbs5d3h6w5x2zkpnm0qzcl00lb8q2656wa81q1kf6928k"))
+                "1nxjhk0yd0njlscnxvsxnlf1wy6027spcaks64qgvnrzzq9vnzrj"))
               (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (arguments
@@ -22846,7 +22846,7 @@ interactive commands and functions, such as @code{completing-read}.")
       #:tests? #t
       #:test-command #~(list "buttercup" "-L" ".")))
     (native-inputs
-     (list emacs-buttercup emacs-with-simulated-input))
+     (list emacs-buttercup emacs-with-simulated-input emacs-xr))
     (propagated-inputs
      (list emacs-dash
            emacs-f
