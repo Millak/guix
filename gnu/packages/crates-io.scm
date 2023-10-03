@@ -39244,17 +39244,17 @@ file IO.")
        #:cargo-development-inputs
        (("rust-tempdir" ,rust-tempdir-0.3))))))
 
-(define-public rust-memmap2-0.5
+(define-public rust-memmap2-0.7
   (package
     (name "rust-memmap2")
-    (version "0.5.10")
+    (version "0.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "memmap2" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "09xk415fxyl4a9pgby4im1v2gqlb5lixpm99dczkk30718na9yl3"))))
+        (base32 "1il82b0mw304jlwvl0m89aa8bj5dgmm3vbb0jg8lqlrk0p98i4zl"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -39268,6 +39268,26 @@ file IO.")
     (description
      "This package provides a Rust API for memory-mapped file IO.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-memmap2-0.5
+  (package
+    (inherit rust-memmap2-0.7)
+    (name "rust-memmap2")
+    (version "0.5.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "memmap2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09xk415fxyl4a9pgby4im1v2gqlb5lixpm99dczkk30718na9yl3"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))
+       #:cargo-development-inputs
+       (("rust-owning-ref" ,rust-owning-ref-0.4)
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-memmap2-0.3
   (package
