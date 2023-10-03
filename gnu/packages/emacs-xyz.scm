@@ -28521,9 +28521,7 @@ targets the Emacs based IDEs (CIDER, ESS, Geiser, Robe, SLIME etc.)")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1rvc9r6swb74lhzd877jidkkf2cxl5v4zz302j2imqhsbk844qzh"))
-       (patches
-        (search-patches "emacs-buttercup-fix-native-comp-pretty-test.patch"))))
+         "1rvc9r6swb74lhzd877jidkkf2cxl5v4zz302j2imqhsbk844qzh"))))
     (build-system emacs-build-system)
     (arguments
      (list
