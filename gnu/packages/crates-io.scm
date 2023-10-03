@@ -41013,8 +41013,33 @@ linear algebra library.")
     (description "This package provides N-API bindings.")
     (license license:expat)))
 
+(define-public rust-napi-build-1
+  (package
+    (name "rust-napi-build")
+    (version "1.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "napi-build" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0asjspv0gkg6lgdz3d6gl9ab7hbc9z2hc51m637j6x3jfa8l3m7b"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "src/libs")
+                 ;; Don't try to read the removed files.
+                 (substitute* "src/windows.rs"
+                   (("include_bytes.*")
+                    "unreachable!(),\n"))))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/napi-rs/napi-rs")
+    (synopsis "N-API build support")
+    (description "This package provides N-API build support.")
+    (license license:expat)))
+
 (define-public rust-napi-build-0.2
   (package
+    (inherit rust-napi-build-1)
     (name "rust-napi-build")
     (version "0.2.1")
     (source
@@ -41023,17 +41048,11 @@ linear algebra library.")
        (uri (crate-uri "napi-build" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1z02mlw1wa01fjpjnqns3f3vxacbg1jnk98hcg3pgwp5xy3zdyqq"))))
-    (build-system cargo-build-system)
+        (base32 "1z02mlw1wa01fjpjnqns3f3vxacbg1jnk98hcg3pgwp5xy3zdyqq"))))
     (arguments
      `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-0.1)
-        ("rust-reqwest" ,rust-reqwest-0.10))))
-    (home-page "https://github.com/napi-rs/napi-rs")
-    (synopsis "N-API build support")
-    (description "This package provides N-API build support.")
-    (license license:expat)))
+        ("rust-reqwest" ,rust-reqwest-0.10))))))
 
 (define-public rust-napi-derive-2
   (package
