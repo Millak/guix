@@ -2296,6 +2296,30 @@ building design matrices.")
     ;; and is covered by the PSFL.
     (license (list license:bsd-2 license:psfl))))
 
+(define-public python-mapie
+  (package
+    (name "python-mapie")
+    (version "0.7.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "MAPIE" version))
+              (sha256
+               (base32
+                "1nvi547avvwrck1n7rf5jh7d0ml6jaqjs2p59iwcq2a5xjmdsmsc"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pandas python-pytest))
+    (propagated-inputs (list python-numpy python-scikit-learn))
+    (home-page "https://github.com/scikit-learn-contrib/MAPIE")
+    (synopsis "Module for estimating prediction intervals")
+    (description "MAPIE allows you to easily estimate prediction intervals
+(or prediction sets) using your favourite scikit-learn-compatible model for
+single-output regression or multi-class classification settings.
+
+Prediction intervals output by MAPIE encompass both aleatoric and epistemic
+uncertainties and are backed by strong theoretical guarantees thanks to
+conformal prediction methods intervals.")
+    (license license:bsd-3)))
+
 (define-public python-statsmodels
   (package
     (name "python-statsmodels")
