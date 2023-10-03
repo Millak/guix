@@ -70416,6 +70416,23 @@ bindings are a small wrapper around the raw C functions, which converts integer
 return values to @code{std::io::Result} to indicate success or failure.")
     (license license:expat)))
 
+(define-public rust-termtree-0.4
+  (package
+    (name "rust-termtree")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "termtree" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xkal5l2r3r9p9j90x35qy4npbdwxz4gskvbijs6msymaangas9k"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/rust-cli/termtree")
+    (synopsis "Visualize tree-like data on the command-line")
+    (description "Visualize tree-like data on the command-line.")
+    (license license:expat)))
+
 (define-public rust-test-assembler-0.1
   (package
     (name "rust-test-assembler")
