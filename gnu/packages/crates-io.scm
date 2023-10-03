@@ -43082,6 +43082,26 @@ with all line endings.")
         ("rust-rustversion" ,rust-rustversion-1)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-normpath-0.2
+  (package
+    (inherit rust-normpath-1)
+    (name "rust-normpath")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "normpath" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0y354v327vbcxap7ag88j81y4zifzhnjgxvn7l1s2d9cjb4si79a"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-tempfile" ,rust-tempfile-3))))))
+
 (define-public rust-notify-5
   (package
     (name "rust-notify")
