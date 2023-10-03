@@ -75307,6 +75307,51 @@ and run them to verify the results, taking inspiration from @code{trybuild} and
         ("rust-snapbox" ,rust-snapbox-0.4)
         ("rust-toml-edit" ,rust-toml-edit-0.14))))))
 
+(define-public rust-tstr-0.2
+  (package
+    (name "rust-tstr")
+    (version "0.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tstr" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0zidpsrn9b4i55cz832myxi2gw3qq6imbd7kxq7yq389f54jd8yc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             "--skip=macros::ts"
+             "--skip=macros::alias")
+       #:cargo-inputs
+       (("rust-tstr-proc-macros" ,rust-tstr-proc-macros-0.2))))
+    (home-page "https://github.com/rodrimati1992/tstr_crates/")
+    (synopsis "Type-level strings")
+    (description "Type-level strings")
+    (license license:zlib)))
+
+(define-public rust-tstr-proc-macros-0.2
+  (package
+    (name "rust-tstr-proc-macros")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tstr-proc-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0yklq0k0s3c4y0k5f0qm13lw7nvz5z97x3yhmyw1if0cdc3250g7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/rodrimati1992/tstr_crates/")
+    (synopsis "Implementation detail of tstr")
+    (description "Implementation detail of tstr.")
+    (license license:zlib)))
+
 (define-public rust-ttf-parser-0.19
   (package
     (name "rust-ttf-parser")
