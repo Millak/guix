@@ -55222,6 +55222,57 @@ Rust.")
     (description "File reopening utility.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-repr-offset-0.2
+  (package
+    (name "rust-repr-offset")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "repr-offset" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1skj3cy77j7vwslnjjzgladq61z6jjvwlw89kp0zz7fjbdsp047v"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; tests must be run with the "testing" feature
+       #:cargo-inputs
+       (("rust-repr-offset-derive" ,rust-repr-offset-derive-0.2)
+        ("rust-tstr" ,rust-tstr-0.2))
+       #:cargo-development-inputs
+       (("rust-repr-offset-derive" ,rust-repr-offset-derive-0.2))))
+    (home-page "https://github.com/rodrimati1992/repr_offset_crates/")
+    (synopsis "Offsets of fields for types with a stable layout")
+    (description "Offsets of fields for types with a stable layout.")
+    (license license:zlib)))
+
+(define-public rust-repr-offset-derive-0.2
+  (package
+    (name "rust-repr-offset-derive")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "repr-offset-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1rwkbf12vmgi5v1llmgiirn0yaaiyw821rd7fc9fhpbkdxz95yh9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; tests must be run with the "testing" feature
+       #:cargo-inputs
+       (("rust-as-derive-utils" ,rust-as-derive-utils-0.8)
+        ("rust-core-extensions" ,rust-core-extensions-0.1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/rodrimati1992/repr_offset_crates/")
+    (synopsis
+     "For deriving the offsets of fields for types with a stable layout")
+    (description
+     "For deriving the offsets of fields for types with a stable layout.")
+    (license license:zlib)))
+
 (define-public rust-reqwest-0.11
   (package
     (name "rust-reqwest")
