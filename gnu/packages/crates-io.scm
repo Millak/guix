@@ -82197,16 +82197,17 @@ Read/Write streams as well as low-level in-memory encoding and decoding.")
 (define-public rust-yansi-0.5
   (package
     (name "rust-yansi")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "yansi" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0wdx8syhc61lphmgw5cw1vq73isi4szjqriz1k07z19r3r59ziwz"))))
+        (base32 "1v4qljgzh73knr7291cgwrf56zrvhmpn837n5n5pypzq1kciq109"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
+    (arguments
+     `(#:cargo-development-inputs (("rust-serial-test" ,rust-serial-test-0.6))))
     (home-page "https://github.com/SergioBenitez/yansi")
     (synopsis "Simple ANSI terminal color painting library")
     (description
