@@ -41058,6 +41058,32 @@ linear algebra library.")
     (description "This package provides N-API procedural macros.")
     (license license:expat)))
 
+(define-public rust-napi-derive-backend-1
+  (package
+    (name "rust-napi-derive-backend")
+    (version "1.0.52")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "napi-derive-backend" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05wy00faa3bz2lqcrwnlr3l9hzwrw3qcapljiy26ml38j73cgfr0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-convert-case" ,rust-convert-case-0.6)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-semver" ,rust-semver-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://napi.rs")
+    (synopsis "Codegen backend for napi procedural macro")
+    (description "Codegen backend for napi procedural macro.")
+    (license license:expat)))
+
 (define-public rust-napi-sys-2
   (package
     (name "rust-napi-sys")
