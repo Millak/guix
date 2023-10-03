@@ -3975,21 +3975,19 @@ structures.")
 (define-public rust-arrayvec-0.7
   (package
     (name "rust-arrayvec")
-    (version "0.7.2")
+    (version "0.7.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "arrayvec" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1mjl8jjqxpl0x7sm9cij61cppi7yi38cdrd1l8zjw7h7qxk2v9cd"))))
+        (base32 "04b7n722jij0v3fnm3qk072d5ysc2q30rl9fz33zpfhzah30mlwn"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-serde" ,rust-serde-1))
+     `(#:cargo-inputs
+       (("rust-serde" ,rust-serde-1)
+        ("rust-zeroize" ,rust-zeroize-1))
        #:cargo-development-inputs
        (("rust-bencher" ,rust-bencher-0.1)
         ("rust-matches" ,rust-matches-0.1)
