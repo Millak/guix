@@ -15129,6 +15129,57 @@ contents of the OS-level clipboard.")
 numbers using the CORDIC method.")
     (license license:bsd-3)))
 
+(define-public rust-core-extensions-1
+  (package
+    (name "rust-core-extensions")
+    (version "1.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "core-extensions" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1vn0jsn8nbi76i2jjadim31piscf0hv8640ng9z608cpgk01viwj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; tests must be run with the "__test" feature
+       #:cargo-inputs
+       (("rust-core-extensions-proc-macros" ,rust-core-extensions-proc-macros-1)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-rand" ,rust-rand-0.4)
+        ("rust-static-assertions" ,rust-static-assertions-1))))
+    (home-page "https://github.com/rodrimati1992/core_extensions")
+    (synopsis
+     "Extensions for core/std library types, and other miscelaneous features")
+    (description
+     "Extensions for core/std library types, and other miscelaneous features.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-core-extensions-proc-macros-1
+  (package
+    (name "rust-core-extensions-proc-macros")
+    (version "1.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "core-extensions-proc-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19k11haw8s00zxxignjmw0ian0q85r9grhbvr153nvlbs8cv5wv9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1))))
+    (home-page "https://github.com/rodrimati1992/core_extensions")
+    (synopsis "Implementation detail of the @code{core_extensions} crate")
+    (description "Implementation detail of the @code{core_extensions} crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-core2-0.3
   (package
     (name "rust-core2")
