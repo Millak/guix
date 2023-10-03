@@ -5938,7 +5938,22 @@ file or files to several hosts.")
                        ("rust-unicode-width" ,rust-unicode-width-0.1)
                        ("rust-winapi-util" ,rust-winapi-util-0.1))
        #:cargo-development-inputs (("rust-assert-cmd" ,rust-assert-cmd-2)
-                                   ("rust-tempfile" ,rust-tempfile-3))))
+                                   ("rust-tempfile" ,rust-tempfile-3))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-extras
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (share (string-append out "/share")))
+               (install-file "man-page/dust.1"
+                             (string-append share "/man/man1"))
+               (mkdir-p (string-append out "/etc/bash_completion.d"))
+               (copy-file "completions/dust.bash"
+                          (string-append out "/etc/bash_completion.d/dust"))
+               (install-file "completions/dust.fish"
+                             (string-append share "/fish/vendor_completions.d"))
+               (install-file "completions/_dust"
+                             (string-append share "/zsh/site-fuctions"))))))))
     (home-page "https://github.com/bootandy/dust")
     (synopsis "Graphical disk usage analyzer")
     (description "This package provides a graphical disk usage analyzer in
