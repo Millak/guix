@@ -16631,7 +16631,7 @@ by zenburn, sinburn and similar themes, but slowly diverging from them.")
 (define-public emacs-dracula-theme
   (package
     (name "emacs-dracula-theme")
-    (version "1.8.0")
+    (version "1.8.1")
     (source
      (origin
        (method git-fetch)
@@ -16640,7 +16640,7 @@ by zenburn, sinburn and similar themes, but slowly diverging from them.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zxcfcgkssjpnwa3s0ryz6j7c8cmdpjhza3x9wycfahq35qf2r0k"))))
+        (base32 "0mb7pix1wbmg4laba06fvcb8q822584iq0cw8mwf0nzaf1yh12l8"))))
     (build-system emacs-build-system)
     (home-page "https://draculatheme.com/")
     (synopsis "Dark theme for Emacs")
