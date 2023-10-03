@@ -2553,24 +2553,31 @@ high performance.")
 (define-public rust-ahash-0.7
   (package
     (name "rust-ahash")
-    (version "0.7.4")
+    (version "0.7.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ahash" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "163vy6jcd7r3jczsv4zyhlc5x9dqsfgg1yrqbm3xhygr1czq7fs3"))))
+        (base32 "0isw672fiwx8cjl040jrck6pi85xcszkz6q0xsqkiy6qjl31mdgw"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-const-random" ,rust-const-random-0.1)
         ("rust-getrandom" ,rust-getrandom-0.2)
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-serde" ,rust-serde-1)
-        ("rust-version-check" ,rust-version-check-0.9))))
+        ("rust-version-check" ,rust-version-check-0.9))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-fnv" ,rust-fnv-1)
+        ("rust-fxhash" ,rust-fxhash-0.2)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-no-panic" ,rust-no-panic-0.1)
+        ("rust-rand" ,rust-rand-0.7)
+        ("rust-seahash" ,rust-seahash-4)
+        ("rust-serde-json" ,rust-serde-json-1))))
     (home-page "https://github.com/tkaitchuck/ahash")
     (synopsis "Non-cryptographic hash function using AES-NI")
     (description "This package provides a non-cryptographic hash function
