@@ -68748,14 +68748,14 @@ words, like Python's shlex.")
 (define-public rust-signal-hook-0.3
   (package
     (name "rust-signal-hook")
-    (version "0.3.15")
+    (version "0.3.17")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "signal-hook" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1fc2wvl8sp6l6kd5hh0csn9bl2yl4cqsj8vc0ygd08bd2zqnh9vk"))))
+        (base32 "0098nsah04spqf3n8niirmfym4wsdgjl57c78kmzijlq8xymh8c6"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
