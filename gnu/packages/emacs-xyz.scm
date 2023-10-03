@@ -1652,14 +1652,14 @@ code files.")
 (define-public emacs-mct
   (package
     (name "emacs-mct")
-    (version "0.5.1")
+    (version "1.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://gitlab.com/protesilaos/mct")
                     (commit version)))
               (sha256
-               (base32 "0vmlss546z0x8y26cxb1iis926pwjfv466gwm0clb8jfqkvr0qmh"))
+               (base32 "1xagrc06rvzsrv1k0arx8d5jxy1x4s9rp46gwfmnl1732irx8z3r"))
               (file-name (git-file-name name version))))
     (native-inputs (list texinfo))
     (build-system emacs-build-system)
