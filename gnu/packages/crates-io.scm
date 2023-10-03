@@ -76484,6 +76484,28 @@ Unicode and Internationalization Crates (UNIC) project.")
 membership for characters in Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-unicode-id-0.3
+  (package
+    (name "rust-unicode-id")
+    (version "0.3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "unicode-id" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0gq8mvi7cf4a13r9djb6xcf16jm58kic30kv36856s99cgwdxdmi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3))))
+    (home-page "https://github.com/Boshen/unicode-id")
+    (synopsis
+     "Determine whether characters have the ID_Start or ID_Continue properties")
+    (description
+     "Determine whether characters have the ID_Start or ID_Continue properties
+according to Unicode Standard Annex #31.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-unicode-ident-1
   (package
     (name "rust-unicode-ident")
