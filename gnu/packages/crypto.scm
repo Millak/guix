@@ -1595,16 +1595,14 @@ SHA-3, and BLAKE2.")
 (define-public b3sum
   (package
     (name "b3sum")
-    ;; Version 1 requires Rust >= 1.51.
-    ;; <https://github.com/BLAKE3-team/BLAKE3/releases/tag/1.0.0>
-    (version "0.3.8")
+    (version "1.5.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "b3sum" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "0h3fz16q5lk6mg7r8kjkjrq5hd4injngn5m7pswjbf2pyzjmg4b4"))))
+         (base32 "05k0vn7gpbvjr925vjc5yzvhiyrmkw9pqmch5fr4ir7s8wiaq2fm"))))
     (build-system cargo-build-system)
     (arguments
       `(;; Install the source so that Cargo.toml is installed, because that is
@@ -1624,10 +1622,10 @@ SHA-3, and BLAKE2.")
                 (install-file "README.md" doc)))))
         #:cargo-inputs
         (("rust-anyhow" ,rust-anyhow-1)
-         ("rust-blake3" ,rust-blake3-0.3)
-         ("rust-clap" ,rust-clap-2)
+         ("rust-blake3" ,rust-blake3-1)
+         ("rust-clap" ,rust-clap-4)
          ("rust-hex" ,rust-hex-0.4)
-         ("rust-memmap" ,rust-memmap-0.7)
+         ("rust-memmap2" ,rust-memmap2-0.7)
          ("rust-rayon" ,rust-rayon-1)
          ("rust-wild" ,rust-wild-2))
         #:cargo-development-inputs
