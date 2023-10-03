@@ -37937,6 +37937,33 @@ algorithms.  It supports CBC block cipher mode, PKCS5 padding and 64, 128,
 192 or 256-bits key length.")
     (license license:asl2.0)))
 
+(define-public rust-magic-string-0.3
+  (package
+    (name "rust-magic-string")
+    (version "0.3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "magic-string" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "062fjfvq17qm8ymqzq4y6wk7a3fmxqq9ysg40yrcrxs3ik73703c"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-base64" ,rust-base64-0.13)
+        ("rust-napi" ,rust-napi-2)
+        ("rust-napi-derive" ,rust-napi-derive-2)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-vlq" ,rust-vlq-0.5))))
+    (home-page "https://github.com/h-a-n-a/magic-string-rs")
+    (synopsis "MagicString port driven by Rust and N-API")
+    (description
+     "This package provides a MagicString port driven by Rust and N-API.")
+    (license license:expat)))
+
 (define-public rust-maildir-0.5
   (package
     (name "rust-maildir")
