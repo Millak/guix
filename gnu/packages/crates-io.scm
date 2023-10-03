@@ -64953,42 +64953,32 @@ maximal amount of configuration possible intended.")
 (define-public rust-sourcemap-6
   (package
     (name "rust-sourcemap")
-    (version "6.0.1")
+    (version "6.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sourcemap" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1sv1rxc6d2rfvd5xrqzqq0i2y0z1q7sqj3wm9krxbggcccj1y0vf"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Enable unstable features
-           (substitute* "src/lib.rs"
-             (("//! This library" all)
-              (string-append "#![feature(inner_deref)]" "\n" all)))
-           #t))))
+        (base32 "145xyp6qaai2gd5p92bkg7yzrm4n5mqx1y111vsnqmywlxfgdjz4"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-base64" ,rust-base64-0.11)
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             "--skip=types::tests::test_adjust_mappings_injection")
+       #:cargo-inputs
+       (("rust-data-encoding" ,rust-data-encoding-2)
+        ("rust-debugid" ,rust-debugid-0.8)
         ("rust-if-chain" ,rust-if-chain-1)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-regex" ,rust-regex-1)
+        ("rust-rustc-version" ,rust-rustc-version-0.2)
         ("rust-scroll" ,rust-scroll-0.10)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-unicode-id" ,rust-unicode-id-0.3)
         ("rust-url" ,rust-url-2))
        #:cargo-development-inputs
-       (("rust-rustc-version" ,rust-rustc-version-0.2))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'enable-unstable-features
-           (lambda _
-             (setenv "RUSTC_BOOTSTRAP" "1")
-             #t)))))
+       (("rust-magic-string" ,rust-magic-string-0.3)
+        ("rust-proptest" ,rust-proptest-1))))
     (home-page "https://github.com/getsentry/rust-sourcemap")
     (synopsis "Basic sourcemap handling for Rust")
     (description "This package provides basic sourcemap handling for Rust.")
