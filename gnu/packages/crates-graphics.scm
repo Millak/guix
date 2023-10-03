@@ -3823,8 +3823,29 @@ the platform-specific getters provided by winit, or another library.")
     (description "This package provides X11 library bindings for Rust.")
     (license license:expat)))
 
+(define-public rust-y4m-0.8
+  (package
+    (name "rust-y4m")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "y4m" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0j24y2zf60lpxwd7kyg737hqfyqx16y32s0fjyi6fax6w4hlnnks"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-resize" ,rust-resize-0.4))))
+    (home-page "https://github.com/image-rs/y4m")
+    (synopsis "YUV4MPEG2 (@file{.y4m}) encoder and decoder")
+    (description
+     "This package provides a YUV4MPEG2 (@file{.y4m}) encoder and decoder.")
+    (license license:expat)))
+
 (define-public rust-y4m-0.7
   (package
+    (inherit rust-y4m-0.8)
     (name "rust-y4m")
     (version "0.7.0")
     (source
@@ -3834,13 +3855,7 @@ the platform-specific getters provided by winit, or another library.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1bhdgb7hgx7j92nm6ij5n8wisp50j8ff66ks14jzwdw2mwhrjam7"))))
-    (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page "https://github.com/image-rs/y4m")
-    (synopsis "YUV4MPEG2 (@file{.y4m}) encoder and decoder")
-    (description
-     "This package provides a YUV4MPEG2 (@file{.y4m}) encoder and decoder.")
-    (license license:expat)))
+    (arguments `(#:skip-build? #t))))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
