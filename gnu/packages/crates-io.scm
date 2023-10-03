@@ -15156,6 +15156,27 @@ numbers using the CORDIC method.")
      "Extensions for core/std library types, and other miscelaneous features.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-core-extensions-0.1
+  (package
+    (inherit rust-core-extensions-1)
+    (name "rust-core-extensions")
+    (version "0.1.20")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "core-extensions" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1nhgd5rlgp679qm4g3x806ywwhm6qr1y2j3y90wzjgyqllf7w49s"))))
+    (arguments
+     `(#:skip-build? #t ; failed to resolve: could not find `export` in `_serde`
+       #:cargo-inputs
+       (("rust-rustc-version" ,rust-rustc-version-0.2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-typenum" ,rust-typenum-1))
+       #:cargo-development-inputs
+       (("rust-rand" ,rust-rand-0.4))))))
+
 (define-public rust-core-extensions-proc-macros-1
   (package
     (name "rust-core-extensions-proc-macros")
