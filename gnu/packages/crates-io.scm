@@ -70016,22 +70016,22 @@ deleting all contents when it's dropped.")
 (define-public rust-tempfile-3
   (package
     (name "rust-tempfile")
-    (version "3.5.0")
+    (version "3.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tempfile" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "163rp254r3x7i5hisagrpxid2166pq94jvk511dpkmc1yf2fryxr"))))
+        (base32 "1vsl2193w3gpx3mwj36fwx3v6q2qyvmzrdn6m8fgfsjkrkrx556b"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-fastrand" ,rust-fastrand-1)
+        ("rust-fastrand" ,rust-fastrand-2)
         ("rust-redox-syscall" ,rust-redox-syscall-0.3)
-        ("rust-rustix" ,rust-rustix-0.37)
-        ("rust-windows-sys" ,rust-windows-sys-0.45))
+        ("rust-rustix" ,rust-rustix-0.38)
+        ("rust-windows-sys" ,rust-windows-sys-0.48))
        #:cargo-development-inputs
        (("rust-doc-comment" ,rust-doc-comment-0.3))))
     (home-page "https://stebalien.com/projects/tempfile-rs")
