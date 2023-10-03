@@ -50614,16 +50614,14 @@ functions.")
 (define-public rust-predicates-core-1
   (package
     (name "rust-predicates-core")
-    (version "1.0.0")
+    (version "1.0.6")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "predicates-core" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "0y3ingf2i4xx7r61f1a8wizs57j8hh32hylyjbw9ymcj7qx5q1q6"))))
+         (base32 "0x7ij95n63mhgkyrb7hly5ngm41mwfsassfvnjz7lbk10wk0755p"))))
     (build-system cargo-build-system)
     (home-page
      "https://github.com/assert-rs/predicates-rs/tree/master/predicates-core")
