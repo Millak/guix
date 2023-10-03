@@ -5488,7 +5488,7 @@ interfering with any pam-mount configuration.")))
 (define-public wlgreet
   (package
     (name "wlgreet")
-    (version "0.4")
+    (version "0.4.1")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -5497,25 +5497,24 @@ interfering with any pam-mount configuration.")))
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "00grp63n9nrgqls3knxfv9wjbc7p0jwr7i2vzxy750dz85gi2kzn"))))
+               "1k0jmgh0rjbnb49gkvs0a4d7z9xb6pad8v5w5f7my4s0rfpk7wd9"))))
     (build-system cargo-build-system)
     (arguments
      (list #:cargo-inputs
            `(("rust-chrono" ,rust-chrono-0.4)
              ("rust-getopts" ,rust-getopts-0.2)
-             ("rust-greetd-ipc" ,rust-greetd-ipc-0.8)
+             ("rust-greetd-ipc" ,rust-greetd-ipc-0.9)
              ("rust-lazy-static" ,rust-lazy-static-1)
              ("rust-memmap2" ,rust-memmap2-0.3)
-             ("rust-nix" ,rust-nix-0.15)
-             ("rust-os-pipe" ,rust-os-pipe-0.8)
-             ("rust-rusttype" ,rust-rusttype-0.7)
+             ("rust-nix" ,rust-nix-0.25)
+             ("rust-os-pipe" ,rust-os-pipe-1)
+             ("rust-rusttype" ,rust-rusttype-0.9)
              ("rust-serde" ,rust-serde-1)
              ("rust-smithay-client-toolkit"
               ,rust-smithay-client-toolkit-0.15)
              ("rust-toml" ,rust-toml-0.5)
              ("rust-wayland-client" ,rust-wayland-client-0.29)
-             ("rust-wayland-protocols" ,rust-wayland-protocols-0.29)
-             ("rust-xml-rs" ,rust-xml-rs-0.8))
+             ("rust-wayland-protocols" ,rust-wayland-protocols-0.29))
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'remove-bundled-fonts
