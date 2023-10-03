@@ -794,10 +794,10 @@ Common Lisp or Smalltalk, but for Emacs Lisp.")
       (license license:gpl3+))))
 
 (define-public emacs-tree-inspector
-  (let ((commit "495ef1874fba9d75842087f4acf0ebd75cf09e97"))
+  (let ((commit "bbb8d2dfe84fbf857fcc1579de5a1324b09a877e"))
     (package
       (name "emacs-tree-inspector")
-      (version "0.3")
+      (version "0.4")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -806,7 +806,7 @@ Common Lisp or Smalltalk, but for Emacs Lisp.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "011pk5gr2j9m4qnv70qz63bh58ga72nqahv0zkf2qpbr2a5df09c"))))
+                  "01ad4r97hfr9nndbifyggscb5108y7h2qm95jsmh5b9qgzqm39nx"))))
       (build-system emacs-build-system)
       (arguments
        (list
@@ -814,7 +814,17 @@ Common Lisp or Smalltalk, but for Emacs Lisp.")
         #:test-command #~(list "emacs" "-Q" "--batch"
                                "-L" "."
                                "-l" "tree-inspector-tests.el"
-                               "-f" "ert-run-tests-batch-and-exit")))
+                               "-f" "ert-run-tests-batch-and-exit")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-library-loading
+              ;; The library calls `hash-table-keys', which is not
+              ;; auto-loaded.  Explicitly require `subr-x', where it is
+              ;; defined.
+              (lambda _
+                (substitute* "tree-inspector.el"
+                  (("\\(require 'cl-lib\\)" line)
+                   (string-append line "(require 'subr-x)"))))))))
       (propagated-inputs (list emacs-treeview))
       (home-page "https://github.com/mmontone/emacs-tree-inspector")
       (synopsis "Inspection tool for Emacs Lisp objects that uses a tree view")
