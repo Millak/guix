@@ -7,7 +7,7 @@
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017, 2019, 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2017 Pierre Langlois <pierre.langlois@gmx.com>
-;;; Copyright © 2018, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2020, 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018, 2020 Nicolò Balzarotti <nicolo@nixo.xyz>
@@ -258,22 +258,20 @@ OpenBSD tool of the same name.")
 (define-public rust-minisign
   (package
     (name "rust-minisign")
-    (version "0.5.20")
+    (version "0.7.5")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "minisign" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "0xmcvh2snravghaar8igc6b9r3s1snnmf9qam9l3zyhm4987767y"))))
+         (base32 "1lmp83bxdg53c4n35fbwr3rkh6178y75fwsn25hf1kn62f2gbdnj"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-getrandom" ,rust-getrandom-0.1)
-        ("rust-rpassword" ,rust-rpassword-4)
-        ("rust-scrypt" ,rust-scrypt-0.3))))
+       (("rust-getrandom" ,rust-getrandom-0.2)
+        ("rust-rpassword" ,rust-rpassword-7)
+        ("rust-scrypt" ,rust-scrypt-0.11))))
     (home-page "https://github.com/jedisct1/rust-minisign")
     (synopsis "Crate to sign files and verify signatures")
     (description
