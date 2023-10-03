@@ -65777,18 +65777,21 @@ maximal amount of configuration possible intended.")
 (define-public rust-spin-0.9
   (package
     (name "rust-spin")
-    (version "0.9.2")
+    (version "0.9.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "spin" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1rch0my17z66fam7hbynvrcs6jk63b08jv4s04mhdksv1jz584ji"))))
+        (base32 "0rvam5r0p3a6qhc18scqpvpgb3ckzyqxpgdfyjnghh8ja7byi039"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-lock-api" ,rust-lock-api-0.4))))
+       (("rust-lock-api" ,rust-lock-api-0.4)
+        ("rust-portable-atomic" ,rust-portable-atomic-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4))))
     (home-page "https://github.com/mvdnes/spin-rs")
     (synopsis "Synchronization primitives based on spinning")
     (description "This crate provides synchronization primitives based on
