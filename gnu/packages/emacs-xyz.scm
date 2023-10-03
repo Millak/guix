@@ -4263,7 +4263,7 @@ searches.  Unlike code@{emacs-wiki.el}, it can be combined with any format.")
 (define-public emacs-bm
   (package
     (name "emacs-bm")
-    (version "201905")
+    (version "202309")
     (source
      (origin
        (method git-fetch)
@@ -4272,7 +4272,7 @@ searches.  Unlike code@{emacs-wiki.el}, it can be combined with any format.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "180b3rc13asrmsdh7v405d54jkrininvaj52xhp71vw91ng51dkn"))))
+        (base32 "1a47dcda196sb6qx45w94d0vfzyfprfs3g7yj0scjmna79rr3fqa"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/joodland/bm")
     (synopsis "Visual bookmarks for Emacs")
