@@ -1628,31 +1628,31 @@ basic input/output.")
                (install-file "extra/completions/alacritty.fish"
                              (string-append share "/fish/vendor_completions.d"))))))))
     (native-inputs
-     `(("ncurses" ,ncurses)
-       ("pkg-config" ,pkg-config)
-       ("python3" ,python)))
+     (list ncurses
+           pkg-config
+           python))
     (inputs
-     `(("expat" ,expat)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("libx11" ,libx11)
-       ("libxcb" ,libxcb)
-       ("libxcursor" ,libxcursor)
-       ("libxext" ,libxext)
-       ("libxft" ,libxft)
-       ("libxi" ,libxi)
-       ("libxinerama" ,libxinerama)
-       ("libxkbcommon" ,libxkbcommon)
-       ("libxmu" ,libxmu)
-       ("libxpresent" ,libxpresent)
-       ("libxrandr" ,libxrandr)
-       ("libxscrnsaver" ,libxscrnsaver)
-       ("libxt" ,libxt)
-       ("libxtst" ,libxtst)
-       ("libxxf86vm" ,libxxf86vm)
-       ("mesa" ,mesa)
-       ("xdg-utils" ,xdg-utils)
-       ("wayland" ,wayland)))
+     (list expat
+           fontconfig
+           freetype
+           libx11
+           libxcb
+           libxcursor
+           libxext
+           libxft
+           libxi
+           libxinerama
+           libxkbcommon
+           libxmu
+           libxpresent
+           libxrandr
+           libxscrnsaver
+           libxt
+           libxtst
+           libxxf86vm
+           mesa
+           xdg-utils
+           wayland))
     (native-search-paths
      ;; FIXME: This should only be located in 'ncurses'.  Nonetheless it is
      ;; provided for usability reasons.  See <https://bugs.gnu.org/22138>.
