@@ -1680,7 +1680,7 @@ Scheme by using Guile’s foreign function interface.")
               (replace "guile" guile-2.2)))))
 
 (define-public guile-mastodon
-  (let ((commit "74b75bcf547df92acee1e0466ecd7ec07f775392")
+  (let ((commit "0a94ae6bbca63d440eb3f6d7e636630aca6d2b52")
         (revision "1"))
     (package
       (name "guile-mastodon")
@@ -1693,7 +1693,7 @@ Scheme by using Guile’s foreign function interface.")
                 (file-name (string-append name "-" version "-checkout"))
                 (sha256
                  (base32
-                  "1wx5h6wa9c0na8mrnr2nv1nzjvq68zyrly8yyp11dsskhaw4y33h"))))
+                  "17ic44jypv1yq296w8b4nm99189fdgmdw1pdx0172x97dicsf2j6"))))
       (build-system gnu-build-system)
       (native-inputs
        (list autoconf automake emacs-minimal pkg-config texinfo))
