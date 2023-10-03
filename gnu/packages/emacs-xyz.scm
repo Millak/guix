@@ -37353,13 +37353,13 @@ buffer.")
 (define-public emacs-seq
   (package
     (name "emacs-seq")
-    (version "2.23")
+    (version "2.24")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/seq-" version ".tar"))
        (sha256
-        (base32 "1lbxnrzq88z8k9dyylg2636pg9vc8bzfprs1hxwp9ah0zkvsn52p"))))
+        (base32 "1w2cysad3qwnzdabhq9xipbslsjm528fcxkwnslhlkh8v07karml"))))
     (build-system emacs-build-system)
     (home-page "https://elpa.gnu.org/packages/seq.html")
     (synopsis "Sequence manipulation functions")
