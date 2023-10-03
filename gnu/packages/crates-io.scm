@@ -40984,8 +40984,39 @@ linear algebra library.")
        #:cargo-development-inputs
        (("rust-nalgebra" ,rust-nalgebra-0.26))))))
 
+(define-public rust-napi-2
+  (package
+    (name "rust-napi")
+    (version "2.13.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "napi" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1h1sbblg638h1pnhvf2yxy0lzk8hy9dwx5mswc296500p69kq1px"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-bitflags" ,rust-bitflags-2)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-ctor" ,rust-ctor-0.2)
+        ("rust-encoding-rs" ,rust-encoding-rs-0.8)
+        ("rust-napi-derive" ,rust-napi-derive-2)
+        ("rust-napi-sys" ,rust-napi-sys-2)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/napi-rs/napi-rs")
+    (synopsis "N-API bindings")
+    (description "This package provides N-API bindings.")
+    (license license:expat)))
+
 (define-public rust-napi-0.5
   (package
+    (inherit rust-napi-2)
     (name "rust-napi")
     (version "0.5.1")
     (source
@@ -40996,7 +41027,6 @@ linear algebra library.")
        (sha256
         (base32
          "0mp0di7zv1r9gn3r3pmqnyy6q94akd9d6bl1p7m76nm9hgj9rw56"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-encoding-rs" ,rust-encoding-rs-0.8)
@@ -41007,11 +41037,7 @@ linear algebra library.")
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-tokio" ,rust-tokio-0.2))
        #:cargo-development-inputs
-       (("rust-napi-build" ,rust-napi-build-0.2))))
-    (home-page "https://github.com/napi-rs/napi-rs")
-    (synopsis "N-API bindings")
-    (description "This package provides N-API bindings.")
-    (license license:expat)))
+       (("rust-napi-build" ,rust-napi-build-0.2))))))
 
 (define-public rust-napi-build-1
   (package
