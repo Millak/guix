@@ -50504,29 +50504,30 @@ libpq.")
 dependency to expose a precomputed hash.")
     (license license:expat)))
 
-(define-public rust-predicates-2
+(define-public rust-predicates-3
   (package
     (name "rust-predicates")
-    (version "2.1.0")
+    (version "3.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "predicates" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "05d749i3z8cbsr0899fzr2ksn8drbci4harcq82vjsj5krlagrcm"))))
+        (base32 "182q0wiabllvbg0nzfkf8a6qkbk0ckrkmfbk7k5ijgrfbibjiz3d"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=path::fc::PredicateFileContentExt::from_file_path")
        #:cargo-inputs
-       (("rust-concolor-control" ,rust-concolor-control-0.0.7)
+       (("rust-anstyle" ,rust-anstyle-1)
         ("rust-difflib" ,rust-difflib-0.4)
         ("rust-float-cmp" ,rust-float-cmp-0.9)
-        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-itertools" ,rust-itertools-0.11)
         ("rust-normalize-line-endings" ,rust-normalize-line-endings-0.3)
         ("rust-predicates-core" ,rust-predicates-core-1)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-yansi" ,rust-yansi-0.5))
+        ("rust-regex" ,rust-regex-1))
        #:cargo-development-inputs
        (("rust-predicates-tree" ,rust-predicates-tree-1))))
     (home-page "https://github.com/assert-rs/predicates-rs")
@@ -50535,6 +50536,34 @@ dependency to expose a precomputed hash.")
      "This package provides an implementation of boolean-valued predicate
 functions.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-predicates-2
+  (package
+    (inherit rust-predicates-3)
+    (name "rust-predicates")
+    (version "2.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "predicates" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1pdd8zgw8351bvk882zadyqghnxzkjlf946vkdb1hgkzqdihl8sr"))))
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=path::fc::PredicateFileContentExt::from_file_path")
+       #:cargo-inputs
+       (("rust-concolor" ,rust-concolor-0.0.11)
+        ("rust-difflib" ,rust-difflib-0.4)
+        ("rust-float-cmp" ,rust-float-cmp-0.9)
+        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-normalize-line-endings" ,rust-normalize-line-endings-0.3)
+        ("rust-predicates-core" ,rust-predicates-core-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-yansi" ,rust-yansi-0.5))
+       #:cargo-development-inputs
+       (("rust-predicates-tree" ,rust-predicates-tree-1))))))
 
 (define-public rust-predicates-1
   (package
