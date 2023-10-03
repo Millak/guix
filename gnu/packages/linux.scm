@@ -9448,7 +9448,7 @@ tools for managing PipeWire.")
 (define-public ell
   (package
     (name "ell")
-    (version "0.57")
+    (version "0.59")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9457,7 +9457,7 @@ tools for managing PipeWire.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1vpzz0z6q0d3h41aqajaw0dlpkdnmjcppmlwbb558hvj40q5dpzm"))))
+                "11xlkdvw7pyd9idq1zsnl946dry9aksnz29wbpzxqjc97xhhd5xq"))))
     (build-system gnu-build-system)
     (arguments
      ;; Tests launch dbus-daemon instances that all try to bind to
@@ -9466,7 +9466,7 @@ tools for managing PipeWire.")
     (inputs
      (list dbus))
     (native-inputs
-     (list autoconf automake libtool pkg-config))
+     (list autoconf automake libtool pkg-config procps))
     (home-page "https://01.org/ell")
     (synopsis "Embedded Linux Library")
     (description "The Embedded Linux* Library (ELL) provides core, low-level
