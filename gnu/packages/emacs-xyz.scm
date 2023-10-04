@@ -37671,7 +37671,7 @@ parallel fetching of tiles with cURL, and more.")
 (define-public emacs-corfu-terminal
   (package
     (name "emacs-corfu-terminal")
-    (version "0.5")
+    (version "0.7")
     (source
      (origin
        (method git-fetch)
@@ -37681,7 +37681,7 @@ parallel fetching of tiles with cURL, and more.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15pwv48v6plvc33715x1j1g6vf53ds4880ly5h96x2idffh7fncl"))))
+        (base32 "0ddj0x1mivrnxpdmnim9vkdpyjrhkfkvmcpfas1wznn4wfr559yj"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-corfu emacs-popon))
     (home-page "https://codeberg.org/akib/emacs-corfu-terminal/")
