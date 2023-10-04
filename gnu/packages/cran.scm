@@ -14467,14 +14467,16 @@ both to consistency and asymptotic normality.")
     (properties `((upstream-name . "doFuture")))
     (build-system r-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'set-HOME
            (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list r-foreach r-future r-future-apply r-globals r-iterators))
     (native-inputs
-     (list r-r-rsp)) ; vignette builder
+     (list r-markdown                   ;check phase requires markdown package
+           r-r-rsp))                    ;vignette builder
     (home-page "https://github.com/HenrikBengtsson/doFuture")
     (synopsis "Foreach parallel adapter using the future API")
     (description
