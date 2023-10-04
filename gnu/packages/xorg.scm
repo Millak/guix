@@ -5341,7 +5341,7 @@ Wayland.")
 (define-public libx11-fixed
   (package
     (inherit libx11)
-    (version "1.8.6")
+    (version "1.8.7")
     (source
      (origin
        (method url-fetch)
@@ -5349,7 +5349,7 @@ Wayland.")
                            version ".tar.xz"))
        (sha256
         (base32
-         "1jawl8zp1h7hdmxx1sc6kmxkki187d9yixr2l03ai6wqqry5nlsr"))))))
+         "1vlrgrdibp4lr84wgmsdy1ihzaai8bvvqc68npi1m19wir36gwh5"))))))
 
 ;; packages of height 5 in the propagated-inputs tree
 
