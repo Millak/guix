@@ -31333,7 +31333,7 @@ current tree.")
 (define-public emacs-org-dynamic-agenda
   (package
     (name "emacs-org-dynamic-agenda")
-    (version "0.2.0")
+    (version "0.3.1")
     (source
      (origin
        (method git-fetch)
@@ -31342,7 +31342,7 @@ current tree.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1yw5ns7ar5mbj8yfhd6m5kigssb3csxjhwvmjggksq1557w1ypmx"))))
+        (base32 "0g59ckcrc9qd0h78qwq4qm3kn97nvnc2a0yj4g3fh74wr1mg80ad"))))
     (build-system emacs-build-system)
     (arguments
      (list #:include
