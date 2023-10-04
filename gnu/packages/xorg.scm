@@ -36,6 +36,7 @@
 ;;; Copyright © 2021 Lu Hui <luhux76@gmail.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1432,6 +1433,7 @@ treat it as part of their software base when porting.")
   (package
     (name "libxpm")
     (version "3.5.13")
+    (replacement libxpm/fixed)
     (source
       (origin
         (method url-fetch)
@@ -1454,6 +1456,21 @@ treat it as part of their software base when porting.")
     (synopsis "Xorg XPM library")
     (description "XPM (X Pixmap) image file format library.")
     (license license:x11)))
+
+(define-public libxpm/fixed
+  (package
+    (inherit libxpm)
+    (version "3.5.17")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append
+               "mirror://xorg/individual/lib/libXpm-"
+               version
+               ".tar.xz"))
+        (sha256
+          (base32
+            "0hvf49qy55gwldpwpw7ihcmn5i2iinpjh2rbha63hzcy060izcv4"))))))
 
 (define-public libxres
   (package
