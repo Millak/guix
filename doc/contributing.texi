@@ -428,9 +428,13 @@ configuration file:
                                  (zero-or-one
                                   (seq "#" (one-or-more
                                             (char "0-9"))))))
-                     (seq "<https://bugs.gnu.org/"
+                     (seq (? "<") "https://bugs.gnu.org/"
                           (group-n 2 (one-or-more (char "0-9")))
-                          ">")))))
+                          (? ">"))
+                     (seq (? "<") "https://issues.guix.gnu.org/"
+                          (? "issue/")
+                          (group-n 2 (one-or-more (char "0-9")))
+                          (? ">"))))))
 (setq bug-reference-url-format "https://issues.guix.gnu.org/%s")
 
 (require 'debbugs)
