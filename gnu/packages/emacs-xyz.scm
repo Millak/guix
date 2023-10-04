@@ -14720,7 +14720,7 @@ parsing utility.")
 (define-public emacs-yaml-mode
   (package
     (name "emacs-yaml-mode")
-    (version "0.0.15")
+    (version "0.0.16")
     (source
      (origin
        (method git-fetch)
@@ -14729,7 +14729,7 @@ parsing utility.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gsa153yp8lmwrvcc3nzpw5lj037y7q2nm23k5k404r5as4k355l"))))
+        (base32 "0jqg2hmh7qsgqywwd6fy3k8z8j45nqhpdzr3hw4hd5s2hry3zhg1"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/yoshiki/yaml-mode")
     (synopsis "Major mode for editing YAML files")
