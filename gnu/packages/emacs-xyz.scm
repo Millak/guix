@@ -8661,7 +8661,8 @@ by a query, so both a link can refer to several mails.")
        (uri (string-append "https://elpa.gnu.org/packages/debbugs-"
                            version ".tar"))
        (sha256
-        (base32 "1rzv13shadbvy583vjj4zg13v920zpiqrsnn10r3cqqyli89ivn2"))))
+        (base32 "1rzv13shadbvy583vjj4zg13v920zpiqrsnn10r3cqqyli89ivn2"))
+       (patches (search-patches "emacs-debbugs-keep-patch-subject.patch"))))
     (build-system emacs-build-system)
     (arguments '(#:include '("\\.el$" "\\.wsdl$" "\\.info$")))
     (propagated-inputs
