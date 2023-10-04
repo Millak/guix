@@ -144,7 +144,8 @@ fi
 
 alias ls='ls -p --color=auto'
 alias ll='ls -l'
-alias grep='grep --color=auto'\n"))
+alias grep='grep --color=auto'
+alias ip='ip -color=auto'\n"))
 
 (define (default-skeletons)
   "Return the default skeleton files for /etc/skel.  These files are copied by
