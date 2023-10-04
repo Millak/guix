@@ -1284,6 +1284,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/glibc-CVE-2019-7309.patch		\
   %D%/packages/patches/glibc-CVE-2019-9169.patch		\
   %D%/packages/patches/glibc-CVE-2019-19126.patch		\
+  %D%/packages/patches/glibc-2.35-CVE-2023-4911.patch	\
   %D%/packages/patches/glibc-allow-kernel-2.6.32.patch		\
   %D%/packages/patches/glibc-boot-2.16.0.patch			\
   %D%/packages/patches/glibc-boot-2.2.5.patch			\
