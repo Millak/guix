@@ -242,7 +242,32 @@ directory = '" port)
         ;;error: invalid inclusion of reserved file name Cargo.toml.orig in package source
         (when (file-exists? "Cargo.toml.orig")
           (delete-file "Cargo.toml.orig"))
-        (apply invoke `("cargo" "package" ,@cargo-package-flags))))
+        (apply invoke `("cargo" "package" ,@cargo-package-flags))
+
+        ;; Then unpack the crate, reset the timestamp of all contained files, and
+        ;; repack them.  This is necessary to ensure that they are reproducible.
+        (with-directory-excursion "target/package"
+          (for-each
+            (lambda (crate)
+              (invoke "tar" "xf" crate)
+              (delete-file crate)
+              ;; Some of the crate names have underscores, so we need to
+              ;; search the current directory to find the unpacked crate.
+              (let ((dir
+                      (car (scandir "."
+                                    (lambda (file)
+                                      (and (not (member file '("." "..")))
+                                           (not (string-suffix? ".crate" file))))))))
+                ;; XXX: copied from (gnu build install)
+                (for-each (lambda (file)
+                            (let ((s (lstat file)))
+                              (unless (eq? (stat:type s) 'symlink)
+                                (utime file 0 0 0 0))))
+                          (find-files dir #:directories? #t))
+                (apply invoke "tar" "czf" (string-append dir ".crate")
+                       (find-files dir #:directories? #t))
+                (delete-file-recursively dir)))
+            (find-files "." "\\.crate$")))))
     (format #t "Not installing cargo sources, skipping `cargo package`.~%"))
   #t)
 
