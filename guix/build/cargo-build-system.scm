@@ -231,10 +231,10 @@ directory = '" port)
           (for-each
             (lambda (file)
               (make-file-writable file)
-              ;; Strip the hash and replace '.tar.gz' with '.crate'.
+              ;; Strip the hash and rust prefix and replace '.tar.gz' with '.crate'.
               (rename-file file
                            (string-append (string-drop-right
-                                            (string-drop file 35)
+                                            (string-drop file 40)
                                             (string-length ".tar.gz"))
                                           ".crate")))
             (find-files "." "\\.tar\\.gz$"))))
