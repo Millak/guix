@@ -5468,7 +5468,7 @@ with a FSM is being built (for example, from a Makefile.)")
                          guile-lib
                          guile-smc))
     (inputs (list bash-minimal guile-3.0 guile-lib))
-    (propagated-inputs (list guile-smc))
+    (propagated-inputs (list guile-lib guile-smc))
     (home-page "https://github.com/artyom-poptsov/guile-ini")
     (synopsis "Guile library for INI format support")
     (description
