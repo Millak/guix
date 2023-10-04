@@ -27920,7 +27920,7 @@ and comments.")
 (define-public emacs-yeetube
   (package
     (name "emacs-yeetube")
-    (version "2.0.4")
+    (version "2.0.5")
     (source
      (origin
        (method git-fetch)
@@ -27929,7 +27929,7 @@ and comments.")
              (commit version)))
        (sha256
         (base32
-         "175yz46gql27y2v02apa1zyzgparzpgrsmw1mbb1nlx0cnf7an79"))
+         "1pb6pb624icnjp7210vqrxj4sb38kydfaxc88bj1xmk1dh332h1k"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (arguments
@@ -27939,10 +27939,10 @@ and comments.")
           (add-after 'unpack 'locate-binaries
             (lambda* (#:key inputs #:allow-other-keys)
               (emacs-substitute-variables "yeetube.el"
-                ("yeetube-yt-dlp"
+                ("yeetube-ytdlp"
                  (search-input-file inputs "/bin/yt-dlp")))
-              (substitute* "yeetube-mpv.el"
-                (("\\(executable-find \"mpv\"\\)")
+              (emacs-substitute-variables "yeetube-mpv.el"
+                ("yeetube-mpv-path"
                  (search-input-file inputs "/bin/mpv"))))))))
     (inputs (list mpv yt-dlp))
     (home-page "https://thanosapollo.com/blog/yeetube/")
