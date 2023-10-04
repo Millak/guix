@@ -3599,8 +3599,8 @@ that can be used to verify that future runs produce the same data.")
                 (copy-file "proba.scm" script)
                 (chmod script #o555)
                 (wrap-program script
-                  `("GUILE_LOAD_PATH" = (,(getenv "GUILE_LOAD_PATH")))
-                  `("GUILE_LOAD_COMPILED_PATH" =
+                  `("GUILE_LOAD_PATH" prefix (,(getenv "GUILE_LOAD_PATH")))
+                  `("GUILE_LOAD_COMPILED_PATH" prefix
                     (,(getenv "GUILE_LOAD_COMPILED_PATH")))))))
           (add-after 'install 'install-manual
             (lambda* (#:key outputs #:allow-other-keys)
