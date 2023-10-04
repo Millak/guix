@@ -446,8 +446,8 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-java
   (tree-sitter-grammar
    "java" "Java"
-   "1i9zfgqibinz3rkx6yws1wk49iys32x901dki65qihbxcmcfh341"
-   "0.20.0"))
+   "0440xh8x8rkbdlc1f1ail9wzl4583l29ic43x9lzl8290bm64q5l"
+   "0.20.1"))
 
 (define-public tree-sitter-json
   ;; Not tagged
