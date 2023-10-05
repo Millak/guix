@@ -2234,9 +2234,9 @@ command that allows you to share pre-built binaries with others over HTTP.")))
   (rules  udev-configuration-rules                ;list of file-like
           (default '())))
 
-(define (udev-rules-union packages)
-  "Return the union of the @code{lib/udev/rules.d} directories found in each
-item of @var{packages}."
+(define (udev-configurations-union subdirectory packages)
+  "Return the union of the lib/udev/SUBDIRECTORY.d directories found in each
+item of PACKAGES."
   (define build
     (with-imported-modules '((guix build union)
                              (guix build utils))
@@ -2247,38 +2247,56 @@ item of @var{packages}."
                        (srfi srfi-26))
 
           (define %standard-locations
-            '("/lib/udev/rules.d" "/libexec/udev/rules.d"))
+            '(#$(string-append "/lib/udev/" subdirectory ".d")
+                #$(string-append "/libexec/udev/" subdirectory ".d")))
 
-          (define (rules-sub-directory directory)
-            ;; Return the sub-directory of DIRECTORY containing udev rules, or
-            ;; #f if none was found.
+          (define (configuration-sub-directory directory)
+            ;; Return the sub-directory of DIRECTORY containing udev
+            ;; configurations, or #f if none was found.
             (find directory-exists?
                   (map (cut string-append directory <>) %standard-locations)))
 
           (union-build #$output
-                       (filter-map rules-sub-directory '#$packages)))))
+                       (filter-map configuration-sub-directory '#$packages)))))
 
-  (computed-file "udev-rules" build))
+  (computed-file (string-append "udev-" subdirectory) build))
+
+(define (udev-rules-union packages)
+  "Return the union of the lib/udev/rules.d directories found in each
+item of PACKAGES."
+  (udev-configurations-union "rules" packages))
+
+(define (udev-configuration-file subdirectory file-name contents)
+  "Return a directory with a udev configuration file FILE-NAME containing CONTENTS."
+  (file->udev-configuration-file subdirectory file-name (plain-file file-name contents)))
 
 (define (udev-rule file-name contents)
   "Return a directory with a udev rule file FILE-NAME containing CONTENTS."
-  (file->udev-rule file-name (plain-file file-name contents)))
+  (udev-configuration-file "rules" file-name contents))
 
-(define (file->udev-rule file-name file)
-  "Return a directory with a udev rule file FILE-NAME which is a copy of FILE."
+(define (file->udev-configuration-file subdirectory file-name file)
+  "Return a directory with a udev configuration file FILE-NAME which is a copy
+ of FILE."
   (computed-file file-name
                  (with-imported-modules '((guix build utils))
                    #~(begin
                        (use-modules (guix build utils))
 
-                       (define rules.d
-                         (string-append #$output "/lib/udev/rules.d"))
+                       (define configuration-directory
+                         (string-append #$output
+                                        "/lib/udev/"
+                                        #$subdirectory
+                                        ".d"))
 
                        (define file-copy-dest
-                         (string-append rules.d "/" #$file-name))
+                         (string-append configuration-directory "/" #$file-name))
 
-                       (mkdir-p rules.d)
+                       (mkdir-p configuration-directory)
                        (copy-file #$file file-copy-dest)))))
+
+(define (file->udev-rule file-name file)
+  "Return a directory with a udev rule file FILE-NAME which is a copy of FILE."
+  (file->udev-configuration-file "rules" file-name file))
 
 (define kvm-udev-rule
   ;; Return a directory with a udev rule that changes the group of /dev/kvm to
