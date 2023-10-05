@@ -17971,21 +17971,27 @@ Processing.")
 (define-public r-waffle
   (package
     (name "r-waffle")
-    (version "0.7.0")
+    (version "1.0.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "waffle" version))
               (sha256
                (base32
-                "1qjmai33p96cyavi9lgi6k30h6fj7db5sr569v9jf4kwx92c61df"))))
+                "17z05mlnp2k9dywr0bbqz633sq1xs8q9879bl2na1in39qxq0l76"))))
     (properties `((upstream-name . "waffle")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-extrafont
+     (list r-curl
+           r-dt
+           r-extrafont
            r-ggplot2
            r-gridextra
            r-gtable
-           r-rcolorbrewer))
+           r-htmlwidgets
+           r-plyr
+           r-rcolorbrewer
+           r-rlang
+           r-stringr))
     (home-page "https://github.com/hrbrmstr/waffle/tree/cran")
     (synopsis "Creating waffle chart visualizations in R")
     (description
