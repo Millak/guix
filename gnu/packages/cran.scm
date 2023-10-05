@@ -27913,14 +27913,14 @@ transcription, ...")
 (define-public r-seewave
   (package
     (name "r-seewave")
-    (version "2.2.1")
+    (version "2.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "seewave" version))
        (sha256
         (base32
-         "0whfanh3949162575ddw5y6s5ydq9v24l929gwdd1jv16xzlnp9h"))))
+         "12r09cirqzpg0lki304kfrdvxhdjpvsficba8inmnr4qzpfw7s5a"))))
     (properties `((upstream-name . "seewave")))
     (build-system r-build-system)
     (inputs
