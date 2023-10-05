@@ -5397,6 +5397,31 @@ matrix with which the LU factorization becomes sparser.  It is a variant of
 COLAMD which has the the option to apply constraints to the ordering.")
     (license license:bsd-3)))
 
+(define-public gklib-suitesparse
+  (package/inherit gklib
+    (name "gklib-suitesparse")
+    (source (origin
+              (inherit (package-source gklib))
+              (patches (cons
+                        (search-patch
+                         "gklib-suitesparse.patch")
+                        (origin-patches (package-source gklib))))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments gklib)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'patch-cmake
+              (lambda _
+                (substitute* "CMakeLists.txt"
+                  (("add_library\\(GKlib.*" all)
+                   (string-append
+                    all
+                    "target_link_libraries(GKlib PUBLIC"
+                    " ${SUITESPARSE_CONFIG_LIBRARIES} m)\n")))))))))
+    (inputs
+     (modify-inputs (package-inputs gklib)
+       (prepend suitesparse-config)))))
+
 (define-public suitesparse
   (package
     (name "suitesparse")
