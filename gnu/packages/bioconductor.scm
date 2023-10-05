@@ -10372,13 +10372,13 @@ tools either included in speaq or available elsewhere on CRAN.")
 (define-public r-spectra
   (package
     (name "r-spectra")
-    (version "1.10.2")
+    (version "1.10.3")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "Spectra" version))
               (sha256
                (base32
-                "1jrlfm6k6v4vhzl4lg6sa49yw35ds9x3v7iyc2cvbxqmpp5haila"))))
+                "1fx6xkl29frfk8bzz5jvr1cn0hjyi46ck23izb1cypiag4lsrf8v"))))
     (properties `((upstream-name . "Spectra")))
     (build-system r-build-system)
     (propagated-inputs (list r-biocgenerics
