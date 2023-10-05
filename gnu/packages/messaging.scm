@@ -2636,41 +2636,43 @@ replacement.")
     (license license:gpl2+)))
 
 (define-public tdlib
-  (package
-    (name "tdlib")
-    (version "1.8.10")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/tdlib/td")
-             (commit "ef4c3902fe082b83192d578af7a0bb956a917fed")))
-       (sha256
-        (base32 "1pi53v8qjl0lzann99pv90i4qx2lbjz10rvnwzkbqbn932y3j3gg"))
-       (file-name (git-file-name name version))))
-    (build-system cmake-build-system)
-    (arguments
-     (list
-      #:build-type "Release"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-failing-tests
-            (lambda _
-              (substitute* "test/CMakeLists.txt"
-                ;; The test cases are compiled into a distinct binary
-                ;; which uses mtproto.cpp to attempt to connect to
-                ;; a remote server. Removing this file from the sources
-                ;; list disables those specific test cases.
-                (("\\$\\{CMAKE_CURRENT_SOURCE_DIR\\}/mtproto.cpp") "")))))))
-    (native-inputs
-     (list gperf openssl zlib php doxygen))
-    (synopsis "Cross-platform library for building Telegram clients")
-    (description "Tdlib is a cross-platform library for creating custom
+  (let ((commit "4d1d22d6f477d61f6ff2b8f6e49de1847092c5b4")
+        (revision "0"))
+    (package
+      (name "tdlib")
+      (version (git-version "1.8.16" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/tdlib/td")
+               (commit commit)))
+         (sha256
+          (base32 "0nv921k795kq0l993rxzd5pm5v3l3mnwbaxb7d7d0m0506l4w9fk"))
+         (file-name (git-file-name name version))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:build-type "Release"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'remove-failing-tests
+              (lambda _
+                (substitute* "test/CMakeLists.txt"
+                  ;; The test cases are compiled into a distinct binary
+                  ;; which uses mtproto.cpp to attempt to connect to
+                  ;; a remote server. Removing this file from the sources
+                  ;; list disables those specific test cases.
+                  (("\\$\\{CMAKE_CURRENT_SOURCE_DIR\\}/mtproto.cpp") "")))))))
+      (native-inputs
+       (list gperf openssl zlib php doxygen))
+      (synopsis "Cross-platform library for building Telegram clients")
+      (description "Tdlib is a cross-platform library for creating custom
 Telegram clients following the official Telegram API.  It can be easily used
 from almost any programming language with a C-FFI and features first-class
 support for high performance Telegram Bot creation.")
-    (home-page "https://core.telegram.org/tdlib")
-    (license license:boost1.0)))
+      (home-page "https://core.telegram.org/tdlib")
+      (license license:boost1.0))))
 
 (define-public purple-mm-sms
   (package
