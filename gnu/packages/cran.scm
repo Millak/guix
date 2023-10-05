@@ -22004,14 +22004,14 @@ utilities for sequence data management under the ACNUC system.")
 (define-public r-units
   (package
     (name "r-units")
-    (version "0.8-3")
+    (version "0.8-4")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "units" version))
         (sha256
           (base32
-            "1a27cymlr99cjsy3pl294vvyagp80i0j2lzxx04nmk7d5vh7bhgq"))))
+            "1z672lsyrbm8mjv6ni8pa0cxixf9vi249281ym1ayrv13s4s37a9"))))
     (build-system r-build-system)
     (inputs
      (list udunits))
