@@ -8824,13 +8824,13 @@ hardware on Grid'5000 or via OpenStack, to Vagrant, Chameleon, and more.")
 (define-public python-pynetbox
   (package
     (name "python-pynetbox")
-    (version "7.0.1")
+    (version "7.2.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pynetbox" version))
               (sha256
                (base32
-                "16ps9zgcjzyzn95lry277741i8php4ci3plsyd2vqxd57havba7b"))))
+                "1pzmkl4nr247v4022i33v32jlx88wwcdy7ycyfd4pnl19vag8d9p"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
