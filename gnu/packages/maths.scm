@@ -5201,6 +5201,51 @@ to Cholesky factorization (or for LU factorization with diagonal pivoting).")
 matrix into block upper triangular form.")
     (license license:lgpl2.1+)))
 
+(define-public suitesparse-camd
+  (package
+    (name "suitesparse-camd")
+    (version "3.2.0")
+    (source suitesparse-source)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "CAMD")))
+          (add-after 'chdir 'set-cmake-module-path
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set.*CMAKE_MODULE_PATH.*")
+                 (string-append "set(CMAKE_MODULE_PATH "
+                                #$suitesparse-config "/lib/cmake/SuiteSparse)\n"
+                                "set(DUMMY\n")))))
+          (add-after 'build 'build-doc
+            (lambda _
+              (with-directory-excursion "../CAMD/Doc"
+                (invoke "make"))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (install-file "../CAMD/Doc/CAMD_UserGuide.pdf"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version))))
+          (replace 'install-license-files
+            (lambda _
+              (install-file "../CAMD/Doc/License.txt"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version)))))))
+    (inputs (list suitesparse-config))
+    (native-inputs (list (texlive-updmap.cfg '())))
+    (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
+    (synopsis "Sparse matrix ordering for Cholesky factorization with constraints")
+    (description "CAMD is a set of routines for ordering a sparse matrix prior
+to Cholesky factorization (or for LU factorization with diagonal pivoting).
+It is a variant of AMD which has the the option to apply constraints to the
+ordering.")
+    (license license:bsd-3)))
+
 (define-public suitesparse
   (package
     (name "suitesparse")
