@@ -32421,20 +32421,21 @@ here.")
 (define-public r-projpred
   (package
     (name "r-projpred")
-    (version "2.6.0")
+    (version "2.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "projpred" version))
        (sha256
         (base32
-         "1nkil537n43sz0ajkcyr0i38hb852qgcdxlgnirqkl0w98ax2hac"))))
+         "0dydkvb0znqli4lbncihk8yimsiakvdyra5cx1cakvm73mn37s5r"))))
     (properties `((upstream-name . "projpred")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-abind
            r-gamm4
            r-ggplot2
+           r-gtools
            r-lme4
            r-loo
            r-mass
