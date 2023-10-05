@@ -7032,18 +7032,18 @@ Methods are provided for a variety of fitted models, including @code{lm()} and
 (define-public r-puniform
   (package
     (name "r-puniform")
-    (version "0.2.6")
+    (version "0.2.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "puniform" version))
        (sha256
         (base32
-         "1rfd7d14an28hba1rhldxn418qagnlk8ngvimb86i3774ll9blvi"))))
+         "15q5wlcps7387rjz7p1f5kifg1fl5yxxy7gjx6fvspvqwjkjbs4z"))))
     (properties `((upstream-name . "puniform")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-adgoftest r-metafor r-rcpp r-rcpparmadillo))
+     (list r-adgoftest r-metafor r-numderiv r-rcpp r-rcpparmadillo))
     (home-page
      "https://github.com/RobbievanAert/puniform")
     (synopsis
