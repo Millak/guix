@@ -31488,14 +31488,14 @@ need to derive the partial derivatives.")
 (define-public r-rstanarm
   (package
     (name "r-rstanarm")
-    (version "2.21.4")
+    (version "2.26.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rstanarm" version))
        (sha256
         (base32
-         "11diz486ak31zx5402kra3s6nd76cvnla8frfn0kc7dzwhiwcspc"))))
+         "0i24ah6mcvvb25pkynkacjn1l7dqk3yfnyk42fv32n83dqnpjm2a"))))
     (properties `((upstream-name . "rstanarm")))
     (build-system r-build-system)
     (inputs
@@ -31508,6 +31508,7 @@ need to derive the partial derivatives.")
            r-loo
            r-matrix
            r-nlme
+           r-posterior
            r-rcpp
            r-rcppeigen
            r-rcppparallel
