@@ -10690,24 +10690,25 @@ of gene-level counts.")
 (define-public r-valr
   (package
     (name "r-valr")
-    (version "0.6.8")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "valr" version))
        (sha256
         (base32
-         "156sqh474synjvdm1j332ab75rqab0n81d674xbgs3rfxlr2ksgz"))))
+         "038s5n8cbffpb9132rpw7q82cxfzlsc86fcywhv63c8szm5g9nrk"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-broom
            r-cli
            r-dplyr
            r-ggplot2
+           r-lifecycle
            r-rcpp
            r-readr
            r-rlang
-           r-rtracklayer ;bioconductor package
+           r-rtracklayer
            r-stringr
            r-tibble))
     (native-inputs
