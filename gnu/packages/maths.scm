@@ -5279,6 +5279,40 @@ ordering.")
 matrix with which the LU factorization becomes sparser.")
     (license license:bsd-3)))
 
+(define-public suitesparse-ccolamd
+  (package
+    (name "suitesparse-ccolamd")
+    (version "3.2.0")
+    (source suitesparse-source)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "CCOLAMD")))
+          (add-after 'chdir 'set-cmake-module-path
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set.*CMAKE_MODULE_PATH.*")
+                 (string-append "set(CMAKE_MODULE_PATH "
+                                #$suitesparse-config "/lib/cmake/SuiteSparse)\n"
+                                "set(DUMMY\n")))))
+          (replace 'install-license-files
+            (lambda _
+              (install-file "../CCOLAMD/Doc/License.txt"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version)))))))
+    (inputs (list suitesparse-config))
+    (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
+    (synopsis "Column Approximate Minimum Degree Ordering with constraints")
+    (description "CCOLAMD is library for computing a permutation vector for a
+matrix with which the LU factorization becomes sparser.  It is a variant of
+COLAMD which has the the option to apply constraints to the ordering.")
+    (license license:bsd-3)))
+
 (define-public suitesparse
   (package
     (name "suitesparse")
