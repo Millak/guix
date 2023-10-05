@@ -17553,14 +17553,14 @@ Scientific.")
 (define-public r-activity
   (package
     (name "r-activity")
-    (version "1.3.3")
+    (version "1.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "activity" version))
        (sha256
         (base32
-         "056dnhwc781ykgsmm2jaqxd15bckdxhbvxws6gjcrkvn4yimwgmh"))))
+         "10gp2yvqxz5ysmh5z8qvrpli8kc2kn2z3nd2llfabpyh21476in2"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-pbapply))
