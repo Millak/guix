@@ -65,6 +65,7 @@
   (package
     (name "curl")
     (version "7.85.0")
+    (replacement curl/fixed)
     (source (origin
               (method url-fetch)
               (uri (string-append "https://curl.se/download/curl-"
@@ -153,6 +154,20 @@ tunneling, and so on.")
     (license (license:non-copyleft "file://COPYING"
                                    "See COPYING in the distribution."))
     (home-page "https://curl.haxx.se/")))
+
+(define curl/fixed
+  (let ((%version "8.3.0"))
+    (package
+      (inherit curl)
+      (version "8.3.0a")               ; add lowercase 'a' for grafting
+      (source (origin
+                (method url-fetch)
+                (uri (string-append "https://curl.se/download/curl-"
+                                    %version ".tar.xz"))
+                (sha256
+                 (base32
+                  "0qza6yf20y2l4aaxkn8dfw8p3fls1mxljvdb0m8z1i6ncxvn4v9p"))
+                (patches (search-patches "curl-use-ssl-cert-env.patch")))))))
 
 (define-public curl-ssh
   (package/inherit curl
