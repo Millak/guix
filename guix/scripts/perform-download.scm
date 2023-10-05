@@ -108,6 +108,12 @@ Note: OUTPUT may differ from the 'out' value of DRV, notably for 'bmCheck' or
            (drv-output (assoc-ref (derivation-outputs drv) "out"))
            (algo       (derivation-output-hash-algo drv-output))
            (hash       (derivation-output-hash drv-output)))
+      ;; Commands such as 'git submodule' expect Coreutils and sed (among
+      ;; others) to be in $PATH.  The 'git' package in Guix should address it
+      ;; with wrappers but packages on other distros such as Debian may rely
+      ;; on ambient authority, hence the PATH value below.
+      (setenv "PATH" "/run/current-system/profile/bin:/bin:/usr/bin")
+
       (git-fetch-with-fallback url commit output
                                #:recursive? recursive?
                                #:git-command %git))))
