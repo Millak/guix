@@ -2262,19 +2262,7 @@ item of @var{packages}."
 
 (define (udev-rule file-name contents)
   "Return a directory with a udev rule file FILE-NAME containing CONTENTS."
-  (computed-file file-name
-                 (with-imported-modules '((guix build utils))
-                   #~(begin
-                       (use-modules (guix build utils))
-
-                       (define rules.d
-                         (string-append #$output "/lib/udev/rules.d"))
-
-                       (mkdir-p rules.d)
-                       (call-with-output-file
-                           (string-append rules.d "/" #$file-name)
-                         (lambda (port)
-                           (display #$contents port)))))))
+  (file->udev-rule file-name (plain-file file-name contents)))
 
 (define (file->udev-rule file-name file)
   "Return a directory with a udev rule file FILE-NAME which is a copy of FILE."
