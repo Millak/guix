@@ -7201,14 +7201,14 @@ various statistical models with linear predictors.")
 (define-public r-bayesfactor
   (package
     (name "r-bayesfactor")
-    (version "0.9.12-4.4")
+    (version "0.9.12-4.5")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "BayesFactor" version))
         (sha256
           (base32
-            "02bhlamnkxp9wqi2cp1i0dxmqdf3y3l872ad9z39xwripbi4kc7a"))))
+            "10bclqzczawpssjwa3b177xpab4mdhczfj1qj23xn2yvrrw1z9mh"))))
     (properties `((upstream-name . "BayesFactor")))
     (build-system r-build-system)
     (propagated-inputs
