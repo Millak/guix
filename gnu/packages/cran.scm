@@ -13634,14 +13634,14 @@ Venn diagram, heatmap).")
 (define-public r-getopt
   (package
     (name "r-getopt")
-    (version "1.20.3")
+    (version "1.20.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "getopt" version))
        (sha256
         (base32
-         "0zzmzgwl9a4y3s34600vmih22d6y32294f9bvxrnmffnvkgmy7sk"))))
+         "12qy48adnibfi9rpv5qd8k3hipbc4q85514dsz0xnhdsdnz6rlw7"))))
     (build-system r-build-system)
     (home-page "https://github.com/trevorld/getopt")
     (synopsis "Command-line option processor for R")
