@@ -53,6 +53,7 @@
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;; Copyright © 2023 Arjan Adriaanse <arjan@adriaan.se>
+;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1885,7 +1886,7 @@ delivery.")
 (define-public exim
   (package
     (name "exim")
-    (version "4.96")
+    (version "4.96.1")
     (source
      (origin
        (method url-fetch)
@@ -1899,7 +1900,7 @@ delivery.")
                     (string-append "https://ftp.exim.org/pub/exim/exim4/old/"
                                    file-name))))
        (sha256
-        (base32 "18ziihkpa23lybm7m2l9wp2farxw0bd5ng7xm9ylgcrfgf95d6i9"))))
+        (base32 "0g83cxkq3znh5b3r2a3990qxysw7d2l71jwcxaxzvq8pqdahgb4k"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
