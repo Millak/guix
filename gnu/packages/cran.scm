@@ -30779,14 +30779,14 @@ estimate parameters given observed data.")
 (define-public r-kutils
   (package
     (name "r-kutils")
-    (version "1.72")
+    (version "1.73")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "kutils" version))
        (sha256
         (base32
-         "0mnrh1bfpwssw9j5lspvwfawqx9s4fxy2gh3n60knjzbzrzqckp4"))))
+         "0xqg1s48afpn2w0mlqfwz3sj1gdjf05cpxq4z9r01k1476lvh6c9"))))
     (properties `((upstream-name . "kutils")))
     (build-system r-build-system)
     (propagated-inputs
