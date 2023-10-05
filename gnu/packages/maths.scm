@@ -5630,6 +5630,60 @@ direct methods on both real and complex matrices.")
 for real and complex matrices.")
     (license license:lgpl2.1+)))
 
+(define-public suitesparse-ldl
+  (package
+    (name "suitesparse-ldl")
+    (version "3.2.0")
+    (source suitesparse-source)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "LDL")))
+          (add-after 'chdir 'set-cmake-module-path
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set.*CMAKE_MODULE_PATH.*")
+                 (string-append
+                  "set(CMAKE_MODULE_PATH "
+                  (string-join
+                   (map (lambda (path)
+                          (string-append path "/lib/cmake/SuiteSparse"))
+                        (list #$suitesparse-amd
+                              #$suitesparse-config)))
+                  ")\nset(DUMMY\n")))))
+          (add-after 'build 'build-doc
+            (lambda _
+              (substitute* "../LDL/Doc/Makefile"
+                (("\\.\\./\\.\\./BTF/Include/btf.h")
+                 (string-append #$suitesparse-btf "/include/btf.h")))
+              (with-directory-excursion "../LDL/Doc"
+                (invoke "make"))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (install-file "../LDL/Doc/ldl_userguide.pdf"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version))))
+          (replace 'install-license-files
+            (lambda _
+              (install-file "../LDL/Doc/License.txt"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version)))))))
+    (inputs
+     (list suitesparse-amd
+           suitesparse-config))
+    (native-inputs (list (texlive-updmap.cfg '())))
+    (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
+    (synopsis "LDL' factorization method for sparse, symmetric matrices")
+    (description "This package contains a set of routines for computing the
+LDL' factorization of sparse, symmetric matrices.  Its focus lies on concise
+code.")
+    (license license:lgpl2.1+)))
+
 (define-public suitesparse
   (package
     (name "suitesparse")
