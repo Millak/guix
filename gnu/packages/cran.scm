@@ -38422,19 +38422,20 @@ Tensorflow graphs.")
 (define-public r-tensorflow
   (package
     (name "r-tensorflow")
-    (version "2.13.0")
+    (version "2.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tensorflow" version))
        (sha256
         (base32
-         "016km378m1w50yb9myrb46xi6vcp9qv9z526cb59qpg83r08ac4z"))))
+         "1zv7b3r8c2nzyrq295pvdf3kv2mz7cmm4adck508qr12rb9d5ybx"))))
     (properties `((upstream-name . "tensorflow")))
     (build-system r-build-system)
     (inputs (list tensorflow))
     (propagated-inputs
      (list r-config
+           r-lifecycle
            r-processx
            r-reticulate
            r-rstudioapi
