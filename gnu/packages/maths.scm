@@ -5722,6 +5722,81 @@ code.")
 for reading and writing sparse matrices in the Rutherford/Boeing format.")
     (license license:gpl2+)))
 
+(define-public suitesparse-mongoose
+  (package
+    (name "suitesparse-mongoose")
+    (version "3.2.0")
+    (source suitesparse-source)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "Mongoose")))
+          (add-after 'chdir 'set-cmake-module-path
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set.*CMAKE_MODULE_PATH.*")
+                 (string-append "set(CMAKE_MODULE_PATH "
+                                #$suitesparse-config "/lib/cmake/SuiteSparse)\n"
+                                "set(DUMMY\n")))))
+          (add-after 'build 'build-doc
+            (lambda _
+              ;; XeLaTeX fails with .eps graphics
+              (with-directory-excursion "../Mongoose/Doc"
+                (for-each
+                 (lambda (name)
+                   (invoke "epstopdf" name))
+                 (find-files "Figures" "\\.eps$"))
+                (substitute* "Mongoose_UserGuide.tex"
+                  (("\\.eps") ".pdf"))
+                (invoke "make"))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (install-file "../Mongoose/Doc/Mongoose_UserGuide.pdf"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version))))
+          (replace 'install-license-files
+            (lambda _
+              (install-file "../Mongoose/Doc/License.txt"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version)))))))
+    (inputs (list suitesparse-config))
+    (native-inputs
+     (list texlive-epstopdf
+           (texlive-updmap.cfg
+            (list texlive-algorithmicx
+                  texlive-booktabs
+                  texlive-lastpage
+                  texlive-multirow
+                  texlive-pgf
+                  texlive-caption
+                  texlive-etoolbox
+                  texlive-csquotes
+                  texlive-fancybox
+                  texlive-enumitem
+                  texlive-microtype
+                  texlive-cancel
+                  texlive-sourcecodepro
+                  texlive-xkeyval
+                  texlive-fontspec
+                  texlive-wasy
+                  texlive-wasysym
+                  texlive-float
+                  texlive-tcolorbox
+                  texlive-environ
+                  texlive-xcolor
+                  texlive-xetex
+                  texlive-listings))))
+    (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
+    (synopsis "Graph partitioning library")
+    (description "Mongoose is a library for graph partitioning by computing
+edge cuts using a coarsening and refinement framework.")
+    (license license:gpl3)))
+
 (define-public suitesparse
   (package
     (name "suitesparse")
