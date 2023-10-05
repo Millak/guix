@@ -3174,13 +3174,13 @@ certain criterion, e.g., it contains a certain regular file.")
 (define-public r-rmarkdown
   (package
     (name "r-rmarkdown")
-    (version "2.24")
+    (version "2.25")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "rmarkdown" version))
         (sha256
-          (base32 "11ixspf7w5zsr02c5545w0ra7l9c8kb4bls97dhx5cgldnjfywrq"))))
+          (base32 "0m814598vc67sjwk83xh9g17n72618l32dgg7fz8y0gycqk6dr06"))))
     (properties
      `((upstream-name . "rmarkdown")
        (updater-extra-propagated-inputs . ("pandoc"))))
