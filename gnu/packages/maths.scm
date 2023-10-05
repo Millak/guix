@@ -5567,6 +5567,69 @@ and other related operations.")
 direct methods on both real and complex matrices.")
     (license license:lgpl2.1+)))
 
+(define-public suitesparse-klu
+  (package
+    (name "suitesparse-klu")
+    (version "2.2.0")
+    (source suitesparse-source)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "KLU")))
+          (add-after 'chdir 'set-cmake-module-path
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set.*CMAKE_MODULE_PATH.*")
+                 (string-append
+                  "set(CMAKE_MODULE_PATH "
+                  (string-join
+                   (map (lambda (path)
+                          (string-append path "/lib/cmake/SuiteSparse"))
+                        (list #$suitesparse-amd
+                              #$suitesparse-btf
+                              #$suitesparse-camd
+                              #$suitesparse-ccolamd
+                              #$suitesparse-cholmod
+                              #$suitesparse-colamd
+                              #$suitesparse-config)))
+                  ")\nset(DUMMY\n")))))
+          (add-after 'build 'build-doc
+            (lambda _
+              (substitute* "../KLU/Doc/Makefile"
+                (("\\.\\./\\.\\./BTF/Include/btf.h")
+                 (string-append #$suitesparse-btf "/include/btf.h")))
+              (with-directory-excursion "../KLU/Doc"
+                (invoke "make"))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (install-file "../KLU/Doc/KLU_UserGuide.pdf"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version))))
+          (replace 'install-license-files
+            (lambda _
+              (install-file "../KLU/Doc/License.txt"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version)))))))
+    (inputs
+     (list suitesparse-amd
+           suitesparse-btf
+           suitesparse-camd
+           suitesparse-ccolamd
+           suitesparse-cholmod
+           suitesparse-colamd
+           suitesparse-config))
+    (native-inputs (list (texlive-updmap.cfg '())))
+    (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
+    (synopsis "Routines for solving sparse linear problems with a LU factorization")
+    (description "KLU is a method for computing the LU factorization of sparse
+for real and complex matrices.")
+    (license license:lgpl2.1+)))
+
 (define-public suitesparse
   (package
     (name "suitesparse")
