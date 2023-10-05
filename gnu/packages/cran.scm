@@ -39878,13 +39878,13 @@ constructing and executing optimized SQL queries.")
 (define-public r-varhandle
   (package
     (name "r-varhandle")
-    (version "2.0.5")
+    (version "2.0.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "varhandle" version))
        (sha256
-        (base32 "1l42d0s6fbjjc9l28a2m3myxkrx2c0p0b9yj8wjjjgilw19yc3lv"))))
+        (base32 "0xy5w7cz9sb0xmxvzajg4sf0ip2ihxc5nimh10awchvkywzgsyjf"))))
     (properties `((upstream-name . "varhandle")))
     (build-system r-build-system)
     (home-page "https://bitbucket.org/mehrad_mahmoudian/varhandle")
