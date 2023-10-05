@@ -1085,6 +1085,20 @@ that will be listening to receive secret keys on port 1004, TCP."
                                     accounts)
                     (operating-system-user-services os)))))
 
+(define (operating-system-with-locked-root-account os)
+  "Return OS with a 'root' account whose password is uninitialized, thereby
+preventing password-based authentication as 'root'."
+  (define root
+    ;; %ROOT-ACCOUNT has an empty password; change that to an uninitialized
+    ;; password.
+    (user-account
+     (inherit %root-account)
+     (password #f)))
+
+  (operating-system
+    (inherit os)
+    (users (cons root (operating-system-users os)))))
+
 (define %hurd-vm-operating-system
   (operating-system
     (inherit %hurd-default-operating-system)
@@ -1147,8 +1161,14 @@ that will be listening to receive secret keys on port 1004, TCP."
 is added to the OS specified in CONFIG."
   (define transform
     (compose secret-service-operating-system
+             ;; When offloading is enabled, (1) add the 'offloading' account,
+             ;; and (2) prevent users from logging in as 'root' without a
+             ;; password as this would allow any user on the host to populate
+             ;; the host's store indirectly (for example by logging in as root
+             ;; in the Hurd VM over VNC).
              (if (hurd-vm-configuration-offloading? config)
-                 operating-system-with-offloading-account
+                 (compose operating-system-with-locked-root-account
+                          operating-system-with-offloading-account)
                  identity)))
 
   (let* ((os        (transform (hurd-vm-configuration-os config)))
