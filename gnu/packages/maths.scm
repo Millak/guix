@@ -5448,6 +5448,91 @@ COLAMD which has the the option to apply constraints to the ordering.")
                 (string-append "-DGKLIB_PATH=" #$gklib-suitesparse)))))
     (inputs (list suitesparse-config gklib-suitesparse))))
 
+(define-public suitesparse-cholmod
+  (package
+    (name "suitesparse-cholmod")
+    (version "4.2.0")
+    (source suitesparse-source)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "CHOLMOD")))
+          (add-after 'chdir 'set-cmake-module-path
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set.*CMAKE_MODULE_PATH.*")
+                 (string-append
+                  "set(CMAKE_MODULE_PATH "
+                  (string-join
+                   (map (lambda (path)
+                          (string-append path "/lib/cmake/SuiteSparse"))
+                        (list #$suitesparse-amd
+                              #$suitesparse-camd
+                              #$suitesparse-ccolamd
+                              #$suitesparse-colamd
+                              #$suitesparse-config)))
+                  ")\nset(DUMMY\n"))
+                (("add_subdirectory.*GPU.*") "\n")
+                ((".*cmake_modules/FindCHOLMOD_CUDA.cmake.*") "\n"))))
+          (add-after 'chdir 'use-external-metis
+            (lambda _
+              (let ((port (open-file "CMakeLists.txt" "a")))
+                (display
+                 (string-append
+                  "find_library(METIS_LIBRARY NAME metis PATHS ENV LIBRARY_PATH)
+get_filename_component(METIS_LIBRARY ${METIS_LIBRARY} REALPATH)
+find_library(GKLIB_LIBRARY NAME GKlib PATHS ENV LIBRARY_PATH)
+get_filename_component(GKLIB_LIBRARY ${GKLIB_LIBRARY} REALPATH)
+target_link_libraries(CHOLMOD PRIVATE ${METIS_LIBRARY} ${GKLIB_LIBRARY})
+target_link_libraries(CHOLMOD_static PRIVATE ${METIS_LIBRARY} ${GKLIB_LIBRARY})")
+                 port)
+                (close-port port))
+              (delete-file "Partition/cholmod_metis_wrapper.c")
+              (delete-file "Partition/cholmod_metis_wrapper.h")
+              (substitute* "Partition/cholmod_metis.c"
+                (("#include \"cholmod_metis_wrapper\\.h\"") "")
+                (("#include \"SuiteSparse_metis/include/metis.h\"")
+                 "#include <metis.h>")
+                (("SuiteSparse_metis_METIS") "METIS"))))
+          (add-after 'build 'build-doc
+            (lambda _
+              (with-directory-excursion "../CHOLMOD/Doc"
+                (invoke "make"))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (install-file "../CHOLMOD/Doc/CHOLMOD_UserGuide.pdf"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version))))
+          (replace 'install-license-files
+            (lambda _
+              (let ((out (string-append #$output
+                                        "/share/doc/" #$name "-" #$version)))
+                (install-file "../CHOLMOD/Doc/License.txt" out)
+                (install-file "../CHOLMOD/Core/lesser.txt" out)
+                (install-file "../CHOLMOD/MatrixOps/gpl.txt" out)))))))
+    (inputs
+     (list gklib-suitesparse
+           metis-suitesparse
+           openblas
+           suitesparse-amd
+           suitesparse-camd
+           suitesparse-ccolamd
+           suitesparse-colamd
+           suitesparse-config))
+    (native-inputs (list (texlive-updmap.cfg '())))
+    (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
+    (synopsis "Library for solving sparse symmetric positive definite linear
+equations")
+    (description "CHOLMOD is a set of routins for factorizing sparse symmetrix
+positive definite matrices, updating/downdating sparse Cholesky factorizations
+and other related operations.")
+    (license (list license:gpl2+ license:lgpl2.1+))))
+
 (define-public suitesparse
   (package
     (name "suitesparse")
