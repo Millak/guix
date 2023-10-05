@@ -4381,6 +4381,7 @@ bio-chemistry.")
 software from KarypisLab, such as METIS.")
       (license license:asl2.0))))
 
+;; XXX: Remove once the full SuiteSparse package is replaced.
 (define-public metis
   (package
     (name "metis")
@@ -4413,6 +4414,53 @@ matrices.  The algorithms implemented in METIS are based on the multilevel
 recursive-bisection, multilevel k-way, and multi-constraint partitioning
 schemes.")
     (license license:asl2.0)))          ;As of version 5.0.3
+
+(define-public metis-5.2
+  (package
+    (name "metis")
+    (version "5.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/KarypisLab/METIS")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "19vi1wsi2gp2m5vb715yfnzd2g7brm4r40qxg65ysrzgl13lpmvr"))
+       (snippet
+        #~(delete-file "manual/manual.pdf"))))
+    (build-system cmake-build-system)
+    (inputs (list gklib openblas))
+    (arguments
+     (list
+      #:tests? #f ; Tests are not automatic
+      #:configure-flags
+      #~(list "-DSHARED=ON"
+              (string-append "-DGKLIB_PATH=" #$gklib))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The original Makefile copies some files and invokes CMake.
+          (add-before 'configure 'prepare-cmake
+              (lambda _
+                (substitute* "Makefile"
+                  (("config: distclean") "config:")
+                  (("BUILDDIR =.*")
+                   "BUILDDIR = .\n")
+                  ((".*cmake.*") ""))
+                (substitute* "CMakeLists.txt"
+                  (("build/") "../source/"))
+                (invoke "make" "config"))))))
+    (home-page "http://glaros.dtc.umn.edu/gkhome/metis/metis/overview")
+    (synopsis "Graph partitioning and fill-reducing matrix ordering library")
+    (description
+     "METIS is a set of serial programs for partitioning graphs, partitioning
+finite element meshes, and producing fill-reducing orderings for sparse
+matrices.  The algorithms implemented in METIS are based on the multilevel
+recursive-bisection, multilevel k-way, and multi-constraint partitioning
+schemes.")
+    (license license:asl2.0)))
 
 (define-public p4est
   (package
