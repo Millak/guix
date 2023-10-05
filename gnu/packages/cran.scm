@@ -32545,14 +32545,14 @@ inference diagnostics.
 (define-public r-brms
   (package
     (name "r-brms")
-    (version "2.20.1")
+    (version "2.20.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "brms" version))
        (sha256
         (base32
-         "0p0y2x1bkfvb9np08sq5riv8cmd3qd18gmllwch91ggn653k6229"))))
+         "0bq76birbaqi2387d4qv2m8vvjcki9nkc2jychz6nkhcd7mg79h0"))))
     (properties `((upstream-name . "brms")))
     (build-system r-build-system)
     (propagated-inputs
