@@ -24730,14 +24730,14 @@ from SuiteSparse.")
 (define-public r-sctransform
   (package
     (name "r-sctransform")
-    (version "0.3.5")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sctransform" version))
        (sha256
         (base32
-         "02vfgv6v3knmn5nxadjyjkzqmni1sgaf3f9ywm7d0knn0pgmd3n0"))))
+         "1cxlqscjn33rszigk7bxjj2hdsr8rxalq94fg86qwmx9jv0i1vws"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-dplyr
