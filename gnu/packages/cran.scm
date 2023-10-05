@@ -13770,14 +13770,14 @@ the work.")
 (define-public r-doby
   (package
     (name "r-doby")
-    (version "4.6.18")
+    (version "4.6.19")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "doBy" version))
        (sha256
         (base32
-         "19g60s7d8a444mg24b50bs56fvwbwjv44fylvib2q1c6rjx3wxrz"))))
+         "14hvbhf9zamqkjhr9jd8zjpm9xlc8hwqj04gy6ln32n2hzqqqr6v"))))
     (properties `((upstream-name . "doBy")))
     (build-system r-build-system)
     (propagated-inputs
