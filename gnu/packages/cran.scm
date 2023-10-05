@@ -7201,14 +7201,14 @@ transportation problems.")
 (define-public r-limsolve
   (package
     (name "r-limsolve")
-    (version "1.5.6")
+    (version "1.5.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "limSolve" version))
        (sha256
         (base32
-         "1829rd2cnd8qj80z9a7sgc7gx4sf3kvl5g6d2a0lqqw30f9sjzmr"))))
+         "1waqkkipks8h4h5lpn0xw0077hwpz963q42h7xv6f70p07zncxq4"))))
     (properties `((upstream-name . "limSolve")))
     (build-system r-build-system)
     (propagated-inputs
