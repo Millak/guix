@@ -6498,14 +6498,14 @@ statistical functions and other utilities to ease their usage.")
 (define-public r-prettyunits
   (package
     (name "r-prettyunits")
-    (version "1.1.1")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "prettyunits" version))
        (sha256
         (base32
-         "1ibmzgknw5896q2i6r59jz2izblxwgb29ivvjzx50pkd1jl9l6cs"))))
+         "1smcxrfsz6cxym9h8iaiqrrw5bzp2bbpmf05zr8y70jw59zg4ngh"))))
     (build-system r-build-system)
     (home-page "https://github.com/gaborcsardi/prettyunits")
     (synopsis "Pretty, human readable formatting of quantities")
