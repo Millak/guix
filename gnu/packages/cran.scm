@@ -4792,14 +4792,14 @@ Bootstrap themes, which are packaged for use with Shiny applications.")
 (define-public r-d3r
   (package
     (name "r-d3r")
-    (version "1.0.1")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "d3r" version))
        (sha256
         (base32
-         "07n92x047l6savy8s5r3rj15nmjgswl1shl1dyzrzhgpa5jrpxf3"))
+         "1dcm53y3jpyswr6y368xhdnn1nkchixf4wkxnsb2mk9lzccb44y4"))
        (snippet
         '(for-each delete-file
                    '("inst/www/d3/v3/dist/d3.min.js"
@@ -4838,7 +4838,7 @@ Bootstrap themes, which are packaged for use with Shiny applications.")
                                        (string-append "--outfile=" target)))
                              sources targets)))))))))
     (propagated-inputs
-     (list r-dplyr r-htmltools r-rlang r-tidyr))
+     (list r-dplyr r-htmltools r-tidyr))
     (native-inputs
      `(("esbuild" ,esbuild)
        ("d3.v3.js"
