@@ -24,14 +24,15 @@
   #:use-module (gnu tests)
   #:use-module (gnu image)
   #:use-module (gnu system)
+  #:use-module (gnu system accounts)
   #:use-module (gnu system file-systems)
   #:use-module (gnu system image)
   #:use-module (gnu system images hurd)
+  #:use-module ((gnu system shadow) #:select (%base-user-accounts))
   #:use-module (gnu system vm)
   #:use-module (gnu services)
   #:use-module (gnu services dbus)
   #:use-module (gnu services networking)
-  #:use-module (gnu services ssh)
   #:use-module (gnu services virtualization)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages virtualization)
@@ -232,17 +233,13 @@
    (service dhcp-client-service-type)
    (service hurd-vm-service-type
             (hurd-vm-configuration
-             ;; Allow root login with an empty password to simplify the test
-             ;; below.
              (os (operating-system
                    (inherit %hurd-vm-operating-system)
-                   (services
-                    (modify-services (operating-system-user-services
-                                      %hurd-vm-operating-system)
-                      (openssh-service-type
-                       config => (openssh-configuration
-                                  (inherit config)
-                                  (permit-root-login #t)))))))))))
+                   (users (cons (user-account
+                                 (name "test")
+                                 (group "users")
+                                 (password ""))   ;empty password
+                                %base-user-accounts))))))))
 
 (define (run-childhurd-test)
   (define (import-module? module)
@@ -277,7 +274,7 @@
                            (ice-9 match)
                            (ice-9 textual-ports))
 
-              (let ((session (make-session #:user "root"
+              (let ((session (make-session #:user "test"
                                            #:port 10022
                                            #:host "localhost"
                                            #:log-verbosity 'rare)))
