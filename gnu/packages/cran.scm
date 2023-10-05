@@ -23532,14 +23532,14 @@ range of inputs and can be visualized in numerous ways.")
 (define-public r-europepmc
   (package
     (name "r-europepmc")
-    (version "0.4.2")
+    (version "0.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "europepmc" version))
        (sha256
         (base32
-         "0p04gi06iwdcsj6abh7pwdghc8fs9sf2abd8vwr550c9879g1x5w"))))
+         "160rvp4yl5myccasyzaq8qhgxwv858y1wdwyrmnrmn3va8s5b515"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-dplyr
