@@ -5111,7 +5111,10 @@ multifrontal LU factorization; CHOLMOD, supernodal Cholesky; SPQR,
 multifrontal QR; KLU and BTF, sparse LU factorization, well-suited for circuit
 simulation; ordering methods (AMD, CAMD, COLAMD, and CCOLAMD); CSparse and
 CXSparse, a concise sparse Cholesky factorization package; and many other
-packages.")
+packages.
+
+This package contains all of the above-mentioned parts.
+")
     ;; LGPLv2.1+:
     ;;   AMD, CAMD, BTF, COLAMD, CCOLAMD, CSparse, CXSparse, KLU, LDL
     ;; GPLv2+:
