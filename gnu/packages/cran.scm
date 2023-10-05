@@ -12298,16 +12298,16 @@ reproducible.")
 (define-public r-learnr
   (package
     (name "r-learnr")
-    (version "0.11.4")
+    (version "0.11.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "learnr" version))
        (sha256
         (base32
-         "1m2m2sm8yx2b64y7xqlzx7v1bf8x8sci0miaka6frpd6rn4bsr7f"))))
+         "01xig6ijsjnkwdjh03zdp86mqm5pjlqp9br34pn644rf98qg8k2y"))))
     (build-system r-build-system)
-    (native-inputs (list r-knitr))
+    (native-inputs (list esbuild r-knitr))
     (propagated-inputs
      (list r-checkmate
            r-digest
