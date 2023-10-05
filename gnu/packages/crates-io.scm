@@ -73711,7 +73711,7 @@ the Trust-DNS client to use rustls for TLS.")
        (uri (crate-uri "trybuild" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ab7ahdx563n6kbm14pm3qnxq4fp06pz42nh5ii4acvlzycnwdh4"))))
+        (base32 "17xpybcdx76dm54dk7jvr5aickc4ia66qf57bazg7myx8pf6yzcq"))))
     (arguments
      `(#:cargo-inputs
        (("rust-toml" ,rust-toml-0.5)
