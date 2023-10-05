@@ -652,13 +652,13 @@ estimation) corresponding to the book: Wand, M.P. and Jones, M.C. (1995)
 (define-public r-lattice
   (package
     (name "r-lattice")
-    (version "0.21-8")
+    (version "0.21-9")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "lattice" version))
               (sha256
                (base32
-                "0af3c0mk0s3gnpmg7xmd4hjjynwv4ym3iv4grjvcmrk28abxdlwa"))))
+                "0ak9k6s6drd1a25m7mwzb426ms92a2p3ps04h2pacifwnk74ca59"))))
     (build-system r-build-system)
     (home-page "https://lattice.r-forge.r-project.org/")
     (synopsis "High-level data visualization system")
