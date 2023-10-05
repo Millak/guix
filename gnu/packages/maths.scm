@@ -5422,6 +5422,32 @@ COLAMD which has the the option to apply constraints to the ordering.")
      (modify-inputs (package-inputs gklib)
        (prepend suitesparse-config)))))
 
+(define-public metis-suitesparse
+  (package/inherit metis-5.2
+    (name "metis-suitesparse")
+    (arguments
+     (substitute-keyword-arguments (package-arguments metis-5.2)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-before 'prepare-cmake 'set-idxwidth
+              (lambda _
+                (substitute* "Makefile"
+                  (("IDXWIDTH.*=.*")
+                   "IDXWIDTH = \"\\#define IDXTYPEWIDTH 64\"\n"))))
+            (add-before 'prepare-cmake 'link-suitesparse-config
+              (lambda _
+                (substitute* "programs/CMakeLists.txt"
+                  (("include_directories.*" all)
+                   (string-append
+                    all "find_package(SuiteSparse_config REQUIRED)\n"))
+                  (("(target_link_libraries.*)GKlib(.*)" _ start end)
+                   (string-append
+                    start "GKlib ${SUITESPARSE_CONFIG_LIBRARIES}" end)))))))
+       ((#:configure-flags _)
+        #~(list "-DSHARED=ON"
+                (string-append "-DGKLIB_PATH=" #$gklib-suitesparse)))))
+    (inputs (list suitesparse-config gklib-suitesparse))))
+
 (define-public suitesparse
   (package
     (name "suitesparse")
