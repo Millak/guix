@@ -3833,13 +3833,13 @@ of the problems that API wrapping packages face.")
 (define-public r-jade
   (package
     (name "r-jade")
-    (version "2.0-3")
+    (version "2.0-4")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "JADE" version))
               (sha256
                (base32
-                "1fj2wawx5ac1fvlp28naqha0i17f1sb47j2qqzgccvx17ycqmmjn"))))
+                "0m90rnhr5vkdv1xswr5c0j06ngzvmg73nd0kmg9m9r6a6ddddcyl"))))
     (properties `((upstream-name . "JADE")))
     (build-system r-build-system)
     (propagated-inputs (list r-clue))
