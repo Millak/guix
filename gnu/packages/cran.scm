@@ -976,13 +976,13 @@ repositories, replacing the need for installation via @code{devtools}.")
 (define-public r-gunifrac
   (package
     (name "r-gunifrac")
-    (version "1.7")
+    (version "1.8")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "GUniFrac" version))
               (sha256
                (base32
-                "13qb5fw9km6p5x8li9x3liqbh833wf2v73npj8jl3msplzfk82vp"))))
+                "1yw0d8hb7s662xy0dny9ygvx9gwh7yj8dxw4897zy7zyjhzim95f"))))
     (properties `((upstream-name . "GUniFrac")))
     (build-system r-build-system)
     (propagated-inputs
@@ -991,6 +991,7 @@ repositories, replacing the need for installation via @code{devtools}.")
            r-foreach
            r-ggplot2
            r-ggrepel
+           r-inline
            r-mass
            r-matrix
            r-matrixstats
