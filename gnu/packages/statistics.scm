@@ -6424,14 +6424,14 @@ is supported.")
 (define-public r-lubridate
   (package
     (name "r-lubridate")
-    (version "1.9.2")
+    (version "1.9.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lubridate" version))
        (sha256
         (base32
-         "19s4cm6a73b9q519mmgf2qxjmd2bsjff19ds3hk8ksgz98d46xl9"))))
+         "1zvzycng2hsks9d7552nb93abzjrs43c975rc16s3c1is8318vib"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-generics r-timechange))
