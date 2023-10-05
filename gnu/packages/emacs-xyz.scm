@@ -14306,8 +14306,8 @@ indentation guides in Emacs:
   ;; https://github.com/jorgenschaefer/elpy/issues/1824
   ;; https://github.com/jorgenschaefer/elpy/pull/1951
   ;; https://github.com/jorgenschaefer/elpy/issues/1940.
-  (let ((commit "1746e7009000b7635c0ea6f1559018143aa61642")
-        (revision "1"))
+  (let ((commit "7ff8ffa918411887d165764f7a5a12bc46646e73")
+        (revision "2"))
     (package
       (name "emacs-elpy")
       (version (git-version "1.35.0" revision commit))
@@ -14319,7 +14319,8 @@ indentation guides in Emacs:
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "120xzzaa8jxls3lri6d53zq6gafnkc6d9mlg09an334kkmh8k2fc"))))
+                  "0lh8w5a1abxaa7lf1c4yzgr0sh9szcwdnwd8w2004hv6mrcmyqc6"))
+                (patches (search-patches "emacs-elpy-dup-test-name.patch"))))
       (build-system emacs-build-system)
       (arguments
        `(#:include (cons* "^elpy/[^/]+\\.py$" "^snippets\\/" %default-include)
@@ -14354,6 +14355,12 @@ indentation guides in Emacs:
                     (string-append all "  :expected-result :failed\n")))
                  (substitute* "elpy-shell-echo-inputs-and-outputs-test.el"
                    (("elpy-shell-should-echo-outputs.*" all)
+                    (string-append all "  :expected-result :failed\n")))
+                 ;; This test started failing with Emacs 29 (see:
+                 ;; https://github.com/jorgenschaefer/elpy/issues/2032).
+                 (substitute* "elpy-folding-fold-blocks-test.el"
+                   (("elpy-fold-at-point-should-NOT-fold-and-unfold-functions\
+-from-after.*" all)
                     (string-append all "  :expected-result :failed\n"))))))
            ;; The default environment of the RPC uses Virtualenv to install
            ;; Python dependencies from PyPI.  We don't want/need this in Guix.
