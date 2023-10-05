@@ -10802,14 +10802,14 @@ and @dfn{alternating direction method of multipliers algorithms} (ADMM).")
 (define-public r-import
   (package
     (name "r-import")
-    (version "1.3.0")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "import" version))
        (sha256
         (base32
-         "19g4jnfg9pkvvsncw62yc15xlb97hfbdqxivpjd9jqi36i6mdjrg"))))
+         "1h7km8751flxf70112r31wp10vhk4v1jr4avyb969ln317pf8yjq"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
