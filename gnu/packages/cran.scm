@@ -12456,13 +12456,13 @@ file.")
 (define-public r-billboarder
   (package
     (name "r-billboarder")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "billboarder" version))
        (sha256
-        (base32 "1llac7fyyfax6q8n9b8lccyl9c8vxqvkfp341sz59mrw8yhwb2hr"))
+        (base32 "0byj1ilwnmq9n9gswsnj17r8pzhm4fp6567nbz1xfmlvl3402qkn"))
        (snippet
         '(delete-file "inst/htmlwidgets/lib/billboard/billboard.pkgd.min.js"))))
     (properties `((upstream-name . "billboarder")))
