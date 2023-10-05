@@ -5811,14 +5811,14 @@ is configured appropriately so R can use them.")
 (define-public r-pkgload
   (package
     (name "r-pkgload")
-    (version "1.3.2.1")
+    (version "1.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pkgload" version))
        (sha256
         (base32
-         "1ckl6cqjk93n91p1i42hza6dciygsc25mibdif89vnyb7w97p651"))))
+         "0nb9h61l57cb7yzmsmh5q650zdd7nda6cmnd6m5cqyb4hwi832dh"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
@@ -5826,6 +5826,7 @@ is configured appropriately so R can use them.")
            r-desc
            r-fs
            r-glue
+           r-pkgbuild
            r-rlang
            r-rprojroot
            r-withr))
