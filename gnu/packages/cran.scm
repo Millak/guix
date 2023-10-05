@@ -35338,14 +35338,14 @@ package also provides functions to visualize the observed data and the MLE.")
 (define-public r-metafor
   (package
     (name "r-metafor")
-    (version "4.2-0")
+    (version "4.4-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "metafor" version))
        (sha256
         (base32
-         "0rm7w1mmjhry4xkrv6nkhg5ln1cb61lg66y2nbwim32n9wxl5fzi"))))
+         "1m4762fn4zbjpnx9vxyy9gvzyzn3avxnqpzmbj45w8241g3s1b32"))))
     (properties `((upstream-name . "metafor")))
     (build-system r-build-system)
     (propagated-inputs
