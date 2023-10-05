@@ -39092,19 +39092,20 @@ functions-as-a-service, containers, batch processing, and more.")
 (define-public r-paws
   (package
     (name "r-paws")
-    (version "0.3.0")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws" version))
        (sha256
         (base32
-         "1s4nya5xghjj1a2w8bqcmnpnpdw7li22asssm2ihv68zvlxavzdk"))))
+         "1l9pjmfnhqgzxghxz22fbqc43x9am6d21f982p2sykxv271yclhf"))))
     (properties `((upstream-name . "paws")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-paws-analytics
            r-paws-application-integration
+           r-paws-common
            r-paws-compute
            r-paws-cost-management
            r-paws-customer-engagement
