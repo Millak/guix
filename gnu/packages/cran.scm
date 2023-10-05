@@ -17796,14 +17796,14 @@ classification.")
 (define-public r-sodium
   (package
     (name "r-sodium")
-    (version "1.2.1")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sodium" version))
        (sha256
         (base32
-         "1a03z2asvmalnmsn89lapzp8a4fr0qvzdv3xgin8pbqhjyb9hvpp"))))
+         "0b10cbzpybbjwhrbdx2ldjg8gb3cgzra533x6rn3d52zy1sqs6l8"))))
     (properties `((upstream-name . "sodium")))
     (build-system r-build-system)
     (inputs
