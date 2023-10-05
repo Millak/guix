@@ -460,14 +460,14 @@ etc.")
 (define-public r-datawizard
   (package
     (name "r-datawizard")
-    (version "0.8.0")
+    (version "0.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "datawizard" version))
        (sha256
         (base32
-         "18i27mmf3z8a3wa49k8jjcs17nd0h4gmmjybbnaihyqm6r7yv8qk"))))
+         "1w1d18ssd6nbwg2r9gs0779wf33vpl8xivlc79ci5mi4db2m7zsd"))))
     (properties `((upstream-name . "datawizard")))
     (build-system r-build-system)
     (propagated-inputs
