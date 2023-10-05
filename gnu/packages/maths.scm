@@ -5867,6 +5867,68 @@ LU factorization for solving unsymmetric sparse linear systems.")
     ;; Dual licensed.
     (license (list license:lgpl3+ license:gpl2+))))
 
+(define-public suitesparse-spqr
+  (package
+    (name "suitesparse-spqr")
+    (version "4.2.0")
+    (source suitesparse-source)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "SPQR")))
+          (add-after 'chdir 'set-cmake-module-path
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set.*CMAKE_MODULE_PATH.*")
+                 (string-append
+                  "set(CMAKE_MODULE_PATH "
+                  (string-join
+                   (map (lambda (path)
+                          (string-append path "/lib/cmake/SuiteSparse"))
+                        (list #$suitesparse-amd
+                              #$suitesparse-camd
+                              #$suitesparse-ccolamd
+                              #$suitesparse-cholmod
+                              #$suitesparse-colamd
+                              #$suitesparse-config)))
+                  ")\nset(DUMMY\n")))))
+          (add-after 'build 'build-doc
+            (lambda _
+              (with-directory-excursion "../SPQR/Doc"
+                (invoke "make"))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (install-file "../SPQR/Doc/spqr_user_guide.pdf"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version))))
+          (replace 'install-license-files
+            (lambda _
+              (install-file "../SPQR/Doc/License.txt"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version)))))))
+    (inputs
+     (list openblas
+           suitesparse-amd
+           suitesparse-camd
+           suitesparse-ccolamd
+           suitesparse-cholmod
+           suitesparse-colamd
+           suitesparse-config))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-epsf))))
+    (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
+    (synopsis "Sparse QR factorization method")
+    (description "The SPQR (SuiteSparseQR) package provides sparse QR
+factorization based on the multifrontal method, using BLAS for the frontal
+matrices.")
+    (license license:gpl2+)))
+
 (define-public suitesparse
   (package
     (name "suitesparse")
