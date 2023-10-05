@@ -1308,6 +1308,17 @@ Guile Reference Manual}); pattern matching for records is better done
 using @code{match-record} from @code{(guix records)}, which, unlike
 @code{match}, verifies field names at macro-expansion time.
 
+When defining a new record type, keep the @dfn{record type descriptor}
+(RTD) private (@pxref{Records,,, guile, GNU Guile Reference Manual}, for
+more on records and RTDs).  As an example, the @code{(guix packages)}
+module defines @code{<package>} as the RTD for package records but it
+does not export it; instead, it exports a type predicate, a constructor,
+and field accessors.  Exporting RTDs would make it harder to change the
+application binary interface (because code in other modules might be
+matching fields by position) and would make it trivial for users to
+forge records of that type, bypassing any checks we may have in the
+official constructor (such as ``field sanitizers'').
+
 @node Formatting Code
 @subsection Formatting Code
 
