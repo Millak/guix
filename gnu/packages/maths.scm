@@ -5929,6 +5929,77 @@ factorization based on the multifrontal method, using BLAS for the frontal
 matrices.")
     (license license:gpl2+)))
 
+(define-public suitesparse-umfpack
+  (package
+    (name "suitesparse-umfpack")
+    (version "6.2.0")
+    (source suitesparse-source)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "UMFPACK")))
+          (add-after 'chdir 'set-cmake-module-path
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set.*CMAKE_MODULE_PATH.*")
+                 (string-append
+                  "set(CMAKE_MODULE_PATH "
+                  (string-join
+                   (map (lambda (path)
+                          (string-append path "/lib/cmake/SuiteSparse"))
+                        (list #$suitesparse-amd
+                              #$suitesparse-camd
+                              #$suitesparse-ccolamd
+                              #$suitesparse-cholmod
+                              #$suitesparse-colamd
+                              #$suitesparse-config)))
+                  ")\nset(DUMMY\n")))))
+          (add-after 'build 'build-doc
+            (lambda _
+              (with-directory-excursion "../UMFPACK/Doc"
+                (invoke "make"))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (let ((outdir
+                     (string-append #$output "/share/doc/"
+                                    #$name "-" #$version)))
+                (install-file "../UMFPACK/Doc/UMFPACK_UserGuide.pdf" outdir)
+                (install-file "../UMFPACK/Doc/UMFPACK_QuickStart.pdf" outdir))))
+          (replace 'install-license-files
+            (lambda _
+              (let ((outdir
+                     (string-append #$output "/share/doc/"
+                                    #$name "-" #$version)))
+                (install-file "../UMFPACK/Doc/License.txt" outdir)
+                (install-file "../UMFPACK/Doc/gpl.txt" outdir)))))))
+    (inputs
+     (list openblas
+           suitesparse-amd
+           suitesparse-camd
+           suitesparse-ccolamd
+           suitesparse-cholmod
+           suitesparse-colamd
+           suitesparse-config))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-etoolbox
+                  texlive-framed
+                  texlive-mdframed
+                  texlive-needspace
+                  texlive-xcolor
+                  texlive-zref))))
+    (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
+    (synopsis "Routines for solving sparse linear problems via LU factorization")
+    (description "UMFPACK is a set of routines for solving unsymmetric sparse
+linear systems using the Unsymmetric MultiFrontal method and direct sparse LU
+factorization.")
+    (license license:gpl2+)))
+
 (define-public suitesparse
   (package
     (name "suitesparse")
