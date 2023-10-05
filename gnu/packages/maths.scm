@@ -4344,6 +4344,42 @@ bio-chemistry.")
 (define-public pt-scotch-shared
   (deprecated-package "pt-scotch-shared" pt-scotch))
 
+(define-public gklib
+  (let ((commit "8bd6bad750b2b0d90800c632cf18e8ee93ad72d7")
+        (revision "1"))
+    (package
+      (name "gklib")
+      (version (git-version "5.1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/KarypisLab/GKlib")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "08k4zzyd7zsisdhfmnwz7zb9w3pzpgagyjq52mwk8i6sqajdxsdn"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        #~(list "-DBUILD_SHARED_LIBS=ON"
+                #$@(if (target-x86?)
+                       '()
+                       '("-DNO_X86=1")))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'remove-march=native
+                (lambda _
+                  (substitute* "GKlibSystem.cmake"
+                    (("-march=native") "")))))))
+      (home-page "https://github.com/KarypisLab/GKlib")
+      (synopsis "Helper library for METIS")
+      (description
+       "GKlib is a library of various helper routines and frameworks used by
+software from KarypisLab, such as METIS.")
+      (license license:asl2.0))))
 
 (define-public metis
   (package
