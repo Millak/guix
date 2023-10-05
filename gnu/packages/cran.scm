@@ -800,13 +800,13 @@ text annotations.")
 (define-public r-ggstatsplot
   (package
     (name "r-ggstatsplot")
-    (version "0.12.0")
+    (version "0.12.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggstatsplot" version))
               (sha256
                (base32
-                "17jxvzr4dlvsakrsvblxngg60jxh0c1a0i8phqqg63nbf79ng2lk"))))
+                "0w24dbz2zc60zpxp2bylj6yk8rwdrkbppkykmip1wrhsbi8663xi"))))
     (properties `((upstream-name . "ggstatsplot")))
     (build-system r-build-system)
     (propagated-inputs (list r-correlation
