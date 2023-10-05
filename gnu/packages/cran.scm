@@ -23290,18 +23290,18 @@ package.")
 (define-public r-yulab-utils
   (package
     (name "r-yulab-utils")
-    (version "0.0.9")
+    (version "0.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "yulab.utils" version))
        (sha256
         (base32
-         "0y8594xmsg59p7pgz9bnjdc0bi50y6nmzvvzmjk8wyn4v5rz09ln"))))
+         "045s3xg723a8m9cqql74ifqir5k6zl4csdq39vw5im2zgvyajkzg"))))
     (properties `((upstream-name . "yulab.utils")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-memoise r-rlang))
+     (list r-cli r-digest r-fs r-memoise r-rlang))
     (home-page "https://cran.r-project.org/package=yulab.utils")
     (synopsis "Supporting functions for packages maintained by YuLab-SMU")
     (description
