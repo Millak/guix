@@ -5168,6 +5168,39 @@ package contains a library with common configuration options.")
 to Cholesky factorization (or for LU factorization with diagonal pivoting).")
     (license license:bsd-3)))
 
+(define-public suitesparse-btf
+  (package
+    (name "suitesparse-btf")
+    (version "2.2.0")
+    (source suitesparse-source)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "BTF")))
+          (add-after 'chdir 'set-cmake-module-path
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set.*CMAKE_MODULE_PATH.*")
+                 (string-append "set(CMAKE_MODULE_PATH "
+                                #$suitesparse-config "/lib/cmake/SuiteSparse)\n"
+                                "set(DUMMY\n")))))
+          (replace 'install-license-files
+            (lambda _
+              (install-file "../BTF/Doc/License.txt"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version)))))))
+    (inputs (list suitesparse-config))
+    (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
+    (synopsis "Library for permuting matrices into block upper triangular form")
+    (description "BTF (Block Triangular Form) is a C library for permuting a
+matrix into block upper triangular form.")
+    (license license:lgpl2.1+)))
+
 (define-public suitesparse
   (package
     (name "suitesparse")
