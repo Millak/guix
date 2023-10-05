@@ -29776,18 +29776,18 @@ automatically show a loader when the output is (re)calculating.")
 (define-public r-rsvg
   (package
     (name "r-rsvg")
-    (version "2.4.0")
+    (version "2.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rsvg" version))
        (sha256
         (base32
-         "1schf5gfqzvwmaigdsic5va9bbk9ycvcisiyll8xjjw116y9cxyb"))))
+         "1gi31hhs488a90lcql9c1hhsbymskj5brp05ag5z9f0azspazpdm"))))
     (properties `((upstream-name . "rsvg")))
     (build-system r-build-system)
     (inputs
-     (list (librsvg-for-system) zlib))
+     (list (librsvg-for-system) pcre2 zlib))
     (native-inputs
      (list pkg-config r-knitr))
     (home-page "https://github.com/jeroen/rsvg#readme")
