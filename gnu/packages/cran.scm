@@ -15407,21 +15407,18 @@ handle data from simple random samples as well as complex surveys.")
 (define-public r-tarchetypes
   (package
     (name "r-tarchetypes")
-    (version "0.7.8")
+    (version "0.7.9")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "tarchetypes" version))
               (sha256
                (base32
-                "1m43f2c2rrwnmsbhzfl97fvgjnfm4xwip09saia0dmp84lml26n1"))))
+                "1889jca7zwav1wwig1a4jr1dxmbcszfriqmhdyg97m2s1c9j0r9p"))))
     (properties `((upstream-name . "tarchetypes")))
     (build-system r-build-system)
     (propagated-inputs (list r-digest
                              r-dplyr
                              r-fs
-                             r-furrr
-                             r-future
-                             r-future-callr
                              r-rlang
                              r-targets
                              r-tibble
