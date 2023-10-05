@@ -5120,6 +5120,54 @@ Fresnel integrals, and similar related functions as well.")
 package contains a library with common configuration options.")
     (license license:bsd-3)))
 
+(define-public suitesparse-amd
+  (package
+    (name "suitesparse-amd")
+    (version "3.2.0")
+    (source suitesparse-source)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "AMD")))
+          (add-after 'chdir 'set-cmake-module-path
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set.*CMAKE_MODULE_PATH.*")
+                 (string-append "set(CMAKE_MODULE_PATH "
+                                #$suitesparse-config "/lib/cmake/SuiteSparse)\n"
+                                "set(DUMMY\n")))))
+          (add-after 'build 'build-doc
+            (lambda _
+              (with-directory-excursion "../AMD/Doc"
+                (invoke "make"))))
+          ;; Required for suitesparse-umfpack
+          (add-after 'install 'install-internal-header
+              (lambda _
+                (install-file "../AMD/Include/amd_internal.h"
+                              (string-append #$output "/include"))))
+          (add-after 'install-internal-header 'install-doc
+            (lambda _
+              (install-file "../AMD/Doc/AMD_UserGuide.pdf"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version))))
+          (replace 'install-license-files
+            (lambda _
+              (install-file "../AMD/Doc/License.txt"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version)))))))
+    (inputs (list suitesparse-config))
+    (native-inputs (list gfortran (texlive-updmap.cfg '())))
+    (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
+    (synopsis "Sparse matrix ordering for Cholesky factorization")
+    (description "AMD is a set of routines for ordering a sparse matrix prior
+to Cholesky factorization (or for LU factorization with diagonal pivoting).")
+    (license license:bsd-3)))
+
 (define-public suitesparse
   (package
     (name "suitesparse")
