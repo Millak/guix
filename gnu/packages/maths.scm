@@ -5684,6 +5684,44 @@ LDL' factorization of sparse, symmetric matrices.  Its focus lies on concise
 code.")
     (license license:lgpl2.1+)))
 
+(define-public suitesparse-rbio
+  (package
+    (name "suitesparse-rbio")
+    (version "4.2.0")
+    (source suitesparse-source)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "RBio")))
+          (add-after 'chdir 'set-cmake-module-path
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set.*CMAKE_MODULE_PATH.*")
+                 (string-append
+                  "set(CMAKE_MODULE_PATH "
+                  (string-join
+                   (map (lambda (path)
+                          (string-append path "/lib/cmake/SuiteSparse"))
+                        (list #$suitesparse-config)))
+                  ")\nset(DUMMY\n")))))
+          (replace 'install-license-files
+            (lambda _
+              (let ((out (string-append #$output
+                                        "/share/doc/" #$name "-" #$version)))
+                (install-file "../RBio/Doc/License.txt" out)
+                (install-file "../RBio/Doc/gpl.txt" out)))))))
+    (inputs (list suitesparse-config))
+    (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
+    (synopsis "Library for the Rutherford/Boeing sparse matrix format")
+    (description "This package provides the C library of RBio.  It can be used
+for reading and writing sparse matrices in the Rutherford/Boeing format.")
+    (license license:gpl2+)))
+
 (define-public suitesparse
   (package
     (name "suitesparse")
