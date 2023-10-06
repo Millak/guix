@@ -1463,6 +1463,18 @@ new Date();"))
     (substitute-keyword-arguments (package-arguments openjdk11)
       ((#:phases phases)
        #~(modify-phases #$phases
+           #$@(if (target-aarch64?)
+                #~((add-after 'unpack 'patch-for-aarch64
+                    (lambda _
+                      (substitute* "src/hotspot/cpu/aarch64/interp_masm_aarch64.hpp"
+                        ;; This line is duplicated, so remove both occurrences,
+                        ;; then add back one occurrence by substituting a
+                        ;; comment that occurs once.
+                        (("using MacroAssembler::call_VM_leaf_base;") "")
+                        (("Interpreter specific version of call_VM_base")
+                         (string-append "Interpreter specific version of call_VM_base\n"
+                                        "  using MacroAssembler::call_VM_leaf_base;"))))))
+                #~())
            (replace 'fix-java-shebangs
              (lambda _
                ;; 'blocked' was renamed to 'blacklisted' in this version for
