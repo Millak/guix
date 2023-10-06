@@ -40187,13 +40187,13 @@ calculate a dimension's unknown value from other dimensions' measurements.")
 (define-public r-sungeo
   (package
     (name "r-sungeo")
-    (version "0.2.292")
+    (version "1.1.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "SUNGEO" version))
               (sha256
                (base32
-                "1xav5by7sl21cwfg9m1ij1lz1kvdlqkkp2ah67rnj9vp4vk7nkfg"))
+                "1sy9kw3nr69jf33034kcnv418lqyz6sfrd01646i7dfsm64aydp2"))
               (modules '((guix build utils)))
               (snippet '(begin
                           ;; Fortunately, the package does not actually use
@@ -40212,7 +40212,6 @@ calculate a dimension's unknown value from other dimensions' measurements.")
            r-cartogram
            r-data-table
            r-dplyr
-           r-fasterize
            r-httr
            r-jsonlite
            r-measurements
@@ -40225,7 +40224,9 @@ calculate a dimension's unknown value from other dimensions' measurements.")
            r-rlang
            r-sf
            r-sp
-           r-spdep))
+           r-spdep
+           r-stringr
+           r-terra))
     (home-page "https://github.com/zhukovyuri/SUNGEO/")
     (synopsis "Sub-National Geospatial Data Archive: Geoprocessing Toolkit")
     (description
