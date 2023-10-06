@@ -1373,9 +1373,7 @@ provides the GNU compiler for the Go programming language."))
   (list (search-path-specification
          (variable "OBJCPLUS_INCLUDE_PATH")
          (files '("include")))
-        (search-path-specification
-         (variable "LIBRARY_PATH")
-         (files '("lib" "lib64")))))
+        $LIBRARY_PATH))
 
 (define-public gcc-objc++-4.8
   (custom-gcc gcc-4.8 "gcc-objc++" '("obj-c++")
