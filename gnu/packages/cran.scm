@@ -4591,7 +4591,7 @@ previewing themes in real time.")
     (inputs
      (list js-datatables js-selectize js-strftime js-highlight))
     (native-inputs
-     `(("uglifyjs" ,node-uglify-js)
+     `(("esbuild" ,esbuild)
        ("gfortran" ,gfortran)
        ("js-bootstrap-accessibility"
         ,(origin

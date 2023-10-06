@@ -4069,7 +4069,7 @@ using the multicore functionality of the parallel package.")
        (list js-selectize))
       (native-inputs
        `(("r-knitr" ,r-knitr)
-         ("uglifyjs" ,node-uglify-js)
+         ("esbuild" ,esbuild)
          ("datatables-plugins"
           ,(let ((version "1.13.4"))
              (origin

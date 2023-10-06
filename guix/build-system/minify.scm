@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2018 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2018, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -41,15 +41,15 @@
   `((guix build minify-build-system)
     ,@%gnu-build-system-modules))
 
-(define (default-uglify-js)
+(define (default-esbuild)
   "Return the default package to minify JavaScript source files."
   ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((mod (resolve-interface '(gnu packages uglifyjs))))
-    (module-ref mod 'uglifyjs)))
+  (let ((mod (resolve-interface '(gnu packages web))))
+    (module-ref mod 'esbuild)))
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system
-                (uglify-js (default-uglify-js))
+                (esbuild (default-esbuild))
                 #:allow-other-keys
                 #:rest arguments)
   "Return a bag for NAME."
@@ -64,7 +64,7 @@
                          '())
                    ,@inputs
                    ,@(standard-packages)))
-    (build-inputs `(("uglify-js" ,uglify-js)
+    (build-inputs `(("esbuild" ,esbuild)
                     ,@native-inputs))
     (outputs outputs)
     (build minify-build)
