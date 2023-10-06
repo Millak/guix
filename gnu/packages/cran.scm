@@ -9381,6 +9381,40 @@ of merit, ordering functions, and enhanced versions of @code{pairs} and
 @code{parcoord} which color panels according to their merit level.")
     (license license:gpl2+)))
 
+(define-public r-webchem
+  (package
+    (name "r-webchem")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "webchem" version))
+       (sha256
+        (base32 "06b9i9jipg564zyw4gkgiidz7501rlp40hxm4z3k5mzy148lr5vq"))))
+    (properties `((upstream-name . "webchem")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-base64enc
+                             r-data-tree
+                             r-dplyr
+                             r-httr
+                             r-jsonlite
+                             r-purrr
+                             r-rlang
+                             r-rvest
+                             r-stringr
+                             r-tibble
+                             r-xml2))
+    (native-inputs (list r-knitr))
+    (home-page "https://docs.ropensci.org/webchem/")
+    (synopsis "Chemical information from the web")
+    (description
+     "This package interacts with a suite of web services for chemical
+information.  Sources include: Alan Wood's Compendium of Pesticide Common
+Names, Chemical Identifier Resolver, ChEBI, Chemical Translation Service,
+ChemSpider, ETOX, Flavornet, NIST Chemistry WebBook, OPSIN, PubChem, SRS,
+Wikidata.")
+    (license license:expat)))
+
 (define-public r-webshot
   (package
     (name "r-webshot")
