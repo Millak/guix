@@ -423,6 +423,28 @@ Interface} specification.")
     (license license:asl2.0)
     (home-page "https://modwsgi.readthedocs.io/")))
 
+(define-public ablorb
+  (package
+    (name "ablorb")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.gnome.org/lilyp/ablorb")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1i705p2gw5aryj0myfj3rmsrmj3ilqdn5w7xd5dwjkyi80rc20kj"))))
+    (build-system meson-build-system)
+    (inputs (list glib gconf gnome-vfs libxml2))
+    (native-inputs (list pkg-config))
+    (home-page "https://gitlab.gnome.org/lilyp/ablorb")
+    (synopsis "Replace asset links with data URIs")
+    (description "Ablorb takes an XML file and resolves relative links,
+replacing them with data URIs.")
+    (license license:gpl3+)))
+
 (define-public monolith
   (package
     (name "monolith")
