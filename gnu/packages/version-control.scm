@@ -242,358 +242,373 @@ Python 3.3 and later, rather than on Python 2.")
 
 (define-public git
   (package
-   (name "git")
-   (version "2.45.2")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append "mirror://kernel.org/software/scm/git/git-"
-                                version ".tar.xz"))
-            (sha256
-             (base32
-              "1nws1vjgj54sv32wxl1h3n1jkcpabqv7a605hhafsby0n5zfigsi"))))
-   (build-system gnu-build-system)
-   (native-inputs
-    `(("native-perl" ,perl)
-      ;; Add bash-minimal explicitly to ensure it comes before bash-for-tests,
-      ;; see <https://bugs.gnu.org/39513>.
-      ("bash" ,bash-minimal)
-      ("bash-for-tests" ,bash)
-      ("gettext" ,gettext-minimal)
-      ;; To build the man pages from the git sources, we would need a dependency
-      ;; on a full XML tool chain, and building it actually takes ages.  So we
-      ;; use this lazy approach and use released tarball.
-      ("git-manpages"
-       ,(origin
-          (method url-fetch)
-          (uri (string-append
-                "mirror://kernel.org/software/scm/git/git-manpages-"
-                version ".tar.xz"))
-          (sha256
-           (base32
-            "1pqrp46kwbxycqld39027ph1cvkq9am156y3sswn6w2khsg30f09"))))
-      ;; For subtree documentation.
-      ("asciidoc" ,asciidoc)
-      ("docbook2x" ,docbook2x)
-      ("docbook-xsl" ,docbook-xsl)
-      ("libxslt" ,libxslt)
-      ("pkg-config" ,pkg-config)
-      ("texinfo" ,texinfo)
-      ("xmlto" ,xmlto)))
-   (inputs
-    `(("curl" ,curl)
-      ("expat" ,expat)
-      ("openssl" ,openssl)
-      ("perl" ,perl)
-      ("python" ,python) ; for git-p4
-      ("zlib" ,zlib)
+    (name "git")
+    (version "2.45.2")
+    (source (origin
+             (method url-fetch)
+             (uri (string-append "mirror://kernel.org/software/scm/git/git-"
+                                 version ".tar.xz"))
+             (sha256
+              (base32
+               "1nws1vjgj54sv32wxl1h3n1jkcpabqv7a605hhafsby0n5zfigsi"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list perl
+           ;; Add bash-minimal explicitly to ensure it comes before bash-for-tests,
+           ;; see <https://bugs.gnu.org/39513>.
+           bash-minimal
+           bash
+           gettext-minimal
+           ;; For subtree documentation.
+           asciidoc
+           docbook2x
+           docbook-xsl
+           libxslt
+           pkg-config
+           texinfo
+           xmlto))
+    (inputs
+     (list curl
+           expat
+           openssl
+           perl
+           python                       ;for git-p4
+           zlib
 
-       ;; For PCRE support in git grep (USE_LIBPCRE2).
-       ("pcre" ,pcre2)
+           ;; For PCRE support in git grep (USE_LIBPCRE2).
+           pcre2
 
-       ;; For 'gitweb.cgi'.
-       ("perl-cgi" ,perl-cgi)
+           ;; For 'gitweb.cgi'.
+           perl-cgi
 
-       ;; For 'git-svn'.
-       ("subversion" ,subversion)
-       ("perl-term-readkey" ,perl-term-readkey)
+           ;; For 'git-svn'.
+           subversion
+           perl-term-readkey
 
-       ;; For 'git-send-email'.
-       ("perl-authen-sasl" ,perl-authen-sasl)
-       ("perl-net-smtp-ssl" ,perl-net-smtp-ssl)
-       ("perl-io-socket-ssl" ,perl-io-socket-ssl)
+           ;; For 'git-send-email'.
+           perl-authen-sasl
+           perl-net-smtp-ssl
+           perl-io-socket-ssl
 
-       ;; For 'git gui', 'gitk', and 'git citool'.
-       ("tcl" ,tcl)
-       ("tk" ,tk)
+           ;; For 'git gui', 'gitk', and 'git citool'.
+           tcl
+           tk
 
-       ;; For 'git-credential-libsecret'
-       ("glib" ,glib)
-       ("libsecret" ,libsecret)))
-    (outputs '("out"                    ; the core
-               "send-email"             ; for git-send-email
-               "svn"                    ; git-svn
-               "credential-netrc"       ; git-credential-netrc
-               "credential-libsecret"   ; git-credential-libsecret
-               "subtree"                ; git-subtree
-               "gui"))                  ; gitk, git gui
+           ;; For 'git-credential-libsecret'
+           glib
+           libsecret))
+    (outputs '("out"                    ;the core
+               "send-email"             ;for git-send-email
+               "svn"                    ;git-svn
+               "credential-netrc"       ;git-credential-netrc
+               "credential-libsecret"   ;git-credential-libsecret
+               "subtree"                ;git-subtree
+               "gui"))                  ;gitk, git gui
     (arguments
-     `(#:make-flags `("V=1"             ;more verbose compilation
+     (list
+      #:make-flags
+      #~(list "V=1"                     ;more verbose compilation
+              (string-append "SHELL_PATH="
+                             #$(this-package-native-input "bash-minimal")
+                             "/bin/sh")
 
-                      ,(string-append "SHELL_PATH="
-                                      (assoc-ref %build-inputs "bash")
-                                      "/bin/sh")
+              ;; Tests require a bash with completion support.
+              (string-append "TEST_SHELL_PATH="
+                             #$(this-package-native-input "bash")
+                             "/bin/bash")
 
-                      ;; Tests require a bash with completion support.
-                      ,(string-append "TEST_SHELL_PATH="
-                                      (assoc-ref %build-inputs "bash-for-tests")
-                                      "/bin/bash")
+              "USE_LIBPCRE2=yes"
 
-                      "USE_LIBPCRE2=yes"
+              ;; By default 'make install' creates hard links for
+              ;; things in 'libexec/git-core', which leads to huge
+              ;; nars; see <https://bugs.gnu.org/21949>.
+              "NO_INSTALL_HARDLINKS=indeed")
 
-                      ;; By default 'make install' creates hard links for
-                      ;; things in 'libexec/git-core', which leads to huge
-                      ;; nars; see <https://bugs.gnu.org/21949>.
-                      "NO_INSTALL_HARDLINKS=indeed")
+      ;; Make sure the full bash does not end up in the final closure.
+      #:disallowed-references (list bash)
 
-       ;; Make sure the full bash does not end up in the final closure.
-       #:disallowed-references (,bash)
+      #:test-target "test"
 
-       #:test-target "test"
+      ;; The explicit --with-tcltk forces the build system to hardcode the
+      ;; absolute file name to 'wish'.
+      #:configure-flags
+      #~(list (string-append "--with-tcltk="
+                             (search-input-file %build-inputs
+                                                "bin/wish8.6"))
+              #$@(if (%current-target-system)
+                     git-cross-configure-flags
+                     #~()))
 
-       ;; The explicit --with-tcltk forces the build system to hardcode the
-       ;; absolute file name to 'wish'.
-       #:configure-flags (list (string-append "--with-tcltk="
-                                              (assoc-ref %build-inputs "tk")
-                                              "/bin/wish8.6") ; XXX
-                               ,@(if (%current-target-system)
-                                     git-cross-configure-flags
-                                     '()))
-
-       #:modules ((srfi srfi-1)
+      #:modules `((srfi srfi-1)
                   (srfi srfi-26)
                   ((guix build gnu-build-system) #:prefix gnu:)
                   ,@%gnu-build-system-modules)
-       #:phases
-       (modify-phases %standard-phases
-         ,@(if (%current-target-system)
-               ;; The git build system assumes build == host
-               `((add-after 'unpack  'use-host-uname_S
-                   (lambda _
-                     (substitute* "config.mak.uname"
-                       (("uname_S := .*" all)
-                        (if (equal? ,(%current-target-system) "i586-pc-gnu")
-                            "uname_S := GNU\n"
-                            all))))))
-               ;; We do not have bash-for-tests when cross-compiling.
-               `((add-after 'unpack 'modify-PATH
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     (let ((path (string-split (getenv "PATH") #\:))
-                           (bash-full (assoc-ref inputs "bash-for-tests")))
-                       ;; Drop the test bash from PATH so that (which "sh") and
-                       ;; similar does the right thing.
-                       (setenv "PATH" (string-join
-                                       (remove (cut string-prefix? bash-full <>) path)
-                                       ":")))))))
-         ;; Add cross curl-config script to PATH when cross-compiling.
-         ,@(if (%current-target-system)
-               '((add-before 'configure 'add-cross-curl-config
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     (setenv "PATH"
-                             (string-append (assoc-ref inputs "curl") "/bin:"
-                                            (getenv "PATH"))))))
-               '())
-         (add-after 'configure 'patch-makefiles
-           (lambda _
-             (substitute* "Makefile"
-               (("/usr/bin/perl") (which "perl"))
-               (("/usr/bin/python") (which "python3")))))
-         (add-after 'configure 'add-PM.stamp
-           (lambda _
-             ;; Add the "PM.stamp" to avoid "no rule to make target".
-             (call-with-output-file "perl/PM.stamp" (const #t))))
-         (add-after 'build 'build-subtree
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "contrib/subtree"
-               (substitute* "Makefile"
-                 ;; Apparently `xmlto' does not bother to looks up the stylesheets
-                 ;; specified in the XML, unlike the above substitution.  Instead it
-                 ;; uses a hard-coded URL.  Work around it here, but if this is
-                 ;; common perhaps we should hardcode this path in xmlto itself.
-                 (("\\$\\(XMLTO\\) -m \\$\\(MANPAGE_XSL\\)")
-                  (string-append "$(XMLTO) -x "
-                                 (string-append (assoc-ref inputs "docbook-xsl")
-                                                "/xml/xsl/docbook-xsl-"
-                                                ,(package-version docbook-xsl))
-                                 "/manpages/docbook.xsl -m $(MANPAGE_XSL)")))
-               (invoke "make")
-               (invoke "make" "install")
-               (invoke "make" "install-doc")
-               (substitute* "git-subtree"
-                 (("/bin/sh") (which "sh"))))))
-         (add-before 'check 'patch-tests
-           (lambda _
-             (let ((store-directory (%store-directory)))
-               ;; These files contain some funny bytes that Guile is unable
-               ;; to decode for shebang patching. Just delete them.
-               (for-each delete-file '("t/t4201-shortlog.sh"
-                                       "t/t7813-grep-icase-iso.sh"))
-               ;; Many tests contain inline shell scripts (hooks etc).
-               (substitute* (find-files "t" "\\.sh$")
-                 (("#!/bin/sh") (string-append "#!" (which "sh"))))
-               ;; Un-do shebang patching here to prevent checksum mismatch.
-               (substitute* '("t/t4034/perl/pre" "t/t4034/perl/post")
-                 (("^#!.*/bin/perl") "#!/usr/bin/perl"))
-               (substitute* "t/t5003-archive-zip.sh"
-                 (("cp /bin/sh") (string-append "cp " (which "sh"))))
-               (substitute* "t/t6030-bisect-porcelain.sh"
-                 (("\"/bin/sh\"") (string-append "\"" (which "sh") "\"")))
-               ;; FIXME: This test runs `git commit` with a bogus EDITOR
-               ;; and empty commit message, but does not fail the way it's
-               ;; expected to. The test passes when invoked interactively.
-               (substitute* "t/t7508-status.sh"
-                 (("\tcommit_template_commented") "\ttrue"))
-               ;; More checksum mismatches due to odd shebangs.
-               (substitute* "t/t9100-git-svn-basic.sh"
-                 (((string-append "\"#!" store-directory ".*/bin/sh")) "\"#!/bin/sh") )
-               (substitute* "t/t9300-fast-import.sh"
-                 (((string-append "\t#!" store-directory ".*/bin/sh")) "\t#!/bin/sh")
-                 (((string-append "'#!" store-directory ".*/bin/sh")) "'#!/bin/sh"))
-               ;; FIXME: Some hooks fail with "basename: command not found".
-               ;; See 't/trash directory.t9164.../svn-hook.log'.
-               (delete-file "t/t9164-git-svn-dcommit-concurrent.sh")
+      #:phases
+      #~(modify-phases %standard-phases
+          #$@(if (%current-target-system)
+                 ;; The git build system assumes build == host
+                 #~((add-after 'unpack  'use-host-uname_S
+                      (lambda _
+                        (substitute* "config.mak.uname"
+                          (("uname_S := .*" all)
+                           (if (equal? #$(%current-target-system) "i586-pc-gnu")
+                               "uname_S := GNU\n"
+                               all))))))
+                 ;; We do not have a full bash when cross-compiling.
+                 #~((add-after 'unpack 'modify-PATH
+                      (lambda* (#:key inputs #:allow-other-keys)
+                        (let ((path (string-split (getenv "PATH") #\:))
+                              (bash-full #$(this-package-native-input "bash")))
+                          ;; Drop the test bash from PATH so that (which "sh")
+                          ;; and similar does the right thing.
+                          (setenv "PATH"
+                                  (string-join
+                                   (remove (cut string-prefix? bash-full <>)
+                                           path)
+                                   ":")))))))
+          ;; Add cross curl-config script to PATH when cross-compiling.
+          #$@(if (%current-target-system)
+                 #~((add-before 'configure 'add-cross-curl-config
+                      (lambda* (#:key inputs #:allow-other-keys)
+                        (setenv "PATH"
+                                (string-append
+                                 (dirname (search-input-file
+                                           inputs "bin/curl-config"))
+                                 ":" (getenv "PATH"))))))
+                 #~())
+          (add-after 'configure 'patch-makefiles
+            (lambda _
+              (substitute* "Makefile"
+                (("/usr/bin/perl") (which "perl"))
+                (("/usr/bin/python") (which "python3")))))
+          (add-after 'configure 'add-PM.stamp
+            (lambda _
+              ;; Add the "PM.stamp" to avoid "no rule to make target".
+              (call-with-output-file "perl/PM.stamp" (const #t))))
+          (add-after 'build 'build-subtree
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (with-directory-excursion "contrib/subtree"
+                (substitute* "Makefile"
+                  ;; Apparently `xmlto' does not bother to looks up the
+                  ;; stylesheets specified in the XML, unlike the above
+                  ;; substitution.  Instead it uses a hard-coded URL.  Work
+                  ;; around it here, but if this is common perhaps we should
+                  ;; hardcode this path in xmlto itself.
+                  (("\\$\\(XMLTO\\) -m \\$\\(MANPAGE_XSL\\)")
+                   (string-append "$(XMLTO) -x "
+                                  (search-input-directory
+                                   (or native-inputs inputs)
+                                   (string-append
+                                    "xml/xsl/docbook-xsl-"
+                                    #$(package-version docbook-xsl)))
+                                  "/manpages/docbook.xsl -m $(MANPAGE_XSL)")))
+                (invoke "make")
+                (invoke "make" "install")
+                (invoke "make" "install-doc")
+                (substitute* "git-subtree"
+                  (("/bin/sh") (which "sh"))))))
+          (add-before 'check 'patch-tests
+            (lambda _
+              (let ((store-directory (%store-directory)))
+                ;; These files contain some funny bytes that Guile is unable
+                ;; to decode for shebang patching. Just delete them.
+                (for-each delete-file '("t/t4201-shortlog.sh"
+                                        "t/t7813-grep-icase-iso.sh"))
+                ;; Many tests contain inline shell scripts (hooks etc).
+                (substitute* (find-files "t" "\\.sh$")
+                  (("#!/bin/sh") (string-append "#!" (which "sh"))))
+                ;; Un-do shebang patching here to prevent checksum mismatch.
+                (substitute* '("t/t4034/perl/pre" "t/t4034/perl/post")
+                  (("^#!.*/bin/perl") "#!/usr/bin/perl"))
+                (substitute* "t/t5003-archive-zip.sh"
+                  (("cp /bin/sh") (string-append "cp " (which "sh"))))
+                (substitute* "t/t6030-bisect-porcelain.sh"
+                  (("\"/bin/sh\"") (string-append "\"" (which "sh") "\"")))
+                ;; FIXME: This test runs `git commit` with a bogus EDITOR
+                ;; and empty commit message, but does not fail the way it's
+                ;; expected to. The test passes when invoked interactively.
+                (substitute* "t/t7508-status.sh"
+                  (("\tcommit_template_commented") "\ttrue"))
+                ;; More checksum mismatches due to odd shebangs.
+                (substitute* "t/t9100-git-svn-basic.sh"
+                  (((string-append "\"#!" store-directory ".*/bin/sh"))
+                   "\"#!/bin/sh") )
+                (substitute* "t/t9300-fast-import.sh"
+                  (((string-append "\t#!" store-directory ".*/bin/sh"))
+                   "\t#!/bin/sh")
+                  (((string-append "'#!" store-directory ".*/bin/sh"))
+                   "'#!/bin/sh"))
+                ;; FIXME: Some hooks fail with "basename: command not found".
+                ;; See 't/trash directory.t9164.../svn-hook.log'.
+                (delete-file "t/t9164-git-svn-dcommit-concurrent.sh")
 
-               ;; XXX: These tests fail intermittently for unknown reasons:
-               ;; <https://bugs.gnu.org/29546>.
-               (for-each delete-file
-                         '("t/t9128-git-svn-cmd-branch.sh"
-                           "t/t9167-git-svn-cmd-branch-subproject.sh"
-                           "t/t9141-git-svn-multiple-branches.sh")))))
-         (add-after 'install 'install-info-manual
-           (lambda* (#:key parallel-build? #:allow-other-keys)
-             (define job-count (if parallel-build?
-                                   (number->string (parallel-job-count))
-                                   "1"))
-             (invoke "make" "-C" "Documentation" "install-info"
-                     "-j" job-count
-                     ;; The Makefile refer to 'docbook2x-texi', but our binary
-                     ;; is named 'docbook2texi'.
-                     "DOCBOOK2X_TEXI=docbook2texi" "PERL_PATH=perl")))
-         (add-after 'install 'install-shell-completion
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out         (assoc-ref outputs "out"))
-                    (completions (string-append out "/etc/bash_completion.d")))
-               ;; TODO: Install the tcsh and zsh completions in the right place.
-               (mkdir-p completions)
-               (copy-file "contrib/completion/git-completion.bash"
-                          (string-append completions "/git")))))
-         (add-after 'install 'install-credential-netrc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((netrc (assoc-ref outputs "credential-netrc")))
-               (install-file "contrib/credential/netrc/git-credential-netrc.perl"
-                             (string-append netrc "/bin"))
-               (rename-file (string-append netrc "/bin/git-credential-netrc.perl")
-                            (string-append netrc "/bin/git-credential-netrc"))
-               ;; Previously, Git.pm was automatically found by netrc.
-               ;; Perl 5.26 changed how it locates modules so that @INC no
-               ;; longer includes the current working directory (the Perl
-               ;; community calls this "dotless @INC").
-               (wrap-program (string-append netrc "/bin/git-credential-netrc")
-                 `("PERL5LIB" ":" prefix
-                   (,(string-append (assoc-ref outputs "out") "/share/perl5")))))))
-         (add-after 'install 'install-credential-libsecret
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((libsecret (assoc-ref outputs "credential-libsecret")))
-               (with-directory-excursion "contrib/credential/libsecret"
-                 ((assoc-ref gnu:%standard-phases 'build))
-                 (install-file "git-credential-libsecret"
-                               (string-append libsecret "/bin"))))))
-         (add-after 'install 'install-subtree
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((subtree (assoc-ref outputs "subtree")))
-               (install-file "contrib/subtree/git-subtree"
-                             (string-append subtree "/bin"))
-               (install-file "contrib/subtree/git-subtree.1"
-                             (string-append subtree "/share/man/man1")))))
-         (add-after 'install 'restore-sample-hooks-shebang
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (dir (string-append out "/share/git-core/templates/hooks")))
-               (for-each (lambda (file)
-                           (format #t "restoring shebang on `~a'~%" file)
-                           (substitute* file
-                             (("^#!.*/bin/sh") "#!/bin/sh")))
-                         (find-files dir ".*")))))
-         (add-after 'install 'split
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Split the binaries to the various outputs.
-             (let* ((out      (assoc-ref outputs "out"))
-                    (se       (assoc-ref outputs "send-email"))
-                    (svn      (assoc-ref outputs "svn"))
-                    (gui      (assoc-ref outputs "gui"))
-                    (gitk     (string-append out "/bin/gitk"))
-                    (gitk*    (string-append gui "/bin/gitk"))
-                    (git-gui  (string-append out "/libexec/git-core/git-gui"))
-                    (git-gui* (string-append gui "/libexec/git-core/git-gui"))
-                    (git-cit  (string-append out "/libexec/git-core/git-citool"))
-                    (git-cit* (string-append gui "/libexec/git-core/git-citool"))
-                    (git-se   (string-append out "/libexec/git-core/git-send-email"))
-                    (git-se*  (string-append se  "/libexec/git-core/git-send-email"))
-                    (git-svn  (string-append out "/libexec/git-core/git-svn"))
-                    (git-svn* (string-append svn "/libexec/git-core/git-svn"))
-                    (git-sm   (string-append out
-                                             "/libexec/git-core/git-submodule")))
-               (mkdir-p (string-append gui "/bin"))
-               (mkdir-p (string-append gui "/libexec/git-core"))
-               (mkdir-p (string-append se  "/libexec/git-core"))
-               (mkdir-p (string-append svn "/libexec/git-core"))
+                ;; XXX: These tests fail intermittently for unknown reasons:
+                ;; <https://bugs.gnu.org/29546>.
+                (for-each delete-file
+                          '("t/t9128-git-svn-cmd-branch.sh"
+                            "t/t9167-git-svn-cmd-branch-subproject.sh"
+                            "t/t9141-git-svn-multiple-branches.sh")))))
+          (add-after 'install 'install-info-manual
+            (lambda* (#:key parallel-build? #:allow-other-keys)
+              (define job-count (if parallel-build?
+                                    (number->string (parallel-job-count))
+                                    "1"))
+              (invoke "make" "-C" "Documentation" "install-info"
+                      "-j" job-count
+                      ;; The Makefile refer to 'docbook2x-texi', but our binary
+                      ;; is named 'docbook2texi'.
+                      "DOCBOOK2X_TEXI=docbook2texi" "PERL_PATH=perl")))
+          (add-after 'install 'install-shell-completion
+            (lambda _
+              (let ((completions (string-append #$output
+                                                "/etc/bash_completion.d")))
+                ;; TODO: Install the tcsh and zsh completions in the right
+                ;; place.
+                (mkdir-p completions)
+                (copy-file "contrib/completion/git-completion.bash"
+                           (string-append completions "/git")))))
+          (add-after 'install 'install-credential-netrc
+            (lambda _
+              (install-file "contrib/credential/netrc/git-credential-netrc.perl"
+                            (string-append #$output:credential-netrc "/bin"))
+              (rename-file (string-append #$output:credential-netrc
+                                          "/bin/git-credential-netrc.perl")
+                           (string-append #$output:credential-netrc
+                                          "/bin/git-credential-netrc"))
+              ;; Previously, Git.pm was automatically found by netrc.
+              ;; Perl 5.26 changed how it locates modules so that @INC no
+              ;; longer includes the current working directory (the Perl
+              ;; community calls this "dotless @INC").
+              (wrap-program (string-append #$output:credential-netrc
+                                           "/bin/git-credential-netrc")
+                `("PERL5LIB" ":" prefix
+                  (,(string-append #$output "/share/perl5"))))))
+          (add-after 'install 'install-credential-libsecret
+            (lambda _
+              (with-directory-excursion "contrib/credential/libsecret"
+                ((assoc-ref gnu:%standard-phases 'build))
+                (install-file "git-credential-libsecret"
+                              (string-append #$output:credential-libsecret
+                                             "/bin")))))
+          (add-after 'install 'install-subtree
+            (lambda _
+              (install-file "contrib/subtree/git-subtree"
+                            (string-append #$output:subtree "/bin"))
+              (install-file "contrib/subtree/git-subtree.1"
+                            (string-append #$output:subtree
+                                           "/share/man/man1"))))
+          (add-after 'install 'restore-sample-hooks-shebang
+            (lambda _
+              (let* ((dir (string-append #$output
+                                         "/share/git-core/templates/hooks")))
+                (for-each (lambda (file)
+                            (format #t "restoring shebang on `~a'~%" file)
+                            (substitute* file
+                              (("^#!.*/bin/sh") "#!/bin/sh")))
+                          (find-files dir ".*")))))
+          (add-after 'install 'split
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Split the binaries to the various outputs.
+              (let* ((out      #$output)
+                     (se       #$output:send-email)
+                     (svn      #$output:svn)
+                     (gui      #$output:gui)
+                     (gitk     (string-append out "/bin/gitk"))
+                     (gitk*    (string-append gui "/bin/gitk"))
+                     (git-gui  (string-append
+                                out "/libexec/git-core/git-gui"))
+                     (git-gui* (string-append gui "/libexec/git-core/git-gui"))
+                     (git-cit  (string-append
+                                out "/libexec/git-core/git-citool"))
+                     (git-cit* (string-append
+                                gui "/libexec/git-core/git-citool"))
+                     (git-se   (string-append
+                                out "/libexec/git-core/git-send-email"))
+                     (git-se*  (string-append
+                                se  "/libexec/git-core/git-send-email"))
+                     (git-svn  (string-append out "/libexec/git-core/git-svn"))
+                     (git-svn* (string-append svn "/libexec/git-core/git-svn"))
+                     (git-sm   (string-append
+                                out "/libexec/git-core/git-submodule")))
+                (mkdir-p (string-append gui "/bin"))
+                (mkdir-p (string-append gui "/libexec/git-core"))
+                (mkdir-p (string-append se  "/libexec/git-core"))
+                (mkdir-p (string-append svn "/libexec/git-core"))
 
-               (for-each (lambda (old new)
-                           (copy-file old new)
-                           (delete-file old)
-                           (chmod new #o555))
-                         (list gitk git-gui git-cit git-se git-svn)
-                         (list gitk* git-gui* git-cit* git-se* git-svn*))
+                (for-each (lambda (old new)
+                            (copy-file old new)
+                            (delete-file old)
+                            (chmod new #o555))
+                          (list gitk git-gui git-cit git-se git-svn)
+                          (list gitk* git-gui* git-cit* git-se* git-svn*))
 
-               ;; Tell 'git-svn' where Subversion and perl-term-readkey are.
-               (wrap-program git-svn*
-                 `("PATH" ":" prefix
-                   (,(string-append (assoc-ref inputs "subversion")
-                                    "/bin")))
-                 `("PERL5LIB" ":" prefix
-                   ,(map (lambda (i) (string-append (assoc-ref inputs i)
-                                                    "/lib/perl5/site_perl"))
-                         '("subversion" "perl-term-readkey")))
+                ;; Tell 'git-svn' where Subversion and perl-term-readkey are.
 
-                 ;; XXX: The .so for SVN/Core.pm lacks a RUNPATH, so
-                 ;; help it find 'libsvn_client-1.so'.
-                 `("LD_LIBRARY_PATH" ":" prefix
-                   (,(string-append (assoc-ref inputs "subversion")
-                                    "/lib"))))
+                ;; FIXME: Old school 'assoc-ref' is used to retrieve
+                ;; subversion here, as #$(this-package-input "subversion")
+                ;; causes a dependency cycle for unknown reasons.
+                (wrap-program git-svn*
+                  `("PATH" ":" prefix
+                    (,(dirname (search-input-file inputs "bin/perl"))))
+                  `("PERL5LIB" ":" prefix
+                    ,(search-path-as-list
+                      '("lib/perl5/site_perl")
+                      (list (assoc-ref inputs "subversion")
+                            #$(this-package-input "perl-term-readkey"))))
 
-               ;; Tell 'git-send-email' where perl modules are.
-               (wrap-program git-se*
-                 `("PERL5LIB" ":" prefix
-                   ,(map (lambda (o) (string-append o "/lib/perl5/site_perl"))
-                         (list
-                          ,@(transitive-input-references
-                             'inputs
-                             (map (lambda (l)
-                                    (assoc l (package-inputs this-package)))
-                                  '("perl-authen-sasl"
-                                    "perl-net-smtp-ssl"
-                                    "perl-io-socket-ssl")))))))
+                  ;; XXX: The .so for SVN/Core.pm lacks a RUNPATH, so
+                  ;; help it find 'libsvn_client-1.so'.
+                  `("LD_LIBRARY_PATH" ":" prefix
+                    (,(string-append (assoc-ref inputs "subversion")
+                                     "/lib"))))
 
-               ;; Tell 'gitweb.cgi' where perl modules are.
-               (wrap-program (string-append out "/share/gitweb/gitweb.cgi")
-                 `("PERL5LIB" ":" prefix
-                   ,(map (lambda (o) (string-append o "/lib/perl5/site_perl"))
-                         (list
-                          ,@(transitive-input-references
-                             'inputs
-                             (map (lambda (l)
-                                    (assoc l (package-inputs this-package)))
-                                  '("perl-cgi")))))))
+                ;; Tell 'git-send-email' where perl modules are.
+                (wrap-program git-se*
+                  `("PERL5LIB" ":" prefix
+                    ,(search-path-as-list
+                      '("lib/perl5/site_perl")
+                      '#$(delete-duplicates
+                          (append-map
+                           (compose last package-transitive-propagated-inputs)
+                           (list (this-package-input "perl-authen-sasl")
+                                 (this-package-input "perl-net-smtp-ssl")
+                                 (this-package-input "perl-io-socket-ssl")))))))
+                ;; Tell 'gitweb.cgi' where perl modules are.
+                (wrap-program (string-append out "/share/gitweb/gitweb.cgi")
+                  `("PERL5LIB" ":" prefix
+                    ,(search-path-as-list
+                      '("lib/perl5/site_perl")
+                      '#$(delete-duplicates
+                          (append-map
+                           (compose last package-transitive-propagated-inputs)
+                           (list (this-package-input "perl-cgi")))))))
 
-               ;; Tell 'git-submodule' where Perl is.
-               (wrap-program git-sm
-                 `("PATH" ":" prefix
-                   (,(string-append (assoc-ref inputs "perl")
-                                    "/bin")))))))
-         (add-after 'split 'install-man-pages
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (man (string-append out "/share/man"))
-                    (manpages (assoc-ref inputs "git-manpages")))
-               (mkdir-p man)
-               (with-directory-excursion man
-                 (invoke "tar" "xvf" manpages)))))
-         ,@(if (system-hurd?)
-               '((add-after 'unpack 'delete-tests/hurd
-                   (lambda _
-                     (delete-file "t/t0052-simple-ipc.sh")
-                     (delete-file "t/t5562-http-backend-content-length.sh")
-                     (delete-file "t/t9902-completion.sh"))))
-               '()))))
+                ;; Tell 'git-submodule' where Perl is.
+                (wrap-program git-sm
+                  `("PATH" ":" prefix
+                    (,(dirname (search-input-file inputs "bin/perl"))))))))
+          (add-after 'split 'install-man-pages
+            (lambda _
+              (let ((man (string-append #$output "/share/man")))
+                (mkdir-p man)
+                (with-directory-excursion man
+                  (invoke
+                   "tar" "xvf"
+                   #$(origin
+                       (method url-fetch)
+                       (uri (string-append
+                             "mirror://kernel.org/software/scm/git/"
+                             "git-manpages-" version ".tar.xz"))
+                       (sha256
+                        (base32
+                         "1w6r2liifafsxydmc48p578z7z70ys0spm6qp5ygdd0l26mxf8p6"))))))))
+          #$@(if (system-hurd?)
+                 #~((add-after 'unpack 'delete-tests/hurd
+                      (lambda _
+                        (delete-file "t/t0052-simple-ipc.sh")
+                        (delete-file "t/t5562-http-backend-content-length.sh")
+                        (delete-file "t/t9902-completion.sh"))))
+                 #~()))))
 
     (native-search-paths
      ;; For HTTPS access, Git needs a single-file certificate bundle, specified
@@ -653,9 +668,8 @@ everything from small to very large projects with speed and efficiency.")
             (delete 'install-credential-libsecret)
             (add-after 'install 'remove-unusable-perl-commands
               (lambda* (#:key outputs #:allow-other-keys)
-                (let* ((out     (assoc-ref outputs "out"))
-                       (bin     (string-append out "/bin"))
-                       (libexec (string-append out "/libexec")))
+                (let ((bin     (string-append #$output "/bin"))
+                      (libexec (string-append #$output "/libexec")))
                   (for-each (lambda (file)
                               (delete-file (string-append libexec
                                                           "/git-core/" file)))
@@ -675,11 +689,11 @@ everything from small to very large projects with speed and efficiency.")
 
                   ;; These templates typically depend on Perl.  Remove them.
                   (delete-file-recursively
-                   (string-append out "/share/git-core/templates/hooks"))
+                   (string-append #$output "/share/git-core/templates/hooks"))
 
                   ;; Gitweb depends on Perl as well.
                   (delete-file-recursively
-                   (string-append out "/share/gitweb")))))))
+                   (string-append #$output "/share/gitweb")))))))
        ((#:make-flags flags)
         #~(delete "USE_LIBPCRE2=yes" #$flags))
        ((#:configure-flags flags)
