@@ -934,12 +934,8 @@ It also includes runtime support libraries for these languages.")
                         "MAKEINFOFLAGS = --force\n"))))))))
     (native-search-paths
      ;; This package supports nothing but the C language.
-     (list (search-path-specification
-            (variable "C_INCLUDE_PATH")
-            (files '("include")))
-           (search-path-specification
-            (variable "LIBRARY_PATH")
-            (files '("lib")))))))
+     (list $C_INCLUDE_PATH
+           $LIBRARY_PATH))))
 
 
 (define-public (make-libstdc++ gcc)
