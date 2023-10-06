@@ -31895,13 +31895,13 @@ development, testing, production]};
 (define-public python-pudb
   (package
     (name "python-pudb")
-    (version "2022.1.3")
+    (version "2023.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pudb" version))
               (sha256
                (base32
-                "0jk61qgacvwy6zkz1f55jawax4ggb1aawy6w3wnfkzqrkvd3ms2q"))))
+                "00rgx80inpvsbcydp29mrhw44xizyqdqxvv6lqcak1xs79h3rpqm"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
