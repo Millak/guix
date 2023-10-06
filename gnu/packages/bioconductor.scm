@@ -22203,6 +22203,15 @@ design.")
          "0n026b744ah5kcnipsyiqqs7vlz5n5im1kgv35i2pgxyzvf7a8sn"))))
     (properties `((upstream-name . "biomvRCNS")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-constants
+           (lambda _
+             (substitute* "src/biomvRCNS.c"
+               (("DOUBLE_XMIN") "DBL_MIN")
+               (("DOUBLE_XMAX") "DBL_MAX")))))))
     (propagated-inputs
      (list r-genomicranges r-gviz r-iranges r-mvtnorm))
     (home-page "https://bioconductor.org/packages/biomvRCNS")
