@@ -3980,13 +3980,13 @@ using the multicore functionality of the parallel package.")
                           extensions)))))
     (package
       (name "r-dt")
-      (version "0.29")
+      (version "0.30")
       (source (origin
                 (method url-fetch)
                 (uri (cran-uri "DT" version))
                 (sha256
                  (base32
-                  "1b9qshrjv9xaak92rvg65vkak4pyci9js4j7nkfcg0p19ghnvlm8"))
+                  "13k9zyapx6rqfsrl5afpgaqyni57qq88hxa1j3y3wjcv5bim66ig"))
                 (modules '((guix build utils)
                            (ice-9 match)))
                 (snippet
