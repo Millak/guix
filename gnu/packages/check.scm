@@ -3548,7 +3548,7 @@ that can be used to verify that future runs produce the same data.")
 (define-public guile-proba
   (package
     (name "guile-proba")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method git-fetch)
@@ -3557,7 +3557,7 @@ that can be used to verify that future runs produce the same data.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mjnrbb6gv5f95i1ihn75yh7ya445pcnj13cy34x2v58h9n2r80s"))))
+        (base32 "17ab304ylylm9z980ij5lv188inx6331r1mn1s7qrlxly9fzx888"))))
     (build-system guile-build-system)
     (inputs (list bash-minimal guile-3.0))
     (native-inputs (list texinfo))
