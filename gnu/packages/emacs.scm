@@ -498,7 +498,12 @@ editor (with wide ints)" )
              (commit commit)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00mwpq1msr3jij281w5piqmbwq968xr8dn9hqbf4r947ck754kn9")))))))
+        (base32 "00mwpq1msr3jij281w5piqmbwq968xr8dn9hqbf4r947ck754kn9"))
+       (patches
+        (search-patches "emacs-next-exec-path.patch"
+                        "emacs-fix-scheme-indent-function.patch"
+                        "emacs-next-native-comp-driver-options.patch"
+                        "emacs-pgtk-super-key-fix.patch")))))))
 
 (define* (emacs->emacs-next emacs #:optional name
                             #:key (version (package-version emacs-next-minimal))
