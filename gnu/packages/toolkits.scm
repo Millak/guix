@@ -173,6 +173,11 @@ standard operating system features.")
     (arguments
      (substitute-keyword-arguments (package-arguments imgui)
        ((#:make-flags flags ''())
-        ;; Remove the "-DImDrawIdx=unsigned int" make-flag as this breaks
-        ;; mangohud, the only user of this version.
-        #~(delete "-DImDrawIdx=unsigned int" #$flags))))))
+        ;; Remove "-DImDrawIdx=unsigned int" and "-DIMGUI_ENABLE_FREETYPE"
+        ;; from make-flags as this breaks MangoHud, the only user of this
+        ;; version.
+        #~(filter (negate (lambda (x) (string-prefix? "-D" x)))
+                  #$flags))))
+    (inputs
+     (modify-inputs (package-inputs imgui)
+       (delete "freetype")))))
