@@ -14,6 +14,7 @@
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -50,6 +51,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (guix gexp)
+  #:use-module (guix search-paths)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match)
@@ -369,25 +371,7 @@ where the OS part is overloaded to denote a specific ABI---into GCC
                 (substitute* "Makefile"
                   (("^TOPLEVEL_CONFIGURE_ARGUMENTS=(.*)$" _ rest)
                    "TOPLEVEL_CONFIGURE_ARGUMENTS=\n")))))))
-
-       (native-search-paths
-        ;; Use the language-specific variables rather than 'CPATH' because they
-        ;; are equivalent to '-isystem' whereas 'CPATH' is equivalent to '-I'.
-        ;; The intent is to allow headers that are in the search path to be
-        ;; treated as "system headers" (headers exempt from warnings) just like
-        ;; the typical /usr/include headers on an FHS system.
-        (list (search-path-specification
-               (variable "C_INCLUDE_PATH")
-               (files '("include")))
-              (search-path-specification
-               (variable "CPLUS_INCLUDE_PATH")
-               ;; Add 'include/c++' here so that <cstdlib>'s "#include_next
-               ;; <stdlib.h>" finds GCC's <stdlib.h>, not libc's.
-               (files '("include/c++" "include")))
-              (search-path-specification
-               (variable "LIBRARY_PATH")
-               (files '("lib" "lib64")))))
-
+       (native-search-paths %gcc-search-paths)
        (properties `((gcc-libc . ,(assoc-ref inputs "libc"))))
        (synopsis "GNU Compiler Collection")
        (description
