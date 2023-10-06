@@ -829,6 +829,44 @@ LP/MIP solver is included in the package.")
        (base32
         "040sfaa9jclg2nqdh83w71sv9rc1sznpnfiripjdyr48cady50a2"))))))
 
+(define-public linasm
+  (package
+    (name "linasm")
+    (version "1.13")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.code.sf.net/p/linasm/linasm")
+                    (commit (string-append "v" version "(stable)"))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "11095bxjxsq3a9apvyi1kpddwkg9b2hc5ga65qhrdxzvdsrjhaaq"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #false                   ;there are none
+      #:make-flags
+      #~(list (string-append "prefix=" #$output))
+      #:phases
+      '(modify-phases %standard-phases
+         (delete 'configure))))
+    (supported-systems '("x86_64-linux"))
+    (home-page "https://sourceforge.net/projects/linasm/")
+    (synopsis "Collection of fast and optimized assembly libraries for x86-64")
+    (description
+     "LinAsm is collection of very fast and SIMD optimized assembly written
+libraries for x86-64.
+
+It implements many common and widely used algorithms for array manipulations:
+searching, sorting, arithmetic and vector operations, unit conversions; fast
+mathematical and statistic functions; numbers and time converting algorithms;
+@dfn{finite impulse response} (FIR) digital filters; spectrum analysis
+algorithms, Fast Hartley transformation; CPU cache friendly functions and
+extremely fast @dfn{abstract data types} (ADT) such as hash tables b-trees,
+and much more.")
+    (license license:lgpl3+)))
+
 (define-public 4ti2
   (package
     (name "4ti2")
