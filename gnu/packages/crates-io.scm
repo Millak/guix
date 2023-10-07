@@ -23583,6 +23583,25 @@ convert enum to u8 slice ref.")
     (description "This package provides enum-based bit flags.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-enumflags2-0.6
+  (package
+    (inherit rust-enumflags2-0.7)
+    (name "rust-enumflags2")
+    (version "0.6.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "enumflags2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "182xd6cxxmadx1axnz6x73d12pzgwkc712zq2lxd4z1k48lxij43"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-enumflags2-derive" ,rust-enumflags2-derive-0.6)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3))))))
+
 (define-public rust-enumflags2-derive-0.7
   (package
     (name "rust-enumflags2-derive")
