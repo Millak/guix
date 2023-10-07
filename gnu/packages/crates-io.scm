@@ -18849,17 +18849,18 @@ into structs when implementing custom derives.")
         ("rust-quote" ,rust-quote-0.6)
         ("rust-syn" ,rust-syn-0.15))))))
 
-(define-public rust-darling-core-0.14
+(define-public rust-darling-core-0.20
   (package
     (name "rust-darling-core")
-    (version "0.14.1")
+    (version "0.20.3")
     (source
      (origin
        (method url-fetch)
-       (uri (crate-uri "darling_core" version))
+       (uri (crate-uri "darling-core" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0vyvkx7qkz6ap5dwgsz8dg588xjigny8s7mrkz0fmcg806y93734"))))
+        (base32
+         "08g6afi3z9jgcqx7g41s1mzr6q3dj2z56vz7v1bv6941h51k8zhp"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
@@ -18869,13 +18870,35 @@ into structs when implementing custom derives.")
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-strsim" ,rust-strsim-0.10)
-        ("rust-syn" ,rust-syn-1))))
+        ("rust-syn" ,rust-syn-2))))
     (home-page "https://github.com/TedDriggs/darling")
     (synopsis "Helper crate for @code{rust-darling}")
     (description
      "Helper crate for @code{rust-darling}, a proc-macro library for
 reading attributes into structs when implementing custom derives.")
     (license license:expat)))
+
+(define-public rust-darling-core-0.14
+  (package
+    (inherit rust-darling-core-0.20)
+    (name "rust-darling-core")
+    (version "0.14.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "darling_core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vyvkx7qkz6ap5dwgsz8dg588xjigny8s7mrkz0fmcg806y93734"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-fnv" ,rust-fnv-1)
+        ("rust-ident-case" ,rust-ident-case-1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-strsim" ,rust-strsim-0.10)
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-darling-core-0.13
   (package
