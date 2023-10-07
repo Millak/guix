@@ -1197,7 +1197,7 @@ satellites.")
 (define-public gqrx
   (package
     (name "gqrx")
-    (version "2.16")
+    (version "2.17")
     (source
      (origin
        (method git-fetch)
@@ -1206,7 +1206,7 @@ satellites.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "189cgmp88kabv823l5bfn1xfyyj6sldi5sdbmflvncxicf51b0yp"))))
+        (base32 "0gg2i4x4z9ggliflpb00434q28831qfrxr0dv7d83ahagy428z22"))))
     (build-system qt-build-system)
     (native-inputs
      (list pkg-config))
