@@ -83766,6 +83766,42 @@ for locating fonts.")
     (description "This package provides an API for D-Bus communication.")
     (license license:expat)))
 
+(define-public rust-zbus-1
+  (package
+    (inherit rust-zbus-3)
+    (name "rust-zbus")
+    (version "1.9.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zbus" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jgwydwjgk16dyrzdbc1k0dnqj9kv9p3fwcv92a7l9np3hlv5glw"))))
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs
+       (("rust-async-io" ,rust-async-io-1)
+        ("rust-byteorder" ,rust-byteorder-1)
+        ("rust-derivative" ,rust-derivative-2)
+        ("rust-enumflags2" ,rust-enumflags2-0.6)
+        ("rust-fastrand" ,rust-fastrand-1)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-nb-connect" ,rust-nb-connect-1)
+        ("rust-nix" ,rust-nix-0.22)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-polling" ,rust-polling-2)
+        ("rust-scoped-tls" ,rust-scoped-tls-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-xml-rs" ,rust-serde-xml-rs-0.4)
+        ("rust-serde-repr" ,rust-serde-repr-0.1)
+        ("rust-zbus-macros" ,rust-zbus-macros-1)
+        ("rust-zvariant" ,rust-zvariant-2))
+       #:cargo-development-inputs
+       (("rust-doc-comment" ,rust-doc-comment-0.3)
+        ("rust-ntest" ,rust-ntest-0.7)
+        ("rust-zbus-polkit" ,rust-zbus-polkit-1))))))
+
 (define-public rust-zbus-macros-3
   (package
     (name "rust-zbus-macros")
