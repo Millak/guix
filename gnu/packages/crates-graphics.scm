@@ -3025,8 +3025,36 @@ initializing an OpenGL or Vulkan context.")
     (native-inputs
      (list pkg-config))))
 
+(define-public rust-wayland-protocols-0.30
+  (package
+    (name "rust-wayland-protocols")
+    (version "0.30.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wayland-protocols" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0kcvvli38gdjb9c7dpa2s0ix4nnqfq7n2bbc39370kx9bhg10a1v"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-wayland-backend" ,rust-wayland-backend-0.1)
+        ("rust-wayland-client" ,rust-wayland-client-0.30)
+        ("rust-wayland-scanner" ,rust-wayland-scanner-0.30)
+        ("rust-wayland-server" ,rust-wayland-server-0.30))))
+    (home-page "https://github.com/smithay/wayland-rs")
+    (synopsis "Generated API for the officials Wayland protocol extensions")
+    (description
+     "This package provides a generated API for the officials Wayland protocol
+extensions.")
+    (license license:expat)))
+
 (define-public rust-wayland-protocols-0.29
   (package
+    (inherit rust-wayland-protocols-0.30)
     (name "rust-wayland-protocols")
     (version "0.29.5")
     (source
@@ -3036,7 +3064,6 @@ initializing an OpenGL or Vulkan context.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1ihbjyd0w460gd7w22g9qabbwd4v8x74f8vsh7p25csljcgn4l5r"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
@@ -3047,13 +3074,7 @@ initializing an OpenGL or Vulkan context.")
     (inputs
      (list rust-bitflags-1 rust-wayland-client-0.29
            rust-wayland-commons-0.29 rust-wayland-scanner-0.29
-           rust-wayland-server-0.29))
-    (home-page "https://github.com/smithay/wayland-rs")
-    (synopsis "Generated API for the officials Wayland protocol extensions")
-    (description
-     "This package provides a generated API for the officials Wayland protocol
-extensions.")
-    (license license:expat)))
+           rust-wayland-server-0.29))))
 
 (define-public rust-wayland-protocols-0.28
   (package
