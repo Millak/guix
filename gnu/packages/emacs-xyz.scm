@@ -32828,40 +32828,37 @@ time.")
     (license license:gpl3+)))
 
 (define-public emacs-mastodon
-  ;; No release in ~1 year, hence this snapshot.
-  (let ((commit "20dec8871c9bb5f5e418bfc197e7533b5e3065e3")
-        (revision "1"))
-    (package
-      (name "emacs-mastodon")
-      (version (git-version "1.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://codeberg.org/martianh/mastodon.el")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "15cfjny99yw5frdp8nlyazlwgscvfvbinsj0fbdfprxf50k2zjs6"))))
-      (build-system emacs-build-system)
-      (arguments
-       (list #:phases
-             #~(modify-phases %standard-phases
-                 ;; Move the source files to the top level, which is included in
-                 ;; the EMACSLOADPATH.
-                 (add-after 'unpack 'move-source-files
-                   (lambda _
-                     (let ((el-files (find-files "./lisp" ".*\\.el$")))
-                       (for-each (lambda (f)
-                                   (rename-file f (basename f)))
-                                 el-files)))))))
-      (propagated-inputs
-       (list emacs-request emacs-ts emacs-persist))
-      (home-page "https://codeberg.org/martianh/mastodon.el")
-      (synopsis "Emacs client for Mastodon")
-      (description "@code{mastodon.el} is an Emacs client for Mastodon, the
+  (package
+    (name "emacs-mastodon")
+    (version "1.0.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/martianh/mastodon.el")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1z5lmzxhindxa0f6qi6z361k9smqcz68alr6w6jbmwg279qmk8jj"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   ;; Move the source files to the top level, which is
+                   ;; included in the EMACSLOADPATH.
+                   (add-after 'unpack 'move-source-files
+                     (lambda _
+                       (let ((el-files (find-files "./lisp" ".*\\.el$")))
+                         (for-each (lambda (f)
+                                     (rename-file f
+                                                  (basename f)))
+                                   el-files)))))))
+    (propagated-inputs (list emacs-request emacs-ts emacs-persist))
+    (home-page "https://codeberg.org/martianh/mastodon.el")
+    (synopsis "Emacs client for Mastodon")
+    (description "@code{mastodon.el} is an Emacs client for Mastodon, the
 federated microblogging social network.")
-	  (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-ebdb
   (package
