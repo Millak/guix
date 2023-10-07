@@ -37,6 +37,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-2)
   #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-171)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:export (jami-account
@@ -204,22 +205,20 @@ SET-ACCOUNT-DETAILS."
       ('rendezvous-point? "Account.rendezVous")
       ('peer-discovery? "Account.peerDiscovery")
       ('bootstrap-hostnames "Account.hostname")
-      ('name-server-uri "RingNS.uri")
-      (_ #f)))
+      ('name-server-uri "RingNS.uri")))
 
-  (filter-map (lambda (field)
-                (and-let* ((name (field-name->account-detail
+  (define jami-account-transducer
+    (compose (tremove empty-serializer?)
+             (tfilter-maybe-value jami-account-object)
+             (tmap (lambda (field)
+                     (let* ((name (field-name->account-detail
                                   (configuration-field-name field)))
-                           (value ((configuration-field-serializer field)
-                                   name ((configuration-field-getter field)
-                                         jami-account-object)))
-                           ;; The define-maybe default serializer produces an
-                           ;; empty string for unspecified values.
-                           (value* (if (string-null? value)
-                                       #f
-                                       value)))
-                  (cons name value*)))
-              jami-account-fields))
+                            (value ((configuration-field-serializer field)
+                                    name ((configuration-field-getter field)
+                                          jami-account-object))))
+                       (cons name value))))))
+
+  (list-transduce jami-account-transducer rcons jami-account-fields))
 
 (define (jami-account-list? val)
   (and (list? val)
