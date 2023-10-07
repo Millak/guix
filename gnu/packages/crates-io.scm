@@ -83798,6 +83798,32 @@ for locating fonts.")
     (description "This package provides proc-macros for zbus.")
     (license license:expat)))
 
+(define-public rust-zbus-macros-1
+  (package
+    (inherit rust-zbus-macros-3)
+    (name "rust-zbus-macros")
+    (version "1.9.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zbus-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19p0pdwdf52zkaknav0pj5qvgcf52xk8a4p3a4ymxybwhjkmjfgs"))))
+    (arguments
+     `(#:tests? #f      ; Tests need a running dbus instance.
+       #:cargo-inputs
+       (("rust-proc-macro-crate" ,rust-proc-macro-crate-0.1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-rustversion" ,rust-rustversion-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-trybuild" ,rust-trybuild-1)
+        ("rust-zbus" ,rust-zbus-1)
+        ("rust-zvariant" ,rust-zvariant-2))))))
+
 (define-public rust-zbus-names-2
   (package
     (name "rust-zbus-names")
