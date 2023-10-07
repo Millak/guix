@@ -3096,8 +3096,39 @@ extensions.")
         ("rust-wayland-sys" ,rust-wayland-sys-0.21)
         ("rust-wayland-scanner" ,rust-wayland-scanner-0.21))))))
 
+(define-public rust-wayland-scanner-0.30
+  (package
+    (name "rust-wayland-scanner")
+    (version "0.30.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wayland-scanner" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "03ikmfwacsgbym2y4raf05knl1qjlgg81sy0174jxhzvayr77f5r"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Tests expect running wayland instance.
+       #:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quick-xml" ,rust-quick-xml-0.28)
+        ("rust-quote" ,rust-quote-1))
+       #:cargo-development-inputs
+       (("rust-similar" ,rust-similar-2))))
+    (home-page "https://github.com/smithay/wayland-rs")
+    (synopsis "Generate Rust APIs from XML Wayland protocol files")
+    (description
+     "Wayland Scanner generates Rust APIs from XML Wayland protocol files.
+It is intended for use with wayland-sys.  You should only need this crate if
+you are working on custom Wayland protocol extensions.  Look at the
+wayland-client crate for usable bindings.")
+    (license license:expat)))
+
 (define-public rust-wayland-scanner-0.29
   (package
+    (inherit rust-wayland-scanner-0.30)
     (name "rust-wayland-scanner")
     (version "0.29.5")
     (source
@@ -3107,22 +3138,13 @@ extensions.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0lxx3i2kxnmsk421qx87lqqc9kd2y1ksjxcyg0pqbar2zbc06hwg"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-xml-rs" ,rust-xml-rs-0.8))))
     (inputs
-     (list rust-proc-macro2-1 rust-quote-1 rust-xml-rs-0.8))
-    (home-page "https://github.com/smithay/wayland-rs")
-    (synopsis "Generate Rust APIs from XML Wayland protocol files")
-    (description
-     "Wayland Scanner generates Rust APIs from XML Wayland protocol files.
-It is intended for use with wayland-sys.  You should only need this crate if
-you are working on custom Wayland protocol extensions.  Look at the
-wayland-client crate for usable bindings.")
-    (license license:expat)))
+     (list rust-proc-macro2-1 rust-quote-1 rust-xml-rs-0.8))))
 
 (define-public rust-wayland-scanner-0.28
   (package
