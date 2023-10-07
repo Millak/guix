@@ -24162,6 +24162,38 @@ ecosystem.")
     (description "This package is a Rust library of Ethereum types.")
     (license license:expat)))
 
+(define-public rust-evdev-0.12
+  (package
+    (name "rust-evdev")
+    (version "0.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "evdev" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1ww35bkqf060nl6x2vfg0frd6ql470c90l2ah68b3mngr3y5kv9b"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitvec" ,rust-bitvec-1)
+        ("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-futures-core" ,rust-futures-core-0.3)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-nix" ,rust-nix-0.23)
+        ("rust-paste" ,rust-paste-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs
+       (("rust-itertools" ,rust-itertools-0.10)
+        ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/cmr/evdev")
+    (synopsis "Rust interface to Linux event devices")
+    (description "This package provides evdev interface for Linux.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-event-listener-2
   (package
     (name "rust-event-listener")
