@@ -41,6 +41,7 @@
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
+  #:use-module (srfi srfi-171)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:export (earlyoom-configuration
@@ -252,13 +253,9 @@ more information)."
   (prefix fstrim-))
 
 (define (serialize-fstrim-configuration config)
-  (concatenate
-   (filter list?
-           (map (lambda (field)
-                  ((configuration-field-serializer field)
-                   (configuration-field-name field)
-                   ((configuration-field-getter field) config)))
-                fstrim-configuration-fields))))
+  (list-transduce (compose (base-transducer config) tconcatenate)
+                  rcons
+                  fstrim-configuration-fields))
 
 (define (fstrim-mcron-job config)
   (match-record config <fstrim-configuration> (package schedule)
