@@ -2317,6 +2317,29 @@ uncertainties and are backed by strong theoretical guarantees thanks to
 conformal prediction methods intervals.")
     (license license:bsd-3)))
 
+(define-public python-emcee
+  (package
+    (name "python-emcee")
+    (version "3.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "emcee" version))
+       (sha256
+        (base32 "1vbz67cwzig28dlndkm6g246p1vcvj6yy2w65z8cdyffigf1j3lf"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list python-coverage
+                         python-pytest
+                         python-pytest-cov
+                         python-setuptools-scm))
+    (home-page "https://emcee.readthedocs.io/en/stable/")
+    (synopsis "Ensemble sampling toolkit for MCMC")
+    (description
+     "@code{emcee} is a Python implementation of the affine-invariant ensemble
+sampler for Markov chain Monte Carlo (MCMC).")
+    (license license:expat)))
+
 (define-public python-statsmodels
   (package
     (name "python-statsmodels")
