@@ -2500,6 +2500,57 @@ are safe to modify, and which staged changes belong to each of those commits.
 It will then write @code{fixup!} commits for each of those changes.")
     (license license:bsd-3)))
 
+(define-public rust-xremap
+  (package
+    (name "rust-xremap")
+    (version "0.8.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "xremap" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1815hz1a93brj6v9102xypds1qslf6gxgk9vcvxhxlhy1c2pfxvj"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "Cargo.toml"
+                   (("1\\.0\\.75") "1.0.68")    ; rust-anyhow
+                   (("0\\.4\\.19") "0.4.17")    ; rust-log
+                   (("1\\.9\\.4") "1.9.1")      ; regex
+                   (("3\\.3") "3.0"))))))       ; serde-with
+    (build-system cargo-build-system)
+    (arguments
+     `(#:features '()
+       #:install-source? #f
+       #:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-clap-complete" ,rust-clap-complete-4)
+        ("rust-derive-where" ,rust-derive-where-1)
+        ("rust-env-logger" ,rust-env-logger-0.10)
+        ("rust-evdev" ,rust-evdev-0.12)
+        ("rust-fork" ,rust-fork-0.1)
+        ("rust-hyprland" ,rust-hyprland-0.3)
+        ("rust-indoc" ,rust-indoc-2)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-nix" ,rust-nix-0.26)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-serde-with" ,rust-serde-with-3)
+        ("rust-serde-yaml" ,rust-serde-yaml-0.9)
+        ("rust-swayipc" ,rust-swayipc-3)
+        ("rust-wayland-client" ,rust-wayland-client-0.30)
+        ("rust-wayland-protocols-wlr" ,rust-wayland-protocols-wlr-0.1)
+        ("rust-x11rb" ,rust-x11rb-0.12)
+        ("rust-zbus" ,rust-zbus-1))))
+    (home-page "https://github.com/k0kubun/xremap")
+    (synopsis "Dynamic key remapp for X and Wayland")
+    (description "This package provides dynamic key remapp for X and Wayland.")
+    (license license:expat)))
+
 (define-public xsv
   (package
     (name "xsv")
