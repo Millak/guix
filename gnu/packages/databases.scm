@@ -3077,17 +3077,22 @@ of PyMySQL.  @code{aiomysql} tries to preserve the same API as the
 (define-public python-tortoise-orm
   (package
     (name "python-tortoise-orm")
-    (version "0.19.1")
+    (version "0.20.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "tortoise-orm" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tortoise/tortoise-orm")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "17yk71dlx5ai98i6ivqgsplkwivdxackz9jfn6z42bpcdgbpiwhg"))))
-    (build-system python-build-system)
+        (base32 "19rgyvs2y9gn27x71y7djdz6rb6bszgvprv55q1hr4266wy6g999"))))
+    (build-system pyproject-build-system)
     ;; The test suite relies on asynctest, which is abandoned and doesn't
     ;; support Python >= 3.8.
     (arguments '(#:tests? #f))
+    (native-inputs
+     (list poetry))
     (propagated-inputs
      (list python-aiomysql
            python-aiosqlite-0.17
