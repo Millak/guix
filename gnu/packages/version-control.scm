@@ -88,6 +88,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
+  #:use-module (guix modules)
   #:use-module (gnu packages apr)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages documentation)
@@ -257,9 +258,14 @@ Python 3.3 and later, rather than on Python 2.")
     (build-system gnu-build-system)
     (arguments
      (list
-      #:modules `((srfi srfi-1)
+      #:imported-modules `(,@%gnu-build-system-modules
+                           ,@(source-module-closure '((guix search-paths))))
+      #:modules `((ice-9 match)
+                  (ice-9 textual-ports)
+                  (srfi srfi-1)
                   (srfi srfi-26)
                   ((guix build gnu-build-system) #:prefix gnu:)
+                  (guix search-paths)
                   ,@%gnu-build-system-modules)
       ;; Make sure the full bash does not end up in the final closure.
       #:disallowed-references (list bash perl)
@@ -323,6 +329,51 @@ Python 3.3 and later, rather than on Python 2.")
                                            inputs "bin/curl-config"))
                                  ":" (getenv "PATH"))))))
                  #~())
+          (add-after 'unpack 'patch-commands
+            (lambda* (#:key inputs #:allow-other-keys)
+              (define (prepend-string-to-file text file)
+                "Prepend TEXT to FILE."
+                (let ((content (call-with-input-file file
+                                 (cut get-string-all <>))))
+                  (call-with-output-file file
+                    (lambda (port)
+                      (display text port)
+                      (display content port)))))
+
+              (define PATH-variable-definition
+                (let ((value
+                       (match (evaluate-search-paths
+                               (list $PATH)
+                               (list #$(this-package-input "coreutils-minimal")
+                                     #$(this-package-input "sed")))
+                         (((spec . value))
+                          value))))
+                  (string-append
+                   (search-path-definition $PATH value
+                                           #:kind 'prefix) "\n\n")))
+
+              ;; Ensure that coreutils (for basename) and sed are on PATH
+              ;; for any script that sources the 'git-sh-setup.sh' file.
+              (prepend-string-to-file PATH-variable-definition
+                                      "git-sh-setup.sh")
+
+              ;; Avoid depending on util-linux; it's only used to detect
+              ;; whether the system is MinGW, which we can detect at build
+              ;; time.
+              (substitute* "git-sh-setup.sh"
+                (("\\$\\(uname -s)")
+                 (if #$(target-mingw?)
+                     "MINGW"
+                     "GNU")))           ;matched against '*'
+
+              ;; git-submodule sources 'git-sh-setup.sh', but not before
+              ;; invoking the basename and sed commands... patch them to their
+              ;; absolute location.
+              (substitute* "git-submodule.sh"
+                (("\\$\\(basename")
+                 (string-append "$(" (search-input-file inputs "bin/basename")))
+                (("sed -e")
+                 (string-append (search-input-file inputs "bin/sed") " -e")))))
           (add-after 'configure 'patch-makefiles
             (lambda _
               (substitute* "Makefile"
@@ -426,10 +477,12 @@ Python 3.3 and later, rather than on Python 2.")
            gettext-minimal
            perl))
     (inputs
-     (list curl                         ;for HTTP(S) access
+     (list coreutils-minimal
+           curl                         ;for HTTP(S) access
            expat                        ;for 'git push' over HTTP(S)
            openssl
            perl
+           sed
            zlib))
     (native-search-paths
      ;; For HTTPS access, Git needs a single-file certificate bundle, specified
