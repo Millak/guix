@@ -2030,6 +2030,33 @@ Out-of-Core DataFrames (similar to Pandas), to visualize and explore big
 tabular datasets.  This package provides the core modules of Vaex.")
     (license license:expat)))
 
+(define-public python-salib
+  (package
+    (name "python-salib")
+    (version "1.4.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/SALib/SALib")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "18xfyzircsx2q2lmfc9lxb6xvkxicnc83qzghd7df1jsprr5ymch"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-matplotlib
+                             python-multiprocess
+                             python-numpy
+                             python-pandas
+                             python-scipy))
+    (native-inputs (list python-hatchling python-pytest python-pytest-cov))
+    (home-page "https://salib.readthedocs.io/en/latest/")
+    (synopsis "Tools for global sensitivity analysis")
+    (description "SALib provides tools for global sensitivity analysis.  It
+contains Sobol', Morris, FAST, DGSM, PAWN, HDMR, Moment Independent and
+fractional factorial methods.")
+    (license license:expat)))
+
 (define-public python-pylems
   (package
     (name "python-pylems")
