@@ -84301,6 +84301,35 @@ in Pure Rust.")
     (description "D-Bus & GVariant encoding & decoding")
     (license license:expat)))
 
+(define-public rust-zvariant-2
+  (package
+    (inherit rust-zvariant-3)
+    (name "rust-zvariant")
+    (version "2.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zvariant" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0995d59vl8409mk3qrbshqrz5d76dq52szg0x2vqji07y9app356"))))
+    (arguments
+     `(#:tests? #f      ; unresolved import `glib`
+       #:cargo-inputs
+       (("rust-arrayvec" ,rust-arrayvec-0.5)
+        ("rust-byteorder" ,rust-byteorder-1)
+        ("rust-enumflags2" ,rust-enumflags2-0.6)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-bytes" ,rust-serde-bytes-0.11)
+        ("rust-static-assertions" ,rust-static-assertions-1)
+        ("rust-zvariant-derive" ,rust-zvariant-derive-2))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-serde-repr" ,rust-serde-repr-0.1))))))
+
 (define-public rust-zvariant-derive-3
   (package
     (name "rust-zvariant-derive")
