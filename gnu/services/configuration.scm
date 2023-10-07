@@ -190,32 +190,32 @@ does not have a default value" field kind)))
   (define (normalize-extra-args s)
     "Extract and normalize arguments following @var{doc}."
     (let loop ((s s)
-               (sanitizer* %unset-value)
-               (serializer* %unset-value))
+               (sanitizer* #f)
+               (serializer* #f))
       (syntax-case s (sanitizer serializer empty-serializer)
         (((sanitizer proc) tail ...)
-         (if (maybe-value-set? sanitizer*)
-             (syntax-violation 'sanitizer "duplicate entry"
-                               #'proc)
+         (if sanitizer*
+             (syntax-violation 'sanitizer
+                               "duplicate entry" #'proc)
              (loop #'(tail ...) #'proc serializer*)))
         (((serializer proc) tail ...)
-         (if (maybe-value-set? serializer*)
-             (syntax-violation 'serializer "duplicate or conflicting entry"
-                               #'proc)
+         (if serializer*
+             (syntax-violation 'serializer
+                               "duplicate or conflicting entry" #'proc)
              (loop #'(tail ...) sanitizer* #'proc)))
         ((empty-serializer tail ...)
-         (if (maybe-value-set? serializer*)
+         (if serializer*
              (syntax-violation 'empty-serializer
                                "duplicate or conflicting entry" #f)
              (loop #'(tail ...) sanitizer* #'empty-serializer)))
         (()  ; stop condition
          (values (list sanitizer* serializer*)))
         ((proc)  ; TODO: deprecated, to be removed.
-         (null? (filter-map maybe-value-set? (list sanitizer* serializer*)))
+         (not (or sanitizer* serializer*))
          (begin
            (warning #f (G_ "specifying serializers after documentation is \
 deprecated, use (serializer ~a) instead~%") (syntax->datum #'proc))
-           (values (list %unset-value #'proc)))))))
+           (values (list #f #'proc)))))))
 
   (syntax-case syn ()
     ((_ stem (field field-type+def doc extra-args ...) ...)
@@ -239,11 +239,11 @@ deprecated, use (serializer ~a) instead~%") (syntax->datum #'proc))
                      default-value))
                   #'((field-type def) ...)))
             ((field-sanitizer ...)
-             (map maybe-value #'(sanitizer* ...)))
+             #'(sanitizer* ...))
             ((field-serializer ...)
              (map (lambda (type proc)
                     (and serialize?
-                         (or (maybe-value proc)
+                         (or proc
                              (if serializer-prefix
                                  (id #'stem serializer-prefix #'serialize- type)
                                  (id #'stem #'serialize- type)))))
