@@ -18982,8 +18982,36 @@ reading attributes into structs when implementing custom derives.")
         ("rust-strsim" ,rust-strsim-0.7)
         ("rust-syn" ,rust-syn-0.15))))))
 
+(define-public rust-darling-macro-0.20
+  (package
+    (name "rust-darling-macro")
+    (version "0.20.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "darling-macro" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1mg2k1f0v33s271lpn4m5mxcfjqnmg61bf77svb44cyngay9nsl3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-darling-core" ,rust-darling-core-0.20)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/TedDriggs/darling")
+    (synopsis "Helper crate for @code{rust-darling}")
+    (description
+     "This package provides internal support for @code{rust-darling},
+a proc-macro library for reading attributes into structs when implementing
+custom derives.")
+    (license license:expat)))
+
 (define-public rust-darling-macro-0.14
   (package
+    (inherit rust-darling-macro-0.20)
     (name "rust-darling-macro")
     (version "0.14.1")
     (source
@@ -18992,21 +19020,13 @@ reading attributes into structs when implementing custom derives.")
         (uri (crate-uri "darling_macro" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "1dag2f4bq38vdn886slqczip5qzhvb95317kl04zrlnbpz2nkz6x"))))
-    (build-system cargo-build-system)
+         (base32 "1dag2f4bq38vdn886slqczip5qzhvb95317kl04zrlnbpz2nkz6x"))))
     (arguments
-      `(#:skip-build? #t
-        #:cargo-inputs
-        (("rust-darling-core" ,rust-darling-core-0.14)
-         ("rust-quote" ,rust-quote-1)
-         ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/TedDriggs/darling")
-    (synopsis "Helper crate for @code{rust-darling}")
-    (description
-     "This package provides internal support for @code{rust-darling},
-a proc-macro library for reading attributes into structs when implementing
-custom derives.")
-    (license license:expat)))
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-darling-core" ,rust-darling-core-0.14)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-darling-macro-0.13
   (package
