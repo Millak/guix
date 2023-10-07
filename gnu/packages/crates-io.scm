@@ -20470,6 +20470,34 @@ traits for both structs and enums.")
 structs and enums.")
   (license license:expat)))
 
+(define-public rust-derive-where-1
+  (package
+    (name "rust-derive-where")
+    (version "1.2.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "derive-where" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1jqck0b2vsyh85p6v5jlhcrmgphdvxzg2256919g782247b9hqql"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-trybuild" ,rust-trybuild-1)
+        ("rust-zeroize" ,rust-zeroize-1))))
+    (home-page "https://github.com/ModProg/derive-where")
+    (synopsis "Deriving with custom trait bounds")
+    (description "Deriving with custom trait bounds.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-des-0.8
   (package
     (name "rust-des")
