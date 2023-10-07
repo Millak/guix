@@ -117,15 +117,10 @@
   (or (string? val)
       (computed-file? val)))
 
-(define (string-list? val)
-  (and (list? val)
-       (and-map string? val)))
+(define account-fingerprint-list?
+  (list-of account-fingerprint?))
 
-(define (account-fingerprint-list? val)
-  (and (list? val)
-       (and-map account-fingerprint? val)))
-
-(define-maybe string-list)
+(define-maybe list-of-strings)
 
 (define-maybe/no-serialization account-fingerprint-list)
 
@@ -135,7 +130,7 @@
 
 ;;; The following serializers are used to derive an account details alist from
 ;;; a <jami-account> record.
-(define (serialize-string-list _ val)
+(define (serialize-list-of-strings _ val)
   (string-join val ";"))
 
 (define (serialize-boolean _ val)
@@ -188,7 +183,7 @@ maintain communication between devices on such network even when the
 connection to the the Internet has been lost.  When left unspecified, the
 value from the account archive prevails.")
   (bootstrap-hostnames
-   maybe-string-list
+   maybe-list-of-strings
    "A list of hostnames or IPs pointing to OpenDHT nodes, that should be used
 to initially join the OpenDHT network.  When left unspecified, the value from
 the account archive prevails.")
@@ -220,9 +215,8 @@ SET-ACCOUNT-DETAILS."
 
   (list-transduce jami-account-transducer rcons jami-account-fields))
 
-(define (jami-account-list? val)
-  (and (list? val)
-       (and-map jami-account? val)))
+(define jami-account-list?
+  (list-of jami-account?))
 
 (define-maybe/no-serialization jami-account-list)
 

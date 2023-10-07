@@ -28188,7 +28188,7 @@ to maintain communication between devices on such network even when the
 connection to the Internet has been lost.  When left unspecified,
 the value from the account archive prevails.
 
-@item @code{bootstrap-hostnames} (type: maybe-string-list)
+@item @code{bootstrap-hostnames} (type: maybe-list-of-strings)
 A list of hostnames or IPs pointing to OpenDHT nodes, that should be
 used to initially join the OpenDHT network.  When left unspecified, the
 value from the account archive prevails.
@@ -34509,7 +34509,7 @@ The group to run mpd as.
 
 The default @code{%mpd-group} is a system group with name ``mpd''.
 
-@item @code{shepherd-requirement} (default: @code{'()}) (type: list-of-symbol)
+@item @code{shepherd-requirement} (default: @code{'()}) (type: list-of-symbols)
 A list of symbols naming Shepherd services that this service
 will depend on.
 
@@ -34759,7 +34759,7 @@ Available @code{mympd-configuration} fields are:
 @item @code{package} (default: @code{mympd}) (type: file-like)
 The package object of the myMPD server.
 
-@item @code{shepherd-requirement} (default: @code{'()}) (type: list-of-symbol)
+@item @code{shepherd-requirement} (default: @code{'()}) (type: list-of-symbols)
 This is a list of symbols naming Shepherd services that this service
 will depend on.
 

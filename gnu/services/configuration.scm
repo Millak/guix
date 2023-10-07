@@ -80,7 +80,9 @@
             interpose
             list-of
 
+            list-of-packages?
             list-of-strings?
+            list-of-symbols?
             alist?
             serialize-file-like
             text-config?
@@ -500,6 +502,11 @@ DELIMITER interposed LS.  Support 'infix and 'suffix GRAMMAR values."
                           (cons delimiter acc))))
               '() ls))
 
+
+;;;
+;;; Commonly used predicates
+;;;
+
 (define (list-of pred?)
   "Return a procedure that takes a list and check if all the elements of
 the list result in @code{#t} when applying PRED? on them."
@@ -508,9 +515,19 @@ the list result in @code{#t} when applying PRED? on them."
           (every pred? x)
           #f)))
 
+(define list-of-packages?
+  (list-of package?))
 
 (define list-of-strings?
   (list-of string?))
+
+(define list-of-symbols?
+  (list-of symbol?))
+
+
+;;;
+;;; Special serializers
+;;;
 
 (define alist?
   (list-of pair?))
