@@ -63303,6 +63303,42 @@ the application/x-www-form-urlencoded format.")
 for later processing.")
     (license license:expat)))
 
+(define-public rust-serde-with-macros-3
+  (package
+    (name "rust-serde-with-macros")
+    (version "3.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serde-with-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0w5hp31ji9vc5x00qzsn6yxfy16573fn8ppf4bkjrc9gjg9xbizd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; Not all files included.
+         "--skip=test_serde_with_dependency")
+       #:cargo-inputs
+       (("rust-darling" ,rust-darling-0.20)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs
+       (("rust-expect-test" ,rust-expect-test-1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-trybuild" ,rust-trybuild-1)
+        ("rust-version-sync" ,rust-version-sync-0.9))))
+    (home-page "https://github.com/jonasbb/serde_with/")
+    (synopsis "Proc-macro library for serde_with")
+    (description "This package provides proc-macro library for
+@code{serde_with}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-serde-xml-rs-0.5
   (package
     (name "rust-serde-xml-rs")
