@@ -32504,6 +32504,29 @@ with hyper.")
      "This package provides a Knuth-Liang hyphenation for a variety of languages.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-hyprland-macros-0.3
+  (package
+    (name "rust-hyprland-macros")
+    (version "0.3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hyprland-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1sz4yhwi7d1s2wfpk9ql43dgmiq0j3j8skmrijpi55lp5vax6hf9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-2))))
+    (home-page
+     "https://github.com/hyprland-community/hyprland-rs/tree/master/hyprland-macros")
+    (synopsis "Macros used in hyprland-rs")
+    (description "This package provides async closure macro for hyprland-rs.")
+    (license license:gpl3+)))
+
 (define-public rust-iana-time-zone-haiku-0.1
   (package
     (name "rust-iana-time-zone-haiku")
