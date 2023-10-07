@@ -2590,6 +2590,14 @@ It will then write @code{fixup!} commits for each of those changes.")
      (substitute-keyword-arguments (package-arguments rust-xremap)
        ((#:features _) '(list "wlroots"))))))
 
+(define-public xremap-x11
+  (package
+    (inherit rust-xremap)
+    (name "xremap-x11")
+    (arguments
+     (substitute-keyword-arguments (package-arguments rust-xremap)
+       ((#:features _) '(list "x11"))))))
+
 (define-public xsv
   (package
     (name "xsv")
