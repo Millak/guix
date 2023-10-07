@@ -4589,6 +4589,24 @@ library for Rust.")
      "This package provides implementation details for the @code{asn1-rs} crate.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-as-raw-xcb-connection-1
+  (package
+    (name "rust-as-raw-xcb-connection")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "as-raw-xcb-connection" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1am99fbsp5f5vnbvr0qnjma36q49c9zvdbn0czwwvian18mk2prd"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/psychon/as-raw-xcb-connection")
+    (synopsis "Trait to facilitate interoperatibility with libxcb C API")
+    (description "This package provides trait to facilitate interoperatibility
+with @code{libxcb} C API.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-as-slice-0.2
   (package
     (name "rust-as-slice")
