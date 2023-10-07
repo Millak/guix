@@ -2574,6 +2574,14 @@ It will then write @code{fixup!} commits for each of those changes.")
     (description "This package provides dynamic key remapp for X and Wayland.")
     (license license:expat)))
 
+(define-public xremap-wlroots
+  (package
+    (inherit rust-xremap)
+    (name "xremap-wlroots")
+    (arguments
+     (substitute-keyword-arguments (package-arguments rust-xremap)
+       ((#:features _) '(list "wlroots"))))))
+
 (define-public xsv
   (package
     (name "xsv")
