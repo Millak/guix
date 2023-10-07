@@ -492,7 +492,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-6.5-version "6.5.5")
+(define-public linux-libre-6.5-version "6.5.6")
 (define-public linux-libre-6.5-gnu-revision "gnu")
 (define deblob-scripts-6.5
   (linux-libre-deblob-scripts
@@ -502,7 +502,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "132ps1jprxw6kqyscsar38fn7s12kg416mfhz7w702f4ajgq1ndi")))
 (define-public linux-libre-6.5-pristine-source
   (let ((version linux-libre-6.5-version)
-        (hash (base32 "15gg8sb6cfgk1afwj7fl7mj4nkj14w43vzwvw0qsg3nzyxwh7wcc")))
+        (hash (base32 "1xnjjm50ks18ifrp36md2p2xca4lw160y57j9p152w2l2i16vqvq")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.5)))
