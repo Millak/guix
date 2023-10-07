@@ -26163,6 +26163,29 @@ implementation that is more efficient for smaller hash keys.")
         (base32
          "0jxgzd04ra4imjv8jgkmdq59kj8fsz6w4zxsbmlai34h26225c00"))))))
 
+(define-public rust-fork-0.1
+  (package
+    (name "rust-fork")
+    (version "0.1.22")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fork" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "124fbfwqka5xh2jndmlpgbl2ya7a9yf7q6adxvkja510b5xajb5z"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))
+    (home-page "https://docs.rs/fork/latest/fork/")
+    (synopsis
+     "Library for creating a new process detached from the controlling terminal")
+    (description
+     "This package provides library for creating a new process detached from
+the controling terminal (daemon) using the fork and setsid syscalls.")
+    (license license:bsd-3)))
+
 (define-public rust-form-urlencoded-1
   (package
     (name "rust-form-urlencoded")
