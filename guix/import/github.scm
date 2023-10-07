@@ -6,6 +6,7 @@
 ;;; Copyright © 2019 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2023 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,6 +25,7 @@
 
 (define-module (guix import github)
   #:use-module (ice-9 match)
+  #:use-module (ice-9 regex)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
@@ -96,6 +98,11 @@ false if none is recognized"
                             url)
             (string-append prefix "/releases/download/" repo "-" new-version "/"
                            repo "-" new-version ext))
+           ((string-match (string-append "/releases/download/(v)?" version "/"
+                                         name ".*" ext "$")
+                          url)
+            (string-replace-substring url version new-version))
+
            (#t #f))) ; Some URLs are not recognised.
         #f))
 
