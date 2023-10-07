@@ -32504,6 +32504,52 @@ with hyper.")
      "This package provides a Knuth-Liang hyphenation for a variety of languages.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-hyprland-0.3
+  (package
+    (name "rust-hyprland")
+    (version "0.3.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hyprland" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0a6ay1cnpmj3v16hs6k65yxdg53wv438i2va5rpgjz9bk8aijhm8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; Some tests expect hyprland to be running.
+         "--skip=dispatch::Dispatch::call"
+         "--skip=event_listener::mutable::EventListener::new"
+         "--skip=data"
+         "--skip=dispatch")
+         #:cargo-inputs
+       (("rust-async-net" ,rust-async-net-1)
+        ("rust-async-std" ,rust-async-std-1)
+        ("rust-async-trait" ,rust-async-trait-0.1)
+        ("rust-derive-more" ,rust-derive-more-0.99)
+        ("rust-doc-comment" ,rust-doc-comment-0.3)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-futures-lite" ,rust-futures-lite-1)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-hyprland-macros" ,rust-hyprland-macros-0.3)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-paste" ,rust-paste-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-serde-repr" ,rust-serde-repr-0.1)
+        ("rust-strum" ,rust-strum-0.24)
+        ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/hyprland-community/hyprland-rs")
+    (synopsis "An unofficial rust wrapper for Hyprland's IPC")
+    (description
+     "This package provides a unoffical rust wrapper for hyprland's IPC.")
+    (license license:gpl3+)))
+
 (define-public rust-hyprland-macros-0.3
   (package
     (name "rust-hyprland-macros")
