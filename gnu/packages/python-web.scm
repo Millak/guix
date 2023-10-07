@@ -1923,13 +1923,13 @@ service.")
 (define-public python-openai
   (package
     (name "python-openai")
-    (version "0.27.8")
+    (version "0.28.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "openai" version))
               (sha256
                (base32
-                "0dlmxnib71fih9xzmd3v41alwv4qb8qrxixsrrsf5vmigmf0k0r4"))))
+                "1j6wsavgrxzh6ls8hp45nllz8f5l65a6vzk0lvhlqnx6579xmqab"))))
     (build-system pyproject-build-system)
     (arguments
      (list
