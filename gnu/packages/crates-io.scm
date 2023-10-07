@@ -82741,6 +82741,30 @@ non-cryptographic hashing algorithm and random number generator.")
      "This package provides a collection of utility functions.")
     (license license:expat)))
 
+(define-public rust-x11rb-protocol-0.12
+  (package
+    (name "rust-x11rb-protocol")
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "x11rb-protocol" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1g24qdvq0mbyl2npz7zqy5v6hpdxq2qakkpnp3x02rzvl3ww7ml2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-nix" ,rust-nix-0.26)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4))))
+    (home-page "https://github.com/psychon/x11rb")
+    (synopsis "Rust bindings to X11")
+    (description "This package provides Rust bindings to X11.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-x25519-dalek-1
   (package
     (name "rust-x25519-dalek")
