@@ -2577,22 +2577,28 @@ image processing functions: @code{xyxymatch}, @code{geomap}.")
 (define-public python-stcal
   (package
     (name "python-stcal")
-    (version "1.4.2")
+    (version "1.4.4")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "stcal" version))
               (sha256
                (base32
-                "163vyqcd9qv2knf8jik8y449z7ljl2lvbd7im82bq61prgi3z2hj"))))
+                "031ldihdmsdrwz4wl49bfk2bxmzbp1i3kidrw46xz936765zmnc0"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
                         ;; XXX: Can't detect opencv-python version. The input
                         ;; opencv might not set the version correctly.
-                        (delete 'sanity-check))))
+                        (delete 'sanity-check)
+                        (add-before 'check 'build-extensions
+                          (lambda _
+                            ;; Cython extensions have to be built before
+                            ;; running the tests.
+                            (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (propagated-inputs (list opencv ;Provides OpenCV-Python
                              python-astropy python-numpy python-scipy))
-    (native-inputs (list python-psutil
+    (native-inputs (list python-cython
+                         python-psutil
                          python-pytest
                          python-pytest-cov
                          python-pytest-doctestplus
