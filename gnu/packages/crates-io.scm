@@ -20312,7 +20312,7 @@ pattern for arbitrary structs.")
     (arguments
      `(#:cargo-inputs
        (("rust-quote" ,rust-quote-0.3)
-        ("rust-syn" ,rust-syn-0.14))))
+        ("rust-syn" ,rust-syn-0.11))))
     (home-page "https://github.com/Arnavion/derive-error-chain")
     (synopsis "Macros 1.1 implementation of error-chain")
     (description "This package provides a Macros 1.1 implementation of
