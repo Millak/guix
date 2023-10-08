@@ -10628,6 +10628,41 @@ arrangements.")
 (define-public cl-xhtmlambda
   (sbcl-package->cl-source-package sbcl-xhtmlambda))
 
+(define-public sbcl-clad
+  (let ((commit "1ff6f417d4ee3836d1edd96923d4b03f3cafa849")
+        (revision "0"))
+    (package
+      (name "sbcl-clad")
+      (version
+       ;; There's no version, but there's a timestamp
+       (git-version "2023-01-21" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.common-lisp.net/mantoniotti/CLAD")
+               (commit commit)))
+         (file-name (git-file-name "cl-clad" version))
+         (sha256
+          (base32 "184mhdq7pxd6hd4rzv8z4lfbwnkyhgm5bdn3xsqaav2j0d1dqm6i"))
+         (modules '((guix build utils)))
+         (snippet
+          ;; Delete compiled ABCL files.
+          '(begin
+             (delete-file "clad-package.abcl")
+             (delete-file "clad.abcl")))))
+      (build-system asdf-build-system/sbcl)
+      (synopsis "Library providing standard locations on the file system")
+      (description
+       "The Common Lisp Application Directories (CLAD) library is
+a simple API collection that provides access to a set of @emph{standard}
+Common Lisp folders on a per-application or per-library basis.")
+      (home-page "https://gitlab.common-lisp.net/mantoniotti/CLAD")
+      (license license:expat)))) ;the mit-modern-variant is used
+
+(define-public cl-clad
+  (sbcl-package->cl-source-package sbcl-clad))
+
 (define-public sbcl-plump
   (let ((commit "0c3e0b57b43b6e0c5794b6a902f1cf5bee2a2927")
         (revision "3"))
