@@ -24687,7 +24687,10 @@ floats.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0ywr3xqi884i12d5mfidbma1hrd4rxj9f8jw7p4bignagmy13yk3"))))
+                "0ywr3xqi884i12d5mfidbma1hrd4rxj9f8jw7p4bignagmy13yk3"))
+              (snippet
+               #~(begin (use-modules (guix build utils))
+                        (delete-file-recursively "tests/fixtures")))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
