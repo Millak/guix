@@ -59179,7 +59179,8 @@ native certificate store.")
        (("rust-ring" ,rust-ring-0.16)
         ("rust-untrusted" ,rust-untrusted-0.7)
         ("rust-webpki" ,rust-webpki-0.21)
-        ("rust-webpki-roots" ,rust-webpki-roots-0.20))))))
+        ("rust-webpki-roots" ,rust-webpki-roots-0.20))))
+    (native-inputs (list perl))))
 
 (define-public rust-rustls-pemfile-1
   (package
