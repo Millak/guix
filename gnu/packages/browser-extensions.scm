@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2023 Clément Lassieur <clement@lassieur.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,6 +26,7 @@
   #:use-module (guix build-system gnu)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu build chromium-extension)
+  #:use-module (gnu build icecat-extension)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages python))
 
@@ -98,6 +100,7 @@ supported content to the Kodi media center.")
                 "1i8rnij3sbwg6vj6znprrsca0n5xjzhmhppaa8v6jyxg6wrrfch1"))))
     (build-system gnu-build-system)
     (outputs '("xpi" "firefox" "chromium"))
+    (properties '((addon-id . "uBlock0@raymondhill.net")))
     (arguments
      (list
       #:tests? #f                      ;no tests
@@ -125,9 +128,11 @@ supported content to the Kodi media center.")
               (invoke "./tools/make-chromium.sh")))
           (add-after 'build-chromium 'install
             (lambda* (#:key outputs #:allow-other-keys)
-              (let ((firefox (assoc-ref outputs "firefox"))
-                    (xpi (assoc-ref outputs "xpi"))
-                    (chromium (assoc-ref outputs "chromium")))
+              (let* ((addon-id #$(assq-ref properties 'addon-id))
+                     (firefox (in-vicinity
+                               (assoc-ref outputs "firefox") addon-id))
+                     (xpi (assoc-ref outputs "xpi"))
+                     (chromium (assoc-ref outputs "chromium")))
                 (install-file "dist/build/uBlock0.firefox.xpi"
                               (string-append xpi "/lib/mozilla/extensions"))
                 (copy-recursively "dist/build/uBlock0.firefox" firefox)
@@ -142,3 +147,6 @@ ungoogled-chromium.")
 
 (define-public ublock-origin/chromium
   (make-chromium-extension ublock-origin "chromium"))
+
+(define-public ublock-origin/icecat
+  (make-icecat-extension ublock-origin "firefox"))

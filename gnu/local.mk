@@ -762,6 +762,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/build/chromium-extension.scm		\
   %D%/build/cross-toolchain.scm			\
   %D%/build/dbus-service.scm			\
+  %D%/build/icecat-extension.scm		\
   %D%/build/image.scm				\
   %D%/build/jami-service.scm			\
   %D%/build/file-systems.scm			\
@@ -1415,8 +1416,10 @@ dist_patch_DATA =						\
   %D%/packages/patches/icecat-makeicecat.patch			\
   %D%/packages/patches/icecat-102-makeicecat.patch		\
   %D%/packages/patches/icecat-avoid-bundled-libraries.patch	\
+  %D%/packages/patches/icecat-compare-paths.patch		\
   %D%/packages/patches/icecat-use-system-graphite2+harfbuzz.patch	\
   %D%/packages/patches/icecat-use-system-media-libs.patch	\
+  %D%/packages/patches/icecat-use-system-wide-dir.patch		\
   %D%/packages/patches/icedtea-7-hotspot-aarch64-use-c++98.patch	\
   %D%/packages/patches/icedtea-7-hotspot-pointer-comparison.patch	\
   %D%/packages/patches/icu4c-fix-TestHebrewCalendarInTemporalLeapYear.patch	\
