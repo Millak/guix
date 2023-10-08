@@ -11302,9 +11302,22 @@ supported by Cargo.")
        (sha256
         (base32
          "1sz0gzcyp9ycb4zwj69qs9gd8kn9hv9nh2dq42c59x5xccqph755"))))
-    (arguments '())
-    (inputs '())
-    (native-inputs '())))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-core-foundation" ,rust-core-foundation-0.9)
+        ("rust-crypto-hash" ,rust-crypto-hash-0.3)
+        ("rust-filetime" ,rust-filetime-0.2)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-jobserver" ,rust-jobserver-0.1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-miow" ,rust-miow-0.3)
+        ("rust-same-file" ,rust-same-file-1)
+        ("rust-shell-escape" ,rust-shell-escape-0.1)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-walkdir" ,rust-walkdir-2)
+        ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-cassowary-0.3
   (package
