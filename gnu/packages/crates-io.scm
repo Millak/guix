@@ -2431,7 +2431,8 @@ This package is deprecated and was replaced by the @code{aes} crate.")
         (base32
          "0r6j0mjkyqnwvgib01cvrwfw8rlx1biw75234niv723n1fdx6l6h"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:skip-build? #t
+       #:cargo-inputs
        (("rust-block-cipher" ,rust-block-cipher-0.7)
         ("rust-opaque-debug" ,rust-opaque-debug-0.2)
         ("rust-stream-cipher" ,rust-stream-cipher-0.4))
