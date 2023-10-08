@@ -23109,6 +23109,8 @@ order.")
                (base32
                 "0clrjghlfkkb7sndabs5wch0fz2nif6nj4b117s8kqxx3nqnrhq6"))))
     (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-thiserror" ,rust-thiserror-1))))
     (home-page "https://github.com/reujab/enquote")
     (synopsis "Rust library that quotes, unquotes, and unescapes strings")
     (description "This package provides a Rust library quotes, unquotes, and
