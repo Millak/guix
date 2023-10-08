@@ -51442,10 +51442,9 @@ in terms of the upstream unstable API.")
     (arguments
      `(#:cargo-test-flags '("--lib")
        #:cargo-inputs
-       (("rust-unicode-ident" ,rust-unicode-ident-1))
+       (("rust-unicode-xid" ,rust-unicode-xid-0.2))
        #:cargo-development-inputs
-       (("rust-quote" ,rust-quote-1.0.10)
-        ("rust-rustversion" ,rust-rustversion-1))))))
+       (("rust-quote" ,rust-quote-1))))))
 
 (define-public rust-proc-macro2-0.4
   (package
