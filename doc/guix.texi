@@ -44220,7 +44220,7 @@ Extra options will be passed to @command{ssh-agent}, please run
 
 @cindex GNU Privacy Guard, Home service
 @cindex GPG, Home service
-The @code{(gnu home services gnupg)} modules provides services that help
+The @code{(gnu home services gnupg)} module provides services that help
 you set up the GNU Privacy Guard, also known as GnuPG or GPG, in your
 home environment.
 
