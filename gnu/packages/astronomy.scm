@@ -1891,47 +1891,42 @@ used with local NetDRMS sites.")
   (package
     (name "python-drizzle")
     (version "1.14.3")
-    (source (origin
-              (method git-fetch) ;PyPi doesn't have the test data sets
-              (uri (git-reference
-                    (url "https://github.com/spacetelescope/drizzle")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "04gncwg76yivcaq7rwgsw5k8w4h3c4wcrjcamb53h0d5s820z7dl"))))
+    (source
+     (origin
+       (method git-fetch) ;PyPi doesn't have the test data sets
+       (uri (git-reference
+             (url "https://github.com/spacetelescope/drizzle")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04gncwg76yivcaq7rwgsw5k8w4h3c4wcrjcamb53h0d5s820z7dl"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; XXX: 2 of 26 tests failed with AssertionError, disable them for now.
-      ;; Consider mention it in upstream.
-      #:test-flags #~(list "-k"
-                           (string-append "not test_square_with_point"
-                                          " and not test_square_with_grid"))
-      #:phases #~(modify-phases %standard-phases
-                   (add-before 'build 'set-env-version
-                     (lambda _
-                       (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
-                               #$version)))
-                   (add-before 'check 'build-extensions
-                     (lambda _
-                       ;; Cython extensions have to be built before running
-                       ;; the tests.
-                       (invoke "python" "setup.py" "build_ext" "--inplace"))))))
-    (propagated-inputs (list python-astropy python-numpy))
-    (native-inputs (list python-coverage python-flake8 python-pytest
-                         python-pytest-cov python-setuptools-scm))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-env-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+          (add-before 'check 'build-extensions
+            (lambda _
+              ;; Cython extensions have to be built before running the tests.
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (propagated-inputs
+     (list python-astropy python-numpy))
+    (native-inputs
+     (list python-flake8 python-pytest python-setuptools-scm))
     (home-page "https://github.com/spacetelescope/drizzle")
     (synopsis
      "Astronomical tool for combining dithered images into a single image")
     (description
-     "The drizzle library is a Python package for combining dithered images into
-a single image.  This library is derived from code used in DrizzlePac.  Like
-DrizzlePac, most of the code is implemented in the C language.  The biggest
-change from DrizzlePac is that this code passes an array that maps the input to
-output image into the C code, while the DrizzlePac code computes the mapping by
-using a Python callback.  Switching to using an array allowed the code to be
-greatly simplified.")
+     "The drizzle library is a Python package for combining dithered images
+into a single image.  This library is derived from code used in DrizzlePac.
+Like DrizzlePac, most of the code is implemented in the C language.  The
+biggest change from DrizzlePac is that this code passes an array that maps the
+input to output image into the C code, while the DrizzlePac code computes the
+mapping by using a Python callback.  Switching to using an array allowed the
+code to be greatly simplified.")
     (license license:bsd-3)))
 
 (define-public python-ephem
