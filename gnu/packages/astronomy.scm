@@ -3543,13 +3543,13 @@ of the old packages.")
 (define-public python-tweakwcs
   (package
     (name "python-tweakwcs")
-    (version "0.8.2")
+    (version "0.8.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "tweakwcs" version))
               (sha256
                (base32
-                "1500w737n9vf5hv16xkybk4shl7g4wfzb2ji9mc4vgzj41gkrwl4"))))
+                "09bd8b77rpn641cwmkhcyzx43xkx3va83wdcb47wcqqa7qgx9f1m"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-astropy
                              python-gwcs
