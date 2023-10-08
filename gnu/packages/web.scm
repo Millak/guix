@@ -186,6 +186,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages re2c)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages sdl)
   #:use-module (gnu packages search)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages skribilo)
@@ -5713,6 +5714,39 @@ project.")
     (description
      "Libnsbmp is a decoding library for BMP and ICO image file formats,
 written in C.  It is developed as part of the NetSurf project.")
+    (license license:expat)))
+
+(define-public libnsfb
+  (package
+    (name "libnsfb")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://download.netsurf-browser.org/libs/releases/"
+                           name "-" version "-src.tar.gz"))
+       (sha256
+        (base32 "16m3kv8x8mlic4z73h2s3z8lqmyp0z8i30x95lzr1pslxfinqi5y"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list netsurf-buildsystem pkg-config))
+    (inputs
+     ;; SDL is needed to accept any (keyboard, mouse) input.  Don't propagate it
+     ;; to satisfy libnsfb.pc: netsurf is the only user and not worth the pain.
+     (list sdl))
+    (arguments netsurf-buildsystem-arguments)
+    (home-page "https://www.netsurf-browser.org/projects/libnsfb/")
+    (synopsis "Framebuffer display abstraction library")
+    (description
+     "LibNSFB is a framebuffer abstraction library, written in C.  It is
+developed as part of the NetSurf project and is intended to be suitable for use
+in other projects too.
+
+The overall idea of the library is to provide a generic abstraction to a linear
+section of memory which corresponds to a visible array of pixel elements on a
+display device.  Different colour depths are supported and the library provides
+routines for tasks such as drawing onto the framebuffer and rectangle copy
+operations.")
     (license license:expat)))
 
 (define-public libnsgif
