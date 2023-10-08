@@ -15668,14 +15668,14 @@ intrinsics.")
   (package
     (inherit rust-core-foundation-sys-0.8)
     (name "rust-core-foundation-sys")
-    (version "0.7.2")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "core-foundation-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ghrg46h4ci306agr2vwm28w6gb5l455nzp61y2zkhwfs49p4nis"))))))
+        (base32 "1b5qfnnmg49sawwfsb0c0wbj81bqi7h7lh68pmhbidf0jjs1m9xk"))))))
 
 (define-public rust-core-foundation-sys-0.6
   (package
