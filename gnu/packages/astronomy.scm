@@ -2618,40 +2618,43 @@ image processing functions: @code{xyxymatch}, @code{geomap}.")
   (package
     (name "python-stdatamodels")
     (version "1.8.3")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "stdatamodels" version))
-              (sha256
-               (base32
-                "0265xa9nrp6qp1z7v9kmnd3c8jc0dad2vzin657clk3rrsj2qll5"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "stdatamodels" version))
+       (sha256
+        (base32 "0265xa9nrp6qp1z7v9kmnd3c8jc0dad2vzin657clk3rrsj2qll5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; Disable tests requiring access to CRDS servers to download ~500MiB
-      ;; of data.
+      ;; Disable tests requiring access to CRDS servers to download ~500MiB of
+      ;; data.
       #:test-flags #~(list "-k" "not test_crds_selectors_vs_datamodel")
-      #:phases #~(modify-phases %standard-phases
-                   (add-before 'check 'set-home
-                     (lambda _
-                       (setenv "HOME" "/tmp"))))))
-    (propagated-inputs (list python-asdf
-                             python-asdf-astropy
-                             python-astropy
-                             python-numpy
-                             python-psutil))
-    (native-inputs (list python-crds
-                         python-pytest
-                         python-pytest-doctestplus
-                         python-scipy
-                         python-semantic-version
-                         python-setuptools-scm))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list python-asdf
+           python-asdf-astropy
+           python-astropy
+           python-numpy
+           python-psutil))
+    (native-inputs
+     (list python-crds
+           python-pytest
+           python-pytest-doctestplus
+           python-scipy
+           python-semantic-version
+           python-setuptools-scm))
     (home-page "https://github.com/spacetelescope/stdatamodels")
     (synopsis
      "Core support for DataModel classes used in calibration pipelines")
     (description
-     "Provides DataModel, which is the base class for data models implemented in
-the @acronym{JWST, James Webb Space Telescope} and @acronym{Roman, Nancy Grace
-Roman Space Telescope} calibration software.")
+     "Provides @code{DataModel}, which is the base class for data models
+implemented in the @acronym{JWST, James Webb Space Telescope} and
+@acronym{Roman, Nancy Grace Roman Space Telescope} calibration software.")
     (license license:bsd-3)))
 
 (define-public python-stpipe
