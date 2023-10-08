@@ -6633,6 +6633,10 @@ embedded-friendly no_std support.")
         (base32
          "1ykwx8jhksqxghfgyw2pzikzjf4n9wqm1x2ww5wqyn68ssf6dki3"))))
     (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-quickcheck" ,rust-quickcheck-0.7)
+        ("rust-rand" ,rust-rand-0.5))))
     (home-page "https://github.com/andreasots/base32")
     (synopsis "Base32 encoder/decoder for Rust")
     (description "This library lets you encode and decode in either
