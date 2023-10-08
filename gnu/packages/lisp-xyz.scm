@@ -10494,6 +10494,36 @@ as readmes, documentation files, and docstrings.")
 (define-public ecl-staple
   (sbcl-package->ecl-package sbcl-staple))
 
+(define-public sbcl-helambdap
+  (let ((commit "5bf65f57a36ee094cadb096caca6e90eb3ba46c4")
+        (revision "0"))
+    (package
+      (name "sbcl-helambdap")
+      (version (git-version "20220103" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.code.sf.net/p/helambdap/code")
+               (commit commit)))
+         (file-name (git-file-name "cl-helambdap" version))
+         (sha256
+          (base32 "1kzapbf9l2bw8i9m9sxv0dfnkksrxq81d5hbn34pm25abk0i937j"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-cl-fad
+             sbcl-clad
+             sbcl-split-sequence
+             sbcl-xhtmlambda))
+      (synopsis "Common Lisp documentation system")
+      (description "HELambdap is a Common Lisp documentation system which
+strives to be simple to use, yet easily customizable.")
+      (home-page "https://helambdap.sourceforge.net")
+      (license license:expat))))
+
+(define-public cl-helambdap
+  (sbcl-package->cl-source-package sbcl-helambdap))
+
 (define-public sbcl-form-fiddle
   (let ((commit "e0c23599dbb8cff3e83e012f3d86d0764188ad18")
         (revision "0"))
