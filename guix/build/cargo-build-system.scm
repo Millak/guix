@@ -114,7 +114,7 @@ Cargo.toml file present at its root."
 (define* (check-for-pregenerated-files #:rest _)
   "Check the source code for files which are known to generally be bundled
 libraries or executables."
-  (let ((pregenerated-files (find-files "." "\\.(a|dll|exe|lib)$")))
+  (let ((pregenerated-files (find-files "." "\\.(a|dll|dylib|exe|lib)$")))
     (when (not (null-list? pregenerated-files))
       (error "Possible pre-generated files found:" pregenerated-files))))
 
