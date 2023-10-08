@@ -164,6 +164,7 @@ This package includes the @code{libtree-sitter} runtime library.")
      (list tree-sitter graphviz node-lts))
     (arguments
      (list
+      #:tests? #~(not (%current-target-system))
       #:cargo-test-flags
       ''("--release" "--"
          ;; Skip tests which rely on downloading grammar fixtures.  It is

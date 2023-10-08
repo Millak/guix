@@ -5356,7 +5356,8 @@ result in several formats:
                    (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? ,(not (%current-target-system))
+       #:cargo-inputs
        (("rust-aom-sys" ,rust-aom-sys-0.3)
         ("rust-arbitrary" ,rust-arbitrary-0.4)
         ("rust-arg-enum-proc-macro" ,rust-arg-enum-proc-macro-0.3)

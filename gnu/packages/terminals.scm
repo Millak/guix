@@ -1524,7 +1524,8 @@ basic input/output.")
         (base32 "1jbyxnza38c22k7ri8apzn03q91l06isj8la9xca7cz06kn0hha9"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f     ; virtual manifest
+     `(#:tests? ,(not (%current-target-system))
+       #:install-source? #f     ; virtual manifest
        #:cargo-inputs
        (("rust-alacritty-config" ,rust-alacritty-config-0.1)
         ("rust-alacritty-config-derive" ,rust-alacritty-config-derive-0.2)

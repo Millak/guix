@@ -515,7 +515,8 @@ This Guix package is built to use the nettle cryptographic library.")
     (native-inputs
      (list clang pkg-config))
     (arguments
-     `(#:install-source? #f
+     `(#:tests? ,(not (%current-target-system))
+       #:install-source? #f
        #:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-chrono" ,rust-chrono-0.4)

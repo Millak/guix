@@ -3053,6 +3053,7 @@ help formatter.")
             (assoc-ref py:%standard-phases 'build))
           (add-after 'build-python-module 'install-python-module
             (assoc-ref py:%standard-phases 'install)))
+      #:tests? #~(not (%current-target-system))
       #:cargo-inputs
       `(("rust-ahash" ,rust-ahash-0.8)
         ("rust-arrayvec" ,rust-arrayvec-0.7)
