@@ -53603,6 +53603,8 @@ and Petrick's method, an algorithm to automatically minimize boolean expressions
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-rcgen" ,rust-rcgen-0.8)
         ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (native-inputs
+     (list perl))
     (home-page "https://github.com/quinn-rs/quinn")
     (synopsis "State machine for the QUIC transport protocol")
     (description "State machine for the QUIC transport protocol")
