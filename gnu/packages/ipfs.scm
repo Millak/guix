@@ -219,9 +219,9 @@ powerful and simple.")
 written in Go.")
     (license license:expat)))
 
-(define-public go-ipfs
+(define-public kubo
   (package
-    (name "go-ipfs")
+    (name "kubo")
     (version "0.14.0")
     (source
      (origin
@@ -368,3 +368,6 @@ like a single bittorrent swarm, exchanging git objects.  IPFS provides an
 interface as simple as the HTTP web, but with permanence built in.  You can
 also mount the world at @code{/ipfs}.")
     (license license:expat)))
+
+(define-public go-ipfs
+  (deprecated-package "go-ipfs" kubo))
