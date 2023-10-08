@@ -15094,6 +15094,31 @@ It supports signed and private (encrypted + signed) jars.")
         ("rust-time" ,rust-time-0.2)
         ("rust-version-check" ,rust-version-check-0.9))))))
 
+(define-public rust-cookie-0.14
+  (package
+    (inherit rust-cookie-0.15)
+    (name "rust-cookie")
+    (version "0.14.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cookie" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0ldryjb41r8n0ar2pya0bajlxr8s4j59fjkmyi5ppg1932rdg983"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-aes-gcm" ,rust-aes-gcm-0.8)
+        ("rust-base64" ,rust-base64-0.13)
+        ("rust-hkdf" ,rust-hkdf-0.10)
+        ("rust-hmac" ,rust-hmac-0.10)
+        ("rust-percent-encoding" ,rust-percent-encoding-2)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-sha2" ,rust-sha2-0.9)
+        ("rust-time" ,rust-time-0.2)
+        ("rust-version-check" ,rust-version-check-0.9))))))
+
 (define-public rust-cookie-0.12
   (package
     (inherit rust-cookie-0.15)
@@ -15368,32 +15393,6 @@ numbers using the CORDIC method.")
       "This package provides the bare essentials of @code{std::io} for use
 in @code{no_std}.  Alloc support is optional.")
     (license (list license:asl2.0 license:expat))))
-
-(define-public rust-cookie-0.14
-  (package
-    (inherit rust-cookie-0.15)
-    (name "rust-cookie")
-    (version "0.14.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "cookie" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1q56fl2cqrci9ksa80d7g220phq02nf1yfbvxkpk9g1p95ma2wqk"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-aes-gcm" ,rust-aes-gcm-0.6)
-        ("rust-base64" ,rust-base64-0.12)
-        ("rust-hkdf" ,rust-hkdf-0.9)
-        ("rust-hmac" ,rust-hmac-0.8)
-        ("rust-percent-encoding" ,rust-percent-encoding-2)
-        ("rust-rand" ,rust-rand-0.7)
-        ("rust-sha2" ,rust-sha2-0.9)
-        ("rust-time" ,rust-time-0.2))
-       #:cargo-development-inputs
-       (("rust-version-check" ,rust-version-check-0.9))))))
 
 (define-public rust-cookie-store-0.19
   (package
