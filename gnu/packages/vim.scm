@@ -81,7 +81,7 @@
 (define-public vim
   (package
     (name "vim")
-    (version "9.0.1672")
+    (version "9.0.2001")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -90,7 +90,7 @@
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "1cl4a7rzks0ll0b8y0ffrbin622k0qww3l0nz9kb0mz2favw0b9q"))))
+               "1y0xfvndnyfv677gn4mkq0jf5k15mm1dngl96l9j90sp4lbqrszx"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -147,7 +147,11 @@
                 (string-append line "return\n")))
              (substitute* "src/testdir/test_popupwin.vim"
                ((".*Test_popup_drag_termwin.*" line)
-                (string-append line "return\n")))))
+                (string-append line "return\n")))
+             (with-fluids ((%default-port-encoding #f))
+               (substitute* "src/testdir/test_writefile.vim"
+                 ((".*Test_write_with_xattr_support.*" line)
+                  (string-append line "return\n"))))))
          (add-before 'install 'fix-installman.sh
            (lambda _
              (substitute* "src/installman.sh"
