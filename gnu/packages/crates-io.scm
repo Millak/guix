@@ -48023,11 +48023,12 @@ in pure Rust.")
      (origin
        (method url-fetch)
        (uri (crate-uri "pcap-sys" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "18w9c8i5zjnazay86219w4789482ya617z35cw433h12wbgjaiqi"))))
+        (base32 "18w9c8i5zjnazay86219w4789482ya617z35cw433h12wbgjaiqi"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "Lib")))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
