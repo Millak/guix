@@ -29193,7 +29193,7 @@ tabulated-lists).")
 (define-public emacs-eat
   (package
     (name "emacs-eat")
-    (version "0.8")
+    (version "0.9")
     (source
      (origin
        (method git-fetch)
@@ -29203,7 +29203,7 @@ tabulated-lists).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1fb66g7jjc7dhw61323d94mx7gqfp6ylf9a7v5qym1n92mv48bdr"))
+         "0d0p1yrd6n409m2szn3k9d82913kjzp24j11lksp85328qhav9g7"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -29236,12 +29236,14 @@ tabulated-lists).")
      (list texinfo))
     (inputs
      (list ncurses))
+    (propagated-inputs
+     (list emacs-compat))
     (home-page "https://codeberg.org/akib/emacs-eat")
     (synopsis "Terminal emulator in Emacs")
     (description
      "Eat (Emulate A Terminal) is a terminal emulator in Emacs, written in
-pure Elisp.  It has features like complete mouse support and shell
-integration.")
+pure Elisp.  It has features like Sixel support, complete mouse support and
+shell integration.")
     (license license:gpl3+)))
 
 (define-public emacs-vterm
