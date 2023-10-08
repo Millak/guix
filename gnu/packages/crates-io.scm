@@ -39568,6 +39568,12 @@ for Rust structs.")
        (sha256
         (base32 "01wxhi7mqmp34l540wcfb24hb13vcbps4wlynas66bnsfra0g790"))))
     (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro-error" ,rust-proc-macro-error-1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
     (home-page "https://sr.ht/~ireas/merge-rs")
     (synopsis "Derive macro for the merge crate")
     (description "This crate provides a derive macro for the
