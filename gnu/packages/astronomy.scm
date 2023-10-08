@@ -2660,13 +2660,17 @@ implemented in the @acronym{JWST, James Webb Space Telescope} and
 (define-public python-stpipe
   (package
     (name "python-stpipe")
-    (version "0.5.0")
+    (version "0.5.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "stpipe" version))
               (sha256
                (base32
-                "17gnwzhl10vbg059lfprdyci19dlh3whkmb9rl7z25wr593rnvcp"))))
+                "11ccb3v2s20lf851061s4nanljwm9s9xzkcfgb3qhv0hjwziq0vr"))))
+    (arguments
+     (list
+      ;; See https://github.com/spacetelescope/stpipe/issues/114
+      #:test-flags #~(list "-k" "not test_roman_datamodel")))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-asdf python-astropy python-crds
                              python-semantic-version python-stdatamodels))
