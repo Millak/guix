@@ -186,7 +186,7 @@ reused in several astronomical applications, such as @code{wsclean},
 (define-public calceph
   (package
     (name "calceph")
-    (version  "3.5.2")
+    (version  "3.5.3")
     (source
      (origin
        (method url-fetch)
@@ -194,7 +194,7 @@ reused in several astronomical applications, such as @code{wsclean},
              "https://www.imcce.fr/content/medias/recherche/equipes/asd/calceph/calceph-"
              version ".tar.gz"))
        (sha256
-        (base32 "1rnjlaiii4j0agbj4k242p212bqqmqdqa0lni6c3bnhgfnrbjfp4"))))
+        (base32 "12apl806h8qx1kq74malq3828jqapwfi27cn05pvvxfiq7gfpllx"))))
     (build-system gnu-build-system)
     (native-inputs
      (list gfortran))
