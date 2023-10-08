@@ -2484,7 +2484,10 @@ This package is deprecated and was replaced by the @code{aes} crate.")
        #:cargo-development-inputs
        (("rust-arbitrary" ,rust-arbitrary-1)
         ("rust-assert-cmd" ,rust-assert-cmd-2)
-        ("rust-tempfile" ,rust-tempfile-3))))
+        ("rust-tempfile" ,rust-tempfile-3))
+       #:phases (modify-phases %standard-phases
+                  ;; Custom archive file for test suite.
+                  (delete 'check-for-pregenerated-files))))
     (home-page "https://github.com/rust-fuzz/afl.rs")
     (synopsis
      "Fuzzing Rust code with american-fuzzy-lop")
