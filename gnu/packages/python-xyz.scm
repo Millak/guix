@@ -19955,13 +19955,13 @@ etc.")
 (define-public python-pyvirtualdisplay
   (package
     (name "python-pyvirtualdisplay")
-    (version "2.1")
+    (version "3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "PyVirtualDisplay" version))
        (sha256
-        (base32 "1z2fzgiw3xv3m1d9ppn53g07zhnpj05addiz56sm6ircxibnjk4x"))))
+        (base32 "0nb1s7nilakrkcm0vq08pz9mh8rzyhjm9jkyn1gp5sxnrv1mnx89"))))
     (build-system python-build-system)
     (arguments
      ;; Tests fail with:
