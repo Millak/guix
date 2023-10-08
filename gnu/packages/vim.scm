@@ -618,6 +618,30 @@ It keeps the same selective contrast relationships and overall feel when
 switching between the light and dark background modes.")
       (license license:expat))))
 
+(define-public vim-rainbow
+  (package
+    (name "vim-rainbow")
+    (version "5c8094b56568aeaeda9cc09b3ebc6d2ed95e1ad8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mason1920/rainbow")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jya8wwlkmgs89hndrq6gsaskhk9g0fh62wdib8v9vz2x5g3738z"))))
+    (build-system copy-build-system)
+    (arguments
+     '(#:install-plan '(("opt" "share/vim/vimfiles/pack/rainbow/"))))
+    (home-page "https://github.com/mason1920/rainbow")
+    (synopsis "Rainbow Parentheses Improved")
+    (description
+     "As everyone knows, the most complex codes were composed of a mass of different
+kinds of parentheses (typically: lisp).  This plugin will help you read these
+codes by showing different levels of parentheses in different colors.")
+    (license license:asl2.0)))
+
 (define-public editorconfig-vim
   (package
     (name "editorconfig-vim")
