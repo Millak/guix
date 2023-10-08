@@ -1869,9 +1869,17 @@ Rust, using gimli.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0sw16zqy6w0ar633z69m7lw6gb0k1y7xj3387a8wly43ij5div5r"))))
+                "0sw16zqy6w0ar633z69m7lw6gb0k1y7xj3387a8wly43ij5div5r"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (substitute* "Cargo.toml.orig"
+                    (("(cpp_demangle =.*)default-features = false,(.*)" _ first last)
+                     (string-append first last))
+                    ((".*auxiliary.*") ""))
+                  (copy-file "Cargo.toml.orig" "Cargo.toml")))))
     (arguments
-     `(#:tests? #false ;use of undeclared crate or module `auxiliary`
+     `(#:tests? #false  ; Not all files included.
        #:cargo-inputs
        (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
         ("rust-cpp-demangle" ,rust-cpp-demangle-0.3)
