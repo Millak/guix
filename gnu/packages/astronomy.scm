@@ -3124,10 +3124,10 @@ floating-point (no compression, LZW- or ZIP-compressed), FITS 8-bit, 16-bit,
 32-bit floating-point.")
     (license license:gpl3+)))
 
-(define-public indi
+(define-public indi-2.0
   (package
     (name "indi")
-    (version "1.9.9")
+    (version "2.0.4")
     (source
      (origin
        (method git-fetch)
@@ -3136,7 +3136,7 @@ floating-point (no compression, LZW- or ZIP-compressed), FITS 8-bit, 16-bit,
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vfcas59nlw8v7n6qhxhcm4isf5wk0crip5rmsallq3bsv3zznfr"))))
+        (base32 "1pp72bqxrvdij47fqfrnyxwqw1w8prxvs1igjsazcw8ncbrdbbjc"))))
     (build-system cmake-build-system)
     (arguments
      ;; TODO: fix failing tests on aarch64-system.
@@ -3184,6 +3184,24 @@ more.")
                    license:gpl2+
                    license:lgpl2.0+
                    license:lgpl2.1+))))
+
+(define-public indi-1.9
+  (package
+    (inherit indi-2.0)
+    (version "1.9.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/indilib/indi")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "indi" version))
+       (sha256
+        (base32 "1vfcas59nlw8v7n6qhxhcm4isf5wk0crip5rmsallq3bsv3zznfr"))))))
+
+(define-public indi
+  ;; Default version of INDI..
+  indi-1.9)
 
 (define-public sunclock
   (let ((commit "f4106eb0a81f7594726d6b2859efd8fc64cc1225")
