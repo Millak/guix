@@ -1550,7 +1550,7 @@ of a loop structure or other iterative computation.")
 (define-public python-glymur
   (package
     (name "python-glymur")
-    (version "0.12.0")
+    (version "0.12.8")
     (source
      (origin
        (method git-fetch)   ; no tests data in PyPi package
@@ -1559,7 +1559,7 @@ of a loop structure or other iterative computation.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03nny8k42yxdyw7sjv43szmg23x3rqplbaf7m0a0lpvwla1dl78i"))))
+        (base32 "0mfyn9j7h13242d41vg12acw55yl2mv6lmgi265hfp11k7g52b6n"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1588,7 +1588,7 @@ of a loop structure or other iterative computation.")
               ;; which is patched above.
               (delete-file "tests/test_config.py"))))))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-scikit-image))
     (inputs
      (list openjpeg  ; glymur/lib/openjp2.py
            libtiff)) ; glymur/lib/tiff.py
