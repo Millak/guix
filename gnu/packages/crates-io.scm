@@ -6080,15 +6080,7 @@ they're not available.")
     (arguments
      (list
       #:tests? #false ;The crate does not include test files
-      #:phases
-      '(modify-phases %standard-phases
-         (add-before 'patch-cargo-checksums 'do-not-build-xz
-           (lambda _
-             ;; Detection of liblzma (in rust-lzma-sys, pulled in by
-             ;; rust-hts-sys) doesn't seem to work, or perhaps it really does
-             ;; request a static build somewhere.
-             (substitute* "guix-vendor/rust-lzma-sys-0.1.17.tar.xz/build.rs"
-               (("if .want_static && .msvc && pkg_config::probe_library\\(\"liblzma\"\\).is_ok\\(\\)") "")))))
+      #:skip-build? #t  ; could not find `block` in `zstd`
       #:cargo-inputs
       `(("rust-brotli" ,rust-brotli-3)
         ("rust-bzip2" ,rust-bzip2-0.4)
@@ -6105,6 +6097,7 @@ they're not available.")
         ("rust-rand" ,rust-rand-0.8)
         ("rust-temp-testdir" ,rust-temp-testdir-0.2))))
     (inputs (list xz))
+    (native-inputs (list pkg-config))
     (home-page "https://github.com/informationsea/autocompress-rs")
     (synopsis "Select decoder from magic bytes or encoder from file extension")
     (description
