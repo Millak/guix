@@ -2507,7 +2507,7 @@ This package is deprecated and was replaced by the @code{aes} crate.")
         (base32
          "1rw11hycfjhqbc7z1smn75m0sczq519msjwimxh7b8s6n4pzk5r7"))))
     (arguments
-     `(#:skip-build? #t
+     `(#:skip-build? #t     ; Build wants AFL
        #:cargo-inputs
        (("rust-cc" ,rust-cc-1)
         ("rust-clap" ,rust-clap-2)
@@ -2517,7 +2517,10 @@ This package is deprecated and was replaced by the @code{aes} crate.")
         ("rust-xdg" ,rust-xdg-2))
        #:cargo-development-inputs
        (("rust-rustc-version" ,rust-rustc-version-0.2)
-        ("rust-xdg" ,rust-xdg-2))))))
+        ("rust-xdg" ,rust-xdg-2))
+       #:phases (modify-phases %standard-phases
+                  ;; Custom archive file for test suite.
+                  (delete 'check-for-pregenerated-files))))))
 
 (define-public rust-ahash-0.8
   (package
