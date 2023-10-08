@@ -39590,7 +39590,13 @@ for Rust structs.")
     (arguments
      `(#:cargo-inputs
        (("rust-merge-derive" ,rust-merge-derive-0.1)
-        ("rust-num-traits" ,rust-num-traits-0.2))))
+        ("rust-num-traits" ,rust-num-traits-0.2))
+       #:cargo-development-inputs
+       (("rust-envy" ,rust-envy-0.4)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-structopt" ,rust-structopt-0.3)
+        ("rust-toml" ,rust-toml-0.5)
+        ("rust-trybuild" ,rust-trybuild-1))))
     (home-page "https://sr.ht/~ireas/merge-rs")
     (synopsis "Rust trait for objects that can be merged")
     (description "This package provides a merge trait that can be used
