@@ -1575,8 +1575,16 @@ different name or email just for commits in this repository, you can
 use @command{git config --local}, or edit @file{.git/config} in the
 repository instead of @file{~/.gitconfig}.
 
+@cindex commit-msg hook
 Other important Git configuration will automatically be configured when
-building the project (@pxref{Building from Git}).
+building the project (@pxref{Building from Git}).  A
+@file{.git/hooks/commit-msg} hook will be installed that embeds
+@samp{Change-Id} Git @emph{trailers} in your commit messages for
+traceability purposes.  It is important to preserve these when editing
+your commit messages, particularly if a first version of your proposed
+changes was already submitted for review.  If you have a
+@file{commit-msg} hook of your own you would like to use with Guix, you
+can place it under the @file{.git/hooks/commit-msg.d/} directory.
 
 @node Sending a Patch Series
 @subsection Sending a Patch Series

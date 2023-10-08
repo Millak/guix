@@ -1170,7 +1170,17 @@ cuirass-jobs: $(GOBJECTS)
 	git config --add include.path ../etc/git/gitconfig; \
 	fi
 
-nodist_noinst_DATA = .git/hooks/pre-push .git/config
+COMMIT_MSG_MAGIC = VGhpcyBpcyB0aGUgY29tbWl0LW1zZyBob29rIG9mIEd1aXg=
+.git/hooks/commit-msg: etc/git/commit-msg
+	$(AM_V_at)if test -d .git; then \
+	if test -f $@  && ! grep -qF $(COMMIT_MSG_MAGIC) $@; then \
+	  mkdir -p $@.d && mv $@ $@.d && \
+	@ echo user commit-msg hook moved to $@.d/commit-msg; \
+	fi; \
+	cp etc/git/commit-msg $@; \
+	fi
+
+nodist_noinst_DATA = .git/hooks/pre-push .git/config .git/hooks/commit-msg
 
 # Downloading up-to-date PO files.
 
