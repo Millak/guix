@@ -39,6 +39,7 @@
 ;;; Copyright © 2022, 2023 Artyom Bologov <mail@aartaka.me>
 ;;; Copyright © 2023 Roman Scherer <roman@burningswell.com>
 ;;; Copyright © 2023 ykonai <mail@ykonai.net>
+;;; Copyright © 2023 Gabriel Hondet <gabriel.hondet@cominety.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -10593,6 +10594,39 @@ LASS files.")
 
 (define-public ecl-lass
   (sbcl-package->ecl-package sbcl-lass))
+
+(define-public sbcl-xhtmlambda
+  (let ((commit "c86376bccebf77ca428e8033df2ba7d8450ea1e8")
+        (revision "0"))
+    (package
+      (name "sbcl-xhtmlambda")
+      (version
+       ;; The source repository doesn't provide any version nor revision, but
+       ;; a timestamp
+       (git-version "2022-01-21" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.common-lisp.net/xhtmlambda/XHTMLambda")
+               (commit commit)))
+         (file-name (git-file-name "cl-xhtmlambda" version))
+         (sha256
+          (base32 "0narbzz06ry1wn048avm1fwihvnjvvc4wfcv5hmdazkilpvnqz2y"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs (list sbcl-cl-unicode))
+      (synopsis "(X)HTML library for Common Lisp")
+      (description
+       "(X)HTMLambda is yet another (X)HTML library which
+emphasizes programmability and user-friendliness.  Each (X)HTML element is a
+structured object and pretty-printing of (X)HTML trees is well defined to
+provide properly indented human-readable output even for complex recursive
+arrangements.")
+      (home-page "https://xhtmlambda.common-lisp.dev/")
+      (license license:expat))))
+
+(define-public cl-xhtmlambda
+  (sbcl-package->cl-source-package sbcl-xhtmlambda))
 
 (define-public sbcl-plump
   (let ((commit "0c3e0b57b43b6e0c5794b6a902f1cf5bee2a2927")
