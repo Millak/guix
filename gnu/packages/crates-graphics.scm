@@ -2186,21 +2186,22 @@ AVIF format (powers the `cavif` tool).")
   (package
     (inherit rust-ravif-0.8)
     (name "rust-ravif")
-    (version "0.6.4")
+    (version "0.6.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ravif" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1gyc7w1fz3qdk95cdpkj185dm6lskxfp329xm69waxc565fcz9rx"))))
+        (base32 "0rfm63bv0q2rjyivmzlk4wma8xff6jralh7dr1bjz2aw4knm7cw1"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:skip-build? #t     ; Not packaging older versions of rav1e.
+       #:cargo-inputs
        (("rust-avif-serialize" ,rust-avif-serialize-0.6)
         ("rust-imgref" ,rust-imgref-1)
         ("rust-loop9" ,rust-loop9-0.1)
         ("rust-num-cpus" ,rust-num-cpus-1)
-        ("rav1e" ,rav1e)
+        ("rav1e" ,rav1e)    ; 0.5
         ("rust-rayon" ,rust-rayon-1)
         ("rust-rgb" ,rust-rgb-0.8))
        #:cargo-development-inputs
