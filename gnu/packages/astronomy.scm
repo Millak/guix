@@ -3849,13 +3849,13 @@ install an implementation package such as gwcs.")
 (define-public python-gwcs
   (package
     (name "python-gwcs")
-    (version "0.18.3")
+    (version "0.19.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "gwcs" version))
        (sha256
-        (base32 "0mgyk5mgmj242g8nl7glcj689vry3ncwf04b8q3hasjcc9bs0rm4"))))
+        (base32 "1f3h41aq4nwcl6k80jb9s8shn2mhvz32mx9qhcm1xmcqrflqyf52"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-jsonschema
