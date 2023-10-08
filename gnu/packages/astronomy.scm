@@ -2227,13 +2227,13 @@ Virtual observatory (VO) using Python.")
 (define-public python-reproject
   (package
     (name "python-reproject")
-    (version "0.11.0")
+    (version "0.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "reproject" version))
        (sha256
-        (base32 "0p07qlqinb826m4n5b5invyfyv4z750sai2caqaf598mgj04l61p"))))
+        (base32 "1cjdfv7wd4c0ia63vqakxf9w8hd5dfz6jzi520scd37rliy1xgld"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2243,6 +2243,9 @@ Virtual observatory (VO) using Python.")
       ;; from .deforest import map_coordinates
       ;; E   ModuleNotFoundError: No module named 'reproject.adaptive.deforest'
       ;;
+      ;; Project removed setup.py and there is no alternative to `python
+      ;; setup.py build_ext'
+      ;; See: https://github.com/pypa/setuptools/discussions/3388
       #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
