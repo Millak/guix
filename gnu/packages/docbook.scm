@@ -342,93 +342,71 @@ downloading from @var{source}, where @var{version} is a string and
               (add-before 'install 'generate-catalog.xml
                 (lambda* (#:key make-flags #:allow-other-keys)
                   (apply invoke "make" "-C" "xsl" "catalog.xml" make-flags)))
-              (add-before 'install 'patch-catalog-xml
+              (add-after 'generate-catalog.xml 'patch-catalog.xml
+                ;; Note: URI resolutions are not recursive.
+                ;; A rewrite rule from:
+                ;;   'http://docbook.sourceforge.net/release/xsl-ns/'
+                ;; to
+                ;;   'http://docbook.sourceforge.net/release/xsl/'
+                ;; will not trigger the rewrite rule that ultimately
+                ;; remaps to a /gnu/store URI, as can be seen by
+                ;; invoking:
+                ;; $ xmlcatalog "" \
+                ;;     'http://docbook.sourceforge.net/release/xsl-ns/current/'
+                ;; http://docbook.sourceforge.net/release/xsl/current/
+                ;; $ xmlcatalog "" \
+                ;;     'http://docbook.sourceforge.net/release/xsl/current/'
+                ;; file:/gnu/store/…/xml/xsl/…
+                ;;
+                ;; See XML Catalog specification, item 7.2.2. for
+                ;; details.
                 (lambda* (#:key inputs #:allow-other-keys)
                   (let ((xmlcatalog (search-input-file inputs
                                                        "/bin/xmlcatalog"))
-                        (catalog-files (find-files "." "catalog\\.xml$"))
-                        (store-uri (string-append "file://" dest-path "/")))
+                        (catalog-file "xsl/catalog.xml")
+                        (store-uri (string-append "file:" dest-path "/")))
+                    ;; Remove /snapshot/ references.
                     (for-each
-                     (lambda (catalog)
-                       ;; Replace /snapshot/ reference with one based on
-                       ;; BASE-VERSION.
-                       (let ((versioned-uri
-                              (format
-                               #f "https://cdn.docbook.org/release/xsl/~a/"
-                               #$base-version)))
-                         (invoke xmlcatalog "--noout"
-                                 "--del"
-                                 "https://cdn.docbook.org/release/xsl/snapshot/"
-                                 catalog)
-                         (for-each
-                          (lambda (type)
-                            (invoke xmlcatalog "--noout"
-                                    "--add" type
-                                    versioned-uri
-                                    store-uri
-                                    catalog))
-                          (list "rewriteSystem" "rewriteURI")))
-
-                       ;; Patch /current/ references to point to /gnu/store/….
+                     (lambda (scheme)
+                       (invoke xmlcatalog "--noout"
+                               "--del"
+                               (string-append
+                                scheme
+                                "://cdn.docbook.org/release/xsl/snapshot/")
+                               catalog-file))
+                     (list "http" "https"))
+                    ;; Rewrite both http:// and https:// URIs.
+                    (for-each
+                     (lambda (path)
                        (for-each
-                        (lambda (type)
-                          (invoke xmlcatalog "--noout"
-                                  "--add" type
-                                  "https://cdn.docbook.org/release/xsl/current/"
-                                  store-uri
-                                  catalog))
-                        (list "rewriteSystem" "rewriteURI"))
-
-                       ;; Re-add the no longer present compatibility entries for
-                       ;; v.1.79.1 or earlier URIs.
-                       (for-each
-                        (lambda (type)
-                          (invoke xmlcatalog "--noout"
-                                  "--add" type
-                                  "http://docbook.sourceforge.net/release/xsl/current/"
-                                  store-uri
-                                  catalog))
-                        (list "rewriteSystem" "rewriteURI"))
-
-                       ;; Originally the
-                       ;; "http://docbook.sourceforge.net/release/xsl/"
-                       ;; URI referred to the non-namespaced docbook-xsl,
-                       ;; with its namespaced version using a URI differing in
-                       ;; the path component as '…/xsl-ns/'.
-                       ;; At some point the namespaced version was made the
-                       ;; canonical docbook-xsl package whilst preserving the
-                       ;; original URI.
-                       ;;
-                       ;; For compatibility with XML files that still specify
-                       ;; the legacy namespaced docbook-xsl URIs we re-add them
-                       ;; here.
-                       (for-each
-                        (lambda (type)
-                          ;; Remap /xsl-ns/ to /xsl/.
-                          ;; Note: URI resolutions are not recursive.
-                          ;; A rewrite rule from:
-                          ;;   'http://docbook.sourceforge.net/release/xsl-ns/'
-                          ;; to
-                          ;;   'http://docbook.sourceforge.net/release/xsl/'
-                          ;; will not trigger the rewrite rule that ultimately
-                          ;; remaps to a /gnu/store URI, as can be seen by
-                          ;; invoking:
-                          ;; $ xmlcatalog "" \
-                          ;;     'http://docbook.sourceforge.net/release/xsl-ns/current/'
-                          ;; http://docbook.sourceforge.net/release/xsl/current/
-                          ;; $ xmlcatalog "" \
-                          ;;     'http://docbook.sourceforge.net/release/xsl/current/'
-                          ;; file://gnu/store/…/xml/xsl/…
-                          ;;
-                          ;; See XML Catalog specification, item 7.2.2. for
-                          ;; details.
-                          (invoke xmlcatalog "--noout"
-                                "--add" type
-                                "http://docbook.sourceforge.net/release/xsl-ns/current/"
-                                store-uri
-                                catalog))
-                          (list "rewriteSystem" "rewriteURI")))
-                     catalog-files))))
+                        (lambda (scheme)
+                          (for-each
+                           (lambda (entry-type)
+                             (let ((uri (string-append scheme "://" path)))
+                               (invoke xmlcatalog "--noout"
+                                       "--add" entry-type uri store-uri
+                                       catalog-file)))
+                           (list "rewriteSystem" "rewriteURI")))
+                        (list "http" "https")))
+                     (list #$(format #f "cdn.docbook.org/release/xsl/~a/"
+                                     base-version)
+                           "cdn.docbook.org/release/xsl/current/"
+                           ;; Re-add the no longer present compatibility entries for
+                           ;; v.1.79.1 or earlier URIs.
+                           "docbook.sourceforge.net/release/xsl/current/"
+                           ;; Originally the
+                           ;; "http://docbook.sourceforge.net/release/xsl/"
+                           ;; URI referred to the non-namespaced docbook-xsl,
+                           ;; with its namespaced version using a URI differing in
+                           ;; the path component as '…/xsl-ns/'.
+                           ;; At some point the namespaced version was made the
+                           ;; canonical docbook-xsl package whilst preserving the
+                           ;; original URI.
+                           ;;
+                           ;; For compatibility with XML files that still specify
+                           ;; the legacy namespaced docbook-xsl URIs we re-add them
+                           ;; here.
+                           "docbook.sourceforge.net/release/xsl-ns/current/")))))
             (replace 'install
               (lambda _
                 (let ((select-rx (make-regexp
