@@ -66,13 +66,11 @@
                (ftw "." (lambda (file stat flag)
                           (unless (<= early-1980 (stat:mtime stat))
                             (utime file early-1980 early-1980))
-                          #t))
-               #t)))
+                          #t)))))
          (add-after 'build 'patch-exec-bin-sh
            (lambda _
              (substitute* "test/run"
-               (("/bin/sh") (which "sh")))
-             #t))
+               (("/bin/sh") (which "sh")))))
          (add-before 'check 'patch-tests
            (lambda _
              ;; The coreutils do not have an ACL bit to remove from their
@@ -84,12 +82,9 @@
              (substitute* "Makefile.in"
                ((".*test/misc\\.test.*") "")
                ((".*test/cp\\.test.*") "")
-               ((".*test/setfacl-X\\.test.*") ""))
-             #t)))))
+               ((".*test/setfacl-X\\.test.*") "")))))))
     (inputs (list attr))
-    (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("perl" ,perl)))
+    (native-inputs (list gettext-minimal perl))
     (home-page "https://savannah.nongnu.org/projects/acl")
     (synopsis
      "Library and tools for manipulating access control lists")
