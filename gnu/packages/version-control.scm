@@ -555,20 +555,6 @@ everything from small to very large projects with speed and efficiency.")
             (add-after 'build 'build-subtree
               (lambda* (#:key native-inputs inputs #:allow-other-keys)
                 (with-directory-excursion "contrib/subtree"
-                  (substitute* "Makefile"
-                    ;; Apparently `xmlto' does not bother to looks up the
-                    ;; stylesheets specified in the XML, unlike the above
-                    ;; substitution.  Instead it uses a hard-coded URL.  Work
-                    ;; around it here, but if this is common perhaps we should
-                    ;; hardcode this path in xmlto itself.
-                    (("\\$\\(XMLTO\\) -m \\$\\(MANPAGE_XSL\\)")
-                     (string-append "$(XMLTO) -x "
-                                    (search-input-directory
-                                     (or native-inputs inputs)
-                                     (string-append
-                                      "xml/xsl/docbook-xsl-"
-                                      #$(package-version docbook-xsl)))
-                                    "/manpages/docbook.xsl -m $(MANPAGE_XSL)")))
                   (invoke "make")
                   (invoke "make" "install")
                   (invoke "make" "install-doc")
@@ -721,6 +707,7 @@ everything from small to very large projects with speed and efficiency.")
        ;; For subtree documentation.
        (append asciidoc
                docbook2x
+               docbook-xml-4.5
                docbook-xsl
                libxslt
                pkg-config
