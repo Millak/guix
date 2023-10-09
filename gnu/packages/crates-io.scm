@@ -41520,7 +41520,8 @@ linear algebra library.")
         (base32
          "0mp0di7zv1r9gn3r3pmqnyy6q94akd9d6bl1p7m76nm9hgj9rw56"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:skip-build? #t     ; Wants node for napi-build-0.2 and napi-sys-0.4
+       #:cargo-inputs
        (("rust-encoding-rs" ,rust-encoding-rs-0.8)
         ("rust-futures" ,rust-futures-0.3)
         ("rust-napi-sys" ,rust-napi-sys-0.4)
