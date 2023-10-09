@@ -85,6 +85,7 @@
   #:use-module (gnu packages cran)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages datastructures)
@@ -23127,9 +23128,8 @@ module capable of computing base-level alignments for very large sequences.")
               "-DGDCM_DOCUMENTATION:BOOL=ON"
               "-DGDCM_PDF_DOCUMENTATION:BOOL=OFF"
               (string-append "-DGDCM_INSTALL_DOC_DIR="
-                             #$output:doc "/share/doc/" #$name)
-              "-DGDCM_BUILD_DOCBOOK_MANPAGES:BOOL=OFF"))) ; TODO: need ‘xsl-ns’
-    (native-inputs (list doxygen graphviz))
+                             #$output:doc "/share/doc/" #$name))))
+    (native-inputs (list docbook-xsl doxygen graphviz libxslt))
     (home-page "https://gdcm.sourceforge.net/wiki/index.php/Main_Page")
     (synopsis "Grassroots DICOM library")
     (description
