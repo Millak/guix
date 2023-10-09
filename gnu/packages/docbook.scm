@@ -30,6 +30,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages groff)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages inkscape)
   #:use-module (gnu packages tex)
@@ -37,6 +38,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages web)
   #:use-module (gnu packages web-browsers)
   #:use-module (gnu packages xfig)
   #:use-module (gnu packages xml)
@@ -910,6 +912,12 @@ Detect the differences in markup between two SGML files.
                          `("PERL5LIB" ":" prefix ,perl5lib)
                          `("XML_CATALOG_FILES" " " prefix ,xml-catalog-files)))
                      programs))))
+          (add-after 'install 'sgml-check
+            ;; This is not covered by 'make check'.
+            ;; Test that 'sgml2xml-isoent' works.
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "make" "installcheck"))))
           (add-after 'install 'create-symlinks
             (lambda _
               ;; Create db2x_* symlinks to satisfy some configure scripts
@@ -921,6 +929,7 @@ Detect the differences in markup between two SGML files.
                    '("docbook2man" "docbook2texi")))))))
     (inputs
      (list bash-minimal
+           opensp
            perl
            perl-xml-namespacesupport
            perl-xml-parser
@@ -929,7 +938,11 @@ Detect the differences in markup between two SGML files.
            texinfo
            libxslt))
     (native-inputs
-     (list autoconf automake libtool))
+     (list autoconf automake libtool
+           tidy-html
+           ;; For tests
+           docbook-xml-4.1.2 docbook-xml-4.2 docbook-xml-4.4
+           groff-minimal libxml2))
     (home-page "https://docbook2x.sourceforge.net")
     (synopsis "Convert DocBook to man page and Texinfo format")
     (description
