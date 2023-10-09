@@ -60850,7 +60850,8 @@ Pwrite traits from the scroll crate.")
          (base32
           "1fb9ym5bwswx01yyggn7v2vfryih4vnqpp4r4ssv3qaqpn7xynig"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:skip-build? #t     ; TODO: Fix building rust-ring-0.14
+       #:cargo-inputs
        (("rust-ring" ,rust-ring-0.14)
         ("rust-untrusted" ,rust-untrusted-0.6))
        #:phases
