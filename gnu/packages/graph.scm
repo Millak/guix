@@ -842,7 +842,7 @@ transformed into common image formats for display or printing.")
     (arguments
      `(#:imported-modules (,@%default-gnu-imported-modules
                            (guix build python-build-system))
-       #:modules (,@%default-gnu-imported-modules
+       #:modules (,@%default-gnu-modules
                   ((guix build python-build-system) #:select (site-packages)))
        ;; The build process peaks around 4GB/RAM per core.
        #:parallel-build? #f
