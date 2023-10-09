@@ -62452,25 +62452,25 @@ commonly used by Ruby on Rails via Rack.")
 (define-public rust-serde-repr-0.1
   (package
     (name "rust-serde-repr")
-    (version "0.1.10")
+    (version "0.1.16")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "serde_repr" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0knbzc87nlrfnm1jh3zmx77hxflnzk0xl8xcv7jvn3m2fkxcjpls"))))
+        (base32 "005x2q9x6cdqp312mjhggbzd6vkg8r0abcg0biz0z9dkmpgy29c7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-1.0.34)
-        ("rust-quote" ,rust-quote-1.0.10)
-        ("rust-syn" ,rust-syn-1))
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-2))
        #:cargo-development-inputs
        (("rust-rustversion" ,rust-rustversion-1)
         ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1.0.73)
-        ("rust-trybuild" ,rust-trybuild-1.0.19))))
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-trybuild" ,rust-trybuild-1))))
     (home-page "https://github.com/dtolnay/serde-repr")
     (synopsis "Serialize and deserialize C-like enum as underlying repr")
     (description
