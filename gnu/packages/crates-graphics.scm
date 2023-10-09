@@ -1217,20 +1217,18 @@ EUI-64, also known as MAC-48 media access control addresses.")
   (package
     (inherit rust-glutin-egl-sys-0.4)
     (name "rust-glutin-egl-sys")
-    (version "0.1.5")
+    (version "0.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "glutin-egl-sys" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "04f2ci9kb8q4dv4kviigvgfy54lr4jmbnmjsvi50qj13anjnmfra"))))
+        (base32 "0g81bz7ppvaksvwcw1jg553g8b2shvmnfm9ms6hixwvinj20z438"))))
     (arguments
      `(#:cargo-inputs
        (("rust-winapi" ,rust-winapi-0.3)
-        ("rust-gl-generator" ,rust-gl-generator-0.13))))))
+        ("rust-gl-generator" ,rust-gl-generator-0.14))))))
 
 (define-public rust-glutin-emscripten-sys-0.1
   (package
