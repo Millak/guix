@@ -25198,13 +25198,13 @@ includes data sets from oceanography.")
 (define-public r-plotroc
   (package
     (name "r-plotroc")
-    (version "2.3.0")
+    (version "2.3.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "plotROC" version))
               (sha256
                (base32
-                "0kaz9hrimi9gi7cf7flag9kc9yrg5fdyylqa5hn53x4dy8vhj37g"))
+                "15jvn1dlx8qh5ghnkhqyc49frw6rp58ikpjs3ga8mjxrqyz7wb1g"))
               (snippet
                '(delete-file "inst/d3.v3.min.js"))))
     (properties `((upstream-name . "plotROC")))
