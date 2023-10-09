@@ -1556,30 +1556,30 @@ full-featured UI aimed at clinical researchers.")
          (sha256
           (base32 "0r7n3a6bvcxkbpda4mwmrpicii09iql5z69nkjqygkwxw7ny3309"))))
       (build-system gnu-build-system)
-      (inputs
-       `(("giflib" ,giflib)
-         ("libjpeg" ,libjpeg-turbo)
-         ("libpng" ,libpng)
-         ("perl" ,perl)))
-      (native-inputs
-       `(("pkg-config" ,pkg-config)
-         ("docbook-xml" ,docbook-xml-4.2)
-         ("docbook-xsl" ,docbook-xsl)
-         ("xsltproc" ,libxslt)))
       (arguments
-       `(#:tests? #f                    ; No tests.
-         #:make-flags (list
-                       (string-append "PREFIX=" (assoc-ref %outputs "out"))
-                       (string-append "MANPAGE_XSL="
-                                      (assoc-ref %build-inputs "docbook-xsl")
-                                      "/xml/xsl/docbook-xsl-*/manpages/docbook.xsl"))
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (add-before 'install 'fix-directory-creation
-             (lambda* (#:key outputs #:allow-other-keys)
-               (mkdir-p (string-append (assoc-ref outputs "out") "/share/man/man1"))
-               #t)))))
+       (list
+        #:tests? #f                    ; No tests.
+        #:make-flags
+        #~(list
+           (string-append "PREFIX=" #$output)
+           (format #f "MANPAGE_XSL=~a/xml/xsl/~a-~a/manpages/docbook.xsl"
+                   #$(this-package-native-input "docbook-xsl")
+                   #$(package-name
+                      (this-package-native-input "docbook-xsl"))
+                   #$(package-version
+                      (this-package-native-input "docbook-xsl"))))
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (add-before 'install 'fix-directory-creation
+              (lambda _
+                (mkdir-p (string-append #$output "/share/man/man1")))))))
+      (inputs
+       (list giflib libjpeg-turbo libpng
+             perl))
+      (native-inputs
+       (list docbook-xml-4.2 docbook-xsl
+             libxslt pkg-config))
       (home-page "https://www.complang.tuwien.ac.at/schani/metapixel/")
       (synopsis "Photomosaics generator")
       (description "Metapixel is a program for generating photomosaics.  It can
