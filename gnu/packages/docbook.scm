@@ -388,7 +388,46 @@ downloading from @var{source}, where @var{version} is a string and
                                   "http://docbook.sourceforge.net/release/xsl/current/"
                                   store-uri
                                   catalog))
-                        (list "rewriteSystem" "rewriteURI")))
+                        (list "rewriteSystem" "rewriteURI"))
+
+                       ;; Originally the
+                       ;; "http://docbook.sourceforge.net/release/xsl/"
+                       ;; URI referred to the non-namespaced docbook-xsl,
+                       ;; with its namespaced version using a URI differing in
+                       ;; the path component as '…/xsl-ns/'.
+                       ;; At some point the namespaced version was made the
+                       ;; canonical docbook-xsl package whilst preserving the
+                       ;; original URI.
+                       ;;
+                       ;; For compatibility with XML files that still specify
+                       ;; the legacy namespaced docbook-xsl URIs we re-add them
+                       ;; here.
+                       (for-each
+                        (lambda (type)
+                          ;; Remap /xsl-ns/ to /xsl/.
+                          ;; Note: URI resolutions are not recursive.
+                          ;; A rewrite rule from:
+                          ;;   'http://docbook.sourceforge.net/release/xsl-ns/'
+                          ;; to
+                          ;;   'http://docbook.sourceforge.net/release/xsl/'
+                          ;; will not trigger the rewrite rule that ultimately
+                          ;; remaps to a /gnu/store URI, as can be seen by
+                          ;; invoking:
+                          ;; $ xmlcatalog "" \
+                          ;;     'http://docbook.sourceforge.net/release/xsl-ns/current/'
+                          ;; http://docbook.sourceforge.net/release/xsl/current/
+                          ;; $ xmlcatalog "" \
+                          ;;     'http://docbook.sourceforge.net/release/xsl/current/'
+                          ;; file://gnu/store/…/xml/xsl/…
+                          ;;
+                          ;; See XML Catalog specification, item 7.2.2. for
+                          ;; details.
+                          (invoke xmlcatalog "--noout"
+                                "--add" type
+                                "http://docbook.sourceforge.net/release/xsl-ns/current/"
+                                store-uri
+                                catalog))
+                          (list "rewriteSystem" "rewriteURI")))
                      catalog-files))))
             (replace 'install
               (lambda _
