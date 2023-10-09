@@ -51,7 +51,8 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
-  #:use-module (guix build-system python))
+  #:use-module (guix build-system python)
+  #:use-module (srfi srfi-26))
 
 ;; The fetch-plan, install-plan and phases for docbook-xml tend to vary
 ;; between releases therefore we use a “template” package for the
@@ -750,7 +751,9 @@ the in DocBook SGML DTDs.")
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "0yd09nypswy3q4scri1dg7dr99d7gd6r2dwx0xm81l9f4y32gs0n"))))
+                "0yd09nypswy3q4scri1dg7dr99d7gd6r2dwx0xm81l9f4y32gs0n"))
+              (patches
+               (search-patches "dblatex-inkscape-1.0.patch"))))
     (outputs '("out" "doc"))
     (build-system python-build-system)
     (arguments
@@ -773,40 +776,89 @@ the in DocBook SGML DTDs.")
                     (new (string-append #$output:doc "/share/doc")))
                 (mkdir-p (dirname new))
                 (rename-file old new))))
-          (add-after 'wrap 'set-path
+          (add-after 'wrap 'wrap-dblatex
             (lambda* (#:key inputs #:allow-other-keys)
-              (let ((path (map (lambda (x)
-                                 (string-append (assoc-ref inputs x)
-                                                "/bin"))
-                               (list "libxslt"
-                                     "imagemagick" "inkscape"
-                                     "texlive-updmap.cfg"))))
+              (let ((path
+                     (search-path-as-list
+                      '("bin")
+                      '#$(map (cut this-package-input <>)
+                              (list "libxslt" "imagemagick" "inkscape"
+                                    "fig2dev" "texlive-bin")))))
                 ;; dblatex executes helper programs at runtime.
                 (wrap-program (string-append #$output "/bin/dblatex")
-                  `("PATH" ":" prefix ,path))))))))
+                  `("PATH" ":" prefix ,path)
+                  `("GUIX_TEXMF" prefix (,(getenv "GUIX_TEXMF")))))))
+          (add-after 'check 'check-wrap
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (unsetenv "GUIX_TEXMF")
+                (invoke/quiet (string-append #$output "/bin/dblatex")
+                              "--quiet" "tests/mathml/mmltest2.xml")))))))
+    (native-inputs (list docbook-mathml-1.0))
     (inputs
-     (list (texlive-updmap.cfg (list texlive-anysize
-                                             texlive-appendix
-                                             texlive-changebar
-                                             texlive-fancybox
-                                             texlive-fancyvrb
-                                             texlive-float
-                                             texlive-footmisc
-                                             texlive-jknapltx
-                                             texlive-listings
-                                             texlive-multirow
-                                             texlive-overpic
-                                             texlive-pdfpages
-                                             texlive-refcount
-                                             texlive-rsfs
-                                             texlive-stmaryrd
-                                             texlive-subfigure
-                                             texlive-titlesec
-                                             texlive-wasysym))
-           ;; FIXME: transfig causes the build to fail.
-           ;;transfig                   ;for fig2dev
+     (list texlive-bin
+           (texlive-updmap.cfg (list texlive-amsmath
+                                     texlive-anysize
+                                     texlive-appendix
+                                     texlive-auxhook
+                                     texlive-bigintcalc
+                                     texlive-bin
+                                     texlive-bitset
+                                     texlive-bookmark
+                                     texlive-changebar
+                                     texlive-colortbl
+                                     texlive-courier
+                                     texlive-eepic
+                                     texlive-epstopdf-pkg
+                                     texlive-eso-pic
+                                     texlive-etexcmds
+                                     texlive-fancybox
+                                     texlive-fancyhdr
+                                     texlive-fancyvrb
+                                     texlive-float
+                                     texlive-footmisc
+                                     texlive-gettitlestring
+                                     texlive-graphics
+                                     texlive-graphics-cfg
+                                     texlive-helvetic
+                                     texlive-hycolor
+                                     texlive-hyperref
+                                     texlive-infwarerr
+                                     texlive-intcalc
+                                     texlive-jknapltx
+                                     texlive-kpathsea
+                                     texlive-kvdefinekeys
+                                     texlive-kvoptions
+                                     texlive-kvsetkeys
+                                     texlive-l3backend
+                                     texlive-latex
+                                     texlive-latex-bin
+                                     texlive-letltxmacro
+                                     texlive-listings
+                                     texlive-ltxcmds
+                                     texlive-multirow
+                                     texlive-overpic
+                                     texlive-pdfescape
+                                     texlive-pdflscape
+                                     texlive-pdfpages
+                                     texlive-pdftexcmds
+                                     texlive-psnfss
+                                     texlive-refcount
+                                     texlive-rerunfilecheck
+                                     texlive-rsfs
+                                     texlive-stmaryrd
+                                     texlive-subfigure
+                                     texlive-symbol
+                                     texlive-times
+                                     texlive-titlesec
+                                     texlive-tools
+                                     texlive-uniquecounter
+                                     texlive-url
+                                     texlive-wasysym
+                                     texlive-zapfding))
+           fig2dev
            imagemagick                  ;for convert
-           inkscape/stable              ;for svg conversion
+           inkscape                     ;for svg conversion
            docbook-xml
            libxslt))                    ;for xsltproc
     ;; lib/dbtexmf/xslt/4xslt.py shows that this package
@@ -832,7 +884,8 @@ DB2LaTeX.")
   (hidden-package
    (package/inherit dblatex
      (inputs (modify-inputs (package-inputs dblatex)
-               (replace "imagemagick" imagemagick/stable))))))
+               (replace "imagemagick" imagemagick/stable)
+               (replace "inkscape" inkscape/stable))))))
 
 (define-public docbook-utils
   (package
