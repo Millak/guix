@@ -129,7 +129,7 @@ chart.")
                                          "/etc/boxes-config"))
        #:modules
        ((ice-9 match)
-        ,@%default-gnu-imported-modules)
+        ,@%default-gnu-modules)
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
