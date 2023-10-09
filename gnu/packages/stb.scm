@@ -47,7 +47,7 @@
        `(#:modules ((ice-9 ftw)
                     (ice-9 regex)
                     (srfi srfi-26)
-                    ,@%default-gnu-imported-modules)
+                    ,@%default-gnu-modules)
          #:phases (modify-phases %standard-phases
                     (delete 'configure)
                     (delete 'build)
