@@ -743,6 +743,10 @@ the in DocBook SGML DTDs.")
            inkscape/stable              ;for svg conversion
            docbook-xml
            libxslt))                    ;for xsltproc
+    ;; lib/dbtexmf/xslt/4xslt.py shows that this package
+    ;; makes use of XML_CATALOG_FILES and also invokes
+    ;; xsltproc.
+    (native-search-paths %libxslt-search-paths)
     (home-page "https://dblatex.sourceforge.net")
     (synopsis "DocBook to LaTeX Publishing")
     (description
