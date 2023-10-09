@@ -50,17 +50,17 @@
   #:use-module (guix build-system trivial)
   #:use-module (guix build-system python))
 
-(define-public docbook-xml
+;; The fetch-plan, install-plan and phases for docbook-xml tend to vary
+;; between releases therefore we use a “template” package for the
+;; transformations that are common to these packages.
+(define* (docbook-xml-package source version)
+  "Return a package for a docbook-xml package version @var{version} and
+downloading from @var{source}, where @var{version} is a string and
+@var{source} is a @code{<origin>} record."
   (package
     (name "docbook-xml")
-    (version "5.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://docbook.org/xml/" version
-                                  "/docbook-v" version "-os.zip"))
-              (sha256
-               (base32
-                "0zqy9prj9wam9dn7v3mgr7ld1axqxdhgrmv06dviwg00ahv43wxk"))))
+    (version version)
+    (source source)
     (build-system copy-build-system)
     (arguments
      (list
@@ -71,23 +71,27 @@
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-permissions
             (lambda _
-              ;; XXX: These files do not need 0755 permission.
+              ;; These files do not need 0755 permission.
               (for-each (cut chmod <> #o644) (find-files "."))))
           (add-before 'install 'patch-catalog-xml
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((xsltproc (search-input-file inputs "/bin/xsltproc"))
-                    (dtd-path (string-append #$output "/xml/dtd/docbook")))
-                (invoke xsltproc "--nonet" "--noout"
-                        "--stringparam" "prefix" dtd-path
-                        "--output" "catalog.xml.new"
-                        #$(local-file
-                           (search-auxiliary-file "xml/patch-catalog-xml.xsl"))
-                        "catalog.xml")
-                (rename-file "catalog.xml.new" "catalog.xml"))))
-          (replace 'install
-            (lambda _
-              (let ((dtd-path (string-append #$output "/xml/dtd/docbook")))
-                (copy-recursively "." dtd-path)))))))
+                    (xslt-file #$(local-file
+                                  (search-auxiliary-file
+                                   "xml/patch-catalog-xml.xsl")))
+                    ;; Avoid profile conflicts by installing to a
+                    ;; versioned path.
+                    (dest-path
+                     (format #f "~a/xml/docbook/~a" #$output #$version)))
+                (for-each
+                 (lambda (catalog)
+                   (let ((catalog* (string-append catalog ".new")))
+                     (invoke xsltproc "--nonet" "--novalid" "--noout"
+                             "--stringparam" "prefix" dest-path
+                             "--output" catalog*
+                             xslt-file catalog)
+                     (rename-file catalog* catalog)))
+                 (find-files "." "catalog\\.xml$"))))))))
     (native-inputs (list libxslt unzip))
     (home-page "https://docbook.org")
     (synopsis "DocBook XML DTDs for document authoring")
@@ -97,95 +101,152 @@ suited to books and papers about computer hardware and software (though it is
 by no means limited to these applications.)  This package provides XML DTDs.")
     (license (license:x11-style "" "See file headers."))))
 
+(define-public docbook-xml-5.1
+  (let* ((version "5.1")
+         (source (origin
+                   (method url-fetch/zipbomb)
+                   (uri (string-append "https://docbook.org/xml/" version
+                                       "/docbook-v" version "-os.zip"))
+                   (sha256
+                    (base32
+                     "0zqy9prj9wam9dn7v3mgr7ld1axqxdhgrmv06dviwg00ahv43wxk"))))
+         (template (docbook-xml-package source version)))
+    (package
+      (inherit template)
+      (arguments
+       (let ((dest-dir (format #f "xml/docbook/~a/" version)))
+         (substitute-keyword-arguments (package-arguments template)
+           ;; XXX: A default value must be provided otherwise this
+           ;; substitution has no effect.
+           ((#:install-plan _ #f)
+            #~`(("schemas/" #$dest-dir)))))))))
+;; XXX: docbook-xml-4.x versions use the same #:install-plan but since the
+;; paths are versioned we can't use (inherit …).
+(define* (docbook-xml-4.x-package source version)
+  "Return a template for a docbook-xml-4.x package version @var{version} and
+downloading from @var{source}, where @var{version} is a string and
+@var{source} is a @code{<origin>} record."
+  (let ((base-template (docbook-xml-package source version)))
+    (package
+      (inherit base-template)
+      (arguments
+       (let* ((dest-dir (format #f "xml/docbook/~a/" version)))
+         (substitute-keyword-arguments (package-arguments base-template)
+           ((#:phases phases)
+            ;; Some programs, such as kdoctools, instead of using
+            ;; XML_CATALOG_FILES, prefer to use cmake to locate
+            ;; the DTDs for docbook-xml-4.x packages but
+            ;; since there's no agreed standard as to where these files
+            ;; should be placed, in practice the .cmake files
+            ;; end up searching for paths that are distribution specific.
+            #~(modify-phases #$phases
+                (add-after 'install 'symlink-alternate-path
+                  (lambda _
+                    ;; kdoctools searches under xml/dtd/docbook/
+                    ;; which is the convention used by Nix.
+                    (mkdir-p (string-append #$output "/xml/dtd"))
+                    (symlink (string-append #$output "/" #$dest-dir)
+                             (string-append #$output "/xml/dtd/docbook"))))))
+           ((#:install-plan _ #f)
+            #~`(("./" #$dest-dir
+                 #:exclude-regexp ("ChangeLog$"
+                                   "README$"
+                                   "docbook\\.cat$"
+                                   "\\.txt$"))))))))))
+
 (define-public docbook-xml-4.5
-  (package
-    (inherit docbook-xml)
-    (version "4.5")
-    (source (origin
-              (method url-fetch/zipbomb)
-              (uri (string-append "https://docbook.org/xml/" version
-                                  "/docbook-xml-" version ".zip"))
-              (sha256
-               (base32
-                "1d671lcjckjri28xfbf6dq7y3xnkppa910w1jin8rjc35dx06kjf"))))))
+  (let* ((version "4.5")
+         (source (origin
+                   (method url-fetch/zipbomb)
+                   (uri (string-append "https://docbook.org/xml/" version
+                                       "/docbook-xml-" version ".zip"))
+                   (sha256
+                    (base32
+                     "1d671lcjckjri28xfbf6dq7y3xnkppa910w1jin8rjc35dx06kjf")))))
+    (docbook-xml-4.x-package source version)))
 
 (define-public docbook-xml-4.4
-  (package (inherit docbook-xml)
-    (version "4.4")
-    (source (origin
-              (method url-fetch/zipbomb)
-              (uri (string-append "https://docbook.org/xml/" version
-                                  "/docbook-xml-" version ".zip"))
-              (sha256
-               (base32
-                "141h4zsyc71sfi2zzd89v4bb4qqq9ca1ri9ix2als9f4i3mmkw82"))))))
+  (let* ((version "4.4")
+         (source (origin
+                   (method url-fetch/zipbomb)
+                   (uri (string-append "https://docbook.org/xml/" version
+                                       "/docbook-xml-" version ".zip"))
+                   (sha256
+                    (base32
+                     "141h4zsyc71sfi2zzd89v4bb4qqq9ca1ri9ix2als9f4i3mmkw82")))))
+    (docbook-xml-4.x-package source version)))
 
 (define-public docbook-xml-4.3
-  (package (inherit docbook-xml)
-    (version "4.3")
-    (source (origin
-              (method url-fetch/zipbomb)
-              (uri (string-append "https://docbook.org/xml/" version
-                                  "/docbook-xml-" version ".zip"))
-              (sha256
-               (base32
-                "0r1l2if1z4wm2v664sqdizm4gak6db1kx9y50jq89m3gxaa8l1i3"))))))
+  (let* ((version "4.3")
+         (source (origin
+                   (method url-fetch/zipbomb)
+                   (uri (string-append "https://docbook.org/xml/" version
+                                       "/docbook-xml-" version ".zip"))
+                   (sha256
+                    (base32
+                     "0r1l2if1z4wm2v664sqdizm4gak6db1kx9y50jq89m3gxaa8l1i3")))))
+    (docbook-xml-4.x-package source version)))
 
 (define-public docbook-xml-4.2
-  (package (inherit docbook-xml)
-    (version "4.2")
-    (source (origin
-              (method url-fetch/zipbomb)
-              (uri (string-append "https://docbook.org/xml/" version
-                                  "/docbook-xml-" version ".zip"))
-              (sha256
-               (base32
-                "18hgwvmywh6a5jh38szjmg3hg2r4v5lb6r3ydc3rd8cp9wg61i5c"))))))
+  (let* ((version "4.2")
+         (source (origin
+                   (method url-fetch/zipbomb)
+                   (uri (string-append "https://docbook.org/xml/" version
+                                       "/docbook-xml-" version ".zip"))
+                   (sha256
+                    (base32
+                     "18hgwvmywh6a5jh38szjmg3hg2r4v5lb6r3ydc3rd8cp9wg61i5c")))))
+    (docbook-xml-4.x-package source version)))
 
 (define-public docbook-xml-4.1.2
-  (package
-    (inherit docbook-xml)
-    (version "4.1.2")
-    (source (origin
-              (method url-fetch/zipbomb)
-              (uri (string-append "https://docbook.org/xml/" version
-                                  "/docbkx412.zip"))
-              (sha256
-               (base32
-                "0wkp5rvnqj0ghxia0558mnn4c7s3n501j99q2isp3sp0ci069w1h"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments docbook-xml)
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (add-after 'unpack 'copy-catalog-file
-              ;; docbook-xml-4.1.2 is unique in the fact that it doesn't come
-              ;; with a catalog.xml file, requiring it to be generated by hand
-              ;; from the docbook.cat SGML catalog. We could automatically
-              ;; generate it here at the cost of enlarging the package
-              ;; definition with a rudimentary (PEG) parser for the SGML
-              ;; catalog but this is overkill since this file is unlikely to
-              ;; change, therefore we ship a pre-generated catalog.xml.
-              (lambda _
-                (copy-file
-                 #$(local-file
-                    (search-auxiliary-file
-                     "xml/docbook-xml/catalog-4.1.2.xml"))
-                 "catalog.xml")))
-            (add-after 'patch-catalog-xml 'add-rewrite-entries
-              (lambda* (#:key inputs #:allow-other-keys)
-                (let ((xmlcatalog (search-input-file inputs "/bin/xmlcatalog"))
-                      (dtd-path (string-append #$output "/xml/dtd/docbook")))
-                  (for-each
-                   (lambda (type)
-                     (invoke xmlcatalog "--noout"
-                             "--add" type
-                             "http://www.oasis-open.org/docbook/xml/4.1.2/"
-                             (string-append "file://" dtd-path "/")
-                             "catalog.xml"))
-                   (list "rewriteSystem" "rewriteURI")))))))))
-    (native-inputs
-     (modify-inputs (package-native-inputs docbook-xml)
-       (prepend libxml2)))))
+  (let* ((version "4.1.2")
+         (source (origin
+                   (method url-fetch/zipbomb)
+                   (uri (string-append "https://docbook.org/xml/" version
+                                       "/docbkx412.zip"))
+                   (sha256
+                    (base32
+                     "0wkp5rvnqj0ghxia0558mnn4c7s3n501j99q2isp3sp0ci069w1h"))))
+         (template (docbook-xml-4.x-package source version)))
+    (package
+      (inherit template)
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'copy-catalog-file
+                ;; docbook-xml-4.1.2 is unique in the fact that it doesn't come
+                ;; with a catalog.xml file, requiring it to be generated by hand
+                ;; from the docbook.cat SGML catalog. We could automatically
+                ;; generate it here at the cost of enlarging the package
+                ;; definition with a rudimentary (PEG) parser for the SGML
+                ;; catalog but this is overkill since this file is unlikely to
+                ;; change, therefore we ship a pre-generated catalog.xml.
+                (lambda _
+                  (copy-file
+                   #$(local-file
+                      (search-auxiliary-file
+                       "xml/docbook-xml/catalog-4.1.2.xml"))
+                   "catalog.xml")))
+              (add-after 'patch-catalog-xml 'add-rewrite-entries
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((xmlcatalog (search-input-file inputs
+                                                       "/bin/xmlcatalog"))
+                        (dtd-path (format #f "~a/xml/docbook/~a"
+                                          #$output #$version)))
+                    (for-each
+                     (lambda (type)
+                       (invoke xmlcatalog "--noout"
+                               "--add" type
+                               "http://www.oasis-open.org/docbook/xml/4.1.2/"
+                               (string-append "file:" dtd-path "/")
+                               "catalog.xml"))
+                     (list "rewriteSystem" "rewriteURI")))))))))
+      (native-inputs
+       (modify-inputs (package-native-inputs template)
+         (prepend libxml2))))))
+
+(define-public docbook-xml docbook-xml-5.1)
 
 ;;; There's an issue in docbook-xsl 1.79.2 that causes manpages to be
 ;;; generated incorrectly and embed raw nroff syntax such as '.PP' when there
