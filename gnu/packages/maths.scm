@@ -9208,7 +9208,7 @@ symbolic reasoning engines that need to reason about polynomial constraints.")
      (arguments
       (list #:test-target "test"
             #:modules `((ice-9 match)
-                        ,@%default-gnu-imported-modules)
+                        ,@%default-gnu-modules)
             #:configure-flags #~(list "--aiger=.")
             #:phases
             #~(modify-phases %standard-phases
