@@ -3015,7 +3015,7 @@ inspired by the SCSH regular expression system.")
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((ice-9 match) (ice-9 ftw)
-                  ,@%default-gnu-imported-modules)
+                  ,@%default-gnu-modules)
        #:tests? #f ; test suite is non-deterministic :(
        #:phases (modify-phases %standard-phases
                   (add-after 'install 'wrap-haunt
