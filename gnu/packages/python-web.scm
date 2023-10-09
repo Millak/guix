@@ -5136,22 +5136,23 @@ Google search engine.  Its module is called @code{googlesearch}.")
 (define-public python-google-api-client
   (package
     (name "python-google-api-client")
-    (version "1.12.8")
+    (version "2.102.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "google-api-python-client" version))
        (sha256
         (base32
-         "1fq89wifa9ymby655is246w5d54ixybffj5vz7lwzhpf8926ifgk"))))
+         "07b9afz3g3lk976i974h6ikvl7wzwm0a0ws0iynxvmd4favgjvwh"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f))    ; tests require internet access
     (propagated-inputs
-     (list python-google-api-core-1
-           python-google-auth-1
+     (list python-google-api-core
+           python-google-auth
            python-google-auth-httplib2
            python-httplib2
+           python-pyparsing
            python-six
            python-uritemplate-3))
     (home-page "https://github.com/google/google-api-python-client")
@@ -5162,12 +5163,12 @@ Google search engine.  Its module is called @code{googlesearch}.")
 (define-public python-google-auth-httplib2
   (package
     (name "python-google-auth-httplib2")
-    (version "0.1.0")
+    (version "0.1.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "google-auth-httplib2" version))
               (sha256
-               (base32 "1b1hrhah01hx6bj3rb83iybrdwqv0bbdy63py39srv1bcgykjz50"))))
+               (base32 "0agwwgw04nks7lzpm224fbvpnjfgzz67pkrfls77ipf6zmawajy6"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-google-auth python-httplib2 python-six))
