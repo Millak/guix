@@ -3300,7 +3300,7 @@ The picture values can directly be displayed in Geiser.")
        `(#:modules
          ((ice-9 match)
           (srfi srfi-1)
-          ,@%default-gnu-imported-modules)
+          ,@%default-gnu-modules)
          #:tests? #f                    ; there are none
          #:make-flags
          (list (string-append "PICT_DIR="
