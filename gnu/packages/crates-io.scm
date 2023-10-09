@@ -72428,7 +72428,11 @@ writing asynchronous I/O backed applications.")
        (uri (crate-uri "tokio" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1xhaadfmm6m37f79xv5020gc3np9wqza3bq95ymp522qpfsw02as"))))
+        (base32 "1xhaadfmm6m37f79xv5020gc3np9wqza3bq95ymp522qpfsw02as"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "Cargo.toml"
+                   (("features = \\[\"tokio\"\\]") ""))))))
     (arguments
      `(#:cargo-inputs
        (("rust-bytes" ,rust-bytes-0.4)
