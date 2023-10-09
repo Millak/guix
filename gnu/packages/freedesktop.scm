@@ -1774,20 +1774,6 @@ Analysis and Reporting Technology) functionality.")
               (string-append "--with-html-dir=" #$output:doc
                              "/share/doc/udisks/html")
               (string-append "--with-udevdir=" #$output "/lib/udev"))
-      #:make-flags
-      #~(let* ((docbook-xsl-name-version
-                #$(string-append (package-name docbook-xsl) "-"
-                                 (package-version docbook-xsl)))
-               (docbook-xsl-catalog-file
-                (string-append #$(this-package-native-input "docbook-xsl")
-                               "/xml/xsl/" docbook-xsl-name-version
-                               "/catalog.xml"))
-               (docbook-xml-catalog-file
-                #$(file-append (this-package-native-input "docbook-xml")
-                               "/xml/dtd/docbook/catalog.xml")))
-          ;; Reference the catalog files required to build the manpages.
-          (list (string-append "XML_CATALOG_FILES=" docbook-xsl-catalog-file
-                               " " docbook-xml-catalog-file)))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'configure 'fix-girdir
