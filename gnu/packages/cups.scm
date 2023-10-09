@@ -949,7 +949,7 @@ language.")
       (arguments
        `(#:modules
          ((srfi srfi-26)
-          ,@%default-gnu-imported-modules)
+          ,@%default-gnu-modules)
          #:make-flags
          (list (string-append "CUPSDRV="
                               (assoc-ref %outputs "out") "/share/cups/drv")
