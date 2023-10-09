@@ -4393,7 +4393,8 @@ easy-to-understand binary values.")
            (lambda _
              (setenv "CC" "gcc")
              (invoke "make" "tunctl")))
-         ;; TODO: Requires docbook2x to generate man page from SGML.
+         ;; TODO: Requires docbook-to-man (unrelated to docbook2x and
+         ;; docbook-utils) to generate man page from SGML.
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
