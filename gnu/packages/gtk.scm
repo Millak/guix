@@ -2259,36 +2259,38 @@ information.")
                (search-patches "gtk-doc-respect-xml-catalog.patch"))))
     (build-system meson-build-system)
     (arguments
-     `(#:parallel-tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-gtk-doc-scan
-           (lambda* (#:key inputs #:allow-other-keys)
+     (list
+      #:parallel-tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-gtk-doc-scan
+            ;; Use a substitution to avoid setting docbook-xsl as a
+            ;; propagated input.
+            (lambda _
              (substitute* "gtk-doc.xsl"
                (("http://docbook.sourceforge.net/release/xsl/current/html/chunk.xsl")
-                (string-append (assoc-ref inputs "docbook-xsl")
-                               "/xml/xsl/docbook-xsl-"
-                               ,(package-version docbook-xsl)
-                               "/html/chunk.xsl"))
+                #$(let ((docbook-xsl (this-package-input "docbook-xsl")))
+                    (file-append docbook-xsl
+                                 "/xml/xsl/" (package-name docbook-xsl)
+                                 "-" (package-version docbook-xsl)
+                                 "/html/chunk.xsl")))
                (("http://docbook.sourceforge.net/release/xsl/current/common/en.xml")
-                (string-append (assoc-ref inputs "docbook-xsl")
-                               "/xml/xsl/docbook-xsl-"
-                               ,(package-version docbook-xsl)
-                               "/common/en.xml")))
-             #t))
+                #$(let ((docbook-xsl (this-package-input "docbook-xsl")))
+                    (file-append docbook-xsl
+                                 "/xml/xsl/" (package-name docbook-xsl)
+                                 "-" (package-version docbook-xsl)
+                                 "/common/en.xsl"))))))
          (add-after 'unpack 'disable-failing-tests
            (lambda _
              (substitute* "tests/Makefile.am"
                (("annotations.sh bugs.sh empty.sh fail.sh gobject.sh program.sh")
-                ""))
-             #t))
+                ""))))
          (add-after 'install 'wrap-executables
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (for-each (lambda (prog)
-                           (wrap-program prog
-                             `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))))
-                         (find-files (string-append out "/bin")))))))))
+           (lambda _
+             (for-each (lambda (prog)
+                         (wrap-program prog
+                           `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))))
+                       (find-files (string-append #$output "/bin"))))))))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")
