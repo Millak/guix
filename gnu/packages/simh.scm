@@ -53,7 +53,7 @@
            #:make-flags
            #~(list (string-append "GCC=" #$(cc-for-target) " -fcommon"))
            #:modules `((ice-9 string-fun)
-                       ,@%default-gnu-imported-modules)
+                       ,@%default-gnu-modules)
            #:phases
            #~(modify-phases %standard-phases
                (delete 'configure)
