@@ -61,6 +61,7 @@
   #:use-module (guix download)
   #:use-module (guix bzr-download)
   #:use-module (guix git-download)
+  #:use-module (guix search-paths)
   #:use-module ((guix build utils) #:select (alist-replace))
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system glib-or-gtk)
@@ -2316,6 +2317,8 @@ information.")
            python-pygments
            source-highlight
            yelp-tools))
+    ;; xsltproc's search paths, to avoid propagating libxslt.
+    (native-search-paths %libxslt-search-paths)
     (home-page "https://wiki.gnome.org/DocumentationProject/GtkDoc")
     (synopsis "GTK+ DocBook Documentation Generator")
     (description "GtkDoc is a tool used to extract API documentation from C-code
