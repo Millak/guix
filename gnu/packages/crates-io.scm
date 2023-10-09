@@ -41680,7 +41680,8 @@ linear algebra library.")
     (native-inputs
      (list pkg-config))
     (arguments
-     `(#:cargo-inputs
+     `(#:skip-build? #t     ; Wants node.
+       #:cargo-inputs
        (("rust-bindgen" ,rust-bindgen-0.55)
         ("rust-semver" ,rust-semver-0.10)
         ("rust-tar" ,rust-tar-0.4))
