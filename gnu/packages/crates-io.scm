@@ -67582,7 +67582,11 @@ struct.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1mvfv1l8vp3y402fkl2wcl34hi7gmr4bqha13dfz2xf3kjzwvhhn"))))
+          "1mvfv1l8vp3y402fkl2wcl34hi7gmr4bqha13dfz2xf3kjzwvhhn"))
+        (snippet
+         #~(begin (use-modules (guix build utils))
+                  (substitute* "Cargo.toml"
+                    ((".*lints.*") ""))))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f
