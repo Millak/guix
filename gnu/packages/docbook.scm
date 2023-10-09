@@ -773,18 +773,20 @@ DB2LaTeX.")
               (sha256
                (base32
                 "1scj5vgw1xz872pq54a89blcxqqm11p90yzv8a9mqq57x27apyj8"))
+              (patches
+               (search-patches "docbook-utils-documentation-edits.patch"
+                               "docbook-utils-escape-characters.patch"
+                               "docbook-utils-remove-jade-sp.patch"
+                               "docbook-utils-respect-refentry-for-name.patch"
+                               "docbook-utils-use-date-element.patch"
+                               "docbook-utils-source-date-epoch.patch"))
               (modules '((guix build utils)))
               (snippet
                #~(begin
                    ;; Patch build system.
-                   (substitute* (find-files "." "\\.in$")
+                   (substitute* (find-files "." "\\.(in|am)$")
                      ;; Do not hard-code SGML_CATALOG_FILES.
-                     ((".*SGML_CATALOG_FILES=/etc/sgml/catalog.*") "")
-                     ;; Use OpenSP and OpenJade.
-                     (("\\bjade\\b")
-                      "openjade")
-                     (("\\bnsgmls\\b")
-                      "onsgmls"))
+                     ((".*SGML_CATALOG_FILES=/etc/sgml/catalog.*") ""))
 
                    ;; Do not override the SGML_CATALOG_FILES environment
                    ;; variable.
@@ -804,7 +806,12 @@ DB2LaTeX.")
                      (("CONVERT=/usr/bin/")
                       "CONVERT=")
                      (("\\[ -x /usr/bin/([^ ]+) \\]" _ command)
-                      (format #f "command -v ~a > /dev/null" command)))))))
+                      (format #f "command -v ~a > /dev/null" command)))
+
+                   ;; This forces autoreconf to be invoked, needed for patches
+                   ;; to be effective.
+                   (delete-file  "configure")))))
+    (native-inputs (list autoconf automake libtool))
     (build-system gnu-build-system)
     ;; Propagated for convenience.  All these tools are used at run time to
     ;; provide the complete functionality of the docbook-utils commands.

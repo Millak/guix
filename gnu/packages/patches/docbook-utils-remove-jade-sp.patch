@@ -1,0 +1,216 @@
+# Source: <https://sources.debian.org/patches/docbook-utils/0.6.14-4/remove-jade-sp.patch/>
+Description: Change dependencies on jade and sp to openjade and opensp
+Author: Neil Roeth <neil@debian.org>
+Last-Update: 2016-07-24
+
+Edit by Bruno Victal <mirai@makinata.eu>:
+  Patch was edited so that it could be applied against the original
+  docbook-utils-0.6.14 sources.
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+--- a/doc/HTML/Makefile.am
++++ b/doc/HTML/Makefile.am
+@@ -1,4 +1,4 @@
+-htmldir	  = $(docdir)/html/docbook-utils-@VERSION@
++htmldir	  = $(docdir)/html
+ html_DATA = api.html \
+ 	backend-spec.html \
+ 	docbook2man.html \
+@@ -25,6 +25,6 @@
+ 		$(top_srcdir)/doc/refentry/sgmldiff.sgml
+ 	SGML_CATALOG_FILES=/etc/sgml/catalog \
+ 	SGML_SEARCH_PATH=$(top_srcdir):$(top_srcdir)/doc:.. \
+-		jade -t sgml -i html -d $(top_srcdir)/docbook-utils.dsl\#html \
++		openjade -t sgml -i html -d $(top_srcdir)/docbook-utils.dsl\#html \
+ 			-V '%use-id-as-filename%' $<
+ 
+--- a/doc/man/Makefile.am
++++ b/doc/man/Makefile.am
+@@ -12,5 +12,5 @@
+ 		$(top_srcdir)/helpers/docbook2man-spec.pl
+ 	SGML_CATALOG_FILES=/etc/sgml/catalog \
+ 	SGML_SEARCH_PATH=$(top_srcdir)/doc:.. \
+-		nsgmls $< | \
++		onsgmls $< | \
+ 		sgmlspl $(top_srcdir)/helpers/docbook2man-spec.pl
+--- a/backends/man.in
++++ b/backends/man.in
+@@ -7,8 +7,8 @@
+ TMPDIR=`mktemp -d /tmp/man.XXXXXX` || \
+  { echo >&2 "man backend: could not create secure temporary directory"; exit 1;}
+ trap 'rm -rf "${TMPDIR}"' EXIT
+-nsgmls $SGML_FILE > "${TMPDIR}/nsgmls.tmp"
+-sgmlspl $HELPER <"${TMPDIR}/nsgmls.tmp" 2>"${TMPDIR}/errs"
++onsgmls $SGML_FILE > "${TMPDIR}/onsgmls.tmp"
++sgmlspl $HELPER <"${TMPDIR}/onsgmls.tmp" 2>"${TMPDIR}/errs"
+ if [ $? -ne 0 ]
+ then
+   cat "${TMPDIR}/errs"
+@@ -18,7 +18,7 @@
+ if grep unresolved "${TMPDIR}/errs" >/dev/null 2>&1
+ then
+   echo "Resolving references.."
+-  sgmlspl $HELPER <"${TMPDIR}/nsgmls.tmp"
++  sgmlspl $HELPER <"${TMPDIR}/onsgmls.tmp"
+   if [ $? -ne 0 ]
+   then exit 1
+   fi
+--- a/backends/texi.in
++++ b/backends/texi.in
+@@ -3,7 +3,7 @@
+ # This program is under GPL license. See LICENSE file for details.
+ 
+ # Convert to texinfo
+-nsgmls $SGML_FILE | sgmlspl $SGML_BASE_DIR/docbook/utils-@VERSION@/helpers/docbook2texi-spec.pl >$SGML_FILE_NAME.texi
++onsgmls $SGML_FILE | sgmlspl docbook2texi-spec.pl >$SGML_FILE_NAME.texi
+ if [ $? -ne 0 ]
+ then exit 1
+ fi
+--- a/bin/sgmldiff.in
++++ b/bin/sgmldiff.in
+@@ -22,13 +22,13 @@
+ 
+ use strict;
+ use integer;
+-use vars qw($nsgmls $errors $errorlog $VERSION);
++use vars qw($onsgmls $errors $errorlog $VERSION);
+ use Getopt::Long 2.01;
+ 
+ $VERSION = 1.03;
+ 
+-my $nsgmls;
+-$nsgmls = "@jade_bindir@/nsgmls";
++my $onsgmls;
++$onsgmls = "@jade_bindir@/onsgmls";
+ 
+ #----------------------------------------------------------------------
+ # TODO:
+@@ -37,7 +37,7 @@
+ # - Wait for suggestions ;-)
+ # 
+ # Note: the input file need not be valid, nor is it necessary to have 
+-# the DTDs.  nsgmls always returns a structure.
++# the DTDs.  onsgmls always returns a structure.
+ #----------------------------------------------------------------------
+ 
+ # Get file name
+@@ -141,11 +141,11 @@
+ unlink $diff2;
+ 
+ #---------------------------------------------------------------------
+-# Process nsgmls output: keep all stuff that is important for the
++# Process onsgmls output: keep all stuff that is important for the
+ # structure comparison.  Make two structures: one that is diffed
+ # (without text) (DIFF) and one that is used to present the
+ # differences to the user (@full).  For more info: see SP
+-# documentation, nsgmls output format.
++# documentation, onsgmls output format.
+ 
+ sub prepare {
+     my($filename,$todiffname) = @_;
+@@ -161,7 +161,7 @@
+     my @line_numbered = ();
+     my $line = 0;
+ 
+-    open(ESIS, "$nsgmls -l $errors $errorlog -onotation-sysid -oid -oempty $filename | ");  #-oentity generates strange output; ? -ononsgml
++    open(ESIS, "$onsgmls -l $errors $errorlog -onotation-sysid -oid -oempty $filename | ");  #-oentity generates strange output; ? -ononsgml
+     open(DIFF, "> $todiffname");
+     while (<ESIS>) {
+ 	chomp $_;
+@@ -375,7 +375,7 @@
+ };
+ 
+ #----------------------------------------------------------------------
+-# Normalise data text from nsgmls (i.e. don't print the escaped text).
++# Normalise data text from onsgmls (i.e. don't print the escaped text).
+ sub normalise_text {
+     my($string,$prefix) = @_;
+     my $result = "$prefix";
+--- a/configure.in
++++ b/configure.in
+@@ -21,7 +21,7 @@
+ 
+ dnl Checks for programs.
+ jade_bindirs="/usr/bin /usr/local/bin"
+-AC_FIND_PROGRAM(nsgmls, $jade_bindirs, jade_bindir)
++AC_FIND_PROGRAM(onsgmls, $jade_bindirs, jade_bindir)
+ AC_SUBST(jade_bindir)
+ 
+ perl_bindirs="/usr/bin /usr/local/bin"
+--- a/doc/refentry/docbook2man-spec.pl.sgml
++++ b/doc/refentry/docbook2man-spec.pl.sgml
+@@ -19,7 +19,7 @@
+ <!-- docbook2man-spec.pl BREAKAGE HERE! -->
+ 
+ <CmdSynopsis>
+-<Command>nsgmls</command>
++<Command>onsgmls</command>
+ <Arg><Replaceable>sgml document</replaceable></Arg>
+ <Command>| sgmlspl</command>
+ <Arg choice=req>docbook2man-spec.pl</arg>
+@@ -35,7 +35,7 @@
+ </Para>
+ 
+ <Para>
+-The program reads ESIS produced by nsgmls (or other SGML parsers) from
++The program reads ESIS produced by onsgmls (or other SGML parsers) from
+ standard input.  Markup not found in RefEntry is discarded.
+ </Para>
+ 
+--- a/doc/refentry/docbook2texi-spec.pl.sgml
++++ b/doc/refentry/docbook2texi-spec.pl.sgml
+@@ -20,7 +20,7 @@
+ <!-- docbook2man-spec.pl BREAKAGE HERE! -->
+ 
+ <CmdSynopsis>
+-<Command>nsgmls</command>
++<Command>onsgmls</command>
+ <Arg><Replaceable>sgml document</replaceable></Arg>
+ <Command>| sgmlspl</command>
+ <Arg choice=req>docbook2texi-spec.pl</arg>
+@@ -37,7 +37,7 @@
+ </Para>
+ 
+ <Para>
+-The program reads ESIS produced by nsgmls (or other SGML parsers) from
++The program reads ESIS produced by onsgmls (or other SGML parsers) from
+ standard input.  Currently the document element must be <SGMLTag>Book</sgmltag>,
+ otherwise the results are undefined.
+ </Para>
+--- a/doc/refentry/jw.sgml
++++ b/doc/refentry/jw.sgml
+@@ -630,7 +630,7 @@
+     <manvolnum>1</manvolnum></citerefentry>,
+     <citerefentry><refentrytitle>install-catalog</refentrytitle>
+     <manvolnum>8</manvolnum></citerefentry>,
+-    <citerefentry><refentrytitle>nsgmls</refentrytitle>
++    <citerefentry><refentrytitle>onsgmls</refentrytitle>
+     <manvolnum>1</manvolnum></citerefentry>, <ulink
+     url="http://sources.redhat.com/docbook-tools/">docbook-utils
+     homepage</ulink>.</para>
+--- a/doc/refentry/sgmldiff.sgml
++++ b/doc/refentry/sgmldiff.sgml
+@@ -238,10 +238,10 @@
+         <glossterm>
+ <!-- Next line  is a hack to force a paragraph break in the man-page. -->
+ <cmdsynopsis> <command></command> </cmdsynopsis>
+-          <citerefentry> <refentrytitle>nsgmls</refentrytitle> <manvolnum>1</manvolnum> </citerefentry>
++          <citerefentry> <refentrytitle>onsgmls</refentrytitle> <manvolnum>1</manvolnum> </citerefentry>
+         </glossterm>
+         <glossdef>
+-          <para>a base component of <application>Jade</application> DSSSL engine</para>
++          <para>a base component of <application>OpenJade</application> DSSSL engine</para>
+         </glossdef>
+       </glossentry>
+ 
+--- a/helpers/docbook2man-spec.pl
++++ b/helpers/docbook2man-spec.pl
+@@ -7,7 +7,7 @@
+ The SGMLSpm package from CPAN.  This contains the sgmlspl script which
+ is used to grok this file.  Use it like this:
+ 
+-nsgmls some-docbook-document.sgml | sgmlspl docbook2man-spec.pl
++onsgmls some-docbook-document.sgml | sgmlspl docbook2man-spec.pl
+ 
+ =head1 DESCRIPTION
+ 
