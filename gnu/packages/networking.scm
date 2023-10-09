@@ -1656,7 +1656,7 @@ intended as a substitute for the PPPStatus and EthStatus projects.")
      (list gettext-minimal
            pkg-config
            docbook-xsl
-           docbook-xml
+           docbook-xml-5.0.1
            libxml2                      ;for XML_CATALOG_FILES
            libxslt))
     (inputs
