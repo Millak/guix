@@ -868,7 +868,7 @@ variable defined below.  It requires guile-json to be installed."
                   (rnrs io ports)
                   (guix elf)
                   (guix build gremlin)
-                  ,@%default-gnu-imported-modules)
+                  ,@%default-gnu-modules)
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'apply-guix-specific-patches
