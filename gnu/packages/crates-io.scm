@@ -79786,7 +79786,8 @@ Verification.")
          (base32
           "10nhyxlqsa4caxlxrijm5h79rdg6ld8hqy78ldjnnfhaj3biqzjg"))))
     (arguments
-     `(#:tests? #f  ; tests fail to build "missing file tests/ed25519/ee.der"
+     `(#:skip-build? #t     ; TODO: Fix building rust-ring-0.14
+       #:tests? #f  ; tests fail to build "missing file tests/ed25519/ee.der"
        #:cargo-inputs
        (("rust-ring" ,rust-ring-0.14)
         ("rust-untrusted" ,rust-untrusted-0.6))
