@@ -66430,7 +66430,7 @@ deeply recursive algorithms that may accidentally blow the stack.")
          "1zr8zy3kzryaggz3k0j4135m3zbd31pyqmja8cyj8yp07mpzn4z1"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-development-inputs
+     `(#:cargo-inputs
        (("rust-version-check" ,rust-version-check-0.9))))
     (home-page "https://github.com/jhpratt/standback")
     (synopsis "New standard library, old compiler")
