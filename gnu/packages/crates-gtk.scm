@@ -1395,14 +1395,14 @@
   (package
     (inherit rust-glib-macros-0.17)
     (name "rust-glib-macros")
-    (version "0.15.11")
+    (version "0.15.13")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "glib-macros" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0r3cr0c79rs91z0sps089nsf8ppnm8agp48qwwqlkc32lqqq39i5"))))
+        (base32 "0jiwvywmkqhih6glipj1c7aylwfr738jid8nmjr4yvx2dygsxihh"))))
     (arguments
      `(;; XXX: Circular dependency on rust-glib??
        #:tests? #f
