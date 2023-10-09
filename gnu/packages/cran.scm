@@ -7400,14 +7400,14 @@ median test.")
 (define-public r-ksamples
   (package
     (name "r-ksamples")
-    (version "1.2-9")
+    (version "1.2-10")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "kSamples" version))
        (sha256
         (base32
-         "1zs22p68d6320kcylisnk0b5wmpapxkyz15py09czxzw7npw8gms"))))
+         "13ap5ggid3w3s3k5mzz1ir31j96hjg6msa2s1hcy66zv242wqrid"))))
     (properties `((upstream-name . "kSamples")))
     (build-system r-build-system)
     (propagated-inputs
