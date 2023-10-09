@@ -3939,7 +3939,7 @@ module provides support functions to the automatically generated code.")
                            ,@%default-gnu-imported-modules)
        #:modules ((srfi srfi-1)
                   ((guix build python-build-system) #:select (python-version))
-                  ,@%default-gnu-imported-modules)
+                  ,@%default-gnu-modules)
        #:phases
        (modify-phases %standard-phases
          (replace 'configure
