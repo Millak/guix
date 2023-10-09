@@ -71,7 +71,7 @@
     ;; For building the manual pages.
     (native-inputs
      (list docbook-xml-4.4
-           docbook-xsl     ;without -next, man pages are corrupted
+           docbook-xsl
            libxml2
            libxslt))
     (home-page "https://joeyh.name/code/moreutils/")

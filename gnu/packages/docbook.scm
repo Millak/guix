@@ -47,7 +47,6 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
-  #:use-module (guix build-system trivial)
   #:use-module (guix build-system python))
 
 ;; The fetch-plan, install-plan and phases for docbook-xml tend to vary
