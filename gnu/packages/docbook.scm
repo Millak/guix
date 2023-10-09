@@ -883,11 +883,18 @@ Detect the differences in markup between two SGML files.
                       "<bridgehead renderas=\"sect2\">"))
                    ;; Force a new autoreconf run.
                    (delete-file "configure")))))
+    (outputs '("out" "doc"))
     (build-system gnu-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'install 'move-doc
+            (lambda _
+              (let* ((old (string-append #$output "/share/doc"))
+                     (new (string-append #$output:doc "/share/doc")))
+                (mkdir-p (dirname new))
+                (rename-file old new))))
           (add-after 'install 'wrap-programs
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (let* ((programs
