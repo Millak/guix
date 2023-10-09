@@ -79818,7 +79818,8 @@ Verification.")
         (base32 "0zx1v8afa4ig97dyqfrnlj5i7pib6dnfw88qn2iiqhfq2rrrdmqp"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:skip-build? #t     ; TODO: Fix building rust-ring-0.13
+       #:cargo-inputs
        (("rust-ring" ,rust-ring-0.13)
         ("rust-untrusted" ,rust-untrusted-0.6))
        #:cargo-development-inputs
