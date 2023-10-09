@@ -3066,28 +3066,19 @@ MIDI functionality to the Linux-based operating system.")
                "09m4dnn4kplawprd2bl15nwa0b4r1brab3x44ga7f1fyk7aw5zwq"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags (list ;; The udev rule is responsible for restoring
-                               ;; the volume.
-                               (string-append "--with-udev-rules-dir="
-                                              (assoc-ref %outputs "out")
-                                              "/lib/udev/rules.d"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'disable-broken-test
-           (lambda _
-             ;; XXX: The 1.1.8 release tarball is missing a header that's
-             ;; required for this test to work.  Fixed in 1.1.9.
-             (substitute* "axfer/test/Makefile"
-               ((".*container-test.*") ""))
-             #t))
-         (add-before
-           'install 'pre-install
-           (lambda _
-             ;; Don't try to mkdir /var/lib/alsa.
-             (substitute* "Makefile"
-               (("\\$\\(MKDIR_P\\) .*ASOUND_STATE_DIR.*")
-                "true\n"))
-             #t)))))
+     (list
+      #:configure-flags
+      #~(list
+         ;; The udev rule is responsible for restoring the volume.
+         (string-append "--with-udev-rules-dir=" #$output "/lib/udev/rules.d"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'pre-install
+            (lambda _
+              ;; Don't try to mkdir /var/lib/alsa.
+              (substitute* "Makefile"
+                (("\\$\\(MKDIR_P\\) .*ASOUND_STATE_DIR.*")
+                 "true\n")))))))
     (native-inputs
      (list docbook-xml-4.2 docbook-xsl xmlto
            gettext-minimal))
