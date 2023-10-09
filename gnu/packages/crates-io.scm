@@ -15385,8 +15385,30 @@ numbers using the CORDIC method.")
     (description "Implementation detail of the @code{core_extensions} crate.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-core2-0.4
+  (package
+    (name "rust-core2")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "core2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "01f5xv0kf3ds3xm7byg78hycbanb8zlpvsfv4j47y46n3bpsg6xl"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-memchr" ,rust-memchr-2))))
+    (home-page "https://github.com/bbqsrc/core2")
+    (synopsis "Bare essentials of @code{std::io} for use in @code{no_std}")
+    (description
+      "This package provides the bare essentials of @code{std::io} for use
+in @code{no_std}.  Alloc support is optional.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-core2-0.3
   (package
+    (inherit rust-core2-0.4)
     (name "rust-core2")
     (version "0.3.3")
     (source
@@ -15395,15 +15417,8 @@ numbers using the CORDIC method.")
         (uri (crate-uri "core2" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "1wzzy5iazdk5caadxvjfwrd312rbg7a55a1zpmsdrhk3kfpa77r3"))))
-    (build-system cargo-build-system)
-    (arguments `(#:cargo-inputs (("rust-memchr" ,rust-memchr-2))))
-    (home-page "https://github.com/bbqsrc/core2")
-    (synopsis "Bare essentials of @code{std::io} for use in @code{no_std}")
-    (description
-      "This package provides the bare essentials of @code{std::io} for use
-in @code{no_std}.  Alloc support is optional.")
-    (license (list license:asl2.0 license:expat))))
+         (base32 "1wzzy5iazdk5caadxvjfwrd312rbg7a55a1zpmsdrhk3kfpa77r3"))))
+    (arguments `(#:cargo-inputs (("rust-memchr" ,rust-memchr-2))))))
 
 (define-public rust-cookie-store-0.19
   (package
