@@ -52,7 +52,7 @@
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((ice-9 ftw)
-                  ,@%default-gnu-imported-modules)
+                  ,@%default-gnu-modules)
        #:configure-flags '("--disable-static")
        #:tests? ,(not (or (%current-target-system)
                           (target-hurd?)))
