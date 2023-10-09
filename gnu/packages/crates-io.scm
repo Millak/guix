@@ -42642,7 +42642,10 @@ applications written in Rust.  Its API is inspired by the popular
        (("rust-lazy_static" ,rust-lazy-static-1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-nitrokey-sys" ,rust-nitrokey-sys-3)
-        ("rust-rand_core" ,rust-rand-core-0.5))))
+        ("rust-rand_core" ,rust-rand-core-0.5))
+       #:cargo-development-inputs
+       (("rust-nitrokey-test" ,rust-nitrokey-test-0.3)
+        ("rust-nitrokey-test-state" ,rust-nitrokey-test-state-0.1))))
     (home-page "https://git.sr.ht/~ireas/nitrokey-rs")
     (synopsis "Rust bindings to libnitrokey")
     (description
