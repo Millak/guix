@@ -38865,22 +38865,25 @@ testing of matrixcompare.")
 (define-public rust-matrixmultiply-0.3
   (package
     (name "rust-matrixmultiply")
-    (version "0.3.1")
+    (version "0.3.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "matrixmultiply" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0hdpsvw28in1m9c5h8a7abzxv70rq8l5hg5h8k6sxpyrfsvib2js"))))
+        (base32 "1whgrp8ph7904aslqx87h9qm0ks4pxdj2nysffmrhiys6v7w2x3m"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-num-cpus" ,rust-num-cpus-1)
+     `(#:cargo-inputs
+       (("rust-autocfg" ,rust-autocfg-1)
+        ("rust-num-cpus" ,rust-num-cpus-1)
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-rawpointer" ,rust-rawpointer-0.2)
-        ("rust-thread-tree" ,rust-thread-tree-0.3))))
+        ("rust-thread-tree" ,rust-thread-tree-0.3))
+       #:cargo-development-inputs
+       (("rust-bencher" ,rust-bencher-0.1)
+        ("rust-itertools" ,rust-itertools-0.8))))
     (home-page "https://github.com/bluss/matrixmultiply/")
     (synopsis "General matrix multiplication for f32 and f64 matrices")
     (description "General matrix multiplication for f32 and f64 matrices.
