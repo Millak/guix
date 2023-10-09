@@ -79990,7 +79990,8 @@ with webpki.")
          (base32
           "03ny02mwqdgd2ff23k03kbwr2rrcaymxhp7jcjjikfh340hs83y1"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:skip-build? #t     ; TODO: Fix building rust-ring-0.14
+       #:cargo-inputs
        (("rust-untrusted" ,rust-untrusted-0.6)
         ("rust-webpki" ,rust-webpki-0.19))))))
 
