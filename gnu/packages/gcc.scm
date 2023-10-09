@@ -1103,7 +1103,7 @@ as the 'native-search-paths' field."
     (native-search-paths search-paths)
     (arguments
      (substitute-keyword-arguments (package-arguments gcc)
-       ((#:modules modules %default-gnu-imported-modules)
+       ((#:modules modules %default-gnu-modules)
         `(,@modules
           (srfi srfi-1)
           (srfi srfi-26)
