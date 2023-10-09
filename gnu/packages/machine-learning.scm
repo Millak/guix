@@ -387,7 +387,7 @@ Learning usecases.")
        `(#:imported-modules (,@%default-gnu-imported-modules
                              (guix build python-build-system))
          #:modules          ((guix build python-build-system)
-                             ,@%default-gnu-imported-modules)
+                             ,@%default-gnu-modules)
          #:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'enter-dir
