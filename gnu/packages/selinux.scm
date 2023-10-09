@@ -251,7 +251,7 @@ binary policies.")
     (name "python-sepolgen")
     (arguments
      (substitute-keyword-arguments (package-arguments libsepol)
-       ((#:modules _ #~%default-gnu-imported-modules)
+       ((#:modules _ #~%default-gnu-modules)
         '((srfi srfi-1)
           (guix build gnu-build-system)
           (guix build utils)))
