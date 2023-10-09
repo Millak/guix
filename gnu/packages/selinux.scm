@@ -60,7 +60,8 @@
               (file-name (git-file-name "selinux" version))
               (sha256
                (base32
-                "1lcmgmfr0q7g5cwg6b7jm6ncw8cw6c1jblkm93v1g37bfhcgrqc0"))))
+                "1lcmgmfr0q7g5cwg6b7jm6ncw8cw6c1jblkm93v1g37bfhcgrqc0"))
+              (patches (search-patches "libsepol-versioned-docbook.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -231,14 +232,6 @@ binary policies.")
     (name "secilc")
     (arguments
      (substitute-keyword-arguments (package-arguments libsepol)
-       ((#:make-flags flags)
-        #~(let ((xsl (search-input-directory %build-inputs "xml/xsl")))
-            (cons (string-append "XMLTO=xmlto --skip-validation -x "
-                                 xsl "/docbook-xsl-"
-                                 #$(package-version
-                                    (this-package-native-input "docbook-xsl"))
-                                 "/manpages/docbook.xsl")
-                  #$flags)))
        ((#:phases phases)
         #~(modify-phases #$phases
             (delete 'portability)
@@ -247,7 +240,7 @@ binary policies.")
     (inputs
      (list libsepol))
     (native-inputs
-     (list xmlto docbook-xsl))
+     (list docbook-xml-4.2 docbook-xsl xmlto))
     (synopsis "SELinux common intermediate language (CIL) compiler")
     (description "The SELinux CIL compiler is a compiler that converts the
 @dfn{common intermediate language} (CIL) into a kernel binary policy file.")

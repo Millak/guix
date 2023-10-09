@@ -1,0 +1,56 @@
+# Sent upstream: <https://lore.kernel.org/selinux/260cd39c55ff2d13f5ac916b508f023bedecfce9.1692025627.git.mirai@makinata.eu/>
+
+From 260cd39c55ff2d13f5ac916b508f023bedecfce9 Mon Sep 17 00:00:00 2001
+Message-Id: <260cd39c55ff2d13f5ac916b508f023bedecfce9.1692827278.git.mirai@makinata.eu>
+From: Bruno Victal <mirai@makinata.eu>
+Date: Mon, 14 Aug 2023 15:51:05 +0100
+Subject: [PATCH] secilc: Use versioned DocBook public identifier.
+
+Fix xml validation issues that often crop up since the XML catalogs
+for DocBook often only contain versioned public identifiers.
+
+Signed-off-by: Bruno Victal <mirai@makinata.eu>
+---
+ secilc/secil2conf.8.xml | 2 +-
+ secilc/secil2tree.8.xml | 2 +-
+ secilc/secilc.8.xml     | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/secilc/secil2conf.8.xml b/secilc/secil2conf.8.xml
+index 33646f97..330b6a07 100644
+--- a/secilc/secil2conf.8.xml
++++ b/secilc/secil2conf.8.xml
+@@ -1,5 +1,5 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+-<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML//EN"
++<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+                "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+ 
+ <refentry>
+diff --git a/secilc/secil2tree.8.xml b/secilc/secil2tree.8.xml
+index e95a8947..d7bb177e 100644
+--- a/secilc/secil2tree.8.xml
++++ b/secilc/secil2tree.8.xml
+@@ -1,5 +1,5 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+-<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML//EN"
++<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+                "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+ 
+ <refentry>
+diff --git a/secilc/secilc.8.xml b/secilc/secilc.8.xml
+index e9a121e2..5c0680a8 100644
+--- a/secilc/secilc.8.xml
++++ b/secilc/secilc.8.xml
+@@ -1,5 +1,5 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+-<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML//EN"
++<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+                "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+ 
+ <refentry>
+
+base-commit: f6dc6acfa00707ce25c6357169111937f12512dd
+-- 
+2.40.1
+
