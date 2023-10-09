@@ -77993,15 +77993,17 @@ Unix users and groups.")
 (define-public rust-utf8-width-0.1
   (package
     (name "rust-utf8-width")
-    (version "0.1.4")
+    (version "0.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "utf8-width" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ylf5mvzck81iszchxyqmhwimkcdqv7jhazvd454g911cchsqwch"))))
+        (base32 "18fbr6bbkfprs0hb2pdz3ckfb6i1gm0j0x7ka3fhvbyd5m2ck42i"))))
     (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-bencher" ,rust-bencher-0.1))))
     (home-page "https://magiclen.org/utf8-width")
     (synopsis "Determine the width of a UTF-8 character")
     (description
