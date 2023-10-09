@@ -888,6 +888,9 @@ Detect the differences in markup between two SGML files.
     (build-system gnu-build-system)
     (arguments
      (list
+      #:modules '((guix build gnu-build-system)
+                  (guix build utils)
+                  (srfi srfi-26))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'move-doc
@@ -898,20 +901,20 @@ Detect the differences in markup between two SGML files.
                 (rename-file old new))))
           (add-after 'install 'wrap-programs
             (lambda* (#:key inputs outputs #:allow-other-keys)
-              (let* ((programs
-                      (map (lambda (p)
-                             (search-input-file outputs
-                                                (string-append "bin/" p)))
-                           '("db2x_manxml" "db2x_texixml" "db2x_xsltproc"
-                             "docbook2man" "docbook2texi")))
-                     (perl5lib
-                      '#$(map (lambda (i)
-                                (file-append (this-package-input i)
-                                             "/lib/perl5/site_perl"))
-                              '("perl-xml-namespacesupport"
-                                "perl-xml-parser"
-                                "perl-xml-sax"
-                                "perl-xml-sax-base"))))
+              (let ((programs
+                     (map (lambda (p)
+                            (search-input-file outputs
+                                               (string-append "bin/" p)))
+                          '("db2x_manxml" "db2x_texixml" "db2x_xsltproc"
+                            "docbook2man" "docbook2texi")))
+                    (perl5lib
+                     (search-path-as-list
+                      '("/lib/perl5/site_perl")
+                      (map (cut assoc-ref inputs <>)
+                           '("perl-xml-namespacesupport"
+                             "perl-xml-parser"
+                             "perl-xml-sax"
+                             "perl-xml-sax-base")))))
                 (map (lambda (program)
                        (wrap-program program
                          `("PERL5LIB" ":" prefix ,perl5lib)))
