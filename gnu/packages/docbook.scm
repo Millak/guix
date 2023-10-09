@@ -692,6 +692,7 @@ the in DocBook SGML DTDs.")
               (sha256
                (base32
                 "0yd09nypswy3q4scri1dg7dr99d7gd6r2dwx0xm81l9f4y32gs0n"))))
+    (outputs '("out" "doc"))
     (build-system python-build-system)
     (arguments
      (list
@@ -707,6 +708,12 @@ the in DocBook SGML DTDs.")
       #:tests? #f                       ;no test suite
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'install 'move-doc
+            (lambda _
+              (let ((old (string-append #$output "/share/doc"))
+                    (new (string-append #$output:doc "/share/doc")))
+                (mkdir-p (dirname new))
+                (rename-file old new))))
           (add-after 'wrap 'set-path
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((path (map (lambda (x)
