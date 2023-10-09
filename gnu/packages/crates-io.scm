@@ -53637,6 +53637,7 @@ and Petrick's method, an algorithm to automatically minimize boolean expressions
         ("rust-tracing-futures" ,rust-tracing-futures-0.2)
         ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3)
         ("rust-url" ,rust-url-2))))
+    (native-inputs (list perl))
     (home-page "https://github.com/quinn-rs/quinn")
     (synopsis "Versatile QUIC transport protocol implementation")
     (description "Versatile QUIC transport protocol implementation")
