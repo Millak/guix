@@ -3348,23 +3348,12 @@ backends, including ALSA, OSS, Network and FluidSynth.")
                 "0kh8pns9pla9c47y2nwckjpiihczg6rpg96aignsdsd7vkql69s9"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f  ; no test target
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'fix-docbook
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "cmake_admin/CreateManpages.cmake"
-               (("http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl")
-                (string-append (assoc-ref inputs "docbook-xsl")
-                               "/xml/xsl/docbook-xsl-"
-                               ,(package-version docbook-xsl)
-                               "/manpages/docbook.xsl")))
-             #t)))))
+     `(#:tests? #f))  ; no test target
     (inputs
      (list drumstick qtbase-5 qtsvg-5 qtx11extras))
     (native-inputs
      (list libxslt ;for xsltproc
-           docbook-xsl qttools-5 pkg-config))
+           docbook-xml-4.4 docbook-xsl qttools-5 pkg-config))
     (home-page "https://vmpk.sourceforge.io/")
     (synopsis "Virtual MIDI piano keyboard")
     (description
