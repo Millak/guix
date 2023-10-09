@@ -16126,19 +16126,20 @@ models.")
 (define-public r-glmmtmb
   (package
     (name "r-glmmtmb")
-    (version "1.1.7")
+    (version "1.1.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "glmmTMB" version))
        (sha256
         (base32
-         "1wf1fn2gf500y2r4d84p5gj3b1fj2cmyw2lp366r4nm6p3iyd2x3"))))
+         "055xi424cd1glhbv8a8v9cm79zq9skb7230nq0xm90iggb1zcj22"))))
     (properties `((upstream-name . "glmmTMB")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lme4
            r-matrix
+           r-mgcv
            r-nlme
            r-numderiv
            r-rcppeigen
