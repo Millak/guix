@@ -11074,17 +11074,14 @@ contain a list of @file{catalog.xml} files (not directories), which are
 to be found in @file{xml} sub-directories---nothing less.  The search
 path specification looks like this:
 
+@c This is defined at (guix search-paths) as $XML_CATALOG_FILES.
 @lisp
-(package
-  (name "libxml2")
-  ;; some fields omitted
-  (native-search-paths
-   (list (search-path-specification
-          (variable "XML_CATALOG_FILES")
-          (separator " ")
-          (files '("xml"))
-          (file-pattern "^catalog\\.xml$")
-          (file-type 'regular)))))
+(search-path-specification
+ (variable "XML_CATALOG_FILES")
+ (separator " ")
+ (files '("xml"))
+ (file-pattern "^catalog\\.xml$")
+ (file-type 'regular))
 @end lisp
 
 Worry not, search path specifications are usually not this tricky.
@@ -11120,21 +11117,31 @@ The type of file being matched---@code{'directory} or @code{'regular},
 though it can be any symbol returned by @code{stat:type} (@pxref{File
 System, @code{stat},, guile, GNU Guile Reference Manual}).
 
-In the libxml2 example above, we would match regular files; in the
-Python example, we would match directories.
+In the @env{XML_CATALOG_FILES} example above, we would match regular
+files; in the Python example, we would match directories.
 
 @item @code{file-pattern} (default: @code{#f})
 This must be either @code{#f} or a regular expression specifying
 files to be matched @emph{within} the sub-directories specified by the
 @code{files} field.
 
-Again, the libxml2 example shows a situation where this is needed.
+Again, the @env{XML_CATALOG_FILES} example shows a situation where this
+is needed.
 @end table
 @end deftp
 
 Some search paths are not tied by a single package but to many packages.
 To reduce duplications, some of them are pre-defined in @code{(guix
 search-paths)}.
+
+@defvar $SGML_CATALOG_FILES
+@defvarx $XML_CATALOG_FILES
+These two search paths indicate where the
+@url{https://www.oasis-open.org/specs/a401.htm,TR9401 catalog}@footnote{
+Alternatively known as SGML catalog.} or
+@url{https://www.oasis-open.org/committees/download.php/14809/xml-catalogs.html,
+XML catalog} files can be found.
+@end defvar
 
 @defvar $SSL_CERT_DIR
 @defvarx $SSL_CERT_FILE
