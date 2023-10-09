@@ -1316,6 +1316,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/gcc-5-fix-powerpc64le-build.patch	\
   %D%/packages/patches/gcc-5-source-date-epoch-1.patch		\
   %D%/packages/patches/gcc-5-source-date-epoch-2.patch		\
+  %D%/packages/patches/gcc-5.5.0-libstdc++-xmlcatalog.patch	\
   %D%/packages/patches/gcc-6-arm-none-eabi-multilib.patch	\
   %D%/packages/patches/gcc-6-cross-environment-variables.patch	\
   %D%/packages/patches/gcc-6-source-date-epoch-1.patch		\
@@ -1335,6 +1336,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/gcc-10-tree-sra-union-handling.patch	\
   %D%/packages/patches/gcc-11-libstdc++-powerpc.patch           \
   %D%/packages/patches/gcc-13-cross-system-header-dir.patch     \
+  %D%/packages/patches/gcc-13.2.0-libstdc++-docbook-xsl-uri.patch	\
+  %D%/packages/patches/gcc-13.2.0-libstdc++-info-install-fix.patch	\
   %D%/packages/patches/gcolor3-update-libportal-usage.patch	\
   %D%/packages/patches/gd-fix-tests-on-i686.patch		\
   %D%/packages/patches/gd-brect-bounds.patch			\

@@ -1,0 +1,50 @@
+# Upstreamed <https://gcc.gnu.org/pipermail/gcc-patches/2023-August/628047.html>
+
+From 2748b8df7a241c5fd6a7c2de6621c5cc56bb6ae1 Mon Sep 17 00:00:00 2001
+Message-Id: <2748b8df7a241c5fd6a7c2de6621c5cc56bb6ae1.1692808412.git.mirai@makinata.eu>
+In-Reply-To: <2db0606adfdb800f3fcc95f2cb6c13ff76246e5f.1692808412.git.mirai@makinata.eu>
+References: <2db0606adfdb800f3fcc95f2cb6c13ff76246e5f.1692808412.git.mirai@makinata.eu>
+From: Bruno Victal <mirai@makinata.eu>
+Date: Mon, 21 Aug 2023 20:58:43 +0100
+Subject: [PATCH 2/2] libstdc++: Update docbook xsl URI.
+
+The URI for namespaced docbook-xsl was updated to reflect the current
+DocBook upstream at <https://cdn.docbook.org/>.
+
+libstdc++-v3/Changelog:
+        * acinclude.m4: Update docbook xsl URI.
+	* configure: Regenerate.
+---
+ libstdc++-v3/acinclude.m4 | 2 +-
+ libstdc++-v3/configure    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/libstdc++-v3/acinclude.m4 b/libstdc++-v3/acinclude.m4
+index b25378eaace..152811fd00d 100644
+--- a/libstdc++-v3/acinclude.m4
++++ b/libstdc++-v3/acinclude.m4
+@@ -604,7 +604,7 @@ dnl  XSL_STYLE_DIR
+ dnl
+ AC_DEFUN([GLIBCXX_CONFIGURE_DOCBOOK], [
+ 
+-glibcxx_docbook_url=http://docbook.sourceforge.net/release/xsl-ns/current/
++glibcxx_docbook_url=http://cdn.docbook.org/release/xsl/current/
+ 
+ AC_MSG_CHECKING([for local stylesheet directory])
+ glibcxx_local_stylesheets=no
+diff --git a/libstdc++-v3/configure b/libstdc++-v3/configure
+index c4da56c3042..d967b137ea1 100755
+--- a/libstdc++-v3/configure
++++ b/libstdc++-v3/configure
+@@ -73923,7 +73923,7 @@ fi
+ 
+ 
+ 
+-glibcxx_docbook_url=http://docbook.sourceforge.net/release/xsl-ns/current/
++glibcxx_docbook_url=http://cdn.docbook.org/release/xsl/current/
+ 
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for local stylesheet directory" >&5
+ $as_echo_n "checking for local stylesheet directory... " >&6; }
+-- 
+2.40.1
+

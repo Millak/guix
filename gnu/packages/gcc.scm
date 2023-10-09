@@ -505,6 +505,9 @@ Go.  It also includes runtime support libraries for these languages.")
                                        "gcc-5.0-libvtv-runpath.patch"
                                        "gcc-5-source-date-epoch-1.patch"
                                        "gcc-5-source-date-epoch-2.patch"
+                                       "gcc-5.5.0-libstdc++-xmlcatalog.patch"
+                                       "gcc-13.2.0-libstdc++-docbook-xsl-uri.patch"
+                                       "gcc-13.2.0-libstdc++-info-install-fix.patch"
                                        "gcc-6-libsanitizer-mode-size.patch"
                                        "gcc-fix-texi2pod.patch"
                                        "gcc-5-hurd.patch"
@@ -693,7 +696,9 @@ It also includes runtime support libraries for these languages.")
             (sha256
              (base32
               "13ygjmd938m0wmy946pxdhz9i1wq7z4w10l6pvidak0xxxj9yxi7"))
-            (patches (search-patches "gcc-9-strmov-store-file-names.patch"
+            (patches (search-patches "gcc-13.2.0-libstdc++-docbook-xsl-uri.patch"
+                                     "gcc-13.2.0-libstdc++-info-install-fix.patch"
+                                     "gcc-9-strmov-store-file-names.patch"
                                      "gcc-9-asan-fix-limits-include.patch"
                                      "gcc-5.0-libvtv-runpath.patch"))
             (modules '((guix build utils)))
@@ -1432,6 +1437,7 @@ provides the GNU compiler for the Go programming language."))
                          libxslt
                          docbook-xml
                          docbook-xsl
+                         docbook2x
                          graphviz)) ;for 'dot', invoked by 'doxygen'
     (inputs '())
     (propagated-inputs '())
@@ -1444,28 +1450,18 @@ provides the GNU compiler for the Go programming language."))
           (add-before 'configure 'chdir
             (lambda _
               (chdir "libstdc++-v3")))
-          (add-before 'configure 'set-xsl-directory
-            (lambda _
-              (substitute* (find-files "doc"
-                                       "^Makefile\\.in$")
-                (("@XSL_STYLE_DIR@")
-                 (string-append #$(this-package-native-input "docbook-xsl")
-                                "/xml/xsl/"
-                                (strip-store-file-name docbook))))))
           (replace 'build
-            (lambda _
-              ;; XXX: There's also a 'doc-info' target, but it
-              ;; relies on docbook2X, which itself relies on
-              ;; DocBook 4.1.2, which is not really usable
-              ;; (lacks a catalog.xml.)
-              (invoke "make"
-                      "doc-html"
-                      "doc-man")))
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (apply invoke `("make" ,@make-flags
+                              "doc-info"
+                              "doc-html"
+                              "doc-man"))))
           (replace 'install
-            (lambda _
-              (invoke "make"
-                      "doc-install-html"
-                      "doc-install-man"))))))
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (apply invoke `("make" ,@make-flags
+                              "doc-install-info"
+                              "doc-install-html"
+                              "doc-install-man")))))))
     (properties (alist-delete 'hidden? (package-properties gcc)))))
 
 (define-public libstdc++-doc-5
