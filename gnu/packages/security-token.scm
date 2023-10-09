@@ -622,10 +622,9 @@ Notable features:
      (list help2man
            gengetopt
            pkg-config
-           gtk-doc
+           gtk-doc/stable
            docbook-xml-4.3
-           eudev
-           libxml2))                    ;for XML_CATALOG_FILES
+           eudev))
     (home-page "https://developers.yubico.com/libu2f-host/")
     ;; TRANSLATORS: The U2F protocol has a "server side" and a "host side".
     (synopsis "U2F host-side C library and tool")
