@@ -1768,7 +1768,6 @@ modular implementation of XML-RPC for C and C++.")
     (native-inputs
      (list docbook-xml-4.1.2
            docbook-xsl
-           libxml2                      ;for XML_CATALOG_DIR
            xmlto
            ;; Dependencies to regenerate the 'configure' script.
            autoconf
