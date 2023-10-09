@@ -7757,15 +7757,13 @@ such as gzip tarballs.")
                  (,(dirname (search-input-file (or native-inputs inputs)
                                                "bin/gdbus"))))))))
        #:configure-flags
-       '("-Ddocbook=false" ; FIXME: disabled because of docbook validation error
-         "-Dman=false"   ; FIXME: disabled because of docbook validation error
-         "-Delogind=true"
+       '("-Delogind=true"
          "-Dsystemd=false"
          "-Dsystemd_session=disable"
          "-Dsystemd_journal=false")))
     (build-system meson-build-system)
     (native-inputs
-     (list docbook-xml
+     (list docbook-xml-4.1.2
            docbook-xsl
            `(,glib "bin")               ; for glib-compile-schemas, etc.
            intltool
