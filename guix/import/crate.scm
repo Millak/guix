@@ -5,6 +5,7 @@
 ;;; Copyright © 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -82,6 +83,7 @@
                  (match-lambda
                    ('null #f)
                    ((? string? str) str)))
+  (yanked?       crate-version-yanked? "yanked")  ;boolean
   (links         crate-version-links))            ;alist
 
 ;; Crate dependency.  Each dependency (each edge in the graph) is annotated as
@@ -255,13 +257,16 @@ look up the development dependencs for the given crate."
       (and (not (null-list? versions))
            (semver->string (last versions)))))
 
-  ;; find the highest version of a crate that fulfills the semver <range>
+  ;; Find the highest version of a crate that fulfills the semver <range>
+  ;; and hasn't been yanked.
   (define (find-crate-version crate range)
     (let* ((semver-range (string->semver-range range))
            (versions
             (sort
              (filter (lambda (entry)
-                       (semver-range-contains? semver-range (first entry)))
+                       (and
+                         (not (crate-version-yanked? (second entry)))
+                         (semver-range-contains? semver-range (first entry))))
                      (map (lambda (ver)
                             (list (string->semver (crate-version-number ver))
                                   ver))
