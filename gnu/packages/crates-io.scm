@@ -78371,7 +78371,16 @@ write operations.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "09i4nf5y8lig6xgj3f7fyrvzd3nlaw4znrihw8psidvv5yk4xkdc"))))
+          "09i4nf5y8lig6xgj3f7fyrvzd3nlaw4znrihw8psidvv5yk4xkdc"))
+        (snippet
+         #~(begin (use-modules (guix build utils))
+                  (for-each delete-file-recursively
+                            '("test-data/normalized/installed/arm64-ios"
+                              "test-data/normalized/installed/x64-osx"
+                              "test-data/normalized/installed/x64-windows"
+                              "test-data/normalized/installed/x64-windows-static"
+                              "test-data/normalized/installed/x86-windows"
+                              "test-data/no-status/installed/x64-windows"))))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Tests want mysql, harfbuzz, graphite2.
