@@ -3315,18 +3315,7 @@ browser.")
                 "1rs248pkgn6d29nkvw9ab6dvi1vsz220jdmz1ddzr29cpyc0adfh"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ; no test target
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'fix-docbook
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "cmake_admin/CreateManpages.cmake"
-               (("http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl")
-                (string-append (assoc-ref inputs "docbook-xsl")
-                               "/xml/xsl/docbook-xsl-"
-                               ,(package-version docbook-xsl)
-                               "/manpages/docbook.xsl")))
-             #t)))))
+     `(#:tests? #f))                      ; no test target
     (inputs
      (list qtbase-5 qtsvg-5 qttools-5 alsa-lib))
     (native-inputs
