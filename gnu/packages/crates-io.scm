@@ -42695,6 +42695,27 @@ communication with Nitrokey devices.")
 nitrokey crate and others using it.")
     (license license:gpl3+)))
 
+(define-public rust-nitrokey-test-0.3
+  (package
+    (inherit rust-nitrokey-test-0.5)
+    (name "rust-nitrokey-test")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "nitrokey-test" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0dzy0lfz2zwn7f1d126avig6risj78a4bvf3zdwjyldaxln0rnpk"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-nitrokey" ,rust-nitrokey-0.9)
+        ("rust-nitrokey-test-state" ,rust-nitrokey-test-state-0.1))))))
+
 (define-public rust-nitrokey-test-state-0.1
   (package
     (name "rust-nitrokey-test-state")
