@@ -72531,7 +72531,11 @@ writing asynchronous I/O backed applications.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0wbgg59mxfvrhzv97y56nh3gmnmw3jj9dhgkmvz27410jjxzpvxf"))))
+         "0wbgg59mxfvrhzv97y56nh3gmnmw3jj9dhgkmvz27410jjxzpvxf"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "Cargo.toml"
+                   (("features = \\[\"tokio\"\\]") ""))))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
