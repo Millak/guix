@@ -14,6 +14,7 @@
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1435,36 +1436,36 @@ provides the GNU compiler for the Go programming language."))
     (inputs '())
     (propagated-inputs '())
     (arguments
-     '(#:out-of-source? #t
-       #:tests? #f                                ;it's just documentation
-       #:phases (modify-phases %standard-phases
-                  (add-before 'configure 'chdir
-                              (lambda _
-                                (chdir "libstdc++-v3")))
-                  (add-before 'configure 'set-xsl-directory
-                              (lambda* (#:key inputs #:allow-other-keys)
-                                (let ((docbook (assoc-ref inputs "docbook-xsl")))
-                                  (substitute* (find-files "doc"
-                                                           "^Makefile\\.in$")
-                                    (("@XSL_STYLE_DIR@")
-                                     (string-append
-                                      docbook "/xml/xsl/"
-                                      (strip-store-file-name docbook)))))))
-                  (replace 'build
-                           (lambda _
-                             ;; XXX: There's also a 'doc-info' target, but it
-                             ;; relies on docbook2X, which itself relies on
-                             ;; DocBook 4.1.2, which is not really usable
-                             ;; (lacks a catalog.xml.)
-                             (invoke "make"
-                                     "doc-html"
-                                     "doc-man")))
-                  (replace 'install
-                           (lambda* (#:key outputs #:allow-other-keys)
-                             (let ((out (assoc-ref outputs "out")))
-                               (invoke "make"
-                                       "doc-install-html"
-                                       "doc-install-man")))))))
+     (list
+      #:out-of-source? #t
+      #:tests? #f                                ;it's just documentation
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'chdir
+            (lambda _
+              (chdir "libstdc++-v3")))
+          (add-before 'configure 'set-xsl-directory
+            (lambda _
+              (substitute* (find-files "doc"
+                                       "^Makefile\\.in$")
+                (("@XSL_STYLE_DIR@")
+                 (string-append #$(this-package-native-input "docbook-xsl")
+                                "/xml/xsl/"
+                                (strip-store-file-name docbook))))))
+          (replace 'build
+            (lambda _
+              ;; XXX: There's also a 'doc-info' target, but it
+              ;; relies on docbook2X, which itself relies on
+              ;; DocBook 4.1.2, which is not really usable
+              ;; (lacks a catalog.xml.)
+              (invoke "make"
+                      "doc-html"
+                      "doc-man")))
+          (replace 'install
+            (lambda _
+              (invoke "make"
+                      "doc-install-html"
+                      "doc-install-man"))))))
     (properties (alist-delete 'hidden? (package-properties gcc)))))
 
 (define-public libstdc++-doc-5
