@@ -1344,7 +1344,7 @@ list of languages supported as well as the currently used changeset."
       #:modules `((guix build utils)          ;find-files
                   (sxml simple)
                   (ice-9 regex)
-                  ,@%default-gnu-imported-modules)
+                  ,@%default-gnu-modules)
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'patch-source-shebangs 'patch-cargo-checksums
