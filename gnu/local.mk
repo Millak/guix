@@ -1124,6 +1124,12 @@ dist_patch_DATA =						\
   %D%/packages/patches/diffutils-fix-signal-processing.patch	\
   %D%/packages/patches/directfb-davinci-glibc-228-compat.patch	\
   %D%/packages/patches/dkimproxy-add-ipv6-support.patch		\
+  %D%/packages/patches/docbook-utils-documentation-edits.patch	\
+  %D%/packages/patches/docbook-utils-escape-characters.patch	\
+  %D%/packages/patches/docbook-utils-remove-jade-sp.patch	\
+  %D%/packages/patches/docbook-utils-respect-refentry-for-name.patch	\
+  %D%/packages/patches/docbook-utils-source-date-epoch.patch	\
+  %D%/packages/patches/docbook-utils-use-date-element.patch	\
   %D%/packages/patches/doc++-include-directives.patch		\
   %D%/packages/patches/doc++-segfault-fix.patch			\
   %D%/packages/patches/dovecot-opensslv3.patch			\
