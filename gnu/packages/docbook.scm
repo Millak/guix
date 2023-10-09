@@ -120,6 +120,30 @@ by no means limited to these applications.)  This package provides XML DTDs.")
            ;; substitution has no effect.
            ((#:install-plan _ #f)
             #~`(("schemas/" #$dest-dir)))))))))
+
+(define-public docbook-xml-5.0.1
+  (let* ((version "5.0.1")
+         (source (origin
+                   (method url-fetch)
+                   (uri (string-append "https://docbook.org/xml/" version
+                                       "/docbook-" version ".zip"))
+                   (sha256
+                    (base32
+                     "1iz3hq1lqgnshvlz4j9gvh4jy1ml74qf90vqf2ikbq0h4i2xzybs"))))
+         (template (docbook-xml-package source version)))
+    (package
+      (inherit template)
+      (arguments
+       (let ((dest-dir (format #f "xml/docbook/~a/" version)))
+         (substitute-keyword-arguments (package-arguments template)
+           ((#:install-plan _ #f)
+            #~`(("catalog.xml" #$dest-dir)
+                ("docbook.nvdl" #$dest-dir)
+                ("dtd" #$dest-dir)
+                ("rng" #$dest-dir)
+                ("sch" #$dest-dir)
+                ("xsd" #$dest-dir)))))))))
+
 ;; XXX: docbook-xml-4.x versions use the same #:install-plan but since the
 ;; paths are versioned we can't use (inherit …).
 (define* (docbook-xml-4.x-package source version)
