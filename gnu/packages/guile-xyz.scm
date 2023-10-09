@@ -290,7 +290,7 @@ more.")
      `(#:make-flags '("GUILE_AUTO_COMPILE=0")
        #:modules (((guix build guile-build-system)
                    #:select (target-guile-effective-version))
-                  ,@%default-gnu-imported-modules)
+                  ,@%default-gnu-modules)
        #:imported-modules ((guix build guile-build-system)
                            ,@%default-gnu-imported-modules)
        #:phases (modify-phases %standard-phases
