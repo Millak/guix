@@ -46,6 +46,7 @@
             $XML_CATALOG_FILES
 
             %gcc-search-paths
+            %libxslt-search-paths
 
             search-path-specification->sexp
             sexp->search-path-specification
@@ -178,6 +179,9 @@
    (files '("xml"))
    (file-pattern "^catalog\\.xml$")
    (file-type 'regular)))
+
+(define %libxslt-search-paths
+  (list $SGML_CATALOG_FILES $XML_CATALOG_FILES))
 
 (define (search-path-specification->sexp spec)
   "Return an sexp representing SPEC, a <search-path-specification>.  The sexp
