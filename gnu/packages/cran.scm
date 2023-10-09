@@ -3948,13 +3948,13 @@ a list of p-values.")
 (define-public r-htmltools
   (package
     (name "r-htmltools")
-    (version "0.5.6")
+    (version "0.5.6.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "htmltools" version))
               (sha256
                (base32
-                "0rx0nmal1dca5xqj1pd17a85whsislhkyxxa4scmxgn38lkqxsqm"))))
+                "0km08kvg0j2h1d0v6wpxf09yjadhp2srjjnmqwcahfyh37w4xf09"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-base64enc r-digest r-ellipsis r-fastmap r-rlang))
