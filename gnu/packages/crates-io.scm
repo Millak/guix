@@ -73304,7 +73304,8 @@ Rustls.")
           "1jd63sl177sxacnksaxhazzmamwds98xk3niprh2qib75a1rk8cm"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:skip-build? #t     ; TODO: Fix building rust-ring-0.14
+       #:cargo-inputs
        (("rust-bytes" ,rust-bytes-0.4)
         ("rust-futures" ,rust-futures-0.1)
         ("rust-iovec" ,rust-iovec-0.1)
