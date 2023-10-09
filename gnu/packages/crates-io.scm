@@ -61327,7 +61327,8 @@ macOS and iOS.")
         (base32
          "07zv0szz2kfy1hn251h0qsq0q9i1zia768d8vzril1g6xarj7mcj"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:skip-build? #t ; MacOS specific
+       #:cargo-inputs
        (("rust-core-foundation-sys" ,rust-core-foundation-sys-0.6)
         ("rust-libc" ,rust-libc-0.2))))))
 
