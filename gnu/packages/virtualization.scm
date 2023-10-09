@@ -760,7 +760,7 @@ firmware blobs.  You can
      `(#:imported-modules (,@%default-gnu-imported-modules
                            (guix build haskell-build-system)
                            (guix build python-build-system))
-       #:modules (,@%default-gnu-imported-modules
+       #:modules (,@%default-gnu-modules
                   ((guix build haskell-build-system) #:prefix haskell:)
                   ((guix build python-build-system) #:select (site-packages))
                   (srfi srfi-1)
