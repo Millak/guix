@@ -3066,10 +3066,7 @@ MIDI functionality to the Linux-based operating system.")
                "09m4dnn4kplawprd2bl15nwa0b4r1brab3x44ga7f1fyk7aw5zwq"))))
     (build-system gnu-build-system)
     (arguments
-     ;; XXX: Disable man page creation until we have DocBook.
-     '(#:configure-flags (list "--disable-xmlto"
-
-                               ;; The udev rule is responsible for restoring
+     '(#:configure-flags (list ;; The udev rule is responsible for restoring
                                ;; the volume.
                                (string-append "--with-udev-rules-dir="
                                               (assoc-ref %outputs "out")
@@ -3092,9 +3089,10 @@ MIDI functionality to the Linux-based operating system.")
                 "true\n"))
              #t)))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)))
+     (list docbook-xml-4.2 docbook-xsl xmlto
+           gettext-minimal))
     (inputs
-     (list libsamplerate ncurses alsa-lib xmlto))
+     (list libsamplerate ncurses alsa-lib))
     (home-page "http://www.alsa-project.org/")
     (synopsis "Utilities for the Advanced Linux Sound Architecture (ALSA)")
     (description
