@@ -279,6 +279,65 @@ downloading from @var{source}, where @var{version} is a string and
        (modify-inputs (package-native-inputs template)
          (prepend libxml2))))))
 
+(define-public docbook-mathml-1.0
+  (package
+    (name "docbook-mathml")
+    (version "1.0")
+    (source (origin
+              (method url-fetch)
+              (uri
+               (string-append "https://www.oasis-open.org/docbook/xml/mathml/"
+                              version "/dbmathml.dtd"))
+              (sha256
+               (base32
+                "10vmyl29j829w4xn928rznh163pf47gyzbbjjwqrbg2bidfnk7vp"))))
+    (build-system copy-build-system)
+    (arguments
+     (let ((target (format #f "xml/docbook/mathml/~a/" version)))
+       (list
+        #:modules '((guix build copy-build-system)
+                    (guix build utils)
+                    (sxml simple)
+                    (srfi srfi-1))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'install 'generate-catalog.xml
+              (lambda _
+                (let ((store-uri (string-append "file:"
+                                                #$output "/"
+                                                #$target "dbmathml.dtd")))
+                  (call-with-output-file "catalog.xml"
+                    (lambda (port)
+                      (sxml->xml
+                       `(*TOP*
+                         (*PI* xml "version='1.0'")
+                         (catalog (@ (xmlns "urn:oasis:names:tc:entity:xmlns:xml:catalog"))
+                           (public (@ (publicId "-//OASIS//DTD DocBook MathML Module V1.0//EN")
+                                      (uri ,store-uri)))
+                           ,@(map
+                              (lambda (scheme)
+                                `(system
+                                  (@ (systemId
+                                      ,(string-append scheme
+                                                      "://www.oasis-open.org/docbook/xml/"
+                                                      "mathml/1.0/dbmathml.dtd"))
+                                     (uri ,store-uri))))
+                              '("http" "https"))))
+                       port)))))))
+        #:install-plan
+        #~`(("catalog.xml" #$target)
+            ("dbmathml.dtd" #$target)))))
+    (propagated-inputs
+     ;; These must be propagated for the package to make sense.
+     ;; TODO: Package MathML2 DTD and propagate it as well.
+     (list docbook-xml-4.1.2))
+    (home-page
+     "https://www.oasis-open.org/docbook/xml/mathml/1.0/index.1.shtml")
+    (synopsis "MathML support for DocBook XML V4.1.2.")
+    (description "The DocBook MathML Module is an extension to DocBook XML
+V4.1.2 that adds support for MathML in equation markup.")
+    (license (license:non-copyleft "" "See file headers."))))
+
 (define-public docbook-xml docbook-xml-5.1)
 
 ;;; There's an issue in docbook-xsl 1.79.2 that causes manpages to be
