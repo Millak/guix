@@ -2497,29 +2497,10 @@ Rendering Manager devices.")
                (base32 "13216b8rfkzak5k6bvpx6jvqv3cnbgpijnjwj8a8d3kq4cl0a1ra"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("docbook-xsl" ,docbook-xsl)
-       ("docbook-xml" ,docbook-xml-4.3)
-       ("xsltproc" ,libxslt)))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'locate-catalog-files
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((xmldoc (string-append (assoc-ref inputs "docbook-xml")
-                                          "/xml/dtd/docbook"))
-                   (xsldoc (string-append (assoc-ref inputs "docbook-xsl")
-                                          "/xml/xsl/docbook-xsl-"
-                                          ,(package-version docbook-xsl))))
-               (for-each (lambda (file)
-                           (substitute* file
-                             (("http://.*/docbookx\\.dtd")
-                              (string-append xmldoc "/docbookx.dtd"))))
-                         (find-files "man" "\\.xml$"))
-               (substitute* "man/Makefile"
-                 (("http://.*/docbook\\.xsl")
-                  (string-append xsldoc "/manpages/docbook.xsl")))
-               #t))))))
+     (list gettext-minimal
+           docbook-xsl
+           docbook-xml-4.3
+           libxslt))
     (home-page "https://www.freedesktop.org/wiki/Software/xdg-user-dirs/")
     (synopsis "Tool to help manage \"well known\" user directories")
     (description "xdg-user-dirs is a tool to help manage \"well known\" user
