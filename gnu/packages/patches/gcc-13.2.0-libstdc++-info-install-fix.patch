@@ -1,0 +1,70 @@
+# Upstreamed <https://gcc.gnu.org/pipermail/gcc-patches/2023-August/628047.html>
+
+From 2db0606adfdb800f3fcc95f2cb6c13ff76246e5f Mon Sep 17 00:00:00 2001
+Message-Id: <2db0606adfdb800f3fcc95f2cb6c13ff76246e5f.1692808412.git.mirai@makinata.eu>
+From: Bruno Victal <mirai@makinata.eu>
+Date: Mon, 21 Aug 2023 20:58:22 +0100
+Subject: [PATCH 1/2] libstdc++: Fix 'doc-install-info' rule.
+
+The info manual isn't moved to the expected location after
+generation which causes the install rule for it to fail.
+
+libstdc++-v3/Changelog:
+
+	* doc/Makefile.in: Regenerate.
+	* doc/Makefile.am: Fix 'doc-install-info' rule.
+	Fix typo in commment.
+---
+ libstdc++-v3/doc/Makefile.am | 4 ++--
+ libstdc++-v3/doc/Makefile.in | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/libstdc++-v3/doc/Makefile.am b/libstdc++-v3/doc/Makefile.am
+index 8371441c62e..373522d593d 100644
+--- a/libstdc++-v3/doc/Makefile.am
++++ b/libstdc++-v3/doc/Makefile.am
+@@ -598,7 +598,7 @@ stamp-pdf-docbook: doc-pdf-docbook-pre doc-xml-single-docbook
+ doc-pdf-docbook: stamp-pdf-docbook
+ 
+ # TEXINFO, via docbook2X
+-# NB: Both experimental and tempermental
++# NB: Both experimental and temperamental
+ manual_texi = ${docbook_outdir}/texinfo/libstdc++-manual.texi
+ manual_info = ${docbook_outdir}/texinfo/libstdc++-manual.info
+ DB2TEXI_FLAGS = \
+@@ -615,7 +615,7 @@ stamp-texinfo-docbook: stamp-xml-single-docbook ${docbook_outdir}/texinfo
+ 
+ stamp-info-docbook: stamp-texinfo-docbook
+ 	@echo "Generating info files..."
+-	$(MAKEINFO) $(MAKEINFOFLAGS) ${manual_texi}
++	$(MAKEINFO) $(MAKEINFOFLAGS) ${manual_texi} -o ${manual_info}
+ 	$(STAMP) stamp-info-docbook
+ 
+ doc-texinfo-docbook: stamp-texinfo-docbook
+diff --git a/libstdc++-v3/doc/Makefile.in b/libstdc++-v3/doc/Makefile.in
+index 21ad8557f7a..c19e3e3044c 100644
+--- a/libstdc++-v3/doc/Makefile.in
++++ b/libstdc++-v3/doc/Makefile.in
+@@ -645,7 +645,7 @@ manual_pdf = ${docbook_outdir}/pdf/libstdc++-manual.pdf
+ DBLATEX_FLAGS = --verbose --pdf --dump --debug --tmpdir=${docbook_outdir}/latex
+ 
+ # TEXINFO, via docbook2X
+-# NB: Both experimental and tempermental
++# NB: Both experimental and temperamental
+ manual_texi = ${docbook_outdir}/texinfo/libstdc++-manual.texi
+ manual_info = ${docbook_outdir}/texinfo/libstdc++-manual.info
+ DB2TEXI_FLAGS = \
+@@ -1096,7 +1096,7 @@ stamp-texinfo-docbook: stamp-xml-single-docbook ${docbook_outdir}/texinfo
+ 
+ stamp-info-docbook: stamp-texinfo-docbook
+ 	@echo "Generating info files..."
+-	$(MAKEINFO) $(MAKEINFOFLAGS) ${manual_texi}
++	$(MAKEINFO) $(MAKEINFOFLAGS) ${manual_texi} -o ${manual_info}
+ 	$(STAMP) stamp-info-docbook
+ 
+ doc-texinfo-docbook: stamp-texinfo-docbook
+
+base-commit: f9ff6fa58217294d63f255dd02abfcc8a074f509
+-- 
+2.40.1
+
