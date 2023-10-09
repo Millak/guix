@@ -435,7 +435,7 @@ features that are not supported by the standard @code{stdio} implementation.")
 (define-public universal-ctags
   (package
     (name "universal-ctags")
-    (version "6.0.20230212.0")
+    (version "6.0.20231001.0")
     (source
      (origin
        (method git-fetch)
@@ -445,7 +445,7 @@ features that are not supported by the standard @code{stdio} implementation.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0616y8sqbydh4baixs1fndknjvhfpf57p7a0yr1l5n732lknk2pm"))
+         "0qik6rsai254prydfx8k2bq7wpim3a272jiw1y37r734k4s9xbrb"))
        (modules '((guix build utils)))
        (snippet
         '(begin

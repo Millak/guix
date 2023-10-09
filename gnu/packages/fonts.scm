@@ -58,6 +58,7 @@
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2023 chris <chris@bumblehead.com>
+;;; Copyright © 2023 Luis Felipe López Acevedo <sirgazil@zoho.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1937,7 +1938,7 @@ weights and five widths in both Roman and Italic, plus variable fonts.")
 (define-public font-sarasa-gothic
   (package
     (name "font-sarasa-gothic")
-    (version "0.42.0")
+    (version "0.42.1")
     (source
      (origin
        (method url-fetch)
@@ -1945,7 +1946,7 @@ weights and five widths in both Roman and Italic, plus variable fonts.")
                            "/releases/download/v" version
                            "/sarasa-gothic-ttc-" version ".7z"))
        (sha256
-        (base32 "06yvymkkmp8g7innmwg9xc6wdsfngj118k1fhp8fcav4110qx585"))))
+        (base32 "0lrhipis21cafpsf8wsrdavlblfgzz424r23rj78ik8npbws1a3v"))))
     (build-system font-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -3144,7 +3145,7 @@ and readability.  This package bundles those icons into a font.")
 (define-public font-lxgw-wenkai
   (package
     (name "font-lxgw-wenkai")
-    (version "1.300")
+    (version "1.310")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3152,7 +3153,7 @@ and readability.  This package bundles those icons into a font.")
                     version "/lxgw-wenkai-v" version ".tar.gz"))
               (sha256
                (base32
-                "1vywhvzj8l3hw2j0np5jhmwli037mxgs05s7n3y3xw3z46r7rwx4"))))
+                "10z8ilcpfxmll6j6ck4yj90x48vh3c7ck0lm61qjangpw9fcgfb1"))))
     (build-system font-build-system)
     (home-page "https://lxgw.github.io/2021/01/28/Klee-Simpchin/")
     (synopsis "Simplified Chinese Imitation Song typeface")
@@ -3166,7 +3167,7 @@ within GB 2312, standard glyphs for Mainland China is used.")
   (package
     (inherit font-lxgw-wenkai)
     (name "font-lxgw-wenkai-tc")
-    (version "1.000")
+    (version "1.010")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3174,7 +3175,7 @@ within GB 2312, standard glyphs for Mainland China is used.")
                     version "/lxgw-wenkai-tc-v" version ".tar.gz"))
               (sha256
                (base32
-                "1jhmqwrx7311iwng3b00j3lwjzacam605dm4n6wd8amqc9azi9b2"))))
+                "1yppqrfmynai1canlq0hksl3yaj8kflbnj41ljl4lxwaz6q9i1ly"))))
     (home-page "https://github.com/lxgw/LxgwWenKaitc")
     (synopsis "Traditional Chinese Imitation Song typeface")
     (description
@@ -3209,7 +3210,7 @@ prevalent typefaces in Traditional Chinese regions.")
   (package
     (inherit font-chiron-sung-hk)
     (name "font-chiron-hei-hk")
-    (version "2.506")
+    (version "2.508")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3218,7 +3219,7 @@ prevalent typefaces in Traditional Chinese regions.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1v40wcj3h38ai9gacpjfd02nas97scpdkz3g3h8a5yzp0n0pfknw"))))
+                "0drvkqk629z63k62v3ds559phl82dmkyvpx2r8mi99nnsz22a8ps"))))
     (synopsis "Traditional Chinese Gothic typeface")
     (description
      "Chiron Hei HK is a Traditional Chinese Gothic typeface based on the Hong
@@ -3457,3 +3458,29 @@ interfaces.")
 is to provide fonts that conform to existing standards and recommendations, so
 that it can be a reference implementation.")
    (license license:gpl2+)))
+
+(define-public font-orbitron
+  (let ((version "0")
+        (commit "13e6a5222aa6818d81c9acd27edd701a2d744152")
+        (revision "0"))
+    (package
+      (name "font-orbitron")
+      (version (git-version version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/theleagueof/orbitron")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1c6jb7ayr07j1pbnzf3jxng9x9bbqp3zydf8mqdw9ifln1b4ycyf"))))
+      (build-system font-build-system)
+      (home-page "https://github.com/theleagueof/orbitron")
+      (synopsis "Futuristic geometric sans-serif")
+      (description "Orbitron is a geometric sans-serif typeface intended
+for display purposes.  It features four weights (light, medium, bold,
+and black), a stylistic alternative, small caps, and many alternate
+glyphs.")
+      (license license:silofl1.1))))

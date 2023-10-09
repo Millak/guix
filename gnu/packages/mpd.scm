@@ -246,7 +246,16 @@ protocol.")
                  ;; actually invoked.
                  (lambda _
                    (substitute* "doc/meson.build"
-                     (("rsync") "ls")))))))
+                     (("rsync") "ls"))))
+               (add-after 'install 'move-completion
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (contrib (string-append out "/share/doc/mpc/contrib"))
+                          (completion
+                           (string-append out "/etc/bash-completion.d/")))
+                     (mkdir-p completion)
+                     (rename-file (string-append contrib "/mpc-completion.bash")
+                                  (string-append completion "/mpc"))))))))
     (inputs (list libmpdclient))
     (native-inputs
      (list pkg-config python-sphinx))
@@ -613,7 +622,7 @@ mpdevil loads all tags and covers on demand.")
 (define-public mympd
   (package
     (name "mympd")
-    (version "12.0.2")
+    (version "12.0.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -622,7 +631,7 @@ mpdevil loads all tags and covers on demand.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19139ina79jdfmc2vh6xcp5n0z8c41fi2fz2fmvg623bpix3fcgf"))))
+                "06g0b7j12lrrz8mrg6wp2fxy0qm4x9z2fri05by40399z1akgsx4"))))
     (build-system cmake-build-system)
     (arguments
      (list

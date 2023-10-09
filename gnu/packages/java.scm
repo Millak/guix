@@ -9,7 +9,7 @@
 ;;; Copyright © 2017, 2019, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
-;;; Copyright © 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2020, 2021 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
@@ -1078,6 +1078,18 @@ new Date();"))
      (substitute-keyword-arguments (package-arguments openjdk9)
        ((#:phases phases)
         `(modify-phases ,phases
+         ,@(if (target-aarch64?)
+               `((replace 'patch-for-aarch64
+                   (lambda _
+                     (substitute* "src/hotspot/cpu/aarch64/interp_masm_aarch64.hpp"
+                       ;; This line is duplicated, so remove both occurrences,
+                       ;; then add back one occurrence by substituting a
+                       ;; comment that occurs once.
+                       (("using MacroAssembler::call_VM_leaf_base;") "")
+                       (("Interpreter specific version of call_VM_base")
+                        (string-append "Interpreter specific version of call_VM_base\n"
+                                       "  using MacroAssembler::call_VM_leaf_base;"))))))
+               '())
            (replace 'fix-java-shebangs
              (lambda _
                ;; This file was "fixed" by patch-source-shebangs, but it requires
@@ -1451,6 +1463,18 @@ new Date();"))
     (substitute-keyword-arguments (package-arguments openjdk11)
       ((#:phases phases)
        #~(modify-phases #$phases
+           #$@(if (target-aarch64?)
+                #~((add-after 'unpack 'patch-for-aarch64
+                    (lambda _
+                      (substitute* "src/hotspot/cpu/aarch64/interp_masm_aarch64.hpp"
+                        ;; This line is duplicated, so remove both occurrences,
+                        ;; then add back one occurrence by substituting a
+                        ;; comment that occurs once.
+                        (("using MacroAssembler::call_VM_leaf_base;") "")
+                        (("Interpreter specific version of call_VM_base")
+                         (string-append "Interpreter specific version of call_VM_base\n"
+                                        "  using MacroAssembler::call_VM_leaf_base;"))))))
+                #~())
            (replace 'fix-java-shebangs
              (lambda _
                ;; 'blocked' was renamed to 'blacklisted' in this version for

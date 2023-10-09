@@ -18,6 +18,7 @@
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2023 pinoaffe <pinoaffe@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -65,6 +66,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xdisorg)
@@ -368,6 +370,37 @@ but also provides many useful font conversion and analysis facilities.
            python-tqdm
            python-ufonormalizer
            python-ufoprocessor))))
+
+(define-public python-beziers
+  (package
+    (name "python-beziers")
+    (version "0.5.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/simoncozens/beziers.py")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1dyr45m15sclbgaz1mrcnw8kny50h09gd45dlpfkgv9qpfxphkg3"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "pytest" "-vv")))))))
+    (native-inputs (list python-pytest python-dotmap python-matplotlib))
+    (propagated-inputs (list python-pyclipper))
+    (home-page "https://simoncozens.github.io/beziers.py/index.html")
+    (synopsis "Python bezier manipulation library")
+    (description
+     "Beziers provides a variety of classes for constructing,
+manipulating and drawing Bezier curves and paths.  Principally designed for
+font design software, it allows you to join, split, offset, and perform many
+other operations on paths.")
+    (license license:expat)))
 
 (define-public python-cffsubr
   (package
@@ -959,6 +992,35 @@ value (e.g. @samp{x=\"95.0\"} becomes @samp{x=\"95\"})
 @item Formatting XML with tabs rather than spaces.
 @end itemize")
     (license license:bsd-3)))
+
+(define-public fontobene-qt5
+  (package
+    (name "fontobene-qt5")
+    (version "0.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/fontobene/fontobene-qt5")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0gy3sfraf23k7dm4ha8nqpd6madzk0zmxkcb204micyn5b5l8ljg"))))
+    (inputs (list qtbase-5))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "./tests/fontobene-qt5-tests")))))))
+    (home-page "https://github.com/fontobene/fontobene-qt5")
+    (synopsis "Parser for FontoBene stroke fonts")
+    (description "FontoBene-Qt5 is a header-only library to parse FontoBene
+stroke fonts with C++11/Qt5.")
+    ;; Dual-licensed, either license applies.
+    (license (list license:asl2.0 license:expat))))
 
 (define-public ttfautohint
   (package

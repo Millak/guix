@@ -43,9 +43,9 @@ a boolean or an integer.  Lists are currently not supported"
      (format port "~a = '~a'~%" key value))
     ((? integer?)
      (format port "~a = ~a~%" key value))
-    (#f
-     (format port "~a = true~%" key))
     (#t
+     (format port "~a = true~%" key))
+    (#f
      (format port "~a = false~%" key))))
 
 (define* (write-assignments port alist)

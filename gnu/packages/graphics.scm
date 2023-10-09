@@ -2,7 +2,7 @@
 ;;; Copyright © 2015, 2016, 2021, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Tomáš Čech <sleep_walker@gnu.org>
 ;;; Copyright © 2016, 2019 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2016, 2017, 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2017, 2019, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2018, 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2017 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
@@ -1505,7 +1505,7 @@ in Julia).")
 (define-public povray
   (package
     (name "povray")
-    (version "3.7.0.8")
+    (version "3.7.0.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1514,43 +1514,41 @@ in Julia).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1q114n4m3r7qy3yn954fq7p46rg7ypdax5fazxr9yj1jklf1lh6z"))
+                "19bv962clwc6sk53kq8bqf77fh0v46afm2knjbki8yj0m1mnyyd0"))
               (modules '((guix build utils)))
               (snippet
-               '(begin
-                  ;; Delete bundled libraries.
-                  (delete-file-recursively "libraries")
-                  #t))))
+               ;; Delete bundled libraries.
+               '(delete-file-recursively "libraries"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake pkg-config))
     (inputs
-     `(("boost" ,boost)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libtiff" ,libtiff)
-       ("openexr" ,openexr-2)
-       ("sdl" ,sdl)
-       ("zlib" ,zlib)))
+     (list boost
+           libjpeg-turbo
+           libpng
+           libtiff
+           openexr-2
+           sdl
+           zlib))
     (arguments
-     '(#:configure-flags
-       (list "COMPILED_BY=Guix"
-             (string-append "--with-boost-libdir="
-                            (assoc-ref %build-inputs "boost") "/lib")
-             "--disable-optimiz-arch")
+     (list
+      #:configure-flags
+      #~(list "COMPILED_BY=Guix"
+              (string-append "--with-boost-libdir="
+                             #$(this-package-input "boost") "/lib")
+              "--disable-optimiz-arch")
        #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'run-prebuild
-           (lambda _
-             (setenv "HOME" (getcwd))
-             (with-directory-excursion "unix"
-               (substitute* "prebuild.sh"
-                 (("/bin/sh") (which "sh")))
-               (invoke "sh" "prebuild.sh"))
-             #t))
-         ;; The bootstrap script is run by the prebuild script in the
-         ;; "run-prebuild" phase.
-         (delete 'bootstrap))))
+       '(modify-phases %standard-phases
+          (add-after 'unpack 'run-prebuild
+            (lambda _
+              (setenv "HOME" (getcwd))
+              (with-directory-excursion "unix"
+                (substitute* "prebuild.sh"
+                  (("/bin/sh") (which "sh")))
+                (invoke "sh" "prebuild.sh"))))
+          ;; The bootstrap script is run by the prebuild script in the
+          ;; "run-prebuild" phase.
+          (delete 'bootstrap))))
     (synopsis "Tool for creating three-dimensional graphics")
     (description
      "@code{POV-Ray} is short for the Persistence of Vision Raytracer, a tool

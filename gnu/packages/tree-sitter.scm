@@ -6,6 +6,7 @@
 ;;; Copyright © 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Raven Hallsby <karl@hallsby.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -446,8 +447,8 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-java
   (tree-sitter-grammar
    "java" "Java"
-   "1i9zfgqibinz3rkx6yws1wk49iys32x901dki65qihbxcmcfh341"
-   "0.20.0"))
+   "0440xh8x8rkbdlc1f1ail9wzl4583l29ic43x9lzl8290bm64q5l"
+   "0.20.1"))
 
 (define-public tree-sitter-json
   ;; Not tagged
@@ -607,3 +608,16 @@ which will be used as a snippet in origin."
            (use-modules (guix build utils))
            (delete-file "binding.gyp")
            (delete-file-recursively "bindings"))))))
+
+(define-public tree-sitter-lua
+  (tree-sitter-grammar
+   "lua" "Lua"
+   "05irhg6gg11r9cnzh0h3691pnxjhd396sa1x8xrgqjz2fd09brf3"
+   "0.0.19"
+   #:repository-url "https://github.com/MunifTanjim/tree-sitter-lua"))
+
+(define-public tree-sitter-scala
+  (tree-sitter-grammar
+   "scala" "Scala"
+   "0hs6gmkq5cx9qrmgfz1mh0c34flwffc0k2mhwf13laawswnywfkz"
+   "0.20.2"))

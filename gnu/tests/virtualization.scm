@@ -24,9 +24,11 @@
   #:use-module (gnu tests)
   #:use-module (gnu image)
   #:use-module (gnu system)
+  #:use-module (gnu system accounts)
   #:use-module (gnu system file-systems)
   #:use-module (gnu system image)
   #:use-module (gnu system images hurd)
+  #:use-module ((gnu system shadow) #:select (%base-user-accounts))
   #:use-module (gnu system vm)
   #:use-module (gnu services)
   #:use-module (gnu services dbus)
@@ -37,6 +39,7 @@
   #:use-module (guix gexp)
   #:use-module (guix records)
   #:use-module (guix store)
+  #:use-module (guix modules)
   #:export (%test-libvirt
             %test-qemu-guest-agent
             %test-childhurd))
@@ -225,31 +228,33 @@
 ;;; GNU/Hurd virtual machines, aka. childhurds.
 ;;;
 
-;; Copy of `hurd-vm-disk-image', using plain disk-image for test
-(define (hurd-vm-disk-image-raw config)
-  (let ((os ((@@ (gnu services virtualization) secret-service-operating-system)
-             (hurd-vm-configuration-os config)))
-        (disk-size (hurd-vm-configuration-disk-size config)))
-    (system-image
-     (image
-      (inherit hurd-disk-image)
-      (format 'disk-image)
-      (size disk-size)
-      (operating-system os)))))
-
 (define %childhurd-os
   (simple-operating-system
    (service dhcp-client-service-type)
    (service hurd-vm-service-type
             (hurd-vm-configuration
-             (image (hurd-vm-disk-image-raw this-record))))))
+             (os (operating-system
+                   (inherit %hurd-vm-operating-system)
+                   (users (cons (user-account
+                                 (name "test")
+                                 (group "users")
+                                 (password ""))   ;empty password
+                                %base-user-accounts))))))))
 
 (define (run-childhurd-test)
+  (define (import-module? module)
+    ;; This module is optional and depends on Guile-Gcrypt, do skip it.
+    (and (guix-module-name? module)
+         (not (equal? module '(guix store deduplication)))))
+
   (define os
     (marionette-operating-system
      %childhurd-os
-     #:imported-modules '((gnu services herd)
-                          (guix combinators))))
+     #:imported-modules (source-module-closure
+                         '((gnu services herd)
+                           (guix combinators)
+                           (gnu build install))
+                         #:select? import-module?)))
 
   (define vm
     (virtual-machine
@@ -269,7 +274,7 @@
                            (ice-9 match)
                            (ice-9 textual-ports))
 
-              (let ((session (make-session #:user "root"
+              (let ((session (make-session #:user "test"
                                            #:port 10022
                                            #:host "localhost"
                                            #:log-verbosity 'rare)))
@@ -293,7 +298,10 @@
                        (ice-9 match))
 
           (define marionette
-            (make-marionette (list #$vm)))
+            ;; Emulate the host CPU so that KVM is available inside as well
+            ;; ("nested KVM"), provided
+            ;; /sys/module/kvm_intel/parameters/nested (or similar) allows it.
+            (make-marionette (list #$vm "-cpu" "host")))
 
           (test-runner-current (system-test-runner #$output))
           (test-begin "childhurd")
@@ -370,6 +378,31 @@
               (and (string-suffix? ".drv"
                                    (pk 'drv (string-trim-right drv)))
                    drv)))
+
+          (test-assert "copy-on-write store"
+            ;; Set up a writable store.  The root partition is already an
+            ;; overlayfs, which is not suitable as the bottom part of this
+            ;; additional overlayfs; thus, create a tmpfs for the backing
+            ;; store.
+            ;; TODO: Remove this when <virtual-machine> creates a writable
+            ;; store.
+            (marionette-eval
+             '(begin
+                (use-modules (gnu build install)
+                             (guix build syscalls))
+
+                (mkdir "/run/writable-store")
+                (mount "none" "/run/writable-store" "tmpfs")
+                (mount-cow-store "/run/writable-store" "/backing-store")
+                (system* "df" "-hT"))
+             marionette))
+
+          (test-equal "offloading"
+            0
+            (marionette-eval
+             '(and (file-exists? "/etc/guix/machines.scm")
+                   (system* "guix" "offload" "test"))
+             marionette))
 
           (test-end))))
 

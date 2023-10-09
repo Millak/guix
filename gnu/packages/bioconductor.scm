@@ -118,6 +118,28 @@ analysis.")
 based on mapping using Entrez Gene identifiers.")
     (license license:artistic2.0)))
 
+(define-public r-org-sc-sgd-db
+  (package
+    (name "r-org-sc-sgd-db")
+    (version "3.17.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "org.Sc.sgd.db" version
+                              'annotation))
+       (sha256
+        (base32 "1anxk5sgzgkdk4n1c7gjyzy56wa2bkifghs9m1mh82l95kyvk2ig"))))
+    (properties `((upstream-name . "org.Sc.sgd.db")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationdbi))
+    (home-page "https://bioconductor.org/packages/org.Sc.sgd.db")
+    (synopsis "Genome wide annotation for Yeast")
+    (description
+     "This package provides genome wide annotation for Yeast, primarily based
+on mapping using ORF identifiers from @acronym{SGD, Saccharomyces Genome
+Database}.")
+    (license license:artistic2.0)))
+
 (define-public r-pd-mapping50k-xba240
   (package
     (name "r-pd-mapping50k-xba240")
@@ -2863,13 +2885,13 @@ analysis, modelling, and visualization of spike-in controls.")
 (define-public r-ancombc
   (package
     (name "r-ancombc")
-    (version "2.2.1")
+    (version "2.2.2")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ANCOMBC" version))
               (sha256
                (base32
-                "05gngz6cqihxg4zlf7ymw93qj61a1i19hgp4fkc0cxnkq0pambrd"))))
+                "0jws3wqgwc0gnp7smc0lsqfw9jbcik36pl7vz9a8ndgwpp9c8653"))))
     (properties `((upstream-name . "ANCOMBC")))
     (build-system r-build-system)
     (propagated-inputs
@@ -3492,6 +3514,67 @@ structures: @code{ExpressionSet}, @code{AffyBatch}, @code{NChannelSet}.")
 Bioconductor microarray data containers @code{(ExpressionSet},
 @code{NChannelSet}, @code{AffyBatch}).  One and two color array platforms are
 supported.")
+    (license license:lgpl2.0+)))
+
+(define-public r-arraymvout
+  (package
+    (name "r-arraymvout")
+    (version "1.58.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "arrayMvout" version))
+       (sha256
+        (base32 "1wdqcfa0h070lky4m2h5k4wg8lg7014y0gk95gip5zags29zjwqb"))))
+    (properties `((upstream-name . "arrayMvout")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'install 'change-home-dir
+           (lambda _
+             ;; Change from /homeless-shelter to /tmp for write permission.
+             (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list r-affy
+           r-affycontam
+           r-biobase
+           r-lumi
+           r-mdqc
+           r-parody))
+    (home-page "https://bioconductor.org/packages/arrayMvout")
+    (synopsis "Multivariate outlier detection for expression array QA")
+    (description
+     "This package supports the application of diverse quality metrics to
+AffyBatch instances, summarizing these metrics via PCA, and then performing
+parametric outlier detection on the PCs to identify aberrant arrays with a
+fixed Type I error rate.")
+    (license license:artistic2.0)))
+
+(define-public r-arrayquality
+  (package
+    (name "r-arrayquality")
+    (version "1.78.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "arrayQuality" version))
+       (sha256
+        (base32 "0lq59y4pi13z4v1i1ah78xlchxy34x1lplsh0n42wlk88rk0rqxd"))))
+    (properties `((upstream-name . "arrayQuality")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-gridbase
+           r-hexbin
+           r-limma
+           r-marray
+           r-rcolorbrewer))
+    (home-page "http://arrays.ucsf.edu/")
+    (synopsis "Assessing array quality on spotted arrays")
+    (description
+     "This package provides functions for performing print-run and array level
+quality assessment.")
     (license license:lgpl2.0+)))
 
 (define-public r-asafe
@@ -6152,13 +6235,13 @@ powerful online queries from gene annotation to database mining.")
 (define-public r-biomartr
   (package
     (name "r-biomartr")
-    (version "1.0.4")
+    (version "1.0.5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "biomartr" version))
               (sha256
                (base32
-                "0hv4z6ycmn58ha7j7zfmyhvs2i37cm48gcalg19dli2kaw1c4210"))))
+                "14nw44dkyrfw43dc4zwsnvkrmdhsl131m9w1wa80j3qkbhyaypfl"))))
     (properties `((upstream-name . "biomartr")))
     (build-system r-build-system)
     (propagated-inputs
@@ -7005,14 +7088,14 @@ visualization of Illumina DNA methylation array data.")
 (define-public r-ensembldb
   (package
     (name "r-ensembldb")
-    (version "2.24.0")
+    (version "2.24.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ensembldb" version))
        (sha256
         (base32
-         "0rl5ix755055i95y5xfb4zv5gih2gkqwqia1r1b3yx12z5ybvkc6"))))
+         "1x73lln0rlnypl8iia54srl3wrazs94f8rspmjsaqsxwknkym319"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi
@@ -7195,13 +7278,13 @@ genomic intervals.  In addition, it can use BAM or BigWig files as input.")
 (define-public r-genomeinfodb
   (package
     (name "r-genomeinfodb")
-    (version "1.36.3")
+    (version "1.36.4")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GenomeInfoDb" version))
               (sha256
                (base32
-                "04bh4481jcj91xdh11ic4519jczck6zmysbpnpbbhykanp31z4pf"))))
+                "0wwh72sj894m3awk4g2zmkkwqafdjyxzsr49vnd1fiyz909hw02a"))))
     (properties
      `((upstream-name . "GenomeInfoDb")))
     (build-system r-build-system)
@@ -7848,14 +7931,14 @@ Shiny-based display methods for Bioconductor objects.")
 (define-public r-keggrest
   (package
     (name "r-keggrest")
-    (version "1.40.0")
+    (version "1.40.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "KEGGREST" version))
        (sha256
         (base32
-         "1zmsk5w8i3cq0983nx1d24a6awrbq7aj2wrapsnizq9gvrsrhbbb"))))
+         "13pbw5nlkjwplliv2pdwazv2idfjklvw0ykx5ja8rchvzs5f1vk4"))))
     (properties `((upstream-name . "KEGGREST")))
     (build-system r-build-system)
     (propagated-inputs
@@ -8098,6 +8181,31 @@ experiments.")
      "This package provides functionalities for downstream analysis, annotation
 and visualizaton of alternative splicing events generated by rMATS.")
     (license license:expat)))
+
+(define-public r-mdqc
+  (package
+    (name "r-mdqc")
+    (version "1.62.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "mdqc" version))
+       (sha256
+        (base32 "0y35z9sw3h77a5g4ah0fxrk5xh7irdw9z0y2jhh6dp0xxcqh6i0k"))))
+    (properties `((upstream-name . "mdqc")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-cluster
+           r-mass))
+    (home-page "https://bioconductor.org/packages/mdqc")
+    (synopsis "Mahalanobis distance quality control for microarrays")
+    (description
+     "MDQC is a multivariate quality assessment method for microarrays based
+on quality control (QC) reports.  The Mahalanobis distance of an array's
+quality attributes is used to measure the similarity of the quality of that
+array against the quality of the other arrays.  Then, arrays with unusually
+high distances can be flagged as potentially low-quality.")
+    (license license:lgpl2.0+)))
 
 (define-public r-metagenomeseq
   (package
@@ -10264,13 +10372,13 @@ tools either included in speaq or available elsewhere on CRAN.")
 (define-public r-spectra
   (package
     (name "r-spectra")
-    (version "1.10.2")
+    (version "1.10.3")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "Spectra" version))
               (sha256
                (base32
-                "1jrlfm6k6v4vhzl4lg6sa49yw35ds9x3v7iyc2cvbxqmpp5haila"))))
+                "1fx6xkl29frfk8bzz5jvr1cn0hjyi46ck23izb1cypiag4lsrf8v"))))
     (properties `((upstream-name . "Spectra")))
     (build-system r-build-system)
     (propagated-inputs (list r-biocgenerics
@@ -10582,24 +10690,25 @@ of gene-level counts.")
 (define-public r-valr
   (package
     (name "r-valr")
-    (version "0.6.8")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "valr" version))
        (sha256
         (base32
-         "156sqh474synjvdm1j332ab75rqab0n81d674xbgs3rfxlr2ksgz"))))
+         "038s5n8cbffpb9132rpw7q82cxfzlsc86fcywhv63c8szm5g9nrk"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-broom
            r-cli
            r-dplyr
            r-ggplot2
+           r-lifecycle
            r-rcpp
            r-readr
            r-rlang
-           r-rtracklayer ;bioconductor package
+           r-rtracklayer
            r-stringr
            r-tibble))
     (native-inputs
@@ -11080,32 +11189,57 @@ problems in genomics, brain imaging, astrophysics, and data mining.")
 @code{Rcpp}.")
    (license license:gpl2+)))
 
+(define-public r-apcomplex
+  (package
+    (name "r-apcomplex")
+    (version "2.66.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "apComplex" version))
+       (sha256
+        (base32 "057p1bsqqw3r49bsx78prqc4jha468bfx50gpl62giix0cfs007f"))))
+    (properties `((upstream-name . "apComplex")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-graph
+           r-org-sc-sgd-db
+           r-rbgl
+           r-rgraphviz))
+    (home-page "https://bioconductor.org/packages/apComplex")
+    (synopsis "Estimate protein complex membership using AP-MS protein data")
+    (description
+     "This package provides functions to estimate a bipartite graph of protein
+complex membership using @acronym{AP-MS, affinity purification–mass
+spectrometry} data.")
+    (license license:lgpl2.0+)))
+
 (define-public r-apeglm
   (package
-   (name "r-apeglm")
-   (version "1.22.1")
-   (source (origin
-            (method url-fetch)
-            (uri (bioconductor-uri "apeglm" version))
-            (sha256
-             (base32
-              "19r1mhpkn3xy6l188c14k9xgn25xqc718bwrlmnz63lak6mp4ws7"))))
-   (properties `((upstream-name . "apeglm")))
-   (build-system r-build-system)
-   (propagated-inputs
-    (list r-emdbook
-          r-genomicranges
-          r-rcpp
-          r-rcppeigen
-          r-rcppnumerical
-          r-summarizedexperiment))
-   (native-inputs (list r-knitr r-rmarkdown))
-   (home-page "https://bioconductor.org/packages/apeglm")
-   (synopsis "Approximate posterior estimation for GLM coefficients")
-   (description "This package provides Bayesian shrinkage estimators for
+    (name "r-apeglm")
+    (version "1.22.1")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "apeglm" version))
+              (sha256
+               (base32
+                "19r1mhpkn3xy6l188c14k9xgn25xqc718bwrlmnz63lak6mp4ws7"))))
+    (properties `((upstream-name . "apeglm")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-emdbook
+           r-genomicranges
+           r-rcpp
+           r-rcppeigen
+           r-rcppnumerical
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr r-rmarkdown))
+    (home-page "https://bioconductor.org/packages/apeglm")
+    (synopsis "Approximate posterior estimation for GLM coefficients")
+    (description "This package provides Bayesian shrinkage estimators for
 effect sizes for a variety of GLM models, using approximation of the
 posterior for individual coefficients.")
-   (license license:gpl2)))
+    (license license:gpl2)))
 
 (define-public r-greylistchip
   (package
@@ -14197,6 +14331,42 @@ analyzed in parallel the library performs a number of tests to assure that
 the data set is suitable for such analysis.")
     (license license:gpl3)))
 
+(define-public r-anota2seq
+  (package
+    (name "r-anota2seq")
+    (version "1.22.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "anota2seq" version))
+       (sha256
+        (base32 "0pmk45276bl3qppzxlp4jpc8bsvdpca8nzrdl6c4n9r3xhzfpyq0"))))
+    (properties `((upstream-name . "anota2seq")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-deseq2
+           r-edger
+           r-limma
+           r-multtest
+           r-qvalue
+           r-rcolorbrewer
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/anota2seq")
+    (synopsis "Transcriptome-wide analysis of translational efficiency")
+    (description
+     "The anota2seq package provides analysis of translational efficiency and
+differential expression analysis for polysome-profiling and ribosome-profiling
+studies (two or more sample classes) quantified by RNA sequencing or
+DNA-microarray.  Polysome-profiling and ribosome-profiling typically generate
+data for two RNA sources, translated mRNA and total mRNA.  Analysis of
+differential expression is used to estimate changes within each RNA source.
+Analysis of translational efficiency aims to identify changes in translation
+efficiency leading to altered protein levels that are independent of total
+mRNA levels or buffering, a mechanism regulating translational efficiency so
+that protein levels remain constant despite fluctuating total mRNA levels.")
+    (license license:gpl3)))
+
 (define-public r-sigpathway
   (package
     (name "r-sigpathway")
@@ -14355,18 +14525,19 @@ correspondance between different data sources.")
 (define-public r-enrichplot
   (package
     (name "r-enrichplot")
-    (version "1.20.1")
+    (version "1.20.3")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "enrichplot" version))
        (sha256
         (base32
-         "0yxnh5bmfcfsciwm852rbb707v9zbky3lsz2xsyyaapm5jjb6npk"))))
+         "11hgxs42wvirv6b9ywr2jb51s67k4r0pm21dkvm7xjbsbarlkhmh"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-aplot
            r-dose
+           r-ggfun
            r-ggnewscale
            r-ggplot2
            r-ggraph
@@ -15439,14 +15610,14 @@ decomposition algorithms.")
 (define-public r-yapsa
   (package
     (name "r-yapsa")
-    (version "1.25.0")
+    (version "1.26.8")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "YAPSA" version))
        (sha256
         (base32
-         "0xva7vljq2k78rzjnjlp4x3ylwk86jaqn2cgbff4h4sb8rfdya7c"))))
+         "16rr2bkni3jx5qskr5fz5lvf23d03xgd3m4068mnd3n9r23hpb4p"))))
     (properties `((upstream-name . "YAPSA")))
     (build-system r-build-system)
     (propagated-inputs
@@ -18302,14 +18473,14 @@ using whole genome sequencing data.")
 (define-public r-activepathways
   (package
     (name "r-activepathways")
-    (version "2.0.0")
+    (version "2.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ActivePathways" version))
        (sha256
         (base32
-         "1niwzbzqs1s0mx6ia8fmvg9db6kajs0rdxgnnn1pq68yd8rjn79g"))))
+         "1h0ih87pf6b5mdhmh65frv3nqx7v5adqv37wn2p3gkpszd6hwc79"))))
     (properties
      `((upstream-name . "ActivePathways")))
     (build-system r-build-system)
@@ -18498,6 +18669,37 @@ the read count and GC content bias.")
      "This package provides an R interface to libsbml for SBML parsing,
 validating output, provides an S4 SBML DOM, converts SBML to R graph objects.")
     (license license:artistic2.0)))
+
+(define-public r-hybridmtest
+  (package
+    (name "r-hybridmtest")
+    (version "1.44.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "HybridMTest" version))
+       (sha256
+        (base32 "19pycad35hc7ylnsz75bv029y1r6j9xvrbhzk4i64i7jn8gi7ngh"))))
+    (properties `((upstream-name . "HybridMTest")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biobase
+           r-fdrtool
+           r-mass
+           r-survival))
+    (home-page "https://bioconductor.org/packages/HybridMTest")
+    (synopsis "Hybrid multiple testing")
+    (description
+     "This package performs hybrid multiple testing that incorporates method
+selection and assumption evaluations into the analysis using @acronym{EBP,
+empirical Bayes probability} estimates obtained by Grenander density
+estimation.  For instance, for 3-group comparison analysis, Hybrid Multiple
+testing considers EBPs as weighted EBPs between F-test and H-test with EBPs
+from Shapiro Wilk test of normality as weigth.  Instead of just using EBPs
+from F-test only or using H-test only, this methodology combines both types of
+EBPs through EBPs from Shapiro Wilk test of normality.  This methodology uses
+then the law of total EBPs.")
+    (license license:gpl2+)))
 
 (define-public r-hypergraph
   (package
@@ -18964,13 +19166,13 @@ different graph related packages produced by Bioconductor.")
 (define-public r-biocstyle
   (package
     (name "r-biocstyle")
-    (version "2.28.0")
+    (version "2.28.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BiocStyle" version))
               (sha256
                (base32
-                "04npnfmz1p1vpwrdsim309k7518i4p1li04xnmw8c9zgdb6yl61a"))))
+                "11v3gzy88fai0rhdymvj9k74g7hjc6n9fihfrrnw0qfr447z1d61"))))
     (properties
      `((upstream-name . "BiocStyle")))
     (build-system r-build-system)
@@ -19700,13 +19902,13 @@ array-like semantic.  It also provides:
 (define-public r-s4vectors
   (package
     (name "r-s4vectors")
-    (version "0.38.1")
+    (version "0.38.2")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "S4Vectors" version))
               (sha256
                (base32
-                "0qpjx64ilc1niglhf6pn47damgaf5vdzwkvnlhcixqzpl28ndbs9"))))
+                "0n1w451647pxii6qrrxbvdi9z6rqdwibczkbs7k7a9j33bv3nqv8"))))
     (properties
      `((upstream-name . "S4Vectors")))
     (build-system r-build-system)
@@ -21001,14 +21203,14 @@ family of feature/genome hypotheses.")
 (define-public r-gviz
   (package
     (name "r-gviz")
-    (version "1.44.1")
+    (version "1.44.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Gviz" version))
        (sha256
         (base32
-         "0yfmpxvx7h344fp6i3iny7r61n904bj0qdy14qbsp3d0z4g8a5fn"))))
+         "0laismy8kklzkg81r5vf1194fbhp2hw952g6jc3zvn2z5y2d4524"))))
     (properties `((upstream-name . "Gviz")))
     (build-system r-build-system)
     (propagated-inputs
@@ -21257,6 +21459,27 @@ statistical dependencies in messy, complex data.")
     (description "This package provides tools for analysis of ChIP-seq and
 other functional sequencing data.")
     (license license:gpl2)))
+
+(define-public r-parody
+  (package
+    (name "r-parody")
+    (version "1.58.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "parody" version))
+       (sha256
+        (base32 "0n2pmpnpwh16hb58v821xn42jm4a7wjsdf6sqxapjjw9w432mjac"))))
+    (properties `((upstream-name . "parody")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/parody")
+    (synopsis "Parametric and resistant outlier detection")
+    (description
+     "The parody package provides routines for univariate and multivariate
+outlier detection with a focus on parametric methods, but support for some
+methods based on resistant statistics.")
+    (license license:artistic2.0)))
 
 (define-public r-pathview
   (package
@@ -21853,19 +22076,20 @@ the Bioconductor project.")
 (define-public r-biodb
   (package
     (name "r-biodb")
-    (version "1.8.0")
+    (version "1.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biodb" version))
        (sha256
         (base32
-         "1lcjq1zfarhc7pqqrkqnaycsv2f27n4n8mfvrc3c9ww4lsza555k"))))
+         "18j70ma85qb42qqpzz8fw3g4x6cav4j0pc2ab5ym22791dr8izck"))))
     (properties `((upstream-name . "biodb")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biocfilecache
            r-chk
+           r-git2r
            r-jsonlite
            r-lgr
            r-lifecycle
@@ -21979,6 +22203,15 @@ design.")
          "0n026b744ah5kcnipsyiqqs7vlz5n5im1kgv35i2pgxyzvf7a8sn"))))
     (properties `((upstream-name . "biomvRCNS")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-constants
+           (lambda _
+             (substitute* "src/biomvRCNS.c"
+               (("DOUBLE_XMIN") "DBL_MIN")
+               (("DOUBLE_XMAX") "DBL_MAX")))))))
     (propagated-inputs
      (list r-genomicranges r-gviz r-iranges r-mvtnorm))
     (home-page "https://bioconductor.org/packages/biomvRCNS")
@@ -22380,13 +22613,13 @@ interest on transformed methylation proportions.")
 (define-public r-omnipathr
   (package
     (name "r-omnipathr")
-    (version "3.8.0")
+    (version "3.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "OmnipathR" version))
        (sha256
-        (base32 "0r2nv3nbadnvqby7p5bdpl9fxjb30h0c8kjv1dkqqnhk5rbfl4hf"))))
+        (base32 "13ac98jj03vkzrc1ghrs98qrfvr74wz099w26lgc7jw2yxj575as"))))
     (properties `((upstream-name . "OmnipathR")))
     (build-system r-build-system)
     (arguments
@@ -22406,13 +22639,13 @@ interest on transformed methylation proportions.")
            r-later
            r-logger
            r-magrittr
-           r-rmarkdown
            r-progress
            r-purrr
            r-rappdirs
            r-readr
            r-readxl
            r-rlang
+           r-rmarkdown
            r-rvest
            r-stringr
            r-tibble
@@ -22581,14 +22814,14 @@ embeddings and functions to build new reference.")
 (define-public r-tximeta
   (package
     (name "r-tximeta")
-    (version "1.18.1")
+    (version "1.18.3")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "tximeta" version))
        (sha256
         (base32
-         "02240v41scaqxabjb62zh6shkkzb9520dhn0lfc2jbimnb26yj7f"))))
+         "01s8x8a3rb0a5i599pxc5miz84ssvh10b4vha79nmbhkqccffvml"))))
     (properties `((upstream-name . "tximeta")))
     (build-system r-build-system)
     (propagated-inputs

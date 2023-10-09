@@ -138,9 +138,6 @@
                                    str)
                                #\-) "_")))
 
-(define list-of-symbol?
-  (list-of symbol?))
-
 ;; Helpers for deprecated field types, to be removed later.
 (define %lazy-group (make-symbol "%lazy-group"))
 
@@ -428,7 +425,7 @@ to be appended to the audio output configuration.")
    (sanitizer mpd-group-sanitizer))
 
   (shepherd-requirement
-   (list-of-symbol '())
+   (list-of-symbols '())
    "This is a list of symbols naming Shepherd services that this service
 will depend on."
    empty-serializer)
@@ -763,7 +760,7 @@ user-group instead~%"))
     empty-serializer)
 
   (shepherd-requirement
-   (list-of-symbol '())
+   (list-of-symbols '())
    "This is a list of symbols naming Shepherd services that this service
 will depend on."
    empty-serializer)

@@ -1382,7 +1382,9 @@ to the @code{share/locale} sub-directory of this package.")
                                                          locale ".UTF-8")))
                                ',locales)
                      #t))))
-    (native-inputs (list glibc gzip))
+    (native-inputs
+     `(("glibc" ,glibc)
+       ("gzip" ,gzip)))
     (synopsis (if default-locales?
                   (P_ "Small sample of UTF-8 locales")
                   (P_ "Customized sample of UTF-8 locales")))

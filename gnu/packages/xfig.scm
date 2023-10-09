@@ -4,6 +4,7 @@
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Ivan Vilata i Balaguer <ivan@selidor.net>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,20 +23,26 @@
 
 (define-module (gnu packages xfig)
   #:use-module (guix packages)
-  #:use-module ((guix licenses) #:select (bsd-2))
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages xorg)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages ghostscript)
+  #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages netpbm)
   #:use-module (gnu packages compression))
 
-(define-public xfig
+(define-public fig2dev
   (package
-    (name "xfig")
-    (version "3.2.8b")
+    (name "fig2dev")
+    (version "3.2.9")
     (source
      (origin
        (method url-fetch)
@@ -43,27 +50,114 @@
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "0fndgbm1mkqb1sn2v2kj3nx9mxj70jbp31y2bjvzcmmkry0q3k5j"))))
+         "1cch429zbmrg2zy1mkx9xwnpvkjhmlw40c88bvi2virws744dqhm"))))
     (build-system gnu-build-system)
-    (native-inputs
-     ;; For tests.
-     (list desktop-file-utils ghostscript))
-    (inputs
-     `(("libxaw3d" ,libxaw3d)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libxpm" ,libxpm)
-       ("libx11" ,libx11)
-       ("libxt" ,libxt)))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'install 'strip-bogus-exec-prefix
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "xfig.desktop"
-               ;; The patch-dot-desktop-files phase requires a relative name.
-               (("Exec=/usr/bin/xfig") "Exec=xfig"))
-             #t)))))
+     (list
+      #:modules '((guix build gnu-build-system)
+                  (guix build utils)
+                  (srfi srfi-26))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-program
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((programs
+                     (find-files (string-append #$output "/bin")))
+                    (path
+                     (search-path-as-list
+                      '("bin")
+                      (map (cut assoc-ref inputs <>)
+                           (list "ghostscript" "imagemagick")))))
+                (for-each (lambda (program)
+                            (wrap-program program
+                              `("PATH" ":" prefix ,path)))
+                          programs)))))))
+    (inputs
+     (list libpng zlib
+           ;; Quoth INSTALL:
+           ;; “To run fig2dev, the packages
+           ;;    ghostscript, and one out of
+           ;;    netpbm | ImageMagick | GraphicsMagick
+           ;; are needed to produce various bitmap output formats, or process
+           ;; fig files with embedded images.”
+           ghostscript
+           imagemagick))
+    (native-inputs
+     ;; XXX: Tests fail if netpbm is absent.
+     (list netpbm))
+    (home-page "https://sourceforge.net/projects/mcj")
+    (synopsis "Translate Fig to other graphic description formats")
+    (description "Fig2dev is a set of tools for creating TeX documents with
+graphics which are portable, in the sense that they can be printed in a wide
+variety of environments.")
+    (license
+     (license:non-copyleft "file://Makefile.am"
+                           "See <https://spdx.org/licenses/Xfig.html>."))))
+
+(define-public transfig
+  (deprecated-package "transfig" fig2dev))
+
+(define-public xfig
+  (package
+    (name "xfig")
+    (version "3.2.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/mcj/"
+                           name "-" version ".tar.xz"))
+       (sha256
+        (base32
+         "1xy2zqbd1wn2fij95kgnj39850r7xk74kvx7kp0dxhmvs429vv8k"))
+       ;; TODO: Remove these patches and snippet when updating,
+       ;; upstreamed since commit `84375ac05e923b46bbacc8b336b0dfbe29497b6b'.
+       (patches
+        (search-patches "xfig-Enable-error-message-for-missing-libraries.patch"
+                        "xfig-Use-pkg-config-to-set-fontconfig-CFLAGS-and-LIBS.patch"
+                        "xfig-Fix-double-free-when-requesting-MediaBox.patch"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; The patch-dot-desktop-files phase requires a relative name.
+        #~(begin
+            (substitute* "xfig.desktop"
+              (("^(Exec=)/usr/bin/" _ key) key))
+            ;; This forces autoreconf to be invoked, needed for patches
+            ;; to be effective.
+            (delete-file "configure")))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:modules '((guix build gnu-build-system)
+                  (guix build utils)
+                  (srfi srfi-26))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-program
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((path
+                     (search-path-as-list
+                      '("bin")
+                      (map (cut assoc-ref inputs <>)
+                           (list "ghostscript" "fig2dev")))))
+                (wrap-program (string-append #$output "/bin/xfig")
+                  `("PATH" ":" prefix ,path))))))))
+    (native-inputs
+     (list pkg-config
+           ;; TODO: Remove the import on (gnu packages autotools)
+           ;; and related packages in the next update.
+           autoconf automake libtool
+           ;; For tests.
+           desktop-file-utils))
+    (inputs
+     (list ghostscript
+           fig2dev
+           libxaw3d
+           libjpeg-turbo
+           libpng
+           libxpm
+           libx11
+           libxft
+           libxt))
     (home-page "https://mcj.sourceforge.net/")
     (synopsis "Interactive drawing tool")
     (description
@@ -73,85 +167,6 @@ spline curves, text, etc.  It is also possible to import images in formats
 such as GIF, JPEG, EPSF (PostScript), etc.  Those objects can be created,
 deleted, moved or modified.  Attributes such as colors or line styles can be
 selected in various ways.  For text, 35 fonts are available.")
-    (license bsd-2)))
-
-(define-public transfig
-  (package
-    (name "transfig")
-    (version "3.2.5e")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/mcj/mcj-source/transfig."
-                           version ".tar.gz"))
-       (sha256
-        (base32
-         "0i3p7qmg2w8qrad3pn42b0miwarql7yy0gpd49b1bpal6bqsiicf"))
-       (patches
-        (search-patches
-         "transfig-gcc10-fno-common.patch")))) ; fix GCC10 build
-    (build-system gnu-build-system)
-    (native-inputs
-     (list imake makedepend))
-    (inputs
-     `(("xfig"    ,xfig)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng"  ,libpng)
-       ("libxpm"  ,libxpm)
-       ("libx11"  ,libx11)
-       ("zlib"    ,zlib)))
-    (arguments
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((imake (assoc-ref inputs "imake"))
-                   (out   (assoc-ref outputs "out")))
-               (substitute* '("fig2dev/Imakefile"
-                              "transfig/Imakefile")
-                 (("XCOMM (BINDIR = )[[:graph:]]*" _ front)
-                  (string-append front out "/bin"))
-                 (("XCOMM USEINLINE") "USEINLINE")
-                 ;; The variable name is deceptive.  The directory is used as an
-                 ;; installation path for bitmaps.
-                 (("(XFIGLIBDIR =[[:blank:]]*)[[:graph:]]*" _ front)
-                  (string-append front out "/lib"))
-                 (("(XPMLIBDIR = )[[:graph:]]*" _ front)
-                  (string-append front (assoc-ref inputs "libxpm") "/lib"))
-                 (("(XPMINC = -I)[[:graph:]]*" _ front)
-                  (string-append front (assoc-ref inputs "libxpm") "/include/X11"))
-                 (("/usr/local/lib/fig2dev") (string-append out "/lib")))
-               ;; The -a argument is required in order to pick up the correct paths
-               ;; to several X header files.
-               (invoke "xmkmf" "-a")
-               (substitute* '("Makefile"
-                              "fig2dev/Makefile"
-                              "fig2dev/dev/Makefile"
-                              "transfig/Makefile")
-                 ;; These imake variables somehow remain undefined
-                 (("DefaultGcc2[[:graph:]]*Opt") "-O2")
-                 ;; Reset a few variable defaults that are set in imake templates
-                 ((imake) out)
-                 (("(MANPATH = )[[:graph:]]*" _ front)
-                  (string-append front out "/share/man"))
-                 (("(CONFDIR = )([[:graph:]]*)" _ front default)
-                  (string-append front out default))
-                 ;; The "l" option was silently ignored until binutils 2.36,
-                 ;; where it got a different purpose.  So remove it to avoid
-                 ;; "ar: libdeps specified more than once".
-                 (("((AR|MODAR) = ar )clq" _ front)
-                  (string-append front "cq")))
-               #t)))
-         (add-after 'install 'install/doc
-           (lambda _
-             (invoke "make" "install.man"))))))
-    (home-page "https://mcj.sourceforge.net/")
-    (synopsis "Create portable LaTeX figures")
-    (description
-     "Transfig creates a makefile to translate figures described in Fig code
-or PIC into a specified LaTeX graphics language.  PIC files are identified by
-the suffix \".pic\"; Fig files can be specified either with or without the
-suffix \".fig\".  Transfig also creates a TeX macro file appropriate to the
-target language.")
-    (license bsd-2)))
+    (license
+     (license:non-copyleft "file://Makefile.am"
+                           "See <https://spdx.org/licenses/Xfig.html>."))))

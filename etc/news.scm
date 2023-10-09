@@ -26,6 +26,59 @@
 (channel-news
  (version 0)
 
+ (entry (commit "953c65ffdd43c02c934518fb7a1c68542584b223")
+        (title
+         (en "Declarative offloading on Guix System and childhurds")
+         (de "Auslagern kann deklariert werden auf Guix System und Childhurds")
+         (fr "Déclaration du déchargement dans Guix System et childhurds"))
+        (body
+         (en "When configuring Guix System, it is now possible to declare
+build machines to offload to directly from the @code{operating-system}
+declaration by specifying the @code{build-machines} field of
+@code{guix-configuration}.  When you do this, @command{guix system} generates
+a @file{/etc/guix/machines.scm} file by concatenating the @code{(build-machine
+@dots{})} expressions you specified.
+
+This mechanism is used by @code{hurd-vm-service-type}, also known as
+``childhurd'', to create virtual machines running the GNU/Hurd operating
+system one can offload to, without additional configuration steps.
+
+Run @command{info \"(guix) Daemon Offload Setup\"} for more info on
+offloading; run @command{info \"(guix) Virtualization Services\"} for info on
+@code{hurd-vm-service-type}.")
+         (de "In der Betriebssystemkonfiguration von Guix System können jetzt
+auch die Erstellungsmaschinen deklariert werden, an die Erstellungen ausgelagert
+werden.  Diese geben Sie im Feld @code{build-machines} einer
+@code{guix-configuration} an.  In diesem Fall wird @command{guix system} eine
+Datei @file{/etc/guix/machines.scm} anlegen, die der Aneinanderreihung der
+angegebenen @code{(build-machine @dots{})}-Ausdrücke entspricht.
+
+Der Mechanismus wird für @code{hurd-vm-service-type} eingesetzt, auch bekannt
+als „Childhurd“, um virtuelle Maschinen anzulegen, auf denen das
+GNU/Hurd-Betriebssystem läuft und auf die man auslagern kann, ohne weitere
+Einstellungen vorzunehmen.
+
+Führen Sie @command{info \"(guix.de) Auslagern des Daemons einrichten\"} aus, um
+mehr Informationen über das Auslagern zu bekommen; führen Sie
+@command{info \"(guix.de) Virtualisierungsdienste\"} aus für Informationen zu
+@code{hurd-vm-service-type}.")
+         (fr "Dans sa configuration Guix System, il est désormais possible de
+déclarer les machines de construction vers lesquelles se décharger directement
+dans la déclaration @code{operating-system} en spécifiant le champ
+@code{build-machines} de @code{guix-configuration}.  Quand on fait cela,
+@command{guix system} produit un fichier @file{/etc/guix/machines.scm} en
+concaténant les expressions @code{(build-machine @dots{})} fournies.
+
+Ce mécanisme est utilisé par @code{hurd-vm-service-type}, également appelé
+« childhurd », pour créer des machines virtuelles faisant tourner le système
+d'exploitation GNU/Hurd vers lesquelles se décharger, sans étape
+supplémentaire de configuration.
+
+Lancer @command{info \"(guix.fr) Réglages du déchargement du démon\"} pour
+plus d'informations sur le délestage ; lancer @command{info \"(guix.fr)
+Services de virtualisation\"} pour en apprendre sur
+@code{hurd-vm-service-type}.")))
+
  (entry (commit "db775e7367e8deffb513aad94f4afb875d796d0b")
         (title
           (en "Linux-libre 6.3 removed due to end of upstream support")

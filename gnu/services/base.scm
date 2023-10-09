@@ -62,8 +62,9 @@
                           util-linux xfsprogs))
   #:use-module (gnu packages bash)
   #:use-module ((gnu packages base)
-                #:select (coreutils glibc glibc-utf8-locales tar
-                          canonical-package))
+                #:select (coreutils glibc glibc/hurd
+                          glibc-utf8-locales make-glibc-utf8-locales
+                          tar canonical-package))
   #:use-module ((gnu packages compression) #:select (gzip))
   #:use-module (gnu packages fonts)
   #:autoload   (gnu packages guile-xyz) (guile-netlink)
@@ -87,6 +88,7 @@
   #:use-module ((guix self) #:select (make-config.scm))
   #:use-module (guix diagnostics)
   #:use-module (guix i18n)
+  #:autoload   (guix utils) (target-hurd?)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
@@ -1741,6 +1743,31 @@ archive' public keys, with GUIX."
   (list (file-append guix "/share/guix/berlin.guix.gnu.org.pub")
         (file-append guix "/share/guix/bordeaux.guix.gnu.org.pub")))
 
+(define (guix-machines-files-installation machines)
+  "Return a gexp to install MACHINES, a list of gexps, as
+/etc/guix/machines.scm, which is used for offloading."
+  (with-imported-modules '((guix build utils))
+    #~(begin
+        (use-modules (guix build utils))
+
+        (define machines-file
+          "/etc/guix/machines.scm")
+
+        ;; If MACHINES-FILE already exists, move it out of the way.
+        ;; Create a backup if it's a regular file: it's likely that the
+        ;; user manually updated it.
+        (if (file-exists? machines-file)
+            (if (and (symbolic-link? machines-file)
+                     (store-file-name? (readlink machines-file)))
+                (delete-file machines-file)
+                (rename-file machines-file
+                             (string-append machines-file ".bak")))
+            (mkdir-p (dirname machines-file)))
+
+        ;; Installed the declared machines file.
+        (symlink #+(scheme-file "machines.scm" machines)
+                 machines-file))))
+
 (define-record-type* <guix-configuration>
   guix-configuration make-guix-configuration
   guix-configuration?
@@ -1777,6 +1804,8 @@ archive' public keys, with GUIX."
   (http-proxy       guix-http-proxy               ;string | #f
                     (default #f))
   (tmpdir           guix-tmpdir                   ;string | #f
+                    (default #f))
+  (build-machines   guix-build-machines           ;list of gexps | #f
                     (default #f))
   (environment      guix-configuration-environment  ;list of strings
                     (default '())))
@@ -1831,6 +1860,12 @@ proxy of 'guix-daemon'...~%")
 
 (define (guix-shepherd-service config)
   "Return a <shepherd-service> for the Guix daemon service with CONFIG."
+  (define locales
+    (let-system (system target)
+      (if (target-hurd? (or target system))
+          (make-glibc-utf8-locales glibc/hurd)
+          glibc-utf8-locales)))
+
   (match-record config <guix-configuration>
     (guix build-group build-accounts authorize-key? authorized-keys
           use-substitutes? substitute-urls max-silent-time timeout
@@ -1912,8 +1947,7 @@ proxy of 'guix-daemon'...~%")
                                  ;; 'nss-certs'.  See
                                  ;; <https://bugs.gnu.org/32942>.
                                  (string-append "GUIX_LOCPATH="
-                                                #$glibc-utf8-locales
-                                                "/lib/locale")
+                                                #$locales "/lib/locale")
                                  "LC_ALL=en_US.utf8"
                                  ;; Make 'tar' and 'gzip' available so
                                  ;; that 'guix perform-download' can use
@@ -1958,8 +1992,15 @@ proxy of 'guix-daemon'...~%")
           (system* #$(file-append guix "/bin/guix") "archive"
                    "--generate-key"))
 
+        ;; Optionally install /etc/guix/acl...
         #$(if authorize-key?
               (substitute-key-authorization authorized-keys guix)
+              #~#f)
+
+        ;; ... and /etc/guix/machines.scm.
+        #$(if (guix-build-machines config)
+              (guix-machines-files-installation
+               #~(list #$@(guix-build-machines config)))
               #~#f))))
 
 (define-record-type* <guix-extension>
@@ -1969,6 +2010,8 @@ proxy of 'guix-daemon'...~%")
                     (default '()))
   (substitute-urls guix-extension-substitute-urls ;list of strings
                     (default '()))
+  (build-machines  guix-extension-build-machines  ;list of gexps
+                   (default '()))
   (chroot-directories guix-extension-chroot-directories ;list of file-like/strings
                       (default '())))
 
@@ -1978,6 +2021,8 @@ proxy of 'guix-daemon'...~%")
                             (guix-extension-authorized-keys b)))
    (substitute-urls (append (guix-extension-substitute-urls a)
                             (guix-extension-substitute-urls b)))
+   (build-machines (append (guix-extension-build-machines a)
+                           (guix-extension-build-machines b)))
    (chroot-directories (append (guix-extension-chroot-directories a)
                                (guix-extension-chroot-directories b)))))
 
@@ -2001,6 +2046,11 @@ proxy of 'guix-daemon'...~%")
                                        (guix-configuration-authorized-keys config)))
               (substitute-urls (append (guix-extension-substitute-urls extension)
                                        (guix-configuration-substitute-urls config)))
+              (build-machines
+               (and (or (guix-build-machines config)
+                        (pair? (guix-extension-build-machines extension)))
+                    (append (or (guix-build-machines config) '())
+                            (guix-extension-build-machines extension))))
               (chroot-directories
                (append (guix-extension-chroot-directories extension)
                        (guix-configuration-chroot-directories config))))))

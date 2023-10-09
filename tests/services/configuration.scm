@@ -337,13 +337,9 @@
 (define-configuration config-with-maybe-symbol
   (protocol maybe-symbol ""))
 
-;;; Maybe symbol values are currently seen as serializable, because the
-;;; unspecified value is '%unset-marker%, which is a symbol itself.
-;;; TODO: Remove expected fail marker after resolution.
-(test-expect-fail 1)
 (test-equal "symbol maybe value serialization, unspecified"
   ""
-  (gexp->approximate-sexp
+  (eval-gexp
    (serialize-configuration (config-with-maybe-symbol)
                             config-with-maybe-symbol-fields)))
 

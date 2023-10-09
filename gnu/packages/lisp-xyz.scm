@@ -3502,6 +3502,37 @@ values in other options.")
 (define-public ecl-py-configparser
   (sbcl-package->ecl-package sbcl-py-configparser))
 
+(define-public sbcl-cl-ini
+  (let ((commit "e630acb405022a7ae11969bf908669fee1191ab7")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-ini")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/compufox/cl-ini")
+               (commit commit)))
+         (file-name (git-file-name "sbcl-cl-ini" version))
+         (sha256
+          (base32
+           "12vy3gspqn0wmkyz5id1xrgv1scgb16m7pkvmbmi19vlpj2iyq7p"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-prove))
+      (inputs (list sbcl-cl-str))
+      (home-page "https://github.com/compufox/cl-ini")
+      (synopsis "INI file parser for Common Lisp")
+      (description
+       "Parse INI formatted files into a Common Lisp list structure.")
+      (license license:expat))))
+
+(define-public cl-ini
+  (sbcl-package->cl-source-package sbcl-cl-ini))
+
+(define-public ecl-cl-ini
+  (sbcl-package->ecl-package sbcl-cl-ini))
+
 (define-public sbcl-pythonic-string-reader
   (let ((commit "47a70ba1e32362e03dad6ef8e6f36180b560f86a"))
     (package

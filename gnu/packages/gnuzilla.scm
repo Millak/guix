@@ -5,7 +5,7 @@
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
-;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
+;;; Copyright © 2017, 2023 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017, 2018 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2020 Ricardo Wurmus <rekado@elephly.net>
@@ -393,7 +393,12 @@ from collections.abc import MutableSequence"))))
                       "-src.tgz"))
                 (sha256
                  (base32
-                  "0iccpdvc0kvpww5a31k9gjkqigyz016i7v80r9zamd34w4fl6mx4")))))))
+                  "0iccpdvc0kvpww5a31k9gjkqigyz016i7v80r9zamd34w4fl6mx4"))
+                (patches
+                 (cons
+                  (search-patch
+                   "icu4c-fix-TestHebrewCalendarInTemporalLeapYear.patch")
+                  (origin-patches (package-source icu4c)))))))))
 
 ;;;
 ;;; Localization helper procedures.
@@ -542,9 +547,9 @@ variable defined below.  It requires guile-json to be installed."
 ;; XXXX: Workaround 'snippet' limitations.
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
-(define %icecat-base-version "115.3.0")
+(define %icecat-base-version "115.3.1")
 (define %icecat-version (string-append %icecat-base-version "-guix0-preview1"))
-(define %icecat-build-id "20230926000000") ;must be of the form YYYYMMDDhhmmss
+(define %icecat-build-id "20230928000000") ;must be of the form YYYYMMDDhhmmss
 
 ;; 'icecat-source' is a "computed" origin that generates an IceCat tarball
 ;; from the corresponding upstream Firefox ESR tarball, using the 'makeicecat'
@@ -564,12 +569,12 @@ variable defined below.  It requires guile-json to be installed."
                   "firefox-" upstream-firefox-version ".source.tar.xz"))
             (sha256
              (base32
-              "1jkhfrnjyjr3c7xs724ny0wv3jamld8ia6ggx273ppw17l5wa7ca"))))
+              "0lqymabkhxpdhmgz81if8za1hdakh8nlm4cmsir4y1fa95p2bnkx"))))
 
          ;; The upstream-icecat-base-version may be older than the
          ;; %icecat-base-version.
-         (upstream-icecat-base-version "115.3.0")
-         (gnuzilla-commit "3486a3e29280093102e11411d4f05987133ba789")
+         (upstream-icecat-base-version "115.3.1")
+         (gnuzilla-commit "1b0f0ba84716023657dd7dff72cb408e35380a60")
          (gnuzilla-source
           (origin
             (method git-fetch)
@@ -581,7 +586,7 @@ variable defined below.  It requires guile-json to be installed."
                                       (string-take gnuzilla-commit 8)))
             (sha256
              (base32
-              "0x3dlrvf59w8sgg5n6ryaj39yxr2573zmshimfh4mzbidv3j4aw5"))))
+              "0kvdyg2kzjabldqa10any5ad8r06pcybamvfnkn7nwcvd86g8s0v"))))
 
          ;; 'search-patch' returns either a valid file name or #f, so wrap it
          ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.

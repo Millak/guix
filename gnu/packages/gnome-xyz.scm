@@ -1050,6 +1050,29 @@ scrollable tiling of windows and per monitor workspaces.  It's inspired by paper
 notebooks and tiling window managers.")
     (license license:gpl3)))
 
+(define-public gnome-shell-extension-night-theme-switcher
+  (package
+    (name "gnome-shell-extension-night-theme-switcher")
+    (version "65")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url
+              "https://gitlab.com/rmnvgr/nightthemeswitcher-gnome-shell-extension")
+             (commit version)))
+       (sha256
+        (base32 "0qhi2g2lh6m8vhrmmfi60977f0i4k9x1zj68lrvpzzlqndz8cgh9"))
+       (file-name (git-file-name name version))))
+    (build-system meson-build-system)
+    (native-inputs (list pkg-config (list glib "bin")))
+    (synopsis "Automatic theme switcher for GNOME Shell")
+    (description
+     "Automatically toggle your GNOME desktop's color scheme between light and
+dark, switch backgrounds and run custom commands at sunset and sunrise.")
+    (home-page "https://nightthemeswitcher.romainvigier.fr")
+    (license license:gpl2+)))
+
 (define-public gpaste
   (package
     (name "gpaste")

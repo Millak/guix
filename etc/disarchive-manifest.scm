@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021-2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -94,34 +94,41 @@ an empty directory if ORIGIN could not be disassembled."
                    (#f "anonymous-tarball.dis"))
                  build))
 
-(define (disarchive-collection origins)
-  "Return a directory containing all the Disarchive metadata for ORIGINS."
-  (directory-union "disarchive-collection"
-                   (filter-map (lambda (origin)
-                                 (and (tarball-origin? origin)
-
-                                      ;; Dismiss origins with (sha256 #f) such
-                                      ;; as that of IceCat.
-                                      (and=> (origin-hash origin)
-                                             content-hash-value)
-
-                                      ;; FIXME: Exclude the Chromium tarball
-                                      ;; because it's huge and "disarchive
-                                      ;; disassemble" exceeds the max-silent
-                                      ;; timeout.
-                                      (not (string-prefix?
-                                            "chromium-"
-                                            (origin-actual-file-name origin)))
-
-                                      (origin->disarchive origin)))
-                               origins)
-                   #:copy? #t))
-
 
 ;; The manifest containing Disarchive data.
-(let ((origins (all-origins)))
+(let* ((origins (all-origins))
+       (disarchives
+        (filter-map (lambda (origin)
+                      (and (tarball-origin? origin)
+
+                           ;; Dismiss origins with (sha256 #f) such as that of
+                           ;; IceCat.
+                           (and=> (origin-hash origin)
+                                  content-hash-value)
+
+                           ;; FIXME: Exclude the Chromium tarball because it's
+                           ;; huge and "disarchive disassemble" exceeds the
+                           ;; max-silent timeout.
+                           (not (string-prefix?
+                                 "chromium-"
+                                 (origin-actual-file-name origin)))
+
+                           (manifest-entry
+                             (name
+                              (string-append (origin-actual-file-name origin)
+                                             ".dis"))
+                             (version "0")
+                             (item (origin->disarchive origin)))))
+                    origins)))
   (manifest
-   (list (manifest-entry
+   (cons (manifest-entry
            (name "disarchive-collection")
            (version (number->string (length origins)))
-           (item (disarchive-collection origins))))))
+           (item (directory-union "disarchive-collection"
+                                  (map manifest-entry-item disarchives)
+                                  #:copy? #t)))
+
+         ;; Cuirass can distribute derivation builds to build machines if and
+         ;; only if it has one "job" per derivation.  Thus, add them here in
+         ;; addition to "disarchive-collection".
+         disarchives)))

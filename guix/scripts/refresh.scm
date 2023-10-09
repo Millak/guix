@@ -571,6 +571,28 @@ all are dependent packages: ~{~a~^ ~}~%")
       (lists
        (concatenate lists))))
 
+  ;; Sort SEQUENCE by consecutive application of all tests to selected
+  ;; elements in SEQUENCE.  Every item in LESS+SELECT is a pair consisting of
+  ;; a binary comparison procedure and a selector, e.g (cons < car).
+  (define (cascade-sort sequence . less+select)
+    (define (make-test less? select)
+      (lambda (a b)
+        (less? (select a) (select b))))
+    (define (combine-tests procs)
+      (lambda (a b)
+        (eq? 'less
+             (any (lambda (test)
+                    (cond
+                     ((test a b) 'less)
+                     ((test b a) 'greater)
+                     (else #false)))
+                  procs))))
+    (let ((tests (match less+select
+                   (((less? . select) ...)
+                    (combine-tests
+                     (map make-test less? select))))))
+      (sort sequence tests)))
+
   (let* ((opts            (parse-options))
          (update?         (assoc-ref opts 'update?))
          (updaters        (options->updaters opts))
@@ -605,18 +627,21 @@ all are dependent packages: ~{~a~^ ~}~%")
                               (or (assoc-ref opts 'keyring)
                                   (string-append (config-directory)
                                                  "/upstream/trustedkeys.kbx"))))
-                (let* ((spec-line
-                        (compose (cut string-trim-right <> char-set:digit)
-                                 location->string
-                                 package-location
+                (let* ((spec->location
+                        (compose package-location
                                  update-spec-package))
                        ;; Sort the specs so that we update packages from the
                        ;; bottom of the file to the top.  This way we can be
                        ;; sure that the package locations are always correct
                        ;; and never shifted due to previous edits.
                        (sorted-update-specs
-                        (sort update-specs
-                              (lambda (a b) (string> (spec-line a) (spec-line b))))))
+                        (cascade-sort update-specs
+                                      (cons string<
+                                            (compose location-file
+                                                     spec->location))
+                                      (cons >
+                                            (compose location-line
+                                                     spec->location)))))
                   (for-each
                    (lambda (update)
                      (update-package store

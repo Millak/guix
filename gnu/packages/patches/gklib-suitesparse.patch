@@ -1,0 +1,65 @@
+This patch contains the relevant changes to GKlib made in SuiteSparse
+(CHOLMOD) for the version 7.2.0
+(https://github.com/DrTimothyAldenDavis/SuiteSparse/commit/8a7641cdb4809533c681417e94f98058c07c5da2).
+The disabling of signal handling when MATLAB_MEX_FILE is defined is omitted.
+
+diff -ur a/CMakeLists.txt b/CMakeLists.txt
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -3,6 +3,8 @@
+ 
+ option(BUILD_SHARED_LIBS "Build shared libraries (.dll/.so) instead of static ones (.lib/.a)" OFF)
+ 
++find_package ( SuiteSparse_config 7.1.0 REQUIRED )
++
+ get_filename_component(abs "." ABSOLUTE)
+ set(GKLIB_PATH ${abs})
+ unset(abs)
+diff -ur a/GKlib.h b/GKlib.h
+--- a/GKlib.h
++++ b/GKlib.h
+@@ -59,6 +59,24 @@
+ #include <omp.h>
+ #endif
+ 
++/* -------------------------------------------------------------------------- */
++/* Added for incorporation into SuiteSparse.
++   Tim Davis, Oct 31, 2022, Texas A&M University. */
++#include "SuiteSparse_config.h"
++#define malloc  SuiteSparse_config_malloc
++#define calloc  SuiteSparse_config_calloc
++#define realloc SuiteSparse_config_realloc
++#define free(p)                                 \
++{                                               \
++    if ((p) != NULL)                            \
++    {                                           \
++        SuiteSparse_config_free (p) ;           \
++        (p) = NULL ;                            \
++    }                                           \
++}
++
++/* -------------------------------------------------------------------------- */
++
+ 
+ 
+ 
+diff -ur a/memory.c b/memory.c
+--- a/memory.c
++++ b/memory.c
+@@ -108,6 +108,8 @@
+ /*************************************************************************/
+ int gk_malloc_init()
+ {
++  gkmcore = NULL;
++#if 0
+   if (gkmcore == NULL)
+     gkmcore = gk_gkmcoreCreate();
+ 
+@@ -115,6 +117,7 @@
+     return 0;
+ 
+   gk_gkmcorePush(gkmcore);
++#endif
+ 
+   return 1;
+ }

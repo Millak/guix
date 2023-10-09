@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2015, 2017, 2018 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,12 +33,17 @@
             search-path-specification-file-type
             search-path-specification-file-pattern
 
-            $PATH
+            $CPLUS_INCLUDE_PATH
+            $C_INCLUDE_PATH
+            $LIBRARY_PATH
             $GUIX_EXTENSIONS_PATH
+            $PATH
             $PKG_CONFIG_PATH
             $SSL_CERT_DIR
             $SSL_CERT_FILE
             $TZDIR
+
+            %gcc-search-paths
 
             search-path-specification->sexp
             sexp->search-path-specification
@@ -68,6 +74,33 @@
                 (default 'directory))
   (file-pattern search-path-specification-file-pattern ;#f | string
                 (default #f)))
+
+(define $C_INCLUDE_PATH
+  (search-path-specification
+   (variable "CPLUS_INCLUDE_PATH")
+   ;; Add 'include/c++' here so that <cstdlib>'s "#include_next
+   ;; <stdlib.h>" finds GCC's <stdlib.h>, not libc's.
+   (files '("include/c++" "include"))))
+
+(define $CPLUS_INCLUDE_PATH
+  (search-path-specification
+   (variable "C_INCLUDE_PATH")
+   (files '("include"))))
+
+(define $LIBRARY_PATH
+  (search-path-specification
+   (variable "LIBRARY_PATH")
+   (files '("lib" "lib64"))))
+
+(define %gcc-search-paths
+  ;; Use the language-specific variables rather than 'CPATH' because they
+  ;; are equivalent to '-isystem' whereas 'CPATH' is equivalent to '-I'.
+  ;; The intent is to allow headers that are in the search path to be
+  ;; treated as "system headers" (headers exempt from warnings) just like
+  ;; the typical /usr/include headers on an FHS system.
+  (list $C_INCLUDE_PATH
+        $CPLUS_INCLUDE_PATH
+        $LIBRARY_PATH))
 
 (define $PATH
   ;; The 'PATH' variable.  This variable is a bit special: it is not attached

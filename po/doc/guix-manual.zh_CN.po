@@ -13853,7 +13853,7 @@ msgstr ""
 
 #. type: Plain text
 #: guix-git/doc/guix.texi:5649
-msgid "The output of @command{guix describe} above shows that we're now running Generation@tie{}19 and that it includes both Guix and packages from the @code{variant-personal-packages} channel (@pxref{Invoking guix describe})."
+msgid "The output of @command{guix describe} above shows that we're now running Generation@tie{}19 and that it includes both Guix and packages from the @code{variant-packages} channel (@pxref{Invoking guix describe})."
 msgstr ""
 
 #. type: Plain text

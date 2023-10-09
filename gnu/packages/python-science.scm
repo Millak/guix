@@ -630,6 +630,31 @@ Python module with the same interface, but (hopefully) faster.")
 written in C.")
     (license license:bsd-2)))
 
+(define-public python-numpoly
+  (package
+    (name "python-numpoly")
+    (version "1.2.11")
+    (source (origin
+              (method git-fetch) ;; PyPI is missing some Pytest fixtures
+              (uri (git-reference
+                    (url "https://github.com/jonathf/numpoly")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "01g21v91f4d66xd0bvap0n6d6485w2fnq1636gx6h2s42550rlbd"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-importlib-metadata python-numpy))
+    (native-inputs (list python-pytest python-sympy))
+    (home-page "https://numpoly.readthedocs.io/en/master/")
+    (synopsis "Polynomials as a numpy datatype")
+    (description "Numpoly is a generic library for creating, manipulating and
+evaluating arrays of polynomials based on @code{numpy.ndarray objects}.")
+    ;; Tests fail with dtype mismatches on 32-bit architectures, suggesting
+    ;; that numpoly only supports 64 bit platforms.
+    (supported-systems '("x86_64-linux" "aarch64-linux" "powerpc64le-linux"))
+    (license license:bsd-2)))
+
 (define-public python-baycomp
   (package
     (name "python-baycomp")
@@ -1296,7 +1321,8 @@ Mathematics (GLM) library to Python.")
                 "test_tls_temporary_credentials_functional"
                 "test_variable_in_task"
                 "test_worker_preload_text"
-                "test_worker_uses_same_host_as_nanny")
+                "test_worker_uses_same_host_as_nanny"
+                "test_nanny_timeout") ; access to 127.0.0.1
                " and not ")
 
               ;; These fail because it doesn't find dask[distributed]
@@ -1319,7 +1345,8 @@ Mathematics (GLM) library to Python.")
 
               ;; These tests are rather flaky
               " and not test_quiet_quit_when_cluster_leaves"
-              " and not multiple_clients_restart"))
+              " and not multiple_clients_restart"
+              " and not test_steal_twice"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'versioneer

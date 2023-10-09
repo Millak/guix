@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -525,7 +525,15 @@ password from USERS."
     (lookup-procedure current-shadow shadow-entry-name))
 
   (define now
-    (days-since-epoch current-time))
+    ;; On machines without a real-time clock (typically Arm SBCs), the system
+    ;; clock may be at 1970-01-01 while booting, while would lead us to define
+    ;; NOW as zero.
+    ;;
+    ;; However, the 'isexpired' function in Shadow interprets the combination
+    ;; uninitialized password + last-change = 0 as "The password has expired,
+    ;; it must be changed", which prevents logins altogether.  To avoid that,
+    ;; never set 'last-change' to zero.
+    (max (days-since-epoch current-time) 1))
 
   (map (lambda (user passwd)
          (or (previous-entry (password-entry-name passwd))

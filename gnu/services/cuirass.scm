@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
-;;; Copyright © 2016-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
@@ -274,6 +274,9 @@
                               (cuirass-remote-server-configuration-cache
                                remote-server)))
          (user           (cuirass-configuration-user config))
+         ;; RUNSTATEDIR contains the "bridge" Unix-domain socket that 'cuirass
+         ;; web' connects to to communicate with 'cuirass register'.
+         (runstatedir    "/var/run/cuirass")
          (log            "/var/log/cuirass")
          (profile        (string-append "/var/guix/profiles/per-user/" user))
          (roots          (string-append profile "/cuirass"))
@@ -285,6 +288,7 @@
           (mkdir-p #$cache)
           (mkdir-p #$log)
           (mkdir-p #$roots)
+          (mkdir-p #$runstatedir)
 
           (when #$remote-cache
             (mkdir-p #$remote-cache))
@@ -295,6 +299,8 @@
             (chown #$log uid gid)
             (chown #$roots uid gid)
             (chown #$profile uid gid)
+            (chown #$runstatedir uid gid)
+            (chmod #$runstatedir #o700)
 
             (when #$remote-cache
               (chown #$remote-cache uid gid)))))))

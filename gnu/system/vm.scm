@@ -87,41 +87,6 @@
 ;; conservative default.
 (define %default-msize-value (* 100 (expt 2 20))) ;100 MiB
 
-(define %linux-vm-file-systems
-  ;; File systems mounted for 'derivation-in-linux-vm'.  These are shared with
-  ;; the host over 9p.
-  ;;
-  ;; The 9p documentation says that cache=loose is "intended for exclusive,
-  ;; read-only mounts", without additional details.  It's much faster than the
-  ;; default cache=none, especially when copying and registering store items.
-  ;; Thus, use cache=loose, except for /xchg where we want to ensure
-  ;; consistency.
-  (list (file-system
-          (mount-point (%store-prefix))
-          (device "store")
-          (type "9p")
-          (needed-for-boot? #t)
-          (flags '(read-only))
-          (options (format #f "trans=virtio,cache=loose,msize=~a"
-                           %default-msize-value))
-          (check? #f))
-        (file-system
-          (mount-point "/xchg")
-          (device "xchg")
-          (type "9p")
-          (needed-for-boot? #t)
-          (options (format #f "trans=virtio,msize=~a" %default-msize-value))
-          (check? #f))
-        (file-system
-          (mount-point "/tmp")
-          (device "tmp")
-          (type "9p")
-          (needed-for-boot? #t)
-          (options (format #f "trans=virtio,cache=loose,msize=~a"
-                           %default-msize-value))
-          (check? #f))))
-
-
 ;;;
 ;;; VMs that share file systems with the host.
 ;;;
@@ -145,6 +110,12 @@
        (device (file-system->mount-tag source))
        (type "9p")
        (flags (if writable? '() '(read-only)))
+
+       ;; The 9p documentation says that cache=loose is "intended for
+       ;; exclusive, read-only mounts", without additional details.  It's
+       ;; faster than the default cache=none, especially when copying and
+       ;; registering store items.  Thus, use cache=loose, except for writable
+       ;; mounts, to ensure consistency.
        (options (string-append "trans=virtio"
                                (if writable? "" ",cache=loose")
                                ",msize=" (number->string %default-msize-value)))

@@ -69,10 +69,12 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages javascript)
+  #:use-module (gnu packages libedit)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages logging)
   #:use-module (gnu packages lua)
+  #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages multiprecision)
@@ -501,6 +503,30 @@ library.  It also adds hamlib support, which provides basic gain and frequency
 controls for certain tuners which may be paired with an audio device.")
       (license license:expat))))
 
+(define-public soapybladerf
+  (let ((commit "85f6dc554ed4c618304d99395b19c4e1523675b0")
+        (revision "1"))
+    (package
+      (name "soapybladerf")
+      (version (git-version "0.4.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/pothosware/SoapyBladeRF")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "05c5mv1b55jv7dcr740hv4b3gplfaqryflfvprhlkm7bycr8pp16"))))
+      (build-system cmake-build-system)
+      (inputs (list bladerf soapysdr))
+      (arguments (list #:tests? #f))  ; No test suite
+      (home-page "https://github.com/pothosware/SoapyBladeRF/wiki")
+      (synopsis "SoapySDR BladeRF module")
+      (description "This package provides BladeRF devices support to the
+SoapySDR library.")
+      (license license:lgpl2.1+))))
+
 (define-public soapyhackrf
   ;; Some fixes are not yet in a tagged release.
   (let ((commit "6c0c33f0aa44c3080674e6bca0273184d3e9eb44")
@@ -919,57 +945,62 @@ environment.")
     (license license:gpl3+)))
 
 (define-public gr-osmosdr
-  ;; No tag for version supporting Gnuradio 3.9; use commit.
-  (let ((commit "a100eb024c0210b95e4738b6efd836d48225bd03")
-        (revision "0"))
-    (package
-      (name "gr-osmosdr")
-      (version (git-version "0.2.3" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://git.osmocom.org/gr-osmosdr")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1pk5gnyznfyy510lbqzg9ijcb1fnhmn547n24aiqyrxd6i6vv1ki"))))
-      (build-system cmake-build-system)
-      (native-inputs
-       (list doxygen pkg-config pybind11 python-mako python-six))
-      (inputs
-       (list airspy
-             airspyhf
-             boost
-             fftwf
-             gmp
-             gnuradio
-             hackrf
-             libsndfile
-             log4cpp
-             python
-             python-numpy
-             python-pyqt
-             rtl-sdr
-             soapysdr
-             spdlog
-             volk))
-      (arguments
-       `(#:modules ((guix build cmake-build-system)
-                    ((guix build python-build-system) #:prefix python:)
-                    (guix build utils))
-         #:imported-modules (,@%cmake-build-system-modules
-                             (guix build python-build-system))
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'install 'wrap-python
-             (assoc-ref python:%standard-phases 'wrap)))))
-      (synopsis "GNU Radio block for interfacing with various radio hardware")
-      (description "This is a block for GNU Radio allowing to use a common API
+  (package
+    (name "gr-osmosdr")
+    (version "0.2.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.osmocom.org/gr-osmosdr")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qpa908bb7iagvaa7h541k1x092mb6dfrmw5ayy4p51qks45nj3p"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list doxygen pkg-config pybind11 python-mako python-six))
+    (inputs
+     (list airspy
+           airspyhf
+           bladerf
+           boost
+           fftwf
+           gmp
+           gnuradio
+           gr-iqbal
+           hackrf
+           libsndfile
+           log4cpp
+           python
+           python-numpy
+           python-pyqt
+           rtl-sdr
+           soapysdr
+           spdlog
+           volk))
+    (arguments
+     (list #:modules '((guix build cmake-build-system)
+                       ((guix build python-build-system) #:prefix python:)
+                       (guix build utils))
+           #:imported-modules `(,@%cmake-build-system-modules
+                                (guix build python-build-system))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-gnuradio-iqbalance-detection
+                 (lambda _
+                   (substitute* "CMakeLists.txt"
+                     (("find_package\\(gnuradio-iqbalance PATHS \\$\\{Gnuradio_DIR\\}\\)")
+                      (string-append "find_package(gnuradio-iqbalance PATHS "
+                                     #$(this-package-input "gr-iqbal")
+                                     "/lib/cmake/gnuradio)")))))
+               (add-after 'install 'wrap-python
+                 (assoc-ref python:%standard-phases 'wrap)))))
+    (synopsis "GNU Radio block for interfacing with various radio hardware")
+    (description "This is a block for GNU Radio allowing to use a common API
 to access different radio hardware.")
-      (home-page "https://osmocom.org/projects/gr-osmosdr/wiki/GrOsmoSDR")
-      (license license:gpl3+))))
-(deprecated-package "gnuradio-osmosdr" gr-osmosdr)
+    (home-page "https://osmocom.org/projects/gr-osmosdr/wiki/GrOsmoSDR")
+    (license license:gpl3+)))
 
 (define-public libosmo-dsp
   (package
@@ -1166,7 +1197,7 @@ satellites.")
 (define-public gqrx
   (package
     (name "gqrx")
-    (version "2.16")
+    (version "2.17")
     (source
      (origin
        (method git-fetch)
@@ -1175,7 +1206,7 @@ satellites.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "189cgmp88kabv823l5bfn1xfyyj6sldi5sdbmflvncxicf51b0yp"))))
+        (base32 "0gg2i4x4z9ggliflpb00434q28831qfrxr0dv7d83ahagy428z22"))))
     (build-system qt-build-system)
     (native-inputs
      (list pkg-config))
@@ -1415,6 +1446,43 @@ userspace hackrf utilities and C library.  To install the hackrf udev rules,
 you must extend 'udev-service-type' with this package.  E.g.:
 @code{(udev-rules-service 'hackrf hackrf #:groups '(\"dialout\"))}.")
     (license license:gpl2)))
+
+(define-public bladerf
+  (package
+    (name "bladerf")
+    (version "2023.02")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Nuand/bladeRF")
+             (commit version)
+             (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "038v9qdmrwx9mxsrq4l36bap0bsypyg4i8hs7l7srv4b0c2s7ynp"))))
+    (build-system cmake-build-system)
+    (native-inputs (list doxygen help2man pkg-config))
+    (inputs (list libedit libusb))
+    (arguments
+     (list #:configure-flags #~(list "-DTAGGED_RELEASE=ON"
+                                     (string-append "-DUDEV_RULES_PATH="
+                                                    #$output
+                                                    "/lib/udev/rules.d")
+                                     "-DBLADERF_GROUP=dialout"
+                                     "-DBUILD_DOCUMENTATION=ON")
+           #:tests? #f)) ; No test suite
+    (home-page "https://www.nuand.com/")
+    (synopsis "User-space library and utilities for BladeRF SDR")
+    (description
+     "This package contains a library and command line utilities for
+controlling the BladeRF Software Defined Radio (SDR) over USB.  To install the
+bladerf udev rules, you must extend 'udev-service-type' with this package.
+E.g.: @code{(udev-rules-service 'bladerf bladerf)}.")
+    (license (list license:bsd-3
+                   license:expat
+                   license:gpl2+
+                   license:lgpl2.1+))))
 
 (define-public hamlib
   (package
@@ -1793,13 +1861,12 @@ gain and standing wave ratio.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list hackrf libusb ncurses rtl-sdr))
+     (list bladerf hackrf libusb ncurses rtl-sdr))
     (arguments
      (list
       #:test-target "test"
       #:make-flags
-      #~(list (string-append "CC=" #$(cc-for-target))
-              "BLADERF=no")
+      #~(list (string-append "CC=" #$(cc-for-target)))
       #:phases
       #~(modify-phases %standard-phases
           (delete 'configure)
@@ -2517,6 +2584,7 @@ voice formats.")
            airspyhf
            alsa-lib
            aptdec
+           bladerf
            boost
            cm256cc
            codec2
@@ -2614,6 +2682,7 @@ various hardware.")
        (list airspy
              airspyhf
              alsa-lib
+             bladerf
              codec2
              fftwf
              glew
@@ -2629,7 +2698,8 @@ various hardware.")
              (list zstd "lib")))
       (arguments
        (list #:tests? #f ; No test suite.
-             #:configure-flags #~(list "-DOPT_BUILD_PLUTOSDR_SOURCE=OFF"
+             #:configure-flags #~(list "-DOPT_BUILD_BLADERF_SOURCE=ON"
+                                       "-DOPT_BUILD_PLUTOSDR_SOURCE=OFF"
                                        "-DOPT_BUILD_M17_DECODER=ON")
              #:phases
              #~(modify-phases %standard-phases
@@ -2866,7 +2936,9 @@ of devices than RTL-SDR.")
            python-pytest
            xorg-server-for-tests))
     (inputs
-     (list gnuradio
+     (list airspy
+           bladerf
+           gnuradio
            gr-osmosdr
            hackrf
            python-numpy
@@ -2995,6 +3067,7 @@ Navigation Satellite System.")
     (inputs
      (list airspy
            airspyhf
+           bladerf
            fftwf
            glew
            glfw

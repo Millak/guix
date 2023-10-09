@@ -13,7 +13,7 @@
 # Copyright © 2016-2023 Efraim Flashner <efraim@flashner.co.il>
 # Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 # Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-# Copyright © 2017, 2018 Clément Lassieur <clement@lassieur.org>
+# Copyright © 2017, 2018, 2023 Clément Lassieur <clement@lassieur.org>
 # Copyright © 2017, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 # Copyright © 2017, 2018, 2019 Gábor Boskovits <boskovits@gmail.com>
 # Copyright © 2018 Amirouche Boubekki <amirouche@hypermove.net>
@@ -59,6 +59,7 @@
 # Copyright © 2023 Zheng Junjie <873216071@qq.com>
 # Copyright © 2023 Ivana Drazovic <iv.dra@hotmail.com>
 # Copyright © 2023 Andy Tai <atai@atai.org>
+# Copyright © 2023 B. Wilson <elaexuotee@wilsonb.com>
 # Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 #
 # This file is part of GNU Guix.
@@ -127,6 +128,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/anthy.scm			\
   %D%/packages/antivirus.scm			\
   %D%/packages/apl.scm				\
+  %D%/packages/apple.scm			\
   %D%/packages/apparmor.scm			\
   %D%/packages/apr.scm				\
   %D%/packages/arcan.scm			\
@@ -1068,8 +1070,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/debops-constants-for-external-program-names.patch \
   %D%/packages/patches/debops-debops-defaults-fall-back-to-less.patch \
   %D%/packages/patches/dee-vapi.patch			\
-  %D%/packages/patches/desmume-gcc6-fixes.patch			\
-  %D%/packages/patches/desmume-gcc7-fixes.patch			\
   %D%/packages/patches/dfu-programmer-fix-libusb.patch		\
   %D%/packages/patches/diffutils-fix-signal-processing.patch	\
   %D%/packages/patches/directfb-davinci-glibc-228-compat.patch	\
@@ -1099,7 +1099,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/elm-reactor-static-files.patch		\
   %D%/packages/patches/elogind-fix-rpath.patch			\
   %D%/packages/patches/emacs-all-the-icons-remove-duplicate-rs.patch	\
+  %D%/packages/patches/emacs-debbugs-keep-patch-subject.patch	\
   %D%/packages/patches/emacs-deferred-fix-number-of-arguments.patch	\
+  %D%/packages/patches/emacs-elpy-dup-test-name.patch		\
   %D%/packages/patches/emacs-exec-path.patch			\
   %D%/packages/patches/emacs-ess-fix-obsolete-function-alias.patch	\
   %D%/packages/patches/emacs-git-email-missing-parens.patch	\
@@ -1110,6 +1112,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/emacs-highlight-stages-add-gexp.patch	\
   %D%/packages/patches/emacs-lispy-fix-thread-last-test.patch   \
   %D%/packages/patches/emacs-native-comp-driver-options.patch   \
+  %D%/packages/patches/emacs-next-exec-path.patch   \
+  %D%/packages/patches/emacs-next-native-comp-driver-options.patch   \
   %D%/packages/patches/emacs-pasp-mode-quote-file-names.patch  \
   %D%/packages/patches/emacs-polymode-fix-lexical-variable-error.patch  \
   %D%/packages/patches/emacs-telega-path-placeholder.patch	\
@@ -1273,6 +1277,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ghostscript-no-header-uuid.patch		\
   %D%/packages/patches/ghostscript-no-header-creationdate.patch \
   %D%/packages/patches/gitg-fix-positional-argument.patch	\
+  %D%/packages/patches/gklib-suitesparse.patch			\
   %D%/packages/patches/glib-appinfo-watch.patch			\
   %D%/packages/patches/glib-networking-gnutls-binding.patch	\
   %D%/packages/patches/glib-skip-failing-test.patch		\
@@ -1416,6 +1421,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/icecat-use-system-media-libs.patch	\
   %D%/packages/patches/icedtea-7-hotspot-aarch64-use-c++98.patch	\
   %D%/packages/patches/icedtea-7-hotspot-pointer-comparison.patch	\
+  %D%/packages/patches/icu4c-fix-TestHebrewCalendarInTemporalLeapYear.patch	\
   %D%/packages/patches/id3lib-CVE-2007-4460.patch			\
   %D%/packages/patches/id3lib-UTF16-writing-bug.patch			\
   %D%/packages/patches/idris-test-ffi008.patch			\
@@ -1990,7 +1996,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/softhsm-fix-openssl3-tests.patch		\
   %D%/packages/patches/spectre-meltdown-checker-externalize-fwdb.patch \
   %D%/packages/patches/spdlog-fix-tests.patch			\
-  %D%/packages/patches/spectre-meltdown-checker-find-kernel.patch \
   %D%/packages/patches/sphinxbase-fix-doxygen.patch		\
   %D%/packages/patches/sssd-system-directories.patch		\
   %D%/packages/patches/steghide-fixes.patch			\
@@ -2036,7 +2041,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/tootle-glib-object-naming.patch		\
   %D%/packages/patches/tootle-reason-phrase.patch		\
   %D%/packages/patches/transcode-ffmpeg.patch	\
-  %D%/packages/patches/transfig-gcc10-fno-common.patch		\
   %D%/packages/patches/trytond-add-egg-modules-to-path.patch	\
   %D%/packages/patches/trytond-add-guix_trytond_path.patch	\
   %D%/packages/patches/ttf2eot-cstddef.patch			\
@@ -2114,6 +2118,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/wacomtablet-add-missing-includes.patch	\
   %D%/packages/patches/wacomtablet-qt5.15.patch			\
   %D%/packages/patches/warsow-qfusion-fix-bool-return-type.patch	\
+  %D%/packages/patches/wcstools-extend-makefiles.patch	\
   %D%/packages/patches/wdl-link-libs-and-fix-jnetlib.patch	\
   %D%/packages/patches/webkitgtk-adjust-bubblewrap-paths.patch	\
   %D%/packages/patches/webrtc-audio-processing-big-endian.patch	\
@@ -2133,6 +2138,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/xf86-video-nouveau-fixup-ABI.patch	\
   %D%/packages/patches/xf86-video-savage-xorg-compat.patch 	\
   %D%/packages/patches/xf86-video-siliconmotion-fix-ftbfs.patch \
+  %D%/packages/patches/xfig-Enable-error-message-for-missing-libraries.patch		\
+  %D%/packages/patches/xfig-Fix-double-free-when-requesting-MediaBox.patch		\
+  %D%/packages/patches/xfig-Use-pkg-config-to-set-fontconfig-CFLAGS-and-LIBS.patch	\
   %D%/packages/patches/xfce4-panel-plugins.patch		\
   %D%/packages/patches/xfce4-settings-defaults.patch		\
   %D%/packages/patches/xgboost-use-system-dmlc-core.patch       \

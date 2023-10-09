@@ -28,7 +28,7 @@
 ;;; Copyright © 2020, 2022 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2020, 2021 Robert Karszniewicz <avoidr@posteo.de>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
-;;; Copyright © 2021 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2021, 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
@@ -1480,14 +1480,14 @@ Qt-based XMPP library QXmpp.")
 (define-public prosody
   (package
     (name "prosody")
-    (version "0.12.3")
+    (version "0.12.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://prosody.im/downloads/source/"
                                   "prosody-" version ".tar.gz"))
               (sha256
                (base32
-                "0091vc0v8xnxkpdi4qpy4dirn92y4pa09q1qssi40q7l3w1hvnim"))))
+                "0mjqss1h2cw0nlyj9nkxdg1bnq1j0zndlv1g8665aa9g7hki5ms7"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ;tests require "busted"
@@ -2636,41 +2636,43 @@ replacement.")
     (license license:gpl2+)))
 
 (define-public tdlib
-  (package
-    (name "tdlib")
-    (version "1.8.10")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/tdlib/td")
-             (commit "ef4c3902fe082b83192d578af7a0bb956a917fed")))
-       (sha256
-        (base32 "1pi53v8qjl0lzann99pv90i4qx2lbjz10rvnwzkbqbn932y3j3gg"))
-       (file-name (git-file-name name version))))
-    (build-system cmake-build-system)
-    (arguments
-     (list
-      #:build-type "Release"
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-failing-tests
-            (lambda _
-              (substitute* "test/CMakeLists.txt"
-                ;; The test cases are compiled into a distinct binary
-                ;; which uses mtproto.cpp to attempt to connect to
-                ;; a remote server. Removing this file from the sources
-                ;; list disables those specific test cases.
-                (("\\$\\{CMAKE_CURRENT_SOURCE_DIR\\}/mtproto.cpp") "")))))))
-    (native-inputs
-     (list gperf openssl zlib php doxygen))
-    (synopsis "Cross-platform library for building Telegram clients")
-    (description "Tdlib is a cross-platform library for creating custom
+  (let ((commit "4d1d22d6f477d61f6ff2b8f6e49de1847092c5b4")
+        (revision "0"))
+    (package
+      (name "tdlib")
+      (version (git-version "1.8.16" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/tdlib/td")
+               (commit commit)))
+         (sha256
+          (base32 "0nv921k795kq0l993rxzd5pm5v3l3mnwbaxb7d7d0m0506l4w9fk"))
+         (file-name (git-file-name name version))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:build-type "Release"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'remove-failing-tests
+              (lambda _
+                (substitute* "test/CMakeLists.txt"
+                  ;; The test cases are compiled into a distinct binary
+                  ;; which uses mtproto.cpp to attempt to connect to
+                  ;; a remote server. Removing this file from the sources
+                  ;; list disables those specific test cases.
+                  (("\\$\\{CMAKE_CURRENT_SOURCE_DIR\\}/mtproto.cpp") "")))))))
+      (native-inputs
+       (list gperf openssl zlib php doxygen))
+      (synopsis "Cross-platform library for building Telegram clients")
+      (description "Tdlib is a cross-platform library for creating custom
 Telegram clients following the official Telegram API.  It can be easily used
 from almost any programming language with a C-FFI and features first-class
 support for high performance Telegram Bot creation.")
-    (home-page "https://core.telegram.org/tdlib")
-    (license license:boost1.0)))
+      (home-page "https://core.telegram.org/tdlib")
+      (license license:boost1.0))))
 
 (define-public purple-mm-sms
   (package
@@ -3193,7 +3195,7 @@ designed for experienced users.")
 (define-public matterbridge
   (package
     (name "matterbridge")
-    (version "1.25.2")
+    (version "1.26.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3202,7 +3204,7 @@ designed for experienced users.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0csvxsgl62fjkrmk0wy64h2qaiy16m0wh6pqfbhz0kfacq16p9an"))))
+                "0939fiy7z53izznfhlr7c6vaskbmkbj3ncb09fzx5dmz9cjngy80"))))
     ;; Using the go-build-system results in the same error message
     ;; than in the bug 1551[1]. So we fix it by running go build
     ;; manually in the git repository as-is as this is the solution

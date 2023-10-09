@@ -1485,6 +1485,14 @@ name, and they will be scheduled on matching build machines.
 @end table
 @end deftp
 
+@quotation Note
+On Guix System, instead of managing @file{/etc/guix/machines.scm}
+independently, you can choose to specify build machines directly in the
+@code{operating-system} declaration, in the @code{build-machines} field
+of @code{guix-configuration}.  @xref{guix-configuration-build-machines,
+@code{build-machines} field of @code{guix-configuration}}.
+@end quotation
+
 The @command{guix} command must be in the search path on the build
 machines.  You can check whether this is the case by running:
 
@@ -5665,7 +5673,7 @@ Generation 19	Aug 27 2018 16:20:48
 @noindent
 The output of @command{guix describe} above shows that we're now running
 Generation@tie{}19 and that it includes
-both Guix and packages from the @code{variant-personal-packages} channel
+both Guix and packages from the @code{variant-packages} channel
 (@pxref{Invoking guix describe}).
 
 @node Using a Custom Guix Channel
@@ -19263,6 +19271,28 @@ The type of compression used for build logs---one of @code{gzip},
 Whether to discover substitute servers on the local network using mDNS
 and DNS-SD.
 
+@anchor{guix-configuration-build-machines}
+@item @code{build-machines} (default: @code{#f})
+This field must be either @code{#f} or a list of gexps evaluating to a
+@code{build-machine} record (@pxref{Daemon Offload Setup}).
+
+When it is @code{#f}, the @file{/etc/guix/machines.scm} file is left
+untouched.  Otherwise, the list of of gexps is written to
+@file{/etc/guix/machines.scm}; if a previously-existing file is found,
+it is backed up as @file{/etc/guix/machines.scm.bak}.  This allows you
+to declare build machines for offloading directly in the operating
+system declaration, like so:
+
+@lisp
+(guix-configuration
+  (build-machines
+    (list #~(build-machine (name "foo.example.org") @dots{})
+          #~(build-machine (name "bar.example.org") @dots{}))))
+@end lisp
+
+Additional build machines may be added @i{via} the @code{guix-extension}
+mechanism (see below).
+
 @item @code{extra-options} (default: @code{'()})
 List of extra command-line options for @command{guix-daemon}.
 
@@ -19300,7 +19330,6 @@ Environment variables to be set before starting the daemon, as a list of
 @end deftp
 
 @deftp {Data Type} guix-extension
-
 This data type represents the parameters of the Guix build daemon that
 are extendable. This is the type of the object that must be used within
 a guix service extension.
@@ -19312,6 +19341,16 @@ A list of file-like objects where each element contains a public key.
 
 @item @code{substitute-urls} (default: @code{'()})
 A list of strings where each element is a substitute URL.
+
+@item @code{build-machines} (default: @code{'()})
+A list of gexps that evaluate to @code{build-machine} records
+(@pxref{Daemon Offload Setup}).
+
+Using this field, a service may add new build machines to receive builds
+offloaded by the daemon.  This is useful for a service such as
+@code{hurd-vm-service-type}, which can make a GNU/Hurd virtual machine
+directly usable for offloading (@pxref{hurd-vm,
+@code{hurd-vm-service-type}}).
 
 @item @code{chroot-directories} (default: @code{'()})
 A list of file-like objects or strings pointing to additional directories the build daemon can use.
@@ -28149,7 +28188,7 @@ to maintain communication between devices on such network even when the
 connection to the Internet has been lost.  When left unspecified,
 the value from the account archive prevails.
 
-@item @code{bootstrap-hostnames} (type: maybe-string-list)
+@item @code{bootstrap-hostnames} (type: maybe-list-of-strings)
 A list of hostnames or IPs pointing to OpenDHT nodes, that should be
 used to initially join the OpenDHT network.  When left unspecified, the
 value from the account archive prevails.
@@ -34470,7 +34509,7 @@ The group to run mpd as.
 
 The default @code{%mpd-group} is a system group with name ``mpd''.
 
-@item @code{shepherd-requirement} (default: @code{'()}) (type: list-of-symbol)
+@item @code{shepherd-requirement} (default: @code{'()}) (type: list-of-symbols)
 A list of symbols naming Shepherd services that this service
 will depend on.
 
@@ -34720,7 +34759,7 @@ Available @code{mympd-configuration} fields are:
 @item @code{package} (default: @code{mympd}) (type: file-like)
 The package object of the myMPD server.
 
-@item @code{shepherd-requirement} (default: @code{'()}) (type: list-of-symbol)
+@item @code{shepherd-requirement} (default: @code{'()}) (type: list-of-symbols)
 This is a list of symbols naming Shepherd services that this service
 will depend on.
 
@@ -35654,6 +35693,7 @@ host.  If empty, QEMU uses a default file name.
 @end deftp
 
 
+@anchor{hurd-vm}
 @subsubheading The Hurd in a Virtual Machine
 
 @cindex @code{hurd}
@@ -35682,10 +35722,14 @@ guix shell tigervnc-client -- vncviewer localhost:5900
 The default configuration (see @code{hurd-vm-configuration} below)
 spawns a secure shell (SSH) server in your GNU/Hurd system, which QEMU
 (the virtual machine emulator) redirects to port 10222 on the host.
-Thus, you can connect over SSH to the childhurd with:
+By default, the service enables @dfn{offloading} such that the host
+@code{guix-daemon} automatically offloads GNU/Hurd builds to the
+childhurd (@pxref{Daemon Offload Setup}).  This is what happens when
+running a command like the following one, where @code{i586-gnu} is the
+system type of 32-bit GNU/Hurd:
 
 @example
-ssh root@@localhost -p 10022
+guix build emacs-minimal -s i586-gnu
 @end example
 
 The childhurd is volatile and stateless: it starts with a fresh root
@@ -35695,6 +35739,57 @@ file system of the childhurd when it boots.  This allows you to
 initialize ``secrets'' inside the VM: SSH host keys, authorized
 substitute keys, and so on---see the explanation of @code{secret-root}
 below.
+
+You will probably find it useful to create an account for you in the
+GNU/Hurd virtual machine and to authorize logins with your SSH key.  To
+do that, you can define the GNU/Hurd system in the usual way
+(@pxref{Using the Configuration System}), and then pass that operating
+system as the @code{os} field of @code{hurd-vm-configuration}, as in
+this example:
+
+@lisp
+(define childhurd-os
+  ;; Definition of my GNU/Hurd system, derived from the default one.
+  (operating-system
+    (inherit %hurd-vm-operating-system)
+
+    ;; Add a user account.
+    (users (cons (user-account
+                  (name "charlie")
+                  (comment "This is me!")
+                  (group "users")
+                  (supplementary-groups '("wheel"))) ;for 'sudo'
+                 %base-user-accounts))
+
+    (services
+     ;; Modify the SSH configuration to allow login as "root"
+     ;; and as "charlie" using public key authentication.
+     (modify-services (operating-system-user-services
+                       %hurd-vm-operating-system)
+       (openssh-service-type
+        config => (openssh-configuration
+                   (inherit config)
+                   (authorized-keys
+                    `(("root"
+                       ,(local-file
+                         "/home/charlie/.ssh/id_rsa.pub"))
+                      ("charlie"
+                       ,(local-file
+                         "/home/charlie/.ssh/id_rsa.pub"))))))))))
+
+(operating-system
+  ;; @dots{}
+  (services
+    ;; Add the 'hurd-vm' service, configured to use the
+    ;; operating system configuration above.
+    (append (list (service hurd-vm-service-type
+                           (hurd-vm-configuration
+                             (os %childhurd-os))))
+            %base-services)))
+@end lisp
+
+That's it!  The remainder of this section provides the reference of the
+service configuration.
 
 @defvar hurd-vm-service-type
 This is the type of the Hurd in a Virtual Machine service.  Its value
@@ -35730,8 +35825,8 @@ permissive OpenSSH secure shell daemon listening on port 2222
 The QEMU package to use.
 
 @item @code{image} (default: @var{hurd-vm-disk-image})
-The procedure used to build the disk-image built from this
-configuration.
+The image object representing the disk image of this virtual machine
+(@pxref{System Images}).
 
 @item @code{disk-size} (default: @code{'guess})
 The size of the disk image.
@@ -35769,6 +35864,41 @@ with forwarded ports:
 @var{vnc-port}: @code{(+ 15900 (* 1000 @var{ID}))}
 @end example
 
+@cindex childhurd, offloading
+@cindex Hurd, offloading
+@item @code{offloading?} (default: @code{#t})
+Whether to automatically set up offloading of builds to the childhurd.
+
+When enabled, this lets you run GNU/Hurd builds on the host and have
+them transparently offloaded to the VM, for instance when running a
+command like this:
+
+@example
+guix build coreutils -s i586-gnu
+@end example
+
+This option automatically sets up offloading like so:
+
+@enumerate
+@item
+Authorizing the childhurd's key on the host so that the host accepts
+build results coming from the childhurd, which can be done like so
+(@pxref{Invoking guix archive, @command{guix archive --authorize}}, for
+more on that).
+
+@item
+Creating a user account called @code{offloading} dedicated to offloading
+in the childhurd.
+
+@item
+Creating an SSH key pair on the host and making it an authorized key of
+the @code{offloading} account in the childhurd.
+
+@item
+Adding the childhurd to @file{/etc/guix/machines.scm} (@pxref{Daemon
+Offload Setup}).
+@end enumerate
+
 @item @code{secret-root} (default: @file{/etc/childhurd})
 The root directory with out-of-band secrets to be installed into the
 childhurd once it runs.  Childhurds are volatile which means that on
@@ -35786,38 +35916,13 @@ with the following non-volatile secrets, unless they already exist:
 /etc/childhurd/etc/guix/acl
 /etc/childhurd/etc/guix/signing-key.pub
 /etc/childhurd/etc/guix/signing-key.sec
+/etc/childhurd/etc/ssh/authorized_keys.d/offloading
 /etc/childhurd/etc/ssh/ssh_host_ed25519_key
 /etc/childhurd/etc/ssh/ssh_host_ecdsa_key
 /etc/childhurd/etc/ssh/ssh_host_ed25519_key.pub
 /etc/childhurd/etc/ssh/ssh_host_ecdsa_key.pub
 @end example
 
-These files are automatically sent to the guest Hurd VM when it boots,
-including permissions.
-
-@cindex childhurd, offloading
-@cindex Hurd, offloading
-Having these files in place means that only a couple of things are
-missing to allow the host to offload @code{i586-gnu} builds to the
-childhurd:
-
-@enumerate
-@item
-Authorizing the childhurd's key on the host so that the host accepts
-build results coming from the childhurd, which can be done like so:
-
-@example
-guix archive --authorize < \
-  /etc/childhurd/etc/guix/signing-key.pub
-@end example
-
-@item
-Adding the childhurd to @file{/etc/guix/machines.scm} (@pxref{Daemon
-Offload Setup}).
-@end enumerate
-
-We're working towards making that happen automatically---get in touch
-with us at @email{guix-devel@@gnu.org} to discuss it!
 @end table
 @end deftp
 
@@ -42471,53 +42576,32 @@ and to make it easier to create Scheme bindings for these configuration
 files, you can use the utilities defined in the @code{(gnu services
 configuration)} module.
 
-The main utility is the @code{define-configuration} macro, which you
-will use to define a Scheme record type (@pxref{Record Overview,,,
-guile, GNU Guile Reference Manual}).  The Scheme record will be
-serialized to a configuration file by using @dfn{serializers}, which are
-procedures that take some kind of Scheme value and returns a
-G-expression (@pxref{G-Expressions}), which should, once serialized to
-the disk, return a string.  More details are listed below.
+The main utility is the @code{define-configuration} macro, a helper
+used to define a Scheme record type (@pxref{Record Overview,,,
+guile, GNU Guile Reference Manual}).  The fields from this Scheme record
+can be serialized using @dfn{serializers}, which are procedures that take
+some kind of Scheme value and translates them into another Scheme value or
+@ref{G-Expressions}.
 
 @defmac define-configuration name clause1 clause2 @dots{}
 Create a record type named @code{@var{name}} that contains the
 fields found in the clauses.
 
-A clause can have one of the following forms:
+A clause has the following form:
 
 @example
 (@var{field-name}
- (@var{type} @var{default-value})
- @var{documentation})
-
-(@var{field-name}
- (@var{type} @var{default-value})
+ @var{type-decl}
  @var{documentation}
- (serializer @var{serializer}))
-
-(@var{field-name}
- (@var{type})
- @var{documentation})
-
-(@var{field-name}
- (@var{type})
- @var{documentation}
- (serializer @var{serializer}))
-
-(@var{field-name}
- (@var{type})
- @var{documentation}
- (sanitizer @var{sanitizer})
-
-(@var{field-name}
- (@var{type})
- @var{documentation}
- (sanitizer @var{sanitizer})
- (serializer @var{serializer}))
+ @var{option*}
+ @dots{})
 @end example
 
 @var{field-name} is an identifier that denotes the name of the field in
 the generated record.
+
+@var{type-decl} is either @code{@var{type}} for fields that require a
+value to be set or @code{(@var{type} @var{default})} otherwise.
 
 @var{type} is the type of the value corresponding to @var{field-name};
 since Guile is untyped, a predicate
@@ -42536,6 +42620,28 @@ an object of the record type.
 @var{documentation} is a string formatted with Texinfo syntax which
 should provide a description of what setting this field does.
 
+@var{option*} is one of the following subclauses:
+
+@table @asis
+@item @code{empty-serializer}
+Exclude this field from serialization.
+
+@item @code{(serializer @var{serializer})}
+@var{serializer} is the name of a procedure which takes two arguments,
+the first is the name of the field, and the second is the value
+corresponding to the field.  The procedure should return a string or
+@ref{G-Expressions} that represents the content that will be serialized
+to the configuration file.  If none is specified, a procedure of the
+name @code{serialize-@var{type}} will be used.
+
+An example of a simple serializer procedure:
+@lisp
+(define (serialize-boolean field-name value)
+  (let ((value (if value "true" "false")))
+    #~(string-append '#$field-name " = " #$value)))
+@end lisp
+
+@item @code{(sanitizer @var{sanitizer})}
 @var{sanitizer} is a procedure which takes one argument,
 a user-supplied value, and returns a ``sanitized'' value for the field.
 If no sanitizer is specified, a default sanitizer is used, which raises
@@ -42549,21 +42655,7 @@ symbols looks like this:
         ((symbol? value) (symbol->string value))
         (else (error "bad value"))))
 @end lisp
-
-@var{serializer} is the name of a procedure which takes two arguments,
-the first is the name of the field, and the second is the value
-corresponding to the field.  The procedure should return a string or
-G-expression (@pxref{G-Expressions}) that represents the content that
-will be serialized to the configuration file.  If none is specified, a
-procedure of the name @code{serialize-@var{type}} will be used.
-
-A simple serializer procedure could look like this:
-
-@lisp
-(define (serialize-boolean field-name value)
-  (let ((value (if value "true" "false")))
-    #~(string-append #$field-name #$value)))
-@end lisp
+@end table
 
 In some cases multiple different configuration records might be defined
 in the same file, but their serializers for the same type might have to
@@ -42584,13 +42676,13 @@ manually specify a custom @var{serializer} for every field.
 
 (define-configuration foo-configuration
   (label
-   (string)
+   string
    "The name of label.")
   (prefix foo-))
 
 (define-configuration bar-configuration
   (ip-address
-   (string)
+   string
    "The IPv4 address for this device.")
   (prefix bar-))
 @end lisp
@@ -42680,11 +42772,6 @@ Return a G-expression that contains the values corresponding to the
 @var{fields} of @var{configuration}, a record that has been generated by
 @code{define-configuration}.  The G-expression can then be serialized to
 disk by using something like @code{mixed-text-file}.
-@end deffn
-
-@deffn {Procedure} empty-serializer field-name value
-A serializer that just returns an empty string.  The
-@code{serialize-package} procedure is an alias for this.
 @end deffn
 
 Once you have defined a configuration record, you will most likely also
@@ -42789,7 +42876,7 @@ Below is an example of a record type created using
 
 (define-configuration contact-configuration
   (name
-   (string)
+   string
    "The name of the contact."
    serialize-contact-name)
   (phone-number
@@ -42799,15 +42886,15 @@ Below is an example of a record type created using
    maybe-string
    "The person's email address.")
   (married?
-   (boolean)
+   boolean
    "Whether the person is married."))
 
 (define-configuration contacts-list-configuration
   (name
-   (string)
+   string
    "The name of the owner of this contact list.")
   (email
-   (string)
+   string
    "The owner's email address.")
   (contacts
    (list-of-contact-configurations '())
@@ -44133,7 +44220,7 @@ Extra options will be passed to @command{ssh-agent}, please run
 
 @cindex GNU Privacy Guard, Home service
 @cindex GPG, Home service
-The @code{(gnu home services gnupg)} modules provides services that help
+The @code{(gnu home services gnupg)} module provides services that help
 you set up the GNU Privacy Guard, also known as GnuPG or GPG, in your
 home environment.
 

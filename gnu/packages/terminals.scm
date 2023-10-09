@@ -1509,7 +1509,7 @@ basic input/output.")
 (define-public alacritty
   (package
     (name "alacritty")
-    (version "0.12.2")
+    (version "0.12.3")
     (source
      (origin
        ;; XXX: The crate at "crates.io" has limited contents.  In particular,
@@ -1520,11 +1520,10 @@ basic input/output.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17a7v32gxsy79cj1ap71ckrypxv7i9jv4lnibg0ymcpwk9zpwxjz"))))
+        (base32 "1jbyxnza38c22k7ri8apzn03q91l06isj8la9xca7cz06kn0hha9"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f     ; virtual manifest
-       #:cargo-test-flags '("--release" "--" "--skip=config_read_eof")
        #:cargo-inputs
        (("rust-alacritty-config" ,rust-alacritty-config-0.1)
         ("rust-alacritty-config-derive" ,rust-alacritty-config-derive-0.2)
@@ -1577,10 +1576,9 @@ basic input/output.")
                 (search-input-file inputs "lib/libEGL.so"))
                (("libGL\\.so")
                 (search-input-file inputs "lib/libGL.so"))
-               ;; Lots of libraries from rust-x11-dl.
-               ;; XXX: Not all X11 libraries are inside the build enclosure.
-               ;(("libX.*\\.so" all)
-               ; (search-input-file inputs (string-append "lib/" all)))
+               ;; Lots of libraries from rust-x11-dl and others.
+               (("libX[[:alpha:]]*\\.so" all)
+                (search-input-file inputs (string-append "lib/" all)))
 
                ;; There are several libwayland libraries.
                (("libwayland-.*\\.so" all)
@@ -1630,23 +1628,31 @@ basic input/output.")
                (install-file "extra/completions/alacritty.fish"
                              (string-append share "/fish/vendor_completions.d"))))))))
     (native-inputs
-     `(("ncurses" ,ncurses)
-       ("pkg-config" ,pkg-config)
-       ("python3" ,python)))
+     (list ncurses
+           pkg-config
+           python))
     (inputs
-     `(("expat" ,expat)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("libx11" ,libx11)
-       ("libxcb" ,libxcb)
-       ("libxcursor" ,libxcursor)
-       ("libxi" ,libxi)
-       ("libxkbcommon" ,libxkbcommon)
-       ("libxrandr" ,libxrandr)
-       ("libxxf86vm" ,libxxf86vm)
-       ("mesa" ,mesa)
-       ("xdg-utils" ,xdg-utils)
-       ("wayland" ,wayland)))
+     (list expat
+           fontconfig
+           freetype
+           libx11
+           libxcb
+           libxcursor
+           libxext
+           libxft
+           libxi
+           libxinerama
+           libxkbcommon
+           libxmu
+           libxpresent
+           libxrandr
+           libxscrnsaver
+           libxt
+           libxtst
+           libxxf86vm
+           mesa
+           xdg-utils
+           wayland))
     (native-search-paths
      ;; FIXME: This should only be located in 'ncurses'.  Nonetheless it is
      ;; provided for usability reasons.  See <https://bugs.gnu.org/22138>.

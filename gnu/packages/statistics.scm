@@ -43,6 +43,7 @@
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix build-system ant)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system r)
@@ -54,12 +55,15 @@
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages bison)
+  #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cran)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages emacs-xyz)
+  #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gtk)
@@ -90,6 +94,7 @@
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages swig)
+  #:use-module (gnu packages tbb)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
@@ -647,13 +652,13 @@ estimation) corresponding to the book: Wand, M.P. and Jones, M.C. (1995)
 (define-public r-lattice
   (package
     (name "r-lattice")
-    (version "0.21-8")
+    (version "0.21-9")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "lattice" version))
               (sha256
                (base32
-                "0af3c0mk0s3gnpmg7xmd4hjjynwv4ym3iv4grjvcmrk28abxdlwa"))))
+                "0ak9k6s6drd1a25m7mwzb426ms92a2p3ps04h2pacifwnk74ca59"))))
     (build-system r-build-system)
     (home-page "https://lattice.r-forge.r-project.org/")
     (synopsis "High-level data visualization system")
@@ -667,14 +672,14 @@ also flexible enough to handle most nonstandard requirements.")
 (define-public r-matrix
   (package
     (name "r-matrix")
-    (version "1.6-1")
+    (version "1.6-1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Matrix" version))
        (sha256
         (base32
-         "01qcrv4y1fm3ah5h4j90xvzlwvzcnbpa10cpg6k9hp363xh0pip5"))))
+         "1hlcxr38p4ybb67n25cc1ssh2q2r8cj0flc59lid8hclzvqv27ik"))))
     (properties `((upstream-name . "Matrix")))
     (build-system r-build-system)
     (propagated-inputs
@@ -1091,13 +1096,13 @@ in which the whole-plots or split-plots or both can be freely exchangeable.")
 (define-public r-plyr
   (package
     (name "r-plyr")
-    (version "1.8.8")
+    (version "1.8.9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "plyr" version))
        (sha256
-        (base32 "030706kwgqa2s5jd93ck271iqb0pj3fshrj9frg4wgp1pfs12cm7"))))
+        (base32 "00z1mvqisnzbbwcwax1gm9ilahpgp21kk4l7hqdz8fym27vygd8m"))))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
     (home-page "http://had.co.nz/plyr")
@@ -1446,13 +1451,13 @@ for template use among CRAN packages.")
 (define-public r-evaluate
   (package
     (name "r-evaluate")
-    (version "0.21")
+    (version "0.22")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "evaluate" version))
               (sha256
                (base32
-                "1f92kjlds2nckmsjxx07xm2pikpc9x6hcvc0538xf5w9xsfcjy1i"))))
+                "0sz4zimz4brbd9sawdazfgipkmfzzdmdq01b5m8pnrql5xrxhiwh"))))
     (build-system r-build-system)
     (home-page "https://github.com/hadley/evaluate")
     (synopsis "Parsing and evaluation tools for R")
@@ -1532,13 +1537,13 @@ data derived from /etc/mime.types in UNIX-type systems.")
 (define-public r-markdown
   (package
     (name "r-markdown")
-    (version "1.8")
+    (version "1.9")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "markdown" version))
               (sha256
                (base32
-                "1az5l2dnrdfx36kcdi5x8qnrbwmylf0wqd6a4hg2l9m8q1vpgs8d"))))
+                "0201v3spgl8a5c5xkddac5a3z9zh8d0nm9yg6alyhhj4cjwmgibh"))))
     (build-system r-build-system)
     ;; Skip check phase because the tests require the r-knitr package to be
     ;; installed. This prevents installation failures. Knitr normally
@@ -1864,14 +1869,14 @@ database.")
 (define-public r-dbplyr
   (package
     (name "r-dbplyr")
-    (version "2.3.3")
+    (version "2.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dbplyr" version))
        (sha256
         (base32
-         "1d3m7bhd8n5l0x1phfwzgrw2kwfyahb9yd61bbcnryd6m8c8kr3w"))))
+         "1b6y1jhf5ix4vry165vwid5nqm0d99q61vxak6aw3vfkj379vgk9"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-blob
@@ -2234,6 +2239,32 @@ modeling focusing on advanced Markov chain Monte Carlo (MCMC) and variational
 inference (VI) algorithms.")
     (license license:asl2.0)))
 
+(define-public python-chaospy
+  (package
+    (name "python-chaospy")
+    (version "4.3.13")
+    (source (origin ;; PyPI misses Pytest fixtures.
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jonathf/chaospy")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1bn4jmwygs5h0dskbniivj20qblgm75pyi9hcjf47r25kawd730m"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-importlib-metadata python-numpoly
+                             python-numpy python-scipy))
+    (native-inputs (list python-pytest python-scikit-learn))
+    (home-page "https://chaospy.readthedocs.io/en/master/")
+    (synopsis "Numerical tool for performing uncertainty quantification")
+    (description "Chaospy is a numerical toolbox for performing uncertainty
+quantification using polynomial chaos expansions, advanced Monte Carlo
+methods implemented in Python.  It also include a full suite of tools for
+doing low-discrepancy sampling, quadrature creation, polynomial manipulations,
+and a lot more.")
+    (license license:expat)))
+
 (define-public python-patsy
   (package
     (name "python-patsy")
@@ -2264,6 +2295,30 @@ building design matrices.")
     ;; patsy.compat contains code derived from the Python standard library,
     ;; and is covered by the PSFL.
     (license (list license:bsd-2 license:psfl))))
+
+(define-public python-mapie
+  (package
+    (name "python-mapie")
+    (version "0.7.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "MAPIE" version))
+              (sha256
+               (base32
+                "1nvi547avvwrck1n7rf5jh7d0ml6jaqjs2p59iwcq2a5xjmdsmsc"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pandas python-pytest))
+    (propagated-inputs (list python-numpy python-scikit-learn))
+    (home-page "https://github.com/scikit-learn-contrib/MAPIE")
+    (synopsis "Module for estimating prediction intervals")
+    (description "MAPIE allows you to easily estimate prediction intervals
+(or prediction sets) using your favourite scikit-learn-compatible model for
+single-output regression or multi-class classification settings.
+
+Prediction intervals output by MAPIE encompass both aleatoric and epistemic
+uncertainties and are backed by strong theoretical guarantees thanks to
+conformal prediction methods intervals.")
+    (license license:bsd-3)))
 
 (define-public python-statsmodels
   (package
@@ -2318,6 +2373,94 @@ building design matrices.")
 statistical computations including descriptive statistics and estimation and
 inference for statistical models.")
     (license license:bsd-3)))
+
+(define-public python-openturns
+  (package
+    (name "python-openturns")
+    (version "1.21")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/openturns/openturns")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05lbx8npvvk7jyakvfpgi9ggdp6cnzwv2hjmjrkji2s42axv0q6d"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'check)
+          ;; This is a Python package which is fully managed by CMake.  In
+          ;; cmake-build-system the check phase runs before install, but the
+          ;; Python modules required for testing are only installed in the
+          ;; install phase.  Move check to after the install phase.
+          (add-after 'install 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "ctest" "--exclude-regex"
+                        ;; XXX: Cpp tests fail in 'No such file or directory',
+                        ;; skip for now and only run the Python tests.
+                        ;; TODO: To pass the Python tests below, Ipopt must be
+                        ;; built with MUMPS support, but simply adding mumps
+                        ;; to the inputs doesn't work for it to be found,
+                        ;; possibly because MUMPS doesn't generate a .pc file.
+                        (string-join
+                         (list "^cpp"
+                               "pyinstallcheck_Bonmin_std"
+                               "pyinstallcheck_Bonmin_4dsoo"
+                               "pyinstallcheck_Bonmin_MIT15"
+                               "pyinstallcheck_Bonmin_swiler2014"
+                               "pyinstallcheck_Ipopt_std"
+                               "pyinstallcheck_example_plot_optimization_bonmin"
+                               "pyinstallcheck_coupling_tools")
+                         "|"))))))))
+    (native-inputs
+     (list bison
+           dvisvgm
+           flex
+           python-numpydoc
+           python-sphinx
+           ;; python-sphinx-gallery ;; Currently broken
+           swig))
+    (inputs
+     (list openblas                ; the only required dependency
+           ;; The dependecies below are all optional.
+           bonmin
+           boost
+           cbc ;; Maybe this should be propagated by Bonmin?
+           ceres
+           cminpack
+           dlib
+           hdf5
+           hmat
+           ipopt
+           libxml2
+           mpc
+           mpfr
+           nlopt
+           pagmo
+           primesieve
+           python-wrapper
+           spectra
+           tbb))
+    (propagated-inputs
+     (list python-chaospy
+           python-dill
+           python-matplotlib
+           python-numpy
+           python-pandas
+           python-scipy))
+    (home-page "https://openturns.github.io/www/")
+    (synopsis "Uncertainty treatment library")
+    (description
+     "OpenTURNS is a scientific C++ and Python library including an internal
+data model and algorithms dedicated to the treatment of uncertainties.  The
+main goal of this library is giving to specific applications all the
+functionalities needed to treat uncertainties in studies.")
+    (license license:lgpl3+)))
 
 (define-public r-coda
   (package
@@ -2673,14 +2816,14 @@ collation, and NAMESPACE files.")
 (define-public r-openssl
   (package
     (name "r-openssl")
-    (version "2.1.0")
+    (version "2.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "openssl" version))
        (sha256
         (base32
-         "0fg5avcrjjn7sv6rzbp19y6jwjjr77xpldxg4xssp5s1p832wnk2"))))
+         "1p2bnr4z4vx3yqq5isqb3z4d9vg2isiz8i0h3vxdb5ramzwjd9zs"))))
     (properties
      `((upstream-name . "openssl")
        (updater-extra-inputs . ("openssl"))))
@@ -2826,13 +2969,13 @@ tools to simplify the devolpment of R packages.")
 (define-public r-withr
   (package
     (name "r-withr")
-    (version "2.5.0")
+    (version "2.5.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "withr" version))
               (sha256
                (base32
-                "1h4bzj0am9lawbh1cam1jmgk1xjmn9da14r90w3q984hswz7nc9p"))))
+                "1kndhxl0fxn40v9yx0iglilani3ym3ywbjf6zbg1pnb52ncf0nm9"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
@@ -3055,13 +3198,13 @@ certain criterion, e.g., it contains a certain regular file.")
 (define-public r-rmarkdown
   (package
     (name "r-rmarkdown")
-    (version "2.24")
+    (version "2.25")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "rmarkdown" version))
         (sha256
-          (base32 "11ixspf7w5zsr02c5545w0ra7l9c8kb4bls97dhx5cgldnjfywrq"))))
+          (base32 "0m814598vc67sjwk83xh9g17n72618l32dgg7fz8y0gycqk6dr06"))))
     (properties
      `((upstream-name . "rmarkdown")
        (updater-extra-propagated-inputs . ("pandoc"))))
@@ -3837,13 +3980,13 @@ using the multicore functionality of the parallel package.")
                           extensions)))))
     (package
       (name "r-dt")
-      (version "0.29")
+      (version "0.30")
       (source (origin
                 (method url-fetch)
                 (uri (cran-uri "DT" version))
                 (sha256
                  (base32
-                  "1b9qshrjv9xaak92rvg65vkak4pyci9js4j7nkfcg0p19ghnvlm8"))
+                  "13k9zyapx6rqfsrl5afpgaqyni57qq88hxa1j3y3wjcv5bim66ig"))
                 (modules '((guix build utils)
                            (ice-9 match)))
                 (snippet
@@ -3926,7 +4069,7 @@ using the multicore functionality of the parallel package.")
        (list js-selectize))
       (native-inputs
        `(("r-knitr" ,r-knitr)
-         ("uglifyjs" ,node-uglify-js)
+         ("esbuild" ,esbuild)
          ("datatables-plugins"
           ,(let ((version "1.13.4"))
              (origin
@@ -5782,13 +5925,13 @@ groupings.")
 (define-public r-vgam
   (package
     (name "r-vgam")
-    (version "1.1-8")
+    (version "1.1-9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "VGAM" version))
        (sha256
-        (base32 "1k6i18ywfh0xlc7ipgvz1g9gdgkyz5phf1cwyfv8mn2nwgag3h6l"))))
+        (base32 "1l5gn6495k8vqp2b4hj4g5ani7j4cli2p7n8fwkw7bmc42q13m6l"))))
     (properties `((upstream-name . "VGAM")))
     (build-system r-build-system)
     (native-inputs
@@ -6305,14 +6448,14 @@ is supported.")
 (define-public r-lubridate
   (package
     (name "r-lubridate")
-    (version "1.9.2")
+    (version "1.9.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lubridate" version))
        (sha256
         (base32
-         "19s4cm6a73b9q519mmgf2qxjmd2bsjff19ds3hk8ksgz98d46xl9"))))
+         "1zvzycng2hsks9d7552nb93abzjrs43c975rc16s3c1is8318vib"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-generics r-timechange))
@@ -6913,18 +7056,18 @@ Methods are provided for a variety of fitted models, including @code{lm()} and
 (define-public r-puniform
   (package
     (name "r-puniform")
-    (version "0.2.6")
+    (version "0.2.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "puniform" version))
        (sha256
         (base32
-         "1rfd7d14an28hba1rhldxn418qagnlk8ngvimb86i3774ll9blvi"))))
+         "15q5wlcps7387rjz7p1f5kifg1fl5yxxy7gjx6fvspvqwjkjbs4z"))))
     (properties `((upstream-name . "puniform")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-adgoftest r-metafor r-rcpp r-rcpparmadillo))
+     (list r-adgoftest r-metafor r-numderiv r-rcpp r-rcpparmadillo))
     (home-page
      "https://github.com/RobbievanAert/puniform")
     (synopsis
@@ -7082,14 +7225,14 @@ various statistical models with linear predictors.")
 (define-public r-bayesfactor
   (package
     (name "r-bayesfactor")
-    (version "0.9.12-4.4")
+    (version "0.9.12-4.5")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "BayesFactor" version))
         (sha256
           (base32
-            "02bhlamnkxp9wqi2cp1i0dxmqdf3y3l872ad9z39xwripbi4kc7a"))))
+            "10bclqzczawpssjwa3b177xpab4mdhczfj1qj23xn2yvrrw1z9mh"))))
     (properties `((upstream-name . "BayesFactor")))
     (build-system r-build-system)
     (propagated-inputs

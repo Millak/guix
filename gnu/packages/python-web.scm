@@ -1923,13 +1923,13 @@ service.")
 (define-public python-openai
   (package
     (name "python-openai")
-    (version "0.27.8")
+    (version "0.28.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "openai" version))
               (sha256
                (base32
-                "0dlmxnib71fih9xzmd3v41alwv4qb8qrxixsrrsf5vmigmf0k0r4"))))
+                "1j6wsavgrxzh6ls8hp45nllz8f5l65a6vzk0lvhlqnx6579xmqab"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -8820,3 +8820,28 @@ Grid5000 resources interactively using the embedded shell.")
 scientific testbeds.  It lets you deploy networks of machines on actual
 hardware on Grid'5000 or via OpenStack, to Vagrant, Chameleon, and more.")
     (license license:gpl3+)))
+
+(define-public python-pynetbox
+  (package
+    (name "python-pynetbox")
+    (version "7.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pynetbox" version))
+              (sha256
+               (base32
+                "1pzmkl4nr247v4022i33v32jlx88wwcdy7ycyfd4pnl19vag8d9p"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'disable-failing-tests
+                          (lambda _
+                            ;; Integration tests depend on docker.
+                            (delete-file-recursively "tests/integration"))))))
+    (propagated-inputs (list python-requests))
+    (native-inputs (list python-pytest python-pyyaml python-setuptools-scm))
+    (home-page "https://github.com/netbox-community/pynetbox")
+    (synopsis "NetBox API client library")
+    (description "Python module to query and edit data stored in a
+@url{https://netbox.dev,NetBox} instance.")
+    (license license:asl2.0)))

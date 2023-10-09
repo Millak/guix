@@ -532,7 +532,7 @@ the in DocBook SGML DTDs.")
                (base32
                 "0yd09nypswy3q4scri1dg7dr99d7gd6r2dwx0xm81l9f4y32gs0n"))))
     (build-system python-build-system)
-    ;; TODO: Add xfig/transfig for fig2dev utility
+    ;; TODO: Add fig2dev for fig2dev utility.
     (inputs
      `(("texlive" ,(texlive-updmap.cfg (list texlive-anysize
                                              texlive-appendix

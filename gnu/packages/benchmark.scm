@@ -34,6 +34,7 @@
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
+  #:use-module (guix search-paths)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
@@ -70,11 +71,10 @@
   #:use-module (gnu packages xml)
   #:use-module (ice-9 match))
 
-;; Lazily resolve the gcc-toolchain to avoid a circular dependency.  Always
-;; use the latest available toolchain to avoid conflicts in user profiles.
+;; Lazily resolve the gcc-toolchain to avoid a circular dependency.
 (define gcc-toolchain*
   (delay (module-ref (resolve-interface '(gnu packages commencement))
-                     'gcc-toolchain-12)))
+                     'gcc-toolchain)))
 
 (define-public fio
   (package
@@ -351,24 +351,39 @@ file metadata operations that can be performed per second.")
               (invoke "./install-sh" #$output "--free-software-only")))
           (add-after 'install 'wrap-binary
             (lambda* (#:key inputs #:allow-other-keys)
-              (let ((pts (string-append #$output "/bin/phoronix-test-suite")))
+              (let ((pts (string-append #$output "/bin/phoronix-test-suite"))
+                    (gcc #$(this-package-input "gcc-toolchain")))
                 (wrap-program pts
                   (list "PATH" 'prefix
                         (map (lambda (binary)
                                (dirname (search-input-file
                                          inputs (string-append "bin/" binary))))
                              '("bash" "cat" ;coreutils
-                               "gzip" "make" "php" "sed" "tar" "which"))))))))))
+                               "gcc"
+                               "gzip" "make" "php" "sed" "tar" "which")))
+                  ;; Wrap the GCC compiler paths.
+                  (list "C_INCLUDE_PATH" 'prefix
+                        (list (string-append gcc "/include")))
+                  (list "CPLUS_INCLUDE_PATH" 'prefix
+                        (list (string-append gcc "/include/c++")
+                              (string-append gcc "/include")))
+                  (list "LIBRARY_PATH" 'prefix
+                        (list (string-append gcc "/lib"))))))))))
     (build-system gnu-build-system)
     (native-inputs (list python which))
     ;; Wrap the most basic build tools needed by Phoronix Test Suite to build
     ;; simple tests such as 'fio'.
-    (inputs (list bash coreutils gnu-make gzip php sed tar which))
-    ;; Phoronix Test Suite builds and caches the benchmarking tools itself;
-    ;; the user is required to manually install extra libraries depending on
-    ;; the selected test; but at least a working C/C++ toolchain is assumed to
-    ;; be available.
-    (propagated-inputs (list (force gcc-toolchain*)))
+    (inputs
+     (list bash
+           coreutils
+           (force gcc-toolchain*)
+           gnu-make
+           gzip
+           php
+           sed
+           tar
+           which))
+    (native-search-paths %gcc-search-paths)
     (home-page "https://www.phoronix-test-suite.com/")
     (synopsis "Automated testing/benchmarking software")
     (description

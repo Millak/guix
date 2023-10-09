@@ -95,7 +95,7 @@ Return #t in the former case and #f in the latter case."
 
 (define* (secret-service-send-secrets port secret-root
                                       #:key (retry 60)
-                                      (handshake-timeout 120))
+                                      (handshake-timeout 180))
   "Copy all files under SECRET-ROOT using TCP to secret-service listening at
 local PORT.  If connect fails, sleep 1s and retry RETRY times; once connected,
 wait for at most HANDSHAKE-TIMEOUT seconds for handshake to complete.  Return

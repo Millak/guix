@@ -23,6 +23,7 @@ choice.
 * Building from Git::           The latest and greatest.
 * Running Guix Before It Is Installed::  Hacker tricks.
 * The Perfect Setup::           The right tools.
+* Alternative Setups::          Other posible tools that do the job.
 * Packaging Guidelines::        Growing the distribution.
 * Coding Style::                Hygiene of the contributor.
 * Submitting Patches::          Share your work.
@@ -427,9 +428,13 @@ configuration file:
                                  (zero-or-one
                                   (seq "#" (one-or-more
                                             (char "0-9"))))))
-                     (seq "<https://bugs.gnu.org/"
+                     (seq (? "<") "https://bugs.gnu.org/"
                           (group-n 2 (one-or-more (char "0-9")))
-                          ">")))))
+                          (? ">"))
+                     (seq (? "<") "https://issues.guix.gnu.org/"
+                          (? "issue/")
+                          (group-n 2 (one-or-more (char "0-9")))
+                          (? ">"))))))
 (setq bug-reference-url-format "https://issues.guix.gnu.org/%s")
 
 (require 'debbugs)
@@ -452,6 +457,83 @@ configuration file:
 For more information, refer to @ref{Bug Reference,,, emacs, The GNU
 Emacs Manual} and @ref{Minor Mode,,, debbugs-ug, The Debbugs User
 Guide}.
+
+@node Alternative Setups
+@section Alternative Setups
+
+Alternative setups than Emacs may let you work on Guix with a
+similar development experience and they might work better with the
+tools you currently use or help you make the transition to Emacs.
+
+The options listed below only provide the alternatives to the Emacs
+based setup, which is the most widely used in the Guix community. If
+you want to really understand how is the perfect setup for Guix
+development supposed to work, we encourage you to read the section
+before this regardless the editor you choose to use.
+
+@menu
+* Guile Studio::                First step in your transition to Emacs.
+* Vim and NeoVim::              When you are evil to the root.
+@end menu
+
+@node Guile Studio
+@subsection Guile Studio
+
+Guile Studio is a pre-configured Emacs with mostly everything you need
+to start hacking in Guile. If you are not familiar with Emacs it makes
+the transition easier for you.
+
+@example
+guix install guile-studio
+@end example
+
+Guile Studio comes with Geiser preinstalled and prepared for action.
+
+@node Vim and NeoVim
+@subsection Vim and NeoVim
+
+
+Vim (and NeoVim) are also packaged in Guix, just in case you decided
+to go for the evil path.
+
+@example
+guix install vim
+@end example
+
+If you want to enjoy a similar development experience to that in the perfect
+setup, you should install several plugins to configure the editor. Vim (and
+NeoVim) have the equivalent to Paredit,
+@uref{https://www.vim.org/scripts/script.php?script_id=3998,
+@code{paredit.vim}}, that will help you with the structural editing of Scheme
+files (the support for very large files is not great, though).
+
+@example
+guix install vim-paredit
+@end example
+
+We also recommend that you run @code{:set autoindent} so that your code is
+automatically indented as you type.
+
+For the interaction with Git,
+@uref{https://www.vim.org/scripts/script.php?script_id=2975
+@code{fugitive.vim}} is the most commonly used plugin:
+
+@example
+guix install vim-fugitive
+@end example
+
+And of course if you want to interact with Guix directly from inside of
+vim, using the built-in terminal emulator, we have our very own
+@code{guix.vim} package!
+
+@example
+guix install vim-guix-vim
+@end example
+
+In NeoVim you can even make a similar setup to Geiser using
+@url{https://conjure.fun/, Conjure} that lets you connect to a running Guile
+process and inject your code there live (sadly it's not packaged in Guix yet).
+
 
 @node Packaging Guidelines
 @section Packaging Guidelines
@@ -1226,6 +1308,17 @@ Guile Reference Manual}); pattern matching for records is better done
 using @code{match-record} from @code{(guix records)}, which, unlike
 @code{match}, verifies field names at macro-expansion time.
 
+When defining a new record type, keep the @dfn{record type descriptor}
+(RTD) private (@pxref{Records,,, guile, GNU Guile Reference Manual}, for
+more on records and RTDs).  As an example, the @code{(guix packages)}
+module defines @code{<package>} as the RTD for package records but it
+does not export it; instead, it exports a type predicate, a constructor,
+and field accessors.  Exporting RTDs would make it harder to change the
+application binary interface (because code in other modules might be
+matching fields by position) and would make it trivial for users to
+forge records of that type, bypassing any checks we may have in the
+official constructor (such as ``field sanitizers'').
+
 @node Formatting Code
 @subsection Formatting Code
 
@@ -1256,13 +1349,6 @@ rules.  To automatically indent a package definition, you can also run:
 
 @noindent
 @xref{Invoking guix style}, for more information.
-
-@cindex Vim, Scheme code editing
-If you are editing code with Vim, we recommend that you run @code{:set
-autoindent} so that your code is automatically indented as you type.
-Additionally,
-@uref{https://www.vim.org/scripts/script.php?script_id=3998,
-@code{paredit.vim}} may help you deal with all these parentheses.
 
 We require all top-level procedures to carry a docstring.  This
 requirement can be relaxed for simple private procedures in the

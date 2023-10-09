@@ -754,6 +754,39 @@ header.")
         (base32 "1m3bx6gh5w3c7vvsqcki0x20mg8lilg13m0i8nh7za89w58dxy4w"))))
     (properties '((hidden? . #t)))))
 
+(define-public wcstools
+  (package
+    (name "wcstools")
+    (version "3.9.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "http://tdc-www.harvard.edu/software/wcstools/wcstools-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "125hqzspvqrx6372smzsmxwg06ib2arjc5awnwnq53w1xdq6jpsj"))
+       (patches (search-patches "wcstools-extend-makefiles.patch"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ;No tests provided.
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
+    (home-page "http://tdc-www.harvard.edu/software/wcstools/")
+    (synopsis "Handle the WCS of a FITS image")
+    (description
+     "WCSTools is a set of software utilities, written in C, which create,
+display and manipulate the world coordinate system of a FITS or IRAF image,
+using specific keywords in the image header which relate pixel position within
+the image to position on the sky.  Auxillary programs search star catalogs and
+manipulate images.")
+    (license license:gpl2+)))
+
 (define-public weightwatcher
   (package
     (name "weightwatcher")
@@ -1623,6 +1656,37 @@ in @acronym{HCSS, Herschel Common Science System}.  HCSS was the all
 encompassing software system for the operations and analysis of the ESA satelite
 Herschel.")
     (license license:gpl3+)))
+
+(define-public python-casa-formats-io
+  (package
+    (name "python-casa-formats-io")
+    (version "0.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "casa-formats-io" version))
+              (sha256
+               (base32
+                "07cchih2ws6jf6q1a4xhkv0jk96s3w08kzxx9l1911wzqk0pw9pj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'build-extensions
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (native-inputs
+     (list python-pytest python-pytest-cov python-pytest-openfiles))
+    (propagated-inputs
+     (list python-astropy python-click python-dask python-numpy))
+    (home-page "https://casa-formats-io.readthedocs.io/")
+    (synopsis "Dask-based reader for CASA data")
+    (description
+     "The @code{casa-formats-io} package is a small package which implements
+functionality to read data stored in @acronym{CASA, Common Astronomy Software
+Applications} formats (such as @file{.image} datasets).  This implementation
+is independent of and does not use @code{casacore}.")
+    (license license:lgpl2.0)))
 
 (define-public python-ccdproc
   (package

@@ -143,6 +143,7 @@
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © c4droid <c4droid@foxmail.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2023 Attila Lendvai <attila@lendvai.name>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -832,6 +833,31 @@ names for 256 color terminal setups.")
     (synopsis "Terminal string styling")
     (description "Colorful provides an array of text styles, that can be used
 as functions or string constants to form colored terminal output.")
+    (license license:expat)))
+
+(define-public python-construct-classes
+  (package
+    (name "python-construct-classes")
+    (version "0.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/matejcik/construct-classes")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fmr8nfg543lyqk4164a52jb6lwpq98radicbkhhdfckq9lib2wp"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-construct))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest))
+    (home-page "https://github.com/matejcik/construct-classes")
+    (synopsis "Parse binary structs into dataclasses")
+    (description "This package provides a parser to parse binary structs
+into dataclasses.")
     (license license:expat)))
 
 (define-public python-yaspin
@@ -1524,7 +1550,7 @@ of a loop structure or other iterative computation.")
 (define-public python-glymur
   (package
     (name "python-glymur")
-    (version "0.12.0")
+    (version "0.12.8")
     (source
      (origin
        (method git-fetch)   ; no tests data in PyPi package
@@ -1533,7 +1559,7 @@ of a loop structure or other iterative computation.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03nny8k42yxdyw7sjv43szmg23x3rqplbaf7m0a0lpvwla1dl78i"))))
+        (base32 "0mfyn9j7h13242d41vg12acw55yl2mv6lmgi265hfp11k7g52b6n"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1562,7 +1588,7 @@ of a loop structure or other iterative computation.")
               ;; which is patched above.
               (delete-file "tests/test_config.py"))))))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-scikit-image))
     (inputs
      (list openjpeg  ; glymur/lib/openjp2.py
            libtiff)) ; glymur/lib/tiff.py
@@ -11493,6 +11519,26 @@ GA4GH Task Execution API.")
 algorithm.")
     (license license:asl2.0)))
 
+(define-public python-altgraph
+  (package
+    (name "python-altgraph")
+    (version "0.17.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "altgraph" version))
+       (sha256
+        (base32 "01j48np3g50g6insjkszsz0vifwlm6gspria5vdwlkbciywznnhv"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest))
+    (home-page "https://altgraph.readthedocs.io")
+    (synopsis "Python graph network package")
+    (description
+"This package provides tools for constructing graphs, BFS and DFS
+traversals, topological sort, shortest paths, and more with graphviz
+output.")
+    (license license:expat)))
+
 (define-public python-three-merge
   (package
     (name "python-three-merge")
@@ -13492,6 +13538,37 @@ reading and writing MessagePack data.")
               (sha256
                (base32
                 "1109s2yynrahwi64ikax68hx0mbclz8p35afmpphw5dwynb49q7s"))))))
+
+;; This msgpack library's name changed from "python-msgpack" to "msgpack" with
+;; release 0.5. Some packages like borg still call it by the old name for now.
+;; <https://bugs.gnu.org/30662>
+(define-public python-msgpack-transitional
+  (package
+    (inherit python-msgpack)
+    (name "python-msgpack-transitional")
+    (version "0.5.6")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "msgpack" version))
+              (sha256
+               (base32
+                "1hz2dba1nvvn52afg34liijsm7kn65cmn06dl0xbwld6bb4cis0f"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-msgpack)
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (add-after 'unpack 'configure-transitional
+             (lambda _
+               ;; Keep using the old name.
+               (substitute* "setup.py"
+                 (("TRANSITIONAL = False")
+                   "TRANSITIONAL = 1"))
+               ;; This old version is not compatible with Python 3.9
+               (substitute* '("test/test_buffer.py" "test/test_extension.py")
+                 ((".tostring\\(") ".tobytes("))
+               (substitute* '("test/test_buffer.py" "test/test_extension.py")
+                 ((".fromstring\\(") ".frombytes("))
+               #t))))))))
 
 (define-public python-netaddr
   (package
@@ -19251,26 +19328,25 @@ database, file, dict stores.  Cachy supports python versions 2.7+ and 3.2+.")
 (define-public poetry
   (package
     (name "poetry")
-    (version "1.4.2")
+    (version "1.1.12")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "poetry" version))
        (sha256
         (base32
-         "0g0vczn6qa4b2bdkq4k7fm1g739vyxp2iiblwwsrcmw24jj81m8b"))))
+         "0rr54mvcfcv9cv6vw2122y28xvd2pwqpv2x8c8j5ayz3gwsy4rjw"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f                      ;PyPI does not have tests
-       ;; #:phases
-       ;; (modify-phases %standard-phases
-       ;;   (add-before 'build 'patch-setup-py
-       ;;     (lambda _
-       ;;       (substitute* "setup.py"
-       ;;         ;; Relax some of the requirements.
-       ;;         (("(keyring>=21.2.0),<22.0.0" _ keyring) keyring)
-       ;;         (("(packaging>=20.4),<21.0" _ packaging) packaging)))))
-       ))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'patch-setup-py
+           (lambda _
+             (substitute* "setup.py"
+               ;; Relax some of the requirements.
+               (("(keyring>=21.2.0),<22.0.0" _ keyring) keyring)
+               (("(packaging>=20.4),<21.0" _ packaging) packaging)))))))
     (propagated-inputs
      (list python-cachecontrol
            python-cachy
@@ -19279,12 +19355,14 @@ database, file, dict stores.  Cachy supports python versions 2.7+ and 3.2+.")
            python-entrypoints
            python-html5lib
            python-keyring
-           python-msgpack
+           ; Use of deprecated version of msgpack reported upstream:
+           ; https://github.com/python-poetry/poetry/issues/3607
+           python-msgpack-transitional
            python-packaging
            python-pexpect
            python-pip
            python-pkginfo
-           python-poetry-core
+           python-poetry-core-1.0
            python-requests
            python-requests-toolbelt
            python-shellingham
@@ -31817,13 +31895,13 @@ development, testing, production]};
 (define-public python-pudb
   (package
     (name "python-pudb")
-    (version "2022.1.3")
+    (version "2023.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pudb" version))
               (sha256
                (base32
-                "0jk61qgacvwy6zkz1f55jawax4ggb1aawy6w3wnfkzqrkvd3ms2q"))))
+                "00rgx80inpvsbcydp29mrhw44xizyqdqxvv6lqcak1xs79h3rpqm"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases

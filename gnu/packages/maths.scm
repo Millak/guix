@@ -61,6 +61,7 @@
 ;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
 ;;; Copyright © 2023 Camilo Q.S. (Distopico) <distopico@riseup.net>
+;;; Copyright © 2023 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -829,6 +830,44 @@ LP/MIP solver is included in the package.")
        (base32
         "040sfaa9jclg2nqdh83w71sv9rc1sznpnfiripjdyr48cady50a2"))))))
 
+(define-public linasm
+  (package
+    (name "linasm")
+    (version "1.13")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.code.sf.net/p/linasm/linasm")
+                    (commit (string-append "v" version "(stable)"))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "11095bxjxsq3a9apvyi1kpddwkg9b2hc5ga65qhrdxzvdsrjhaaq"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #false                   ;there are none
+      #:make-flags
+      #~(list (string-append "prefix=" #$output))
+      #:phases
+      '(modify-phases %standard-phases
+         (delete 'configure))))
+    (supported-systems '("x86_64-linux"))
+    (home-page "https://sourceforge.net/projects/linasm/")
+    (synopsis "Collection of fast and optimized assembly libraries for x86-64")
+    (description
+     "LinAsm is collection of very fast and SIMD optimized assembly written
+libraries for x86-64.
+
+It implements many common and widely used algorithms for array manipulations:
+searching, sorting, arithmetic and vector operations, unit conversions; fast
+mathematical and statistic functions; numbers and time converting algorithms;
+@dfn{finite impulse response} (FIR) digital filters; spectrum analysis
+algorithms, Fast Hartley transformation; CPU cache friendly functions and
+extremely fast @dfn{abstract data types} (ADT) such as hash tables b-trees,
+and much more.")
+    (license license:lgpl3+)))
+
 (define-public 4ti2
   (package
     (name "4ti2")
@@ -1292,6 +1331,137 @@ plotting engine by third-party applications like Octave.")
     ;;  distributed as patches to the original.
     (license (license:fsf-free
               "http://gnuplot.cvs.sourceforge.net/gnuplot/gnuplot/Copyright"))))
+
+(define-public hmat
+  (package
+    (name "hmat")
+    (version "1.9.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jeromerobert/hmat-oss")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ssjzf3sdhn80w03bhp694s413222cl0100bf36mx70q3a1b6vi5"))))
+    (build-system cmake-build-system)
+    (arguments
+     ;; Examples are the tests.
+     (list #:configure-flags #~(list "-DBUILD_EXAMPLES=ON")))
+    (inputs (list openblas))
+    (home-page "https://github.com/jeromerobert/hmat-oss")
+    (synopsis "Hierarchical matrix library")
+    (description "@code{hmat-oss} is hierarchical matrix library written in
+C++ with a C API.  It contains a LU and LLt solver, and a few other things.")
+    (license license:gpl2+)))
+
+(define-public primesieve
+  (package
+    (name "primesieve")
+    (version "11.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/kimwalisch/primesieve")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ja3kxvpya7bwrib40hnyahsiiiavf65ppk7i7afvc093b7gg9bg"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DBUILD_STATIC_LIBS=off"
+                                     "-DBUILD_TESTS=ON")))
+    (home-page "https://github.com/kimwalisch/primesieve")
+    (synopsis "Prime number generator")
+    (description "@code{primesieve} is a command-line program and C/C++
+ library for quickly generating prime numbers.  It is very cache efficient,
+ it detects your CPU's L1 & L2 cache sizes and allocates its main data
+ structures accordingly.  It is also multi-threaded by default, it uses all
+ available CPU cores whenever possible i.e. if sequential ordering is not
+ required. primesieve can generate primes and prime k-tuplets up to 264.")
+    (license license:bsd-2)))
+
+(define-public cminpack
+  (package
+    (name "cminpack")
+    (version "1.3.8")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/devernay/cminpack")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1bg0954mwry22izsvikpai16pkfp8srz4z34n267bhkmrvvb0zgy"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON")))
+    (home-page "https://github.com/devernay/cminpack")
+    (synopsis "C/C++ rewrite of the MINPACK software")
+    (description
+     "This is a C version of the minpack minimization package.  It has been
+derived from the fortran code using f2c and some limited manual editing.
+Extern C linkage permits the package routines to be called from C++.")
+    (license (license:non-copyleft ; original minpack license
+              "https://github.com/certik/minpack/blob/master/LICENSE"))))
+
+(define-public bonmin
+  (package
+    (name "bonmin")
+    (version "1.8.9")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/coin-or/Bonmin")
+                    (commit (string-append "releases/" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "153kj4wx386609g21hw3cv5yxps62qqrc64zwb9ryd2xad1w1a4y"))))
+    (build-system gnu-build-system)
+    (native-inputs (list gfortran pkg-config))
+    (inputs (list cbc ipopt lapack))
+    (home-page "https://coin-or.github.io/Bonmin/")
+    (synopsis "Basic Open-source Nonlinear Mixed INteger programming")
+    (description "Bonmin is a code for solving general MINLP (Mixed Integer
+NonLinear Programming) problems.  It builds on top of Cbc and Ipopt.")
+    (license license:epl1.0)))
+
+(define-public pagmo
+  (package
+    (name "pagmo")
+    (version "2.19.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/esa/pagmo2")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0g0j0k0cwp8kyyggj80s5cd24bl6gqmf6f5g7j2axswr2bdj16fg"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DPAGMO_BUILD_TESTS=ON"
+                                     "-DPAGMO_WITH_EIGEN3=ON")))
+    ;; Eigen is optional, enables some extra features.
+    (inputs (list boost eigen tbb))
+    (home-page "https://esa.github.io/pagmo2/")
+    (synopsis
+     "Platform to perform parallel computations of optimisation tasks")
+    (description "@code{pagmo} is a C++ scientific library for massively
+parallel optimization.  It is built around the idea of providing a unified
+interface to optimization algorithms and to optimization problems and to make
+their deployment in massively parallel environments easy.")
+    ;; Pagmo only supports 64-bit x86, ARM and PowerPC:
+    ;; https://esa.github.io/pagmo2/install.html
+    (supported-systems '("x86_64-linux" "aarch64-linux" "armhf-linux"
+                         "powerpc64le-linux"))
+    ;; Dual licensed, user choice.
+    (license (list license:lgpl3+ license:gpl3+))))
 
 (define-public gctp
   (package
@@ -2729,16 +2899,10 @@ with constraints.")
                       (substitute* "CMakeLists.txt"
                         (("set\\(LIB_SUFFIX \"64\"\\)")
                          "set(LIB_SUFFIX \"\")")))))))
-    (native-inputs
-     (list pkg-config))
-    (propagated-inputs
-     (list glog))                           ;for #include <glog/glog.h>
-    (inputs
-     (list eigen
-           openblas
-           lapack
-           suitesparse
-           gflags))
+    (native-inputs (list pkg-config))
+    ;; These inputs need to be propagated to satisfy dependent packages.
+    (propagated-inputs (list eigen gflags glog))
+    (inputs (list openblas lapack suitesparse))
     (synopsis "C++ library for solving large optimization problems")
     (description
      "Ceres Solver is a C++ library for modeling and solving large,
@@ -4219,7 +4383,44 @@ bio-chemistry.")
 (define-public pt-scotch-shared
   (deprecated-package "pt-scotch-shared" pt-scotch))
 
+(define-public gklib
+  (let ((commit "8bd6bad750b2b0d90800c632cf18e8ee93ad72d7")
+        (revision "1"))
+    (package
+      (name "gklib")
+      (version (git-version "5.1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/KarypisLab/GKlib")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "08k4zzyd7zsisdhfmnwz7zb9w3pzpgagyjq52mwk8i6sqajdxsdn"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        #~(list "-DBUILD_SHARED_LIBS=ON"
+                #$@(if (target-x86?)
+                       '()
+                       '("-DNO_X86=1")))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'remove-march=native
+                (lambda _
+                  (substitute* "GKlibSystem.cmake"
+                    (("-march=native") "")))))))
+      (home-page "https://github.com/KarypisLab/GKlib")
+      (synopsis "Helper library for METIS")
+      (description
+       "GKlib is a library of various helper routines and frameworks used by
+software from KarypisLab, such as METIS.")
+      (license license:asl2.0))))
 
+;; XXX: Remove once the full SuiteSparse package is replaced.
 (define-public metis
   (package
     (name "metis")
@@ -4252,6 +4453,53 @@ matrices.  The algorithms implemented in METIS are based on the multilevel
 recursive-bisection, multilevel k-way, and multi-constraint partitioning
 schemes.")
     (license license:asl2.0)))          ;As of version 5.0.3
+
+(define-public metis-5.2
+  (package
+    (name "metis")
+    (version "5.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/KarypisLab/METIS")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "19vi1wsi2gp2m5vb715yfnzd2g7brm4r40qxg65ysrzgl13lpmvr"))
+       (snippet
+        #~(delete-file "manual/manual.pdf"))))
+    (build-system cmake-build-system)
+    (inputs (list gklib openblas))
+    (arguments
+     (list
+      #:tests? #f ; Tests are not automatic
+      #:configure-flags
+      #~(list "-DSHARED=ON"
+              (string-append "-DGKLIB_PATH=" #$gklib))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The original Makefile copies some files and invokes CMake.
+          (add-before 'configure 'prepare-cmake
+              (lambda _
+                (substitute* "Makefile"
+                  (("config: distclean") "config:")
+                  (("BUILDDIR =.*")
+                   "BUILDDIR = .\n")
+                  ((".*cmake.*") ""))
+                (substitute* "CMakeLists.txt"
+                  (("build/") "../source/"))
+                (invoke "make" "config"))))))
+    (home-page "http://glaros.dtc.umn.edu/gkhome/metis/metis/overview")
+    (synopsis "Graph partitioning and fill-reducing matrix ordering library")
+    (description
+     "METIS is a set of serial programs for partitioning graphs, partitioning
+finite element meshes, and producing fill-reducing orderings for sparse
+matrices.  The algorithms implemented in METIS are based on the multilevel
+recursive-bisection, multilevel k-way, and multi-constraint partitioning
+schemes.")
+    (license license:asl2.0)))
 
 (define-public p4est
   (package
@@ -4914,6 +5162,883 @@ Fresnel integrals, and similar related functions as well.")
     ;; public domain software.
     (license (list license:expat license:public-domain))))
 
+;; Source for the modular SuiteSparse packages. When updating, also update the
+;; (different) versions of the subpackages.
+(define suitesparse-version "7.2.0")
+(define suitesparse-source
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/DrTimothyAldenDavis/SuiteSparse")
+          (commit (string-append "v" suitesparse-version))))
+    (file-name (git-file-name "suitesparse" suitesparse-version))
+    (sha256
+     (base32
+      "1draljn8i46862drc6008cnb2zjpklf74j8c34jirjazzpf53kaa"))
+    (modules '((guix build utils)))
+    (snippet
+     #~(begin
+         ;; Delete autogenerated and bundled files
+         (for-each delete-file (find-files "." "\\.pdf$"))
+         ;; ssget
+         (delete-file-recursively "ssget")
+         ;; SuiteSparse_config
+         (delete-file "SuiteSparse_config/SuiteSparse_config.h")
+         ;; CHOLMOD
+         (delete-file-recursively "CHOLMOD/SuiteSparse_metis")
+         ; GraphBLAS
+         (delete-file "GraphBLAS/README.md")
+         (delete-file "GraphBLAS/Config/GB_config.h")
+         (delete-file "GraphBLAS/Config/GB_prejit.c")
+         (delete-file-recursively "GraphBLAS/cpu_features")
+         (delete-file "GraphBLAS/CUDA/GB_cuda_common_jitFactory.hpp")
+         (delete-file "GraphBLAS/JITpackage/GB_JITpackage.c")
+         (delete-file-recursively "GraphBLAS/lz4/lz4.c")
+         (delete-file-recursively "GraphBLAS/lz4/lz4.h")
+         (delete-file-recursively "GraphBLAS/lz4/lz4hc.c")
+         (delete-file-recursively "GraphBLAS/lz4/lz4hc.h")
+         (delete-file "GraphBLAS/GraphBLAS/Config/GB_config.h")
+         (delete-file "GraphBLAS/Tcov/PreJIT/GB_prejit.c")
+         (delete-file-recursively "GraphBLAS/Source/FactoryKernels")
+         (delete-file "GraphBLAS/Source/GB_AxB__include1.h")
+         (delete-file "GraphBLAS/xxHash/xxhash.h")
+         (delete-file-recursively "GraphBLAS/zstd/zstd_subset")
+         ;; KLU
+         (delete-file "KLU/Include/klu.h")
+         (delete-file "KLU/Doc/klu_version.tex")
+         ;; LDL
+         (delete-file "LDL/Include/ldl.h")
+         (delete-file "LDL/Doc/ldl_version.tex")
+         ;; RBio
+         (delete-file "RBio/Include/RBio.h")
+         ;; SPEX
+         (delete-file "SPEX/Include/SPEX.h")
+         (delete-file "SPEX/Doc/SPEX_version.tex")
+         ;; SPQR
+         (delete-file "SPQR/Include/SuiteSparseQR_definitions.h")
+         (delete-file "SPQR/Doc/spqr_version.tex")
+         ;; UMFPACK
+         (delete-file "UMFPACK/Include/umfpack.h")
+         (delete-file "UMFPACK/Doc/umfpack_version.tex")))))
+
+(define-public suitesparse-config
+  (package
+    (name "suitesparse-config")
+    (version suitesparse-version)
+    (source suitesparse-source)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "SuiteSparse_config"))))))
+    (inputs (list openblas))
+    (native-inputs (list pkg-config))
+    (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
+    (synopsis "Configuration for all SuiteSparse packages")
+    (description "SuiteSparse is a suite of sparse matrix algorithms.  This
+package contains a library with common configuration options.")
+    (license license:bsd-3)))
+
+(define-public suitesparse-amd
+  (package
+    (name "suitesparse-amd")
+    (version "3.2.0")
+    (source suitesparse-source)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "AMD")))
+          (add-after 'chdir 'set-cmake-module-path
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set.*CMAKE_MODULE_PATH.*")
+                 (string-append "set(CMAKE_MODULE_PATH "
+                                #$suitesparse-config "/lib/cmake/SuiteSparse)\n"
+                                "set(DUMMY\n")))))
+          (add-after 'build 'build-doc
+            (lambda _
+              (with-directory-excursion "../AMD/Doc"
+                (invoke "make"))))
+          ;; Required for suitesparse-umfpack
+          (add-after 'install 'install-internal-header
+              (lambda _
+                (install-file "../AMD/Include/amd_internal.h"
+                              (string-append #$output "/include"))))
+          (add-after 'install-internal-header 'install-doc
+            (lambda _
+              (install-file "../AMD/Doc/AMD_UserGuide.pdf"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version))))
+          (replace 'install-license-files
+            (lambda _
+              (install-file "../AMD/Doc/License.txt"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version)))))))
+    (inputs (list suitesparse-config))
+    (native-inputs (list gfortran (texlive-updmap.cfg '())))
+    (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
+    (synopsis "Sparse matrix ordering for Cholesky factorization")
+    (description "AMD is a set of routines for ordering a sparse matrix prior
+to Cholesky factorization (or for LU factorization with diagonal pivoting).")
+    (license license:bsd-3)))
+
+(define-public suitesparse-btf
+  (package
+    (name "suitesparse-btf")
+    (version "2.2.0")
+    (source suitesparse-source)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "BTF")))
+          (add-after 'chdir 'set-cmake-module-path
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set.*CMAKE_MODULE_PATH.*")
+                 (string-append "set(CMAKE_MODULE_PATH "
+                                #$suitesparse-config "/lib/cmake/SuiteSparse)\n"
+                                "set(DUMMY\n")))))
+          (replace 'install-license-files
+            (lambda _
+              (install-file "../BTF/Doc/License.txt"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version)))))))
+    (inputs (list suitesparse-config))
+    (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
+    (synopsis "Library for permuting matrices into block upper triangular form")
+    (description "BTF (Block Triangular Form) is a C library for permuting a
+matrix into block upper triangular form.")
+    (license license:lgpl2.1+)))
+
+(define-public suitesparse-camd
+  (package
+    (name "suitesparse-camd")
+    (version "3.2.0")
+    (source suitesparse-source)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "CAMD")))
+          (add-after 'chdir 'set-cmake-module-path
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set.*CMAKE_MODULE_PATH.*")
+                 (string-append "set(CMAKE_MODULE_PATH "
+                                #$suitesparse-config "/lib/cmake/SuiteSparse)\n"
+                                "set(DUMMY\n")))))
+          (add-after 'build 'build-doc
+            (lambda _
+              (with-directory-excursion "../CAMD/Doc"
+                (invoke "make"))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (install-file "../CAMD/Doc/CAMD_UserGuide.pdf"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version))))
+          (replace 'install-license-files
+            (lambda _
+              (install-file "../CAMD/Doc/License.txt"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version)))))))
+    (inputs (list suitesparse-config))
+    (native-inputs (list (texlive-updmap.cfg '())))
+    (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
+    (synopsis "Sparse matrix ordering for Cholesky factorization with constraints")
+    (description "CAMD is a set of routines for ordering a sparse matrix prior
+to Cholesky factorization (or for LU factorization with diagonal pivoting).
+It is a variant of AMD which has the the option to apply constraints to the
+ordering.")
+    (license license:bsd-3)))
+
+(define-public suitesparse-colamd
+  (package
+    (name "suitesparse-colamd")
+    (version "3.2.0")
+    (source suitesparse-source)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "COLAMD")))
+          (add-after 'chdir 'set-cmake-module-path
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set.*CMAKE_MODULE_PATH.*")
+                 (string-append "set(CMAKE_MODULE_PATH "
+                                #$suitesparse-config "/lib/cmake/SuiteSparse)\n"
+                                "set(DUMMY\n")))))
+          (replace 'install-license-files
+            (lambda _
+              (install-file "../COLAMD/Doc/License.txt"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version)))))))
+    (inputs (list suitesparse-config))
+    (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
+    (synopsis "Column Approximate Minimum Degree Ordering")
+    (description "COLAMD is library for computing a permutation vector for a
+matrix with which the LU factorization becomes sparser.")
+    (license license:bsd-3)))
+
+(define-public suitesparse-ccolamd
+  (package
+    (name "suitesparse-ccolamd")
+    (version "3.2.0")
+    (source suitesparse-source)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "CCOLAMD")))
+          (add-after 'chdir 'set-cmake-module-path
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set.*CMAKE_MODULE_PATH.*")
+                 (string-append "set(CMAKE_MODULE_PATH "
+                                #$suitesparse-config "/lib/cmake/SuiteSparse)\n"
+                                "set(DUMMY\n")))))
+          (replace 'install-license-files
+            (lambda _
+              (install-file "../CCOLAMD/Doc/License.txt"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version)))))))
+    (inputs (list suitesparse-config))
+    (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
+    (synopsis "Column Approximate Minimum Degree Ordering with constraints")
+    (description "CCOLAMD is library for computing a permutation vector for a
+matrix with which the LU factorization becomes sparser.  It is a variant of
+COLAMD which has the the option to apply constraints to the ordering.")
+    (license license:bsd-3)))
+
+(define-public gklib-suitesparse
+  (package/inherit gklib
+    (name "gklib-suitesparse")
+    (source (origin
+              (inherit (package-source gklib))
+              (patches (cons
+                        (search-patch
+                         "gklib-suitesparse.patch")
+                        (origin-patches (package-source gklib))))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments gklib)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'patch-cmake
+              (lambda _
+                (substitute* "CMakeLists.txt"
+                  (("add_library\\(GKlib.*" all)
+                   (string-append
+                    all
+                    "target_link_libraries(GKlib PUBLIC"
+                    " ${SUITESPARSE_CONFIG_LIBRARIES} m)\n")))))))))
+    (inputs
+     (modify-inputs (package-inputs gklib)
+       (prepend suitesparse-config)))))
+
+(define-public metis-suitesparse
+  (package/inherit metis-5.2
+    (name "metis-suitesparse")
+    (arguments
+     (substitute-keyword-arguments (package-arguments metis-5.2)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-before 'prepare-cmake 'set-idxwidth
+              (lambda _
+                (substitute* "Makefile"
+                  (("IDXWIDTH.*=.*")
+                   "IDXWIDTH = \"\\#define IDXTYPEWIDTH 64\"\n"))))
+            (add-before 'prepare-cmake 'link-suitesparse-config
+              (lambda _
+                (substitute* "programs/CMakeLists.txt"
+                  (("include_directories.*" all)
+                   (string-append
+                    all "find_package(SuiteSparse_config REQUIRED)\n"))
+                  (("(target_link_libraries.*)GKlib(.*)" _ start end)
+                   (string-append
+                    start "GKlib ${SUITESPARSE_CONFIG_LIBRARIES}" end)))))))
+       ((#:configure-flags _)
+        #~(list "-DSHARED=ON"
+                (string-append "-DGKLIB_PATH=" #$gklib-suitesparse)))))
+    (inputs (list suitesparse-config gklib-suitesparse))))
+
+(define-public suitesparse-cholmod
+  (package
+    (name "suitesparse-cholmod")
+    (version "4.2.0")
+    (source suitesparse-source)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "CHOLMOD")))
+          (add-after 'chdir 'set-cmake-module-path
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set.*CMAKE_MODULE_PATH.*")
+                 (string-append
+                  "set(CMAKE_MODULE_PATH "
+                  (string-join
+                   (map (lambda (path)
+                          (string-append path "/lib/cmake/SuiteSparse"))
+                        (list #$suitesparse-amd
+                              #$suitesparse-camd
+                              #$suitesparse-ccolamd
+                              #$suitesparse-colamd
+                              #$suitesparse-config)))
+                  ")\nset(DUMMY\n"))
+                (("add_subdirectory.*GPU.*") "\n")
+                ((".*cmake_modules/FindCHOLMOD_CUDA.cmake.*") "\n"))))
+          (add-after 'chdir 'use-external-metis
+            (lambda _
+              (let ((port (open-file "CMakeLists.txt" "a")))
+                (display
+                 (string-append
+                  "find_library(METIS_LIBRARY NAME metis PATHS ENV LIBRARY_PATH)
+get_filename_component(METIS_LIBRARY ${METIS_LIBRARY} REALPATH)
+find_library(GKLIB_LIBRARY NAME GKlib PATHS ENV LIBRARY_PATH)
+get_filename_component(GKLIB_LIBRARY ${GKLIB_LIBRARY} REALPATH)
+target_link_libraries(CHOLMOD PRIVATE ${METIS_LIBRARY} ${GKLIB_LIBRARY})
+target_link_libraries(CHOLMOD_static PRIVATE ${METIS_LIBRARY} ${GKLIB_LIBRARY})")
+                 port)
+                (close-port port))
+              (delete-file "Partition/cholmod_metis_wrapper.c")
+              (delete-file "Partition/cholmod_metis_wrapper.h")
+              (substitute* "Partition/cholmod_metis.c"
+                (("#include \"cholmod_metis_wrapper\\.h\"") "")
+                (("#include \"SuiteSparse_metis/include/metis.h\"")
+                 "#include <metis.h>")
+                (("SuiteSparse_metis_METIS") "METIS"))))
+          (add-after 'build 'build-doc
+            (lambda _
+              (with-directory-excursion "../CHOLMOD/Doc"
+                (invoke "make"))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (install-file "../CHOLMOD/Doc/CHOLMOD_UserGuide.pdf"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version))))
+          (replace 'install-license-files
+            (lambda _
+              (let ((out (string-append #$output
+                                        "/share/doc/" #$name "-" #$version)))
+                (install-file "../CHOLMOD/Doc/License.txt" out)
+                (install-file "../CHOLMOD/Core/lesser.txt" out)
+                (install-file "../CHOLMOD/MatrixOps/gpl.txt" out)))))))
+    (inputs
+     (list gklib-suitesparse
+           metis-suitesparse
+           openblas
+           suitesparse-amd
+           suitesparse-camd
+           suitesparse-ccolamd
+           suitesparse-colamd
+           suitesparse-config))
+    (native-inputs (list (texlive-updmap.cfg '())))
+    (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
+    (synopsis "Library for solving sparse symmetric positive definite linear
+equations")
+    (description "CHOLMOD is a set of routins for factorizing sparse symmetrix
+positive definite matrices, updating/downdating sparse Cholesky factorizations
+and other related operations.")
+    (license (list license:gpl2+ license:lgpl2.1+))))
+
+(define-public suitesparse-cxsparse
+  (package
+    (name "suitesparse-cxsparse")
+    (version "4.2.0")
+    (source suitesparse-source)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "CXSparse")))
+          (add-after 'chdir 'set-cmake-module-path
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set.*CMAKE_MODULE_PATH.*")
+                 (string-append "set(CMAKE_MODULE_PATH "
+                                #$suitesparse-config "/lib/cmake/SuiteSparse)\n"
+                                "set(DUMMY\n")))))
+          (replace 'install-license-files
+            (lambda _
+              (let ((out (string-append #$output
+                                        "/share/doc/" #$name "-" #$version)))
+                (install-file "../CXSparse/Doc/License.txt" out)
+                (install-file "../CXSparse/Doc/lesser.txt" out)))))))
+    (inputs (list suitesparse-config))
+    (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
+    (synopsis "Concise eXtended Sparse Matrix Package")
+    (description "CXSparse is a collection of sparse matrix algorithms for
+direct methods on both real and complex matrices.")
+    (license license:lgpl2.1+)))
+
+(define-public suitesparse-klu
+  (package
+    (name "suitesparse-klu")
+    (version "2.2.0")
+    (source suitesparse-source)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "KLU")))
+          (add-after 'chdir 'set-cmake-module-path
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set.*CMAKE_MODULE_PATH.*")
+                 (string-append
+                  "set(CMAKE_MODULE_PATH "
+                  (string-join
+                   (map (lambda (path)
+                          (string-append path "/lib/cmake/SuiteSparse"))
+                        (list #$suitesparse-amd
+                              #$suitesparse-btf
+                              #$suitesparse-camd
+                              #$suitesparse-ccolamd
+                              #$suitesparse-cholmod
+                              #$suitesparse-colamd
+                              #$suitesparse-config)))
+                  ")\nset(DUMMY\n")))))
+          (add-after 'build 'build-doc
+            (lambda _
+              (substitute* "../KLU/Doc/Makefile"
+                (("\\.\\./\\.\\./BTF/Include/btf.h")
+                 (string-append #$suitesparse-btf "/include/btf.h")))
+              (with-directory-excursion "../KLU/Doc"
+                (invoke "make"))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (install-file "../KLU/Doc/KLU_UserGuide.pdf"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version))))
+          (replace 'install-license-files
+            (lambda _
+              (install-file "../KLU/Doc/License.txt"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version)))))))
+    (inputs
+     (list suitesparse-amd
+           suitesparse-btf
+           suitesparse-camd
+           suitesparse-ccolamd
+           suitesparse-cholmod
+           suitesparse-colamd
+           suitesparse-config))
+    (native-inputs (list (texlive-updmap.cfg '())))
+    (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
+    (synopsis "Routines for solving sparse linear problems with a LU factorization")
+    (description "KLU is a method for computing the LU factorization of sparse
+for real and complex matrices.")
+    (license license:lgpl2.1+)))
+
+(define-public suitesparse-ldl
+  (package
+    (name "suitesparse-ldl")
+    (version "3.2.0")
+    (source suitesparse-source)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "LDL")))
+          (add-after 'chdir 'set-cmake-module-path
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set.*CMAKE_MODULE_PATH.*")
+                 (string-append
+                  "set(CMAKE_MODULE_PATH "
+                  (string-join
+                   (map (lambda (path)
+                          (string-append path "/lib/cmake/SuiteSparse"))
+                        (list #$suitesparse-amd
+                              #$suitesparse-config)))
+                  ")\nset(DUMMY\n")))))
+          (add-after 'build 'build-doc
+            (lambda _
+              (substitute* "../LDL/Doc/Makefile"
+                (("\\.\\./\\.\\./BTF/Include/btf.h")
+                 (string-append #$suitesparse-btf "/include/btf.h")))
+              (with-directory-excursion "../LDL/Doc"
+                (invoke "make"))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (install-file "../LDL/Doc/ldl_userguide.pdf"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version))))
+          (replace 'install-license-files
+            (lambda _
+              (install-file "../LDL/Doc/License.txt"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version)))))))
+    (inputs
+     (list suitesparse-amd
+           suitesparse-config))
+    (native-inputs (list (texlive-updmap.cfg '())))
+    (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
+    (synopsis "LDL' factorization method for sparse, symmetric matrices")
+    (description "This package contains a set of routines for computing the
+LDL' factorization of sparse, symmetric matrices.  Its focus lies on concise
+code.")
+    (license license:lgpl2.1+)))
+
+(define-public suitesparse-rbio
+  (package
+    (name "suitesparse-rbio")
+    (version "4.2.0")
+    (source suitesparse-source)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "RBio")))
+          (add-after 'chdir 'set-cmake-module-path
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set.*CMAKE_MODULE_PATH.*")
+                 (string-append
+                  "set(CMAKE_MODULE_PATH "
+                  (string-join
+                   (map (lambda (path)
+                          (string-append path "/lib/cmake/SuiteSparse"))
+                        (list #$suitesparse-config)))
+                  ")\nset(DUMMY\n")))))
+          (replace 'install-license-files
+            (lambda _
+              (let ((out (string-append #$output
+                                        "/share/doc/" #$name "-" #$version)))
+                (install-file "../RBio/Doc/License.txt" out)
+                (install-file "../RBio/Doc/gpl.txt" out)))))))
+    (inputs (list suitesparse-config))
+    (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
+    (synopsis "Library for the Rutherford/Boeing sparse matrix format")
+    (description "This package provides the C library of RBio.  It can be used
+for reading and writing sparse matrices in the Rutherford/Boeing format.")
+    (license license:gpl2+)))
+
+(define-public suitesparse-mongoose
+  (package
+    (name "suitesparse-mongoose")
+    (version "3.2.0")
+    (source suitesparse-source)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "Mongoose")))
+          (add-after 'chdir 'set-cmake-module-path
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set.*CMAKE_MODULE_PATH.*")
+                 (string-append "set(CMAKE_MODULE_PATH "
+                                #$suitesparse-config "/lib/cmake/SuiteSparse)\n"
+                                "set(DUMMY\n")))))
+          (add-after 'build 'build-doc
+            (lambda _
+              ;; XeLaTeX fails with .eps graphics
+              (with-directory-excursion "../Mongoose/Doc"
+                (for-each
+                 (lambda (name)
+                   (invoke "epstopdf" name))
+                 (find-files "Figures" "\\.eps$"))
+                (substitute* "Mongoose_UserGuide.tex"
+                  (("\\.eps") ".pdf"))
+                (invoke "make"))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (install-file "../Mongoose/Doc/Mongoose_UserGuide.pdf"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version))))
+          (replace 'install-license-files
+            (lambda _
+              (install-file "../Mongoose/Doc/License.txt"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version)))))))
+    (inputs (list suitesparse-config))
+    (native-inputs
+     (list texlive-epstopdf
+           (texlive-updmap.cfg
+            (list texlive-algorithmicx
+                  texlive-booktabs
+                  texlive-lastpage
+                  texlive-multirow
+                  texlive-pgf
+                  texlive-caption
+                  texlive-etoolbox
+                  texlive-csquotes
+                  texlive-fancybox
+                  texlive-enumitem
+                  texlive-microtype
+                  texlive-cancel
+                  texlive-sourcecodepro
+                  texlive-xkeyval
+                  texlive-fontspec
+                  texlive-wasy
+                  texlive-wasysym
+                  texlive-float
+                  texlive-tcolorbox
+                  texlive-environ
+                  texlive-xcolor
+                  texlive-xetex
+                  texlive-listings))))
+    (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
+    (synopsis "Graph partitioning library")
+    (description "Mongoose is a library for graph partitioning by computing
+edge cuts using a coarsening and refinement framework.")
+    (license license:gpl3)))
+
+(define-public suitesparse-spex
+  (package
+    (name "suitesparse-spex")
+    (version "2.2.0")
+    (source suitesparse-source)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "SPEX")))
+          (add-after 'chdir 'set-cmake-module-path
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set.*CMAKE_MODULE_PATH.*")
+                 (string-append
+                  "set(CMAKE_MODULE_PATH "
+                  (string-join
+                   (map (lambda (path)
+                          (string-append path "/lib/cmake/SuiteSparse"))
+                        (list #$suitesparse-amd
+                              #$suitesparse-colamd
+                              #$suitesparse-config)))
+                  ")\nset(DUMMY\n")))))
+          (add-after 'build 'build-doc
+            (lambda _
+              (with-directory-excursion "../SPEX/Doc"
+                (invoke "make"))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (install-file "../SPEX/Doc/SPEX_UserGuide.pdf"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version)))))))
+    (inputs
+     (list gmp
+           mpfr
+           suitesparse-amd
+           suitesparse-colamd
+           suitesparse-config))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-paralist
+                  texlive-comment
+                  texlive-psfrag
+                  texlive-soul
+                  texlive-multirow
+                  texlive-algorithms
+                  texlive-float
+                  texlive-algorithmicx
+                  texlive-cprotect
+                  texlive-bigfoot
+                  texlive-caption
+                  texlive-listings
+                  texlive-xcolor
+                  texlive-framed
+                  texlive-mdframed
+                  texlive-etoolbox
+                  texlive-zref
+                  texlive-needspace))))
+    (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
+    (synopsis "Package for SParse EXact algebra")
+    (description "SPEX is a set of routines for sparse exact linear algebra.
+It contains the SPEX Left LU library for computing a sparse exact left-looking
+LU factorization for solving unsymmetric sparse linear systems.")
+    ;; Dual licensed.
+    (license (list license:lgpl3+ license:gpl2+))))
+
+(define-public suitesparse-spqr
+  (package
+    (name "suitesparse-spqr")
+    (version "4.2.0")
+    (source suitesparse-source)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "SPQR")))
+          (add-after 'chdir 'set-cmake-module-path
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set.*CMAKE_MODULE_PATH.*")
+                 (string-append
+                  "set(CMAKE_MODULE_PATH "
+                  (string-join
+                   (map (lambda (path)
+                          (string-append path "/lib/cmake/SuiteSparse"))
+                        (list #$suitesparse-amd
+                              #$suitesparse-camd
+                              #$suitesparse-ccolamd
+                              #$suitesparse-cholmod
+                              #$suitesparse-colamd
+                              #$suitesparse-config)))
+                  ")\nset(DUMMY\n")))))
+          (add-after 'build 'build-doc
+            (lambda _
+              (with-directory-excursion "../SPQR/Doc"
+                (invoke "make"))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (install-file "../SPQR/Doc/spqr_user_guide.pdf"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version))))
+          (replace 'install-license-files
+            (lambda _
+              (install-file "../SPQR/Doc/License.txt"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version)))))))
+    (inputs
+     (list openblas
+           suitesparse-amd
+           suitesparse-camd
+           suitesparse-ccolamd
+           suitesparse-cholmod
+           suitesparse-colamd
+           suitesparse-config))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-epsf))))
+    (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
+    (synopsis "Sparse QR factorization method")
+    (description "The SPQR (SuiteSparseQR) package provides sparse QR
+factorization based on the multifrontal method, using BLAS for the frontal
+matrices.")
+    (license license:gpl2+)))
+
+(define-public suitesparse-umfpack
+  (package
+    (name "suitesparse-umfpack")
+    (version "6.2.0")
+    (source suitesparse-source)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "UMFPACK")))
+          (add-after 'chdir 'set-cmake-module-path
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("set.*CMAKE_MODULE_PATH.*")
+                 (string-append
+                  "set(CMAKE_MODULE_PATH "
+                  (string-join
+                   (map (lambda (path)
+                          (string-append path "/lib/cmake/SuiteSparse"))
+                        (list #$suitesparse-amd
+                              #$suitesparse-camd
+                              #$suitesparse-ccolamd
+                              #$suitesparse-cholmod
+                              #$suitesparse-colamd
+                              #$suitesparse-config)))
+                  ")\nset(DUMMY\n")))))
+          (add-after 'build 'build-doc
+            (lambda _
+              (with-directory-excursion "../UMFPACK/Doc"
+                (invoke "make"))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (let ((outdir
+                     (string-append #$output "/share/doc/"
+                                    #$name "-" #$version)))
+                (install-file "../UMFPACK/Doc/UMFPACK_UserGuide.pdf" outdir)
+                (install-file "../UMFPACK/Doc/UMFPACK_QuickStart.pdf" outdir))))
+          (replace 'install-license-files
+            (lambda _
+              (let ((outdir
+                     (string-append #$output "/share/doc/"
+                                    #$name "-" #$version)))
+                (install-file "../UMFPACK/Doc/License.txt" outdir)
+                (install-file "../UMFPACK/Doc/gpl.txt" outdir)))))))
+    (inputs
+     (list openblas
+           suitesparse-amd
+           suitesparse-camd
+           suitesparse-ccolamd
+           suitesparse-cholmod
+           suitesparse-colamd
+           suitesparse-config))
+    (native-inputs
+     (list (texlive-updmap.cfg
+            (list texlive-etoolbox
+                  texlive-framed
+                  texlive-mdframed
+                  texlive-needspace
+                  texlive-xcolor
+                  texlive-zref))))
+    (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
+    (synopsis "Routines for solving sparse linear problems via LU factorization")
+    (description "UMFPACK is a set of routines for solving unsymmetric sparse
+linear systems using the Unsymmetric MultiFrontal method and direct sparse LU
+factorization.")
+    (license license:gpl2+)))
+
 (define-public suitesparse
   (package
     (name "suitesparse")
@@ -4986,101 +6111,15 @@ multifrontal LU factorization; CHOLMOD, supernodal Cholesky; SPQR,
 multifrontal QR; KLU and BTF, sparse LU factorization, well-suited for circuit
 simulation; ordering methods (AMD, CAMD, COLAMD, and CCOLAMD); CSparse and
 CXSparse, a concise sparse Cholesky factorization package; and many other
-packages.")
+packages.
+
+This package contains all of the above-mentioned parts.
+")
     ;; LGPLv2.1+:
     ;;   AMD, CAMD, BTF, COLAMD, CCOLAMD, CSparse, CXSparse, KLU, LDL
     ;; GPLv2+:
     ;;  GPUQREngine, RBio, SuiteSparse_GPURuntime, SuiteSparseQR, UMFPACK
     (license (list license:gpl2+ license:lgpl2.1+))))
-
-
-;; This outdated version is used to build the scilab package.
-(define-public suitesparse-3
-  (package
-    (inherit suitesparse)
-    (name "suitesparse")
-    (version "3.1.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/DrTimothyAldenDavis/SuiteSparse")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0wxk755nzps0c9la24zqknqkzjp6rcj5q9jhd973mff1pqja3clz"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f  ;no "check" target
-       #:make-flags
-       ,#~(list
-           (string-append "CC=gcc")
-           "AR=gcc -shared -o"
-           "RANLIB=touch"
-           "CFLAGS=-O3 -fPIC -I../Include"
-           "TBB=-ltbb"
-
-           ;; Disable metis@4 (nonfree) support.
-           "CHOLMOD_CONFIG=-DNPARTITION"
-           "METIS="
-           "METIS_PATH="
-
-           ;; The default is to link against netlib lapack.  Use OpenBLAS
-           ;; instead.
-           "BLAS=-lopenblas" "LAPACK=-lopenblas"
-
-           (string-append "INSTALL_LIB="
-                          (assoc-ref %outputs "out") "/lib")
-           (string-append "INSTALL_INCLUDE="
-                          (assoc-ref %outputs "out") "/include")
-           "library")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'correct-build-configuration
-           (lambda _
-             ;; Invert build order: CHOLMOD before KLU.
-             (substitute* "Makefile"
-               (("\t\\( cd CHOLMOD ; \\$\\(MAKE\\) \\)\n$")
-                "")
-               (("\\( cd KLU ; \\$\\(MAKE\\) \\)")
-                (string-append "( cd CHOLMOD ; $(MAKE) )\n\t"
-                               "( cd KLU ; $(MAKE) )")))
-             ;; Build shared libraries.
-             (substitute* (find-files "." "akefile$")
-               (("lib([a-z]+)\\.a" all libname)
-                (string-append "lib" libname ".so")))
-             ;; Delete broken KLU Demo step.
-             (substitute* "KLU/Makefile"
-               (("\\( cd Demo ; \\$\\(MAKE\\) \\)")
-                ""))))
-         (replace 'install
-           (lambda _
-             ;; Install libraries.
-             (for-each
-              (lambda (x)
-                (install-file
-                 x
-                 (string-append (assoc-ref %outputs "out") "/lib")))
-              (find-files "." "\\.so$"))
-             ;; Install header files.
-             (for-each
-              (lambda (x)
-                (install-file
-                 x
-                 (string-append (assoc-ref %outputs "out") "/include")))
-              (find-files "." "\\.h$"))))
-         ,@(if (target-riscv64?)
-               ;; GraphBLAS FTBFS on riscv64-linux
-               `((add-after 'unpack 'skip-graphblas
-                   (lambda _
-                     (substitute* "Makefile"
-                       ((".*cd GraphBLAS.*") "")
-                       (("metisinstall gbinstall moninstall")
-                        "moninstall")))))
-               '())
-         (delete 'configure))))         ;no configure script
-    (inputs
-     (list tbb openblas gmp mpfr))))
 
 (define-public atlas
   (package
@@ -8451,112 +9490,186 @@ computation is supported via MPI.")
 (define-public scilab
   (package
     (name "scilab")
-    (version "5.5.2")
+    (version "2023.1.0")
     (source
      (origin
-       (method url-fetch)
-       (uri
-        (string-append "https://www.scilab.org/download/"
-                       version "/scilab-" version "-src.tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/scilab/scilab")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0phg9pn24yw98hbh475ik84dnikf1225b2knh7qbhdbdx6fm2d57"))))
+        (base32
+         "0hbqsnc67b4f8zc690kl79bwhjaasykjlmqbln8iymnjcn3l5ypd"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)))
+       (patches (search-patches "scilab-hdf5-1.8-api.patch"))
+       (snippet
+        #~(begin
+            ;; Delete everything except for scilab itself:
+            (for-each (lambda (file)
+                        (unless (member file '("." ".." "scilab"))
+                          (delete-file-recursively file)))
+                      (scandir "."))
+            (for-each (lambda (file)
+                        (unless (member file '("." ".."))
+                          (rename-file (string-append "scilab/" file) file)))
+                      (scandir "scilab"))
+
+            ;; Some clean-up in scilab:
+            (for-each delete-file-recursively
+                      '("scilab"
+                        "config"
+                        "libs/GetWindowsVersion"))
+            (for-each delete-file
+                      (cons* "aclocal.m4"
+                             "configure"
+                             "m4/ax_cxx_compile_stdcxx.m4"
+                             "m4/lib-ld.m4"
+                             "m4/libtool.m4"
+                             "m4/ltoptions.m4"
+                             "m4/ltsugar.m4"
+                             "m4/ltversion.m4"
+                             "m4/lt~obsolete.m4"
+                             "m4/pkg.m4"
+                             (find-files "." "^Makefile\\.in$")))
+
+            ;; And finally some files in the modules directory:
+            (for-each
+              (lambda (file)
+                (delete-file
+                  (string-append "modules/dynamic_link/src/scripts/" file)))
+              '("aclocal.m4"
+                "configure"
+                "compile"
+                "config.guess"
+                "config.sub"
+                "ltmain.sh"
+                "depcomp"
+                "install-sh"
+                "missing"))
+            (delete-file-recursively "modules/dynamic_link/src/scripts/m4")
+            (for-each delete-file
+                      '("modules/ast/src/cpp/parse/scanscilab.cpp"
+                        "modules/ast/src/cpp/parse/bison/parsescilab.output"
+                        "modules/ast/includes/parse/parsescilab.hxx"
+                        "modules/ast/src/cpp/parse/parsescilab.cpp"))))))
     (build-system gnu-build-system)
-    (native-inputs (list pkg-config gfortran))
-    (inputs (list libxml2
-                  `(,pcre "bin")
+    (native-inputs
+     (list autoconf
+           autoconf-archive
+           automake
+           bison
+           eigen
+           flex
+           gfortran
+           libtool
+           ocaml
+           ocaml-findlib
+           pkg-config))
+    (inputs (list `(,pcre "bin")
                   `(,pcre "out")
-                  readline
-                  hdf5-1.8
-                  curl
-                  openblas
-                  lapack
                   arpack-ng
+                  curl
                   fftw
                   gettext-minimal
-                  suitesparse-3
-                  tcl
-                  tk
+                  hdf5-1.14
+                  lapack
                   libx11
-                  matio))
+                  libxml2
+                  matio
+                  ocaml-num
+                  openblas
+                  readline
+                  suitesparse
+                  tcl
+                  tk))
     (arguments
-     `(#:tests? #f
-       #:configure-flags
-       ,#~(list
-           "--enable-relocatable"
-           "--disable-static-system-lib"
-           ;; Disable all java code.
-           "--without-gui"
-           "--without-javasci"
-           "--disable-build-help"
-           "--with-external-scirenderer"
-           ;; Tcl and Tk library locations.
-           (string-append "--with-tcl-include="
-                          (string-drop-right
-                           (search-input-file %build-inputs "include/tcl.h")
-                           (string-length "/tcl.h")))
-           (string-append "--with-tcl-library="
-                          (string-drop-right
-                           (search-input-directory %build-inputs "lib/tcl8")
-                           (string-length "/tcl8")))
-           (string-append "--with-tk-include="
-                          (string-drop-right
-                           (search-input-file %build-inputs "include/tk.h")
-                           (string-length "/tk.h")))
-           (string-append "--with-tk-library="
-                          (string-drop-right
-                           (search-input-directory %build-inputs "lib/tk8.6")
-                           (string-length "/tk8.6")))
-           ;; There are some 2018-fortran errors that are ignored
-           ;; with this fortran compiler flag.
-           "FFLAGS=-fallow-argument-mismatch")
-       #:phases
-       ,#~(modify-phases %standard-phases
-            (add-before 'build 'pre-build
-              (lambda _
-                ;; Fix scilab script.
-                (substitute* "bin/scilab"
-                  (("\\/bin\\/ls")
-                   (which "ls")))
-                ;; Fix core.start.
-                (substitute* "modules/core/etc/core.start"
-                  (("'SCI/modules")
-                   "SCI+'/modules"))
-                ;; Fix fortran compilation error.
-                (substitute*
-                    "modules/differential_equations/src/fortran/twodq.f"
-                  (("node\\(10\\),node1\\(10\\),node2\\(10\\),coef")
-                   "node(9),node1(9),node2(9),coef"))
-                ;; Fix C compilation errors.
-                ;; remove &
-                (substitute* "modules/hdf5/src/c/h5_readDataFromFile_v1.c"
-                  (("(H5Rdereference\\(_iDatasetId, H5R_OBJECT, )&(.*)\\);$"
-                    all common ref)
-                   (string-append common ref)))
-                ;; fix multiple definitions
-                (substitute* "modules/tclsci/src/c/TCL_Command.h"
-                  (("^__thread")
-                   "extern __thread"))
-                (substitute* "modules/tclsci/src/c/InitTclTk.c"
-                  (("BOOL TK_Started = FALSE;" all)
-                   (string-append all "\n"
-                                  "__threadId TclThread;" "\n"
-                                  "__threadSignal InterpReady;" "\n"
-                                  "__threadSignalLock InterpReadyLock;"
-                                  "\n")))
-                ;; Fix CPP compilation errors.
-                (substitute* "modules/output_stream/src/cpp/diary_manager.cpp"
-                  (("if \\(array_size > 0\\)")
-                   "if (*array_size > 0)"))
-                ;; Set SCIHOME to /tmp before macros compilation.
-                (setenv "SCIHOME" "/tmp"))))))
-    (home-page "https://scilab.org")
+     (list
+      ;; The tests require java code.
+      #:tests? #f
+      #:configure-flags
+      #~(list
+         "--enable-relocatable"
+         "--disable-static-system-lib"
+         "--enable-build-parser"
+         ;; Disable all java code.
+         "--without-gui"
+         "--without-javasci"
+         "--disable-build-help"
+         "--with-external-scirenderer"
+         ;; Tcl and Tk library locations.
+         (string-append "--with-tcl-include="
+                        (dirname
+                          (search-input-file %build-inputs "include/tcl.h")))
+         (string-append "--with-tcl-library="
+                        (dirname
+                          (search-input-directory %build-inputs "lib/tcl8")))
+         (string-append "--with-tk-include="
+                        (dirname
+                          (search-input-file %build-inputs "include/tk.h")))
+         (string-append "--with-tk-library="
+                        (dirname
+                          (search-input-directory %build-inputs "lib/tk8.6")))
+         (string-append "--with-eigen-include="
+                        (search-input-directory %build-inputs "include/eigen3"))
+         ;; Find and link to the OCaml Num package
+         "OCAMLC=ocamlfind ocamlc -package num"
+         "OCAMLOPT=ocamlfind ocamlopt -package num -linkpkg"
+         ;; There are some 2018-fortran errors that are ignored
+         ;; with this fortran compiler flag.
+         "FFLAGS=-fallow-argument-mismatch")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The Num library is specified with the OCAMLC and
+          ;; OCAMLOPT variables above.
+          (add-after 'unpack 'fix-ocaml-num
+            (lambda _
+              (substitute*
+                '("modules/scicos/Makefile.modelica.am"
+                  "modules/scicos/src/translator/makefile.mak"
+                  "modules/scicos/src/modelica_compiler/makefile.mak")
+                (("nums\\.cmx?a") ""))))
+          ;; Install only scilab-cli.desktop
+          (add-after 'unpack 'remove-desktop-files
+            (lambda _
+              (substitute* "desktop/Makefile.am"
+                (("desktop_DATA =")
+                 "desktop_DATA = scilab-cli.desktop\nDUMMY ="))))
+          ;; These generated files are assumed to be present during
+          ;; the build.
+          (add-after 'bootstrap 'bootstrap-dynamic_link-scripts
+            (lambda _
+              (with-directory-excursion "modules/dynamic_link/src/scripts"
+                ((assoc-ref %standard-phases 'bootstrap)))))
+          (add-before 'build 'pre-build
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Fix scilab script.
+              (substitute* "bin/scilab"
+                (("\\/bin\\/ls")
+                 (search-input-file inputs "bin/ls")))
+              ;; Fix core.start.
+              (substitute* "modules/core/etc/core.start"
+                (("'SCI/modules")
+                 "SCI+'/modules"))
+              ;; Set SCIHOME to /tmp before macros compilation.
+              (setenv "SCIHOME" "/tmp")))
+          ;; Prevent race condition
+          (add-after 'pre-build 'build-parsers
+            (lambda* (#:key (make-flags #~'()) #:allow-other-keys)
+              (with-directory-excursion "modules/ast"
+                (apply invoke "make"
+                       "src/cpp/parse/parsescilab.cpp"
+                       "src/cpp/parse/scanscilab.cpp"
+                       make-flags)))))))
+    (home-page "https://www.scilab.org/")
     (synopsis "Software for engineers and scientists")
     (description "This package provides the non-graphical version of the Scilab
-software for engineers and scientists. Scilab is used for signal processing,
+software for engineers and scientists.  Scilab is used for signal processing,
 statistical analysis, image enhancement, fluid dynamics simulations, numerical
 optimization, and modeling, simulation of explicit and implicit dynamical
 systems and symbolic manipulations.")
-    (license license:cecill)))                    ;CeCILL v2.1
+    (license (list license:gpl2 license:bsd-3))))
 
 (define-public ruy
   (let ((commit "caa244343de289f913c505100e6a463d46c174de")

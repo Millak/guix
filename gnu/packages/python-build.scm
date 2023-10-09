@@ -493,6 +493,26 @@ any dependency management.  It aims to keep dependencies to a minimum, in
 order to make bootstrapping easier.")
     (license license:expat)))
 
+(define-public python-poetry-core-1.0
+  (package
+    (name "python-poetry-core")
+    (version "1.0.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "poetry-core" version))
+       (sha256
+        (base32 "01n2rbsvks7snrq3m1d08r3xz9q2715ajb62fdb6rvqnb9sirhcq"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/python-poetry/poetry-core")
+    (synopsis "Poetry PEP 517 build back-end")
+    (description
+     "The @code{poetry-core} module provides a PEP 517 build back-end
+implementation developed for Poetry.  This project is intended to be
+a light weight, fully compliant, self-contained package allowing PEP 517
+compatible build front-ends to build Poetry managed projects.")
+    (license license:expat)))
+
 (define-public python-poetry-core
   (package
     (name "python-poetry-core")

@@ -1,0 +1,60 @@
+Forwarded upstream: https://github.com/jorgenschaefer/elpy/pull/2031
+
+diff --git a/test/elpy-config--insert-help-test.el b/test/elpy-config--insert-help-test.el
+index bb293ff..2584fd4 100644
+--- a/test/elpy-config--insert-help-test.el
++++ b/test/elpy-config--insert-help-test.el
+@@ -2,6 +2,6 @@
+ ;; with output. We will test its constituent functions later, and just
+ ;; make sure it doesn't throw an error here.
+ 
+-(ert-deftest elpy-config-should-not-fail ()
++(ert-deftest elpy-config-should-not-fail-insert-help ()
+   (elpy-testcase ()
+     (elpy-config--insert-help)))
+diff --git a/test/elpy-library-root-test.el b/test/elpy-library-root-test.el
+index fdc88b2..2f7484c 100644
+--- a/test/elpy-library-root-test.el
++++ b/test/elpy-library-root-test.el
+@@ -4,7 +4,7 @@
+     (should (f-equal? (elpy-library-root)
+                       project-root))))
+ 
+-(ert-deftest elpy-library-root-should-find-current-directory ()
++(ert-deftest elpy-library-root-should-find-current-directory-2 ()
+   (elpy-testcase ((:project project-root
+                             "p1/p2/test.py"
+                             "p1/p2/__init__.py"
+diff --git a/test/elpy-open-and-indent-line-above-test.el b/test/elpy-open-and-indent-line-above-test.el
+index d846712..790dd26 100644
+--- a/test/elpy-open-and-indent-line-above-test.el
++++ b/test/elpy-open-and-indent-line-above-test.el
+@@ -1,4 +1,4 @@
+-(ert-deftest elpy-open-and-indent-line-below ()
++(ert-deftest elpy-open-and-indent-line-above ()
+   (elpy-testcase ()
+     (elpy-enable)
+     (python-mode)
+diff --git a/test/elpy-rpc-get-usages-test.el b/test/elpy-rpc-get-usages-test.el
+index 85f0ad4..be5d7c5 100644
+--- a/test/elpy-rpc-get-usages-test.el
++++ b/test/elpy-rpc-get-usages-test.el
+@@ -1,4 +1,4 @@
+-(ert-deftest elpy-rpc-get-completions ()
++(ert-deftest elpy-rpc-get-completions-usages ()
+   (elpy-testcase ()
+     (mletf* ((called-args nil)
+              (elpy-rpc (&rest args) (setq called-args args)))
+diff --git a/test/elpy-rpc-test.el b/test/elpy-rpc-test.el
+index 8b5bdca..3ff6965 100644
+--- a/test/elpy-rpc-test.el
++++ b/test/elpy-rpc-test.el
+@@ -17,7 +17,7 @@
+               (should (equal error 'elpy-rpc--default-error-callback))))
+       (elpy-rpc "test-method" nil 'success))))
+ 
+-(ert-deftest elpy-rpc-should-use-default-without-error-callback ()
++(ert-deftest elpy-rpc-should-use-default-without-error-callback-2 ()
+   (elpy-testcase ()
+     (mletf* ((elpy-rpc--call-blocking
+               (method params)

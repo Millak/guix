@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -24,7 +24,6 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match)
-  #:use-module (ice-9 popen)
   #:export (%standard-phases
             minify-build
             minify))
@@ -39,14 +38,9 @@
 (define* (minify file #:key target (directory ""))
   (format #t "minifying ~a\n" file)
   (let* ((base (basename file ".js"))
-         (installed (or target (string-append directory base ".min.js")))
-         (minified (open-pipe* OPEN_READ "uglifyjs" file)))
-    (call-with-output-file installed
-      (cut dump-port minified <>))
-    (match (close-pipe minified)
-      (0 #t)
-      (status
-       (error "uglify-js failed" status)))))
+         (installed (or target (string-append directory base ".min.js"))))
+    (invoke "esbuild" file "--minify"
+            (string-append "--outfile=" installed))))
 
 (define* (build #:key javascript-files
                 #:allow-other-keys)

@@ -492,6 +492,21 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
+(define-public linux-libre-6.5-version "6.5.5")
+(define-public linux-libre-6.5-gnu-revision "gnu")
+(define deblob-scripts-6.5
+  (linux-libre-deblob-scripts
+   linux-libre-6.5-version
+   linux-libre-6.5-gnu-revision
+   (base32 "01mm6v67bcrhgm97axsw46x0iix9im7hmlb765f3bkjhwklpxdy7")
+   (base32 "132ps1jprxw6kqyscsar38fn7s12kg416mfhz7w702f4ajgq1ndi")))
+(define-public linux-libre-6.5-pristine-source
+  (let ((version linux-libre-6.5-version)
+        (hash (base32 "15gg8sb6cfgk1afwj7fl7mj4nkj14w43vzwvw0qsg3nzyxwh7wcc")))
+   (make-linux-libre-source version
+                            (%upstream-linux-source version hash)
+                            deblob-scripts-6.5)))
+
 (define-public linux-libre-6.4-version "6.4.16")
 (define-public linux-libre-6.4-gnu-revision "gnu")
 (define deblob-scripts-6.4
@@ -628,6 +643,11 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
     (patches (append (origin-patches source)
                      patches))))
 
+(define-public linux-libre-6.5-source
+  (source-with-patches linux-libre-6.5-pristine-source
+                       (list %boot-logo-patch
+                             %linux-libre-arm-export-__sync_icache_dcache-patch)))
+
 (define-public linux-libre-6.4-source
   (source-with-patches linux-libre-6.4-pristine-source
                        (list %boot-logo-patch
@@ -746,6 +766,11 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
     (synopsis "GNU Linux-Libre kernel headers")
     (description "Headers of the Linux-Libre kernel.")
     (license license:gpl2)))
+
+(define-public linux-libre-headers-6.5
+  (make-linux-libre-headers* linux-libre-6.5-version
+                             linux-libre-6.5-gnu-revision
+                             linux-libre-6.5-source))
 
 (define-public linux-libre-headers-6.4
   (make-linux-libre-headers* linux-libre-6.4-version
@@ -1090,6 +1115,14 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
 ;;;
 ;;; Generic kernel packages.
 ;;;
+
+(define-public linux-libre-6.5
+  (make-linux-libre* linux-libre-6.5-version
+                     linux-libre-6.5-gnu-revision
+                     linux-libre-6.5-source
+                     '("x86_64-linux" "i686-linux" "armhf-linux"
+                       "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
+                     #:configuration-file kernel-config))
 
 (define-public linux-libre-6.4
   (make-linux-libre* linux-libre-6.4-version
@@ -1827,6 +1860,36 @@ and some newer models when connected via Bluetooth.  In addition to the included
 Linux kernel module, it also contains a modprobe configuration and udev rules,
 which need to be installed separately.")
     (license license:gpl3+)))
+
+(define-public vendor-reset-linux-module
+  (let ((commit "4b466e92a2d9f76ce1082cde982c7be0be91e248")
+        (revision "0"))
+    (package
+      (name "vendor-reset-linux-module")
+      (version (git-version "0.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/gnif/vendor-reset")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1gaf4j20grng689c9fylcqri3j9ycnhr2bsva2z6qcdqvzl6yxbi"))))
+      (build-system linux-module-build-system)
+      (arguments
+       (list #:tests? #f)) ;no test suite
+      (home-page "https://github.com/gnif/vendor-reset")
+      (synopsis
+       "Kernel module that resets GPUs that are affected by the reset bug")
+      (description
+       "This package provides a kernel module that is capable of
+resetting hardware devices into a state where they can be
+re-initialized or passed through into a virtual machine (VFIO).
+While it would be great to have these in the kernel as PCI quirks,
+some of the reset procedures are very complex and would never be
+accepted as a quirk (ie AMD Vega 10).")
+      (license license:gpl2))))
 
 
 ;;;
@@ -10316,7 +10379,7 @@ error detection and correction (EDAC).")
 (define-public spectre-meltdown-checker
   (package
     (name "spectre-meltdown-checker")
-    (version "0.45")
+    (version "0.46")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -10325,15 +10388,14 @@ error detection and correction (EDAC).")
               (file-name (git-file-name name version))
               (patches
                (search-patches
-                "spectre-meltdown-checker-externalize-fwdb.patch"
-                "spectre-meltdown-checker-find-kernel.patch"))
+                "spectre-meltdown-checker-externalize-fwdb.patch"))
               ;; Remove builtin firmware database.
               (modules '((guix build utils)))
               (snippet '(substitute* "spectre-meltdown-checker.sh"
                           (("^# [AI],.*") "")))
               (sha256
                (base32
-                "1xx8h5791lhc2xw0dcbzjkklzvlxwxkjzh8di4g8divfy24fqsn8"))))
+                "0j42p6dayb7k87kf8sqimxlaswis3qh0569a15zccyknv9vf129k"))))
     (build-system copy-build-system)
     (arguments
      (list
@@ -10352,11 +10414,11 @@ error detection and correction (EDAC).")
                  (find-command inputs cmd))
 
                 ;; Commands safe to substitute directly.
-                (("\\<(awk|(base|dir)name|bunzip|g(un)?zip|lz4)\\>" all cmd)
+                (("\\<(awk|(base|dir)name|bunzip2|g(un)?zip|lz4)\\>" all cmd)
                  (find-command inputs cmd))
-                (("\\<(modprobe|pgrep|rmmod|umount|unlzma)\\>" all cmd)
+                (("\\<(lzop|mktemp|modprobe|pgrep|rmmod|umount)\\>" all cmd)
                  (find-command inputs cmd))
-                (("\\<(unxz|unzstd|uuencode)\\>" all cmd)
+                (("\\<(unlzma|unxz|unzstd|uuencode)\\>" all cmd)
                  (find-command inputs cmd))
 
                 ;; Commands which should only be substituted based on their

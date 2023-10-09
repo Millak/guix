@@ -11191,100 +11191,97 @@ and unsafe rides.  Which path will you take?")
     (license license:gpl2)))
 
 (define-public ultrastar-deluxe
-  ;; The last release is quite old and does not support recent ffmpeg versions.
-  (let ((commit "43484b0a10ce6aae339e19d81ae2f7b37caf6baa")
-        (revision "1"))
-    (package
-      (name "ultrastar-deluxe")
-      (version (git-version "2020.4.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/UltraStar-Deluxe/USDX.git")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "078g1rbm1ympmwq9s64v68sxvcms7rr0qid12d2wgm4r04ana47r"))
-                (patches (search-patches "ultrastar-deluxe-no-freesans.patch"))
-                (modules '((guix build utils)))
-                (snippet
-                 #~(begin
-                     ;; Remove Windows binaries.
-                     (for-each delete-file (find-files "game" "\\.dll$"))
-                     ;; Remove font blobs.
-                     (let ((font-directories
-                            (list "DejaVu" "FreeSans" "NotoSans"
-                                  "wqy-microhei")))
-                       (for-each
-                        (lambda (d) (delete-file-recursively
-                                (string-append "game/fonts/" d)))
-                        font-directories))))))
-      (build-system gnu-build-system)
-      (arguments
-        (list
-         #:tests? #f ; No tests.
-         #:phases
-         #~(modify-phases %standard-phases
-             (add-after 'unpack 'fix-configure
-               (lambda* (#:key inputs configure-flags outputs #:allow-other-keys)
-                 (define (where inputs file)
-                   (dirname (search-input-file inputs file)))
-                 ;; The configure script looks for lua$version, but we
-                 ;; provide lua-$version.
-                 (substitute* "configure.ac"
-                   (("lua\\$i") "lua-$i"))
-                 ;; fpc does not pass -lfoo to the linker, but uses its own
-                 ;; linker script, which references libs.  Pass the libraries
-                 ;; listed in that linker script, so our custom linker adds
-                 ;; a correct rpath.
-                 (substitute* "src/Makefile.in"
-                   (("linkflags\\s+:= ")
-                    (string-append
-                     "linkflags := -lpthread -lsqlite3 -lSDL2"
-                     " -lSDL2_image -ldl "
-                     " -lz -lfreetype -lportaudio -lavcodec"
-                     " -lavformat -lavutil -lswresample"
-                     " -lswscale -llua -ldl -lX11 -lportmidi"
-                     " -L" (where inputs "lib/libz.so")
-                     " -L" (where inputs "lib/libX11.so")
-                     " -L" (where inputs "lib/libportmidi.so"))))))
-             (add-after 'install 'font-paths
-               (lambda* (#:key outputs #:allow-other-keys)
-                 (substitute* (string-append
-                               (assoc-ref outputs "out")
-                               "/share/ultrastardx/fonts/fonts.ini")
-                   (("=NotoSans/") (string-append "=" #$font-google-noto
-                                                  "/share/fonts/truetype/"))
-                   (("=DejaVu/") (string-append "=" #$font-dejavu
-                                                "/share/fonts/truetype/"))))))))
-      (inputs (list ffmpeg-5
-                    font-dejavu
-                    font-google-noto
-                    ; Not needed, since we don’t have freesans.
-                    ;font-wqy-microhei
-                    freetype
-                    libx11
-                    lua
-                    portaudio
-                    portmidi
-                    sdl2
-                    sdl2-image
-                    sqlite
-                    zlib))
-      (native-inputs (list pkg-config fpc autoconf automake))
-      (synopsis "Karaoke game")
-      (description
-       "UltraStar Deluxe (USDX) is a karaoke game.  It allows up to six players
+  (package
+    (name "ultrastar-deluxe")
+    (version "2023.9.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/UltraStar-Deluxe/USDX.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0sm0f67hpsys072yvp5phhza686ivbb18qlfy62vsdv0v9cizxia"))
+              (patches (search-patches "ultrastar-deluxe-no-freesans.patch"))
+              (modules '((guix build utils)))
+              (snippet
+               #~(begin
+                   ;; Remove Windows binaries.
+                   (for-each delete-file (find-files "game" "\\.dll$"))
+                   ;; Remove font blobs.
+                   (let ((font-directories
+                          (list "DejaVu" "FreeSans" "NotoSans"
+                                "wqy-microhei")))
+                     (for-each
+                      (lambda (d) (delete-file-recursively
+                              (string-append "game/fonts/" d)))
+                      font-directories))))))
+    (build-system gnu-build-system)
+    (arguments
+      (list
+       #:tests? #f ; No tests.
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'fix-configure
+             (lambda* (#:key inputs configure-flags outputs #:allow-other-keys)
+               (define (where inputs file)
+                 (dirname (search-input-file inputs file)))
+               ;; The configure script looks for lua$version, but we
+               ;; provide lua-$version.
+               (substitute* "configure.ac"
+                 (("lua\\$i") "lua-$i"))
+               ;; fpc does not pass -lfoo to the linker, but uses its own
+               ;; linker script, which references libs.  Pass the libraries
+               ;; listed in that linker script, so our custom linker adds
+               ;; a correct rpath.
+               (substitute* "src/Makefile.in"
+                 (("linkflags\\s+:= ")
+                  (string-append
+                   "linkflags := -lpthread -lsqlite3 -lSDL2"
+                   " -lSDL2_image -ldl "
+                   " -lz -lfreetype -lportaudio -lavcodec"
+                   " -lavformat -lavutil -lswresample"
+                   " -lswscale -llua -ldl -lX11 -lportmidi"
+                   " -L" (where inputs "lib/libz.so")
+                   " -L" (where inputs "lib/libX11.so")
+                   " -L" (where inputs "lib/libportmidi.so"))))))
+           (add-after 'install 'font-paths
+             (lambda* (#:key outputs #:allow-other-keys)
+               (substitute* (string-append
+                             (assoc-ref outputs "out")
+                             "/share/ultrastardx/fonts/fonts.ini")
+                 (("=NotoSans/") (string-append "=" #$font-google-noto
+                                                "/share/fonts/truetype/"))
+                 (("=DejaVu/") (string-append "=" #$font-dejavu
+                                              "/share/fonts/truetype/"))))))))
+    (inputs (list ffmpeg-5
+                  font-dejavu
+                  font-google-noto
+                  ; Not needed, since we don’t have freesans.
+                  ;font-wqy-microhei
+                  freetype
+                  libx11
+                  lua
+                  portaudio
+                  portmidi
+                  sdl2
+                  sdl2-image
+                  sqlite
+                  zlib))
+    (native-inputs (list pkg-config fpc autoconf automake))
+    (synopsis "Karaoke game")
+    (description
+     "UltraStar Deluxe (USDX) is a karaoke game.  It allows up to six players
 to sing along with music using microphones in order to score points, depending
 on the pitch of the voice and the rhythm of singing.")
-      (home-page "https://usdx.eu/")
-      (license license:gpl2+))))
+    (home-page "https://usdx.eu/")
+    (license license:gpl2+)))
 
 (define-public steam-devices-udev-rules
   ;; Last release from 2019-04-10
-  (let ((commit "d87ef558408c5e7a1a793d738db4c9dc2cb5f8fa")
-        (revision "0"))
+  (let ((commit "13443480a64fe8f10676606bd57da6de89f8ccb1")
+        (revision "1"))
     (package
       (name "steam-devices-udev-rules")
       (version (git-version "1.0.0.61" revision commit))
@@ -11296,7 +11293,7 @@ on the pitch of the voice and the rhythm of singing.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1yqigraz9f19018ma5n2pbx7naadh9960lia3z8ayg7vz1fjdl54"))))
+                  "0i086gmnk93q76sw1laa9br6b7zj2r6nrrw7d64y4q9wcrlxw2bi"))))
       (build-system copy-build-system)
       (arguments
        '(#:install-plan '(("./" "lib/udev/rules.d"

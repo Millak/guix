@@ -22398,6 +22398,66 @@ accessor functions on enums.")
         ("rust-quote" ,rust-quote-0.6)
         ("rust-syn" ,rust-syn-0.15))))))
 
+(define-public rust-enum-derive-0.1
+  (package
+    (name "rust-enum-derive")
+    (version "0.1.7")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "enum-derive" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "05n8mdca3y2c8pvl1isncj52fa80wplvx28lxvwqmpzfr6lc4sj0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-custom-derive" ,rust-custom-derive-0.1))))
+    (home-page "https://github.com/DanielKeep/rust-custom-derive")
+    (synopsis "Macros for deriving additional functionality for enums")
+    (description
+     "This crate provides macros for deriving additional functionality for enums.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-enum-dispatch-0.3
+  (package
+    (name "rust-enum-dispatch")
+    (version "0.3.11")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "enum_dispatch" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1qlxlxjvy92s0fwcwlnd2cdkkyml1755xap2lq8v4812hsanxwqi"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin (substitute* "Cargo.toml"
+                         (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                          (string-append "\"^" version)))))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+       #:skip-build? #t     ; Needs newer version of rust-smol
+       #:cargo-inputs
+       `(("rust-once-cell" ,rust-once-cell-1)
+         ("rust-proc-macro2" ,rust-proc-macro2-1)
+         ("rust-quote" ,rust-quote-1)
+         ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       `(("rust-custom-derive" ,rust-custom-derive-0.1)
+         ("rust-enum-derive" ,rust-enum-derive-0.1)
+         ("rust-rand" ,rust-rand-0.6)
+         ("rust-serde" ,rust-serde-1)
+         ("rust-serde-json" ,rust-serde-json-1)
+         ("rust-smol" ,rust-smol-1))))
+    (home-page "https://gitlab.com/antonok/enum_dispatch")
+    (synopsis "Faster alternative to dynamically dispatched method calls")
+    (description
+     "This crate transforms your trait objects into concrete compound types,
+increasing their method call speed up to 10x.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-enum-map-derive-0.4
   (package
     (name "rust-enum-map-derive")
@@ -37548,6 +37608,34 @@ parallelize and optimize.")
      `(#:cargo-inputs (("rust-rawpointer" ,rust-rawpointer-0.1))
        #:cargo-development-inputs (("rust-bencher" ,rust-bencher-0.1))))))
 
+(define-public rust-maybe-async-0.2
+  (package
+    (name "rust-maybe-async")
+    (version "0.2.7")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "maybe-async" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "01gksgxmzgl8hvg831vv993fvrwz8hjwgcln99ilp08zrc9qq6qg"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-proc-macro2" ,rust-proc-macro2-1)
+             ("rust-quote" ,rust-quote-1)
+             ("rust-syn" ,rust-syn-1)
+             ("rust-async-std" ,rust-async-std-1)
+             ("rust-async-trait" ,rust-async-trait-0.1)
+             ("rust-tokio" ,rust-tokio-1)
+             ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/fMeow/maybe-async-rs")
+    (synopsis "Procedural macro to unify sync and async Rust code")
+    (description
+     "This package provides a procedural macro that unifies sync and
+async code in Rust.")
+    (license license:expat)))
+
 (define-public rust-maybe-rayon-0.1
   (package
     (name "rust-maybe-rayon")
@@ -45937,6 +46025,28 @@ Rust with reasonable performance.")
     (description "This package provides a Rust implementation of cleanname or
 path.Clean.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-path-slash-0.2
+  (package
+    (name "rust-path-slash")
+    (version "0.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "path-slash" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0hjgljv4vy97qqw9gxnwzqhhpysjss2yhdphfccy3c388afhk48y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-lazy-static" ,rust-lazy-static-1))))
+    (home-page "https://github.com/rhysd/path-slash")
+    (synopsis "Rust library to convert a file path from/to slash path")
+    (description
+     "This package provides @code{path-slash}, a tiny library to convert a file
+path (e.g. @code{foo/bar}, @code{foo\\bar} or @code{C:\\foo\\bar}) from/to a
+slash path (e.g. @code{foo/bar}, @code{C:/foo/bar}).")
+    (license license:expat)))
 
 (define-public rust-pathdiff-0.2
   (package
@@ -55067,6 +55177,167 @@ can handle huge texts and memory-incoherent edits with ease.")
 rust.")
     (license license:mpl2.0)))
 
+(define-public rust-rspotify-0.11
+  (package
+    (name "rust-rspotify")
+    (version "0.11.7")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rspotify" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0jxpdiic1550h13j8gaqk1g3xlv3b7p7dzyjrf6xx6j8hzh74kjw"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-async-stream" ,rust-async-stream-0.3)
+             ("rust-async-trait" ,rust-async-trait-0.1)
+             ("rust-base64" ,rust-base64-0.20)
+             ("rust-chrono" ,rust-chrono-0.4)
+             ("rust-dotenv" ,rust-dotenv-0.15)
+             ("rust-futures" ,rust-futures-0.3)
+             ("rust-getrandom" ,rust-getrandom-0.2)
+             ("rust-log" ,rust-log-0.4)
+             ("rust-maybe-async" ,rust-maybe-async-0.2)
+             ("rust-rspotify-http" ,rust-rspotify-http-0.11)
+             ("rust-rspotify-macros" ,rust-rspotify-macros-0.11)
+             ("rust-rspotify-model" ,rust-rspotify-model-0.11)
+             ("rust-serde" ,rust-serde-1)
+             ("rust-serde-json" ,rust-serde-json-1)
+             ("rust-sha2" ,rust-sha2-0.10)
+             ("rust-thiserror" ,rust-thiserror-1)
+             ("rust-url" ,rust-url-2)
+             ("rust-webbrowser" ,rust-webbrowser-0.8))
+           #:cargo-development-inputs
+           `(("rust-env-logger" ,rust-env-logger-0.10)
+             ("rust-futures-util" ,rust-futures-util-0.3)
+             ("rust-tokio" ,rust-tokio-1))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'pre-check
+                 ;; This test requires RSPOTIFY_CLIENT_ID and RSPOTIFY_CLIENT_SECRET
+                 (lambda _
+                   (delete-file "tests/test_with_credential.rs"))))))
+    (native-inputs (list pkg-config openssl))
+    (home-page "https://github.com/ramsayleung/rspotify")
+    (synopsis "Spotify API wrapper")
+    (description "This package provides a wrapper API for the Spotify
+streaming service.")
+    (license license:expat)))
+
+(define-public rust-rspotify-0.10
+  (package
+    (inherit rust-rspotify-0.11)
+    (name "rust-rspotify")
+    (version "0.10.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rspotify" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "196wd157l3fn6hlyixgffhl2x516g4fpa3s91arhcikiifsppzgf"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-base64" ,rust-base64-0.10)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-derive-builder" ,rust-derive-builder-0.7)
+        ("rust-dotenv" ,rust-dotenv-0.13)
+        ("rust-env-logger" ,rust-env-logger-0.6)
+        ("rust-failure" ,rust-failure-0.1)
+        ("rust-itertools" ,rust-itertools-0.8)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-percent-encoding" ,rust-percent-encoding-1)
+        ("rust-rand" ,rust-rand-0.6)
+        ("rust-random" ,rust-random-0.12)
+        ("rust-reqwest" ,rust-reqwest-0.10)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-url" ,rust-url-1)
+        ("rust-webbrowser" ,rust-webbrowser-0.5))))))
+
+(define-public rust-rspotify-http-0.11
+  (package
+    (name "rust-rspotify-http")
+    (version "0.11.7")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rspotify-http" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1a1xdvnlksb0gbkyrw9q4l7fyy8ba0mfsjs71qv2r6bbpadij0d8"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-async-trait" ,rust-async-trait-0.1)
+             ("rust-log" ,rust-log-0.4)
+             ("rust-maybe-async" ,rust-maybe-async-0.2)
+             ("rust-reqwest" ,rust-reqwest-0.11)
+             ("rust-serde-json" ,rust-serde-json-1)
+             ("rust-thiserror" ,rust-thiserror-1)
+             ("rust-ureq" ,rust-ureq-2))
+           #:cargo-development-inputs
+           `(("rust-rspotify-model" ,rust-rspotify-model-0.11)
+             ("rust-tokio" ,rust-tokio-1))))
+    (native-inputs (list pkg-config openssl))
+    (home-page "https://github.com/ramsayleung/rspotify")
+    (synopsis "HTTP compatibility layer for RSpotify")
+    (description "RSpotify is a wrapper for the Spotify Web API.  This
+package contains a HTTP compatibility layer for RSpotify.")
+    (license license:expat)))
+
+(define-public rust-rspotify-macros-0.11
+  (package
+    (name "rust-rspotify-macros")
+    (version "0.11.7")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rspotify-macros" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "00zjxnbhljak54bf5q1h09487bh7sza3mqsxk21x43q7pw5jlrkg"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-development-inputs
+           `(("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/ramsayleung/rspotify")
+    (synopsis "Macros for RSpotify")
+    (description "RSpotify is a wrapper for the Spotify Web API.  This crate
+contains Macros for RSpotify.")
+    (license license:expat)))
+
+(define-public rust-rspotify-model-0.11
+  (package
+    (name "rust-rspotify-model")
+    (version "0.11.7")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rspotify-model" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1j0fy5n3f0gwq2qnn4qss0sx5kvbghfr8149jb0bp8azzvlg3gbg"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-chrono" ,rust-chrono-0.4)
+             ("rust-enum-dispatch" ,rust-enum-dispatch-0.3)
+             ("rust-serde" ,rust-serde-1)
+             ("rust-serde-json" ,rust-serde-json-1)
+             ("rust-strum" ,rust-strum-0.24)
+             ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/ramsayleung/rspotify")
+    (synopsis "API endpoint response model object for RSpotify")
+    (description "RSpotify is a wrapper for the Spotify Web API.  This crate
+contains the API endpoint response objects.")
+    (license license:expat)))
+
 (define-public rust-rstar-0.9
   (package
     (name "rust-rstar")
@@ -63717,45 +63988,6 @@ OIDs)")
        (("rust-bencher" ,rust-bencher-0.1)
         ("rust-bincode" ,rust-bincode-1)
         ("rust-tobj" ,rust-tobj-2))))))
-
-(define-public rust-rspotify-0.10
-  (package
-    (name "rust-rspotify")
-    (version "0.10.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "rspotify" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "196wd157l3fn6hlyixgffhl2x516g4fpa3s91arhcikiifsppzgf"))))
-    (build-system cargo-build-system)
-    (arguments
-      `(#:skip-build? #t
-        #:cargo-inputs
-        (("rust-base64" ,rust-base64-0.10)
-         ("rust-chrono" ,rust-chrono-0.4)
-         ("rust-derive-builder" ,rust-derive-builder-0.7)
-         ("rust-dotenv" ,rust-dotenv-0.13)
-         ("rust-env-logger" ,rust-env-logger-0.6)
-         ("rust-failure" ,rust-failure-0.1)
-         ("rust-itertools" ,rust-itertools-0.8)
-         ("rust-lazy-static" ,rust-lazy-static-1)
-         ("rust-log" ,rust-log-0.4)
-         ("rust-percent-encoding" ,rust-percent-encoding-1)
-         ("rust-rand" ,rust-rand-0.6)
-         ("rust-random" ,rust-random-0.12)
-         ("rust-reqwest" ,rust-reqwest-0.10)
-         ("rust-serde" ,rust-serde-1)
-         ("rust-serde-derive" ,rust-serde-derive-1)
-         ("rust-serde-json" ,rust-serde-json-1)
-         ("rust-url" ,rust-url-1)
-         ("rust-webbrowser" ,rust-webbrowser-0.5))))
-    (home-page "https://github.com/ramsayleung/rspotify")
-    (synopsis "Spotify API wrapper")
-    (description "This package provides wrapper API forSpotify streaming
-service.")
-    (license license:expat)))
 
 (define-public rust-spsc-buffer-0.1
   (package
@@ -73479,7 +73711,7 @@ the Trust-DNS client to use rustls for TLS.")
        (uri (crate-uri "trybuild" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ab7ahdx563n6kbm14pm3qnxq4fp06pz42nh5ii4acvlzycnwdh4"))))
+        (base32 "17xpybcdx76dm54dk7jvr5aickc4ia66qf57bazg7myx8pf6yzcq"))))
     (arguments
      `(#:cargo-inputs
        (("rust-toml" ,rust-toml-0.5)
