@@ -588,7 +588,15 @@ avoiding password prompts when X11 forwarding has already been setup.")
               (let ((old (string-append #$output "/share/doc"))
                     (new (string-append #$output:doc "/share/doc")))
                 (mkdir-p (dirname new))
-                (rename-file old new)))))))
+                (rename-file old new))))
+          (add-after 'install 'symlink-pc
+            ;; in Requires.private of xkbregistry.pc
+            ;; XXX: Symlink libxml-2.0.pc in order to avoid putting
+            ;; libxml2 as a propagated input.
+            (lambda _
+              (let ((stem "/lib/pkgconfig/libxml-2.0.pc"))
+                (symlink (string-append #$(this-package-input "libxml2") stem)
+                         (string-append #$output stem))))))))
     (home-page "https://xkbcommon.org/")
     (synopsis "Library to handle keyboard descriptions")
     (description "Xkbcommon is a library to handle keyboard descriptions,
