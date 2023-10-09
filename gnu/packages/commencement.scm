@@ -3236,7 +3236,7 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
       ;; Additional modules for the libstdc++ phase below.
       #:modules `((srfi srfi-1)
                   (srfi srfi-26)
-                  ,@%default-gnu-imported-modules)
+                  ,@%default-gnu-modules)
 
       (substitute-keyword-arguments (package-arguments gcc)
         ((#:make-flags flags)
