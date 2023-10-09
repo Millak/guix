@@ -2253,14 +2253,25 @@ iChat interoperability, and multi-user chats and Tubes using the
               (sha256
                (base32
                 "1l61ydb0zv2ffilwpapgz5mm3bznr28zl16xqbxnz6kdsrb6cimr"))))
+    (outputs '("out" "doc"))
     (build-system meson-build-system)
-    (arguments '(#:tests? #f            ;require the colord system service
-                 ;; Building documentation fails with: "Cannot build man pages
-                 ;; without docbook-xsl-ns".
-                 #:configure-flags (list "-Ddocs=false" "-Dman=false")))
+    (arguments
+     (list
+      #:tests? #f            ;require the colord system service
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'split-package
+            (lambda _
+              (let* ((old (string-append #$output "/share/gtk-doc"))
+                     (new (string-append #$output:doc "/share/gtk-doc")))
+                (mkdir-p (dirname new))
+                (rename-file old new)))))))
     (native-inputs
-     (list gettext-minimal
+     (list docbook-xsl
+           gettext-minimal
            gobject-introspection
+           gtk-doc/stable
+           libxslt
            pkg-config
            vala))
     (inputs
