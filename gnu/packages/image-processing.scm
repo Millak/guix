@@ -1563,7 +1563,7 @@ full-featured UI aimed at clinical researchers.")
          ("perl" ,perl)))
       (native-inputs
        `(("pkg-config" ,pkg-config)
-         ("docbook-xml" ,docbook-xml)
+         ("docbook-xml" ,docbook-xml-4.2)
          ("docbook-xsl" ,docbook-xsl)
          ("xsltproc" ,libxslt)))
       (arguments
@@ -1576,13 +1576,6 @@ full-featured UI aimed at clinical researchers.")
          #:phases
          (modify-phases %standard-phases
            (delete 'configure)
-           (add-before 'install 'make-local-docbook-xml
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "metapixel.xml"
-                 (("http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd")
-                  (string-append (assoc-ref inputs "docbook-xml")
-                                 "/xml/dtd/docbook/docbookx.dtd")))
-               #t))
            (add-before 'install 'fix-directory-creation
              (lambda* (#:key outputs #:allow-other-keys)
                (mkdir-p (string-append (assoc-ref outputs "out") "/share/man/man1"))
