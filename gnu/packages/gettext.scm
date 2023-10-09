@@ -278,10 +278,6 @@ from Markdown files.")
                             (wrap-program file
                               `("PERL5LIB" ":" prefix (,path))))
                           (find-files bin "\\.*$")))))
-          (add-before 'check 'disable-failing-tests
-            (lambda _
-              ;; FIXME: fails despite of importing SGMLS
-              (delete-file "t/fmt-sgml.t")))
           #$@(if (system-hurd?)
                  #~((add-after 'unpack 'skip-tests/hurd
                       (lambda _
@@ -293,14 +289,15 @@ from Markdown files.")
      (list gettext-minimal
            perl-module-build
            docbook-xsl
-           libxml2
            libxslt
            ;; For tests.
+           docbook-sgml-4.1
            docbook-xml-4.1.2
            perl-test-pod
            (texlive-updmap.cfg)))
     (inputs
      (list bash-minimal
+           opensp
            perl-gettext
            perl-pod-parser
            perl-sgmls
