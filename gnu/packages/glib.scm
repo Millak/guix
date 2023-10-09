@@ -161,7 +161,6 @@
            docbook-xsl
            doxygen
            libtool
-           libxml2 ;for XML_CATALOG_FILES
            libxslt
            which
            xmlto

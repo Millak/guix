@@ -160,7 +160,6 @@ models for the Tesseract OCR Engine.")
            libarchive
            libtiff
            libtool
-           libxml2                      ;for XML_CATALOG_FILES
            libxslt
            pkg-config
            tesseract-ocr-tessdata-fast))

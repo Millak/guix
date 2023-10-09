@@ -92,7 +92,6 @@
            docbook-xml-4.3
            docbook-xsl
            libtool
-           libxml2                      ;for XML_CATALOG_FILES
            libxslt
            util-linux                   ;For `rev` command used in tests.
            xmlto))

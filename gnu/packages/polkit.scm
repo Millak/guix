@@ -153,7 +153,6 @@
            `(,glib "bin")               ;for glib-mkenums
            docbook-xsl                  ;for man page generation
            gobject-introspection
-           libxml2                      ;for XML_CATALOG_FILES
            libxslt                      ;for man page generation
            perl
            pkg-config
