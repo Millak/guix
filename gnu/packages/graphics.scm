@@ -1505,7 +1505,7 @@ in Julia).")
 (define-public povray
   (package
     (name "povray")
-    (version "3.7.0.8")
+    (version "3.7.0.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1514,13 +1514,11 @@ in Julia).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1q114n4m3r7qy3yn954fq7p46rg7ypdax5fazxr9yj1jklf1lh6z"))
+                "19bv962clwc6sk53kq8bqf77fh0v46afm2knjbki8yj0m1mnyyd0"))
               (modules '((guix build utils)))
               (snippet
-               '(begin
-                  ;; Delete bundled libraries.
-                  (delete-file-recursively "libraries")
-                  #t))))
+               ;; Delete bundled libraries.
+               '(delete-file-recursively "libraries"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake pkg-config))
