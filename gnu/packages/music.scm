@@ -1671,7 +1671,7 @@ and auto-mapping slices to MIDI note numbers.")
            python))
     (native-inputs
      (list bison
-           dblatex
+           dblatex/stable
            flex
            fontforge
            gettext-minimal
