@@ -1653,28 +1653,36 @@ intended as a substitute for the PPPStatus and EthStatus projects.")
                 (("if build_ping == true")
                  "if false")))))))
     (native-inputs
-     (list gettext-minimal
-           pkg-config
-           docbook-xsl
-           docbook-xml-5.0.1
-           libxml2                      ;for XML_CATALOG_FILES
-           libxslt))
+     (list docbook-xsl docbook-xml-5.0.1
+           gettext-minimal
+           libxml2          ;for XML_CATALOG_FILES
+           libxslt pkg-config))
     (inputs
      (list libcap libidn2 openssl))
     (synopsis "Collection of network utilities")
     (description
      "This package contains a variety of tools for dealing with network
 configuration, troubleshooting, or servers.  Utilities included are:
-
-@itemize @bullet
-@item @command{arping}: Ping hosts using the @dfn{Address Resolution Protocol}.
-@item @command{clockdiff}: Compute time difference between network hosts
-using ICMP TSTAMP messages.
-@item @command{ping}: Use ICMP ECHO messages to measure round-trip delays
-and packet loss across network paths.
-@item @command{tracepath}: Trace network path to an IPv4 or IPv6 address and
-discover MTU along the way.
-@end itemize")
+@table @command
+@item arping
+Ping hosts using @acronym{ARP, Address Resolution Protocol}.
+@item clockdiff
+Compute time difference between network hosts using ICMP TSTAMP messages.
+@item ninfod
+Daemon that responds to IPv6 Node Information Queries.
+@item ping
+Use ICMP ECHO messages to measure round-trip delays and packet loss across
+network paths.
+@item rarpd
+Answer RARP requests from clients.
+@item rdisc
+Populate network routing tables with information from the ICMP router
+discovery protocol.
+@item tftpd
+Trivial file transfer protocol server.
+@item tracepath
+Trace network path to an IPv4 or IPv6 address and discover MTU along the way.
+@end table")
     ;; The various utilities are covered by different licenses, see LICENSE
     ;; for details.
     (license (list license:gpl2+        ;arping, tracepath
