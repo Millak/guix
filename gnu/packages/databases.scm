@@ -2051,10 +2051,8 @@ changes.")
                (invoke "./configure"
                        (string-append "--prefix=" out))))))))
     (native-inputs
-     (list ;; TODO: Build the documentation.
-           ;; ("docbook-xsl" ,docbook-xsl)
-           ;; ("libxml2" ,libxml2)
-           ;; ("libxslt" ,libxslt)
+     (list docbook-xsl
+           libxslt
            python ;for the Waf build system
            which))
     (home-page "https://tdb.samba.org/")
