@@ -4242,7 +4242,7 @@ language understood by many solvers.")
      `(#:modules ((ice-9 match)
                   (ice-9 popen)
                   (srfi srfi-1)
-                  ,@%default-gnu-imported-modules)
+                  ,@%default-gnu-modules)
        #:phases
        (modify-phases %standard-phases
          (replace 'configure
