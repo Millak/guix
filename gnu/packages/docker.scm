@@ -343,7 +343,7 @@ the built-in registry server of Docker.")
         (guix build union)
         (guix build utils))
       #:imported-modules
-      `(,@%gnu-build-system-modules
+      `(,@%default-gnu-imported-modules
         (guix build union)
         (guix build go-build-system))
       #:phases

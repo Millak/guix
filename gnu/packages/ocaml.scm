@@ -1320,7 +1320,7 @@ the OCaml core distribution.")
     (build-system gnu-build-system)
     (arguments
      (list
-      #:imported-modules `(,@%gnu-build-system-modules
+      #:imported-modules `(,@%default-gnu-imported-modules
                            (guix build emacs-build-system)
                            (guix build emacs-utils))
       #:modules '((guix build gnu-build-system)

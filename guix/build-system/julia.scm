@@ -42,7 +42,7 @@
 (define %julia-build-system-modules
   ;; Build-side modules imported by default.
   `((guix build julia-build-system)
-    ,@%gnu-build-system-modules))
+    ,@%default-gnu-imported-modules))
 
 (define (default-julia)
   "Return the default Julia package."

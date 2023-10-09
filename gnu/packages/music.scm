@@ -3585,7 +3585,7 @@ can connect to any JACK port and record the output into a stereo WAV file.")
      `(#:modules ((guix build gnu-build-system)
                   ((guix build python-build-system) #:prefix python:)
                   (guix build utils))
-       #:imported-modules (,@%gnu-build-system-modules
+       #:imported-modules (,@%default-gnu-imported-modules
                            (guix build python-build-system))
        #:make-flags
        (list (string-append "PREFIX=" (assoc-ref %outputs "out")))

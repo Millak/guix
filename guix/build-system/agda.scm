@@ -38,7 +38,7 @@
 
 (define %agda-build-system-modules
   `((guix build agda-build-system)
-    ,@%gnu-build-system-modules))
+    ,@%default-gnu-imported-modules))
 
 (define %default-modules
   '((guix build agda-build-system)

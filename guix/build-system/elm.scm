@@ -88,7 +88,7 @@ given VERSION with sha256 checksum HASH."
   `((guix build elm-build-system)
     (guix build json)
     (guix build union)
-    ,@%gnu-build-system-modules))
+    ,@%default-gnu-imported-modules))
 
 (define %elm-default-modules
   ;; Modules in scope in the build-side environment.

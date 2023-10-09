@@ -56,7 +56,7 @@
   `((guix build asdf-build-system)
     (guix build lisp-utils)
     (guix build union)
-    ,@%gnu-build-system-modules))
+    ,@%default-gnu-imported-modules))
 
 (define %asdf-build-modules
   ;; Used (visible) build-side modules

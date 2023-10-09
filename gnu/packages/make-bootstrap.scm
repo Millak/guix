@@ -473,7 +473,7 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
      (outputs '("out"))                           ; all in one
      (arguments
       (substitute-keyword-arguments (package-arguments gcc-7)
-        ((#:modules modules %gnu-build-system-modules)
+        ((#:modules modules %default-gnu-imported-modules)
          `((srfi srfi-1)
            (srfi srfi-26)
            (ice-9 regex)

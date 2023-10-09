@@ -48,7 +48,7 @@
     (arguments
      (list
       #:modules `((ice-9 format)
-                  ,@%gnu-build-system-modules)
+                  ,@%default-gnu-imported-modules)
       ;; Specify the absolute location of xterm, as the user experience sucks
       ;; when no terminal is available (can't consult help with 'C-t ?', for
       ;; example).

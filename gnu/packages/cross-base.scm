@@ -359,7 +359,7 @@ target that libc."
     (arguments
      `(#:implicit-inputs? #f
        #:imported-modules ((gnu build cross-toolchain)
-                           ,@%gnu-build-system-modules)
+                           ,@%default-gnu-imported-modules)
        #:modules ((guix build gnu-build-system)
                   (guix build utils)
                   (gnu build cross-toolchain)

@@ -232,7 +232,7 @@ servers from Python programs.")
                    #:select (add-installed-pythonpath python-version))
                   (guix build utils))
       #:imported-modules `((guix build python-build-system)
-                           ,@%gnu-build-system-modules)
+                           ,@%default-gnu-imported-modules)
       #:disallowed-references (list httpd)
       #:configure-flags
       #~(list "--enable-cmocka"

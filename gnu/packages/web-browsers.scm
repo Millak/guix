@@ -380,7 +380,7 @@ systems intended primarily for local access.")
        `(#:modules ((guix build gnu-build-system)
                     (guix build qt-utils)
                     (guix build utils))
-         #:imported-modules (,@%gnu-build-system-modules
+         #:imported-modules (,@%default-gnu-imported-modules
                              (guix build qt-utils))
          #:make-flags
          (list (string-append "PREFIX=" %output))

@@ -723,7 +723,7 @@ IcedTea build harness.")
       (arguments
        `(#:imported-modules
          ((guix build ant-build-system)
-          ,@%gnu-build-system-modules)
+          ,@%default-gnu-imported-modules)
 
          #:disallowed-references ,(list (gexp-input icedtea-7 "jdk"))
 
@@ -889,7 +889,7 @@ new Date();"))
     (arguments
      `(#:imported-modules
        ((guix build ant-build-system)
-        ,@%gnu-build-system-modules)
+        ,@%default-gnu-imported-modules)
        #:modules
        ((guix build utils)
         (guix build gnu-build-system)
@@ -8114,7 +8114,7 @@ discards all logging messages.")
     (arguments
      `(#:tests? #f ; no test target
        #:imported-modules ((guix build ant-build-system)
-                           ,@%gnu-build-system-modules)
+                           ,@%default-gnu-imported-modules)
        #:modules (((guix build ant-build-system) #:prefix ant:)
                   (guix build gnu-build-system)
                   (guix build utils))

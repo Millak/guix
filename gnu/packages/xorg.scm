@@ -6316,7 +6316,7 @@ X11 servers, Windows, or macOS.")
      `(#:modules ((guix build gnu-build-system)
                   (guix build utils)
                   (guix build emacs-utils))
-       #:imported-modules (,@%gnu-build-system-modules
+       #:imported-modules (,@%default-gnu-imported-modules
                            (guix build emacs-utils))
        #:configure-flags
        (list "--with-anthy-utf8"

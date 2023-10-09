@@ -22861,9 +22861,9 @@ single-cell data named @url{https://github.com/PMBio/cardelino, cardelino}.")
      `(#:make-flags '("GUILE_AUTO_COMPILE=0") ; to prevent guild warnings
        #:modules (((guix build guile-build-system)
                    #:select (target-guile-effective-version))
-                  ,@%gnu-build-system-modules)
+                  ,@%default-gnu-imported-modules)
        #:imported-modules ((guix build guile-build-system)
-                           ,@%gnu-build-system-modules)
+                           ,@%default-gnu-imported-modules)
        #:phases
        (modify-phases %standard-phases
          (add-after 'patch-source-shebangs 'patch-more-source-shebangs

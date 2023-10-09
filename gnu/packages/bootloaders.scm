@@ -1044,7 +1044,7 @@ U-Boot must be used."
             ,@modules))
          ((#:imported-modules imported-modules '())
           `((guix build kconfig)
-            ,@%gnu-build-system-modules
+            ,@%default-gnu-imported-modules
             ,@imported-modules))
          ((#:test-target _ "test")
           "test")
@@ -1949,7 +1949,7 @@ order to add a suitable bootloader menu entry.")
                     (ice-9 regex)
                     (rnrs bytevectors))
         #:imported-modules `((guix base32)
-                             ,@%gnu-build-system-modules)
+                             ,@%default-gnu-imported-modules)
         #:make-flags
         ;; XXX: 'BUILD_ID' is used to determine when another ROM in the
         ;; system contains identical code in order to save space within the

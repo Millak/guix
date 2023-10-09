@@ -521,7 +521,7 @@ traditional Chinese output.")
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((ice-9 match)
-                  ,@%gnu-build-system-modules)
+                  ,@%default-gnu-imported-modules)
        #:tests? #f                  ; no tests
        #:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
        #:phases

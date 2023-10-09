@@ -135,7 +135,7 @@ are encoded as (nested) directories.  Note that the switches you pass to
                 "shakespeare-spl-fix-grammar.patch"))))
     (build-system copy-build-system)
     (arguments
-     `(#:imported-modules (,@%gnu-build-system-modules
+     `(#:imported-modules (,@%default-gnu-imported-modules
                            (guix build copy-build-system))
        #:modules ((guix build copy-build-system)
                   ((guix build gnu-build-system) #:prefix gnu:)

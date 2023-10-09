@@ -62,7 +62,7 @@
   ;; Build-side modules imported by default.
   `((guix build composer-build-system)
     (guix build union)
-    ,@%gnu-build-system-modules))
+    ,@%default-gnu-imported-modules))
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system target

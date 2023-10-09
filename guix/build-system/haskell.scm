@@ -55,7 +55,7 @@ to NAME and VERSION."
 (define %haskell-build-system-modules
   ;; Build-side modules imported by default.
   `((guix build haskell-build-system)
-    ,@%gnu-build-system-modules))
+    ,@%default-gnu-imported-modules))
 
 (define (default-haskell)
   "Return the default Haskell package."

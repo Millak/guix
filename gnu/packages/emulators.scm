@@ -190,7 +190,7 @@ SuperCPU.")
        #:tests? #f ; No check target and custom tests don't seem to build
        #:imported-modules
        ((guix build copy-build-system)
-        ,@%gnu-build-system-modules)
+        ,@%default-gnu-imported-modules)
        #:modules
        (((guix build copy-build-system)
          #:prefix copy:)

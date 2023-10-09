@@ -4242,7 +4242,7 @@ language understood by many solvers.")
      `(#:modules ((ice-9 match)
                   (ice-9 popen)
                   (srfi srfi-1)
-                  ,@%gnu-build-system-modules)
+                  ,@%default-gnu-imported-modules)
        #:phases
        (modify-phases %standard-phases
          (replace 'configure
@@ -7211,7 +7211,7 @@ set.")
      (list openblas))
     (arguments
      `(#:modules ((srfi srfi-1)
-                  ,@%gnu-build-system-modules)
+                  ,@%default-gnu-imported-modules)
        #:configure-flags '("--enable-shared"
                            "--disable-fortran"
                            "--without-MPI"
@@ -7718,7 +7718,7 @@ theories} (SMT) solver.  It provides a C/C++ API, as well as Python bindings.")
     (build-system gnu-build-system)
     (arguments
      `(#:imported-modules ((guix build python-build-system)
-                           ,@%gnu-build-system-modules)
+                           ,@%default-gnu-imported-modules)
        #:modules (((guix build python-build-system) #:select (site-packages))
                   (guix build gnu-build-system)
                   (guix build utils))
@@ -9208,7 +9208,7 @@ symbolic reasoning engines that need to reason about polynomial constraints.")
      (arguments
       (list #:test-target "test"
             #:modules `((ice-9 match)
-                        ,@%gnu-build-system-modules)
+                        ,@%default-gnu-imported-modules)
             #:configure-flags #~(list "--aiger=.")
             #:phases
             #~(modify-phases %standard-phases

@@ -56,7 +56,7 @@ and VERSION."
 (define %rebar-build-system-modules
   ;; Build-side modules imported by default.
   `((guix build rebar-build-system)
-    ,@%gnu-build-system-modules))
+    ,@%default-gnu-imported-modules))
 
 (define (default-rebar3)
   "Return the default Rebar3 package."

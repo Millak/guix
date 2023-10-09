@@ -59,7 +59,7 @@ extension, such as '.tar.gz'."
 (define %python-build-system-modules
   ;; Build-side modules imported by default.
   `((guix build python-build-system)
-    ,@%gnu-build-system-modules))
+    ,@%default-gnu-imported-modules))
 
 (define (default-python)
   "Return the default Python package."

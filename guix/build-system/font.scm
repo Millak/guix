@@ -40,7 +40,7 @@
 (define %font-build-system-modules
   ;; Build-side modules imported by default.
   `((guix build font-build-system)
-    ,@%gnu-build-system-modules))
+    ,@%default-gnu-imported-modules))
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system target

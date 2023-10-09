@@ -356,7 +356,7 @@ be used by the sighted.")
        #:modules ((guix build gnu-build-system)
                   (guix build utils)
                   (guix build emacs-utils))
-       #:imported-modules (,@%gnu-build-system-modules
+       #:imported-modules (,@%default-gnu-imported-modules
                            (guix build emacs-utils))
        #:phases
        (modify-phases %standard-phases

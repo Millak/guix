@@ -18,7 +18,7 @@
 
 (define-module (test-modules)
   #:use-module (guix modules)
-  #:use-module ((guix build-system gnu) #:select (%gnu-build-system-modules))
+  #:use-module ((guix build-system gnu) #:select (%default-gnu-imported-modules))
   #:use-module ((guix utils) #:select (call-with-temporary-directory))
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-34)
@@ -30,9 +30,9 @@
   (lset= equal?
          (live-module-closure '((guix build gnu-build-system)))
          (source-module-closure '((guix build gnu-build-system)))
-         %gnu-build-system-modules
-         (source-module-closure %gnu-build-system-modules)
-         (live-module-closure %gnu-build-system-modules)))
+         %default-gnu-imported-modules
+         (source-module-closure %default-gnu-imported-modules)
+         (live-module-closure %default-gnu-imported-modules)))
 
 (test-assert "closure of (gnu build install)"
   (lset= equal?

@@ -246,9 +246,9 @@ not offer a replacement for libcurl.")
    (arguments
     `(#:modules (((guix build guile-build-system)
                   #:select (target-guile-effective-version))
-                 ,@%gnu-build-system-modules)
+                 ,@%default-gnu-imported-modules)
       #:imported-modules ((guix build guile-build-system)
-                          ,@%gnu-build-system-modules)
+                          ,@%default-gnu-imported-modules)
       #:configure-flags (list (string-append
                                "--with-guilesitedir="
                                (assoc-ref %outputs "out")

@@ -68,7 +68,7 @@ release corresponding to NAME and VERSION."
 (define %r-build-system-modules
   ;; Build-side modules imported by default.
   `((guix build r-build-system)
-    ,@%gnu-build-system-modules))
+    ,@%default-gnu-imported-modules))
 
 (define (default-r)
   "Return the default R package."

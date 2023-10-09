@@ -90,7 +90,7 @@ See: https://github.com/hexpm/specifications/blob/main/endpoints.md"
                     (system (%current-system))
                     (guile #f)
                     (imported-modules `((guix build mix-build-system)
-                                        ,@%gnu-build-system-modules))
+                                        ,@%default-gnu-imported-modules))
                     (modules '((guix build mix-build-system)
                                (guix build utils))))
   "Build SOURCE using Elixir, and with INPUTS."

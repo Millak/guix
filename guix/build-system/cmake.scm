@@ -42,7 +42,7 @@
 (define %cmake-build-system-modules
   ;; Build-side modules imported by default.
   `((guix build cmake-build-system)
-    ,@%gnu-build-system-modules))
+    ,@%default-gnu-imported-modules))
 
 (define (default-cmake target)
   "Return the default CMake package."

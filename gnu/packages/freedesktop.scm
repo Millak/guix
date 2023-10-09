@@ -523,7 +523,7 @@ display servers.  It supports many different languages and emoji.")
         #:make-flags #~(list (string-append "DESTDIR=" #$output)
                              #$(string-append "CC=" (cc-for-target)))
         #:imported-modules `((guix build copy-build-system)
-                             ,@%gnu-build-system-modules)
+                             ,@%default-gnu-imported-modules)
         #:modules `((guix build gnu-build-system)
                     ((guix build copy-build-system) #:prefix copy:)
                     (guix build utils))
@@ -643,8 +643,7 @@ database is translated at Transifex.")
      (list
       #:tests? #f                       ;no check target
       #:modules `((srfi srfi-26)
-                  (guix build gnu-build-system)
-                  (guix build utils))
+                  ,@%default-gnu-modules)
       #:phases
       #~(modify-phases %standard-phases
         (add-after 'unpack 'patch-hardcoded-paths

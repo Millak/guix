@@ -46,7 +46,7 @@
   ;; Build-side modules imported by default.
   `((guix build maven-build-system)
     (guix build maven pom)
-    ,@%gnu-build-system-modules))
+    ,@%default-gnu-imported-modules))
 
 (define (default-maven)
   "Return the default maven package."
