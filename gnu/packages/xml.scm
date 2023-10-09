@@ -85,6 +85,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix deprecation)
   #:use-module (guix utils)
+  #:use-module (guix search-paths)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config))
 
@@ -227,14 +228,7 @@ hierarchical form with variable field lengths.")
     (inputs (list xz))
     (propagated-inputs (list zlib)) ; libxml2.la says '-lz'.
     (native-inputs (list perl))
-    ;; $XML_CATALOG_FILES lists 'catalog.xml' files found in under the 'xml'
-    ;; sub-directory of any given package.
-    (native-search-paths (list (search-path-specification
-                                (variable "XML_CATALOG_FILES")
-                                (separator " ")
-                                (files '("xml"))
-                                (file-pattern "^catalog\\.xml$")
-                                (file-type 'regular))))
+    (native-search-paths (list $XML_CATALOG_FILES))
     (search-paths native-search-paths)
     (description
      "Libxml2 is the XML C parser and toolkit developed for the Gnome
@@ -1808,14 +1802,7 @@ modular implementation of XML-RPC for C and C++.")
                 (("^\tOSGMLNORM=`echo osgmlnorm\\|sed '\\$\\(transform\\)'`\\\\")
                  "\tOSGMLNORM=`echo osgmlnorm|sed '$(transform)'`")
                 (("^\t\\$\\(SHELL\\)\n") "")))))))
-    ;; $SGML_CATALOG_FILES lists 'catalog' or 'CATALOG' or '*.cat' files found
-    ;; under the 'sgml' sub-directory of any given package.
-    (native-search-paths (list (search-path-specification
-                                (variable "SGML_CATALOG_FILES")
-                                (separator ":")
-                                (files '("sgml"))
-                                (file-pattern "^catalog$|^CATALOG$|^.*\\.cat$")
-                                (file-type 'regular))))
+    (native-search-paths (list $SGML_CATALOG_FILES))
     (home-page "https://openjade.sourceforge.net/")
     (synopsis "Suite of SGML/XML processing tools")
     (description "OpenSP is an object-oriented toolkit for SGML parsing and

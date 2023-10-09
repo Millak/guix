@@ -42,6 +42,8 @@
             $SSL_CERT_DIR
             $SSL_CERT_FILE
             $TZDIR
+            $SGML_CATALOG_FILES
+            $XML_CATALOG_FILES
 
             %gcc-search-paths
 
@@ -153,6 +155,29 @@
    (variable "TZDIR")
    (files '("share/zoneinfo"))
    (separator #f)))                     ;single entry
+
+;; Some packages (notably libxml2) make use of 'XML_CATALOG_FILES'
+;; and 'SGML_CATALOG_FILES' for remapping URI references or public/system
+;; identifiers to other URI references.
+(define $SGML_CATALOG_FILES
+  ;; $SGML_CATALOG_FILES lists 'catalog' or 'CATALOG' or '*.cat' files found
+  ;; under the 'sgml' sub-directory of any given package.
+  (search-path-specification
+   (variable "SGML_CATALOG_FILES")
+   (separator ":")
+   (files '("sgml"))
+   (file-pattern "^catalog$|^CATALOG$|^.*\\.cat$")
+   (file-type 'regular)))
+
+(define $XML_CATALOG_FILES
+  ;; $XML_CATALOG_FILES lists 'catalog.xml' files found in under the 'xml'
+  ;; sub-directory of any given package.
+  (search-path-specification
+   (variable "XML_CATALOG_FILES")
+   (separator " ")
+   (files '("xml"))
+   (file-pattern "^catalog\\.xml$")
+   (file-type 'regular)))
 
 (define (search-path-specification->sexp spec)
   "Return an sexp representing SPEC, a <search-path-specification>.  The sexp

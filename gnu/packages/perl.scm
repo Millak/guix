@@ -602,12 +602,7 @@ requires only 10MB of RAM.")
      (list perl-class-xsaccessor perl-test-trap))
     (native-search-paths
      ;; xsltproc's search paths, to avoid propagating libxslt.
-     (list (search-path-specification
-            (variable "XML_CATALOG_FILES")
-            (separator " ")
-            (files '("xml"))
-            (file-pattern "^catalog\\.xml$")
-            (file-type 'regular))))
+     (list $XML_CATALOG_FILES))
     (home-page "https://www.shlomifish.org/open-source/projects/docmake/")
     (synopsis "Translate DocBook/XML documentation into other file formats")
     (description
