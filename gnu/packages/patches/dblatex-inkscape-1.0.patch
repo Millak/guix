@@ -1,0 +1,39 @@
+# Imported from <https://sourceforge.net/p/dblatex/dblatex/merge-requests/4/>
+
+# HG changeset patch
+# User Jan Tojnar <jtojnar@gmail.com>
+# Date 1588714251 -7200
+#      Tue May 05 23:30:51 2020 +0200
+# Branch inkscape1
+# Node ID 611cc4a4a878d57f5877f2d418864560f68d25cf
+# Parent  3ddf5d6cedcbc9c8b98c4da77fd545b2478d90a3
+Port to Inkscape 1.0
+
+Inkscape revamped the CLI flags:
+
+https://gitlab.com/inkscape/inbox/issues/2416
+
+diff -r 3ddf5d6cedcb -r 611cc4a4a878 docs/custom/dblatex.xconf
+--- a/docs/custom/dblatex.xconf	Tue Sep 10 00:40:26 2019 +0200
++++ b/docs/custom/dblatex.xconf	Tue May 05 23:30:51 2020 +0200
+@@ -18,7 +18,7 @@
+   <imagedata>
+     <converter src="svg" dst="*" docformat="pdf">
+       <command>
+-        inkscape -z -D --export-dpi=600 --export-%(dst)s=%(output)s %(input)s
++        inkscape -D --export-dpi=600 --export-type=%(dst)s --export-filename=%(output)s %(input)s
+       </command>
+     </converter>
+   </imagedata>
+diff -r 3ddf5d6cedcb -r 611cc4a4a878 lib/dbtexmf/core/imagedata.py
+--- a/lib/dbtexmf/core/imagedata.py	Tue Sep 10 00:40:26 2019 +0200
++++ b/lib/dbtexmf/core/imagedata.py	Tue May 05 23:30:51 2020 +0200
+@@ -178,7 +178,7 @@
+ class SvgConverter(ImageConverter):
+     def __init__(self, imgsrc, imgdst="", docformat="", backend=""):
+         ImageConverter.__init__(self, imgsrc="svg", imgdst=imgdst)
+-        self.add_command(["inkscape", "-z", "-D", "--export-%(dst)s=%(output)s",
++        self.add_command(["inkscape", "-D", "--export-type=%(dst)s", "--export-filename=%(output)s",
+                           "%(input)s"])
+ 
+ 
