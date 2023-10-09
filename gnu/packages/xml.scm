@@ -1155,6 +1155,7 @@ code for classes that correspond to data structures defined by XMLSchema.")
      (list util-linux ; for 'getopt'
            libxml2 ; for 'xmllint'
            libxslt))                     ; for 'xsltproc'
+    (native-search-paths %libxslt-search-paths)
     (home-page "http://cyberelk.net/tim/software/xmlto/")
     (synopsis "Front-end to an XSL toolchain")
     (description
