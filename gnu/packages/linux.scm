@@ -5846,7 +5846,7 @@ arrays when needed.")
                     (for-each delete-file-recursively directories)
                     (remove-store-references "sbin/mdadm")
                     (delete-file "sbin/mdmon")))))))
-       ((#:modules modules %default-gnu-imported-modules)
+       ((#:modules modules %default-gnu-modules)
         `((ice-9 ftw) ,@modules))
        ((#:strip-flags _ '())
         ''("--strip-all"))                        ;strip a few extra KiB
