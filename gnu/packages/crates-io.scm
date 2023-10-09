@@ -75262,7 +75262,8 @@ the Trust-DNS client to use DNS over HTTPS.")
         (base32 "14ps1fxngm8d3ynp9jf86zrqbyzjzh62v5grwrqb1q0xhbz98vv1"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #false                  ;network unreachable
+     `(#:skip-build? #t     ; TODO: Fix building rust-ring-0.14
+       #:tests? #false                  ;network unreachable
        #:cargo-inputs
        (("rust-bytes" ,rust-bytes-0.4)
         ("rust-data-encoding" ,rust-data-encoding-2)
