@@ -843,7 +843,7 @@ NTFS volumes using @code{ntfs-3g}, preserving NTFS-specific attributes.")
                 "1kbxa1irszp2zw8hd5qzqnrrzb4vxfivs1vn64yxnj0lak1jjzvb"))))
     (arguments
      `(#:modules ((ice-9 match) (ice-9 rdelim)
-                  ,@%default-gnu-imported-modules)
+                  ,@%default-gnu-modules)
        #:phases
        ;; This mostly mirrors the steps taken in the install.sh that ships
        ;; with dirvish, but simplified because we aren't prompting interactively
@@ -919,8 +919,7 @@ NTFS volumes using @code{ntfs-3g}, preserving NTFS-specific attributes.")
                ;; Write out executables
                (for-each write-pl executables)
                ;; Write out man pages
-               (for-each write-man man-pages)
-               #t))))))
+               (for-each write-man man-pages)))))))
     (inputs
      (list perl rsync perl-libtime-period perl-libtime-parsedate))
     (home-page "http://dirvish.org/")
