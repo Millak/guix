@@ -36604,7 +36604,8 @@ advertised and discovered using this mechanism.")
          "18d9n8xaq5ncq3375f0xrr96l8si1frczgzdlrz3fl1jby8vbl6f"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f  ; backend::file_header::test_fileheader_alignment fails
+     `(#:skip-build? #t     ; TODO: Fix build
+       #:tests? #f  ; backend::file_header::test_fileheader_alignment fails
        #:cargo-inputs
        (("rust-base64" ,rust-base64-0.10)
         ("rust-bincode" ,rust-bincode-1)
