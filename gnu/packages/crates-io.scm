@@ -32096,6 +32096,7 @@ SystemTime}}.")
         ("rust-rustls" ,rust-rustls-0.20)
         ("rust-rustls-pemfile" ,rust-rustls-pemfile-1)
         ("rust-tokio" ,rust-tokio-1))))
+    (native-inputs (list perl))
     (home-page "https://github.com/ctz/hyper-rustls")
     (synopsis "Rustls+Hyper integration for pure Rust HTTPS")
     (description
