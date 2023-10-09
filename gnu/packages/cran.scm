@@ -10719,14 +10719,14 @@ powerful and convenient features.")
 (define-public r-heatmaply
   (package
     (name "r-heatmaply")
-    (version "1.4.2")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "heatmaply" version))
        (sha256
         (base32
-         "0zgaqmbc1nha38c8kx5xdjdjbwmykrf2acq8ydki8dqixv6b34la"))))
+         "1crdm7avxv3zx59byz2fqbcw95728crwf9cckjb9gal1065xv95c"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-assertthat
