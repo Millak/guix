@@ -7767,7 +7767,6 @@ such as gzip tarballs.")
            docbook-xsl
            `(,glib "bin")               ; for glib-compile-schemas, etc.
            intltool
-           libxml2                      ;for 'XML_CATALOG_FILES'
            libxslt
            pkg-config
            xmlto))
