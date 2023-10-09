@@ -955,7 +955,7 @@ using compilers other than GCC."
       #:out-of-source? #t
       #:modules `((srfi srfi-1)
                   (srfi srfi-26)
-                  ,@%default-gnu-imported-modules)
+                  ,@%default-gnu-modules)
       #:phases
       #~(modify-phases %standard-phases
           #$@(if (version>=? (package-version gcc) "11")
