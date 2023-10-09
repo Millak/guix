@@ -5180,6 +5180,26 @@ Google search engine.  Its module is called @code{googlesearch}.")
 for httplib2 transport.")
     (license license:asl2.0)))
 
+(define-public python-google-auth-oauthlib
+  (package
+    (name "python-google-auth-oauthlib")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "google-auth-oauthlib" version))
+       (sha256
+        (base32 "1yvsjd1vh440nsh9vpnig23sq4k1ia749x5g1dwm7r4110xqrsl3"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-google-auth python-requests-oauthlib))
+    (native-inputs (list python-flask))
+    (home-page
+     "https://github.com/GoogleCloudPlatform/google-auth-library-python-oauthlib")
+    (synopsis "Google Authentication Library: oauthlib")
+    (description "This package provides a Google Authentication Library plugin
+with oauthlib.")
+    (license license:asl2.0)))
+
 (define-public whoogle-search
   (package
     (name "whoogle-search")
