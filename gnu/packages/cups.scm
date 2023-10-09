@@ -888,7 +888,7 @@ HP@tie{}LaserJet, and possibly other printers.  See @file{README} for details.")
     (arguments
      (list #:modules
            `((srfi srfi-26)
-             ,@%default-gnu-imported-modules)
+             ,@%default-gnu-modules)
            #:configure-flags
            #~(list "--disable-static"
                    (string-append "--prefix=" #$output)
