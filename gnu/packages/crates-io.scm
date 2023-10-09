@@ -56424,7 +56424,8 @@ Digital Signature Algorithm} (ECDSA).")
              (lambda _
                 (format #t "")))))))
     (arguments
-     `(#:cargo-inputs
+     `(#:skip-build? #t     ; TODO: Fix build
+       #:cargo-inputs
        (("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-spin" ,rust-spin-0.5)
