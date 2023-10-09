@@ -43,6 +43,7 @@
   #:use-module (gnu packages xfig)
   #:use-module (gnu packages xml)
   #:use-module (guix gexp)
+  #:use-module (guix search-paths)
   #:use-module (guix utils)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
@@ -910,14 +911,10 @@ Detect the differences in markup between two SGML files.
                               '("perl-xml-namespacesupport"
                                 "perl-xml-parser"
                                 "perl-xml-sax"
-                                "perl-xml-sax-base")))
-                     (xml-catalog-files
-                      (list (search-input-file
-                             inputs "xml/dtd/docbook/catalog.xml"))))
+                                "perl-xml-sax-base"))))
                 (map (lambda (program)
                        (wrap-program program
-                         `("PERL5LIB" ":" prefix ,perl5lib)
-                         `("XML_CATALOG_FILES" " " prefix ,xml-catalog-files)))
+                         `("PERL5LIB" ":" prefix ,perl5lib)))
                      programs))))
           (add-after 'install 'sgml-check
             ;; This is not covered by 'make check'.
@@ -950,6 +947,7 @@ Detect the differences in markup between two SGML files.
            ;; For tests
            docbook-xml-4.1.2 docbook-xml-4.2 docbook-xml-4.4
            groff-minimal libxml2))
+    (native-search-paths %libxslt-search-paths)
     (home-page "https://docbook2x.sourceforge.net")
     (synopsis "Convert DocBook to man page and Texinfo format")
     (description
