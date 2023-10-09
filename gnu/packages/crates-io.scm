@@ -76003,7 +76003,8 @@ the Trust-DNS client to use rustls for TLS.")
     (inputs
      (list openssl))
     (arguments
-     `(#:cargo-test-flags
+     `(#:skip-build? #t     ; TODO: Fix building rust-ring-0.14
+       #:cargo-test-flags
        '("--release" "--" "--skip=tests::test_tls_client_stream_ipv4")
        #:cargo-inputs
        (("rust-futures" ,rust-futures-0.1)
