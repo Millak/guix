@@ -65,7 +65,7 @@
 (define %ocaml-build-system-modules
   ;; Build-side modules imported by default.
   `((guix build ocaml-build-system)
-    ,@%gnu-build-system-modules))
+    ,@%default-gnu-imported-modules))
 
 (define (default-ocaml)
   "Return the default OCaml package."

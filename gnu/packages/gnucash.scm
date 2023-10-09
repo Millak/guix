@@ -81,7 +81,7 @@
       #:test-target "check"
       #:configure-flags #~(list "-DWITH_PYTHON=ON")
       #:make-flags #~(list "GUILE_AUTO_COMPILE=0")
-      #:imported-modules `(,@%gnu-build-system-modules
+      #:imported-modules `(,@%default-gnu-imported-modules
                            (guix build cmake-build-system)
                            (guix build glib-or-gtk-build-system))
       #:modules '((guix build cmake-build-system)

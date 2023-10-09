@@ -843,7 +843,7 @@ NTFS volumes using @code{ntfs-3g}, preserving NTFS-specific attributes.")
                 "1kbxa1irszp2zw8hd5qzqnrrzb4vxfivs1vn64yxnj0lak1jjzvb"))))
     (arguments
      `(#:modules ((ice-9 match) (ice-9 rdelim)
-                  ,@%gnu-build-system-modules)
+                  ,@%default-gnu-imported-modules)
        #:phases
        ;; This mostly mirrors the steps taken in the install.sh that ships
        ;; with dirvish, but simplified because we aren't prompting interactively

@@ -263,7 +263,7 @@ Python 3.3 and later, rather than on Python 2.")
                   (ice-9 format)
                   (ice-9 textual-ports)
                   ((guix build gnu-build-system) #:prefix gnu:)
-                  ,@%gnu-build-system-modules)
+                  ,@%default-gnu-modules)
       ;; Make sure the full bash does not end up in the final closure.
       #:disallowed-references (list bash perl)
       #:test-target "test"
@@ -2102,7 +2102,7 @@ control to Git repositories.")
     (build-system gnu-build-system)
     (arguments
      `(#:imported-modules ((guix build guile-build-system)
-                           ,@%gnu-build-system-modules)
+                           ,@%default-gnu-imported-modules)
        #:make-flags (list "GUILE_AUTO_COMPILE=0")
        #:phases
        (modify-phases %standard-phases
@@ -4093,7 +4093,7 @@ TkDiff is included for browsing and merging your changes.")
      (list
       #:tests? #f                       ;No tests.
       #:imported-modules
-      `(,@%gnu-build-system-modules
+      `(,@%default-gnu-imported-modules
         (guix build python-build-system))
       #:modules
       '((guix build gnu-build-system)

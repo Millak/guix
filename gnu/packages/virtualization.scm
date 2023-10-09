@@ -251,7 +251,7 @@
                   (srfi srfi-26)
                   (ice-9 ftw)
                   (ice-9 match)
-                  ,@%gnu-build-system-modules)
+                  ,@%default-gnu-imported-modules)
       #:phases
       #~(modify-phases %standard-phases
           ;; Since we removed the bundled firmwares above, many tests
@@ -757,10 +757,10 @@ firmware blobs.  You can
                                        "ganeti-relax-dependencies.patch"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:imported-modules (,@%gnu-build-system-modules
+     `(#:imported-modules (,@%default-gnu-imported-modules
                            (guix build haskell-build-system)
                            (guix build python-build-system))
-       #:modules (,@%gnu-build-system-modules
+       #:modules (,@%default-gnu-imported-modules
                   ((guix build haskell-build-system) #:prefix haskell:)
                   ((guix build python-build-system) #:select (site-packages))
                   (srfi srfi-1)
@@ -1978,7 +1978,7 @@ client desktops.
                             (search-input-file %build-inputs
                                                "/bin/xmlto")))
        #:modules ((ice-9 ftw)
-                  ,@%gnu-build-system-modules)
+                  ,@%default-gnu-imported-modules)
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)            ; no configure script
@@ -2350,7 +2350,7 @@ Open Container Initiative (OCI) image layout and its tagged images.")
       #:tests? #f                       ; The tests require Docker
       #:test-target "test-unit"
       #:imported-modules
-      (source-module-closure `(,@%gnu-build-system-modules
+      (source-module-closure `(,@%default-gnu-imported-modules
                                (guix build go-build-system)))
       #:phases
       #~(modify-phases %standard-phases

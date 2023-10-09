@@ -70,7 +70,7 @@ to NAME and VERSION."
 (define %cargo-utils-modules
   ;; Build-side modules imported by default.
   `((guix build cargo-utils)
-    ,@%gnu-build-system-modules))
+    ,@%default-gnu-imported-modules))
 
 (define %cargo-build-system-modules
   ;; Build-side modules imported by default.

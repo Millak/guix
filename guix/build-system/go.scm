@@ -115,7 +115,7 @@ commit hash and its date rather than a proper release tag."
   ;; Build-side modules imported and used by default.
   `((guix build go-build-system)
     (guix build union)
-    ,@%gnu-build-system-modules))
+    ,@%default-gnu-imported-modules))
 
 (define (default-go)
   ;; Lazily resolve the binding to avoid a circular dependency.

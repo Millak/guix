@@ -72,7 +72,7 @@
 (define %glib-or-gtk-build-system-modules
   ;; Build-side modules imported and used by default.
   `((guix build glib-or-gtk-build-system)
-    ,@%gnu-build-system-modules))
+    ,@%default-gnu-imported-modules))
 
 (define (default-glib)
   "Return the default glib package from which we use

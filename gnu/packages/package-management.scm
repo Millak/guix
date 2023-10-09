@@ -1567,9 +1567,9 @@ environments.")
        (list
         #:modules `(((guix build guile-build-system)
                      #:select (target-guile-effective-version))
-                    ,@%gnu-build-system-modules)
+                    ,@%default-gnu-imported-modules)
         #:imported-modules `((guix build guile-build-system)
-                             ,@%gnu-build-system-modules)
+                             ,@%default-gnu-imported-modules)
         #:phases
         #~(modify-phases %standard-phases
             (add-before 'build 'set-GUILE_AUTO_COMPILE
@@ -1825,9 +1825,9 @@ in an isolated environment, in separate namespaces.")
        (list
         #:modules `(((guix build guile-build-system)
                      #:select (target-guile-effective-version))
-                    ,@%gnu-build-system-modules)
+                    ,@%default-gnu-imported-modules)
         #:imported-modules `((guix build guile-build-system)
-                             ,@%gnu-build-system-modules)
+                             ,@%default-gnu-imported-modules)
         #:phases
         #~(modify-phases %standard-phases
             (add-before 'build 'set-GUILE_AUTO_COMPILE

@@ -11835,7 +11835,7 @@ mp3, Ogg Vorbis and FLAC")
     (arguments
      `(#:imported-modules ((guix build python-build-system)
                            (guix build glib-or-gtk-build-system)
-                           ,@%gnu-build-system-modules)
+                           ,@%default-gnu-imported-modules)
 
        #:modules ((guix build glib-or-gtk-build-system)
                   (guix build utils)

@@ -90,7 +90,7 @@
     (build-system gnu-build-system)
     (arguments
      (list #:modules
-           `(,@%gnu-build-system-modules
+           `(,@%default-gnu-imported-modules
              (ice-9 textual-ports))
            #:test-target "test"
            #:configure-flags

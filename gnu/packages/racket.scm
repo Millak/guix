@@ -582,7 +582,7 @@ used to build the name of the resulting store item."
                   (guix build union)
                   (ice-9 match))
       #:imported-modules `((guix build union)
-                           ,@%gnu-build-system-modules)
+                           ,@%default-gnu-imported-modules)
       #:phases
       #~(modify-phases %standard-phases
           (delete 'unpack)

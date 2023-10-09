@@ -2816,7 +2816,7 @@ orienteering sport.")
          #:modules ((guix build gnu-build-system)
                     ((guix build python-build-system) #:prefix python:)
                     (guix build utils))
-         #:imported-modules (,@%gnu-build-system-modules
+         #:imported-modules (,@%default-gnu-imported-modules
                              (guix build python-build-system))
          #:phases
          (modify-phases %standard-phases

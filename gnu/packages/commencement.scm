@@ -145,7 +145,7 @@ the checkout from TARBALL, a tarball containing said checkout.
        #:tests? #f
        #:guile ,%bootstrap-guile
        #:imported-modules ((guix build gnu-bootstrap)
-                           ,@%gnu-build-system-modules)
+                           ,@%default-gnu-imported-modules)
        #:phases
        (begin
          (use-modules (guix build gnu-bootstrap))
@@ -185,7 +185,7 @@ pure Scheme to Tar and decompression in one easy step.")
        #:tests? #f
        #:guile ,%bootstrap-guile
        #:imported-modules ((guix build gnu-bootstrap)
-                           ,@%gnu-build-system-modules)
+                           ,@%default-gnu-imported-modules)
        #:phases
        (begin
          (use-modules (guix build gnu-bootstrap))
@@ -214,7 +214,7 @@ pure Scheme to Tar and decompression in one easy step.")
        #:tests? #f
        #:guile ,%bootstrap-guile
        #:imported-modules ((guix build gnu-bootstrap)
-                           ,@%gnu-build-system-modules)
+                           ,@%default-gnu-imported-modules)
        #:phases
        (begin
          (use-modules (guix build gnu-bootstrap))
@@ -3236,7 +3236,7 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
       ;; Additional modules for the libstdc++ phase below.
       #:modules `((srfi srfi-1)
                   (srfi srfi-26)
-                  ,@%gnu-build-system-modules)
+                  ,@%default-gnu-imported-modules)
 
       (substitute-keyword-arguments (package-arguments gcc)
         ((#:make-flags flags)

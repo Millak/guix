@@ -142,7 +142,7 @@ symbols, and almost all Latin-1 accented letters.")
     (native-inputs (list `(,openjdk18 "jdk") zip))
     (arguments
      (list
-       #:imported-modules `(,@%gnu-build-system-modules
+       #:imported-modules `(,@%default-gnu-imported-modules
                             (guix build ant-build-system))
        #:modules `((guix build gnu-build-system)
                    ((guix build ant-build-system) #:prefix ant:)

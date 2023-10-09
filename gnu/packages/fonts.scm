@@ -980,9 +980,9 @@ OpenType variant of these fonts.")
     (build-system gnu-build-system)
     (arguments
      (list
-      #:imported-modules `(,@%gnu-build-system-modules
+      #:imported-modules `(,@%default-gnu-imported-modules
                            (guix build font-build-system))
-      #:modules `(,@%gnu-build-system-modules
+      #:modules `(,@%default-gnu-imported-modules
                   ((guix build font-build-system) #:prefix font:))
       #:phases #~(modify-phases %standard-phases
                    (add-after 'unpack 'patch-source

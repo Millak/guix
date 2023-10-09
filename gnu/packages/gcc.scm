@@ -420,7 +420,7 @@ Go.  It also includes runtime support libraries for these languages.")
            ;; For native builds of some GCC versions the C++ include path needs to
            ;; be adjusted so it does not interfere with GCC's own build processes.
            (substitute-keyword-arguments (package-arguments parent)
-             ((#:modules modules %gnu-build-system-modules)
+             ((#:modules modules %default-gnu-imported-modules)
               `((srfi srfi-1)
                 ,@modules))
              ((#:phases phases)
@@ -955,7 +955,7 @@ using compilers other than GCC."
       #:out-of-source? #t
       #:modules `((srfi srfi-1)
                   (srfi srfi-26)
-                  ,@%gnu-build-system-modules)
+                  ,@%default-gnu-imported-modules)
       #:phases
       #~(modify-phases %standard-phases
           #$@(if (version>=? (package-version gcc) "11")
@@ -1103,7 +1103,7 @@ as the 'native-search-paths' field."
     (native-search-paths search-paths)
     (arguments
      (substitute-keyword-arguments (package-arguments gcc)
-       ((#:modules modules %gnu-build-system-modules)
+       ((#:modules modules %default-gnu-imported-modules)
         `(,@modules
           (srfi srfi-1)
           (srfi srfi-26)

@@ -581,7 +581,7 @@ distributions such as Debian and Trisquel.")
     (arguments
      (list #:modules
            `((srfi srfi-71)
-             ,@%gnu-build-system-modules)
+             ,@%default-gnu-imported-modules)
            #:phases
            #~(modify-phases %standard-phases
                (add-before 'bootstrap 'patch-version

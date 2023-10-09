@@ -388,7 +388,7 @@ interface for the Music Player Daemon.")
                   (guix build python-build-system)
                   ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
                   (guix build utils))
-       #:imported-modules (,@%gnu-build-system-modules
+       #:imported-modules (,@%default-gnu-imported-modules
                            (guix build python-build-system)
                            (guix build glib-or-gtk-build-system))
        #:phases

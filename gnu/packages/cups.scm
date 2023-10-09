@@ -569,7 +569,7 @@ should only be used as part of the Guix cups-pk-helper service.")
     (arguments
      (list
       #:imported-modules `((guix build python-build-system)
-                           ,@%gnu-build-system-modules)
+                           ,@%default-gnu-imported-modules)
       #:modules '((guix build gnu-build-system)
                   (guix build utils)
                   ((guix build python-build-system) #:prefix python:))
@@ -888,7 +888,7 @@ HP@tie{}LaserJet, and possibly other printers.  See @file{README} for details.")
     (arguments
      (list #:modules
            `((srfi srfi-26)
-             ,@%gnu-build-system-modules)
+             ,@%default-gnu-imported-modules)
            #:configure-flags
            #~(list "--disable-static"
                    (string-append "--prefix=" #$output)
@@ -949,7 +949,7 @@ language.")
       (arguments
        `(#:modules
          ((srfi srfi-26)
-          ,@%gnu-build-system-modules)
+          ,@%default-gnu-imported-modules)
          #:make-flags
          (list (string-append "CUPSDRV="
                               (assoc-ref %outputs "out") "/share/cups/drv")

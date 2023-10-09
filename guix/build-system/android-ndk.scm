@@ -31,7 +31,7 @@
 (define %android-ndk-build-system-modules
   ;; Build-side modules imported by default.
   `((guix build android-ndk-build-system)
-    ,@%gnu-build-system-modules))
+    ,@%default-gnu-imported-modules))
 
 (define* (android-ndk-build name inputs
                             #:key

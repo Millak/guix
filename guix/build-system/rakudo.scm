@@ -41,7 +41,7 @@
 (define %rakudo-build-system-modules
   ;; Build-side modules imported by default.
   `((guix build rakudo-build-system)
-    ,@%gnu-build-system-modules))
+    ,@%default-gnu-imported-modules))
 
 (define (default-rakudo)
   "Return the default Rakudo package."

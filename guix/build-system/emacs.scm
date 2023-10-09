@@ -46,7 +46,7 @@
   ;; Build-side modules imported by default.
   `((guix build emacs-build-system)
     (guix build emacs-utils)
-    ,@%gnu-build-system-modules))
+    ,@%default-gnu-imported-modules))
 
 (define (default-emacs)
   "Return the default Emacs package."
