@@ -1737,15 +1737,15 @@ Analysis and Reporting Technology) functionality.")
                 "06cq52kp1nyy15qzylywy9s7hhhqc45k0s3y68crf0zsmjyng0yj"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("docbook-xml" ,docbook-xml-4.3) ; to build the manpages
-       ("docbook-xsl" ,docbook-xsl)
-       ("glib:bin" ,glib "bin")         ; for glib-mkenums
-       ("gnome-common" ,gnome-common)   ; TODO: Why is this needed?
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc/stable)
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("xsltproc" ,libxslt)))
+     (list docbook-xml-4.3 ; to build the manpages
+           docbook-xsl
+           `(,glib "bin")  ; for glib-mkenums
+           gnome-common    ; TODO: Why is this needed?
+           gobject-introspection
+           gtk-doc/stable
+           intltool
+           pkg-config
+           libxslt))
     (propagated-inputs
      (list glib)) ; required by udisks2.pc
     (inputs
@@ -1763,59 +1763,55 @@ Analysis and Reporting Technology) functionality.")
     (outputs '("out"
                "doc"))                            ;5 MiB of gtk-doc HTML
     (arguments
-     `(#:tests? #f ; requiring system message dbus
-       #:disallowed-references ("doc")            ;enforce separation of "doc"
-       #:configure-flags
-       (list "--enable-man"
-             "--enable-available-modules" ; Such as lvm2, btrfs, etc.
-             "--localstatedir=/var"
-             "--enable-fhs-media"     ;mount devices in /media, not /run/media
-             (string-append "--with-html-dir="
-                            (assoc-ref %outputs "doc")
-                            "/share/doc/udisks/html")
-             (string-append "--with-udevdir=" %output "/lib/udev"))
-       #:make-flags
-       (let*  ((docbook-xsl-name-version ,(string-append
-                                           (package-name docbook-xsl) "-"
-                                           (package-version  docbook-xsl)))
-               (docbook-xsl-catalog-file (string-append
-                                          (assoc-ref %build-inputs "docbook-xsl")
-                                          "/xml/xsl/"
-                                          docbook-xsl-name-version
-                                          "/catalog.xml"))
-               (docbook-xml-catalog-file (string-append
-                                          (assoc-ref %build-inputs "docbook-xml")
-                                          "/xml/dtd/docbook/catalog.xml")))
-         ;; Reference the catalog files required to build the manpages.
-         (list (string-append "XML_CATALOG_FILES=" docbook-xsl-catalog-file " "
-                              docbook-xml-catalog-file)))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before
-          'configure 'fix-girdir
-          (lambda _
-            ;; Install introspection data to its own output.
-            (substitute* "udisks/Makefile.in"
-              (("girdir = .*")
-               "girdir = $(datadir)/gir-1.0\n")
-              (("typelibsdir = .*")
-               "typelibsdir = $(libdir)/girepository-1.0\n"))))
-         (add-after 'install 'wrap-udisksd
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             ;; Tell 'udisksd' where to find the 'mount' command.
-             (let ((out   (assoc-ref outputs "out"))
-                   (utils (assoc-ref inputs "util-linux"))
-                   (cryptsetup (assoc-ref inputs "cryptsetup"))
-                   (parted (assoc-ref inputs "parted")))
-               (wrap-program (string-append out "/libexec/udisks2/udisksd")
-                 `("PATH" ":" prefix
-                   (,(string-append utils "/bin") ;for 'mount'
-                    ;; cryptsetup is required for setting encrypted
-                    ;; partitions, e.g. in gnome-disks
-                    ,(string-append cryptsetup "/sbin")
-                    "/run/current-system/profile/bin"
-                    "/run/current-system/profile/sbin")))
-               #t))))))
+     (list
+      #:tests? #f ; requiring system message dbus
+      #:disallowed-references '("doc")            ;enforce separation of "doc"
+      #:configure-flags
+      #~(list "--enable-man"
+              "--enable-available-modules" ; Such as lvm2, btrfs, etc.
+              "--localstatedir=/var"
+              "--enable-fhs-media"     ;mount devices in /media, not /run/media
+              (string-append "--with-html-dir=" #$output:doc
+                             "/share/doc/udisks/html")
+              (string-append "--with-udevdir=" #$output "/lib/udev"))
+      #:make-flags
+      #~(let* ((docbook-xsl-name-version
+                #$(string-append (package-name docbook-xsl) "-"
+                                 (package-version docbook-xsl)))
+               (docbook-xsl-catalog-file
+                (string-append #$(this-package-native-input "docbook-xsl")
+                               "/xml/xsl/" docbook-xsl-name-version
+                               "/catalog.xml"))
+               (docbook-xml-catalog-file
+                #$(file-append (this-package-native-input "docbook-xml")
+                               "/xml/dtd/docbook/catalog.xml")))
+          ;; Reference the catalog files required to build the manpages.
+          (list (string-append "XML_CATALOG_FILES=" docbook-xsl-catalog-file
+                               " " docbook-xml-catalog-file)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'fix-girdir
+            (lambda _
+              ;; Install introspection data to its own output.
+              (substitute* "udisks/Makefile.in"
+                (("girdir = .*")
+                 "girdir = $(datadir)/gir-1.0\n")
+                (("typelibsdir = .*")
+                 "typelibsdir = $(libdir)/girepository-1.0\n"))))
+          (add-after 'install 'wrap-udisksd
+            (lambda _
+              ;; Tell 'udisksd' where to find the 'mount' command.
+              (let ((utils #$(this-package-input "util-linux"))
+                    (cryptsetup #$(this-package-input "cryptsetup"))
+                    (parted #$(this-package-input "parted")))
+                (wrap-program (string-append #$output "/libexec/udisks2/udisksd")
+                  `("PATH" ":" prefix
+                    (,(string-append utils "/bin") ;for 'mount'
+                     ;; cryptsetup is required for setting encrypted
+                     ;; partitions, e.g. in gnome-disks
+                     ,(string-append cryptsetup "/sbin")
+                     "/run/current-system/profile/bin"
+                     "/run/current-system/profile/sbin")))))))))
     (home-page "https://www.freedesktop.org/wiki/Software/udisks/")
     (synopsis "Disk manager service")
     (description
