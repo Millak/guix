@@ -665,7 +665,7 @@ multipole-accelerated algorithm.")
        #:parallel-build? #f
        #:tests? #f ;; no tests-suite
        #:modules ((srfi srfi-1)
-                  ,@%default-gnu-imported-modules)
+                  ,@%default-gnu-modules)
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
