@@ -48,6 +48,7 @@
 ;;; Copyright © 2022 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;; Copyright © 2015, 2022 David Thompson <davet@gnu.org>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Kjartan Oli Agustsson <kjartanoli@disroot.org>
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
@@ -1225,34 +1226,20 @@ write native speed custom Git applications in any language with bindings.")
     (inputs
      (list git openssl))
     (native-inputs
-     (list docbook-xsl libxslt))
+     (list docbook-xml-4.2 docbook-xsl libxslt))
     (arguments
-     `(#:tests? #f ; No tests.
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'unpack 'patch-makefile
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "Makefile"
-               (("http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl")
-                (string-append (assoc-ref inputs "docbook-xsl")
-                               "/xml/xsl/docbook-xsl-"
-                               ,(package-version docbook-xsl)
-                               "/manpages/docbook.xsl")))
-             #t))
-         (replace 'build
-           (lambda _
-             ;; Add flag to work around OpenSSL 3 incompatibility.
-             ;; See <https://github.com/AGWA/git-crypt/issues/232>.
-             (setenv "CXXFLAGS" "-DOPENSSL_API_COMPAT=0x30000000L")
-
-             (invoke "make" "ENABLE_MAN=yes")))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (invoke "make" "install"
-                       "ENABLE_MAN=yes"
-                       (string-append "PREFIX=" out))))))))
+     (list
+      #:tests? #f ; No tests.
+      #:make-flags
+      #~(list
+         "ENABLE_MAN=yes"
+         ;; Add flag to work around OpenSSL 3 incompatibility.
+         ;; See <https://github.com/AGWA/git-crypt/issues/232>.
+         "CXXFLAGS+=-DOPENSSL_API_COMPAT=0x30000000L"
+         (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))
     (home-page "https://www.agwa.name/projects/git-crypt/")
     (synopsis "Transparent encryption of files in a git repository")
     (description "git-crypt enables transparent encryption and decryption of
