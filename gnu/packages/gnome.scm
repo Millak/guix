@@ -5741,7 +5741,7 @@ output devices.")
     (native-inputs
      (modify-inputs (package-native-inputs colord-minimal)
        (append bash-completion
-               docbook-xsl-1.79.1
+               docbook-xsl
                gtk-doc/stable
                libxslt
                sane-backends
