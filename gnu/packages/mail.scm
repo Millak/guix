@@ -2229,6 +2229,16 @@ hashing scheme (such as scrypt) plug-in for @code{Dovecot}.")
         ;; Likely to be included in next version
         (search-patches "isync-openssl3-fix.patch"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'install 'substitute-openssl-path
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (substitute* (string-append #$output "/bin/mbsync-get-cert")
+                 (("openssl s_client")
+                  (string-append (search-input-file inputs "/bin/openssl")
+                                 " s_client"))))))))
     (native-inputs
      (list perl))
     (inputs
