@@ -50438,7 +50438,11 @@ library.")
        (uri (crate-uri "poly1305" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1pkf4jlriskq9rvz8y5fjj9dw42q6yg5djijlin4n6p1dd3yp2h4"))))
+        (base32 "1pkf4jlriskq9rvz8y5fjj9dw42q6yg5djijlin4n6p1dd3yp2h4"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("version = \">=1, <1\\.4\"") "version = \"^1\""))))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
