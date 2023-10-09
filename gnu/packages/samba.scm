@@ -278,8 +278,7 @@ external dependencies.")
              ;; For generating man pages.
              docbook-xml-4.2
              docbook-xsl
-             libxslt
-             libxml2)))                 ;for XML_CATALOG_FILES
+             libxslt)))
      (home-page "https://www.samba.org/")
      (synopsis
       "The standard Windows interoperability suite of programs for GNU and Unix")

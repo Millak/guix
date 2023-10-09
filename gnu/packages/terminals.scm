@@ -349,7 +349,6 @@ compatibility to existing emulators like xterm, gnome-terminal, konsole, etc.")
              automake
              libtool
              libxslt ;to build the man page
-             libxml2 ;for XML_CATALOG_FILES
              docbook-xsl))
       (inputs
        `(("libdrm" ,libdrm)

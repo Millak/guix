@@ -663,7 +663,6 @@ its features are:
                          python-wrapper
                          which
                          ;; For documentation
-                         libxml2        ;for XML_CATALOG_FILES
                          libxslt
                          docbook-xml
                          docbook-xsl))

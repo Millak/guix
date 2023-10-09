@@ -1654,9 +1654,7 @@ intended as a substitute for the PPPStatus and EthStatus projects.")
                  "if false")))))))
     (native-inputs
      (list docbook-xsl docbook-xml-5.0.1
-           gettext-minimal
-           libxml2          ;for XML_CATALOG_FILES
-           libxslt pkg-config))
+           gettext-minimal libxslt pkg-config))
     (inputs
      (list libcap libidn2 openssl))
     (synopsis "Collection of network utilities")
