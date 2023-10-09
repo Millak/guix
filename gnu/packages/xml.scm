@@ -367,6 +367,7 @@ formulas and hyperlinks to multiple worksheets in an Excel 2007+ XLSX file.")
            xz))
     (native-inputs
      (list pkg-config))
+    (native-search-paths %libxslt-search-paths)
     (description
      "Libxslt is an XSLT C library developed for the GNOME project.  It is
 based on libxml for XML parsing, tree manipulation and XPath support.")
