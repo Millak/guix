@@ -56516,7 +56516,10 @@ Digital Signature Algorithm} (ECDSA).")
        (uri (crate-uri "riscv" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1fla10m2qkcf7zqw91rrribpdaavkv6qbbzjz9q2n09igbfwq1v9"))))
+        (base32 "1fla10m2qkcf7zqw91rrribpdaavkv6qbbzjz9q2n09igbfwq1v9"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "bin")))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
