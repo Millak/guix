@@ -27,6 +27,7 @@
 
 (define-module (gnu packages docbook)
   #:use-module (gnu packages)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages imagemagick)
@@ -864,42 +865,27 @@ Detect the differences in markup between two SGML files.
                                   version "/docbook2X-" version ".tar.gz"))
               (sha256
                (base32
-                "0ifwzk99rzjws0ixzimbvs83x6cxqk1xzmg84wa1p7bs6rypaxs0"))))
+                "0ifwzk99rzjws0ixzimbvs83x6cxqk1xzmg84wa1p7bs6rypaxs0"))
+              (patches
+               (search-patches "docbook2x-filename-handling.patch"
+                               "docbook2x-fix-synopsis.patch"
+                               "docbook2x-manpage-typo.patch"
+                               "docbook2x-preprocessor-declaration.patch"
+                               "docbook2x-static-datadir-evaluation.patch"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Fix a failing test (maybe it worked with old texinfo?)
+               #~(begin
+                   (substitute* "test/complete-manuals/at1.xml"
+                     (("<bridgehead>")
+                      "<bridgehead renderas=\"sect2\">"))
+                   ;; Force a new autoreconf run.
+                   (delete-file "configure")))))
     (build-system gnu-build-system)
-    (inputs
-     (list bash-minimal
-           docbook-xml-4.5
-           perl
-           perl-xml-namespacesupport
-           perl-xml-parser
-           perl-xml-sax
-           perl-xml-sax-base
-           texinfo
-           libxslt))
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'configure 'patch-sources
-            (lambda* (#:key inputs #:allow-other-keys)
-              ;; Fix failed substitution in config.pl
-              (substitute* "perl/config.pl"
-                (("\\$\\{prefix\\}")
-                 #$output))
-              ;; Fix a failing test (maybe it worked with old texinfo?)
-              (substitute* "test/complete-manuals/at1.xml"
-                (("<bridgehead>")
-                 "<bridgehead renderas=\"sect2\">"))
-              ;; Patch all the tests use DocBook 4.5
-              (substitute* (find-files "test" "\\.xml$")
-                (("\"-//OASIS//DTD DocBook XML V4\\..+//EN\"")
-                 "\"-//OASIS//DTD DocBook XML V4.5//EN\"")
-                (("\"http://www\\.oasis-open\\.org/docbook/xml/4\\..+/docbookx.dtd\"")
-                 "\"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd\""))
-              ;; Set XML catalogs for tests to pass
-              (setenv "XML_CATALOG_FILES"
-                      (string-append (assoc-ref inputs "docbook-xml")
-                                     "/xml/dtd/docbook/catalog.xml"))))
           (add-after 'install 'wrap-programs
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (let* ((programs
@@ -933,6 +919,17 @@ Detect the differences in markup between two SGML files.
                      (symlink prog (string-append #$output
                                                   "/bin/db2x_" prog)))
                    '("docbook2man" "docbook2texi")))))))
+    (inputs
+     (list bash-minimal
+           perl
+           perl-xml-namespacesupport
+           perl-xml-parser
+           perl-xml-sax
+           perl-xml-sax-base
+           texinfo
+           libxslt))
+    (native-inputs
+     (list autoconf automake libtool))
     (home-page "https://docbook2x.sourceforge.net")
     (synopsis "Convert DocBook to man page and Texinfo format")
     (description

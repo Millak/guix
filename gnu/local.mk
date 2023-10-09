@@ -1130,6 +1130,11 @@ dist_patch_DATA =						\
   %D%/packages/patches/docbook-utils-respect-refentry-for-name.patch	\
   %D%/packages/patches/docbook-utils-source-date-epoch.patch	\
   %D%/packages/patches/docbook-utils-use-date-element.patch	\
+  %D%/packages/patches/docbook2x-filename-handling.patch	\
+  %D%/packages/patches/docbook2x-fix-synopsis.patch		\
+  %D%/packages/patches/docbook2x-manpage-typo.patch		\
+  %D%/packages/patches/docbook2x-preprocessor-declaration.patch	\
+  %D%/packages/patches/docbook2x-static-datadir-evaluation.patch	\
   %D%/packages/patches/doc++-include-directives.patch		\
   %D%/packages/patches/doc++-segfault-fix.patch			\
   %D%/packages/patches/dovecot-opensslv3.patch			\
