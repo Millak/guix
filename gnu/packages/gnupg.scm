@@ -997,7 +997,7 @@ passphrase when @code{gpg} is run and needs it.")))
      `(#:modules
        ((ice-9 match)
         (ice-9 ftw)
-        ,@%default-gnu-imported-modules)
+        ,@%default-gnu-modules)
        #:phases
        (modify-phases
            %standard-phases
