@@ -1740,13 +1740,13 @@ graphics and video games.")
 (define-public rust-mp4parse-0.12
   (package
     (name "rust-mp4parse")
-    (version "0.12.0")
+    (version "0.12.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "mp4parse" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "1ppqv60qiyrnbb996gb1sik08c0j2i317llv3rrcwb1cjg3bdlk7"))))
+               (base32 "1scynvlmiy6xv2rrzzpijd812amh6a863na8i0xrcw5d9d08kl8h"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f              ; Not all files included.
