@@ -354,7 +354,7 @@ buffers.")
      (list
       #:modules `((ice-9 popen)
                   (ice-9 rdelim)
-                  ,@%default-gnu-imported-modules)
+                  ,@%default-gnu-modules)
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-gcc-reference
