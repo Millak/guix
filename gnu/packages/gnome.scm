@@ -3124,16 +3124,6 @@ configuring CUPS.")
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-docbook
-            (lambda* (#:key inputs #:allow-other-keys)
-              ;; Don't attempt to download XSL schema.
-              (substitute* "meson.build"
-                (("http://docbook.sourceforge.net/release/xsl-ns/current\
-/manpages/docbook.xsl")
-                 (string-append #$(this-package-native-input "docbook-xsl")
-                                "/xml/xsl/docbook-xsl-"
-                                #$(package-version docbook-xsl)
-                                "/manpages/docbook.xsl"))))))))
     (propagated-inputs (list gdk-pixbuf glib)) ;in Requires of libnotify.pc.
     (inputs (list gtk+ libpng))
     (native-inputs
