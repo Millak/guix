@@ -5729,7 +5729,7 @@ schedulers.")
       (arguments
        `(#:modules (((guix build guile-build-system)
                      #:prefix guile:)
-                    ,@%default-gnu-imported-modules)
+                    ,@%default-gnu-modules)
          #:imported-modules ((guix build guile-build-system)
                              ,@%default-gnu-imported-modules)
          #:tests? #false ; there are none
