@@ -7567,42 +7567,6 @@ of the CRC32C hashing algorithm.")
 server-to-server authentication mechanisms to access Google APIs.")
     (license license:asl2.0)))
 
-(define-public python-google-auth-1
-  (package
-    (inherit python-google-auth)
-    (name "python-google-auth")
-    (version "1.35.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "google-auth" version))
-       (sha256
-        (base32 "13nqj6hikvbdmbs1vb78c88ym0pd03m09ch00biqw64c0blkn0xp"))))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest")))))))
-    (propagated-inputs
-     (list python-cachetools
-           python-pyasn1-modules
-           python-rsa
-           python-six
-           ;; For the extras
-           python-pyopenssl
-           python-pyu2f))
-    (native-inputs
-     (list python-flask
-           python-freezegun
-           python-oauth2client
-           python-pytest
-           python-pytest-localserver
-           python-requests
-           python-responses
-           python-urllib3))))
-
 (define-public python-google-resumable-media
   (package
     (name "python-google-resumable-media")
@@ -7701,52 +7665,6 @@ common protos in the @code{googleapis/api-common-protos} repository.")
     (description "This library defines common helpers used by all Google API
 clients.")
     (license license:asl2.0)))
-
-(define-public python-google-api-core-1
-  (package
-    (inherit python-google-api-core)
-    (name "python-google-api-core")
-    (version "1.32.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "google-api-core" version))
-       (sha256
-        (base32 "0709va9sisll7axkv6ii2x5s0ls38rqp1jnvs6nkpmg7z163q70h"))))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (for-each
-                 delete-file
-                 '(;; The test suite can't find AsyncMock.
-                   "tests/asyncio/test_page_iterator_async.py"
-                   "tests/asyncio/test_retry_async.py"
-                   ;; Skip the tests depending on grpc.
-                   "tests/asyncio/test_operation_async.py"
-                   "tests/asyncio/test_grpc_helpers_async.py"
-                   "tests/asyncio/operations_v1/test_operations_async_client.py"
-                   "tests/unit/test_bidi.py"
-                   "tests/unit/test_exceptions.py"
-                   "tests/unit/test_grpc_helpers.py"
-                   "tests/unit/test_operation.py"
-                   "tests/unit/operations_v1/test_operations_client.py"))
-               (delete-file-recursively "tests/asyncio/gapic")
-               (delete-file-recursively "tests/unit/gapic")
-               (invoke "pytest" "-k" "not test_constructor_defaults")))))))
-    (propagated-inputs
-     (list python-google-auth-1
-           python-googleapis-common-protos
-           python-packaging
-           python-protobuf
-           python-proto-plus
-           python-pytz
-           python-requests))
-    (native-inputs
-     (list python-pytest
-           python-pytest-asyncio))))
 
 (define-public python-google-cloud-core
   (package
