@@ -46226,6 +46226,9 @@ easy and usable crypto while trying to minimize the use of unsafe code.")
        (sha256
         (base32
          "04yjs1hf88jjm17g8a2lr7ibxyyg460rzbgcw9f1yzihq833y8zv"))))
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-winapi" ,rust-winapi-0.3))))
     (native-inputs (list))))
 
 (define-public rust-os-pipe-0.8
