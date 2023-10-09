@@ -5263,21 +5263,21 @@ in a digital read-out.")
            ;; There are build scripts written in these languages.
            perl
            python-2
-           python-3))
+           python-3
+           ;; Documentation
+           docbook-xsl
+           xmlto
+           asciidoc))
     (inputs
      (list slang ;for the interactive TUI
+           zlib
            ;; newt
            python-2                            ;'perf' links against libpython
            elfutils
            libiberty                 ;used alongside BDF for symbol demangling
            libunwind                 ;better stack walking
            libtraceevent
-           numactl                   ;for 'perf bench numa mem'
-           ;; Documentation.
-           libxml2                                ;for $XML_CATALOG_FILES
-           docbook-xsl
-           xmlto
-           asciidoc))
+           numactl))                 ;for 'perf bench numa mem'
     (home-page "https://perf.wiki.kernel.org/")
     (synopsis "Linux profiling with performance counters")
     (description
