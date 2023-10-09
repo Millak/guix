@@ -109,7 +109,13 @@ by no means limited to these applications.)  This package provides XML DTDs.")
                                        "/docbook-v" version "-os.zip"))
                    (sha256
                     (base32
-                     "0zqy9prj9wam9dn7v3mgr7ld1axqxdhgrmv06dviwg00ahv43wxk"))))
+                     "0zqy9prj9wam9dn7v3mgr7ld1axqxdhgrmv06dviwg00ahv43wxk"))
+                   (modules '((guix build utils)))
+                   (snippet
+                    ;; The .zip release mistakenly uses '5.1CR4' instead of
+                    ;; '5.1' as intended by <https://docbook.org/xml/5.1/catalog.xml>.
+                    #~(substitute* "schemas/catalog.xml"
+                        (("5\\.1CR4") #$version)))))
          (template (docbook-xml-package source version)))
     (package
       (inherit template)
