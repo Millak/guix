@@ -1207,11 +1207,6 @@ application suites.")
                  "find_program('rst2man.py'"))))
           (add-after 'unpack 'patch
             (lambda* (#:key inputs native-inputs outputs #:allow-other-keys)
-              ;; Correct DTD resources of docbook.
-              (substitute* (find-files "docs" "\\.xml$")
-                (("http://www.oasis-open.org/docbook/xml/4.3/")
-                 (string-append #$(this-package-native-input "docbook-xml")
-                                "/xml/dtd/docbook/")))
               ;; Disable building of icon cache.
               (substitute* "meson.build"
                 (("gtk_update_icon_cache: true")
