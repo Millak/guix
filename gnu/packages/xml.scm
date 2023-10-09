@@ -228,7 +228,8 @@ hierarchical form with variable field lengths.")
     (inputs (list xz))
     (propagated-inputs (list zlib)) ; libxml2.la says '-lz'.
     (native-inputs (list perl))
-    (native-search-paths (list $XML_CATALOG_FILES))
+    (native-search-paths
+     (list $SGML_CATALOG_FILES $XML_CATALOG_FILES))
     (search-paths native-search-paths)
     (description
      "Libxml2 is the XML C parser and toolkit developed for the Gnome
