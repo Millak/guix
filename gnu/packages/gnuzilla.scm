@@ -119,7 +119,7 @@
      (list
       #:imported-modules %cargo-utils-modules ;for `generate-all-checksums'
       #:modules `((guix build cargo-utils)
-                  ,@%default-gnu-imported-modules)
+                  ,@%default-gnu-modules)
       #:test-target "check-jstests"
       #:configure-flags
       #~(list
