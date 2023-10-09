@@ -200,29 +200,29 @@ hierarchical form with variable field lengths.")
     (build-system gnu-build-system)
     (outputs '("out" "static" "doc"))
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'install 'use-other-outputs
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let ((src (assoc-ref outputs "out"))
-                            (doc (string-append (assoc-ref outputs "doc") "/share"))
-                            (dst (string-append (assoc-ref outputs "static")
-                                                "/lib")))
-                        (mkdir-p doc)
-                        (mkdir-p dst)
-                        (for-each (lambda (dir)
-                                    (rename-file (string-append src "/share/" dir)
-                                                 (string-append doc "/" dir)))
-                                  '("gtk-doc"))
-                        (for-each (lambda (ar)
-                                    (rename-file ar (string-append dst "/"
-                                                                   (basename ar))))
-                                  (find-files (string-append src "/lib") "\\.a$"))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'use-other-outputs
+            (lambda _
+              (let ((doc (string-append #$output:doc "/share/"))
+                    (static (string-append #$output:static "/lib/")))
+                (for-each mkdir-p (list doc static))
 
-                        ;; Remove reference to the static library from the .la
-                        ;; file such that Libtool does the right thing when both
-                        ;; the shared and static variants are available.
-                        (substitute* (string-append src "/lib/libxml2.la")
-                          (("^old_library='libxml2.a'") "old_library=''"))))))))
+                (rename-file (string-append #$output "/share/gtk-doc")
+                             (string-append doc "/gtk-doc"))
+
+                (for-each
+                 (lambda (ar)
+                   (rename-file ar
+                                (string-append static (basename ar))))
+                 (find-files (string-append #$output "/lib") "\\.a$"))
+
+                ;; Remove reference to the static library from the .la
+                ;; file such that Libtool does the right thing when both
+                ;; the shared and static variants are available.
+                (substitute* (string-append #$output "/lib/libxml2.la")
+                  (("^old_library='libxml2.a'") "old_library=''"))))))))
     (home-page "http://www.xmlsoft.org/")
     (synopsis "C parser for XML")
     (inputs (list xz))
