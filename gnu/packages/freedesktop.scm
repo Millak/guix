@@ -627,7 +627,8 @@ database is translated at Transifex.")
          "1nai806smz3zcb2l5iny4x7li0fak0rzmjg6vlyhdqm8z25b166p"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list docbook-xsl docbook-xml-4.1.2 libxslt w3m-for-tests xmlto))
+     (list docbook-xsl docbook-xml-4.1.2
+           libxslt xmlto w3m-for-tests))
     (inputs
      (list bash-minimal                 ;for 'wrap-program'
            coreutils
@@ -643,7 +644,8 @@ database is translated at Transifex.")
      (list
       #:tests? #f                       ;no check target
       #:modules `((srfi srfi-26)
-                  ,@%gnu-build-system-modules)
+                  (guix build gnu-build-system)
+                  (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
         (add-after 'unpack 'patch-hardcoded-paths
@@ -654,32 +656,6 @@ database is translated at Transifex.")
             (substitute* "scripts/xdg-open.in"
               (("/usr/bin/printf")
                (search-input-file inputs "bin/printf")))))
-        (add-before 'build 'locate-catalog-files
-          (lambda* (#:key native-inputs inputs #:allow-other-keys)
-            (let* ((native (or native-inputs inputs))
-                   (xmldoc (search-input-directory native
-                                                   "xml/dtd/docbook"))
-                   (xsldoc (search-input-directory
-                            native
-                            (string-append "xml/xsl/docbook-xsl-"
-                                           #$(package-version
-                                              (this-package-native-input
-                                               "docbook-xsl"))))))
-              (for-each (lambda (file)
-                          (substitute* file
-                            (("http://.*/docbookx\\.dtd")
-                             (string-append xmldoc "/docbookx.dtd"))))
-                        (find-files "scripts/desc" "\\.xml$"))
-              (substitute* "scripts/Makefile"
-                ;; Apparently `xmlto' does not bother to looks up the stylesheets
-                ;; specified in the XML, unlike the above substitition. Instead it
-                ;; uses a hard-coded URL. Work around it here, but if this is
-                ;; common perhaps we should hardcode this path in xmlto itself.
-                (("\\$\\(XMLTO\\) man")
-                 (string-append "$(XMLTO) -x " xsldoc
-                                "/manpages/docbook.xsl man")))
-              (setenv "STYLESHEET"
-                      (string-append xsldoc "/html/docbook.xsl")))))
         (add-after 'install 'wrap-executables
           (lambda* (#:key inputs outputs #:allow-other-keys)
             (let* ((dependencies '("awk" "grep" "hostname" "ls" "mimeopen"
