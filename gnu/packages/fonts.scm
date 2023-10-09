@@ -982,7 +982,7 @@ OpenType variant of these fonts.")
      (list
       #:imported-modules `(,@%default-gnu-imported-modules
                            (guix build font-build-system))
-      #:modules `(,@%default-gnu-imported-modules
+      #:modules `(,@%default-gnu-modules
                   ((guix build font-build-system) #:prefix font:))
       #:phases #~(modify-phases %standard-phases
                    (add-after 'unpack 'patch-source
