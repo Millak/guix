@@ -1144,10 +1144,11 @@ code for classes that correspond to data structures defined by XMLSchema.")
     (build-system gnu-build-system)
     (arguments
      ;; Make sure the reference to util-linux's 'getopt' is kept in 'xmlto'.
-     '(#:configure-flags (list (string-append "GETOPT="
-                                              (assoc-ref %build-inputs
-                                                         "util-linux")
-                                              "/bin/getopt"))))
+     (list
+      #:configure-flags
+      #~(list (string-append "GETOPT="
+                             #$(this-package-input "util-linux")
+                             "/bin/getopt"))))
     (native-inputs
      (list util-linux))
     (inputs
