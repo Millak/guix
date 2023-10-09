@@ -5,7 +5,7 @@
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
-;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
+;;; Copyright © 2017, 2023 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017, 2018 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2020 Ricardo Wurmus <rekado@elephly.net>
@@ -392,7 +392,12 @@ from collections.abc import MutableSequence"))))
                       "-src.tgz"))
                 (sha256
                  (base32
-                  "0iccpdvc0kvpww5a31k9gjkqigyz016i7v80r9zamd34w4fl6mx4")))))))
+                  "0iccpdvc0kvpww5a31k9gjkqigyz016i7v80r9zamd34w4fl6mx4"))
+                (patches
+                 (cons
+                  (search-patch
+                   "icu4c-fix-TestHebrewCalendarInTemporalLeapYear.patch")
+                  (origin-patches (package-source icu4c)))))))))
 
 ;;;
 ;;; Localization helper procedures.
