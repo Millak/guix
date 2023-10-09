@@ -680,7 +680,7 @@ coreboot.")
     (supported-systems %supported-systems)
     (arguments
      (substitute-keyword-arguments (package-arguments seabios)
-       ((#:modules modules %default-gnu-imported-modules)
+       ((#:modules modules %default-gnu-modules)
         `((ice-9 match)
           (ice-9 threads)
           ,@modules))
