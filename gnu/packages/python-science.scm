@@ -352,13 +352,13 @@ implements several methods for sequential model-based optimization.
 (define-public python-trimesh
   (package
     (name "python-trimesh")
-    (version "3.22.1")
+    (version "3.23.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trimesh" version))
        (sha256
-        (base32 "1ck4dkhz1x6sznd83c1hlvsv2m6d22fr82na0947j5jf47a4c1gl"))))
+        (base32 "08967axlnmfv98n05dhrkynyrmcc814hl8184gzzmcy4rjg6dzdx"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-numpy))
