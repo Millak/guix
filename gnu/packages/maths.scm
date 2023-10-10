@@ -2421,7 +2421,7 @@ interfaces.")
 (define-public nomad-optimizer
   (package
     (name "nomad-optimizer")
-    (version "4.2.0")
+    (version "4.3.1")
     (source
      (origin
        (method git-fetch)
@@ -2430,164 +2430,109 @@ interfaces.")
              (commit (string-append "v." version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1r4ygy3xn83dnppsw1451ynklsxpb238g5gk57inn84ghmdk08mj"))))
+        (base32 "08bxdvx8p5qzdw331xa5irc1896as4q5hajsid7f3qcxjm4nq4v3"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list python-wrapper python-cython))
+     (list openmpi))
     (arguments
-     `(#:imported-modules ((guix build python-build-system)
-                           ,@%cmake-build-system-modules)
-       #:modules (((guix build python-build-system)
-                   #:select (python-version site-packages))
-                  (guix build cmake-build-system)
-                  (guix build utils))
-       #:configure-flags
-       '("-DBUILD_INTERFACE_C=ON"
-         "-DBUILD_INTERFACE_PYTHON=ON"
-         "-DBUILD_TESTS=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-sources-for-build
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "CMakeLists.txt"
-               ;; CMAKE_INSTALL_PREFIX is accidentally hardcoded.
-               (("set\\(CMAKE_INSTALL_PREFIX .* FORCE\\)") "")
-               ;; Requiring GCC version 8 or later is unwarranted.
-               (("message\\(FATAL_ERROR \"GCC version < 8")
-                "message(STATUS \"GCC version < 8"))
-
-             (let ((out (assoc-ref outputs "out")))
-               (substitute* "interfaces/PyNomad/CMakeLists.txt"
-                 ;; We don't want to build in-place, and anyway the install
-                 ;; command further below runs build_ext as a prerequisite.
-                 (("COMMAND python setup_PyNomad\\.py .* build_ext --inplace\n")
-                  "")
-                 ;; Don't install locally.
-                 (("COMMAND python (setup_PyNomad\\.py .* install) --user\n"
-                   _ args)
-                  (string-append "COMMAND ${CMAKE_COMMAND} -E env"
-                                 " CC=" ,(cc-for-target)
-                                 " CXX=" ,(cxx-for-target)
-                                 " " (which "python")
-                                 " " args
-                                 " --prefix=" out
-                                 "\n")))
-               ;; Fix erroneous assumptions about the paths of the include and
-               ;; library directories.
-               (substitute* "interfaces/PyNomad/setup_PyNomad.py"
-                 (("^( +os_include_dirs = ).*" _ prefix)
-                  (string-append prefix "[\"../../src\"]\n"))
-                 (("^(installed_lib_dir1 = ).*" _ prefix)
-                  (string-append prefix "\"" out "/lib\"\n"))
-                 (("^installed_lib_dir2 = .*") "")
-                 (("^ +link_args\\.append\\(\"-Wl,-rpath,\" \\+ installed_lib_dir2\\)\n")
-                  "")))))
-
-         ;; Fix the tests so they run in out-of-source builds.
-         ;;
-         ;; TODO: Add support for examples/basic/batch/single_obj_MPIparallel,
-         ;; by adding openmpi to native-inputs and adjusting the example's
-         ;; BB_EXE parameter.
-         (add-after 'fix-sources-for-build 'fix-sources-for-tests
-           (lambda _
-             (substitute* "examples/CMakeLists.txt"
-               ;; This test passes only sometimes.
-               ;; See https://github.com/bbopt/nomad/issues/72.
-               (("^ +add_subdirectory\\(\\$\\{CMAKE_CURRENT_SOURCE_DIR\\}/advanced/library/PSDMads\\)\n")
-                "")
-               ;; examples/basic/batch/example3 is accidentally omitted.
-               (("^(add_subdirectory\\(\\$\\{CMAKE_CURRENT_SOURCE_DIR\\}/basic/batch/example)2(\\)\n)"
-                 _ prefix suffix)
-                (string-append prefix "2" suffix
-                               prefix "3" suffix))
-
-               ;; The generated runExampleTest.sh script runs the test as part
-               ;; of a pipeline and incorrectly (because pipefail is unset)
-               ;; relies on the value of the exit status immediately after the
-               ;; pipeline.
-               ;; (The patch-shebangs phase runs later than this one, so no
-               ;; need to update the path to bash here.)
-               (("#!/bin/bash") "#!/bin/bash\nset -o pipefail"))
-
-             (substitute*
-                 (map (lambda (d) (string-append "examples/" d "/CMakeLists.txt"))
-                      (append
-                       (map (lambda (d) (string-append "basic/library/" d))
-                            '("example1" "example2" "example3"
-                              "single_obj_parallel"))
-                       (map (lambda (d) (string-append "advanced/library/" d))
-                            '("FixedVariable" "NMonly" "PSDMads" "Restart"
-                              "c_api/example1" "c_api/example2"
-                              "exampleSuggestAndObserve"))))
-               ;; The runExampleTest.sh script is run with WORKING_DIRECTORY
-               ;; set to CMAKE_CURRENT_SOURCE_DIR.
-               ;; Other scripts invoked by that script (for example
-               ;; examples/advanced/batch/SuggestAndObserve/loopSuggestAndObserve.sh)
-               ;; are in that same directory, but compiled examples are
-               ;; located in CMAKE_CURRENT_BINARY_DIR.
-               (("(COMMAND \\$\\{CMAKE_BINARY_DIR\\}/examples/runExampleTest\\.sh )\\.(/.*)"
-                 _ command test)
-                (string-append command "${CMAKE_CURRENT_BINARY_DIR}" test)))
-
-             ;; The examples/basic/batch/example3 executable is already named
-             ;; bb3.exe.
-             (substitute* "examples/basic/batch/single_obj_parallel/CMakeLists.txt"
-               (("bb3.exe") "bb_parallel.exe"))
-
-             ;; (Unrelated to support for out-of-source testing.)
-             (make-file-writable
-              "examples/advanced/library/exampleSuggestAndObserve/cache0.txt")
-
-             (let ((builddir (string-append (getcwd) "/../build")))
-               (let ((dir "examples/advanced/library/FixedVariable"))
-                 (substitute* (string-append dir "/fixedVariable.cpp")
-                   (("^( +std::string sExe = ).*" _ prefix)
-                    (string-append prefix "\"" builddir "/" dir "/ufl.exe" "\";\n"))))
-
-               ;; The BB_EXE and SURROGATE_EXE paths are interpreted relative
-               ;; to the configuration file provided to NOMAD.
-               ;; However, the configuration files are all in the source tree
-               ;; rather than in the build tree (unlike the compiled
-               ;; executables).
-               (let ((fix-exe-path (lambda* (dir #:optional
-                                                 (file "param.txt")
-                                                 (exe-opt "BB_EXE"))
-                                     (substitute* (string-append dir "/" file)
-                                       (((string-append "^" exe-opt " +"))
-                                        ;; The $ prevents NOMAD from prefixing
-                                        ;; the executable with the path of the
-                                        ;; parent directory of the configuration
-                                        ;; file NOMAD was provided with as
-                                        ;; argument (param.txt or some such).
-                                        (string-append exe-opt " $"
-                                                       builddir "/" dir "/"))))))
-                 (for-each
-                  (lambda (dir)
-                    (let ((dir (string-append "examples/" dir)))
-                      (substitute* (string-append dir "/CMakeLists.txt")
-                        ;; The install phase has not yet run.
-                        (("COMMAND \\$\\{CMAKE_INSTALL_PREFIX\\}/bin/nomad ")
-                         "COMMAND ${CMAKE_BINARY_DIR}/src/nomad "))
-                      (fix-exe-path dir)
-                      (when (equal? dir "examples/basic/batch/surrogate_sort")
-                        (fix-exe-path dir "param.txt" "SURROGATE_EXE"))))
-                  (append (map (lambda (d) (string-append "basic/batch/" d))
-                               '("example1" "example2" "example3"
-                                 "single_obj"
-                                 "single_obj_parallel"
-                                 ;; "single_obj_MPIparallel"
-                                 "surrogate_sort"))
-                          '("advanced/batch/LHonly")))
-
-                 (let ((dir "examples/advanced/batch/FixedVariable"))
-                   (substitute* (string-append dir "/runFixed.sh")
-                     ;; Hardcoded path to NOMAD executable.
-                     (("^\\.\\./\\.\\./\\.\\./\\.\\./bin/nomad ")
-                      (string-append builddir "/src/nomad ")))
-                   (for-each
-                    (lambda (f) (fix-exe-path dir f))
-                    '("param1.txt" "param2.txt" "param3.txt" "param10.txt"))))))))))
+     (list
+      ;; Cannot build Python interface because it is incompatible with OpenMP
+      ;; support, which is enabled by default.
+      #:configure-flags
+      #~(list "-DBUILD_TESTS=ON"
+              "-DBUILD_INTERFACE_C=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              (substitute* "examples/CMakeLists.txt"
+                ;; This test passes only sometimes.
+                ;; See https://github.com/bbopt/nomad/issues/72.
+                (("^ +add_subdirectory\\(\\$\\{CMAKE_CURRENT_SOURCE_DIR\\}/advanced/library/PSDMads\\)\n")
+                 ""))
+              (make-file-writable
+               "examples/advanced/library/exampleSuggestAndObserve/cache0.txt")
+              ;; Fix the tests so they run in out-of-source builds.
+              (substitute*
+                  '("examples/basic/library/COCO/CMakeLists.txt"
+                    "examples/basic/library/example1/CMakeLists.txt"
+                    "examples/basic/library/example2/CMakeLists.txt"
+                    "examples/basic/library/example3/CMakeLists.txt"
+                    "examples/basic/library/example4/CMakeLists.txt"
+                    "examples/basic/library/single_obj_parallel/CMakeLists.txt"
+                    "examples/advanced/library/FixedVariable/CMakeLists.txt"
+                    "examples/advanced/library/NMonly/CMakeLists.txt"
+                    "examples/advanced/library/PSDMads/CMakeLists.txt"
+                    "examples/advanced/library/Restart/CMakeLists.txt"
+                    "examples/advanced/library/Restart_VNS/CMakeLists.txt"
+                    "examples/advanced/library/c_api/example1/CMakeLists.txt"
+                    "examples/advanced/library/c_api/example2/CMakeLists.txt"
+                    "examples/advanced/library/exampleSuggestAndObserve/CMakeLists.txt")
+                ;; The runExampleTest.sh script is run with WORKING_DIRECTORY
+                ;; set to CMAKE_CURRENT_SOURCE_DIR.
+                ;; Other scripts invoked by that script (for example
+                ;; examples/advanced/batch/SuggestAndObserve/loopSuggestAndObserve.sh)
+                ;; are in that same directory, but compiled examples are
+                ;; located in CMAKE_CURRENT_BINARY_DIR.
+                (("(COMMAND \\$\\{CMAKE_BINARY_DIR\\}/examples/runExampleTest\\.sh )\\.(/.*)"
+                  _ command test)
+                 (string-append command "${CMAKE_CURRENT_BINARY_DIR}" test)))
+              (let ((builddir (string-append (getcwd) "/../build")))
+                (let ((dir "examples/advanced/library/FixedVariable"))
+                  (substitute* (string-append dir "/fixedVariable.cpp")
+                    (("^( +std::string sExe = ).*" _ prefix)
+                     (string-append prefix "\"" builddir "/" dir "/ufl.exe" "\";\n"))))
+                ;; The BB_EXE and SURROGATE_EXE paths are interpreted relative
+                ;; to the configuration file provided to NOMAD.
+                ;; However, the configuration files are all in the source tree
+                ;; rather than in the build tree (unlike the compiled
+                ;; executables).
+                (let ((fix-exe-path (lambda* (dir #:optional
+                                                  (file "param.txt")
+                                                  (exe-opt "BB_EXE"))
+                                      (substitute* (string-append dir "/" file)
+                                        (((string-append "^" exe-opt " +"))
+                                         ;; The $ prevents NOMAD from prefixing
+                                         ;; the executable with the path of the
+                                         ;; parent directory of the configuration
+                                         ;; file NOMAD was provided with as
+                                         ;; argument (param.txt or some such).
+                                         (string-append exe-opt " $"
+                                                        builddir "/" dir "/"))))))
+                  (for-each
+                   (lambda (dir)
+                     (substitute* (string-append dir "/CMakeLists.txt")
+                       ;; The install phase has not yet run.
+                       (("(COMMAND.*)\\$\\{CMAKE_INSTALL_PREFIX\\}/bin/nomad\\b"
+                         _ prefix)
+                        (string-append prefix "${CMAKE_BINARY_DIR}/src/nomad")))
+                     (if (equal? dir "examples/basic/batch/single_obj_MPIparallel")
+                         (substitute* (string-append dir "/param.txt")
+                           (("^BB_EXE +'\\$.*mpirun \\$-np \\$4 ")
+                            (string-append "BB_EXE '$" (which "mpirun") " $"
+                                           builddir "/" dir "/")))
+                         (fix-exe-path dir))
+                     (when (equal? dir "examples/basic/batch/surrogate_sort")
+                       (fix-exe-path dir "param.txt" "SURROGATE_EXE"))
+                     (when (equal? dir "examples/advanced/batch/FixedVariable")
+                       (fix-exe-path dir "param1.txt")
+                       (fix-exe-path dir "param2.txt")
+                       (fix-exe-path dir "param3.txt")
+                       (fix-exe-path dir "param10.txt")))
+                   '("examples/basic/batch/coco_bbob-constrained"
+                     "examples/basic/batch/example1"
+                     "examples/basic/batch/example2"
+                     "examples/basic/batch/example3"
+                     "examples/basic/batch/multi_obj"
+                     "examples/basic/batch/multi_obj2"
+                     "examples/basic/batch/single_obj"
+                     "examples/basic/batch/single_obj_MPIparallel"
+                     "examples/basic/batch/single_obj_parallel"
+                     "examples/basic/batch/surrogate_sort"
+                     "examples/advanced/batch/FixedVariable"
+                     "examples/advanced/batch/LHonly"))))))
+          (add-before 'configure 'mpi-setup
+            #$%openmpi-setup))))
     (home-page "https://www.gerad.ca/nomad/")
     (synopsis "Nonlinear optimization by mesh-adaptive direct search")
     (description
