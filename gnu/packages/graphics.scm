@@ -2736,7 +2736,7 @@ desired local properties.")
 (define-public f3d
   (package
     (name "f3d")
-    (version "2.0.0")
+    (version "2.2.1")
     (source
      (origin
        (method git-fetch)
@@ -2745,22 +2745,12 @@ desired local properties.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gcwpdkz3ylaxi133zri1cxkvj6za5s1hbgqqc8fn10q2dkkdd44"))
+        (base32 "0f076754zsxb4gwk6bxj94iyjj0dfxmmc8w88f55xd6hbm3qdnwd"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
-            (delete-file "external/cxxopts.hpp")
-            (delete-file "external/json.hpp")
-            (substitute* "application/F3DOptionsParser.cxx"
-              (("^#include \"cxxopts\\.hpp\"")
-               "#include <cxxopts.hpp>")
-              (("^#include \"json\\.hpp\"")
-               "#include <nlohmann/json.hpp>")
-              (("cxxopts::OptionException")
-               "cxxopts::exceptions::parsing"))
-            (substitute* "library/src/engine.cxx"
-              (("^#include <json\\.hpp>")
-               "#include <nlohmann/json.hpp>"))))))
+            (delete-file-recursively "external/cxxopts")
+            (delete-file-recursively "external/nlohmann_json")))))
     (build-system cmake-build-system)
     ;; The package cannot easily be split into out and lib outputs because
     ;; VTK's vtkModule.cmake complains, and also the CMake files in
@@ -2783,15 +2773,29 @@ desired local properties.")
       #~(list (string-append "-DCMAKE_INSTALL_DOCDIR=" #$output
                              "/share/doc/" #$name "-" #$version)
               "-DBUILD_TESTING=OFF"
-              "-DF3D_GENERATE_MAN=ON"
-              "-DF3D_INSTALL_DEFAULT_CONFIGURATION_FILE=ON"
-              "-DF3D_INSTALL_DEFAULT_CONFIGURATION_FILE_IN_PREFIX=ON"
-              "-DF3D_INSTALL_MIME_TYPES_FILES=ON"
-              "-DF3D_INSTALL_THUMBNAILER_FILES=ON"
-              "-DF3D_MODULE_ALEMBIC=ON"
-              "-DF3D_MODULE_ASSIMP=ON"
+              "-DF3D_LINUX_GENERATE_MAN=ON"
+              "-DF3D_USE_EXTERNAL_CXXOPTS=ON"
+              "-DF3D_USE_EXTERNAL_NLOHMANN_JSON=ON"
               "-DF3D_MODULE_EXTERNAL_RENDERING=ON"
-              "-DF3D_MODULE_OCCT=ON")))
+              "-DF3D_MODULE_EXR=ON"
+              "-DF3D_PLUGIN_BUILD_ALEMBIC=ON"
+              "-DF3D_PLUGIN_BUILD_ASSIMP=ON"
+              "-DF3D_PLUGIN_BUILD_OCCT=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-cmake-rpath
+            (lambda _
+              ;; Expand $ORIGIN, and add VTK to library RPATH, because it is
+              ;; not added automatically.
+              (substitute* "application/CMakeLists.txt"
+                (("(set_target_properties.*PROPERTIES.*INSTALL_RPATH ).*"
+                  _ prefix)
+                 (string-append prefix "\"" #$output "/lib\")\n")))
+              (substitute* "library/CMakeLists.txt"
+                (("(set_target_properties.*PROPERTIES.*INSTALL_RPATH ).*"
+                  _ prefix)
+                 (string-append prefix "\"" #$output "/lib:"
+                                #$(this-package-input "vtk") "/lib\")\n"))))))))
     (native-inputs
      (list cxxopts
            help2man
@@ -2815,6 +2819,7 @@ desired local properties.")
            lz4
            netcdf
            opencascade-occt
+           openexr
            vtk
            zlib))
     (home-page "https://f3d-app.github.io/f3d/")
