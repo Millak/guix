@@ -26063,65 +26063,51 @@ extra features like type inference.")
   (sbcl-package->cl-source-package sbcl-nclasses))
 
 (define-public sbcl-prompter
-  (package
-    (name "sbcl-prompter")
-    (version "0.1.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/atlas-engineer/prompter")
-             (commit version)))
-       (file-name (git-file-name "prompter" version))
-       (sha256
-        (base32
-         "1489qg99n5bpl9b88pq3smnw5l9hrq08sbnabvavv3jcd4pzpsqf"))
-       (modules '((guix build utils)))
-       (snippet
-        `(begin
-           (delete-file-recursively "nasdf")
-           #t))))
-    (build-system asdf-build-system/sbcl)
-    (inputs
-     (list
-      sbcl-alexandria
-      sbcl-calispel
-      sbcl-cl-containers
-      sbcl-cl-str
-      sbcl-closer-mop
-      sbcl-lparallel
-      sbcl-moptilities
-      sbcl-nclasses
-      sbcl-serapeum
-      sbcl-trivial-package-local-nicknames))
-    (native-inputs
-     (list sbcl-lisp-unit2
-           sbcl-nasdf))
-    (home-page "https://github.com/atlas-engineer/prompter")
-    (synopsis "Live-narrowing, fuzzy-matching, extensible prompt framework")
-    (description
-     "This prompter library is heavily inspired by Emacs' minibuffer and
+  (let ((commit "b40a13af6ba4bd5c73c17e94dd2cbc2901bbd02f")
+        (revision "0"))
+    (package
+      (name "sbcl-prompter")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/atlas-engineer/prompter")
+               (commit commit)))
+         (file-name (git-file-name "cl-prompter" version))
+         (sha256
+          (base32
+           "1gg69rq2v9wcr7kj9fvd2i38r28fsgqqw6zs71m46krmr1gmfh4q"))
+         (modules '((guix build utils)))
+         (snippet
+          `(begin
+             (delete-file-recursively "nasdf")
+             #t))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list
+        sbcl-alexandria
+        sbcl-calispel
+        sbcl-cl-containers
+        sbcl-cl-str
+        sbcl-closer-mop
+        sbcl-lparallel
+        sbcl-moptilities
+        sbcl-nclasses
+        sbcl-serapeum
+        sbcl-trivial-package-local-nicknames))
+      (native-inputs
+       (list sbcl-lisp-unit2
+             sbcl-nasdf))
+      (home-page "https://github.com/atlas-engineer/prompter")
+      (synopsis "Live-narrowing, fuzzy-matching, extensible prompt framework")
+      (description
+       "This prompter library is heavily inspired by Emacs' minibuffer and
 Helm (@url{https://emacs-helm.github.io/helm/}).  It only deals with the
-backend side of things, it does not handle any display.
-
-Non-exhaustive list of features:
-
-@itemize
-@item Asynchronous suggestion computation.
-@item Multiple sources.
-@item Multiple return actions.
-@item Customizable matching and sorting.
-@item Multiple attributes to match and display (also known as 'multiple column
-display').
-@item Customizable initialization and cleanup functions.
-@item Notifications sent when suggestion list is updated.
-@item Per-source history.
-@item Resumable prompters.
-@item Marks actions (event-driven on marks change).
-@item Current suggestion actions (event-driven on current suggestion change).
-@item Automatically return the prompt when narrowed down to a single suggestion.
-@end itemize\n")
-    (license license:bsd-3)))
+backend side of things, it does not handle any display.  Features include
+asynchronous suggestion computation, multiple sources, actions and resumable
+prompters.")
+      (license license:bsd-3))))
 
 (define-public cl-prompter
   (sbcl-package->cl-source-package sbcl-prompter))
