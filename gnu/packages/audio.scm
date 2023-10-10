@@ -756,64 +756,65 @@ namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \
               (file-name (string-append name "-" version))))
     (build-system waf-build-system)
     (arguments
-     `(#:configure-flags '("--cxx11"              ; required by gtkmm
-                           "--optimize"
-                           "--no-phone-home"      ; don't contact ardour.org
-                           "--freedesktop"        ; build .desktop file
-                           "--test"               ; build unit tests
-                           "--use-external-libs") ; use system libraries
+     (list
+      #:configure-flags
+      '(list "--cxx11"                  ;required by gtkmm
+             "--optimize"
+             "--no-phone-home"          ;don't contact ardour.org
+             "--freedesktop"            ;build .desktop file
+             "--test"                   ;build unit tests
+             "--use-external-libs")     ;use system libraries
        #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'set-rpath-in-LDFLAGS
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((libdir (string-append (assoc-ref outputs "out")
-                                          "/lib/ardour"
-                                          ,(version-major version))))
-               (substitute* "wscript"
-                 (("linker_flags = \\[\\]")
-                  (string-append "linker_flags = [\""
-                                 "-Wl,-rpath="
-                                 libdir ":"
-                                 libdir "/backends" ":"
-                                 libdir "/engines" ":"
-                                 libdir "/panners" ":"
-                                 libdir "/surfaces" ":"
-                                 libdir "/vamp" "\"]"))))))
-         (add-after 'build 'build-i18n
-           (lambda _
-             (invoke "python" "waf" "i18n")))
-         (add-after 'install 'install-freedesktop-files
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out   (assoc-ref outputs "out"))
-                    (share (string-append out "/share"))
-                    (ver   ,(version-major version)))
-               (for-each
-                 (lambda (size)
-                   (let ((dir (string-append share "/icons/hicolor/"
-                                             size "x" size "/apps")))
-                     (mkdir-p dir)
-                     (copy-file
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'set-rpath-in-LDFLAGS
+             (lambda _
+               (let ((libdir (string-append #$output
+                                            "/lib/ardour"
+                                            #$(version-major version))))
+                 (substitute* "wscript"
+                   (("linker_flags = \\[\\]")
+                    (string-append "linker_flags = [\""
+                                   "-Wl,-rpath="
+                                   libdir ":"
+                                   libdir "/backends" ":"
+                                   libdir "/engines" ":"
+                                   libdir "/panners" ":"
+                                   libdir "/surfaces" ":"
+                                   libdir "/vamp" "\"]"))))))
+           (add-after 'build 'build-i18n
+             (lambda _
+               (invoke "python" "waf" "i18n")))
+           (add-after 'install 'install-freedesktop-files
+             (lambda _
+               (let ((share (string-append #$output "/share"))
+                     (ver #$(version-major version)))
+                 (for-each
+                  (lambda (size)
+                    (let ((dir (string-append share "/icons/hicolor/"
+                                              size "x" size "/apps")))
+                      (mkdir-p dir)
+                      (copy-file
                        (string-append "gtk2_ardour/resources/Ardour-icon_"
                                       size "px.png")
                        (string-append dir "/ardour" ver ".png"))))
-                 '("16" "22" "32" "48" "256"))
-               (install-file (string-append "build/gtk2_ardour/ardour"
-                                            ver ".desktop")
-                             (string-append share "/applications/"))
-               (install-file (string-append "build/gtk2_ardour/ardour"
-                                            ver ".appdata.xml")
-                             (string-append share "/appdata/")))))
-         (add-after 'install 'install-man-page
-           (lambda* (#:key outputs #:allow-other-keys)
-             (install-file "ardour.1" (string-append (assoc-ref outputs "out")
-                                                     "/share/man/man1"))))
-         (add-after 'install 'install-bundled-media
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "unzip" "-d" (string-append (assoc-ref outputs "out")
-                                                 "/share/ardour"
-                                                 ,(version-major version)
-                                                 "/media/")
-                     ,ardour-bundled-media))))
+                  '("16" "22" "32" "48" "256"))
+                 (install-file (string-append "build/gtk2_ardour/ardour"
+                                              ver ".desktop")
+                               (string-append share "/applications/"))
+                 (install-file (string-append "build/gtk2_ardour/ardour"
+                                              ver ".appdata.xml")
+                               (string-append share "/appdata/")))))
+           (add-after 'install 'install-man-page
+             (lambda _
+               (install-file "ardour.1" (string-append #$output
+                                                       "/share/man/man1"))))
+           (add-after 'install 'install-bundled-media
+             (lambda _
+               (invoke "unzip" "-d" (string-append #$output
+                                                   "/share/ardour"
+                                                   #$(version-major version)
+                                                   "/media/")
+                       #$ardour-bundled-media))))
        #:test-target "test"))
     (inputs
      (list alsa-lib
