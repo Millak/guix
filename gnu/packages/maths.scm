@@ -1301,14 +1301,14 @@ in the terminal or with an external viewer.")
 (define-public gnuplot
   (package
     (name "gnuplot")
-    (version "5.4.8")
+    (version "5.4.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/gnuplot/gnuplot/"
                                   version "/gnuplot-"
                                   version ".tar.gz"))
        (sha256
-        (base32 "1kzmj4yyxvlxqzqbrw6sx6dnvhj1zzqnciyb8ryzy6mdrb3pj4lk"))))
+        (base32 "15vabi30s4ln4vi82csx4nvfms3ik8704rk0prcm9h1xylhs0a53"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config (texlive-updmap.cfg)))
@@ -1316,7 +1316,8 @@ in the terminal or with an external viewer.")
      (list cairo gd lua pango readline))
     (arguments
      (list #:configure-flags
-           #~(list (string-append "--with-texdir=" #$output
+           #~(list "--with-qt=no"
+                   (string-append "--with-texdir=" #$output
                                   "/texmf-local/tex/latex/gnuplot"))
            ;; Plot on a dumb terminal during tests.
            #:make-flags #~'("GNUTERM=dumb")))
