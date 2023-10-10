@@ -10506,3 +10506,26 @@ against the several transient execution CVEs that were published since early
     (description "The primary purpose of Csmith is to find compiler bugs with
 random programs using differential testing.")
     (license license:bsd-4)))
+
+(define-public ryzen-smu
+  (package
+    (name "ryzen-smu")
+    (version "0.1.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://gitlab.com/leogx9r/ryzen_smu.git")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "010la2a8zp7rljlg5ssc9ragzva4ca05gvzlicjagl508659d2wz"))))
+    (build-system linux-module-build-system)
+    (arguments
+     `(#:tests? #f)) ; no tests
+    (synopsis "System Management Unit driver for AMD Ryzen processors")
+    (description "This package provides a way to access the
+System Management Unit for certain AMD Ryzen processors.
+This includes access to the System Management Network.")
+    (home-page "https://gitlab.com/leogx9r/ryzen_smu")
+    (license license:gpl2)))
