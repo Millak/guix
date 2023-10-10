@@ -2550,7 +2550,7 @@ generated discrete signed distance field using the cubic spline kernel.
 (define-public mmg
   (package
     (name "mmg")
-    (version "5.7.1")
+    (version "5.7.2")
     (source
      (origin
        (method git-fetch)
@@ -2559,7 +2559,7 @@ generated discrete signed distance field using the cubic spline kernel.
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0skb7yzsw6y44zp9gb729i5xks7qd97nvn3z6jhz4jksqksx7lz0"))))
+        (base32 "007d0mvqhnxxj6dbcip9s615asrbpgrbkpm5xn6m8k3n9sljr153"))))
     (build-system cmake-build-system)
     (outputs '("out" "lib" "doc"))
     (arguments
