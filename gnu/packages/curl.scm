@@ -167,7 +167,26 @@ tunneling, and so on.")
                 (sha256
                  (base32
                   "0qza6yf20y2l4aaxkn8dfw8p3fls1mxljvdb0m8z1i6ncxvn4v9p"))
-                (patches (search-patches "curl-use-ssl-cert-env.patch")))))))
+                (patches (search-patches "curl-use-ssl-cert-env.patch"))))
+      (arguments
+       (if (system-hurd?)
+           (substitute-keyword-arguments (package-arguments curl)
+             ((#:phases phases '%standard-phases)
+              #~(modify-phases #$phases
+                  ;; We cannot simply set #:make-flags because they are
+                  ;; ignored by curl's custom check phase.
+                  (replace 'check
+                    (lambda* (#:key tests? make-flags #:allow-other-keys)
+                      (substitute* "tests/runtests.pl"
+                        (("/bin/sh") (which "sh")))
+                      ;; See comment in curl about check/test.
+                      (let ((arguments `("-C" "tests" "test"
+                                         ,@make-flags
+                                         ;; protocol FAIL
+                                         "TFLAGS=~1474")))
+                        (when tests?
+                          (apply invoke "make" arguments))))))))
+           (package-arguments curl))))))
 
 (define-public curl-ssh
   (package/inherit curl
