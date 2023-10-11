@@ -493,6 +493,60 @@ in FITS files.")
     (license (license:non-copyleft "file://License.txt"
                                    "See License.txt in the distribution."))))
 
+(define-public python-aplpy
+  (package
+    (name "python-aplpy")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "aplpy" version))
+       (sha256
+        (base32 "0ph9jhv4q4i4z6nkqr6hjw9148kdlnayxsn83qgv5dqn0h3nc9r8"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-astropy
+           python-matplotlib
+           python-numpy
+           python-pillow
+           python-pyavm
+           python-pyregion
+           python-reproject
+           python-scikit-image
+           python-shapely))
+    (native-inputs
+     (list python-pytest-astropy
+           python-pytest-mpl
+           python-semantic-version))
+    (home-page "http://aplpy.github.io")
+    (synopsis "Astronomical Plotting Library in Python")
+    (description
+     "@acronym{APLpy, the Astronomical Plotting Library in Python} is a Python
+module aimed at producing publication-quality plots of astronomical imaging data
+in FITS format.  The module uses @code{matplotlib}, a powerful and interactive
+plotting package.  It is capable of creating output files in several graphical
+formats, including EPS, PDF, PS, PNG, and SVG.
+
+Main features:
+@itemize
+@item Make plots interactively or using scripts
+@item Show grayscale, colorscale, and 3-color RGB images of FITS files
+@item Generate co-aligned FITS cubes to make 3-color RGB images
+@item Make plots from FITS files with arbitrary WCS (e.g. position-velocity)
+@item Slice multi-dimensional FITS cubes
+@item Overlay any number of contour sets
+@item Overlay markers with fully customizable symbols
+@item Plot customizable shapes like circles, ellipses, and rectangles
+@item Overlay ds9 region files
+@item Overlay coordinate grids
+@item Show colorbars, scalebars, and beams
+@item Customize the appearance of labels and ticks
+@item Hide, show, and remove different contour and marker layers
+@item Pan, zoom, and save any view as a full publication-quality plot
+@item Save plots as EPS, PDF, PS, PNG, and SVG
+@end itemize")
+    (license license:expat)))
+
 (define-public python-astroml
   (package
     (name "python-astroml")
