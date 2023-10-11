@@ -1043,8 +1043,10 @@ bar.  It is also compatible with sway.")
                                        "/share/man/man1"))))
              #t)))
        #:features '("pcre2")))
+    (inputs
+     (list pcre2))
     (native-inputs
-     (list asciidoc pcre2 pkg-config))
+     (list asciidoc pkg-config))
     (home-page "https://github.com/BurntSushi/ripgrep")
     (synopsis "Line-oriented search tool")
     (description
