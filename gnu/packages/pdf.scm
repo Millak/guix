@@ -17,7 +17,7 @@
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019 Ben Sturmfels <ben@sturm.com.au>
 ;;; Copyright © 2019,2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2020-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -999,7 +999,7 @@ using a stylus.")
 (define-public xournalpp
   (package
     (name "xournalpp")
-    (version "1.1.3")
+    (version "1.2.1")
     (source
      (origin
        (method git-fetch)
@@ -1008,11 +1008,11 @@ using a stylus.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17qq3clfmiyrcah89h8c5r6pc58xcskm5z1czbasv67bfq7chzhy"))))
+        (base32 "18slm517yazysvd0ii0gi7kg4hzyf17d86w2bflgfaz9ccclswbn"))))
     (build-system cmake-build-system)
     (arguments
      (list
-      #:configure-flags #~(list "-DENABLE_CPPUNIT=ON") ;enable tests
+      #:configure-flags #~(list "-DENABLE_GTEST=ON")
       #:imported-modules `((guix build glib-or-gtk-build-system)
                            ,@%cmake-build-system-modules)
       #:modules '(((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
@@ -1029,10 +1029,13 @@ using a stylus.")
                  (string-append "\""
                                 (search-input-file inputs "/bin/addr2line")
                                 " ")))))
+          (add-after 'build 'prepare-tests
+            (lambda _
+              (invoke "cmake" "--build" "." "--target" "test-units")))
           (add-after 'install 'glib-or-gtk-wrap
             (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
     (native-inputs
-     (list cppunit gettext-minimal help2man pkg-config))
+     (list cppunit gettext-minimal googletest help2man pkg-config))
     (inputs
      (list alsa-lib
            gtk+
