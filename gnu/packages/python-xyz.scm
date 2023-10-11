@@ -29901,26 +29901,48 @@ applications with variable CPU loads).")
 (define-public python-versioneer
   (package
     (name "python-versioneer")
-    (version "0.21")
+    (version "0.29")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "versioneer" version))
        (sha256
         (base32
-         "084fglxafbzvf1vbkzfajvs9qwnvjwwn8pxql9nrlpyipv5xpwk4"))
+         "0cap4cjckxp9mlkprqayfs77k3pn5iwpr2riacdxc4bjhnwq7cjs"))
        (patches (search-patches "python-versioneer-guix-support.patch"))))
-    (build-system python-build-system)
-    (home-page
-     "https://github.com/python-versioneer/python-versioneer")
-    (synopsis
-     "Version-string management for VCS-controlled trees")
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Taken from tox.ini.
+                (invoke "python" "setup.py" "make_versioneer")
+                (invoke "python" "-m" "unittest" "discover" "test")
+                (invoke "python" "test/git/test_git.py" "-v")
+                ;; Some invocation tests require the network.
+                ;;(invoke "python" "test/git/test_invocations.py" "-v")
+                (invoke "python" "setup.py" "make_long_version_py_git")
+                (invoke "pyflakes" "setup.py" "versioneer.py" "git_version.py")
+                (invoke "python" "test/run_pyflakes_src.py")
+                (invoke "pyflakes" "test")
+                (invoke "flake8" "git_version.py" "versioneer.py")
+                (invoke "pycodestyle" "--max-line-length=88"
+                        "git_version.py" "versioneer.py")))))))
+    (native-inputs
+     (list git python-flake8 python-pycodestyle python-pyflakes))
+    (propagated-inputs
+     (list python-tomli))
+    (home-page "https://github.com/python-versioneer/python-versioneer")
+    (synopsis "Version-string management for VCS-controlled trees")
     (description
      "@code{versioneer} is a tool for managing a recorded version number in
 distutils-based python projects.  The goal is to remove the tedious and
 error-prone \"update the embedded version string\" step from your release
 process.")
-    (license license:public-domain)))
+    (license license:unlicense)))
 
 (define-public python-gamera
   (package
