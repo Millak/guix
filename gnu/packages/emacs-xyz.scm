@@ -504,6 +504,7 @@ API key.")
               (uri (git-reference
                     (url "https://github.com/xenodium/chatgpt-shell")
                     (commit "1de7bfa6a34f20cca813006282d9a8f2ef291f95")))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "1rabpp70qlmc47lmp2v7ckvfjhy6wkk881fxpbv2dchzhn77qk5r"))))
