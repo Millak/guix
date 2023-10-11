@@ -8098,13 +8098,13 @@ regular expressions.")
 (define-public python-scrapy
   (package
     (name "python-scrapy")
-    (version "2.10.1")
+    (version "2.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Scrapy" version))
        (sha256
-        (base32 "03yil4hjn14amx5jnvjfahmm78qqax2664z30xxn0dxmzdspimli"))))
+        (base32 "199nbc7vipdsvxmfxc0lrzbprgl3hr2xgqhvss1083iz1k7fvg9w"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags
