@@ -10480,6 +10480,7 @@ against the several transient execution CVEs that were published since early
               (uri (git-reference
                     (url "https://github.com/csmith-project/csmith")
                     (commit (string-append "csmith-" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "0nhrsnv6cny14xz68qb1h30fbwc05adkisk51p3x63mydm60ddl3"))))
