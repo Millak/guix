@@ -3955,6 +3955,40 @@ format, which are used by ASDF to serialize and deserialize data for the Nancy
 Grace Roman Space Telescope.")
     (license license:bsd-3)))
 
+(define-public python-radio-beam
+  (package
+    (name "python-radio-beam")
+    (version "0.3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "radio-beam" version))
+       (sha256
+        (base32 "0293hlbxb61h8js7yrvrbiw8108qn5s0rh2iy9rkhc012mzjacp0"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-astropy
+           python-matplotlib
+           python-numpy
+           python-scipy
+           python-six))
+    (native-inputs (list python-pytest-astropy))
+    (home-page "https://radio-beam.readthedocs.io/en/latest/")
+    (synopsis "Operations for radio astronomy beams with Astropy")
+    (description
+     "Radio Beam is a simple toolkit for reading beam information from FITS
+headers and manipulating beams.
+Some example applications include:
+@itemize
+@item Convolution and deconvolution
+@item Unit conversion (Jy to/from K)
+@item Handle sets of beams for spectral cubes with varying resolution between
+channels
+@item Find the smallest common beam from a set of beams
+@item Add the beam shape to a matplotlib plot
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public python-roman-datamodels
   (package
     (name "python-roman-datamodels")
