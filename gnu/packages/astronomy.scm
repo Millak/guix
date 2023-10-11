@@ -2166,6 +2166,29 @@ cases for which diffractive rather than geometric optics is the topic of
 interest, and which require portability between platforms or ease of scripting.")
     (license license:bsd-3)))
 
+(define-public python-pyavm
+  (package
+    (name "python-pyavm")
+    (version "0.9.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "PyAVM" version))
+       (sha256
+        (base32 "0vgjqvddq4a5lnmg8msm7fwqs3r6fc748xzvnhyvc387h0z8pdxk"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-astropy python-numpy))
+    (native-inputs
+     (list python-pillow python-pytest python-setuptools-scm))
+    (home-page "https://astrofrog.github.io/pyavm/")
+    (synopsis "Simple pure-python AVM meta-data handling")
+    (description
+     "PyAVM is a module to represent, read, and write metadata following the
+@acronym{AVM, Astronomy Visualization Metadata} standard provided by
+@url{https://www.virtualastronomy.org/avm_metadata.php, vamp} project.")
+    (license license:expat)))
+
 (define-public python-pyvo
   (package
     (name "python-pyvo")
