@@ -122,7 +122,7 @@
 (define-public converseen
   (package
     (name "converseen")
-    (version "0.9.11.1")
+    (version "0.11.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -131,7 +131,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0nxvac8df47gxg1klqlz0s3rxl0ykrikmciniwkb938bgilmaijm"))
+                "1imc0dbbrs96yv3mp6bs7whd14zvgdw7hmv87bz8lp7d739s74z4"))
               (patches
                (search-patches "converseen-hide-updates-checks.patch"
                                ;; Remove links to sites relying on non-free
