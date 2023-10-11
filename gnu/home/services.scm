@@ -2,6 +2,7 @@
 ;;; Copyright © 2021-2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2022-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2023 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -412,20 +413,29 @@ activation.")))
      #~(begin
          (use-modules (guix i18n)
                       (guix diagnostics))
+
+       (define (claim-first-run file)
+         (catch #t
+           (lambda ()
+             ;; This incantation raises an error if FILE already exists, and
+             ;; creates it otherwise.
+             (close-fdes
+              (open-fdes file (logior O_CREAT O_EXCL O_CLOEXEC)))
+             #t)
+           (const #f)))
+
        #$%initialize-gettext
 
        (let* ((xdg-runtime-dir (or (getenv "XDG_RUNTIME_DIR")
                                    (format #f "/run/user/~a" (getuid))))
               (flag-file-path (string-append
-                               xdg-runtime-dir "/on-first-login-executed"))
-              (touch (lambda (file-name)
-                       (call-with-output-file file-name (const #t)))))
+                               xdg-runtime-dir "/on-first-login-executed")))
          ;; XDG_RUNTIME_DIR dissapears on logout, that means such trick
          ;; allows to launch on-first-login script on first login only
          ;; after complete logout/reboot.
          (if (file-exists? xdg-runtime-dir)
-             (unless (file-exists? flag-file-path)
-               (begin #$@gexps (touch flag-file-path)))
+             (when (claim-first-run flag-file-path)
+               #$@gexps)
              ;; TRANSLATORS: 'on-first-login' is the name of a service and
              ;; shouldn't be translated
              (warning (G_ "XDG_RUNTIME_DIR doesn't exists, on-first-login script
