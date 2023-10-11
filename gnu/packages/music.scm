@@ -5221,15 +5221,15 @@ specification and header.")
 (define-public rosegarden
   (package
     (name "rosegarden")
-    (version "22.12.1")
+    (version "23.06")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/rosegarden/rosegarden/"
                            (version-major+minor version) "/"
-                           "rosegarden-" version ".tar.bz2"))
+                           "rosegarden-" version ".tar.xz"))
        (sha256
-        (base32 "01ljv4rkglicvx7fd6d5chi8k6wia5d6374gf20rgi75grzs59vy"))))
+        (base32 "1k3j5p6lx3w6pbsh95xiyfj8g8ysmvd18v0wmx7kdb3vyj5mfd0z"))))
     (build-system cmake-build-system)
     (arguments
      (list
