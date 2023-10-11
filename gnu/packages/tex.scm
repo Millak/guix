@@ -320,6 +320,7 @@ of user-specified directories similar to how shells look up executables.")
                            "tlpkg/TeXLive/"
                            "tlpkg/texlive.tlpdb"))
                     (revision %texlive-revision)))
+              (file-name (git-file-name name version))
               (sha256
                "0sqbg5kjpzkpm1fq2c9hpf4f21bvjs3xas944dlbqp44lsqhcmsk")))
     (outputs '("out" "doc"))
