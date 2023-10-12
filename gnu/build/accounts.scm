@@ -526,7 +526,7 @@ password from USERS."
 
   (define now
     ;; On machines without a real-time clock (typically Arm SBCs), the system
-    ;; clock may be at 1970-01-01 while booting, while would lead us to define
+    ;; clock may be at 1970-01-01 while booting, which would lead us to define
     ;; NOW as zero.
     ;;
     ;; However, the 'isexpired' function in Shadow interprets the combination
