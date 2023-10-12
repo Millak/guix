@@ -10602,6 +10602,29 @@ the Singular Value Decomposition in R (Beaton et al 2014)
 the matrix exponential and logarithm, and the determinant.")
     (license license:gpl2)))
 
+(define-public r-complexupset
+  (package
+    (name "r-complexupset")
+    (version "1.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "ComplexUpset" version))
+       (sha256
+        (base32 "1sk4v5kc2wkgfaws0hjlp30mngm907r5gz1iglf68j46lfs9jbsv"))))
+    (properties `((upstream-name . "ComplexUpset")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-colorspace r-ggplot2 r-patchwork r-scales))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/krassowski/complex-upset")
+    (synopsis "Create complex UpSet plots using ggplot2 components")
+    (description
+     "@code{UpSet} plots are an improvement over Venn Diagram for set overlap
+visualizations.  Striving to bring the best of the @code{UpSetR} and ggplot2,
+this package offers a way to create complex overlap visualisations, using
+simple and familiar tools.")
+    (license license:expat)))
+
 (define-public r-phontools
   (package
     (name "r-phontools")
