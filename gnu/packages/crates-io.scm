@@ -59158,7 +59158,8 @@ rustc compiler.")
          (base32
           "0vh93fhqfbn4ysw4xzkpkpqdz36xixz4mhs1qllgldfq5iay6wgj"))))
     (arguments
-     `(#:tests? #f ;; 1/111 tests fail (test file not found)
+     `(#:skip-build? #t     ; TODO: Fix building rust-ring-0.14
+       #:tests? #f ;; 1/111 tests fail (test file not found)
        #:cargo-inputs
        (("rust-base64" ,rust-base64-0.10)
         ("rust-log" ,rust-log-0.4)
