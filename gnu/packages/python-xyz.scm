@@ -1220,13 +1220,13 @@ Markdown.  All extensions are found under the module namespace of pymdownx.")
 (define-public python-pint
   (package
     (name "python-pint")
-    (version "0.20.1")
+    (version "0.22")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Pint" version))
               (sha256
                (base32
-                "0rv0cbala7ibjbaf6kkcn0mdhqdbajnvlcw0f15gwzfwg10g0z1q"))))
+                "0cs4lsvngrkfzpnrmxcwz728m47y0xbw1knksz51cc6gpdm9y4rd"))))
     (build-system pyproject-build-system)
     (arguments
      ;; This single test tries to write to $HOME/.cache/pint.
@@ -1241,7 +1241,9 @@ Markdown.  All extensions are found under the module namespace of pymdownx.")
            python-pytest-subtests
            python-setuptools-scm
            python-sparse
+           python-uncertainties
            python-xarray))
+    (propagated-inputs (list python-typing-extensions))
     (home-page "https://github.com/hgrecco/pint")
     (synopsis "Physical quantities module")
     (description
