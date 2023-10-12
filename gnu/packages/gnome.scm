@@ -10992,14 +10992,14 @@ supports both X and Wayland display servers.")
 (define-public bluefish
   (package
     (name "bluefish")
-    (version "2.2.12")
+    (version "2.2.14")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.bennewitz.com/bluefish/stable/source/"
                            "bluefish-" version ".tar.gz"))
        (sha256
-        (base32 "09hgxq139kbkjda5y073lqhq1z1x7cx0j80jh77afrqa3y9c53wl"))))
+        (base32 "0427xihrr7l1475qr3n40hz2xz6bqmfdbdg9pn8q7rvhvajyvjx7"))))
     (build-system gnu-build-system)
     (native-inputs
      (list desktop-file-utils intltool pkg-config))
