@@ -42723,7 +42723,8 @@ communication with Nitrokey devices.")
          "197j9r2s4ydzbqfydza6v31mgcsgd29jpidz4psqawjdm49f8lg6"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:skip-build? #t     ; Wants an older version of rust-nitrokey.
+       #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("quote" ,rust-quote-1)
         ("syn" ,rust-syn-1))))
