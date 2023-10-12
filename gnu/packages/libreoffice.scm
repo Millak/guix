@@ -117,22 +117,22 @@ their dependencies automatically upon calculation.")
 (define-public orcus
   (package
     (name "orcus")
-    (version "0.17.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "http://kohei.us/files/orcus/src/lib"
-                           "orcus-" version ".tar.xz"))
-       (sha256
-        (base32
-         "1as04qb74jnlnwy4wh5jwaw2nnzgn2s3230ymvh3kx1w9r0rsl1h"))))
+    (version "0.19.0")
+    (source (origin
+              ;; The test suite requires data files store with Git Large
+              ;; File Storage.
+              (method git-fetch/lfs)
+              (uri (git-reference
+                    (url "https://gitlab.com/orcus/orcus")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "02prj6kgph56fkr89k8wlqarrmx65cq92863i4rrny5sqr8c2llr"))))
     (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags '("--disable-static")))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list ixion mdds python zlib))
+    (arguments (list #:configure-flags #~(list "--disable-static")))
+    (native-inputs (list autoconf automake libtool pkg-config))
+    (inputs (list ixion mdds python zlib))
     (home-page "https://gitlab.com/orcus/orcus")
     (synopsis "File import filter library for spreadsheet documents")
     (description "Orcus is a library that provides a collection of standalone
