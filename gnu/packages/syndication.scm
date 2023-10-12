@@ -622,7 +622,7 @@ parser.  It is \"not fit for use at this point\", but gfeeds uses it anyway.")
            python-readability-lxml
            python-requests
            syndication-domination
-           webkitgtk-next))
+           webkitgtk))
     (home-page "https://gfeeds.gabmus.org/")
     (synopsis "Easy-to-use GTK+ RSS/Atom feed reader")
     (description "Feeds is an RSS/Atom feed reader made with GTK+

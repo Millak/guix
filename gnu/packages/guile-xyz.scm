@@ -3350,7 +3350,7 @@ list of components.  This module takes care of that for you.")
                   (guix build utils)
                   (ice-9 popen)
                   (ice-9 rdelim))
-       #:disallowed-references ,(list gtk+ webkitgtk)
+       #:disallowed-references ,(list gtk+ webkitgtk-for-gtk3)
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'remove-dotted-circle-from-combining-character
@@ -3396,7 +3396,7 @@ list of components.  This module takes care of that for you.")
     (propagated-inputs (list gobject-introspection))
     (inputs (list guile-3.0 glib
                   ;; For tests, only relevant when compiling natively
-                  gtk+ webkitgtk))
+                  gtk+ webkitgtk-for-gtk3))
     (home-page "https://github.com/spk121/guile-gi")
     (synopsis "GObject bindings for Guile")
     (description
@@ -3935,7 +3935,7 @@ processing filters.")
        ("glib-networking" ,glib-networking)
        ("gtk+" ,gtk+)
        ("gtk+:bin" ,gtk+ "bin")
-       ("webkitgtk" ,webkitgtk)
+       ("webkitgtk" ,webkitgtk-for-gtk3)
        ("gtksourceview" ,gtksourceview-4)
        ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
        ("vte" ,vte)

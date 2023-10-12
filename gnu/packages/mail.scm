@@ -3915,7 +3915,7 @@ tools and applications:
            libsecret
            openldap
            sqlite
-           webkitgtk))
+           webkitgtk-for-gtk3))
     (native-inputs
      (list compface
            `(,glib "bin") intltool pkg-config yelp-tools))

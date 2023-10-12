@@ -5039,7 +5039,7 @@ is a library for creating graphical user interfaces.")
     (inputs
      `(("cffi" ,sbcl-cffi)
        ("cl-cffi-gtk" ,sbcl-cl-cffi-gtk)
-       ("webkitgtk" ,webkitgtk)))
+       ("webkitgtk" ,webkitgtk-for-gtk3)))
     (native-inputs
      `(;; Tests seem to need Xorg.
        ;; ("xorg-server" ,xorg-server-for-tests)

@@ -775,7 +775,7 @@ infamous 'Wanda the Fish'.")
        ;;   Build libkpathsea as a shared library for DVI support.
        ;; ("libkpathsea" ,texlive-bin)
        ("poppler" ,poppler)
-       ("webkitgtk" ,webkitgtk)))
+       ("webkitgtk" ,webkitgtk-for-gtk3)))
     (home-page "https://mate-desktop.org")
     (synopsis "Document viewer for Mate")
     (description

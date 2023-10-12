@@ -1577,7 +1577,7 @@ extraction, and lookup for applications on the desktop.")
            polkit
            rest-next
            upower
-           webkitgtk-next))
+           webkitgtk))
     (synopsis "Initial setup wizard for GNOME desktop")
     (description "This package provides a set-up wizard when a
 user logs into GNOME for the first time.  It typically provides a
@@ -1665,7 +1665,7 @@ sharing to the masses.")
            libmusicbrainz
            libxml2
            neon
-           webkitgtk))
+           webkitgtk-for-gtk3))
     (synopsis "File previewer for the GNOME desktop")
     (description "Sushi is a DBus-activated service that allows applications
 to preview files on the GNOME desktop.")
@@ -3369,7 +3369,7 @@ compiles to GTKBuilder XML.")
            python-pygobject
            python-lxml
            webkitgtk
-           webkitgtk-next))
+           webkitgtk))
     (native-inputs
      (list `(,glib "bin")
            gobject-introspection
@@ -6130,7 +6130,7 @@ both a traditional UI or a modern UI with a GtkHeaderBar.")
            pkg-config))
     (inputs
      (list amtk
-           webkitgtk))
+           webkitgtk-for-gtk3))
     (home-page "https://wiki.gnome.org/Apps/Devhelp")
     (synopsis "API documentation browser for GNOME")
     (description
@@ -6143,7 +6143,7 @@ throughout GNOME for API documentation).")
   (hidden-package
    (package/inherit devhelp
      (inputs (modify-inputs (package-inputs devhelp)
-               (replace "webkitgtk" webkitgtk-with-libsoup2))))))
+               (replace "webkitgtk-for-gtk3" webkitgtk-with-libsoup2))))))
 
 (define-public cogl
   (package
@@ -8036,7 +8036,7 @@ window manager.")
            libsecret
            mit-krb5
            rest-next
-           webkitgtk))
+           webkitgtk-for-gtk3))
     (synopsis "Single sign-on framework for GNOME")
     (home-page "https://wiki.gnome.org/Projects/GnomeOnlineAccounts")
     (description
@@ -8069,7 +8069,7 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
                       (delete 'disable-gtk-update-icon-cache)))))
     (inputs (modify-inputs (package-inputs gnome-online-accounts)
               (replace "rest" rest)
-              (replace "webkitgtk" webkitgtk-with-libsoup2)))))
+              (replace "webkitgtk-for-gtk3" webkitgtk-with-libsoup2)))))
 
 (define-public evolution-data-server
   (package
@@ -8155,7 +8155,7 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
            libphonenumber
            mit-krb5
            openldap
-           webkitgtk))
+           webkitgtk-for-gtk3))
     (synopsis "Store address books and calendars")
     (home-page "https://wiki.gnome.org/Apps/Evolution")
     (description
@@ -8182,7 +8182,7 @@ Evolution (hence the name), but is now used by other packages as well.")
      (modify-inputs (package-inputs evolution-data-server)
        (replace "gnome-online-accounts" gnome-online-accounts-3.44)
        (replace "libgweather4" libgweather)
-       (replace "webkitgtk" webkitgtk-with-libsoup2)))
+       (replace "webkitgtk-for-gtk3" webkitgtk-with-libsoup2)))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs evolution-data-server)
        (delete "gtk")
@@ -11315,7 +11315,7 @@ views can be printed as PDF or PostScript files, or exported to HTML.")
            python-pygobject
            python-pylast
            totem-pl-parser
-           webkitgtk))
+           webkitgtk-for-gtk3))
     (propagated-inputs
      (list gst-plugins-good             ;required to start lollypop
            gst-plugins-ugly))           ;required for streaming
@@ -11784,7 +11784,7 @@ generic enough to work for everyone.")
            libsoup
            nss
            openldap
-           webkitgtk
+           webkitgtk-for-gtk3
            ytnef))
     (home-page "https://gitlab.gnome.org/GNOME/evolution")
     (synopsis "Manage your email, contacts and schedule")
@@ -12400,7 +12400,7 @@ integrate seamlessly with the GNOME desktop.")
            spice-gtk
            tracker
            vte
-           webkitgtk))
+           webkitgtk-for-gtk3))
     (home-page "https://wiki.gnome.org/Apps/Boxes")
     (synopsis "View, access, and manage remote and virtual systems")
     (description "GNOME Boxes is a simple application to view, access, and
@@ -12474,7 +12474,7 @@ non-privileged user.")
            libstemmer
            libunwind
            sqlite
-           webkitgtk
+           webkitgtk-for-gtk3
            ytnef))
     (native-inputs
      (list appstream-glib
@@ -13173,7 +13173,7 @@ profiler via Sysprof, debugging support, and more.")
            python-rarfile
            python-requests
            python-unidecode
-           webkitgtk-next))
+           webkitgtk))
     (native-inputs
      (list desktop-file-utils
            gettext-minimal
