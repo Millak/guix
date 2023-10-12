@@ -42688,7 +42688,7 @@ with Nitrokey devices.")
 (define-public rust-nitrokey-sys-3
   (package
     (name "rust-nitrokey-sys")
-    (version "3.6.0")
+    (version "3.7.0")
     (source
      (origin
        (method url-fetch)
@@ -42696,8 +42696,12 @@ with Nitrokey devices.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "08c3lnb8iqx000jd5rzvrdvv4ihjyw3x3s8q11dw56is0nmjyvws"))))
+         "0hcns32sclzf8xbdjg5iqndbn1b66l3j61zbgbl8ds8n6nind16q"))))
     (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-bindgen" ,rust-bindgen-0.55)
+         ("rust-cc" ,rust-cc-1))))
     (home-page "https://git.sr.ht/~ireas/nitrokey-sys-rs")
     (synopsis "Low-level Rust bindings for libnitrokey")
     (description
