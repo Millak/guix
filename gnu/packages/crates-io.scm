@@ -74538,7 +74538,7 @@ composition between @code{Service}s.")
 (define-public rust-tower-service-0.3
   (package
     (name "rust-tower-service")
-    (version "0.3.0")
+    (version "0.3.2")
     (source
      (origin
        (method url-fetch)
@@ -74546,11 +74546,14 @@ composition between @code{Service}s.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0q4q53w82w1wd71x7vbspg2l3jicb6al2w1qdwxmnjrz8jzvd1z9"))))
+         "0lmfzmmvid2yp2l36mbavhmqgsvzqf7r2wiwz73ml4xmwaf1rg5n"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
-       (("rust-http" ,rust-http-0.1))))
+       (("rust-futures" ,rust-futures-0.3)
+        ("rust-http" ,rust-http-0.2)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tower-layer" ,rust-tower-layer-0.3))))
     (home-page "https://github.com/tower-rs/tower")
     (synopsis "Asynchronous, request / response based, client or server")
     (description "This package provides a trait representing an asynchronous,
