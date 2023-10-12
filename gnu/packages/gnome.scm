@@ -10476,9 +10476,6 @@ desktop.  It supports multiple calendars, month, week and year view.")
 to perfectly fit the GNOME desktop.")
     (license license:gpl3+)))
 
-(define-public gnome-todo
-  (deprecated-package "gnome-todo" endeavour))
-
 (define-public dialect
   (package
     (name "dialect")
