@@ -74470,21 +74470,20 @@ One-Time Password library.")
 (define-public rust-tower-0.4
   (package
     (name "rust-tower")
-    (version "0.4.10")
+    (version "0.4.13")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tower" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "001wx4iiyhmiih9f93szjsfdm5mzlr0n093bhqf178azzw7m03n0"))))
+        (base32 "073wncyqav4sak1p755hf6vl66njgfc1z1g1di9rxx3cvvh9pymq"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-futures-core" ,rust-futures-core-0.3)
         ("rust-futures-util" ,rust-futures-util-0.3)
-        ("rust-hdrhistogram" ,rust-hdrhistogram-6)
+        ("rust-hdrhistogram" ,rust-hdrhistogram-7)
         ("rust-indexmap" ,rust-indexmap-1)
         ("rust-pin-project" ,rust-pin-project-1)
         ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
@@ -74492,10 +74491,21 @@ One-Time Password library.")
         ("rust-slab" ,rust-slab-0.4)
         ("rust-tokio" ,rust-tokio-1)
         ("rust-tokio-stream" ,rust-tokio-stream-0.1)
-        ("rust-tokio-util" ,rust-tokio-util-0.6)
+        ("rust-tokio-util" ,rust-tokio-util-0.7)
         ("rust-tower-layer" ,rust-tower-layer-0.3)
         ("rust-tower-service" ,rust-tower-service-0.3)
-        ("rust-tracing" ,rust-tracing-0.1))))
+        ("rust-tracing" ,rust-tracing-0.1))
+       #:cargo-development-inputs
+       (("rust-futures" ,rust-futures-0.3)
+        ("rust-hdrhistogram" ,rust-hdrhistogram-7)
+        ("rust-http" ,rust-http-0.2)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-stream" ,rust-tokio-stream-0.1)
+        ("rust-tokio-test" ,rust-tokio-test-0.4)
+        ("rust-tower-test" ,rust-tower-test-0.4)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
     (home-page "https://github.com/tower-rs/tower")
     (synopsis "Library for building clients and servers")
     (description
