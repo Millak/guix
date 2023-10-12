@@ -6425,13 +6425,13 @@ revised simplex and the branch-and-bound methods.")
                              (string-replace-substring version "." "-")))))
        (file-name (git-file-name "trilinos" version))
        (sha256
-        (base32 "0fnwlhzsh85qj38cq3igbs8nm1b2jdgr2z734sapmyyzsy21mkgp"))))
+        (base32 "0fnwlhzsh85qj38cq3igbs8nm1b2jdgr2z734sapmyyzsy21mkgp"))
+       (patches
+        (search-patches "teuchos-remove-duplicate-using.patch"
+                        "tpetra-remove-duplicate-using.patch"))))
     (build-system cmake-build-system)
     (native-inputs
      (list
-      ;; The build fails with the current gcc.
-      ;; Use the version from when Trilinos was added.
-      gcc-7
       gfortran
       ;; Trilinos's repository contains several C-shell scripts, but adding
       ;; tcsh to the native inputs does not result in the check phase running

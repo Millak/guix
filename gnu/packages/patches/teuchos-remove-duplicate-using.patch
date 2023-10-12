@@ -1,0 +1,34 @@
+commit e27d9ae98502626d8407045a4e082797682ba56b
+Author: Christian Glusa <caglusa@sandia.gov>
+Date:   Fri Jul 3 18:02:27 2020 -0600
+
+    Teuchos Comm test: remove duplicate 'using ...'
+
+diff --git a/packages/teuchos/comm/test/Comm/reduce.cpp b/packages/teuchos/comm/test/Comm/reduce.cpp
+index c05ebc0dc34..eac1975ef83 100644
+--- a/packages/teuchos/comm/test/Comm/reduce.cpp
++++ b/packages/teuchos/comm/test/Comm/reduce.cpp
+@@ -53,9 +53,6 @@ bool
+ testReduceSum (bool& success, std::ostream& out,
+                const int root, const Teuchos::Comm<int>& comm)
+ {
+-#ifdef HAVE_TEUCHOS_MPI
+-  using Teuchos::MpiComm;
+-#endif // HAVE_TEUCHOS_MPI
+   using Teuchos::reduce;
+   using Teuchos::TypeNameTraits;
+   using std::endl;
+diff --git a/packages/teuchos/comm/test/Comm/scatter.cpp b/packages/teuchos/comm/test/Comm/scatter.cpp
+index 0ca961d2846..001009029c4 100644
+--- a/packages/teuchos/comm/test/Comm/scatter.cpp
++++ b/packages/teuchos/comm/test/Comm/scatter.cpp
+@@ -53,9 +53,6 @@ bool
+ testScatter (bool& success, std::ostream& out,
+              const int root, const Teuchos::Comm<int>& comm)
+ {
+-#ifdef HAVE_TEUCHOS_MPI
+-  using Teuchos::MpiComm;
+-#endif // HAVE_TEUCHOS_MPI
+   using Teuchos::scatter;
+   using Teuchos::TypeNameTraits;
+   using std::endl;
