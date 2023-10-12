@@ -159,7 +159,7 @@ tunneling, and so on.")
   (let ((%version "8.4.0"))
     (package
       (inherit curl)
-      (version "8.3.0a")               ; add lowercase 'a' for grafting
+      (version "8.4.0a")               ; add lowercase 'a' for grafting
       (source (origin
                 (method url-fetch)
                 (uri (string-append "https://curl.se/download/curl-"
