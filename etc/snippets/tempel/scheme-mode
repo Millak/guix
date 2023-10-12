@@ -18,32 +18,32 @@ scheme-mode
  "(origin"
  n> "(method " (p "url-fetch" method) ")"
  n> "(uri " (cl-case (and method (intern method))
-              ('git-fetch "git-reference...")
-              ('svn-fetch "svn-reference...")
-              ('hg-fetch  "hg-reference...")
-              ('cvs-fetch "cvs-reference...")
-              ('bzr-fetch "bzr-reference...")
-              (t          "\"https://...\""))
+              (git-fetch "git-reference...")
+              (svn-fetch "svn-reference...")
+              (hg-fetch  "hg-reference...")
+              (cvs-fetch "cvs-reference...")
+              (bzr-fetch "bzr-reference...")
+              (otherwise "\"https://...\""))
  ")"
  n>
  (cl-case (and method (intern method))
-   ('git-fetch
+   (git-fetch
     (insert "(file-name (git-file-name name version))")
     (newline)
     (indent-according-to-mode))
-   ('hg-fetch
+   (hg-fetch
     (insert "(file-name (hg-file-name name version))")
     (newline)
     (indent-according-to-mode))
-   ('svn-fetch
+   (svn-fetch
     (insert "(file-name (string-append name \"-\" version \"-checkout\"))")
     (newline)
     (indent-according-to-mode))
-   ('cvs-fetch
+   (cvs-fetch
     (insert "(file-name (string-append name \"-\" version \"-checkout\"))")
     (newline)
     (indent-according-to-mode))
-   ('bzr-fetch
+   (bzr-fetch
     (insert "(file-name (string-append name \"-\" version \"-checkout\"))")
     (newline)
     (indent-according-to-mode))
