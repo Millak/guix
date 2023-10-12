@@ -30,9 +30,10 @@
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2022 Felipe Balbi <balbi@kernel.org>
 ;;; Copyright © 2022 ( <paren@disroot.org>
-;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2022, 2023 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Aaron Covrig <aaron.covrig.us@ieee.org>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
@@ -1075,14 +1076,14 @@ usable with any list--including files, command history, processes and more.")
 (define-public python-pyte
   (package
     (name "python-pyte")
-    (version "0.7.0")
+    (version "0.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyte" version))
        (sha256
         (base32
-         "1an54hvyjm8gncx8cgabz9mkpgjkdb0bkyjlkh7g7f94nr3wnfl7"))))
+         "1c4pn2qijk6q8q25klfq365gbvlkrh8c0lz5lrr7b7kmh6vx3gxr"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
