@@ -151,7 +151,7 @@
            telepathy-glib
            vte                          ; for st plugin
            wayland
-           webkitgtk                    ; for www plugin
+           webkitgtk-for-gtk3           ; for www plugin
            libx11
            libxext                      ; for xdmcp plugin
            xdg-utils
