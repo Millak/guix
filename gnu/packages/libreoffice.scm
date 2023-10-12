@@ -14,6 +14,7 @@
 ;;; Copyright © 2019 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2020 Marcin Karpezo <sirmacik@wioo.waw.pl>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -92,20 +93,19 @@
 (define-public ixion
   (package
     (name "ixion")
-    (version "0.17.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "http://kohei.us/files/ixion/src/libixion-"
-                           version ".tar.xz"))
-       (sha256
-        (base32
-         "07hhqkvns4da8xv990gr1smqz1zf40m531lg95nphfrz48wp3jak"))))
+    (version "0.19.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/ixion/ixion")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0nycbs3765wkaw9ff7aflm56ayxkn15dlfl5pbbb9b5i2rcv3dq6"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list mdds python spdlog))
+    (native-inputs (list autoconf automake libtool pkg-config))
+    (inputs (list mdds python spdlog))
     (home-page "https://gitlab.com/ixion/ixion")
     (synopsis "General purpose formula parser and interpreter")
     (description "Ixion is a library for calculating the results of formula
