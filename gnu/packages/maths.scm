@@ -3179,6 +3179,61 @@ This is the certified version of the Open Cascade Technology (OCCT) library.")
                    ;; File src/NCollection/NCollection_StdAllocator.hxx:
                    license:public-domain))))
 
+(define-public fast-downward
+  (package
+    (name "fast-downward")
+    (version "23.06.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/aibasel/downward")
+                    (commit (string-append "release-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1xrgnvbkzkdf6srbrlsnf4qrgp0f1lkk7yxf34ynna0w49l468d4"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f        ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-driver
+            (lambda* (#:key outputs #:allow-other-keys)
+              (substitute* "driver/run_components.py"
+                ;; strip gratuitous "bin"
+                (("os\\.path\\.join\\((.*), \"bin\"\\)" all keep)
+                 (string-append "os.path.join(" keep ")")))))
+          (add-before 'configure 'chdir
+            (lambda _ (chdir "src")))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (dest (string-append out "/libexec/fast-downward"
+                                          "/builds/release")))
+                (mkdir-p dest)
+                (with-directory-excursion "bin"
+                  (install-file "downward" dest)
+                  (copy-recursively "translate"
+                                    (string-append dest "/translate"))))))
+          (add-after 'install 'install-driver
+            (lambda* (#:key outputs #:allow-other-keys)
+              (with-directory-excursion ".."
+                (let* ((out (assoc-ref outputs "out"))
+                       (bin (string-append out "/bin/fast-downward"))
+                       (dest (string-append out "/libexec/fast-downward")))
+                  (copy-recursively "driver"
+                                    (string-append dest "/driver"))
+                  (mkdir-p (dirname bin))
+                  (copy-file "fast-downward.py" bin)
+                  (wrap-program bin
+                    `("PYTHONPATH" prefix (,dest))))))))))
+    (inputs (list bash-minimal python))
+    (home-page "https://www.fast-downward.org/")
+    (synopsis "Domain-independant classical planning system")
+    (description "Fast Downward is a portfolio-based planning system that
+supports the propositional fragment of PDDL2.2.")
+    (license license:gpl3+)))
+
 (define-public gmsh
   (package
     (name "gmsh")
