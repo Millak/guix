@@ -31,7 +31,7 @@
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022, 2023 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2022, 2023 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2023 Sughosha <Sughosha@proton.me>
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
@@ -608,6 +608,47 @@ functions, class methods, and stl containers.
 container which uses the order in which keys were inserted to the container
 as ordering relation.")
     (license license:expat)))
+
+(define-public frozen
+  ;; The test suite fails to compile with the latest 1.1.1 release; use a
+  ;; newer commit (see:
+  ;; https://github.com/serge-sans-paille/frozen/issues/163).
+  (let ((commit "dd1f58c5f6c97fbf0832cc4e84676663839b913e")
+        (revision "0"))
+    (package
+      (name "frozen")
+      (version (git-version "1.1.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/serge-sans-paille/frozen")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "06i307a7v6alxfy24d47b1sjkz5f4mrqwl2vb4j8zx7wlgnrf08b"))))
+      (build-system cmake-build-system)
+      (home-page "https://github.com/serge-sans-paille/frozen")
+      (synopsis "C++ constexpr alternative header-only library")
+      (description "@code{frozen} is a header-only library that provides zero
+cost initialization for immutable containers, fixed-size containers, and
+various algorithms.  It provides features such as:
+@itemize
+@item
+immutable (also known as frozen), @code{constexpr}-compatible versions of
+{std::set}, {std::unordered_set}, {std::map} and {std::unordered_map}
+@item
+fixed-capacity, @code{constinit}-compatible versions of @code{std::map} and
+@code{std::unordered_map} with immutable, compile-time selected keys mapped to
+mutable values.
+@item
+zero cost initialization version of @code{std::search} for frozen needles
+using Boyer-Moore or Knuth-Morris-Pratt algorithms.
+@end itemize
+The @code{unordered_*} containers are guaranteed perfect (no hash
+collision) and the extra storage is linear with respect to the number of
+keys.")
+      (license license:asl2.0))))
 
 (define-public json-dto
   (package
