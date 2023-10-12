@@ -11403,7 +11403,7 @@ directory in the store, but may produce more.
 @item
 @cindex build-time dependencies
 @cindex dependencies, build-time
-The inputs of the derivations---i.e., its build-time dependencies---which may
+The inputs of the derivation---i.e., its build-time dependencies---which may
 be other derivations or plain files in the store (patches, build scripts,
 etc.).
 
