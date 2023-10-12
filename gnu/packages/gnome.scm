@@ -11600,7 +11600,7 @@ configurable file renaming.")
 (define-public workrave
   (package
     (name "workrave")
-    (version "1.10.50")
+    (version "1.10.52")
     (source
      (origin
        (method git-fetch)
@@ -11611,7 +11611,7 @@ configurable file renaming.")
                                          version)))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fj3fqmdn4nsjgvbbvzpxw2mgiihcr1zpb08amg2p6hg9n11y9bx"))))
+        (base32 "1rp6v9a8xmhjy75wmh7pnd092dn9nrb6wd4gcgr3c866qnpp6zsk"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      ;; The only tests are maintainer tests (in po/), which fail.
