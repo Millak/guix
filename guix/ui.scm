@@ -552,19 +552,20 @@ See the \"Application Setup\" section in the manual, for more info.\n"))
 
 (define* (show-version-and-exit #:optional (command (car (command-line))))
   "Display version information for COMMAND and `(exit 0)'."
-  (simple-format #t "~a (~a) ~a~%"
-                 command %guix-package-name %guix-version)
-  (format #t "Copyright ~a 2023 ~a"
-          ;; TRANSLATORS: Translate "(C)" to the copyright symbol
-          ;; (C-in-a-circle), if this symbol is available in the user's
-          ;; locale.  Otherwise, do not translate "(C)"; leave it as-is.  */
-          (G_ "(C)")
-          (G_ "the Guix authors\n"))
-  (display (G_"\
+  (leave-on-EPIPE
+   (simple-format #t "~a (~a) ~a~%"
+                  command %guix-package-name %guix-version)
+   (format #t "Copyright ~a 2023 ~a"
+           ;; TRANSLATORS: Translate "(C)" to the copyright symbol
+           ;; (C-in-a-circle), if this symbol is available in the user's
+           ;; locale.  Otherwise, do not translate "(C)"; leave it as-is.  */
+           (G_ "(C)")
+           (G_ "the Guix authors\n"))
+   (display (G_"\
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 This is free software: you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.
-"))
+")))
   (exit 0))
 
 (define (show-bug-report-information)
