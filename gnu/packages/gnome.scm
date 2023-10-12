@@ -9679,7 +9679,7 @@ shared object databases, search tools and indexing.")
 (define-public nautilus
   (package
     (name "nautilus")
-    (version "44.2")
+    (version "44.2.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -9687,7 +9687,7 @@ shared object databases, search tools and indexing.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1rfkh43iw4bqv36ccznl3lh9g0p9pa8xqyjk167qlvar4xchcji7"))
+                "0k0yyh7sqan68c8n0ahwlw0xyiq25f57inm5qrpsgxr78w12zinr"))
               (patches
                (search-patches "nautilus-extension-search-path.patch"))))
     (build-system meson-build-system)
