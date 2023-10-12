@@ -11627,17 +11627,17 @@ configurable file renaming.")
                   libice
                   libsm
                   libxscrnsaver))
-    (native-inputs `(("boost" ,boost)
-                     ("pkg-config" ,pkg-config)
-                     ("gettext" ,gettext-minimal)
-                     ("autoconf" ,autoconf)
-                     ("autoconf-archive" , autoconf-archive)
-                     ("automake" ,automake)
-                     ("libtool" ,libtool)
-                     ("intltool" ,intltool)
-                     ("gobject-introspection" ,gobject-introspection)
-                     ("python3" ,python-3)
-                     ("python-jinja2" ,python-jinja2)))
+    (native-inputs (list boost
+                         pkg-config
+                         gettext-minimal
+                         autoconf
+                         autoconf-archive
+                         automake
+                         libtool
+                         intltool
+                         gobject-introspection
+                         python-3
+                         python-jinja2))
     (synopsis "Tool to help prevent repetitive strain injury (RSI)")
     (description
      "Workrave is a program that assists in the recovery and prevention of
