@@ -13987,14 +13987,18 @@ idiomatic wrappers for Mac OS X's CommonCrypto library.")
 (define-public rust-compact-str-0.7
   (package
     (name "rust-compact-str")
-    (version "0.7.0")
+    (version "0.7.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "compact_str" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1lbk5vkn6vriwx98pybfsgy093ga6ilpm5gkcd8v7cgcg5gq1w5z"))))
+                "0gvvfc2c6pg1rwr2w36ra4674w3lzwg97vq2v6k791w30169qszq"))
+              (snippet
+               #~(begin (use-modules (guix build utils))
+                        (substitute* "Cargo.toml"
+                          (("1\\.0\\.\\*") "1.0.0"))))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -14017,6 +14021,7 @@ idiomatic wrappers for Mac OS X's CommonCrypto library.")
         ("rust-quickcheck" ,rust-quickcheck-1)
         ("rust-quickcheck-macros" ,rust-quickcheck-macros-1)
         ("rust-rayon" ,rust-rayon-1)
+        ("rust-rkyv" ,rust-rkyv-0.7)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-test-case" ,rust-test-case-2)
