@@ -11927,7 +11927,7 @@ tabs, and it supports drag and drop re-ordering of terminals.")
 (define-public libhandy
   (package
     (name "libhandy")
-    (version "1.7.90")
+    (version "1.8.2")
     (source
      (origin
        (method git-fetch)
@@ -11936,7 +11936,7 @@ tabs, and it supports drag and drop re-ordering of terminals.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1z8sbx7g19c1p8dy0sn0l25qfvrd2j28h269lsqm1y98r818h2k1"))))
+        (base32 "031bmrxc62p86fpk1x8kg4zljxf5bd2cgq8bsm7nrk5yipha2xvy"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags
