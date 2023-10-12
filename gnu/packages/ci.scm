@@ -77,8 +77,10 @@
       (arguments
        `(#:modules ((guix build utils)
                     (guix build gnu-build-system)
+                    (ice-9 match)
                     (ice-9 rdelim)
-                    (ice-9 popen))
+                    (ice-9 popen)
+                    (srfi srfi-1))
          #:configure-flags '("--localstatedir=/var") ;for /var/log/cuirass
          ;; XXX: HTTP tests fail on aarch64 due to Fibers errors, disable them
          ;; on that architecture for now.
@@ -98,47 +100,34 @@
            (add-after 'install 'wrap-program
              (lambda* (#:key inputs outputs #:allow-other-keys)
                ;; Wrap the 'cuirass' command to refer to the right modules.
+               ;; Do so by collecting the subset of INPUTS that provides Guile
+               ;; modules.  This includes direct inputs as well as their
+               ;; propagated inputs--e.g., 'guix' propagates 'guile-zstd'.
+               (define (sub-directory suffix)
+                 (match-lambda
+                   ((label . directory)
+                    (let ((directory (string-append directory suffix)))
+                      (and (directory-exists? directory)
+                           directory)))))
+
                (let* ((out    (assoc-ref outputs "out"))
-                      (avahi  (assoc-ref inputs "guile-avahi"))
-                      (gcrypt (assoc-ref inputs "guile-gcrypt"))
-                      (json   (assoc-ref inputs "guile-json"))
-                      (zmq    (assoc-ref inputs "guile-simple-zmq"))
-                      (squee  (assoc-ref inputs "guile-squee"))
-                      (git    (assoc-ref inputs "guile-git"))
-                      (bytes  (assoc-ref inputs "guile-bytestructures"))
-                      (fibers (assoc-ref inputs "guile-fibers"))
-                      (zlib   (assoc-ref inputs "guile-zlib"))
-                      (matd   (assoc-ref inputs "guile-mastodon"))
-                      (tls    (assoc-ref inputs "guile-gnutls"))
-                      (mail   (assoc-ref inputs "mailutils"))
-                      (guix   (assoc-ref inputs "guix"))
-                      (deps   (list avahi gcrypt json zmq squee git bytes
-                                    fibers zlib matd tls mail guix))
-                      (guile  (assoc-ref inputs "guile"))
                       (effective
                        (read-line
-                        (open-pipe* OPEN_READ
-                                    (string-append guile "/bin/guile")
+                        (open-pipe* OPEN_READ (which "guile")
                                     "-c" "(display (effective-version))")))
-                      (mods
-                       (string-drop-right  ;drop trailing colon
-                        (string-join deps
-                                     (string-append "/share/guile/site/"
-                                                    effective ":")
-                                     'suffix)
-                        1))
-                      (objs
-                       (string-drop-right
-                        (string-join deps
-                                     (string-append "/lib/guile/" effective
-                                                    "/site-ccache:")
-                                     'suffix)
-                        1)))
-                 ;; Make sure 'cuirass' can find the relevant Guile modules.
+                      (mods   (filter-map (sub-directory
+                                           (string-append "/share/guile/site/"
+                                                          effective))
+                                          inputs))
+                      (objs   (filter-map (sub-directory
+                                           (string-append "/lib/guile/"
+                                                          effective
+                                                          "/site-ccache"))
+                                          inputs)))
                  (wrap-program (string-append out "/bin/cuirass")
                    `("PATH" ":" prefix (,(string-append out "/bin")))
-                   `("GUILE_LOAD_PATH" ":" prefix (,mods))
-                   `("GUILE_LOAD_COMPILED_PATH" ":" prefix (,objs)))))))))
+                   `("GUILE_LOAD_PATH" ":" prefix ,mods)
+                   `("GUILE_LOAD_COMPILED_PATH" ":" prefix ,objs))))))))
       (inputs
        (list guile-3.0-latest
              guile-avahi
