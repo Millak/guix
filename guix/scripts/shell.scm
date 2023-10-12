@@ -26,6 +26,7 @@
   #:autoload   (guix transformations) (options->transformation
                                        transformation-option-key?
                                        show-transformation-options-help)
+  #:autoload   (guix grafts) (%graft?)
   #:use-module (guix scripts)
   #:use-module (guix packages)
   #:use-module (guix profiles)
@@ -354,6 +355,7 @@ performed--e.g., because the package cache is not authoritative."
         ;; be insufficient: <https://lwn.net/Articles/866582/>.
         (sha256 (string->utf8
                  (string-append primary-key ":" system ":"
+                                (if (%graft?) "" "ungrafted:")
                                 (number->string (stat:dev stat)) ":"
                                 (number->string (stat:ino stat))))))))))
 
@@ -366,6 +368,7 @@ is a list of package specs.  Return #f if caching is not possible."
      (bytevector->base32-string
       (sha256 (string->utf8
                (string-append primary-key ":" system ":"
+                              (if (%graft?) "" "ungrafted:")
                               (object->string specs))))))))
 
 (define (profile-cached-gc-root opts)
