@@ -11996,7 +11996,7 @@ for usage on small and big screens.")
 (define-public libgit2-glib
   (package
     (name "libgit2-glib")
-    (version "1.1.0")
+    (version "1.2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -12004,7 +12004,7 @@ for usage on small and big screens.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1wqypx0xv20vk0zfh20c474z6rdgbxbklcr2wkhl30dgbmbxg3f3"))))
+                "1441w7gzn6m3adhx4g6wcbkmscka2929si963dciyklghgddlc8k"))))
     (build-system meson-build-system)
     (native-inputs
      (list `(,glib "bin") ;; For glib-mkenums
