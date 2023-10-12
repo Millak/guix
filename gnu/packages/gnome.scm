@@ -12161,44 +12161,40 @@ library which detects when a file or a directory has been modified.")
     (license license:gpl2+)))
 
 (define-public gnome-mahjongg
-  ;; There hasn't been a GNOME Mahjongg release in a long time, and the last
-  ;; release doesn't build with a recent Meson, so use the latest commit.
-  (let ((commit "e9e73e5165e5968ff897e568f8eba10fc1eb207b")
-        (revision "0"))
-    (package
-      (name "gnome-mahjongg")
-      (version (git-version "3.38.3" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://gitlab.gnome.org/GNOME/gnome-mahjongg")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1cj0c076h7qfz77wpz8ypli60inj37fgw0cl9cc39b1kjfqcy3mb"))))
-      (build-system meson-build-system)
-      (arguments (list #:glib-or-gtk? #t))
-      (native-inputs
-       (list appstream-glib
-             gettext-minimal
-             `(,glib "bin")             ;for glib-compile-resources
-             `(,gtk "bin")              ;for gtk-update-icon-cache
-             itstool
-             pkg-config
-             vala))
-      (propagated-inputs
-       (list dconf))
-      (inputs
-       (list glib
-             gtk
-             libadwaita))
-      (synopsis "Mahjongg tile-matching game")
-      (description "GNOME Mahjongg is a game based on the classic Chinese
+  (package
+    (name "gnome-mahjongg")
+    (version "3.40.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.gnome.org/GNOME/gnome-mahjongg")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1yj41lj2vancjzwjcm5cdv48983jq05i6sw8p4nggyqwij3xpllj"))))
+    (build-system meson-build-system)
+    (arguments (list #:glib-or-gtk? #t))
+    (native-inputs
+     (list appstream-glib
+           gettext-minimal
+           `(,glib "bin")             ;for glib-compile-resources
+           `(,gtk "bin")              ;for gtk-update-icon-cache
+           itstool
+           pkg-config
+           vala))
+    (propagated-inputs
+     (list dconf))
+    (inputs
+     (list glib
+           gtk
+           libadwaita))
+    (synopsis "Mahjongg tile-matching game")
+    (description "GNOME Mahjongg is a game based on the classic Chinese
 tile-matching game Mahjongg.  It features multiple board layouts, tile themes,
 and a high score table.")
-      (home-page "https://wiki.gnome.org/Apps/Mahjongg")
-      (license license:gpl2+))))
+    (home-page "https://wiki.gnome.org/Apps/Mahjongg")
+    (license license:gpl2+)))
 
 (define-public gnome-themes-extra
   (package
