@@ -1276,7 +1276,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/ghostscript-no-header-id.patch		\
   %D%/packages/patches/ghostscript-no-header-uuid.patch		\
   %D%/packages/patches/ghostscript-no-header-creationdate.patch \
-  %D%/packages/patches/gitg-fix-positional-argument.patch	\
   %D%/packages/patches/gklib-suitesparse.patch			\
   %D%/packages/patches/glib-appinfo-watch.patch			\
   %D%/packages/patches/glib-networking-gnutls-binding.patch	\

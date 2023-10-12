@@ -12027,7 +12027,7 @@ higher level porcelain stuff.")
 (define-public gitg
   (package
     (name "gitg")
-    (version "41")
+    (version "44")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -12035,8 +12035,7 @@ higher level porcelain stuff.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0aa6djcf7rjw0q688mfy47k67bbjpnx6aw1xs94abfhgn6gipdkz"))
-              (patches (search-patches "gitg-fix-positional-argument.patch"))))
+                "0m135v2qm5kaa2jki0y2lbh0wa69bqfh9a4cm7db153v7smrj3jv"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -12060,6 +12059,7 @@ higher level porcelain stuff.")
                   `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))))))))
     (inputs
      (list glib
+           gpgme
            gsettings-desktop-schemas
            gspell
            gtk+
@@ -12068,6 +12068,7 @@ higher level porcelain stuff.")
            libdazzle
            libgee
            libgit2-glib
+           libhandy
            libpeas
            libsecret
            libsoup-minimal-2
