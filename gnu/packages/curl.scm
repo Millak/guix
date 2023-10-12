@@ -156,7 +156,7 @@ tunneling, and so on.")
     (home-page "https://curl.haxx.se/")))
 
 (define curl/fixed
-  (let ((%version "8.3.0"))
+  (let ((%version "8.4.0"))
     (package
       (inherit curl)
       (version "8.3.0a")               ; add lowercase 'a' for grafting
@@ -166,7 +166,7 @@ tunneling, and so on.")
                                     %version ".tar.xz"))
                 (sha256
                  (base32
-                  "0qza6yf20y2l4aaxkn8dfw8p3fls1mxljvdb0m8z1i6ncxvn4v9p"))
+                  "0bd8y8v66biyqvg70ka1sdd0aixs6yzpnvfsig907xzh9af2mihn"))
                 (patches (search-patches "curl-use-ssl-cert-env.patch"))))
       (arguments
        (if (system-hurd?)
