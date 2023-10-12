@@ -74546,8 +74546,37 @@ composition between @code{Service}s.")
 request/response based, client or server.")
     (license license:expat)))
 
+(define-public rust-tower-test-0.4
+  (package
+    (name "rust-tower-test")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tower-test" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19zgjwzr9216yg1ayrnsly06lqdv96m2z1xq0bmf9fgazxrnfm54"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-pin-project" ,rust-pin-project-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-test" ,rust-tokio-test-0.4)
+        ("rust-tower-layer" ,rust-tower-layer-0.3)
+        ("rust-tower-service" ,rust-tower-service-0.3))
+       #:cargo-development-inputs
+       (("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/tower-rs/tower")
+    (synopsis "Utilities for writing client and server @code{Service} tests")
+    (description "This package provides utilities for writing client and
+server @code{Service} tests.")
+    (license license:expat)))
+
 (define-public rust-tower-test-0.3
   (package
+    (inherit rust-tower-test-0.4)
     (name "rust-tower-test")
     (version "0.3.0")
     (source
@@ -74558,7 +74587,6 @@ request/response based, client or server.")
        (sha256
         (base32
          "1j2k07g3z8ascq7r30bmw3b75v8lhd63mhfl60y59a74q71bp94v"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-futures-util" ,rust-futures-util-0.3)
@@ -74568,12 +74596,7 @@ request/response based, client or server.")
         ("rust-tower-layer" ,rust-tower-layer-0.3)
         ("rust-tower-service" ,rust-tower-service-0.3))
        #:cargo-development-inputs
-       (("rust-tokio" ,rust-tokio-0.2))))
-    (home-page "https://github.com/tower-rs/tower")
-    (synopsis "Utilities for writing client and server @code{Service} tests")
-    (description "This package provides utilities for writing client and
-server @code{Service} tests.")
-    (license license:expat)))
+       (("rust-tokio" ,rust-tokio-0.2))))))
 
 (define-public rust-tower-util-0.3
   (package
