@@ -73,6 +73,8 @@
                     (default "/var/log/cuirass-remote-server.log"))
   (cache            cuirass-remote-server-configuration-cache ;string
                     (default "/var/cache/cuirass/remote/"))
+  (log-expiry       cuirass-remote-server-configuration-log-expiry
+                    (default (* 6 30 24 3600)))   ;6 months
   (publish?         cuirass-remote-server-configuration-publish? ;boolean
                     (default #t))
   (trigger-url      cuirass-remote-server-trigger-url ;string
@@ -194,7 +196,7 @@
         (stop #~(make-kill-destructor)))
       ,@(if remote-server
             (match-record remote-server <cuirass-remote-server-configuration>
-              (backend-port publish-port log-file cache publish?
+              (backend-port publish-port log-file log-expiry cache publish?
                             trigger-url public-key private-key)
               (list
                (shepherd-service
@@ -207,6 +209,9 @@
                                 (string-append "--database=" #$database)
                                 (string-append "--cache=" #$cache)
                                 (string-append "--user=" #$user)
+                                (string-append "--log-expiry="
+                                               #$(number->string log-expiry)
+                                               "s")
                                 #$@(if backend-port
                                        (list (string-append
                                               "--backend-port="

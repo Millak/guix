@@ -33822,6 +33822,10 @@ Location of the log file.
 @item @code{cache} (default: @code{"/var/cache/cuirass/remote"})
 Use @var{cache} directory to cache build log files.
 
+@item @code{log-expiry} (default: 6 months)
+The duration in seconds after which build logs collected by
+@command{cuirass remote-worker} may be deleted.
+
 @item @code{trigger-url} (default: @code{#f})
 Once a substitute is successfully fetched, trigger substitute baking at
 @var{trigger-url}.
