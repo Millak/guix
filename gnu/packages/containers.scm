@@ -4,6 +4,7 @@
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2023 Zongyuan Li <zongyuan.li@c0x0o.me>
+;;; Copyright © 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -159,7 +160,7 @@ runtime (like runc or crun) for a single container.")
 (define-public distrobox
   (package
     (name "distrobox")
-    (version "1.4.2.1")
+    (version "1.5.0.2")
     (source
      (origin
        (method git-fetch)
@@ -167,7 +168,7 @@ runtime (like runc or crun) for a single container.")
              (url "https://github.com/89luca89/distrobox")
              (commit version)))
        (sha256
-        (base32 "0gs81m1bvlyq6ad22zsdsw1q6s3agy79vx94kdf6zjzngbanlydk"))
+        (base32 "0h6rpgbcmg33vriyzh9nkdxj8yhfn0y35i1wh1zmb7zss3ik9kxj"))
        (file-name (git-file-name name version))))
     (build-system copy-build-system)
     (inputs
@@ -177,7 +178,7 @@ runtime (like runc or crun) for a single container.")
            #~(modify-phases %standard-phases
                (add-before 'install 'refer-to-inputs
                  (lambda* (#:key inputs #:allow-other-keys)
-                   (substitute* (find-files "." "^distrobox.*[^1]$")
+                   (substitute* (find-files "." "^distrobox[^.]*[^1]$")
                      (("podman") (search-input-file inputs "/bin/podman"))
                      (("wget") (search-input-file inputs "/bin/wget"))
                      (("command -v") "test -x"))))
