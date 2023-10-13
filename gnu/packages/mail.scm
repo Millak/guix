@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2017, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2014 Sou Bunnbu <iyzsong@gmail.com>
@@ -4243,10 +4243,7 @@ Git and exports them in maildir format or to an MDA through a pipe.")
              (file-name (git-file-name name version))))
     (build-system perl-build-system)
     (arguments
-     `(#:imported-modules (,@%perl-build-system-modules
-                           (guix build syscalls))
-       #:modules ((guix build perl-build-system)
-                  (guix build syscalls)
+     `(#:modules ((guix build perl-build-system)
                   (guix build utils)
                   (ice-9 match))
        #:phases
@@ -4283,18 +4280,20 @@ Git and exports them in maildir format or to an MDA through a pipe.")
                     (setenv "TMP" "/tmp")
                     (setenv "TMPDIR" "/tmp")
 
-                    ;; Use tini so that signals are properly handled and
-                    ;; doubly-forked processes get reaped; otherwise,
-                    ;; lei-daemon is kept as a zombie and the testsuite
-                    ;; fails thinking that it didn't quit as it should.
-                    (set-child-subreaper!)
-                    (apply execlp "tini" "--"
+                    (apply execlp "make"
                            "make" "check" test-flags))
-                   (pid
-                    (match (waitpid pid)
-                      ((_ . status)
-                       (unless (zero? status)
-                         (error "`make check' exited with status" status))))))
+                   (make-pid
+                    ;; Reap child processes; otherwise, lei-daemon is kept as
+                    ;; a zombie and the testsuite fails thinking that it
+                    ;; didn't quit as it should.
+                    (let loop ()
+                      (match (waitpid WAIT_ANY)
+                        ((pid . status)
+                         (if (= pid make-pid)
+                             (unless (zero? status)
+                               (error "`make check' exited with status"
+                                      status))
+                             (loop)))))))
                  (format #t "test suite not run~%"))))
          (add-after 'install 'wrap-programs
            (lambda* (#:key inputs outputs #:allow-other-keys)
@@ -4314,7 +4313,7 @@ Git and exports them in maildir format or to an MDA through a pipe.")
                 (find-files (string-append out "/bin")))))))))
     (native-inputs
      (list ;; For testing.
-           lsof openssl tini))
+           lsof openssl))
     (inputs
      (append
       (if (not (target-64bit?))
