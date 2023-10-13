@@ -114,6 +114,7 @@
   #:use-module (gnu packages coq)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages datamash)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages documentation)
@@ -6562,17 +6563,17 @@ A unique design feature of Trilinos is its focus on packages.")
 (define-public dealii
   (package
     (name "dealii")
-    (version "9.4.0")
+    (version "9.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/dealii/dealii/releases/"
                            "download/v" version "/dealii-" version ".tar.gz"))
        (sha256
-        (base32 "0v73q6f35f2yrjihaq6vh9lma07qc4cdv75nwmc3c5yrdh07g1i3"))
+        (base32 "0phgcfnil4rb41xipsdbm4lxrymlqxbiccakg3pkm3a8wqsva658"))
        (modules '((guix build utils)))
        (snippet
-        ;; Remove bundled boost, muparser, TBB and UMFPACK.
+        ;; Remove bundled boost, Kokkos, muparser, TBB and UMFPACK.
         #~(delete-file-recursively "bundled"))))
     (build-system cmake-build-system)
     (outputs '("out" "doc"))
@@ -6596,6 +6597,7 @@ A unique design feature of Trilinos is its focus on packages.")
      ;; the requisite interpreter to its native inputs.
      (list boost
            hdf5
+           kokkos
            suitesparse                  ; For UMFPACK.
            sundials
            tbb))
@@ -6620,6 +6622,18 @@ A unique design feature of Trilinos is its focus on packages.")
                                     "/examples")))
            #:phases
            #~(modify-phases %standard-phases
+               ;; Without unsetting CPATH, the build fails with the following
+               ;; error (similar to <https://bugs.gnu.org/30756>):
+               ;;
+               ;;   /gnu/store/…-gcc-11.3.0/include/c++/math.h:30:16: fatal error: math.h: No such file or directory
+               ;;      30 | # include_next <math.h>
+               ;;         |                ^~~~~~~~
+               ;;
+               ;; Why does unsetting CPATH magically fix the error?
+               ;; TODO: Properly fix this issue.
+               (add-after 'set-paths 'unset-cpath
+                 (lambda _
+                   (unsetenv "CPATH")))
                (add-after 'install 'remove-build-logs
                  ;; These build logs leak the name of the build directory by
                  ;; storing the values of CMAKE_SOURCE_DIR and
@@ -6651,7 +6665,7 @@ in finite element programs.")
                 scalapack)))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs dealii)
-       (delete "hdf5" "sundials")
+       (delete "hdf5" "kokkos" "sundials")
        (prepend hdf5-parallel-openmpi
                 openmpi
                 p4est-openmpi
@@ -6662,7 +6676,12 @@ in finite element programs.")
     (arguments
      (substitute-keyword-arguments (package-arguments dealii)
        ((#:configure-flags flags)
-        #~(cons "-DDEAL_II_WITH_MPI=ON" #$flags))))
+        #~(cons "-DDEAL_II_WITH_MPI=ON" #$flags))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            ;; The build failure fixed by this phase does not manifest when
+            ;; Kokkos is included via Trilinos.
+            (delete 'unset-cpath)))))
     (synopsis "Finite element library (with MPI support)")))
 
 (define-public flann
