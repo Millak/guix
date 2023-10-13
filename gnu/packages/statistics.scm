@@ -6563,30 +6563,35 @@ tools.")
       (license license:gpl2))))
 
 (define-public r-tgconfig
-  (let ((changeset "1e02c7614713bd0866c46f0c679a058f8c6d627e")
+  (let ((commit "15cf199436ae0b2ac0006b2ca7f0aeeb5c9d4445")
         (revision "1"))
     (package
       (name "r-tgconfig")
-      (version (string-append "0.0.0.9000-" revision "." (string-take changeset 7)))
+      (version (git-version "0.1.2" revision commit))
       (source
        (origin
-         (method hg-fetch)
-         (uri (hg-reference
-               (url "https://bitbucket.org/tanaylab/tgconfig")
-               (changeset changeset)))
-         (file-name (string-append name "-" version "-checkout"))
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/tanaylab/tgconfig")
+               (commit commit)))
+         (file-name (git-file-name name version))
          (sha256
-          (base32
-           "0xy6c7s7mn1yx191154bwbv1bl424bnvc80syqpl1vdl28ba46rj"))))
+          (base32 "159m8hhbk9ip2fdy6zsa96v0173q1awcrzdz2rr2796awfaxjgx1"))))
+      (properties `((upstream-name . "tgconfig")))
       (build-system r-build-system)
-      (propagated-inputs
-       (list r-yaml))
-      (home-page "https://bitbucket.org/tanaylab/tgconfig/")
+      (propagated-inputs (list r-yaml))
+      (home-page "https://github.com/tanaylab/tgconfig")
       (synopsis "Infrastructure for managing package parameters")
       (description
-       "The goal of tgconfig is to provide infrastructure for managing package
-parameters.")
-      (license license:gpl3))))
+       "This is a package to provide infrastructure for managing package parameters.
+Parameters are easy to get in relevant functions within a package,
+and rrror is thrown if a parameter is missing.  Developers are able
+to register parameters and set their default value in a config file
+that is part of the package in YAML format, and users are able to
+override parameters using their own YAML.  Users get an exception
+when trying to override a parameter that was not registered, and
+can load multiple parameters to the current environment.")
+      (license license:gpl3+))))
 
 (define-public r-catterplots
   (let ((commit "ae17cd5e49ddda4ecfe0eba8a4c21df8c88e72c4")
