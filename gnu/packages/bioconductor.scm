@@ -68,6 +68,36 @@
 
 ;;; Annotations
 
+(define-public r-mafh5-gnomad-v3-1-2-grch38
+  (package
+    (name "r-mafh5-gnomad-v3-1-2-grch38")
+    (version "3.15.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "MafH5.gnomAD.v3.1.2.GRCh38" version
+                              'annotation))
+       (sha256
+        (base32 "18hzw7f41ii16qpm3ch516b773900l1m1id5z6a763m01fg0mhiq"))))
+    (properties `((upstream-name . "MafH5.gnomAD.v3.1.2.GRCh38")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bsgenome
+                             r-genomeinfodb
+                             r-genomicranges
+                             r-genomicscores
+                             r-hdf5array
+                             r-iranges
+                             r-rhdf5
+                             r-s4vectors))
+    (home-page "https://bioconductor.org/packages/MafH5.gnomAD.v3.1.2.GRCh38")
+    (synopsis
+     "Minor allele frequency data from gnomAD version 3.1.2 for GRCh38")
+    (description
+     "This package is designed to store minor allele frequency data.
+It retrieves this data from the Genome Aggregation Database
+(@code{gnomAD} version 3.1.2) for the human genome version GRCh38.")
+    (license license:artistic2.0)))
+
 (define-public r-org-eck12-eg-db
   (package
     (name "r-org-eck12-eg-db")
