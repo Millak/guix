@@ -5532,8 +5532,8 @@ client and server.")
   (sbcl-package->cl-source-package sbcl-trivial-arguments))
 
 (define-public sbcl-trivial-clipboard
-  (let ((commit "6ddf8d5dff8f5c2102af7cd1a1751cbe6408377b")
-        (revision "6"))
+  (let ((commit "aee67d6132a46237f61d508ae4bd9ff44032566d")
+        (revision "7"))
     (package
       (name "sbcl-trivial-clipboard")
       (version (git-version "0.0.0" revision commit))
@@ -5545,7 +5545,7 @@ client and server.")
                (commit commit)))
          (file-name (git-file-name "cl-trivial-clipboard" version))
          (sha256
-          (base32 "04qmm69zyx8rs23pfhgzgxn0j108byv3b7skfdv0h01a76wlhplz"))))
+          (base32 "029qmx523xfk54p99ndgbmdd20s5i32mzpf77xymngrn4c33v9jk"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        ;; Pick xsel instead of xclip because its closure size is slightly
