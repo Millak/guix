@@ -27165,12 +27165,10 @@ for YAML and JSON.")
          "1nwl0gzzds2g1w1gfxfzlgrkb5hr1rrdyn619ml25c6b1rjyfk3g"))))
     (build-system python-build-system)
     (arguments
-     `(#:imported-modules (,@%python-build-system-modules
-                           (guix build syscalls))
-       #:modules ((guix build python-build-system)
-                  (guix build syscalls)
+     `(#:modules ((guix build python-build-system)
                   (guix build utils)
                   (ice-9 match))
+
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-paths
@@ -27186,20 +27184,20 @@ for YAML and JSON.")
              (when tests?
                (match (primitive-fork)
                  (0                     ;child process
-                  (set-child-subreaper!)
-                  ;; Use tini so that signals are properly handled and
-                  ;; doubly-forked processes get reaped; otherwise,
-                  ;; python-dbusmock would waste time polling for the dbus
-                  ;; processes it spawns to be reaped, in vain.
-                  (execlp "tini" "--" "pytest" "-vv"))
-                 (pid
-                  (match (waitpid pid)
-                    ((_ . status)
-                     (unless (zero? status)
-                       (error "`pytest' exited with status"
-                              status))))))))))))
+                  (execlp "pytest" "pytest" "-vv"))
+                 (pytest-pid
+                  (let loop ()
+                    ;; Reap child processes; otherwise, python-dbusmock would
+                    ;; waste time polling for the dbus processes it spawns to
+                    ;; be reaped, in vain.
+                    (match (waitpid WAIT_ANY)
+                      ((pid . status)
+                       (if (= pid pytest-pid)
+                           (unless (zero? status)
+                             (error "`pytest' exited with status" status))
+                           (loop)))))))))))))
     (native-inputs
-     (list dbus python-pytest tini which))
+     (list dbus python-pytest which))
     (inputs
      (list dbus))
     (propagated-inputs
