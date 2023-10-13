@@ -6558,6 +6558,43 @@ when trying to override a parameter that was not registered, and
 can load multiple parameters to the current environment.")
       (license license:gpl3+))))
 
+(define-public r-tgutil
+  (let ((commit "0e4a2e84e5cf1f74bc66df0a3d8eac89633fd7b1")
+        (revision "1"))
+    (package
+      (name "r-tgutil")
+      (version (git-version "0.1.15" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/tanaylab/tgutil")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0pmacpzhrigprlpl8b5j4xz7l110ifw98017xwk569dghbf8zrq1"))))
+      (properties `((upstream-name . "tgutil")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-broom
+                               r-cowplot
+                               r-data-table
+                               r-dplyr
+                               r-ggplot2
+                               r-glue
+                               r-magrittr
+                               r-matrix
+                               r-matrixstats
+                               r-qlcmatrix
+                               r-readr
+                               r-rlang
+                               r-scales
+                               r-tibble
+                               r-tidyr))
+      (home-page "https://github.com/tanaylab/tgutil")
+      (synopsis "Simple utility functions for Tanay lab code")
+      (description "Shared utility functions for multiple Tanay lab packages.")
+      (license license:gpl3))))
+
 (define-public r-catterplots
   (let ((commit "ae17cd5e49ddda4ecfe0eba8a4c21df8c88e72c4")
         (revision "3"))
