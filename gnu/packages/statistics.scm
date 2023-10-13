@@ -1346,22 +1346,19 @@ and to generate base64 encoded string from raster matrix.")
 (define-public r-svglite
   (package
     (name "r-svglite")
-    (version "2.1.1")
+    (version "2.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "svglite" version))
        (sha256
-        (base32
-         "0mmcipyqq4hs8fnb7301gdhl9ic4m80f1fp2x6z5vc61xrlh2w28"))))
+        (base32 "0c00djvlnf4qr30srh3xjnx1valqq8grm5ib0q4485z8gphn7hf2"))))
+    (properties `((upstream-name . "svglite")))
     (build-system r-build-system)
-    (inputs
-     (list libpng zlib))
-    (propagated-inputs
-     (list r-cpp11 r-systemfonts))
-    (native-inputs
-     (list r-knitr))
-    (home-page "https://github.com/hadley/svglite")
+    (inputs (list libpng zlib))
+    (propagated-inputs (list r-cpp11 r-systemfonts))
+    (native-inputs (list r-knitr))
+    (home-page "https://svglite.r-lib.org")
     (synopsis "SVG graphics device")
     (description
      "@code{svglite} is a graphics device that produces clean
