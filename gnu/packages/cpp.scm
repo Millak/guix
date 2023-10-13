@@ -38,6 +38,7 @@
 ;;; Copyright © 2023 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
+;;; Copyright © 2023 Paul A. Patience <paul@apatience.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1038,6 +1039,28 @@ SObjectizer supports not only the Actor Model but also the Publish-Subscribe
 Model and CSP-like channels.  The goal of SObjectizer is to simplify
 development of concurrent and multithreaded applications in C++.")
     (license license:bsd-3)))
+
+(define-public taskflow
+  (package
+    (name "taskflow")
+    (version "3.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/taskflow/taskflow")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cv74l181137lchc1rxygcg401cnq216ymq5qz2njsw99j342br3"))))
+    (build-system cmake-build-system)
+    (home-page "https://taskflow.github.io/")
+    (synopsis
+     "General-purpose parallel and heterogeneous task programming system")
+    (description
+     "Taskflow is a C++ library for writing parallel and heterogeneous task
+programs.")
+    (license license:expat)))
 
 (define-public tweeny
   (package
