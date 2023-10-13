@@ -27178,8 +27178,8 @@ for YAML and JSON.")
                       (which "bash")))
                    (substitute* "dbusmock/testcase.py"
                      (("'dbus-daemon'")
-                      (string-append "'" (assoc-ref inputs "dbus")
-                                     "/bin/dbus-daemon'")))))
+                      (object->string
+                       (search-input-file inputs "/bin/dbus-daemon"))))))
                (replace 'check
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests?
