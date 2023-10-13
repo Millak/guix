@@ -2051,6 +2051,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/u-boot-fix-build-python-3.10.patch	\
   %D%/packages/patches/u-boot-fix-u-boot-lib-build.patch	\
   %D%/packages/patches/u-boot-nintendo-nes-serial.patch		\
+  %D%/packages/patches/u-boot-patman-change-id.patch	\
   %D%/packages/patches/u-boot-rockchip-inno-usb.patch		\
   %D%/packages/patches/u-boot-sifive-prevent-reloc-initrd-fdt.patch	\
   %D%/packages/patches/u-boot-rk3399-enable-emmc-phy.patch	\
