@@ -95,10 +95,7 @@
     (build-system meson-build-system)
     (arguments
      (list
-      #:imported-modules `(,@%meson-build-system-modules
-                           (guix build syscalls))
       #:modules '((guix build meson-build-system)
-                  (guix build syscalls)
                   (guix build utils)
                   (ice-9 match))
       #:configure-flags
@@ -130,24 +127,23 @@
           (replace 'check
             (lambda* (#:key tests? test-options #:allow-other-keys)
               (when tests?
-                ;; Run the test suite through tini to ensure signals are
-                ;; properly handled and zombie processes reaped.
                 (match (primitive-fork)
                   (0                    ;child process
-                   (set-child-subreaper!)
-                   ;; Use tini so that signals are properly handled and
-                   ;; doubly-forked processes get reaped; otherwise,
-                   ;; python-dbusmock would waste time polling for the dbus
-                   ;; processes it spawns to be reaped, in vain.
-                   (apply execlp "tini" "--"
-                          "meson" "--" "test" "-t" "0" "--print-errorlogs"
+                   (apply execlp "meson" "meson"
+                          "test" "-t" "0" "--print-errorlogs"
                           test-options))
-                  (pid
-                   (match (waitpid pid)
-                     ((_ . status)
-                      (unless (zero? status)
-                        (error "`meson test' exited with status"
-                               status))))))))))))
+                  (meson-pid
+                   ;; Reap child processes; otherwise, python-dbusmock would
+                   ;; waste time polling for the dbus processes it spawns to
+                   ;; be reaped, in vain.
+                   (let loop ()
+                     (match (waitpid WAIT_ANY)
+                       ((pid . status)
+                        (if (= pid meson-pid)
+                            (unless (zero? status)
+                              (error "`meson test' exited with status"
+                                     status))
+                            (loop)))))))))))))
     (inputs
      (list duktape expat elogind linux-pam nspr))
     (propagated-inputs
@@ -162,8 +158,7 @@
            perl
            pkg-config
            python
-           python-dbusmock
-           tini))
+           python-dbusmock))
     (home-page "https://www.freedesktop.org/wiki/Software/polkit/")
     (synopsis "Authorization API for privilege management")
     (description "Polkit is an application-level toolkit for defining and
