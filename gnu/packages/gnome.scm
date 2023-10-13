@@ -7831,10 +7831,7 @@ to display dialog boxes from the commandline and shell scripts.")
     (build-system meson-build-system)
     (arguments
      (list
-      #:imported-modules `(,@%meson-build-system-modules
-                           (guix build syscalls))
       #:modules '((guix build meson-build-system)
-                  (guix build syscalls)
                   (guix build utils)
                   (ice-9 match))
       #:glib-or-gtk? #t
@@ -7928,22 +7925,22 @@ to display dialog boxes from the commandline and shell scripts.")
                             "1"))
                 (match (primitive-fork)
                   (0                    ;child process
-                   (set-child-subreaper!)
-                   ;; Use tini so that signals are properly handled and
-                   ;; doubly-forked processes get reaped; otherwise,
-                   ;; python-dbusmock would waste time polling for the dbus
-                   ;; processes it spawns to be reaped, in vain.
-                   (apply execlp "tini" "--"
-                          "dbus-run-session" "--"
+                   (apply execlp "dbus-run-session" "dbus-run-session"
                           "xvfb-run" "-a" "-s" (getenv "XVFB_SERVER_ARGS")
                           "meson" "test" "-t" "0" "--print-errorlogs"
                           test-options))
-                  (pid
-                   (match (waitpid pid)
-                     ((_ . status)
-                      (unless (zero? status)
-                        (error "`meson test' exited with status"
-                               status))))))))))))
+                  (dbus-pid
+                   (let loop ()
+                     ;; Reap child processes; otherwise, python-dbusmock would
+                     ;; waste time polling for the dbus processes it spawns to
+                     ;; be reaped, in vain.
+                     (match (waitpid WAIT_ANY)
+                       ((pid . status)
+                        (if (= pid dbus-pid)
+                            (unless (zero? status)
+                              (error "`meson test' exited with status"
+                                     status))
+                            (loop)))))))))))))
     (native-inputs
      (list desktop-file-utils           ;for update-desktop-database
            `(,glib "bin")               ;for glib-compile-schemas, etc.
@@ -7964,8 +7961,7 @@ to display dialog boxes from the commandline and shell scripts.")
            pipewire
            python
            python-dbus
-           python-dbusmock
-           tini))                       ;acting as init (zombie reaper)
+           python-dbusmock))
     (propagated-inputs
      (list gsettings-desktop-schemas-next ;required by libmutter.pc
            gtk+                           ;required by libmutter.pc
