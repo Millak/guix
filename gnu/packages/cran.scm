@@ -3257,6 +3257,29 @@ design tools, including ALM, ALC, and expected improvement for optimizing
 noisy black-box functions.")
     (license license:lgpl2.0+)))
 
+(define-public r-tgstat
+  (package
+    (name "r-tgstat")
+    (version "2.3.24")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "tgstat" version))
+       (sha256
+        (base32 "0czd3j7z30jgb03813s0jc0701ypnwpkkq7var6n6f6cj7sdvc0l"))))
+    (properties `((upstream-name . "tgstat")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=tgstat")
+    (synopsis "Amos Tanay's Group High Performance Statistical Utilities")
+    (description
+     "This package provides a collection of high-performance utilities.
+It can be used to compute distances, correlations, autocorrelations,
+clustering, and other tasks.  It also contains a graph clustering
+algorithm described in MetaCell analysis of single-cell RNA-seq
+data using K-nn graph partitions.")
+    (license license:gpl2)))
+
 (define-public r-tidyft
   (package
     (name "r-tidyft")
