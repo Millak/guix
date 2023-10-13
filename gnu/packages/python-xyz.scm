@@ -10660,10 +10660,7 @@ installing @code{kernelspec}s for use with Jupyter frontends.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:imported-modules `(,@%pyproject-build-system-modules
-                           (guix build syscalls))
       #:modules '((guix build pyproject-build-system)
-                  (guix build syscalls)
                   (guix build utils)
                   (ice-9 match))
       #:phases
@@ -10682,20 +10679,19 @@ installing @code{kernelspec}s for use with Jupyter frontends.")
               (when tests?
                 (match (primitive-fork)
                   (0                    ;child process
-                   (set-child-subreaper!)
-                   ;; XXX: Tini provides proper PID1-like signal handling that
-                   ;; reaps zombie processes, necessary for the
-                   ;; 'test_shutdown_subprocesses' test to pass.
-
-                   ;; TODO: Complete https://issues.guix.gnu.org/30948.
                    (setenv "HOME" "/tmp")
-                   (execlp "tini" "--" "pytest" "-vv"))
-                  (pid
-                   (match (waitpid pid)
-                     ((_ . status)
-                      (unless (zero? status)
-                        (error "`pytest' exited with status"
-                               status)))))))))
+                   (execlp "pytest" "pytest" "-vv"))
+                  (pytest-pid
+                   ;; Reap zombie processes, necessary for the
+                   ;; 'test_shutdown_subprocesses' test to pass.
+                   (let loop ()
+                     (match (waitpid WAIT_ANY)
+                       ((pid . status)
+                        (if (= pid pytest-pid)
+                            (unless (zero? status)
+                              (error "`pytest' exited with status"
+                                     status))
+                            (loop))))))))))
           (add-after 'install 'set-python-file-name
             (lambda* (#:key inputs #:allow-other-keys)
               ;; Record the absolute file name of the 'python' executable in
@@ -10724,8 +10720,7 @@ installing @code{kernelspec}s for use with Jupyter frontends.")
            ;; and causes deprecation warnings.  Using the bootstrap variant
            ;; avoids that.
            python-pytest-bootstrap
-           python-pytest-timeout
-           tini))
+           python-pytest-timeout))
     (home-page "https://ipython.org")
     (synopsis "IPython Kernel for Jupyter")
     (description "This package provides the IPython kernel for Jupyter.")
