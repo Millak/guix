@@ -27165,37 +27165,39 @@ for YAML and JSON.")
          "1nwl0gzzds2g1w1gfxfzlgrkb5hr1rrdyn619ml25c6b1rjyfk3g"))))
     (build-system python-build-system)
     (arguments
-     `(#:modules ((guix build python-build-system)
-                  (guix build utils)
-                  (ice-9 match))
+     (list #:modules `((guix build python-build-system)
+                       (guix build utils)
+                       (ice-9 match))
 
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "tests/test_code.py"
-               (("/bin/bash") (which "bash")))
-             (substitute* "dbusmock/testcase.py"
-               (("'dbus-daemon'")
-                (string-append "'" (assoc-ref inputs "dbus")
-                               "/bin/dbus-daemon'")))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (match (primitive-fork)
-                 (0                     ;child process
-                  (execlp "pytest" "pytest" "-vv"))
-                 (pytest-pid
-                  (let loop ()
-                    ;; Reap child processes; otherwise, python-dbusmock would
-                    ;; waste time polling for the dbus processes it spawns to
-                    ;; be reaped, in vain.
-                    (match (waitpid WAIT_ANY)
-                      ((pid . status)
-                       (if (= pid pytest-pid)
-                           (unless (zero? status)
-                             (error "`pytest' exited with status" status))
-                           (loop)))))))))))))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-paths
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "tests/test_code.py"
+                     (("/bin/bash")
+                      (which "bash")))
+                   (substitute* "dbusmock/testcase.py"
+                     (("'dbus-daemon'")
+                      (string-append "'" (assoc-ref inputs "dbus")
+                                     "/bin/dbus-daemon'")))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (match (primitive-fork)
+                       (0 ;child process
+                        (execlp "pytest" "pytest" "-vv"))
+                       (pytest-pid
+                        (let loop ()
+                          ;; Reap child processes; otherwise, python-dbusmock
+                          ;; would waste time polling for the dbus processes
+                          ;; it spawns to be reaped, in vain.
+                          (match (waitpid WAIT_ANY)
+                            ((pid . status)
+                             (if (= pid pytest-pid)
+                                 (unless (zero? status)
+                                   (error "`pytest' exited with status"
+                                          status))
+                                 (loop)))))))))))))
     (native-inputs
      (list dbus python-pytest which))
     (inputs
