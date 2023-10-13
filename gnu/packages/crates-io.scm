@@ -83153,7 +83153,7 @@ implementation that works everywhere, even WASM!")
   (package
     (inherit rust-zstd-0.11)
     (name "rust-zstd")
-    (version "0.9.3+zstd.1.5.2")
+    (version "0.9.2+zstd.1.5.1")
     (source
      (origin
        (method url-fetch)
@@ -83162,7 +83162,7 @@ implementation that works everywhere, even WASM!")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "15dsisk3g9ncbxzb6miwav35p2v98az6clh5qdab5jxn05l9qzrp"))
+         "0m5aik2jy2w1g68i4isa0c3gq9a7avq9abgjfjbc6f60yqdym413"))
        (modules '((guix build utils)))
        (snippet
         '(begin (substitute* "Cargo.toml"
