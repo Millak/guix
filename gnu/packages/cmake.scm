@@ -263,6 +263,7 @@ and workspaces that can be used in the compiler environment of your choice.")
   (package
     (inherit cmake-bootstrap)
     (name "cmake-minimal")
+    (properties (alist-delete 'hidden? (package-properties cmake-bootstrap)))
     (source (origin
               (inherit (package-source cmake-bootstrap))
               ;; Purge CMakes bundled dependencies as they are no longer needed.
