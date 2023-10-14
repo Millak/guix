@@ -762,6 +762,31 @@ safety and thread safety guarantees.")
                     (string-append name "\"" ,%cargo-reference-hash "\"")))
                  (generate-all-checksums "vendor"))))))))))
 
+(define rust-1.72
+  (let ((base-rust
+          (rust-bootstrapped-package
+           rust-1.71 "1.72.1" "15gqd1jzhnc16a7gjmav4x1v83jjbzyjh1gvcdfvpkajd9gq8j3z")))
+    (package
+      (inherit base-rust)
+      (source
+        (origin
+          (inherit (package-source base-rust))
+          (snippet
+           '(begin
+              (for-each delete-file-recursively
+                        '("src/llvm-project"
+                          "vendor/tikv-jemalloc-sys/jemalloc"))
+              ;; Remove vendored dynamically linked libraries.
+              ;; find . -not -type d -executable -exec file {} \+ | grep ELF
+              ;; Also remove the bundled (mostly Windows) libraries.
+              (for-each delete-file
+                        (find-files "vendor" "\\.(a|dll|exe|lib)$"))
+              ;; Adjust rustc_driver to explicitly use rustix with libc backend.
+              (substitute* "compiler/rustc_driver/Cargo.toml"
+                (("rustix = \"=0.37.11\"")
+                 (string-append "rustix = { version = \"=0.37.11\","
+                                " features = [\"use-libc\"] }"))))))))))
+
 (define (make-ignore-test-list strs)
   "Function to make creating a list to ignore tests a bit easier."
   (map (lambda (str)
