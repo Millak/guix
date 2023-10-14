@@ -7768,56 +7768,63 @@ Github or Gitlab.")
         (base32 "0bpy5nzkvq5nfr0w8jf7bl7zs8yz2cpzp87pnkdlgwl3adcn9nsw"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ;no test
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'make-git-checkout-writable
-           (lambda _
-             (for-each make-file-writable (find-files "."))
-             #t))
-         (add-after 'unpack 'fix-directories
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("(\\$\\{CMAKE_INSTALL_PREFIX\\})/games" _ prefix)
-                (string-append prefix "/bin"))
-               (("(\\$\\{CMAKE_INSTALL_PREFIX\\}/share)/games/colobot" _ prefix)
-                (string-append prefix "/colobot")))
-             #t))
-         (add-after 'fix-directories 'install-music
-           ;; Retrieve and install music files.
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Installation process tries to download music files using
-             ;; "wget" if not already present.  Since we are going another
-             ;; route, skip "wget" command check.
-             (substitute* "data/music/CMakeLists.txt"
-               (("find_program\\(WGET wget\\)") ""))
-             ;; Populate "music/" directory.
-             (let ((data (assoc-ref inputs "colobot-music")))
-               (invoke "tar" "-xvf" data "-Cdata/music"))
-             #t)))))
+     (list
+      #:tests? #f                       ;no test
+      #:modules '((guix build cmake-build-system)
+                  (guix build utils)
+                  (srfi srfi-1)
+                  (ice-9 match)
+                  (ice-9 regex))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'make-git-checkout-writable
+            (lambda _
+              (for-each make-file-writable (find-files "."))))
+          (add-after 'unpack 'fix-directories
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("(\\$\\{CMAKE_INSTALL_PREFIX\\})/games" _ prefix)
+                 (string-append prefix "/bin"))
+                (("(\\$\\{CMAKE_INSTALL_PREFIX\\}/share)/games/colobot" _ prefix)
+                 (string-append prefix "/colobot")))))
+          (add-after 'fix-directories 'install-music
+            ;; Retrieve and install music files.
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Installation process tries to download music files using
+              ;; "wget" if not already present.  Since we are going another
+              ;; route, skip "wget" command check.
+              (substitute* "data/music/CMakeLists.txt"
+                (("find_program\\(WGET wget\\)") ""))
+              ;; Populate "music/" directory.
+              (let ((data
+                     (any
+                      (match-lambda ((_ . input)
+                                     (and (string-match "colobot-music" input)
+                                          input)))
+                      inputs)))
+                (invoke "tar" "-xvf" data "-Cdata/music")))))))
     (native-inputs
-     `(("colobot-music"
-        ,(origin
-           (method url-fetch)
-           (uri (string-append "https://colobot.info/files/music/"
-                               "colobot-music_ogg_" version ".tar.gz"))
-           (sha256
-            (base32
-             "1s86cd36rwkff329mb1ay1wi5qqyi35564ppgr3f4qqz9wj9vs2m"))))
-       ("gettext" ,gettext-minimal)
-       ("librsvg" ,(librsvg-for-system))
-       ("po4a" ,po4a)
-       ("python" ,python-wrapper)))
+     (list (origin
+             (method url-fetch)
+             (uri (string-append "https://colobot.info/files/music/"
+                                 "colobot-music_ogg_" version ".tar.gz"))
+             (sha256
+              (base32
+               "1s86cd36rwkff329mb1ay1wi5qqyi35564ppgr3f4qqz9wj9vs2m")))
+           gettext-minimal
+           (librsvg-for-system)
+           po4a
+           python-wrapper))
     (inputs
-     `(("boost" ,boost)
-       ("glew" ,glew)
-       ("libogg" ,libogg)
-       ("libpng" ,libpng)
-       ("libsndfile" ,libsndfile)
-       ("libvorbis" ,libvorbis)
-       ("openal" ,openal)
-       ("physfs" ,physfs)
-       ("sdl" ,(sdl-union (list sdl2 sdl2-image sdl2-ttf)))))
+     (list boost
+           glew
+           libogg
+           libpng
+           libsndfile
+           libvorbis
+           openal
+           physfs
+           (sdl-union (list sdl2 sdl2-image sdl2-ttf))))
     (synopsis "Educational programming strategy game")
     (description "Colobot: Gold Edition is a real-time strategy game, where
 you can program your units (bots) in a language called CBOT, which is similar
