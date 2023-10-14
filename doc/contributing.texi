@@ -2114,7 +2114,18 @@ all contributors, and even more so from committers, to help build
 consensus and make decisions based on consensus.  To learn what
 consensus decision making means and understand its finer details, you
 are encouraged to read
-@url{https://www.seedsforchange.org.uk/consensus}.
+@url{https://www.seedsforchange.org.uk/consensus}.  It is expected from
+all contributors, and even more so from committers, to help build
+consensus and make decisions based on consensus.  By using consensus, we
+are committed to finding solutions that everyone can live with.  It
+implies that no decision is made against significant concerns and these
+concerns are actively resolved with proposals that work for everyone.  A
+contributor (which may or may not have commit access) wishing to block a
+proposal bears a special responsibility for finding alternatives,
+proposing ideas/code or explain the rationale for the status quo to
+resolve the deadlock.  To learn what consensus decision making means and
+understand its finer details, you are encouraged to read
+<https://www.seedsforchange.org.uk/consensus>.
 
 The following sections explain how to get commit access, how to be ready
 to push commits, and the policies and community expectations for commits
