@@ -743,6 +743,25 @@ safety and thread safety guarantees.")
         ;; for a precompiled library.
         (patches (search-patches "rust-1.70-fix-rustix-build.patch")))))))
 
+(define rust-1.71
+  (let ((base-rust
+          (rust-bootstrapped-package
+           rust-1.70 "1.71.1" "0bj79syjap1kgpg9pc0r4jxc0zkxwm6phjf3digsfafms580vabg")))
+    (package
+      (inherit base-rust)
+      (arguments
+       (substitute-keyword-arguments (package-arguments base-rust)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (replace 'patch-cargo-checksums
+               (lambda _
+                 (substitute* (cons* "Cargo.lock"
+                                     "src/bootstrap/Cargo.lock"
+                                     (find-files "src/tools" "Cargo.lock"))
+                   (("(checksum = )\".*\"" all name)
+                    (string-append name "\"" ,%cargo-reference-hash "\"")))
+                 (generate-all-checksums "vendor"))))))))))
+
 (define (make-ignore-test-list strs)
   "Function to make creating a list to ignore tests a bit easier."
   (map (lambda (str)
