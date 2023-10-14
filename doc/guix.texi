@@ -8533,8 +8533,80 @@ support of the Mercurial version control system.
 Return a fixed-output derivation that fetches @var{ref}, a
 @code{<hg-reference>} object.  The output is expected to have recursive
 hash @var{hash} of type @var{hash-algo} (a symbol).  Use @var{name} as
-the file name, or a generic name if @code{#false}.
+the file name, or a generic name if @code{#f}.
 @end deffn
+
+@deftp {Data Type} hg-reference
+This data type represents a Mercurial reference for @code{hg-fetch} to
+retrieve.
+
+@table @asis
+@item @code{url}
+The URL of the Mercurial repository to clone.
+
+@item @code{revision}
+This string denotes revision to fetch specified as a number.
+@end table
+@end deftp
+
+For Subversion repositories, the module @code{(guix svn-download)}
+defines the @code{svn-fetch} origin method and @code{svn-reference} data
+type for support of the Subversion version control system.
+
+@deffn {Procedure} svn-fetch ref hash-algo hash [name]
+Return a fixed-output derivation that fetches @var{ref}, a
+@code{<svn-reference>} object.  The output is expected to have recursive
+hash @var{hash} of type @var{hash-algo} (a symbol).  Use @var{name} as
+the file name, or a generic name if @code{#f}.
+@end deffn
+
+@deftp {Data Type} svn-reference
+This data type represents a Subversion reference for @code{svn-fetch} to
+retrieve.
+
+@table @asis
+@item @code{url}
+The URL of the Subversion repository to clone.
+
+@item @code{revision}
+This string denotes revision to fetch specified as a number.
+
+@item @code{recursive?} (default: @code{#f})
+This Boolean indicates whether to recursively fetch Subversion
+``externals''.
+
+@item @code{user-name} (default: @code{#f})
+The name of an account that has read-access to the repository, if the
+repository isn't public.
+
+@item @code{password} (default: @code{#f})
+Password to access the Subversion repository, if required.
+@end table
+@end deftp
+
+For Bazaar repositories, the module @code{(guix bzr-download)}
+defines the @code{bzr-fetch} origin method and @code{bzr-reference} data
+type for support of the Bazaar version control system.
+
+@deffn {Procedure} bzr-fetch ref hash-algo hash [name]
+Return a fixed-output derivation that fetches @var{ref}, a
+@code{<bzr-reference>} object.  The output is expected to have recursive
+hash @var{hash} of type @var{hash-algo} (a symbol).  Use @var{name} as
+the file name, or a generic name if @code{#f}.
+@end deffn
+
+@deftp {Data Type} bzr-reference
+This data type represents a Bazaar reference for @code{bzr-fetch} to
+retrieve.
+
+@table @asis
+@item @code{url}
+The URL of the Bazaar repository to clone.
+
+@item @code{revision}
+This string denotes revision to fetch specified as a number.
+@end table
+@end deftp
 
 @node Defining Package Variants
 @section Defining Package Variants
