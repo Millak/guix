@@ -1359,7 +1359,7 @@ libpanel, librsvg and quartz.")
 (define-public unison
   (package
     (name "unison")
-    (version "2.51.2")
+    (version "2.53.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1368,52 +1368,18 @@ libpanel, librsvg and quartz.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1bykiyc0dc5pkw8x370qkg2kygq9pq7yqzsgczd3y13b6ivm4sdq"))
-              (patches (search-patches "unison-fix-ocaml-4.08.patch"))))
-    (build-system gnu-build-system)
-    (outputs '("out"
-               "doc"))                  ; 1.9 MiB of documentation
-    (native-inputs
-     `(("ocaml" ,ocaml-4.09)
-       ;; For documentation
-       ("ghostscript" ,ghostscript)
-       ("texlive" ,(texlive-updmap.cfg))
-       ("hevea" ,hevea)
-       ("lynx" ,lynx)
-       ("which" ,which)))
+                "05ihxk1yynw08586i06w19xab9r24h9hr6v9bknqm98qrlshm92w"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list lablgtk3 zlib))
+    (native-inputs (list ghostscript (texlive-updmap.cfg '()) hevea lynx which))
     (arguments
-     `(#:parallel-build? #f
-       #:parallel-tests? #f
-       #:test-target "selftest"
-       #:tests? #f ; Tests require writing to $HOME.
-                   ; If some $HOME is provided, they fail with the message
-                   ; "Fatal error: Skipping some tests -- remove me!"
-       #:phases
+     `(#:phases
          (modify-phases %standard-phases
-           (delete 'configure)
-           (add-before 'install 'prepare-install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin")))
-                 (mkdir-p bin)
-                 (setenv "HOME" out) ; forces correct INSTALLDIR in Makefile
-                 #t)))
-           (add-after 'install 'install-fsmonitor
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin")))
-                 ;; 'unison-fsmonitor' is used in "unison -repeat watch" mode.
-                 (install-file "src/unison-fsmonitor" bin)
-                 #t)))
            (add-after 'install 'install-doc
              (lambda* (#:key outputs #:allow-other-keys)
-               (let ((doc (string-append (assoc-ref outputs "doc")
+               (let ((doc (string-append (assoc-ref outputs "out")
                                          "/share/doc/unison")))
                  (mkdir-p doc)
-                 ;; Remove an '\n' that prevents the doc to be generated
-                 ;; correctly with newer hevea.
-                 (substitute* "doc/local.tex"
-                   (("----SNIP----.*") "----SNIP----"))
                  ;; This file needs write-permissions, because it's
                  ;; overwritten by 'docs' during documentation generation.
                  (chmod "src/strings.ml" #o600)
