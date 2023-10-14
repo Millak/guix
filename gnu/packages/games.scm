@@ -7755,7 +7755,7 @@ Github or Gitlab.")
 (define-public colobot
   (package
     (name "colobot")
-    (version "0.2.0-alpha")
+    (version "0.2.1-alpha")
     (source
      (origin
        (method git-fetch)
@@ -7765,7 +7765,7 @@ Github or Gitlab.")
              (recursive? #t)))          ;for "data/" subdir
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02z21pw47j2afjsikn5b162gacwgiahdrlhmfxhq4xqlzsvz58z6"))))
+        (base32 "0bpy5nzkvq5nfr0w8jf7bl7zs8yz2cpzp87pnkdlgwl3adcn9nsw"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ;no test
