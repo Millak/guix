@@ -1730,6 +1730,27 @@ leveraging built-in functionality.")
 purpose finder.")
       (license license:gpl3+))))
 
+(define-public emacs-pacfiles-mode
+  (package
+    (name "emacs-pacfiles-mode")
+    (version "1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/UndeadKernel/pacfiles-mode")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1d61s846r9ncmyx97f44r8i3p1ikgi4bab8k7xk868lja96y2ij7"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/UndeadKernel/pacfiles-mode")
+    (synopsis "ArchLinux's pacnew and pacsave merging tool")
+    (description
+     "This Emacs major mode helps manage @file{.pacnew} and @file{.pacsave}
+files left by ArchLinux's pacman.")
+    (license license:expat)))
+
 (define-public emacs-minions
   (package
     (name "emacs-minions")
