@@ -17,6 +17,7 @@
 ;;; Copyright © 2022 Jim Newsome <jnewsome@torproject.org>
 ;;; Copyright © 2022 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2023 Fries <fries1234@protonmail.com>
+;;; Copyright © 2023 Herman Rimm <herman_rimm@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -786,6 +787,29 @@ safety and thread safety guarantees.")
                 (("rustix = \"=0.37.11\"")
                  (string-append "rustix = { version = \"=0.37.11\","
                                 " features = [\"use-libc\"] }"))))))))))
+
+(define rust-1.73
+  (let ((base-rust (rust-bootstrapped-package rust-1.72 "1.73.0"
+                    "0fmvn7vg3qg9xprgfwv10g3ygy8i4j4bkcxcr1xdy89d3xnjxmln")))
+    (package
+      (inherit base-rust)
+      (source
+       (origin
+         (inherit (package-source base-rust))
+         (snippet
+          '(begin
+             (for-each delete-file-recursively
+                       '("src/llvm-project"
+                         "vendor/tikv-jemalloc-sys/jemalloc"))
+             ;; Remove vendored dynamically linked libraries.
+             ;; find . -not -type d -executable -exec file {} \+ | grep ELF
+             ;; Also remove the bundled (mostly Windows) libraries.
+             (for-each delete-file
+                       (find-files "vendor" "\\.(a|dll|exe|lib)$"))
+             ;; Adjust vendored dependency to explicitly use rustix with libc backend.
+             (substitute* "vendor/tempfile-3.6.0/Cargo.toml"
+               (("features = \\[\"fs\"" all)
+                (string-append all ", \"use-libc\""))))))))))
 
 (define (make-ignore-test-list strs)
   "Function to make creating a list to ignore tests a bit easier."
