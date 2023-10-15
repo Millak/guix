@@ -3253,18 +3253,15 @@ program that can perform mesh processing tasks in batch mode, without a GUI.")
                   (delete-file "libpoke/pvm-vm1.c")
                   (delete-file "libpoke/pvm-vm2.c")))))
     (build-system gnu-build-system)
-    ;; The GUI, which we elide, requires tcl and tk.
     (native-inputs (list bison dejagnu flex libtool pkg-config))
     ;; FIXME: Enable NBD support by adding `libnbd' (currently unpackaged).
-    (inputs (list json-c libgc readline libtextstyle))
+    (inputs (list libgc readline libtextstyle))
     (arguments
-     ;; To build the GUI, add the `--enable-gui' configure flag.
-     ;; To enable the "hyperlink server", add the `--enable-hserver' flag.
-     `(#:configure-flags
-       '("--enable-mi"
-         "--disable-static"
-         ;; The emacs files are provided in emacs-poke.
-         "--with-lispdir=/tmp/share/emacs")))
+     (list
+      #:configure-flags
+      #~(list "--disable-static"
+              ;; The emacs files are provided in emacs-poke.
+              "--with-lispdir=/tmp/share/emacs")))
     (home-page "https://www.gnu.org/software/poke/#documentation")
     (synopsis "Editing of arbitrary binary data")
     (description "GNU poke is an interactive, extensible editor for binary data.
