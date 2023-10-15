@@ -1837,8 +1837,16 @@ display a clock or apply image manipulation techniques to the background image."
        (sha256
         (base32 "1lmqz5bmig90gq2m7lwf02d2g7z4hzf8fhqz78c8vk92c6p4xwbc"))))
     (build-system meson-build-system)
-    (inputs (list cairo gdk-pixbuf wayland))
-    (native-inputs (list pkg-config scdoc wayland-protocols))
+    (inputs
+     (cons* cairo gdk-pixbuf wayland
+            (if (%current-target-system)
+              (list wayland-protocols)
+              '())))
+    (native-inputs
+     (cons* pkg-config scdoc wayland-protocols
+            (if (%current-target-system)
+              (list pkg-config-for-build wayland)
+              '())))
     (home-page "https://github.com/swaywm/sway")
     (synopsis "Screen wallpaper utility for Wayland compositors")
     (description "Swaybg is a wallpaper utility for Wayland compositors.")
