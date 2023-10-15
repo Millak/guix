@@ -32,6 +32,7 @@
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Paul Alesius <paul@unnservice.com>
 ;;; Copyright © 2023 Arnav Andrew Jose <arnav.jose@gmail.com>
+;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24388,6 +24389,26 @@ they are called, and how to convert them into a platform-independent
 representation.")
     (license (list license:asl2.0
                    license:expat))))
+
+(define-public rust-filetime-0.1
+  (package
+    (inherit rust-filetime-0.2)
+    (name "rust-filetime")
+    (version "0.1.15")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "filetime" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "03xishfxzpr4nfz4g3r218d6b6g94rxsqw9pw96m6wa8wgrm6iki"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-cfg-if" ,rust-cfg-if-0.1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-redox-syscall" ,rust-redox-syscall-0.1))))))
 
 (define-public rust-field-offset-0.3
   (package
