@@ -18427,17 +18427,16 @@ to support both Python 2 and Python 3 with minimal overhead.")
 (define-public python-cysignals
   (package
     (name "python-cysignals")
-    (version "1.9.0")
+    (version "1.11.4")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "cysignals" version))
         (sha256
-          (base32
-            "15ix8crpad26cfl1skyg7qajqqfdrm8q5ahhmlfmqi1aw0jqj2g2"))))
+         (base32 "1hrqn976xhrq189x1086f3z9vzznjx21wsm3hqf90zx0alg347hg"))))
     (build-system python-build-system)
     (native-inputs
-      (list python-cython python-sphinx))
+      (list python-cython-3 python-sphinx))
     (inputs
       (list pari-gp))
     (arguments
