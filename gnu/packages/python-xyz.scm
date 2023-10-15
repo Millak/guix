@@ -18429,16 +18429,12 @@ to support both Python 2 and Python 3 with minimal overhead.")
     (name "python-cysignals")
     (version "1.11.4")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "cysignals" version))
-        (sha256
-         (base32 "1hrqn976xhrq189x1086f3z9vzznjx21wsm3hqf90zx0alg347hg"))))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cysignals" version))
+       (sha256
+        (base32 "1hrqn976xhrq189x1086f3z9vzznjx21wsm3hqf90zx0alg347hg"))))
     (build-system python-build-system)
-    (native-inputs
-      (list python-cython-3 python-sphinx))
-    (inputs
-      (list pari-gp))
     (arguments
      `(#:modules ((guix build python-build-system)
                   ((guix build gnu-build-system) #:prefix gnu:)
@@ -18447,17 +18443,15 @@ to support both Python 2 and Python 3 with minimal overhead.")
        ;; when not installing into standard locations; the author is working
        ;; on a fix.
        #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-before
-          'build 'configure
-          (assoc-ref gnu:%standard-phases 'configure)))))
-    (home-page
-      "https://github.com/sagemath/cysignals")
-    (synopsis
-      "Handling of interrupts and signals for Cython")
+       #:phases (modify-phases %standard-phases
+                  (add-before 'build 'configure
+                    (assoc-ref gnu:%standard-phases 'configure)))))
+    (native-inputs (list python-cython-3 python-sphinx))
+    (inputs (list pari-gp))
+    (home-page "https://github.com/sagemath/cysignals")
+    (synopsis "Handling of interrupts and signals for Cython")
     (description
-      "The cysignals package provides mechanisms to handle interrupts (and
+     "The cysignals package provides mechanisms to handle interrupts (and
 other signals and errors) in Cython code, using two related approaches,
 for mixed Cython/Python code or external C libraries and pure Cython code,
 respectively.")
