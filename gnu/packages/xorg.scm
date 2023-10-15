@@ -970,9 +970,9 @@ rendering commands to the X server.")
         (uri (string-append
                "mirror://xorg/individual/app/iceauth-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
-         (base32 "1ik0mdidmyvy48hn8p2hwvf3535rf3m96hhf0mvcqrbj44x23vp6"))))
+         (base32 "01cc816fvdkkfcnqnyvgcshcip2jzjivwa8hzdvsz0snak5xzf9c"))))
     (build-system gnu-build-system)
     (inputs
       (list libice))
