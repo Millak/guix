@@ -473,32 +473,30 @@ with optional @acronym{TLS, Transport-Level Security} to protect credentials.")
                 "1pax8sqlvcc7ammsxd9r53yx4m2hg1827wfz6f4rrwjx9q9lnbl7"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-FHS-file-names
-           (lambda _
-             (substitute* "scripts/mosh.pl"
-               (("/bin/sh")
-                (which "sh")))
-             #t))
-         (add-after 'install 'wrap
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Make sure 'mosh' can find 'mosh-client' and
-             ;; 'mosh-server'.
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               (wrap-program (string-append bin "/mosh")
-                             `("PATH" ":" prefix (,bin)))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-FHS-file-names
+            (lambda _
+              (substitute* "scripts/mosh.pl"
+                (("/bin/sh")
+                 (which "sh")))))
+          (add-after 'install 'wrap
+            (lambda _
+              ;; Make sure 'mosh' can find 'mosh-client' and 'mosh-server'.
+              (let ((bin (string-append #$output "/bin")))
+                (wrap-program (string-append bin "/mosh")
+                  `("PATH" ":" prefix (,bin)))))))))
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("openssl" ,openssl)
-       ("perl" ,perl)
-       ("perl-io-tty" ,perl-io-tty)
-       ("zlib" ,zlib)
-       ("ncurses" ,ncurses)
-       ("protobuf" ,protobuf)
-       ("boost-headers" ,boost)))
+     (list boost
+           ncurses
+           openssl
+           perl
+           perl-io-tty
+           protobuf
+           zlib))
     (home-page "https://mosh.org/")
     (synopsis "Remote shell tolerant to intermittent connectivity")
     (description
