@@ -24,6 +24,7 @@
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2023 Arnav Andrew Jose <arnav.jose@gmail.com>
+;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2454,6 +2455,43 @@ current branch.  @code{git absorb} will automatically identify which commits
 are safe to modify, and which staged changes belong to each of those commits.
 It will then write @code{fixup!} commits for each of those changes.")
     (license license:bsd-3)))
+
+(define-public xsv
+  (package
+    (name "xsv")
+    (version "0.13.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "xsv" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0pvzr7x5phlya6m5yikvy13vgbazshw0plysckz9zmf2ly5x4jl8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-byteorder" ,rust-byteorder-1)
+        ("rust-chan" ,rust-chan-0.1)
+        ("rust-csv" ,rust-csv-1)
+        ("rust-csv-index" ,rust-csv-index-0.1)
+        ("rust-docopt" ,rust-docopt-1)
+        ("rust-filetime" ,rust-filetime-0.1)
+        ("rust-num-cpus" ,rust-num-cpus-1)
+        ("rust-rand" ,rust-rand-0.4)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-streaming-stats" ,rust-streaming-stats-0.2)
+        ("rust-tabwriter" ,rust-tabwriter-1)
+        ("rust-threadpool" ,rust-threadpool-1))
+       #:cargo-development-inputs
+       (("rust-log" ,rust-log-0.4)
+        ("rust-quickcheck" ,rust-quickcheck-0.6))))
+    (home-page "https://github.com/BurntSushi/xsv")
+    (synopsis "High performance CSV command line toolkit")
+    (description
+     "This package provides a high performance CSV command line toolkit.")
+    (license (list license:unlicense license:expat))))
 
 (define-public zoxide
   (package
