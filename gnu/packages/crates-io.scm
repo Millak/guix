@@ -11425,6 +11425,26 @@ chain, the first matching branch is the item that gets emitted.")
        (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
         ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))))))
 
+(define-public rust-chan-0.1
+  (package
+    (name "rust-chan")
+    (version "0.1.23")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "chan" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1n0y992mqfk5zpxzvrv14g9qivacmd4fiv4j1nmgyrg0vaimcjfi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-rand" ,rust-rand-0.3))))
+    (home-page "https://github.com/BurntSushi/chan")
+    (synopsis "DEPRECATED. Use crossbeam-channel instead")
+    (description "DEPRECATED. Use crossbeam-channel instead.")
+    (license (list license:unlicense license:expat))))
+
 (define-public rust-chacha20-0.8
   (package
     (name "rust-chacha20")
