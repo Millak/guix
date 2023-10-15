@@ -577,14 +577,20 @@ freedesktop.org project.")
        ;; Meson target anyway.
        #:build-type "release"))
     (native-inputs
-     (list check pkg-config))
+     (append (list check pkg-config)
+             (if (%current-target-system)
+               (list pkg-config-for-build)
+               '())))
     (inputs
-     (list cairo
-           glib
-           gtk+
-           libevdev
-           libwacom
-           mtdev))
+     (append (list cairo
+                   glib
+                   gtk+
+                   libevdev
+                   libwacom
+                   mtdev)
+             (if (%current-target-system)
+               (list check)
+               '())))
     (propagated-inputs
      `(;; libinput.h requires <libudev.h>, so propagate it.
        ("udev" ,eudev)))
