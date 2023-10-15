@@ -1723,7 +1723,11 @@ modules for building a Wayland compositor.")
                   wayland
                   wlroots))
     (native-inputs
-     (list linux-pam mesa pkg-config scdoc wayland-protocols))
+     (cons* linux-pam mesa pkg-config scdoc wayland-protocols
+            (if (%current-target-system)
+              (list pkg-config-for-build
+                    wayland)
+              '())))
     (home-page "https://github.com/swaywm/sway")
     (synopsis "Wayland compositor compatible with i3")
     (description "Sway is a i3-compatible Wayland compositor.")
