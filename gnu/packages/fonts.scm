@@ -580,6 +580,10 @@ The unified Libertinus family consists of:
     (outputs (list "out" "pcf-8bit" "otb"))
     (arguments
      `(#:tests? #f                      ; no test target in tarball
+       #:modules
+       ((guix build gnu-build-system)
+        (guix build utils)
+        (ice-9 match))
        #:phases
        (modify-phases %standard-phases
          (add-after 'build 'build-more-bits
@@ -601,7 +605,16 @@ The unified Libertinus family consists of:
            (lambda* (#:key make-flags outputs #:allow-other-keys)
              (let ((otb (assoc-ref outputs "otb")))
                (apply invoke "make" "install-otb" (string-append "prefix=" otb)
-                      make-flags)))))))
+                      make-flags))))
+         (add-after 'install 'install-documentation
+           ;; There's no way to decypher the cryptic file names without this.
+           (lambda* (#:key outputs #:allow-other-keys)
+             (for-each (match-lambda
+                         ((name . directory)
+                          (install-file "README"
+                                        (string-append directory "/share/doc/"
+                                                       ,name "-" ,version))))
+                       outputs))))))
     (native-inputs
      (list bdftopcf font-util mkfontdir pkg-config python))
     (home-page "https://terminus-font.sourceforge.net/")
