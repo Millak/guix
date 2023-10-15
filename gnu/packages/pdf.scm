@@ -341,10 +341,14 @@ please install the @code{flyer-composer-gui} package.")))
     ;; different solution to the circular dependency mentioned above.
     (list glib))
    (native-inputs
+    (append
       (list pkg-config
             `(,glib "bin") ; glib-mkenums, etc.
             gobject-introspection
-            python))
+            python)
+      (if (%current-target-system)
+        (list pkg-config-for-build)
+        '())))
    (arguments
     (list
      ;; The Poppler test suite needs to be downloaded separately and contains
