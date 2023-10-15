@@ -5289,7 +5289,12 @@ EGLStream families of extensions.")
                   xkeyboard-config
                   xorgproto
                   xtrans))
-    (native-inputs (list pkg-config))
+    (native-inputs (cons pkg-config
+                         (if (%current-target-system)
+                           (list pkg-config-for-build
+                                 wayland
+                                 wayland-protocols)
+                           '())))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
