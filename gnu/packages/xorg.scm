@@ -5243,8 +5243,11 @@ application-facing EGL functions.")
         (base32 "11a3j2rjai2vsway9ki5y3ncvhrwd300pz2zcq36mq3brbr1vgf5"))))
     (build-system meson-build-system)
     (native-inputs
-     (list libglvnd ;needed for headers
-           mesa-headers pkg-config))
+     (cons* libglvnd ;needed for headers
+            mesa-headers pkg-config
+            (if (%current-target-system)
+              (list pkg-config-for-build wayland wayland-protocols)
+              '())))
     (inputs
      (list mesa wayland wayland-protocols))
     (propagated-inputs
