@@ -5592,7 +5592,10 @@ The XCB util module provides the following libraries:
         ("automake" ,automake)
         ("libtool" ,libtool)
         ("python" ,python-wrapper)
-        ("pkg-config" ,pkg-config)))
+        ("pkg-config" ,pkg-config)
+        ,@(if (%current-target-system)
+            `(("libxcb" ,libxcb))
+            `())))
      (arguments
       `(#:phases
         (modify-phases %standard-phases
