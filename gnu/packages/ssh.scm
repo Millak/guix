@@ -477,10 +477,10 @@ with optional @acronym{TLS, Transport-Level Security} to protect credentials.")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-FHS-file-names
-            (lambda _
+            (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "scripts/mosh.pl"
-                (("/bin/sh")
-                 (which "sh")))))
+                (("/bin/sh" shell)
+                 (search-input-file inputs shell)))))
           (add-after 'install 'wrap
             (lambda _
               ;; Make sure 'mosh' can find 'mosh-client' and 'mosh-server'.
