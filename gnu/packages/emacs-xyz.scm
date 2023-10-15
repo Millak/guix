@@ -38382,6 +38382,24 @@ In particular, it saves and restores project files and window configurations
 across sessions.")
       (license license:gpl3+))))
 
+(define-public emacs-poke-mode
+  (package
+    (name "emacs-poke-mode")
+    (version "3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/poke-mode-" version
+                           ".tar"))
+       (sha256
+        (base32 "1lirhws5d8l16qs5ddrvvz0f9xfl004q9yp333pdgsmcpk3ww7sr"))))
+    (build-system emacs-build-system)
+    (home-page "https://elpa.gnu.org/packages/poke-mode.html")
+    (synopsis "Major mode for editing GNU poke programs")
+    (description
+     "This package provides a major mode for editing GNU poke programs.")
+    (license license:gpl3+)))
+
 (define-public emacs-vcard-mode
   ;; Use the latest commit, as there are no tagged releases.
   (let ((commit "ab1a2885a5720d7fb02d9b6583ee908ba2260b78")
