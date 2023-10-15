@@ -1644,10 +1644,10 @@ functionality to display information about the most commonly used services.")
                                             "/bin/Xwayland")))
              #t))
          (add-before 'configure 'fix-meson-file
-           (lambda* (#:key inputs #:allow-other-keys)
+           (lambda* (#:key native-inputs inputs #:allow-other-keys)
              (substitute* "backend/drm/meson.build"
                (("/usr/share/hwdata/pnp.ids")
-                (string-append (assoc-ref inputs "hwdata")
+                (string-append (assoc-ref (or native-inputs inputs) "hwdata")
                                "/share/hwdata/pnp.ids"))))))))
     (propagated-inputs
      (list ;; As required by wlroots.pc.
@@ -1663,9 +1663,13 @@ functionality to display information about the most commonly used services.")
            xcb-util-wm
            xorg-server-xwayland))
     (native-inputs
-     (list
+     (cons*
        `(,hwdata "pnp")
-       pkg-config))
+       pkg-config
+       wayland
+       (if (%current-target-system)
+         (list pkg-config-for-build)
+         '())))
     (home-page "https://gitlab.freedesktop.org/wlroots/wlroots/")
     (synopsis "Pluggable, composable, unopinionated modules for building a
 Wayland compositor")
