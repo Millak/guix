@@ -3277,22 +3277,9 @@ data structures and to operate on them.")
     (license license:gpl3+)))
 
 (define-public emacs-poke
-  (package
-    (inherit poke)
-    (name "emacs-poke")
-    (build-system emacs-build-system)
-    (arguments
-     (list
-       #:phases
-       #~(modify-phases %standard-phases
-           (add-before 'expand-load-path 'change-working-directory
-             (lambda _ (chdir "etc"))))))
-    (inputs '())
-    (native-inputs '())
-    (synopsis "GNU Poke major modes for Emacs")
-    (description
-     "This package provides two Emacs major modes for working with GNU Poke:
-@code{Poke Ras mode} and @code{Poke Map mode}.")))
+  ;; The 'emacs-poke' name may eventually refer to 'poke' from ELPA, which is
+  ;; a different beast.
+  (deprecated-package "emacs-poke" poke))
 
 (define-public pcb2gcode
   (package
