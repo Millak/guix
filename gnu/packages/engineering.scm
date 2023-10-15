@@ -3258,10 +3258,16 @@ program that can perform mesh processing tasks in batch mode, without a GUI.")
     (inputs (list libgc readline libtextstyle))
     (arguments
      (list
+      #:imported-modules `((guix build emacs-build-system)
+                           (guix build emacs-utils)
+                           ,@%gnu-build-system-modules)
+      #:modules '((guix build gnu-build-system)
+                  ((guix build emacs-build-system) #:prefix emacs:)
+                  (guix build utils))
       #:configure-flags
       #~(list "--disable-static"
-              ;; The emacs files are provided in emacs-poke.
-              "--with-lispdir=/tmp/share/emacs")))
+              (string-append "--with-lispdir="
+                             (emacs:elpa-directory #$output)))))
     (home-page "https://www.gnu.org/software/poke/#documentation")
     (synopsis "Editing of arbitrary binary data")
     (description "GNU poke is an interactive, extensible editor for binary data.
