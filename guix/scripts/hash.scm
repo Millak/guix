@@ -153,7 +153,7 @@ use '--serializer=nar' instead~%")))
                               (alist-delete 'serializer result))))
         (option '(#\h "help") #f #f
                 (lambda args
-                  (show-help)
+                  (leave-on-EPIPE (show-help))
                   (exit 0)))
         (option '(#\V "version") #f #f
                 (lambda args
