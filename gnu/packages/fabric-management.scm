@@ -46,7 +46,7 @@
 (define-public opensm
   (package
     (name "opensm")
-    (version "3.3.22")
+    (version "3.3.24")
     (source
      (origin
        (method url-fetch)
@@ -54,7 +54,7 @@
         (string-append "https://github.com/linux-rdma/opensm/releases/download/"
                        version "/opensm-" version ".tar.gz"))
        (sha256
-        (base32 "19scwwpwqhqsyq4hbr5cflcmypss828lalxxd36yby7mbimca38y"))))
+        (base32 "0q74sx8y23h7picdzb4g5r84wcvc9hr9vzsdawkl812b38vmwcx3"))))
     (build-system gnu-build-system)
     (native-inputs
      (list bison
