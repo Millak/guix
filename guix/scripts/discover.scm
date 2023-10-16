@@ -50,7 +50,7 @@ Discover Guix related services using Avahi.\n"))
                   (alist-cons 'cache arg result)))
         (option '(#\h "help") #f #f
                 (lambda _
-                  (show-help)
+                  (leave-on-EPIPE (show-help))
                   (exit 0)))
         (option '(#\V "version") #f #f
                 (lambda _
