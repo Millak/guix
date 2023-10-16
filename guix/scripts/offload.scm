@@ -868,11 +868,12 @@ machine."
     (("--version")
      (show-version-and-exit "guix offload"))
     (("--help")
-     (format #t (G_ "Usage: guix offload SYSTEM MAX-SILENT-TIME \
+     (leave-on-EPIPE
+      (format #t (G_ "Usage: guix offload SYSTEM MAX-SILENT-TIME \
 PRINT-BUILD-TRACE? BUILD-TIMEOUT
 Process build offload requests written on the standard input, possibly
 offloading builds to the machines listed in '~a'.~%")
-             %machine-file)
+              %machine-file))
      (display (G_ "
 This tool is meant to be used internally by 'guix-daemon'.\n"))
      (show-bug-report-information))
