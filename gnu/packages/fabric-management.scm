@@ -66,18 +66,20 @@
     (inputs
      (list rdma-core))
     (arguments
-     `(#:configure-flags '("--disable-static")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((base (assoc-ref outputs "out"))
-                    (doc  (string-append base "/share/doc/"
-                                         ,(package-name this-package) "-"
-                                         ,(package-version this-package))))
-               (for-each (lambda (file)
-                           (install-file file doc))
-                         (find-files "doc"))))))))
+     (list
+      #:configure-flags #~'("--disable-static")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-doc
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((base (assoc-ref outputs "out"))
+                     (doc (string-append base "/share/doc/"
+                                         #$(package-name this-package)
+                                         "-"
+                                         #$(package-version this-package))))
+                (for-each (lambda (file)
+                            (install-file file doc))
+                          (find-files "doc"))))))))
     (home-page "https://www.openfabrics.org/")
     (synopsis "OpenIB InfiniBand Subnet Manager and management utilities")
     (description "\
