@@ -89,7 +89,6 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
-  #:use-module (guix modules)
   #:use-module (gnu packages apr)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages documentation)
@@ -259,14 +258,11 @@ Python 3.3 and later, rather than on Python 2.")
     (build-system gnu-build-system)
     (arguments
      (list
-      #:imported-modules `(,@%gnu-build-system-modules
-                           ,@(source-module-closure '((guix search-paths))))
-      #:modules `((ice-9 match)
-                  (ice-9 textual-ports)
-                  (srfi srfi-1)
+      #:modules `((srfi srfi-1)
                   (srfi srfi-26)
+                  (ice-9 format)
+                  (ice-9 textual-ports)
                   ((guix build gnu-build-system) #:prefix gnu:)
-                  (guix search-paths)
                   ,@%gnu-build-system-modules)
       ;; Make sure the full bash does not end up in the final closure.
       #:disallowed-references (list bash perl)
@@ -342,16 +338,10 @@ Python 3.3 and later, rather than on Python 2.")
                       (display content port)))))
 
               (define PATH-variable-definition
-                (let ((value
-                       (match (evaluate-search-paths
-                               (list $PATH)
-                               (list #$(this-package-input "coreutils-minimal")
-                                     #$(this-package-input "sed")))
-                         (((spec . value))
-                          value))))
-                  (string-append
-                   (search-path-definition $PATH value
-                                           #:kind 'prefix) "\n\n")))
+                (format #f "PATH=~{~a~^:~}${PATH:+:}$PATH~%~%"
+                        (map (compose dirname (cut search-input-file inputs <>))
+                             '("bin/basename"
+                               "bin/sed"))))
 
               ;; Ensure that coreutils (for basename) and sed are on PATH
               ;; for any script that sources the 'git-sh-setup.sh' file.
