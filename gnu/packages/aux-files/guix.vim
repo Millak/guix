@@ -1,13 +1,8 @@
-" This appends all of the vim plugins to the end of Vim's runtimepath.
+" This appends all applicable vim paths to the end of packagepath.  Once we
+" have told vim the packagepath vim will add it to the runtimepath for us.
 for directory in ["/run/current-system/profile", $HOME . "/.guix-profile", $HOME ."/.guix-home/profile", $GUIX_PROFILE, $GUIX_ENVIRONMENT]
     let vimplugins = directory . "/share/vim/vimfiles"
     if isdirectory(vimplugins)
-        let &rtp = join([&rtp,vimplugins], ',')
+        let &pp = join([&pp,vimplugins], ',')
     endif
-endfor
-" Unconditionally add */after directories last, as intended by upstream
-" TODO: Remove duplicate */after directories
-for directory in [$VIM . "/vimfiles", $HOME ."/.vim"]
-    let vimplugins = directory . "/after"
-    let &rtp = join([&rtp,vimplugins], ',')
 endfor
