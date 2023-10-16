@@ -150,7 +150,7 @@ Copy ITEMS to or from the specified host over SSH.\n"))
 
          (option '(#\h "help") #f #f
                  (lambda args
-                   (show-help)
+                   (leave-on-EPIPE (show-help))
                    (exit 0)))
          (option '(#\V "version") #f #f
                  (lambda args
