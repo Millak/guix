@@ -3295,6 +3295,32 @@ serializing continuations or delimited continuations.")
 from @code{tree-il}.")
     (license license:lgpl2.0+)))
 
+(define-public guile-hoot
+  (package
+    (name "guile-hoot")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://spritely.institute/files/releases"
+                                  "/guile-hoot/guile-hoot-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1087rcj22hk6fcbqajm268f1q2c3kbizah8wy1z0aqkfliwc309g"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:make-flags '("GUILE_AUTO_COMPILE=0"
+                      "WASM_HOST=hoot")))
+    (native-inputs
+     (list autoconf automake pkg-config texinfo))
+    (inputs
+     (list guile-next))
+    (synopsis "WebAssembly compiler backend for Guile")
+    (description "Guile Hoot is a WebAssembly compiler backend for GNU Guile
+and standalone WASM toolchain.")
+    (home-page "https://spritely.institute/hoot")
+    (license (list license:asl2.0 license:lgpl3+))))
+
 (define-public guile-file-names
   (package
     (name "guile-file-names")
