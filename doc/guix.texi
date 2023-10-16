@@ -185,7 +185,6 @@ Weblate} (@pxref{Translating Guix}).
 * Introduction::                What is Guix about?
 * Installation::                Installing Guix.
 * System Installation::         Installing the whole operating system.
-* System Troubleshooting Tips::  When things don't go as planned.
 * Getting Started::             Your first steps.
 * Package Management::          Package installation, upgrade, etc.
 * Channels::                    Customizing the package collection.
@@ -194,6 +193,7 @@ Weblate} (@pxref{Translating Guix}).
 * Utilities::                   Package management commands.
 * Foreign Architectures::       Build for foreign architectures.
 * System Configuration::        Configuring the operating system.
+* System Troubleshooting Tips::  When things don't go as planned.
 * Home Configuration::          Configuring the home environment.
 * Documentation::               Browsing software user manuals.
 * Platforms::                   Defining platforms.
@@ -250,10 +250,6 @@ Manual Installation
 
 * Keyboard Layout and Networking and Partitioning::  Initial setup.
 * Proceeding with the Installation::  Installing.
-
-System Troubleshooting Tips
-
-* Chrooting into an existing system::
 
 Package Management
 
@@ -426,6 +422,10 @@ Defining Services
 * Service Reference::           API reference.
 * Shepherd Services::           A particular type of service.
 * Complex Configurations::      Defining bindings for complex configurations.
+
+System Troubleshooting Tips
+
+* Chrooting into an existing system::
 
 Home Configuration
 
@@ -2978,123 +2978,6 @@ guix system image --system=armhf-linux -e '((@@ (gnu system install) os-with-u-b
 @code{A20-OLinuXino-Lime2} is the name of the board.  If you specify an invalid
 board, a list of possible boards will be printed.
 
-@c *********************************************************************
-@cindex troubleshooting, guix system
-@cindex guix system troubleshooting
-@node System Troubleshooting Tips
-@chapter System Troubleshooting Tips
-
-Guix System allows rebooting into a previous generation should the last
-one be malfunctioning, which makes it quite robust against being broken
-irreversibly.  This feature depends on GRUB being correctly functioning
-though, which means that if for whatever reasons your GRUB installation
-becomes corrupted during a system reconfiguration, you may not be able
-to easily boot into a previous generation.  A technique that can be used
-in this case is to @i{chroot} into your broken system and reconfigure it
-from there.  Such technique is explained below.
-
-@cindex chroot, guix system
-@cindex chrooting, guix system
-@cindex repairing GRUB, via chroot
-@menu
-* Chrooting into an existing system::
-@end menu
-
-@node Chrooting into an existing system
-@section Chrooting into an existing system
-
-This section details how to @i{chroot} to an already installed Guix
-System with the aim of reconfiguring it, for example to fix a broken
-GRUB installation.  The process is similar to how it would be done on
-other GNU/Linux systems, but there are some Guix System particularities
-such as the daemon and profiles that make it worthy of explaining here.
-
-@enumerate
-@item
-Obtain a bootable image of Guix System.  It is recommended the latest
-development snapshot so the kernel and the tools used are at least as as
-new as those of your installed system; it can be retrieved from the
-@url{https://ci.guix.gnu.org/search/latest/ISO-9660?query=spec:images+status:success+system:x86_64-linux+image.iso,
-https://ci.guix.gnu.org} URL.  Follow the @pxref{USB Stick and DVD
-Installation} section for copying it to a bootable media.
-
-@item
-Boot the image, and proceed with the graphical text-based installer
-until your network is configured.  Alternatively, you could configure
-the network manually by following the
-@ref{manual-installation-networking} section.  If you get the error
-@samp{RTNETLINK answers: Operation not possible due to RF-kill}, try
-@samp{rfkill list} followed by @samp{rfkill unblock 0}, where @samp{0}
-is your device identifier (ID).
-
-@item
-Switch to a virtual console (tty) if you haven't already by pressing
-simultaneously the @kbd{Control + Alt + F4} keys.  Mount your file
-system at @file{/mnt}.  Assuming your root partition is
-@file{/dev/sda2}, you would do:
-
-@example sh
-mount /dev/sda2 /mnt
-@end example
-
-@item
-Mount special block devices and Linux-specific directories:
-
-@example sh
-mount --rbind /proc /mnt/proc
-mount --rbind /sys /mnt/sys
-mount --rbind /dev /mnt/dev
-@end example
-
-If your system is EFI-based, you must also mount the ESP partition.
-Assuming it is @file{/dev/sda1}, you can do so with:
-
-@example sh
-mount /dev/sda1 /mnt/boot/efi
-@end example
-
-@item
-Enter your system via chroot:
-
-@example sh
-chroot /mnt /bin/sh
-@end example
-
-@item
-Source the system profile as well as your @var{user} profile to setup
-the environment, where @var{user} is the user name used for the Guix
-System you are attempting to repair:
-
-@example sh
-source /var/guix/profiles/system/profile/etc/profile
-source /home/@var{user}/.guix-profile/etc/profile
-@end example
-
-To ensure you are working with the Guix revision you normally would as
-your normal user, also source your current Guix profile:
-
-@example sh
-source /home/@var{user}/.config/guix/current/etc/profile
-@end example
-
-@item
-Start a minimal @command{guix-daemon} in the background:
-
-@example sh
-guix-daemon --build-users-group=guixbuild --disable-chroot &
-@end example
-
-@item
-Edit your Guix System configuration if needed, then reconfigure with:
-
-@example sh
-guix system reconfigure your-config.scm
-@end example
-
-@item
-Finally, you should be good to reboot the system to test your fix.
-
-@end enumerate
 
 @c *********************************************************************
 @node Getting Started
@@ -43112,6 +42995,124 @@ phone-number = 0
 is-married = true
 @end example
 
+
+@c *********************************************************************
+@cindex troubleshooting, Guix System
+@cindex guix system troubleshooting
+@node System Troubleshooting Tips
+@chapter System Troubleshooting Tips
+
+Guix System allows rebooting into a previous generation should the last
+one be malfunctioning, which makes it quite robust against being broken
+irreversibly.  This feature depends on GRUB being correctly functioning
+though, which means that if for whatever reasons your GRUB installation
+becomes corrupted during a system reconfiguration, you may not be able
+to easily boot into a previous generation.  A technique that can be used
+in this case is to @i{chroot} into your broken system and reconfigure it
+from there.  Such technique is explained below.
+
+@cindex chroot, guix system
+@cindex chrooting, guix system
+@cindex repairing GRUB, via chroot
+@menu
+* Chrooting into an existing system::
+@end menu
+
+@node Chrooting into an existing system
+@section Chrooting into an existing system
+
+This section details how to @i{chroot} to an already installed Guix
+System with the aim of reconfiguring it, for example to fix a broken
+GRUB installation.  The process is similar to how it would be done on
+other GNU/Linux systems, but there are some Guix System particularities
+such as the daemon and profiles that make it worthy of explaining here.
+
+@enumerate
+@item
+Obtain a bootable image of Guix System.  It is recommended the latest
+development snapshot so the kernel and the tools used are at least as as
+new as those of your installed system; it can be retrieved from the
+@url{https://ci.guix.gnu.org/search/latest/ISO-9660?query=spec:images+status:success+system:x86_64-linux+image.iso,
+https://ci.guix.gnu.org} URL.  Follow the @pxref{USB Stick and DVD
+Installation} section for copying it to a bootable media.
+
+@item
+Boot the image, and proceed with the graphical text-based installer
+until your network is configured.  Alternatively, you could configure
+the network manually by following the
+@ref{manual-installation-networking} section.  If you get the error
+@samp{RTNETLINK answers: Operation not possible due to RF-kill}, try
+@samp{rfkill list} followed by @samp{rfkill unblock 0}, where @samp{0}
+is your device identifier (ID).
+
+@item
+Switch to a virtual console (tty) if you haven't already by pressing
+simultaneously the @kbd{Control + Alt + F4} keys.  Mount your file
+system at @file{/mnt}.  Assuming your root partition is
+@file{/dev/sda2}, you would do:
+
+@example sh
+mount /dev/sda2 /mnt
+@end example
+
+@item
+Mount special block devices and Linux-specific directories:
+
+@example sh
+mount --rbind /proc /mnt/proc
+mount --rbind /sys /mnt/sys
+mount --rbind /dev /mnt/dev
+@end example
+
+If your system is EFI-based, you must also mount the ESP partition.
+Assuming it is @file{/dev/sda1}, you can do so with:
+
+@example sh
+mount /dev/sda1 /mnt/boot/efi
+@end example
+
+@item
+Enter your system via chroot:
+
+@example sh
+chroot /mnt /bin/sh
+@end example
+
+@item
+Source the system profile as well as your @var{user} profile to setup
+the environment, where @var{user} is the user name used for the Guix
+System you are attempting to repair:
+
+@example sh
+source /var/guix/profiles/system/profile/etc/profile
+source /home/@var{user}/.guix-profile/etc/profile
+@end example
+
+To ensure you are working with the Guix revision you normally would as
+your normal user, also source your current Guix profile:
+
+@example sh
+source /home/@var{user}/.config/guix/current/etc/profile
+@end example
+
+@item
+Start a minimal @command{guix-daemon} in the background:
+
+@example sh
+guix-daemon --build-users-group=guixbuild --disable-chroot &
+@end example
+
+@item
+Edit your Guix System configuration if needed, then reconfigure with:
+
+@example sh
+guix system reconfigure your-config.scm
+@end example
+
+@item
+Finally, you should be good to reboot the system to test your fix.
+
+@end enumerate
 
 @node Home Configuration
 @chapter Home Configuration
