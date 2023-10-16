@@ -547,7 +547,7 @@ bailing out~%"))
 
         (option '(#\h "help") #f #f
                 (lambda args
-                  (show-help)
+                  (leave-on-EPIPE (show-help))
                   (exit 0)))
         (option '(#\l "list-stylings") #f #f
                 (lambda args
