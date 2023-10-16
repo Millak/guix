@@ -8572,7 +8572,7 @@ comparing system environments.")
 (define-public libfabric
   (package
     (name "libfabric")
-    (version "1.11.2")
+    (version "1.19.0")
     (source
      (origin
        (method url-fetch)
@@ -8580,7 +8580,7 @@ comparing system environments.")
         (string-append "https://github.com/ofiwg/libfabric/releases/download/v"
                        version "/libfabric-" version ".tar.bz2"))
        (sha256
-        (base32 "1nnpfkwxhim2nqjkb1vwrb4wj4j3l6w6yvvy69fqam2snlhshazz"))))
+        (base32 "17pg0fb4fa77r1bmp0xk535m8n8fadpfdg93cb280ghhx55pck7i"))))
     (build-system gnu-build-system)
     (inputs `(("rdma-core" ,rdma-core)
               ,@(match (%current-system)
