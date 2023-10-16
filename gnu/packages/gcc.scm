@@ -1006,7 +1006,7 @@ using compilers other than GCC."
                                       (assoc-ref inputs "powerpc64le-patch"))))))
                    '()))
           ;; Force rs6000 (i.e., powerpc) libdir to be /lib and not /lib64.
-          (add-before 'chdir 'fix-rs6000-libdir
+          (add-after 'unpack 'fix-rs6000-libdir
             (lambda _
               (when (file-exists? "gcc/config/rs6000")
                 (substitute* (find-files "gcc/config/rs6000")
