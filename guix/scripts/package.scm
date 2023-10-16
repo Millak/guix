@@ -504,7 +504,7 @@ Install, remove, or upgrade packages in a single transaction.\n"))
   ;; Specification of the command-line options.
   (cons* (option '(#\h "help") #f #f
                  (lambda args
-                   (show-help)
+                   (leave-on-EPIPE (show-help))
                    (exit 0)))
          (option '(#\V "version") #f #f
                  (lambda args
