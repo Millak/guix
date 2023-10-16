@@ -543,7 +543,7 @@ Locate FILE and return the list of packages that contain it.\n"))
 
 (define %options
   (list (option '(#\h "help") #f #f
-                (lambda args (show-help) (exit 0)))
+                (lambda args (leave-on-EPIPE (show-help)) (exit 0)))
         (option '(#\V "version") #f #f
                 (lambda (opt name arg result)
                   (show-version-and-exit "guix locate")))
