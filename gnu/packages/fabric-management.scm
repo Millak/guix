@@ -185,7 +185,7 @@ testing InfiniBand networks.")
 (define-public ucx
   (package
     (name "ucx")
-    (version "1.14.0")
+    (version "1.15.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -195,7 +195,7 @@ testing InfiniBand networks.")
               (patches (search-patches "ucx-tcp-iface-ioctl.patch"))
               (sha256
                (base32
-                "0ki2r768wqm92qv06wxrh3kv2nl2yj4ds9fz0s0b5rr2ycjiw9ir"))))
+                "1mk46vyfp8hsivk88s8gv0nf458jfs59fczpf66wwa3a9yp324jp"))))
     (build-system gnu-build-system)
     (arguments
      (list
