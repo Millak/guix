@@ -1084,7 +1084,8 @@ drags, snap-to-border support, and virtual desktops.")
          (add-after 'install 'install-vim-files
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
-                    (syntax (string-append out "/share/vim/vimfiles/syntax")))
+                    (syntax (string-append
+                              out "/share/vim/vimfiles/pack/guix/start/fluxbox/syntax")))
                (copy-recursively "3rd/vim/vim/syntax" syntax)
                #t)))
          (add-after 'install 'install-xsession

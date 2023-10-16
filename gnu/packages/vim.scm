@@ -31,17 +31,17 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages vim)
-  #:use-module ((guix licenses) #:prefix license:)  
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
-  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
+  #:use-module (guix build-system vim)
   #:use-module (gnu packages)
   #:use-module (gnu packages acl)
   #:use-module (gnu packages admin) ; For GNU hostname
@@ -299,12 +299,9 @@ written in the Python 3, Perl, Ruby, Tcl, and Lua programming languages.")))
        (sha256
         (base32
          "1h6sci5mhdfg6sjsjpi8l5li02hg858zcayiwl60y9j2gqnd18lv"))))
-    (build-system copy-build-system)
+    (build-system vim-build-system)
     (arguments
-     '(#:install-plan
-       '(("autoload" "share/vim/vimfiles/")
-         ("doc" "share/vim/vimfiles/")
-         ("plugin" "share/vim/vimfiles/"))))
+     (list #:plugin-name "neocomplete"))
     (synopsis "Next generation completion framework for Vim")
     (description
      "@code{neocomplete}, an abbreviation of 'neo-completion with cache',
@@ -332,10 +329,9 @@ features than Vim's built-in completion.")
          (sha256
           (base32
            "151wpvbj6jb9jdkbhj3b77f5sq7y328spvwfbqyj1y32rg4ifmc6"))))
-      (build-system copy-build-system)
+      (build-system vim-build-system)
       (arguments
-       '(#:install-plan
-         '(("neosnippets" "share/vim/vimfiles/"))))
+       (list #:plugin-name "neosnippet"))   ; Extends neosnippet
     (synopsis "Snippets for neosnippet")
     (description
      "@code{neosnippet-snippets} provides standard snippets for the Vim plugin
@@ -361,17 +357,9 @@ you can fill in on the fly.")
        (sha256
         (base32
          "0k80syscmpnj38ks1fq02ds59g0r4jlg9ll7z4qc048mgi35alw5"))))
-    (build-system copy-build-system)
+    (build-system vim-build-system)
     (arguments
-     '(#:install-plan
-       '(("autoload" "share/vim/vimfiles/")
-         ("doc" "share/vim/vimfiles/")
-         ("ftdetect" "share/vim/vimfiles/")
-         ("ftplugin" "share/vim/vimfiles/")
-         ("indent" "share/vim/vimfiles/")
-         ("plugin" "share/vim/vimfiles/")
-         ("rplugin" "share/vim/vimfiles/")
-         ("syntax" "share/vim/vimfiles/"))))
+     (list #:plugin-name "neosnippet"))
     (synopsis "Snippet support for Vim")
     (description
      "@code{neosnippet}, is a plugin for Vim which adds snippet support to Vim.
@@ -400,12 +388,9 @@ trouble using them, because you do not have to remember each snippet name.")
          (sha256
           (base32
            "04h946vr4f8wxap3wzqs69y2v8n50g2zbk22jsg2kxr4c01z5cbw"))))
-      (build-system copy-build-system)
+      (build-system vim-build-system)
       (arguments
-       '(#:install-plan
-         '(("ftplugin" "share/vim/vimfiles/")
-           ("indent" "share/vim/vimfiles/")
-           ("syntax" "share/vim/vimfiles/"))))
+       (list #:plugin-name "vim-scheme"))
       (synopsis "Scheme syntax for Vim")
       (description
        "@code{vim-scheme} provides Scheme support for Vim (R7RS and CHICKEN).")
@@ -428,10 +413,9 @@ trouble using them, because you do not have to remember each snippet name.")
          (sha256
           (base32
            "0ka3qbhsh8lix1vyj4678j7dnchkd8khhirrnn3aylxxf8fpqyg8"))))
-      (build-system copy-build-system)
+      (build-system vim-build-system)
       (arguments
-       '(#:install-plan
-         '(("colors" "share/vim/vimfiles/"))))
+       (list #:plugin-name "luna"))
       (synopsis "Dark color theme for Vim")
       (description
        "@code{vim-luna} is a dark color theme for Vim.")
@@ -455,11 +439,9 @@ trouble using them, because you do not have to remember each snippet name.")
          (sha256
           (base32
            "0alvrfhmd91zkd9h83s8wvgyq4iakcf6rybsyjd369qbgpcqky89"))))
-      (build-system copy-build-system)
+      (build-system vim-build-system)
       (arguments
-       '(#:install-plan
-         '(("doc" "share/vim/vimfiles/")
-           ("autoload" "share/vim/vimfiles/"))))
+       (list #:plugin-name "context_filetype"))
       (synopsis "Context filetype library for Vim")
       (description
        "@code{vim-context-filetype} is context filetype library for Vim script.")
@@ -479,15 +461,9 @@ trouble using them, because you do not have to remember each snippet name.")
         (file-name (git-file-name name version))
         (sha256
          (base32 "138290g2aph1jjhaza6biky5qi4ka6435s01bwxivllgb53g3irc"))))
-    (build-system copy-build-system)
+    (build-system vim-build-system)
     (arguments
-     '(#:install-plan
-       '(("autoload" "share/vim/vimfiles/")
-         ("doc" "share/vim/vimfiles/")
-         ("ftdetect" "share/vim/vimfiles/")
-         ("ftplugin" "share/vim/vimfiles/")
-         ("plugin" "share/vim/vimfiles/")
-         ("syntax" "share/vim/vimfiles/"))))
+     (list #:plugin-name "fugitive"))
     (home-page "https://github.com/tpope/vim-fugitive")
     (synopsis "Vim plugin to work with Git")
     (description "Vim-fugitive is a wrapper for Vim that complements the
@@ -509,12 +485,9 @@ commit or run any Git arbitrary command.")
        (sha256
         (base32
          "1aksmr73648pvyc75pfdz28k2d4ky52rn7xiwcv7lz87q3vqld7k"))))
-    (build-system copy-build-system)
+    (build-system vim-build-system)
     (arguments
-     '(#:install-plan
-       '(("autoload" "share/vim/vimfiles/")
-         ("doc" "share/vim/vimfiles/")
-         ("plugin" "share/vim/vimfiles/"))))
+     (list #:plugin-name "airline"))
     (synopsis "Statusline for Vim")
     (description
      "@code{vim-airline} is an extensible statusline for Vim.
@@ -540,12 +513,9 @@ and powerline symbols, etc.")
          (sha256
           (base32
            "1sb7nb7j7bz0pv1c9bgdy0smhr0jk2b1vbdv9yzghg5lrknpsbr6"))))
-      (build-system copy-build-system)
+      (build-system vim-build-system)
       (arguments
-       '(#:install-plan
-         '(("autoload" "share/vim/vimfiles/")
-           ("doc" "share/vim/vimfiles/")
-           ("plugin" "share/vim/vimfiles/"))))
+       (list #:plugin-name "airline-themes"))
       (synopsis "Collection of themes for Vim-airline")
       (description
        "@code{vim-airline-themes} is a collection of themes for @code{vim-airline}.")
@@ -565,13 +535,9 @@ and powerline symbols, etc.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0j91f72jaz1s6aw1hpjiz30vk2ds2aqd9gisk91grsldy6nz6hhz"))))
-    (build-system copy-build-system)
+    (build-system vim-build-system)
     (arguments
-     '(#:install-plan
-       '(("autoload" "share/vim/vimfiles/")
-         ("doc" "share/vim/vimfiles/")
-         ("plugin" "share/vim/vimfiles/")
-         ("syntax_checkers" "share/vim/vimfiles/"))))
+     (list #:plugin-name "syntastic"))
     (synopsis "Syntax checking plugin for Vim")
     (description
      "Vim-syntastic is a syntax checking plugin for Vim.  It runs files through
@@ -580,6 +546,17 @@ can be done on demand, or automatically as files are saved.  If syntax errors
 are detected, the user is notified.")
     (home-page "https://github.com/vim-syntastic/syntastic")
     (license license:wtfpl2)))
+
+(define-public neovim-syntastic
+  (package
+    (inherit vim-syntastic)
+    (name "neovim-syntastic")
+    (synopsis "Syntax checking plugin for Neovim")
+    (description
+     "Vim-syntastic is a syntax checking plugin for Neovim.  It runs files through
+external syntax checkers and displays any resulting errors to the user.  This
+can be done on demand, or automatically as files are saved.  If syntax errors
+are detected, the user is notified.")))
 
 (define-public vim-solarized
   (let ((commit "62f656a02f93c5190a8753159e34b385588d5ff3")
@@ -596,11 +573,15 @@ are detected, the user is notified.")
          (file-name (git-file-name name version))
          (sha256
           (base32 "0001mz5v3a8zvi3gzmxhi3yrsb6hs7qf6i497arsngnvj2cwn61d"))))
-      (build-system copy-build-system)
+      (build-system vim-build-system)
       (arguments
-       '(#:install-plan
-         '(("vim-colors-solarized/colors" "share/vim/vimfiles/")
-           ("vim-colors-solarized/doc" "share/vim/vimfiles/"))))
+       (list
+         #:plugin-name "solarized"
+         #:phases
+         #~(modify-phases %standard-phases
+             (add-after 'unpack 'chdir
+               (lambda _
+                 (chdir "vim-colors-solarized"))))))
       (home-page "https://github.com/altercation/vim-colors-solarized")
       (synopsis "Solarized color scheme for Vim")
       (description
@@ -631,9 +612,16 @@ switching between the light and dark background modes.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1jya8wwlkmgs89hndrq6gsaskhk9g0fh62wdib8v9vz2x5g3738z"))))
-    (build-system copy-build-system)
+    (build-system vim-build-system)
     (arguments
-     '(#:install-plan '(("opt" "share/vim/vimfiles/pack/rainbow/"))))
+     (list
+       #:plugin-name "rainbow"
+       #:mode "opt"
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'chdir
+             (lambda _
+               (chdir "opt/rainbow"))))))
     (home-page "https://github.com/mason1920/rainbow")
     (synopsis "Rainbow Parentheses Improved")
     (description
@@ -656,12 +644,11 @@ codes by showing different levels of parentheses in different colors.")
         (sha256
          (base32
           "0mp80bi2m56bb93szw87vy6q5s85yk9g91sl4pr51316rgdv5kkv"))))
-    (build-system copy-build-system)
+    (build-system vim-build-system)
     (arguments
-     '(#:install-plan
-       '(("autoload" "share/vim/vimfiles/")
-         ("doc" "share/vim/vimfiles/")
-         ("plugin" "share/vim/vimfiles/"))))
+     (list
+       #:plugin-name "editorconfig"
+       #:vim? #t))
     (home-page "https://editorconfig.org/")
     (synopsis "EditorConfig plugin for Vim")
     (description "EditorConfig makes it easy to maintain the correct coding
@@ -686,11 +673,9 @@ editors.")
                 (sha256
                  (base32
                   "1xn08z3a21mgfvp5i1nv57jnldwxwnl5nkryiff3zc99b1mizigp"))))
-      (build-system copy-build-system)
+      (build-system vim-build-system)
       (arguments
-       (list #:install-plan
-             #~'(("lua" "share/nvim/site/pack/guix/start/packer.nvim/")
-                 ("doc" "share/nvim/site/pack/guix/start/packer.nvim/"))))
+       (list #:plugin-name "packer.nvim"))
       (home-page "https://github.com/wbthomason/packer.nvim")
       (synopsis "Plugin manager for Neovim")
       (description
@@ -698,23 +683,6 @@ editors.")
 @code{use-package}.  It's written in Lua, supports Luarocks dependencies, and
 is based on Vim's builtin plugin support.")
       (license license:expat))))
-
-(define-public neovim-syntastic
-  (package
-    (inherit vim-syntastic)
-    (name "neovim-syntastic")
-    (arguments
-     '(#:install-plan
-       '(("autoload" "share/nvim/site/")
-         ("doc" "share/nvim/site/")
-         ("plugin" "share/nvim/site/")
-         ("syntax_checkers" "share/nvim/site/"))))
-    (synopsis "Syntax checking plugin for Neovim")
-    (description
-     "Vim-syntastic is a syntax checking plugin for Neovim.  It runs files through
-external syntax checkers and displays any resulting errors to the user.  This
-can be done on demand, or automatically as files are saved.  If syntax errors
-are detected, the user is notified.")))
 
 (define-public neovim
   (package
@@ -889,12 +857,12 @@ and support for fonts with ligatures.")
             (lambda* (#:key outputs #:allow-other-keys)
               (let* ((out (assoc-ref outputs "out"))
                      (vifm (string-append out "/share/vifm"))
-                     (vimfiles (string-append out "/share/vim/vimfiles")))
+                     (vimfiles (string-append
+                                 out "/share/vim/vimfiles/pack/guix/start/vifm")))
                 (copy-recursively (string-append vifm "/colors")
                                   (string-append vimfiles "/colors"))
                 (copy-recursively (string-append vifm "/vim")
                                   vimfiles)
-                (delete-file-recursively (string-append vifm "/colors"))
                 (delete-file-recursively (string-append vifm "/vim"))))))))
     (native-inputs
      (list groff)) ; for the documentation
@@ -986,17 +954,9 @@ a nested nvim process.")
               (sha256
                (base32
                 "013yn2n2nsspk12bldkc9xn4z4kjx9rvracbllc8i1nngldckxd0"))))
-    (build-system copy-build-system)
+    (build-system vim-build-system)
     (arguments
-     '(#:install-plan
-       '(("autoload" "share/vim/vimfiles/")
-         ("compiler" "share/vim/vimfiles/")
-         ("doc" "share/vim/vimfiles/")
-         ("indent" "share/vim/vimfiles/")
-         ("ftdetect" "share/vim/vimfiles/")
-         ("ftplugin" "share/vim/vimfiles/")
-         ("plugin" "share/vim/vimfiles/")
-         ("syntax" "share/vim/vimfiles/"))))
+     (list #:plugin-name "guix"))
     (home-page "https://git.sr.ht/~efraim/guix.vim")
     (synopsis "Guix integration in Vim")
     (description "This package provides support for GNU Guix in Vim.")
@@ -1015,11 +975,10 @@ a nested nvim process.")
               (sha256
                (base32
                 "11zcw0sll6qg6ha0rr6n1cw5v73azvf7ycwn9lgiwa5cj7rrqjf4"))))
-    (build-system copy-build-system)
+    (build-system vim-build-system)
     (arguments
-     '(#:install-plan
-       '(("plugin" "share/vim/vimfiles/")
-         ("doc/" "share/vim/vimfiles/doc" #:include ("asyncrun.txt")))))
+     (list
+       #:plugin-name "asyncrun"))
     (home-page "https://github.com/skywind3000/asyncrun.vim")
     (synopsis "Run Async Shell Commands in Vim")
     (description "This plugin takes the advantage of new APIs in Vim 8 (and
@@ -1041,12 +1000,9 @@ quickfix window in realtime.")
         (sha256
          (base32
           "1m8b5mn2zqlphzs6xfwykwmghf6p0wabrhpjmh7vav35jgcxc4wl"))))
-    (build-system copy-build-system)
+    (build-system vim-build-system)
     (arguments
-     '(#:install-plan
-       '(("autoload" "share/vim/vimfiles/")
-         ("doc" "share/vim/vimfiles/")
-         ("plugin" "share/vim/vimfiles/"))))
+     (list #:plugin-name "dispatch"))
     (home-page "https://github.com/tpope/vim-dispatch")
     (synopsis "Asynchronous build and test dispatcher")
     (description "Leverage the power of Vim's compiler plugins without being
@@ -1071,11 +1027,9 @@ the job completes, errors will be loaded and parsed automatically.")
           (file-name (git-file-name name version))
           (sha256
            (base32 "05ffhhfahjqwxyrqmsinsahrs15wknzl2qbj8mznyv319mn2civ2"))))
-      (build-system copy-build-system)
+      (build-system vim-build-system)
       (arguments
-       `(#:install-plan
-         '(("ftdetect" "share/vim/vimfiles/")
-           ("syntax" "share/vim/vimfiles/"))))
+       (list #:plugin-name "gemini"))
       (home-page "https://git.sr.ht/~torresjrjr/gemini.vim")
       (synopsis "Vim syntax highlighting plugin for Gemini")
       (description "This Vim plugin provides a Vim syntax highlighting plugin
@@ -1099,11 +1053,9 @@ specification.")
           (sha256
            (base32
             "1xadb22kd40swmww0qxmmkcpcq6viy8l167pjck5q32hfngll5d3"))))
-      (build-system copy-build-system)
+      (build-system vim-build-system)
       (arguments
-       '(#:install-plan
-         '(("doc" "share/vim/vimfiles/")
-           ("plugin" "share/vim/vimfiles/"))))
+       (list #:plugin-name "eunuch"))
       (home-page "https://github.com/tpope/vim-eunuch")
       (synopsis "Vim sugar for the UNIX shell commands")
       (description "Vim sugar for the UNIX shell commands that need it the most.
@@ -1127,13 +1079,9 @@ help working on Vim buffers and the files they reference with one command.")
           (file-name (git-file-name name version))
           (sha256
            (base32 "0k4b629jn6xlxyjxdl3cgm06v9dmx967rqnslv5m82c9kscwpyh4"))))
-      (build-system copy-build-system)
+      (build-system vim-build-system)
       (arguments
-       `(#:install-plan
-         '(("autoload" "share/vim/vimfiles/")
-           ("doc" "share/vim/vimfiles/")
-           ("ftplugin" "share/vim/vimfiles/")
-           ("plugin" "share/vim/vimfiles/"))))
+       (list #:plugin-name "vim-slime"))
       (home-page "https://technotales.wordpress.com/2007/10/03/like-slime-for-vim/")
       (synopsis "Vim plugin to give you some slime")
       (description "SLIME is an Emacs plugin to turn Emacs into a Lisp IDE.  You
@@ -1159,28 +1107,29 @@ to Lisp.")
        (sha256
         (base32 "1dfc1wyjsgkckrklkzvk4whaz3ahaka59rvm7rc724mabmk83pmp"))
        (file-name (git-file-name name version))))
-    (build-system copy-build-system)
+    (build-system vim-build-system)
     (arguments
-     '(#:install-plan
-       '(("vim/autoload" "share/vim/vimfiles/")
-         ("vim/doc" "share/vim/vimfiles/")
-         ("vim/ftplugin" "share/vim/vimfiles/")
-         ("vim/syntax" "share/vim/vimfiles/")
-         ("vim/test" "share/vim/vimfiles/")
-         ;; This is so the Vimscript part of Vlime can find the lisp files.
-         ("lisp" "share/vim/")
-         ;; This is so lisp can load Vlime without the Vim part.
-         ("lisp" "share/common-lisp/source/vlime"))
+     '(#:plugin-name "vlime"
        #:phases
        (modify-phases %standard-phases
-         ;; Create a symbolic link to the .asd file so that
-         ;; (asdf:load-system "vlime") finds the system.
-         (add-after 'install 'link-asd
+         (add-after 'symlink-files 'install-lisp-files
            (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (mkdir-p (string-append out "/share/common-lisp/systems/"))
-               (symlink (string-append out "/share/common-lisp/source/vlime/vlime.asd")
-                        (string-append out "/share/common-lisp/systems/vlime.asd"))))))))
+             (let* ((out (assoc-ref outputs "out"))
+                    (common-lisp (string-append out "/share/common-lisp")))
+               ;; Create a symbolic link to the .asd file so that
+               ;; (asdf:load-system "vlime") finds the system.
+               (copy-recursively "lisp" (string-append common-lisp "/source/vlime"))
+               (mkdir-p (string-append common-lisp "/systems/"))
+               (symlink (string-append common-lisp "/source/vlime/vlime.asd")
+                        (string-append common-lisp "/systems/vlime.asd")))))
+         (add-after 'install 'symlink-files
+           (lambda* (#:key outputs plugin-name mode #:allow-other-keys)
+             (with-directory-excursion
+               (string-append (assoc-ref outputs "out")
+                              "/share/vim/vimfiles/pack/guix/" mode "/" plugin-name)
+               (for-each (lambda (dir)
+                           (symlink (string-append "./vim/" dir) dir))
+                         (list "after" "autoload" "doc" "ftplugin" "syntax"))))))))
     (propagated-inputs
      (list cl-alexandria
            cl-slime-swank
@@ -1211,11 +1160,9 @@ to aid you in your glorious Common Lisp hacking quest.")
           (file-name (git-file-name name version))
           (sha256
            (base32 "07d5s20r0ssd7rir45vy0fqlci44gha1a81rcilgar227f3nw328"))))
-      (build-system copy-build-system)
+      (build-system vim-build-system)
       (arguments
-       '(#:install-plan
-         '(("doc" "share/vim/vimfiles/")
-           ("plugin" "share/vim/vimfiles/"))))
+       (list #:plugin-name "paredit"))
       (home-page "https://github.com/kovisoft/paredit")
       (synopsis "Vim plugin for structured editing of Lisp S-expressions")
       (description
@@ -1237,11 +1184,9 @@ to aid you in your glorious Common Lisp hacking quest.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1b0bd5m5lv1p4d299mrwjfs2gk0zqwyaqdaid9hs9yqlxnr8s5nf"))))
-    (build-system copy-build-system)
+    (build-system vim-build-system)
     (arguments
-     '(#:install-plan
-       '(("doc" "share/vim/vimfiles/")
-         ("plugin" "share/vim/vimfiles/"))))
+     (list #:plugin-name "surround"))
     (home-page "https://github.com/tpope/vim-surround")
     (synopsis "Vim plugin for easy quoting and parenthesizing")
     (description
@@ -1262,12 +1207,9 @@ change and add such surroundings in pairs.")
                            "/vim-gnupg-v" version ".tar.gz"))
        (sha256
         (base32 "02w8lgyyh7wgxysvmmcf9ja5c06vrbyh3alzvv97x8cfhrp0skn7"))))
-    (build-system copy-build-system)
+    (build-system vim-build-system)
     (arguments
-     '(#:install-plan
-       '(("autoload" "share/vim/vimfiles/")
-         ("doc" "share/vim/vimfiles/")
-         ("plugin" "share/vim/vimfiles/"))))
+     (list #:plugin-name "vim-gnupg"))
     (home-page "https://www.vim.org/scripts/script.php?script_id=3645")
     (synopsis "Vim plugin for transparent editing of gpg encrypted files")
     (description
@@ -1293,12 +1235,9 @@ swapfile, and undofile when editing encrypted files to increase security.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0n68hg59h4rjn0ziqbsh5pr03l3kr98zk54659ny6vq107af1w96"))))
-    (build-system copy-build-system)
+    (build-system vim-build-system)
     (arguments
-     '(#:install-plan
-       '(("autoload" "share/vim/vimfiles/")
-         ("doc" "share/vim/vimfiles/")
-         ("plugin" "share/vim/vimfiles/"))))
+     (list #:plugin-name "ctrlp.vim"))
     (home-page "https://ctrlpvim.github.io/ctrlp.vim/")
     (synopsis "Fuzzy file, buffer, mru, tag, etc. finder for Vim")
     (description
@@ -1330,12 +1269,9 @@ anything).
        (file-name (git-file-name name version))
        (sha256
         (base32 "054g80n09mmxxlh8xaic29bn8bgn3clvv732rymljdyvbj1mlhwd"))))
-    (build-system copy-build-system)
+    (build-system vim-build-system)
     (arguments
-     '(#:install-plan
-       '(("autoload" "share/vim/vimfiles/")
-         ("doc" "share/vim/vimfiles/")
-         ("plugin" "share/vim/vimfiles/"))))
+     (list #:plugin-name "MUcomplete"))
     (home-page "https://github.com/lifepillar/vim-mucomplete")
     (synopsis "MUcomplete is a minimalist autocompletion plugin for Vim")
     (description
@@ -1359,12 +1295,9 @@ result is returned.")
          (file-name (git-file-name name version))
          (sha256
           (base32 "0zpa7cs59a8sq0k3frlf9flpf30jcn239yrpmv40r7nqvxzglbpl"))))
-      (build-system copy-build-system)
+      (build-system vim-build-system)
       (arguments
-       '(#:install-plan
-         '(("autoload" "share/vim/vimfiles/")
-           ("doc" "share/vim/vimfiles/")
-           ("plugin" "share/vim/vimfiles/"))))
+       (list #:plugin-name "gitgutter"))
       (synopsis "Vim plugin which shows a git diff in the sign column")
       (description
        "A Vim plugin which shows a git diff in the sign column.  It shows which
@@ -1388,12 +1321,9 @@ buffer.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0ppsbsd696ih40d9f76mdl9sd9y7p2pvm65qmvq4b2zhkv4xbpxz"))))
-    (build-system copy-build-system)
+    (build-system vim-build-system)
     (arguments
-     '(#:install-plan
-       '(("autoload" "share/vim/vimfiles/")
-         ("doc" "share/vim/vimfiles/")
-         ("plugin" "share/vim/vimfiles/"))))
+     (list #:plugin-name "characterize"))
     (home-page "https://github.com/tpope/vim-characterize")
     (synopsis "Vim plugin for showing Unicode character metadata")
     (description
@@ -1422,13 +1352,9 @@ additions:
        (file-name (git-file-name name version))
        (sha256
         (base32 "1fqfs8msmr6d4kpvxqp14sdjvp5fj52q5w5kz71myzcd4kqzmirp"))))
-    (build-system copy-build-system)
+    (build-system vim-build-system)
     (arguments
-     '(#:install-plan
-       '(("autoload" "share/vim/vimfiles/")
-         ("doc" "share/vim/vimfiles/")
-         ("plugin" "share/vim/vimfiles/")
-         ("syntax" "share/vim/vimfiles/"))
+     '(#:plugin-name "tagbar"
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'link-universal-ctags
@@ -1463,15 +1389,9 @@ the class they are defined in.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1si8qla86ng8cffbmfrk9gss0i3912yw0f1ph4bsiq0kk837lccp"))))
-    (build-system copy-build-system)
+    (build-system vim-build-system)
     (arguments
-     '(#:install-plan
-       '(("autoload" "share/vim/vimfiles/")
-         ("doc" "share/vim/vimfiles/")
-         ("lib" "share/vim/vimfiles/")
-         ("nerdtree_plugin" "share/vim/vimfiles/")
-         ("plugin" "share/vim/vimfiles/")
-         ("syntax" "share/vim/vimfiles/"))))
+     (list #:plugin-name "nerdtree"))
     (home-page "https://github.com/preservim/nerdtree")
     (synopsis "Tree explorer plugin for Vim")
     (description
@@ -1493,13 +1413,9 @@ files for reading or editing, and perform basic file system operations.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1ka2rqn7rby55aps3iblh1dcqxm7m7qx72mpkz6y2aaj8mkj0zyd"))))
-    (build-system copy-build-system)
+    (build-system vim-build-system)
     (arguments
-     (list
-      #:install-plan
-      #~`(("autoload" "share/vim/vimfiles/")
-          ("doc" "share/vim/vimfiles/")
-          ("plugin" "share/vim/vimfiles/"))))
+     (list #:plugin-name "nerdcommenter"))
     (home-page "https://github.com/preservim/nerdcommenter")
     (synopsis "Vim plugin for easy commenting of code")
     (description
