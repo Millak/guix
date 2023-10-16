@@ -813,7 +813,7 @@ default value."
     ((or ("-V") ("--version"))
      (show-version-and-exit "guix substitute"))
     ((or ("-h") ("--help") ())
-     (show-help)
+     (leave-on-EPIPE (show-help))
      (exit 0))
     (_ #t))
 
