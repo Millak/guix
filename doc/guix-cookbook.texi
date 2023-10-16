@@ -3987,7 +3987,9 @@ without having to specify the path to a profile.
 @node The benefits of manifests
 @subsection The benefits of manifests
 
-Manifests are a convenient way to keep your package lists around and, say,
+Manifests let you @dfn{declare} the set of packages you'd like to have
+in a profile (@pxref{Writing Manifests,,, guix, GNU Guix Reference Manual}).
+They are a convenient way to keep your package lists around and, say,
 to synchronize them across multiple machines using a version control system.
 
 A common complaint about manifests is that they can be slow to install when they
@@ -4064,16 +4066,18 @@ To reproduce a profile bit-for-bit, we need two pieces of information:
 
 @itemize
 @item
-a manifest,
+a manifest (@pxref{Writing Manifests,,, guix, GNU Guix Reference Manual});
 @item
-a Guix channel specification.
+a Guix channel specification (@pxref{Replicating Guix,,, guix, GNU Guix
+Reference Manual}).
 @end itemize
 
 Indeed, manifests alone might not be enough: different Guix versions (or
 different channels) can produce different outputs for a given manifest.
 
 You can output the Guix channel specification with @samp{guix describe
---format=channels}.
+--format=channels} (@pxref{Invoking guix describe,,, guix, GNU Guix
+Reference Manual}).
 Save this to a file, say @samp{channel-specs.scm}.
 
 On another computer, you can use the channel specification file and the manifest
