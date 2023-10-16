@@ -8861,7 +8861,7 @@ privileges.")
 (define-public psm2
   (package
     (name "psm2")
-    (version "11.2.230")
+    (version "12.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8870,7 +8870,7 @@ privileges.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1bm7ndhi8qzmd0plnggj2h52yb34bab4k38530nsnkmv9smwdivl"))))
+                "04nar65ac11qqx41vkfs7iip8kfiah0zms7l4rmsxncpiz2iqfik"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
