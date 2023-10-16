@@ -73,11 +73,11 @@
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((base (assoc-ref outputs "out"))
                     (doc  (string-append base "/share/doc/"
-                                         ,name "-" ,version)))
+                                         ,(package-name this-package) "-"
+                                         ,(package-version this-package))))
                (for-each (lambda (file)
                            (install-file file doc))
-                         (find-files "doc"))
-               #t))))))
+                         (find-files "doc"))))))))
     (home-page "https://www.openfabrics.org/")
     (synopsis "OpenIB InfiniBand Subnet Manager and management utilities")
     (description "\
