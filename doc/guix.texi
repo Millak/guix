@@ -3074,6 +3074,10 @@ deleting old generations, collecting garbage, and other nifty features
 that will come in handy as you become more familiar with Guix.  If you
 are a developer, @pxref{Development} for additional tools.  And if
 you're curious, @pxref{Features}, to peek under the hood.
+
+You can also manage the configuration of your entire @dfn{home
+environment}---your user ``dot files'', services, and packages---using
+Guix Home.  @xref{Home Configuration}, to learn more about it!
 @end quotation
 
 Once you've installed a set of packages, you will want to periodically
@@ -43128,12 +43132,6 @@ configured for the user.  Once a user has written a file containing
 command (@pxref{Invoking guix home}).
 @c Maybe later, it will be possible to make home configuration a part of
 @c system configuration to make everything managed by guix system.
-
-@quotation Note
-The functionality described in this section is still under development
-and is subject to change.  Get in touch with us on
-@email{guix-devel@@gnu.org}!
-@end quotation
 
 The user's home environment usually consists of three basic parts:
 software, configuration, and state.  Software in mainstream distros are
