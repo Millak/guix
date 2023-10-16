@@ -3714,13 +3714,23 @@ reference.
 @section Guix Profiles in Practice
 
 Guix provides a very useful feature that may be quite foreign to newcomers:
-@emph{profiles}.  They are a way to group package installations together and all users
+@dfn{profiles}.  They are a way to group package installations together and all users
 on the same system are free to use as many profiles as they want.
 
 Whether you're a developer or not, you may find that multiple profiles bring you
 great power and flexibility.  While they shift the paradigm somewhat compared to
 @emph{traditional package managers}, they are very convenient to use once you've
 understood how to set them up.
+
+@quotation Note
+This section is an opinionated guide on the use of multiple profiles.
+It predates @command{guix shell} and its fast profile cache
+(@pxref{Invoking guix shell,,, guix, GNU Guix Reference Manual}).
+
+In many cases, you may find that using @command{guix shell} to set up
+the environment you need, when you need it, is less work that
+maintaining a dedicated profile.  Your call!
+@end quotation
 
 If you are familiar with Python's @samp{virtualenv}, you can think of a profile as a
 kind of universal @samp{virtualenv} that can hold any kind of software whatsoever, not
@@ -4034,29 +4044,12 @@ profiles, they are not strictly equivalent: profiles have the side effect that
 they ``pin'' packages in the store, which prevents them from being
 garbage-collected (@pxref{Invoking guix gc,,, guix, GNU Guix Reference Manual})
 and ensures that they will still be available at any point in
-the future.
+the future.  The @command{guix shell} command also protects
+recently-used profiles from garbage collection; profiles that have not
+been used for a while may be garbage-collected though, along with the
+packages they refer to.
 
-Let's take an example:
-
-@enumerate
-@item
-We have an environment for hacking on a project for which there isn't a Guix
-package yet.  We build the environment using a manifest, and then run @code{guix
-   environment -m manifest.scm}.  So far so good.
-
-@item
-Many weeks pass and we have run a couple of @code{guix pull} in the mean time.
-Maybe a dependency from our manifest has been updated; or we may have run
-@code{guix gc} and some packages needed by our manifest have been
-garbage-collected.
-
-@item
-Eventually, we set to work on that project again, so we run @code{guix shell
-   -m manifest.scm}.  But now we have to wait for Guix to build and install
-stuff!
-@end enumerate
-
-Ideally, we could spare the rebuild time.  And indeed we can, all we need is to
+To be 100% sure that a given profile will never be collected,
 install the manifest to a profile and use @code{GUIX_PROFILE=/the/profile;
 . "$GUIX_PROFILE"/etc/profile} as explained above: this guarantees that our
 hacking environment will be available at all times.
