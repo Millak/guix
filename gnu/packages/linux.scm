@@ -5239,9 +5239,11 @@ thanks to the use of namespaces.")
           (add-after 'install 'set-PATH
             (lambda _
               ;; Have the 'singularity' and 'run-singularity' self-sufficient.
+              ;; But don't override PATH, so that other tools like zcat and
+              ;; tar can still be found if they are available.
               (let ((coreutils #$(this-package-input "coreutils")))
                 (wrap-program (string-append #$output "/bin/singularity")
-                  `("PATH" ":" = (,(string-append coreutils "/bin"))))
+                  `("PATH" prefix (,(string-append coreutils "/bin"))))
                 (substitute* (string-append #$output "/bin/run-singularity")
                   (("/usr/bin/env singularity")
                    (string-append (which "env") " "
