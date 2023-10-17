@@ -2545,6 +2545,28 @@ programs.")
 supports type hints, definition-jumping, completion, and more.")
     (license license:gpl3+)))
 
+(define-public emacs-flexoki-themes
+  (let ((commit "1b871e57e989d58a793cbfef7b4996a6bd47ba9f")) ;version bump
+    (package
+      (name "emacs-flexoki-themes")
+      (version "0.20")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/crmsnbleyd/flexoki-emacs-theme")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0npl45h1l8jhrd5dcaaql5in4pj7c3wxnqsp8di668pz2s4i9pfh"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/crmsnbleyd/flexoki-emacs-theme")
+      (synopsis "Inky colour scheme for prose and code")
+      (description
+       "Flexoki themes is a pair of light and dark themes for GNU Emacs based
+on the Flexoki colour scheme by Steph Ango.")
+      (license license:gpl3+))))
+
 (define-public emacs-flycheck
   (package
     (name "emacs-flycheck")
