@@ -1369,7 +1369,13 @@ the 'showing the effect of'-style of operation.")
        (commit (string-append "v" version))))
      (file-name (git-file-name name version))
      (sha256
-      (base32 "1qkhrqkjsmm0h1bxf2ihkqfhdr18xx5x1i2ds1mla13zm0bw2570"))))
+      (base32 "1qkhrqkjsmm0h1bxf2ihkqfhdr18xx5x1i2ds1mla13zm0bw2570"))
+     (snippet
+      #~(begin (use-modules (guix build utils))
+               (delete-file-recursively "3rdparty")
+               (substitute* '("tests/test_colormap.cpp"
+                              "tests/test_main.cpp")
+                (("catch\\.hpp") "catch2/catch.hpp"))))))
   (build-system cmake-build-system)
   (arguments
    `(#:phases
@@ -1387,6 +1393,8 @@ the 'showing the effect of'-style of operation.")
          openssl
          qtbase
          qtsvg))
+  (native-inputs
+   (list catch2))
   (home-page "https://github.com/ccoors/Valeronoi")
   (synopsis "WiFi mapping companion application for Valetudo")
   (description
