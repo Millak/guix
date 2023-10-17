@@ -1610,13 +1610,13 @@ signatures.")
 (define-public python-pgpy
   (package
     (name "python-pgpy")
-    (version "0.5.3")
+    (version "0.6.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "PGPy" version))
         (sha256
-         (base32 "11rrq15gmn6qbahli7czflfcngjl7zyybjlvk732my6axnf2d754"))))
+         (base32 "10w3h934fi1ijx72ppn67a50yhkf8n1db6xx02gk2fjc7wsjx717"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1628,8 +1628,7 @@ signatures.")
     (native-inputs
      (list python-pytest
            python-wheel))
-    (propagated-inputs (list python-cryptography python-pyasn1
-                             python-singledispatch python-six))
+    (propagated-inputs (list python-cryptography python-pyasn1))
     (home-page "https://github.com/SecurityInnovation/PGPy")
     (synopsis "Python implementation of OpenPGP")
     (description
