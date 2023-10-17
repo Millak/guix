@@ -1359,7 +1359,7 @@ the 'showing the effect of'-style of operation.")
 (define-public valeronoi
 (package
   (name "valeronoi")
-  (version "0.1.6")
+  (version "0.2.0")
   (source
    (origin
      (method git-fetch)
@@ -1369,7 +1369,7 @@ the 'showing the effect of'-style of operation.")
        (commit (string-append "v" version))))
      (file-name (git-file-name name version))
      (sha256
-      (base32 "1hpyh4mmjnxgkij7a6rynk2ril5413nkdvf8syn0lqvrmibdg7wv"))))
+      (base32 "1qkhrqkjsmm0h1bxf2ihkqfhdr18xx5x1i2ds1mla13zm0bw2570"))))
   (build-system cmake-build-system)
   (arguments
    `(#:phases
@@ -1385,8 +1385,8 @@ the 'showing the effect of'-style of operation.")
          libxkbcommon
          mpfr
          openssl
-         qtbase-5
-         qtsvg-5))
+         qtbase
+         qtsvg))
   (home-page "https://github.com/ccoors/Valeronoi")
   (synopsis "WiFi mapping companion application for Valetudo")
   (description
