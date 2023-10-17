@@ -1280,11 +1280,16 @@ implement low-level concepts, such as the @code{memoize} procedure.
 
 @node Modules
 @subsection Modules
-
+@cindex build-side modules
+@cindex host-side modules
 Guile modules that are meant to be used on the builder side must live in
 the @code{(guix build @dots{})} name space.  They must not refer to
 other Guix or GNU modules.  However, it is OK for a ``host-side'' module
-to use a build-side module.
+to use a build-side module.  As an example, the @code{(guix
+search-paths)} module should not be imported and used by a package since
+it isn't meant to be used as a ``build-side'' module.  It would also
+couple the module with the package's dependency graph, which is
+undesirable.
 
 Modules that deal with the broader GNU system should be in the
 @code{(gnu @dots{})} name space rather than @code{(guix @dots{})}.
