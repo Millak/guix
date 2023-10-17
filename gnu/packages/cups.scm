@@ -522,6 +522,7 @@ should only be used as part of the Guix cups-pk-helper service.")
               (sha256
                (base32
                 "0ihv9ddjrjx5bdf8pwc2fvljkpfzq4qi9r2awm8dgky053v0bk7p"))
+              (patches (search-patches "hplip-usb-timeout.patch"))
               (modules '((guix build utils)))
               (snippet
                '(begin

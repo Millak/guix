@@ -1401,6 +1401,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/heimdal-CVE-2022-45142.patch		\
   %D%/packages/patches/helm-fix-gcc-9-build.patch		\
   %D%/packages/patches/highlight-gui-data-dir.patch		\
+  %D%/packages/patches/hplip-usb-timeout.patch			\
   %D%/packages/patches/http-parser-CVE-2020-8287.patch		\
   %D%/packages/patches/htslib-for-stringtie.patch		\
   %D%/packages/patches/hubbub-sort-entities.patch		\

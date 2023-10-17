@@ -1,0 +1,24 @@
+# Source: <https://bugs.launchpad.net/hplip/+bug/1922404>
+
+--- a/config_usb_printer.py
++++ b/config_usb_printer.py
+@@ -28,6 +28,7 @@
+ # Std Lib
+ import sys
+ import os
++import time
+ 
+ # Local
+ from base.g import *
+@@ -181,9 +182,10 @@
+        # ******************************* RUNNING FIRMWARE DOWNLOAD TO DEVICE FOR SUPPORTED PRINTER'S
+        fw_download_req = mq.get('fw-download', False)
+        if fw_download_req:
+-           fw_cmd = "hp-firmware -y3 -s %s"%param
++           fw_cmd = "hp-firmware -n -y3 -s %s"%param
+            log.info(fw_cmd)
+            fw_sts, fw_out = utils.run(fw_cmd)
++           time.sleep(5)
+            if fw_sts == 0:
+                log.debug("Firmware downloaded to %s "%device_uri)
+            else:
