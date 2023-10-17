@@ -167,6 +167,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system emacs)
+  #:use-module (guix build-system perl)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
@@ -271,6 +272,7 @@
   #:use-module (gnu packages erlang)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages libcanberra)
+  #:use-module (gnu packages texinfo)
   #:use-module (gnu packages virtualization)
   #:use-module (gnu packages web-browsers)
   #:use-module (gnu packages wget)
@@ -12333,6 +12335,90 @@ keywords in comments and strings.  This package also provides commands for
 moving to the next or previous keyword and to invoke @code{occur} with a
 regexp that matches all known keywords.")
     (license license:gpl3+)))
+
+(define-public emacs-pde
+  (package
+    (name "emacs-pde")
+    (version "0.2.17")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/Y/YE/YEWENBIN/Emacs-PDE-v"
+                           version ".tar.gz"))
+       (modules '((guix build utils)))
+       (snippet '(begin
+                   ;; Delete pre-generated Texinfo and HTML documentation.
+                   (for-each delete-file '("lisp/doc/pde.info"
+                                           "lisp/doc/pde.html"))
+                   (delete-file-recursively "lisp/doc/pde")))
+       (sha256
+        (base32 "1i82isha839c8lx73kgp43v7gxr2adsr1yfw1glyxvi62w5ab9qz"))))
+    (build-system perl-build-system)
+    (arguments
+     (list
+      #:imported-modules `(,@%emacs-build-system-modules
+                           ,@%perl-build-system-modules)
+      #:modules '((guix build perl-build-system)
+                  (guix build emacs-utils)
+                  (guix build utils))
+      #:module-build-flags
+      #~(list (string-append "--elispdir=" #$output
+                             "/share/emacs/site-lisp/pde")
+              "--verbose")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-commands
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion "lisp"
+                (for-each make-file-writable
+                          '("pde-vars.el" "perlcritic.el" "perldoc.el"
+                            "perltidy.el"))
+                (emacs-substitute-variables "pde-vars.el"
+                  ("pde-perl-program"
+                   (search-input-file inputs "bin/perl"))
+                  ("pde-perl-version"
+                   #$(package-version (this-package-input "perl")))
+                  ("pde-perldoc-program"
+                   (search-input-file inputs "bin/perldoc"))
+                  ("pde-find-program"
+                   (search-input-file inputs "bin/find")))
+                (emacs-substitute-variables "perlcritic.el"
+                  ("perlcritic-program"
+                   (search-input-file inputs "bin/perlcritic")))
+                (emacs-substitute-variables "perldoc.el"
+                  ("perldoc-cache-el"
+                   "(expand-file-name \"~/.cache/perldoc-cache.el\"")
+                  ("perldoc-pod2man"
+                   (search-input-file inputs "bin/pod2man")))
+                (emacs-substitute-variables "perltidy.el"
+                  ("perltidy-program"
+                   (search-input-file inputs "bin/perltidy")))
+                (substitute* "tools/perldoc-cache.pl"
+                  (("`perldoc")
+                   (string-append
+                    "`" (search-input-file inputs "bin/perldoc")))))))
+          (add-after 'build 'generate-doc
+            (lambda _
+              (invoke "./Build" "info")))
+          (add-after 'install 'move-doc
+            (lambda _
+              (let ((info (string-append #$output "/share/info/pde.info")))
+                (mkdir-p (dirname info))
+                (rename-file (string-append
+                              #$output
+                              "/share/emacs/site-lisp/pde/doc/pde.info")
+                             info)))))))
+    (native-inputs (list emacs-minimal perl-module-build texinfo))
+    (inputs (list findutils perl perl-critic))
+    (home-page "https://metacpan.org/release/Emacs-PDE")
+    (synopsis "Perl Development Environment for Emacs")
+    (description "Emacs::PDE is a collection of Emacs Lisp extensions to
+facilitate Perl programming.  CPerl Mode has provided an excellent environment
+for coding; Emacs::PDE provides other common tools such as creating files
+using templates, smart compiling, @command{perldoc}, @command{perltidy},
+debugger, tags tree view and so on.  PDE also provides an easy configuration
+for Perl programing, and a tutorial for novices to start using Emacs.")
+    (license license:perl-license)))
 
 (define-public emacs-perspective
   (package
