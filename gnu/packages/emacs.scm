@@ -9,7 +9,7 @@
 ;;; Copyright © 2016 David Thompson <dthompson2@worcester.edu>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2017, 2019, 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2017, 2019, 2020, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2017 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2017, 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
@@ -59,6 +59,7 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages fribidi)
+  #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gd)
   #:use-module (gnu packages gettext)
@@ -157,13 +158,60 @@
                 (delete-file "configure"))))
           (add-after 'unpack 'patch-program-file-names
             (lambda* (#:key inputs #:allow-other-keys)
+              ;; Substitute "sh" command.
               (substitute* '("src/callproc.c"
                              "lisp/term.el"
                              "lisp/htmlfontify.el"
+                             "lisp/mail/feedmail.el"
+                             "lisp/obsolete/pgg-pgp.el"
+                             "lisp/obsolete/pgg-pgp5.el"
+                             "lisp/obsolete/terminal.el"
+                             "lisp/org/ob-eval.el"
                              "lisp/textmodes/artist.el"
-                             "lisp/progmodes/sh-script.el")
+                             "lisp/progmodes/sh-script.el"
+                             "lisp/textmodes/artist.el"
+                             "lisp/htmlfontify.el"
+                             "lisp/term.el")
                 (("\"/bin/sh\"")
-                 (format #f "~s" (search-input-file inputs "/bin/sh"))))
+                 (format #f "~s" (search-input-file inputs "bin/sh"))))
+              (substitute* '("lisp/gnus/mm-uu.el"
+                             "lisp/gnus/nnrss.el"
+                             "lisp/mail/blessmail.el")
+                (("\"#!/bin/sh\\\n\"")
+                 (format #f "\"#!~a~%\"" (search-input-file inputs "bin/sh"))))
+              (substitute* '("lisp/jka-compr.el"
+                             "lisp/man.el")
+                (("\"sh\"")
+                 (format #f "~s" (search-input-file inputs "bin/sh"))))
+
+              ;; Substitute "awk" command.
+              (substitute* '("lisp/gnus/nnspool.el"
+                             "lisp/org/ob-awk.el"
+                             "lisp/man.el")
+                (("\"awk\"")
+                 (format #f "~s" (search-input-file inputs "bin/awk"))))
+
+              ;; Substitute "find" command.
+              (substitute* '("lisp/gnus/gnus-search.el"
+                             "lisp/obsolete/nnir.el"
+                             "lisp/progmodes/executable.el"
+                             "lisp/progmodes/grep.el"
+                             "lisp/filecache.el"
+                             "lisp/ldefs-boot.el"
+                             "lisp/mpc.el")
+                (("\"find\"")
+                 (format #f "~s" (search-input-file inputs "bin/find"))))
+
+              ;; Substitute "sed" command.
+              (substitute* "lisp/org/ob-sed.el"
+                (("org-babel-sed-command \"sed\"")
+                 (format #f "org-babel-sed-command ~s"
+                         (search-input-file inputs "bin/sed"))))
+              (substitute* "lisp/man.el"
+                (("Man-sed-command \"sed\"")
+                 (format #f "Man-sed-command ~s"
+                         (search-input-file inputs "bin/sed"))))
+
               (substitute* "lisp/doc-view.el"
                 (("\"(gs|dvipdf|ps2pdf|pdftotext)\"" all what)
                  (let ((replacement (false-if-exception
@@ -254,7 +302,7 @@
                 (copy-file
                  (car (find-files "bin" "^emacs-([0-9]+\\.)+[0-9]+$"))
                  "bin/emacs")))))))
-    (inputs (list bash-minimal coreutils gzip ncurses))
+    (inputs (list bash-minimal coreutils findutils gawk gzip ncurses sed))
     (native-inputs (list autoconf pkg-config texinfo))
     (home-page "https://www.gnu.org/software/emacs/")
     (synopsis "The extensible text editor (minimal build for byte-compilation)")
