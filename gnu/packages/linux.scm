@@ -12,7 +12,7 @@
 ;;; Copyright © 2016 Raymond Nicholson <rain1@openmailbox.org>
 ;;; Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2016, 2018-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2016, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2018, 2019, 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2016-2023 Marius Bakke <marius@gnu.org>
@@ -5215,45 +5215,43 @@ thanks to the use of namespaces.")
                   ;; supported since Linux-libre 5.4.5.
                   (substitute* "src/lib/image/squashfs/mount.c"
                     (("\"errors=remount-ro\"")
-                     "NULL"))
-                  #t))))
+                     "NULL"))))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--localstatedir=/var")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-references
-           (lambda _
-             (substitute* "libexec/cli/build.exec.in"
-               (("-mksquashfs") (string-append "-" (which "mksquashfs"))))
-             (substitute* (append
+     (list
+      #:configure-flags #~(list "--localstatedir=/var")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-references
+            (lambda _
+              (substitute* "libexec/cli/build.exec.in"
+                (("-mksquashfs") (string-append "-" (which "mksquashfs"))))
+              (substitute* (append
                             (find-files "libexec" "functions")
                             (find-files "libexec/bootstrap-scripts" ".*sh$")
                             (find-files "libexec/cli" ".*exec$"))
-               (("\\| grep ")
-                (string-append "| " (which "grep") " "))
-               (("egrep ")
-                (string-append (which "egrep") " "))
-               ((" sed ")
-                (string-append " " (which "sed") " ")))
-             #t))
-         (add-after 'install 'set-PATH
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Have the 'singularity' and 'run-singularity' self-sufficient.
-             (let ((out (assoc-ref outputs "out"))
-                   (coreutils (assoc-ref inputs "coreutils")))
-               (wrap-program (string-append out "/bin/singularity")
-                 `("PATH" ":" = (,(string-append coreutils "/bin"))))
-               (substitute* (string-append out "/bin/run-singularity")
-                 (("/usr/bin/env singularity")
-                  (string-append (which "env") " "
-                                 out "/bin/singularity")))
-               #t))))))
+                (("\\| grep ")
+                 (string-append "| " (which "grep") " "))
+                (("egrep ")
+                 (string-append (which "egrep") " "))
+                ((" sed ")
+                 (string-append " " (which "sed") " ")))))
+          (add-after 'install 'set-PATH
+            (lambda _
+              ;; Have the 'singularity' and 'run-singularity' self-sufficient.
+              (let ((coreutils #$(this-package-input "coreutils")))
+                (wrap-program (string-append #$output "/bin/singularity")
+                  `("PATH" ":" = (,(string-append coreutils "/bin"))))
+                (substitute* (string-append #$output "/bin/run-singularity")
+                  (("/usr/bin/env singularity")
+                   (string-append (which "env") " "
+                                  #$output "/bin/singularity")))))))))
     (inputs
-     `(("libarchive" ,libarchive)
-       ("python" ,python-wrapper)
-       ("zlib" ,zlib)
-       ("squashfs-tools" ,squashfs-tools)))
+     (list coreutils
+           libarchive
+           python-wrapper
+           squashfs-tools
+           zlib))
     (home-page "https://singularity.lbl.gov/")
     (synopsis "Container platform")
     (description "Singularity is a container platform supporting a number of
