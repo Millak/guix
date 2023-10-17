@@ -29607,26 +29607,30 @@ opposed to character-based).")
       (license license:gpl1+))))
 
 (define-public emacs-disk-usage
-  (package
-    (name "emacs-disk-usage")
-    (version "1.3.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.com/Ambrevar/emacs-disk-usage")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0hv2gsd8k5fbjgckgiyisq4rn1i7y4rchbjy8kmixjv6mx563bll"))))
-    (build-system emacs-build-system)
-    (home-page "https://gitlab.com/Ambrevar/emacs-disk-usage")
-    (synopsis "Sort and browse disk usage listings with Emacs")
-    (description "Disk Usage is a file system analyzer: it offers a tabulated
+  ;; Use a recent commit as the last release is missing changes from 2020
+  ;; onwards
+  (let ((commit "b0d803f2cec3afc2937840f9ba66e3f903d6c415")
+        (revision "0"))
+    (package
+      (name "emacs-disk-usage")
+      (version (git-version "1.3.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/Ambrevar/emacs-disk-usage")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0vl79knb2snp2gzmcdasncgcc44rq99kmfnvwhfpm0wk21nxhc1m"))))
+      (build-system emacs-build-system)
+      (home-page "https://gitlab.com/Ambrevar/emacs-disk-usage")
+      (synopsis "Sort and browse disk usage listings with Emacs")
+      (description "Disk Usage is a file system analyzer: it offers a tabulated
 view of file listings sorted by size.  Directory sizes are computed
 recursively.  The results are cached for speed.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-orgit
   (package
