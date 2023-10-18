@@ -1685,6 +1685,42 @@ or during the tests temporarily change the value of an environment variable in
 Golang.")
     (license license:expat)))
 
+(define-public go-github-com-lestrrat-go-strftime
+  (package
+    (name "go-github-com-lestrrat-go-strftime")
+    (version "1.0.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lestrrat-go/strftime")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1iqzxmj3ijldjf99acy44qrrzvfxzn0vza3m0c9bw46bg8v1wsyc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/lestrrat-go/strftime"
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'remove-benchmarks
+                     (lambda* (#:key import-path #:allow-other-keys)
+                       (delete-file-recursively
+                        (string-append "src/" import-path "/bench")))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-pkg-errors
+           go-github-com-lestrrat-go-envload))
+    (home-page "https://github.com/lestrrat-go/strftime")
+    (synopsis "Strftime for Golang")
+    (description
+     "This package provides a Golang library implementing the conversion of
+date and time information from a given calendar time to a character string
+according to a format string.  It is optimized for scenarios where the same
+pattern is called repeatedly.")
+    (license license:expat)))
+
 (define-public go-github-com-lib-pq
   (package
     (name "go-github-com-lib-pq")
