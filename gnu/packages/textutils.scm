@@ -69,6 +69,7 @@
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages java)
@@ -1534,6 +1535,60 @@ JSON for post-processing
 
 (define-public go-github-com-aswinkarthik-csvdiff
   (deprecated-package "go-github-com-aswinkarthik-csvdiff" csvdiff))
+
+(define-public miller
+  (package
+    (name "miller")
+    (version "6.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/johnkerl/miller")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "195lgayq5z7ndag3w495fs618pkrhz426kg0kp3s5sa68vr1madp"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.19
+      #:install-source? #f
+      #:import-path "github.com/johnkerl/miller/cmd/mlr"
+      #:unpack-path "github.com/johnkerl/miller"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; TODO: Build all provided documentation.
+          (add-after 'install 'install-man-pages
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (invoke "make" (string-append "PREFIX=" #$output)
+                        "-C" "man" "install")))))))
+    (native-inputs
+     (list go-github-com-facette-natsort
+           go-github-com-johnkerl-lumin
+           go-github-com-kballard-go-shellquote
+           go-github-com-klauspost-compress
+           go-github-com-lestrrat-go-strftime
+           go-github-com-mattn-go-isatty
+           ;; Optional, not packed in Guix
+           ;; go-github-com-nine-lives-later-go-windows-terminal-sequences
+           go-github-com-pkg-profile
+           go-github-com-stretchr-testify
+           go-golang-org-x-sys
+           go-golang-org-x-term
+           go-golang-org-x-text
+           python-wrapper
+           python-mkdocs-material
+           ruby))
+    (home-page "https://miller.readthedocs.io/")
+    (synopsis "Text-formatted data processing tool")
+    (description
+     "Miller (@command{mlr}) is like @command{awk}, @command{sed},
+@command{cut}, @command{join}, and @command{sort} for data formats such as
+CSV, TSV, JSON, JSON Lines, and positionally-indexed.  It supports format
+conversion and pretty-printing.")
+    (license license:bsd-2)))
 
 (define-public ack
   (package
