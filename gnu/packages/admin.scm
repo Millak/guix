@@ -1479,14 +1479,18 @@ connection alive.")
                  (("^RELEASEVER=.*")
                   (format #f "RELEASEVER=~a\n" ,bind-release-version)))))
            ,@(if (%current-target-system)
-                 '((add-before 'configure 'fix-bind-cross-compilation
+                 `((add-before 'configure 'fix-bind-cross-compilation
                      (lambda _
                        (substitute* "configure"
                          (("--host=\\$host")
                           "--host=$host_alias"))
                        ;; BIND needs a native compiler because the DHCP
                        ;; build system uses the built 'gen' executable.
-                       (setenv "BUILD_CC" "gcc"))))
+                       (setenv "BUILD_CC" "gcc")
+                       ;; powerpc-linux needs to be told to use -latomic.
+                       ,@(if (target-ppc32?)
+                           `((setenv "LIBS" "-latomic"))
+                           '()))))
                  '())
            (add-before 'configure 'update-config-scripts
              (lambda* (#:key native-inputs inputs #:allow-other-keys)
