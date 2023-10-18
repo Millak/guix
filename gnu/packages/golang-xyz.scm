@@ -1527,6 +1527,33 @@ and stop units of work, which may receive @code{Close} signals from many clients
 struct to another.")
     (license license:expat)))
 
+(define-public go-github-com-johnkerl-lumin
+  (package
+    (name "go-github-com-johnkerl-lumin")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/johnkerl/lumin")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1liv27pxi79q4yr1bd0wgsx31ixw53ipsgs2kp0asxj2d6z4hpiz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/johnkerl/lumin"))
+    (home-page "https://github.com/johnkerl/lumin")
+    (synopsis "Command-line tool to highlight matches in files")
+    (description
+     "@command{lumin} is a simple command-line program which highlights matches
+to a specified pattern (string or regex) in the specified files.  This is like
+@code{grep} with @code{--color}, except that @code{lumin} shows all lines, not
+just matching lines.  This package proviedes a CLI tool and @code{colors}
+library.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-josharian-intern
   (package
     (name "go-github-com-josharian-intern")
