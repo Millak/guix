@@ -4384,7 +4384,7 @@ applications.")
     (build-system python-build-system)
     (arguments '(#:tests? #f))          ;no tests
     (propagated-inputs
-     (list python-flask-restful))
+     (list python-flask-restful python-six))
     (home-page "https://github.com/rantav/flask-restful-swagger")
     (synopsis "Extract Swagger specs from Flask-Restful projects")
     (description "This package lets you extract Swagger API documentation
