@@ -196,10 +196,15 @@ SELECT version FROM SchemaVersion ORDER BY version DESC LIMIT 1;"
   ;; System-wide database file name.
   (string-append %localstatedir "/cache/guix/locate/db.sqlite"))
 
-(define (suitable-database create?)
+(define (file-age stat)
+  "Return the age of the file denoted by STAT in seconds."
+  (- (current-time) (stat:mtime stat)))
+
+(define (suitable-database create? age-update-threshold)
   "Return a suitable database file.  When CREATE? is true, the returned
 database will be opened for writing; otherwise, return the most recent one,
-user or system."
+user or system.  Do not return the system database if it is older than
+AGE-UPDATE-THRESHOLD seconds."
   (if (zero? (getuid))
       system-database-file
       (if create?
@@ -207,10 +212,13 @@ user or system."
           (let ((system (stat system-database-file #f))
                 (user   (stat user-database-file #f)))
             (if user
-                (if (and system (> (stat:mtime system) (stat:mtime user)))
+                (if (and system
+                         (> (stat:mtime system) (stat:mtime user))
+                         (< (file-age system) age-update-threshold))
                     system-database-file
                     user-database-file)
-                (if system
+                (if (and system
+                         (< (file-age system) age-update-threshold))
                     system-database-file
                     user-database-file))))))
 
@@ -595,10 +603,6 @@ Locate FILE and return the list of packages that contain it.\n"))
     ;; database.
     (* 9 30 (* 24 60 60)))
 
-  (define (file-age stat)
-    ;; Return true if TIME denotes an "old" time.
-    (- (current-time) (stat:mtime stat)))
-
   (with-error-handling
     (let* ((opts     (parse-command-line args %options
                                          (list %default-options)
@@ -610,7 +614,7 @@ Locate FILE and return the list of packages that contain it.\n"))
            (clear?   (assoc-ref opts 'clear?))
            (update?  (assoc-ref opts 'update?))
            (glob?    (assoc-ref opts 'glob?))
-           (database ((assoc-ref opts 'database) update?))
+           (database ((assoc-ref opts 'database) update? age-update-threshold))
            (method   (assoc-ref opts 'method))
            (files    (reverse (filter-map (match-lambda
                                             (('argument . arg) arg)
