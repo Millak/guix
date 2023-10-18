@@ -1657,6 +1657,34 @@ word-splitting rules.")
       (home-page "https://github.com/kballard/go-shellquote")
       (license license:expat))))
 
+(define-public go-github-com-lestrrat-go-envload
+  (package
+    (name "go-github-com-lestrrat-go-envload")
+    (version "0.0.0-20180220234015-a3eb8ddeffcc")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lestrrat-go/envload")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hlhvygfg67w8pqmjl91124zggnz6m750vjmmjlf8ys63nv3na05"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/lestrrat-go/envload"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/lestrrat-go/envload")
+    (synopsis "Restore and load environment variables")
+    (description
+     "This package implements a Perl5 like @code{temporary} variable, for
+applications requiring reloading of configuration from environment variables
+or during the tests temporarily change the value of an environment variable in
+Golang.")
+    (license license:expat)))
+
 (define-public go-github-com-lib-pq
   (package
     (name "go-github-com-lib-pq")
