@@ -29,6 +29,7 @@
 ;;; Copyright © 2023 Sergey Trofimov <sarg@sarg.org.ru>
 ;;; Copyright © 2023 Thomas Ieong <th.ieong@free.fr>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
+;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
@@ -1088,6 +1089,31 @@ scanner API made public.")
      "This package provides a ordered map library that maintains amortized O(1)
 for @code{Set}, @code{Get}, @code{Delete} and @code{Len}.")
     (license license:expat)))
+
+(define-public go-github-com-facette-natsort
+  (package
+    (name "go-github-com-facette-natsort")
+    (version "0.0.0-20181210072756-2cd4dd1e2dcb")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/facette/natsort")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kfas7nq7cfrbaqvpmifg2p8v8z0d2kdqjb7p9y6r0rpdzl2zy6p"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/facette/natsort"))
+    (home-page "https://github.com/facette/natsort")
+    (synopsis "Natural strings sorting in Go")
+    (description
+     "This package provides an implementation of
+@url{https://web.archive.org/web/20210803201519/http://davekoelle.com/alphanum.html,the
+Alphanum Algorithm} developed by Dave Koelle in Go.")
+    (license license:bsd-3)))
 
 (define-public go-github-com-gabriel-vasile-mimetype
   (package
