@@ -268,8 +268,7 @@ OpenBSD tool of the same name.")
          (base32 "1lmp83bxdg53c4n35fbwr3rkh6178y75fwsn25hf1kn62f2gbdnj"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-getrandom" ,rust-getrandom-0.2)
         ("rust-rpassword" ,rust-rpassword-7)
         ("rust-scrypt" ,rust-scrypt-0.11))))
@@ -1606,8 +1605,7 @@ SHA-3, and BLAKE2.")
          (base32 "05k0vn7gpbvjr925vjc5yzvhiyrmkw9pqmch5fr4ir7s8wiaq2fm"))))
     (build-system cargo-build-system)
     (arguments
-      `(#:tests? ,(not (%current-target-system))
-        ;; Install the source so that Cargo.toml is installed, because that is
+      `(;; Install the source so that Cargo.toml is installed, because that is
         ;; the only reference to the license information.
         #:install-source? #t
         #:phases

@@ -99,8 +99,7 @@
         (base32 "1mhrl4j5r6wzsnwpqsbgzny5vqschyjm3gnk4y88har7skk7j19v"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-configparser" ,rust-configparser-2)
         ("rust-env-logger" ,rust-env-logger-0.8)
         ("rust-getopts" ,rust-getopts-0.2)
@@ -139,8 +138,7 @@ low-end hardware and serving many concurrent requests.")
         (base32 "1kgzz92mkyzn7mbsdpik1q21kl38i4almn01k99nww3p0vgx9514"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:cargo-test-flags
+     `(#:cargo-test-flags
        '("--release" "--"
          "--skip=dns::client::tests::test_tcp_client"
          "--skip=dns::client::tests::test_udp_client")
@@ -213,8 +211,7 @@ alternative zones.")
         (base32 "05sj0chxpai26fhk1k7p5m54v3j7n1x64ayx53mcimsj1skdr77m"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-ansi-colours" ,rust-ansi-colours-1)
         ("rust-ansi-term" ,rust-ansi-term-0.12)
         ("rust-atty" ,rust-atty-0.2)
@@ -276,8 +273,7 @@ paging.")
           (base32 "1b0mz1ki2ksxni6g49x5l5j9ijpyhc11mywvxr9i9h3nr098nc5l"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:install-source? #f
+     `(#:install-source? #f
        ;; https://github.com/mookid/diffr/issues/79
        #:cargo-test-flags
        '("--release" "--"
@@ -317,8 +313,7 @@ highlighting tool to ease code review from your terminal.")
           (base32 "1m73d7rzi0p5c1hn0081d2235kcyapdza7h0vqf5jhnirpnjn793"))))
     (build-system cargo-build-system)
     (arguments
-      `(#:tests? ,(not (%current-target-system))
-        #:cargo-inputs
+      `(#:cargo-inputs
         (("rust-async-trait" ,rust-async-trait-0.1)
          ("rust-clap" ,rust-clap-2)
          ("rust-colored" ,rust-colored-1)
@@ -359,8 +354,7 @@ Ansible syntax.  Benchmark files can be written in YAML.")
          (base32 "1611h27i8fm3jndscd6w65z8z7w09nnrm61vdgs9kb8ln57gqm8x"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:install-source? #f
+     `(#:install-source? #f
        #:cargo-inputs
        (("rust-getopts" ,rust-getopts-0.2)
         ("rust-regex" ,rust-regex-1)
@@ -398,8 +392,7 @@ Features include:
          "1dd7waq2bnxc1xwygqphi8k1g2qzykr6fk0q4rgrhhxp2jd09f04"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:install-source? #f
+     `(#:install-source? #f
        #:cargo-inputs
        (("rust-ansi-term" ,rust-ansi-term-0.12)
         ("rust-datetime" ,rust-datetime-0.5)
@@ -485,8 +478,7 @@ also knows about symlinks, extended attributes, and Git.")
          "186217yyb0znfn4jcc9l3i51fhfyb23lhbm3gg084sdrbj6bdnbg"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:cargo-test-flags
+     `(#:cargo-test-flags
        '("--release"
          "--"
          ;; No user 'root' in the build environment.
@@ -577,8 +569,7 @@ provides defaults for 80% of the use cases.")
           "0sipag77196467idbznbk5q5lwhqz85zw7y1pwg9b27jxqyk04rp"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-ansi-term" ,rust-ansi-term-0.12)
         ("rust-atty" ,rust-atty-0.2)
         ("rust-clap" ,rust-clap-2)
@@ -609,7 +600,6 @@ characters, ASCII whitespace characters, other ASCII characters and non-ASCII.")
      `(#:modules ((guix build cargo-build-system)
                   (guix build utils)
                   (srfi srfi-26))
-       #:tests? ,(not (%current-target-system))
        #:cargo-inputs
        (("rust-atty" ,rust-atty-0.2)
         ("rust-cfg-if" ,rust-cfg-if-0.1)
@@ -669,7 +659,6 @@ characters, ASCII whitespace characters, other ASCII characters and non-ASCII.")
     (build-system cargo-build-system)
     (arguments
      `(#:features '("pulseaudio" "libpulse-binding")
-       #:tests? ,(not (%current-target-system))
        #:install-source? #f
        #:cargo-inputs
        (("rust-chrono" ,rust-chrono-0.4)
@@ -762,8 +751,7 @@ bar.  It is also compatible with sway.")
                (base32 "0kafd87zmjf7wswyiqakqd2r5b8q3a761ipsihmrg9wr57k5zlis"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:cargo-test-flags
+     `(#:cargo-test-flags
        '("--release" "--"
          "--skip=functions::env_var_functions"
          "--skip=string::shebang_backtick")
@@ -867,7 +855,6 @@ bar.  It is also compatible with sway.")
        #:imported-modules ((guix build cargo-build-system)
                            (guix build cargo-utils)
                            ,@%pyproject-build-system-modules)
-       #:tests? ,(not (%current-target-system))
        #:install-source? #f
        #:cargo-test-flags
        '("--release" "--"
@@ -1025,8 +1012,7 @@ bar.  It is also compatible with sway.")
          "1gv4imhjgxmyxaa996yshcjlakmrjw9pf4rycp90pq675cn9sz7k"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-0.2)
         ("rust-clap" ,rust-clap-2)
         ("rust-grep" ,rust-grep-0.2)
@@ -1083,8 +1069,7 @@ gitignore rules.")
                 "1m5kzpqq9pgc19lbnh20iaq654lzlmc1m5fc9f73w2vpwqdiw1qf"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:cargo-inputs (("rust-clap" ,rust-clap-2)
+     `(#:cargo-inputs (("rust-clap" ,rust-clap-2)
                        ("rust-glob" ,rust-glob-0.3)
                        ("rust-regex" ,rust-regex-1)
                        ("rust-serde" ,rust-serde-1)
@@ -1117,8 +1102,7 @@ touchscreen devices.")
                    (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:install-source? #f
+     `(#:install-source? #f
        #:cargo-build-flags
        '("--release" "-p" "swc_cli")
        #:cargo-test-flags
@@ -1253,8 +1237,7 @@ browsers.")
                 "19wfjz7z4kqjfjmnq1bl6dhsvskjy6r656fqmbha9dfdspbsnmd0"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:install-source? #f
+     `(#:install-source? #f
        ;; error[E0463]: can't find crate for `cargo_test_macro`
        #:tests? #f
        #:cargo-inputs
@@ -1327,8 +1310,7 @@ by modifying your @file{Cargo.toml} file from the command line.")
          "173spqqpyc00kvfmldjmjfqizh9b4spq4xw4bskd4dny8qcpz28d"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:cargo-test-flags
+     `(#:cargo-test-flags
        ;; https://github.com/MitMaro/git-interactive-rebase-tool/issues/586
        '("--release" "--" "--skip=tests::success")
        #:cargo-inputs
@@ -1372,8 +1354,7 @@ rebase.")
           "0673pq96hs7waavkv58v2pakpxpsfyjvbraa5kyl2b44phgdzcid"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("clap" ,rust-clap-2)
         ("log" ,rust-log-0.4)
         ("proc-macro2" ,rust-proc-macro2-1)
@@ -1402,8 +1383,7 @@ rebase.")
               (base32
                "1yqxqsz2d0cppd8zwihk2139g5gy38wqgl9snj6rnk8gyvnqsdd6"))))
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-clap" ,rust-clap-3)
         ("rust-heck" ,rust-heck-0.4)
         ("rust-indexmap" ,rust-indexmap-1)
@@ -1448,8 +1428,7 @@ rebase.")
         (base32
          "1yld9fni9g9mzg4r42zfk79aq9mzm2sfzzjrrx4vir4lp4qqqwiq"))))
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-clap" ,rust-clap-2)
         ("rust-heck" ,rust-heck-0.3)
         ("rust-indexmap" ,rust-indexmap-1)
@@ -1510,8 +1489,7 @@ rebase.")
          "038wcjiiay825wc8inmn62flklc1adxskg5fmjhmxqnhwmj1k5gn"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-ansi-term" ,rust-ansi-term-0.12)
         ("rust-anyhow" ,rust-anyhow-1)
         ("rust-atty" ,rust-atty-0.2)
@@ -1565,8 +1543,7 @@ of the project is to be runnable on untrusted networks without crashing.")
         (base32 "1q4mz2c32gfypx33zlzgd1q9h4322jrk13fzvsf8h676ylclqzpc"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:cargo-build-flags '("--release" "--features" "external-harfbuzz")
+     `(#:cargo-build-flags '("--release" "--features" "external-harfbuzz")
        #:cargo-inputs
        (("rust-atty" ,rust-atty-0.2)
         ("rust-byte-unit" ,rust-byte-unit-4)
@@ -1648,8 +1625,7 @@ of support files.")
         (base32 "1rarg6rffzl1cf6r167h9p14wr696kwnzr85kwbdy7x7x5zpj5li"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:install-source? #f
+     `(#:install-source? #f
        #:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-console" ,rust-console-0.13)
@@ -1707,8 +1683,7 @@ revert and check changes.
         (base32 "03x27nixdlnkkrh85gy4152arp02kpjwq0i9dn9p73lyr24s64lv"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-ansi-term" ,rust-ansi-term-0.12)
         ("rust-atty" ,rust-atty-0.2)
         ("rust-clap" ,rust-clap-2)
@@ -1735,8 +1710,7 @@ colorized view to stdout.")
         (base32 "000w549v1bpw7r57xw656p40ywf1gimvxxx5cjnri2js0xg927x4"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-aho-corasick" ,rust-aho-corasick-0.7)
         ("rust-clap" ,rust-clap-2)
         ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
@@ -1789,8 +1763,7 @@ blanks grouped by language.")
         (base32 "01fds6dm19bqgqydaa6n051v9l4wh9rb5d6sr9akwp2cc0fs43b7"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-ansi-colours" ,rust-ansi-colours-1)
         ("rust-clap" ,rust-clap-2)
         ("rust-dirs" ,rust-dirs-3)
@@ -1838,7 +1811,6 @@ older terminal emulators.")
                ;;
                ;; (copy-file "completions/zsh" zsh)
                (install-file "README.md" doc)))))
-       #:tests? ,(not (%current-target-system))
        #:cargo-inputs
        (("rust-clap" ,rust-clap-2)
         ("rust-embed-resource" ,rust-embed-resource-1)
@@ -1881,7 +1853,6 @@ runs a command whenever it detects modifications.")
              (substitute*
                  "Cargo.toml"
                (("version = \"1.4\"") "version = \"^1\"")))))
-       #:tests? ,(not (%current-target-system))
        #:cargo-inputs
        (("rust-aes" ,rust-aes-0.7)
         ("rust-anyhow" ,rust-anyhow-1)
@@ -1954,7 +1925,6 @@ background agent taking care of maintaining the necessary state.")
     (build-system cargo-build-system)
     (arguments
      `(#:rust ,rust-1.64
-       #:tests? ,(not (%current-target-system))
        #:install-source? #f             ; virtual manifest
        #:cargo-test-flags
        '("--release" "--lib" "--tests" "--"
@@ -2131,8 +2101,7 @@ support for Rust.")
           "191d0813g4m2g1c1h8ykgrfp00blkbds6pg3zl044iyxaclng29h"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-cargo" ,rust-cargo-0.69)
         ("rust-cargo-util" ,rust-cargo-util-0.2)
@@ -2173,8 +2142,7 @@ C-compatible) software.")
         (base32 "1r1b6fynkjnpj5p3k209sa13mjvh4k0ghzwnribm48dh9v7lfnnv"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
         ("rust-memchr" ,rust-memchr-2))))
     (home-page "https://github.com/Freaky/rtss")
@@ -2198,8 +2166,7 @@ consecutive lines and since program start.")
             "1d5v9vq8frkdjm7bnw3455h6xf3c277d51il2qasn7r20kwik7ab"))))
     (build-system cargo-build-system)
     (arguments
-      `(#:tests? ,(not (%current-target-system))
-        #:cargo-inputs
+      `(#:cargo-inputs
         (("rust-atty-0.2" ,rust-atty-0.2)
          ("rust-beef" ,rust-beef-0.5)
          ("rust-bitflags" ,rust-bitflags-1)
@@ -2284,8 +2251,7 @@ consecutive lines and since program start.")
          (base32
           "1yiyd6fml5hd2l811sckkzmiiq9bd7018ajk4qk3ai4wyvqnw8mv"))))
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-chrono" ,rust-chrono-0.4)
         ("rust-clap" ,rust-clap-2)
@@ -2322,8 +2288,7 @@ consecutive lines and since program start.")
           "0q8slfgjfhpljzlk2myb0i538mfq99q1ljn398jm17r1q2pjjxhv"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-cast" ,rust-cast-0.2)
         ("rust-clap" ,rust-clap-2)
@@ -2357,8 +2322,7 @@ files.")
         (base32 "0x172ffj0lfmbv5nix708l1mfsizxzy74gpxp5amvx0bbaq0p78s"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-exitcode" ,rust-exitcode-1)
         ("rust-swayipc" ,rust-swayipc-2))))
     (home-page "https://github.com/NomisIV/swayhide/")
@@ -2441,7 +2405,6 @@ daemon which executes them.")
                           (string-append fish "tealdeer.fish"))
                (copy-file "completion/zsh_tealdeer"
                           (string-append zsh "_tealdeer"))))))
-       #:tests? #~(not (%current-target-system))
        #:install-source? #f
        #:cargo-test-flags
        '("--release" "--"
@@ -2503,8 +2466,7 @@ Full featured offline client with caching support.")
         (base32 "04v10bn24acify34vh5ayymsr1flcyb05f3az9k1s2m6nlxy5gb9"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-clap" ,rust-clap-2)
         ("rust-git2" ,rust-git2-0.13)
@@ -2588,8 +2550,7 @@ It will then write @code{fixup!} commits for each of those changes.")
         (base32 "0y5v2vgl9f3n0n0w4b3iddbfyxv0hls0vw5406ry0hcvnnjyy2l3"))))
     (build-system cargo-build-system)
     (arguments
-     (list #:tests? #~(not (%current-target-system))
-           #:cargo-inputs
+     (list #:cargo-inputs
            `(("rust-anyhow" ,rust-anyhow-1)
              ("rust-askama" ,rust-askama-0.11)
              ("rust-bincode" ,rust-bincode-1)
@@ -2648,8 +2609,7 @@ to navigate to the best match.")
           (base32 "0912cdkz5xji1hzfj1cf42zh1kd860b52xmwwhb7q2jhp6qk25jh"))))
     (build-system cargo-build-system)
     (arguments
-      `(#:tests? ,(not (%current-target-system))
-        #:cargo-inputs
+      `(#:cargo-inputs
         (("rust-clap" ,rust-clap-2)
          ("rust-html5ever" ,rust-html5ever-0.25)
          ("rust-kuchiki" ,rust-kuchiki-0.8)

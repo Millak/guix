@@ -226,8 +226,7 @@ competitive (as in keystroke count) with Vim.")
        (sha256 "1wfv2fy5ga6kc51zka3pak0hq97csm2l11bz74w3n1hrf5q9nnf8")))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-crossbeam-channel" ,rust-crossbeam-channel-0.4)
         ("rust-clap" ,rust-clap-2)
         ("rust-daemonize" ,rust-daemonize-0.4)
@@ -272,8 +271,7 @@ Rust.")
        (file-name (git-file-name name version))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-getopts" ,rust-getopts-0.2)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-emacs" ,rust-emacs-0.11)

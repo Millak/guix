@@ -75,7 +75,7 @@ to NAME and VERSION."
 (define* (cargo-build name inputs
                       #:key
                       source
-                      (tests? #f)
+                      (tests? #t)
                       (test-target #f)
                       (vendor-dir "guix-vendor")
                       (cargo-build-flags ''("--release"))

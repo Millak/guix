@@ -460,8 +460,7 @@ replacing them with data URIs.")
         (base32 "1pj4wnsw5a4ys79sqw68ib6zimaqlkplb89x6yncg949a6hj8516"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-atty" ,rust-atty-0.2)
         ("rust-base64" ,rust-base64-0.13)
         ("rust-chrono" ,rust-chrono-0.4)
@@ -1478,7 +1477,7 @@ efficiently.  It gives the application developer no more than 4 methods.")
                   "ImportTaxonomy"
                   "ImportText"
                   "ImportXML"))
-               (for-each
+               (for-each 
                 (lambda (directory)
                   (copy-recursively directory
                                     (string-append perl "/../" directory)))
@@ -6867,8 +6866,7 @@ file links.")
         (base32 "1l72r6a917ymc9pn8dllbal1xdczfai376nvqkiys5fm4j4s3zmj"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-ansi-parser" ,rust-ansi-parser-0.6)
         ("rust-dirs" ,rust-dirs-2)
         ("rust-gdk" ,rust-gdk-0.13)

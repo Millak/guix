@@ -2654,7 +2654,6 @@ compressed files.")
                (("find_package\\(biosoup 0.10.0 QUIET\\)")
                 "find_package(biosoup 0.10.0 CONFIG)")
                (("GTest_FOUND") "TRUE")))))
-       #:tests? ,(not (%current-target-system))
        #:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-bio" ,rust-bio-0.33)
@@ -21094,7 +21093,6 @@ handling.")))
     (build-system cargo-build-system)
     (arguments
      (list
-      #:tests? #~(not (%current-target-system))
       #:install-source? #false
       #:features '(list "extension-module")
       #:cargo-test-flags '(list "--features=extension-module")

@@ -3513,7 +3513,6 @@ for dealing with different structured file formats.")
     (outputs '("out" "doc" "debug"))
     (arguments
      (list
-      #:tests? #~(not (%current-target-system))
       #:install-source? #f
       #:modules
       '((guix build cargo-build-system)

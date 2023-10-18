@@ -252,7 +252,6 @@ cards.")
      `(#:modules ((guix build cargo-build-system)
                   (guix build utils)
                   ((guix build gnu-build-system) #:prefix gnu:))
-       #:tests? ,(not (%current-target-system))
        #:install-source? #f
        #:cargo-inputs
        (("rust-backtrace" ,rust-backtrace-0.3)

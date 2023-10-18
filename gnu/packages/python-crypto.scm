@@ -362,7 +362,6 @@ risk.")
     (build-system cargo-build-system)
     (arguments
      (list
-      #:tests? #~(not (%current-target-system))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'build-python-module
@@ -569,7 +568,6 @@ ciphers, message digests and key derivation functions.")
                   (guix build utils)
                   (srfi srfi-1)
                   (ice-9 match))
-      #:tests? #~(not (%current-target-system))
       #:install-source? #f
       ;; As seen in noxfile.py
       #:cargo-test-flags ''("--release" "--no-default-features")

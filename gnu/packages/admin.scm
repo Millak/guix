@@ -5395,8 +5395,7 @@ it won't take longer to install 15 machines than it would to install just 2.")
                (base32 "1b79lb0vikh5vwpdlyga6zwzm11gpsd7ghp8zb0q2m6mlqlj5by3"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? ,(not (%current-target-system))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-nix" ,rust-nix-0.26)
         ("rust-pam-sys" ,rust-pam-sys-0.5)
         ("rust-rpassword" ,rust-rpassword-5)
@@ -5501,8 +5500,7 @@ interfering with any pam-mount configuration.")))
                "1k0jmgh0rjbnb49gkvs0a4d7z9xb6pad8v5w5f7my4s0rfpk7wd9"))))
     (build-system cargo-build-system)
     (arguments
-     (list #:tests? #~(not (%current-target-system))
-           #:cargo-inputs
+     (list #:cargo-inputs
            `(("rust-chrono" ,rust-chrono-0.4)
              ("rust-getopts" ,rust-getopts-0.2)
              ("rust-greetd-ipc" ,rust-greetd-ipc-0.9)
@@ -5921,7 +5919,6 @@ file or files to several hosts.")
      `(#:cargo-test-flags
        (list "--release" "--"
              "--skip=test_apparent_size")
-       #:tests? ,(not (%current-target-system))
        #:install-source? #f
        #:cargo-inputs (("rust-ansi-term" ,rust-ansi-term-0.12)
                        ("rust-atty" ,rust-atty-0.2)
