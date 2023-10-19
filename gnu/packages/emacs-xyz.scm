@@ -36021,6 +36021,26 @@ should replace it.  However, if you call them again immediately after, they
 restore that occurrence of the placeholder and move to the next.")
       (license license:gpl3+))))
 
+(define-public emacs-pddl-mode
+  (package
+    (name "emacs-pddl-mode")
+    (version "0.100")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/emacsmirror/pddl-mode")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1zq5a0sv8am1c1gxky80dsi39gqsgnwbasv3nw4993r3ccz180r8"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/emacsmirror/pddl-mode")
+    (synopsis "Emacs mode for PDDL files")
+    (description "This package provides a major mode for browsing and editing
+PDDL files with syntax highlighting, templates, auto-completion, and more.")
+    (license license:gpl2+)))
+
 (define-public emacs-plantuml-mode
   (package
     (name "emacs-plantuml-mode")
