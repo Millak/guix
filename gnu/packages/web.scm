@@ -303,15 +303,16 @@
     (native-inputs (list `(,pcre "bin")))       ;for 'pcre-config'
     (inputs (list apr apr-util openssl perl)) ; needed to run bin/apxs
     (arguments
-     `(#:test-target "test"
-       #:configure-flags (list "--enable-rewrite"
-                               "--enable-userdir"
-                               "--enable-vhost-alias"
-                               "--enable-ssl"
-                               "--enable-mime-magic"
-                               (string-append "--sysconfdir="
-                                              (assoc-ref %outputs "out")
-                                              "/etc/httpd"))))
+     (list
+      #:test-target "test"
+      #:configure-flags #~(list "--enable-rewrite"
+                                "--enable-userdir"
+                                "--enable-vhost-alias"
+                                "--enable-ssl"
+                                "--enable-mime-magic"
+                                (string-append "--sysconfdir="
+                                               #$output
+                                               "/etc/httpd"))))
     (synopsis "Featureful HTTP server")
     (description
      "The Apache HTTP Server Project is a collaborative software development
