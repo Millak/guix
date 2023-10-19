@@ -1483,13 +1483,11 @@ on stdout instead of using a socket as the Emacsclient does.")
                                            emacs:%default-include)))))
             (add-after 'unpack 'emacs-add-install-to-native-load-path
               (assoc-ref emacs:%standard-phases 'add-install-to-native-load-path))
-            (add-after 'install 'make-autoloads
+            (add-after 'unpack 'make-autoloads
               (assoc-ref emacs:%standard-phases 'make-autoloads))
-            (add-after 'make-autoloads 'enable-autoloads-compilation
-              (assoc-ref emacs:%standard-phases 'enable-autoloads-compilation))
-            (add-after 'enable-autoloads-compilation 'patch-el-files
+            (add-after 'unpack 'patch-el-files
               (assoc-ref emacs:%standard-phases 'patch-el-files))
-            (add-after 'patch-el-files 'emacs-build
+            (add-after 'install 'emacs-build
               (assoc-ref emacs:%standard-phases 'build))
             (add-after 'emacs-build 'validate-compiled-autoloads
               (assoc-ref emacs:%standard-phases 'validate-compiled-autoloads)))))
