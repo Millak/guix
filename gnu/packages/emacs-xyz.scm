@@ -543,8 +543,7 @@ API key.")
                          (search-input-file inputs "bin/guile"))))))
           (add-after 'make-autoloads 'patch-autoloads
             (lambda _
-              (substitute* (string-append (elpa-directory #$output)
-                                          "/geiser-guile-autoloads.el")
+              (substitute* "geiser-guile-autoloads.el"
                 ;; Activating implementations fails when Geiser is not yet
                 ;; loaded, so let's defer that until it is.
                 (("\\(geiser-activate-implementation .*\\)" all)
