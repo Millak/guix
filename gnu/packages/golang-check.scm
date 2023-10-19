@@ -83,10 +83,10 @@
     (arguments
      '(#:import-path "github.com/stretchr/testify"))
     (propagated-inputs
-     `(("github.com/davecgh/go-spew" ,go-github-com-davecgh-go-spew)
-       ("github.com/pmezard/go-difflib" ,go-github-com-pmezard-go-difflib)
-       ("github.com/stretchr/objx" ,go-github-com-stretchr-objx)
-       ("gopkg.in/yaml.v3" ,go-gopkg-in-yaml-v3)))
+     (list go-github-com-davecgh-go-spew
+           go-github-com-pmezard-go-difflib
+           go-github-com-stretchr-objx
+           go-gopkg-in-yaml-v3))
     (home-page "https://github.com/stretchr/testify")
     (synopsis "Go helper library for tests and invariant checking")
     (description "This package provide many tools for testifying that your
