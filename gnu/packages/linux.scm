@@ -10376,7 +10376,7 @@ provides user-space tools for creating EROFS file systems.")
               ;; line lets sysconfdir correctly pick up DESTDIR.
               (substitute* "configure.ac"
                 (("^test .* sysconfdir=/etc\n$") ""))))
-          (add-after 'wrap 'wrap-rasdaemon
+          (add-after 'install 'wrap-rasdaemon
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((path (map dirname
                                (list (search-input-file inputs "/sbin/dmidecode")
