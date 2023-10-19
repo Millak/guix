@@ -401,8 +401,8 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-c-sharp
   (tree-sitter-grammar
    "c-sharp" "C#"
-   "054fmpf47cwh59gbg00sc0nl237ba4rnxi73miz39yqzcs87055r"
-   "0.19.1"))
+   "0lijbi5q49g50ji00p2lb45rvd76h07sif3xjl9b31yyxwillr6l"
+   "0.20.0"))
 
 (define-public tree-sitter-dockerfile
   (tree-sitter-grammar
