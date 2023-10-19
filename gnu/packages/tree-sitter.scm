@@ -369,19 +369,15 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-c
   (tree-sitter-grammar
    "c" "C"
-   "1w03r4l773ki4iq2xxsc2pqxf3pjsbybq3xq4glmnsihgylibn8v"
-   "0.20.2"))
+   "00mhz2rz98pxssgyhm0iymgcb8cbv8slsf3nmfgyjhfchpmb9n6z"
+   "0.20.6"))
 
 (define-public tree-sitter-cpp
-  ;; There are a lot of additions, the last tag was placed more than 1 year ago
-  (let ((commit "56cec4c2eb5d6af3d2942e69e35db15ae2433740")
-        (revision "0"))
       (tree-sitter-grammar
        "cpp" "C++"
-       "0c5iwg9j6naivvr18glfp095x32nfl9hbw0q02rhh1b59fkpjs09"
-       (git-version "0.20.0" revision commit)
-       #:commit commit
-       #:inputs (list tree-sitter-c))))
+       "0fsb6la0da3azh7m9p1w3w079bpg6074dy8jisjw1yq1w1r9grxy"
+       "0.20.3"
+       #:inputs (list tree-sitter-c)))
 
 (define-public tree-sitter-cmake
   (tree-sitter-grammar
