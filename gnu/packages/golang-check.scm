@@ -2,6 +2,7 @@
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
+;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
@@ -38,6 +39,29 @@
 ;;;
 ;;; Code:
 
+(define-public go-github-com-golangplus-testing
+  (package
+    (name "go-github-com-golangplus-testing")
+    (version "1.0.0")
+    (home-page "https://github.com/golangplus/testing")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a29m4zplf9m14k74lrb55dids2l17vx28sv0g3y3qcv1xygksiv"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/golangplus/testing"))
+    (propagated-inputs
+     (list go-github-com-golangplus-fmt))
+    (synopsis "Additions to Go's standard testing package")
+    (description "This package provides additions to Go's stdlib testing.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-jacobsa-oglematchers
   (let ((commit "141901ea67cd4769c6800aa7bfdfc558fa22bda5")
         (revision "0"))
