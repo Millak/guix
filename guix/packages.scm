@@ -2022,11 +2022,12 @@ symbolic output name, such as \"out\".  Note that this procedure calls
 ;;; Monadic interface.
 ;;;
 
-(define (set-guile-for-build guile)
+(define* (set-guile-for-build guile #:optional system)
   "This monadic procedure changes the Guile currently used to run the build
-code of derivations to GUILE, a package object."
+code of derivations to GUILE, a package object, compiled for SYSTEM."
   (lambda (store)
-    (let ((guile (package-derivation store guile)))
+    (let ((guile (package-derivation store guile
+                                     (or system (%current-system)))))
       (values (%guile-for-build guile) store))))
 
 (define* (package-file package
