@@ -4743,14 +4743,12 @@ ex-like commands on it.")
                (for-each (lambda (file)
                            (install-file file (string-append out "/bin")))
                          (list "mailfilter.crm" "mailreaver.crm" "mailtrainer.crm")))))
+         ;; Run phases from the emacs build system.
+         (add-after 'unpack 'make-autoloads
+           (assoc-ref emacs:%standard-phases 'make-autoloads))
          (add-after 'install 'install-emacs-mode
            (assoc-ref emacs:%standard-phases 'install))
-         ;; Run phases from the emacs build system.
-         (add-after 'install-emacs-mode 'make-autoloads
-           (assoc-ref emacs:%standard-phases 'make-autoloads))
-         (add-after 'make-autoloads 'enable-autoloads-compilation
-           (assoc-ref emacs:%standard-phases 'enable-autoloads-compilation))
-         (add-after 'enable-autoloads-compilation 'emacs-build
+         (add-after 'install-emacs-mode 'emacs-build
            (assoc-ref emacs:%standard-phases 'build))
          (add-after 'emacs-build 'validate-compiled-autoloads
            (assoc-ref emacs:%standard-phases 'validate-compiled-autoloads)))))
