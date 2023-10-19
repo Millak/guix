@@ -395,8 +395,8 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-bash
   (tree-sitter-grammar
    "bash" "Bash"
-   "18c030bb65r50i6z37iy7jb9z9i8i36y7b08dbc9bchdifqsijs5"
-   "0.19.0"))
+   "01sjympivwhr037c0gdx5fqw8fvzchq4fd4m8wlr8mdw50di0ag2"
+   "0.20.4"))
 
 (define-public tree-sitter-c-sharp
   (tree-sitter-grammar
