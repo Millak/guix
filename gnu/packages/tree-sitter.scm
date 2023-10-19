@@ -523,8 +523,8 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-rust
   (tree-sitter-grammar
    "rust" "Rust"
-   "149jhy01mqvavwa8jlxb8bnn7sxpfq2x1w35si6zn60b7kqjlx8f"
-   "0.20.3"))
+   "1pk4mb3gh62xk0qlhxa8ihhxvnf7grrcchwg2xv99yy6yb3yh26b"
+   "0.20.4"))
 
 (define-public tree-sitter-clojure
   (tree-sitter-grammar
