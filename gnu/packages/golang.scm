@@ -5660,39 +5660,6 @@ which satisfies the cron expression.")
       (license (list license:gpl3+
                      license:asl2.0)))))
 
-(define-public go-gopkg-in-check-v1
-  (package
-    (name "go-gopkg-in-check-v1")
-    (version "1.0.0-20201130134442-10cb98267c6c")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/go-check/check")
-             (commit (go-version->git-ref version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1jwxndf8rsyx0fgrp47d99rp55yzssmryb92jfj3yf7zd8rjjljn"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-       #:import-path "gopkg.in/check.v1"
-       #:phases
-       #~(modify-phases %standard-phases
-           (replace 'check
-             (lambda* (#:key inputs #:allow-other-keys #:rest args)
-               (unless
-                 ;; The tests fail when run with gccgo.
-                 (false-if-exception (search-input-file inputs "/bin/gccgo"))
-                 (apply (assoc-ref %standard-phases 'check) args)))))))
-    (propagated-inputs
-     (list go-github-com-kr-pretty))
-    (home-page "https://gopkg.in/check.v1")
-    (synopsis "Test framework for the Go language")
-    (description "This package provides a test library for the Go language.")
-    (license license:bsd-2)))
-
 (define-public go-gopkg-in-ini-v1
   (package
     (name "go-gopkg-in-ini-v1")

@@ -1,6 +1,8 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
+;;; Copyright © 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
+;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;;
@@ -23,6 +25,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix build-system go)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (gnu packages)
   #:use-module (gnu packages golang))
@@ -100,6 +103,39 @@ Features include:
 @item Testing suite interfaces and functions.
 @end itemize")
     (license license:expat)))
+
+(define-public go-gopkg-in-check-v1
+  (package
+    (name "go-gopkg-in-check-v1")
+    (version "1.0.0-20201130134442-10cb98267c6c")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-check/check")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1jwxndf8rsyx0fgrp47d99rp55yzssmryb92jfj3yf7zd8rjjljn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gopkg.in/check.v1"
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key inputs #:allow-other-keys #:rest args)
+              (unless
+                  ;; The tests fail when run with gccgo.
+                  (false-if-exception (search-input-file inputs "/bin/gccgo"))
+                (apply (assoc-ref %standard-phases 'check) args)))))))
+    (propagated-inputs
+     (list go-github-com-kr-pretty))
+    (home-page "https://gopkg.in/check.v1")
+    (synopsis "Test framework for the Go language")
+    (description "This package provides a test library for the Go language.")
+    (license license:bsd-2)))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
