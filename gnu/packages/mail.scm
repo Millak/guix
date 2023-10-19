@@ -1167,17 +1167,17 @@ repository and Maildir/IMAP as LOCAL repository.")
            "0xazygwdc328m5l31rxjazq9giv2xrygp2p2q455lf3jhdxwq1km"))))
       (build-system gnu-build-system)
       (arguments
-       (let ((elisp-dir #~(string-append #$output "/share/emacs/site-lisp"))
-             (icon-dir  #~(string-append #$output "/share/mew")))
+       (let ((icon-dir  #~(string-append #$output "/share/mew")))
          (list
           #:modules '((guix build gnu-build-system)
                       (guix build utils)
+                      ((guix build emacs-build-system) #:prefix emacs:)
                       (guix build emacs-utils))
-          #:imported-modules `(,@%gnu-build-system-modules
-                               (guix build emacs-utils))
+          #:imported-modules %emacs-build-system-modules
           #:tests? #f
           #:configure-flags
-          #~(list (string-append "--with-elispdir=" #$elisp-dir)
+          #~(list (string-append "--with-elispdir="
+                                 (emacs:elpa-directory #$output))
                   (string-append "--with-etcdir=" #$icon-dir))
           #:phases
           #~(modify-phases %standard-phases
@@ -1188,9 +1188,15 @@ repository and Maildir/IMAP as LOCAL repository.")
                      `(progn
                        (add-to-list 'image-load-path 'mew-icon-directory)
                        ,#$icon-dir)))))
-              (add-after 'install 'generate-autoloads
+              (add-after 'unpack 'generate-autoloads
                 (lambda _
-                  (emacs-generate-autoloads "mew" #$elisp-dir)))))))
+                  (emacs-generate-autoloads "mew" "elisp")
+                  (substitute* "elisp/mew-autoloads.el"
+                    ((";; no-byte-compile.*") ""))
+                  ;; Add generated autoloads to Makefile, so they get compiled
+                  (substitute* "elisp/Makefile"
+                    (("OBJS =") "OBJS = mew-autoloads.elc")
+                    (("SRCS =") "SRCS = mew-autoloads.el"))))))))
       (native-inputs
        (list emacs))
       (propagated-inputs
