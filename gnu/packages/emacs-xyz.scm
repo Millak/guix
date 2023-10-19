@@ -657,8 +657,7 @@ a generic Scheme interaction mode for the GNU Emacs editor.")
                          (search-input-file inputs "bin/racket"))))))
           (add-after 'make-autoloads 'patch-autoloads
             (lambda _
-              (substitute* (string-append (elpa-directory #$output)
-                                          "/geiser-racket-autoloads.el")
+              (substitute* "geiser-racket-autoloads.el"
                 ;; Activating implementations fails when Geiser is not yet
                 ;; loaded, so let's defer that until it is.
                 (("\\(geiser-activate-implementation .*\\)" all)
