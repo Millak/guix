@@ -503,14 +503,10 @@ which will be used as a snippet in origin."
      #:commit commit)))
 
 (define-public tree-sitter-python
-  ;; There are a lot of additions, the last tag was placed a while ago
-  (let ((commit "9e53981ec31b789ee26162ea335de71f02186003")
-        (revision "0"))
     (tree-sitter-grammar
      "python" "Python"
-     "1lv3pgb7h2a0f121897r0lwc228rjwb77y3a6g3ghifx1rgbwvqg"
-     (git-version "0.20.0" revision commit)
-     #:commit commit)))
+     "1sxz3npk3mq86abcnghfjs38nzahx7nrn3wdh8f8940hy71d0pvi"
+     "0.20.4"))
 
 (define-public tree-sitter-r
   ;; No tags
