@@ -612,8 +612,7 @@ using geiser.")
                    (search-input-file inputs "bin/gosh")))))
             (add-after 'make-autoloads 'patch-autoloads
               (lambda _
-                (substitute* (string-append (elpa-directory #$output)
-                                            "/geiser-gauche-autoloads.el")
+                (substitute* "geiser-gauche-autoloads.el"
                   ;; Activating implementations fails when Geiser is not yet
                   ;; loaded, so let's defer that until it is.
                   (("\\(geiser-activate-implementation .*\\)" all)
