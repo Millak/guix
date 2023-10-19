@@ -441,14 +441,10 @@ which will be used as a snippet in origin."
    #:repository-url "https://github.com/camdencheek/tree-sitter-go-mod.git"))
 
 (define-public tree-sitter-go
-  ;; There are a lot of additions, the last tag was placed more than 1 year ago
-  (let ((commit "64457ea6b73ef5422ed1687178d4545c3e91334a")
-        (revision "0"))
     (tree-sitter-grammar
      "go" "Go"
-     "16d32m78y8jricba9xav35c9y0k2r29irj5xyqgq24323yln9jnz"
-     (git-version "0.19.1" revision commit)
-     #:commit commit)))
+     "0wlhwcdlaj74japyn8wjza0fbwckqwbqv8iyyqdk0a5jf047rdqv"
+     "0.20.0"))
 
 (define-public tree-sitter-haskell
   ;; There are a lot of additions, the last tag was placed more than 4 years ago
