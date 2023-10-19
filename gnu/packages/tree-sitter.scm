@@ -320,26 +320,26 @@ which will be used as a snippet in origin."
   ;; Commit required by tree-sitter-typescript 0.20.3.
   (let ((commit "f772967f7b7bc7c28f845be2420a38472b16a8ee")
         (revision "22"))
-  (tree-sitter-grammar
-   "javascript" "JavaScript(JSX)"
-   "0vp7z57scpbcvyxpya06lnpz9f5kjdb66wjlkrp684xwjjgq1wxd"
-   (git-version "0.20.0" revision commit)
-   #:commit commit
-   #:get-cleanup-snippet
-   (lambda (grammar-directories)
-     #~(begin
-         (use-modules (guix build utils))
-         (delete-file "tree-sitter-javascript.wasm")
-         (delete-file "binding.gyp")
-         (delete-file-recursively "bindings")
-         (for-each
-          (lambda (lang)
-            (with-directory-excursion lang
-              (delete-file "src/grammar.json")
-              (delete-file "src/node-types.json")
-              (delete-file "src/parser.c")
-              (delete-file-recursively "src/tree_sitter")))
-          '#$grammar-directories))))))
+    (tree-sitter-grammar
+     "javascript" "JavaScript(JSX)"
+     "0vp7z57scpbcvyxpya06lnpz9f5kjdb66wjlkrp684xwjjgq1wxd"
+     (git-version "0.20.0" revision commit)
+     #:commit commit
+     #:get-cleanup-snippet
+     (lambda (grammar-directories)
+       #~(begin
+           (use-modules (guix build utils))
+           (delete-file "tree-sitter-javascript.wasm")
+           (delete-file "binding.gyp")
+           (delete-file-recursively "bindings")
+           (for-each
+            (lambda (lang)
+              (with-directory-excursion lang
+                (delete-file "src/grammar.json")
+                (delete-file "src/node-types.json")
+                (delete-file "src/parser.c")
+                (delete-file-recursively "src/tree_sitter")))
+            '#$grammar-directories))))))
 
 (define-public tree-sitter-typescript
   (tree-sitter-grammar
@@ -373,11 +373,11 @@ which will be used as a snippet in origin."
    "0.20.6"))
 
 (define-public tree-sitter-cpp
-      (tree-sitter-grammar
-       "cpp" "C++"
-       "0fsb6la0da3azh7m9p1w3w079bpg6074dy8jisjw1yq1w1r9grxy"
-       "0.20.3"
-       #:inputs (list tree-sitter-c)))
+  (tree-sitter-grammar
+   "cpp" "C++"
+   "0fsb6la0da3azh7m9p1w3w079bpg6074dy8jisjw1yq1w1r9grxy"
+   "0.20.3"
+   #:inputs (list tree-sitter-c)))
 
 (define-public tree-sitter-cmake
   (tree-sitter-grammar
@@ -390,14 +390,14 @@ which will be used as a snippet in origin."
   ;; No tags at all, version in the source code is 0.19.0
   (let ((commit "b20eaa75565243c50be5e35e253d8beb58f45d56")
         (revision "0"))
-      (tree-sitter-grammar
-       "elixir" "Elixir"
-       "1i0c0xki3sv24649p0ws7xs2jagbwg7z7baz1960239bj94nl487"
-       (git-version "0.19.0" revision commit)
-       #:article "an"
-       #:repository-url "https://github.com/elixir-lang/tree-sitter-elixir"
-       #:commit commit
-       #:license (list license:asl2.0 license:expat))))
+    (tree-sitter-grammar
+     "elixir" "Elixir"
+     "1i0c0xki3sv24649p0ws7xs2jagbwg7z7baz1960239bj94nl487"
+     (git-version "0.19.0" revision commit)
+     #:article "an"
+     #:repository-url "https://github.com/elixir-lang/tree-sitter-elixir"
+     #:commit commit
+     #:license (list license:asl2.0 license:expat))))
 
 (define-public tree-sitter-heex
   (tree-sitter-grammar
@@ -441,10 +441,10 @@ which will be used as a snippet in origin."
    #:repository-url "https://github.com/camdencheek/tree-sitter-go-mod.git"))
 
 (define-public tree-sitter-go
-    (tree-sitter-grammar
-     "go" "Go"
-     "0wlhwcdlaj74japyn8wjza0fbwckqwbqv8iyyqdk0a5jf047rdqv"
-     "0.20.0"))
+  (tree-sitter-grammar
+   "go" "Go"
+   "0wlhwcdlaj74japyn8wjza0fbwckqwbqv8iyyqdk0a5jf047rdqv"
+   "0.20.0"))
 
 (define-public tree-sitter-haskell
   ;; There are a lot of additions, the last tag was placed more than 4 years ago
@@ -495,10 +495,10 @@ which will be used as a snippet in origin."
      #:commit commit)))
 
 (define-public tree-sitter-python
-    (tree-sitter-grammar
-     "python" "Python"
-     "1sxz3npk3mq86abcnghfjs38nzahx7nrn3wdh8f8940hy71d0pvi"
-     "0.20.4"))
+  (tree-sitter-grammar
+   "python" "Python"
+   "1sxz3npk3mq86abcnghfjs38nzahx7nrn3wdh8f8940hy71d0pvi"
+   "0.20.4"))
 
 (define-public tree-sitter-r
   ;; No tags
