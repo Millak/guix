@@ -513,31 +513,25 @@ V4.1.2 that adds support for MathML in equation markup.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "1g72y2yyc2k89kzs0lvrb9n7hjayw1hdskfpplpz97pf1c99wcig"))))
+                "1g72y2yyc2k89kzs0lvrb9n7hjayw1hdskfpplpz97pf1c99wcig"))
+              (snippet
+               #~(begin
+                   ;; Remove empty directories.
+                   (rmdir "doc")
+                   (rmdir "docsrc")))))
     (build-system copy-build-system)
     (outputs '("out" "doc"))
     (arguments
      (list
       #:install-plan
-      #~`(("./" "sgml/dtd/docbook/"
-           #:exclude ("doc" "docsrc")))
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; The doc output contains 1.4 MiB of HTML documentation.
-          (add-after 'install 'install-doc
-            (lambda* (#:key inputs #:allow-other-keys)
-              (mkdir-p (string-append #$output:doc "/share/doc"))
-              (symlink (assoc-ref inputs "docbook-dsssl-doc")
-                       (format #f "~a/share/doc/~a-~a"
-                               #$output:doc #$name #$version)))))))
+      #~`(("./" "sgml/dtd/docbook/")
+          (#$(this-package-input "docbook-dsssl-doc") "./" #:output "doc"))))
     (inputs
      (list docbook-dsssl-doc))
-    (native-inputs
-     (list bzip2 tar))
     (home-page "https://docbook.org/")
     (synopsis "DSSSL style sheets for DocBook")
     (description "This package provides DSSSL style sheets for DocBook.")
-    (license (license:non-copyleft "file://README"))))
+    (license (license:non-copyleft "file:/README"))))
 
 ;;; Private variable, used as the 'doc' output of the docbook-dsssl package.
 (define docbook-dsssl-doc
@@ -560,7 +554,7 @@ V4.1.2 that adds support for MathML in equation markup.")
     (home-page "https://docbook.org/")
     (synopsis "DocBook DSSSL style sheets documentation")
     (description "Documentation for the DocBook DSSSL style sheets.")
-    (license (license:non-copyleft "file://doc/LEGALNOTICE.htm"))))
+    (license (license:non-copyleft "file:/doc/LEGALNOTICE.htm"))))
 
 (define-public docbook-sgml-4.2
   (package
