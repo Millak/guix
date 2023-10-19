@@ -98,16 +98,16 @@ Tree-sitter parsing library.")
 (define-public tree-sitter
   (package
     (name "tree-sitter")
-    (version "0.20.8")
+    (version "0.20.10")                 ;untagged
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/tree-sitter/tree-sitter")
-                    (commit (string-append "v" version))))
+                    (commit "0e4ff0bb27edf37b76fc7d35aa768b02cf4392ad")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10w17lfn9asqrk612xivkx26lc620s3nnm30hhlyqd4bj19k7gyv"))
+                "1bai4gdhf8w5p1i9np2kl2ms0jq6rgq98qpiipipzayb9jjjlxcy"))
               (modules '((guix build utils)))
               (snippet #~(begin
                            ;; Remove bundled ICU parts
@@ -175,6 +175,7 @@ This package includes the @code{libtree-sitter} runtime library.")
          ;; good compromise compared to maintaining two different sets of
          ;; grammars (Guix packages vs test fixtures).
          "--skip=tests::corpus_test"
+         "--skip=tests::github_issue_test"
          "--skip=tests::highlight_test"
          "--skip=tests::node_test"
          "--skip=tests::parser_test"
@@ -196,6 +197,7 @@ This package includes the @code{libtree-sitter} runtime library.")
         ("rust-dirs" ,rust-dirs-3)
         ("rust-html-escape" ,rust-html-escape-0.2)
         ("rust-libloading" ,rust-libloading-0.7)
+        ("rust-path-slash" ,rust-path-slash-0.2)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-rustc-hash" ,rust-rustc-hash-1)
         ("rust-semver" ,rust-semver-1)
