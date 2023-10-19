@@ -334,6 +334,7 @@ automatic, safe and reliable.  It is used by tools such as GNOME Software.")
      `(#:make-flags (list (string-append "PREFIX="
                                          (assoc-ref %outputs "out")
                                          "/lib/firmware/b43-open"))
+       #:target #f                      ; Package produces firmware.
        #:tests? #f                      ;no tests
        #:phases (modify-phases %standard-phases
                   (delete 'configure))))
