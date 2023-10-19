@@ -2174,6 +2174,48 @@ from other CLXes around the net.")
 (define-public ecl-clx
   (sbcl-package->ecl-package sbcl-clx))
 
+(define-public sbcl-cl-wayland
+  (let ((commit "a92a5084b64102f538ab90212e99c7863e5338ae")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-wayland")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sdilts/cl-wayland")
+               (commit commit)))
+         (file-name (git-file-name "cl-wayland" version))
+         (sha256
+          (base32 "1r4fn9dc0dz2b30k8z243yacx1y5z21qk4zh2ildj7ak51qx53zf"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-paths
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "wayland-server-core.lisp"
+                       (("libwayland-server.so")
+                        (search-input-file inputs
+                                           "/lib/libwayland-server.so"))))))))
+      (inputs
+       (list sbcl-cffi
+             sbcl-closer-mop
+             wayland))
+      (home-page "https://github.com/sdilts/cl-wayland")
+      (synopsis "Common Lisp FFI bindings for libwayland")
+      (description
+       "This package provides Common Lisp FFI bindings for libwayland,
+primarily for the mahogany window manager.")
+      (license license:bsd-3))))
+
+(define-public cl-wayland
+  (sbcl-package->cl-source-package sbcl-cl-wayland))
+
+(define-public ecl-cl-wayland
+  (sbcl-package->ecl-package sbcl-cl-wayland))
+
 (define-public sbcl-clx-truetype
   (let ((commit "c6e10a918d46632324d5863a8ed067a83fc26de8")
         (revision "1"))
