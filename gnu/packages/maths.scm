@@ -5283,7 +5283,7 @@ package contains a library with common configuration options.")
               (install-file "../AMD/Doc/License.txt"
                             (string-append #$output "/share/doc/"
                                            #$name "-" #$version)))))))
-    (inputs (list suitesparse-config))
+    (propagated-inputs (list suitesparse-config))
     (native-inputs (list gfortran (texlive-updmap.cfg '())))
     (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
     (synopsis "Sparse matrix ordering for Cholesky factorization")
@@ -5317,7 +5317,7 @@ to Cholesky factorization (or for LU factorization with diagonal pivoting).")
               (install-file "../BTF/Doc/License.txt"
                             (string-append #$output "/share/doc/"
                                            #$name "-" #$version)))))))
-    (inputs (list suitesparse-config))
+    (propagated-inputs (list suitesparse-config))
     (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
     (synopsis "Library for permuting matrices into block upper triangular form")
     (description "BTF (Block Triangular Form) is a C library for permuting a
@@ -5359,7 +5359,7 @@ matrix into block upper triangular form.")
               (install-file "../CAMD/Doc/License.txt"
                             (string-append #$output "/share/doc/"
                                            #$name "-" #$version)))))))
-    (inputs (list suitesparse-config))
+    (propagated-inputs (list suitesparse-config))
     (native-inputs (list (texlive-updmap.cfg '())))
     (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
     (synopsis "Sparse matrix ordering for Cholesky factorization with constraints")
@@ -5395,7 +5395,7 @@ ordering.")
               (install-file "../COLAMD/Doc/License.txt"
                             (string-append #$output "/share/doc/"
                                            #$name "-" #$version)))))))
-    (inputs (list suitesparse-config))
+    (propagated-inputs (list suitesparse-config))
     (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
     (synopsis "Column Approximate Minimum Degree Ordering")
     (description "COLAMD is library for computing a permutation vector for a
@@ -5428,7 +5428,7 @@ matrix with which the LU factorization becomes sparser.")
               (install-file "../CCOLAMD/Doc/License.txt"
                             (string-append #$output "/share/doc/"
                                            #$name "-" #$version)))))))
-    (inputs (list suitesparse-config))
+    (propagated-inputs (list suitesparse-config))
     (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
     (synopsis "Column Approximate Minimum Degree Ordering with constraints")
     (description "CCOLAMD is library for computing a permutation vector for a
@@ -5457,9 +5457,7 @@ COLAMD which has the the option to apply constraints to the ordering.")
                     all
                     "target_link_libraries(GKlib PUBLIC"
                     " ${SUITESPARSE_CONFIG_LIBRARIES} m)\n")))))))))
-    (inputs
-     (modify-inputs (package-inputs gklib)
-       (prepend suitesparse-config)))))
+    (propagated-inputs (list suitesparse-config))))
 
 (define-public metis-suitesparse
   (package/inherit metis-5.2
@@ -5561,8 +5559,8 @@ target_link_libraries(CHOLMOD_static PRIVATE ${METIS_LIBRARY} ${GKLIB_LIBRARY})"
            suitesparse-amd
            suitesparse-camd
            suitesparse-ccolamd
-           suitesparse-colamd
-           suitesparse-config))
+           suitesparse-colamd))
+    (propagated-inputs (list suitesparse-config))
     (native-inputs (list (texlive-updmap.cfg '())))
     (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
     (synopsis "Library for solving sparse symmetric positive definite linear
@@ -5599,7 +5597,7 @@ and other related operations.")
                                         "/share/doc/" #$name "-" #$version)))
                 (install-file "../CXSparse/Doc/License.txt" out)
                 (install-file "../CXSparse/Doc/lesser.txt" out)))))))
-    (inputs (list suitesparse-config))
+    (propagated-inputs (list suitesparse-config))
     (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
     (synopsis "Concise eXtended Sparse Matrix Package")
     (description "CXSparse is a collection of sparse matrix algorithms for
@@ -5655,13 +5653,14 @@ direct methods on both real and complex matrices.")
                             (string-append #$output "/share/doc/"
                                            #$name "-" #$version)))))))
     (inputs
-     (list suitesparse-amd
-           suitesparse-btf
-           suitesparse-camd
+     (list suitesparse-camd
            suitesparse-ccolamd
-           suitesparse-cholmod
            suitesparse-colamd
            suitesparse-config))
+    (propagated-inputs
+     (list suitesparse-amd
+           suitesparse-btf
+           suitesparse-cholmod))
     (native-inputs (list (texlive-updmap.cfg '())))
     (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
     (synopsis "Routines for solving sparse linear problems with a LU factorization")
@@ -5712,9 +5711,8 @@ for real and complex matrices.")
               (install-file "../LDL/Doc/License.txt"
                             (string-append #$output "/share/doc/"
                                            #$name "-" #$version)))))))
-    (inputs
-     (list suitesparse-amd
-           suitesparse-config))
+    (inputs (list suitesparse-amd))
+    (propagated-inputs (list suitesparse-config))
     (native-inputs (list (texlive-updmap.cfg '())))
     (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
     (synopsis "LDL' factorization method for sparse, symmetric matrices")
@@ -5754,7 +5752,7 @@ code.")
                                         "/share/doc/" #$name "-" #$version)))
                 (install-file "../RBio/Doc/License.txt" out)
                 (install-file "../RBio/Doc/gpl.txt" out)))))))
-    (inputs (list suitesparse-config))
+    (propagated-inputs (list suitesparse-config))
     (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
     (synopsis "Library for the Rutherford/Boeing sparse matrix format")
     (description "This package provides the C library of RBio.  It can be used
@@ -5803,7 +5801,7 @@ for reading and writing sparse matrices in the Rutherford/Boeing format.")
               (install-file "../Mongoose/Doc/License.txt"
                             (string-append #$output "/share/doc/"
                                            #$name "-" #$version)))))))
-    (inputs (list suitesparse-config))
+    (propagated-inputs (list suitesparse-config))
     (native-inputs
      (list texlive-epstopdf
            (texlive-updmap.cfg
@@ -5872,12 +5870,8 @@ edge cuts using a coarsening and refinement framework.")
               (install-file "../SPEX/Doc/SPEX_UserGuide.pdf"
                             (string-append #$output "/share/doc/"
                                            #$name "-" #$version)))))))
-    (inputs
-     (list gmp
-           mpfr
-           suitesparse-amd
-           suitesparse-colamd
-           suitesparse-config))
+    (inputs (list suitesparse-amd suitesparse-colamd))
+    (propagated-inputs (list gmp mpfr suitesparse-config))
     (native-inputs
      (list (texlive-updmap.cfg
             (list texlive-paralist
@@ -5950,14 +5944,13 @@ LU factorization for solving unsymmetric sparse linear systems.")
               (install-file "../SPQR/Doc/License.txt"
                             (string-append #$output "/share/doc/"
                                            #$name "-" #$version)))))))
-    (inputs
-     (list openblas
-           suitesparse-amd
-           suitesparse-camd
-           suitesparse-ccolamd
-           suitesparse-cholmod
-           suitesparse-colamd
-           suitesparse-config))
+    (inputs (list openblas
+                  suitesparse-amd
+                  suitesparse-camd
+                  suitesparse-ccolamd
+                  suitesparse-colamd
+                  suitesparse-config))
+    (propagated-inputs (list suitesparse-cholmod))
     (native-inputs
      (list (texlive-updmap.cfg
             (list texlive-epsf))))
@@ -6016,13 +6009,13 @@ matrices.")
                                     #$name "-" #$version)))
                 (install-file "../UMFPACK/Doc/License.txt" outdir)
                 (install-file "../UMFPACK/Doc/gpl.txt" outdir)))))))
-    (inputs
-     (list openblas
-           suitesparse-amd
-           suitesparse-camd
-           suitesparse-ccolamd
-           suitesparse-cholmod
-           suitesparse-colamd
+    (inputs (list openblas
+                  suitesparse-camd
+                  suitesparse-ccolamd
+                  suitesparse-cholmod
+                  suitesparse-colamd))
+    (propagated-inputs
+     (list suitesparse-amd
            suitesparse-config))
     (native-inputs
      (list (texlive-updmap.cfg
