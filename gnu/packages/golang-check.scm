@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
+;;; Copyright © 2019 Brian Leung <bkleung89@gmail.com>
 ;;; Copyright © 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
@@ -457,6 +458,32 @@ such as readers and writers that fail after N consecutive reads/writes.")
      "This package provides basic assertions along with building blocks for
 custom assertions to be used alongside native Go testing.")
     (license license:expat)))
+
+(define-public go-golang-org-sql-mock
+  (let ((commit "e98392b8111b45f8126e00af035a0dd95dc12e8b")
+        (version "1.3.3")
+        (revision "1"))
+    (package
+      (name "go-golang-org-sql-mock")
+      (version (git-version version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/DATA-DOG/go-sqlmock")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "033vv29g2wf6fd757ajfmha30bqin3b07377037zkl051mk6mghs"))))
+      (build-system go-build-system)
+      (arguments
+       '(#:import-path "github.com/DATA-DOG/go-sqlmock"))
+      (synopsis "Mock library implementing @code{sql/driver}")
+      (description "This library simulates SQL-driver behavior in tests
+without requiring a real database connection.")
+      (home-page "https://github.com/DATA-DOG/go-sqlmock")
+      (license license:expat))))
 
 (define-public go-golang-org-x-lint
   (let ((commit "83fdc39ff7b56453e3793356bcff3070b9b96445")
