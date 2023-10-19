@@ -1049,7 +1049,7 @@ RSS 0.91, RSS 1.0, RSS 2.0, Atom")
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'wrap 'wrap-xpath
+          (add-after 'install 'wrap-xpath
             (lambda _
               (let ((xpath (string-append #$output "/bin/xpath"))
                     (perl5lib
