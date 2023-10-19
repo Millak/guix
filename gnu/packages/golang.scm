@@ -1311,34 +1311,6 @@ networks where it would otherwise be blocked or heavily throttled.")
 not included in the Go standard library.")
       (license license:asl2.0))))
 
-(define-public go-github-com-jacobsa-oglematchers
-  (let ((commit "141901ea67cd4769c6800aa7bfdfc558fa22bda5")
-        (revision "0"))
-    (package
-      (name "go-github-com-jacobsa-oglematchers")
-      (version (git-version "0.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/jacobsa/oglematchers")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "09ff5x6vbhd9zl1z4yzyk573ifh16rry38q1rx986kbz4hqkmniq"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/jacobsa/oglematchers"
-         ;; break loop with with go-github-com-jacobsa-ogletest
-         #:tests? #f))
-      (home-page "https://github.com/jacobsa/oglematchers")
-      (synopsis "Matchers for Go testing framework")
-      (description
-       "Package oglematchers provides a set of matchers useful in a testing or mocking
-framework.  These matchers are inspired by and mostly compatible with Google
-Test for C++ and Google JS Test.")
-      (license license:asl2.0))))
-
 (define-public go-github-com-jacobsa-ogletest
   (let ((commit "80d50a735a1108a2aeb7abc4a988d183f20c5292")
         (revision "0"))
