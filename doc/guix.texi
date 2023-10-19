@@ -9312,6 +9312,9 @@ install all files but those matching the exclusion filters.
 If both inclusions and exclusions are specified, the exclusions are done
 on top of the inclusions.
 @end itemize
+@item When a package has multiple outputs, the @code{#:output} argument
+can be used to specify which output label the files should be installed
+to.
 @end itemize
 In all cases, the paths relative to @var{source} are preserved within
 @var{target}.
@@ -9328,6 +9331,9 @@ e.g., install @file{foo/sub/file} to @file{share/my-app/sub/file}.
 @file{share/my-app/sub/file}.
 @item @code{("foo/sub" "share/my-app" #:include ("file"))}: Install @file{foo/sub/file} to
 @file{share/my-app/file}.
+@item @code{("foo/doc" "share/my-app/doc" #:output "doc")}: Install
+@file{"foo/doc"} to @file{"share/my-app/doc"} within the @code{"doc"}
+output.
 @end itemize
 @end defvar
 

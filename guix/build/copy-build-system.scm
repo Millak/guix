@@ -2,6 +2,7 @@
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,9 +41,9 @@
 
 An install plan is a list of plans in the form:
 
-  (SOURCE TARGET [FILTERS])
+  (SOURCE TARGET [FILTERS] [#:output OUTPUT])
 
-In the above, FILTERS are optional.
+In the above, FILTERS and OUTPUT are optional.
 
 - When SOURCE matches a file or directory without trailing slash, install it to
   TARGET.
@@ -63,6 +64,9 @@ In the above, FILTERS are optional.
       If both `#:include*` and `#:exclude*` are specified, the exclusion is done
       on the inclusion list.
 
+- When a package has multiple outputs, the `#:output` argument can be used
+to specify which output label the files should be installed to.
+
 Examples:
 
 - `(\"foo/bar\" \"share/my-app/\")`: Install bar to \"share/my-app/bar\".
@@ -72,7 +76,9 @@ Examples:
 - `(\"foo/\" \"share/my-app\" #:include (\"sub/file\"))`: Install only \"foo/sub/file\" to
 \"share/my-app/sub/file\".
 - `(\"foo/sub\" \"share/my-app\" #:include (\"file\"))`: Install \"foo/sub/file\" to
-\"share/my-app/file\"."
+\"share/my-app/file\".
+- `(\"foo/doc\" \"share/my-app/doc\" #:output \"doc\")`: Install \"foo/doc\" to
+\"share/my-app/doc\" within the \"doc\" output."
   (define (install-simple source target)
     "Install SOURCE to TARGET.
 TARGET must point to a store location.
@@ -133,8 +139,10 @@ given, then the predicate always returns DEFAULT-VALUE."
                                       (string-append target "/")))
              file-list))))
 
-  (define* (install source target #:key include exclude include-regexp exclude-regexp)
-    (let ((final-target (string-append (assoc-ref outputs "out") "/" target))
+  (define* (install source target
+                    #:key include exclude include-regexp exclude-regexp
+                    (output "out"))
+    (let ((final-target (string-append (assoc-ref outputs output) "/" target))
           (filters? (or include exclude include-regexp exclude-regexp)))
       (when (and (not (file-is-directory? source))
                  filters?)
