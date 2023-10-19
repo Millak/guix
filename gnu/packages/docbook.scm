@@ -516,6 +516,7 @@ V4.1.2 that adds support for MathML in equation markup.")
                 "1g72y2yyc2k89kzs0lvrb9n7hjayw1hdskfpplpz97pf1c99wcig"))
               (snippet
                #~(begin
+                   (chmod "bin/collateindex.pl" #o755)
                    ;; Remove empty directories.
                    (rmdir "doc")
                    (rmdir "docsrc")))))
@@ -524,10 +525,12 @@ V4.1.2 that adds support for MathML in equation markup.")
     (arguments
      (list
       #:install-plan
-      #~`(("./" "sgml/dtd/docbook/")
+      #~`(("./" "sgml/dtd/docbook/" #:exclude ("bin"))
+          ("bin/collateindex.pl" "bin/")
+          ("bin/collateindex.pl.1" "share/man/man1/")
           (#$(this-package-input "docbook-dsssl-doc") "./" #:output "doc"))))
     (inputs
-     (list docbook-dsssl-doc))
+     (list perl docbook-dsssl-doc))
     (home-page "https://docbook.org/")
     (synopsis "DSSSL style sheets for DocBook")
     (description "This package provides DSSSL style sheets for DocBook.")
