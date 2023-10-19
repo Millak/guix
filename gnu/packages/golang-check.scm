@@ -5,6 +5,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
+;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 ( <paren@disroot.org>
@@ -45,6 +46,41 @@
 ;;;
 ;;; Code:
 
+(define-public go-honnef-co-go-tools
+  (package
+    (name "go-honnef-co-go-tools")
+    (version "0.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dominikh/go-tools")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "099z04v7vvwwglnps315s9fmal68xvzlc1g8m26iqi980grbwn32"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "honnef.co/go/tools"
+       #:tests? #f
+       ;; Source-only package
+       #:phases (modify-phases %standard-phases
+                  (delete 'build))))
+    (propagated-inputs
+     (list go-github-com-burntsushi-toml
+           go-github-com-kisielk-gotool
+           go-golang-org-x-exp
+           go-golang-org-x-mod
+           go-golang-org-x-tools))
+    (home-page "https://honnef.co/go/tools")
+    (synopsis "Staticcheck advanced Go linter")
+    (description
+     "Staticcheck is a state of the art linter for the Go programming language.
+Using static analysis, it finds bugs and performance issues, offers
+simplifications, and enforces style rules.")
+    (license license:expat)))
+
 (define-public go-github-com-cheekybits-is
   (let ((commit "68e9c0620927fb5427fda3708222d0edee89eae9")
         (revision "0"))

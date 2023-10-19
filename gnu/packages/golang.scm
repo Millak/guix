@@ -11529,37 +11529,6 @@ reformat the source code, it only prints out style mistakes.")
 tools with similar semantics.")
     (license license:expat)))
 
-(define-public go-honnef-co-go-tools
-  (package
-    (name "go-honnef-co-go-tools")
-    (version "0.3.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/dominikh/go-tools")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "099z04v7vvwwglnps315s9fmal68xvzlc1g8m26iqi980grbwn32"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "honnef.co/go/tools"
-       #:tests? #f
-       ;; Source-only package
-       #:phases (modify-phases %standard-phases
-                  (delete 'build))))
-    (propagated-inputs (list go-golang-org-x-exp go-golang-org-x-tools
-                             go-golang-org-x-mod go-github-com-kisielk-gotool
-                             go-github-com-burntsushi-toml))
-    (home-page "https://honnef.co/go/tools")
-    (synopsis "Staticcheck advanced Go linter")
-    (description
-     "Staticcheck is a state of the art linter for the Go programming language.
-Using static analysis, it finds bugs and performance issues, offers
-simplifications, and enforces style rules.")
-    (license license:expat)))
-
 (define-public go-go-uber-org-zap
   (package
     (name "go-go-uber-org-zap")
