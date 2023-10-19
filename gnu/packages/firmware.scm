@@ -105,7 +105,8 @@
                                        "ath9k-htc-firmware-gcc-compat.patch"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
+     '(#:target #f                          ; Package produces firmware.
+       #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'pre-configure
            (lambda* (#:key inputs native-inputs #:allow-other-keys)
