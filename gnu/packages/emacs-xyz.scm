@@ -695,9 +695,7 @@ a generic Scheme interaction mode for the GNU Emacs editor.")
        (modify-phases %standard-phases
          (add-after 'make-autoloads 'patch-autoloads
            (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* (string-append
-                           (elpa-directory (assoc-ref outputs "out"))
-                           "/geiser-chez-autoloads.el")
+             (substitute* "geiser-chez-autoloads.el"
                ;; Activating implementations fails when Geiser is not yet
                ;; loaded, so let's defer that until it is.
                ;; See <https://gitlab.com/emacs-geiser/chez/-/issues/7>.
