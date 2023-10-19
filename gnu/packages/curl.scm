@@ -405,7 +405,7 @@ asynchronously via cURL in C++.")
 (define-public curlie
   (package
     (name "curlie")
-    (version "1.6.9")
+    (version "1.7.2")
     (source
      (origin
        (method git-fetch)
@@ -415,7 +415,7 @@ asynchronously via cURL in C++.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1b94wfliivfq06i5sf664nhmp3v1k0lpz33cv9lyk6s59awb2hnw"))))
+         "04gwd9sqpykappnzyw9icgn5253cx1vwpr2h1fg7sgkyq3fjmsv0"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/rs/curlie"))
