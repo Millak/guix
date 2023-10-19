@@ -1003,15 +1003,15 @@ and manipulation.")
                                                 "convert2skk/skk2list")
                                           (find-files "filters" "\\.rb$"))))))
                   ;; Install and make autoloads for skk-xml.el.
+                  (add-after 'unpack 'make-autoloads
+                    (assoc-ref emacs:%standard-phases
+                               'make-autoloads))
                   (add-after 'install 'install-emacs-files
                     (assoc-ref emacs:%standard-phases
                                'install))
                   (add-after 'install-emacs-files 'compile-emacs-files
                     (assoc-ref emacs:%standard-phases
                                'build))
-                  (add-after 'compile-emacs-files 'make-autoloads
-                    (assoc-ref emacs:%standard-phases
-                               'make-autoloads))
                   (add-after 'install 'install-docs
                     (lambda* (#:key outputs #:allow-other-keys)
                       (let ((doc (string-append (assoc-ref outputs "out")
