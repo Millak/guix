@@ -3180,6 +3180,54 @@ This is the certified version of the Open Cascade Technology (OCCT) library.")
 supports the propositional fragment of PDDL2.2.")
     (license license:gpl3+)))
 
+(define-public popf
+  (package
+    (name "popf")
+    (version "0.0.15")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/fmrico/popf")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1i1am3h6japn8fgapi5s5mnyrm31a05jkjhzgk48cd2n42c5060v"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-cmake
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (find-files "." "CMakeLists\\.txt")
+                (("/usr/local/opt/flex/include")
+                 (dirname (search-input-file inputs "include/FlexLexer.h"))))
+              (substitute* "CMakeLists.txt"
+                (("find_package\\(ament_cmake REQUIRED\\)") "")
+                (("ament_.*") "")
+                (("(RUNTIME DESTINATION) .*" all dst)
+                 (string-append dst " libexec/${PROJECT_NAME}")))))
+          (add-after 'install 'symlink
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out")))
+                (mkdir-p (string-append out "/bin"))
+                (for-each (lambda (link)
+                            (symlink
+                             (string-append out "/libexec/popf/" (cdr link))
+                             (string-append out "/bin/" (car link))))
+                          '(("popf" . "popf") ("VAL" . "validate")))))))))
+    (inputs (list cbc flex))
+    (native-inputs (list flex bison perl))
+    (home-page "https://github.com/fmrico/popf")
+    (synopsis "Forward-chaining temporal planner")
+    (description "This package contains an implementation of the @acronym{POPF,
+Partial Order Planning Forwards} planner described in @cite{Forward-Chaining
+Partial Order Planning}, that has been updated to compile with newer C++
+compilers.")
+    (license license:gpl2+)))
+
 (define-public gmsh
   (package
     (name "gmsh")
