@@ -4,6 +4,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;;
@@ -188,6 +189,29 @@ Features include:
     (synopsis "Test framework for the Go language")
     (description "This package provides a test library for the Go language.")
     (license license:bsd-2)))
+
+(define-public go-gopkg-in-go-playground-assert-v1
+  (package
+    (name "go-gopkg-in-go-playground-assert-v1")
+    (version "1.2.1")
+    (home-page "https://github.com/go-playground/assert")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h4amgykpa0djwi619llr3g55p75ia0mi184h9s5zdl8l4rhn9pm"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "gopkg.in/go-playground/assert.v1"))
+    (synopsis "Basic assertion library used alongside native Go testing")
+    (description
+     "This package provides basic assertions along with building blocks for
+custom assertions to be used alongside native Go testing.")
+    (license license:expat)))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
