@@ -10,6 +10,7 @@
 ;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
+;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -100,6 +101,36 @@
      "Package quicktest provides a collection of Go helpers for writing
 tests.")
     (license license:expat)))
+
+(define-public go-github-com-google-go-cmdtest
+  (let ((commit "55ab3332a786118933ddf71544aae14951ba9bc5")
+        (revision "0"))
+    (package
+      (name "go-github-com-google-go-cmdtest")
+      (version (git-version "0.4.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/google/go-cmdtest")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "10kswvbdwissjb5mr0ys4b3ppxkxlpklqg7cr2z7rv21g2vwczbl"))))
+      (build-system go-build-system)
+      (arguments
+       '(#:import-path "github.com/google/go-cmdtest"))
+      (propagated-inputs
+       (list go-github-com-google-renameio go-github-com-google-go-cmp-cmp))
+      (home-page "https://github.com/google/go-cmdtest")
+      (synopsis "Testing for your CLI")
+      (description
+       "The cmdtest package simplifies testing of command-line interfaces.  It
+provides a simple, cross-platform, shell-like language to express command
+execution.  It can compare actual output with the expected output, and can
+also update a file with new \"golden\" output that is deemed correct.")
+      (license license:asl2.0))))
 
 (define-public go-github-com-google-gofuzz
   (let ((commit "fd52762d25a41827db7ef64c43756fd4b9f7e382")
