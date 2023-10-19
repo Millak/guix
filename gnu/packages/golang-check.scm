@@ -4,6 +4,7 @@
 ;;; Copyright © 2019 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
+;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
@@ -73,6 +74,32 @@
 - because testing panics is ugly.
 @end itemize\n")
       (license license:expat))))
+
+(define-public go-github-com-frankban-quicktest
+  (package
+    (name "go-github-com-frankban-quicktest")
+    (version "1.11.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/frankban/quicktest")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0b1b44b2hli2p969gqz30z8v9z6ahlklpqzi17nwk1lsjz9yv938"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/frankban/quicktest"))
+    (propagated-inputs
+     (list go-github-com-google-go-cmp-cmp go-github-com-kr-pretty))
+    (home-page "https://github.com/frankban/quicktest")
+    (synopsis "Quick helpers for testing Go applications")
+    (description
+     "Package quicktest provides a collection of Go helpers for writing
+tests.")
+    (license license:expat)))
 
 (define-public go-github-com-google-gofuzz
   (let ((commit "fd52762d25a41827db7ef64c43756fd4b9f7e382")
