@@ -972,12 +972,12 @@ auto-completion and syntax highlighting.")
                             ,(string-append coreutils "/bin")
                             ,(string-append grep "/bin")
                             ,(string-append ps "/bin")
-                            ,(string-append sed "/bin"))))
-                       #t))))))
+                            ,(string-append sed "/bin"))))))))))
     (native-inputs
      (list bison perl pkg-config))
     (inputs
-     (list boost-for-mysql
+     (list bash-minimal
+           boost-for-mysql
            coreutils
            gawk
            grep
