@@ -852,7 +852,11 @@ printer/driver specific, but spooler-independent PPD file.")
        #:tests? #f                                ;no tests
        #:make-flags '("CC=gcc")))
     (inputs
-     (list coreutils sed ghostscript foomatic-filters))   ;for 'foomatic-rip'
+     (list bash-minimal
+           coreutils
+           sed
+           ghostscript
+           foomatic-filters))           ;for 'foomatic-rip'
     (native-inputs
      (list bc groff))
     ;; The domain has expired and no one has meaningfully taken up the torch.
