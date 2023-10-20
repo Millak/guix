@@ -18,6 +18,7 @@
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -773,7 +774,7 @@ style and key ordering are kept, so you can diff the source.")
 (define-public python-ruamel.yaml.clib
   (package
     (name "python-ruamel.yaml.clib")
-    (version "0.2.6")
+    (version "0.2.8")
     (source
       (origin
         ;; pypi release code has cythonized code without corresponding source.
@@ -784,7 +785,7 @@ style and key ordering are kept, so you can diff the source.")
         (file-name (string-append name "-" version "-checkout"))
         (sha256
          (base32
-          "05m3y7pjfbaarqbbgw1k6gs6cnnmxnwadjipxvw1aaaqk3s236cs"))
+          "0qspqnk72xrjj17b00hjibbzjk3krsrakzf08wxwz7z908cv6278"))
         (modules '((guix build utils)))
         (snippet
          '(begin
