@@ -1932,8 +1932,7 @@ for example from a shell script.")
          (add-before 'check 'set-check-environment
            (lambda _
              (setenv "TZ" "UTC")
-             (setenv "HOME" "/tmp")
-             #t))
+             (setenv "HOME" "/tmp")))
          (add-after 'install 'wrap-program
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -1942,8 +1941,7 @@ for example from a shell script.")
                  `("PERL5LIB" ":" prefix
                    (,(string-append out "/lib/perl5/site_perl"
                                     ":"
-                                    path)))))
-             #t)))))
+                                    path))))))))))
     (native-inputs
      (list perl-capture-tiny
            perl-io-pager
@@ -1960,38 +1958,39 @@ for example from a shell script.")
            perl-test-nowarnings
            perl-test-warn))
     (inputs
-     `(("perl-class-xsaccessor" ,perl-class-xsaccessor)
-       ("perl-clone" ,perl-clone)
-       ("perl-config-gitlike" ,perl-config-gitlike)
-       ("perl-datetime" ,perl-datetime)
-       ("perl-datetime-timezone" ,perl-datetime-timezone)
-       ("perl-dbd-mysql" ,perl-dbd-mysql)
-       ("perl-dbd-pg" ,perl-dbd-pg)
-       ("perl-dbd-sqlite" ,perl-dbd-sqlite)
-       ("perl-dbi" ,perl-dbi)
-       ("perl-devel-stacktrace" ,perl-devel-stacktrace)
-       ("perl-encode-locale" ,perl-encode-locale)
-       ("perl-hash-merge" ,perl-hash-merge)
-       ("perl-ipc-run3" ,perl-ipc-run3)
-       ("perl-ipc-system-simple" ,perl-ipc-system-simple)
-       ("perl-libintl-perl" ,perl-libintl-perl)
-       ("perl-list-moreutils" ,perl-list-moreutils)
-       ("perl-moo" ,perl-moo)
-       ("perl-mysql-config" ,perl-mysql-config)
-       ("perl-namespace-autoclean" ,perl-namespace-autoclean)
-       ("perl-path-class" ,perl-path-class)
-       ("perl-perlio-utf8_strict" ,perl-perlio-utf8_strict)
-       ("perl-string-formatter" ,perl-string-formatter)
-       ("perl-string-shellquote" ,perl-string-shellquote)
-       ("perl-sub-exporter" ,perl-sub-exporter)
-       ("perl-template-tiny" ,perl-template-tiny)
-       ("perl-template-toolkit" ,perl-template-toolkit)
-       ("perl-throwable" ,perl-throwable)
-       ("perl-try-tiny" ,perl-try-tiny)
-       ("perl-type-tiny" ,perl-type-tiny)
-       ("perl-type-tiny-xs" ,perl-type-tiny-xs)
-       ("perl-uri" ,perl-uri)
-       ("perl-uri-db" ,perl-uri-db)))
+     (list bash-minimal
+           perl-class-xsaccessor
+           perl-clone
+           perl-config-gitlike
+           perl-datetime
+           perl-datetime-timezone
+           perl-dbd-mysql
+           perl-dbd-pg
+           perl-dbd-sqlite
+           perl-dbi
+           perl-devel-stacktrace
+           perl-encode-locale
+           perl-hash-merge
+           perl-ipc-run3
+           perl-ipc-system-simple
+           perl-libintl-perl
+           perl-list-moreutils
+           perl-moo
+           perl-mysql-config
+           perl-namespace-autoclean
+           perl-path-class
+           perl-perlio-utf8_strict
+           perl-string-formatter
+           perl-string-shellquote
+           perl-sub-exporter
+           perl-template-tiny
+           perl-template-toolkit
+           perl-throwable
+           perl-try-tiny
+           perl-type-tiny
+           perl-type-tiny-xs
+           perl-uri
+           perl-uri-db))
     (home-page "https://sqitch.org/")
     (synopsis "Database change management tool")
     (description
