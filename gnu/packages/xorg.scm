@@ -4661,7 +4661,7 @@ protocol and arbitrary X extension protocol.")
                  (,(dirname
                     (search-input-file inputs "/bin/mkfontscale"))))))))))
     (inputs
-      (list mkfontscale))
+      (list bash-minimal mkfontscale))
     (native-inputs
      (list pkg-config automake)) ;For up to date 'config.guess' and 'config.sub'.
     (home-page "https://www.x.org/wiki/")
