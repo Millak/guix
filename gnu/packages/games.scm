@@ -5482,8 +5482,7 @@ http://lavachat.symlynx.com/unix/")
                  (("data = \"data\"")
                   (string-append "data = \""
                                  (assoc-ref outputs "out")
-                                 "/share/redeclipse/data\"")))
-               #t))
+                                 "/share/redeclipse/data\"")))))
            (delete 'configure)  ; no configure script
            (add-after 'set-paths 'set-sdl-paths
              (lambda* (#:key inputs #:allow-other-keys)
@@ -5502,8 +5501,7 @@ http://lavachat.symlynx.com/unix/")
                                    (string-append out "/share/redeclipse/data"))
                  (mkdir-p (string-append out "/lib/redeclipse"))
                  (symlink (string-append out "/share/redeclipse/data")
-                          (string-append out "/lib/redeclipse/data")))
-               #t))
+                          (string-append out "/lib/redeclipse/data")))))
            (add-after 'copy-data 'wrap-program
              (lambda* (#:key inputs outputs #:allow-other-keys)
                (let* ((out (assoc-ref outputs "out"))
@@ -5532,12 +5530,11 @@ exec -a \"$0\" ~a/.redeclipse_server_linux-real~%"
                                (string-append out)
                                (string-append bin))))
                    (chmod "redeclipse_linux" #o555)
-                   (chmod "redeclipse_server_linux" #o555)))
-               #t)))))
+                   (chmod "redeclipse_server_linux" #o555))))))))
       (native-inputs
        (list pkg-config))
       (inputs
-       (list curl freetype glu
+       (list bash-minimal curl freetype glu
              (sdl-union (list sdl2 sdl2-image sdl2-mixer))))
       (home-page "https://redeclipse.net/")
       (synopsis "Arena shooter derived from the Cube 2 engine")
