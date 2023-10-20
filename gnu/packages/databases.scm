@@ -4508,8 +4508,8 @@ is designed to have a low barrier to entry.")
                    ,(map (lambda (output)
                            (string-append output sitedir))
                          (list python out))))))))))
-    (native-inputs
-     (list python-pytest))
+    (native-inputs (list python-pytest))
+    (inputs (list bash-minimal))
     (home-page "https://github.com/andialbrecht/sqlparse")
     (synopsis "Non-validating SQL parser")
     (description "Sqlparse is a non-validating SQL parser for Python.  It
