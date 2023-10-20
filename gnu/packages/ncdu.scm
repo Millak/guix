@@ -36,14 +36,14 @@
   ;; yet, so we'll keep both for just a little longer.
   (package
     (name "ncdu")
-    (version "1.18.1")
+    (version "1.19")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://dev.yorhel.nl/download/ncdu-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "01946cqp5z38srbpq08d75f1n0cgpfyn8h8ppbaawnnq57ms23vw"))))
+                "0zdidd4rhik5j0qdrdg1yh9094jlw496q07vqx90gphc30ck0dih"))))
     (build-system gnu-build-system)
     (inputs (list ncurses))
     (synopsis "Ncurses-based disk usage analyzer")
