@@ -36856,6 +36856,30 @@ suite of tools for the rapid, accurate and memory-frugal processing
 single-cell and single-nucleus sequencing data.")
     (license license:bsd-3)))
 
+(define-public rust-librespot-protocol-0.4
+  (package
+    (name "rust-librespot-protocol")
+    (version "0.4.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "librespot-protocol" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "17xkvhlxfkjh1z79pvq22nrxi99hcxnzafg0pdkymh3a3733lvax"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+       #:cargo-inputs
+       `(("rust-protobuf" ,rust-protobuf-2)
+         ("rust-glob" ,rust-glob-0.3)
+         ("rust-protobuf-codegen-pure" ,rust-protobuf-codegen-pure-2))))
+    (home-page "https://github.com/librespot-org/librespot")
+    (synopsis "The protobuf logic for communicating with Spotify servers")
+    (description "Part of Librespot, an open source, Spotify client library.
+This package contains the protobuf logic.")
+    (license license:expat)))
+
 (define-public rust-libsqlite3-sys-0.26
   (package
     (name "rust-libsqlite3-sys")
@@ -52062,7 +52086,7 @@ library to invoke programmatically (e.g. from @code{build.rs}) and
                 "0rfqvpbbqh4pa406nda54jdl0sgagdgp274mmbpd7g4lzjcr78lm"))))
     (build-system cargo-build-system)
     (arguments
-     `(;#:tests? #f
+     `(#:tests? #f
        #:cargo-inputs
        (("rust-protobuf" ,rust-protobuf-2)
         ("rust-protobuf-codegen" ,rust-protobuf-codegen-2))))
