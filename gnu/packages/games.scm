@@ -6234,7 +6234,8 @@ Linux / Mac OS X servers, and an auto mapper with a VT100 map display.")
                                       "laby-use-tmpdir-from-runtime.patch"))))
     (build-system glib-or-gtk-build-system)
     (inputs
-     (list gdk-pixbuf
+     (list bash-minimal
+           gdk-pixbuf
            lablgtk3
            (librsvg-for-system)
            ocaml-lablgtk3-sourceview3
