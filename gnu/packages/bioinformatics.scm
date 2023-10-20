@@ -9285,12 +9285,13 @@ predicts the locations of structural units in the sequences.")
                            (cons (string-append out "/bin/proteinortho")
                                  (find-files out "\\.(pl|py)$")))))))))
     (inputs
-     `(("guile" ,guile-3.0) ; for wrap-script
-       ("diamond" ,diamond)
-       ("perl" ,perl)
-       ("python" ,python-wrapper)
-       ("blast+" ,blast+)
-       ("openblas" ,openblas)))
+     (list bash-minimal
+           guile-3.0         ; for wrap-script
+           diamond
+           perl
+           python-wrapper
+           blast+
+           openblas))
     (native-inputs
      (list which))
     (home-page "https://www.bioinf.uni-leipzig.de/Software/proteinortho")
