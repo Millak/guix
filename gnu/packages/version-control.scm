@@ -835,44 +835,43 @@ logs to GNU ChangeLog format.")
        (file-name (git-file-name name version))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'loosen-requirements
-           (lambda _
-             (substitute* "setup.py"
-               ;; Using Guix's python-pygit2 1.1.0 appears to work fine…
-               (("pygit2==") "pygit2>="))
-             #t))
-         (add-before 'check 'prepare-for-tests
-           (lambda _
-             ;; Find the 'gl' command.
-             (rename-file "gl.py" "gl")
-             (setenv "PATH" (string-append (getcwd) ":" (getenv "PATH")))
+     #~(list
+        #:phases
+        (modify-phases %standard-phases
+          (add-before 'build 'loosen-requirements
+            (lambda _
+              (substitute* "setup.py"
+                ;; Using Guix's python-pygit2 1.1.0 appears to work fine…
+                (("pygit2==") "pygit2>="))))
+          (add-before 'check 'prepare-for-tests
+            (lambda _
+              ;; Find the 'gl' command.
+              (rename-file "gl.py" "gl")
+              (setenv "PATH" (string-append (getcwd) ":" (getenv "PATH")))
 
-             ;; The tests try to run git as if it were already set up.
-             (setenv "HOME" (getcwd))
-             (invoke "git" "config" "--global" "user.email" "git@example.com")
-             (invoke "git" "config" "--global" "user.name" "Guix")))
-         (replace 'wrap
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (git (assoc-ref inputs "git")))
-               (wrap-program (string-append out "/bin/gl")
-                 `("PATH" ":" prefix (,(string-append git "/bin")))
-                 `("GUIX_PYTHONPATH" ":" =
-                   (,(string-append out "/lib/python"
-                                    ,(version-major+minor
-                                      (package-version python))
-                                    "/site-packages:")
-                    ,(getenv "GUIX_PYTHONPATH"))))
-               #t))))))
-    (native-inputs
-     `(("git-for-tests" ,git-minimal)))
+              ;; The tests try to run git as if it were already set up.
+              (setenv "HOME" (getcwd))
+              (invoke "git" "config" "--global" "user.email" "git@example.com")
+              (invoke "git" "config" "--global" "user.name" "Guix")))
+          (replace 'wrap
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((out #$output)
+                    (git (search-input-file inputs "bin/git")))
+                (wrap-program (string-append out "/bin/gl")
+                  `("PATH" ":" prefix (,(dirname git)))
+                  `("GUIX_PYTHONPATH" ":" =
+                    (,(string-append out "/lib/python"
+                                     #$(version-major+minor
+                                        (package-version python))
+                                     "/site-packages:")
+                     ,(getenv "GUIX_PYTHONPATH"))))))))))
+    (native-inputs (list git-minimal))
     (inputs
-     `(("git" ,git-minimal)
-       ("python-clint" ,python-clint)
-       ("python-pygit2" ,python-pygit2)
-       ("python-sh" ,python-sh)))
+     (list bash-minimal
+           git-minimal
+           python-clint
+           python-pygit2
+           python-sh))
     (home-page "https://gitless.com")
     (synopsis "Simple version control system built on top of Git")
     (description
