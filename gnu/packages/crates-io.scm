@@ -48162,6 +48162,34 @@ in pure Rust.")
         ("rust-sha2" ,rust-sha2-0.9)
         ("rust-streebog" ,rust-streebog-0.9))))))
 
+(define-public rust-pbkdf2-0.8
+  (package
+    (inherit rust-pbkdf2-0.10)
+    (name "rust-pbkdf2")
+    (version "0.8.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pbkdf2" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1ykgicvyjm41701mzqhrfmiz5sm5y0zwfg6csaapaqaf49a54pyr"))))
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-crypto-mac" ,rust-crypto-mac-0.11)
+             ("rust-base64ct" ,rust-base64ct-1)
+             ("rust-hmac" ,rust-hmac-0.11)
+             ("rust-password-hash" ,rust-password-hash-0.2)
+             ("rust-rayon" ,rust-rayon-1)
+             ("rust-sha-1" ,rust-sha-1-0.9)
+             ("rust-sha2" ,rust-sha2-0.9))
+           #:cargo-development-inputs
+           `(("rust-hex-literal" ,rust-hex-literal-0.3)
+             ("rust-hmac" ,rust-hmac-0.11)
+             ("rust-rand-core" ,rust-rand-core-0.6)
+             ("rust-sha-1" ,rust-sha-1-0.9)
+             ("rust-sha2" ,rust-sha2-0.9))))))
+
 (define-public rust-pbkdf2-0.6
   (package
     (inherit rust-pbkdf2-0.10)
