@@ -265,7 +265,7 @@ command line, without displaying a keyboard at all.")
                (wrap-program (string-append out "/bin/arandr")
                  `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))))
        #:tests? #f)) ;no tests
-    (inputs (list gtk+ python-pycairo python-pygobject xrandr))
+    (inputs (list bash-minimal gtk+ python-pycairo python-pygobject xrandr))
     (native-inputs (list gettext-minimal python-docutils))
     (home-page "https://christian.amsuess.com/tools/arandr/")
     (synopsis "Another RandR graphical user interface")
