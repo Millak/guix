@@ -36882,6 +36882,35 @@ suite of tools for the rapid, accurate and memory-frugal processing
 single-cell and single-nucleus sequencing data.")
     (license license:bsd-3)))
 
+(define-public rust-librespot-audio-0.4
+  (package
+    (name "rust-librespot-audio")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "librespot-audio" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "178djijj7fkg5ca5rhk10rvy9gs797gikvackh5qxsp1al9s6xn1"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-aes-ctr" ,rust-aes-ctr-0.6)
+             ("rust-byteorder" ,rust-byteorder-1)
+             ("rust-bytes" ,rust-bytes-1)
+             ("rust-futures-util" ,rust-futures-util-0.3)
+             ("rust-librespot-core" ,rust-librespot-core-0.4)
+             ("rust-log" ,rust-log-0.4)
+             ("rust-tempfile" ,rust-tempfile-3)
+             ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/librespot-org/librespot")
+    (synopsis "The audio fetching logic for Librespot")
+    (description
+     "Part of Librespot, an open source client library for Spotify.  This
+package contains the audio fetching logic.")
+    (license license:expat)))
+
 (define-public rust-librespot-core-0.4
   (package
     (name "rust-librespot-core")
