@@ -19174,7 +19174,8 @@ datasets.")
           (add-after 'register 'remove-libraries
             (lambda* (#:key outputs #:allow-other-keys)
               (delete-file-recursively (string-append (assoc-ref outputs "out") "/lib")))))))
-    (inputs (list prodigal
+    (inputs (list bash-minimal
+                  prodigal
                   bwa
                   samtools
                   minimap2
