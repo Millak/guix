@@ -22885,9 +22885,9 @@ single-cell data named @url{https://github.com/PMBio/cardelino, cardelino}.")
                    (,(string-append out "/lib/guile/" effective-version "/site-ccache")
                     ,(getenv "GUILE_LOAD_COMPILED_PATH"))))))))))
     (inputs
-     `(("bash" ,bash-minimal)
-       ("guile" ,guile-3.0)
-       ("guile-libyaml" ,guile-libyaml)))
+     (list bash-minimal
+           guile-3.0
+           guile-libyaml))
     (native-inputs
      (list pkg-config
            lzip
