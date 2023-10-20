@@ -23235,7 +23235,8 @@ sum test, etc).")
            python-tqdm))
     ;; Used by rpy2
     (inputs
-     (list r-minimal  ;for R_LIBS_SITE
+     (list bash-minimal
+           r-minimal  ;for R_LIBS_SITE
            r-apeglm   ;for runDE
            r-deseq2   ;for runDE
            r-drimseq  ;for runDS
