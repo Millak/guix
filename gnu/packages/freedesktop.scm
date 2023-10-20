@@ -2664,19 +2664,16 @@ Python, that binds to the C library @code{uchardet} to increase performance.")
          "0z0gk8l6rv4np29kfdalmy4q3900005sxhjg0jz1aa8irdcsp1qz"))))
     (build-system python-build-system)
     (native-inputs
-     `(("asciidoc" ,asciidoc)
-       ("gettext" ,gettext-minimal)
-       ("gobject-introspection" ,gobject-introspection)))
+     (list asciidoc
+           gettext-minimal
+           gobject-introspection))
     (inputs
-     ;; TODO(staging): Make unconditional.
-     `(,@(if (%current-target-system)
-             (list bash-minimal)
-             '())
-       ,gobject-introspection
-       ,gtk+
-       ,libappindicator
-       ,libnotify
-       ,udisks))
+     (list bash-minimal
+           gobject-introspection
+           gtk+
+           libappindicator
+           libnotify
+           udisks))
     (propagated-inputs
      (list python-docopt python-pygobject python-keyutils python-pyxdg
            python-pyyaml))
