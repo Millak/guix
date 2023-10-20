@@ -3471,17 +3471,14 @@ how information about the merge is displayed.")
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((git (search-input-file inputs "/bin/git")))
                (substitute* "git-imerge"
-                 (("'git'") (string-append "'" git "'")))
-               #t)))
+                 (("'git'") (string-append "'" git "'"))))))
          (add-after 'install 'wrap-script
            (lambda* (#:key outputs #:allow-other-keys)
              (wrap-program (string-append (assoc-ref outputs "out")
                                           "/bin/git-imerge")
-               `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH"))))
-             #t)))))
-    (inputs
-     `(("git" ,git)
-       ("python" ,python-wrapper)))
+               `("GUIX_PYTHONPATH" ":" prefix
+                 (,(getenv "GUIX_PYTHONPATH")))))))))
+    (inputs (list bash-minimal git python-wrapper))
     (home-page "https://github.com/mhagger/git-imerge")
     (synopsis "Incremental merge for Git")
     (description "This Git extension defines a subcommand, @code{imerge},
