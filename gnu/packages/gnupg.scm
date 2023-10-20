@@ -21,7 +21,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Nikita Domnitskii <nikita@domnitskii.me>
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
@@ -45,6 +45,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages adns)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages base)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages crypto)
@@ -788,16 +789,16 @@ parties.")
     (native-inputs
      ;; autoconf-wrapper is required due to the non-standard
      ;; 'configure phase.
-     `(("autoconf" ,autoconf-wrapper)
-       ("automake" ,automake)))
-    (inputs (list perl
+     (list autoconf-wrapper automake))
+    (inputs (list bash-minimal
+                  perl
                   perl-text-template
                   perl-mime-tools
                   perl-gnupg-interface
                   perl-net-idn-encode
                   libmd))
     (arguments
-     `(#:tests? #f ; no test suite
+     `(#:tests? #f                      ; no test suite
        #:phases
        (modify-phases %standard-phases
          (replace 'configure
@@ -815,8 +816,7 @@ parties.")
                               "keylookup/Makefile" "sig2dot/Makefile"
                               "springgraph/Makefile")
                  (("/usr") out))
-               (setenv "CONFIG_SHELL" (which "sh")))
-             #t))
+               (setenv "CONFIG_SHELL" (which "sh")))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys #:rest args)
              (let ((out (assoc-ref outputs "out"))
@@ -841,15 +841,13 @@ parties.")
                 '("caff.1" "pgp-clean.1" "pgp-fixkey.1" "gpgdir.1"
                   "gpg-key2ps.1" "gpglist.1" "gpg-mailkeys.1"
                   "gpgparticipants.1" "gpgsigs.1" "gpgwrap.1"
-                  "process_keys.1" "pgpring.1" "keyanalyze.1")))
-             #t))
+                  "process_keys.1" "pgpring.1" "keyanalyze.1")))))
          (add-after 'install 'wrap-programs
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out")))
                (wrap-program
                    (string-append out "/bin/caff")
-                 `("PERL5LIB" ":" prefix (,(getenv "PERL5LIB")))))
-             #t)))))
+                 `("PERL5LIB" ":" prefix (,(getenv "PERL5LIB"))))))))))
     (synopsis "Collection of scripts for simplifying gnupg key signing")
     (description
      "Signing-party is a collection for all kinds of PGP/GnuPG related things,
