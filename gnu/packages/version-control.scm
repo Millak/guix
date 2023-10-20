@@ -705,7 +705,8 @@ everything from small to very large projects with speed and efficiency.")
                xmlto)))
     (inputs
      (modify-inputs (package-inputs git-minimal)
-       (append python                   ;for git-p4
+       (append bash-minimal             ;for wrap-program
+               python                   ;for git-p4
 
                ;; For PCRE support in git grep (USE_LIBPCRE2).
                pcre2
