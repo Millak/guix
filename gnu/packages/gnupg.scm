@@ -1131,16 +1131,15 @@ however, pgpdump produces more detailed and easier to understand output.")
              (let ((out (assoc-ref outputs "out"))
                    (gnupg (assoc-ref inputs "gnupg")))
                (wrap-program (string-append out "/bin/gpa")
-                 `("PATH" ":" prefix (,(string-append gnupg "/bin"))))
-               #t))))))
-    (native-inputs
-     (list pkg-config))
+                 `("PATH" ":" prefix (,(string-append gnupg "/bin"))))))))))
+    (native-inputs (list pkg-config))
     (inputs
-     `(("gnupg" ,gnupg)
-       ("gpgme" ,gpgme)
-       ("libassuan" ,libassuan)
-       ("libgpg-error" ,libgpg-error)
-       ("gtk+-2" ,gtk+-2)))
+     (list bash-minimal
+           gnupg
+           gpgme
+           libassuan
+           libgpg-error
+           gtk+-2))
     (home-page "https://gnupg.org/software/gpa/")
     (synopsis "Graphical user interface for GnuPG")
     (description
