@@ -783,7 +783,8 @@ and Matrox.")
     (arguments
      `(#:configure-flags
        '("--disable-static")
-       ,@(if (and (target-riscv64?)
+       ,@(if (and (or (target-riscv64?)
+                      (target-aarch64?))
                   (%current-target-system))
            `(#:phases
              (modify-phases %standard-phases
@@ -798,7 +799,8 @@ and Matrox.")
                              '("config.guess" "config.sub"))))))
            '())))
     (native-inputs
-     (if (and (target-riscv64?)
+     (if (and (or (target-riscv64?)
+                  (target-aarch64?))
               (%current-target-system))
        (list config)
        '()))
