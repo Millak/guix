@@ -51435,6 +51435,34 @@ losslessly as possible.")
        #:cargo-development-inputs
        (("rust-os-str-bytes" ,rust-os-str-bytes-2))))))
 
+(define-public rust-priority-queue-1
+  (package
+    (name "rust-priority-queue")
+    (version "1.2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "priority-queue" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1id9vzrypiilraw4wd5lh577prkjgyhd5vv77rdcgb7kkbcq4l41"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-indexmap" ,rust-indexmap-1)
+             ("rust-serde" ,rust-serde-1)
+             ("rust-autocfg" ,rust-autocfg-1))
+           #:cargo-development-inputs
+           `(("rust-hashbrown" ,rust-hashbrown-0.9)
+             ("rust-serde-json" ,rust-serde-json-1)
+             ("rust-serde-test" ,rust-serde-test-1)
+             ("rust-uuid" ,rust-uuid-0.8))))
+    (home-page "https://github.com/garro95/priority-queue")
+    (synopsis "Efficient priority queue implemented as a heap")
+    (description "An efficient priority queue with a function to change the
+priority of an object.")
+    (license license:expat)))
+
 (define-public rust-proc-macro-crate-1
   (package
     (name "rust-proc-macro-crate")
