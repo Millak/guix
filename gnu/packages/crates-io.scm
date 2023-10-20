@@ -47842,6 +47842,23 @@ Format (MCF).")
         ("rust-rand-core" ,rust-rand-core-0.6)
         ("rust-subtle" ,rust-subtle-2))))))
 
+(define-public rust-password-hash-0.2
+  (package
+    (inherit rust-password-hash-0.5)
+    (name "rust-password-hash")
+    (version "0.2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "password-hash" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1rr4kd52ld978a2xhcvlc54p1d92yhxl9kvbajba7ia6rs5b5q3p"))))
+    (arguments
+     (list #:cargo-inputs `(("rust-base64ct" ,rust-base64ct-1)
+                            ("rust-subtle" ,rust-subtle-2)
+                            ("rust-rand-core" ,rust-rand-core-0.6))))))
+
 (define-public rust-paste-1
   (package
     (name "rust-paste")
