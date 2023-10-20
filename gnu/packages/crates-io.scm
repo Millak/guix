@@ -63846,6 +63846,27 @@ and environment at run time.  You can use this tool to check in production
 exactly where a binary came from and how it was built.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-shannon-0.2
+  (package
+    (name "rust-shannon")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "shannon" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0qa52zs4y1i87ysr11g9p6shpdagl14bb340gfm6rd97jhfb99by"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs `(("rust-byteorder" ,rust-byteorder-1))))
+    (home-page "https://docs.rs/shannon/0.2.0/shannon/")
+    (synopsis "Shannon cipher implementation")
+    (description
+     "A Shannon cipher implementation, that encrypts a message using a
+shared secret key.")
+    (license license:expat)))
+
 (define-public rust-sharded-slab-0.1
   (package
     (name "rust-sharded-slab")
