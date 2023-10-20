@@ -3659,7 +3659,7 @@ if there's more than one.")
         (base32 "1xa6sgvnwynl2qrjnsppvb2vg4p5v1pisrfhrmnlymw1fzhh6s9p"))))
     (build-system gnu-build-system)
     (inputs
-     (list libx11 perl perl-tk))
+     (list bash-minimal libx11 perl perl-tk))
     (arguments
      `(#:tests? #f                      ; There are none.
        #:make-flags
@@ -3681,14 +3681,13 @@ if there's more than one.")
            (lambda* (#:key outputs #:allow-other-keys)
              (wrap-program (string-append (assoc-ref outputs "out")
                                           "/bin/xkbset-gui")
-               `("PERL5LIB" ":" prefix (,(getenv "PERL5LIB"))))
-             #t))
+               `("PERL5LIB" ":" prefix (,(getenv "PERL5LIB"))))))
          (replace 'install-license-files
            (lambda* (#:key outputs #:allow-other-keys)
              (install-file "COPYRIGHT"
-                           (string-append (assoc-ref outputs "out")
-                                          "/share/doc/" ,name "-" ,version))
-             #t)))))
+                           (string-append
+                            (assoc-ref outputs "out")
+                            "/share/doc/" ,name "-" ,version)))))))
     (home-page "https://stephenmontgomerysmith.github.io/software/#xkbset")
     (synopsis "User-preference utility for XKB extensions for X")
     (description
