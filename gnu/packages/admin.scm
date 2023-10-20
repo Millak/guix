@@ -3494,26 +3494,26 @@ results (ndiff), and a packet generation and response analysis tool (nping).")
                                 "dstat-skip-devices-without-io.patch"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no make check
-       #:make-flags
-       (list (string-append "prefix=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-python3-DeprecationWarning
-           (lambda _
-             (substitute* "dstat"
-               (("collections") "collections.abc"))
-             #t))
-         (delete 'configure)            ; no configure script
-         (add-after 'install 'wrap
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-program (string-append out "/bin/dstat")
-                 `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH"))))
-               #t))))))
+     (list
+      #:tests? #f                       ; no make check
+      #:make-flags
+      #~(list (string-append "prefix=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-python3-DeprecationWarning
+            (lambda _
+              (substitute* "dstat"
+                (("collections") "collections.abc"))))
+          (delete 'configure)           ; no configure script
+          (add-after 'install 'wrap
+            (lambda _
+              (wrap-program (string-append #$output "/bin/dstat")
+                `("GUIX_PYTHONPATH" ":" prefix
+                  (,(getenv "GUIX_PYTHONPATH")))))))))
     (inputs
-     `(("python" ,python-wrapper)
-       ("python-six" ,python-six)))
+     (list bash-minimal                 ;for wrap-program
+           python-wrapper
+           python-six))
     (synopsis "Versatile resource statistics tool")
     (description "Dstat is a versatile replacement for @command{vmstat},
 @command{iostat}, @command{netstat}, and @command{ifstat}.  Dstat overcomes
