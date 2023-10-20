@@ -37019,6 +37019,46 @@ Spotify.  This package contains core functionality, such as authentication,
 channel and session.")
     (license license:expat)))
 
+(define-public rust-librespot-discovery-0.4
+  (package
+    (name "rust-librespot-discovery")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "librespot-discovery" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "01igbv0xf3vj046jvblbr09cgmv25mlfajyb2903cl31iz8pga1a"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-aes-ctr" ,rust-aes-ctr-0.6)
+             ("rust-base64" ,rust-base64-0.13)
+             ("rust-form-urlencoded" ,rust-form-urlencoded-1)
+             ("rust-futures-core" ,rust-futures-core-0.3)
+             ("rust-hmac" ,rust-hmac-0.11)
+             ("rust-hyper" ,rust-hyper-0.14)
+             ("rust-libmdns" ,rust-libmdns-0.7)
+             ("rust-librespot-core" ,rust-librespot-core-0.4)
+             ("rust-log" ,rust-log-0.4)
+             ("rust-rand" ,rust-rand-0.8)
+             ("rust-serde-json" ,rust-serde-json-1)
+             ("rust-sha-1" ,rust-sha-1-0.9)
+             ("rust-thiserror" ,rust-thiserror-1)
+             ("rust-tokio" ,rust-tokio-1)
+             ("rust-dns-sd" ,rust-dns-sd-0.1))
+           #:cargo-development-inputs
+           `(("rust-futures" ,rust-futures-0.3)
+             ("rust-hex" ,rust-hex-0.4)
+             ("rust-simple-logger" ,rust-simple-logger-2)
+             ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/librespot-org/librespot")
+    (synopsis "The discovery logic of Librespot")
+    (description "Part of Librespot, an open source client library for
+Spotify.  This package contains the discovery logic.")
+    (license license:expat)))
+
 (define-public rust-librespot-protocol-0.4
   (package
     (name "rust-librespot-protocol")
