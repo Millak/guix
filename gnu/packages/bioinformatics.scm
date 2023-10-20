@@ -9366,8 +9366,7 @@ partial genes, and identifies translation initiation sites.")
              (for-each (lambda (file)
                          (display file)(display "\n")
                          (invoke "perl" file))
-                       (find-files "t" ".*\\.t$"))
-             #t))
+                       (find-files "t" ".*\\.t$"))))
          (replace 'install
            ;; There is no 'install' target in the Makefile.
            (lambda* (#:key outputs #:allow-other-keys)
@@ -9378,8 +9377,7 @@ partial genes, and identifies translation initiation sites.")
                (mkdir-p bin)
                (mkdir-p perl)
                (copy-recursively "bin" bin)
-               (copy-recursively "lib" perl)
-               #t)))
+               (copy-recursively "lib" perl))))
          (add-after 'install 'wrap-programs
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -9405,39 +9403,39 @@ partial genes, and identifies translation initiation sites.")
                      (,(string-append r-site-lib ":" out "/site-library/"))))
                  (wrap-program file
                    `("PATH" ":" prefix
-                     (,(string-append coreutils-path ":" out "/bin"))))))
-             #t)))))
+                     (,(string-append coreutils-path ":" out "/bin")))))))))))
     (native-inputs
      (list perl-env-path perl-test-files perl-test-most perl-test-output))
     (inputs
-     `(("perl-array-utils" ,perl-array-utils)
-       ("bioperl" ,bioperl-minimal)
-       ("perl-digest-md5-file" ,perl-digest-md5-file)
-       ("perl-exception-class" ,perl-exception-class)
-       ("perl-file-find-rule" ,perl-file-find-rule)
-       ("perl-file-grep" ,perl-file-grep)
-       ("perl-file-slurper" ,perl-file-slurper)
-       ("perl-file-which" ,perl-file-which)
-       ("perl-graph" ,perl-graph)
-       ("perl-graph-readwrite" ,perl-graph-readwrite)
-       ("perl-log-log4perl" ,perl-log-log4perl)
-       ("perl-moose" ,perl-moose)
-       ("perl-perlio-utf8_strict" ,perl-perlio-utf8_strict)
-       ("perl-text-csv" ,perl-text-csv)
-       ("bedtools" ,bedtools)
-       ("cd-hit" ,cd-hit)
-       ("blast+" ,blast+)
-       ("mcl" ,mcl)
-       ("parallel" ,parallel)
-       ("prank" ,prank)
-       ("mafft" ,mafft)
-       ("fasttree" ,fasttree)
-       ("grep" ,grep)
-       ("sed" ,sed)
-       ("gawk" ,gawk)
-       ("r-minimal" ,r-minimal)
-       ("r-ggplot2" ,r-ggplot2)
-       ("coreutils" ,coreutils)))
+     (list bash-minimal
+           perl-array-utils
+           bioperl-minimal
+           perl-digest-md5-file
+           perl-exception-class
+           perl-file-find-rule
+           perl-file-grep
+           perl-file-slurper
+           perl-file-which
+           perl-graph
+           perl-graph-readwrite
+           perl-log-log4perl
+           perl-moose
+           perl-perlio-utf8_strict
+           perl-text-csv
+           bedtools
+           cd-hit
+           blast+
+           mcl
+           parallel
+           prank
+           mafft
+           fasttree
+           grep
+           sed
+           gawk
+           r-minimal
+           r-ggplot2
+           coreutils))
     (home-page "https://sanger-pathogens.github.io/Roary/")
     (synopsis "High speed stand-alone pan genome pipeline")
     (description
