@@ -1733,40 +1733,37 @@ Analysis and Reporting Technology) functionality.")
                 "06cq52kp1nyy15qzylywy9s7hhhqc45k0s3y68crf0zsmjyng0yj"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list docbook-xml-4.3 ; to build the manpages
+     (list docbook-xml-4.3              ; to build the manpages
            docbook-xsl
-           `(,glib "bin")  ; for glib-mkenums
-           gnome-common    ; TODO: Why is this needed?
+           `(,glib "bin")               ; for glib-mkenums
+           gnome-common                 ; TODO: Why is this needed?
            gobject-introspection
            gtk-doc/stable
            intltool
            pkg-config
            libxslt))
     (propagated-inputs
-     (list glib)) ; required by udisks2.pc
+     (list glib))                       ; required by udisks2.pc
     (inputs
-     `(,acl
-       ;; TODO(staging): Make unconditional.
-       ,@(if (%current-target-system)
-             (list bash-minimal) ; for wrap-program
-             '())
-       ,cryptsetup
-       ,libatasmart
-       ,libblockdev
-       ,libgudev
-       ,polkit
-       ,util-linux))
+     (list acl
+           bash-minimal
+           cryptsetup
+           libatasmart
+           libblockdev
+           libgudev
+           polkit
+           util-linux))
     (outputs '("out"
-               "doc"))                            ;5 MiB of gtk-doc HTML
+               "doc"))                  ;5 MiB of gtk-doc HTML
     (arguments
      (list
-      #:tests? #f ; requiring system message dbus
-      #:disallowed-references '("doc")            ;enforce separation of "doc"
+      #:tests? #f                       ; requiring system message dbus
+      #:disallowed-references '("doc")  ;enforce separation of "doc"
       #:configure-flags
       #~(list "--enable-man"
               "--enable-available-modules" ; Such as lvm2, btrfs, etc.
               "--localstatedir=/var"
-              "--enable-fhs-media"     ;mount devices in /media, not /run/media
+              "--enable-fhs-media"    ;mount devices in /media, not /run/media
               (string-append "--with-html-dir=" #$output:doc
                              "/share/doc/udisks/html")
               (string-append "--with-udevdir=" #$output "/lib/udev"))
