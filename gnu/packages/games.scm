@@ -4726,7 +4726,8 @@ Battle for Wesnoth}.")))
     (native-inputs
      (list pkg-config intltool))
     (inputs
-     (list gstreamer
+     (list bash-minimal
+           gstreamer
            gst-plugins-base ; playbin plugin
            gst-plugins-good ; for wav playback
            gtk+))
@@ -4745,8 +4746,7 @@ Battle for Wesnoth}.")))
             (let ((out             (assoc-ref outputs "out"))
                   (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
               (wrap-program (string-append out "/bin/gamine")
-                `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))))
-            #t)))))
+                `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path)))))))))
     (home-page "http://gamine-game.sourceforge.net/")
     (synopsis "Mouse and keyboard discovery for children")
     (description
