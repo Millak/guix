@@ -52002,19 +52002,19 @@ language.")
 (define-public rust-protobuf-2
   (package
     (name "rust-protobuf")
-    (version "2.14.0")
+    (version "2.28.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "protobuf" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "11bl8hf522s9mbkckivnn9n8s3ss4g41w6jmfdsswmr5adqd71lf"))))
+                "154dfzjvxlpx37ha3cmp7fkhcsnyzbnfv7aisvz34x23k2gdjv8h"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f          ; missing files in the release tarball.
        #:cargo-inputs
-       (("rust-bytes" ,rust-bytes-0.5)
+       (("rust-bytes" ,rust-bytes-1)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-derive" ,rust-serde-derive-1))))
     (home-page "https://github.com/stepancheg/rust-protobuf/")
@@ -52028,14 +52028,14 @@ language.")
 (define-public rust-protobuf-codegen-2
   (package
     (name "rust-protobuf-codegen")
-    (version "2.14.0")
+    (version "2.28.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "protobuf-codegen" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "031bx325lsgcx7wc76vc2cqph6q0b34jgc8nz0g2rkwcfnx3n4fy"))))
+                "1mhpl2cs1d2sqddf097ala180il61g9axpqnzky5bxswnypn0d03"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-protobuf" ,rust-protobuf-2))))
@@ -52052,17 +52052,18 @@ library to invoke programmatically (e.g. from @code{build.rs}) and
 (define-public rust-protobuf-codegen-pure-2
   (package
     (name "rust-protobuf-codegen-pure")
-    (version "2.14.0")
+    (version "2.28.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "protobuf-codegen-pure" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0h34gfqlb7bqmgqv1mfgy5wk35z5r2h5ki3p3pdcmw1vqzmly6id"))))
+                "0rfqvpbbqh4pa406nda54jdl0sgagdgp274mmbpd7g4lzjcr78lm"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(;#:tests? #f
+       #:cargo-inputs
        (("rust-protobuf" ,rust-protobuf-2)
         ("rust-protobuf-codegen" ,rust-protobuf-codegen-2))))
     (home-page "https://github.com/stepancheg/rust-protobuf/")
