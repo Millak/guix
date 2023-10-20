@@ -1341,7 +1341,7 @@ compression parameters used by Gzip.")
                      (invoke "pytest")))))))
     (inputs
      (list borg python-colorama python-jsonschema python-requests
-           python-ruamel.yaml))
+           python-ruamel.yaml-0.16))
     (native-inputs
      (list python-flexmock python-pytest python-pytest-cov))
     (home-page "https://torsion.org/borgmatic/")

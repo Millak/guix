@@ -23,6 +23,7 @@
 ;;; Copyright © 2022, 2023 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2023 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
+;;; Copyright © 2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1251,7 +1252,7 @@ extracting, creating, and converting between formats.")
            python-pyyaml
            python-requests
            python-responses
-           python-ruamel.yaml
+           python-ruamel.yaml-0.16
            python-tqdm
            ;; XXX: This is dragged in by libarchive and is needed at runtime.
            zstd))

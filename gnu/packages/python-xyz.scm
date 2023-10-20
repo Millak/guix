@@ -33347,7 +33347,7 @@ Python @code{set} interface.")
                         "--maxfail=1" "tests/"))))))))
     (propagated-inputs
      (list python-click python-configobj python-dotenv-0.13.0
-           python-ruamel.yaml python-toml python-tomli))
+           python-ruamel.yaml-0.16 python-toml python-tomli))
     (native-inputs
      (list python-django python-flask python-pytest python-pytest-cov
            python-pytest-mock))

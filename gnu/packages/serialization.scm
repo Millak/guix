@@ -745,14 +745,14 @@ includes the following features:
 (define-public python-ruamel.yaml
   (package
     (name "python-ruamel.yaml")
-    (version "0.16.13")
+    (version "0.18.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ruamel.yaml" version))
        (sha256
         (base32
-         "0hm9yg785f46bkrgqknd6fdvmkby9dpzjnm0b63qf0i748acaj5v"))))
+         "06rimidc9nb3i3r90n3a1zwf0qxw24zqykb3wpxwd1p72yifc9wb"))))
     (build-system python-build-system)
     (native-inputs
      (list python-pytest))
@@ -770,6 +770,18 @@ is a derivative of Kirill Simonov’s PyYAML 3.11.  It supports YAML 1.2
 and has round-trip loaders and dumpers.  It supports comments.  Block
 style and key ordering are kept, so you can diff the source.")
     (license license:expat)))
+
+(define-public python-ruamel.yaml-0.16
+  (package
+    (inherit python-ruamel.yaml)
+    (version "0.16.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ruamel.yaml" version))
+       (sha256
+        (base32
+         "0hm9yg785f46bkrgqknd6fdvmkby9dpzjnm0b63qf0i748acaj5v"))))))
 
 (define-public python-ruamel.yaml.clib
   (package
