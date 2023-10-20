@@ -254,11 +254,10 @@ persistent, single-file databases with support for secondary indexes.")
                     ,(string-append (assoc-ref inputs "postgresql")
                                     "/bin")
                     ;; For getsocket.
-                    ,(string-append out "/bin")))))
-             #t)))
+                    ,(string-append out "/bin"))))))))
        #:test-target "test"))
     (inputs
-     (list postgresql util-linux))
+     (list bash-minimal postgresql util-linux))
     (native-inputs
      ;; For tests.
      (list ruby which))
