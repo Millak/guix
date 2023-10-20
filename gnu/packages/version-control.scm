@@ -3700,7 +3700,7 @@ standalone agent instead of a server.")
         (base32 "11n46bngvca5wbdbfcxzjhjbfdbad7sgf7h9gf956cb1q8swsdm0"))))
     (build-system copy-build-system)
     (inputs
-     (list xdg-utils))
+     (list bash-minimal xdg-utils))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
