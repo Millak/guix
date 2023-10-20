@@ -32102,6 +32102,48 @@ SystemTime}}.")
     (description "This package provides native-tls support for Hyper 0.10.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-hyper-proxy-0.9
+  (package
+    (name "rust-hyper-proxy")
+    (version "0.9.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "hyper-proxy" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1k3mpq6d4rhz58dam1757sav14j32n39q8x37wjgpz943f4mm0fa"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+       #:cargo-inputs
+       `(("rust-bytes" ,rust-bytes-1)
+         ("rust-futures" ,rust-futures-0.3)
+         ("rust-headers" ,rust-headers-0.3)
+         ("rust-http" ,rust-http-0.2)
+         ("rust-hyper" ,rust-hyper-0.14)
+         ("rust-tokio" ,rust-tokio-1)
+         ("rust-tower-service" ,rust-tower-service-0.3)
+         ("rust-hyper-rustls" ,rust-hyper-rustls-0.22)
+         ("rust-hyper-tls" ,rust-hyper-tls-0.5)
+         ("rust-native-tls" ,rust-native-tls-0.2)
+         ("rust-openssl" ,rust-openssl-0.10)
+         ("rust-rustls-native-certs" ,rust-rustls-native-certs-0.5)
+         ("rust-tokio-native-tls" ,rust-tokio-native-tls-0.3)
+         ("rust-tokio-openssl" ,rust-tokio-openssl-0.6)
+         ("rust-tokio-rustls" ,rust-tokio-rustls-0.22)
+         ("rust-webpki" ,rust-webpki-0.21)
+         ("rust-webpki-roots" ,rust-webpki-roots-0.21))
+       #:cargo-development-inputs
+       `(("rust-hyper" ,rust-hyper-0.14)
+         ("rust-tokio" ,rust-tokio-1))))
+    (native-inputs (list pkg-config))
+    (inputs (list openssl))
+    (home-page "https://github.com/tafia/hyper-proxy")
+    (synopsis "Proxy connector for Hyper-based applications")
+    (description "Proxy connector for the Hyper HTTP library.")
+    (license license:expat)))
+
 (define-public rust-hyper-rustls-0.23
   (package
     (name "rust-hyper-rustls")
