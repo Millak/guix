@@ -1009,14 +1009,13 @@ passphrase when @code{gpg} is run and needs it.")))
                  (("." ".." version)
                   (wrap-program
                       (string-append bin "pinentry-rofi")
-                    (list "PATH" ":" 'prefix `(,rofi-bin)))
-                  #t)))))
+                    (list "PATH" ":" 'prefix `(,rofi-bin))))))))
          (add-after 'compress-documentation 'installcheck
            (lambda* rest
              (invoke "make" "installcheck"))))))
     (native-inputs
      (list autoconf autoconf-archive automake pkg-config texinfo))
-    (inputs (list guile-3.0 rofi))
+    (inputs (list bash-minimal guile-3.0 rofi))
     (synopsis "Rofi GUI for GnuPG's passphrase input")
     (description "Pinentry-rofi is a simple graphical user interface for
 passphrase or PIN when required by @code{gpg} or other software.  It is using
