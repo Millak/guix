@@ -13616,7 +13616,8 @@ secondary structure and comparative analysis in R.")
                     `("GUILE_LOAD_COMPILED_PATH" ":" = (,path))
                     `("R_LIBS_SITE" ":" = (,(getenv "R_LIBS_SITE"))))))))))
       (inputs
-       (list r-minimal
+       (list bash-minimal
+             r-minimal
              r-rcas
              guile-3.0
              guile-json-4
