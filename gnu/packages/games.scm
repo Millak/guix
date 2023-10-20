@@ -5991,14 +5991,15 @@ safety of the Chromium vessel.")
     (native-inputs
      (list gperf pkg-config))
     (inputs
-     `(("cairo" ,cairo)
-       ("fribidi" ,fribidi)
-       ("gettext" ,gettext-minimal)
-       ("libpng" ,libpng)
-       ("librsvg" ,(librsvg-for-system))
-       ("libpaper" ,libpaper)
-       ("netpbm" ,netpbm)
-       ("sdl" ,(sdl-union (list sdl sdl-mixer sdl-ttf sdl-image)))))
+     (list bash-minimal
+           cairo
+           fribidi
+           gettext-minimal
+           libpng
+           (librsvg-for-system)
+           libpaper
+           netpbm
+           (sdl-union (list sdl sdl-mixer sdl-ttf sdl-image))))
     ;; TODO: Use system fonts rather than those in data/fonts
     (arguments
      `(#:make-flags `("VER_DATE=2018-09-02"
@@ -6015,8 +6016,7 @@ safety of the Chromium vessel.")
                   (add-before 'install 'no-sys-cache
                     (lambda _           ;do not rebuild system conf cache
                       (substitute* "Makefile"
-                        (("kbuildsycoca4") ""))
-                      #t))
+                        (("kbuildsycoca4") ""))))
                   (add-after 'install 'fix-import
                     (lambda* (#:key inputs outputs #:allow-other-keys)
                       (let* ((out (assoc-ref outputs "out"))
