@@ -2560,11 +2560,7 @@ applications define in those files.")
         (base32
          "1i5iw6ri0w9clwpqf40xmsh4isc8xvx2lyf2r5g34886i6rsdgpn"))))
     (build-system perl-build-system)
-    (inputs
-     ;; TODO(staging): Make unconditional.
-     (if (%current-target-system)
-         (list bash-minimal) ; for wrap-program
-         '()))
+    (inputs (list bash-minimal))        ;for wrap-program
     ;; If the tests are fixed, add perl-test-pod, perl-test-pod-coverage, and
     ;; perl-test-tiny as native-inputs.
     (propagated-inputs
@@ -2595,8 +2591,7 @@ applications define in those files.")
                                   #~(,(string-append
                                        (getenv "PERL5LIB")
                                        ":" out "/lib/perl5/site_perl"))))))
-                      '("mimeopen" "mimetype")))
-                   #t)))))
+                      '("mimeopen" "mimetype"))))))))
     (home-page "https://metacpan.org/release/File-MimeInfo")
     (synopsis "Determine file type from the file name")
     (description
