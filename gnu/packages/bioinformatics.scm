@@ -3298,7 +3298,7 @@ files.")
                                `("PERL5LIB" ":" prefix (,path))))
                            (find-files bin "\\.pl$")))))))))
     (inputs
-     (list perl-module-build perl-data-stag perl-libwww perl-uri))
+     (list bash-minimal perl-module-build perl-data-stag perl-libwww perl-uri))
     (native-inputs
      (list perl-test-most))
     (home-page "https://metacpan.org/release/BioPerl")
