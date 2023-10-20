@@ -2144,7 +2144,8 @@ control to Git repositories.")
     (native-inputs
      (list autoconf automake guile-3.0 pkg-config))
     (inputs
-     (list guile-3.0
+     (list bash-minimal                 ;for wrap-program
+           guile-3.0
            guile-commonmark
            guile-fibers
            guile-gcrypt
