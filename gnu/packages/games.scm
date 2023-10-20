@@ -72,7 +72,7 @@
 ;;; Copyright © 2022 Roman Riabenko <roman@riabenko.com>
 ;;; Copyright © 2022, 2023 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2022 Gabriel Arazas <foo.dogsquared@gmail.com>
-;;; Copyright © 2022, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022-2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Hendursaga <hendursaga@aol.com>
 ;;; Copyright © 2022 Parnikkapore <poomklao@yahoo.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
@@ -10834,8 +10834,7 @@ kingdom.")
          (snippet
           '(begin
              ;; Octocat seems to be non-free.  Oddly, Debian doesn't strip it.
-             (delete-file-recursively "data/ball/octocat")
-             #t))))
+             (delete-file-recursively "data/ball/octocat")))))
       (build-system copy-build-system)
       (arguments
        `(#:install-plan
@@ -10900,20 +10899,19 @@ kingdom.")
                          (string-append "LOCALEDIR=" out "/share/locale")
                          (string-append "SDL_CPPFLAGS=-I"
                                         sdl
-                                        "/include/SDL2/")))
-               #t))
+                                        "/include/SDL2/")))))
            (add-after 'install 'fix-some-broken-fonts
              (lambda* (#:key outputs #:allow-other-keys)
                (let* ((out (assoc-ref outputs "out")))
                  (wrap-program (string-append out "/bin/neverball")
                    `("LANG" = ("en_US.utf8")))
                  (wrap-program (string-append out "/bin/neverputt")
-                   `("LANG" = ("en_US.utf8"))))
-               #t)))))
+                   `("LANG" = ("en_US.utf8")))))))))
       (native-inputs
        `(("gettext" ,gettext-minimal))) ;for msgfmt
       (inputs
-       `(("libjpeg" ,libjpeg-turbo)
+       `(("bash-minimal" ,bash-minimal)
+         ("libjpeg" ,libjpeg-turbo)
          ("libpng" ,libpng)
          ("libvorbis" ,libvorbis)
          ("physfs" ,physfs)
