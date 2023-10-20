@@ -8705,8 +8705,7 @@ when packaged in Blorb container files or optionally from individual files.")
            (add-after 'unpack 'prevent-build-error
              (lambda _
                (substitute* "inc/My/Builder.pm"
-                 (("-Werror") ""))
-               #t))
+                 (("-Werror") ""))))
            (add-after 'install 'install-desktop-file-and-icons
              (lambda* (#:key outputs #:allow-other-keys)
                (let* ((share (string-append (assoc-ref outputs "out") "/share"))
@@ -8729,8 +8728,7 @@ when packaged in Blorb container files or optionally from individual files.")
                         (copy-file
                          (string-append "frozen-bubble-icon-" dim ".png")
                          (string-append dir "/frozen-bubble.png"))))
-                    '("16" "32" "48" "64"))))
-               #t))
+                    '("16" "32" "48" "64"))))))
            (add-after 'install 'wrap-perl-libs
              (lambda* (#:key outputs #:allow-other-keys)
                (let ((out (assoc-ref outputs "out"))
@@ -8740,20 +8738,20 @@ when packaged in Blorb container files or optionally from individual files.")
                                `("PERL5LIB" ":" prefix
                                  (,(string-append perl5lib ":" out
                                                   "/lib/perl5/site_perl")))))
-                           (find-files "bin" ".")))
-               #t)))))
+                           (find-files "bin" "."))))))))
       (native-inputs
        (list perl-alien-sdl perl-capture-tiny perl-locale-maketext-lexicon
              perl-module-build pkg-config))
       (inputs
-       `(("glib" ,glib)
-         ("perl-compress-bzip2" ,perl-compress-bzip2)
-         ("perl-file-sharedir" ,perl-file-sharedir)
-         ("perl-file-slurp" ,perl-file-slurp)
-         ("perl-file-which" ,perl-file-which)
-         ("perl-ipc-system-simple" ,perl-ipc-system-simple)
-         ("perl-sdl" ,perl-sdl)
-         ("sdl" ,(sdl-union (list sdl sdl-image sdl-mixer sdl-pango sdl-ttf)))))
+       (list bash-minimal
+             glib
+             perl-compress-bzip2
+             perl-file-sharedir
+             perl-file-slurp
+             perl-file-which
+             perl-ipc-system-simple
+             perl-sdl
+             (sdl-union (list sdl sdl-image sdl-mixer sdl-pango sdl-ttf))))
       (home-page "http://frozen-bubble.org/")
       (synopsis "Puzzle with bubbles")
       (description
