@@ -3363,32 +3363,32 @@ specific files and directories.")
                 "0r9i399kkagpwj08nwf1f7c6lr50xjzzgmzwyjjy6ppgcc53a809"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:make-flags
-       (list (string-append "prefix=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no 'configure' script
-         (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out  (assoc-ref outputs "out"))
-                    (prog (string-append out "/bin/src"))
-                    (rcs  (assoc-ref inputs "rcs")))
-               (wrap-program prog
-                 `("PATH" ":" prefix (,(string-append rcs "/bin"))))
-               #t)))
-         (replace 'check
-           (lambda _
-             (setenv "HOME" (getenv "TMPDIR"))
-             (invoke "git" "config" "--global" "user.name" "guix")
-             (invoke "git" "config" "--global" "user.email" "guix")
-             (invoke "./srctest"))))))
+     (list
+      #:make-flags
+      #~(list (string-append "prefix=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)           ; no 'configure' script
+          (add-after 'install 'wrap-program
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((prog (string-append #$output "/bin/src"))
+                     (rcs  (search-input-file inputs "bin/rcs")))
+                (wrap-program prog
+                  `("PATH" ":" prefix (,(dirname rcs)))))))
+          (replace 'check
+            (lambda _
+              (setenv "HOME" (getenv "TMPDIR"))
+              (invoke "git" "config" "--global" "user.name" "guix")
+              (invoke "git" "config" "--global" "user.email" "guix")
+              (invoke "./srctest"))))))
     (native-inputs
      ;; For testing.
      (list git perl))
     (inputs
-     `(("cssc" ,cssc)
-       ("python" ,python-wrapper)
-       ("rcs" ,rcs)))
+     (list bash-minimal
+           cssc
+           python-wrapper
+           rcs))
     (synopsis "Simple revision control")
     (home-page "http://www.catb.org/~esr/src/")
     (description
