@@ -3457,7 +3457,8 @@ rules is done with the @code{auditctl} utility.")
        ;; Nmap can't cope with out-of-source building.
        #:out-of-source? #f))
     (inputs
-     (list libpcap
+     (list bash-minimal                 ;for wrap-program
+           libpcap
            lua
            openssl-3.0
            pcre
