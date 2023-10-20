@@ -32624,28 +32624,45 @@ with hyper.")
 floating-point numbers.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-if-addrs-0.6
+(define-public rust-if-addrs-0.7
   (package
     (name "rust-if-addrs")
-    (version "0.6.7")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "if-addrs" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32 "1pkkkwm9znn07xq9s6glf8lxzn2rdxvy8kwkw6czrw64ywhy8wr2"))))
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "if-addrs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1a81w57p0hx6ql2ds2ayps38n0ndfaqcs618qzdyjln7zw0zmh6b"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-if-addrs-sys" ,rust-if-addrs-sys-0.3)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-winapi" ,rust-winapi-0.3))))
+     (list #:cargo-inputs
+           `(("rust-libc" ,rust-libc-0.2)
+             ("rust-winapi" ,rust-winapi-0.3))))
     (native-inputs (list iproute))
     (home-page "https://github.com/messense/if-addrs")
     (synopsis "Return interface IP addresses on POSIX and Windows systems")
     (description "Returns the IP addresses for all network interfaces,
 on both POSIX and Microsoft Windows hosts.")
     (license (list license:expat license:bsd-3))))
+
+(define-public rust-if-addrs-0.6
+  (package
+    (inherit rust-if-addrs-0.7)
+    (name "rust-if-addrs")
+    (version "0.6.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "if-addrs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1pkkkwm9znn07xq9s6glf8lxzn2rdxvy8kwkw6czrw64ywhy8wr2"))))
+    (arguments
+     (list #:cargo-inputs `(("rust-if-addrs-sys" ,rust-if-addrs-sys-0.3)
+                            ("rust-libc" ,rust-libc-0.2)
+                            ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-if-addrs-sys-0.3
   (package
