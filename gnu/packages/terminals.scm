@@ -189,6 +189,29 @@ configurable through a graphical wizard.")
     (home-page "https://github.com/lanoxx/tilda")
     (license license:gpl2+)))
 
+(define-public tilda-dbus
+  (package
+    (inherit tilda)
+    (name "tilda")
+    (version "1.6-alpha")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lanoxx/tilda")
+             (commit "51a980a55ad6d750daa21d43a66d44577dad277b")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pdarmlxkap9v689s88b89l5hi4vspsrrysh7pbm9rhdjmzk5m2c"))))
+    (synopsis "GTK+-based drop-down terminal with experimental D-Bus support")
+    (description
+     "Tilda is a terminal emulator similar to normal terminals like
+gnome-terminal (GNOME) or Konsole (KDE), with the difference that it drops down
+from the edge of a screen when a certain configurable hotkey is pressed.  This
+is similar to the built-in consoles in some applications.  Tilda is highly
+configurable through a graphical wizard.  This version enables D-Bus support
+which is necessary for using Tilda on Wayland.")))
+
 (define-public termite
   (package
     (name "termite")
