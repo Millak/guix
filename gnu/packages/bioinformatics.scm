@@ -9567,7 +9567,7 @@ phylogenies.")
                            "rsem-run-ebseq"
                            "rsem-run-prsem-testing-procedure"))))))))
     (inputs
-     (list boost r-minimal perl htslib-1.3 zlib))
+     (list bash-minimal boost r-minimal perl htslib-1.3 zlib))
     (home-page "https://deweylab.biostat.wisc.edu/rsem/")
     (synopsis "Estimate gene expression levels from RNA-Seq data")
     (description
