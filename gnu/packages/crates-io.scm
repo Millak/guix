@@ -37059,6 +37059,32 @@ channel and session.")
 Spotify.  This package contains the discovery logic.")
     (license license:expat)))
 
+(define-public rust-librespot-metadata-0.4
+  (package
+    (name "rust-librespot-metadata")
+    (version "0.4.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "librespot-metadata" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "07626b84cghd3jabdvyqhn1v0lax9p1hhz6ldw2r4l6brcgkd03b"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-async-trait" ,rust-async-trait-0.1)
+             ("rust-byteorder" ,rust-byteorder-1)
+             ("rust-librespot-core" ,rust-librespot-core-0.4)
+             ("rust-librespot-protocol" ,rust-librespot-protocol-0.4)
+             ("rust-log" ,rust-log-0.4)
+             ("rust-protobuf" ,rust-protobuf-2))))
+    (home-page "https://github.com/librespot-org/librespot")
+    (synopsis "The metadata elements of Librespot")
+    (description "Part of Librespot, an open source client library for
+Spotify.  This package contains the metadata logic.")
+    (license license:expat)))
+
 (define-public rust-librespot-protocol-0.4
   (package
     (name "rust-librespot-protocol")
