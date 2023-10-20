@@ -2911,15 +2911,13 @@ Wayland.")
              (let ((out          (assoc-ref outputs "out"))
                    (wl-clipboard (assoc-ref inputs "wl-clipboard")))
                (wrap-program (string-append out "/bin/wl-clipboard-x11")
-                `("PATH" prefix (,(string-append wl-clipboard "/bin")))))
-             #t))
+                `("PATH" prefix (,(string-append wl-clipboard "/bin")))))))
          (add-after 'wrap-binary 'symlink-utilities
            ;; As seen in the Makefile.
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((bin (string-append (assoc-ref outputs "out") "/bin/")))
                (symlink "wl-clipboard-x11" (string-append bin "xclip"))
-               (symlink "wl-clipboard-x11" (string-append bin "xsel")))
-             #t)))))
+               (symlink "wl-clipboard-x11" (string-append bin "xsel"))))))))
     (inputs
      (list bash-minimal wl-clipboard))
     (home-page "https://github.com/brunelli/wl-clipboard-x11")
