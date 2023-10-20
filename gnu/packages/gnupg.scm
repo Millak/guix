@@ -1164,7 +1164,8 @@ files, to verify signatures, and to manage the private and public keys.")
                 "10gal2h8ihg7nnzy3adw942axd2ia1rcn1fw3a3v07n5mm8kqrx9"))))
     (build-system perl-build-system)
     (inputs
-     (list gnupg
+     (list bash-minimal
+           gnupg
            perl-clone
            perl-config-general
            perl-file-homedir
