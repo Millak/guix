@@ -1613,8 +1613,7 @@ driver for the X.Org X Server version 1.7 and later (X11R7.5 or later).")
                               (string-append out "/share/" dir)
                               (string-append gtk "/share/" dir))
                              (delete-file-recursively dir))
-                           '("appdata" "icons")))
-               #t)))
+                           '("appdata" "icons"))))))
          (add-after 'split-outputs 'wrap
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((gtk (assoc-ref outputs "gtk"))
@@ -1624,13 +1623,13 @@ driver for the X.Org X Server version 1.7 and later (X11R7.5 or later).")
                (wrap-program (string-append gtk "/bin/redshift-gtk")
                  `("GUIX_PYTHONPATH" ":" prefix
                    (,(string-append site ":" (getenv "GUIX_PYTHONPATH"))))
-                 `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH"))))
-               #t))))))
+                 `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH"))))))))))
     (outputs '("out" "gtk"))
     (native-inputs
      (list pkg-config intltool))
     (inputs
-     (list libdrm
+     (list bash-minimal
+           libdrm
            libx11
            libxcb
            libxxf86vm
