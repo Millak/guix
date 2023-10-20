@@ -214,6 +214,7 @@ driver is known to work with these printers:
                    pkg-config)))
     (inputs
      (list avahi
+           bash-minimal
            coreutils
            cups-minimal
            dbus
