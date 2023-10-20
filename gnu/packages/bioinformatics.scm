@@ -19319,7 +19319,8 @@ phase + query phase).")
                 (substitute* "scripts/read_info_histograms.sh"
                   (("awk") (which "gawk"))))))))
       (inputs
-       (list gawk                     ;for read_info_histograms.sh
+       (list bash-minimal
+             gawk                     ;for read_info_histograms.sh
              python-wrapper           ;required for histogram.py
              zlib))
       (home-page "https://github.com/rrwick/Filtlong/")
