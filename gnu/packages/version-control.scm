@@ -3790,7 +3790,7 @@ for historians.")
                (base32
                 "11vkq5njjlvjipic7db44ga875n61drszw1qrdzwxmmfmnz425zz"))))
     (inputs
-     (list perl ncurses))
+     (list bash-minimal perl ncurses))
     (build-system copy-build-system)
     (arguments
      '(#:phases
