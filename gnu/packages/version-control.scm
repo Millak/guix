@@ -3425,23 +3425,19 @@ directory full of HOWTOs.")
              (lambda* (#:key outputs #:allow-other-keys)
                (install-file "bin/git-when-merged"
                              (string-append (assoc-ref outputs "out")
-                                            "/bin"))
-               #t))
+                                            "/bin"))))
            (add-before 'install 'patch-git
              (lambda* (#:key inputs #:allow-other-keys)
                (let ((git (search-input-file inputs "/bin/git")))
                  (substitute* "bin/git-when-merged"
-                   (("'git'") (string-append "'" git "'")))
-                 #t)))
+                   (("'git'") (string-append "'" git "'"))))))
            (add-after 'install 'wrap-script
              (lambda* (#:key outputs #:allow-other-keys)
                (wrap-program (string-append (assoc-ref outputs "out")
                                             "/bin/git-when-merged")
-                 `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH"))))
-               #t)))))
-      (inputs
-       `(("git" ,git)
-         ("python" ,python-wrapper)))
+                 `("GUIX_PYTHONPATH" ":" prefix
+                   (,(getenv "GUIX_PYTHONPATH")))))))))
+      (inputs (list bash-minimal git python-wrapper))
       (home-page "https://github.com/mhagger/git-when-merged")
       (synopsis "Determine when a commit was merged into a Git branch")
       (description "This Git extension defines a subcommand,
