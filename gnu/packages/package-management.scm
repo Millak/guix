@@ -2251,19 +2251,18 @@ Python eggs, Ruby gems, and more to RPMs, debs, Solaris packages and more.")
                         (mkdir-p datadir)
                         (invoke "touch" (string-append datadir "index.db"))
                         (setenv "HOME" home))
-                      (invoke "./bootstrap")
-                      #t))
+                      (invoke "./bootstrap")))
                   (add-after 'install 'wrap-executables
                     (lambda* (#:key outputs inputs #:allow-other-keys)
                       (let ((out (assoc-ref outputs "out"))
                             (curl (assoc-ref inputs "curl")))
                         (wrap-program (string-append out "/bin/akku")
-                          `("LD_LIBRARY_PATH" ":" prefix (,(string-append curl "/lib"))))
-                        #t))))))
+                          `("LD_LIBRARY_PATH" ":" prefix
+                            (,(string-append curl "/lib"))))))))))
     (native-inputs
      (list which autoconf automake pkg-config))
     (inputs
-     (list guile-3.0 curl))
+     (list bash-minimal guile-3.0 curl))
     (home-page "https://akkuscm.org/")
     (synopsis "Language package manager for Scheme")
     (description
