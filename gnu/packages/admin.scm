@@ -532,9 +532,10 @@ inspired by @command{vi}.")
                               (list "bin/readlink"
                                     "sbin/sfdisk")))))))))))
     (inputs
-     (list coreutils                    ; for readlink
+     (list bash-minimal                 ;for wrap-program
+           coreutils                    ;for readlink
            python
-           util-linux))                 ; sfdisk for growpart
+           util-linux))                 ;sfdisk for growpart
     (home-page "https://launchpad.net/cloud-utils")
     (synopsis "Set of utilities for cloud computing environments")
     (description
