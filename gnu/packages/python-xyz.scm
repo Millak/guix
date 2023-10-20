@@ -1289,6 +1289,31 @@ different units.")
 scatter plots, histograms and heatmaps in the terminal using braille dots.")
     (license license:expat)))
 
+(define-public python-portpicker
+  (package
+    (name "python-portpicker")
+    (version "1.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "portpicker" version))
+       (sha256
+        (base32 "1yiisk4h8qliwf99khz3lszrpjf6km76fbhzg01fwrbgz7b7yl5x"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; This fails because portserver ends up in bin, not site-packages
+      '(list "--ignore=src/tests/portserver_test.py")))
+    (propagated-inputs (list python-psutil))
+    (native-inputs (list python-pytest net-tools))
+    (home-page "https://github.com/google/python_portpicker")
+    (synopsis "Choose unique available network ports")
+    (description
+     "This package provides a library to choose unique available network
+ports.")
+    (license license:asl2.0)))
+
 (define-public python-mdx-gh-links
   (package
     (name "python-mdx-gh-links")
