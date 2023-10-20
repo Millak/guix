@@ -1941,10 +1941,10 @@ realms/domains like Active Directory or IPA.")
                     (wrap-program program
                       `("PERL5LIB" ":" prefix
                         (,(string-append out "/lib/perl5/site_perl")))))
-                  (find-files "." ".*")))
-               #t))))))
+                  (find-files "." ".*")))))))))
     (native-inputs
      (list perl-module-build perl-test-pod perl-test-pod-coverage))
+    (inputs (list bash-minimal))        ;for wrap-program
     (home-page "https://metacpan.org/pod/distribution/File-Rename/rename.PL")
     (synopsis "Perl extension for renaming multiple files")
     (description
