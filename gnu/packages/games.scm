@@ -1222,7 +1222,8 @@ allows users to brew while offline.")
       #:tests? #f)) ; TODO need busted package to run tests
     ;; Omit Lua-Socket dependency to disable automatic updates.
     (inputs
-     (list ffmpeg
+     (list bash-minimal
+           ffmpeg
            fluid-3
            freetype
            lua
