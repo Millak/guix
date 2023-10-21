@@ -10366,6 +10366,55 @@ ChessX.")
       (home-page "https://stockfishchess.org/")
       (license license:gpl3+))))
 
+(define-public moonfish
+  (let ((commit "4f8829009e8c26e6a878261e0bc4c7e7617ef6b6")
+        (revision "1"))
+    (package
+      (name "moonfish")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.sr.ht/~zamfofex/moonfish")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "1ksg42x9cyn3pbfryy9raqb355k47cqcisascpy157c3cgdr2z60"))
+                (file-name (git-file-name name version))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:make-flags
+        #~(list (string-append "CC=" #$(cc-for-target)))
+        #:tests? #f                     ;no check target
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)         ;no configure script
+            (replace 'install           ;no 'install' target
+              (lambda _
+                (let* ((out-bin (string-append #$output "/bin"))
+                       (tools-bin (string-append #$output:tools "/bin"))
+                       (tool (string-append tools-bin "/moonfish-")))
+                  (mkdir-p out-bin)
+                  (mkdir-p tools-bin)
+                  (copy-file "moonfish"
+                             (string-append out-bin "/moonfish"))
+                  (copy-file "play"
+                             (string-append tool "play"))
+                  (copy-file "lichess"
+                             (string-append tool "lichess"))
+                  (copy-file "analyse"
+                             (string-append tool "analyse"))))))))
+      (inputs (list bearssl cjson))
+      (outputs '("out" "tools"))
+      (home-page "https://git.sr.ht/~zamfofex/moonfish")
+      (synopsis "Simple chess engine written in C")
+      (description
+       "moonfish is a toy UCI chess engine made for fun.  It is inspired by
+sunfish, but is written in C rather than Python.  It also has TUI tools for
+using any UCI engine and also to connect UCI engines to Lichess.")
+      (license license:agpl3+))))
+
 (define-public barrage
   (package
     (name "barrage")
