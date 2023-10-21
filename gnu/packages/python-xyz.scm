@@ -246,6 +246,7 @@
   #:use-module (gnu packages rdf)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages regex)
+  #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages scanner)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages search)
@@ -3056,13 +3057,13 @@ help formatter.")
 (define-public python-orjson
   (package
     (name "python-orjson")
-    (version "3.8.8")
+    (version "3.9.7")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "orjson" version))
               (sha256
                (base32
-                "1nn617pzn8smjkf7j593ybq16qfnj53bla52qjwzzrms4fjxg5n0"))))
+                "0hh1j7akxgx1nvsnwx1p4f4h4pkgr7v9aqr99l2pwbwfyyc93qw5"))))
     (build-system cargo-build-system)
     (arguments
      (list
@@ -3073,47 +3074,10 @@ help formatter.")
                   (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'install 'prepare-python-module
-            (lambda _
-              ;; We don't use maturin.
-              (delete-file "pyproject.toml")
-              (call-with-output-file "pyproject.toml"
-                (lambda (port)
-                  (format port "\
-[build-system]
-build-backend = 'setuptools.build_meta'
-requires = ['setuptools']
-")))
-              (call-with-output-file "setup.cfg"
-                (lambda (port)
-                  (format port "\
-[metadata]
-name = orjson
-version = ~a
-
-[options]
-packages = find:
-
-[options.packages.find]
-exclude =
-  src
-  integration
-  test
-  Cargo.toml
-" #$version)))))
           (add-after 'prepare-python-module 'build-python-module
             (assoc-ref py:%standard-phases 'build))
           (add-after 'build-python-module 'install-python-module
-            (assoc-ref py:%standard-phases 'install))
-          (add-after 'install-python-module 'install-python-library
-            (lambda _
-              (let ((site (string-append #$output "/lib/python"
-                                         #$(version-major+minor
-                                            (package-version python))
-                                         "/site-packages")))
-                (mkdir-p site)
-                (copy-file "target/release/liborjson.so"
-                           (string-append site "/orjson.so"))))))
+            (assoc-ref py:%standard-phases 'install)))
       #:cargo-inputs
       `(("rust-ahash" ,rust-ahash-0.8)
         ("rust-arrayvec" ,rust-arrayvec-0.7)
@@ -3126,17 +3090,20 @@ exclude =
         ("rust-itoa" ,rust-itoa-1)
         ("rust-itoap" ,rust-itoap-1)
         ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-pyo3-ffi" ,rust-pyo3-ffi-0.18)
+        ("rust-pyo3-ffi" ,rust-pyo3-ffi-0.19)
         ("rust-ryu" ,rust-ryu-1)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-simdutf8" ,rust-simdutf8-0.1)
-        ("rust-smallvec" ,rust-smallvec-1))
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-cc" ,rust-cc-1)
+        ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.19)
+        ("rust-version-check" ,rust-version-check-0.9))
       #:install-source? #false))
+    (inputs
+     (list maturin))
     (native-inputs
-     (list python-wrapper
-           python-pypa-build
-           python-wheel))
+     (list python-wrapper))
     (home-page "https://github.com/ijl/orjson")
     (synopsis "Python JSON library supporting dataclasses, datetimes, and numpy")
     (description "Orjson is a fast, correct JSON library for Python.  It

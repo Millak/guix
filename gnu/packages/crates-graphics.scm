@@ -1217,20 +1217,18 @@ EUI-64, also known as MAC-48 media access control addresses.")
   (package
     (inherit rust-glutin-egl-sys-0.4)
     (name "rust-glutin-egl-sys")
-    (version "0.1.5")
+    (version "0.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "glutin-egl-sys" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "04f2ci9kb8q4dv4kviigvgfy54lr4jmbnmjsvi50qj13anjnmfra"))))
+        (base32 "0g81bz7ppvaksvwcw1jg553g8b2shvmnfm9ms6hixwvinj20z438"))))
     (arguments
      `(#:cargo-inputs
        (("rust-winapi" ,rust-winapi-0.3)
-        ("rust-gl-generator" ,rust-gl-generator-0.13))))))
+        ("rust-gl-generator" ,rust-gl-generator-0.14))))))
 
 (define-public rust-glutin-emscripten-sys-0.1
   (package
@@ -1742,13 +1740,13 @@ graphics and video games.")
 (define-public rust-mp4parse-0.12
   (package
     (name "rust-mp4parse")
-    (version "0.12.0")
+    (version "0.12.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "mp4parse" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "1ppqv60qiyrnbb996gb1sik08c0j2i317llv3rrcwb1cjg3bdlk7"))))
+               (base32 "1scynvlmiy6xv2rrzzpijd812amh6a863na8i0xrcw5d9d08kl8h"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f              ; Not all files included.
@@ -2186,21 +2184,22 @@ AVIF format (powers the `cavif` tool).")
   (package
     (inherit rust-ravif-0.8)
     (name "rust-ravif")
-    (version "0.6.4")
+    (version "0.6.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ravif" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1gyc7w1fz3qdk95cdpkj185dm6lskxfp329xm69waxc565fcz9rx"))))
+        (base32 "0rfm63bv0q2rjyivmzlk4wma8xff6jralh7dr1bjz2aw4knm7cw1"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:skip-build? #t     ; Not packaging older versions of rav1e.
+       #:cargo-inputs
        (("rust-avif-serialize" ,rust-avif-serialize-0.6)
         ("rust-imgref" ,rust-imgref-1)
         ("rust-loop9" ,rust-loop9-0.1)
         ("rust-num-cpus" ,rust-num-cpus-1)
-        ("rav1e" ,rav1e)
+        ("rav1e" ,rav1e)    ; 0.5
         ("rust-rayon" ,rust-rayon-1)
         ("rust-rgb" ,rust-rgb-0.8))
        #:cargo-development-inputs
@@ -2261,6 +2260,25 @@ AVIF format (powers the `cavif` tool).")
          "04c2wir7qq3g2b143yav52a1g5ack8ffqx2bpmrn9bc0dix1li0a"))))
     (arguments
      `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))))
+
+(define-public rust-resize-0.4
+  (package
+    (name "rust-resize")
+    (version "0.4.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "resize" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bamrw2m37l8q46mcy6snp6106d93dq7x67hbbj32w88pjdhxn84"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-png" ,rust-png-0.16))))
+    (home-page "https://github.com/PistonDevelopers/resize")
+    (synopsis "Image resampling library in pure Rust")
+    (description "This package provides an image resampling library in pure Rust.")
+    (license license:expat)))
 
 (define-public rust-rgb-0.8
   (package
@@ -3823,8 +3841,29 @@ the platform-specific getters provided by winit, or another library.")
     (description "This package provides X11 library bindings for Rust.")
     (license license:expat)))
 
+(define-public rust-y4m-0.8
+  (package
+    (name "rust-y4m")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "y4m" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0j24y2zf60lpxwd7kyg737hqfyqx16y32s0fjyi6fax6w4hlnnks"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-resize" ,rust-resize-0.4))))
+    (home-page "https://github.com/image-rs/y4m")
+    (synopsis "YUV4MPEG2 (@file{.y4m}) encoder and decoder")
+    (description
+     "This package provides a YUV4MPEG2 (@file{.y4m}) encoder and decoder.")
+    (license license:expat)))
+
 (define-public rust-y4m-0.7
   (package
+    (inherit rust-y4m-0.8)
     (name "rust-y4m")
     (version "0.7.0")
     (source
@@ -3834,13 +3873,7 @@ the platform-specific getters provided by winit, or another library.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1bhdgb7hgx7j92nm6ij5n8wisp50j8ff66ks14jzwdw2mwhrjam7"))))
-    (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page "https://github.com/image-rs/y4m")
-    (synopsis "YUV4MPEG2 (@file{.y4m}) encoder and decoder")
-    (description
-     "This package provides a YUV4MPEG2 (@file{.y4m}) encoder and decoder.")
-    (license license:expat)))
+    (arguments `(#:skip-build? #t))))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances

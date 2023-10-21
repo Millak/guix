@@ -5491,7 +5491,7 @@ interfering with any pam-mount configuration.")))
 (define-public wlgreet
   (package
     (name "wlgreet")
-    (version "0.4")
+    (version "0.4.1")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -5500,25 +5500,24 @@ interfering with any pam-mount configuration.")))
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "00grp63n9nrgqls3knxfv9wjbc7p0jwr7i2vzxy750dz85gi2kzn"))))
+               "1k0jmgh0rjbnb49gkvs0a4d7z9xb6pad8v5w5f7my4s0rfpk7wd9"))))
     (build-system cargo-build-system)
     (arguments
      (list #:cargo-inputs
            `(("rust-chrono" ,rust-chrono-0.4)
              ("rust-getopts" ,rust-getopts-0.2)
-             ("rust-greetd-ipc" ,rust-greetd-ipc-0.8)
+             ("rust-greetd-ipc" ,rust-greetd-ipc-0.9)
              ("rust-lazy-static" ,rust-lazy-static-1)
              ("rust-memmap2" ,rust-memmap2-0.3)
-             ("rust-nix" ,rust-nix-0.15)
-             ("rust-os-pipe" ,rust-os-pipe-0.8)
-             ("rust-rusttype" ,rust-rusttype-0.7)
+             ("rust-nix" ,rust-nix-0.25)
+             ("rust-os-pipe" ,rust-os-pipe-1)
+             ("rust-rusttype" ,rust-rusttype-0.9)
              ("rust-serde" ,rust-serde-1)
              ("rust-smithay-client-toolkit"
               ,rust-smithay-client-toolkit-0.15)
              ("rust-toml" ,rust-toml-0.5)
              ("rust-wayland-client" ,rust-wayland-client-0.29)
-             ("rust-wayland-protocols" ,rust-wayland-protocols-0.29)
-             ("rust-xml-rs" ,rust-xml-rs-0.8))
+             ("rust-wayland-protocols" ,rust-wayland-protocols-0.29))
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'remove-bundled-fonts
@@ -5910,34 +5909,54 @@ file or files to several hosts.")
 (define-public du-dust
   (package
     (name "du-dust")
-    (version "0.8.3")
+    (version "0.8.6")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "du-dust" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1daif13rdd7wb8m5fbp6zif5b8znqcvmkxrjpp2w2famsp36sahx"))))
+                "1w52xdz1vi6awsvf4lph791zv13phjvz4ypmxr7f6pgxd3crr77c"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-ansi-term" ,rust-ansi-term-0.12)
-                       ("rust-clap" ,rust-clap-3)
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             "--skip=test_apparent_size")
+       #:install-source? #f
+       #:cargo-inputs (("rust-ansi-term" ,rust-ansi-term-0.12)
+                       ("rust-atty" ,rust-atty-0.2)
                        ("rust-clap" ,rust-clap-3)
                        ("rust-clap-complete" ,rust-clap-complete-3)
+                       ("rust-clap-mangen" ,rust-clap-mangen-0.1)
                        ("rust-config-file" ,rust-config-file-0.2)
                        ("rust-directories" ,rust-directories-4)
-                       ("rust-lscolors" ,rust-lscolors-0.7)
+                       ("rust-lscolors" ,rust-lscolors-0.13)
                        ("rust-rayon" ,rust-rayon-1)
                        ("rust-regex" ,rust-regex-1)
                        ("rust-serde" ,rust-serde-1)
                        ("rust-stfu8" ,rust-stfu8-0.2)
-                       ("rust-sysinfo" ,rust-sysinfo-0.15)
-                       ("rust-terminal-size" ,rust-terminal-size-0.1)
+                       ("rust-sysinfo" ,rust-sysinfo-0.27)
+                       ("rust-terminal-size" ,rust-terminal-size-0.2)
                        ("rust-thousands" ,rust-thousands-0.2)
                        ("rust-unicode-width" ,rust-unicode-width-0.1)
                        ("rust-winapi-util" ,rust-winapi-util-0.1))
-       #:cargo-development-inputs (("rust-assert-cmd" ,rust-assert-cmd-1)
-                                   ("rust-tempfile" ,rust-tempfile-3))))
+       #:cargo-development-inputs (("rust-assert-cmd" ,rust-assert-cmd-2)
+                                   ("rust-tempfile" ,rust-tempfile-3))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-extras
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (share (string-append out "/share")))
+               (install-file "man-page/dust.1"
+                             (string-append share "/man/man1"))
+               (mkdir-p (string-append out "/etc/bash_completion.d"))
+               (copy-file "completions/dust.bash"
+                          (string-append out "/etc/bash_completion.d/dust"))
+               (install-file "completions/dust.fish"
+                             (string-append share "/fish/vendor_completions.d"))
+               (install-file "completions/_dust"
+                             (string-append share "/zsh/site-fuctions"))))))))
     (home-page "https://github.com/bootandy/dust")
     (synopsis "Graphical disk usage analyzer")
     (description "This package provides a graphical disk usage analyzer in

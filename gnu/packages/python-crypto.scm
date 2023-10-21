@@ -486,15 +486,16 @@ is used by the Requests library to verify HTTPS requests.")
 (define-public python-cryptography-vectors
   (package
     (name "python-cryptography-vectors")
-    (version "40.0.2")
+    (version "41.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cryptography_vectors" version))
        (sha256
         (base32
-         "16hcprw919f2rl3jipsy2996bnsz170inway3lishqi30xwqf6x8"))))
-    (build-system python-build-system)
+         "17m1azxfc3w0390jp9mkx1v0k3xfv4v1lrgch4hvbbm77s0z42j4"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))  ; No tests included.
     (home-page "https://github.com/pyca/cryptography")
     (synopsis "Test vectors for the cryptography package")
     (description
@@ -505,14 +506,14 @@ is used by the Requests library to verify HTTPS requests.")
 (define-public python-cryptography
   (package
     (name "python-cryptography")
-    (version "40.0.2")
+    (version "41.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cryptography" version))
        (sha256
         (base32
-         "16awbsm13vdksm98dybwvmpy2y1l636bq7g0s93scksrp0r0sg63"))))
+         "06pm952pr6f31pzwh5fb68zryqyss0hg9cbggxm15z15844w7svz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -567,6 +568,9 @@ ciphers, message digests and key derivation functions.")
                   (guix build utils)
                   (srfi srfi-1)
                   (ice-9 match))
+      #:install-source? #f
+      ;; As seen in noxfile.py
+      #:cargo-test-flags ''("--release" "--no-default-features")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'chdir
@@ -584,26 +588,21 @@ ciphers, message digests and key derivation functions.")
               (apply (assoc-ref %standard-phases 'configure)
                      (append args
                              (list #:inputs (alist-delete "source" inputs))))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                ;; As seen in tox.ini
-                (invoke "cargo" "test" "--no-default-features"))))
           (add-after 'install 'install-shared-library
             (lambda _
               (install-file "target/release/libcryptography_rust.so"
                             (string-append #$output "/lib")))))
       #:cargo-inputs
-      `(("rust-asn1-0.13" ,rust-asn1-0.13)
+      `(("rust-asn1" ,rust-asn1-0.15)
         ("rust-cc" ,rust-cc-1)
-        ("rust-chrono-0.4" ,rust-chrono-0.4)
-        ("rust-foreign-types-shared-0.1" ,rust-foreign-types-shared-0.1)
-        ("rust-once-cell-1" ,rust-once-cell-1)
-        ("rust-openssl-0.10" ,rust-openssl-0.10)
-        ("rust-openssl-sys-0.9" ,rust-openssl-sys-0.9)
-        ("rust-ouroboros-0.15" ,rust-ouroboros-0.15)
-        ("rust-pem-1" ,rust-pem-1)
-        ("rust-pyo3-0.15" ,rust-pyo3-0.15))))
+        ("rust-foreign-types" ,rust-foreign-types-0.3)
+        ("rust-foreign-types-shared" ,rust-foreign-types-shared-0.1)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-openssl" ,rust-openssl-0.10)
+        ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+        ("rust-ouroboros" ,rust-ouroboros-0.15)
+        ("rust-pem" ,rust-pem-1)
+        ("rust-pyo3" ,rust-pyo3-0.18))))
     (native-inputs (list pkg-config python python-cffi))
     ;; XXX: Adding rust-openssl-sys-0.9 is needed because #:cargo-inputs
     ;; doesn't honor propagated-inputs.
@@ -614,14 +613,14 @@ ciphers, message digests and key derivation functions.")
 (define-public python-pyopenssl
   (package
     (name "python-pyopenssl")
-    (version "23.1.1")
+    (version "23.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyOpenSSL" version))
        (sha256
         (base32
-         "1dxhip610zw1j2bz35g1w1h7vh374g0bnzn4nsqj65n6pswrh544"))))
+         "1b4bkcpzhmablf592g21rq3l8apbhklp6wcwlvgfflm4algr6vr7"))))
     (build-system python-build-system)
     (arguments
      (list

@@ -16,6 +16,7 @@
 ;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Jim Newsome <jnewsome@torproject.org>
 ;;; Copyright © 2022 Mark H Weaver <mhw@netris.org>
+;;; Copyright © 2023 Fries <fries1234@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -706,6 +707,92 @@ safety and thread safety guarantees.")
   (rust-bootstrapped-package
    rust-1.67 "1.68.2" "15ifyd5jj8rd979dkakp887hgmhndr68pqaqvd2hqkfdywirqcwk"))
 
+(define rust-1.69
+  (let ((base-rust
+          (rust-bootstrapped-package
+            rust-1.68 "1.69.0"
+            "03zn7kx5bi5mdfsqfccj4h8gd6abm7spj0kjsfxwlv5dcwc9f1gv")))
+    (package
+      (inherit base-rust)
+      (source
+        (origin
+          (inherit (package-source base-rust))
+          (snippet
+           '(begin
+              (for-each delete-file-recursively
+                        '("src/llvm-project"
+                          "vendor/tikv-jemalloc-sys/jemalloc"))
+              ;; Also remove the bundled (mostly Windows) libraries.
+              (for-each delete-file
+                        (find-files "vendor" "\\.(a|dll|exe|lib)$")))))))))
+
+(define rust-1.70
+  (let ((base-rust
+         (rust-bootstrapped-package
+          rust-1.69 "1.70.0"
+                      "0z6j7d0ni0rmfznv0w3mrf882m11kyh51g2bxkj40l3s1c0axgxj")))
+   (package
+     (inherit base-rust)
+     (source
+      (origin
+        (inherit (package-source base-rust))
+        ;; Rust 1.70 adds the rustix library which depends on the vendored
+        ;; fd-lock crate.  The fd-lock crate uses Outline assembly which expects
+        ;; a precompiled static library.  Enabling the "cc" feature tells the
+        ;; build.rs script to compile the assembly files instead of searching
+        ;; for a precompiled library.
+        (patches (search-patches "rust-1.70-fix-rustix-build.patch")))))))
+
+(define rust-1.71
+  (let ((base-rust
+          (rust-bootstrapped-package
+           rust-1.70 "1.71.1" "0bj79syjap1kgpg9pc0r4jxc0zkxwm6phjf3digsfafms580vabg")))
+    (package
+      (inherit base-rust)
+      (arguments
+       (substitute-keyword-arguments (package-arguments base-rust)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (replace 'patch-cargo-checksums
+               (lambda _
+                 (substitute* (cons* "Cargo.lock"
+                                     "src/bootstrap/Cargo.lock"
+                                     (find-files "src/tools" "Cargo.lock"))
+                   (("(checksum = )\".*\"" all name)
+                    (string-append name "\"" ,%cargo-reference-hash "\"")))
+                 (generate-all-checksums "vendor"))))))))))
+
+(define rust-1.72
+  (let ((base-rust
+          (rust-bootstrapped-package
+           rust-1.71 "1.72.1" "15gqd1jzhnc16a7gjmav4x1v83jjbzyjh1gvcdfvpkajd9gq8j3z")))
+    (package
+      (inherit base-rust)
+      (source
+        (origin
+          (inherit (package-source base-rust))
+          (snippet
+           '(begin
+              (for-each delete-file-recursively
+                        '("src/llvm-project"
+                          "vendor/tikv-jemalloc-sys/jemalloc"))
+              ;; Remove vendored dynamically linked libraries.
+              ;; find . -not -type d -executable -exec file {} \+ | grep ELF
+              ;; Also remove the bundled (mostly Windows) libraries.
+              (for-each delete-file
+                        (find-files "vendor" "\\.(a|dll|exe|lib)$"))
+              ;; Adjust rustc_driver to explicitly use rustix with libc backend.
+              (substitute* "compiler/rustc_driver/Cargo.toml"
+                (("rustix = \"=0.37.11\"")
+                 (string-append "rustix = { version = \"=0.37.11\","
+                                " features = [\"use-libc\"] }"))))))))))
+
+(define (make-ignore-test-list strs)
+  "Function to make creating a list to ignore tests a bit easier."
+  (map (lambda (str)
+    `((,str) (string-append "#[ignore]\n" ,str)))
+    strs))
+
 ;;; Note: Only the latest version of Rust is supported and tested.  The
 ;;; intermediate rusts are built for bootstrapping purposes and should not
 ;;; be relied upon.  This is to ease maintenance and reduce the time
@@ -714,10 +801,10 @@ safety and thread safety guarantees.")
 ;;; Here we take the latest included Rust, make it public, and re-enable tests
 ;;; and extra components such as rustfmt.
 (define-public rust
-  (let ((base-rust rust-1.68))
+  (let ((base-rust rust-1.70))
     (package
       (inherit base-rust)
-      (outputs (cons "rustfmt" (package-outputs base-rust)))
+      (outputs (cons* "rust-src" "tools" (package-outputs base-rust)))
       (arguments
        (substitute-keyword-arguments (package-arguments base-rust)
          ((#:tests? _ #f)
@@ -738,52 +825,36 @@ safety and thread safety guarantees.")
                  (substitute* "src/tools/compiletest/src/runtest.rs"
                    (("\"-nx\".as_ref\\(\\), ")
                     ""))))
-             (add-after 'unpack 'patch-cargo-env-shebang
-               (lambda _
-                 (substitute* '("src/tools/cargo/tests/testsuite/build.rs"
-                                "src/tools/cargo/tests/testsuite/fix.rs")
-                   ;; The cargo *_wrapper tests set RUSTC.*WRAPPER environment
-                   ;; variable which points to /usr/bin/env.  Since it's not a
-                   ;; shebang, it needs to be manually patched.
-                   (("/usr/bin/env")
-                    (which "env")))))
              (add-after 'unpack 'disable-tests-requiring-git
                (lambda _
-                 (substitute* "src/tools/cargo/tests/testsuite/new.rs"
-                   (("fn author_prefers_cargo")
-                    "#[ignore]\nfn author_prefers_cargo")
-                   (("fn finds_author_git")
-                    "#[ignore]\nfn finds_author_git")
-                   (("fn finds_local_author_git")
-                    "#[ignore]\nfn finds_local_author_git"))))
+                 (substitute* "src/tools/cargo/tests/testsuite/git.rs"
+                   ,@(make-ignore-test-list
+                      '("fn fetch_downloads_with_git2_first_")))))
              (add-after 'unpack 'disable-tests-requiring-mercurial
                (lambda _
-                 (substitute*
-                   "src/tools/cargo/tests/testsuite/init/simple_hg_ignore_exists/mod.rs"
-                   (("fn simple_hg_ignore_exists")
-                    "#[ignore]\nfn simple_hg_ignore_exists"))
-                 (substitute*
-                   "src/tools/cargo/tests/testsuite/init/mercurial_autodetect/mod.rs"
-                   (("fn mercurial_autodetect")
-                    "#[ignore]\nfn mercurial_autodetect"))))
+                 (with-directory-excursion "src/tools/cargo/tests/testsuite/init"
+                   (substitute* '("mercurial_autodetect/mod.rs"
+                                  "simple_hg_ignore_exists/mod.rs")
+                     ,@(make-ignore-test-list
+                        '("fn case"))))))
              (add-after 'unpack 'disable-tests-broken-on-aarch64
                (lambda _
                  (with-directory-excursion "src/tools/cargo/tests/testsuite/"
                    (substitute* "build_script_extra_link_arg.rs"
-                     (("^fn build_script_extra_link_arg_bin_single" m)
-                      (string-append "#[ignore]\n" m)))
+                     ,@(make-ignore-test-list
+                        '("fn build_script_extra_link_arg_bin_single")))
                    (substitute* "build_script.rs"
-                     (("^fn env_test" m)
-                      (string-append "#[ignore]\n" m)))
+                     ,@(make-ignore-test-list
+                        '("fn env_test")))
                    (substitute* "collisions.rs"
-                     (("^fn collision_doc_profile_split" m)
-                      (string-append "#[ignore]\n" m)))
+                     ,@(make-ignore-test-list
+                        '("fn collision_doc_profile_split")))
                    (substitute* "concurrent.rs"
-                     (("^fn no_deadlock_with_git_dependencies" m)
-                      (string-append "#[ignore]\n" m)))
+                     ,@(make-ignore-test-list
+                        '("fn no_deadlock_with_git_dependencies")))
                    (substitute* "features2.rs"
-                     (("^fn dep_with_optional_host_deps_activated" m)
-                      (string-append "#[ignore]\n" m))))))
+                     ,@(make-ignore-test-list
+                        '("fn dep_with_optional_host_deps_activated"))))))
              (add-after 'unpack 'patch-command-exec-tests
                ;; This test suite includes some tests that the stdlib's
                ;; `Command` execution properly handles in situations where
@@ -791,16 +862,14 @@ safety and thread safety guarantees.")
                ;; since we don't have `echo` available at its usual FHS
                ;; location.
                (lambda _
-                 (substitute* (match (find-files "." "^command-exec.rs$")
-                                ((file) file))
+                 (substitute* "tests/ui/command/command-exec.rs"
                    (("Command::new\\(\"echo\"\\)")
                     (format #f "Command::new(~s)" (which "echo"))))))
              (add-after 'unpack 'patch-command-uid-gid-test
                (lambda _
-                 (substitute* (match (find-files "." "^command-uid-gid.rs$")
-                                ((file) file))
-                   (("/bin/sh")
-                    (which "sh")))))
+                 (substitute* "tests/ui/command/command-uid-gid.rs"
+                   (("/bin/sh") (which "sh"))
+                   (("/bin/ls") (which "ls")))))
              (add-after 'unpack 'skip-shebang-tests
                ;; This test make sure that the parser behaves properly when a
                ;; source file starts with a shebang. Unfortunately, the
@@ -812,26 +881,29 @@ safety and thread safety guarantees.")
              (add-after 'unpack 'patch-process-tests
                (lambda* (#:key inputs #:allow-other-keys)
                  (let ((bash (assoc-ref inputs "bash")))
-                   (substitute* "library/std/src/process/tests.rs"
-                     (("\"/bin/sh\"")
-                      (string-append "\"" bash "/bin/sh\"")))
-                   ;; The three tests which are known to fail upstream on QEMU
-                   ;; emulation on aarch64 and riscv64 also fail on x86_64 in Guix's
-                   ;; build system. Skip them on all builds.
-                   (substitute* "library/std/src/sys/unix/process/process_common/tests.rs"
-                     (("target_arch = \"arm\",") "target_os = \"linux\",")))))
+                   (with-directory-excursion "library/std/src"
+                     (substitute* "process/tests.rs"
+                       (("\"/bin/sh\"")
+                        (string-append "\"" bash "/bin/sh\"")))
+                     ;; The three tests which are known to fail upstream on QEMU
+                     ;; emulation on aarch64 and riscv64 also fail on x86_64 in
+                     ;; Guix's build system.  Skip them on all builds.
+                     (substitute* "sys/unix/process/process_common/tests.rs"
+                       ;; We can't use make-ignore-test-list because we will get
+                       ;; build errors due to the double [ignore] block.
+                       (("target_arch = \"arm\"" arm)
+                        (string-append "target_os = \"linux\",\n"
+                                       "        " arm)))))))
              (add-after 'unpack 'disable-interrupt-tests
                (lambda _
                  ;; This test hangs in the build container; disable it.
-                 (substitute* (match (find-files "." "^freshness.rs$")
-                                ((file) file))
-                   (("fn linking_interrupted")
-                    "#[ignore]\nfn linking_interrupted"))
+                 (substitute* "src/tools/cargo/tests/testsuite/freshness.rs"
+                   ,@(make-ignore-test-list
+                      '("fn linking_interrupted")))
                  ;; Likewise for the ctrl_c_kills_everyone test.
-                 (substitute* (match (find-files "." "^death.rs$")
-                                ((file) file))
-                   (("fn ctrl_c_kills_everyone")
-                    "#[ignore]\nfn ctrl_c_kills_everyone"))))
+                 (substitute* "src/tools/cargo/tests/testsuite/death.rs"
+                   ,@(make-ignore-test-list
+                      '("fn ctrl_c_kills_everyone")))))
              (add-after 'unpack 'adjust-rpath-values
                ;; This adds %output:out to rpath, allowing us to install utilities in
                ;; different outputs while reusing the shared libraries.
@@ -851,18 +923,20 @@ safety and thread safety guarantees.")
                       (string-append all
                                      "gdb = \"" gdb "/bin/gdb\"\n"))))))
              (replace 'build
-               ;; Phase overridden to also build rustfmt.
+               ;; Phase overridden to also build more tools.
                (lambda* (#:key parallel-build? #:allow-other-keys)
                  (let ((job-spec (string-append
                                   "-j" (if parallel-build?
                                            (number->string (parallel-job-count))
                                            "1"))))
                    (invoke "./x.py" job-spec "build"
-                           "library/std" ;rustc
+                           "library/std"    ;rustc
                            "src/tools/cargo"
+                           "src/tools/clippy"
+                           "src/tools/rust-analyzer"
                            "src/tools/rustfmt"))))
              (replace 'check
-               ;; Phase overridden to also test rustfmt.
+               ;; Phase overridden to also test more tools.
                (lambda* (#:key tests? parallel-build? #:allow-other-keys)
                  (when tests?
                    (let ((job-spec (string-append
@@ -872,9 +946,11 @@ safety and thread safety guarantees.")
                      (invoke "./x.py" job-spec "test" "-vv"
                              "library/std"
                              "src/tools/cargo"
+                             "src/tools/clippy"
+                             "src/tools/rust-analyzer"
                              "src/tools/rustfmt")))))
              (replace 'install
-               ;; Phase overridden to also install rustfmt.
+               ;; Phase overridden to also install more tools.
                (lambda* (#:key outputs #:allow-other-keys)
                  (invoke "./x.py" "install")
                  (substitute* "config.toml"
@@ -883,10 +959,26 @@ safety and thread safety guarantees.")
                     (format #f "prefix = ~s" (assoc-ref outputs "cargo"))))
                  (invoke "./x.py" "install" "cargo")
                  (substitute* "config.toml"
-                   ;; Adjust the prefix to the 'rustfmt' output.
+                   ;; Adjust the prefix to the 'tools' output.
                    (("prefix = \"[^\"]*\"")
-                    (format #f "prefix = ~s" (assoc-ref outputs "rustfmt"))))
-                 (invoke "./x.py" "install" "rustfmt")))))))
+                    (format #f "prefix = ~s" (assoc-ref outputs "tools"))))
+                 (invoke "./x.py" "install" "clippy")
+                 (invoke "./x.py" "install" "rust-analyzer")
+                 (invoke "./x.py" "install" "rustfmt")))
+             (add-after 'install 'install-rust-src
+               (lambda* (#:key outputs #:allow-other-keys)
+                 (let ((out (assoc-ref outputs "rust-src"))
+                       (dest "/lib/rustlib/src/rust"))
+                   (mkdir-p (string-append out dest))
+                   (copy-recursively "library" (string-append out dest "/library"))
+                   (copy-recursively "src" (string-append out dest "/src")))))
+             (add-after 'install-rust-src 'wrap-rust-analyzer
+               (lambda* (#:key outputs #:allow-other-keys)
+                 (wrap-program (string-append (assoc-ref outputs "tools")
+                                              "/bin/rust-analyzer")
+                   `("RUST_SRC_PATH" ":" =
+                     (,(string-append (assoc-ref outputs "rust-src")
+                                      "/lib/rustlib/src/rust/library"))))))))))
       ;; Add test inputs.
       (native-inputs (cons* `("gdb" ,gdb/pinned)
                             `("procps" ,procps)

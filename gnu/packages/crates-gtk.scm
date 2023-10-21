@@ -168,8 +168,42 @@
        #:cargo-development-inputs
        (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
+(define-public rust-cairo-rs-0.17
+  (package
+    (name "rust-cairo-rs")
+    (version "0.17.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cairo-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02lz7kvml4m6fx02hy1pgk6ysils9di8n75m166kcpla0b206dmb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-cairo-sys-rs" ,rust-cairo-sys-rs-0.17)
+        ("rust-freetype-rs" ,rust-freetype-rs-0.32)
+        ("rust-glib" ,rust-glib-0.17)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-float-eq" ,rust-float-eq-1)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list cairo))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "Rust bindings for the Cairo library")
+    (description "Rust bindings for the Cairo library")
+    (license license:expat)))
+
 (define-public rust-cairo-rs-0.15
   (package
+    (inherit rust-cairo-rs-0.17)
     (name "rust-cairo-rs")
     (version "0.15.12")
     (source
@@ -179,7 +213,6 @@
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1g396fdz8crf74dmmjarcsdbsm8qgxy3a5x9kw6m2d9xn28y6vn7"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
@@ -189,15 +222,7 @@
         ("rust-libc" ,rust-libc-0.2)
         ("rust-thiserror" ,rust-thiserror-1))
        #:cargo-development-inputs
-       (("rust-tempfile" ,rust-tempfile-3))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list cairo))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "Rust bindings for the Cairo library")
-    (description "Rust bindings for the Cairo library")
-    (license license:expat)))
+       (("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-cairo-rs-0.14
   (package
@@ -277,21 +302,21 @@
        (("rust-gtk-rs-lgpl-docs" ,rust-gtk-rs-lgpl-docs-0.1)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
-(define-public rust-cairo-sys-rs-0.15
+(define-public rust-cairo-sys-rs-0.17
   (package
     (name "rust-cairo-sys-rs")
-    (version "0.15.1")
+    (version "0.17.10")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cairo-sys-rs" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1j6k4pps3dv6g0vlpmxc2xyk0s40vj2wpzi55lbwjspmpqlx8m9w"))))
+        (base32 "1ccw4z59dx60khngx79g64c75abfwy7wnq57h2z82j7vn5k0q7b9"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-glib-sys" ,rust-glib-sys-0.15)
+       (("rust-glib-sys" ,rust-glib-sys-0.17)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-system-deps" ,rust-system-deps-6)
         ("rust-winapi" ,rust-winapi-0.3)
@@ -304,6 +329,26 @@
     (synopsis "FFI bindings to libcairo")
     (description "This package provides FFI bindings to libcairo.")
     (license license:expat)))
+
+(define-public rust-cairo-sys-rs-0.15
+  (package
+    (inherit rust-cairo-sys-rs-0.17)
+    (name "rust-cairo-sys-rs")
+    (version "0.15.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cairo-sys-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1j6k4pps3dv6g0vlpmxc2xyk0s40vj2wpzi55lbwjspmpqlx8m9w"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-glib-sys" ,rust-glib-sys-0.15)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-system-deps" ,rust-system-deps-6)
+        ("rust-winapi" ,rust-winapi-0.3)
+        ("rust-x11" ,rust-x11-2))))))
 
 (define-public rust-cairo-sys-rs-0.14
   (package
@@ -463,8 +508,41 @@
        #:cargo-development-inputs
        (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
+(define-public rust-gdk-pixbuf-0.17
+  (package
+    (name "rust-gdk-pixbuf")
+    (version "0.17.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gdk-pixbuf" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05q7ajsp2z8xi355h26k7lvq7n3lj9xm61vhn045g3238v46npb9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; `Errors` doesn't implement `std::fmt::Display`
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-gdk-pixbuf-sys" ,rust-gdk-pixbuf-sys-0.17)
+        ("rust-gio" ,rust-gio-0.17)
+        ("rust-glib" ,rust-glib-0.17)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-once-cell" ,rust-once-cell-1))
+       #:cargo-development-inputs
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list gdk-pixbuf))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "Rust bindings for the GdkPixbuf library")
+    (description "Rust bindings for the @code{GdkPixbuf} library")
+    (license license:expat)))
+
 (define-public rust-gdk-pixbuf-0.15
   (package
+    (inherit rust-gdk-pixbuf-0.17)
     (name "rust-gdk-pixbuf")
     (version "0.15.11")
     (source
@@ -474,7 +552,6 @@
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "16k1z21r76m620z61kfmgid1n6s8dnxpa4zlrppcr6dhr2fdsf5d"))))
-    (build-system cargo-build-system)
     (arguments
      `(;; FIXME: error[E0277]: `Errors` doesn't implement `std::fmt::Display`
        #:tests? #f
@@ -485,15 +562,7 @@
         ("rust-glib" ,rust-glib-0.15)
         ("rust-libc" ,rust-libc-0.2))
        #:cargo-development-inputs
-       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list gdk-pixbuf))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "Rust bindings for the GdkPixbuf library")
-    (description "Rust bindings for the GdkPixbuf library")
-    (license license:expat)))
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
 (define-public rust-gdk-pixbuf-0.14
   (package
@@ -570,25 +639,23 @@
        #:cargo-development-inputs
        (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
-(define-public rust-gdk-pixbuf-sys-0.15
+(define-public rust-gdk-pixbuf-sys-0.17
   (package
     (name "rust-gdk-pixbuf-sys")
-    (version "0.15.10")
+    (version "0.17.10")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gdk-pixbuf-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "19q2qjrzmmgc7bbs59sk6k0sv3xhpmnk9a2h0cajfr95g19jy2ql"))))
+        (base32 "1jvh91lzanr1a8c5h6ya8i4jzx7ifs8mjxjnmg8dfriw24yfr1cj"))))
     (build-system cargo-build-system)
     (arguments
-     `(;#:skip-build?
-       ;#t
-       #:cargo-inputs
-       (("rust-gio-sys" ,rust-gio-sys-0.15)
-        ("rust-glib-sys" ,rust-glib-sys-0.15)
-        ("rust-gobject-sys" ,rust-gobject-sys-0.15)
+     `(#:cargo-inputs
+       (("rust-gio-sys" ,rust-gio-sys-0.17)
+        ("rust-glib-sys" ,rust-glib-sys-0.17)
+        ("rust-gobject-sys" ,rust-gobject-sys-0.17)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-system-deps" ,rust-system-deps-6))
        #:cargo-development-inputs
@@ -602,6 +669,29 @@
     (synopsis "FFI bindings to libgdk_pixbuf-2.0")
     (description "This package provides FFI bindings to @code{libgdk_pixbuf-2.0}.")
     (license license:expat)))
+
+(define-public rust-gdk-pixbuf-sys-0.15
+  (package
+    (inherit rust-gdk-pixbuf-sys-0.17)
+    (name "rust-gdk-pixbuf-sys")
+    (version "0.15.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gdk-pixbuf-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19q2qjrzmmgc7bbs59sk6k0sv3xhpmnk9a2h0cajfr95g19jy2ql"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-gio-sys" ,rust-gio-sys-0.15)
+        ("rust-glib-sys" ,rust-glib-sys-0.15)
+        ("rust-gobject-sys" ,rust-gobject-sys-0.15)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-system-deps" ,rust-system-deps-6))
+       #:cargo-development-inputs
+       (("rust-shell-words" ,rust-shell-words-1)
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-gdk-pixbuf-sys-0.14
   (package
@@ -768,8 +858,50 @@
        (("rust-shell-words" ,rust-shell-words-0.1)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-gio-0.17
+  (package
+    (name "rust-gio")
+    (version "0.17.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gio" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02nkqpq1a6ikzhv5x4nyfvzx8zk5dkjsjm50ns4qdybwjf93x5x6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; `Errors` doesn't implement `std::fmt::Display`
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-futures-channel" ,rust-futures-channel-0.3)
+        ("rust-futures-core" ,rust-futures-core-0.3)
+        ("rust-futures-io" ,rust-futures-io-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-gio-sys" ,rust-gio-sys-0.17)
+        ("rust-glib" ,rust-glib-0.17)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-futures" ,rust-futures-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-gir-format-check" ,rust-gir-format-check-0.1)
+        ("rust-serial-test" ,rust-serial-test-1))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list glib))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "Rust bindings for the Gio library")
+    (description "Rust bindings for the Gio library")
+    (license license:expat)))
+
 (define-public rust-gio-0.15
   (package
+    (inherit rust-gio-0.17)
     (name "rust-gio")
     (version "0.15.12")
     (source
@@ -779,7 +911,6 @@
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0fr8qiqjf9yzl8867kgqdsxpkcx2jrns3xwmlf0jfiid668brzb8"))))
-    (build-system cargo-build-system)
     (arguments
      `(;; FIXME: error[E0277]: `Errors` doesn't implement `std::fmt::Display`
        #:tests? #f
@@ -797,15 +928,7 @@
        #:cargo-development-inputs
        (("rust-futures-util" ,rust-futures-util-0.3)
         ("rust-gir-format-check" ,rust-gir-format-check-0.1)
-        ("rust-serial-test" ,rust-serial-test-0.6))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list glib))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "Rust bindings for the Gio library")
-    (description "Rust bindings for the Gio library")
-    (license license:expat)))
+        ("rust-serial-test" ,rust-serial-test-0.6))))))
 
 (define-public rust-gio-0.14
   (package
@@ -1272,14 +1395,14 @@
   (package
     (inherit rust-glib-macros-0.17)
     (name "rust-glib-macros")
-    (version "0.15.11")
+    (version "0.15.13")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "glib-macros" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0r3cr0c79rs91z0sps089nsf8ppnm8agp48qwwqlkc32lqqq39i5"))))
+        (base32 "0jiwvywmkqhih6glipj1c7aylwfr738jid8nmjr4yvx2dygsxihh"))))
     (arguments
      `(;; XXX: Circular dependency on rust-glib??
        #:tests? #f
@@ -1813,8 +1936,42 @@
 library.")
     (license license:expat)))
 
+(define-public rust-pango-0.17
+  (package
+    (name "rust-pango")
+    (version "0.17.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pango" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0j0xj9yw81qivqb0y34j9c5azjsdspxp1zzpvxi1zri0qrplbgim"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(;; FIXME: error[E0277]: `Errors` doesn't implement `std::fmt::Display`
+       #:tests? #f
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-gio" ,rust-gio-0.17)
+        ("rust-glib" ,rust-glib-0.17)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-pango-sys" ,rust-pango-sys-0.17))
+       #:cargo-development-inputs
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list pango))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "Rust bindings for the Pango library")
+    (description "This package provides Rust bindings for the Pango library.")
+    (license license:expat)))
+
 (define-public rust-pango-0.15
   (package
+    (inherit rust-pango-0.17)
     (name "rust-pango")
     (version "0.15.10")
     (source
@@ -1824,7 +1981,6 @@ library.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0ksf85fqkw4y5pf21p84g5xn4fnqn21cbrmx2d9yx6k591ah9r12"))))
-    (build-system cargo-build-system)
     (arguments
      `(;; FIXME: error[E0277]: `Errors` doesn't implement `std::fmt::Display`
        #:tests? #f
@@ -1835,15 +1991,7 @@ library.")
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-pango-sys" ,rust-pango-sys-0.15))
        #:cargo-development-inputs
-       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list pango))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "Rust bindings for the Pango library")
-    (description "Rust bindings for the Pango library")
-    (license license:expat)))
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
 (define-public rust-pango-0.14
   (package
@@ -1923,22 +2071,22 @@ library.")
        #:cargo-development-inputs
        (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
-(define-public rust-pango-sys-0.15
+(define-public rust-pango-sys-0.17
   (package
     (name "rust-pango-sys")
-    (version "0.15.10")
+    (version "0.17.10")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pango-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1an3c931kbkr08n9d9d1dapsq3n26zs0xn4ixn11jrp4rn0h186j"))))
+        (base32 "15aindwdxsydzvqcvhc9ysamx5v1jmq8qbs61ncxic2h72grz9ix"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-glib-sys" ,rust-glib-sys-0.15)
-        ("rust-gobject-sys" ,rust-gobject-sys-0.15)
+       (("rust-glib-sys" ,rust-glib-sys-0.17)
+        ("rust-gobject-sys" ,rust-gobject-sys-0.17)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-system-deps" ,rust-system-deps-6))
        #:cargo-development-inputs
@@ -1952,6 +2100,28 @@ library.")
     (synopsis "FFI bindings to libpango-1.0")
     (description "This package provides FFI bindings to @code{libpango-1.0}.")
     (license license:expat)))
+
+(define-public rust-pango-sys-0.15
+  (package
+    (inherit rust-pango-sys-0.17)
+    (name "rust-pango-sys")
+    (version "0.15.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pango-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1an3c931kbkr08n9d9d1dapsq3n26zs0xn4ixn11jrp4rn0h186j"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-glib-sys" ,rust-glib-sys-0.15)
+        ("rust-gobject-sys" ,rust-gobject-sys-0.15)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-system-deps" ,rust-system-deps-6))
+       #:cargo-development-inputs
+       (("rust-shell-words" ,rust-shell-words-1)
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-pango-sys-0.14
   (package
@@ -2017,8 +2187,43 @@ library.")
        (("rust-shell-words" ,rust-shell-words-0.1)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-pangocairo-0.17
+  (package
+    (name "rust-pangocairo")
+    (version "0.17.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pangocairo" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kr2b31034b8zif4r3lf4rniqphk2bxi2q7n8iwq2wrf3k5jkgw6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(;; FIXME: error[E0277]: `Errors` doesn't implement `std::fmt::Display`
+       #:tests? #f
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-cairo-rs" ,rust-cairo-rs-0.17)
+        ("rust-glib" ,rust-glib-0.17)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-pango" ,rust-pango-0.17)
+        ("rust-pangocairo-sys" ,rust-pangocairo-sys-0.17))
+       #:cargo-development-inputs
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list pango))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "Rust bindings for the PangoCairo library")
+    (description
+     "This package provides Rust bindings for the @code{PangoCairo} library.")
+    (license license:expat)))
+
 (define-public rust-pangocairo-0.15
   (package
+    (inherit rust-pangocairo-0.17)
     (name "rust-pangocairo")
     (version "0.15.1")
     (source
@@ -2029,7 +2234,6 @@ library.")
         (sha256
          (base32
           "0rjk0clrjxah4kc0kybn7l7bxa5m5kpxkihxc2i7a6hx3xfa8xkq"))))
-    (build-system cargo-build-system)
     (arguments
      `(;; FIXME: error[E0277]: `Errors` doesn't implement `std::fmt::Display`
        #:tests? #f
@@ -2041,37 +2245,26 @@ library.")
         ("rust-pango" ,rust-pango-0.15)
         ("rust-pangocairo-sys" ,rust-pangocairo-sys-0.15))
        #:cargo-development-inputs
-       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list pango))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "Rust bindings for the PangoCairo library")
-    (description
-     "Rust bindings for the PangoCairo library.")
-    (license license:expat)))
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
-(define-public rust-pangocairo-sys-0.15
+(define-public rust-pangocairo-sys-0.17
   (package
     (name "rust-pangocairo-sys")
-    (version "0.15.1")
+    (version "0.17.10")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "pangocairo-sys" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "154llaawy60zh8fkw2yq0r31ynpmqlsr7brryzaq2v4ijijp9kvq"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pangocairo-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ymr4aqrdpysz0rh383s4h6hj8nbkyj7n4723f45zzzqkf6x7pwl"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-cairo-sys-rs" ,rust-cairo-sys-rs-0.15)
-        ("rust-glib-sys" ,rust-glib-sys-0.15)
+       (("rust-cairo-sys-rs" ,rust-cairo-sys-rs-0.17)
+        ("rust-glib-sys" ,rust-glib-sys-0.17)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-pango-sys" ,rust-pango-sys-0.15)
+        ("rust-pango-sys" ,rust-pango-sys-0.17)
         ("rust-system-deps" ,rust-system-deps-6))
        #:cargo-development-inputs
        (("rust-shell-words" ,rust-shell-words-1)
@@ -2083,8 +2276,33 @@ library.")
      (list cairo glib pango))
     (home-page "https://gtk-rs.org/")
     (synopsis "FFI bindings to libgtk-3")
-    (description "This package provides FFI bindings to libgtk-3.")
+    (description "This package provides FFI bindings to @code{PangoCairo}.")
     (license license:expat)))
+
+(define-public rust-pangocairo-sys-0.15
+  (package
+    (inherit rust-pangocairo-sys-0.17)
+    (name "rust-pangocairo-sys")
+    (version "0.15.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "pangocairo-sys" version))
+        (file-name
+         (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "154llaawy60zh8fkw2yq0r31ynpmqlsr7brryzaq2v4ijijp9kvq"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cairo-sys-rs" ,rust-cairo-sys-rs-0.15)
+        ("rust-glib-sys" ,rust-glib-sys-0.15)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-pango-sys" ,rust-pango-sys-0.15)
+        ("rust-system-deps" ,rust-system-deps-6))
+       #:cargo-development-inputs
+       (("rust-shell-words" ,rust-shell-words-1)
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-soup-sys-0.10
   (package

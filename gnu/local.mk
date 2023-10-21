@@ -1945,6 +1945,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ruby-nokogiri.patch			\
   %D%/packages/patches/rustc-1.54.0-src.patch			\
   %D%/packages/patches/rust-1.64-fix-riscv64-bootstrap.patch	\
+  %D%/packages/patches/rust-1.70-fix-rustix-build.patch	\
   %D%/packages/patches/rust-ring-0.16-missing-files.patch	\
   %D%/packages/patches/rust-ring-0.16-test-files.patch		\
   %D%/packages/patches/i3status-rust-enable-unstable-features.patch	\
@@ -1952,7 +1953,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/rust-ndarray-0.13-remove-blas-src.patch	\
   %D%/packages/patches/rust-ndarray-0.14-remove-blas-src.patch	\
   %D%/packages/patches/rust-nettle-disable-vendor.patch		 \
-  %D%/packages/patches/rust-openssl-sys-no-vendor.patch	\
   %D%/packages/patches/rust-webbrowser-remove-unsupported-os.patch	\
   %D%/packages/patches/rust-wl-clipboard-rs-newer-wl.patch      \
   %D%/packages/patches/rw-igraph-0.10.patch			\

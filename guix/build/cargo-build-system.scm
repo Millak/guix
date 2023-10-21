@@ -111,6 +111,13 @@ Cargo.toml file present at its root."
 (define (rust-package? name)
   (string-prefix? "rust-" name))
 
+(define* (check-for-pregenerated-files #:rest _)
+  "Check the source code for files which are known to generally be bundled
+libraries or executables."
+  (let ((pregenerated-files (find-files "." "\\.(a|dll|dylib|exe|lib)$")))
+    (when (not (null-list? pregenerated-files))
+      (error "Possible pre-generated files found:" pregenerated-files))))
+
 (define* (configure #:key inputs
                     (vendor-dir "guix-vendor")
                     #:allow-other-keys)
@@ -224,10 +231,10 @@ directory = '" port)
           (for-each
             (lambda (file)
               (make-file-writable file)
-              ;; Strip the hash and replace '.tar.gz' with '.crate'.
+              ;; Strip the hash and rust prefix and replace '.tar.gz' with '.crate'.
               (rename-file file
                            (string-append (string-drop-right
-                                            (string-drop file 35)
+                                            (string-drop file 40)
                                             (string-length ".tar.gz"))
                                           ".crate")))
             (find-files "." "\\.tar\\.gz$"))))
@@ -235,7 +242,32 @@ directory = '" port)
         ;;error: invalid inclusion of reserved file name Cargo.toml.orig in package source
         (when (file-exists? "Cargo.toml.orig")
           (delete-file "Cargo.toml.orig"))
-        (apply invoke `("cargo" "package" ,@cargo-package-flags))))
+        (apply invoke `("cargo" "package" ,@cargo-package-flags))
+
+        ;; Then unpack the crate, reset the timestamp of all contained files, and
+        ;; repack them.  This is necessary to ensure that they are reproducible.
+        (with-directory-excursion "target/package"
+          (for-each
+            (lambda (crate)
+              (invoke "tar" "xf" crate)
+              (delete-file crate)
+              ;; Some of the crate names have underscores, so we need to
+              ;; search the current directory to find the unpacked crate.
+              (let ((dir
+                      (car (scandir "."
+                                    (lambda (file)
+                                      (and (not (member file '("." "..")))
+                                           (not (string-suffix? ".crate" file))))))))
+                ;; XXX: copied from (gnu build install)
+                (for-each (lambda (file)
+                            (let ((s (lstat file)))
+                              (unless (eq? (stat:type s) 'symlink)
+                                (utime file 0 0 0 0))))
+                          (find-files dir #:directories? #t))
+                (apply invoke "tar" "czf" (string-append dir ".crate")
+                       (find-files dir #:directories? #t))
+                (delete-file-recursively dir)))
+            (find-files "." "\\.crate$")))))
     (format #t "Not installing cargo sources, skipping `cargo package`.~%"))
   #t)
 
@@ -285,7 +317,8 @@ directory = '" port)
     (replace 'check check)
     (replace 'install install)
     (add-after 'build 'package package)
-    (add-after 'unpack 'unpack-rust-crates unpack-rust-crates)
+    (add-after 'unpack 'check-for-pregenerated-files check-for-pregenerated-files)
+    (add-after 'check-for-pregenerated-files 'unpack-rust-crates unpack-rust-crates)
     (add-after 'patch-generated-file-shebangs 'patch-cargo-checksums patch-cargo-checksums)))
 
 (define* (cargo-build #:key inputs (phases %standard-phases)

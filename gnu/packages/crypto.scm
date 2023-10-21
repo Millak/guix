@@ -7,7 +7,7 @@
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017, 2019, 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2017 Pierre Langlois <pierre.langlois@gmx.com>
-;;; Copyright © 2018, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2020, 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018, 2020 Nicolò Balzarotti <nicolo@nixo.xyz>
@@ -258,22 +258,20 @@ OpenBSD tool of the same name.")
 (define-public rust-minisign
   (package
     (name "rust-minisign")
-    (version "0.5.20")
+    (version "0.7.5")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "minisign" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "0xmcvh2snravghaar8igc6b9r3s1snnmf9qam9l3zyhm4987767y"))))
+         (base32 "1lmp83bxdg53c4n35fbwr3rkh6178y75fwsn25hf1kn62f2gbdnj"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-getrandom" ,rust-getrandom-0.1)
-        ("rust-rpassword" ,rust-rpassword-4)
-        ("rust-scrypt" ,rust-scrypt-0.3))))
+       (("rust-getrandom" ,rust-getrandom-0.2)
+        ("rust-rpassword" ,rust-rpassword-7)
+        ("rust-scrypt" ,rust-scrypt-0.11))))
     (home-page "https://github.com/jedisct1/rust-minisign")
     (synopsis "Crate to sign files and verify signatures")
     (description
@@ -1554,36 +1552,37 @@ SHA-3, and BLAKE2.")
 (define-public rust-blake3-1
   (package
     (name "rust-blake3")
-    (version "1.0.0")
-    ;; The crate does not include the reference_impl directory.
+    (version "1.5.0")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/BLAKE3-team/BLAKE3")
-             (commit version)))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (crate-uri "blake3" version))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "09xi7rjyi5hgxyfpias485x5argwqygvfl9sggiw221qjdfxpbdn"))))
+        (base32 "11ysh12zcqq6xkjxh5cbrmnwzalprm3z552i5ff7wm5za9hz0c82"))))
     (build-system cargo-build-system)
     (arguments
      (list
+      #:tests? #f       ; use of undeclared crate or module `reference_impl`
       #:cargo-inputs
       `(("rust-arrayref" ,rust-arrayref-0.3)
         ("rust-arrayvec" ,rust-arrayvec-0.7)
         ("rust-cc" ,rust-cc-1)
         ("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-constant-time-eq" ,rust-constant-time-eq-0.1)
-        ("rust-crypto-mac" ,rust-crypto-mac-0.11)
-        ("rust-digest" ,rust-digest-0.9)
-        ("rust-rayon" ,rust-rayon-1))
+        ("rust-constant-time-eq" ,rust-constant-time-eq-0.3)
+        ("rust-digest" ,rust-digest-0.10)
+        ("rust-memmap2" ,rust-memmap2-0.7)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-zeroize" ,rust-zeroize-1))
       #:cargo-development-inputs
-      `(("rust-cc" ,rust-cc-1)
-        ("rust-hex" ,rust-hex-0.4)
-        ("rust-page-size" ,rust-page-size-0.4)
+      `(("rust-hex" ,rust-hex-0.4)
+        ("rust-hmac" ,rust-hmac-0.12)
+        ("rust-page-size" ,rust-page-size-0.6)
         ("rust-rand" ,rust-rand-0.8)
-        ("rust-rand-chacha" ,rust-rand-chacha-0.3))))
+        ("rust-rand-chacha" ,rust-rand-chacha-0.3)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-tempfile" ,rust-tempfile-3))))
     (home-page "https://github.com/BLAKE3-team/BLAKE3")
     (synopsis "BLAKE3 hash function Rust implementation")
     (description "This crate provides the official Rust implementation of the
@@ -1596,16 +1595,14 @@ SHA-3, and BLAKE2.")
 (define-public b3sum
   (package
     (name "b3sum")
-    ;; Version 1 requires Rust >= 1.51.
-    ;; <https://github.com/BLAKE3-team/BLAKE3/releases/tag/1.0.0>
-    (version "0.3.8")
+    (version "1.5.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "b3sum" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "0h3fz16q5lk6mg7r8kjkjrq5hd4injngn5m7pswjbf2pyzjmg4b4"))))
+         (base32 "05k0vn7gpbvjr925vjc5yzvhiyrmkw9pqmch5fr4ir7s8wiaq2fm"))))
     (build-system cargo-build-system)
     (arguments
       `(;; Install the source so that Cargo.toml is installed, because that is
@@ -1625,10 +1622,10 @@ SHA-3, and BLAKE2.")
                 (install-file "README.md" doc)))))
         #:cargo-inputs
         (("rust-anyhow" ,rust-anyhow-1)
-         ("rust-blake3" ,rust-blake3-0.3)
-         ("rust-clap" ,rust-clap-2)
+         ("rust-blake3" ,rust-blake3-1)
+         ("rust-clap" ,rust-clap-4)
          ("rust-hex" ,rust-hex-0.4)
-         ("rust-memmap" ,rust-memmap-0.7)
+         ("rust-memmap2" ,rust-memmap2-0.7)
          ("rust-rayon" ,rust-rayon-1)
          ("rust-wild" ,rust-wild-2))
         #:cargo-development-inputs

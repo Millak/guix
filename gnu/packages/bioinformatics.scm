@@ -4695,26 +4695,17 @@ accurately delineate genomic rearrangements throughout the genome.")
     (arguments
      (list
       #:install-source? #false          ;fails
-      #:tests? #false                   ;"cargo test" ignores build.rs
+      #:tests? #true
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'prepare-test-files
             (lambda _
               (delete-file "Cargo.lock")
-              (substitute* "liftover-rs/Cargo.toml"
-                (("anyhow = \"1\"") "anyhow = \"1.0.65\""))
               (substitute* "liftover-rs/prepare-test.sh"
                 (("/bin/bash")
                  (string-append #$(this-package-native-input "bash")
                                 "/bin/bash")))
               (invoke "bash" "prepare-test-files.sh")))
-          (add-before 'patch-cargo-checksums 'do-not-build-xz
-            (lambda _
-              ;; Detection of liblzma (in rust-lzma-sys, pulled in by
-              ;; rust-hts-sys) doesn't seem to work, or perhaps it really does
-              ;; request a static build somewhere.
-              (substitute* "guix-vendor/rust-lzma-sys-0.1.17.tar.xz/build.rs"
-                (("if .want_static && .msvc && pkg_config::probe_library\\(\"liblzma\"\\).is_ok\\(\\)") ""))))
           (add-before 'install 'chdir
             (lambda _ (chdir "transanno"))))
       #:cargo-inputs
@@ -4736,7 +4727,8 @@ accurately delineate genomic rearrangements throughout the genome.")
       #:cargo-development-inputs
       `(("rust-clap" ,rust-clap-2)
         ("rust-lazy-static" ,rust-lazy-static-1))))
-    (native-inputs (list bash))
+    (native-inputs (list bash pkg-config))
+    (inputs (list xz))
     (home-page "https://github.com/informationsea/transanno")
     (synopsis "LiftOver tool for new genome assemblies")
     (description "This package provides an accurate VCF/GFF3/GTF LiftOver tool
