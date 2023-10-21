@@ -1,5 +1,9 @@
-#!@GUILE@ \
---no-auto-compile -s
+#!/bin/sh
+# Extra care is taken here to ensure this script can run in most environments,
+# since it is invoked by 'git send-email'.
+pre_inst_env_maybe=
+command -v guix > /dev/null || pre_inst_env_maybe=./pre-inst-env
+exec $pre_inst_env_maybe guix repl -- "$0" "$@"
 !#
 
 ;;; GNU Guix --- Functional package management for GNU
