@@ -4982,7 +4982,7 @@ includes LV2 plugins and a JACK standalone client.")
 (define-public musescore
   (package
     (name "musescore")
-    (version "4.0.2")
+    (version "4.1.1")
     (source
      (origin
        (method git-fetch)
@@ -4991,14 +4991,11 @@ includes LV2 plugins and a JACK standalone client.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1yri94xs4xw0lsvmk5q7bqnpgmdadchfn08r7bb2y07jsi8qgm6w"))
+        (base32 "12h26k9qnsq027gdpch579nchwrqva1ymwm2fj5xmlh0aayrwy4d"))
        (modules '((guix build utils)))
        (snippet
         '(begin
-           ;; Remove unused libraries...
-           (for-each delete-file-recursively
-                     '("thirdparty/freetype"))
-           ;; ... and precompiled binaries.
+           ;; Delete precompiled binaries.
            (delete-file-recursively "src/diagnostics/crashpad_handler")
            (substitute* "src/diagnostics/CMakeLists.txt"
              (("install") "#install"))))))
