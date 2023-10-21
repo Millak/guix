@@ -435,7 +435,7 @@ activation.")))
          ;; after complete logout/reboot.
          (if (file-exists? xdg-runtime-dir)
              (when (claim-first-run flag-file-path)
-               #$@gexps)
+               (begin #$@gexps))            ;GEXPS can be empty, hence 'begin'
              ;; TRANSLATORS: 'on-first-login' is the name of a service and
              ;; shouldn't be translated
              (warning (G_ "XDG_RUNTIME_DIR doesn't exists, on-first-login script
