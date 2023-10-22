@@ -24410,27 +24410,21 @@ by @file{sysexits.h}.")
 (define-public rust-expect-test-1
   (package
     (name "rust-expect-test")
-    (version "1.2.2")
+    (version "1.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "expect-test" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "05nv365xd5fqydmzbsvzqz0148a1vbxp2p0r8a3ivafdvhl6ngky"))))
+        (base32 "1lzqx5hqh1g4llzqby4z1d18xmrjjx63c5l0na7ycf6mmpzfmn9h"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build?
-       #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-dissimilar" ,rust-dissimilar-1)
         ("rust-once-cell" ,rust-once-cell-1))))
-    (home-page
-     "https://github.com/rust-analyzer/expect-test")
-    (synopsis
-     "Minimalistic snapshot testing library")
+    (home-page "https://github.com/rust-analyzer/expect-test")
+    (synopsis "Minimalistic snapshot testing library")
     (description
      "This package provides a minimalistic snapshot testing library.")
     (license (list license:expat license:asl2.0))))
