@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2018–2023 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 by Amar Singh <nly@disroot.org>
 ;;; Copyright © 2020 R Veera Kumar <vkor@vkten.in>
 ;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
@@ -711,9 +711,10 @@ corrections.")
        (uri (string-append "https://www.atnf.csiro.au/people/mcalabre/WCS/"
                            "wcslib-" version ".tar.bz2"))
        (sha256
-        (base32 "17hjnkwn2rd5d9krw2n637q4y8ma4nzk2i55zzn8l2yimdpkxwib"))))
-    (inputs
-     (list cfitsio))
+        (base32 "17hjnkwn2rd5d9krw2n637q4y8ma4nzk2i55zzn8l2yimdpkxwib"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "C/flexed")))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -731,6 +732,10 @@ corrections.")
                 (("/bin/sh") "sh")))))))
     ;; TODO: Fix build with gfortran and pack missing optional pgplot.
     ;; (inputs (list gfortran pgplot))
+    (inputs
+     (list cfitsio))
+    (native-inputs
+     (list flex))
     (home-page "https://www.atnf.csiro.au/people/mcalabre/WCS")
     (synopsis "Library which implements the FITS WCS standard")
     (description "The FITS \"World Coordinate System\" (@dfn{WCS}) standard
