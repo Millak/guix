@@ -524,7 +524,7 @@ $(prefix)/etc/openrc\n")))
 
          ("git-minimal" ,git-minimal)             ;for 'guix perform-download'
 
-         ("glibc-utf8-locales" ,glibc-utf8-locales)))
+         ("glibc-utf8-locales" ,(libc-utf8-locales-for-target))))
       (propagated-inputs
        `(("guile-gnutls" ,guile-gnutls)
          ;; Avahi requires "glib" which doesn't cross-compile yet.
@@ -2052,7 +2052,7 @@ cp -r /tmp/locale/*/en_US.*")))
            dbus ; for dbus-daemon
            gettext-minimal
            `(,glib "bin") ; for glib-mkenums + gdbus-codegen
-           glibc-utf8-locales
+           (libc-utf8-locales-for-target)
            gobject-introspection
            libcap
            pkg-config

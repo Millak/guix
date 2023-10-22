@@ -137,7 +137,8 @@ dependencies are registered."
 
             ;; Make sure non-ASCII file names are properly handled.
             (setenv "GUIX_LOCPATH"
-                    #+(file-append glibc-utf8-locales "/lib/locale"))
+                    #+(file-append (libc-utf8-locales-for-target (%current-system))
+                                   "/lib/locale"))
             (setlocale LC_ALL "en_US.utf8")
 
             (sql-schema #$schema)
@@ -209,7 +210,10 @@ GLIBC-UT8-LOCALES package."
           (profile-locales? profile))
       #~(begin
           (setenv "GUIX_LOCPATH"
-                  #+(file-append glibc-utf8-locales "/lib/locale"))
+                  #+(file-append (let-system (system target)
+                                   (libc-utf8-locales-for-target
+                                    (or target system)))
+                                 "/lib/locale"))
           (setlocale LC_ALL "en_US.utf8"))
       #~(setenv "GUIX_LOCPATH" "unset for tests")))
 

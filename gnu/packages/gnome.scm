@@ -5917,7 +5917,7 @@ services for numerous locations.")
            gi-docgen
            `(,glib "bin")               ;for glib-mkenums
            gobject-introspection
-           glibc-utf8-locales
+           (libc-utf8-locales-for-target)
            gsettings-desktop-schemas
            pkg-config
            python
@@ -9471,7 +9471,7 @@ easy, safe, and automatic.")
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")
-           glibc-utf8-locales
+           (libc-utf8-locales-for-target)
            gobject-introspection
            docbook-xsl
            docbook-xml

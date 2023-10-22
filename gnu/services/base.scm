@@ -63,7 +63,9 @@
   #:use-module (gnu packages bash)
   #:use-module ((gnu packages base)
                 #:select (coreutils glibc glibc/hurd
-                          glibc-utf8-locales make-glibc-utf8-locales
+                          glibc-utf8-locales
+                          libc-utf8-locales-for-target
+                          make-glibc-utf8-locales
                           tar canonical-package))
   #:use-module ((gnu packages compression) #:select (gzip))
   #:use-module (gnu packages fonts)
@@ -2147,7 +2149,8 @@ raise a deprecation warning if the 'compression-level' field was used."
                       ;; nars for packages that contain UTF-8 file names such
                       ;; as 'nss-certs'.  See <https://bugs.gnu.org/26948>.
                       (list (string-append "GUIX_LOCPATH="
-                                           #$glibc-utf8-locales "/lib/locale")
+                                           #$(libc-utf8-locales-for-target)
+                                           "/lib/locale")
                             "LC_ALL=en_US.utf8")
                       #:log-file "/var/log/guix-publish.log"))
           (endpoints #~(let ((ai (false-if-exception

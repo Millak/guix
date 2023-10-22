@@ -73,7 +73,10 @@
       ("po4a"               . ,(ref 'gettext 'po4a))
       ("gettext-minimal"    . ,(ref 'gettext 'gettext-minimal))
       ("gcc-toolchain"      . ,(ref 'commencement 'gcc-toolchain))
-      ("glibc-utf8-locales" . ,(ref 'base 'glibc-utf8-locales))
+      ("glibc-utf8-locales" . ,(delay
+                                 ((module-ref (resolve-interface
+                                               '(gnu packages base))
+                                              'libc-utf8-locales-for-target))))
       ("graphviz"           . ,(ref 'graphviz 'graphviz-minimal))
       ("font-ghostscript"   . ,(ref 'ghostscript 'font-ghostscript))
       ("texinfo"            . ,(ref 'texinfo 'texinfo)))))
