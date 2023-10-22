@@ -611,10 +611,6 @@ upon error."
 the root file system...\n" root-delay)
             (sleep root-delay)))
 
-        ;; Prepare the real root file system under /root.
-        (unless (file-exists? "/root")
-          (mkdir "/root"))
-
         (when (procedure? pre-mount)
           ;; Do whatever actions are needed before mounting the root file
           ;; system--e.g., installing device mappings.  Error out when the
@@ -630,6 +626,10 @@ the root file system...\n" root-delay)
           ;; but before any on-disk file systems have been mounted.
           (false-if-exception           ; failure is not fatal
            (resume-if-hibernated (find-long-option "resume" args))))
+
+        ;; Prepare the real root file system under /root.
+        (unless (file-exists? "/root")
+          (mkdir "/root"))
 
         (setenv "EXT2FS_NO_MTAB_OK" "1")
 
