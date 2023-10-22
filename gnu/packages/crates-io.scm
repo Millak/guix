@@ -63449,8 +63449,38 @@ Rust's serde.")
 @code{serde_with}.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-serde-xml-rs-0.6
+  (package
+    (name "rust-serde-xml-rs")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serde-xml-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10i7dvd0c1clj4jbljd08qs8466nlymx7ma7k3ncksx1rn7affpv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-log" ,rust-log-0.4)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-xml-rs" ,rust-xml-rs-0.8))
+       #:cargo-development-inputs
+       (("rust-docmatic" ,rust-docmatic-0.1)
+        ("rust-rstest" ,rust-rstest-0.12)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-simple-logger" ,rust-simple-logger-2))))
+    (home-page "https://github.com/RReverser/serde-xml-rs")
+    (synopsis "xml-rs based deserializer for Serde")
+    (description "This package provies a xml-rs based deserializer for Serde
+(compatible with 0.9+).")
+    (license license:expat)))
+
 (define-public rust-serde-xml-rs-0.5
   (package
+    (inherit rust-serde-xml-rs-0.6)
     (name "rust-serde-xml-rs")
     (version "0.5.1")
     (source (origin
@@ -63460,18 +63490,12 @@ Rust's serde.")
               (sha256
                (base32
                 "1ypdy4cry8y6jbia0l0cqvkxkdvl7vplzfzb44s6lbxyb682w5k5"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs (("rust-log" ,rust-log-0.4)
                        ("rust-serde" ,rust-serde-1)
                        ("rust-thiserror" ,rust-thiserror-1)
-                       ("rust-xml-rs" ,rust-xml-rs-0.8))))
-    (home-page "https://github.com/RReverser/serde-xml-rs")
-    (synopsis "xml-rs based deserializer for Serde")
-    (description "This package provies a xml-rs based deserializer for Serde
-(compatible with 0.9+)")
-    (license license:expat)))
+                       ("rust-xml-rs" ,rust-xml-rs-0.8))))))
 
 (define-public rust-serde-xml-rs-0.4
   (package
