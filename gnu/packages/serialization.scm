@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2017, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2019, 2020, 2021, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Lukas Gradl <lgradl@openmailbox.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2016, 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
@@ -818,6 +818,23 @@ game development and other performance-critical applications.")
        ((#:configure-flags  flags)
         ;; Compile with -fPIC, needed for shared lib.
         #~(cons "-DFLATBUFFERS_CXX_FLAGS=-fPIC" #$flags))))))
+
+(define-public python-flatbuffers
+  (package
+    (name "python-flatbuffers")
+    (version "23.1.21")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "flatbuffers" version))
+       (sha256
+        (base32 "11gzc7mhl984248q6abz5rrsph76j0y99mwk24xc90sxpcxr2j59"))))
+    (build-system pyproject-build-system)
+    (home-page "https://google.github.io/flatbuffers/")
+    (synopsis "FlatBuffers serialization for Python")
+    (description "This package provides the @code{FlatBuffers} serialization
+format for Python.")
+    (license license:asl2.0)))
 
 (define-public python-feather-format
   (package
