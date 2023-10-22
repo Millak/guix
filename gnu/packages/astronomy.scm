@@ -756,7 +756,10 @@ header.")
        (uri (string-append "https://www.atnf.csiro.au/people/mcalabre/WCS/"
                            "wcslib-" version ".tar.bz2"))
        (sha256
-        (base32 "1m3bx6gh5w3c7vvsqcki0x20mg8lilg13m0i8nh7za89w58dxy4w"))))
+        (base32 "1m3bx6gh5w3c7vvsqcki0x20mg8lilg13m0i8nh7za89w58dxy4w"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "C/flexed")))))
     (properties '((hidden? . #t)))))
 
 (define-public wcstools
