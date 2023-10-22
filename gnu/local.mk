@@ -1874,8 +1874,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-parso-unit-tests-in-3.10.patch    \
   %D%/packages/patches/python-packaging-test-arch.patch		\
   %D%/packages/patches/python-paste-remove-timing-test.patch	\
-  %D%/packages/patches/python-pycrypto-CVE-2013-7459.patch	\
-  %D%/packages/patches/python-pycrypto-time-clock.patch		\
   %D%/packages/patches/python-pyan3-fix-absolute-path-bug.patch \
   %D%/packages/patches/python-pyan3-fix-positional-arguments.patch \
   %D%/packages/patches/python-pygpgme-fix-pinentry-tests.patch	\
