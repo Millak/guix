@@ -304,7 +304,7 @@ propagated by default) such as @code{gst-plugins-good} and
 (define-public webkitgtk-with-libsoup2
   (package/inherit webkitgtk-for-gtk3
     (name "webkitgtk-with-libsoup2")
-    (arguments (substitute-keyword-arguments (package-arguments webkitgtk)
+    (arguments (substitute-keyword-arguments (package-arguments webkitgtk-for-gtk3)
                  ((#:configure-flags flags)
                   #~(cons "-DUSE_SOUP2=ON" #$flags))))
     (propagated-inputs
