@@ -523,6 +523,7 @@ provide OpenFirmware functionality on top of an already running system.")
        (list python)))
     (arguments
      `(#:tests? #f ; no check target
+       #:target #f ; Package produces firmware.
        #:make-flags (list (string-append "PLATFORM=" ,platform)
                           ,@(if (and (not (string-prefix? "riscv64"
                                                           (%current-system)))
