@@ -5158,6 +5158,30 @@ implementation for a very opinionated @acronym{CWL, Common Workflow Language}
 code formatter.  It outputs CWL in a standardized YAML format.")
     (license license:asl2.0)))
 
+(define-public python-cwl-upgrader
+  (package
+    (name "python-cwl-upgrader")
+    (version "1.2.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cwl-upgrader" version))
+       (sha256
+        (base32
+         "12j6z8nvwnzjjyypz59hwj5hmrcri2r6aknw52n9dbj6lbzbdd2p"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest))
+    (propagated-inputs
+     (list python-ruamel.yaml
+           python-schema-salad))
+    (home-page "https://github.com/common-workflow-language/cwl-upgrader")
+    (synopsis "CWL document upgrader")
+    (description "@code{python-cwl-upgrader} is a standalone upgrader for
+@acronym{CWL, Common Workflow Language} documents from version draft-3, v1.0,
+and v1.1 to v1.2.")
+    (license license:asl2.0)))
+
 (define-public cwltool
   (package
     (name "cwltool")
