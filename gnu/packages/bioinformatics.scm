@@ -5228,7 +5228,7 @@ documents.")
 (define-public cwltool
   (package
     (name "cwltool")
-    (version "3.1.20220119140128")
+    (version "3.1.20240112164112")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5237,56 +5237,51 @@ documents.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1jmrm0qrqgka79avc1kq63fgh20gx6g07fc8p3iih4k85vhdyl3f"))))
+                "1fpc5kqgpbn48g5vlvy64p297x2wm3gfz8casgpk15ap593wwh33"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'loosen-version-restrictions
-           (lambda _
-             (substitute* "setup.py"
-               (("== 1.5.1") ">=1.5.1")))) ; prov
-         (add-after 'unpack 'dont-use-git
-           (lambda _
-             (substitute* "gittaggers.py"
-               (("self.git_timestamp_tag\\(\\)")
-                (string-append "time.strftime('.%Y%m%d%H%M%S', time.gmtime(int("
-                               (string-drop ,version 4) ")))")))))
-         (add-after 'unpack 'modify-tests
-           (lambda _
-             ;; Tries to connect to the internet.
-             (delete-file "tests/test_content_type.py")
-             (delete-file "tests/test_udocker.py")
-             (delete-file "tests/test_http_input.py")
-             (substitute* "tests/test_load_tool.py"
-               (("def test_load_graph_fragment_from_packed")
-                (string-append "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
-                               "def test_load_graph_fragment_from_packed")))
-             (substitute* "tests/test_examples.py"
-               (("def test_env_filtering")
-                (string-append "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
-                               "def test_env_filtering")))
-             ;; Tries to use cwl-runners.
-             (substitute* "tests/test_examples.py"
-               (("def test_v1_0_arg_empty_prefix_separate_false")
-                (string-append "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
-                               "def test_v1_0_arg_empty_prefix_separate_false")))
-
-             (substitute* '("cwltool/schemas/v1.1/tests/env-tool1.cwl"
-                            "cwltool/schemas/v1.1/tests/env-tool2.cwl"
-                            "cwltool/schemas/v1.1/tests/imported-hint.cwl"
-                            "tests/subgraph/env-tool2.cwl"
-                            "tests/subgraph/env-tool2_req.cwl"
-                            "tests/subgraph/env-wf2_subwf-packed.cwl"
-                            "tests/subgraph/env-tool2_no_env.cwl")
-               (("\"/bin/sh\"") (string-append "\"" (which "sh") "\"")))
-             ;; Pytest doesn't know what to do with "-n auto"
-             (substitute* "tox.ini"
-               (("-n auto") "")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'loosen-version-restrictions
+            (lambda _
+              (substitute* "setup.py"
+                (("== 1.5.1") "> 1.5.1")))) ; prov
+          (add-after 'unpack 'set-version
+            (lambda _
+              ;; Set exact version.
+              (substitute* "setup.py"
+                (("use_scm_version=True")
+                 (string-append "version=\"" #$version "\"")))))
+          (add-after 'unpack 'modify-tests
+            (lambda _
+              ;; Tries to connect to the internet.
+              (delete-file "tests/test_content_type.py")
+              (delete-file "tests/test_udocker.py")
+              (delete-file "tests/test_http_input.py")
+              (substitute* "tests/test_load_tool.py"
+                (("def test_load_graph_fragment_from_packed")
+                 (string-append "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
+                                "def test_load_graph_fragment_from_packed")))
+              (substitute* "tests/test_examples.py"
+                (("def test_env_filtering")
+                 (string-append "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
+                                "def test_env_filtering")))
+              ;; Tries to use cwl-runners.
+              (substitute* "tests/test_examples.py"
+                (("def test_v1_0_arg_empty_prefix_separate_false")
+                 (string-append "@pytest.mark.skip(reason=\"Disabled by Guix\")\n"
+                                "def test_v1_0_arg_empty_prefix_separate_false")))
+              (substitute* '("tests/subgraph/env-tool2.cwl"
+                             "tests/subgraph/env-tool2_req.cwl"
+                             "tests/subgraph/env-wf2_subwf-packed.cwl"
+                             "tests/subgraph/env-tool2_no_env.cwl")
+                (("\"/bin/sh\"") (string-append "\"" (which "sh") "\""))))))))
     (inputs
      (list python-argcomplete
            python-bagit
            python-coloredlogs
+           python-cwl-utils
            python-mypy-extensions
            python-prov
            python-pydot
@@ -5296,6 +5291,7 @@ documents.")
            python-ruamel.yaml
            python-schema-salad
            python-shellescape
+           python-spython
            python-typing-extensions
            ;; Not listed as needed but still necessary:
            node))
@@ -5306,7 +5302,8 @@ documents.")
            python-pytest
            python-pytest-cov
            python-pytest-mock
-           python-pytest-runner))
+           python-pytest-runner
+           python-pytest-xdist))
     (home-page
      "https://github.com/common-workflow-language/common-workflow-language")
     (synopsis "Common Workflow Language reference implementation")
