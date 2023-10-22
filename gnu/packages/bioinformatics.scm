@@ -4994,37 +4994,52 @@ Note that this package has been deprecated in favor of @code{pyfaidx}.")
 (define-public python-schema-salad
   (package
     (name "python-schema-salad")
-    (version "8.2.20211116214159")
+    (version "8.5.20240102191335")
     (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "schema-salad" version))
-       (sha256
-        (base32
-         "005dh2y45x92zl8sf2sqjmfvcqr4hrz8dfckgkckv87003v7lwqc"))))
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "schema-salad" version))
+        (sha256
+         (base32
+          "035202p696i3jylb8b3nm9qcxsqby15hhqn1dl4nrz73a17p0ckx"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'skip-failing-tests
-           (lambda _
-             ;; Skip tests that require network access.
-             (substitute* "schema_salad/tests/test_cwl11.py"
-               (("^def test_(secondaryFiles|outputBinding)" all)
-                (string-append "@pytest.mark.skip(reason="
-                               "\"test requires network access\")\n"
-                               all))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              ;; Set exact version.
+              (substitute* "setup.py"
+                (("use_scm_version=True")
+                 (string-append "version=\"" #$version "\"")))))
+          (add-before 'check 'skip-failing-tests
+            (lambda _
+              ;; Skip tests that require network access.
+              (let ((skip-test
+                     (lambda (test-pattern)
+                       (string-append "@pytest.mark.skip(reason="
+                                      "\"test requires network access\")\n"
+                                      test-pattern))))
+                (substitute* "schema_salad/tests/test_cg.py"
+                  (("^def test_(load(_by_yaml_metaschema|_metaschema|_cwlschema|)|include|idmap|idmap2)\\(" all)
+                   (skip-test all)))
+                (substitute* "schema_salad/tests/test_cwl11.py"
+                  (("^def test_(secondaryFiles|outputBinding|yaml_tab_error)\\(" all)
+                   (skip-test all)))
+                (substitute* "schema_salad/tests/test_examples.py"
+                  (("^def test_bad_schemas\\(" all)
+                   (skip-test all)))))))))
     (propagated-inputs
      (list python-cachecontrol
-           python-lockfile
-           python-mistune
+           python-importlib-resources
+           python-mistune-next
+           python-mypy-extensions
            python-rdflib
-           python-rdflib-jsonld
            python-requests
-           python-ruamel.yaml
-           python-typing-extensions))
+           python-ruamel.yaml))
     (native-inputs
-     (list python-black python-pytest python-pytest-runner))
+     (list python-black python-pytest python-pytest-runner python-pytest-xdist))
     (home-page "https://github.com/common-workflow-language/schema_salad")
     (synopsis "Schema Annotations for Linked Avro Data (SALAD)")
     (description
