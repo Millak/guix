@@ -4695,7 +4695,6 @@ accurately delineate genomic rearrangements throughout the genome.")
     (arguments
      (list
       #:install-source? #false          ;fails
-      #:tests? #true
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'prepare-test-files
