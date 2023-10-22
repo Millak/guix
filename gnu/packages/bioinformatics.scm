@@ -5131,6 +5131,33 @@ resources for bioinformatics.")
 doublets in single-cell RNA-seq data.")
     (license license:expat)))
 
+(define-public python-cwlformat
+  (package
+    (name "python-cwlformat")
+    (version "2022.02.18")
+    (source
+     ;; The PyPI tarball is missing Readme.md. Readme.md is required for the
+     ;; build.
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rabix/cwl-format")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0agkz2w86k91rc9m5vx5hsqi5nm6fcmzkng6j99hjapz0r9233ql"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-importlib-resources
+           python-ruamel.yaml))
+    (home-page "https://github.com/rabix/cwl-format")
+    (synopsis "Prettifier for CWL code")
+    (description "@code{python-cwlformat} is a specification and a reference
+implementation for a very opinionated @acronym{CWL, Common Workflow Language}
+code formatter.  It outputs CWL in a standardized YAML format.")
+    (license license:asl2.0)))
+
 (define-public cwltool
   (package
     (name "cwltool")
