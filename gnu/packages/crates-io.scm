@@ -57248,20 +57248,22 @@ decoding, and compression.")
 (define-public rust-rmp-0.8
   (package
     (name "rust-rmp")
-    (version "0.8.9")
+    (version "0.8.12")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rmp" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0kqqq0m4bg1p1rsahbxqlhi0cb65qbxx595sqwdfxwacy5nv840g"))))
+        (base32 "083bbqw8ibqp63v6scmaxmy5x8yznj4j0i2n6jjivv9qrjk6163z"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-byteorder" ,rust-byteorder-1)
-        ("rust-num-traits" ,rust-num-traits-0.2))))
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-paste" ,rust-paste-1))
+       #:cargo-development-inputs
+       (("rust-quickcheck" ,rust-quickcheck-1))))
     (home-page "https://github.com/3Hren/msgpack-rust")
     (synopsis "Pure Rust MessagePack serialization implementation")
     (description
