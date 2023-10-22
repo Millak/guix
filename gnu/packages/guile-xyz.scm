@@ -728,7 +728,7 @@ you send to a FIFO file.")
 (define-public guile-dsv
   (package
     (name "guile-dsv")
-    (version "0.7.0")
+    (version "0.7.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -737,7 +737,7 @@ you send to a FIFO file.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0shrzmbh6x3n3xzpcijkxk3f73z6m1i50zgc2dnnccwf4j1c78p2"))))
+                "18v8snh45ibh13mvihhajs226yflxpl6v09wqndyfj1da8cdmkzk"))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf
                          automake
@@ -757,6 +757,7 @@ you send to a FIFO file.")
        #:imported-modules ((guix build guile-build-system)
                            ,@%gnu-build-system-modules)
        #:phases (modify-phases %standard-phases
+                  (delete 'strip)
                   (add-after 'install 'wrap-program
                     (lambda* (#:key inputs outputs #:allow-other-keys)
                       (let* ((out (assoc-ref outputs "out"))
