@@ -30275,6 +30275,45 @@ heterogeneous and multi-platform clusters (including clusters running other
 applications with variable CPU loads).")
     (license license:bsd-3)))
 
+(define-public python-djitellopy
+  (package
+    (name "python-djitellopy")
+    (version "2.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "djitellopy" version))
+       (sha256
+        (base32 "1kc0syb4hpn7fay0rxpazmczag6jw3pncrrc6v762jj0afiwkrps"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; OpenCV does not ship metadata files for its Python library, which
+          ;; makes it invisible to the sanity_check script (see:
+          ;; https://github.com/opencv/opencv/issues/24810).
+          (delete 'sanity-check))))
+    (propagated-inputs
+     (list opencv                       ;for opencv-python
+           python-av
+           python-numpy
+           python-pillow))
+    (home-page "https://github.com/damiafuentes/DJITelloPy")
+    (synopsis
+     "DJI Tello drone video streaming, swarms and state packets library")
+    (description
+     "DJI Tello drone Python interface using the official Tello SDK and Tello
+EDU SDK.  This library has the following features:
+@itemize
+@item Implementation of all tello commands
+@item Retrieve a video stream easily
+@item Receive and parse state packets
+@item Control a swarm of drones.
+@end itemize")
+    (license license:expat)))
+
 (define-public python-djvulibre
   (package
     (name "python-djvulibre")
