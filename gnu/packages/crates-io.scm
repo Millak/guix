@@ -57273,8 +57273,35 @@ writers and readers for primitive values with direct mapping between binary
 MessagePack format.")
     (license license:expat)))
 
+(define-public rust-rmp-serde-1
+  (package
+    (name "rust-rmp-serde")
+    (version "1.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rmp-serde" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12i5aglyni58hlq19pi58z1z6a1hv6l04p9y8ms8l3cqx9gaizmz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `rmpv`
+       #:cargo-inputs
+       (("rust-byteorder" ,rust-byteorder-1)
+        ("rust-rmp" ,rust-rmp-0.8)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-serde-bytes" ,rust-serde-bytes-0.11)
+        ("rust-serde-derive" ,rust-serde-derive-1))))
+    (home-page "https://github.com/3Hren/msgpack-rust")
+    (synopsis "Serde bindings for RMP")
+    (description "This crate provides Serde bindings for RMP.")
+    (license license:expat)))
+
 (define-public rust-rmp-serde-0.15
   (package
+    (inherit rust-rmp-serde-1)
     (name "rust-rmp-serde")
     (version "0.15.5")
     (source
@@ -57284,17 +57311,12 @@ MessagePack format.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "178f4qlicldm9iy74q4wdqldk5i11p1ad30wzs9avx04mpwwygkj"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-byteorder" ,rust-byteorder-1)
         ("rust-rmp" ,rust-rmp-0.8)
-        ("rust-serde" ,rust-serde-1))))
-    (home-page "https://github.com/3Hren/msgpack-rust")
-    (synopsis "Serde bindings for RMP")
-    (description "This crate provides Serde bindings for RMP.")
-    (license license:expat)))
+        ("rust-serde" ,rust-serde-1))))))
 
 (define-public rust-rmp-serde-0.13
   (package
