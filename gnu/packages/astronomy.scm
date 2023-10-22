@@ -876,7 +876,7 @@ different kinds of input files.")
 (define-public gnuastro
   (package
     (name "gnuastro")
-    (version "0.20")
+    (version "0.21")
     (source
      (origin
        (method url-fetch)
@@ -884,7 +884,7 @@ different kinds of input files.")
                            version ".tar.lz"))
        (sha256
         (base32
-         "05bkad0xbax9k0m2g2507mdmjg2109sfg72dsx16f44yj55llh2n"))))
+         "1zyk764pmfrsfj45gnc3qp4z1zfmgrv7kcsji2bxfzvs9inzzq4c"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
