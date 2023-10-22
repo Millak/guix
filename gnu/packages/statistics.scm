@@ -2374,7 +2374,7 @@ inference for statistical models.")
 (define-public python-openturns
   (package
     (name "python-openturns")
-    (version "1.21")
+    (version "1.21.1")
     (source
      (origin
        (method git-fetch)
@@ -2383,7 +2383,7 @@ inference for statistical models.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05lbx8npvvk7jyakvfpgi9ggdp6cnzwv2hjmjrkji2s42axv0q6d"))))
+        (base32 "147pyh7j5nqp9bl9hfikcfzqj5qp95an0qrna9g5qq07md13c3if"))))
     (build-system cmake-build-system)
     (arguments
      (list
