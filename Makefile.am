@@ -1167,7 +1167,8 @@ cuirass-jobs: $(GOBJECTS)
 
 .git/config: etc/git/gitconfig
 	$(AM_V_at)if command -v git >/dev/null && test -d .git; then \
-	git config --add include.path ../etc/git/gitconfig; \
+	git config --fixed-value --replace-all include.path \
+	  ../etc/git/gitconfig ../etc/git/gitconfig;
 	fi
 
 COMMIT_MSG_MAGIC = VGhpcyBpcyB0aGUgY29tbWl0LW1zZyBob29rIG9mIEd1aXg=
