@@ -2545,7 +2545,30 @@ It will then write @code{fixup!} commits for each of those changes.")
         ("rust-wayland-client" ,rust-wayland-client-0.30)
         ("rust-wayland-protocols-wlr" ,rust-wayland-protocols-wlr-0.1)
         ("rust-x11rb" ,rust-x11rb-0.12)
-        ("rust-zbus" ,rust-zbus-1))))
+        ("rust-zbus" ,rust-zbus-1))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-completions
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (share (string-append out "/share"))
+                    (xremap (string-append out "/bin/xremap")))
+               (mkdir-p (string-append share "/bash-completion/completions"))
+               (with-output-to-file
+                 (string-append share "/bash-completion/completions/xremap")
+                 (lambda _ (invoke xremap "--completions" "bash")))
+               (mkdir-p (string-append share "/fish/vendor_completions.d"))
+               (with-output-to-file
+                 (string-append share "/fish/vendor_completions.d/xremap.fish")
+                 (lambda _ (invoke xremap "--completions" "fish")))
+               (mkdir-p (string-append share "/zsh/site-functions"))
+               (with-output-to-file
+                 (string-append share "/zsh/site-functions/_xremap")
+                 (lambda _ (invoke xremap "--completions" "zsh")))
+               (mkdir-p (string-append share "/elvish/lib"))
+               (with-output-to-file
+                 (string-append share "/elvish/lib/xremap")
+                 (lambda _ (invoke xremap "--completions" "elvish")))))))))
     (home-page "https://github.com/k0kubun/xremap")
     (synopsis "Dynamic key remapp for X and Wayland")
     (description "This package provides dynamic key remapp for X and Wayland.")
