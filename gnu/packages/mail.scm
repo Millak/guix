@@ -118,6 +118,7 @@
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages language)
+  #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libffi)
@@ -3183,26 +3184,32 @@ from the Cyrus IMAP project.")
 (define-public opensmtpd
   (package
     (name "opensmtpd")
-    (version "7.3.0p2")
+    (version "7.4.0p0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.opensmtpd.org/archives/"
                            "opensmtpd-" version ".tar.gz"))
        (sha256
-        (base32 "0kjs5cxbh9lq51b8p20hxmiah61cfm8yzkcwpw9005cdp72zpkgw"))))
+        (base32 "0x731hi7i01mxaz07p1l5q3gwmyl422h404yc61ya4aa8g1wr0f1"))))
     (build-system gnu-build-system)
     (inputs
+     ;; OpenSMTPd bundled (a subset of) libasr and libtls, which we use.  See
+     ;; https://www.mail-archive.com/misc@opensmtpd.org/msg05909.html for why.
      (list bdb
+           libbsd          ;https://github.com/OpenSMTPD/OpenSMTPD/issues/1233
            libevent
            libressl
            linux-pam
            zlib))
     (native-inputs
-     (list bison groff))               ; for man pages
+     (list bison
+           groff                        ;for man pages
+           pkg-config))
     (arguments
      `(#:configure-flags
        (list "--localstatedir=/var"
+             "--with-libbsd"
              ;; This is the default only if it exists at build time—it doesn't.
              "--with-path-socket=/var/run"
              "--with-path-CAfile=/etc/ssl/certs/ca-certificates.crt"
