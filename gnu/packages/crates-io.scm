@@ -57518,8 +57518,38 @@ responses, and headers for the Rocket web framework.")
 network services using futures.")
     (license license:expat)))
 
+(define-public rust-ron-0.8
+  (package
+    (name "rust-ron")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ron" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "154w53s895yxdfg7rn87c6f6x4yncc535x1x31zpcj7p0pzpw7xr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-base64" ,rust-base64-0.21)
+        ("rust-bitflags" ,rust-bitflags-2)
+        ("rust-indexmap" ,rust-indexmap-2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1))
+       #:cargo-development-inputs
+       (("rust-option-set" ,rust-option-set-0.2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-bytes" ,rust-serde-bytes-0.11)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/ron-rs/ron")
+    (synopsis "Rusty Object Notation")
+    (description "This package provides Rusty Object Notation (RON).")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ron-0.7
   (package
+    (inherit rust-ron-0.8)
     (name "rust-ron")
     (version "0.7.1")
     (source (origin
@@ -57528,7 +57558,6 @@ network services using futures.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32 "06iz51r6pyi197jjpfddq8h8884y85myaswfan07cnqylqwkj1w8"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f          ; Cannot find bitflags_serial.
        #:cargo-inputs
@@ -57539,11 +57568,7 @@ network services using futures.")
        #:cargo-development-inputs
        (("rust-option-set" ,rust-option-set-0.1)
         ("rust-serde-bytes" ,rust-serde-bytes-0.11)
-        ("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://github.com/ron-rs/ron")
-    (synopsis "Rusty Object Notation")
-    (description "This package provides Rusty Object Notation (RON).")
-    (license (list license:expat license:asl2.0))))
+        ("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-ron-0.6
   (package
