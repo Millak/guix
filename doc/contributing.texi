@@ -605,7 +605,7 @@ needed is to review and apply the patch.
 * Version Numbers::             When the name is not enough.
 * Synopses and Descriptions::   Helping users find the right package.
 * Snippets versus Phases::      Whether to use a snippet, or a build phase.
-* Cyclic Module Dependencies::   Going full circle.
+* Cyclic Module Dependencies::  Going full circle.
 * Emacs Packages::              Your Elisp fix.
 * Python Modules::              A touch of British comedy.
 * Perl Modules::                Little pearls.
@@ -1771,6 +1771,7 @@ patch submissions and topic branches.
 * Managing Patches and Branches::  How changes to Guix are managed.
 * Debbugs User Interfaces::     Ways to interact with Debbugs.
 * Debbugs Usertags::            Tag reports with custom labels.
+* Cuirass Build Notifications::  Be alerted of any breakage via RSS feeds.
 @end menu
 
 @node The Issue Tracker
@@ -2019,6 +2020,43 @@ If you're a committer and you want to add a usertag, just start using it
 with the @code{guix} user.  If the usertag proves useful to you,
 consider updating this section of the manual so that others will know
 what your usertag means.
+
+@node Cuirass Build Notifications
+@subsection Cuirass Build Notifications
+
+@cindex build event notifications, RSS feed
+@cindex notifications, build events
+Cuirass includes @acronym{RSS, Really Simple Syndication} feeds as one
+of its features (@pxref{Notifications,,,cuirass}).  Since
+@url{https://ci.guix.gnu.org/, Berlin} runs an instance of Cuirass, this
+feature can be used to keep track of recently broken or fixed packages
+caused by changes pushed to the Guix git repository.  Any RSS client can
+be used.  A good one, included with Emacs, is @xref{Gnus,,,gnus}.  To
+register the feed, copy its URL, then from the main Gnus buffer,
+@samp{*Group*}, do the following:
+
+@cindex Gnus, configuration to read CI RSS feeds
+@cindex RSS feeds, Gnus configuration
+@example
+@kbd{G R} https://ci.guix.gnu.org/events/rss/?specification=master RET
+Guix CI - master RET Build events for specification master. RET
+@end example
+
+@noindent
+Then, back at the @samp{*Group*} buffer, press @kbd{s} to save the newly
+added RSS group.  As for any other Gnus group, you can update its
+content by pressing the @kbd{g} key.  You should now receive
+notifications that read like:
+
+@example
+ . [ ?: Cuirass ] Build tree-sitter-meson.aarch64-linux on master is fixed.
+ . [ ?: Cuirass ] Build rust-pbkdf2.aarch64-linux on master is fixed.
+ . [ ?: Cuirass ] Build rust-pbkdf2.x86_64-linux on master is fixed.
+@end example
+
+@noindent
+where each RSS entry contains a link to the Cuirass build details page
+of the associated build.
 
 @node Commit Access
 @section Commit Access
