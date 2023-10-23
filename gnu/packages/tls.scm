@@ -318,7 +318,20 @@ required structures.")
               (patches (search-patches "gnutls-skip-trust-store-test.patch"))
               (sha256
                (base32
-                "1742jiigwsfhx7nj5rz7dwqr8d46npsph6b68j7siar0mqarx2xs"))))))
+                "1742jiigwsfhx7nj5rz7dwqr8d46npsph6b68j7siar0mqarx2xs"))))
+    (arguments
+     (if (target-hurd?)
+         ;; Fix reference to undefined 'PATH_MAX'.  This is fixed in GnuTLS
+         ;; commit 3b6ec1e01de4e96d36276dfe34ee9e183f285264.
+         (substitute-keyword-arguments (package-arguments gnutls)
+           ((#:phases phases #~%standard-phases)
+            #~(modify-phases #$phases
+                (add-after 'unpack 'set-path-max
+                  (lambda _
+                    (substitute* "lib/pathbuf.h"
+                      (("^#define GNUTLS_PATH_MAX PATH_MAX")
+                       "#define GNUTLS_PATH_MAX 8192\n")))))))
+         (package-arguments gnutls)))))
 
 (define-public gnutls/dane
   ;; GnuTLS with build libgnutls-dane, implementing DNS-based
