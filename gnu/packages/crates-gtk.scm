@@ -1755,6 +1755,33 @@
     (description "Rust bindings for GStreamer.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gstreamer-app-sys-0.18
+  (package
+    (name "rust-gstreamer-app-sys")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gstreamer-app-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1fsgdb3b23s45xc7s06xw96x7avza0jpyj02x1fkw6vk3pr03d63"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-glib-sys" ,rust-glib-sys-0.15)
+                       ("rust-gstreamer-base-sys" ,rust-gstreamer-base-sys-0.18)
+                       ("rust-gstreamer-sys" ,rust-gstreamer-sys-0.18)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-system-deps" ,rust-system-deps-6))
+       #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs (list pkg-config))
+    (inputs (list glib gstreamer gst-plugins-base))
+    (home-page "https://gstreamer.freedesktop.org")
+    (synopsis "FFI bindings to libgstapp-1.0")
+    (description "FFI bindings to libgstapp-1.0, part of Gstreamer.")
+    (license license:expat)))
+
 (define-public rust-gstreamer-base-0.18
   (package
     (name "rust-gstreamer-base")
