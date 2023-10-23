@@ -52506,6 +52506,25 @@ replacements, adding colorful diffs.")
      "This package provides a minimal `syn` syntax tree pretty-printer.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-pretty-hex-0.3
+  (package
+    (name "rust-pretty-hex")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pretty-hex" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1mf8xvlfri4impj2paj4azx7hxh7l0i38cjyib1hiikwvlqhiyn6"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-development-inputs `(("rust-heapless" ,rust-heapless-0.5))))
+    (home-page "https://github.com/wolandr/pretty-hex")
+    (synopsis "Prettified output of hexadecimal byte slices")
+    (description "Pretty hex dump of byte slices in the common style.")
+    (license license:expat)))
+
 (define-public rust-prettytable-rs-0.8
   (package
     (name "rust-prettytable-rs")
