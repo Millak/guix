@@ -33,6 +33,7 @@
 ;;; Copyright © 2022 Paul Alesius <paul@unnservice.com>
 ;;; Copyright © 2023 Arnav Andrew Jose <arnav.jose@gmail.com>
 ;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
+;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3147,8 +3148,48 @@ be used with the stdlib.")
     (description "Mirror of Rust's allocator API.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-alsa-0.8
+  (package
+    (name "rust-alsa")
+    (version "0.8.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "alsa" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "02pzlq2q8ml28ikvkvm77bwdqmi22d6ak1qvrc0cr6yjb9adwd6f"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       (list "--release"
+             ;; Not the doc tests.
+             "--lib" "--bins" "--tests" "--"
+             ;; These try to use the audio interface
+             "--skip=pcm::drop"
+             "--skip=pcm::info_from_default"
+             "--skip=pcm::playback_to_default"
+             "--skip=pcm::record_from_default"
+             "--skip=seq::print_seqs"
+             "--skip=seq::seq_loopback"
+             "--skip=seq::seq_portsubscribeiter"
+             "--skip=seq::seq_subscribe")
+       #:cargo-inputs (("rust-alsa-sys" ,rust-alsa-sys-0.3)
+                       ("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-nix" ,rust-nix-0.26))))
+    (inputs (list alsa-lib))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/diwic/alsa-rs")
+    (synopsis "Thin and safe wrapper around ALSA")
+    (description "A thin and safe wrapper around ALSA.  Provides APIs for many
+parts of ALSA including audio playback, audio recording, HCtl API, raw MIDI and
+MIDI sequencer.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-alsa-0.7
   (package
+    (inherit rust-alsa-0.8)
     (name "rust-alsa")
     (version "0.7.1")
     (source (origin
@@ -3158,7 +3199,6 @@ be used with the stdlib.")
               (sha256
                (base32
                 "0iwbdgb6lr81iji9sr4f91mys24pia5avnkgbkv8kxzhvkc2lmp2"))))
-    (build-system cargo-build-system)
     (arguments
      (list #:cargo-test-flags `(list "--release"
                                      ;; Not the doc tests.
@@ -3176,15 +3216,7 @@ be used with the stdlib.")
            #:cargo-inputs `(("rust-alsa-sys" ,rust-alsa-sys-0.3)
                             ("rust-bitflags" ,rust-bitflags-1)
                             ("rust-libc" ,rust-libc-0.2)
-                            ("rust-nix" ,rust-nix-0.24))))
-    (native-inputs (list pkg-config alsa-lib))
-    (home-page "https://github.com/diwic/alsa-rs")
-    (synopsis "Thin and safe wrapper around ALSA")
-    (description
-     "A thin and safe wrapper around ALSA.  Provides APIs for
-many parts of ALSA including audio playback, audio recording, HCtl API, raw
-MIDI and MIDI sequencer.")
-    (license license:expat)))
+                            ("rust-nix" ,rust-nix-0.24))))))
 
 (define-public rust-alsa-0.6
   (package
