@@ -70340,6 +70340,30 @@ library supporting a wide range of audio formats.  This package contains
 shared structs, traits, and features.")
     (license license:mpl2.0)))
 
+(define-public rust-symphonia-metadata-0.4
+  (package
+    (name "rust-symphonia-metadata")
+    (version "0.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "symphonia-metadata" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "06lvwy24kirc84r6d23ncad544525fsb6gna0plqz3d1mffmjq2j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-encoding-rs" ,rust-encoding-rs-0.8)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-symphonia-core" ,rust-symphonia-core-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "Multimedia tag and metadata readers for the Symphonia library")
+    (description "Symphonia is a pure Rust audio decoding and media demuxing
+library supporting a wide range of audio formats.  This package contains
+multimedia tag and metadata readers.")
+    (license license:mpl2.0)))
+
 (define-public rust-syn-2
   (package
     (name "rust-syn")
