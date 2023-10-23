@@ -803,22 +803,29 @@ ever use this library.")
        #:phases
        #~(modify-phases %standard-phases
            (delete 'check)
-           (add-after 'install 'check
-             (lambda _
-               (setenv "HOME" (getenv "TMPDIR")) ;xfconfd requires a writable HOME
-               ;; Run test-suite under a dbus session.
-               (setenv "XDG_DATA_DIRS"  ;for finding org.xfce.Xfconf.service
-                       (string-append #$output "/share:" (getenv "XDG_DATA_DIRS")))
-               ;; Don't fail on missing  '/etc/machine-id'.
-               (setenv "DBUS_FATAL_WARNINGS" "0")
-               (with-directory-excursion (string-append "../at-spi2-core-"
-                                                        #$version "")
-                 (invoke "dbus-run-session" "--" "ci/run-registryd-tests.sh")
-                 (substitute* "ci/run-tests.sh"
-                   (("ps auxwww") "")   ;avoid a dependency on procps
-                   (("meson test -C _build")
-                    "meson test -C ../build")) ;adjust build directory
-                 (invoke "dbus-run-session" "--" "ci/run-tests.sh")))))))
+           ;; The CI test suite fails completely on powerpc-linux.
+           ;; The name org.gnome.SessionManager was not provided by any .service
+           ;; TODO: Wrap 'check phase with 'tests?'.
+           #$@(if (not (target-ppc32?))
+                #~((add-after 'install 'check
+                     (lambda _
+                       ;; xfconfd requires a writable HOME
+                       (setenv "HOME" (getenv "TMPDIR"))
+                       ;; Run test-suite under a dbus session.
+                       (setenv "XDG_DATA_DIRS"  ;for finding org.xfce.Xfconf.service
+                               (string-append #$output "/share:"
+                                              (getenv "XDG_DATA_DIRS")))
+                       ;; Don't fail on missing  '/etc/machine-id'.
+                       (setenv "DBUS_FATAL_WARNINGS" "0")
+                       (with-directory-excursion (string-append "../at-spi2-core-"
+                                                                #$version "")
+                         (invoke "dbus-run-session" "--" "ci/run-registryd-tests.sh")
+                         (substitute* "ci/run-tests.sh"
+                           (("ps auxwww") "")   ;avoid a dependency on procps
+                           (("meson test -C _build")
+                            "meson test -C ../build")) ;adjust build directory
+                         (invoke "dbus-run-session" "--" "ci/run-tests.sh")))))
+                #~()))))
      (inputs
       (list bash-minimal libxml2))
      (propagated-inputs
