@@ -70486,6 +70486,31 @@ that supports a wide range of audio formats.  This package is a Vorbis
 decoder.")
     (license license:mpl2.0)))
 
+(define-public rust-symphonia-format-isomp4-0.4
+  (package
+    (name "rust-symphonia-format-isomp4")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symphonia-format-isomp4" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dap5yh286j74sybjsam378v1jxkpdl3hvvm81sipv7725vkmvpy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-encoding-rs" ,rust-encoding-rs-0.8)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-symphonia-core" ,rust-symphonia-core-0.4)
+                       ("rust-symphonia-metadata" ,rust-symphonia-metadata-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "Rust ISO/MP4 demuxer from the Symphonia project")
+    (description
+     "Symphonia is a pure Rust audio decoding and media demuxing library
+that supports a wide range of audio formats.  This package contains an
+ISO/MP4 demuxer.")
+    (license license:mpl2.0)))
+
 (define-public rust-symphonia-utils-xiph-0.4
   (package
     (name "rust-symphonia-utils-xiph")
