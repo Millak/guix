@@ -1458,6 +1458,9 @@ Library.")
     (version "16.0.6")
     (source (llvm-monorepo version))))
 
+(define-public clang-runtime-16
+  (clang-runtime-from-llvm llvm-16))
+
 ;; Default LLVM and Clang version.
 (define-public libomp libomp-13)
 (define-public llvm llvm-13)
