@@ -70535,6 +70535,29 @@ ISO/MP4 demuxer.")
 supports a wide range of audio formats.  This package is an OGG demuxer.")
     (license license:mpl2.0)))
 
+(define-public rust-symphonia-format-wav-0.4
+  (package
+    (name "rust-symphonia-format-wav")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symphonia-format-wav" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1b8x213s44xis4pb1ibnqr1a20hsxf3phm527dvadpi0nkjsb7vd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-symphonia-core" ,rust-symphonia-core-0.4)
+                       ("rust-symphonia-metadata" ,rust-symphonia-metadata-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "Rust WAV demuxer from the Symphonia project")
+    (description
+     "Symphonia is a pure Rust decoding and media demuxing library that
+supports a wide range of audio formats.  This package is a WAV demuxer.")
+    (license license:mpl2.0)))
+
 (define-public rust-symphonia-utils-xiph-0.4
   (package
     (name "rust-symphonia-utils-xiph")
