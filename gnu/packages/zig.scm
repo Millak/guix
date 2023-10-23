@@ -20,6 +20,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages zig)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (guix git-download)
@@ -53,45 +54,45 @@
     (native-inputs
      (list llvm-15))
     (arguments
-     `(#:configure-flags
-       (list ,@(if (%current-target-system)
-                   '(string-append "-DZIG_TARGET_TRIPLE="
-                                   (%current-target-system))
-                   '())
-             (string-append "-DZIG_TARGET_MCPU=baseline")
-             "-DZIG_SHARED_LLVM=ON"
-             (string-append "-DZIG_LIB_DIR=" (assoc-ref %outputs "out")
-                            "/lib/zig"))
-       #:validate-runpath? #f       ; TODO: zig binary can't find ld-linux.
-       #:out-of-source? #f ; for tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'set-env-variables
-           (lambda* (#:key inputs native-inputs #:allow-other-keys)
-             ;; Set CC, since the stage 2 zig relies on it to find the libc
-             ;; installation, and otherwise silently links against its own.
-             (setenv "CC" ,(cc-for-target))
-             ;; Set cache dir, otherwise Zig looks for `$HOME/.cache'.
-             (setenv "ZIG_GLOBAL_CACHE_DIR"
-                     (string-append (getcwd) "/zig-cache"))))
-         (add-after 'patch-source-shebangs 'patch-more-shebangs
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Zig uses information about /usr/bin/env to determine the
-             ;; version of glibc and other data.
-             (substitute* "lib/std/zig/system/NativeTargetInfo.zig"
-               (("/usr/bin/env") (search-input-file inputs "/bin/env")))))
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda* (#:key outputs tests? #:allow-other-keys)
-             (when tests?
-               (invoke (string-append (assoc-ref outputs "out") "/bin/zig")
-                       "build" "test"
-                       ;; We're not testing the compiler bootstrap chain.
-                       "-Dskip-stage1"
-                       "-Dskip-stage2-tests"
-                       ;; Non-native tests try to link and execute non-native
-                       ;; binaries.
-                       "-Dskip-non-native")))))))
+     (list
+      #:configure-flags
+      #~(list #$@(if (%current-target-system)
+                     (list (string-append "-DZIG_TARGET_TRIPLE="
+                                          (%current-target-system)))
+                     '())
+              "-DZIG_TARGET_MCPU=baseline"
+              "-DZIG_SHARED_LLVM=ON"
+              (string-append "-DZIG_LIB_DIR=" #$output "/lib/zig"))
+      #:validate-runpath? #f            ;TODO: zig binary can't find ld-linux.
+      #:out-of-source? #f               ;for tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-env-variables
+            (lambda _
+              ;; Set CC, since the stage 2 zig relies on it to find the libc
+              ;; installation, and otherwise silently links against its own.
+              (setenv "CC" #$(cc-for-target))
+              ;; Set cache dir, otherwise Zig looks for `$HOME/.cache'.
+              (setenv "ZIG_GLOBAL_CACHE_DIR"
+                      (string-append (getcwd) "/zig-cache"))))
+          (add-after 'patch-source-shebangs 'patch-more-shebangs
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Zig uses information about /usr/bin/env to determine the
+              ;; version of glibc and other data.
+              (substitute* "lib/std/zig/system/NativeTargetInfo.zig"
+                (("/usr/bin/env") (search-input-file inputs "/bin/env")))))
+          (delete 'check)
+          (add-after 'install 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke (string-append #$output "/bin/zig")
+                        "build" "test"
+                        ;; We're not testing the compiler bootstrap chain.
+                        "-Dskip-stage1"
+                        "-Dskip-stage2-tests"
+                        ;; Non-native tests try to link and execute non-native
+                        ;; binaries.
+                        "-Dskip-non-native")))))))
     (native-search-paths
      (list
       (search-path-specification
