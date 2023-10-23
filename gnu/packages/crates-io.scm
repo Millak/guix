@@ -47922,6 +47922,26 @@ synchronization primitives.")
         ("rust-rand" ,rust-rand-0.4)
         ("rust-rustc-version" ,rust-rustc-version-0.2))))))
 
+(define-public rust-parking-lot-0.4
+  (package
+    (inherit rust-parking-lot-0.9)
+    (name "rust-parking-lot")
+    (version "0.4.8")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "parking-lot" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0ph0kv3dfcxpjbi83wkzammqb7lm95j8in7w7hz17hgkjxdqz78l"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-parking-lot-core" ,rust-parking-lot-core-0.2)
+             ("rust-owning-ref" ,rust-owning-ref-0.3))
+           #:cargo-development-inputs
+           `(("rust-rand" ,rust-rand-0.3))))))
+
 (define-public rust-parking-lot-core-0.9
   (package
     (name "rust-parking-lot-core")
