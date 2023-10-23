@@ -41412,6 +41412,31 @@ efficient round-trip float parsing. Minimal-lexical implements a correct, fast
 float parser.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-minimp3-0.5
+  (package
+    (name "rust-minimp3")
+    (version "0.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "minimp3" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0wj3nzj1swnvwsk3a4a3hkfj1d21jsi7babi40wlrxzbbzvkhm4q"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; no method named `next_frame_future` found for struct `Decoder`
+       #:cargo-inputs (("rust-minimp3-sys" ,rust-minimp3-sys-0.3)
+                       ("rust-slice-deque" ,rust-slice-deque-0.3)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-futures" ,rust-futures-0.3)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/germangb/minimp3-rs")
+    (synopsis "Rust bindings for the minimp3 library")
+    (description "Rust bindings for the minimp3 library.")
+    (license license:expat)))
+
 (define-public rust-minimp3-sys-0.3
   (package
     (name "rust-minimp3-sys")
