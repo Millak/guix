@@ -41869,6 +41869,27 @@ select the mock struct at compile time.  Used with the Mockall crate.")
     (description "mp4 is a Rust library to read and write ISO-MP4 files.")
     (license license:expat)))
 
+(define-public rust-muldiv-1
+  (package
+    (name "rust-muldiv")
+    (version "1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "muldiv" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1c6ljsp41n8ijsx7zicwfm135drgyhcms12668ivvsbm1r98frwm"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs `(("rust-quickcheck" ,rust-quickcheck-1))))
+    (home-page "https://github.com/sdroege/rust-muldiv")
+    (synopsis "Trait for numeric types to combine multiplication and division")
+    (description
+     "This package provides a trait for numeric types to perform combined
+multiplication and division with overflow protection.")
+    (license license:expat)))
+
 (define-public rust-multimap-0.8
   (package
     (name "rust-multimap")
