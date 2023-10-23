@@ -6918,18 +6918,19 @@ c6e7d37.  However, this package works only up to 128 bytes.")
 (define-public rust-base64-0.21
   (package
     (name "rust-base64")
-    (version "0.21.0")
+    (version "0.21.4")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "base64" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0sidjip5b33sr6w7kasfj9qxpbda41nw0x4gjjk55g55a6mdv954"))))
+                "18jhmsli1l7zn6pgslgjdrnghqnz12g68n25fv48ids3yfk3x94v"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.4)
+        ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-rstest" ,rust-rstest-0.12)
         ("rust-rstest-reuse" ,rust-rstest-reuse-0.3)
