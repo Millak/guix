@@ -37605,16 +37605,14 @@ library.")
 (define-public rust-libpulse-sys-1
   (package
     (name "rust-libpulse-sys")
-    (version "1.18.0")
+    (version "1.21.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "libpulse-sys" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "10msfr8f951v86ag0fl2bsm4a3siq2r7hz9bqhhg7i234s1yj5yg"))))
+        (base32 "16vs0qk6xadckb5qxlrhg0f4jn2zakfd7xih1lk1fb7lzc8f26dw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
