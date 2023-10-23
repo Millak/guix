@@ -30659,21 +30659,18 @@ IEEE 754-2008 binary16 type.")
 (define-public rust-home-0.5
   (package
     (name "rust-home")
-    (version "0.5.3")
+    (version "0.5.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "home" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0m3nfcksrj784liji1c5j47dymxw2l7hqy5fj90piadnwvrawmi4"))))
+        (base32 "1nqx1krijvpd03d96avsdyknd12h8hs3xhxwgqghf8v9xxzc4i2l"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/brson/home")
+     `(#:cargo-inputs (("rust-windows-sys" ,rust-windows-sys-0.48))))
+    (home-page "https://github.com/rust-lang/cargo")
     (synopsis "Shared definitions of home directories")
     (description "This package provides the definition of @code{home_dir}
 used by @command{cargo} and @command{rustup}, as well as functions to find the
