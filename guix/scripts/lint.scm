@@ -159,7 +159,7 @@ run the checkers on all packages.\n"))
               %standard-build-options)
         (option '(#\h "help") #f #f
                 (lambda args
-                  (show-help)
+                  (leave-on-EPIPE (show-help))
                   (exit 0)))
         (option '(#\l "list-checkers") #f #f
                 (lambda (opt name arg result)

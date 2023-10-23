@@ -43,7 +43,6 @@
     (guix build maven plugin)
     (guix build maven pom)
     (guix build java-utils)
-    (guix build syscalls)
     ,@%gnu-build-system-modules))
 
 (define (default-jdk)

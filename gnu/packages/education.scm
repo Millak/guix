@@ -47,6 +47,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-check)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages image)

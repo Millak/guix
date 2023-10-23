@@ -1346,22 +1346,19 @@ and to generate base64 encoded string from raster matrix.")
 (define-public r-svglite
   (package
     (name "r-svglite")
-    (version "2.1.1")
+    (version "2.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "svglite" version))
        (sha256
-        (base32
-         "0mmcipyqq4hs8fnb7301gdhl9ic4m80f1fp2x6z5vc61xrlh2w28"))))
+        (base32 "0c00djvlnf4qr30srh3xjnx1valqq8grm5ib0q4485z8gphn7hf2"))))
+    (properties `((upstream-name . "svglite")))
     (build-system r-build-system)
-    (inputs
-     (list libpng zlib))
-    (propagated-inputs
-     (list r-cpp11 r-systemfonts))
-    (native-inputs
-     (list r-knitr))
-    (home-page "https://github.com/hadley/svglite")
+    (inputs (list libpng zlib))
+    (propagated-inputs (list r-cpp11 r-systemfonts))
+    (native-inputs (list r-knitr))
+    (home-page "https://svglite.r-lib.org")
     (synopsis "SVG graphics device")
     (description
      "@code{svglite} is a graphics device that produces clean
@@ -1724,13 +1721,13 @@ R packages that praise their users.")
 (define-public r-testthat
   (package
     (name "r-testthat")
-    (version "3.1.10")
+    (version "3.2.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "testthat" version))
               (sha256
                (base32
-                "1xh80rxv0whz618kpwzlzg0jg2vhm4073nyx03hd4xpg0ifhhd9i"))))
+                "03k58p8kd7vddx7rlcyi28sy48bh3w4xy4c7wi190l7yjlrfa2sv"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-brio
@@ -5729,14 +5726,14 @@ data for species delimitation, nearest neighbor based noise detection.")
 (define-public r-deoptimr
   (package
     (name "r-deoptimr")
-    (version "1.1-2")
+    (version "1.1-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "DEoptimR" version))
        (sha256
         (base32
-         "0swycypiyxkvhn1438q0wysz2c4ky6zjw89w62dggbciqwk8xdbq"))))
+         "1526g3fzii8kcy29gy6gjvaw4k9cxxidq8bh7m4j485h0wdsdn4d"))))
     (properties `((upstream-name . "DEoptimR")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/DEoptimR")
@@ -6530,65 +6527,72 @@ levels (including collapsing rare levels into other, \"anonymizing\", and
 manually \"recoding\").")
     (license license:gpl3)))
 
-(define-public r-tgstat
-  (let ((changeset "4f8e60c03598f49aff6f5beeab40f2b995377e9f")
-        (revision "1"))
-    (package
-      (name "r-tgstat")
-      (version (string-append "1.0.2-" revision "." (string-take changeset 7)))
-      (source
-       (origin
-         (method hg-fetch)
-         (uri (hg-reference
-               (url "https://bitbucket.org/tanaylab/tgstat")
-               (changeset changeset)))
-         (file-name (string-append name "-" version "-checkout"))
-         (sha256
-          (base32
-           "0ilkkyximy77zbncm91kdfqbxf0qyndg16pd3q3p6a3xc9qcmxvn"))))
-      (build-system r-build-system)
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'fix-isnan
-             (lambda _
-               (substitute* "src/tgstat.h"
-                 (("#define isnan ::isnan")
-                  "#define isnan std::isnan"))
-               #t)))))
-      (propagated-inputs
-       (list r-rcpp))
-      (home-page "https://bitbucket.org/tanaylab/tgstat/")
-      (synopsis "Tanay's group statistical utilities")
-      (description
-       "The goal of tgstat is to provide fast and efficient statistical
-tools.")
-      (license license:gpl2))))
-
 (define-public r-tgconfig
-  (let ((changeset "1e02c7614713bd0866c46f0c679a058f8c6d627e")
+  (let ((commit "15cf199436ae0b2ac0006b2ca7f0aeeb5c9d4445")
         (revision "1"))
     (package
       (name "r-tgconfig")
-      (version (string-append "0.0.0.9000-" revision "." (string-take changeset 7)))
+      (version (git-version "0.1.2" revision commit))
       (source
        (origin
-         (method hg-fetch)
-         (uri (hg-reference
-               (url "https://bitbucket.org/tanaylab/tgconfig")
-               (changeset changeset)))
-         (file-name (string-append name "-" version "-checkout"))
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/tanaylab/tgconfig")
+               (commit commit)))
+         (file-name (git-file-name name version))
          (sha256
-          (base32
-           "0xy6c7s7mn1yx191154bwbv1bl424bnvc80syqpl1vdl28ba46rj"))))
+          (base32 "159m8hhbk9ip2fdy6zsa96v0173q1awcrzdz2rr2796awfaxjgx1"))))
+      (properties `((upstream-name . "tgconfig")))
       (build-system r-build-system)
-      (propagated-inputs
-       (list r-yaml))
-      (home-page "https://bitbucket.org/tanaylab/tgconfig/")
+      (propagated-inputs (list r-yaml))
+      (home-page "https://github.com/tanaylab/tgconfig")
       (synopsis "Infrastructure for managing package parameters")
       (description
-       "The goal of tgconfig is to provide infrastructure for managing package
-parameters.")
+       "This is a package to provide infrastructure for managing package parameters.
+Parameters are easy to get in relevant functions within a package,
+and rrror is thrown if a parameter is missing.  Developers are able
+to register parameters and set their default value in a config file
+that is part of the package in YAML format, and users are able to
+override parameters using their own YAML.  Users get an exception
+when trying to override a parameter that was not registered, and
+can load multiple parameters to the current environment.")
+      (license license:gpl3+))))
+
+(define-public r-tgutil
+  (let ((commit "0e4a2e84e5cf1f74bc66df0a3d8eac89633fd7b1")
+        (revision "1"))
+    (package
+      (name "r-tgutil")
+      (version (git-version "0.1.15" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/tanaylab/tgutil")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0pmacpzhrigprlpl8b5j4xz7l110ifw98017xwk569dghbf8zrq1"))))
+      (properties `((upstream-name . "tgutil")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-broom
+                               r-cowplot
+                               r-data-table
+                               r-dplyr
+                               r-ggplot2
+                               r-glue
+                               r-magrittr
+                               r-matrix
+                               r-matrixstats
+                               r-qlcmatrix
+                               r-readr
+                               r-rlang
+                               r-scales
+                               r-tibble
+                               r-tidyr))
+      (home-page "https://github.com/tanaylab/tgutil")
+      (synopsis "Simple utility functions for Tanay lab code")
+      (description "Shared utility functions for multiple Tanay lab packages.")
       (license license:gpl3))))
 
 (define-public r-catterplots

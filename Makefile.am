@@ -17,6 +17,7 @@
 # Copyright © 2020, 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 # Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 # Copyright © 2021 Andrew Tropin <andrew@trop.in>
+# Copyright © 2023 Clément Lassieur <clement@lassieur.org>
 #
 # This file is part of GNU Guix.
 #
@@ -184,6 +185,7 @@ MODULES =					\
   guix/build-system/texlive.scm			\
   guix/build-system/tree-sitter.scm		\
   guix/build-system/trivial.scm			\
+  guix/build-system/zig.scm			\
   guix/ftp-client.scm				\
   guix/http-client.scm				\
   guix/gnupg.scm				\
@@ -270,6 +272,7 @@ MODULES =					\
   guix/build/graft.scm				\
   guix/build/bournish.scm			\
   guix/build/qt-utils.scm			\
+  guix/build/zig-build-system.scm		\
   guix/build/make-bootstrap.scm			\
   guix/search-paths.scm				\
   guix/packages.scm				\
@@ -414,10 +417,6 @@ AUX_FILES =						\
   gnu/packages/aux-files/linux-libre/6.5-arm64.conf	\
   gnu/packages/aux-files/linux-libre/6.5-i686.conf	\
   gnu/packages/aux-files/linux-libre/6.5-x86_64.conf	\
-  gnu/packages/aux-files/linux-libre/6.4-arm.conf	\
-  gnu/packages/aux-files/linux-libre/6.4-arm64.conf	\
-  gnu/packages/aux-files/linux-libre/6.4-i686.conf	\
-  gnu/packages/aux-files/linux-libre/6.4-x86_64.conf	\
   gnu/packages/aux-files/linux-libre/6.1-arm.conf	\
   gnu/packages/aux-files/linux-libre/6.1-arm64.conf	\
   gnu/packages/aux-files/linux-libre/6.1-i686.conf	\
@@ -1169,10 +1168,21 @@ cuirass-jobs: $(GOBJECTS)
 
 .git/config: etc/git/gitconfig
 	$(AM_V_at)if command -v git >/dev/null && test -d .git; then \
-	git config --add include.path ../etc/git/gitconfig; \
+	git config --fixed-value --replace-all include.path \
+	  ../etc/git/gitconfig ../etc/git/gitconfig; \
 	fi
 
-nodist_noinst_DATA = .git/hooks/pre-push .git/config
+COMMIT_MSG_MAGIC = VGhpcyBpcyB0aGUgY29tbWl0LW1zZyBob29rIG9mIEd1aXg=
+.git/hooks/commit-msg: etc/git/commit-msg
+	$(AM_V_at)if test -d .git; then \
+	if test -f $@  && ! grep -qF $(COMMIT_MSG_MAGIC) $@; then \
+	  mkdir -p $@.d && mv $@ $@.d && \
+	@ echo user commit-msg hook moved to $@.d/commit-msg; \
+	fi; \
+	cp etc/git/commit-msg $@; \
+	fi
+
+nodist_noinst_DATA = .git/hooks/pre-push .git/config .git/hooks/commit-msg
 
 # Downloading up-to-date PO files.
 

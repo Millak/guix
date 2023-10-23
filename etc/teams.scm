@@ -1,5 +1,9 @@
-#!@GUILE@ \
---no-auto-compile -s
+#!/bin/sh
+# Extra care is taken here to ensure this script can run in most environments,
+# since it is invoked by 'git send-email'.
+pre_inst_env_maybe=
+command -v guix > /dev/null || pre_inst_env_maybe=./pre-inst-env
+exec $pre_inst_env_maybe guix repl -- "$0" "$@"
 !#
 
 ;;; GNU Guix --- Functional package management for GNU
@@ -770,13 +774,16 @@ and REV-END, two git revision strings."
     files))
 
 (define (git-patch->commit-id file)
-  "Parse the commit ID from the first line of FILE, a patch produced with git."
+  "Parse the commit ID from FILE, a patch produced with git."
   (call-with-input-file file
     (lambda (port)
-      (let ((m (string-match "^From ([0-9a-f]{40})" (read-line port))))
-        (unless m
-          (error "invalid patch file:" file))
-        (match:substring m 1)))))
+      (let loop ((line (read-line port)))
+        (when (eof-object? line)
+          (error "could not find 'from' commit in patch" file))
+        (let ((m (string-match "^From ([0-9a-f]{40})" line)))
+          (if m
+           (match:substring m 1)
+           (loop (read-line port))))))))
 
 (define (git-patch->revisions file)
   "Return the start and end revisions of FILE, a patch file produced with git."

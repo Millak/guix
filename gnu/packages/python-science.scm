@@ -352,13 +352,13 @@ implements several methods for sequential model-based optimization.
 (define-public python-trimesh
   (package
     (name "python-trimesh")
-    (version "3.22.1")
+    (version "3.23.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trimesh" version))
        (sha256
-        (base32 "1ck4dkhz1x6sznd83c1hlvsv2m6d22fr82na0947j5jf47a4c1gl"))))
+        (base32 "08967axlnmfv98n05dhrkynyrmcc814hl8184gzzmcy4rjg6dzdx"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-numpy))
@@ -1628,7 +1628,7 @@ and aims to provide a similar API and functionality in Python.")
 (define-public python-pyvista
   (package
     (name "python-pyvista")
-    (version "0.39.1")
+    (version "0.42.3")
     (source
      ;; The PyPI tarball does not contain the tests.
      ;; (However, we don't yet actually run the tests.)
@@ -1639,7 +1639,7 @@ and aims to provide a similar API and functionality in Python.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00nij00z5r35f6dx7mwndsrpmiw43adjk8x35mk308c369ylbv9p"))))
+        (base32 "1qxq0y0hc72hb60w3qq48fma8l6ffz7bdm75ymn1020bvfqrm1s4"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-imageio
@@ -1658,7 +1658,7 @@ and aims to provide a similar API and functionality in Python.")
          (delete 'check)
          ;; Disable the sanity check, which fails with the following error:
          ;;
-         ;;   ...checking requirements: ERROR: pyvista==0.39.1 DistributionNotFound(Requirement.parse('vtk'), {'pyvista'})
+         ;;   ...checking requirements: ERROR: pyvista==0.42.3 DistributionNotFound(Requirement.parse('vtk'), {'pyvista'})
          (delete 'sanity-check))))
     (home-page "https://docs.pyvista.org/")
     (synopsis "3D plotting and mesh analysis through VTK")

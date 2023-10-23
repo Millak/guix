@@ -60,6 +60,7 @@
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix deprecation)
+  #:use-module (guix search-paths)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages bash)
@@ -364,7 +365,7 @@ system, and the core design of Django is reused in Grantlee.")
                (base32
                 "1fcg3kx5akvj0kqxd99h5lv3kv4pw2cj0makmpvhpw90inqnrl60"))
               ;; Use TZDIR to avoid depending on package "tzdata".
-              (patches (search-patches "qtbase-use-TZDIR.patch"
+              (patches (search-patches "qtbase-5-use-TZDIR.patch"
                                        "qtbase-moc-ignore-gcc-macro.patch"
                                        "qtbase-absolute-runpath.patch"))
               (modules '((guix build utils)))
@@ -392,7 +393,7 @@ system, and the core design of Django is reused in Grantlee.")
            fontconfig
            freetype
            glib
-           gtk+               ;for GTK theme support
+           gtk+                         ;for GTK theme support
            harfbuzz
            icu4c
            libinput-minimal
@@ -437,7 +438,8 @@ system, and the core design of Django is reused in Grantlee.")
            vulkan-headers
            ruby-2.7))
     (arguments
-     `(#:configure-flags
+     `(#:disallowed-references ,(list python)
+       #:configure-flags
        (let ((out (assoc-ref %outputs "out")))
          (list "-verbose"
                "-prefix" out
@@ -583,7 +585,16 @@ system, and the core design of Django is reused in Grantlee.")
                (("^\\s*(QLibrary xcursorLib\\(QLatin1String\\(\")(Xcursor\"\\), 1\\);)" _ a b)
                 (string-append a (assoc-ref inputs "libxcursor") "/lib/lib" b))
                (("^\\s*(xcursorLib.setFileName\\(QLatin1String\\(\")(Xcursor\"\\)\\);)" _ a b)
-                (string-append a (assoc-ref inputs "libxcursor") "/lib/lib" b))))))))
+                (string-append a (assoc-ref inputs "libxcursor") "/lib/lib" b)))))
+         (add-after 'install 'do-not-capture-python
+           (lambda* (#:key outputs #:allow-other-keys)
+             ;; For some reason, patching the file after the
+             ;; patch-source-shebangs phase doesn't work for Qt 5.
+             (substitute*
+                 (search-input-file
+                  outputs "lib/qt5/mkspecs/features/uikit/devices.py")
+               (((which "python3"))
+                "/usr/bin/env python3")))))))
     (native-search-paths
      (list (search-path-specification
             (variable "QMAKEPATH")
@@ -724,17 +735,20 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                 (substitute* "src/corelib/CMakeLists.txt"
                   (("/bin/ls")
                    (search-input-file inputs "bin/ls")))))
+            (delete 'do-not-capture-python) ;move after patch-source-shebangs
             (add-after 'patch-source-shebangs 'do-not-capture-python
               (lambda _
                 (substitute* '("mkspecs/features/uikit/devices.py"
-                               "util/testrunner/qt-testrunner.py")
+                               "util/testrunner/qt-testrunner.py"
+                               "util/testrunner/sanitizer-testrunner.py")
                   (((which "python3"))
                    "/usr/bin/env python3"))))
             (replace 'configure
               (assoc-ref %standard-phases 'configure))
             (delete 'check)             ;move after patch-prl-files
             (add-after 'patch-prl-files 'check
-              (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+              (lambda* (#:key tests? parallel-tests?
+                        native-inputs inputs #:allow-other-keys)
                 (when tests?
                   ;; The tests expect to find the modules provided by this
                   ;; package; extend the environment variables needed to do so.
@@ -757,6 +771,18 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                   ;; /tree/src/testlib/qtestblacklist.cpp).
                   (setenv "QTEST_ENVIRONMENT" "linux ci 32bit")
                   (setenv "HOME" "/tmp") ;some tests require a writable HOME
+
+                  ;; Note: the search path specified for TZDIR is only
+                  ;; effective for users of the package, not while it's being
+                  ;; built.
+                  (setenv "TZDIR" (search-input-directory
+                                   (or native-inputs inputs) "share/zoneinfo"))
+
+                  ;; This is to avoid QTimeZone::systemTimeZone() returning
+                  ;; invalid QDate objects due to missing /etc/timezone or
+                  ;; /etc/localtime.
+                  (setenv "TZ" "Etc/UTC")
+
                   (invoke
                    "xvfb-run" "ctest" "--output-on-failure"
                    "-j" (if parallel-tests?
@@ -766,98 +792,107 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                    (string-append
                     "("
                     (string-join
-                     (list
-                      ;; The 'tst_moc' test fails with "'fi.exists()' returned FALSE".
-                      "tst_moc"
+                     (append
+                      (list
+                       ;; The 'tst_moc' test fails with "'fi.exists()' returned FALSE".
+                       "tst_moc"
 
-                      ;; The 'tst_qdate' test fails because the current time
-                      ;; is reported as an invalid date (see:
-                      ;; https://bugreports.qt.io/browse/QTBUG-116017).
-                      "tst_qdate"
+                       ;; The qgraphicsview and qopenglwidget tests fail with a
+                       ;; segfault for unknown reasons (see:
+                       ;; https://bugreports.qt.io/browse/QTBUG-116018).
+                       "tst_qgraphicsview"
+                       "tst_qopenglwidget"
 
-                      ;; The qgraphicsview and qopenglwidget tests fail with a
-                      ;; segfault for unknown reasons (see:
-                      ;; https://bugreports.qt.io/browse/QTBUG-116018).
-                      "tst_qgraphicsview"
-                      "tst_qopenglwidget"
+                       ;; The 'test_rcc' test fails on a comparison:
+                       ;; <<<<<< actual
+                       ;; 0x0,0x0,0x0,0x0,0x0,0x0,0x3,0xe8,
+                       ;; ======
+                       ;; 0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+                       ;; >>>>>> expected
+                       "tst_rcc"
+                       ;; The 'tst_qtemporarydir' and 'tst_qtemporaryfile'
+                       ;; tests depend on '/home' not being writable.
+                       "tst_qtemporarydir"
+                       "tst_qtemporaryfile"
+                       ;; The 'tst_qdir' compares two directories which are
+                       ;; unexpectedly different when inside the build
+                       ;; container.
+                       "tst_qdir"
+                       ;; This checks the last modified time of '/', and fails
+                       ;; because Epoch 0 is considered to be invalid.
+                       "tst_qresourceengine"
+                       ;; The 'tst_qfilesystemwatcher' installs a watcher on
+                       ;; '/home', which doesn't exist in the build container.
+                       "tst_qfilesystemwatcher"
+                       ;; Not all of the tested formats are supported by our
+                       ;; build of openssl; 871 passed, 122 failed.
+                       "tst_qsslkey"
+                       ;; The 'mockplugins' test fail following error: "Unknown
+                       ;; platform linux-g++", and the other plugin tests
+                       ;; depend on it.
+                       "mockplugins"
+                       "test_plugin_flavor.*"
+                       ;; The 'test_import_plugins' fails with "Could NOT find
+                       ;; Qt6MockPlugins1".
+                       "test_import_plugins"
+                       ;; The tst_QObjectRace::destroyRace is flaky (see:
+                       ;; https://bugreports.qt.io/browse/QTBUG-103489).
+                       "tst_qobjectrace"
+                       ;; The 'tst_QSettings::fromFile' assumes the data
+                       ;; location to be relative to the root directory and
+                       ;; fails.
+                       "tst_qsettings"
+                       ;; The 'tst_qaddpreroutine',
+                       ;; 'test_generating_cpp_exports' and
+                       ;; 'test_static_resources' tests fail with: "Unknown
+                       ;; platform linux-g++.
+                       "tst_qaddpreroutine"
+                       "test_generating_cpp_exports"
+                       "test_static_resources"
+                       ;; The 'tst_qfile' fails since there is no /home in the
+                       ;; build container.
+                       "tst_qfile"
+                       ;; The 'tst_QGlyphRun::mixedScripts' test fails with:
+                       ;; Actual   (glyphRuns.size()): 1
+                       ;; Expected (2)               : 2
+                       "tst_qglyphrun"
+                       ;; The 'tst_qx11info' test fails with "Internal error:
+                       ;; QPA plugin doesn't implement generatePeekerId",
+                       ;; likely requires a real display.
+                       "tst_qx11info"
 
-                      ;; The 'test_rcc' test fails on a comparison:
-                      ;; <<<<<< actual
-                      ;; 0x0,0x0,0x0,0x0,0x0,0x0,0x3,0xe8,
-                      ;; ======
-                      ;; 0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
-                      ;; >>>>>> expected
-                      "tst_rcc"
-                      ;; The 'tst_qtemporarydir' and 'tst_qtemporaryfile'
-                      ;; tests depend on '/home' not being writable.
-                      "tst_qtemporarydir"
-                      "tst_qtemporaryfile"
-                      ;; The 'tst_qdir' compares two directories which are
-                      ;; unexpectedly different when inside the build
-                      ;; container.
-                      "tst_qdir"
-                      ;; This checks the last modified time of '/', and fails
-                      ;; because Epoch 0 is considered to be invalid.
-                      "tst_qresourceengine"
-                      ;; The 'tst_qfilesystemwatcher' installs a watcher on
-                      ;; '/home', which doesn't exist in the build container.
-                      "tst_qfilesystemwatcher"
-                      ;; Not all of the tested formats are supported by our
-                      ;; build of openssl; 871 passed, 122 failed.
-                      "tst_qsslkey"
-                      ;; The 'mockplugins' test fail following error: "Unknown
-                      ;; platform linux-g++", and the other plugin tests
-                      ;; depend on it.
-                      "mockplugins"
-                      "test_plugin_flavor.*"
-                      ;; The 'test_import_plugins' fails with "Could NOT find
-                      ;; Qt6MockPlugins1".
-                      "test_import_plugins"
-                      ;; The 'tst_QTimeZone::systemZone' validates the
-                      ;; currently set timezone and fails.
-                      "tst_qtimezone"
-                      ;; The 'tst_qdatetime' fails with:
-                      ;; FAIL!  : tst_QDateTime::offsetFromUtc() Compared values are not the same
-                      ;; Actual   (dt5.offsetFromUtc()): 0
-                      ;; Expected (46800)              : 46800
-                      "tst_qdatetime"
-                      ;; The tst_QObjectRace::destroyRace is flaky (see:
-                      ;; https://bugreports.qt.io/browse/QTBUG-103489).
-                      "tst_qobjectrace"
-                      ;; The 'tst_QSettings::fromFile' assumes the data
-                      ;; location to be relative to the root directory and
-                      ;; fails.
-                      "tst_qsettings"
-                      ;; The 'tst_qaddpreroutine',
-                      ;; 'test_generating_cpp_exports' and
-                      ;; 'test_static_resources' tests fail with: "Unknown
-                      ;; platform linux-g++.
-                      "tst_qaddpreroutine"
-                      "test_generating_cpp_exports"
-                      "test_static_resources"
-                      ;; The 'tst_qfile' fails since there is no /home in the
-                      ;; build container.
-                      "tst_qfile"
-                      ;; The 'tst_QGlyphRun::mixedScripts' test fails with:
-                      ;; Actual   (glyphRuns.size()): 1
-                      ;; Expected (2)               : 2
-                      "tst_qglyphrun"
-                      ;; The 'tst_qx11info' test fails with "Internal error:
-                      ;; QPA plugin doesn't implement generatePeekerId",
-                      ;; likely requires a real display.
-                      "tst_qx11info"
-                      ;; The 'tst_qgraphicswidget' test fails because "This
-                      ;; plugin does not support propagateSizeHints".
-                      "tst_qgraphicswidget"
-                      ;; The 'tst_qdnslookup' test requires networking.
-                      "tst_qdnslookup"
-                      ;; The 'tst_qcompleter' and 'tst_QFiledialog::completer'
-                      ;; attempt to complete paths they assume exist, such as
-                      ;; "/home", "/etc" or "/root" and fail.
-                      "tst_qcompleter"
-                      "tst_qfiledialog"
-                      ;; This test is susceptible to the 600 ms timeout used:
-                      "tst_qpauseanimation") "|") ")")))))
+                       ;; The 'tst_qgraphicswidget' test fails because "This
+                       ;; plugin does not support propagateSizeHints".
+                       "tst_qgraphicswidget"
+                       ;; The 'tst_qdnslookup' test requires networking.
+                       "tst_qdnslookup"
+                       ;; The 'tst_qcompleter' and 'tst_QFiledialog::completer'
+                       ;; attempt to complete paths they assume exist, such as
+                       ;; "/home", "/etc" or "/root" and fail.
+                       "tst_qcompleter"
+                       "tst_qfiledialog"
+                       ;; This test is susceptible to the 600 ms timeout used:
+                       "tst_qpauseanimation")
+                      #$@(if (target-ppc64le?)
+                             #~((list
+                                 ;; The 'tst_QPainter::fpe_radialGradients'
+                                 ;; test fails with a 'Floating point
+                                 ;; exception' error on powerpc64le (see:
+                                 ;; https://bugreports.qt.io/browse/QTBUG-117113).
+                                 "tst_qpainter"
+
+                                 ;; The 'startStopStartStopBuffers' test fails
+                                 ;; on the powerpc64le architecture (see:
+                                 ;; https://bugreports.qt.io/browse/QTBUG-80953).
+                                 "tst_qprocess"
+
+                                 ;; The 'tst_QSqlThread::readWriteThreading'
+                                 ;; test may fail with an sqlite related error,
+                                 ;; "'Unable to fetch row' || 'database is
+                                 ;; locked'" (see:
+                                 ;; https://bugreports.qt.io/browse/QTBUG-117114).
+                                 "tst_qsqlthread"))
+                             #~())) "|") ")")))))
             (replace 'patch-mkspecs
               (lambda* (#:key outputs #:allow-other-keys)
                 (let* ((archdata (search-input-directory outputs "lib/qt6"))
@@ -897,7 +932,8 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                     (("\\$\\$\\[QT_HOST_DATA/src\\]") archdata)))))))))
     (native-inputs
      (modify-inputs (package-native-inputs qtbase-5)
-       (prepend wayland-protocols
+       (prepend tzdata-for-tests
+                wayland-protocols
                 xvfb-run)))
     (inputs
      (modify-inputs (package-inputs qtbase-5)
@@ -921,6 +957,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
            (search-path-specification
             (variable "QT_PLUGIN_PATH")
             (files '("lib/qt6/plugins")))
+           $TZDIR
            (search-path-specification
             (variable "XDG_DATA_DIRS")
             (files '("share")))
@@ -1335,6 +1372,7 @@ with JavaScript and C++.")))
                (base32
                 "06c7xfqn2a5s2m8j1bcvx3pyjqg1rgqkjvp49737gb4z9vjiz8gk"))
               (patches (search-patches "qtdeclarative-disable-qmlcache.patch"))))
+    (outputs '("out" "debug"))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -1751,7 +1789,14 @@ set of plugins for interacting with pulseaudio and GStreamer.")
                                    "m_waitingFrameCallbacks\\.empty\\(\\)\\);"))
                    "")
                   (("QTRY_COMPARE\\(bufferSpy\\.count\\(\\), 1\\);")
-                   ""))))
+                   ""))
+                #$@(if (target-aarch64?)
+                       ;; The tst_surface::createSubsurface test fails on
+                       ;; aarch64 (see:
+                       ;; https://bugreports.qt.io/browse/QTBUG-117112).
+                       #~((substitute* "tests/auto/client/client.pro"
+                            ((".*surface.*") "")))
+                       #~())))
             (add-before 'check 'set-test-environment
               (lambda _
                 ;; Do not fail just because /etc/machine-id is missing.

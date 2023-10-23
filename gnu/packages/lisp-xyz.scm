@@ -39,6 +39,8 @@
 ;;; Copyright © 2022, 2023 Artyom Bologov <mail@aartaka.me>
 ;;; Copyright © 2023 Roman Scherer <roman@burningswell.com>
 ;;; Copyright © 2023 ykonai <mail@ykonai.net>
+;;; Copyright © 2023 Gabriel Hondet <gabriel.hondet@cominety.net>
+;;; Copyright © 2023 Raven Hallsby <karl@hallsby.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -72,6 +74,7 @@
   #:use-module (guix build-system asdf)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
+  #:use-module (guix build-system emacs)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages base)
   #:use-module (gnu packages c)
@@ -2171,6 +2174,48 @@ from other CLXes around the net.")
 
 (define-public ecl-clx
   (sbcl-package->ecl-package sbcl-clx))
+
+(define-public sbcl-cl-wayland
+  (let ((commit "a92a5084b64102f538ab90212e99c7863e5338ae")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-wayland")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sdilts/cl-wayland")
+               (commit commit)))
+         (file-name (git-file-name "cl-wayland" version))
+         (sha256
+          (base32 "1r4fn9dc0dz2b30k8z243yacx1y5z21qk4zh2ildj7ak51qx53zf"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-paths
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "wayland-server-core.lisp"
+                       (("libwayland-server.so")
+                        (search-input-file inputs
+                                           "/lib/libwayland-server.so"))))))))
+      (inputs
+       (list sbcl-cffi
+             sbcl-closer-mop
+             wayland))
+      (home-page "https://github.com/sdilts/cl-wayland")
+      (synopsis "Common Lisp FFI bindings for libwayland")
+      (description
+       "This package provides Common Lisp FFI bindings for libwayland,
+primarily for the mahogany window manager.")
+      (license license:bsd-3))))
+
+(define-public cl-wayland
+  (sbcl-package->cl-source-package sbcl-cl-wayland))
+
+(define-public ecl-cl-wayland
+  (sbcl-package->ecl-package sbcl-cl-wayland))
 
 (define-public sbcl-clx-truetype
   (let ((commit "c6e10a918d46632324d5863a8ed067a83fc26de8")
@@ -5531,8 +5576,8 @@ client and server.")
   (sbcl-package->cl-source-package sbcl-trivial-arguments))
 
 (define-public sbcl-trivial-clipboard
-  (let ((commit "6ddf8d5dff8f5c2102af7cd1a1751cbe6408377b")
-        (revision "6"))
+  (let ((commit "aee67d6132a46237f61d508ae4bd9ff44032566d")
+        (revision "7"))
     (package
       (name "sbcl-trivial-clipboard")
       (version (git-version "0.0.0" revision commit))
@@ -5544,7 +5589,7 @@ client and server.")
                (commit commit)))
          (file-name (git-file-name "cl-trivial-clipboard" version))
          (sha256
-          (base32 "04qmm69zyx8rs23pfhgzgxn0j108byv3b7skfdv0h01a76wlhplz"))))
+          (base32 "029qmx523xfk54p99ndgbmdd20s5i32mzpf77xymngrn4c33v9jk"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        ;; Pick xsel instead of xclip because its closure size is slightly
@@ -10493,6 +10538,36 @@ as readmes, documentation files, and docstrings.")
 (define-public ecl-staple
   (sbcl-package->ecl-package sbcl-staple))
 
+(define-public sbcl-helambdap
+  (let ((commit "5bf65f57a36ee094cadb096caca6e90eb3ba46c4")
+        (revision "0"))
+    (package
+      (name "sbcl-helambdap")
+      (version (git-version "20220103" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.code.sf.net/p/helambdap/code")
+               (commit commit)))
+         (file-name (git-file-name "cl-helambdap" version))
+         (sha256
+          (base32 "1kzapbf9l2bw8i9m9sxv0dfnkksrxq81d5hbn34pm25abk0i937j"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-cl-fad
+             sbcl-clad
+             sbcl-split-sequence
+             sbcl-xhtmlambda))
+      (synopsis "Common Lisp documentation system")
+      (description "HELambdap is a Common Lisp documentation system which
+strives to be simple to use, yet easily customizable.")
+      (home-page "https://helambdap.sourceforge.net")
+      (license license:expat))))
+
+(define-public cl-helambdap
+  (sbcl-package->cl-source-package sbcl-helambdap))
+
 (define-public sbcl-form-fiddle
   (let ((commit "e0c23599dbb8cff3e83e012f3d86d0764188ad18")
         (revision "0"))
@@ -10593,6 +10668,74 @@ LASS files.")
 
 (define-public ecl-lass
   (sbcl-package->ecl-package sbcl-lass))
+
+(define-public sbcl-xhtmlambda
+  (let ((commit "c86376bccebf77ca428e8033df2ba7d8450ea1e8")
+        (revision "0"))
+    (package
+      (name "sbcl-xhtmlambda")
+      (version
+       ;; The source repository doesn't provide any version nor revision, but
+       ;; a timestamp
+       (git-version "2022-01-21" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.common-lisp.net/xhtmlambda/XHTMLambda")
+               (commit commit)))
+         (file-name (git-file-name "cl-xhtmlambda" version))
+         (sha256
+          (base32 "0narbzz06ry1wn048avm1fwihvnjvvc4wfcv5hmdazkilpvnqz2y"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs (list sbcl-cl-unicode))
+      (synopsis "(X)HTML library for Common Lisp")
+      (description
+       "(X)HTMLambda is yet another (X)HTML library which
+emphasizes programmability and user-friendliness.  Each (X)HTML element is a
+structured object and pretty-printing of (X)HTML trees is well defined to
+provide properly indented human-readable output even for complex recursive
+arrangements.")
+      (home-page "https://xhtmlambda.common-lisp.dev/")
+      (license license:expat))))
+
+(define-public cl-xhtmlambda
+  (sbcl-package->cl-source-package sbcl-xhtmlambda))
+
+(define-public sbcl-clad
+  (let ((commit "1ff6f417d4ee3836d1edd96923d4b03f3cafa849")
+        (revision "0"))
+    (package
+      (name "sbcl-clad")
+      (version
+       ;; There's no version, but there's a timestamp
+       (git-version "2023-01-21" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.common-lisp.net/mantoniotti/CLAD")
+               (commit commit)))
+         (file-name (git-file-name "cl-clad" version))
+         (sha256
+          (base32 "184mhdq7pxd6hd4rzv8z4lfbwnkyhgm5bdn3xsqaav2j0d1dqm6i"))
+         (modules '((guix build utils)))
+         (snippet
+          ;; Delete compiled ABCL files.
+          '(begin
+             (delete-file "clad-package.abcl")
+             (delete-file "clad.abcl")))))
+      (build-system asdf-build-system/sbcl)
+      (synopsis "Library providing standard locations on the file system")
+      (description
+       "The Common Lisp Application Directories (CLAD) library is
+a simple API collection that provides access to a set of @emph{standard}
+Common Lisp folders on a per-application or per-library basis.")
+      (home-page "https://gitlab.common-lisp.net/mantoniotti/CLAD")
+      (license license:expat)))) ;the mit-modern-variant is used
+
+(define-public cl-clad
+  (sbcl-package->cl-source-package sbcl-clad))
 
 (define-public sbcl-plump
   (let ((commit "0c3e0b57b43b6e0c5794b6a902f1cf5bee2a2927")
@@ -25964,65 +26107,51 @@ extra features like type inference.")
   (sbcl-package->cl-source-package sbcl-nclasses))
 
 (define-public sbcl-prompter
-  (package
-    (name "sbcl-prompter")
-    (version "0.1.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/atlas-engineer/prompter")
-             (commit version)))
-       (file-name (git-file-name "prompter" version))
-       (sha256
-        (base32
-         "1489qg99n5bpl9b88pq3smnw5l9hrq08sbnabvavv3jcd4pzpsqf"))
-       (modules '((guix build utils)))
-       (snippet
-        `(begin
-           (delete-file-recursively "nasdf")
-           #t))))
-    (build-system asdf-build-system/sbcl)
-    (inputs
-     (list
-      sbcl-alexandria
-      sbcl-calispel
-      sbcl-cl-containers
-      sbcl-cl-str
-      sbcl-closer-mop
-      sbcl-lparallel
-      sbcl-moptilities
-      sbcl-nclasses
-      sbcl-serapeum
-      sbcl-trivial-package-local-nicknames))
-    (native-inputs
-     (list sbcl-lisp-unit2
-           sbcl-nasdf))
-    (home-page "https://github.com/atlas-engineer/prompter")
-    (synopsis "Live-narrowing, fuzzy-matching, extensible prompt framework")
-    (description
-     "This prompter library is heavily inspired by Emacs' minibuffer and
+  (let ((commit "b40a13af6ba4bd5c73c17e94dd2cbc2901bbd02f")
+        (revision "0"))
+    (package
+      (name "sbcl-prompter")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/atlas-engineer/prompter")
+               (commit commit)))
+         (file-name (git-file-name "cl-prompter" version))
+         (sha256
+          (base32
+           "1gg69rq2v9wcr7kj9fvd2i38r28fsgqqw6zs71m46krmr1gmfh4q"))
+         (modules '((guix build utils)))
+         (snippet
+          `(begin
+             (delete-file-recursively "nasdf")
+             #t))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list
+        sbcl-alexandria
+        sbcl-calispel
+        sbcl-cl-containers
+        sbcl-cl-str
+        sbcl-closer-mop
+        sbcl-lparallel
+        sbcl-moptilities
+        sbcl-nclasses
+        sbcl-serapeum
+        sbcl-trivial-package-local-nicknames))
+      (native-inputs
+       (list sbcl-lisp-unit2
+             sbcl-nasdf))
+      (home-page "https://github.com/atlas-engineer/prompter")
+      (synopsis "Live-narrowing, fuzzy-matching, extensible prompt framework")
+      (description
+       "This prompter library is heavily inspired by Emacs' minibuffer and
 Helm (@url{https://emacs-helm.github.io/helm/}).  It only deals with the
-backend side of things, it does not handle any display.
-
-Non-exhaustive list of features:
-
-@itemize
-@item Asynchronous suggestion computation.
-@item Multiple sources.
-@item Multiple return actions.
-@item Customizable matching and sorting.
-@item Multiple attributes to match and display (also known as 'multiple column
-display').
-@item Customizable initialization and cleanup functions.
-@item Notifications sent when suggestion list is updated.
-@item Per-source history.
-@item Resumable prompters.
-@item Marks actions (event-driven on marks change).
-@item Current suggestion actions (event-driven on current suggestion change).
-@item Automatically return the prompt when narrowed down to a single suggestion.
-@end itemize\n")
-    (license license:bsd-3)))
+backend side of things, it does not handle any display.  Features include
+asynchronous suggestion computation, multiple sources, actions and resumable
+prompters.")
+      (license license:bsd-3))))
 
 (define-public cl-prompter
   (sbcl-package->cl-source-package sbcl-prompter))
@@ -26652,6 +26781,48 @@ instead of #'FOO.
 
 (define-public ecl-nkeymaps
   (sbcl-package->ecl-package sbcl-nkeymaps))
+
+(define-public sbcl-xkbcommon
+  (let ((commit "aa9513d93f42d7816f88dd1bd8bd21375e7d7512")
+        (revision "0"))
+    (package
+      (name "sbcl-xkbcommon")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sdilts/cl-xkbcommon")
+               (commit commit)))
+         (file-name (git-file-name "cl-xkbcommon" version))
+         (sha256
+          (base32 "02zdbkh7yliw9vg8i8wx2xgcpfni0fr4z0w19kkxvaib8xm9rx1q"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-paths
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "xkbcommon.lisp"
+                       (("libxkbcommon.so.0")
+                        (search-input-file inputs "/lib/libxkbcommon.so"))))))))
+      (native-inputs
+       (list pkg-config))
+      (inputs
+       (list libxkbcommon
+             sbcl-cffi))
+      (home-page "https://github.com/sdilts/cl-xkbcommon")
+      (synopsis "Common Lisp FFI bindings for xkbcommon")
+      (description
+       "This package provides Common Lisp FFI bindings for xkbcommon
+(libxkbcommon) using cffi-grovel.")
+      (license license:expat))))
+
+(define-public cl-xkbcommon
+  (sbcl-package->cl-source-package sbcl-xkbcommon))
+
+(define-public ecl-xkbcommon
+  (sbcl-package->ecl-package sbcl-xkbcommon))
 
 (define-public sbcl-njson
   (package
@@ -27385,6 +27556,54 @@ definition.")
 
 (define-public ecl-slot-extra-options
   (sbcl-package->ecl-package sbcl-slot-extra-options))
+
+(define-public sbcl-slite
+  (let ((commit "942a95330592d30be5ac02fb1b697fb14ccbf1af")
+        (revision "0"))
+    (package
+      (name "sbcl-slite")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/tdrhq/slite/")
+               (commit commit)))
+         (file-name (git-file-name "slite" version))
+         (sha256
+          (base32 "0b4c4vs1zlhcvr9flv8bx76v9hrwc9qmazmp60407q7cghn0k8zk"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-cl-str
+             sbcl-fiveam
+             sbcl-parachute
+             sbcl-lisp-unit2))
+      (home-page "https://github.com/tdrhq/slite")
+      (synopsis "Common Lisp system for Slite ")
+      (description
+       "This package provides the Common Lisp part of the emacs-slite test runner.")
+      (license license:asl2.0))))
+
+(define-public cl-slite
+  (sbcl-package->cl-source-package sbcl-slite))
+
+(define-public ecl-slite
+  (sbcl-package->ecl-package sbcl-slite))
+
+(define-public emacs-slite
+  (package
+    (inherit sbcl-slite)
+    (name "emacs-slite")
+    (build-system emacs-build-system)
+    (synopsis "SLIme-based TEst runner for FiveAM and Parachute Tests")
+    (description
+     "Slite interactively runs your Common Lisp tests (currently only FiveAM
+and Parachute are supported). It allows you to see the summary of test
+failures, jump to test definitions, rerun tests with debugger all from inside
+Emacs.
+
+In order to work, this also requires the slite Common Lisp system to be
+present. See the code@{*cl-slite packages}.")))
 
 (define-public sbcl-parseq
   (package

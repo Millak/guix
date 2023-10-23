@@ -3,6 +3,7 @@
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
+;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -76,21 +77,24 @@
         \"license\": \"MIT OR Apache-2.0\",
         \"links\": {
           \"dependencies\": \"/api/v1/crates/foo/0.8.1/dependencies\"
-        }
+        },
+        \"yanked\": false
       },
       { \"id\": 234212,
         \"num\": \"1.0.0\",
         \"license\": \"MIT OR Apache-2.0\",
         \"links\": {
           \"dependencies\": \"/api/v1/crates/foo/1.0.0/dependencies\"
-        }
+        },
+        \"yanked\": false
       },
       { \"id\": 234214,
         \"num\": \"1.0.3\",
         \"license\": \"MIT OR Apache-2.0\",
         \"links\": {
           \"dependencies\": \"/api/v1/crates/foo/1.0.3/dependencies\"
-        }
+        },
+        \"yanked\": false
       }
     ]
   }
@@ -123,14 +127,16 @@
         \"license\": \"MIT OR Apache-2.0\",
         \"links\": {
           \"dependencies\": \"/api/v1/crates/root/1.0.0/dependencies\"
-        }
+        },
+        \"yanked\": false
       },
       { \"id\": 234242,
         \"num\": \"1.0.4\",
         \"license\": \"MIT OR Apache-2.0\",
         \"links\": {
           \"dependencies\": \"/api/v1/crates/root/1.0.4/dependencies\"
-        }
+        },
+        \"yanked\": false
       }
     ]
   }
@@ -178,21 +184,24 @@
         \"license\": \"MIT OR Apache-2.0\",
         \"links\": {
           \"dependencies\": \"/api/v1/crates/intermediate-a/1.0.40/dependencies\"
-        }
+        },
+        \"yanked\": false
       },
       { \"id\": 234250,
         \"num\": \"1.0.42\",
         \"license\": \"MIT OR Apache-2.0\",
         \"links\": {
           \"dependencies\": \"/api/v1/crates/intermediate-a/1.0.42/dependencies\"
-        }
+        },
+        \"yanked\": false
       },
       { \"id\": 234252,
         \"num\": \"1.1.0-alpha.1\",
         \"license\": \"MIT OR Apache-2.0\",
         \"links\": {
           \"dependencies\": \"/api/v1/crates/intermediate-a/1.1.0-alpha.1/dependencies\"
-        }
+        },
+        \"yanked\": false
       }
     ]
   }
@@ -235,7 +244,8 @@
         \"license\": \"MIT OR Apache-2.0\",
         \"links\": {
           \"dependencies\": \"/api/v1/crates/intermediate-b/1.2.3/dependencies\"
-        }
+        },
+        \"yanked\": false
       }
     ]
   }
@@ -268,14 +278,16 @@
         \"license\": \"MIT OR Apache-2.0\",
         \"links\": {
           \"dependencies\": \"/api/v1/crates/leaf-alice/0.7.3/dependencies\"
-        }
+        },
+        \"yanked\": false
       },
       { \"id\": 234272,
         \"num\": \"0.7.5\",
         \"license\": \"MIT OR Apache-2.0\",
         \"links\": {
           \"dependencies\": \"/api/v1/crates/leaf-alice/0.7.5/dependencies\"
-        }
+        },
+        \"yanked\": false
       }
     ]
   }
@@ -302,7 +314,8 @@
         \"license\": \"MIT OR Apache-2.0\",
         \"links\": {
           \"dependencies\": \"/api/v1/crates/leaf-bob/3.0.1/dependencies\"
-        }
+        },
+        \"yanked\": false
       }
     ]
   }
@@ -597,7 +610,8 @@
         \"license\": \"MIT OR Apache-2.0\",
         \"links\": {
           \"dependencies\": \"/api/v1/crates/doctool/2.2.2/dependencies\"
-        }
+        },
+        \"yanked\": false
       }
     ]
   }

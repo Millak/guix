@@ -3257,6 +3257,29 @@ design tools, including ALM, ALC, and expected improvement for optimizing
 noisy black-box functions.")
     (license license:lgpl2.0+)))
 
+(define-public r-tgstat
+  (package
+    (name "r-tgstat")
+    (version "2.3.24")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "tgstat" version))
+       (sha256
+        (base32 "0czd3j7z30jgb03813s0jc0701ypnwpkkq7var6n6f6cj7sdvc0l"))))
+    (properties `((upstream-name . "tgstat")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=tgstat")
+    (synopsis "Amos Tanay's Group High Performance Statistical Utilities")
+    (description
+     "This package provides a collection of high-performance utilities.
+It can be used to compute distances, correlations, autocorrelations,
+clustering, and other tasks.  It also contains a graph clustering
+algorithm described in MetaCell analysis of single-cell RNA-seq
+data using K-nn graph partitions.")
+    (license license:gpl2)))
+
 (define-public r-tidyft
   (package
     (name "r-tidyft")
@@ -3948,13 +3971,13 @@ a list of p-values.")
 (define-public r-htmltools
   (package
     (name "r-htmltools")
-    (version "0.5.6")
+    (version "0.5.6.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "htmltools" version))
               (sha256
                (base32
-                "0rx0nmal1dca5xqj1pd17a85whsislhkyxxa4scmxgn38lkqxsqm"))))
+                "0km08kvg0j2h1d0v6wpxf09yjadhp2srjjnmqwcahfyh37w4xf09"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-base64enc r-digest r-ellipsis r-fastmap r-rlang))
@@ -7400,14 +7423,14 @@ median test.")
 (define-public r-ksamples
   (package
     (name "r-ksamples")
-    (version "1.2-9")
+    (version "1.2-10")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "kSamples" version))
        (sha256
         (base32
-         "1zs22p68d6320kcylisnk0b5wmpapxkyz15py09czxzw7npw8gms"))))
+         "13ap5ggid3w3s3k5mzz1ir31j96hjg6msa2s1hcy66zv242wqrid"))))
     (properties `((upstream-name . "kSamples")))
     (build-system r-build-system)
     (propagated-inputs
@@ -10382,13 +10405,13 @@ multivariate distributions.")
 (define-public r-fbasics
   (package
     (name "r-fbasics")
-    (version "4022.94")
+    (version "4031.95")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "fBasics" version))
               (sha256
                (base32
-                "1mka9avcdkq4sj40xa15hrjm1f8ppzbvw3yzxbhkbaw9c130qfy8"))))
+                "1d1pbyidng68fcc6vrm98ybklz6yzrinqc2dhg8q6f1pg3kkx6bj"))))
     (properties `((upstream-name . "fBasics")))
     (build-system r-build-system)
     (propagated-inputs
@@ -10602,6 +10625,29 @@ the Singular Value Decomposition in R (Beaton et al 2014)
 the matrix exponential and logarithm, and the determinant.")
     (license license:gpl2)))
 
+(define-public r-complexupset
+  (package
+    (name "r-complexupset")
+    (version "1.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "ComplexUpset" version))
+       (sha256
+        (base32 "1sk4v5kc2wkgfaws0hjlp30mngm907r5gz1iglf68j46lfs9jbsv"))))
+    (properties `((upstream-name . "ComplexUpset")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-colorspace r-ggplot2 r-patchwork r-scales))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/krassowski/complex-upset")
+    (synopsis "Create complex UpSet plots using ggplot2 components")
+    (description
+     "@code{UpSet} plots are an improvement over Venn Diagram for set overlap
+visualizations.  Striving to bring the best of the @code{UpSetR} and ggplot2,
+this package offers a way to create complex overlap visualisations, using
+simple and familiar tools.")
+    (license license:expat)))
+
 (define-public r-phontools
   (package
     (name "r-phontools")
@@ -10719,14 +10765,14 @@ powerful and convenient features.")
 (define-public r-heatmaply
   (package
     (name "r-heatmaply")
-    (version "1.4.2")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "heatmaply" version))
        (sha256
         (base32
-         "0zgaqmbc1nha38c8kx5xdjdjbwmykrf2acq8ydki8dqixv6b34la"))))
+         "1crdm7avxv3zx59byz2fqbcw95728crwf9cckjb9gal1065xv95c"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-assertthat
@@ -12820,14 +12866,14 @@ steps and provides ggplot2-based elegant data visualization.")
 (define-public r-fansi
   (package
     (name "r-fansi")
-    (version "1.0.4")
+    (version "1.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fansi" version))
        (sha256
         (base32
-         "17y4m4yy8d6j6rlql2bpigcyn6yfv2g2aaaj96xjp4j0di722qri"))))
+         "1xi35schbz42kjwjzhjqj12nd053962mgnk6qd9k5m5zgwsww5n6"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr)) ; for vignettes
@@ -16126,19 +16172,20 @@ models.")
 (define-public r-glmmtmb
   (package
     (name "r-glmmtmb")
-    (version "1.1.7")
+    (version "1.1.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "glmmTMB" version))
        (sha256
         (base32
-         "1wf1fn2gf500y2r4d84p5gj3b1fj2cmyw2lp366r4nm6p3iyd2x3"))))
+         "055xi424cd1glhbv8a8v9cm79zq9skb7230nq0xm90iggb1zcj22"))))
     (properties `((upstream-name . "glmmTMB")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lme4
            r-matrix
+           r-mgcv
            r-nlme
            r-numderiv
            r-rcppeigen
@@ -18065,13 +18112,13 @@ pairs (Selesnick 2001, 2002).")
 (define-public r-word2vec
   (package
     (name "r-word2vec")
-    (version "0.3.4")
+    (version "0.4.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "word2vec" version))
               (sha256
                (base32
-                "0qj39vms6zgwb8lpmfkppayizdmhakic3pkacglary3ain61vnsk"))))
+                "14ba0cj430d02bd6fay3nl4ldwqyj77iwjm4gzgdc0f6sx597iiq"))))
     (properties `((upstream-name . "word2vec")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp r-rcppprogress))
@@ -18907,14 +18954,14 @@ PostScript pictures in R plots.")
 (define-public r-grimport2
   (package
     (name "r-grimport2")
-    (version "0.2-0")
+    (version "0.3-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "grImport2" version))
        (sha256
         (base32
-         "19q0dd8fpp1g4xf6sg5f8dxybwxjfw553ra6wgjd8b74fzca40m1"))))
+         "04k71x2wm1wsgv5fnk8xip2q5brl9cnjp3fv2rs0kdq9jkhs6yhz"))))
     (properties `((upstream-name . "grImport2")))
     (build-system r-build-system)
     (propagated-inputs
@@ -25197,13 +25244,13 @@ includes data sets from oceanography.")
 (define-public r-plotroc
   (package
     (name "r-plotroc")
-    (version "2.3.0")
+    (version "2.3.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "plotROC" version))
               (sha256
                (base32
-                "0kaz9hrimi9gi7cf7flag9kc9yrg5fdyylqa5hn53x4dy8vhj37g"))
+                "15jvn1dlx8qh5ghnkhqyc49frw6rp58ikpjs3ga8mjxrqyz7wb1g"))
               (snippet
                '(delete-file "inst/d3.v3.min.js"))))
     (properties `((upstream-name . "plotROC")))
@@ -29810,14 +29857,14 @@ automatically show a loader when the output is (re)calculating.")
 (define-public r-rsvg
   (package
     (name "r-rsvg")
-    (version "2.5.0")
+    (version "2.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rsvg" version))
        (sha256
         (base32
-         "1gi31hhs488a90lcql9c1hhsbymskj5brp05ag5z9f0azspazpdm"))))
+         "0w29isj7n33vwacvk5h6ghgm9j3phghnz7a98b1xi60cyk08qi2b"))))
     (properties `((upstream-name . "rsvg")))
     (build-system r-build-system)
     (inputs

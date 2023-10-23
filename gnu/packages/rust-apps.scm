@@ -24,6 +24,7 @@
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2023 Arnav Andrew Jose <arnav.jose@gmail.com>
+;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1043,8 +1044,10 @@ bar.  It is also compatible with sway.")
                                        "/share/man/man1"))))
              #t)))
        #:features '("pcre2")))
+    (inputs
+     (list pcre2))
     (native-inputs
-     (list asciidoc pcre2 pkg-config))
+     (list asciidoc pkg-config))
     (home-page "https://github.com/BurntSushi/ripgrep")
     (synopsis "Line-oriented search tool")
     (description
@@ -1081,7 +1084,7 @@ touchscreen devices.")
 (define-public rust-swc
   (package
     (name "rust-swc")
-    (version "1.2.24")
+    (version "1.2.124")
     (source
      (origin
        (method git-fetch)
@@ -1091,81 +1094,125 @@ touchscreen devices.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1w9al035x0gmard80vqvah8sy8szs6bnd1ynnyssiiylzg7vhyyv"))))
+         "1cb65vl437sy7shflsazi2k4sz53v3r85dj8rb32ny1j6njczj4h"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* (find-files "." "^Cargo\\.toml$")
+                  (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-ansi-term" ,rust-ansi-term-0.12)
-        ("rust-base64" ,rust-base64-0.12)
+     `(#:install-source? #f
+       #:cargo-build-flags
+       '("--release" "-p" "swc_cli")
+       #:cargo-test-flags
+       '("--release" "-p" "swc_cli")
+       #:cargo-inputs
+       (("rust-abi-stable" ,rust-abi-stable-0.10)
+        ("rust-ahash" ,rust-ahash-0.7)
+        ("rust-ansi-term" ,rust-ansi-term-0.12)
+        ("rust-anyhow" ,rust-anyhow-1)
+        ("rust-arrayvec" ,rust-arrayvec-0.5)
+        ("rust-arbitrary" ,rust-arbitrary-1)
+        ("rust-auto-impl" ,rust-auto-impl-0.5)
+        ("rust-auto-impl" ,rust-auto-impl-0.4)
+        ("rust-backtrace" ,rust-backtrace-0.3)
+        ("rust-bincode" ,rust-bincode-1)
+        ("rust-bitflags" ,rust-bitflags-1)
+        ("rust-browserslist-rs" ,rust-browserslist-rs-0.6)
+        ("rust-cfg-if" ,rust-cfg-if-0.1)
         ("rust-console-error-panic-hook" ,rust-console-error-panic-hook-0.1)
+        ("rust-copyless" ,rust-copyless-0.1)
         ("rust-crc" ,rust-crc-1)
         ("rust-darling" ,rust-darling-0.10)
-        ("rust-dashmap" ,rust-dashmap-3)
+        ("rust-dashmap" ,rust-dashmap-4)
+        ("rust-debug-unreachable" ,rust-debug-unreachable-0.1)
+        ("rust-difference" ,rust-difference-2)
         ("rust-either" ,rust-either-1)
-        ("rust-fxhash" ,rust-fxhash-0.2)
+        ("rust-glob" ,rust-glob-0.3)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-indexmap" ,rust-indexmap-1)
+        ("rust-inflector" ,rust-inflector-0.11)
         ("rust-is-macro" ,rust-is-macro-0.1)
-        ("rust-jemallocator" ,rust-jemallocator-0.3)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-mimalloc" ,rust-mimalloc-0.1)
-        ("rust-napi" ,rust-napi-0.5)
-        ("rust-napi-build" ,rust-napi-build-0.2)
-        ("rust-napi-derive" ,rust-napi-derive-0.5)
+        ("rust-lexical" ,rust-lexical-5)
+        ("rust-libloading" ,rust-libloading-0.7)
+        ("rust-lru" ,rust-lru-0.7)
+        ("rust-mimalloc-rust" ,rust-mimalloc-rust-0.1)
+        ("rust-napi" ,rust-napi-2)
+        ("rust-napi-build" ,rust-napi-build-1)
+        ("rust-napi-derive" ,rust-napi-derive-2)
         ("rust-nom" ,rust-nom-5)
+        ("rust-normpath" ,rust-normpath-0.2)
+        ("rust-num-bigint" ,rust-num-bigint-0.2)
         ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-ordered-float" ,rust-ordered-float-1)
+        ("rust-ordered-float" ,rust-ordered-float-2)
+        ("rust-owning-ref" ,rust-owning-ref-0.4)
+        ("rust-parking-lot" ,rust-parking-lot-0.11)
         ("rust-parking-lot" ,rust-parking-lot-0.7)
+        ("rust-parking-lot-core" ,rust-parking-lot-core-0.8)
         ("rust-path-clean" ,rust-path-clean-0.1)
+        ("rust-paw" ,rust-paw-1)
         ("rust-petgraph" ,rust-petgraph-0.5)
         ("rust-phf" ,rust-phf-0.8)
+        ("rust-pmutil" ,rust-pmutil-0.5)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-0.7)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-0.6)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-rayon" ,rust-rayon-1)
         ("rust-radix-fmt" ,rust-radix-fmt-1)
         ("rust-regex" ,rust-regex-1)
         ("rust-relative-path" ,rust-relative-path-1)
         ("rust-retain-mut" ,rust-retain-mut-0.1)
+        ("rust-rustc-hash" ,rust-rustc-hash-1)
         ("rust-scoped-tls" ,rust-scoped-tls-1)
-        ("rust-st-map" ,rust-st-map-0.1)
-        ("rust-string-cache" ,rust-string-cache-0.8)
-        ("rust-walkdir" ,rust-walkdir-2)
-        ("rust-wasm-bindgen-futures" ,rust-wasm-bindgen-futures-0.4))
-       #:cargo-development-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-env-logger" ,rust-env-logger-0.7)
-        ("rust-num-bigint" ,rust-num-bigint-0.2)
-        ("rust-pretty-assertions" ,rust-pretty-assertions-0.6)
-        ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.3)
+        ("rust-semver" ,rust-semver-0.9)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-serde-regex" ,rust-serde-regex-1)
+        ("rust-sha-1" ,rust-sha-1-0.9)
+        ("rust-smallvec" ,rust-smallvec-1)
         ("rust-sourcemap" ,rust-sourcemap-6)
+        ("rust-st-map" ,rust-st-map-0.1)
+        ("rust-string-cache" ,rust-string-cache-0.8)
         ("rust-string-cache-codegen" ,rust-string-cache-codegen-0.5)
-        ("rust-tempfile" ,rust-tempfile-3))
-       #:tests? #f ;; tests env_query_chrome_71 and project_env fail
+        ("rust-structopt" ,rust-structopt-0.3)
+        ("rust-syn" ,rust-syn-1)
+        ("rust-termcolor" ,rust-termcolor-1)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3)
+        ("rust-typed-arena" ,rust-typed-arena-2)
+        ("rust-walkdir" ,rust-walkdir-2)
+        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+        ("rust-wasm-bindgen-futures" ,rust-wasm-bindgen-futures-0.4)
+        ("rust-unicode-width" ,rust-unicode-width-0.1)
+        ("rust-unicode-xid" ,rust-unicode-xid-0.2)
+        ("rust-url" ,rust-url-2))
+       #:cargo-development-inputs
+       (("rust-ansi-term" ,rust-ansi-term-0.12)
+        ("rust-anyhow" ,rust-anyhow-1)
+        ("rust-dashmap" ,rust-dashmap-4)
+        ("rust-env-logger" ,rust-env-logger-0.7)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-ntest" ,rust-ntest-0.7)
+        ("rust-path-clean" ,rust-path-clean-0.1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-0.7)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-0.6)
+        ("rust-reqwest" ,rust-reqwest-0.11)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-sha-1" ,rust-sha-1-0.9)
+        ("rust-sourcemap" ,rust-sourcemap-6)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-url" ,rust-url-2)
+        ("rust-walkdir" ,rust-walkdir-2))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'enable-unstable-features
-           (lambda _
-             (setenv "RUSTC_BOOTSTRAP" "1")
-             (substitute* "ecmascript/jsdoc/src/lib.rs"
-               (("pub use self" all)
-                (string-append "#![feature(non_exhaustive)]\n" all)))
-             (substitute* "ecmascript/parser/src/lib.rs"
-               (("//! es2019" all)
-                (string-append "#![feature(non_exhaustive)]
-#![feature(mem_take)]
-#![feature(proc_macro_hygiene)]
-" all)))
-             (substitute* "ecmascript/transforms/src/lib.rs"
-               (("#!\\[cfg_attr" all)
-                (string-append "#![feature(mem_take)]\n" all)))
-             #t))
-         (add-after 'enable-unstable-features 'patch-build-failures
-           (lambda _
-             (chmod ".cargo/config" 420)
-             (substitute* "ecmascript/transforms/macros/src/lib.rs"
-               (("use proc_macro::")
-                "extern crate proc_macro;\nuse proc_macro::"))
-             (substitute* "common/src/errors/emitter.rs"
-               (("        #\\[cfg\\(feature = \"tty-emitter\"\\)\\]\n") ""))
-             #t)))))
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin")))
+               (install-file "target/release/swc" bin)))))))
     (home-page "https://swc.rs/")
     (synopsis "Typescript/javascript compiler")
     (description "@code{rust-swc} is a typescript/javascript compiler.  It
@@ -1908,7 +1955,7 @@ background agent taking care of maintaining the necessary state.")
        (("rust-arbitrary" ,rust-arbitrary-1)
         ("rust-derive-arbitrary" ,rust-derive-arbitrary-1)
         ("rust-expect-test" ,rust-expect-test-1)
-        ("rust-oorandom" ,rust-oorandom-11.1)
+        ("rust-oorandom" ,rust-oorandom-11)
         ("rust-quote" ,rust-quote-1.0.10)
         ("rust-rayon" ,rust-rayon-1)
         ("rust-tracing" ,rust-tracing-0.1)
@@ -2452,6 +2499,149 @@ current branch.  @code{git absorb} will automatically identify which commits
 are safe to modify, and which staged changes belong to each of those commits.
 It will then write @code{fixup!} commits for each of those changes.")
     (license license:bsd-3)))
+
+(define-public rust-xremap
+  (package
+    (name "rust-xremap")
+    (version "0.8.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "xremap" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1815hz1a93brj6v9102xypds1qslf6gxgk9vcvxhxlhy1c2pfxvj"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "Cargo.toml"
+                   (("1\\.0\\.75") "1.0.68")    ; rust-anyhow
+                   (("0\\.4\\.19") "0.4.17")    ; rust-log
+                   (("1\\.9\\.4") "1.9.1")      ; regex
+                   (("3\\.3") "3.0"))))))       ; serde-with
+    (build-system cargo-build-system)
+    (arguments
+     `(#:features '()
+       #:install-source? #f
+       #:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-clap-complete" ,rust-clap-complete-4)
+        ("rust-derive-where" ,rust-derive-where-1)
+        ("rust-env-logger" ,rust-env-logger-0.10)
+        ("rust-evdev" ,rust-evdev-0.12)
+        ("rust-fork" ,rust-fork-0.1)
+        ("rust-hyprland" ,rust-hyprland-0.3)
+        ("rust-indoc" ,rust-indoc-2)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-nix" ,rust-nix-0.26)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-serde-with" ,rust-serde-with-3)
+        ("rust-serde-yaml" ,rust-serde-yaml-0.9)
+        ("rust-swayipc" ,rust-swayipc-3)
+        ("rust-wayland-client" ,rust-wayland-client-0.30)
+        ("rust-wayland-protocols-wlr" ,rust-wayland-protocols-wlr-0.1)
+        ("rust-x11rb" ,rust-x11rb-0.12)
+        ("rust-zbus" ,rust-zbus-1))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-completions
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (share (string-append out "/share"))
+                    (xremap (string-append out "/bin/xremap")))
+               (mkdir-p (string-append share "/bash-completion/completions"))
+               (with-output-to-file
+                 (string-append share "/bash-completion/completions/xremap")
+                 (lambda _ (invoke xremap "--completions" "bash")))
+               (mkdir-p (string-append share "/fish/vendor_completions.d"))
+               (with-output-to-file
+                 (string-append share "/fish/vendor_completions.d/xremap.fish")
+                 (lambda _ (invoke xremap "--completions" "fish")))
+               (mkdir-p (string-append share "/zsh/site-functions"))
+               (with-output-to-file
+                 (string-append share "/zsh/site-functions/_xremap")
+                 (lambda _ (invoke xremap "--completions" "zsh")))
+               (mkdir-p (string-append share "/elvish/lib"))
+               (with-output-to-file
+                 (string-append share "/elvish/lib/xremap")
+                 (lambda _ (invoke xremap "--completions" "elvish")))))))))
+    (home-page "https://github.com/k0kubun/xremap")
+    (synopsis "Dynamic key remapp for X and Wayland")
+    (description "This package provides dynamic key remapp for X and Wayland.")
+    (license license:expat)))
+
+(define-public xremap-gnome
+  (package
+    (inherit rust-xremap)
+    (name "xremap-gnome")
+    (arguments
+     (substitute-keyword-arguments (package-arguments rust-xremap)
+       ((#:features _) '(list "gnome"))))))
+
+(define-public xremap-sway
+  (package
+    (inherit rust-xremap)
+    (name "xremap-sway")
+    (arguments
+     (substitute-keyword-arguments (package-arguments rust-xremap)
+       ((#:features _) '(list "sway"))))))
+
+(define-public xremap-wlroots
+  (package
+    (inherit rust-xremap)
+    (name "xremap-wlroots")
+    (arguments
+     (substitute-keyword-arguments (package-arguments rust-xremap)
+       ((#:features _) '(list "wlroots"))))))
+
+(define-public xremap-x11
+  (package
+    (inherit rust-xremap)
+    (name "xremap-x11")
+    (arguments
+     (substitute-keyword-arguments (package-arguments rust-xremap)
+       ((#:features _) '(list "x11"))))))
+
+(define-public xsv
+  (package
+    (name "xsv")
+    (version "0.13.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "xsv" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0pvzr7x5phlya6m5yikvy13vgbazshw0plysckz9zmf2ly5x4jl8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-byteorder" ,rust-byteorder-1)
+        ("rust-chan" ,rust-chan-0.1)
+        ("rust-csv" ,rust-csv-1)
+        ("rust-csv-index" ,rust-csv-index-0.1)
+        ("rust-docopt" ,rust-docopt-1)
+        ("rust-filetime" ,rust-filetime-0.1)
+        ("rust-num-cpus" ,rust-num-cpus-1)
+        ("rust-rand" ,rust-rand-0.4)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-streaming-stats" ,rust-streaming-stats-0.2)
+        ("rust-tabwriter" ,rust-tabwriter-1)
+        ("rust-threadpool" ,rust-threadpool-1))
+       #:cargo-development-inputs
+       (("rust-log" ,rust-log-0.4)
+        ("rust-quickcheck" ,rust-quickcheck-0.6))))
+    (home-page "https://github.com/BurntSushi/xsv")
+    (synopsis "High performance CSV command line toolkit")
+    (description
+     "This package provides a high performance CSV command line toolkit.")
+    (license (list license:unlicense license:expat))))
 
 (define-public zoxide
   (package

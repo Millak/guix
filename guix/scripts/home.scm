@@ -164,7 +164,7 @@ Some ACTIONS support additional ARGS.\n"))
   ;; Specification of the command-line options.
   (cons* (option '(#\h "help") #f #f
                  (lambda args
-                   (show-help)
+                   (leave-on-EPIPE (show-help))
                    (exit 0)))
          (option '(#\n "dry-run") #f #f
                  (lambda (opt name arg result)

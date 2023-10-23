@@ -142,7 +142,7 @@
   ;; <https://bitcoincore.org/en/lifecycle/#schedule>.
   (package
     (name "bitcoin-core")
-    (version "25.0")
+    (version "25.1")
     (source (origin
               (method url-fetch)
               (uri
@@ -150,7 +150,7 @@
                               version "/bitcoin-" version ".tar.gz"))
               (sha256
                (base32
-                "1hpbw6diyla75a6jrwsis9c5pnhpnnxwbznsik1s1fd35ks7rxjx"))))
+                "1jcq2686x6f1g8xk91h3qfw89v1klw931wbpbcvc5a6zv2cabhmy"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
@@ -682,7 +682,7 @@ blockchain.")
   ;; the system's dynamically linked library.
   (package
     (name "monero")
-    (version "0.18.2.2")
+    (version "0.18.3.1")
     (source
      (origin
        (method git-fetch)
@@ -700,7 +700,7 @@ blockchain.")
             delete-file-recursively
             '("external/miniupnp" "external/rapidjson"))))
        (sha256
-        (base32 "0hi6grf2xnnra60g3dzspahi0rwyiad6hc07n3pq3aknmz5xx8d4"))))
+        (base32 "1k6mrgsvmqsfk95w8kjmp9v2fghjmmpj40667zndrw9jx1h85mwx"))))
     (build-system cmake-build-system)
     (native-inputs
      (list doxygen
@@ -787,7 +787,7 @@ the Monero command line client and daemon.")
 (define-public monero-gui
   (package
     (name "monero-gui")
-    (version "0.18.2.2")
+    (version "0.18.3.1")
     (source
      (origin
        (method git-fetch)
@@ -803,7 +803,7 @@ the Monero command line client and daemon.")
            ;; See the 'extract-monero-sources' phase.
            (delete-file-recursively "monero")))
        (sha256
-        (base32 "07gfvrxm3n0844ximm4rd3f3n0m125shpawdzg8blfjjbfr1k1ij"))))
+        (base32 "1fjx8gdzc1pmfsi14r09gfmkglvh560pnxk70p0k82a4gbs1vyz2"))))
     (build-system qt-build-system)
     (native-inputs
      `(,@(package-native-inputs monero)
@@ -2299,7 +2299,7 @@ mining.")
 (define-public p2pool
   (package
     (name "p2pool")
-    (version "3.6.2")
+    (version "3.7")
     (source
      (origin
        (method git-fetch)
@@ -2308,7 +2308,7 @@ mining.")
              (commit (string-append "v" version))
              (recursive? #t)))
        (file-name (git-file-name name version))
-       (sha256 (base32 "0lki6yrzmmpd5hj55m6s71y1cr81lbk1f3h9h70gmm4p4qjrv5f2"))
+       (sha256 (base32 "1sghdk8yq8si0bq0z83fji48q8yrq0ymvsxbbh5mscw6223syrjq"))
        (modules '((guix build utils)))
        (snippet
         #~(for-each delete-file-recursively

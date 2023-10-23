@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2018–2023 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 by Amar Singh <nly@disroot.org>
 ;;; Copyright © 2020 R Veera Kumar <vkor@vkten.in>
 ;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
@@ -186,7 +186,7 @@ reused in several astronomical applications, such as @code{wsclean},
 (define-public calceph
   (package
     (name "calceph")
-    (version  "3.5.2")
+    (version  "3.5.3")
     (source
      (origin
        (method url-fetch)
@@ -194,7 +194,7 @@ reused in several astronomical applications, such as @code{wsclean},
              "https://www.imcce.fr/content/medias/recherche/equipes/asd/calceph/calceph-"
              version ".tar.gz"))
        (sha256
-        (base32 "1rnjlaiii4j0agbj4k242p212bqqmqdqa0lni6c3bnhgfnrbjfp4"))))
+        (base32 "12apl806h8qx1kq74malq3828jqapwfi27cn05pvvxfiq7gfpllx"))))
     (build-system gnu-build-system)
     (native-inputs
      (list gfortran))
@@ -711,9 +711,10 @@ corrections.")
        (uri (string-append "https://www.atnf.csiro.au/people/mcalabre/WCS/"
                            "wcslib-" version ".tar.bz2"))
        (sha256
-        (base32 "17hjnkwn2rd5d9krw2n637q4y8ma4nzk2i55zzn8l2yimdpkxwib"))))
-    (inputs
-     (list cfitsio))
+        (base32 "17hjnkwn2rd5d9krw2n637q4y8ma4nzk2i55zzn8l2yimdpkxwib"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "C/flexed")))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -731,6 +732,10 @@ corrections.")
                 (("/bin/sh") "sh")))))))
     ;; TODO: Fix build with gfortran and pack missing optional pgplot.
     ;; (inputs (list gfortran pgplot))
+    (inputs
+     (list cfitsio))
+    (native-inputs
+     (list flex))
     (home-page "https://www.atnf.csiro.au/people/mcalabre/WCS")
     (synopsis "Library which implements the FITS WCS standard")
     (description "The FITS \"World Coordinate System\" (@dfn{WCS}) standard
@@ -751,7 +756,10 @@ header.")
        (uri (string-append "https://www.atnf.csiro.au/people/mcalabre/WCS/"
                            "wcslib-" version ".tar.bz2"))
        (sha256
-        (base32 "1m3bx6gh5w3c7vvsqcki0x20mg8lilg13m0i8nh7za89w58dxy4w"))))
+        (base32 "1m3bx6gh5w3c7vvsqcki0x20mg8lilg13m0i8nh7za89w58dxy4w"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "C/flexed")))))
     (properties '((hidden? . #t)))))
 
 (define-public wcstools
@@ -876,7 +884,7 @@ different kinds of input files.")
 (define-public gnuastro
   (package
     (name "gnuastro")
-    (version "0.20")
+    (version "0.21")
     (source
      (origin
        (method url-fetch)
@@ -884,7 +892,7 @@ different kinds of input files.")
                            version ".tar.lz"))
        (sha256
         (base32
-         "05bkad0xbax9k0m2g2507mdmjg2109sfg72dsx16f44yj55llh2n"))))
+         "1zyk764pmfrsfj45gnc3qp4z1zfmgrv7kcsji2bxfzvs9inzzq4c"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
@@ -1020,7 +1028,7 @@ crowded star fields.")
 (define-public siril
   (package
     (name "siril")
-    (version "1.0.6")
+    (version "1.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1028,16 +1036,18 @@ crowded star fields.")
                     (commit version)))
               (sha256
                (base32
-                "0iqxb5zmjyygg4b6lwlq8z82mngxg7kjjpahhzk52m0cypfq0l18"))
+                "0ss1m9w4cz1752vp5738057nzmqc6k7fc9pi6kr9cwgspi1haall"))
               (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (native-inputs (list cmake git glib libconfig pkg-config))
     (inputs (list cfitsio
                   exiv2
+                  ffms2
                   fftwf
                   gsl
                   gtk+
                   json-glib
+                  libheif
                   libraw
                   librtprocess
                   opencv))
@@ -1202,7 +1212,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
 (define-public stellarium
   (package
     (name "stellarium")
-    (version "23.2")
+    (version "23.3")
     (source
      (origin
        (method git-fetch)
@@ -1211,7 +1221,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fkiibc6m8kfmyf5my7ynfrpdlrcri14cl26swpgv3bhzxpmx27h"))))
+        (base32 "15kl8kn5fmmppbm93w5ki7lpjn09lhyhn245v3jc335xifcwd2vd"))))
     (build-system cmake-build-system)
     ;; TODO: Complete documentation build and split into dedicated outputs.
     (arguments
@@ -1720,7 +1730,7 @@ bad pixel tracking throughout the reduction process.")
 (define-public python-cdflib
   (package
     (name "python-cdflib")
-    (version "1.1.0")
+    (version "1.2.1")
     (source
      (origin
        (method git-fetch)   ; no tests in pypi archive
@@ -1729,7 +1739,7 @@ bad pixel tracking throughout the reduction process.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qxf13vmfiblcazxdk2b765b02ys57amawvrwlkj9d5x9f5s6061"))))
+        (base32 "0v73fl69pxbk52ilhj2593zmn3qhqy4hrrwby8m9z2sq3fd5xk0v"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases
@@ -1769,13 +1779,13 @@ attempting to maintain ISTP compliance
 (define-public python-crds
   (package
     (name "python-crds")
-    (version "11.17.4")
+    (version "11.17.6")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "crds" version))
               (sha256
                (base32
-                "0bk6cyd2il7ibqwky6m5kkgs9shrlzyfpnp2rh9jx0xa9habf7zm"))))
+                "1sbfl45rx21g622vm8baqv0ydcdixf1jdjgydn07sxl7kn15fa4g"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1888,48 +1898,43 @@ used with local NetDRMS sites.")
 (define-public python-drizzle
   (package
     (name "python-drizzle")
-    (version "1.13.7")
-    (source (origin
-              (method git-fetch) ;PyPi doesn't have the test data sets
-              (uri (git-reference
-                    (url "https://github.com/spacetelescope/drizzle")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0x591d9gjasds91fvwcf37bhxp5nra28g0vq5zkykczpc70ywiy8"))))
+    (version "1.14.3")
+    (source
+     (origin
+       (method git-fetch) ;PyPi doesn't have the test data sets
+       (uri (git-reference
+             (url "https://github.com/spacetelescope/drizzle")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04gncwg76yivcaq7rwgsw5k8w4h3c4wcrjcamb53h0d5s820z7dl"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; XXX: 2 of 26 tests failed with AssertionError, disable them for now.
-      ;; Consider mention it in upstream.
-      #:test-flags #~(list "-k"
-                           (string-append "not test_square_with_point"
-                                          " and not test_square_with_grid"))
-      #:phases #~(modify-phases %standard-phases
-                   (add-before 'build 'set-env-version
-                     (lambda _
-                       (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
-                               #$version)))
-                   (add-before 'check 'build-extensions
-                     (lambda _
-                       ;; Cython extensions have to be built before running
-                       ;; the tests.
-                       (invoke "python" "setup.py" "build_ext" "--inplace"))))))
-    (propagated-inputs (list python-astropy python-numpy))
-    (native-inputs (list python-coverage python-flake8 python-pytest
-                         python-pytest-cov python-setuptools-scm))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-env-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+          (add-before 'check 'build-extensions
+            (lambda _
+              ;; Cython extensions have to be built before running the tests.
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (propagated-inputs
+     (list python-astropy python-numpy))
+    (native-inputs
+     (list python-flake8 python-pytest python-setuptools-scm))
     (home-page "https://github.com/spacetelescope/drizzle")
     (synopsis
      "Astronomical tool for combining dithered images into a single image")
     (description
-     "The drizzle library is a Python package for combining dithered images into
-a single image.  This library is derived from code used in DrizzlePac.  Like
-DrizzlePac, most of the code is implemented in the C language.  The biggest
-change from DrizzlePac is that this code passes an array that maps the input to
-output image into the C code, while the DrizzlePac code computes the mapping by
-using a Python callback.  Switching to using an array allowed the code to be
-greatly simplified.")
+     "The drizzle library is a Python package for combining dithered images
+into a single image.  This library is derived from code used in DrizzlePac.
+Like DrizzlePac, most of the code is implemented in the C language.  The
+biggest change from DrizzlePac is that this code passes an array that maps the
+input to output image into the C code, while the DrizzlePac code computes the
+mapping by using a Python callback.  Switching to using an array allowed the
+code to be greatly simplified.")
     (license license:bsd-3)))
 
 (define-public python-ephem
@@ -2225,13 +2230,13 @@ Virtual observatory (VO) using Python.")
 (define-public python-reproject
   (package
     (name "python-reproject")
-    (version "0.11.0")
+    (version "0.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "reproject" version))
        (sha256
-        (base32 "0p07qlqinb826m4n5b5invyfyv4z750sai2caqaf598mgj04l61p"))))
+        (base32 "1cjdfv7wd4c0ia63vqakxf9w8hd5dfz6jzi520scd37rliy1xgld"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2241,6 +2246,9 @@ Virtual observatory (VO) using Python.")
       ;; from .deforest import map_coordinates
       ;; E   ModuleNotFoundError: No module named 'reproject.adaptive.deforest'
       ;;
+      ;; Project removed setup.py and there is no alternative to `python
+      ;; setup.py build_ext'
+      ;; See: https://github.com/pypa/setuptools/discussions/3388
       #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
@@ -2315,13 +2323,13 @@ orbits described in TLE files.")
 (define-public python-sunpy
   (package
     (name "python-sunpy")
-    (version "5.0.0")
+    (version "5.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sunpy" version))
        (sha256
-        (base32 "1w75yc8az86pwbf79h083j4kc2ycfk76ky5kzlmcwgp0ih23mhym"))))
+        (base32 "1r4phc91k527kvpa2jd1d417x97wqyrm3ydayr9hshwz1k5v5ngf"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2577,27 +2585,38 @@ image processing functions: @code{xyxymatch}, @code{geomap}.")
 (define-public python-stcal
   (package
     (name "python-stcal")
-    (version "1.4.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "stcal" version))
-              (sha256
-               (base32
-                "163vyqcd9qv2knf8jik8y449z7ljl2lvbd7im82bq61prgi3z2hj"))))
+    (version "1.4.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "stcal" version))
+       (sha256
+        (base32 "031ldihdmsdrwz4wl49bfk2bxmzbp1i3kidrw46xz936765zmnc0"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        ;; XXX: Can't detect opencv-python version. The input
-                        ;; opencv might not set the version correctly.
-                        (delete 'sanity-check))))
-    (propagated-inputs (list opencv ;Provides OpenCV-Python
-                             python-astropy python-numpy python-scipy))
-    (native-inputs (list python-psutil
-                         python-pytest
-                         python-pytest-cov
-                         python-pytest-doctestplus
-                         python-pytest-openfiles
-                         python-setuptools-scm))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Can't detect opencv-python version. The input opencv might
+          ;; not set the version correctly.
+          (delete 'sanity-check)
+          (add-before 'check 'build-extensions
+            (lambda _
+              ;; Cython extensions have to be built before running the tests.
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (propagated-inputs
+     (list opencv ;Provides OpenCV-Python
+           python-astropy
+           python-numpy
+           python-scipy))
+    (native-inputs
+     (list python-cython
+           python-psutil
+           python-pytest
+           python-pytest-cov
+           python-pytest-doctestplus
+           python-pytest-openfiles
+           python-setuptools-scm))
     (home-page "https://github.com/spacetelescope/stcal")
     (synopsis "STScI tools and algorithms used in calibration pipelines")
     (description "STScI tools and algorithms used in calibration pipelines.")
@@ -2606,53 +2625,60 @@ image processing functions: @code{xyxymatch}, @code{geomap}.")
 (define-public python-stdatamodels
   (package
     (name "python-stdatamodels")
-    (version "1.8.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "stdatamodels" version))
-              (sha256
-               (base32
-                "003h3f07aqf6s24ivwnps81n2h51k545b236s75l8ppvjrm45xfq"))))
+    (version "1.8.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "stdatamodels" version))
+       (sha256
+        (base32 "0265xa9nrp6qp1z7v9kmnd3c8jc0dad2vzin657clk3rrsj2qll5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; Disable tests requiring access to CRDS servers to download ~500MiB
-      ;; of data.
+      ;; Disable tests requiring access to CRDS servers to download ~500MiB of
+      ;; data.
       #:test-flags #~(list "-k" "not test_crds_selectors_vs_datamodel")
-      #:phases #~(modify-phases %standard-phases
-                   (add-before 'check 'set-home
-                     (lambda _
-                       (setenv "HOME" "/tmp"))))))
-    (propagated-inputs (list python-asdf
-                             python-asdf-astropy
-                             python-astropy
-                             python-numpy
-                             python-psutil))
-    (native-inputs (list python-crds
-                         python-pytest
-                         python-pytest-doctestplus
-                         python-scipy
-                         python-semantic-version
-                         python-setuptools-scm))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list python-asdf
+           python-asdf-astropy
+           python-astropy
+           python-numpy
+           python-psutil))
+    (native-inputs
+     (list python-crds
+           python-pytest
+           python-pytest-doctestplus
+           python-scipy
+           python-semantic-version
+           python-setuptools-scm))
     (home-page "https://github.com/spacetelescope/stdatamodels")
     (synopsis
      "Core support for DataModel classes used in calibration pipelines")
     (description
-     "Provides DataModel, which is the base class for data models implemented in
-the @acronym{JWST, James Webb Space Telescope} and @acronym{Roman, Nancy Grace
-Roman Space Telescope} calibration software.")
+     "Provides @code{DataModel}, which is the base class for data models
+implemented in the @acronym{JWST, James Webb Space Telescope} and
+@acronym{Roman, Nancy Grace Roman Space Telescope} calibration software.")
     (license license:bsd-3)))
 
 (define-public python-stpipe
   (package
     (name "python-stpipe")
-    (version "0.5.0")
+    (version "0.5.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "stpipe" version))
               (sha256
                (base32
-                "17gnwzhl10vbg059lfprdyci19dlh3whkmb9rl7z25wr593rnvcp"))))
+                "11ccb3v2s20lf851061s4nanljwm9s9xzkcfgb3qhv0hjwziq0vr"))))
+    (arguments
+     (list
+      ;; See https://github.com/spacetelescope/stpipe/issues/114
+      #:test-flags #~(list "-k" "not test_roman_datamodel")))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-asdf python-astropy python-crds
                              python-semantic-version python-stdatamodels))
@@ -3106,10 +3132,10 @@ floating-point (no compression, LZW- or ZIP-compressed), FITS 8-bit, 16-bit,
 32-bit floating-point.")
     (license license:gpl3+)))
 
-(define-public indi
+(define-public indi-2.0
   (package
     (name "indi")
-    (version "1.9.9")
+    (version "2.0.4")
     (source
      (origin
        (method git-fetch)
@@ -3118,7 +3144,7 @@ floating-point (no compression, LZW- or ZIP-compressed), FITS 8-bit, 16-bit,
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vfcas59nlw8v7n6qhxhcm4isf5wk0crip5rmsallq3bsv3zznfr"))))
+        (base32 "1pp72bqxrvdij47fqfrnyxwqw1w8prxvs1igjsazcw8ncbrdbbjc"))))
     (build-system cmake-build-system)
     (arguments
      ;; TODO: fix failing tests on aarch64-system.
@@ -3166,6 +3192,24 @@ more.")
                    license:gpl2+
                    license:lgpl2.0+
                    license:lgpl2.1+))))
+
+(define-public indi-1.9
+  (package
+    (inherit indi-2.0)
+    (version "1.9.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/indilib/indi")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "indi" version))
+       (sha256
+        (base32 "1vfcas59nlw8v7n6qhxhcm4isf5wk0crip5rmsallq3bsv3zznfr"))))))
+
+(define-public indi
+  ;; Default version of INDI..
+  indi-1.9)
 
 (define-public sunclock
   (let ((commit "f4106eb0a81f7594726d6b2859efd8fc64cc1225")
@@ -3229,43 +3273,44 @@ Moon position, etc.")
 (define-public python-jplephem
   (package
     (name "python-jplephem")
-    (version "2.18")
+    (version "2.19")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jplephem" version))
        (sha256
-        (base32 "1rgswy52ismij0bkmfqwbml5zikzvzzs1f833dwk0y64lkl12aa9"))))
-    (build-system python-build-system)
+        (base32 "1kvdzwyh0invinvcnwfr14r9zbqzcwkdh0cpzw1m4vkdcm64aqn1"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (let ((out (assoc-ref outputs "out")))
-                 (add-installed-pythonpath inputs outputs)
-                 (setenv "PATH" (string-append out "/bin:" (getenv "PATH")))
-                 (invoke "python" "-m" "unittest" "discover" "-s" "test"))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python" "-m" "unittest" "discover" "-s" "test")))))))
     (inputs
      (list python-numpy))
     (home-page "https://github.com/brandon-rhodes/python-jplephem")
     (synopsis "Python version of NASA DE4xx ephemerides")
     (description
-     "The package is a Python implementation of the mathematics that standard
-JPL ephemerides use to predict raw (x,y,z) planetary positions.")
+     "@code{skyfield} computes positions for the stars, planets, and
+satellites in orbit around the Earth.  Its results should agree with the
+positions generated by the United States Naval Observatory and their
+Astronomical Almanac to within 0.0005 arcseconds (half a @emph{mas} or
+milliarcsecond).")
     (license license:expat)))
 
 (define-public python-jwst
   (package
     (name "python-jwst")
-    (version "1.11.4")
+    (version "1.12.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "jwst" version))
               (sha256
                (base32
-                "1q3kpdjr8j1y8hkpidy80aqxsp3k13sz4j5aagq3wnzvpnds3x73"))))
+                "0bw7i0pmpdgk2zf47d57g45hm3yb4wbrf1p19z9vg555qv4f4kr5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3524,13 +3569,13 @@ of the old packages.")
 (define-public python-tweakwcs
   (package
     (name "python-tweakwcs")
-    (version "0.8.2")
+    (version "0.8.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "tweakwcs" version))
               (sha256
                (base32
-                "1500w737n9vf5hv16xkybk4shl7g4wfzb2ji9mc4vgzj41gkrwl4"))))
+                "09bd8b77rpn641cwmkhcyzx43xkx3va83wdcb47wcqqa7qgx9f1m"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-astropy
                              python-gwcs
@@ -3847,13 +3892,13 @@ install an implementation package such as gwcs.")
 (define-public python-gwcs
   (package
     (name "python-gwcs")
-    (version "0.18.3")
+    (version "0.19.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "gwcs" version))
        (sha256
-        (base32 "0mgyk5mgmj242g8nl7glcj689vry3ncwf04b8q3hasjcc9bs0rm4"))))
+        (base32 "1f3h41aq4nwcl6k80jb9s8shn2mhvz32mx9qhcm1xmcqrflqyf52"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-jsonschema

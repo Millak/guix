@@ -970,9 +970,9 @@ rendering commands to the X server.")
         (uri (string-append
                "mirror://xorg/individual/app/iceauth-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
-         (base32 "1ik0mdidmyvy48hn8p2hwvf3535rf3m96hhf0mvcqrbj44x23vp6"))))
+         (base32 "01cc816fvdkkfcnqnyvgcshcip2jzjivwa8hzdvsz0snak5xzf9c"))))
     (build-system gnu-build-system)
     (inputs
       (list libice))
@@ -5243,8 +5243,11 @@ application-facing EGL functions.")
         (base32 "11a3j2rjai2vsway9ki5y3ncvhrwd300pz2zcq36mq3brbr1vgf5"))))
     (build-system meson-build-system)
     (native-inputs
-     (list libglvnd ;needed for headers
-           mesa-headers pkg-config))
+     (cons* libglvnd ;needed for headers
+            mesa-headers pkg-config
+            (if (%current-target-system)
+              (list pkg-config-for-build wayland wayland-protocols)
+              '())))
     (inputs
      (list mesa wayland wayland-protocols))
     (propagated-inputs
@@ -5286,7 +5289,12 @@ EGLStream families of extensions.")
                   xkeyboard-config
                   xorgproto
                   xtrans))
-    (native-inputs (list pkg-config))
+    (native-inputs (cons pkg-config
+                         (if (%current-target-system)
+                           (list pkg-config-for-build
+                                 wayland
+                                 wayland-protocols)
+                           '())))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
@@ -5584,7 +5592,10 @@ The XCB util module provides the following libraries:
         ("automake" ,automake)
         ("libtool" ,libtool)
         ("python" ,python-wrapper)
-        ("pkg-config" ,pkg-config)))
+        ("pkg-config" ,pkg-config)
+        ,@(if (%current-target-system)
+            `(("libxcb" ,libxcb))
+            `())))
      (arguments
       `(#:phases
         (modify-phases %standard-phases
@@ -6128,14 +6139,14 @@ basic eye-candy effects.")
 (define-public xpra
   (package
     (name "xpra")
-    (version "5.0.2")
+    (version "5.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.xpra.org/src/xpra-"
                            version ".tar.xz"))
        (sha256
-        (base32 "0gxv0h1spg2jl3g9cc6qxxkq6a7prmb92dqqwk0s6pvrj8w3izlk"))
+        (base32 "03vpihkinidyv6257683av8288vm0hmg767yf188jkkdxl4cv4gs"))
        (patches (search-patches "xpra-5.0-systemd-run.patch"
                                 "xpra-5.0-install_libs.patch"))))
     (build-system python-build-system)

@@ -12,7 +12,7 @@
 ;;; Copyright © 2016 Raymond Nicholson <rain1@openmailbox.org>
 ;;; Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2016, 2018-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2016, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2018, 2019, 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2016-2023 Marius Bakke <marius@gnu.org>
@@ -76,6 +76,7 @@
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 dan <i@dan.games>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
+;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -492,7 +493,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-6.5-version "6.5.5")
+(define-public linux-libre-6.5-version "6.5.7")
 (define-public linux-libre-6.5-gnu-revision "gnu")
 (define deblob-scripts-6.5
   (linux-libre-deblob-scripts
@@ -502,30 +503,15 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "132ps1jprxw6kqyscsar38fn7s12kg416mfhz7w702f4ajgq1ndi")))
 (define-public linux-libre-6.5-pristine-source
   (let ((version linux-libre-6.5-version)
-        (hash (base32 "15gg8sb6cfgk1afwj7fl7mj4nkj14w43vzwvw0qsg3nzyxwh7wcc")))
+        (hash (base32 "135v3y2vgc83dca4xi7q52wqi4dkfal74k1y73jwzj85h12fl28d")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.5)))
 
-(define-public linux-libre-6.4-version "6.4.16")
-(define-public linux-libre-6.4-gnu-revision "gnu")
-(define deblob-scripts-6.4
-  (linux-libre-deblob-scripts
-   linux-libre-6.4-version
-   linux-libre-6.4-gnu-revision
-   (base32 "012d16rjprxdv9frf7kcakpikvw7l0s3kvj4kkp9flzdg3j8wxpz")
-   (base32 "02zizxf0dp4291hbvjrif04m19h8rrc55c11qinlrm0p19s9srcx")))
-(define-public linux-libre-6.4-pristine-source
-  (let ((version linux-libre-6.4-version)
-        (hash (base32 "0zgj1z97jyx7wf12zrnlcp0mj4cl43ais9qsy6dh1jwylf2fq9ln")))
-   (make-linux-libre-source version
-                            (%upstream-linux-source version hash)
-                            deblob-scripts-6.4)))
-
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-6.1-version "6.1.53")
+(define-public linux-libre-6.1-version "6.1.58")
 (define-public linux-libre-6.1-gnu-revision "gnu")
 (define deblob-scripts-6.1
   (linux-libre-deblob-scripts
@@ -535,12 +521,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1c73516nbhnz0cxjz38b5794dxygb8sznv9idiibw7ablmjbhd11")))
 (define-public linux-libre-6.1-pristine-source
   (let ((version linux-libre-6.1-version)
-        (hash (base32 "0zpdg3fcc12iyjhfs5w7cw75700z4i8m9jcg38mlzlhh92hf0msz")))
+        (hash (base32 "1b913ina3rcw4dx2s7n37kynv8rqsmrqa2ialsib6h7nsb9px66f")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.1)))
 
-(define-public linux-libre-5.15-version "5.15.131")
+(define-public linux-libre-5.15-version "5.15.135")
 (define-public linux-libre-5.15-gnu-revision "gnu")
 (define deblob-scripts-5.15
   (linux-libre-deblob-scripts
@@ -550,12 +536,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1c3lm0j401lv2lk39dmr4mlf5ic173snm7cc0cckl6czyvxr5ysy")))
 (define-public linux-libre-5.15-pristine-source
   (let ((version linux-libre-5.15-version)
-        (hash (base32 "0sacnbw48lblnqaj56nybh588sq4k84gwf0r5zinzyrryj8k6z4r")))
+        (hash (base32 "0w3i8jvzqvfnlarcvg89k1144ln96fszv16lzrn16zr3kri5x0ql")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
 
-(define-public linux-libre-5.10-version "5.10.194")
+(define-public linux-libre-5.10-version "5.10.198")
 (define-public linux-libre-5.10-gnu-revision "gnu1")
 (define deblob-scripts-5.10
   (linux-libre-deblob-scripts
@@ -565,12 +551,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0nnp46mn32yk436swd2qh34igmzinfgkwvbzp3lqyy45f06hbc2j")))
 (define-public linux-libre-5.10-pristine-source
   (let ((version linux-libre-5.10-version)
-        (hash (base32 "15fr7krhpmqz0xqjg78m2xvfllbni3xh8xyhxh9ni31ppd3mw394")))
+        (hash (base32 "01gsw96anw44nh8ii3zipp6vh61m1n8yf0bv2fzznr23k771y51b")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.10)))
 
-(define-public linux-libre-5.4-version "5.4.256")
+(define-public linux-libre-5.4-version "5.4.258")
 (define-public linux-libre-5.4-gnu-revision "gnu1")
 (define deblob-scripts-5.4
   (linux-libre-deblob-scripts
@@ -580,12 +566,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0sw67b2pk3lng4y67diqqnhxaggnp3nbkx8dxc5fs27rinfxr4m1")))
 (define-public linux-libre-5.4-pristine-source
   (let ((version linux-libre-5.4-version)
-        (hash (base32 "0fim5q9xakwnjfg48bpsic9r2r8dvrjlalqqkm9vh1rml9mhi967")))
+        (hash (base32 "0gk2xav1ng565l1qsqlr8ja6m4j5g8rfj66vad1fmdd1lwaihw1r")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.4)))
 
-(define-public linux-libre-4.19-version "4.19.294")
+(define-public linux-libre-4.19-version "4.19.296")
 (define-public linux-libre-4.19-gnu-revision "gnu1")
 (define deblob-scripts-4.19
   (linux-libre-deblob-scripts
@@ -595,12 +581,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1425mhkfxn18vxn05bb4h3li7x1jl7l1hf1zi8xhnqv3wa31h9wl")))
 (define-public linux-libre-4.19-pristine-source
   (let ((version linux-libre-4.19-version)
-        (hash (base32 "03x0xsb8a369zdr81hg6xdl5n5v48k6iwnhj6r29725777lvvbfc")))
+        (hash (base32 "1bk051canr4fb00j6x9ff2wam2f20whw4h4z767x2cn2kmv6cqb3")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.19)))
 
-(define-public linux-libre-4.14-version "4.14.325")
+(define-public linux-libre-4.14-version "4.14.327")
 (define-public linux-libre-4.14-gnu-revision "gnu1")
 (define deblob-scripts-4.14
   (linux-libre-deblob-scripts
@@ -610,7 +596,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1faagsj4i31z2bp83hflx3q9vrddjnn37a3ah2b47iaplva7z1nd")))
 (define-public linux-libre-4.14-pristine-source
   (let ((version linux-libre-4.14-version)
-        (hash (base32 "117p1mdha57f6d3kdwac9jrbmib7g77q4xhir8ghl6fmrs1f2sav")))
+        (hash (base32 "0nharfyxlr17yan86zrhlbq7idm0g3zvvvmy2zbw7m9dhgc8bw5z")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.14)))
@@ -645,11 +631,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 
 (define-public linux-libre-6.5-source
   (source-with-patches linux-libre-6.5-pristine-source
-                       (list %boot-logo-patch
-                             %linux-libre-arm-export-__sync_icache_dcache-patch)))
-
-(define-public linux-libre-6.4-source
-  (source-with-patches linux-libre-6.4-pristine-source
                        (list %boot-logo-patch
                              %linux-libre-arm-export-__sync_icache_dcache-patch)))
 
@@ -771,11 +752,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
   (make-linux-libre-headers* linux-libre-6.5-version
                              linux-libre-6.5-gnu-revision
                              linux-libre-6.5-source))
-
-(define-public linux-libre-headers-6.4
-  (make-linux-libre-headers* linux-libre-6.4-version
-                             linux-libre-6.4-gnu-revision
-                             linux-libre-6.4-source))
 
 (define-public linux-libre-headers-6.1
   (make-linux-libre-headers* linux-libre-6.1-version
@@ -1124,19 +1100,11 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                        "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
                      #:configuration-file kernel-config))
 
-(define-public linux-libre-6.4
-  (make-linux-libre* linux-libre-6.4-version
-                     linux-libre-6.4-gnu-revision
-                     linux-libre-6.4-source
-                     '("x86_64-linux" "i686-linux" "armhf-linux"
-                       "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
-                     #:configuration-file kernel-config))
-
-(define-public linux-libre-version         linux-libre-6.4-version)
-(define-public linux-libre-gnu-revision    linux-libre-6.4-gnu-revision)
-(define-public linux-libre-pristine-source linux-libre-6.4-pristine-source)
-(define-public linux-libre-source          linux-libre-6.4-source)
-(define-public linux-libre                 linux-libre-6.4)
+(define-public linux-libre-version         linux-libre-6.5-version)
+(define-public linux-libre-gnu-revision    linux-libre-6.5-gnu-revision)
+(define-public linux-libre-pristine-source linux-libre-6.5-pristine-source)
+(define-public linux-libre-source          linux-libre-6.5-source)
+(define-public linux-libre                 linux-libre-6.5)
 
 (define-public linux-libre-6.1
   (make-linux-libre* linux-libre-6.1-version
@@ -1369,9 +1337,9 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
 (define-public linux-libre-with-bpf
   (let ((base-linux-libre
          (make-linux-libre*
-          linux-libre-6.4-version
-          linux-libre-6.4-gnu-revision
-          linux-libre-6.4-source
+          linux-libre-6.5-version
+          linux-libre-6.5-gnu-revision
+          linux-libre-6.5-source
           '("x86_64-linux" "i686-linux" "armhf-linux"
             "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
           #:extra-version "bpf"
@@ -5237,45 +5205,45 @@ thanks to the use of namespaces.")
                   ;; supported since Linux-libre 5.4.5.
                   (substitute* "src/lib/image/squashfs/mount.c"
                     (("\"errors=remount-ro\"")
-                     "NULL"))
-                  #t))))
+                     "NULL"))))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--localstatedir=/var")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-references
-           (lambda _
-             (substitute* "libexec/cli/build.exec.in"
-               (("-mksquashfs") (string-append "-" (which "mksquashfs"))))
-             (substitute* (append
+     (list
+      #:configure-flags #~(list "--localstatedir=/var")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-references
+            (lambda _
+              (substitute* "libexec/cli/build.exec.in"
+                (("-mksquashfs") (string-append "-" (which "mksquashfs"))))
+              (substitute* (append
                             (find-files "libexec" "functions")
                             (find-files "libexec/bootstrap-scripts" ".*sh$")
                             (find-files "libexec/cli" ".*exec$"))
-               (("\\| grep ")
-                (string-append "| " (which "grep") " "))
-               (("egrep ")
-                (string-append (which "egrep") " "))
-               ((" sed ")
-                (string-append " " (which "sed") " ")))
-             #t))
-         (add-after 'install 'set-PATH
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Have the 'singularity' and 'run-singularity' self-sufficient.
-             (let ((out (assoc-ref outputs "out"))
-                   (coreutils (assoc-ref inputs "coreutils")))
-               (wrap-program (string-append out "/bin/singularity")
-                 `("PATH" ":" = (,(string-append coreutils "/bin"))))
-               (substitute* (string-append out "/bin/run-singularity")
-                 (("/usr/bin/env singularity")
-                  (string-append (which "env") " "
-                                 out "/bin/singularity")))
-               #t))))))
+                (("\\| grep ")
+                 (string-append "| " (which "grep") " "))
+                (("egrep ")
+                 (string-append (which "egrep") " "))
+                ((" sed ")
+                 (string-append " " (which "sed") " ")))))
+          (add-after 'install 'set-PATH
+            (lambda _
+              ;; Have the 'singularity' and 'run-singularity' self-sufficient.
+              ;; But don't override PATH, so that other tools like zcat and
+              ;; tar can still be found if they are available.
+              (let ((coreutils #$(this-package-input "coreutils")))
+                (wrap-program (string-append #$output "/bin/singularity")
+                  `("PATH" prefix (,(string-append coreutils "/bin"))))
+                (substitute* (string-append #$output "/bin/run-singularity")
+                  (("/usr/bin/env singularity")
+                   (string-append (which "env") " "
+                                  #$output "/bin/singularity")))))))))
     (inputs
-     `(("libarchive" ,libarchive)
-       ("python" ,python-wrapper)
-       ("zlib" ,zlib)
-       ("squashfs-tools" ,squashfs-tools)))
+     (list coreutils
+           libarchive
+           python-wrapper
+           squashfs-tools
+           zlib))
     (home-page "https://singularity.lbl.gov/")
     (synopsis "Container platform")
     (description "Singularity is a container platform supporting a number of
@@ -9470,7 +9438,7 @@ tools for managing PipeWire.")
 (define-public ell
   (package
     (name "ell")
-    (version "0.57")
+    (version "0.59")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9479,7 +9447,7 @@ tools for managing PipeWire.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1vpzz0z6q0d3h41aqajaw0dlpkdnmjcppmlwbb558hvj40q5dpzm"))))
+                "11xlkdvw7pyd9idq1zsnl946dry9aksnz29wbpzxqjc97xhhd5xq"))))
     (build-system gnu-build-system)
     (arguments
      ;; Tests launch dbus-daemon instances that all try to bind to
@@ -9488,7 +9456,7 @@ tools for managing PipeWire.")
     (inputs
      (list dbus))
     (native-inputs
-     (list autoconf automake libtool pkg-config))
+     (list autoconf automake libtool pkg-config procps))
     (home-page "https://01.org/ell")
     (synopsis "Embedded Linux Library")
     (description "The Embedded Linux* Library (ELL) provides core, low-level
@@ -10503,6 +10471,7 @@ against the several transient execution CVEs that were published since early
               (uri (git-reference
                     (url "https://github.com/csmith-project/csmith")
                     (commit (string-append "csmith-" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "0nhrsnv6cny14xz68qb1h30fbwc05adkisk51p3x63mydm60ddl3"))))
@@ -10529,3 +10498,66 @@ against the several transient execution CVEs that were published since early
     (description "The primary purpose of Csmith is to find compiler bugs with
 random programs using differential testing.")
     (license license:bsd-4)))
+
+(define-public ipvsadm
+  (package
+    (name "ipvsadm")
+    (version "1.31")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://kernel.org/pub/linux/utils/kernel"
+                           "/ipvsadm/ipvsadm-" version ".tar.xz"))
+       (sha256
+        (base32 "1nyzpv1hx75k9lh0vfxfhc0p2fpqaqb38xpvs8sn88m1nljmw2hs"))))
+    (build-system gnu-build-system)
+    (native-inputs (list linux-libre-headers pkg-config which))
+    (inputs (list libnl popt))
+    (arguments
+     (list #:tests? #f
+           #:parallel-build? #f               ;build fails randomly with '-j'
+           #:make-flags
+           #~(list (string-join
+                    (list "CFLAGS="
+                          (string-append "-I"
+                                         #$(this-package-input "libnl")
+                                         "/include/libnl3")
+                          (string-append "-L" #$(this-package-input "libnl")
+                                         "/lib")
+                          "-fPIC")
+                    " ")
+                   (string-append "CC=" #$(cc-for-target))
+                   (string-append "SBIN=" #$output "/sbin")
+                   (string-append "INIT=" #$output "/etc/init.d")
+                   (string-append "MANDIR=" #$output "/share/man"))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure))))
+    (home-page "http://www.linuxvirtualserver.org/software/ipvs.html")
+    (synopsis "IP virtual server administration utility")
+    (description "@code{ipvsadm(8)} is used to set up, maintain or inspect the
+virtual server table in the Linux kernel.  The Linux Virtual Server can be used
+to build scalable network services based on a cluster of two or more nodes.")
+    (license license:gpl2+)))
+
+(define-public ryzen-smu
+  (package
+    (name "ryzen-smu")
+    (version "0.1.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://gitlab.com/leogx9r/ryzen_smu.git")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "010la2a8zp7rljlg5ssc9ragzva4ca05gvzlicjagl508659d2wz"))))
+    (build-system linux-module-build-system)
+    (arguments
+     `(#:tests? #f)) ; no tests
+    (synopsis "System Management Unit driver for AMD Ryzen processors")
+    (description "This package provides a way to access the
+System Management Unit for certain AMD Ryzen processors.
+This includes access to the System Management Network.")
+    (home-page "https://gitlab.com/leogx9r/ryzen_smu")
+    (license license:gpl2)))

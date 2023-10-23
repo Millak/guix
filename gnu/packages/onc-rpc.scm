@@ -5,7 +5,7 @@
 ;;; Copyright © 2018, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -64,7 +64,17 @@
                             "src/getnetconfig.c"
                             "tirpc/netconfig.h")
                (("/etc/netconfig") (string-append (assoc-ref outputs "out")
-                                                  "/etc/netconfig"))))))))
+                                                  "/etc/netconfig")))))
+         ,@(if (%current-target-system)
+             `((add-after 'unpack 'adjust-pkg-config
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "libtirpc.pc.in"
+                     (("-ltirpc")
+                      (string-append "-ltirpc"
+                                     " -L" (dirname (search-input-file
+                                                      inputs "/lib/libkrb5.so"))
+                                     " -lkrb5"))))))
+             `()))))
     (native-inputs (list mit-krb5)) ;; for cross-compilation
     (inputs (list mit-krb5))
     (home-page "https://sourceforge.net/projects/libtirpc/")

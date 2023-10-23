@@ -98,16 +98,16 @@ Tree-sitter parsing library.")
 (define-public tree-sitter
   (package
     (name "tree-sitter")
-    (version "0.20.8")
+    (version "0.20.10")                 ;untagged
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/tree-sitter/tree-sitter")
-                    (commit (string-append "v" version))))
+                    (commit "0e4ff0bb27edf37b76fc7d35aa768b02cf4392ad")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10w17lfn9asqrk612xivkx26lc620s3nnm30hhlyqd4bj19k7gyv"))
+                "1bai4gdhf8w5p1i9np2kl2ms0jq6rgq98qpiipipzayb9jjjlxcy"))
               (modules '((guix build utils)))
               (snippet #~(begin
                            ;; Remove bundled ICU parts
@@ -175,6 +175,7 @@ This package includes the @code{libtree-sitter} runtime library.")
          ;; good compromise compared to maintaining two different sets of
          ;; grammars (Guix packages vs test fixtures).
          "--skip=tests::corpus_test"
+         "--skip=tests::github_issue_test"
          "--skip=tests::highlight_test"
          "--skip=tests::node_test"
          "--skip=tests::parser_test"
@@ -196,6 +197,7 @@ This package includes the @code{libtree-sitter} runtime library.")
         ("rust-dirs" ,rust-dirs-3)
         ("rust-html-escape" ,rust-html-escape-0.2)
         ("rust-libloading" ,rust-libloading-0.7)
+        ("rust-path-slash" ,rust-path-slash-0.2)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-rustc-hash" ,rust-rustc-hash-1)
         ("rust-semver" ,rust-semver-1)
@@ -315,17 +317,35 @@ which will be used as a snippet in origin."
    "0.19.0"))
 
 (define-public tree-sitter-javascript
-  (tree-sitter-grammar
-   "javascript" "JavaScript(JSX)"
-   "175yrk382n2di0c2xn4gpv8y4n83x1lg4hqn04vabf0yqynlkq67"
-   "0.20.0"
-   #:commit "rust-0.20.0"))
+  ;; Commit required by tree-sitter-typescript 0.20.3.
+  (let ((commit "f772967f7b7bc7c28f845be2420a38472b16a8ee")
+        (revision "22"))
+    (tree-sitter-grammar
+     "javascript" "JavaScript(JSX)"
+     "0vp7z57scpbcvyxpya06lnpz9f5kjdb66wjlkrp684xwjjgq1wxd"
+     (git-version "0.20.0" revision commit)
+     #:commit commit
+     #:get-cleanup-snippet
+     (lambda (grammar-directories)
+       #~(begin
+           (use-modules (guix build utils))
+           (delete-file "tree-sitter-javascript.wasm")
+           (delete-file "binding.gyp")
+           (delete-file-recursively "bindings")
+           (for-each
+            (lambda (lang)
+              (with-directory-excursion lang
+                (delete-file "src/grammar.json")
+                (delete-file "src/node-types.json")
+                (delete-file "src/parser.c")
+                (delete-file-recursively "src/tree_sitter")))
+            '#$grammar-directories))))))
 
 (define-public tree-sitter-typescript
   (tree-sitter-grammar
    "typescript" "TypeScript and TSX"
-   "07fl9d968lal0aqj4f0n16p3n94cjkgfp54wynfr8gbdkjss5v5x"
-   "0.20.1"
+   "08k785q3cy8byrb3zrg93mfidnj1pcx1ggm1xhd8rgmfs2v6jns5"
+   "0.20.3"
    #:inputs (list tree-sitter-javascript)
    #:grammar-directories '("typescript" "tsx")))
 
@@ -349,19 +369,15 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-c
   (tree-sitter-grammar
    "c" "C"
-   "1w03r4l773ki4iq2xxsc2pqxf3pjsbybq3xq4glmnsihgylibn8v"
-   "0.20.2"))
+   "00mhz2rz98pxssgyhm0iymgcb8cbv8slsf3nmfgyjhfchpmb9n6z"
+   "0.20.6"))
 
 (define-public tree-sitter-cpp
-  ;; There are a lot of additions, the last tag was placed more than 1 year ago
-  (let ((commit "56cec4c2eb5d6af3d2942e69e35db15ae2433740")
-        (revision "0"))
-      (tree-sitter-grammar
-       "cpp" "C++"
-       "0c5iwg9j6naivvr18glfp095x32nfl9hbw0q02rhh1b59fkpjs09"
-       (git-version "0.20.0" revision commit)
-       #:commit commit
-       #:inputs (list tree-sitter-c))))
+  (tree-sitter-grammar
+   "cpp" "C++"
+   "0fsb6la0da3azh7m9p1w3w079bpg6074dy8jisjw1yq1w1r9grxy"
+   "0.20.3"
+   #:inputs (list tree-sitter-c)))
 
 (define-public tree-sitter-cmake
   (tree-sitter-grammar
@@ -374,14 +390,14 @@ which will be used as a snippet in origin."
   ;; No tags at all, version in the source code is 0.19.0
   (let ((commit "b20eaa75565243c50be5e35e253d8beb58f45d56")
         (revision "0"))
-      (tree-sitter-grammar
-       "elixir" "Elixir"
-       "1i0c0xki3sv24649p0ws7xs2jagbwg7z7baz1960239bj94nl487"
-       (git-version "0.19.0" revision commit)
-       #:article "an"
-       #:repository-url "https://github.com/elixir-lang/tree-sitter-elixir"
-       #:commit commit
-       #:license (list license:asl2.0 license:expat))))
+    (tree-sitter-grammar
+     "elixir" "Elixir"
+     "1i0c0xki3sv24649p0ws7xs2jagbwg7z7baz1960239bj94nl487"
+     (git-version "0.19.0" revision commit)
+     #:article "an"
+     #:repository-url "https://github.com/elixir-lang/tree-sitter-elixir"
+     #:commit commit
+     #:license (list license:asl2.0 license:expat))))
 
 (define-public tree-sitter-heex
   (tree-sitter-grammar
@@ -393,14 +409,14 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-bash
   (tree-sitter-grammar
    "bash" "Bash"
-   "18c030bb65r50i6z37iy7jb9z9i8i36y7b08dbc9bchdifqsijs5"
-   "0.19.0"))
+   "01sjympivwhr037c0gdx5fqw8fvzchq4fd4m8wlr8mdw50di0ag2"
+   "0.20.4"))
 
 (define-public tree-sitter-c-sharp
   (tree-sitter-grammar
    "c-sharp" "C#"
-   "054fmpf47cwh59gbg00sc0nl237ba4rnxi73miz39yqzcs87055r"
-   "0.19.1"))
+   "0lijbi5q49g50ji00p2lb45rvd76h07sif3xjl9b31yyxwillr6l"
+   "0.20.0"))
 
 (define-public tree-sitter-dockerfile
   (tree-sitter-grammar
@@ -425,14 +441,10 @@ which will be used as a snippet in origin."
    #:repository-url "https://github.com/camdencheek/tree-sitter-go-mod.git"))
 
 (define-public tree-sitter-go
-  ;; There are a lot of additions, the last tag was placed more than 1 year ago
-  (let ((commit "64457ea6b73ef5422ed1687178d4545c3e91334a")
-        (revision "0"))
-    (tree-sitter-grammar
-     "go" "Go"
-     "16d32m78y8jricba9xav35c9y0k2r29irj5xyqgq24323yln9jnz"
-     (git-version "0.19.1" revision commit)
-     #:commit commit)))
+  (tree-sitter-grammar
+   "go" "Go"
+   "0wlhwcdlaj74japyn8wjza0fbwckqwbqv8iyyqdk0a5jf047rdqv"
+   "0.20.0"))
 
 (define-public tree-sitter-haskell
   ;; There are a lot of additions, the last tag was placed more than 4 years ago
@@ -483,14 +495,10 @@ which will be used as a snippet in origin."
      #:commit commit)))
 
 (define-public tree-sitter-python
-  ;; There are a lot of additions, the last tag was placed a while ago
-  (let ((commit "9e53981ec31b789ee26162ea335de71f02186003")
-        (revision "0"))
-    (tree-sitter-grammar
-     "python" "Python"
-     "1lv3pgb7h2a0f121897r0lwc228rjwb77y3a6g3ghifx1rgbwvqg"
-     (git-version "0.20.0" revision commit)
-     #:commit commit)))
+  (tree-sitter-grammar
+   "python" "Python"
+   "1sxz3npk3mq86abcnghfjs38nzahx7nrn3wdh8f8940hy71d0pvi"
+   "0.20.4"))
 
 (define-public tree-sitter-r
   ;; No tags
@@ -515,8 +523,8 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-rust
   (tree-sitter-grammar
    "rust" "Rust"
-   "149jhy01mqvavwa8jlxb8bnn7sxpfq2x1w35si6zn60b7kqjlx8f"
-   "0.20.3"))
+   "1pk4mb3gh62xk0qlhxa8ihhxvnf7grrcchwg2xv99yy6yb3yh26b"
+   "0.20.4"))
 
 (define-public tree-sitter-clojure
   (tree-sitter-grammar

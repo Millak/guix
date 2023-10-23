@@ -3381,7 +3381,7 @@ Weechat communicate over the Matrix protocol.")
 (define-public weechat-wee-slack
   (package
     (name "weechat-wee-slack")
-    (version "2.9.1")
+    (version "2.10.1")
     (source
      (origin
        (method git-fetch)
@@ -3391,7 +3391,7 @@ Weechat communicate over the Matrix protocol.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1zhiwbljh4rgbj8i9rrcimi9v3a7g1nm7v2m2f754rnddck9343z"))))
+         "0ykzmn4q592ih9d6m5ks2dzbxkz3mj81sxwsn9g2vzsxj7w3p2r7"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -3416,9 +3416,9 @@ Weechat communicate over the Matrix protocol.")
              (when tests?
                (invoke "pytest")))))))
     (inputs
-     (list python-mock python-websocket-client))
+     (list python-websocket-client))
     (native-inputs
-     (list python-pytest))
+     (list python-mock python-pytest))
     (home-page "https://github.com/wee-slack/wee-slack")
     (synopsis "Weechat Slack script")
     (description "@code{weechat-wee-slack} is a WeeChat native client for
@@ -3520,5 +3520,58 @@ RPC client written in Python.")
 phone numbers (get validity information, reformat them, or extract numbers from
 a text snippet), using @code{libphonenumber}.")
     (license license:asl2.0)))
+
+(define-public senpai
+  (package
+    (name "senpai")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://git.sr.ht/~taiite/senpai")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qw955i5f3jr42h4afr23v7wq616bcsyq68if75qdw8j1yibnpmb"))))
+    (build-system go-build-system)
+    (arguments
+      (list #:import-path "git.sr.ht/~taiite/senpai/cmd/senpai"
+            #:unpack-path "git.sr.ht/~taiite/senpai"
+            #:install-source? #f
+            #:phases
+            #~(modify-phases %standard-phases
+                (add-after 'build 'build-doc
+                  (lambda* (#:key unpack-path #:allow-other-keys)
+                    (invoke "make" "doc/senpai.1" "doc/senpai.5"
+                            "-C" (string-append "src/" unpack-path))))
+                (add-after 'install 'install-doc
+                  (lambda* (#:key unpack-path #:allow-other-keys)
+                    (let ((man1 (string-append #$output "/share/man/man1"))
+                          (man5 (string-append #$output "/share/man/man5")))
+                      (mkdir-p man1)
+                      (mkdir-p man5)
+                      (install-file
+                        (string-append "src/" unpack-path "/doc/senpai.1")
+                        man1)
+                      (install-file
+                        (string-append "src/" unpack-path "/doc/senpai.5")
+                        man5)))))))
+    (native-inputs (list go-git-sr-ht-emersion-go-scfg
+                         go-github-com-delthas-go-libnp
+                         go-github-com-delthas-go-localeinfo
+                         go-github-com-gdamore-tcell-v2
+                         go-github-com-mattn-go-runewidth
+                         go-golang-org-x-net
+                         go-golang-org-x-term
+                         go-golang-org-x-time
+                         go-mvdan-cc-xurls
+                         scdoc))
+    (home-page "https://sr.ht/~taiite/senpai")
+    (synopsis "Modern terminal IRC client")
+    (description
+     "@code{senpai} is an IRC client that works best with bouncers.")
+    (license license:isc)))
 
 ;;; messaging.scm ends here

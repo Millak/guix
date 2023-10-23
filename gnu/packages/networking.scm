@@ -391,7 +391,7 @@ them in order to efficiently transfer a minimal amount of data.")
     (build-system meson-build-system)
     (outputs '("out" "doc" "gst" "tools"))
     (arguments
-     (list #:glib-or-gtk? #t ; To wrap binaries and/or compile schemas
+     (list #:glib-or-gtk? #t         ; To wrap binaries and/or compile schemas
            #:configure-flags
            #~(list (string-append "-Dbindir="
                                   (assoc-ref %outputs "tools") "/bin")
@@ -400,6 +400,16 @@ them in order to efficiently transfer a minimal amount of data.")
                    "-Dpycamera=disabled")
            #:phases
            #~(modify-phases %standard-phases
+               #$@(if (target-aarch64?)
+                      ;; The 'log_process' test fails on aarch64-linux with a
+                      ;; SIGinvalid error (see:
+                      ;; https://bugs.libcamera.org/show_bug.cgi?id=173).
+                      #~((add-after 'unpack 'disable-problematic-tests
+                           (lambda _
+                             (substitute* "test/log/meson.build"
+                               ((".*'name': 'log_process'.*")
+                                "")))))
+                      #~())
                (add-after 'install 'move-doc-and-gst
                  (lambda* (#:key outputs #:allow-other-keys)
                    (let* ((out (assoc-ref outputs "out"))
@@ -3960,7 +3970,7 @@ powerful route filtering syntax and an easy-to-use configuration interface.")
 (define-public iwd
   (package
     (name "iwd")
-    (version "2.7")
+    (version "2.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3969,7 +3979,7 @@ powerful route filtering syntax and an easy-to-use configuration interface.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xn0db37x0nrvwlw0r4w6q3yk57ijqh9zxd15wf3qqvs01hqkk2j"))))
+                "0bpksqyaqr624bj7zm9hi22rnp6wnjbngx4q08l7lbd0r7r93vcb"))))
     (build-system gnu-build-system)
     (inputs
      (list dbus ell (package-source ell) readline))
@@ -4014,7 +4024,7 @@ powerful route filtering syntax and an easy-to-use configuration interface.")
                ;; Don't try to 'mkdir /var'.
                (("\\$\\(MKDIR_P\\) -m 700") "true")))))))
     (home-page "https://git.kernel.org/pub/scm/network/wireless/iwd.git/")
-    (synopsis "Internet Wireless Daemon")
+    (synopsis "iNet Wireless Daemon")
     (description "iwd is a wireless daemon for Linux that aims to replace WPA
 Supplicant.  It optimizes resource utilization by not depending on any external
 libraries and instead utilizing features provided by the Linux kernel to the

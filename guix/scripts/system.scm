@@ -1064,7 +1064,7 @@ Some ACTIONS support additional ARGS.\n"))
   ;; Specifications of the command-line options.
   (cons* (option '(#\h "help") #f #f
                  (lambda args
-                   (show-help)
+                   (leave-on-EPIPE (show-help))
                    (exit 0)))
          (option '(#\V "version") #f #f
                  (lambda args

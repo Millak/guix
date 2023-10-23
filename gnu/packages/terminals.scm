@@ -30,9 +30,10 @@
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2022 Felipe Balbi <balbi@kernel.org>
 ;;; Copyright © 2022 ( <paren@disroot.org>
-;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2022, 2023 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Aaron Covrig <aaron.covrig.us@ieee.org>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
@@ -76,6 +77,7 @@
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-graphics)
   #:use-module (gnu packages crypto)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages dlang)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages fontutils)
@@ -1075,14 +1077,14 @@ usable with any list--including files, command history, processes and more.")
 (define-public python-pyte
   (package
     (name "python-pyte")
-    (version "0.7.0")
+    (version "0.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyte" version))
        (sha256
         (base32
-         "1an54hvyjm8gncx8cgabz9mkpgjkdb0bkyjlkh7g7f94nr3wnfl7"))))
+         "1c4pn2qijk6q8q25klfq365gbvlkrh8c0lz5lrr7b7kmh6vx3gxr"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -1384,30 +1386,20 @@ comfortably in a pager or editor.
 (define-public eternalterminal
   (package
     (name "eternalterminal")
-    (version "6.0.13")
+    (version "6.2.4")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/MisterTea/EternalTerminal")
-               (commit (string-append "et-v" version))))
-        (file-name (git-file-name name version))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/MisterTea/EternalTerminal")
+             (commit (string-append "et-v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0sb1hypg2276y8c2a5vivrkcxp70swddvhnd9h273if3kv6j879r"))))
+        (base32 "13vhr701j85ga37d53339bxgrf9fqa6z1zcp6s3ly5bb8p7lyvzm"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags '("-DBUILD_TEST=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'insert-googletests
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((tests (assoc-ref inputs "googletest")))
-               (copy-recursively tests "external/googletest"))
-             #t)))))
-    (inputs
-     (list gflags libsodium protobuf))
-    (native-inputs
-     `(("googletest" ,(package-source googletest))))
+     '(#:configure-flags '("-DBUILD_TEST=ON" "-DDISABLE_VCPKG=1")))
+    (inputs (list libsodium protobuf openssl zlib curl))
     (home-page "https://mistertea.github.io/EternalTerminal/")
     (synopsis "Remote shell that reconnects without interrupting the session")
     (description "@dfn{Eternal Terminal} (ET) is a remote shell that

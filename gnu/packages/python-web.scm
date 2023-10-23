@@ -4384,7 +4384,7 @@ applications.")
     (build-system python-build-system)
     (arguments '(#:tests? #f))          ;no tests
     (propagated-inputs
-     (list python-flask-restful))
+     (list python-flask-restful python-six))
     (home-page "https://github.com/rantav/flask-restful-swagger")
     (synopsis "Extract Swagger specs from Flask-Restful projects")
     (description "This package lets you extract Swagger API documentation
@@ -5136,22 +5136,23 @@ Google search engine.  Its module is called @code{googlesearch}.")
 (define-public python-google-api-client
   (package
     (name "python-google-api-client")
-    (version "1.12.8")
+    (version "2.102.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "google-api-python-client" version))
        (sha256
         (base32
-         "1fq89wifa9ymby655is246w5d54ixybffj5vz7lwzhpf8926ifgk"))))
+         "07b9afz3g3lk976i974h6ikvl7wzwm0a0ws0iynxvmd4favgjvwh"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f))    ; tests require internet access
     (propagated-inputs
-     (list python-google-api-core-1
-           python-google-auth-1
+     (list python-google-api-core
+           python-google-auth
            python-google-auth-httplib2
            python-httplib2
+           python-pyparsing
            python-six
            python-uritemplate-3))
     (home-page "https://github.com/google/google-api-python-client")
@@ -5162,12 +5163,12 @@ Google search engine.  Its module is called @code{googlesearch}.")
 (define-public python-google-auth-httplib2
   (package
     (name "python-google-auth-httplib2")
-    (version "0.1.0")
+    (version "0.1.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "google-auth-httplib2" version))
               (sha256
-               (base32 "1b1hrhah01hx6bj3rb83iybrdwqv0bbdy63py39srv1bcgykjz50"))))
+               (base32 "0agwwgw04nks7lzpm224fbvpnjfgzz67pkrfls77ipf6zmawajy6"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-google-auth python-httplib2 python-six))
@@ -5178,6 +5179,26 @@ Google search engine.  Its module is called @code{googlesearch}.")
     (synopsis "Google Authentication Library: httplib2 transport")
     (description "This package provides a Google Authentication Library plugin
 for httplib2 transport.")
+    (license license:asl2.0)))
+
+(define-public python-google-auth-oauthlib
+  (package
+    (name "python-google-auth-oauthlib")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "google-auth-oauthlib" version))
+       (sha256
+        (base32 "1yvsjd1vh440nsh9vpnig23sq4k1ia749x5g1dwm7r4110xqrsl3"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-google-auth python-requests-oauthlib))
+    (native-inputs (list python-flask))
+    (home-page
+     "https://github.com/GoogleCloudPlatform/google-auth-library-python-oauthlib")
+    (synopsis "Google Authentication Library: oauthlib")
+    (description "This package provides a Google Authentication Library plugin
+with oauthlib.")
     (license license:asl2.0)))
 
 (define-public whoogle-search
@@ -7546,42 +7567,6 @@ of the CRC32C hashing algorithm.")
 server-to-server authentication mechanisms to access Google APIs.")
     (license license:asl2.0)))
 
-(define-public python-google-auth-1
-  (package
-    (inherit python-google-auth)
-    (name "python-google-auth")
-    (version "1.35.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "google-auth" version))
-       (sha256
-        (base32 "13nqj6hikvbdmbs1vb78c88ym0pd03m09ch00biqw64c0blkn0xp"))))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest")))))))
-    (propagated-inputs
-     (list python-cachetools
-           python-pyasn1-modules
-           python-rsa
-           python-six
-           ;; For the extras
-           python-pyopenssl
-           python-pyu2f))
-    (native-inputs
-     (list python-flask
-           python-freezegun
-           python-oauth2client
-           python-pytest
-           python-pytest-localserver
-           python-requests
-           python-responses
-           python-urllib3))))
-
 (define-public python-google-resumable-media
   (package
     (name "python-google-resumable-media")
@@ -7680,52 +7665,6 @@ common protos in the @code{googleapis/api-common-protos} repository.")
     (description "This library defines common helpers used by all Google API
 clients.")
     (license license:asl2.0)))
-
-(define-public python-google-api-core-1
-  (package
-    (inherit python-google-api-core)
-    (name "python-google-api-core")
-    (version "1.32.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "google-api-core" version))
-       (sha256
-        (base32 "0709va9sisll7axkv6ii2x5s0ls38rqp1jnvs6nkpmg7z163q70h"))))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (for-each
-                 delete-file
-                 '(;; The test suite can't find AsyncMock.
-                   "tests/asyncio/test_page_iterator_async.py"
-                   "tests/asyncio/test_retry_async.py"
-                   ;; Skip the tests depending on grpc.
-                   "tests/asyncio/test_operation_async.py"
-                   "tests/asyncio/test_grpc_helpers_async.py"
-                   "tests/asyncio/operations_v1/test_operations_async_client.py"
-                   "tests/unit/test_bidi.py"
-                   "tests/unit/test_exceptions.py"
-                   "tests/unit/test_grpc_helpers.py"
-                   "tests/unit/test_operation.py"
-                   "tests/unit/operations_v1/test_operations_client.py"))
-               (delete-file-recursively "tests/asyncio/gapic")
-               (delete-file-recursively "tests/unit/gapic")
-               (invoke "pytest" "-k" "not test_constructor_defaults")))))))
-    (propagated-inputs
-     (list python-google-auth-1
-           python-googleapis-common-protos
-           python-packaging
-           python-protobuf
-           python-proto-plus
-           python-pytz
-           python-requests))
-    (native-inputs
-     (list python-pytest
-           python-pytest-asyncio))))
 
 (define-public python-google-cloud-core
   (package
@@ -8159,13 +8098,13 @@ regular expressions.")
 (define-public python-scrapy
   (package
     (name "python-scrapy")
-    (version "2.10.1")
+    (version "2.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Scrapy" version))
        (sha256
-        (base32 "03yil4hjn14amx5jnvjfahmm78qqax2664z30xxn0dxmzdspimli"))))
+        (base32 "199nbc7vipdsvxmfxc0lrzbprgl3hr2xgqhvss1083iz1k7fvg9w"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags

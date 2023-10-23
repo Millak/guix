@@ -1,0 +1,18 @@
+commit 919ceb0acbf4c6bc4f463433504a338c643612c2
+Author: Karen D. Devine <kddevin@sandia.gov>
+Date:   Tue Feb 2 13:49:13 2021 -0700
+
+    tpetra: removed duplicate using statement #8673
+
+diff --git a/packages/tpetra/core/src/Tpetra_Details_FixedHashTable_def.hpp b/packages/tpetra/core/src/Tpetra_Details_FixedHashTable_def.hpp
+index a76f78c41a8..69d4dc46d03 100644
+--- a/packages/tpetra/core/src/Tpetra_Details_FixedHashTable_def.hpp
++++ b/packages/tpetra/core/src/Tpetra_Details_FixedHashTable_def.hpp
+@@ -1094,7 +1094,6 @@ init (const keys_type& keys,
+ 
+   // Allocate the array of (key,value) pairs.  Don't fill it with
+   // zeros, because we will fill it with actual data below.
+-  using Kokkos::ViewAllocateWithoutInitializing;
+   typedef typename val_type::non_const_type nonconst_val_type;
+   nonconst_val_type val (ViewAllocateWithoutInitializing ("Tpetra::FixedHashTable::pairs"),
+                          theNumKeys);

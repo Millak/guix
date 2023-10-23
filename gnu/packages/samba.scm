@@ -467,34 +467,30 @@ key-value pair databases and a real LDAP database.")
 (define-public ppp
   (package
     (name "ppp")
-    (version "2.4.9")
+    (version "2.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/ppp-project/ppp")
-                    (commit version)))
+                    (commit (string-append "ppp-" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1bhhksdclsnkw54a517ndrw55q5zljjbh9pcqz1z4a2z2flxpsgk"))))
+                "1pkvaxi5318lvsadspj603wdkxah01vgjhywri7rv249p249vfr7"))))
     (build-system gnu-build-system)
     (arguments
-      (list #:tests? #f                    ;; No "check" target
-            #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
-            #:phases
-            #~(modify-phases %standard-phases
-                (add-before 'configure 'patch-Makefile
-                  (lambda* (#:key inputs #:allow-other-keys)
-                    (let ((openssl (assoc-ref inputs "openssl"))
-                          (libpcap (assoc-ref inputs "libpcap")))
-                      (substitute* "pppd/Makefile.linux"
-                        (("/usr/include/openssl")
-                         (string-append openssl "/include"))
-                        (("-DPPP_FILTER")
-                         (string-append "-DPPP_FILTER -I" libpcap "/include")))
-                      (substitute* "pppd/pppcrypt.h"
-                        (("des\\.h") "openssl/des.h")))
-                    #t)))))
+     (list #:tests? #f                  ; no tests
+           #:configure-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "--with-openssl="
+                                  (assoc-ref %build-inputs "openssl")))
+           #:make-flags #~(list "V=1")  ; better build logs
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'bootstrap 'no-/bin/sh
+                 (lambda _ (delete-file "autogen.sh"))))))
+    (native-inputs
+     (list autoconf automake libtool))
     (inputs
      (list libpcap openssl))
     (synopsis "Implementation of the Point-to-Point Protocol")

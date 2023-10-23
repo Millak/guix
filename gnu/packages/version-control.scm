@@ -104,6 +104,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-check)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages guile-xyz)
@@ -3175,6 +3176,11 @@ will reconstruct the object along its delta-base chain and return it.")
       #:install-source? #f
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-/bin/sh
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/github.com/git-lfs/git-lfs/lfs/hook.go"
+                (("/bin/sh")
+                 (search-input-file inputs "bin/sh")))))
           (add-after 'unpack 'fix-embed-x-net
             (lambda _
               (delete-file-recursively "src/golang.org/x/net/publicsuffix/data")

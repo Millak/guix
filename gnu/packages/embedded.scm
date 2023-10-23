@@ -46,7 +46,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
-  #:use-module ((gnu packages base) #:prefix base:)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
@@ -672,7 +672,7 @@ language.")
      (list autoconf
            automake
            libtool
-           base:which
+           which
            pkg-config
            texinfo))
     (inputs
@@ -1152,7 +1152,7 @@ simulator.")
          ("flex" ,flex)
          ("bison" ,bison)
          ("guile-1.8" ,guile-1.8)
-         ("which" ,base:which)))
+         ("which" ,which)))
       (synopsis "Binutils for VC4")
       (description "This package provides @code{binutils} for VideoCore IV,
 the Raspberry Pi chip.")
@@ -1241,7 +1241,7 @@ hardware.  The utility support USB and UART as serial link.")
     (inputs
      (list libftdi python))
     (native-inputs
-     (list pkg-config swig base:which))
+     (list pkg-config swig which))
     (arguments
      `(#:tests? #f ; No tests exist.
        #:parallel-build? #f  ; Would be buggy.

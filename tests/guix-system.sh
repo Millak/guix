@@ -346,6 +346,10 @@ for example in gnu/system/examples/*.tmpl; do
 	    # The Raspberry Pi templates 'linux-libre-arm64-generic', which is
 	    # an ARM-only package.
             options="--system=aarch64-linux";;
+        *plasma*)
+            # Some architectures do not support all the packages Plasma
+            # depends on so restrict to x86_64-linux.
+            options="--system=x86_64-linux";;
 	*vm-image*)
 	    # The VM image tries to build 'current-guix' as per 'guix pull'.
 	    # Skip it.

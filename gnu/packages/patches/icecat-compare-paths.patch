@@ -1,0 +1,21 @@
+See comment in gnu/build/icecat-extension.scm.
+
+--- a/toolkit/mozapps/extensions/internal/XPIDatabase.jsm
++++ b/toolkit/mozapps/extensions/internal/XPIDatabase.jsm
+@@ -3452,6 +3452,7 @@ const XPIDatabaseReconcile = {
+     if (
+       newAddon ||
+       oldAddon.updateDate != xpiState.mtime ||
++      oldAddon.path != xpiState.path ||
+       (aUpdateCompatibility && this.isAppBundledLocation(installLocation))
+     ) {
+       newAddon = this.updateMetadata(
+@@ -3460,8 +3461,6 @@ const XPIDatabaseReconcile = {
+         xpiState,
+         newAddon
+       );
+-    } else if (oldAddon.path != xpiState.path) {
+-      newAddon = this.updatePath(installLocation, oldAddon, xpiState);
+     } else if (aUpdateCompatibility || aSchemaChange) {
+       newAddon = this.updateCompatibility(
+         installLocation,

@@ -654,7 +654,8 @@ tree binary files.  These are board description files used by Linux and BSD.")
                      %u-boot-sifive-prevent-relocating-initrd-fdt
                      %u-boot-rk3399-enable-emmc-phy-patch
                      (search-patch "u-boot-fix-build-python-3.10.patch")
-                     (search-patch "u-boot-fix-u-boot-lib-build.patch")))
+                     (search-patch "u-boot-fix-u-boot-lib-build.patch")
+                     (search-patch "u-boot-patman-change-id.patch")))
               (method url-fetch)
               (uri (string-append
                     "https://ftp.denx.de/pub/u-boot/"

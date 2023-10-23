@@ -114,6 +114,7 @@
   #:use-module (gnu packages coq)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages datamash)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages documentation)
@@ -2421,7 +2422,7 @@ interfaces.")
 (define-public nomad-optimizer
   (package
     (name "nomad-optimizer")
-    (version "4.2.0")
+    (version "4.3.1")
     (source
      (origin
        (method git-fetch)
@@ -2430,164 +2431,109 @@ interfaces.")
              (commit (string-append "v." version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1r4ygy3xn83dnppsw1451ynklsxpb238g5gk57inn84ghmdk08mj"))))
+        (base32 "08bxdvx8p5qzdw331xa5irc1896as4q5hajsid7f3qcxjm4nq4v3"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list python-wrapper python-cython))
+     (list openmpi))
     (arguments
-     `(#:imported-modules ((guix build python-build-system)
-                           ,@%cmake-build-system-modules)
-       #:modules (((guix build python-build-system)
-                   #:select (python-version site-packages))
-                  (guix build cmake-build-system)
-                  (guix build utils))
-       #:configure-flags
-       '("-DBUILD_INTERFACE_C=ON"
-         "-DBUILD_INTERFACE_PYTHON=ON"
-         "-DBUILD_TESTS=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-sources-for-build
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "CMakeLists.txt"
-               ;; CMAKE_INSTALL_PREFIX is accidentally hardcoded.
-               (("set\\(CMAKE_INSTALL_PREFIX .* FORCE\\)") "")
-               ;; Requiring GCC version 8 or later is unwarranted.
-               (("message\\(FATAL_ERROR \"GCC version < 8")
-                "message(STATUS \"GCC version < 8"))
-
-             (let ((out (assoc-ref outputs "out")))
-               (substitute* "interfaces/PyNomad/CMakeLists.txt"
-                 ;; We don't want to build in-place, and anyway the install
-                 ;; command further below runs build_ext as a prerequisite.
-                 (("COMMAND python setup_PyNomad\\.py .* build_ext --inplace\n")
-                  "")
-                 ;; Don't install locally.
-                 (("COMMAND python (setup_PyNomad\\.py .* install) --user\n"
-                   _ args)
-                  (string-append "COMMAND ${CMAKE_COMMAND} -E env"
-                                 " CC=" ,(cc-for-target)
-                                 " CXX=" ,(cxx-for-target)
-                                 " " (which "python")
-                                 " " args
-                                 " --prefix=" out
-                                 "\n")))
-               ;; Fix erroneous assumptions about the paths of the include and
-               ;; library directories.
-               (substitute* "interfaces/PyNomad/setup_PyNomad.py"
-                 (("^( +os_include_dirs = ).*" _ prefix)
-                  (string-append prefix "[\"../../src\"]\n"))
-                 (("^(installed_lib_dir1 = ).*" _ prefix)
-                  (string-append prefix "\"" out "/lib\"\n"))
-                 (("^installed_lib_dir2 = .*") "")
-                 (("^ +link_args\\.append\\(\"-Wl,-rpath,\" \\+ installed_lib_dir2\\)\n")
-                  "")))))
-
-         ;; Fix the tests so they run in out-of-source builds.
-         ;;
-         ;; TODO: Add support for examples/basic/batch/single_obj_MPIparallel,
-         ;; by adding openmpi to native-inputs and adjusting the example's
-         ;; BB_EXE parameter.
-         (add-after 'fix-sources-for-build 'fix-sources-for-tests
-           (lambda _
-             (substitute* "examples/CMakeLists.txt"
-               ;; This test passes only sometimes.
-               ;; See https://github.com/bbopt/nomad/issues/72.
-               (("^ +add_subdirectory\\(\\$\\{CMAKE_CURRENT_SOURCE_DIR\\}/advanced/library/PSDMads\\)\n")
-                "")
-               ;; examples/basic/batch/example3 is accidentally omitted.
-               (("^(add_subdirectory\\(\\$\\{CMAKE_CURRENT_SOURCE_DIR\\}/basic/batch/example)2(\\)\n)"
-                 _ prefix suffix)
-                (string-append prefix "2" suffix
-                               prefix "3" suffix))
-
-               ;; The generated runExampleTest.sh script runs the test as part
-               ;; of a pipeline and incorrectly (because pipefail is unset)
-               ;; relies on the value of the exit status immediately after the
-               ;; pipeline.
-               ;; (The patch-shebangs phase runs later than this one, so no
-               ;; need to update the path to bash here.)
-               (("#!/bin/bash") "#!/bin/bash\nset -o pipefail"))
-
-             (substitute*
-                 (map (lambda (d) (string-append "examples/" d "/CMakeLists.txt"))
-                      (append
-                       (map (lambda (d) (string-append "basic/library/" d))
-                            '("example1" "example2" "example3"
-                              "single_obj_parallel"))
-                       (map (lambda (d) (string-append "advanced/library/" d))
-                            '("FixedVariable" "NMonly" "PSDMads" "Restart"
-                              "c_api/example1" "c_api/example2"
-                              "exampleSuggestAndObserve"))))
-               ;; The runExampleTest.sh script is run with WORKING_DIRECTORY
-               ;; set to CMAKE_CURRENT_SOURCE_DIR.
-               ;; Other scripts invoked by that script (for example
-               ;; examples/advanced/batch/SuggestAndObserve/loopSuggestAndObserve.sh)
-               ;; are in that same directory, but compiled examples are
-               ;; located in CMAKE_CURRENT_BINARY_DIR.
-               (("(COMMAND \\$\\{CMAKE_BINARY_DIR\\}/examples/runExampleTest\\.sh )\\.(/.*)"
-                 _ command test)
-                (string-append command "${CMAKE_CURRENT_BINARY_DIR}" test)))
-
-             ;; The examples/basic/batch/example3 executable is already named
-             ;; bb3.exe.
-             (substitute* "examples/basic/batch/single_obj_parallel/CMakeLists.txt"
-               (("bb3.exe") "bb_parallel.exe"))
-
-             ;; (Unrelated to support for out-of-source testing.)
-             (make-file-writable
-              "examples/advanced/library/exampleSuggestAndObserve/cache0.txt")
-
-             (let ((builddir (string-append (getcwd) "/../build")))
-               (let ((dir "examples/advanced/library/FixedVariable"))
-                 (substitute* (string-append dir "/fixedVariable.cpp")
-                   (("^( +std::string sExe = ).*" _ prefix)
-                    (string-append prefix "\"" builddir "/" dir "/ufl.exe" "\";\n"))))
-
-               ;; The BB_EXE and SURROGATE_EXE paths are interpreted relative
-               ;; to the configuration file provided to NOMAD.
-               ;; However, the configuration files are all in the source tree
-               ;; rather than in the build tree (unlike the compiled
-               ;; executables).
-               (let ((fix-exe-path (lambda* (dir #:optional
-                                                 (file "param.txt")
-                                                 (exe-opt "BB_EXE"))
-                                     (substitute* (string-append dir "/" file)
-                                       (((string-append "^" exe-opt " +"))
-                                        ;; The $ prevents NOMAD from prefixing
-                                        ;; the executable with the path of the
-                                        ;; parent directory of the configuration
-                                        ;; file NOMAD was provided with as
-                                        ;; argument (param.txt or some such).
-                                        (string-append exe-opt " $"
-                                                       builddir "/" dir "/"))))))
-                 (for-each
-                  (lambda (dir)
-                    (let ((dir (string-append "examples/" dir)))
-                      (substitute* (string-append dir "/CMakeLists.txt")
-                        ;; The install phase has not yet run.
-                        (("COMMAND \\$\\{CMAKE_INSTALL_PREFIX\\}/bin/nomad ")
-                         "COMMAND ${CMAKE_BINARY_DIR}/src/nomad "))
-                      (fix-exe-path dir)
-                      (when (equal? dir "examples/basic/batch/surrogate_sort")
-                        (fix-exe-path dir "param.txt" "SURROGATE_EXE"))))
-                  (append (map (lambda (d) (string-append "basic/batch/" d))
-                               '("example1" "example2" "example3"
-                                 "single_obj"
-                                 "single_obj_parallel"
-                                 ;; "single_obj_MPIparallel"
-                                 "surrogate_sort"))
-                          '("advanced/batch/LHonly")))
-
-                 (let ((dir "examples/advanced/batch/FixedVariable"))
-                   (substitute* (string-append dir "/runFixed.sh")
-                     ;; Hardcoded path to NOMAD executable.
-                     (("^\\.\\./\\.\\./\\.\\./\\.\\./bin/nomad ")
-                      (string-append builddir "/src/nomad ")))
-                   (for-each
-                    (lambda (f) (fix-exe-path dir f))
-                    '("param1.txt" "param2.txt" "param3.txt" "param10.txt"))))))))))
+     (list
+      ;; Cannot build Python interface because it is incompatible with OpenMP
+      ;; support, which is enabled by default.
+      #:configure-flags
+      #~(list "-DBUILD_TESTS=ON"
+              "-DBUILD_INTERFACE_C=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              (substitute* "examples/CMakeLists.txt"
+                ;; This test passes only sometimes.
+                ;; See https://github.com/bbopt/nomad/issues/72.
+                (("^ +add_subdirectory\\(\\$\\{CMAKE_CURRENT_SOURCE_DIR\\}/advanced/library/PSDMads\\)\n")
+                 ""))
+              (make-file-writable
+               "examples/advanced/library/exampleSuggestAndObserve/cache0.txt")
+              ;; Fix the tests so they run in out-of-source builds.
+              (substitute*
+                  '("examples/basic/library/COCO/CMakeLists.txt"
+                    "examples/basic/library/example1/CMakeLists.txt"
+                    "examples/basic/library/example2/CMakeLists.txt"
+                    "examples/basic/library/example3/CMakeLists.txt"
+                    "examples/basic/library/example4/CMakeLists.txt"
+                    "examples/basic/library/single_obj_parallel/CMakeLists.txt"
+                    "examples/advanced/library/FixedVariable/CMakeLists.txt"
+                    "examples/advanced/library/NMonly/CMakeLists.txt"
+                    "examples/advanced/library/PSDMads/CMakeLists.txt"
+                    "examples/advanced/library/Restart/CMakeLists.txt"
+                    "examples/advanced/library/Restart_VNS/CMakeLists.txt"
+                    "examples/advanced/library/c_api/example1/CMakeLists.txt"
+                    "examples/advanced/library/c_api/example2/CMakeLists.txt"
+                    "examples/advanced/library/exampleSuggestAndObserve/CMakeLists.txt")
+                ;; The runExampleTest.sh script is run with WORKING_DIRECTORY
+                ;; set to CMAKE_CURRENT_SOURCE_DIR.
+                ;; Other scripts invoked by that script (for example
+                ;; examples/advanced/batch/SuggestAndObserve/loopSuggestAndObserve.sh)
+                ;; are in that same directory, but compiled examples are
+                ;; located in CMAKE_CURRENT_BINARY_DIR.
+                (("(COMMAND \\$\\{CMAKE_BINARY_DIR\\}/examples/runExampleTest\\.sh )\\.(/.*)"
+                  _ command test)
+                 (string-append command "${CMAKE_CURRENT_BINARY_DIR}" test)))
+              (let ((builddir (string-append (getcwd) "/../build")))
+                (let ((dir "examples/advanced/library/FixedVariable"))
+                  (substitute* (string-append dir "/fixedVariable.cpp")
+                    (("^( +std::string sExe = ).*" _ prefix)
+                     (string-append prefix "\"" builddir "/" dir "/ufl.exe" "\";\n"))))
+                ;; The BB_EXE and SURROGATE_EXE paths are interpreted relative
+                ;; to the configuration file provided to NOMAD.
+                ;; However, the configuration files are all in the source tree
+                ;; rather than in the build tree (unlike the compiled
+                ;; executables).
+                (let ((fix-exe-path (lambda* (dir #:optional
+                                                  (file "param.txt")
+                                                  (exe-opt "BB_EXE"))
+                                      (substitute* (string-append dir "/" file)
+                                        (((string-append "^" exe-opt " +"))
+                                         ;; The $ prevents NOMAD from prefixing
+                                         ;; the executable with the path of the
+                                         ;; parent directory of the configuration
+                                         ;; file NOMAD was provided with as
+                                         ;; argument (param.txt or some such).
+                                         (string-append exe-opt " $"
+                                                        builddir "/" dir "/"))))))
+                  (for-each
+                   (lambda (dir)
+                     (substitute* (string-append dir "/CMakeLists.txt")
+                       ;; The install phase has not yet run.
+                       (("(COMMAND.*)\\$\\{CMAKE_INSTALL_PREFIX\\}/bin/nomad\\b"
+                         _ prefix)
+                        (string-append prefix "${CMAKE_BINARY_DIR}/src/nomad")))
+                     (if (equal? dir "examples/basic/batch/single_obj_MPIparallel")
+                         (substitute* (string-append dir "/param.txt")
+                           (("^BB_EXE +'\\$.*mpirun \\$-np \\$4 ")
+                            (string-append "BB_EXE '$" (which "mpirun") " $"
+                                           builddir "/" dir "/")))
+                         (fix-exe-path dir))
+                     (when (equal? dir "examples/basic/batch/surrogate_sort")
+                       (fix-exe-path dir "param.txt" "SURROGATE_EXE"))
+                     (when (equal? dir "examples/advanced/batch/FixedVariable")
+                       (fix-exe-path dir "param1.txt")
+                       (fix-exe-path dir "param2.txt")
+                       (fix-exe-path dir "param3.txt")
+                       (fix-exe-path dir "param10.txt")))
+                   '("examples/basic/batch/coco_bbob-constrained"
+                     "examples/basic/batch/example1"
+                     "examples/basic/batch/example2"
+                     "examples/basic/batch/example3"
+                     "examples/basic/batch/multi_obj"
+                     "examples/basic/batch/multi_obj2"
+                     "examples/basic/batch/single_obj"
+                     "examples/basic/batch/single_obj_MPIparallel"
+                     "examples/basic/batch/single_obj_parallel"
+                     "examples/basic/batch/surrogate_sort"
+                     "examples/advanced/batch/FixedVariable"
+                     "examples/advanced/batch/LHonly"))))))
+          (add-before 'configure 'mpi-setup
+            #$%openmpi-setup))))
     (home-page "https://www.gerad.ca/nomad/")
     (synopsis "Nonlinear optimization by mesh-adaptive direct search")
     (description
@@ -3178,6 +3124,61 @@ This is the certified version of the Open Cascade Technology (OCCT) library.")
                     "https://www.unicode.org/license.html")
                    ;; File src/NCollection/NCollection_StdAllocator.hxx:
                    license:public-domain))))
+
+(define-public fast-downward
+  (package
+    (name "fast-downward")
+    (version "23.06.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/aibasel/downward")
+                    (commit (string-append "release-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1xrgnvbkzkdf6srbrlsnf4qrgp0f1lkk7yxf34ynna0w49l468d4"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f        ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-driver
+            (lambda* (#:key outputs #:allow-other-keys)
+              (substitute* "driver/run_components.py"
+                ;; strip gratuitous "bin"
+                (("os\\.path\\.join\\((.*), \"bin\"\\)" all keep)
+                 (string-append "os.path.join(" keep ")")))))
+          (add-before 'configure 'chdir
+            (lambda _ (chdir "src")))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (dest (string-append out "/libexec/fast-downward"
+                                          "/builds/release")))
+                (mkdir-p dest)
+                (with-directory-excursion "bin"
+                  (install-file "downward" dest)
+                  (copy-recursively "translate"
+                                    (string-append dest "/translate"))))))
+          (add-after 'install 'install-driver
+            (lambda* (#:key outputs #:allow-other-keys)
+              (with-directory-excursion ".."
+                (let* ((out (assoc-ref outputs "out"))
+                       (bin (string-append out "/bin/fast-downward"))
+                       (dest (string-append out "/libexec/fast-downward")))
+                  (copy-recursively "driver"
+                                    (string-append dest "/driver"))
+                  (mkdir-p (dirname bin))
+                  (copy-file "fast-downward.py" bin)
+                  (wrap-program bin
+                    `("PYTHONPATH" prefix (,dest))))))))))
+    (inputs (list bash-minimal python))
+    (home-page "https://www.fast-downward.org/")
+    (synopsis "Domain-independant classical planning system")
+    (description "Fast Downward is a portfolio-based planning system that
+supports the propositional fragment of PDDL2.2.")
+    (license license:gpl3+)))
 
 (define-public gmsh
   (package
@@ -5283,7 +5284,7 @@ package contains a library with common configuration options.")
               (install-file "../AMD/Doc/License.txt"
                             (string-append #$output "/share/doc/"
                                            #$name "-" #$version)))))))
-    (inputs (list suitesparse-config))
+    (propagated-inputs (list suitesparse-config))
     (native-inputs (list gfortran (texlive-updmap.cfg '())))
     (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
     (synopsis "Sparse matrix ordering for Cholesky factorization")
@@ -5317,7 +5318,7 @@ to Cholesky factorization (or for LU factorization with diagonal pivoting).")
               (install-file "../BTF/Doc/License.txt"
                             (string-append #$output "/share/doc/"
                                            #$name "-" #$version)))))))
-    (inputs (list suitesparse-config))
+    (propagated-inputs (list suitesparse-config))
     (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
     (synopsis "Library for permuting matrices into block upper triangular form")
     (description "BTF (Block Triangular Form) is a C library for permuting a
@@ -5359,7 +5360,7 @@ matrix into block upper triangular form.")
               (install-file "../CAMD/Doc/License.txt"
                             (string-append #$output "/share/doc/"
                                            #$name "-" #$version)))))))
-    (inputs (list suitesparse-config))
+    (propagated-inputs (list suitesparse-config))
     (native-inputs (list (texlive-updmap.cfg '())))
     (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
     (synopsis "Sparse matrix ordering for Cholesky factorization with constraints")
@@ -5395,7 +5396,7 @@ ordering.")
               (install-file "../COLAMD/Doc/License.txt"
                             (string-append #$output "/share/doc/"
                                            #$name "-" #$version)))))))
-    (inputs (list suitesparse-config))
+    (propagated-inputs (list suitesparse-config))
     (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
     (synopsis "Column Approximate Minimum Degree Ordering")
     (description "COLAMD is library for computing a permutation vector for a
@@ -5428,7 +5429,7 @@ matrix with which the LU factorization becomes sparser.")
               (install-file "../CCOLAMD/Doc/License.txt"
                             (string-append #$output "/share/doc/"
                                            #$name "-" #$version)))))))
-    (inputs (list suitesparse-config))
+    (propagated-inputs (list suitesparse-config))
     (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
     (synopsis "Column Approximate Minimum Degree Ordering with constraints")
     (description "CCOLAMD is library for computing a permutation vector for a
@@ -5457,9 +5458,7 @@ COLAMD which has the the option to apply constraints to the ordering.")
                     all
                     "target_link_libraries(GKlib PUBLIC"
                     " ${SUITESPARSE_CONFIG_LIBRARIES} m)\n")))))))))
-    (inputs
-     (modify-inputs (package-inputs gklib)
-       (prepend suitesparse-config)))))
+    (propagated-inputs (list suitesparse-config))))
 
 (define-public metis-suitesparse
   (package/inherit metis-5.2
@@ -5561,8 +5560,8 @@ target_link_libraries(CHOLMOD_static PRIVATE ${METIS_LIBRARY} ${GKLIB_LIBRARY})"
            suitesparse-amd
            suitesparse-camd
            suitesparse-ccolamd
-           suitesparse-colamd
-           suitesparse-config))
+           suitesparse-colamd))
+    (propagated-inputs (list suitesparse-config))
     (native-inputs (list (texlive-updmap.cfg '())))
     (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
     (synopsis "Library for solving sparse symmetric positive definite linear
@@ -5599,7 +5598,7 @@ and other related operations.")
                                         "/share/doc/" #$name "-" #$version)))
                 (install-file "../CXSparse/Doc/License.txt" out)
                 (install-file "../CXSparse/Doc/lesser.txt" out)))))))
-    (inputs (list suitesparse-config))
+    (propagated-inputs (list suitesparse-config))
     (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
     (synopsis "Concise eXtended Sparse Matrix Package")
     (description "CXSparse is a collection of sparse matrix algorithms for
@@ -5655,13 +5654,14 @@ direct methods on both real and complex matrices.")
                             (string-append #$output "/share/doc/"
                                            #$name "-" #$version)))))))
     (inputs
-     (list suitesparse-amd
-           suitesparse-btf
-           suitesparse-camd
+     (list suitesparse-camd
            suitesparse-ccolamd
-           suitesparse-cholmod
            suitesparse-colamd
            suitesparse-config))
+    (propagated-inputs
+     (list suitesparse-amd
+           suitesparse-btf
+           suitesparse-cholmod))
     (native-inputs (list (texlive-updmap.cfg '())))
     (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
     (synopsis "Routines for solving sparse linear problems with a LU factorization")
@@ -5712,9 +5712,8 @@ for real and complex matrices.")
               (install-file "../LDL/Doc/License.txt"
                             (string-append #$output "/share/doc/"
                                            #$name "-" #$version)))))))
-    (inputs
-     (list suitesparse-amd
-           suitesparse-config))
+    (inputs (list suitesparse-amd))
+    (propagated-inputs (list suitesparse-config))
     (native-inputs (list (texlive-updmap.cfg '())))
     (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
     (synopsis "LDL' factorization method for sparse, symmetric matrices")
@@ -5754,7 +5753,7 @@ code.")
                                         "/share/doc/" #$name "-" #$version)))
                 (install-file "../RBio/Doc/License.txt" out)
                 (install-file "../RBio/Doc/gpl.txt" out)))))))
-    (inputs (list suitesparse-config))
+    (propagated-inputs (list suitesparse-config))
     (home-page "https://people.engr.tamu.edu/davis/suitesparse.html")
     (synopsis "Library for the Rutherford/Boeing sparse matrix format")
     (description "This package provides the C library of RBio.  It can be used
@@ -5803,7 +5802,7 @@ for reading and writing sparse matrices in the Rutherford/Boeing format.")
               (install-file "../Mongoose/Doc/License.txt"
                             (string-append #$output "/share/doc/"
                                            #$name "-" #$version)))))))
-    (inputs (list suitesparse-config))
+    (propagated-inputs (list suitesparse-config))
     (native-inputs
      (list texlive-epstopdf
            (texlive-updmap.cfg
@@ -5872,12 +5871,8 @@ edge cuts using a coarsening and refinement framework.")
               (install-file "../SPEX/Doc/SPEX_UserGuide.pdf"
                             (string-append #$output "/share/doc/"
                                            #$name "-" #$version)))))))
-    (inputs
-     (list gmp
-           mpfr
-           suitesparse-amd
-           suitesparse-colamd
-           suitesparse-config))
+    (inputs (list suitesparse-amd suitesparse-colamd))
+    (propagated-inputs (list gmp mpfr suitesparse-config))
     (native-inputs
      (list (texlive-updmap.cfg
             (list texlive-paralist
@@ -5950,14 +5945,13 @@ LU factorization for solving unsymmetric sparse linear systems.")
               (install-file "../SPQR/Doc/License.txt"
                             (string-append #$output "/share/doc/"
                                            #$name "-" #$version)))))))
-    (inputs
-     (list openblas
-           suitesparse-amd
-           suitesparse-camd
-           suitesparse-ccolamd
-           suitesparse-cholmod
-           suitesparse-colamd
-           suitesparse-config))
+    (inputs (list openblas
+                  suitesparse-amd
+                  suitesparse-camd
+                  suitesparse-ccolamd
+                  suitesparse-colamd
+                  suitesparse-config))
+    (propagated-inputs (list suitesparse-cholmod))
     (native-inputs
      (list (texlive-updmap.cfg
             (list texlive-epsf))))
@@ -6016,13 +6010,13 @@ matrices.")
                                     #$name "-" #$version)))
                 (install-file "../UMFPACK/Doc/License.txt" outdir)
                 (install-file "../UMFPACK/Doc/gpl.txt" outdir)))))))
-    (inputs
-     (list openblas
-           suitesparse-amd
-           suitesparse-camd
-           suitesparse-ccolamd
-           suitesparse-cholmod
-           suitesparse-colamd
+    (inputs (list openblas
+                  suitesparse-camd
+                  suitesparse-ccolamd
+                  suitesparse-cholmod
+                  suitesparse-colamd))
+    (propagated-inputs
+     (list suitesparse-amd
            suitesparse-config))
     (native-inputs
      (list (texlive-updmap.cfg
@@ -6432,13 +6426,13 @@ revised simplex and the branch-and-bound methods.")
                              (string-replace-substring version "." "-")))))
        (file-name (git-file-name "trilinos" version))
        (sha256
-        (base32 "0fnwlhzsh85qj38cq3igbs8nm1b2jdgr2z734sapmyyzsy21mkgp"))))
+        (base32 "0fnwlhzsh85qj38cq3igbs8nm1b2jdgr2z734sapmyyzsy21mkgp"))
+       (patches
+        (search-patches "teuchos-remove-duplicate-using.patch"
+                        "tpetra-remove-duplicate-using.patch"))))
     (build-system cmake-build-system)
     (native-inputs
      (list
-      ;; The build fails with the current gcc.
-      ;; Use the version from when Trilinos was added.
-      gcc-7
       gfortran
       ;; Trilinos's repository contains several C-shell scripts, but adding
       ;; tcsh to the native inputs does not result in the check phase running
@@ -6563,17 +6557,17 @@ A unique design feature of Trilinos is its focus on packages.")
 (define-public dealii
   (package
     (name "dealii")
-    (version "9.4.0")
+    (version "9.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/dealii/dealii/releases/"
                            "download/v" version "/dealii-" version ".tar.gz"))
        (sha256
-        (base32 "0v73q6f35f2yrjihaq6vh9lma07qc4cdv75nwmc3c5yrdh07g1i3"))
+        (base32 "0phgcfnil4rb41xipsdbm4lxrymlqxbiccakg3pkm3a8wqsva658"))
        (modules '((guix build utils)))
        (snippet
-        ;; Remove bundled boost, muparser, TBB and UMFPACK.
+        ;; Remove bundled boost, Kokkos, muparser, TBB and UMFPACK.
         #~(delete-file-recursively "bundled"))))
     (build-system cmake-build-system)
     (outputs '("out" "doc"))
@@ -6597,6 +6591,7 @@ A unique design feature of Trilinos is its focus on packages.")
      ;; the requisite interpreter to its native inputs.
      (list boost
            hdf5
+           kokkos
            suitesparse                  ; For UMFPACK.
            sundials
            tbb))
@@ -6621,6 +6616,18 @@ A unique design feature of Trilinos is its focus on packages.")
                                     "/examples")))
            #:phases
            #~(modify-phases %standard-phases
+               ;; Without unsetting CPATH, the build fails with the following
+               ;; error (similar to <https://bugs.gnu.org/30756>):
+               ;;
+               ;;   /gnu/store/…-gcc-11.3.0/include/c++/math.h:30:16: fatal error: math.h: No such file or directory
+               ;;      30 | # include_next <math.h>
+               ;;         |                ^~~~~~~~
+               ;;
+               ;; Why does unsetting CPATH magically fix the error?
+               ;; TODO: Properly fix this issue.
+               (add-after 'set-paths 'unset-cpath
+                 (lambda _
+                   (unsetenv "CPATH")))
                (add-after 'install 'remove-build-logs
                  ;; These build logs leak the name of the build directory by
                  ;; storing the values of CMAKE_SOURCE_DIR and
@@ -6652,7 +6659,7 @@ in finite element programs.")
                 scalapack)))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs dealii)
-       (delete "hdf5" "sundials")
+       (delete "hdf5" "kokkos" "sundials")
        (prepend hdf5-parallel-openmpi
                 openmpi
                 p4est-openmpi
@@ -6663,7 +6670,12 @@ in finite element programs.")
     (arguments
      (substitute-keyword-arguments (package-arguments dealii)
        ((#:configure-flags flags)
-        #~(cons "-DDEAL_II_WITH_MPI=ON" #$flags))))
+        #~(cons "-DDEAL_II_WITH_MPI=ON" #$flags))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            ;; The build failure fixed by this phase does not manifest when
+            ;; Kokkos is included via Trilinos.
+            (delete 'unset-cpath)))))
     (synopsis "Finite element library (with MPI support)")))
 
 (define-public flann
@@ -9706,3 +9718,88 @@ user has been TensorFlow Lite, where it is used by default on the ARM CPU
 architecture.")
       (license license:asl2.0))))
 
+(define-public bliss
+  (package
+    (name "bliss")
+    (version "0.77")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://users.aalto.fi/~tjunttil/bliss/downloads/bliss-"
+                    version ".zip"))
+              (sha256
+               (base32
+                "193jb63kdwfas2cf61xj3fgkvhb6v2mnbwwpr0jas3zk6j0bkj5c"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      ;; There are no tests
+      #:tests? #f
+      #:configure-flags #~(list "-DUSE_GMP=ON") ; Used by igraph
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Ensure that GMP is used, otherwise the BigNum type changes.
+          (add-after 'unpack 'define-use-gmp
+            (lambda _
+              (substitute* "src/bignum.hh"
+                (("#pragma once.*" all)
+                 (string-append all "#define BLISS_USE_GMP")))))
+          ;; Move headers under the bliss/ prefix. This is a Guix choice,
+          ;; since there are no upstream installation instructions and the
+          ;; header names are sufficiently generic to cause confusions with
+          ;; other packages (e.g. "heap.hh").
+          (add-after 'define-use-gmp 'move-headers
+            (lambda _
+              (substitute* (find-files "src")
+                (("#include \"(.*)\"" _ path)
+                 (string-append "#include <bliss/" path ">")))
+              (mkdir-p "include/bliss")
+              (for-each
+               (lambda (file)
+                 (rename-file file
+                              (string-append "include/bliss/" (basename file))))
+               (find-files "src" "\\.(h|hh)$"))
+              (substitute* "Doxyfile"
+                (("INPUT *=.*") "INPUT = bliss"))))
+          (add-after 'move-headers 'patch-cmake
+            (lambda _
+              (let ((port (open-file "CMakeLists.txt" "a")))
+                (display
+                 (apply
+                  string-append
+                  ;; Install the executable and the shared library.
+                  "install(TARGETS bliss)\n"
+                  "install(TARGETS bliss-executable)\n"
+                  "install(DIRECTORY include/bliss DESTINATION include)\n"
+                  "target_link_libraries(bliss PUBLIC ${GMP_LIBRARIES})\n"
+                  ;; Missing include directories.
+                  (map
+                   (lambda (name)
+                     (string-append
+                      "target_include_directories(" name " PUBLIC\n"
+                      "${CMAKE_CURRENT_SOURCE_DIR}/include"
+                      " ${GMP_INCLUDE_DIR})\n"))
+                   '("bliss" "bliss_static" "bliss-executable")))
+                 port)
+                (close-port port))))
+          (add-after 'build 'build-doc
+            (lambda _
+              (mkdir "doc")
+              (with-directory-excursion "doc"
+                (let ((srcdir (string-append "../../bliss-" #$version)))
+                  (copy-recursively (string-append srcdir "/include/bliss")
+                                    "bliss")
+                  (invoke "doxygen" (string-append srcdir "/Doxyfile"))))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (copy-recursively
+               "doc/html" (string-append #$output "/share/doc/"
+                                     #$name "-" #$version "/html")))))))
+    (native-inputs (list doxygen graphviz unzip))
+    (propagated-inputs (list gmp))
+    (home-page "https://users.aalto.fi/~tjunttil/bliss/index.html")
+    (synopsis "Tool for computing automorphism groups and canonical labelings of graphs")
+    (description "@code{bliss} is a library for computing automorphism groups
++and canonical forms of graphs.  It has both a command line user interface as
++well as C++ and C programming language APIs.")
+    (license license:lgpl3)))

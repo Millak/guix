@@ -5126,7 +5126,7 @@ studio.")
 (define-public gsequencer
   (package
     (name "gsequencer")
-    (version "5.5.0")
+    (version "6.1.3")
     (source
      (origin
        (method git-fetch)
@@ -5135,7 +5135,7 @@ studio.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dl3gsmpc7b4hi97qri5d5rc3ikx639r3l1dy204p6dx8pwpv2ry"))))
+        (base32 "1h5zw9047qmhhc6n4ny11id1h1p8322wadl7p8j65bwrz8kbfx99"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:phases
@@ -5221,15 +5221,15 @@ specification and header.")
 (define-public rosegarden
   (package
     (name "rosegarden")
-    (version "22.12.1")
+    (version "23.06")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/rosegarden/rosegarden/"
                            (version-major+minor version) "/"
-                           "rosegarden-" version ".tar.bz2"))
+                           "rosegarden-" version ".tar.xz"))
        (sha256
-        (base32 "01ljv4rkglicvx7fd6d5chi8k6wia5d6374gf20rgi75grzs59vy"))))
+        (base32 "1k3j5p6lx3w6pbsh95xiyfj8g8ysmvd18v0wmx7kdb3vyj5mfd0z"))))
     (build-system cmake-build-system)
     (arguments
      (list

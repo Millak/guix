@@ -301,32 +301,37 @@ also known as DXTn or DXTC) for Mesa.")
            wayland-protocols
            `(,zstd "lib")))
     (native-inputs
-     (list bison
-           flex
-           gettext-minimal
-           glslang
-           pkg-config
-           python-libxml2               ;for OpenGL ES 1.1 and 2.0 support
-           python-mako
-           python-wrapper
-           (@ (gnu packages base) which)))
+     (cons* bison
+            flex
+            gettext-minimal
+            glslang
+            pkg-config
+            python-libxml2              ;for OpenGL ES 1.1 and 2.0 support
+            python-mako
+            python-wrapper
+            (@ (gnu packages base) which)
+            (if (%current-target-system)
+              (list pkg-config-for-build
+                    wayland
+                    wayland-protocols)
+              '())))
     (outputs '("out" "bin"))
     (arguments
      (list
       #:configure-flags
       #~(list
-         #$@(match (%current-system)
-             ("aarch64-linux"
+         #$@(cond
+             ((target-aarch64?)
               ;; TODO: Fix svga driver for non-Intel architectures.
               '("-Dgallium-drivers=etnaviv,freedreno,kmsro,lima,nouveau,\
 panfrost,r300,r600,swrast,tegra,v3d,vc4,virgl"))
-             ("armhf-linux"
+             ((target-arm32?)
               ;; Freedreno FTBFS when built on a 64-bit machine.
               '("-Dgallium-drivers=etnaviv,kmsro,lima,nouveau,panfrost,\
 r300,r600,swrast,tegra,v3d,vc4,virgl"))
-             ((or "powerpc64le-linux" "powerpc-linux" "riscv64-linux")
+             ((or (target-ppc64le?) (target-ppc32?) (target-riscv64?))
               '("-Dgallium-drivers=nouveau,r300,r600,radeonsi,swrast,virgl"))
-             (_
+             (else
               '("-Dgallium-drivers=crocus,iris,nouveau,r300,r600,radeonsi,\
 svga,swrast,virgl")))
          ;; Enable various optional features.  TODO: opencl requires libclc,
@@ -344,16 +349,16 @@ svga,swrast,virgl")))
          "-Dshared-glapi=enabled"
 
          ;; Explicitly enable Vulkan on some architectures.
-         #$@(match (%current-system)
-             ((or "i686-linux" "x86_64-linux")
+         #$@(cond
+             ((or (target-x86-32?) (target-x86-64?))
               '("-Dvulkan-drivers=intel,intel_hasvk,amd,swrast"))
-             ((or "powerpc64le-linux" "powerpc-linux")
+             ((or (target-ppc64le?) (target-ppc32?))
               '("-Dvulkan-drivers=amd,swrast"))
-             ("aarch64-linux"
+             ((target-aarch64?)
               '("-Dvulkan-drivers=freedreno,amd,broadcom,swrast"))
-             ("riscv64-linux"
+             ((target-riscv64?)
               '("-Dvulkan-drivers=amd,swrast"))
-             (_
+             (else
               '("-Dvulkan-drivers=auto")))
 
          ;; Enable the Vulkan overlay layer on all architectures.
@@ -381,6 +386,13 @@ svga,swrast,virgl")))
                    (guix build meson-build-system))
        #:phases
        #~(modify-phases %standard-phases
+         #$@(if (%current-target-system)
+              #~((add-after 'unpack 'fix-cross-compiling
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     ;; It isn't a problem to use the host's llvm-config.
+                     (setenv "LLVM_CONFIG"
+                             (search-input-file inputs "/bin/llvm-config")))))
+              #~())
          (add-after 'unpack 'disable-failing-test
            (lambda _
              ;; Disable the intel vulkan (anv_state_pool) tests, as they may

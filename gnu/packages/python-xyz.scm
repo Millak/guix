@@ -246,6 +246,7 @@
   #:use-module (gnu packages rdf)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages regex)
+  #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages scanner)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages search)
@@ -1220,13 +1221,13 @@ Markdown.  All extensions are found under the module namespace of pymdownx.")
 (define-public python-pint
   (package
     (name "python-pint")
-    (version "0.20.1")
+    (version "0.22")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Pint" version))
               (sha256
                (base32
-                "0rv0cbala7ibjbaf6kkcn0mdhqdbajnvlcw0f15gwzfwg10g0z1q"))))
+                "0cs4lsvngrkfzpnrmxcwz728m47y0xbw1knksz51cc6gpdm9y4rd"))))
     (build-system pyproject-build-system)
     (arguments
      ;; This single test tries to write to $HOME/.cache/pint.
@@ -1241,7 +1242,9 @@ Markdown.  All extensions are found under the module namespace of pymdownx.")
            python-pytest-subtests
            python-setuptools-scm
            python-sparse
+           python-uncertainties
            python-xarray))
+    (propagated-inputs (list python-typing-extensions))
     (home-page "https://github.com/hgrecco/pint")
     (synopsis "Physical quantities module")
     (description
@@ -1286,6 +1289,31 @@ different units.")
      "Plotille provides a figure class and graphing functions to create plots,
 scatter plots, histograms and heatmaps in the terminal using braille dots.")
     (license license:expat)))
+
+(define-public python-portpicker
+  (package
+    (name "python-portpicker")
+    (version "1.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "portpicker" version))
+       (sha256
+        (base32 "1yiisk4h8qliwf99khz3lszrpjf6km76fbhzg01fwrbgz7b7yl5x"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; This fails because portserver ends up in bin, not site-packages
+      '(list "--ignore=src/tests/portserver_test.py")))
+    (propagated-inputs (list python-psutil))
+    (native-inputs (list python-pytest net-tools))
+    (home-page "https://github.com/google/python_portpicker")
+    (synopsis "Choose unique available network ports")
+    (description
+     "This package provides a library to choose unique available network
+ports.")
+    (license license:asl2.0)))
 
 (define-public python-mdx-gh-links
   (package
@@ -1827,6 +1855,28 @@ using pcap files, match requests and replies, and so on.
 It can handle tasks such as scanning, tracerouting, probing, unit tests,
 attacks or network discovery.")
     (license license:gpl2)))
+
+(define-public python-icmplib
+  (package
+    (name "python-icmplib")
+    (version "3.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "icmplib" version))
+       (sha256
+        (base32 "1phnlgbb5di79ijm55pyd5jj1ggss4b6nn6mw701h501vcn8z1jp"))))
+    (arguments
+     '(#:tests? #f)) ;test data not present
+    (build-system python-build-system)
+    (home-page "https://github.com/ValentinBELYN/icmplib")
+    (synopsis
+     "Python implementation of the Internet Control Message Protocol (ICMP)")
+    (description
+     "@code{icmplib} is a supporting library for both IPv4 and IPv6 networks.
+ICMP is typically used for diagnostic or control purposes - well known from
+utilities such as ping(1).")
+    (license license:lgpl3)))
 
 (define-public python-rasterio
   (package
@@ -3007,13 +3057,13 @@ help formatter.")
 (define-public python-orjson
   (package
     (name "python-orjson")
-    (version "3.8.8")
+    (version "3.9.7")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "orjson" version))
               (sha256
                (base32
-                "1nn617pzn8smjkf7j593ybq16qfnj53bla52qjwzzrms4fjxg5n0"))))
+                "0hh1j7akxgx1nvsnwx1p4f4h4pkgr7v9aqr99l2pwbwfyyc93qw5"))))
     (build-system cargo-build-system)
     (arguments
      (list
@@ -3024,47 +3074,10 @@ help formatter.")
                   (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'install 'prepare-python-module
-            (lambda _
-              ;; We don't use maturin.
-              (delete-file "pyproject.toml")
-              (call-with-output-file "pyproject.toml"
-                (lambda (port)
-                  (format port "\
-[build-system]
-build-backend = 'setuptools.build_meta'
-requires = ['setuptools']
-")))
-              (call-with-output-file "setup.cfg"
-                (lambda (port)
-                  (format port "\
-[metadata]
-name = orjson
-version = ~a
-
-[options]
-packages = find:
-
-[options.packages.find]
-exclude =
-  src
-  integration
-  test
-  Cargo.toml
-" #$version)))))
           (add-after 'prepare-python-module 'build-python-module
             (assoc-ref py:%standard-phases 'build))
           (add-after 'build-python-module 'install-python-module
-            (assoc-ref py:%standard-phases 'install))
-          (add-after 'install-python-module 'install-python-library
-            (lambda _
-              (let ((site (string-append #$output "/lib/python"
-                                         #$(version-major+minor
-                                            (package-version python))
-                                         "/site-packages")))
-                (mkdir-p site)
-                (copy-file "target/release/liborjson.so"
-                           (string-append site "/orjson.so"))))))
+            (assoc-ref py:%standard-phases 'install)))
       #:cargo-inputs
       `(("rust-ahash" ,rust-ahash-0.8)
         ("rust-arrayvec" ,rust-arrayvec-0.7)
@@ -3077,17 +3090,20 @@ exclude =
         ("rust-itoa" ,rust-itoa-1)
         ("rust-itoap" ,rust-itoap-1)
         ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-pyo3-ffi" ,rust-pyo3-ffi-0.18)
+        ("rust-pyo3-ffi" ,rust-pyo3-ffi-0.19)
         ("rust-ryu" ,rust-ryu-1)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-simdutf8" ,rust-simdutf8-0.1)
-        ("rust-smallvec" ,rust-smallvec-1))
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-cc" ,rust-cc-1)
+        ("rust-pyo3-build-config" ,rust-pyo3-build-config-0.19)
+        ("rust-version-check" ,rust-version-check-0.9))
       #:install-source? #false))
+    (inputs
+     (list maturin))
     (native-inputs
-     (list python-wrapper
-           python-pypa-build
-           python-wheel))
+     (list python-wrapper))
     (home-page "https://github.com/ijl/orjson")
     (synopsis "Python JSON library supporting dataclasses, datetimes, and numpy")
     (description "Orjson is a fast, correct JSON library for Python.  It
@@ -10644,10 +10660,7 @@ installing @code{kernelspec}s for use with Jupyter frontends.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:imported-modules `(,@%pyproject-build-system-modules
-                           (guix build syscalls))
       #:modules '((guix build pyproject-build-system)
-                  (guix build syscalls)
                   (guix build utils)
                   (ice-9 match))
       #:phases
@@ -10666,20 +10679,19 @@ installing @code{kernelspec}s for use with Jupyter frontends.")
               (when tests?
                 (match (primitive-fork)
                   (0                    ;child process
-                   (set-child-subreaper!)
-                   ;; XXX: Tini provides proper PID1-like signal handling that
-                   ;; reaps zombie processes, necessary for the
-                   ;; 'test_shutdown_subprocesses' test to pass.
-
-                   ;; TODO: Complete https://issues.guix.gnu.org/30948.
                    (setenv "HOME" "/tmp")
-                   (execlp "tini" "--" "pytest" "-vv"))
-                  (pid
-                   (match (waitpid pid)
-                     ((_ . status)
-                      (unless (zero? status)
-                        (error "`pytest' exited with status"
-                               status)))))))))
+                   (execlp "pytest" "pytest" "-vv"))
+                  (pytest-pid
+                   ;; Reap zombie processes, necessary for the
+                   ;; 'test_shutdown_subprocesses' test to pass.
+                   (let loop ()
+                     (match (waitpid WAIT_ANY)
+                       ((pid . status)
+                        (if (= pid pytest-pid)
+                            (unless (zero? status)
+                              (error "`pytest' exited with status"
+                                     status))
+                            (loop))))))))))
           (add-after 'install 'set-python-file-name
             (lambda* (#:key inputs #:allow-other-keys)
               ;; Record the absolute file name of the 'python' executable in
@@ -10708,8 +10720,7 @@ installing @code{kernelspec}s for use with Jupyter frontends.")
            ;; and causes deprecation warnings.  Using the bootstrap variant
            ;; avoids that.
            python-pytest-bootstrap
-           python-pytest-timeout
-           tini))
+           python-pytest-timeout))
     (home-page "https://ipython.org")
     (synopsis "IPython Kernel for Jupyter")
     (description "This package provides the IPython kernel for Jupyter.")
@@ -18403,19 +18414,14 @@ to support both Python 2 and Python 3 with minimal overhead.")
 (define-public python-cysignals
   (package
     (name "python-cysignals")
-    (version "1.9.0")
+    (version "1.11.4")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "cysignals" version))
-        (sha256
-          (base32
-            "15ix8crpad26cfl1skyg7qajqqfdrm8q5ahhmlfmqi1aw0jqj2g2"))))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cysignals" version))
+       (sha256
+        (base32 "1hrqn976xhrq189x1086f3z9vzznjx21wsm3hqf90zx0alg347hg"))))
     (build-system python-build-system)
-    (native-inputs
-      (list python-cython python-sphinx))
-    (inputs
-      (list pari-gp))
     (arguments
      `(#:modules ((guix build python-build-system)
                   ((guix build gnu-build-system) #:prefix gnu:)
@@ -18424,17 +18430,15 @@ to support both Python 2 and Python 3 with minimal overhead.")
        ;; when not installing into standard locations; the author is working
        ;; on a fix.
        #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-before
-          'build 'configure
-          (assoc-ref gnu:%standard-phases 'configure)))))
-    (home-page
-      "https://github.com/sagemath/cysignals")
-    (synopsis
-      "Handling of interrupts and signals for Cython")
+       #:phases (modify-phases %standard-phases
+                  (add-before 'build 'configure
+                    (assoc-ref gnu:%standard-phases 'configure)))))
+    (native-inputs (list python-cython-3 python-sphinx))
+    (inputs (list pari-gp))
+    (home-page "https://github.com/sagemath/cysignals")
+    (synopsis "Handling of interrupts and signals for Cython")
     (description
-      "The cysignals package provides mechanisms to handle interrupts (and
+     "The cysignals package provides mechanisms to handle interrupts (and
 other signals and errors) in Cython code, using two related approaches,
 for mixed Cython/Python code or external C libraries and pure Cython code,
 respectively.")
@@ -19955,13 +19959,13 @@ etc.")
 (define-public python-pyvirtualdisplay
   (package
     (name "python-pyvirtualdisplay")
-    (version "2.1")
+    (version "3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "PyVirtualDisplay" version))
        (sha256
-        (base32 "1z2fzgiw3xv3m1d9ppn53g07zhnpj05addiz56sm6ircxibnjk4x"))))
+        (base32 "0nb1s7nilakrkcm0vq08pz9mh8rzyhjm9jkyn1gp5sxnrv1mnx89"))))
     (build-system python-build-system)
     (arguments
      ;; Tests fail with:
@@ -27161,41 +27165,41 @@ for YAML and JSON.")
          "1nwl0gzzds2g1w1gfxfzlgrkb5hr1rrdyn619ml25c6b1rjyfk3g"))))
     (build-system python-build-system)
     (arguments
-     `(#:imported-modules (,@%python-build-system-modules
-                           (guix build syscalls))
-       #:modules ((guix build python-build-system)
-                  (guix build syscalls)
-                  (guix build utils)
-                  (ice-9 match))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "tests/test_code.py"
-               (("/bin/bash") (which "bash")))
-             (substitute* "dbusmock/testcase.py"
-               (("'dbus-daemon'")
-                (string-append "'" (assoc-ref inputs "dbus")
-                               "/bin/dbus-daemon'")))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (match (primitive-fork)
-                 (0                     ;child process
-                  (set-child-subreaper!)
-                  ;; Use tini so that signals are properly handled and
-                  ;; doubly-forked processes get reaped; otherwise,
-                  ;; python-dbusmock would waste time polling for the dbus
-                  ;; processes it spawns to be reaped, in vain.
-                  (execlp "tini" "--" "pytest" "-vv"))
-                 (pid
-                  (match (waitpid pid)
-                    ((_ . status)
-                     (unless (zero? status)
-                       (error "`pytest' exited with status"
-                              status))))))))))))
+     (list #:modules `((guix build python-build-system)
+                       (guix build utils)
+                       (ice-9 match))
+
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-paths
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "tests/test_code.py"
+                     (("/bin/bash")
+                      (which "bash")))
+                   (substitute* "dbusmock/testcase.py"
+                     (("'dbus-daemon'")
+                      (object->string
+                       (search-input-file inputs "/bin/dbus-daemon"))))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (match (primitive-fork)
+                       (0 ;child process
+                        (execlp "pytest" "pytest" "-vv"))
+                       (pytest-pid
+                        (let loop ()
+                          ;; Reap child processes; otherwise, python-dbusmock
+                          ;; would waste time polling for the dbus processes
+                          ;; it spawns to be reaped, in vain.
+                          (match (waitpid WAIT_ANY)
+                            ((pid . status)
+                             (if (= pid pytest-pid)
+                                 (unless (zero? status)
+                                   (error "`pytest' exited with status"
+                                          status))
+                                 (loop)))))))))))))
     (native-inputs
-     (list dbus python-pytest tini which))
+     (list dbus python-pytest which))
     (inputs
      (list dbus))
     (propagated-inputs
@@ -33972,6 +33976,23 @@ functions
     (description "This package allows the programmatic creation of
 markdown-compliant strings.")
     (license license:expat)))
+
+(define-public python-yattag
+  (package
+    (name "python-yattag")
+    (version "1.15.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "yattag" version))
+       (sha256
+        (base32 "05p4dgdp8wwvnsvcv7n4zn8k602w345kw4vq67s9d792w55sa3wn"))))
+    (build-system python-build-system)
+    (synopsis "HTML or XML generator for Python")
+    (description
+     "Yattag is a Python library for generating HTML or XML in a pythonic way.")
+    (home-page "https://www.yattag.org/")
+    (license license:lgpl2.1)))
 
 (define-public python-zbarlight
   (package

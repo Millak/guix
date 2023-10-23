@@ -7314,9 +7314,12 @@ specified binaries and symlinks.
 @item docker
 This produces a tarball that follows the
 @uref{https://github.com/docker/docker/blob/master/image/spec/v1.2.md,
-Docker Image Specification}.  The ``repository name'' as it appears in
-the output of the @command{docker images} command is computed from
-package names passed on the command line or in the manifest file.
+Docker Image Specification}.  By default, the ``repository name'' as it
+appears in the output of the @command{docker images} command is computed
+from package names passed on the command line or in the manifest file.
+Alternatively, the ``repository name'' can also be configured via the
+@option{--image-tag} option.  Refer to @option{--help-docker-format} for
+more information on such advanced options.
 
 @item squashfs
 This produces a SquashFS image containing all the specified binaries and
@@ -8530,8 +8533,80 @@ support of the Mercurial version control system.
 Return a fixed-output derivation that fetches @var{ref}, a
 @code{<hg-reference>} object.  The output is expected to have recursive
 hash @var{hash} of type @var{hash-algo} (a symbol).  Use @var{name} as
-the file name, or a generic name if @code{#false}.
+the file name, or a generic name if @code{#f}.
 @end deffn
+
+@deftp {Data Type} hg-reference
+This data type represents a Mercurial reference for @code{hg-fetch} to
+retrieve.
+
+@table @asis
+@item @code{url}
+The URL of the Mercurial repository to clone.
+
+@item @code{revision}
+This string denotes revision to fetch specified as a number.
+@end table
+@end deftp
+
+For Subversion repositories, the module @code{(guix svn-download)}
+defines the @code{svn-fetch} origin method and @code{svn-reference} data
+type for support of the Subversion version control system.
+
+@deffn {Procedure} svn-fetch ref hash-algo hash [name]
+Return a fixed-output derivation that fetches @var{ref}, a
+@code{<svn-reference>} object.  The output is expected to have recursive
+hash @var{hash} of type @var{hash-algo} (a symbol).  Use @var{name} as
+the file name, or a generic name if @code{#f}.
+@end deffn
+
+@deftp {Data Type} svn-reference
+This data type represents a Subversion reference for @code{svn-fetch} to
+retrieve.
+
+@table @asis
+@item @code{url}
+The URL of the Subversion repository to clone.
+
+@item @code{revision}
+This string denotes revision to fetch specified as a number.
+
+@item @code{recursive?} (default: @code{#f})
+This Boolean indicates whether to recursively fetch Subversion
+``externals''.
+
+@item @code{user-name} (default: @code{#f})
+The name of an account that has read-access to the repository, if the
+repository isn't public.
+
+@item @code{password} (default: @code{#f})
+Password to access the Subversion repository, if required.
+@end table
+@end deftp
+
+For Bazaar repositories, the module @code{(guix bzr-download)}
+defines the @code{bzr-fetch} origin method and @code{bzr-reference} data
+type for support of the Bazaar version control system.
+
+@deffn {Procedure} bzr-fetch ref hash-algo hash [name]
+Return a fixed-output derivation that fetches @var{ref}, a
+@code{<bzr-reference>} object.  The output is expected to have recursive
+hash @var{hash} of type @var{hash-algo} (a symbol).  Use @var{name} as
+the file name, or a generic name if @code{#f}.
+@end deffn
+
+@deftp {Data Type} bzr-reference
+This data type represents a Bazaar reference for @code{bzr-fetch} to
+retrieve.
+
+@table @asis
+@item @code{url}
+The URL of the Bazaar repository to clone.
+
+@item @code{revision}
+This string denotes revision to fetch specified as a number.
+@end table
+@end deftp
 
 @node Defining Package Variants
 @section Defining Package Variants
@@ -10144,6 +10219,27 @@ Python package is used to run the script can be specified with the
 @code{#:python} parameter.
 @end defvar
 
+@defvar zig-build-system
+This variable is exported by @code{(guix build-system zig)}.  It implements
+the build procedures for the @uref{https://ziglang.org/, Zig}
+build system (@command{zig build} command).
+
+Selecting this build system adds @code{zig} to the package inputs, in
+addition to the packages of @code{gnu-build-system}.
+
+There is no @code{configure} phase because Zig packages typically do not
+need to be configured.  The @code{#:zig-build-flags} parameter is a list of
+flags that are passed to the @code{zig} command during the build.  The
+@code{#:zig-test-flags} parameter is a list of flags that are passed to the
+@code{zig test} command during the @code{check} phase.  The default compiler
+package can be overridden with the @code{#:zig} argument.
+
+The optional @code{zig-release-type} parameter declares the type of release.
+Possible values are: @code{safe}, @code{fast}, or @code{small}. The default
+value is @code{#f}, which causes the release flag to be omitted from the
+@code{zig} command.  That results in a @code{debug} build.
+@end defvar
+
 @defvar scons-build-system
 This variable is exported by @code{(guix build-system scons)}.  It
 implements the build procedure used by the SCons software construction
@@ -11403,7 +11499,7 @@ directory in the store, but may produce more.
 @item
 @cindex build-time dependencies
 @cindex dependencies, build-time
-The inputs of the derivations---i.e., its build-time dependencies---which may
+The inputs of the derivation---i.e., its build-time dependencies---which may
 be other derivations or plain files in the store (patches, build scripts,
 etc.).
 
@@ -16944,6 +17040,23 @@ version:
                     %base-packages)))
 @end lisp
 
+@findex specification->package+output
+When a package has more than one output it can be a challenge to refer to a
+specific output instead of just to the standard @code{out} output.  For these
+situations one can use the @code{specification->package+output} procedure from
+the @code{(gnu packages)} module.  For example:
+
+@lisp
+(use-modules (gnu packages))
+
+(operating-system
+  ;; ...
+  (packages (append (map specification->package+output
+                         '("nss-certs" "git" "git:send-email"))
+                    %base-packages)))
+
+@end lisp
+
 @unnumberedsubsec System Services
 
 @cindex services
@@ -20488,19 +20601,74 @@ IP address (a string) through which traffic is routed.
 
 @deftp {Data Type} network-link
 Data type for a network link (@pxref{Link,,, guile-netlink,
-Guile-Netlink Manual}).
+Guile-Netlink Manual}).  During startup, network links are employed to
+construct or modify existing or virtual ethernet links.  These ethernet
+links can be identified by their @var{name} or @var{mac-address}.  If
+there is a need to create virtual interface, @var{name} and @var{type}
+fields are required.
 
 @table @code
 @item name
-The name of the link---e.g., @code{"v0p0"}.
+The name of the link---e.g., @code{"v0p0"} (default: @code{#f}).
 
 @item type
-A symbol denoting the type of the link---e.g., @code{'veth}.
+A symbol denoting the type of the link---e.g., @code{'veth} (default: @code{#f}).
+
+@item mac-address
+The mac-address of the link---e.g., @code{"98:11:22:33:44:55"} (default: @code{#f}).
 
 @item arguments
 List of arguments for this type of link.
 @end table
 @end deftp
+
+Consider a scenario where a server equipped with a network interface
+which has multiple ports.  These ports are connected to a switch, which
+supports @uref{https://en.wikipedia.org/wiki/Link_aggregation, link
+aggregation} (also known as bonding or NIC teaming).  The switch uses
+port channels to consolidate multiple physical interfaces into one
+logical interface to provide higher bandwidth, load balancing, and link
+redundancy.  When a port is added to a LAG (or link aggregation group),
+it inherits the properties of the port-channel.  Some of these
+properties are VLAN membership, trunk status, and so on.
+
+@uref{https://en.wikipedia.org/wiki/Virtual_LAN, VLAN} (or virtual local
+area network) is a logical network that is isolated from other VLANs on
+the same physical network.  This can be used to segregate traffic,
+improve security, and simplify network management.
+
+With all that in mind let's configure our static network for the server.
+We will bond two existing interfaces together using 802.3ad schema and on
+top of it, build a VLAN interface with id 1055.  We assign a static ip
+to our new VLAN interface.
+
+@lisp
+(static-networking
+ (links (list (network-link
+               (name "bond0")
+               (type 'bond)
+               (arguments '((mode . "802.3ad")
+                            (miimon . 100)
+                            (lacp-active . "on")
+                            (lacp-rate . "fast"))))
+
+              (network-link
+               (mac-address "98:11:22:33:44:55")
+               (arguments '((master . "bond0"))))
+
+              (network-link
+               (mac-address "98:11:22:33:44:56")
+               (arguments '((master . "bond0"))))
+
+              (network-link
+               (name "bond0.1055")
+               (type 'vlan)
+               (arguments '((id . 1055)
+                            (link . "bond0"))))))
+ (addresses (list (network-address
+                   (value "192.168.1.4/24")
+                   (device "bond0.1055")))))
+@end lisp
 
 @cindex loopback device
 @defvar %loopback-static-networking
@@ -31970,11 +32138,12 @@ A service type for the @code{certbot} Let's Encrypt client.  Its value
 must be a @code{certbot-configuration} record as in this example:
 
 @lisp
-(define %nginx-deploy-hook
-  (program-file
-   "nginx-deploy-hook"
-   #~(let ((pid (call-with-input-file "/var/run/nginx/pid" read)))
-       (kill pid SIGHUP))))
+(define %certbot-deploy-hook
+  (program-file "certbot-deploy-hook.scm"
+    (with-imported-modules '((gnu services herd))
+      #~(begin
+          (use-modules (gnu services herd))
+          (with-shepherd-action 'nginx ('reload) result result)))))
 
 (service certbot-service-type
          (certbot-configuration
@@ -31983,7 +32152,7 @@ must be a @code{certbot-configuration} record as in this example:
            (list
             (certificate-configuration
              (domains '("example.net" "www.example.net"))
-             (deploy-hook %nginx-deploy-hook))
+             (deploy-hook %certbot-deploy-hook))
             (certificate-configuration
              (domains '("bar.example.net")))))))
 @end lisp
@@ -33801,6 +33970,10 @@ Location of the log file.
 
 @item @code{cache} (default: @code{"/var/cache/cuirass/remote"})
 Use @var{cache} directory to cache build log files.
+
+@item @code{log-expiry} (default: 6 months)
+The duration in seconds after which build logs collected by
+@command{cuirass remote-worker} may be deleted.
 
 @item @code{trigger-url} (default: @code{#f})
 Once a substitute is successfully fetched, trigger substitute baking at
@@ -45604,7 +45777,8 @@ there is no offset applied.
 @item @code{file-system} (default: @code{"ext4"})
 The partition file system as a string, defaulting to @code{"ext4"}.  The
 supported values are @code{"vfat"}, @code{"fat16"}, @code{"fat32"} and
-@code{"ext4"}.
+@code{"ext4"}.  @code{"vfat"}, @code{"fat16"} and @code{"fat32"}
+partitions without the @code{'esp} flag are by default LBA compatible.
 
 @item @code{file-system-options} (default: @code{'()})
 The partition file system creation options that should be passed to the

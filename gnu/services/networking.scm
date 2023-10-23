@@ -353,7 +353,12 @@
 
                          (false-if-exception (delete-file #$pid-file))
                          (let ((pid (fork+exec-command
-                                     (cons* dhclient "-nw"
+                                     ;; By default dhclient uses a
+                                     ;; pre-standardization implementation of
+                                     ;; DDNS, which is incompatable with
+                                     ;; non-ISC DHCP servers; thus, pass '-I'.
+                                     ;; <https://kb.isc.org/docs/aa-01091>.
+                                     (cons* dhclient "-nw" "-I"
                                             "-pf" #$pid-file ifaces))))
                            (and (zero? (cdr (waitpid pid)))
                                 (read-pid-file #$pid-file)))))
@@ -1808,7 +1813,10 @@ table inet filter {
     ct state { established, related } accept
 
     # allow from loopback
-    iifname lo accept
+    iif lo accept
+    # drop connections to lo not coming from lo
+    iif != lo ip daddr 127.0.0.1/8 drop
+    iif != lo ip6 daddr ::1/128 drop
 
     # allow icmp
     ip protocol icmp accept

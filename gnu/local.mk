@@ -303,6 +303,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/gnu-pw-mgr.scm			\
   %D%/packages/gobby.scm			\
   %D%/packages/golang.scm			\
+  %D%/packages/golang-check.scm		\
   %D%/packages/gperf.scm			\
   %D%/packages/gpodder.scm			\
   %D%/packages/gps.scm				\
@@ -762,6 +763,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/build/chromium-extension.scm		\
   %D%/build/cross-toolchain.scm			\
   %D%/build/dbus-service.scm			\
+  %D%/build/icecat-extension.scm		\
   %D%/build/image.scm				\
   %D%/build/jami-service.scm			\
   %D%/build/file-systems.scm			\
@@ -1034,9 +1036,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/collectd-5.11.0-noinstallvar.patch		\
   %D%/packages/patches/combinatorial-blas-awpm.patch		\
   %D%/packages/patches/combinatorial-blas-io-fix.patch		\
-  %D%/packages/patches/connman-CVE-2022-32292.patch		\
-  %D%/packages/patches/connman-CVE-2022-32293-pt1.patch	\
-  %D%/packages/patches/connman-CVE-2022-32293-pt2.patch	\
+  %D%/packages/patches/connman-add-missing-libppp-compat.h.patch	\
   %D%/packages/patches/containerd-create-pid-file.patch	\
   %D%/packages/patches/converseen-hide-updates-checks.patch	\
   %D%/packages/patches/converseen-hide-non-free-pointers.patch	\
@@ -1127,6 +1127,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/enblend-enfuse-reproducible.patch	\
   %D%/packages/patches/enjarify-setup-py.patch			\
   %D%/packages/patches/enlightenment-fix-setuid-path.patch	\
+  %D%/packages/patches/ergodox-firmware-fix-json-target.patch	\
+  %D%/packages/patches/ergodox-firmware-fix-numpad.patch	\
   %D%/packages/patches/erlang-man-path.patch			\
   %D%/packages/patches/esmini-no-clutter-log.patch		\
   %D%/packages/patches/esmini-use-pkgconfig.patch		\
@@ -1284,6 +1286,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/glibc-CVE-2019-7309.patch		\
   %D%/packages/patches/glibc-CVE-2019-9169.patch		\
   %D%/packages/patches/glibc-CVE-2019-19126.patch		\
+  %D%/packages/patches/glibc-2.35-CVE-2023-4911.patch	\
   %D%/packages/patches/glibc-allow-kernel-2.6.32.patch		\
   %D%/packages/patches/glibc-boot-2.16.0.patch			\
   %D%/packages/patches/glibc-boot-2.2.5.patch			\
@@ -1417,8 +1420,10 @@ dist_patch_DATA =						\
   %D%/packages/patches/icecat-makeicecat.patch			\
   %D%/packages/patches/icecat-102-makeicecat.patch		\
   %D%/packages/patches/icecat-avoid-bundled-libraries.patch	\
+  %D%/packages/patches/icecat-compare-paths.patch		\
   %D%/packages/patches/icecat-use-system-graphite2+harfbuzz.patch	\
   %D%/packages/patches/icecat-use-system-media-libs.patch	\
+  %D%/packages/patches/icecat-use-system-wide-dir.patch		\
   %D%/packages/patches/icedtea-7-hotspot-aarch64-use-c++98.patch	\
   %D%/packages/patches/icedtea-7-hotspot-pointer-comparison.patch	\
   %D%/packages/patches/icu4c-fix-TestHebrewCalendarInTemporalLeapYear.patch	\
@@ -1902,11 +1907,13 @@ dist_patch_DATA =						\
   %D%/packages/patches/qtbase-absolute-runpath.patch		\
   %D%/packages/patches/qtbase-moc-ignore-gcc-macro.patch	\
   %D%/packages/patches/qtbase-qmake-use-libname.patch		\
+  %D%/packages/patches/qtbase-5-use-TZDIR.patch			\
   %D%/packages/patches/qtbase-use-TZDIR.patch			\
   %D%/packages/patches/qtscript-disable-tests.patch		\
   %D%/packages/patches/quagga-reproducible-build.patch          \
   %D%/packages/patches/quickswitch-fix-dmenu-check.patch	\
   %D%/packages/patches/quilt-grep-compat.patch 			\
+  %D%/packages/patches/qmk-firmware-fix-hacker-dvorak.patch 	\
   %D%/packages/patches/qtwayland-dont-recreate-callbacks.patch	\
   %D%/packages/patches/qtwayland-cleanup-callbacks.patch	\
   %D%/packages/patches/ragel-char-signedness.patch		\
@@ -1946,6 +1953,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ruby-nokogiri.patch			\
   %D%/packages/patches/rustc-1.54.0-src.patch			\
   %D%/packages/patches/rust-1.64-fix-riscv64-bootstrap.patch	\
+  %D%/packages/patches/rust-1.70-fix-rustix-build.patch	\
   %D%/packages/patches/rust-ring-0.16-missing-files.patch	\
   %D%/packages/patches/rust-ring-0.16-test-files.patch		\
   %D%/packages/patches/i3status-rust-enable-unstable-features.patch	\
@@ -1953,7 +1961,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/rust-ndarray-0.13-remove-blas-src.patch	\
   %D%/packages/patches/rust-ndarray-0.14-remove-blas-src.patch	\
   %D%/packages/patches/rust-nettle-disable-vendor.patch		 \
-  %D%/packages/patches/rust-openssl-sys-no-vendor.patch	\
   %D%/packages/patches/rust-webbrowser-remove-unsupported-os.patch	\
   %D%/packages/patches/rust-wl-clipboard-rs-newer-wl.patch      \
   %D%/packages/patches/rw-igraph-0.10.patch			\
@@ -2028,6 +2035,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/texinfo-5-perl-compat.patch		\
   %D%/packages/patches/telegram-desktop-allow-disable-libtgvoip.patch   \
   %D%/packages/patches/telegram-purple-adjust-test.patch	\
+  %D%/packages/patches/teuchos-remove-duplicate-using.patch	\
   %D%/packages/patches/texi2html-document-encoding.patch	\
   %D%/packages/patches/texi2html-i18n.patch			\
   %D%/packages/patches/thefuck-test-environ.patch		\
@@ -2038,8 +2046,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/tla2tools-build-xml.patch		\
   %D%/packages/patches/tlf-support-hamlib-4.2+.patch		\
   %D%/packages/patches/tofi-32bit-compat.patch			\
-  %D%/packages/patches/tootle-glib-object-naming.patch		\
-  %D%/packages/patches/tootle-reason-phrase.patch		\
+  %D%/packages/patches/tpetra-remove-duplicate-using.patch	\
   %D%/packages/patches/transcode-ffmpeg.patch	\
   %D%/packages/patches/trytond-add-egg-modules-to-path.patch	\
   %D%/packages/patches/trytond-add-guix_trytond_path.patch	\
@@ -2053,6 +2060,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/u-boot-fix-build-python-3.10.patch	\
   %D%/packages/patches/u-boot-fix-u-boot-lib-build.patch	\
   %D%/packages/patches/u-boot-nintendo-nes-serial.patch		\
+  %D%/packages/patches/u-boot-patman-change-id.patch	\
   %D%/packages/patches/u-boot-rockchip-inno-usb.patch		\
   %D%/packages/patches/u-boot-sifive-prevent-reloc-initrd-fdt.patch	\
   %D%/packages/patches/u-boot-rk3399-enable-emmc-phy.patch	\
@@ -2063,7 +2071,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/ungoogled-chromium-RUNPATH.patch		\
   %D%/packages/patches/ungoogled-chromium-system-ffmpeg.patch	\
   %D%/packages/patches/ungoogled-chromium-system-nspr.patch	\
-  %D%/packages/patches/unison-fix-ocaml-4.08.patch		\
   %D%/packages/patches/unknown-horizons-python-3.8-distro.patch	\
   %D%/packages/patches/unzip-CVE-2014-8139.patch		\
   %D%/packages/patches/unzip-CVE-2014-8140.patch		\

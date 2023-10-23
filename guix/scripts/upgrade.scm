@@ -56,7 +56,7 @@ This is an alias for 'guix package -u'.\n"))
   ;; Specification of the command-line options.
   (cons* (option '(#\h "help") #f #f
                  (lambda args
-                   (show-help)
+                   (leave-on-EPIPE (show-help))
                    (exit 0)))
          (option '(#\V "version") #f #f
                  (lambda args

@@ -107,7 +107,7 @@ Execute COMMAND ARGS... in an older version of Guix.\n"))
                    (alist-cons 'authenticate-channels? #f result)))
          (option '(#\h "help") #f #f
                  (lambda args
-                   (show-help)
+                   (leave-on-EPIPE (show-help))
                    (exit 0)))
          (option '(#\V "version") #f #f
                  (lambda args

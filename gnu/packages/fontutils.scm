@@ -1499,6 +1499,37 @@ resolution.")
     (license license:gpl2+)
     (home-page "https://potrace.sourceforge.net/")))
 
+(define-public psftools
+  (package
+    (name "psftools")
+    (version "1.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.seasip.info/Unix/PSF/"
+                           "psftools-" version ".tar.gz"))
+       (sha256
+        (base32 "1lv6kvrcbspyh7a0hlji84wbmw6xh87r3iaafq3khp88kgh1irri"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "--disable-static")))
+    (home-page "https://www.seasip.info/Unix/PSF/")
+    (synopsis
+     "Convert PSF fixed-width bitmap (console) fonts from/to other formats")
+    (description
+     "@acronym{PSF, PC Screen Font} is the simple monospaced bitmap font format
+used by the Linux kernel for console fonts.  The PSF Tools convert between PSF
+and many other font formats, similar to what the NetPBM package does for images.
+
+It includes converters for a good number of common bitmap font formats such as
+@file{.BDF}, @file{.FNT}, and @file{.FON} files, Berkeley vfonts, classic
+Amstrad/Sinclair/Hercules/BBC Micro soft fonts, and raw (DOS-style) fonts.
+
+It also supports less traditional formats such as PBM/XBM images, plain text
+(for rudimentary editing), and C header files.")
+    (license license:gpl2+)))
+
 (define-public libotf
   (package
     (name "libotf")

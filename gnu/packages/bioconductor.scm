@@ -37,10 +37,12 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system r)
   #:use-module (gnu packages)
+  #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bioinformatics)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages chemistry)
   #:use-module (gnu packages cran)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
@@ -65,6 +67,36 @@
 
 
 ;;; Annotations
+
+(define-public r-mafh5-gnomad-v3-1-2-grch38
+  (package
+    (name "r-mafh5-gnomad-v3-1-2-grch38")
+    (version "3.15.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "MafH5.gnomAD.v3.1.2.GRCh38" version
+                              'annotation))
+       (sha256
+        (base32 "18hzw7f41ii16qpm3ch516b773900l1m1id5z6a763m01fg0mhiq"))))
+    (properties `((upstream-name . "MafH5.gnomAD.v3.1.2.GRCh38")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bsgenome
+                             r-genomeinfodb
+                             r-genomicranges
+                             r-genomicscores
+                             r-hdf5array
+                             r-iranges
+                             r-rhdf5
+                             r-s4vectors))
+    (home-page "https://bioconductor.org/packages/MafH5.gnomAD.v3.1.2.GRCh38")
+    (synopsis
+     "Minor allele frequency data from gnomAD version 3.1.2 for GRCh38")
+    (description
+     "This package is designed to store minor allele frequency data.
+It retrieves this data from the Genome Aggregation Database
+(@code{gnomAD} version 3.1.2) for the human genome version GRCh38.")
+    (license license:artistic2.0)))
 
 (define-public r-org-eck12-eg-db
   (package
@@ -18852,6 +18884,47 @@ coordinate plots, volcano plots, and litre plots.  It includes examples for
 visualizing RNA-sequencing datasets and differentially expressed genes.")
     (license license:gpl3)))
 
+(define-public r-chemmineob
+  (package
+    (name "r-chemmineob")
+    (version "1.38.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "ChemmineOB" version))
+       (sha256
+        (base32 "0l44d6l078k1w5nf7i4sarah1zn30zqjmcj9qpy4hhg97dfy45ci"))))
+    (properties `((upstream-name . "ChemmineOB")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-makefile
+            (lambda _
+              (substitute* "src/Makevars.in"
+                (("/usr/include/openbabel3")
+                 (string-append #$(this-package-input "openbabel")
+                                "/include/openbabel3"))
+                (("/usr/include/eigen3")
+                 (string-append #$(this-package-input "eigen")
+                                "/include/eigen3"))))))))
+    (inputs (list eigen openbabel))
+    (propagated-inputs (list r-bh r-biocgenerics r-rcpp r-zlibbioc))
+    (native-inputs (list pkg-config r-knitr))
+    (home-page "https://github.com/girke-lab/ChemmineOB")
+    (synopsis "R interface to a subset of OpenBabel functionalities")
+    (description
+     "@code{ChemmineOB} provides an R interface to a subset of cheminformatics
+functionalities implemented by the @code{OpelBabel} C++ project.
+@code{OpenBabel} is an open source cheminformatics toolbox that includes
+utilities for structure format interconversions, descriptor calculations,
+compound similarity searching and more. @code{ChemineOB} aims to make a subset
+of these utilities available from within R.  For non-developers,
+@code{ChemineOB} is primarily intended to be used from @code{ChemmineR} as an
+add-on package rather than used directly.")
+    (license license:asl2.0)))
+
 (define-public r-chemminer
   (package
     (name "r-chemminer")
@@ -21397,14 +21470,14 @@ on the plot.")
 (define-public r-abn
   (package
     (name "r-abn")
-    (version "3.0.0")
+    (version "3.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "abn" version))
        (sha256
         (base32
-         "100nafmyddz0c1h01fbqw5q6pji7zhg2196rkyak88za6s5ms0s4"))))
+         "03g02450l3mckjzwd0w717dbmxhrngkwlfhm5c9q5zv4g10df7nj"))))
     (build-system r-build-system)
     (inputs
      (list gsl))

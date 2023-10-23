@@ -143,6 +143,17 @@ in the Mozilla clients.")
                 #$@(if (target-riscv64?)
                        #~("NSS_DISABLE_GTESTS=1")
                        #~())
+                ;; Ensure we are building for the (%current-target-system).
+                #$@(if (%current-target-system)
+                       #~((string-append
+                            "OS_TEST="
+                            (string-take #$(%current-target-system)
+                                         (string-index #$(%current-target-system) #\-)))
+                          (string-append
+                            "KERNEL=" (cond (#$(target-hurd?) "gnu")
+                                            (#$(target-linux?) "linux")
+                                            (else ""))))
+                       #~())
                 (string-append "NSPR_INCLUDE_DIR="
                                (search-input-directory %build-inputs
                                                        "include/nspr"))
@@ -163,6 +174,10 @@ in the Mozilla clients.")
           (replace 'configure
             (lambda _
               (setenv "CC" #$(cc-for-target))
+              ;; TODO: Set this unconditionally
+              #$@(if (%current-target-system)
+                     #~((setenv "CCC" #$(cxx-for-target)))
+                     #~())
               ;; No VSX on powerpc-linux.
               #$@(if (target-ppc32?)
                      #~((setenv "NSS_DISABLE_CRYPTO_VSX" "1"))

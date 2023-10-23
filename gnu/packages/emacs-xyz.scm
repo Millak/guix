@@ -70,7 +70,7 @@
 ;;; Copyright © 2020 Jérémy Korwin-Zmijowski <jeremy@korwin-zmijowski.fr>
 ;;; Copyright © 2020 Alberto Eleuterio Flores Guerrero <barbanegra+guix@posteo.mx>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2020, 2022 pinoaffe <pinoaffe@gmail.com>
+;;; Copyright © 2020, 2022, 2023 pinoaffe <pinoaffe@gmail.com>
 ;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Ryan Desfosses <rdes@protonmail.com>
 ;;; Copyright © 2020 Marcin Karpezo <sirmacik@wioo.waw.pl>
@@ -212,6 +212,7 @@
   #:use-module (gnu packages lesstif)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages image-viewers)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages lisp)
@@ -504,6 +505,7 @@ API key.")
               (uri (git-reference
                     (url "https://github.com/xenodium/chatgpt-shell")
                     (commit "1de7bfa6a34f20cca813006282d9a8f2ef291f95")))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "1rabpp70qlmc47lmp2v7ckvfjhy6wkk881fxpbv2dchzhn77qk5r"))))
@@ -4943,6 +4945,54 @@ written in the Go programming language.")
       (synopsis "Access Google Maps from Emacs")
       (description "The @code{google-maps} package displays Google Maps
 directly inside Emacs.  It requires a Google Map Static API key to function.")
+      (license license:gpl3+))))
+
+(define-public emacs-nominatim
+  (let ((revision "0")
+        (commit "f814e16f8f4e2cfd633f52b29699a009ab704fbf"))
+    (package
+      (name "emacs-nominatim")
+      (version (git-version "0.9.3" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://codeberg.org/emacs-weirdware/nominatim")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "19nw2iy8fxy6mfd4nwrdfa23a74a1b644400xx0900fwn6ihjhpl"))))
+      (build-system emacs-build-system)
+      (home-page "https://codeberg.org/emacs-weirdware/nominatim")
+      (synopsis "Forward and reverse geocode using Nominatim inside Emacs")
+      (description "This is an Emacs library which lets you forward and
+reverse geocode using Nominatim, a component of OpenStreetMap.")
+      (license license:gpl3+))))
+
+(define-public emacs-org-street
+  (let ((revision "0")
+        (commit "17913afe01504ee0cbcf83abaca18c5c618f9b33"))
+    (package
+      (name "emacs-org-street")
+      (version (git-version "0.7.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://codeberg.org/emacs-weirdware/org-street")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1a5mnnvs4yxrw4s71z9ap65xi0fc1ki1qprif5jxn8apswjlmiw1"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-nominatim))
+      (home-page "https://codeberg.org/emacs-weirdware/org-street")
+      (synopsis "(Reverse) Geocoding for Emacs Org files")
+      (description "Org Street is an extension for Org Mode for turning the
+names of places into a LOCATION property containing their address.  Given some
+freeform text approximately describing a location, it geocodes it with
+OpenStreetMap’s Nominatim API to determine a canonical location.  If Nominatim
+returns multiple locations, a list is displayed to choose from.")
       (license license:gpl3+))))
 
 (define-public emacs-graphviz-dot-mode
@@ -26781,6 +26831,39 @@ feeding them to package.el library.")
 @end itemize")
       (license license:gpl3+))))
 
+(define-public emacs-sxiv
+  (package
+    (name "emacs-sxiv")
+    (version "0.4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://tildegit.org/contrapunctus/sxiv")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0gimq172pp143jckfhhyw319n3vpjvlkadm0vhypycas9i89mcg0"))))
+    (inputs (list sxiv))
+    (propagated-inputs (list emacs-dash))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-sxiv-path
+           (lambda* (#:key inputs #:allow-other-keys)
+             (emacs-substitute-sexps "sxiv.el"
+               (":command
+                  (append"
+                `(list ,(string-append (assoc-ref inputs "sxiv")
+                                       "/bin/sxiv")))))))))
+    (build-system emacs-build-system)
+    (home-page "https://tildegit.org/contrapunctus/sxiv")
+    (synopsis "Launch sxiv from Emacs with Dired integration")
+    (description "This package integrates sxiv into Dired.  It adds a command
+to start sxiv from a Dired buffer, allowing you to mark or unmark image files
+in said buffer using sxiv.")
+    (license license:unlicense)))
+
 (define-public emacs-mu4e-conversation
   (let ((commit "98110bb9c300fc9866dee8e0023355f9f79c9b96")
         (revision "5"))
@@ -29192,7 +29275,7 @@ tabulated-lists).")
 (define-public emacs-eat
   (package
     (name "emacs-eat")
-    (version "0.8")
+    (version "0.9.2")
     (source
      (origin
        (method git-fetch)
@@ -29202,7 +29285,7 @@ tabulated-lists).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1fb66g7jjc7dhw61323d94mx7gqfp6ylf9a7v5qym1n92mv48bdr"))
+         "1mw3iwid2iky0kwpn90bbswx8m4kkni5zdjc75clzhzzygh340sd"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -29235,12 +29318,14 @@ tabulated-lists).")
      (list texinfo))
     (inputs
      (list ncurses))
+    (propagated-inputs
+     (list emacs-compat))
     (home-page "https://codeberg.org/akib/emacs-eat")
     (synopsis "Terminal emulator in Emacs")
     (description
      "Eat (Emulate A Terminal) is a terminal emulator in Emacs, written in
-pure Elisp.  It has features like complete mouse support and shell
-integration.")
+pure Elisp.  It has features like Sixel support, complete mouse support and
+shell integration.")
     (license license:gpl3+)))
 
 (define-public emacs-vterm
@@ -29604,26 +29689,30 @@ opposed to character-based).")
       (license license:gpl1+))))
 
 (define-public emacs-disk-usage
-  (package
-    (name "emacs-disk-usage")
-    (version "1.3.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.com/Ambrevar/emacs-disk-usage")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0hv2gsd8k5fbjgckgiyisq4rn1i7y4rchbjy8kmixjv6mx563bll"))))
-    (build-system emacs-build-system)
-    (home-page "https://gitlab.com/Ambrevar/emacs-disk-usage")
-    (synopsis "Sort and browse disk usage listings with Emacs")
-    (description "Disk Usage is a file system analyzer: it offers a tabulated
+  ;; Use a recent commit as the last release is missing changes from 2020
+  ;; onwards
+  (let ((commit "b0d803f2cec3afc2937840f9ba66e3f903d6c415")
+        (revision "0"))
+    (package
+      (name "emacs-disk-usage")
+      (version (git-version "1.3.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/Ambrevar/emacs-disk-usage")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0vl79knb2snp2gzmcdasncgcc44rq99kmfnvwhfpm0wk21nxhc1m"))))
+      (build-system emacs-build-system)
+      (home-page "https://gitlab.com/Ambrevar/emacs-disk-usage")
+      (synopsis "Sort and browse disk usage listings with Emacs")
+      (description "Disk Usage is a file system analyzer: it offers a tabulated
 view of file listings sorted by size.  Directory sizes are computed
 recursively.  The results are cached for speed.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-orgit
   (package
@@ -32827,40 +32916,37 @@ time.")
     (license license:gpl3+)))
 
 (define-public emacs-mastodon
-  ;; No release in ~1 year, hence this snapshot.
-  (let ((commit "20dec8871c9bb5f5e418bfc197e7533b5e3065e3")
-        (revision "1"))
-    (package
-      (name "emacs-mastodon")
-      (version (git-version "1.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://codeberg.org/martianh/mastodon.el")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "15cfjny99yw5frdp8nlyazlwgscvfvbinsj0fbdfprxf50k2zjs6"))))
-      (build-system emacs-build-system)
-      (arguments
-       (list #:phases
-             #~(modify-phases %standard-phases
-                 ;; Move the source files to the top level, which is included in
-                 ;; the EMACSLOADPATH.
-                 (add-after 'unpack 'move-source-files
-                   (lambda _
-                     (let ((el-files (find-files "./lisp" ".*\\.el$")))
-                       (for-each (lambda (f)
-                                   (rename-file f (basename f)))
-                                 el-files)))))))
-      (propagated-inputs
-       (list emacs-request emacs-ts emacs-persist))
-      (home-page "https://codeberg.org/martianh/mastodon.el")
-      (synopsis "Emacs client for Mastodon")
-      (description "@code{mastodon.el} is an Emacs client for Mastodon, the
+  (package
+    (name "emacs-mastodon")
+    (version "1.0.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/martianh/mastodon.el")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1z5lmzxhindxa0f6qi6z361k9smqcz68alr6w6jbmwg279qmk8jj"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   ;; Move the source files to the top level, which is
+                   ;; included in the EMACSLOADPATH.
+                   (add-after 'unpack 'move-source-files
+                     (lambda _
+                       (let ((el-files (find-files "./lisp" ".*\\.el$")))
+                         (for-each (lambda (f)
+                                     (rename-file f
+                                                  (basename f)))
+                                   el-files)))))))
+    (propagated-inputs (list emacs-request emacs-ts emacs-persist))
+    (home-page "https://codeberg.org/martianh/mastodon.el")
+    (synopsis "Emacs client for Mastodon")
+    (description "@code{mastodon.el} is an Emacs client for Mastodon, the
 federated microblogging social network.")
-	  (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-ebdb
   (package
@@ -35546,10 +35632,11 @@ conventions.")
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'install 'install-snippets
-              (lambda _
+              (lambda* (#:key outputs #:allow-other-keys)
                 (let ((snippets
                        (string-append
-                        #$output "/share/emacs/site-lisp/snippets/haskell-mode")))
+                        (elpa-directory (assoc-ref outputs "out"))
+                        "/snippets/haskell-mode")))
                   (mkdir-p snippets)
                   (copy-recursively "snippets/haskell-mode" snippets)))))))
       (propagated-inputs
@@ -37000,6 +37087,40 @@ dict.org) from within Emacs.")
 to the @url{https://multitran.com} online dictionary.")
     (license license:gpl3+)))
 
+(define-public emacs-lexic
+  (let ((commit "f9b3de4d9c2dd1ce5022383e1a504b87bf7d1b09")
+        (revision "0"))
+    (package
+      (name "emacs-lexic")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.tecosaur.net/tec/lexic")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "02iz8dh18gb1q97v8ghcd3lavkf28sqbrk0bx6jzzryp69ickk4h"))))
+      (build-system emacs-build-system)
+      (inputs (list sdcv))
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'set-sdcv-path
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (emacs-substitute-variables "lexic.el"
+                 ("lexic-program-path"
+                  (string-append (assoc-ref inputs "sdcv")
+                                 "/bin/sdcv"))))))))
+      (home-page "https://git.tecosaur.net/tec/lexic")
+      (synopsis "Find out more about words using Stardict dictionaries")
+      (description "This provides a major mode to view the output of
+dictionary tools, and utilities that perform searches and nicely format the
+results.  Currently tied to sdcv, but this is intended to be changed in the
+future.")
+      (license license:gpl3+))))
+
 (define-public emacs-blacken
   (package
     (name "emacs-blacken")
@@ -38261,6 +38382,24 @@ navigate through it.")
 In particular, it saves and restores project files and window configurations
 across sessions.")
       (license license:gpl3+))))
+
+(define-public emacs-poke-mode
+  (package
+    (name "emacs-poke-mode")
+    (version "3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/poke-mode-" version
+                           ".tar"))
+       (sha256
+        (base32 "1lirhws5d8l16qs5ddrvvz0f9xfl004q9yp333pdgsmcpk3ww7sr"))))
+    (build-system emacs-build-system)
+    (home-page "https://elpa.gnu.org/packages/poke-mode.html")
+    (synopsis "Major mode for editing GNU poke programs")
+    (description
+     "This package provides a major mode for editing GNU poke programs.")
+    (license license:gpl3+)))
 
 (define-public emacs-vcard-mode
   ;; Use the latest commit, as there are no tagged releases.

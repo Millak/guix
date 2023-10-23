@@ -28,11 +28,13 @@
 
 (define-module (gnu packages firmware)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix memoization)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix git-download)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
@@ -40,6 +42,9 @@
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages autotools)
+  #:use-module (gnu packages avr)
+  #:use-module (gnu packages avr-xyz)
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
@@ -52,7 +57,9 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages efi)
   #:use-module (gnu packages elf)
+  #:use-module (gnu packages flashing-tools)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
@@ -75,7 +82,11 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages xml)
-  #:use-module (ice-9 match))
+  #:use-module (ice-9 format)
+  #:use-module (ice-9 match)
+
+  #:export (make-ergodox-firmware
+            make-qmk-firmware))
 
 (define-public ath9k-htc-firmware
   (package
@@ -94,7 +105,8 @@
                                        "ath9k-htc-firmware-gcc-compat.patch"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
+     '(#:target #f                          ; Package produces firmware.
+       #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'pre-configure
            (lambda* (#:key inputs native-inputs #:allow-other-keys)
@@ -322,6 +334,7 @@ automatic, safe and reliable.  It is used by tools such as GNOME Software.")
      `(#:make-flags (list (string-append "PREFIX="
                                          (assoc-ref %outputs "out")
                                          "/lib/firmware/b43-open"))
+       #:target #f                      ; Package produces firmware.
        #:tests? #f                      ;no tests
        #:phases (modify-phases %standard-phases
                   (delete 'configure))))
@@ -510,6 +523,7 @@ provide OpenFirmware functionality on top of an already running system.")
        (list python)))
     (arguments
      `(#:tests? #f ; no check target
+       #:target #f ; Package produces firmware.
        #:make-flags (list (string-append "PLATFORM=" ,platform)
                           ,@(if (and (not (string-prefix? "riscv64"
                                                           (%current-system)))
@@ -1212,6 +1226,97 @@ AR100.")
 (define-public crust-pine64-plus
   (make-crust-package "pine64_plus"))
 
+
+;;;
+;;; ErgoDox firmware.
+;;;
+
+(define* (make-ergodox-firmware/implementation layout #:key override.c
+                                               override.h)
+  "Return an ergodox-firmware package for LAYOUT, optionally using OVERRIDE.C,
+a C source file-like object to override LAYOUT which may be accompanied by
+OVERRIDE.H, to also override the corresponding layout include file."
+  (let ((revision "0")
+        (commit "89b7e2bfdafb2a87e0248846d5c95cc5e9a27858"))
+    (package
+      (name (string-append "ergodox-firmware-" layout))
+      (version (git-version "1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/benblazak/ergodox-firmware")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1z28frxyb21nz90frycrpsbxjp09374wawayvjphnwc8njlvkkpy"))
+                (patches
+                 (search-patches "ergodox-firmware-fix-json-target.patch"
+                                 "ergodox-firmware-fix-numpad.patch"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f                   ;no test suite
+        #:make-flags
+        #~(list (string-append "LAYOUT=" #$layout)
+                ;; Simplify the output directory name.
+                "ROOT=output")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'copy-override-files
+              (lambda _
+                (when #$override.c
+                  (copy-file #$override.c
+                             (format #f "src/keyboard/ergodox/layout/~a.c"
+                                     #$layout)))
+                (when #$override.h
+                  (copy-file #$override.h
+                             (format #f "src/keyboard/ergodox/layout/~a.h"
+                                     #$layout)))))
+            ;; The Makefile-based build system lacks configure
+            ;; and install targets.
+            (delete 'configure)
+            (replace 'install
+              (lambda _
+                (with-directory-excursion "output"
+                  (install-file "firmware.hex" #$output)
+                  (install-file "firmware.eep" #$output)
+                  (install-file "firmware--layout.html" #$output)))))))
+      (native-inputs (list (make-avr-toolchain) python))
+      (home-page "https://www.ergodox.io")
+      (synopsis "Firmware for the ErgoDox keyboard")
+      (description (format #f "This package contains the original firmware for
+the ErgoDox keyboard, built using the ~a layout (as defined in the
+@file{src/keyboard/ergodox/layout/~@*~a.c} source file).  It contains the
+@file{firmware.hex} and the @file{firmware.eep} files, which can be loaded to
+a target using the @code{teensy-loader-cli} package as well as a
+@file{firmware--layout.html} file, useful to easily visualize the
+corresponding layout." layout))
+      (license license:expat))))
+
+(define make-ergodox-firmware
+  (memoize make-ergodox-firmware/implementation))
+
+(define-public ergodox-firmware-colemak-jc-mod
+  (make-ergodox-firmware "colemak-jc-mod"))
+
+(define-public ergodox-firmware-colemak-symbol-mod
+  (make-ergodox-firmware "colemak-symbol-mod"))
+
+(define-public ergodox-firmware-dvorak-kinesis-mod
+  (make-ergodox-firmware "dvorak-kinesis-mod"))
+
+(define-public ergodox-firmware-qwerty-kinesis-mod
+  (make-ergodox-firmware "qwerty-kinesis-mod"))
+
+(define-public ergodox-firmware-workman-p-kinesis-mod
+  (make-ergodox-firmware "workman-p-kinesis-mod"))
+
+
+;;;
+;;; QMK Firmware.
+;;;
+
 (define-public qmk
   (package
     (name "qmk")
@@ -1223,12 +1328,278 @@ AR100.")
                (base32
                 "1619q9v90740dbg8xpzqlhwcasz42xj737803aiip8qc3a7zhwgq"))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #f)) ;; No tests.
-    (propagated-inputs (list python-dotty-dict python-hid python-hjson
-                             python-jsonschema python-milc python-pillow
-                             python-pygments python-pyserial python-pyusb))
+    (arguments
+     (list
+      #:tests? #f                       ;no tests
+      #:modules '((guix build pyproject-build-system)
+                  (guix build utils)
+                  (srfi srfi-26))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'wrap 'wrap-path
+            ;; Wrap all the tools needed for the 'setup' and 'compile' actions
+            ;; (tested with the 'ergodox_ez' keyboard).
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (wrap-program (search-input-file outputs "bin/qmk")
+                `("PATH" prefix
+                  ,(map (compose dirname
+                                 (cut search-input-file inputs <>))
+                        '("bin/avr-ar"
+                          "bin/avr-gcc"
+                          "bin/avrdude"
+                          "bin/awk"
+                          "bin/cmp"
+                          "bin/dfu-programmer"
+                          "bin/dfu-util"
+                          "bin/git"
+                          "bin/grep"
+                          "bin/make"
+                          "bin/python3"
+                          "bin/sh"
+                          ;; TODO: Remove after git is wrapped with these.
+                          "bin/basename"
+                          "bin/sed"
+                          "bin/uname")))
+                `("CROSS_C_INCLUDE_PATH" = (,(getenv "CROSS_C_INCLUDE_PATH")))
+                `("CROSS_LIBRARY_PATH" = (,(getenv "CROSS_LIBRARY_PATH")))))))))
+    ;; The inputs are not propagated since qmk is to be used strictly as a
+    ;; command.
+    (inputs
+     ;; The 'qmk setup' command advises to use GCC at version 8, and there are
+     ;; compilation errors in some firmware otherwise.
+     (list (make-avr-toolchain #:xgcc gcc-8)
+           avrdude
+           bash-minimal
+           dfu-programmer
+           dfu-util
+           diffutils
+           git-minimal                  ;for the clone action
+           gawk
+           gnu-make
+           grep
+           python
+           python-dotty-dict
+           python-hid
+           python-hjson
+           python-jsonschema
+           python-milc
+           python-pillow
+           python-pygments
+           python-pyserial
+           python-pyusb
+           ;; These are added to workaround faults in our git package (see
+           ;; bug#65924).
+           coreutils-minimal
+           sed
+           util-linux))
     (home-page "https://qmk.fm")
     (synopsis "Command line utility to manage QMK keyboard firmwares")
-    (description "This package provides a program to help users work with
-@acronym{QMK, Quantum Mechanical Keyboard} firmwares.")
+    (description "The QMK CLI provides a @acronym{CLI, command line interface}
+based program to help users work with the QMK firmware, which can be used for
+multiple custom keyboards such as Planck, ErgoDox, Corne and others.
+
+This @acronym{CLI} program is mainly used for building the QMK firmware, but
+also has some other convenience utilities.  It is highly recommended to
+install the udev rules provided by the @code{qmk-udev-rules} package to avoid
+having to run @command{qmk} as root when flashing the firmware.")
     (license license:expat)))
+
+(define* (make-qmk-firmware/implementation keyboard keymap
+                                           #:key (description "")
+                                           keymap-json
+                                           keymap-source-directory)
+  "Return a package to build the QMK firmware for KEYBOARD with KEYMAP.
+Keyboard should be the name of a sub-directory under the @file{keyboards}
+directory.  For custom keymaps, KEYMAP-JSON, a file-like object of a JSON
+representation of KEYMAP as generated by the @url{https://config.qmk.fm/, QMK
+Configurator} tool or KEYMAP-SOURCE-DIRECTORY, a file-like object directory
+containing the keymap source files files such as @file{keymap.c}, can be
+provided."
+  (package
+    (name (string-append "qmk-firmware-"
+                         (string-replace-substring keyboard "_" "-") "-"
+                         (string-replace-substring keymap "_" "-")))
+    ;; Note: When updating this package, make sure to also update the commit
+    ;; used for the LUFA submodule in the 'copy-lufa-source' phase below.
+    (version "0.22.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/qmk/qmk_firmware")
+                    (commit version)))
+              (file-name (git-file-name "qmk-firmware" version))
+              (sha256
+               (base32
+                "0s1lcnv7cddpn768p7mrc5bkxhx0ba5p77ya007dnkbk36c33d0w"))
+              (patches
+               (search-patches "qmk-firmware-fix-hacker-dvorak.patch"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:modules '((guix build gnu-build-system)
+                  (guix build utils)
+                  (ice-9 ftw)
+                  (ice-9 match)
+                  (srfi srfi-26))
+      ;; XXX: Running a test target like "test:$keyboard" doesn't seem to run
+      ;; anything and causes the .hex file to be regenerated; leave the tests
+      ;; out for now.
+      #:tests? #f
+      #:make-flags
+      #~(list #$(format #f "~a:~a" keyboard keymap)
+              (string-append "SHELL=" (search-input-file
+                                       %build-inputs "bin/sh")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              ;; Do not attempt to retrieve information from git during the
+              ;; build.
+              (setenv "SKIP_GIT" "1")))
+          (add-after 'unpack 'copy-lufa-source
+            ;; QMK carries a custom fork of LUFA as a git submodule; make sure
+            ;; the same commit is used (see:
+            ;; https://github.com/qmk/qmk_firmware/tree/master/lib).
+            (lambda _
+              (copy-recursively
+               #$(let ((commit "549b97320d515bfca2f95c145a67bd13be968faa"))
+                   (origin
+                     (inherit (package-source lufa))
+                     (uri (git-reference
+                           (url "https://github.com/qmk/lufa")
+                           (commit commit)))
+                     (file-name (git-file-name "lufa" commit))
+                     (sha256
+                      (base32
+                       "1rmhm4rxvq8skxqn6vc4n4ly1ak6whj7c386zbsci4pxx548n9h4"))))
+               "lib/lufa")))
+          #$@(if keymap-source-directory
+                 #~((add-after 'unpack 'copy-keymap-source-directory
+                      (lambda _
+                        (let ((keymap-dir #$(string-append "keyboards/" keyboard
+                                                           "/keymaps/" keymap)))
+                          (false-if-exception (delete-file-recursively
+                                               keymap-dir))
+                          (copy-recursively #$keymap-source-directory
+                                            keymap-dir)))))
+                 #~())
+          #$@(if keymap-json
+                 #~((replace 'build
+                      (lambda _
+                        (invoke "qmk" "compile" #$keymap-json))))
+                 #~())
+          (replace 'install
+            (lambda _
+              (match (scandir "." (lambda (f)
+                                    (false-if-exception
+                                     (member (string-take-right f 4)
+                                             '(".bin" ".hex" ".uf2")))))
+                (()
+                 (error "no built binary file found"))
+                ((hex ..1)
+                 (for-each (cut install-file <> #$output) hex))))))))
+    ;; Some of the build tools are required to be on the PATH, as the make
+    ;; files do not always operate through 'qmk'; all of qmk's inputs must
+    ;; thus be made available.
+    (native-inputs (modify-inputs (package-inputs qmk)
+                     (append qmk)))
+    (home-page "https://qmk.fm/")
+    (synopsis "Keyboard firmware for Atmel AVR and Arm USB families")
+    (description
+     (format #f "QMK (Quantum Mechanical Keyboard Firmware) is a keyboard
+firmware based on the @url{https://github.com/tmk/tmk_keyboard, tmk_keyboard
+firmware} with some useful features for Atmel AVR and ARM controllers, and
+more specifically, the @url{https://olkb.com/, OLKB product line}, the
+@url{https://ergodox-ez.com/, ErgoDox EZ keyboard}, and the
+@url{https://clueboard.co/, Clueboard product line}.~@[~%~%~a~]" description))
+    (license license:gpl2+)))
+
+(define make-qmk-firmware (memoize make-qmk-firmware/implementation))
+
+(define-public qmk-firmware-ergodox-ez-default
+  (make-qmk-firmware
+   "ergodox_ez" "default" #:description
+   "This is the default keymap used on the ErgoDox EZ keyboard.  It includes
+the novel MEH and Hyper keys pioneered by the ErgoDox EZ, easy to reach
+Control/Shift modifiers keys, and two-functions hold keys to access layer 1.
+Layer 1 contains function keys, symbols, a numpad as well as brightness keys.
+Layer 2 contains multimedia and mouse keys.  See the
+@file{keyboards/ergodox_ez/keymaps/default/keymap.c} source file for the
+keymap definition, or the
+@url{https://configure.ergodox-ez.com/ergodox-ez/layouts/JwwW/latest/0,
+ErgoDox EZ Configurator} page."))
+
+(define-public qmk-firmware-ergodox-ez-dvorak-42-key
+  (make-qmk-firmware "ergodox_ez" "dvorak_42_key" #:description "\
+This is a Dvorak-based layout for the ErgoDox EZ.  Its basic key layout is
+similar to the Atreus @samp{dvorak_42_key} layout; in fact this layout was
+created for seamless switching between the ErgoDox EZ and Atreus keyboards.
+On the base layer, the keys that don't exist on the Atreus are mapped to MEH
+shortcuts and can be interpreted by your window managher.  This layout only
+makes use of the 42 keys that the Atreus also has for the main functionality.
+See the @file{keyboards/atreus/keymaps/dvorak_42_key/keymap.c} source file for
+the keymap definition."))
+
+(define-public qmk-firmware-ergodox-ez-hacker-dvorak
+  (make-qmk-firmware "ergodox_ez" "hacker_dvorak" #:description "\
+This is a Dvorak layout for the ErgoDox EZ.  It is inspired by the
+@url{https://www.kaufmann.no/roland/dvorak, Programmer Dvorak}.  The operating
+system keyboard layout should be set to US for this keymap to function
+normally.  It defines 10 layers:
+@enumerate
+@item Dvorak
+@item Querty
+@item Gaming
+@item Arrows
+@item Mouse
+@item Numpad
+@item Hyper Fn
+@item Media Fn
+@item Meh Fn
+@item Meh Fn +
+@end enumerate
+The complete keymap can be inspected at the ErgoDox EZ Configurator web site:
+@url{https://configure.ergodox-ez.com/ergodox-ez/layouts/Wadz/latest/0}."))
+
+(define-public qmk-firmware-ergodox-ez-dvorak
+  (make-qmk-firmware
+   "ergodox_ez" "dvorak" #:description
+   "This is a rather plain Dvorak layout for the ErgoDox EZ, containing
+function and symbols on layer 1 and media and and mouse keys on layer 2.  See
+the @file{layouts/community/ergodox/dvorak/keymap.c} source file for the
+keymap definition."))
+
+(define-public qmk-firmware-ergodox-ez-dvorak-emacs
+  (make-qmk-firmware
+   "ergodox_ez" "dvorak_emacs" #:description
+   "This is a Dvorak-based keymap optimized for Emacs usage, with the
+frequently used Control and Meta (Alt) keys mapped to the thumb buttons.  It
+contains a single extra layer that includes function and multimedia keys.  A
+graphical representation of the keymap is available in the
+@file{layouts/community/ergodox/dvorak_emacs/readme.md} source file."))
+
+(define-public qmk-firmware-ergodox-ez-dvorak-emacs-software
+  (make-qmk-firmware
+   "ergodox_ez" "dvorak_emacs_software" #:description
+   "This is the same layout as that of the
+@code{qmk-firmware-ergodox-ez-dvorak-emacs}, but designed to be used with a
+Dvorak-configured operating system (instead of a US QWERTY one, which is the
+default assumption for QMK firmware keymaps)."))
+
+(define-public qmk-udev-rules
+  (package
+    (inherit qmk-firmware-ergodox-ez-default)
+    (name "qmk-udev-rules")
+    (build-system copy-build-system)
+    (arguments
+     '(#:install-plan '(("./util/udev" "lib/udev/rules.d"
+                         #:include-regexp ("rules$")))))
+    (native-inputs '())
+    (inputs '())
+    (propagated-inputs '())
+    (synopsis "Udev rules for QMK Firmware")
+    (description
+     "This package provides a set of udev rules to specify the proper
+privileges for flashing QMK compatible devices without needing root.  The
+rules require the group @code{plugdev} to be added to each user that needs
+this.")))

@@ -38,6 +38,7 @@
 ;;; Copyright © 2023 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
+;;; Copyright © 2023 Paul A. Patience <paul@apatience.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -82,6 +83,7 @@
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages datastructures)
+  #:use-module (gnu packages disk)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gcc)
@@ -94,6 +96,7 @@
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages logging)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages mpi)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python)
@@ -1038,6 +1041,78 @@ SObjectizer supports not only the Actor Model but also the Publish-Subscribe
 Model and CSP-like channels.  The goal of SObjectizer is to simplify
 development of concurrent and multithreaded applications in C++.")
     (license license:bsd-3)))
+
+(define-public taskflow
+  (package
+    (name "taskflow")
+    (version "3.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/taskflow/taskflow")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cv74l181137lchc1rxygcg401cnq216ymq5qz2njsw99j342br3"))))
+    (build-system cmake-build-system)
+    (home-page "https://taskflow.github.io/")
+    (synopsis
+     "General-purpose parallel and heterogeneous task programming system")
+    (description
+     "Taskflow is a C++ library for writing parallel and heterogeneous task
+programs.")
+    (license license:expat)))
+
+(define-public kokkos
+  (package
+    (name "kokkos")
+    (version "4.1.00")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kokkos/kokkos")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15kjpa54ssrrbid9h2nr94nh85qna5c4vq2152i4iy7gaagigy3c"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Remove bundled googletest.
+        #~(delete-file-recursively "tpls/gtest"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags
+           ;; deal.II uses only the serial backend, so do not enable the
+           ;; others yet.
+           #~(list "-DBUILD_SHARED_LIBS=ON"
+                   "-DKokkos_ENABLE_SERIAL=ON"
+                   "-DKokkos_ENABLE_TESTS=ON"
+                   "-DKokkos_ENABLE_EXAMPLES=ON"
+                   "-DKokkos_ENABLE_HWLOC=ON"
+                   "-DKokkos_ENABLE_MEMKIND=ON")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install-license-files 'remove-cruft
+                 (lambda _
+                   (delete-file
+                    (string-append #$output "/share/doc/"
+                                   #$name "-" #$version
+                                   "/LICENSE_FILE_HEADER")))))))
+    (native-inputs
+     (list googletest python))
+    (inputs
+     (list `(,hwloc "lib") memkind))
+    (home-page "https://github.com/kokkos/kokkos")
+    (synopsis "C++ abstractions for parallel execution and data management")
+    (description
+     "Kokkos Core implements a programming model in C++ for writing performance
+portable applications targeting all major HPC platforms.  For that purpose it
+provides abstractions for both parallel execution of code and data management.
+Kokkos is designed to target complex node architectures with N-level memory
+hierarchies and multiple types of execution resources.")
+    (license license:asl2.0))) ; With LLVM exception
 
 (define-public tweeny
   (package

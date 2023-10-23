@@ -80,6 +80,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
+  #:use-module (gnu packages openstack)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
@@ -87,6 +88,7 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -102,6 +104,7 @@
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages video)
+  #:use-module (gnu packages wxwidgets)
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
@@ -1197,7 +1200,7 @@ satellites.")
 (define-public gqrx
   (package
     (name "gqrx")
-    (version "2.17")
+    (version "2.17.2")
     (source
      (origin
        (method git-fetch)
@@ -1206,7 +1209,7 @@ satellites.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gg2i4x4z9ggliflpb00434q28831qfrxr0dv7d83ahagy428z22"))))
+        (base32 "1psfbwdgac4wkl6vjdk092rmwbd7228l0d3l5p9ab48d6vyrn2kp"))))
     (build-system qt-build-system)
     (native-inputs
      (list pkg-config))
@@ -2335,7 +2338,7 @@ defined radio with support for rtl-sdr.")
 (define-public csdr
   (package
     (name "csdr")
-    (version "0.18.1")
+    (version "0.18.2")
     (source
      (origin
        (method git-fetch)
@@ -2344,7 +2347,7 @@ defined radio with support for rtl-sdr.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vgl7d03khdql45jq5xxayqfhb5sasxhjmrl621gyk1k8kxaqs8a"))))
+        (base32 "0j5d64na47w1j1sprwj41d9dzvs2x7xwyp0pbl439g686iwp7m9d"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config))
@@ -3087,6 +3090,53 @@ Navigation Satellite System.")
 For example, it can decode the telemetry and images sent by some meteorological
 satellites.")
     (license license:gpl3)))
+
+(define-public chirp
+  (let ((commit "f59b5b254c33be55c73368d6ab036eaadd9e5e76")
+        (revision "1"))
+    (package
+      (name "chirp")
+      (version (git-version "0.4.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/kk7ds/chirp")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1s2qwz00nxqqfrs87ayjbdqg5i8mxf5xgxmqpincsn8rjxgw1s7x"))))
+      (build-system python-build-system)
+      (native-inputs
+       (list python-mock
+             python-mox3
+             python-pep8
+             python-pytest
+             python-pytest-mock
+             python-pyyaml
+             python-tox))
+      (inputs
+       (list python-future
+             python-importlib-resources
+             python-pyserial
+             python-requests
+             python-six
+             python-wxpython
+             python-yattag))
+      (arguments
+       (list ;; FIXME: How to run the tests? The default way crashes.
+             #:tests? #f
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'build 'set-home-for-tests
+                   (lambda _
+                     (setenv "HOME" "/tmp"))))))
+      (synopsis "Cross-radio programming tool")
+      (description "Chirp is a cross-radio programming tool.  It supports a
+growing list of radios across several manufacturers and allows transferring of
+memory contents between them.")
+      (home-page "https://chirp.danplanet.com")
+      (license license:gpl3+))))
 
 (define-public qdmr
   (package

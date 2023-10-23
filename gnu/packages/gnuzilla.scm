@@ -886,16 +886,13 @@ variable defined below.  It requires guile-json to be installed."
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'apply-guix-specific-patches
-            (lambda* (#:key inputs native-inputs #:allow-other-keys)
-              (let ((patch (search-input-file inputs "bin/patch")))
-                (for-each (match-lambda
-                            ((label . file)
-                             (when (and (string-prefix? "icecat-" label)
-                                        (string-suffix? ".patch" label))
-                               (format #t "applying '~a'...~%" file)
-                               (invoke patch "--force" "--no-backup-if-mismatch"
-                                       "-p1" "--input" file))))
-                          (or native-inputs inputs)))))
+            (lambda _
+              (for-each
+               (lambda (file) (invoke "patch" "--force" "-p1" "-i" file))
+               '(#$(local-file
+                    (search-patch "icecat-compare-paths.patch"))
+                 #$(local-file
+                    (search-patch "icecat-use-system-wide-dir.patch"))))))
           (add-after 'apply-guix-specific-patches 'remove-bundled-libraries
             (lambda _
               ;; Remove bundled libraries that we don't use, since they may
@@ -1139,6 +1136,11 @@ variable defined below.  It requires guile-json to be installed."
                  '("default16.png" "default22.png" "default24.png"
                    "default32.png" "default48.png" "content/icon64.png"
                    "mozicon128.png" "default256.png"))))))))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "ICECAT_SYSTEM_DIR")
+            (separator #f)              ;single entry
+            (files '("lib/icecat")))))
     (home-page "https://www.gnu.org/software/gnuzilla/")
     (synopsis "Entirely free browser derived from Mozilla Firefox")
     (description

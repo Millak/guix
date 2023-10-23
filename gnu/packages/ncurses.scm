@@ -348,7 +348,7 @@ of your system.")
                ;; Some programs look for libstfl.so.0.
                (symlink "libstfl.so" (string-append lib "/libstfl.so.0"))))))))
     (inputs (list ncurses))
-    (native-inputs (list swig))
+    (native-inputs (list ncurses swig))
     (home-page "https://www.clifford.at/stfl/")
     (synopsis "Structured terminal forms library")
     (description "Stfl is a library which implements a curses-based widget

@@ -551,7 +551,7 @@ graphical interface.")
 (define-public libcue
   (package
     (name "libcue")
-    (version "2.2.1")
+    (version "2.3.0")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -560,7 +560,7 @@ graphical interface.")
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "1iqw4n01rv2jyk9lksagyxj8ml0kcfwk67n79zy1r6zv1xfp5ywm"))))
+               "1lkcj31fc0wjqr9lgr1ws6invx6ayvrk7v5kd9lm7956q1mi9ib4"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")))

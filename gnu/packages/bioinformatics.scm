@@ -93,6 +93,7 @@
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gd)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-check)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages graph)
   #:use-module (gnu packages graphics)
@@ -4695,26 +4696,16 @@ accurately delineate genomic rearrangements throughout the genome.")
     (arguments
      (list
       #:install-source? #false          ;fails
-      #:tests? #false                   ;"cargo test" ignores build.rs
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'prepare-test-files
             (lambda _
               (delete-file "Cargo.lock")
-              (substitute* "liftover-rs/Cargo.toml"
-                (("anyhow = \"1\"") "anyhow = \"1.0.65\""))
               (substitute* "liftover-rs/prepare-test.sh"
                 (("/bin/bash")
                  (string-append #$(this-package-native-input "bash")
                                 "/bin/bash")))
               (invoke "bash" "prepare-test-files.sh")))
-          (add-before 'patch-cargo-checksums 'do-not-build-xz
-            (lambda _
-              ;; Detection of liblzma (in rust-lzma-sys, pulled in by
-              ;; rust-hts-sys) doesn't seem to work, or perhaps it really does
-              ;; request a static build somewhere.
-              (substitute* "guix-vendor/rust-lzma-sys-0.1.17.tar.xz/build.rs"
-                (("if .want_static && .msvc && pkg_config::probe_library\\(\"liblzma\"\\).is_ok\\(\\)") ""))))
           (add-before 'install 'chdir
             (lambda _ (chdir "transanno"))))
       #:cargo-inputs
@@ -4736,7 +4727,8 @@ accurately delineate genomic rearrangements throughout the genome.")
       #:cargo-development-inputs
       `(("rust-clap" ,rust-clap-2)
         ("rust-lazy-static" ,rust-lazy-static-1))))
-    (native-inputs (list bash))
+    (native-inputs (list bash pkg-config))
+    (inputs (list xz))
     (home-page "https://github.com/informationsea/transanno")
     (synopsis "LiftOver tool for new genome assemblies")
     (description "This package provides an accurate VCF/GFF3/GTF LiftOver tool
@@ -10284,6 +10276,66 @@ generic helpers.")
 figures.  This tool will create clean markdown reports about what you just
 discovered.")
       (license license:gpl3))))
+
+(define-public r-metacell
+  (let ((commit "d6a6926d103ee0cb34a611c753572429c94a53d9")
+        (revision "1"))
+    (package
+      (name "r-metacell")
+      (version (git-version "0.3.41" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/tanaylab/metacell/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0zrsckr3y35x37mj3ibm6scyqx925s84wzrz1i42fnm9n3msc265"))))
+      (properties `((upstream-name . "metacell")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-cluster
+                               r-cowplot
+                               r-data-table
+                               r-dbscan
+                               r-domc
+                               r-dplyr
+                               r-entropy
+                               r-ggplot2
+                               r-graph
+                               r-igraph
+                               r-kernsmooth
+                               r-magrittr
+                               r-matrix
+                               r-matrixstats
+                               r-pdist
+                               r-pheatmap
+                               r-plyr
+                               r-rcolorbrewer
+                               r-rcurl
+                               r-rgraphviz
+                               r-slam
+                               r-singlecellexperiment
+                               r-svglite
+                               r-tgconfig
+                               r-tgstat
+                               r-tgutil
+                               r-tidyr
+                               r-umap
+                               r-umap
+                               r-zoo))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/tanaylab/metacell/")
+      (synopsis "Meta cell analysis for single cell RNA-seq data")
+      (description
+       "This package facilitates the analysis of single-cell RNA-seq UMI matrices.
+It does this by computing partitions of a cell similarity graph into
+small homogeneous groups of cells, which are defined as metacells (MCs).
+The derived MCs are then used for building different representations of
+the data, allowing matrix or 2D graph visualization forming a basis for
+analysis of cell types, subtypes, transcriptional gradients,cell-cycle
+variation, gene modules and their regulatory models and more.")
+      (license license:expat))))
 
 (define-public r-snapatac
   (package

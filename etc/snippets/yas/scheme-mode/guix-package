@@ -43,7 +43,8 @@
                                           "scons-build-system"
                                           "texlive-build-system"
                                           "trivial-build-system"
-                                          "waf-build-system")})
+                                          "waf-build-system"
+                                          "zig-build-system")})
     (home-page "$4")
     (synopsis "$5")
     (description "$6")

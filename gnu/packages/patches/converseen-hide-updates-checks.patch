@@ -43,17 +43,17 @@ index 704e75c..bb3f9b0 100755
      
      int idx = comboLangs->findText(t.currentLanguage(), Qt::MatchExactly);
 diff --git a/src/mainwindowimpl.cpp b/src/mainwindowimpl.cpp
-index 2b6d68d..83a365f 100755
+index 6562e35..d19bc28 100755
 --- a/src/mainwindowimpl.cpp
 +++ b/src/mainwindowimpl.cpp
-@@ -164,7 +164,6 @@ void MainWindowImpl::createActions()
+@@ -163,7 +163,6 @@ void MainWindowImpl::createActions()
      connect(actionInfo, SIGNAL(triggered()), this, SLOT(about()));
      connect(actionDonatePaypal, SIGNAL(triggered()), this, SLOT(openPaypalLink()));
      connect(actionReportBug, SIGNAL(triggered()), this, SLOT(bugReport()));
 -    connect(actionCheckForUpdates, SIGNAL(triggered()), this, SLOT(checkForUpdates()));
- }
+     connect(actionHelp, SIGNAL(triggered()), this, SLOT(onlineHelp()));
  
- void MainWindowImpl::setupMenu()
+     // Create first toolbar button
 diff --git a/ui/dialogoptions.ui b/ui/dialogoptions.ui
 index e59148d..6cb23f5 100755
 --- a/ui/dialogoptions.ui
@@ -82,18 +82,18 @@ index e59148d..6cb23f5 100755
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
 diff --git a/ui/mainwindow.ui b/ui/mainwindow.ui
-index a5f55f0..28df8cc 100755
+index 569565f..b86fc2e 100755
 --- a/ui/mainwindow.ui
 +++ b/ui/mainwindow.ui
-@@ -190,7 +190,6 @@
-     </property>
+@@ -356,7 +356,6 @@
+     <addaction name="separator"/>
      <addaction name="actionDonatePaypal"/>
      <addaction name="separator"/>
 -    <addaction name="actionCheckForUpdates"/>
      <addaction name="actionReportBug"/>
      <addaction name="separator"/>
-    </widget>
-@@ -1365,14 +1364,6 @@ p, li { white-space: pre-wrap; }
+     <addaction name="actionInfo"/>
+@@ -1412,14 +1411,6 @@ p, li { white-space: pre-wrap; }
      <string>Import windows icon (*.ico *.icon)</string>
     </property>
    </action>
@@ -105,6 +105,6 @@ index a5f55f0..28df8cc 100755
 -    <string>Check if a new version of Converseen is available</string>
 -   </property>
 -  </action>
-  </widget>
-  <customwidgets>
-   <customwidget>
+   <action name="actionAddDirectory">
+    <property name="icon">
+     <iconset resource="../resources.qrc">

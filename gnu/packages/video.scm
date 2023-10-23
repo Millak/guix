@@ -5341,16 +5341,19 @@ result in several formats:
 (define-public rav1e
   (package
     (name "rav1e")
-    (version "0.6.3")
+    (version "0.6.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rav1e" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0if94sfviy5cwljlnsy0f470ixfs090k54g416kcc0qd9w4rhy17"))))
+        (base32 "1h9fhmamb7mh3cv86y1qja9qb7r6w2jv3p8ydngvsyjy59lq7hqn"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"= ?([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -5368,8 +5371,8 @@ result in several formats:
         ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-clap" ,rust-clap-4)
         ("rust-clap-complete" ,rust-clap-complete-4)
+        ("rust-clap-lex" ,rust-clap-lex-0.3)
         ("rust-console" ,rust-console-0.15)
-        ("rust-const-fn-assert" ,rust-const-fn-assert-0.1)
         ("rust-crossbeam" ,rust-crossbeam-0.8)
         ("rust-dav1d-sys" ,rust-dav1d-sys-0.7)
         ("rust-fern" ,rust-fern-0.6)
@@ -5403,12 +5406,16 @@ result in several formats:
         ("rust-toml" ,rust-toml-0.5)
         ("rust-v-frame" ,rust-v-frame-0.3)
         ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
-        ("rust-y4m" ,rust-y4m-0.7))
+        ("rust-winnow" ,rust-winnow-0.4)
+        ("rust-y4m" ,rust-y4m-0.8))
        #:cargo-development-inputs
        (("rust-assert-cmd" ,rust-assert-cmd-2)
         ("rust-criterion" ,rust-criterion-0.4)
         ("rust-interpolate-name" ,rust-interpolate-name-0.2)
         ("rust-nom" ,rust-nom-7)
+        ("rust-predicates" ,rust-predicates-2)
+        ("rust-predicates-core" ,rust-predicates-core-1)
+        ("rust-predicates-tree" ,rust-predicates-tree-1)
         ("rust-pretty-assertions" ,rust-pretty-assertions-1)
         ("rust-quickcheck" ,rust-quickcheck-1)
         ("rust-quickcheck-macros" ,rust-quickcheck-macros-1)
@@ -5424,7 +5431,7 @@ result in several formats:
                        (string-append "--prefix=" out)))))
          (add-after 'install 'delete-static-library
            (lambda* (#:key outputs #:allow-other-keys)
-             ;; Delete 80 MiB (!) static library.
+             ;; Delete 93 MiB (!) static library.
              (delete-file (string-append (assoc-ref outputs "out")
                                          "/lib/librav1e.a")))))))
     (native-inputs

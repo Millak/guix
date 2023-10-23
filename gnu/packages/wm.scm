@@ -786,7 +786,7 @@ desktop environment.")
 (define-public icewm
   (package
     (name "icewm")
-    (version "3.4.2")
+    (version "3.4.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -794,7 +794,7 @@ desktop environment.")
                     version "/icewm-" version ".tar.lz"))
               (sha256
                (base32
-                "1qki2r0x9d3yhxypa4i875qzr4dsjig6prs8pvj1w83yb0z4nk5n"))))
+                "1r2x7acjahq4666mds1di46zc32sl80592wllghqcp5800jpjcjm"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (inputs (list fontconfig
@@ -1644,10 +1644,10 @@ functionality to display information about the most commonly used services.")
                                             "/bin/Xwayland")))
              #t))
          (add-before 'configure 'fix-meson-file
-           (lambda* (#:key inputs #:allow-other-keys)
+           (lambda* (#:key native-inputs inputs #:allow-other-keys)
              (substitute* "backend/drm/meson.build"
                (("/usr/share/hwdata/pnp.ids")
-                (string-append (assoc-ref inputs "hwdata")
+                (string-append (assoc-ref (or native-inputs inputs) "hwdata")
                                "/share/hwdata/pnp.ids"))))))))
     (propagated-inputs
      (list ;; As required by wlroots.pc.
@@ -1663,9 +1663,13 @@ functionality to display information about the most commonly used services.")
            xcb-util-wm
            xorg-server-xwayland))
     (native-inputs
-     (list
+     (cons*
        `(,hwdata "pnp")
-       pkg-config))
+       pkg-config
+       wayland
+       (if (%current-target-system)
+         (list pkg-config-for-build)
+         '())))
     (home-page "https://gitlab.freedesktop.org/wlroots/wlroots/")
     (synopsis "Pluggable, composable, unopinionated modules for building a
 Wayland compositor")
@@ -1719,7 +1723,11 @@ modules for building a Wayland compositor.")
                   wayland
                   wlroots))
     (native-inputs
-     (list linux-pam mesa pkg-config scdoc wayland-protocols))
+     (cons* linux-pam mesa pkg-config scdoc wayland-protocols
+            (if (%current-target-system)
+              (list pkg-config-for-build
+                    wayland)
+              '())))
     (home-page "https://github.com/swaywm/sway")
     (synopsis "Wayland compositor compatible with i3")
     (description "Sway is a i3-compatible Wayland compositor.")
@@ -1829,8 +1837,16 @@ display a clock or apply image manipulation techniques to the background image."
        (sha256
         (base32 "1lmqz5bmig90gq2m7lwf02d2g7z4hzf8fhqz78c8vk92c6p4xwbc"))))
     (build-system meson-build-system)
-    (inputs (list cairo gdk-pixbuf wayland))
-    (native-inputs (list pkg-config scdoc wayland-protocols))
+    (inputs
+     (cons* cairo gdk-pixbuf wayland
+            (if (%current-target-system)
+              (list wayland-protocols)
+              '())))
+    (native-inputs
+     (cons* pkg-config scdoc wayland-protocols
+            (if (%current-target-system)
+              (list pkg-config-for-build wayland)
+              '())))
     (home-page "https://github.com/swaywm/sway")
     (synopsis "Screen wallpaper utility for Wayland compositors")
     (description "Swaybg is a wallpaper utility for Wayland compositors.")

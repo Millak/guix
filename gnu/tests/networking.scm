@@ -39,6 +39,7 @@
   #:use-module (gnu services shepherd)
   #:use-module (ice-9 match)
   #:export (%test-static-networking
+            %test-static-networking-advanced
             %test-inetd
             %test-openvswitch
             %test-dhcpd
@@ -123,6 +124,156 @@
                #:imported-modules '((gnu services herd)
                                     (guix combinators)))))
       (run-static-networking-test (virtual-machine os))))))
+
+(define (run-static-networking-advanced-test vm)
+  (define test
+    (with-imported-modules '((gnu build marionette)
+                             (guix build syscalls))
+      #~(begin
+          (use-modules (gnu build marionette)
+                       (guix build syscalls)
+                       (srfi srfi-64))
+
+          (define marionette
+            (make-marionette
+             '(#$vm "-net" "nic,model=e1000,macaddr=98:11:22:33:44:55"
+                    "-net" "nic,model=e1000,macaddr=98:11:22:33:44:56")))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin "static-networking-advanced")
+
+          (test-assert "service is up"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (start-service 'networking))
+             marionette))
+
+          (test-assert "network interfaces"
+            (marionette-eval
+             '(begin
+                (use-modules (guix build syscalls))
+                (network-interface-names))
+             marionette))
+
+          (test-equal "bond0 bonding mode"
+            "802.3ad 4"
+            (marionette-eval
+             '(begin
+                (use-modules (ice-9 rdelim))
+                (call-with-input-file "/sys/class/net/bond0/bonding/mode" read-line))
+             marionette))
+
+          (test-equal "bond0 bonding lacp_rate"
+            "fast 1"
+            (marionette-eval
+             '(begin
+                (use-modules (ice-9 rdelim))
+                (call-with-input-file "/sys/class/net/bond0/bonding/lacp_rate" read-line))
+             marionette))
+
+          (test-equal "bond0 bonding miimon"
+            "100"
+            (marionette-eval
+             '(begin
+                (use-modules (ice-9 rdelim))
+                (call-with-input-file "/sys/class/net/bond0/bonding/miimon" read-line))
+             marionette))
+
+          (test-equal "bond0 bonding slaves"
+            "a b"
+            (marionette-eval
+             '(begin
+                (use-modules (ice-9 rdelim))
+                (call-with-input-file "/sys/class/net/bond0/bonding/slaves" read-line))
+             marionette))
+
+          ;; The hw mac address will come from the first slave bonded to the
+          ;; channel.
+          (test-equal "bond0 mac address"
+            "98:11:22:33:44:55"
+            (marionette-eval
+             '(begin
+                (use-modules (ice-9 rdelim))
+                (call-with-input-file "/sys/class/net/bond0/address" read-line))
+             marionette))
+
+          (test-equal "bond0.1055 is up"
+            IFF_UP
+            (marionette-eval
+             '(let* ((sock  (socket AF_INET SOCK_STREAM 0))
+                     (flags (network-interface-flags sock "bond0.1055")))
+                (logand flags IFF_UP))
+             marionette))
+
+          (test-equal "bond0.1055 address is correct"
+            "192.168.1.4"
+            (marionette-eval
+             '(let* ((sock (socket AF_INET SOCK_STREAM 0))
+                     (addr (network-interface-address sock "bond0.1055")))
+                (close-port sock)
+                (inet-ntop (sockaddr:fam addr) (sockaddr:addr addr)))
+             marionette))
+
+          (test-equal "bond0.1055 netmask is correct"
+            "255.255.255.0"
+            (marionette-eval
+             '(let* ((sock (socket AF_INET SOCK_STREAM 0))
+                     (mask (network-interface-netmask sock "bond0.1055")))
+                (close-port sock)
+                (inet-ntop (sockaddr:fam mask) (sockaddr:addr mask)))
+             marionette))
+          (test-end))))
+
+  (gexp->derivation "static-networking-advanced" test))
+
+(define %test-static-networking-advanced
+  (system-test
+   (name "static-networking-advanced")
+   (description "Test the 'static-networking' service with advanced features like bonds, vlans etc...")
+   (value
+    (let ((os (marionette-operating-system
+               (simple-operating-system
+                (service static-networking-service-type
+                         (list (static-networking
+                                (links (list
+
+                                        (network-link
+                                         (mac-address "98:11:22:33:44:55")
+                                         (arguments '((name . "a"))))
+
+                                        (network-link
+                                         (mac-address "98:11:22:33:44:56")
+                                         (arguments '((name . "b"))))
+
+                                        (network-link
+                                         (name "bond0")
+                                         (type 'bond)
+                                         (arguments '((mode . "802.3ad")
+                                                      (miimon . 100)
+                                                      (lacp-active . "on")
+                                                      (lacp-rate . "fast"))))
+
+                                        (network-link
+                                         (name "a")
+                                         (arguments '((master . "bond0"))))
+
+                                        (network-link
+                                         (name "b")
+                                         (arguments '((master . "bond0"))))
+
+                                        (network-link
+                                         (name "bond0.1055")
+                                         (type 'vlan)
+                                         (arguments '((id . 1055)
+                                                      (link . "bond0"))))))
+
+                                (addresses (list (network-address
+                                                  (value "192.168.1.4/24")
+                                                  (device "bond0.1055"))))))))
+               #:imported-modules '((gnu services herd)
+                                    (guix combinators)))))
+      (run-static-networking-advanced-test (virtual-machine os))))))
 
 
 ;;;
