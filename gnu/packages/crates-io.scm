@@ -70364,6 +70364,29 @@ library supporting a wide range of audio formats.  This package contains
 multimedia tag and metadata readers.")
     (license license:mpl2.0)))
 
+(define-public rust-symphonia-utils-xiph-0.4
+  (package
+    (name "rust-symphonia-utils-xiph")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symphonia-utils-xiph" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1sg1y7s607rk1akrrzyhdsqimiwwaw440jzr1cp89zs8d5n04dva"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-symphonia-core" ,rust-symphonia-core-0.4)
+                       ("rust-symphonia-metadata" ,rust-symphonia-metadata-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "Xiph codecs and formats for Rust's Symphonia")
+    (description
+     "Symphonia is a pure Rust audio decoding and media demuxing
+library that supports a wide range of audio formats.  This package contains Xiph
+codecs and formats.")
+    (license license:mpl2.0)))
+
 (define-public rust-syn-2
   (package
     (name "rust-syn")
