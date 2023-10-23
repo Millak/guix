@@ -57840,6 +57840,28 @@ Digital Signature Algorithm} (ECDSA).")
                  (lambda _
                    (invoke "python" "make_curve25519_tables.py")))))))))))
 
+(define-public rust-ringbuf-0.2
+  (package
+    (name "rust-ringbuf")
+    (version "0.2.6")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ringbuf" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1wxd2sb5b0kjwc5mcv8qrmzl0spfs0agznrxain3xhrr769g6q3c"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs `(("rust-cache-padded" ,rust-cache-padded-1))))
+    (home-page "https://github.com/agerasev/ringbuf")
+    (synopsis
+     "Lock-free SPSC FIFO ring buffer with direct access to inner data")
+    (description
+     "Lock-free @acronym{SPSC, Single Producer Single Consumer} @acronym{FIFO,
+First In First Out} ring buffer with direct access to inner data.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ripemd-0.1
   (package
     (name "rust-ripemd")
