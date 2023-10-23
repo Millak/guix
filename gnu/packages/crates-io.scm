@@ -56777,6 +56777,55 @@ crate unless you're working on a regex implementation.")
 Rust.")
     (license license:expat)))
 
+(define-public rust-rental-0.5
+  (package
+    (name "rust-rental")
+    (version "0.5.6")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rental" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0bhzz2pfbg0yaw8p1l31bggq4jn077wslf6ifhj22vf3r8mgx2fc"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:tests? #f  ; cannot move out of `foo` because it is borrowed
+           #:cargo-inputs
+           `(("rust-rental-impl" ,rust-rental-impl-0.5)
+             ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))
+    (home-page "https://github.com/jpernst/rental")
+    (synopsis "Macro to generate safe self-referential structs")
+    (description
+     "A macro to generate safe self-referential structs, plus
+premade types for common use-cases.  This crate is frozen and should be
+avoided if possible.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-rental-impl-0.5
+  (package
+    (name "rust-rental-impl")
+    (version "0.5.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rental-impl" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1pj0qgmvwwsfwyjqyjxzikkwbwc3vj7hm3hdykr47dy5inbnhpj7"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:skip-build? #f
+           #:cargo-inputs
+           `(("rust-proc-macro2" ,rust-proc-macro2-1)
+             ("rust-quote" ,rust-quote-1)
+             ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/jpernst/rental")
+    (synopsis "Implementation details of the rust-rental crate")
+    (description "Implementation details for the rust-rental crate.
+Should not be used directly.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-reopen-0.3
   (package
     (name "rust-reopen")
