@@ -14353,6 +14353,25 @@ idiomatic wrappers for Mac OS X's CommonCrypto library.")
 stores strings on the stack, when possible.")
     (license license:expat)))
 
+(define-public rust-compound-duration-1
+  (package
+    (name "rust-compound-duration")
+    (version "1.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "compound-duration" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0rb5kasd7044xxb73wz2qqxv6iwawp9gipvqhya8yybafh7a679r"))))
+    (build-system cargo-build-system)
+    (home-page "https://docs.rs/compound_duration/latest/compound_duration/")
+    (synopsis "Convert seconds to compound duration")
+    (description
+     "Convert seconds to compound duration, such as: week, days, hours,
+minutes, seconds.")
+    (license license:bsd-3)))
+
 (define-public rust-const-cstr-0.3
   (package
     (name "rust-const-cstr")
