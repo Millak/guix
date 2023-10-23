@@ -37941,6 +37941,54 @@ Spotify.  This package contains the discovery logic.")
 Spotify.  This package contains the metadata logic.")
     (license license:expat)))
 
+(define-public rust-librespot-playback-0.4
+  (package
+    (name "rust-librespot-playback")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "librespot-playback" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dygnzldvkv1qpagr9nl62hmqh0xfcf4lsva37j0xxy7pjws142i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-alsa" ,rust-alsa-0.6)
+        ("rust-byteorder" ,rust-byteorder-1)
+        ("rust-cpal" ,rust-cpal-0.13)
+        ("rust-futures-executor" ,rust-futures-executor-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-glib" ,rust-glib-0.15)
+        ("rust-gstreamer" ,rust-gstreamer-0.18)
+        ("rust-gstreamer-app" ,rust-gstreamer-app-0.18)
+        ("rust-gstreamer-audio" ,rust-gstreamer-audio-0.18)
+        ("rust-jack" ,rust-jack-0.10)
+        ("rust-lewton" ,rust-lewton-0.10)
+        ("rust-libpulse-binding" ,rust-libpulse-binding-2)
+        ("rust-libpulse-simple-binding" ,rust-libpulse-simple-binding-2)
+        ("rust-librespot-audio" ,rust-librespot-audio-0.4)
+        ("rust-librespot-core" ,rust-librespot-core-0.4)
+        ("rust-librespot-metadata" ,rust-librespot-metadata-0.4)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-ogg" ,rust-ogg-0.8)
+        ("rust-parking-lot" ,rust-parking-lot-0.12)
+        ("rust-portaudio-rs" ,rust-portaudio-rs-0.3)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rand-distr" ,rust-rand-distr-0.4)
+        ("rust-rodio" ,rust-rodio-0.15)
+        ("rust-sdl2" ,rust-sdl2-0.35)
+        ("rust-shell-words" ,rust-shell-words-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-zerocopy" ,rust-zerocopy-0.6))))
+    (home-page "https://github.com/librespot-org/librespot")
+    (synopsis "Audio playback for Librespot")
+    (description "Audio playback for Librespot, an open source client
+library for Spotify.")
+    (license license:expat)))
+
 (define-public rust-librespot-protocol-0.4
   (package
     (name "rust-librespot-protocol")
