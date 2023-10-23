@@ -17428,21 +17428,23 @@ rasterizing glyphs, using native font engines whenever possible.")
         ("rust-servo-fontconfig" ,rust-servo-fontconfig-0.5)
         ("rust-winapi" ,rust-winapi-0.3))))))
 
-(define-public rust-crossterm-0.25
+(define-public rust-crossterm-0.26
   (package
     (name "rust-crossterm")
-    (version "0.25.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "crossterm" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32 "0rsbkkhdf61aipc06b7vpl4cw3wnxz0miizp0ms3a5rcpq7nqkp6"))))
+    (version "0.26.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "crossterm" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "04rxvmbf3scywy0m7rhg586lf833vpb33czijxi80fakadkxlk58"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-crossterm-winapi" ,rust-crossterm-winapi-0.9)
+        ("rust-filedescriptor" ,rust-filedescriptor-0.8)
         ("rust-futures-core" ,rust-futures-core-0.3)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-mio" ,rust-mio-0.8)
@@ -17463,6 +17465,36 @@ rasterizing glyphs, using native font engines whenever possible.")
      "This package provides a crossplatform terminal library for manipulating
 terminals.")
     (license license:expat)))
+
+(define-public rust-crossterm-0.25
+  (package
+    (inherit rust-crossterm-0.26)
+    (name "rust-crossterm")
+    (version "0.25.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "crossterm" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0rsbkkhdf61aipc06b7vpl4cw3wnxz0miizp0ms3a5rcpq7nqkp6"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-crossterm-winapi" ,rust-crossterm-winapi-0.9)
+        ("rust-futures-core" ,rust-futures-core-0.3)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-mio" ,rust-mio-0.8)
+        ("rust-parking-lot" ,rust-parking-lot-0.12)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-signal-hook" ,rust-signal-hook-0.3)
+        ("rust-signal-hook-mio" ,rust-signal-hook-mio-0.2)
+        ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs
+       (("rust-async-std" ,rust-async-std-1)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-futures-timer" ,rust-futures-timer-3)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-tokio" ,rust-tokio-1))))))
 
 (define-public rust-crossterm-0.23
   (package
