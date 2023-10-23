@@ -591,12 +591,14 @@ output), and Binutils.")
 (define %llvm-monorepo-hashes
   '(("14.0.6" . "14f8nlvnmdkp9a9a79wv67jbmafvabczhah8rwnqrgd5g3hfxxxx")
     ("15.0.7" . "12sggw15sxq1krh1mfk3c1f07h895jlxbcifpwk3pznh4m1rjfy2")
-    ("16.0.6" . "0jxmapg7shwkl88m4mqgfjv4ziqdmnppxhjz6vz51ycp2x4nmjky")))
+    ("16.0.6" . "0jxmapg7shwkl88m4mqgfjv4ziqdmnppxhjz6vz51ycp2x4nmjky")
+    ("17.0.3" . "1fhrnsv87if7kbqmrsxy2r7ykx3gnr9lmbmvkhvycc91ii4ihybx")))
 
 (define %llvm-patches
   '(("14.0.6" . ("clang-14.0-libc-search-path.patch"))
     ("15.0.7" . ("clang-15.0-libc-search-path.patch"))
-    ("16.0.6" . ("clang-16.0-libc-search-path.patch"))))
+    ("16.0.6" . ("clang-16.0-libc-search-path.patch"))
+    ("17.0.3" . ("clang-17.0-libc-search-path.patch"))))
 
 (define (llvm-monorepo version)
   (origin
@@ -1485,6 +1487,12 @@ Library.")
 
 (define-public clang-toolchain-16
   (make-clang-toolchain clang-16 libomp-16))
+
+(define-public llvm-17
+  (package
+    (inherit llvm-15)
+    (version "17.0.3")
+    (source (llvm-monorepo version))))
 
 ;; Default LLVM and Clang version.
 (define-public libomp libomp-13)
