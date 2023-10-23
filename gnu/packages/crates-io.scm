@@ -47207,6 +47207,22 @@ owner with them.  This can sometimes be useful because Rust borrowing rules
 normally prevent moving a type that has been borrowed from.")
     (license license:expat)))
 
+(define-public rust-owning-ref-0.3
+  (package
+    (inherit rust-owning-ref-0.4)
+    (name "rust-owning-ref")
+    (version "0.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "owning-ref" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0dqgf5hwbmvkf2ffbik5xmhvaqvqi6iklhwk9x47n0wycd0lzy6d"))))
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))))
+
 (define-public rust-p256-0.13
   (package
     (name "rust-p256")
