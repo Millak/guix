@@ -2788,6 +2788,28 @@ using AES-NI for high performance.")
         ("rust-rand" ,rust-rand-0.3)
         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3))))))
 
+(define-public rust-al-sys-0.6
+  (package
+    (name "rust-al-sys")
+    (version "0.6.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "al-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "08whlcfrhn4gqi4nbglkdqv5ysdpnvnlsqg51q34q9hh9l7rp3gz"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-cmake" ,rust-cmake-0.1)
+             ("rust-libloading" ,rust-libloading-0.5)
+             ("rust-rental" ,rust-rental-0.5))))
+    (home-page "https://github.com/jpernst/alto")
+    (synopsis "Raw bindings for OpenAL 1.1")
+    (description "Rust bindings for OpenAL, this crate contains FFI elements.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-alacritty-config-0.1
   (package
     (name "rust-alacritty-config")
