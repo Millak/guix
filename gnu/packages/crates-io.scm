@@ -1687,8 +1687,30 @@ Rust.")
     (inputs
      (list openssl))))
 
+(define-public rust-adaptive-barrier-1
+  (package
+    (name "rust-adaptive-barrier")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "adaptive-barrier" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1004swrxg9g755h0sk0y1kclk4y9hzk6dzl8772df4l4j44gqz8w"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/vorner/adaptive-barrier")
+    (synopsis "Barrier with adaptable number of thread subsciptions")
+    (description
+     "This is a Barrier synchronization primitive, similar to
+@code{std::sync::Barrier}, but one that adjusts the expected number of
+threads.  This makes it robust in face of panics (it won't make your program
+deadlock, like the standard Barrier).")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-adaptive-barrier-0.1
   (package
+    (inherit rust-adaptive-barrier-1)
     (name "rust-adaptive-barrier")
     (version "0.1.0")
     (source
@@ -1698,16 +1720,7 @@ Rust.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "003ygsiqsd85v0p846q1ym23dbp4iagn89p7k6yrvbg9di1mbjqc"))))
-    (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page "https://github.com/vorner/adaptive-barrier")
-    (synopsis "Barrier with adaptable number of thread subsciptions")
-    (description
-     "This is a Barrier synchronization primitive, similar to
-@code{std::sync::Barrier}, but one that adjusts the expected number of
-threads.  This makes it robust in face of panics (it won't make your program
-deadlock, like the standard Barrier).")
-    (license (list license:asl2.0 license:expat))))
+    (arguments `(#:skip-build? #t))))
 
 (define-public rust-adblock-0.7
   (package
