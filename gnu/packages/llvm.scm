@@ -1630,6 +1630,13 @@ components which highly leverage existing libraries in the larger LLVM Project."
     (inputs (modify-inputs (package-inputs lld)
               (replace "llvm" llvm-11)))))
 
+(define-public lld-16
+  (package
+    (inherit lld-15)
+    (version (package-version llvm-16))
+    (source (llvm-monorepo version))
+    (inputs (list llvm-16))))
+
 (define-public lld lld-14)
 
 (define* (make-lld-wrapper lld #:key lld-as-ld?)
