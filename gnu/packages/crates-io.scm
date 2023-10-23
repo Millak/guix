@@ -16112,6 +16112,52 @@ intrinsics.")
      "This package provides a counts the number of live instances of types.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-cpal-0.13
+  (package
+    (name "rust-cpal")
+    (version "0.13.5")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "cpal" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32 "05j11vz8rw19gqqvpd48i7wvm6j77v8fwx5lwhlkckqjllv7h4bl"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-alsa" ,rust-alsa-0.6)
+                       ("rust-asio-sys" ,rust-asio-sys-0.2)
+                       ("rust-core-foundation-sys" ,rust-core-foundation-sys-0.8)
+                       ("rust-coreaudio-rs" ,rust-coreaudio-rs-0.10)
+                       ("rust-jack" ,rust-jack-0.8)
+                       ("rust-jni" ,rust-jni-0.19)
+                       ("rust-js-sys" ,rust-js-sys-0.3)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-mach" ,rust-mach-0.3)
+                       ("rust-ndk" ,rust-ndk-0.6)
+                       ("rust-ndk-glue" ,rust-ndk-glue-0.6)
+                       ("rust-nix" ,rust-nix-0.23)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-oboe" ,rust-oboe-0.4)
+                       ("rust-parking-lot" ,rust-parking-lot-0.11)
+                       ("rust-stdweb" ,rust-stdweb-0.1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+                       ("rust-web-sys" ,rust-web-sys-0.3)
+                       ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-clap" ,rust-clap-3)
+                                   ("rust-hound" ,rust-hound-3)
+                                   ("rust-ringbuf" ,rust-ringbuf-0.2))))
+    (native-inputs (list pkg-config))
+    (inputs (list alsa-lib))
+    (home-page "https://github.com/rustaudio/cpal")
+    (synopsis "Low-level cross-platform audio I/O library in pure Rust")
+    (description "Low-level cross-platform audio I/O library in pure Rust.
+Supports Linux through either JACK or ALSA.")
+    (license license:asl2.0)))
+
 (define-public rust-cpp-demangle-0.4
   (package
     (name "rust-cpp-demangle")
