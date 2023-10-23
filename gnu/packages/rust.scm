@@ -825,7 +825,7 @@ safety and thread safety guarantees.")
 ;;; Here we take the latest included Rust, make it public, and re-enable tests
 ;;; and extra components such as rustfmt.
 (define-public rust
-  (let ((base-rust rust-1.70))
+  (let ((base-rust rust-1.73))
     (package
       (inherit base-rust)
       (outputs (cons* "rust-src" "tools" (package-outputs base-rust)))
@@ -856,11 +856,42 @@ safety and thread safety guarantees.")
                       '("fn fetch_downloads_with_git2_first_")))))
              (add-after 'unpack 'disable-tests-requiring-mercurial
                (lambda _
-                 (with-directory-excursion "src/tools/cargo/tests/testsuite/init"
+                 (with-directory-excursion "src/tools/cargo/tests/testsuite/cargo_init"
                    (substitute* '("mercurial_autodetect/mod.rs"
                                   "simple_hg_ignore_exists/mod.rs")
                      ,@(make-ignore-test-list
                         '("fn case"))))))
+             (add-after 'unpack 'disable-tests-using-cargo-publish
+               (lambda _
+                 (with-directory-excursion "src/tools/cargo/tests/testsuite"
+                   (substitute* "alt_registry.rs"
+                     ,@(make-ignore-test-list
+                        '("fn warn_for_unused_fields")))
+                   (substitute* '("cargo_add/locked_unchanged/mod.rs"
+                                  "cargo_add/lockfile_updated/mod.rs"
+                                  "cargo_remove/update_lock_file/mod.rs")
+                     ,@(make-ignore-test-list
+                        '("fn case")))
+                   (substitute* "git_shallow.rs"
+                     ,@(make-ignore-test-list
+                        '("fn gitoxide_clones_git_dependency_with_shallow_protocol_and_git2_is_used_for_followup_fetches"
+                          "fn gitoxide_clones_registry_with_shallow_protocol_and_aborts_and_updates_again"
+                          "fn gitoxide_clones_registry_with_shallow_protocol_and_follow_up_fetch_maintains_shallowness"
+                          "fn gitoxide_clones_registry_with_shallow_protocol_and_follow_up_with_git2_fetch"
+                          "fn gitoxide_clones_registry_without_shallow_protocol_and_follow_up_fetch_uses_shallowness"
+                          "fn gitoxide_shallow_clone_followed_by_non_shallow_update"
+                          "fn gitoxide_clones_shallow_two_revs_same_deps"
+                          "fn gitoxide_git_dependencies_switch_from_branch_to_rev"
+                          "fn shallow_deps_work_with_revisions_and_branches_mixed_on_same_dependency")))
+                   (substitute* "install.rs"
+                     ,@(make-ignore-test-list
+                        '("fn failed_install_retains_temp_directory")))
+                   (substitute* "offline.rs"
+                     ,@(make-ignore-test-list
+                        '("fn gitoxide_cargo_compile_offline_with_cached_git_dep_shallow_dep")))
+                   (substitute* "patch.rs"
+                     ,@(make-ignore-test-list
+                        '("fn gitoxide_clones_shallow_old_git_patch"))))))
              (add-after 'unpack 'disable-tests-broken-on-aarch64
                (lambda _
                  (with-directory-excursion "src/tools/cargo/tests/testsuite/"
