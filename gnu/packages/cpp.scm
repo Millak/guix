@@ -1112,6 +1112,10 @@ portable applications targeting all major HPC platforms.  For that purpose it
 provides abstractions for both parallel execution of code and data management.
 Kokkos is designed to target complex node architectures with N-level memory
 hierarchies and multiple types of execution resources.")
+
+    ;; Code exhibits integer size mismatches when compiled on 32-bit systems.
+    (supported-systems %64bit-supported-systems)
+
     (license license:asl2.0))) ; With LLVM exception
 
 (define-public tweeny
