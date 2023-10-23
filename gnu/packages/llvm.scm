@@ -1461,6 +1461,18 @@ Library.")
 (define-public clang-runtime-16
   (clang-runtime-from-llvm llvm-16))
 
+(define-public clang-16
+  (clang-from-llvm
+   llvm-16 clang-runtime-16
+   #:tools-extra
+   (origin
+     (method url-fetch)
+     (uri (llvm-uri "clang-tools-extra"
+                    (package-version llvm-16)))
+     (sha256
+      (base32
+       "0cbgffciql06a1i0ybyyqbnkkr4g7x8cxaar5a5v3415vd27hk0p")))))
+
 ;; Default LLVM and Clang version.
 (define-public libomp libomp-13)
 (define-public llvm llvm-13)
