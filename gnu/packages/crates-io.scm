@@ -6194,19 +6194,23 @@ they're not available.")
 (define-public rust-atomic-waker-1
   (package
     (name "rust-atomic-waker")
-    (version "1.0.0")
+    (version "1.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "atomic-waker" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ansiq5vlw684fhks2x4a4is2rqlbv50q5mi8x0fxxvx5q2p8lq6"))))
+        (base32 "1h5av1lw56m0jf0fd3bchxq8a30xv0b4wv8s4zkp4s0i7mfvs18m"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-development-inputs
-       (("rust-futures" ,rust-futures-0.3))))
-    (home-page "https://github.com/stjepang/atomic-waker")
+     `(#:cargo-inputs
+       (("rust-portable-atomic" ,rust-portable-atomic-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-rayon" ,rust-rayon-1))))
+    (home-page "https://github.com/smol-rs/atomic-waker")
     (synopsis "Synchronization primitive for task wakeup")
     (description
      "This package provides a synchronization primitive for task wakeup.")
