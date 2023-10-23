@@ -161,6 +161,11 @@ as \"x86_64-linux\"."
                   (ice-9 match)
                   ,@%cmake-build-system-modules)
        #:phases (modify-phases (@ (guix build cmake-build-system) %standard-phases)
+                  ,@(if hash
+                        '()
+                        '((add-after 'unpack 'change-directory
+                            (lambda _
+                              (chdir "compiler-rt")))))
                   (add-after 'set-paths 'hide-glibc
                     ;; Work around https://issues.guix.info/issue/36882.  We need to
                     ;; remove glibc from CPLUS_INCLUDE_PATH so that the one hardcoded
@@ -714,28 +719,10 @@ of programming tools as well as libraries with equivalent functionality.")
        ("perl"   ,perl)))))
 
 (define-public clang-runtime-15
-  (let ((template (clang-runtime-from-llvm llvm-15)))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:phases phases '(@ (guix build cmake-build-system) %standard-phases))
-          #~(modify-phases #$phases
-              (add-after 'unpack 'change-directory
-                (lambda _
-                  (chdir "compiler-rt"))))))))))
+  (clang-runtime-from-llvm llvm-15))
 
 (define-public clang-runtime-14
-  (let ((template (clang-runtime-from-llvm llvm-14)))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:phases phases '(@ (guix build cmake-build-system) %standard-phases))
-          #~(modify-phases #$phases
-              (add-after 'unpack 'change-directory
-                (lambda _
-                  (chdir "compiler-rt"))))))))))
+  (clang-runtime-from-llvm llvm-14))
 
 (define-public clang-15
   (clang-from-llvm
