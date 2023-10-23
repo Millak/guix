@@ -1473,6 +1473,16 @@ Library.")
       (base32
        "0cbgffciql06a1i0ybyyqbnkkr4g7x8cxaar5a5v3415vd27hk0p")))))
 
+(define-public libomp-16
+  (package
+    (inherit libomp-15)
+    (version (package-version llvm-16))
+    (source (llvm-monorepo version))
+    (native-inputs
+     (modify-inputs (package-native-inputs libomp-15)
+       (replace "clang" clang-16)
+       (replace "llvm" llvm-16)))))
+
 ;; Default LLVM and Clang version.
 (define-public libomp libomp-13)
 (define-public llvm llvm-13)
