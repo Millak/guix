@@ -70314,6 +70314,31 @@ executed by swayipc.")
 interface")
    (license license:expat)))
 
+(define-public rust-symphonia-bundle-flac-0.4
+  (package
+    (name "rust-symphonia-bundle-flac")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symphonia-bundle-flac" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "00jxn9izfg1g07srhgglpqgadmzwsr88sqnnxw3mskpvyl958vhi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-symphonia-core" ,rust-symphonia-core-0.4)
+                       ("rust-symphonia-metadata" ,rust-symphonia-metadata-0.4)
+                       ("rust-symphonia-utils-xiph" ,rust-symphonia-utils-xiph-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "FLAC demuxer and decoder for the Symphonia library")
+    (description
+     "Symphonia is a pure Rust audio decoding and media demuxing library
+supporting a wide range of audio formats.  This package contains a FLAC demuxer
+and decoder.")
+    (license license:mpl2.0)))
+
 (define-public rust-symphonia-core-0.4
   (package
     (name "rust-symphonia-core")
