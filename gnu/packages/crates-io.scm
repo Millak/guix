@@ -35239,8 +35239,35 @@ format.")
 and MIDI audio server.")
     (license license:expat)))
 
+(define-public rust-jack-sys-0.4
+  (package
+    (name "rust-jack-sys")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "jack-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17vaq4i8q5nx39rjqx9sixqn1xraf1vxs3bmrf618v8nzxchbmz9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; cannot find value `library` in this scope
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libloading" ,rust-libloading-0.7)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (native-inputs (list pkg-config))
+    (inputs (list jack-2))
+    (home-page "https://github.com/RustAudio/rust-jack/tree/main/jack-sys")
+    (synopsis "Low-level binding to the JACK audio API")
+    (description "Low-level binding to the JACK audio API.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-jack-sys-0.2
   (package
+    (inherit rust-jack-sys-0.4)
     (name "rust-jack-sys")
     (version "0.2.3")
     (source (origin
@@ -35255,12 +35282,7 @@ and MIDI audio server.")
      (list #:cargo-inputs `(("rust-lazy-static" ,rust-lazy-static-1)
                             ("rust-libc" ,rust-libc-0.2)
                             ("rust-libloading" ,rust-libloading-0.6)
-                            ("rust-pkg-config" ,rust-pkg-config-0.3))))
-    (inputs (list jack-2))
-    (home-page "https://github.com/RustAudio/rust-jack/tree/main/jack-sys")
-    (synopsis "Low-level bindings to the JACK audio API")
-    (description "Low-level bindings to the JACK audio API.")
-    (license (list license:expat license:asl2.0))))
+                            ("rust-pkg-config" ,rust-pkg-config-0.3))))))
 
 (define-public rust-javascriptcore-rs-sys-0.2
   (package
