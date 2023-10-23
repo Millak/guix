@@ -37339,19 +37339,17 @@ library.")
         ("rust-openssl-sys" ,rust-openssl-sys-0.9)
         ("rust-pkg-config" ,rust-pkg-config-0.3))))))
 
-(define-public rust-libloading-0.7
+(define-public rust-libloading-0.8
   (package
     (name "rust-libloading")
-    (version "0.7.4")
+    (version "0.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "libloading" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "17wbccnjvhjd9ibh019xcd8kjvqws8lqgq86lqkpbgig7gyq0wxn"))
+        (base32 "0q812zvfag4m803ak640znl6cf8ngdd0ilzky498r6pwvmvbcwf5"))
        (modules '((guix build utils)))
        (snippet
         '(begin (for-each delete-file
@@ -37360,17 +37358,39 @@ library.")
     (arguments
      `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-winapi" ,rust-winapi-0.3))
+        ("rust-windows-sys" ,rust-windows-sys-0.48))
        #:cargo-development-inputs
        (("rust-libc" ,rust-libc-0.2)
-        ("rust-static-assertions"
-         ,rust-static-assertions-1))))
-    (inputs (list rust-cfg-if-1 rust-winapi-0.3))
+        ("rust-static-assertions" ,rust-static-assertions-1))))
     (home-page "https://github.com/nagisa/rust_libloading/")
     (synopsis "Safer binding to dynamic library loading utilities")
     (description "This package provides a safer binding to dynamic library
 loading utilities.")
     (license license:isc)))
+
+(define-public rust-libloading-0.7
+  (package
+    (inherit rust-libloading-0.8)
+    (name "rust-libloading")
+    (version "0.7.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libloading" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17wbccnjvhjd9ibh019xcd8kjvqws8lqgq86lqkpbgig7gyq0wxn"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (for-each delete-file
+                          (find-files "tests" "\\.dll$"))))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-static-assertions" ,rust-static-assertions-1))))))
 
 (define-public rust-libloading-0.6
   (package
