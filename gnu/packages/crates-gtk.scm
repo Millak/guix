@@ -3,6 +3,7 @@
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
+;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,6 +30,7 @@
   #:use-module (gnu packages crates-graphics)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages webkit))
@@ -1708,6 +1710,33 @@
        #:cargo-development-inputs
        (("rust-shell-words" ,rust-shell-words-0.1)
         ("rust-tempfile" ,rust-tempfile-3))))))
+
+(define-public rust-gstreamer-sys-0.18
+  (package
+    (name "rust-gstreamer-sys")
+    (version "0.18.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "gstreamer-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1qikgp5m3xj41fbfyfl6ckb5i8dxadfvlvj5bf8girn2sdjpllg3"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs `(("rust-glib-sys" ,rust-glib-sys-0.15)
+                            ("rust-gobject-sys" ,rust-gobject-sys-0.15)
+                            ("rust-libc" ,rust-libc-0.2)
+                            ("rust-system-deps" ,rust-system-deps-6))
+           #:cargo-development-inputs `(("rust-shell-words" ,rust-shell-words-1)
+                                        ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs (list pkg-config))
+    (inputs (list glib gstreamer))
+    (home-page "https://gstreamer.freedesktop.org")
+    (synopsis "FFI bindings to libgstreamer-1.0")
+    (description
+     "Foreign Function Interface (FFI) bindings to libgstreamer-1.0.")
+    (license license:expat)))
 
 (define-public rust-gtk-0.14
   (package
