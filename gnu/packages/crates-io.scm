@@ -70439,6 +70439,29 @@ that supports a wide range of audio formats.  This package contains an AAC
 decoder.")
     (license license:mpl2.0)))
 
+(define-public rust-symphonia-codec-pcm-0.4
+  (package
+    (name "rust-symphonia-codec-pcm")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symphonia-codec-pcm" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1is49qjnfy541zpgzz498hnpz0nsq7i4nfky2133b6aqhxrm87ds"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-symphonia-core" ,rust-symphonia-core-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "Pure Rust PCM audio decoder, part of Symphonia")
+    (description
+     "Symphonia is a pure Rust audio decoding and media demuxing library
+that supports a wide range of audio formats.  This package contains a
+@acronym{PCM, Pulse-Code Modulation} audio decoder.")
+    (license license:mpl2.0)))
+
 (define-public rust-symphonia-utils-xiph-0.4
   (package
     (name "rust-symphonia-utils-xiph")
