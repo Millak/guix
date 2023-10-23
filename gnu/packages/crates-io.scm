@@ -36125,6 +36125,34 @@ requires non-const function calls to be computed.")
 sending emails from Rust applications.")
     (license license:expat)))
 
+(define-public rust-lewton-0.10
+  (package
+    (name "rust-lewton")
+    (version "0.10.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "lewton" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0c60fn004awg5c3cvx82d6na2pirf0qdz9w3b93mbcdakbglhyvp"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-byteorder" ,rust-byteorder-1)
+             ("rust-futures" ,rust-futures-0.1)
+             ("rust-ogg" ,rust-ogg-0.8)
+             ("rust-tinyvec" ,rust-tinyvec-1)
+             ("rust-tokio-io" ,rust-tokio-io-0.1))
+           #:cargo-development-inputs
+           `(("rust-alto" ,rust-alto-3)
+             ("rust-ogg" ,rust-ogg-0.8))))
+    (home-page "https://github.com/RustAudio/lewton")
+    (synopsis "Pure Rust Vorbis decoder")
+    (description "A pure Rust Vorbis decoder.  Vorbis is a free and open
+source audio format.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-lexical-core-0.8
   (package
     (name "rust-lexical-core")
