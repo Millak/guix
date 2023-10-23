@@ -4088,6 +4088,26 @@ initializing large arrays (greater than 32 elements), or arrays of types which
 do not implement the copy or default traits.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-array-init-2
+  (package
+    (name "rust-array-init")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "array-init" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1z0bh6grrkxlbknq3xyipp42rasngi806y92fiddyb2n99lvfqix"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/Manishearth/array-init/")
+    (synopsis "Safe wrapper for initializing fixed-size arrays")
+    (description
+     "A crate that removes the need to fill an array before running
+initialisers.  Provides an init closure that's called for each element of the
+array.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-array-macro-1
   (package
     (name "rust-array-macro")
