@@ -48074,6 +48074,28 @@ synchronization primitives.")
         ("rust-winapi" ,rust-winapi-0.3)
         ("rust-rustc-version" ,rust-rustc-version-0.2))))))
 
+(define-public rust-parking-lot-core-0.2
+  (package
+    (inherit rust-parking-lot-core-0.6)
+    (name "rust-parking-lot-core")
+    (version "0.2.14")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "parking-lot-core" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1yip8m6npxb87ilnn0q774psp1zd0vgv66fcjkkvr9rlyz6aicad"))))
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-backtrace" ,rust-backtrace-0.3)
+             ("rust-libc" ,rust-libc-0.2)
+             ("rust-petgraph" ,rust-petgraph-0.4)
+             ("rust-rand" ,rust-rand-0.4)
+             ("rust-smallvec" ,rust-smallvec-0.6)
+             ("rust-thread-id" ,rust-thread-id-3)
+             ("rust-winapi" ,rust-winapi-0.3))))))
+
 (define-public rust-parquet-5
   (package
     (name "rust-parquet")
