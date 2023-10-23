@@ -37602,6 +37602,28 @@ file.
 library.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-libpulse-simple-sys-1
+  (package
+    (name "rust-libpulse-simple-sys")
+    (version "1.21.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "libpulse-simple-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0lj13ibdwf69ghy1zlldxq5vsyxi1h13wqpvvh79z2wx36s16rpa"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libpulse-sys" ,rust-libpulse-sys-1)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (native-inputs (list pkg-config))
+    (inputs (list pulseaudio))
+    (home-page "https://github.com/jnqnfe/pulse-binding-rust")
+    (synopsis "FFI indings for PulseAudio's libpulse-simple system library")
+    (description
+     "FFI bindings for the PulseAudio libpulse-simple system library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-libpulse-sys-1
   (package
     (name "rust-libpulse-sys")
