@@ -1528,6 +1528,9 @@ Library.")
        (replace "clang" clang-17)
        (replace "llvm" llvm-17)))))
 
+(define-public clang-toolchain-17
+  (make-clang-toolchain clang-17 libomp-17))
+
 ;; Default LLVM and Clang version.
 (define-public libomp libomp-13)
 (define-public llvm llvm-13)
