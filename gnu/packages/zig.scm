@@ -147,52 +147,53 @@ toolchain.  Among other features it provides
     (native-inputs
      (list llvm-13))
     (arguments
-     `(#:configure-flags
-       (list ,@(if (%current-target-system)
-                   (string-append "-DZIG_TARGET_TRIPLE="
-                                  (%current-target-system))
-                   '()))
-       #:out-of-source? #f ; for tests
-       ;; There are too many unclear test failures.
-       #:tests? ,(not (or (target-riscv64?)
-                          (%current-target-system)))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'configure 'set-cache-dir
-           (lambda _
-             ;; Set cache dir, otherwise Zig looks for `$HOME/.cache'.
-             (setenv "ZIG_GLOBAL_CACHE_DIR"
-                     (string-append (getcwd) "/zig-cache"))))
-         ,@(if (target-riscv64?)
-             ;; It is unclear why all these tests fail to build.
-             `((add-after 'unpack 'adjust-tests
-                 (lambda _
-                   (substitute* "build.zig"
-                     ((".*addRuntimeSafetyTests.*") "")
-                     ((".*addRunTranslatedCTests.*") ""))
-                   (substitute* "test/standalone.zig"
-                     ;; These tests fail to build on riscv64-linux.
-                     ;; They both contain 'exe.linkSystemLibrary("c");'
-                     ((".*shared_library.*") "")
-                     ((".*mix_o_files.*") "")
-                     ;; ld.lld: error: undefined symbol: __tls_get_addr
-                     ;; Is this symbol x86 only in glibc?
-                     ((".*link_static_lib_as_system_lib.*") "")))))
-             '())
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda* (#:key outputs tests? #:allow-other-keys)
-             (when tests?
-               (invoke (string-append (assoc-ref outputs "out") "/bin/zig")
-                       ;; Testing the standard library takes >7.5GB RAM, and
-                       ;; will fail if it is OOM-killed.  The 'test-toolchain'
-                       ;; target skips standard library and doc tests.
-                       "build" "test-toolchain"
-                       ;; Stage 2 is experimental, not what we run with `zig',
-                       ;; and stage 2 tests require a lot of RAM.
-                       "-Dskip-stage2-tests"
-                       ;; Non-native tests try to link and execute non-native
-                       ;; binaries.
-                       "-Dskip-non-native")))))))))
+     (list
+      #:configure-flags
+      #~(list #$@(if (%current-target-system)
+                     (list (string-append "-DZIG_TARGET_TRIPLE="
+                                          (%current-target-system)))
+                     '()))
+      #:out-of-source? #f         ; for tests
+      ;; There are too many unclear test failures.
+      #:tests? (not (or (target-riscv64?)
+                        (%current-target-system)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'configure 'set-cache-dir
+            (lambda _
+              ;; Set cache dir, otherwise Zig looks for `$HOME/.cache'.
+              (setenv "ZIG_GLOBAL_CACHE_DIR"
+                      (string-append (getcwd) "/zig-cache"))))
+          #$@(if (target-riscv64?)
+                 ;; It is unclear why all these tests fail to build.
+                 `((add-after 'unpack 'adjust-tests
+                     (lambda _
+                       (substitute* "build.zig"
+                         ((".*addRuntimeSafetyTests.*") "")
+                         ((".*addRunTranslatedCTests.*") ""))
+                       (substitute* "test/standalone.zig"
+                         ;; These tests fail to build on riscv64-linux.
+                         ;; They both contain 'exe.linkSystemLibrary("c");'
+                         ((".*shared_library.*") "")
+                         ((".*mix_o_files.*") "")
+                         ;; ld.lld: error: undefined symbol: __tls_get_addr
+                         ;; Is this symbol x86 only in glibc?
+                         ((".*link_static_lib_as_system_lib.*") "")))))
+                 '())
+          (delete 'check)
+          (add-after 'install 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke (string-append #$output "/bin/zig")
+                        ;; Testing the standard library takes >7.5GB RAM, and
+                        ;; will fail if it is OOM-killed.  The 'test-toolchain'
+                        ;; target skips standard library and doc tests.
+                        "build" "test-toolchain"
+                        ;; Stage 2 is experimental, not what we run with `zig',
+
+                        "-Dskip-stage2-tests"
+                        ;; Non-native tests try to link and execute non-native
+                        ;; binaries.
+                        "-Dskip-non-native")))))))))
 
 (define-public zig zig-0.10)
