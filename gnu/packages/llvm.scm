@@ -26,6 +26,7 @@
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -139,9 +140,19 @@ as \"x86_64-linux\"."
            (patches (map search-patch patches)))
          (llvm-monorepo (package-version llvm))))
     (build-system cmake-build-system)
-    (native-inputs (package-native-inputs llvm))
+    (native-inputs
+     (if (version>=? version "15")
+         ;; TODO: Remove this when GCC 12 is the default.
+         ;; libfuzzer fails to build with GCC 11
+         (modify-inputs (package-native-inputs llvm)
+           (prepend gcc-12))
+         (package-native-inputs llvm)))
     (inputs
-     (list llvm))
+     (append
+      (list llvm)
+      (if (version>=? version "15")
+          (list libffi)
+          '())))
     (arguments
      `(;; Don't use '-g' during the build to save space.
        #:build-type "Release"
@@ -712,13 +723,7 @@ of programming tools as well as libraries with equivalent functionality.")
           #~(modify-phases #$phases
               (add-after 'unpack 'change-directory
                 (lambda _
-                  (chdir "compiler-rt")))))))
-      (native-inputs
-       (modify-inputs (package-native-inputs template)
-         (prepend gcc-12)))             ;libfuzzer fails to build with GCC 11
-      (inputs
-       (modify-inputs (package-inputs template)
-         (append libffi))))))
+                  (chdir "compiler-rt"))))))))))
 
 (define-public clang-runtime-14
   (let ((template (clang-runtime-from-llvm llvm-14)))
