@@ -10773,14 +10773,14 @@ NULL-terminated C linked lists.")
 (define-public rust-cache-padded-1
   (package
     (name "rust-cache-padded")
-    (version "1.1.1")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cache-padded" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1fkdwv9vjazm6fs3s5v56mm4carwswdmw8fcwm9ygrcvihcya6k3"))))
+        (base32 "08gb1407k0cvhfllgg06j45r0lv99qrmraf19mccqbs2iz4j05cq"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/stjepang/cache-padded")
     (synopsis "Prevent once piece of data invalidating other cached data")
