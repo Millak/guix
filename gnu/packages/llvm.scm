@@ -358,6 +358,15 @@ until LLVM/Clang 14."
                                 (("@GLIBC_LIBDIR@")
                                  (string-append libc "/lib"))))))
                         #t)))
+                  ,@(if (version>=? version "17")
+                        '((add-after 'unpack 'include-test-runner
+                            (lambda _
+                              (substitute* "CMakeLists.txt"
+                                ((".*llvm_gtest" line)
+                                 (string-append
+                                  "add_subdirectory(${LLVM_THIRD_PARTY_DIR}/uni\
+ttest third-party/unittest)\n" line))))))
+                        '())
                   ;; Awkwardly, multiple phases added after the same phase,
                   ;; e.g. unpack, get applied in the reverse order.  In other
                   ;; words, adding 'change-directory last means it occurs
@@ -1496,6 +1505,18 @@ Library.")
 
 (define-public clang-runtime-17
   (clang-runtime-from-llvm llvm-17))
+
+(define-public clang-17
+  (clang-from-llvm
+   llvm-17 clang-runtime-17
+   #:tools-extra
+   (origin
+     (method url-fetch)
+     (uri (llvm-uri "clang-tools-extra"
+                    (package-version llvm-17)))
+     (sha256
+      (base32
+       "0an16xdc8rgrdf0dcq3sdg82ajyb00h4bff9n0gm7gqf48ds0da8")))))
 
 ;; Default LLVM and Clang version.
 (define-public libomp libomp-13)
