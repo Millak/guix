@@ -70314,6 +70314,32 @@ executed by swayipc.")
 interface")
    (license license:expat)))
 
+(define-public rust-symphonia-core-0.4
+  (package
+    (name "rust-symphonia-core")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symphonia-core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1j84q4a9p9qa23976spxap9s6ns3fm6fzrfz65n6cjhgpsbmw4zs"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arrayvec" ,rust-arrayvec-0.7)
+                       ("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-bytemuck" ,rust-bytemuck-1)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-log" ,rust-log-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "Shared elements for Symphonia a Rust audio library")
+    (description
+     "Symphonia is a pure Rust audio decoding and media demuxing
+library supporting a wide range of audio formats.  This package contains
+shared structs, traits, and features.")
+    (license license:mpl2.0)))
+
 (define-public rust-syn-2
   (package
     (name "rust-syn")
