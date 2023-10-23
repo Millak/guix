@@ -70462,6 +70462,30 @@ that supports a wide range of audio formats.  This package contains a
 @acronym{PCM, Pulse-Code Modulation} audio decoder.")
     (license license:mpl2.0)))
 
+(define-public rust-symphonia-codec-vorbis-0.4
+  (package
+    (name "rust-symphonia-codec-vorbis")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symphonia-codec-vorbis" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1yj1si92fnnzdfkw27cq324h6y1s958s8r2hl0szpvvqh1sdd7m2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-symphonia-core" ,rust-symphonia-core-0.4)
+                       ("rust-symphonia-utils-xiph" ,rust-symphonia-utils-xiph-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "Pure Rust Vorbis decoder, part of the Symphonia project")
+    (description
+     "Symphonia is a pure Rust audio decoding and media demuxing library
+that supports a wide range of audio formats.  This package is a Vorbis
+decoder.")
+    (license license:mpl2.0)))
+
 (define-public rust-symphonia-utils-xiph-0.4
   (package
     (name "rust-symphonia-utils-xiph")
