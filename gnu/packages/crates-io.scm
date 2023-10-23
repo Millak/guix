@@ -31812,6 +31812,25 @@ Hash-based Message Authentication Code algorithm} for SHA1.")
        (("rust-libc" ,rust-libc-0.2)
         ("rust-winutil" ,rust-winutil-0.1))))))
 
+(define-public rust-hound-3
+  (package
+    (name "rust-hound")
+    (version "3.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "hound" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0kw5yybfc7hdwxwm6d3m3h4ms52fkw0n0zch35drb52ci2xsmbb2"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:skip-build? #t)) ; Cut the dependency graph.
+    (home-page "https://github.com/ruuda/hound")
+    (synopsis "Wav encoding and decoding library")
+    (description "This package provides a wav encoding and decoding library.")
+    (license license:asl2.0)))
+
 (define-public rust-html5ever-0.26
   (package
     (name "rust-html5ever")
