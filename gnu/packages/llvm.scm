@@ -1682,6 +1682,13 @@ components which highly leverage existing libraries in the larger LLVM Project."
     (source (llvm-monorepo version))
     (inputs (list llvm-16))))
 
+(define-public lld-17
+  (package
+    (inherit lld-15)
+    (version (package-version llvm-17))
+    (source (llvm-monorepo version))
+    (inputs (list llvm-17))))
+
 (define-public lld lld-14)
 
 (define* (make-lld-wrapper lld #:key lld-as-ld?)
