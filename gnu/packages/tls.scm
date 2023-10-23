@@ -1017,14 +1017,13 @@ coding footprint.")
      (arguments
       (substitute-keyword-arguments (package-arguments mbedtls-apache)
         ((#:phases phases)
-         `(modify-phases ,phases
-            (add-before 'configure 'configure-extra-features
-              (lambda _
-                (for-each (lambda (feature)
-                            (invoke "scripts/config.pl" "set" feature))
-                          (list "MBEDTLS_THREADING_C"
-                                "MBEDTLS_THREADING_PTHREAD"))
-                #t)))))))))
+         #~(modify-phases #$phases
+             (add-before 'configure 'configure-extra-features
+               (lambda _
+                 (for-each (lambda (feature)
+                             (invoke "scripts/config.pl" "set" feature))
+                           (list "MBEDTLS_THREADING_C"
+                                 "MBEDTLS_THREADING_PTHREAD")))))))))))
 
 (define-public dehydrated
   (package
