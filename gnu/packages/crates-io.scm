@@ -52026,6 +52026,29 @@ overloading without macros in Rust.")
 128-bit atomics, atomic float, etc.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-portaudio-sys-0.1
+  (package
+    (name "rust-portaudio-sys")
+    (version "0.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "portaudio-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1xdpywirpr1kqkbak7hnny62gmsc93qgc3ij3j2zskrvjpxa952i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (native-inputs (list pkg-config))
+    (inputs (list portaudio alsa-lib))
+    (home-page "https://github.com/RustAudio/rust-portaudio")
+    (synopsis "Bindings for PortAudio a cross-platform audio library")
+    (description "Bindings for PortAudio an open source, cross-platform audio
+I/O library.")
+    (license license:expat)))
+
 (define-public rust-postgres-0.19
   (package
     (name "rust-postgres")
