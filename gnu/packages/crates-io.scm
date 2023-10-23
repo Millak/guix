@@ -37563,21 +37563,17 @@ file.
 @end itemize")
     (license license:gpl2+)))
 
-;; https://github.com/jnqnfe/pulse-binding-rust/blob/c788a8069f455f864d2ba5f0aa5f62e6648dfd26/pulse-sys/build.rs
-;; fix location of pulseaudio
 (define-public rust-libpulse-binding-2
   (package
     (name "rust-libpulse-binding")
-    (version "2.23.1")
+    (version "2.28.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "libpulse-binding" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1qx85j489mmad9cvw5k71271l3qy4s8a5qq8a9wac6cfi4viz5fv"))))
+        (base32 "1zza12f22wf1qs6h71lq1i73aj3kmv3036hqc7qci063vyi5fdgd"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -37590,7 +37586,7 @@ file.
        #:phases
        (modify-phases %standard-phases
          (add-before 'check 'set-HOME
-           (lambda _ (setenv "HOME" "/tmp") #t)))))
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list pkg-config))
     (inputs
