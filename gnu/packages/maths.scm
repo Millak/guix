@@ -8518,15 +8518,15 @@ management via the GIMPS project's Primenet server.")
 (define-public nauty
   (package
     (name "nauty")
-    (version "2.7r4")
+    (version "2.8.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "https://pallini.di.uniroma1.it/"
-             "nauty" (string-join (string-split version #\.) "") ".tar.gz"))
+             "nauty" (string-join (string-split version #\.) "_") ".tar.gz"))
        (sha256
-        (base32 "19j8i10cgnqavphj0p7kq939azxckj9ayjpjr6sg76g2dxdch45q"))))
+        (base32 "1yp6wpz2drq0viww8px1vl4pw919nq3xgxrmrrdhycx8bhi9ikpj"))))
     (build-system gnu-build-system)
     (outputs '("out" "lib"))
     (arguments
@@ -8535,37 +8535,11 @@ management via the GIMPS project's Primenet server.")
       #:configure-flags #~(list "--enable-generic") ;prevent -march-native
       #:phases
       #~(modify-phases %standard-phases
-          ;; Default make target does not build all available
-          ;; executables.  Create them now.
-          (add-after 'build 'build-extra-programs
+          (add-after 'unpack 'normalize-pkgconfig-files-location
             (lambda _
-              (for-each (lambda (target) (invoke "make" target))
-                        '("blisstog" "bliss2dre" "checks6" "sumlines"))))
-          ;; Upstream does not provide any install target.
-          (replace 'install
-            (lambda _
-              (let* ((bin (string-append #$output "/bin"))
-                     (doc (string-append #$output "/share/doc/nauty/"))
-                     (include (string-append #$output:lib "/include/nauty"))
-                     (lib (string-append #$output:lib "/lib/nauty")))
-                (for-each (lambda (f) (install-file f bin))
-                          '("addedgeg"  "amtog" "assembleg" "biplabg" "blisstog"
-                            "bliss2dre" "catg" "checks6" "complg" "converseg"
-                            "copyg" "countg" "cubhamg" "deledgeg" "delptg"
-                            "directg"  "dreadnaut" "dretodot" "dretog" "genbg"
-                            "genbgL" "geng" "genquarticg" "genrang" "genspecialg"
-                            "gentourng" "gentreeg" "hamheuristic" "labelg"
-                            "linegraphg" "listg" "multig" "newedgeg" "pickg"
-                            "planarg" "ranlabg" "shortg" "showg" "subdivideg"
-                            "sumlines" "twohamg" "underlyingg" "vcolg"
-                            "watercluster2" "NRswitchg"))
-                (for-each (lambda (f) (install-file f include))
-                          (find-files "." "\\.h$"))
-                (for-each (lambda (f) (install-file f lib))
-                          (find-files "." "\\.a$"))
-                (for-each (lambda (f) (install-file f doc))
-                          (append '("formats.txt" "README" "schreier.txt")
-                              (find-files "." "\\.pdf$")))))))))
+              (substitute* "makefile.in"
+                (("^(pkgconfigexecdir=).*" _ prefix)
+                 (string-append prefix "${libdir}/pkgconfig\n"))))))))
     (inputs
      (list gmp))                        ;for sumlines
     (home-page "https://pallini.di.uniroma1.it/")
