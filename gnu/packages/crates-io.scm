@@ -47070,6 +47070,27 @@ system for OpenSSL.")
     (description "Extends `Option` with additional operations")
     (license license:mpl2.0)))
 
+(define-public rust-option-operations-0.4
+  (package
+    (name "rust-option-operations")
+    (version "0.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "option-operations" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "18jhy5sc56gwdvqc3asr6az685zc9zkgv8p8n69s94bcj6bibc22"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs `(("rust-paste" ,rust-paste-1))))
+    (home-page "https://github.com/fengalin/option-operations")
+    (synopsis "Improved arithmetic operations when dealing with Rust Options")
+    (description
+     "Traits and auto-implementations to improve arithmetic operations
+usability when dealing with Rust Options.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-option-set-0.2
   (package
     (name "rust-option-set")
