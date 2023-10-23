@@ -106,6 +106,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages sphinx)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages guile-xyz)
@@ -792,7 +793,7 @@ ever use this library.")
   (hidden-package
    (package
      (name "at-spi2-core")
-     (version "2.45.90")
+     (version "2.48.4")
      (source (origin
                (method url-fetch)
                (uri (string-append "mirror://gnome/sources/" name "/"
@@ -800,7 +801,7 @@ ever use this library.")
                                    name "-" version ".tar.xz"))
                (sha256
                 (base32
-                 "03dba3c6m3sfapkkbbgzvbi1qcmrrlppydxjjs1m8ds9qb9hl1g9"))))
+                 "05d5azffbglnvqzwk8ngg61jksm3brrwhmfpymsrccz8j8lv3v19"))))
      (build-system meson-build-system)
      (arguments
       (list
@@ -816,10 +817,15 @@ ever use this library.")
                      (lambda _
                        ;; xfconfd requires a writable HOME
                        (setenv "HOME" (getenv "TMPDIR"))
-                       ;; Run test-suite under a dbus session.
-                       (setenv "XDG_DATA_DIRS"  ;for finding org.xfce.Xfconf.service
-                               (string-append #$output "/share:"
-                                              (getenv "XDG_DATA_DIRS")))
+                       ;; dbus-run-session may crash if XDG_DATA_DIRS has too
+                       ;; many entries, maybe related to
+                       ;; https://gitlab.freedesktop.org/dbus/dbus/-/issues/481.
+                       (setenv "XDG_DATA_DIRS"
+                               (string-append
+                                #$output "/share:"
+                                #$(this-package-native-input
+                                   "gsettings-desktop-schemas")
+                                "/share"))
                        ;; Don't fail on missing  '/etc/machine-id'.
                        (setenv "DBUS_FATAL_WARNINGS" "0")
                        (with-directory-excursion (string-append "../at-spi2-core-"
@@ -837,7 +843,8 @@ ever use this library.")
       ;; atspi-2.pc refers to all these.
       (list dbus glib libx11 libxi libxtst))
      (native-inputs
-      (list gettext-minimal
+      (list findutils
+            gettext-minimal
             `(,glib "bin")
             gobject-introspection
             gsettings-desktop-schemas
@@ -867,25 +874,13 @@ is part of the GNOME accessibility project.")
             (add-after 'unpack 'set-documentation-path
               (lambda _
                 ;; Ensure that the cross-references point to the "doc" output.
-                (substitute* "doc/libatspi/meson.build"
-                  (("docpath =.*")
-                   (string-append "docpath = '" #$output:doc
-                                  "/share/gtk-doc/html'\n")))))
-            (add-before 'install 'prepare-doc-directory
-              (lambda _
-                (mkdir-p (string-append #$output:doc "/share"))))
-            #$@(if (%current-target-system)
-                   #~()
-                   #~((add-after 'install 'move-documentation
-                        (lambda _
-                          (copy-recursively
-                           (string-append #$output "/share/gtk-doc")
-                           (string-append #$output:doc "/share/gtk-doc"))
-                          (delete-file-recursively
-                           (string-append #$output "/share/gtk-doc"))))))))))
+                (substitute* "doc/meson.build"
+                  (("docs_dir =.*")
+                   (string-append "docs_dir = '" #$output:doc
+                                  "/share/doc'\n")))))))))
     (native-inputs
      (modify-inputs (package-native-inputs at-spi2-core)
-       (append docbook-xml-4.3 gtk-doc/stable)))
+       (append gi-docgen python python-sphinx)))
     (properties (alist-delete 'hidden?
                               (package-properties at-spi2-core)))))
 
