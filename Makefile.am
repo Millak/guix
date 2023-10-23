@@ -17,6 +17,7 @@
 # Copyright © 2020, 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 # Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 # Copyright © 2021 Andrew Tropin <andrew@trop.in>
+# Copyright © 2023 Clément Lassieur <clement@lassieur.org>
 #
 # This file is part of GNU Guix.
 #
@@ -1168,7 +1169,7 @@ cuirass-jobs: $(GOBJECTS)
 .git/config: etc/git/gitconfig
 	$(AM_V_at)if command -v git >/dev/null && test -d .git; then \
 	git config --fixed-value --replace-all include.path \
-	  ../etc/git/gitconfig ../etc/git/gitconfig;
+	  ../etc/git/gitconfig ../etc/git/gitconfig; \
 	fi
 
 COMMIT_MSG_MAGIC = VGhpcyBpcyB0aGUgY29tbWl0LW1zZyBob29rIG9mIEd1aXg=
