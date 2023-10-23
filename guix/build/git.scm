@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2016, 2019, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -33,10 +34,13 @@
 ;;; Code:
 
 (define* (git-fetch url commit directory
-                    #:key (git-command "git") recursive?)
+                    #:key (git-command "git")
+                    lfs? recursive?)
   "Fetch COMMIT from URL into DIRECTORY.  COMMIT must be a valid Git commit
-identifier.  When RECURSIVE? is true, all the sub-modules of URL are fetched,
-recursively.  Return #t on success, #f otherwise."
+identifier.  When LFS? is true, configure Git to also fetch Large File
+Storage (LFS) files; it assumes that the @code{git-lfs} extension is available
+in the environment.  When RECURSIVE? is true, all the sub-modules of URL are
+fetched, recursively.  Return #t on success, #f otherwise."
 
   ;; Disable TLS certificate verification.  The hash of the checkout is known
   ;; in advance anyway.
@@ -57,6 +61,11 @@ recursively.  Return #t on success, #f otherwise."
     (with-directory-excursion directory
       (invoke git-command "init" "--initial-branch=main")
       (invoke git-command "remote" "add" "origin" url)
+
+      (when lfs?
+        (setenv "HOME" "/tmp")
+        (invoke git-command "lfs" "install"))
+
       (if (zero? (system* git-command "fetch" "--depth" "1" "origin" commit))
           (invoke git-command "checkout" "FETCH_HEAD")
           (begin
@@ -81,11 +90,13 @@ recursively.  Return #t on success, #f otherwise."
 
 
 (define* (git-fetch-with-fallback url commit directory
-                                  #:key (git-command "git") recursive?)
+                                  #:key (git-command "git")
+                                  lfs? recursive?)
   "Like 'git-fetch', fetch COMMIT from URL into DIRECTORY, but fall back to
 alternative methods when fetching from URL fails: attempt to download a nar,
 and if that also fails, download from the Software Heritage archive."
   (or (git-fetch url commit directory
+                 #:lfs? lfs?
                  #:recursive? recursive?
                  #:git-command git-command)
       (download-nar directory)

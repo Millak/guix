@@ -8375,6 +8375,13 @@ hash @var{hash} of type @var{hash-algo} (a symbol).  Use @var{name} as
 the file name, or a generic name if @code{#f}.
 @end deffn
 
+@deffn {Procedure} git-fetch/lfs ref hash-algo hash
+This is a variant of the @code{git-fetch} procedure that supports the
+Git @acronym{LFS, Large File Storage} extension.  This may be useful to
+pull some binary test data to run the test suite of a package, for
+example.
+@end deffn
+
 @deftp {Data Type} git-reference
 This data type represents a Git reference for @code{git-fetch} to
 retrieve.

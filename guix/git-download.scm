@@ -4,6 +4,7 @@
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -54,6 +55,7 @@
             git-reference-recursive?
 
             git-fetch
+            git-fetch/lfs
             git-version
             git-file-name
             git-predicate))
@@ -79,30 +81,36 @@
   (let ((distro (resolve-interface '(gnu packages version-control))))
     (module-ref distro 'git-minimal)))
 
-(define* (git-fetch/in-band ref hash-algo hash
-                            #:optional name
-                            #:key (system (%current-system))
-                            (guile (default-guile))
-                            (git (git-package)))
-  "Return a fixed-output derivation that performs a Git checkout of REF, using
-GIT and GUILE (thus, said derivation depends on GIT and GUILE).
+(define (git-lfs-package)
+  "Return the default 'git-lfs' package."
+  (let ((distro (resolve-interface '(gnu packages version-control))))
+    (module-ref distro 'git-lfs)))
 
-This method is deprecated in favor of the \"builtin:git-download\" builder.
-It will be removed when versions of guix-daemon implementing
-\"builtin:git-download\" will be sufficiently widespread."
+(define* (git-fetch/in-band* ref hash-algo hash
+                             #:optional name
+                             #:key (system (%current-system))
+                             (guile (default-guile))
+                             (git (git-package))
+                             git-lfs)
+  "Shared implementation code for git-fetch/in-band & friends.  Refer to their
+respective documentation."
   (define inputs
-    `(("git" ,(or git (git-package)))
-
-      ;; When doing 'git clone --recursive', we need sed, grep, etc. to be
-      ;; available so that 'git submodule' works.
+    `(,(or git (git-package))
+      ,@(if git-lfs
+            (list git-lfs)
+            '())
       ,@(if (git-reference-recursive? ref)
-            (standard-packages)
+            ;; TODO: remove (standard-packages) after
+            ;; 48e528a26f9c019eeaccf5e3de3126aa02c98d3b is merged into master;
+            ;; currently when doing 'git clone --recursive', we need sed, grep,
+            ;; etc. to be available so that 'git submodule' works.
+            (map second (standard-packages))
 
             ;; The 'swh-download' procedure requires tar and gzip.
-            `(("gzip" ,(module-ref (resolve-interface '(gnu packages compression))
-                                   'gzip))
-              ("tar" ,(module-ref (resolve-interface '(gnu packages base))
-                                  'tar))))))
+            (list (module-ref (resolve-interface '(gnu packages compression))
+                              'gzip)
+                  (module-ref (resolve-interface '(gnu packages base))
+                              'tar)))))
 
   (define guile-json
     (module-ref (resolve-interface '(gnu packages guile)) 'guile-json-4))
@@ -126,13 +134,16 @@ It will be removed when versions of guix-daemon implementing
 
   (define build
     (with-imported-modules modules
-      (with-extensions (list guile-json gnutls    ;for (guix swh)
+      (with-extensions (list guile-json gnutls ;for (guix swh)
                              guile-lzlib)
         #~(begin
             (use-modules (guix build git)
                          ((guix build utils)
                           #:select (set-path-environment-variable))
                          (ice-9 match))
+
+            (define lfs?
+              (call-with-input-string (getenv "git lfs?") read))
 
             (define recursive?
               (call-with-input-string (getenv "git recursive?") read))
@@ -144,18 +155,17 @@ It will be removed when versions of guix-daemon implementing
                     #+(file-append glibc-locales "/lib/locale"))
             (setlocale LC_ALL "en_US.utf8")
 
-            ;; The 'git submodule' commands expects Coreutils, sed,
-            ;; grep, etc. to be in $PATH.
-            (set-path-environment-variable "PATH" '("bin")
-                                           (match '#+inputs
-                                             (((names dirs outputs ...) ...)
-                                              dirs)))
+            ;; The 'git submodule' commands expects Coreutils, sed, grep,
+            ;; etc. to be in $PATH.  This also ensures that git extensions are
+            ;; found.
+            (set-path-environment-variable "PATH" '("bin") '#+inputs)
 
             (setvbuf (current-output-port) 'line)
             (setvbuf (current-error-port) 'line)
 
             (git-fetch-with-fallback (getenv "git url") (getenv "git commit")
                                      #$output
+                                     #:lfs? lfs?
                                      #:recursive? recursive?
                                      #:git-command "git")))))
 
@@ -175,17 +185,48 @@ It will be removed when versions of guix-daemon implementing
                                          (git-reference-url ref))))
                         ("git commit" . ,(git-reference-commit ref))
                         ("git recursive?" . ,(object->string
-                                              (git-reference-recursive? ref))))
+                                              (git-reference-recursive? ref)))
+                        ("git lfs?" . ,(if git-lfs "#t" "#f")))
                       #:leaked-env-vars '("http_proxy" "https_proxy"
                                           "LC_ALL" "LC_MESSAGES" "LANG"
                                           "COLUMNS")
 
                       #:system system
-                      #:local-build? #t           ;don't offload repo cloning
+                      #:local-build? #t ;don't offload repo cloning
                       #:hash-algo hash-algo
                       #:hash hash
                       #:recursive? #t
                       #:guile-for-build guile)))
+
+(define* (git-fetch/in-band ref hash-algo hash
+                             #:optional name
+                             #:key (system (%current-system))
+                             (guile (default-guile))
+                             (git (git-package)))
+  "Return a fixed-output derivation that performs a Git checkout of REF, using
+GIT and GUILE (thus, said derivation depends on GIT and GUILE).
+
+This method is deprecated in favor of the \"builtin:git-download\" builder.
+It will be removed when versions of guix-daemon implementing
+\"builtin:git-download\" will be sufficiently widespread."
+  (git-fetch/in-band* ref hash-algo hash name
+                      #:system system
+                      #:guile guile
+                      #:git git))
+
+(define* (git-fetch/lfs ref hash-algo hash
+                        #:optional name
+                        #:key (system (%current-system))
+                        (guile (default-guile))
+                        (git (git-package))
+                        (git-lfs (git-lfs-package)))
+  "Like git-fetch/in-band, but with support for the Git Large File
+Storage (LFS) extension."
+  (git-fetch/in-band* ref hash-algo hash name
+                      #:system system
+                      #:guile guile
+                      #:git git
+                      #:git-lfs git-lfs))
 
 (define* (git-fetch/built-in ref hash-algo hash
                              #:optional name
