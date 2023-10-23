@@ -70415,6 +70415,29 @@ supporting a wide range of aduio formats.  This package contains support for
 MP1, MP2 and MP3.")
     (license license:mpl2.0)))
 
+(define-public rust-symphonia-codec-aac-0.4
+  (package
+    (name "rust-symphonia-codec-aac")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symphonia-codec-aac" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13smaxgb1jadl4jyay7hixqgwaiqrjvsvmzdvlbdzdxrgsrplgdx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-symphonia-core" ,rust-symphonia-core-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "Pure Rust AAC decoder from Symphonia")
+    (description
+     "Symphonia is a pure Rust audio decoding and media demuxing library
+that supports a wide range of audio formats.  This package contains an AAC
+decoder.")
+    (license license:mpl2.0)))
 
 (define-public rust-symphonia-utils-xiph-0.4
   (package
