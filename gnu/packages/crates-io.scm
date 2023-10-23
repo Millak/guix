@@ -12642,6 +12642,25 @@ usage.")
     (description "This package provides Rust bindings for libclang.")
     (license license:asl2.0)))
 
+(define-public rust-claxon-0.4
+  (package
+    (name "rust-claxon")
+    (version "0.4.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "claxon" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1206mxvw833ysg10029apcsjjwly8zmsvksgza5cm7ma4ikzbysb"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:skip-build? #t)) ; Cut the dependency graph.
+    (home-page "https://github.com/ruuda/claxon#readme")
+    (synopsis "FLAC decoding library")
+    (description "This package provides a FLAC decoding library.")
+    (license license:asl2.0)))
+
 (define-public rust-cipher-0.4
   (package
     (name "rust-cipher")
