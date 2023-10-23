@@ -3092,6 +3092,30 @@ be used with the stdlib.")
     (description "Mirror of Rust's allocator API.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-alsa-sys-0.3
+  (package
+    (name "rust-alsa-sys")
+    (version "0.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "alsa-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "09qmmnpmlcj23zcgx2xsi4phcgm5i02g9xaf801y7i067mkfx3yv"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:tests? #f  ; doc tests fail
+           #:cargo-inputs `(("rust-libc" ,rust-libc-0.2)
+                            ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (native-inputs (list pkg-config alsa-lib))
+    (home-page "https://github.com/diwic/alsa-sys")
+    (synopsis "FFI bindings for the ALSA sound API")
+    (description
+     "FFI bindings for the ALSA sound API.  This package contains
+the code to interact with the underlying operating system ALSA interface.")
+    (license license:expat)))
+
 (define-public rust-alto-3
   (package
     (name "rust-alto")
