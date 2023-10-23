@@ -7338,98 +7338,98 @@ Crowther & Woods, its original authors, in 1995.  It has been known as
     (native-inputs
      (list unzip))
     (inputs
-     `(("sdl-union" ,(sdl-union (list sdl2 sdl2-image sdl2-mixer sdl2-ttf)))
-       ("glu" ,glu)
-       ("premake4" ,premake4)
-       ("openal" ,openal)
-       ("vorbis" ,libvorbis)
-       ("luajit" ,luajit)))
+     (list glu
+           libvorbis
+           luajit
+           openal
+           premake4
+           (sdl-union (list sdl2 sdl2-image sdl2-mixer sdl2-ttf))))
     (arguments
-     `(#:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             "config=release")
-       ;; XXX: Building in parallel occasionally causes this build failure:
-       ;;   ../src/luajit2/src/host/buildvm.c:73:10: fatal error: buildvm_arch.h:
-       ;;   No such file or directory
-       #:parallel-build? #f
-       #:phases (modify-phases %standard-phases
-                  (delete 'bootstrap)
-                  (replace 'configure
-                    (lambda _
-                      (invoke "premake4" "gmake")))
-                  (add-after 'set-paths 'set-sdl-paths
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (setenv "CPATH"
-                              (string-append
-                               (search-input-directory inputs "/include/SDL2")
-                               ":" (or (getenv "CPATH") "")))))
-                  (delete 'check)
-                  ;; premake doesn't provide install target
-                  (replace 'install
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      (let* ((out (assoc-ref outputs "out"))
-                             (usr (string-append out "/usr"))
-                             (bin (string-append out "/bin"))
-                             (licenses (string-append out "/share/licenses"))
-                             (documents (string-append out "/share/doc"))
-                             (pixmaps (string-append out "/share/pixmaps"))
-                             (icon "te4-icon.png")
-                             (data (string-append out "/share/" ,name))
-                             (applications (string-append
-                                            out "/share/applications"))
-                             (unzip (string-append
-                                     (assoc-ref inputs "unzip") "/bin/unzip"))
-                             (wrapper (string-append bin "/" ,name)))
-                        ;; icon
-                        (mkdir-p pixmaps)
-                        (invoke unzip "-j"
-                                (string-append
-                                 "game/engines/te4-" ,version ".teae")
-                                (string-append
-                                 "data/gfx/" icon) "-d" pixmaps)
-                        ;; game executable
-                        (install-file "t-engine" data)
-                        (mkdir-p bin)
-                        (with-output-to-file wrapper
-                          (lambda ()
-                            (display
-                             (string-append
-                              "#!/bin/sh\n"
-                              ;; No bootstrap code found,
-                              ;; defaulting to working directory
-                              ;; for engine code!
-                              "cd " data "\n"
-                              "exec -a tome4 ./t-engine \"$@\"\n"))))
-                        (chmod wrapper #o555)
-                        ;; licenses
-                        (for-each (lambda (file)
-                                    (install-file file licenses))
-                                  '("COPYING" "COPYING-MEDIA"))
-                        ;; documents
-                        (for-each (lambda (file)
-                                    (install-file file documents))
-                                  '("CONTRIBUTING" "CREDITS"))
-                        ;; data
-                        (copy-recursively "bootstrap" (string-append
-                                                       data "/bootstrap"))
-                        (copy-recursively "game" (string-append data "/game"))
-                        ;; launcher
-                        (mkdir-p applications)
-                        (make-desktop-entry-file
-                         (string-append applications "/" ,name ".desktop")
-                         #:name "ToME4"
-                         #:comment ,synopsis
-                         #:exec ,name
-                         #:icon icon
-                         #:categories '("Game" "RolePlaying"))))))))
+     (list
+      #:tests? #false                   ;no test
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              "config=release")
+      ;; XXX: Building in parallel occasionally causes this build failure:
+      ;;   ../src/luajit2/src/host/buildvm.c:73:10: fatal error: buildvm_arch.h:
+      ;;   No such file or directory
+      #:parallel-build? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'bootstrap)
+          (replace 'configure
+            (lambda _
+              (invoke "premake4" "gmake")))
+          (add-after 'set-paths 'set-sdl-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "CPATH"
+                      (string-append
+                       (search-input-directory inputs "/include/SDL2")
+                       ":" (or (getenv "CPATH") "")))))
+          ;; premake doesn't provide install target
+          (replace 'install
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (usr (string-append out "/usr"))
+                     (bin (string-append out "/bin"))
+                     (licenses (string-append out "/share/licenses"))
+                     (documents (string-append out "/share/doc"))
+                     (pixmaps (string-append out "/share/pixmaps"))
+                     (icon "te4-icon.png")
+                     (data (string-append out "/share/" #$name))
+                     (applications (string-append
+                                    out "/share/applications"))
+                     (unzip (string-append
+                             (assoc-ref inputs "unzip") "/bin/unzip"))
+                     (wrapper (string-append bin "/" #$name)))
+                ;; icon
+                (mkdir-p pixmaps)
+                (invoke unzip "-j"
+                        (string-append
+                         "game/engines/te4-" #$version ".teae")
+                        (string-append
+                         "data/gfx/" icon) "-d" pixmaps)
+                ;; game executable
+                (install-file "t-engine" data)
+                (mkdir-p bin)
+                (with-output-to-file wrapper
+                  (lambda ()
+                    (display
+                     (string-append
+                      "#!/bin/sh\n"
+                      ;; No bootstrap code found,
+                      ;; defaulting to working directory
+                      ;; for engine code!
+                      "cd " data "\n"
+                      "exec -a tome4 ./t-engine \"$@\"\n"))))
+                (chmod wrapper #o555)
+                ;; licenses
+                (for-each (lambda (file)
+                            (install-file file licenses))
+                          '("COPYING" "COPYING-MEDIA"))
+                ;; documents
+                (for-each (lambda (file)
+                            (install-file file documents))
+                          '("CONTRIBUTING" "CREDITS"))
+                ;; data
+                (copy-recursively "bootstrap" (string-append
+                                               data "/bootstrap"))
+                (copy-recursively "game" (string-append data "/game"))
+                ;; launcher
+                (mkdir-p applications)
+                (make-desktop-entry-file
+                 (string-append applications "/" #$name ".desktop")
+                 #:name "ToME4"
+                 #:comment #$synopsis
+                 #:exec #$name
+                 #:icon icon
+                 #:categories '("Game" "RolePlaying"))))))))
     (home-page "https://te4.org")
     (description "Tales of Maj’Eyal (ToME) RPG, featuring tactical turn-based
 combat and advanced character building.  Play as one of many unique races and
 classes in the lore-filled world of Eyal, exploring random dungeons, facing
 challenging battles, and developing characters with your own tailored mix of
-abilities and powers.  With a modern graphical and customisable interface,
-intuitive mouse control, streamlined mechanics and deep, challenging combat,
-Tales of Maj’Eyal offers engaging roguelike gameplay for the 21st century.")
+abilities and powers.")
     (license license:gpl3+)))
 
 (define-public quakespasm
