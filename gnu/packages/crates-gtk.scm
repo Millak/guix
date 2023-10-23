@@ -1755,6 +1755,39 @@
     (description "Rust bindings for GStreamer.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gstreamer-app-0.18
+  (package
+    (name "rust-gstreamer-app")
+    (version "0.18.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gstreamer-app" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "115nykpdvfccyzvfi73qkhn061f6rdyhcaj9ajnw2ik5pimdyjk6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; https://github.com/gtk-rs/gtk3-rs/issues/768
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-futures-sink" ,rust-futures-sink-0.3)
+                       ("rust-glib" ,rust-glib-0.15)
+                       ("rust-gstreamer" ,rust-gstreamer-0.18)
+                       ("rust-gstreamer-app-sys" ,rust-gstreamer-app-sys-0.18)
+                       ("rust-gstreamer-base" ,rust-gstreamer-base-0.18)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-once-cell" ,rust-once-cell-1))
+       #:cargo-development-inputs (("rust-futures-executor" ,rust-futures-executor-0.3)
+                                   ("rust-futures-util" ,rust-futures-util-0.3)
+                                   ("rust-gir-format-check" ,rust-gir-format-check-0.1))))
+    (native-inputs (list pkg-config))
+    (inputs (list glib gstreamer gst-plugins-base))
+    (home-page "https://gstreamer.freedesktop.org")
+    (synopsis "Rust bindings for GStreamer App library")
+    (description "Rust bindings for the GStreamer App library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gstreamer-app-sys-0.18
   (package
     (name "rust-gstreamer-app-sys")
