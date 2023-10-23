@@ -68187,6 +68187,24 @@ on verbosity specified")
 Web.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-stdweb-0.1
+  (package
+    (inherit rust-stdweb-0.4)
+    (name "rust-stdweb")
+    (version "0.1.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "stdweb" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0gjk7ch31a3kgdc39kj4zqinf10yqaf717wanh9kwwbbwg430m7g"))))
+    (arguments
+     (list #:skip-build? #t
+           #:cargo-inputs `(("rust-clippy" ,rust-clippy-0.0)
+                            ("rust-serde" ,rust-serde-1)
+                            ("rust-serde-json" ,rust-serde-json-1))))))
+
 (define-public rust-stdweb-derive-0.5
   (package
     (name "rust-stdweb-derive")
