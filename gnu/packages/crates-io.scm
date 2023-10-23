@@ -37598,6 +37598,34 @@ file.
 library.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-libpulse-simple-binding-2
+  (package
+    (name "rust-libpulse-simple-binding")
+    (version "2.28.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "libpulse-simple-binding" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                 "139hiksmxrmj8zcdqvswgjnwl1rivh915vg6cl92asizydl6pz85"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libpulse-binding" ,rust-libpulse-binding-2)
+                       ("rust-libpulse-simple-sys" ,rust-libpulse-simple-sys-1)
+                       ("rust-libpulse-sys" ,rust-libpulse-sys-1))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
+    (native-inputs (list pkg-config))
+    (inputs (list pulseaudio))
+    (home-page "https://github.com/jnqnfe/pulse-binding-rust")
+    (synopsis "Rust language bindings for PulseAudio's libpulse-simple library")
+    (description
+     "A Rust language binding for the PulseAudio libpulse-simple library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-libpulse-simple-sys-1
   (package
     (name "rust-libpulse-simple-sys")
