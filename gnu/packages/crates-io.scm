@@ -25434,6 +25434,31 @@ Atom, RSS 2.0, RSS 1.0, RSS 0.x and JSON Feed")
      "This package provides a simple, efficient logging system for Rust.")
     (license license:expat)))
 
+(define-public rust-fetch-unroll-0.3
+  (package
+    (name "rust-fetch-unroll")
+    (version "0.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "fetch_unroll" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1l3cf8fhcrw354hdmjf03f5v4bxgn2wkjna8n0fn8bgplh8b3666"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:tests? #f  ; Tries to connect to github.com
+           #:cargo-inputs `(("rust-libflate" ,rust-libflate-1)
+                            ("rust-tar" ,rust-tar-0.4)
+                            ("rust-ureq" ,rust-ureq-2))))
+    ; perl required for building rust-ring
+    (inputs (list perl))
+    (home-page "https://github.com/katyo/fetch_unroll")
+    (synopsis "Simple utilities for fetching and unrolling .tar.gz archives")
+    (description
+     "Simple utilities for fetching and unrolling .tar.gz archives.")
+    (license license:asl2.0)))
+
 (define-public rust-fever-api-0.2
   (package
     (name "rust-fever-api")
