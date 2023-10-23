@@ -3131,6 +3131,37 @@ many parts of ALSA including audio playback, audio recording, HCtl API, raw
 MIDI and MIDI sequencer.")
     (license license:expat)))
 
+(define-public rust-alsa-0.6
+  (package
+    (inherit rust-alsa-0.7)
+    (name "rust-alsa")
+    (version "0.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "alsa" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0szx8finhqbffh08fp3bgh4ywz0b572vcdyh4hwyhrfgw8pza5ar"))))
+    (arguments
+     (list #:cargo-test-flags `(list "--release"
+                                     ;; Not the doc tests.
+                                     "--lib" "--bins" "--tests"
+                                     "--"
+                                     ;; These try to use the audio interface
+                                     "--skip=pcm::drop"
+                                     "--skip=pcm::info_from_default"
+                                     "--skip=pcm::playback_to_default"
+                                     "--skip=pcm::record_from_default"
+                                     "--skip=seq::print_seqs"
+                                     "--skip=seq::seq_loopback"
+                                     "--skip=seq::seq_portsubscribeiter"
+                                     "--skip=seq::seq_subscribe")
+           #:cargo-inputs `(("rust-alsa-sys" ,rust-alsa-sys-0.3)
+                            ("rust-bitflags" ,rust-bitflags-1)
+                            ("rust-libc" ,rust-libc-0.2)
+                            ("rust-nix" ,rust-nix-0.23))))))
+
 (define-public rust-alsa-sys-0.3
   (package
     (name "rust-alsa-sys")
