@@ -252,7 +252,7 @@ protocol.")
                    (let* ((out (assoc-ref outputs "out"))
                           (contrib (string-append out "/share/doc/mpc/contrib"))
                           (completion
-                           (string-append out "/etc/bash-completion.d/")))
+                           (string-append out "/etc/bash_completion.d/")))
                      (mkdir-p completion)
                      (rename-file (string-append contrib "/mpc-completion.bash")
                                   (string-append completion "/mpc"))))))))
