@@ -1815,6 +1815,37 @@
     (description "FFI bindings to libgstapp-1.0, part of Gstreamer.")
     (license license:expat)))
 
+(define-public rust-gstreamer-audio-sys-0.18
+  (package
+    (name "rust-gstreamer-audio-sys")
+    (version "0.18.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gstreamer-audio-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0z3xryblh75xp08xyw3m6jfz9azarcvl06dd3psc0n65agxmhhm3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             "--skip=cross_validate_constants_with_c")
+       #:cargo-inputs (("rust-glib-sys" ,rust-glib-sys-0.15)
+                       ("rust-gobject-sys" ,rust-gobject-sys-0.15)
+                       ("rust-gstreamer-base-sys" ,rust-gstreamer-base-sys-0.18)
+                       ("rust-gstreamer-sys" ,rust-gstreamer-sys-0.18)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-system-deps" ,rust-system-deps-6))
+       #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs (list pkg-config))
+    (inputs (list glib gstreamer gst-plugins-base))
+    (home-page "https://gstreamer.freedesktop.org")
+    (synopsis "FFI bindings to libgstaudio-1.0")
+    (description "FFI bindings to libgstaudio, part of Gstreamer.")
+    (license license:expat)))
+
 (define-public rust-gstreamer-base-0.18
   (package
     (name "rust-gstreamer-base")
