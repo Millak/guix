@@ -3092,6 +3092,31 @@ be used with the stdlib.")
     (description "Mirror of Rust's allocator API.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-alto-3
+  (package
+    (name "rust-alto")
+    (version "3.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "alto" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1rgsdmh346s3rwhzqacjc6nz7jap4dd72c1gfmkaq9sgzh9fhnyp"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:tests? #f  ; Not all files included.
+           #:cargo-inputs
+           `(("rust-al-sys" ,rust-al-sys-0.6)
+             ("rust-lazy-static" ,rust-lazy-static-0.2)
+             ("rust-parking-lot" ,rust-parking-lot-0.4))))
+    (home-page "https://github.com/jpernst/alto")
+    (synopsis
+     "Idiomatic Rust bindings for OpenAL 1.1 and extensions (including EFX)")
+    (description
+     "Rust bindings for OpenAL 1.1 and extensions (including EFX).")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-always-assert-0.1
   (package
     (name "rust-always-assert")
