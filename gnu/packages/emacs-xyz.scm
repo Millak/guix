@@ -9919,68 +9919,71 @@ in @code{html-mode}.")
     (license license:gpl3+)))
 
 (define-public emacs-slime
-  (package
-    (name "emacs-slime")
-    (version "2.28")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/slime/slime")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1acmm4w1mv1qzpnkgc4wyiilbx8l0dk16sx8wv815ri5ks289rll"))))
-    (build-system emacs-build-system)
-    (arguments
-     (list
-      #:include #~(cons* "\\.lisp$" "\\.asd$"
-                         "contrib"
-                         "lib/hyperspec.el"
-                         %default-include)
-      #:exclude #~(list "^slime-tests.el" "^contrib/test/"
-                        "^contrib/Makefile$" "^contrib/README.md$")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'install 'configure
-            (lambda* _
-              (emacs-substitute-variables "slime.el"
-                ("inferior-lisp-program" "sbcl"))))
-          (add-before 'install 'install-doc
-            (lambda _
-              (let ((info-dir (string-append #$output "/share/info"))
-                    (doc-dir (string-append #$output "/share/doc/"
-                                            #$name "-" #$version))
-                    (doc-files '("doc/slime-refcard.pdf"
-                                 "README.md" "NEWS" "PROBLEMS"
-                                 "CONTRIBUTING.md")))
-                (with-directory-excursion "doc"
-                  (substitute* "Makefile"
-                    (("infodir=/usr/local/info")
-                     (string-append "infodir=" info-dir)))
-                  (invoke "make" "html/index.html")
-                  (invoke "make" "slime.info")
-                  (install-file "slime.info" info-dir)
-                  (copy-recursively "html" (string-append doc-dir "/html")))
-                (for-each (lambda (f)
-                            (install-file f doc-dir)
-                            (delete-file f))
-                          doc-files)
-                (delete-file-recursively "doc")))))))
-    (propagated-inputs
-     (list emacs-macrostep))
-    (native-inputs
-     (list texinfo))
-    (home-page "https://github.com/slime/slime")
-    (synopsis "Superior Lisp Interaction Mode for Emacs")
-    (description
-     "SLIME extends Emacs with support for interactive programming in
+  ;; Update together with sbcl-slime-swank.
+  (let ((commit "0cc2e736112a0bc2a048ef6efd11dd67e3fbf7ad")
+        (revision "0"))
+    (package
+      (name "emacs-slime")
+      (version (git-version "2.28" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/slime/slime")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0iq9r4007rrnabj290y79i926x2m4j20j6b0x701pkywz926sn02"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:include #~(cons* "\\.lisp$" "\\.asd$"
+                           "contrib"
+                           "lib/hyperspec.el"
+                           %default-include)
+        #:exclude #~(list "^slime-tests.el" "^contrib/test/"
+                          "^contrib/Makefile$" "^contrib/README.md$")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'install 'configure
+              (lambda* _
+                (emacs-substitute-variables "slime.el"
+                  ("inferior-lisp-program" "sbcl"))))
+            (add-before 'install 'install-doc
+              (lambda _
+                (let ((info-dir (string-append #$output "/share/info"))
+                      (doc-dir (string-append #$output "/share/doc/"
+                                              #$name "-" #$version))
+                      (doc-files '("doc/slime-refcard.pdf"
+                                   "README.md" "NEWS" "PROBLEMS"
+                                   "CONTRIBUTING.md")))
+                  (with-directory-excursion "doc"
+                    (substitute* "Makefile"
+                      (("infodir=/usr/local/info")
+                       (string-append "infodir=" info-dir)))
+                    (invoke "make" "html/index.html")
+                    (invoke "make" "slime.info")
+                    (install-file "slime.info" info-dir)
+                    (copy-recursively "html" (string-append doc-dir "/html")))
+                  (for-each (lambda (f)
+                              (install-file f doc-dir)
+                              (delete-file f))
+                            doc-files)
+                  (delete-file-recursively "doc")))))))
+      (propagated-inputs
+       (list emacs-macrostep))
+      (native-inputs
+       (list texinfo))
+      (home-page "https://github.com/slime/slime")
+      (synopsis "Superior Lisp Interaction Mode for Emacs")
+      (description
+       "SLIME extends Emacs with support for interactive programming in
 Common Lisp.  The features are centered around @command{slime-mode},
 an Emacs minor mode that complements the standard @command{lisp-mode}.
 While lisp-mode supports editing Lisp source files, @command{slime-mode}
 adds support for interacting with a running Common Lisp process
 for compilation, debugging, documentation lookup, and so on.")
-    (license (list license:gpl2+ license:public-domain))))
+      (license (list license:gpl2+ license:public-domain)))))
 
 (define-public emacs-popup
   (package
