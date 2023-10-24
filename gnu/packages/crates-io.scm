@@ -61294,22 +61294,21 @@ contains the API endpoint response objects.")
 (define-public rust-rstar-0.9
   (package
     (name "rust-rstar")
-    (version "0.9.0")
+    (version "0.9.3")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "rstar" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "1bdby74j2h7rizs6p81xxilnjsi6w1z2xx2vigaw2gkj5cvlp3km"))))
+         (base32 "1yi5dbwayig107d3x7xmmx1yqxagnwl9qsg6cfy49aydbbz1n3xl"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-heapless" ,rust-heapless-0.6)
+     `(#:cargo-test-flags
+       '("--release" "--lib")
+       #:cargo-inputs
+       (("rust-heapless" ,rust-heapless-0.7)
         ("rust-num-traits" ,rust-num-traits-0.2)
-        ("rust-pdqselect" ,rust-pdqselect-0.1)
         ("rust-serde" ,rust-serde-1)
         ("rust-smallvec" ,rust-smallvec-1))
        #:cargo-development-inputs
