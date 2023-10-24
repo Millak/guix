@@ -9158,24 +9158,28 @@ extension of blocks.")
 (define-public rust-blocking-1
   (package
     (name "rust-blocking")
-    (version "1.0.2")
+    (version "1.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "blocking" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1s9myg9gqmwzrbc38p23bh4vkc8w4pbpddqrcrrl1xz1xpdp1qf5"))))
+        (base32 "0aiy8y524jvxl942hh5naxjjn7b5rjapsjqb6vfv6x45sk8a8dlc"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-async-channel" ,rust-async-channel-1)
+        ("rust-async-lock" ,rust-async-lock-2)
         ("rust-async-task" ,rust-async-task-4)
-        ("rust-atomic-waker" ,rust-atomic-waker-1)
-        ("rust-fastrand" ,rust-fastrand-1)
+        ("rust-fastrand" ,rust-fastrand-2)
+        ("rust-futures-io" ,rust-futures-io-0.3)
         ("rust-futures-lite" ,rust-futures-lite-1)
-        ("rust-once-cell" ,rust-once-cell-1))))
-    (home-page "https://github.com/stjepang/blocking")
+        ("rust-piper" ,rust-piper-0.2)
+        ("rust-tracing" ,rust-tracing-0.1))
+       #:cargo-development-inputs
+       (("rust-futures-lite" ,rust-futures-lite-1))))
+    (home-page "https://github.com/smol-rs/blocking")
     (synopsis "Thread pool for isolating blocking I/O in async programs")
     (description
      "This package provides a thread pool for isolating blocking I/O in async
