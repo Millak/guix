@@ -29844,6 +29844,29 @@ libcurl, which is intended to be used with the @code{git2} crate.")
         ("rust-log" ,rust-log-0.4)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-gix-trace-0.1
+  (package
+    (name "rust-gix-trace")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-trace" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0dmqswxz228in9p7vwhc0cq83r6sxkidcrwhnyn3yb0ml4ixddln"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-document-features" ,rust-document-features-0.2)
+        ("rust-tracing-core" ,rust-tracing-core-0.1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Crate to provide minimal `tracing` support")
+    (description
+     "This package provides a crate to provide minimal `tracing` support that
+can be turned off to zero cost.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-transport-0.32
   (package
     (name "rust-gix-transport")
