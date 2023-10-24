@@ -15503,6 +15503,28 @@ contents of the OS-level clipboard.")
 numbers using the CORDIC method.")
     (license license:bsd-3)))
 
+(define-public rust-coreaudio-sys-0.2
+  (package
+    (name "rust-coreaudio-sys")
+    (version "0.2.12")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "coreaudio-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "091b4sq3kl8n4dy86l4mxq9vjzsn8w8b51xzfcpxwjkciqjv4d7h"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ; Only builds for macos or ios.
+       #:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.64))))
+    (home-page "https://github.com/RustAudio/coreaudio-sys")
+    (synopsis
+     "Bindings for Apple's CoreAudio frameworks generated via rust-bindgen")
+    (description
+     "Bindings for Apple's CoreAudio frameworks generated via rust-bindgen.")
+    (license license:expat)))
+
 (define-public rust-core-extensions-1
   (package
     (name "rust-core-extensions")
