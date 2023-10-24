@@ -1478,7 +1478,7 @@ as RetroArch.")
                  "--disable-builtinglslang")))))))
     (inputs
      `(("alsa-lib" ,alsa-lib)
-       ("ffmpeg" ,ffmpeg-4)
+       ("ffmpeg" ,ffmpeg)
        ("flac" ,flac)
        ("freetype" ,freetype)
        ("glslang" ,glslang)
