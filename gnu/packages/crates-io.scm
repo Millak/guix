@@ -29844,6 +29844,35 @@ libcurl, which is intended to be used with the @code{git2} crate.")
         ("rust-log" ,rust-log-0.4)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-gix-date-0.5
+  (package
+    (name "rust-gix-date")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-date" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "00jrc86398553z2mdljx9vh8skqgdydhsrr11ak3148fcx2l25mw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bstr" ,rust-bstr-1)
+        ("rust-document-features" ,rust-document-features-0.2)
+        ("rust-itoa" ,rust-itoa-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-time" ,rust-time-0.3))
+       #:cargo-development-inputs
+       (("rust-once-cell" ,rust-once-cell-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Parse dates the way git does")
+    (description
+     "This package provides a crate of the gitoxide project parsing dates the
+way git does.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-diff-0.30
   (package
     (name "rust-gix-diff")
