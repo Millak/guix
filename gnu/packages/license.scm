@@ -49,7 +49,7 @@
 (define-public perl-regexp-pattern-license
   (package
     (name "perl-regexp-pattern-license")
-    (version "3.1.94")
+    (version "3.11.0")
     (source
      (origin
        (method url-fetch)
@@ -57,12 +57,11 @@
              "mirror://cpan/authors/id/J/JO/JONASS/Regexp-Pattern-License-"
              "v" version ".tar.gz"))
        (sha256
-        (base32 "0kznpv628jrndn4nw646f6pl7yqvmacwljlygvsjfdkyh0i4sr2k"))))
+        (base32 "1blkraliby1696pqici7k1pkwcrf7gbdavfxfffa2mk8lr4a6xw6"))))
     (build-system perl-build-system)
     (native-inputs
-     (list perl-regexp-pattern perl-test-exception))
-    (propagated-inputs
-     (list perl-strictures-2 perl-try-tiny))
+     (list perl-regexp-pattern perl-test-regexp-pattern
+           perl-test-without-module perl-test2-suite perl-try-tiny))
     (home-page "https://metacpan.org/release/Regexp-Pattern-License")
     (synopsis "Regular expressions for legal licenses")
     (description "Regexp::Pattern::License provides a hash of regular
