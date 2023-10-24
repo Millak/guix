@@ -1477,30 +1477,30 @@ as RetroArch.")
                  "--disable-builtinflac"
                  "--disable-builtinglslang")))))))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("ffmpeg" ,ffmpeg)
-       ("flac" ,flac)
-       ("freetype" ,freetype)
-       ("glslang" ,glslang)
-       ("libxinerama" ,libxinerama)
-       ("libxkbcommon" ,libxkbcommon)
-       ("libxml2" ,libxml2)
-       ("libxrandr" ,libxrandr)
-       ("libxv" ,libxv)
-       ("mbedtls-apache" ,mbedtls-apache)
-       ("mesa" ,mesa)
-       ("openal" ,openal)
-       ("openssl" ,openssl)
-       ("pulseaudio" ,pulseaudio)
-       ("python" ,python)
-       ("qtbase" ,qtbase-5)
-       ("sdl" ,sdl2)
-       ("spirv-headers" ,spirv-headers)
-       ("spirv-tools" ,spirv-tools)
-       ("udev" ,eudev)
-       ("vulkan-loader" ,vulkan-loader)
-       ("wayland" ,wayland)
-       ("zlib" ,zlib)))
+     (list alsa-lib
+           eudev
+           ffmpeg
+           flac
+           freetype
+           glslang
+           libxinerama
+           libxkbcommon
+           libxml2
+           libxrandr
+           libxv
+           mbedtls-apache
+           mesa
+           openal
+           openssl
+           pulseaudio
+           python
+           qtbase-5
+           sdl2
+           spirv-headers
+           spirv-tools
+           vulkan-loader
+           wayland
+           zlib))
     (native-inputs
      (list pkg-config wayland-protocols which))
     (native-search-paths
