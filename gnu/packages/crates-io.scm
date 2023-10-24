@@ -33702,6 +33702,28 @@ Rust that are very fast but not thread-safe.  A thread-safe (and slower)
 variant of this library is available separately as @code{im}.")
     (license license:mpl2.0)))
 
+(define-public rust-imara-diff-0.1
+  (package
+    (name "rust-imara-diff")
+    (version "0.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "imara-diff" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1f0caw8bizfhrvyvzqix7ffmfnaynlyz7caljs5ipj8gsw51v379"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; Do not pull in old copies of rust-gix.
+       #:cargo-inputs
+       (("rust-ahash" ,rust-ahash-0.8)
+        ("rust-hashbrown" ,rust-hashbrown-0.12))))
+    (home-page "https://github.com/pascalkuthe/imara-diff")
+    (synopsis "Minimal terminfo libary")
+    (description "This package provides a minimal terminfo libary.")
+    (license license:asl2.0)))
+
 (define-public rust-impl-codec-0.5
   (package
     (name "rust-impl-codec")
