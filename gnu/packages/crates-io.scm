@@ -29844,6 +29844,34 @@ libcurl, which is intended to be used with the @code{git2} crate.")
         ("rust-log" ,rust-log-0.4)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-gix-glob-0.8
+  (package
+    (name "rust-gix-glob")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-glob" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13jm1anf9xkp0hpzv9va72b9003kmwflx0ni0fbhf7xbh0gdw2nd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; no method named `trim_start` found for reference `&BStr`
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-2)
+        ("rust-bstr" ,rust-bstr-1)
+        ("rust-document-features" ,rust-document-features-0.2)
+        ("rust-gix-features" ,rust-gix-features-0.30)
+        ("rust-gix-path" ,rust-gix-path-0.8)
+        ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Crate of the gitoxide project dealing with pattern matching")
+    (description
+     "This package provides a crate of the gitoxide project dealing with pattern
+matching.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-hash-0.11
   (package
     (name "rust-gix-hash")
