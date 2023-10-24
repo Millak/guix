@@ -29844,6 +29844,44 @@ libcurl, which is intended to be used with the @code{git2} crate.")
         ("rust-log" ,rust-log-0.4)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-gix-pack-0.36
+  (package
+    (name "rust-gix-pack")
+    (version "0.36.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-pack" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "125gs2hw111izv81zcj9i4mm503ikchbfv3xn7npw0sn675i8akx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `gix_testtools`
+       #:cargo-inputs
+       (("rust-clru" ,rust-clru-0.6)
+        ("rust-document-features" ,rust-document-features-0.2)
+        ("rust-gix-chunk" ,rust-gix-chunk-0.4)
+        ("rust-gix-diff" ,rust-gix-diff-0.30)
+        ("rust-gix-features" ,rust-gix-features-0.30)
+        ("rust-gix-hash" ,rust-gix-hash-0.11)
+        ("rust-gix-hashtable" ,rust-gix-hashtable-0.2)
+        ("rust-gix-object" ,rust-gix-object-0.30)
+        ("rust-gix-path" ,rust-gix-path-0.8)
+        ("rust-gix-tempfile" ,rust-gix-tempfile-6)
+        ("rust-gix-traverse" ,rust-gix-traverse-0.26)
+        ("rust-memmap2" ,rust-memmap2-0.5)
+        ("rust-parking-lot" ,rust-parking-lot-0.12)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-uluru" ,rust-uluru-3))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Implements git packs and related data structures")
+    (description
+     "This package implements git packs and related data structures.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-packetline-0.16
   (package
     (name "rust-gix-packetline")
