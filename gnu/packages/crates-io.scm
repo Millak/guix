@@ -65991,6 +65991,30 @@ fragment of code.")
         (base32
          "0gkyqxk760mp1lfcg6lhjk95ajc89nr0qdd0vl4ic0g8pyxcy9mr"))))))
 
+(define-public rust-serde-buf-0.1
+  (package
+    (name "rust-serde-buf")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serde-buf" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1k2nc3pa7rbzyhhnjakw6nkx2wa6da6nrxf65s6p2d3xdjfvx1is"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-serde-test" ,rust-serde-test-1))))
+    (home-page "https://github.com/KodrAus/serde_buf.git")
+    (synopsis "Generic buffering for serde")
+    (description "Generic buffering for serde.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-serde-bytes-0.11
   (package
     (name "rust-serde-bytes")
