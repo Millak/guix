@@ -54197,6 +54197,30 @@ pointers:
 configuration file and/or environment variables.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ptyprocess-0.4
+  (package
+    (name "rust-ptyprocess")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ptyprocess" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kz8gzsr2pjpxcxy708338wcdqnxg3cpfbca8q8a44gvpvvsw1by"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; Some of the tests hang in the build environment.
+         "--skip=cat_intr")
+       #:cargo-inputs (("rust-nix" ,rust-nix-0.26))))
+    (home-page "https://github.com/zhiburt/ptyprocess")
+    (synopsis "Library to work with PTY/TTY on Unix systems")
+    (description
+     "This package provides a library to work with PTY/TTY on Unix systems.")
+    (license license:expat)))
+
 (define-public rust-publicsuffix-2
   (package
     (name "rust-publicsuffix")
