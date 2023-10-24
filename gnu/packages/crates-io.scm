@@ -11557,33 +11557,31 @@ supported by Cargo.")
 (define-public rust-cargo-util-0.2
   (package
     (name "rust-cargo-util")
-    (version "0.2.3")
+    (version "0.2.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cargo-util" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "13wl16p29256rvrsnsr89bifkz1n3m96irwxv6w0w49fb00cvq74"))))
+        (base32 "0p94sivg6svbj0sy5k4dpkphr6rbq3mi4ssbzcf1yw2zb1djn13p"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-core-foundation" ,rust-core-foundation-0.9)
-        ("rust-crypto-hash" ,rust-crypto-hash-0.3)
         ("rust-filetime" ,rust-filetime-0.2)
         ("rust-hex" ,rust-hex-0.4)
         ("rust-jobserver" ,rust-jobserver-0.1)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-miow" ,rust-miow-0.5)
+        ("rust-miow" ,rust-miow-0.6)
         ("rust-same-file" ,rust-same-file-1)
+        ("rust-sha2" ,rust-sha2-0.10)
         ("rust-shell-escape" ,rust-shell-escape-0.1)
         ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-tracing" ,rust-tracing-0.1)
         ("rust-walkdir" ,rust-walkdir-2)
-        ("rust-winapi" ,rust-winapi-0.3))))
+        ("rust-windows-sys" ,rust-windows-sys-0.48))))
     (inputs
      (list openssl))
     (native-inputs
