@@ -32694,6 +32694,27 @@ HTTP request or response body.")
      "This crates parses and formats HTTP datetime strings.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-human-format-1
+  (package
+    (name "rust-human-format")
+    (version "1.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "human-format" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1c3w2lm41gmnd82acjsi6y50ym2sh5fdb6abghysmaaqsxhf5k46"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t))   ; Wants the galvanic framework for the tests.
+    (home-page "https://github.com/BobGneu/human-format-rs")
+    (synopsis "Rust Port of human-format from node")
+    (description
+     "Rust Port of human-format from node, formatting numbers for us, while the
+machines are still at bay.")
+    (license license:expat)))
+
 (define-public rust-humantime-serde-1
   (package
     (name "rust-humantime-serde")
