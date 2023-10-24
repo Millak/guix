@@ -56941,6 +56941,43 @@ random generic types.")
     (license
      (list license:zlib license:asl2.0 license:expat))))
 
+(define-public rust-ratatui-0.20
+  (package
+    (name "rust-ratatui")
+    (version "0.20.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ratatui" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ab8w62dkp2c2l8s1xb904imqlv7aqkc07hm6bp01afbphrd1h6w"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=buffer::tests::index_of_panics_on_out_of_bounds"
+         "--skip=buffer::tests::pos_of_panics_on_out_of_bounds"
+         "--skip=buffer::Buffer::index_of"
+         "--skip=buffer::Buffer::pos_of")
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-cassowary" ,rust-cassowary-0.3)
+        ("rust-crossterm" ,rust-crossterm-0.26)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-termion" ,rust-termion-2)
+        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
+        ("rust-unicode-width" ,rust-unicode-width-0.1))
+       #:cargo-development-inputs
+       (("rust-argh" ,rust-argh-0.1)
+        ("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/ratatui-org/ratatui")
+    (synopsis "Library for cooking up terminal user interfaces")
+    (description
+     "This package provides a library that's all about cooking up terminal user
+interfaces.")
+    (license license:expat)))
+
 (define-public rust-raw-cpuid-10
   (package
     (name "rust-raw-cpuid")
