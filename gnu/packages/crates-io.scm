@@ -6996,22 +6996,12 @@ c6e7d37.  However, this package works only up to 128 bytes.")
      (origin
        (method url-fetch)
        (uri (crate-uri "base64" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1zq33had71xh48n17g4kqs96szhx3yh7qibzwi4fk217n3vz0h9l"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; 'doctest' isn't stable until rust-1.40
-           (substitute* "src/lib.rs"
-             (("\\(doctest") "(test"))
-           #t))))
+        (base32 "1zq33had71xh48n17g4kqs96szhx3yh7qibzwi4fk217n3vz0h9l"))))
     (arguments
      `(#:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.3)
-        ("rust-doc-comment" ,rust-doc-comment-0.3)
         ("rust-rand" ,rust-rand-0.6))))))
 
 (define-public rust-base64-0.11
@@ -7023,11 +7013,14 @@ c6e7d37.  However, this package works only up to 128 bytes.")
      (origin
        (method url-fetch)
        (uri (crate-uri "base64" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1iqmims6yvr6vwzyy54qd672zw29ipjj17p8klcr578c9ajpw6xl"))))))
+        (base32 "1iqmims6yvr6vwzyy54qd672zw29ipjj17p8klcr578c9ajpw6xl"))))
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-doc-comment" ,rust-doc-comment-0.3)
+        ("rust-rand" ,rust-rand-0.6))))))
 
 (define-public rust-base64-0.10
   (package
