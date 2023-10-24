@@ -29844,6 +29844,36 @@ libcurl, which is intended to be used with the @code{git2} crate.")
         ("rust-log" ,rust-log-0.4)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-gix-negotiate-0.2
+  (package
+    (name "rust-gix-negotiate")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-negotiate" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "137hyq036adi5kapw98vd9b0087lxljfkjaz81glmr0jx7qkwp4l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `gix_testtools`
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-2)
+        ("rust-gix-commitgraph" ,rust-gix-commitgraph-0.16)
+        ("rust-gix-hash" ,rust-gix-hash-0.11)
+        ("rust-gix-object" ,rust-gix-object-0.30)
+        ("rust-gix-revision" ,rust-gix-revision-0.15)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis
+     "Crate of the gitoxide project implementing negotiation algorithms")
+    (description
+     "This package provides a crate of the gitoxide project implementing
+negotiation algorithms.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-object-0.30
   (package
     (name "rust-gix-object")
