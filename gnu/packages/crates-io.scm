@@ -83189,24 +83189,22 @@ for @code{Valuable} types.")
 (define-public rust-value-bag-1
   (package
     (name "rust-value-bag")
-    (version "1.0.0-alpha.9")
+    (version "1.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "value-bag" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0mgc2vlqikx16gabp4ghbm3fs773kxvwjmrn57rydxs92a6vf292"))))
+        (base32 "1gjvsnhhf9jp8h62zin6azqrpmgmnxq2ppj72d2dcayy5n8f2wja"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-ctor" ,rust-ctor-0.1)
-        ("rust-erased-serde" ,rust-erased-serde-0.3)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-fmt" ,rust-serde-fmt-1)
-        ("rust-sval" ,rust-sval-1)
-        ("rust-version-check" ,rust-version-check-0.9))))
+     `(#:cargo-inputs
+       (("rust-value-bag-serde1" ,rust-value-bag-serde1-1)
+        ("rust-value-bag-sval2" ,rust-value-bag-sval2-1))
+       #:cargo-development-inputs
+       (("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
     (home-page "https://github.com/sval-rs/value-bag")
     (synopsis "Anonymous structured values")
     (description "This package provides anonymous structured values.")
