@@ -308,7 +308,7 @@ propagated by default) such as @code{gst-plugins-good} and
                  ((#:configure-flags flags)
                   #~(cons "-DUSE_SOUP2=ON" #$flags))))
     (propagated-inputs
-     (modify-inputs (package-propagated-inputs webkitgtk)
+     (modify-inputs (package-propagated-inputs webkitgtk-for-gtk3)
        (replace "libsoup" libsoup-minimal-2)))))
 
 (define-public wpewebkit
