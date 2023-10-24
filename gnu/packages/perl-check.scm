@@ -1301,6 +1301,26 @@ Filesystems' in perlport.  The author of a distribution can select which tests
 to execute.")
     (license perl-license)))
 
+(define-public perl-test-regexp-pattern
+  (package
+    (name "perl-test-regexp-pattern")
+    (version "0.010")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/P/PE/PERLANCAR/Test-Regexp-Pattern-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "11lmwa5y41lhvk0sikn35b4l678jc2y9ybw0rfxv844cjcas0cm4"))))
+    (build-system perl-build-system)
+    (propagated-inputs (list perl-hash-defhash perl-regexp-pattern))
+    (home-page "https://metacpan.org/release/Test-Regexp-Pattern")
+    (synopsis "Test Regexp::Pattern patterns")
+    (description "This module performs various checks on a module's
+@code{Regexp::Pattern} patterns.")
+    (license perl-license)))
+
 (define-public perl-test-requires
   (package
     (name "perl-test-requires")
