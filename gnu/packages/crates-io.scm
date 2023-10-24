@@ -8344,7 +8344,7 @@ behave like a set of bitflags.")
        (sha256
         (base32 "12ki6w8gn1ldq7yz9y680llwk5gmrhrzszaa17g1sbrw2r2qvwxy"))))
     (arguments
-     `(#:tests? #f                      ; Tests require rust-1.46 or newer.
+     `(#:tests? #f      ; could not find `Serialize` in `serde`
        #:cargo-inputs
        (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
         ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))
