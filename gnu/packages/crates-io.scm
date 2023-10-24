@@ -5255,25 +5255,24 @@ Rust.")
 (define-public rust-async-channel-1
   (package
     (name "rust-async-channel")
-    (version "1.5.1")
+    (version "1.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "async-channel" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ffn42ig82az8ndgjb545imifarcavwxs9dff6psbdkdjj1hsx2r"))))
+        (base32 "0dbdlkzlncbibd3ij6y6jmvjd0cmdn48ydcfdpfhw09njd93r5c1"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-concurrent-queue" ,rust-concurrent-queue-1)
+       (("rust-concurrent-queue" ,rust-concurrent-queue-2)
         ("rust-event-listener" ,rust-event-listener-2)
         ("rust-futures-core" ,rust-futures-core-0.3))
        #:cargo-development-inputs
-       (("rust-blocking" ,rust-blocking-0.6)
-        ("rust-easy-parallel" ,rust-easy-parallel-3)
+       (("rust-easy-parallel" ,rust-easy-parallel-3)
         ("rust-futures-lite" ,rust-futures-lite-1))))
-    (home-page "https://github.com/stjepang/async-channel")
+    (home-page "https://github.com/smol-rs/async-channel")
     (synopsis "Async multi-producer multi-consumer channel")
     (description
      "Async multi-producer multi-consumer channel")
