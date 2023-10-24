@@ -29844,6 +29844,35 @@ libcurl, which is intended to be used with the @code{git2} crate.")
         ("rust-log" ,rust-log-0.4)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-gix-config-value-0.12
+  (package
+    (name "rust-gix-config-value")
+    (version "0.12.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-config-value" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15rqyj523ckas16sn0jbqpgzln4h1fcpdsnwj4lw0hbl8d0lz1vf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-2)
+        ("rust-bstr" ,rust-bstr-1)
+        ("rust-document-features" ,rust-document-features-0.2)
+        ("rust-gix-path" ,rust-gix-path-0.8)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis
+     "Crate of the gitoxide project providing git-config value parsing")
+    (description
+     "This package provides a crate of the gitoxide project providing git-config
+value parsing.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-credentials-0.15
   (package
     (name "rust-gix-credentials")
