@@ -29844,6 +29844,30 @@ libcurl, which is intended to be used with the @code{git2} crate.")
         ("rust-log" ,rust-log-0.4)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-gix-quote-0.4
+  (package
+    (name "rust-gix-quote")
+    (version "0.4.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-quote" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "01f9rm8m7pd6j6bhqiq1hgk11sn9pad27fsz8sj7n4nhgnlqcp27"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bstr" ,rust-bstr-1)
+        ("rust-btoi" ,rust-btoi-0.4)
+        ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Various quotations used by git")
+    (description
+     "This package provides a crate of the gitoxide project dealing with various
+quotations used by git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-ref-0.30
   (package
     (name "rust-gix-ref")
