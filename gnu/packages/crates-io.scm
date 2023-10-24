@@ -29844,6 +29844,28 @@ libcurl, which is intended to be used with the @code{git2} crate.")
         ("rust-log" ,rust-log-0.4)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-gix-utils-0.1
+  (package
+    (name "rust-gix-utils")
+    (version "0.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-utils" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "03rgnpcgy968sqqamm7w8197ykklhfas2lnr1rpf44w6fbf8jpdq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-fastrand" ,rust-fastrand-2))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis
+     "Crate with `gitoxide` utilities that don't need feature toggles")
+    (description
+     "This package provides a crate with `gitoxide` utilities that don't need
+feature toggles.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-validate-0.7
   (package
     (name "rust-gix-validate")
