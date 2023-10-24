@@ -87331,29 +87331,16 @@ including a line breaking iterator.")
 (define-public rust-xml-rs-0.8
   (package
     (name "rust-xml-rs")
-    (version "0.8.3")
+    (version "0.8.19")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "xml-rs" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "12ndxyhzxw2zdr76ql8nfdwb2vwhvdkrxwk4pbjafqfglmjv0zdh"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; 'doctest' isn't stable until rust-1.40
-           (substitute* "src/lib.rs"
-             (("\\(doctest") "(test"))
-           #t))))
+        (base32 "0nnpvk3fv32hgh7vs9gbg2swmzxx5yz73f4b7rak7q39q2x9rjqg"))))
     (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-development-inputs
-       (("rust-doc-comment" ,rust-doc-comment-0.3)
-        ("rust-lazy-static" ,rust-lazy-static-1))))
-    (home-page "https://github.com/netvl/xml-rs")
+    (home-page "https://lib.rs/crates/xml-rs")
     (synopsis "XML library in pure Rust")
     (description "An XML library in pure Rust.")
     (license license:expat)))
