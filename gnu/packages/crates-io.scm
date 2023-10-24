@@ -29844,6 +29844,27 @@ libcurl, which is intended to be used with the @code{git2} crate.")
         ("rust-log" ,rust-log-0.4)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-gix-chunk-0.4
+  (package
+    (name "rust-gix-chunk")
+    (version "0.4.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-chunk" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14s4f3g8n6yk6q28f60528wzcf10g8y8ycih04098y8g89jflhjv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Interact with the git chunk file format")
+    (description
+     "Interact with the git chunk file format used in multi-pack index and
+commit-graph files.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-command-0.2
   (package
     (name "rust-gix-command")
