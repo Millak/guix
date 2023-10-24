@@ -83358,6 +83358,25 @@ if they were just another Rust module.")
         ("rust-windows-interface" ,rust-windows-interface-0.46)
         ("rust-windows-targets" ,rust-windows-targets-0.42))))))
 
+(define-public rust-windows-0.44
+  (package
+    (inherit rust-windows-0.48)
+    (name "rust-windows")
+    (version "0.44.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ax1ip82dhszxz4hhsrdj3b0681xw6axahnfldxcgi506nmmsx4y"))))
+    (arguments
+     `(#:tests? #f      ; Test suite only runs on Windows.
+       #:cargo-inputs
+       (("rust-windows-implement" ,rust-windows-implement-0.44)
+        ("rust-windows-interface" ,rust-windows-interface-0.44)
+        ("rust-windows-targets" ,rust-windows-targets-0.42))))))
+
 (define-public rust-windows-0.32
   (package
     (inherit rust-windows-0.46)
