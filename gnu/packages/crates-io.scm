@@ -54676,22 +54676,20 @@ particularly useful for printing structured recursive data like trees.")
 (define-public rust-pretty-assertions-1
   (package
     (name "rust-pretty-assertions")
-    (version "1.3.0")
+    (version "1.4.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "pretty_assertions" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0mgp1ajl3fdc55h989ph48znnk86m41j9dqnpg80yy5a435rnpm2"))))
+                "0rmsnqlpmpfjp5gyi31xgc48kdhc1kqn246bnc494nwadhdfwz5g"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-ctor" ,rust-ctor-0.1)
-        ("rust-diff" ,rust-diff-0.1)
-        ("rust-output-vt100" ,rust-output-vt100-0.1)
+       (("rust-diff" ,rust-diff-0.1)
         ("rust-yansi" ,rust-yansi-0.5))))
-    (home-page "https://github.com/colin-kiegel/rust-pretty-assertions")
+    (home-page "https://github.com/rust-pretty-assertions/rust-pretty-assertions")
     (synopsis "Drop-in replacements for assert_eq! and assert_ne!")
     (description
      "Overwrite @code{assert_eq!} and @code{assert_ne!} with drop-in
