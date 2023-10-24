@@ -29844,6 +29844,36 @@ libcurl, which is intended to be used with the @code{git2} crate.")
         ("rust-log" ,rust-log-0.4)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-gix-tempfile-6
+  (package
+    (name "rust-gix-tempfile")
+    (version "6.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-tempfile" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "047baclw78xkzjg04z5290x7vhcz270jpw7vdm25rp7922q5qy5k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-dashmap" ,rust-dashmap-5)
+        ("rust-document-features" ,rust-document-features-0.2)
+        ("rust-gix-fs" ,rust-gix-fs-0.2)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-parking-lot" ,rust-parking-lot-0.12)
+        ("rust-signal-hook" ,rust-signal-hook-0.3)
+        ("rust-signal-hook-registry" ,rust-signal-hook-registry-1)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Tempfile implementation with a global registry to assure cleanup")
+    (description
+     "This package provides a tempfile implementation with a global registry to
+assure cleanup.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-trace-0.1
   (package
     (name "rust-gix-trace")
