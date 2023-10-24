@@ -35127,6 +35127,33 @@ format.")
     (description "This package provides a simple ivf muxer.")
     (license license:bsd-2)))
 
+(define-public rust-jack-0.8
+  (package
+    (name "rust-jack")
+    (version "0.8.4")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "jack" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0lz10s0n2gy128m65pf96is9ip00vfgvnkfja0y9ydmv24pw2ajx"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:tests? #f
+           #:cargo-inputs `(("rust-bitflags" ,rust-bitflags-1)
+                            ("rust-jack-sys" ,rust-jack-sys-0.2)
+                            ("rust-lazy-static" ,rust-lazy-static-1)
+                            ("rust-libc" ,rust-libc-0.2)
+                            ("rust-log" ,rust-log-0.4)
+                            ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5))))
+    (inputs (list jack-2))
+    (home-page "https://github.com/RustAudio/rust-jack")
+    (synopsis "Rust bindings for the JACK low-latency audio and MIDI system")
+    (description "This package provides bindings for the JACK low-latency
+and MIDI audio server.")
+    (license license:expat)))
+
 (define-public rust-jack-sys-0.2
   (package
     (name "rust-jack-sys")
