@@ -3870,26 +3870,29 @@ coverage-guided, mutation-based fuzzers.")
 (define-public rust-arc-swap-1
   (package
     (name "rust-arc-swap")
-    (version "1.2.0")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "arc-swap" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0wwdvayqa07grw4ljvb6plbw0wdg78jcdg3hwnlq2yqljlrxdmyl"))))
+        (base32 "19n9j146bpxs9phyh48gmlh9jjsdijr9p9br04qms0g9ypfsvp5x"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-adaptive-barrier" ,rust-adaptive-barrier-0.1)
-        ("rust-criterion" ,rust-criterion-0.3)
+     `(#:cargo-inputs
+       (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-adaptive-barrier" ,rust-adaptive-barrier-1)
+        ("rust-criterion" ,rust-criterion-0.4)
         ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
-        ("rust-itertools" ,rust-itertools-0.9)
+        ("rust-itertools" ,rust-itertools-0.10)
         ("rust-num-cpus" ,rust-num-cpus-1)
         ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-parking-lot" ,rust-parking-lot-0.11)
-        ("rust-proptest" ,rust-proptest-0.10))))
+        ("rust-parking-lot" ,rust-parking-lot-0.12)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-test" ,rust-serde-test-1))))
     (home-page "https://github.com/vorner/arc-swap")
     (synopsis "Atomically swappable Arc")
     (description "This package provides an atomically swappable Arc.")
