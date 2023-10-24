@@ -33521,25 +33521,23 @@ ignore files such as @file{.gitignore} against file paths.")
 (define-public rust-im-rc-15
   (package
     (name "rust-im-rc")
-    (version "15.0.0")
+    (version "15.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "im-rc" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0gsgcs1nn38r40973l6zr1v4d85f4s9qyl32n5f20jphf5z9ba1w"))))
+        (base32 "1zp5vdjj4b4lg8jnrz0wmdln2cdd9gn24a4psdvwd050bykma6dg"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-arbitrary" ,rust-arbitrary-0.4)
+       (("rust-arbitrary" ,rust-arbitrary-1)
         ("rust-bitmaps" ,rust-bitmaps-2)
-        ("rust-proptest" ,rust-proptest-0.9)
-        ("rust-quickcheck" ,rust-quickcheck-0.9)
-        ("rust-rand-core" ,rust-rand-core-0.5)
-        ("rust-rand-xoshiro" ,rust-rand-xoshiro-0.4)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-rand-core" ,rust-rand-core-0.6)
+        ("rust-rand-xoshiro" ,rust-rand-xoshiro-0.6)
         ("rust-rayon" ,rust-rayon-1)
         ("rust-refpool" ,rust-refpool-0.4)
         ("rust-serde" ,rust-serde-1)
@@ -33548,14 +33546,13 @@ ignore files such as @file{.gitignore} against file paths.")
         ("rust-version-check" ,rust-version-check-0.9))
        #:cargo-development-inputs
        (("rust-metrohash" ,rust-metrohash-1)
-        ("rust-pretty-assertions" ,rust-pretty-assertions-0.6)
-        ("rust-proptest" ,rust-proptest-0.9)
-        ("rust-proptest-derive" ,rust-proptest-derive-0.1)
-        ("rust-rand" ,rust-rand-0.7)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-proptest-derive" ,rust-proptest-derive-0.3)
+        ("rust-rand" ,rust-rand-0.8)
         ("rust-rayon" ,rust-rayon-1)
         ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-version-check" ,rust-version-check-0.9))))
+        ("rust-serde-json" ,rust-serde-json-1))))
     (home-page "https://docs.rs/crate/im")
     (synopsis "Fast immutable collection datatypes for Rust")
     (description "@code{im-rc} provides immutable collection datatypes for
