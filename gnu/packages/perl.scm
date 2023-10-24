@@ -639,6 +639,27 @@ replacement for @command{xmlto}.")
 configuration files and parsing command line arguments.")
     (license (package-license perl))))
 
+(define-public perl-array-intspan
+  (package
+    (name "perl-array-intspan")
+    (version "2.004")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/D/DD/DDUMONT/Array-IntSpan-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "168crsh363lgh2s127hnrbda37wvcq36xpcv59mywm89rspigkad"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/Array-IntSpan")
+    (synopsis "Handle arrays of scalars or objects using integer ranges")
+    (description "This module brings the speed advantages of
+@code{Set::IntSpan} (written by Steven McDougall) to arrays.  Uses include
+manipulating grades, routing tables, or any other situation where you have
+mutually exclusive ranges of integers that map to given values.")
+    (license license:artistic2.0)))
+
 (define-public perl-array-utils
   (package
     (name "perl-array-utils")
