@@ -29844,6 +29844,38 @@ libcurl, which is intended to be used with the @code{git2} crate.")
         ("rust-log" ,rust-log-0.4)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-gix-attributes-0.13
+  (package
+    (name "rust-gix-attributes")
+    (version "0.13.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-attributes" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0cfciacamnqbxl02l5fb7pcfbzn6r9gnyh86gvc80brqmj89bdvq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bstr" ,rust-bstr-1)
+        ("rust-document-features" ,rust-document-features-0.2)
+        ("rust-gix-glob" ,rust-gix-glob-0.8)
+        ("rust-gix-path" ,rust-gix-path-0.8)
+        ("rust-gix-quote" ,rust-gix-quote-0.4)
+        ("rust-kstring" ,rust-kstring-2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-unicode-bom" ,rust-unicode-bom-2))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Crate of the gitoxide project dealing .gitattributes files")
+    (description
+     "This package provides a crate of the gitoxide project dealing .gitattributes
+files.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-bitmap-0.2
   (package
     (name "rust-gix-bitmap")
