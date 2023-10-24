@@ -13945,7 +13945,7 @@ template logic does not have access outside the template without permission.")
 (define-public perl-regexp-pattern
   (package
     (name "perl-regexp-pattern")
-    (version "0.2.8")
+    (version "0.2.14")
     (source
      (origin
        (method url-fetch)
@@ -13953,7 +13953,7 @@ template logic does not have access outside the template without permission.")
              "mirror://cpan/authors/id/P/PE/PERLANCAR/Regexp-Pattern-"
              version ".tar.gz"))
        (sha256
-        (base32 "064igp2wxgsz4yb33v1r90i8clwjzs2xnpvw9niqlqrbzzrd4q1l"))))
+        (base32 "05j1fzgmv02n5qz4vyf30p1sj7v5lv2rab258aqwmb4w5gvjqaa4"))))
     (build-system perl-build-system)
     (native-inputs
      (list perl-test-exception))
