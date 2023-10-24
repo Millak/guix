@@ -11313,6 +11313,35 @@ the library crate of Cargo.")
     (description "Load and resolve Cargo configuration.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-cargo-credential-0.3
+  (package
+    (name "rust-cargo-credential")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo-credential" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1da8gx0lv4bkr3g070533mvyl638bviv506v8791archyy3nqv32"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-time" ,rust-time-0.3)
+        ("rust-windows-sys" ,rust-windows-sys-0.48))
+       #:cargo-development-inputs
+       (("rust-snapbox" ,rust-snapbox-0.4))))
+    (home-page "https://github.com/rust-lang/cargo")
+    (synopsis "Library to assist writing Cargo credential helpers")
+    (description
+     "This package provides a library to assist writing Cargo credential helpers.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-cargo-metadata-0.15
   (package
     (name "rust-cargo-metadata")
