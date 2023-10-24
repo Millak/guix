@@ -29844,6 +29844,32 @@ libcurl, which is intended to be used with the @code{git2} crate.")
         ("rust-log" ,rust-log-0.4)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-gix-ignore-0.3
+  (package
+    (name "rust-gix-ignore")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-ignore" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09anfy62zfsclkkvvrsp0bi99pny66hqn07pvc4fik0c3887yvzw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bstr" ,rust-bstr-1)
+        ("rust-document-features" ,rust-document-features-0.2)
+        ("rust-gix-glob" ,rust-gix-glob-0.8)
+        ("rust-gix-path" ,rust-gix-path-0.8)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-unicode-bom" ,rust-unicode-bom-2))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Crate of the gitoxide project dealing .gitignore files")
+    (description "This package provides a crate of the gitoxide project dealing
+.gitignore files.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-index-0.17
   (package
     (name "rust-gix-index")
