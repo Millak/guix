@@ -66781,14 +66781,14 @@ Rust's serde.")
 (define-public rust-serde-with-macros-3
   (package
     (name "rust-serde-with-macros")
-    (version "3.0.0")
+    (version "3.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "serde-with-macros" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0w5hp31ji9vc5x00qzsn6yxfy16573fn8ppf4bkjrc9gjg9xbizd"))))
+        (base32 "1277nm0ry2bs52zd5kkddgkzk5s2mhi80x74dnqj68ssyyslwqwk"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
