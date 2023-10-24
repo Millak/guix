@@ -9746,6 +9746,29 @@ UTF-8.")
         ("rust-ucd-parse" ,rust-ucd-parse-0.1)
         ("rust-unicode-segmentation" ,rust-unicode-segmentation-1))))))
 
+(define-public rust-btoi-0.4
+  (package
+    (name "rust-btoi")
+    (version "0.4.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "btoi" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1bg02zgsv5njbhng9sq2b70przbazsczjbla5lbbdf59fdzl1mlx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-num-traits" ,rust-num-traits-0.2))
+       #:cargo-development-inputs
+       (("rust-bencher" ,rust-bencher-0.1)
+        ("rust-quickcheck" ,rust-quickcheck-1))))
+    (home-page "https://github.com/niklasf/rust-btoi")
+    (synopsis "Parse integers directly from ASCII byte slices")
+    (description "Parse integers directly from ASCII byte slices.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-buf-min-0.7
   (package
     (name "rust-buf-min")
