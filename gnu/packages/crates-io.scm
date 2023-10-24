@@ -29844,6 +29844,27 @@ libcurl, which is intended to be used with the @code{git2} crate.")
         ("rust-log" ,rust-log-0.4)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-gix-bitmap-0.2
+  (package
+    (name "rust-gix-bitmap")
+    (version "0.2.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-bitmap" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0n8r9n3rr6fkqggi99hgcqln4gnp8951pn3q3fsxsi38ayyb9jhc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Implement the standard git bitmap format")
+    (description
+     "This package provides a crate of the gitoxide project dedicated
+implementing the standard git bitmap format.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-chunk-0.4
   (package
     (name "rust-gix-chunk")
