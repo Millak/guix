@@ -72444,6 +72444,29 @@ values without proliferating generics.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-sval-serde-2
+  (package
+    (name "rust-sval-serde")
+    (version "2.10.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sval-serde" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11h543cmg0qmprc7jn94crfxwv344wa04qf18hw7xdh5zz293wbz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-serde" ,rust-serde-1)
+        ("rust-sval" ,rust-sval-2)
+        ("rust-sval-buffer" ,rust-sval-buffer-2)
+        ("rust-sval-fmt" ,rust-sval-fmt-2))))
+    (home-page "https://github.com/sval-rs/sval")
+    (synopsis "Integration between serde::Serialize and sval::Value")
+    (description "Integration between serde::Serialize and sval::Value.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-sval-test-2
   (package
     (name "rust-sval-test")
