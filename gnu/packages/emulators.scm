@@ -1471,22 +1471,32 @@ as RetroArch.")
                  ;; Non-free software are available through the core updater,
                  ;; disable it.  See <https://issues.guix.gnu.org/38360>.
                  "--disable-update_cores"
-                 "--disable-builtinzlib")))))))
+                 "--disable-builtinmbedtls"
+                 "--disable-builtinbearssl"
+                 "--disable-builtinzlib"
+                 "--disable-builtinflac"
+                 "--disable-builtinglslang")))))))
     (inputs
      `(("alsa-lib" ,alsa-lib)
        ("ffmpeg" ,ffmpeg-4)
+       ("flac" ,flac)
        ("freetype" ,freetype)
+       ("glslang" ,glslang)
        ("libxinerama" ,libxinerama)
        ("libxkbcommon" ,libxkbcommon)
        ("libxml2" ,libxml2)
        ("libxrandr" ,libxrandr)
        ("libxv" ,libxv)
+       ("mbedtls-apache" ,mbedtls-apache)
        ("mesa" ,mesa)
        ("openal" ,openal)
+       ("openssl" ,openssl)
        ("pulseaudio" ,pulseaudio)
        ("python" ,python)
        ("qtbase" ,qtbase-5)
        ("sdl" ,sdl2)
+       ("spirv-headers" ,spirv-headers)
+       ("spirv-tools" ,spirv-tools)
        ("udev" ,eudev)
        ("vulkan-loader" ,vulkan-loader)
        ("wayland" ,wayland)
