@@ -72444,6 +72444,28 @@ values without proliferating generics.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-sval-derive-macros-2
+  (package
+    (name "rust-sval-derive-macros")
+    (version "2.10.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sval-derive-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11vmfpr028n4z9x0nlaqa1v7p4fij6fz7wxbr3mmizp9v6267nry"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/sval-rs/sval")
+    (synopsis "Minimal derive support for `sval`")
+    (description "Minimal derive support for `sval`.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-sval-dynamic-2
   (package
     (name "rust-sval-dynamic")
