@@ -59484,8 +59484,41 @@ uses finite automata and guarantees linear time matching on all inputs.")
         ("rust-quickcheck" ,rust-quickcheck-0.2)
         ("rust-rand" ,rust-rand-0.3))))))
 
+(define-public rust-regex-automata-0.4
+  (package
+    (name "rust-regex-automata")
+    (version "0.4.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "regex-automata" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0gs8q9yhd3kcg4pr00ag4viqxnh5l7jpyb9fsfr8hzh451w4r02z"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f          ; Not all files included.
+       #:cargo-inputs
+       (("rust-aho-corasick" ,rust-aho-corasick-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-memchr" ,rust-memchr-2)
+        ("rust-regex-syntax" ,rust-regex-syntax-0.8))
+       #:cargo-development-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-bstr" ,rust-bstr-1)
+        ("rust-doc-comment" ,rust-doc-comment-0.3)
+        ("rust-env-logger" ,rust-env-logger-0.9)
+        ("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-regex-test" ,rust-regex-test-0.1))))
+    (home-page "https://github.com/rust-lang/regex/tree/master/regex-automata")
+    (synopsis "Automata construction and matching using regular expressions")
+    (description
+     "Automata construction and matching using regular expressions.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-regex-automata-0.3
   (package
+    (inherit rust-regex-automata-0.4)
     (name "rust-regex-automata")
     (version "0.3.3")
     (source (origin
@@ -59495,7 +59528,6 @@ uses finite automata and guarantees linear time matching on all inputs.")
               (sha256
                (base32
                 "041kj8fnyh3hv8sqmqq1am6agb1ckjxj6swjfcp8qih7vl84qd9r"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f          ; Not all files included.
        #:cargo-inputs
@@ -59509,12 +59541,7 @@ uses finite automata and guarantees linear time matching on all inputs.")
         ("rust-doc-comment" ,rust-doc-comment-0.3)
         ("rust-env-logger" ,rust-env-logger-0.9)
         ("rust-quickcheck" ,rust-quickcheck-1)
-        ("rust-regex-test" ,rust-regex-test-0.1))))
-    (home-page "https://github.com/rust-lang/regex/tree/master/regex-automata")
-    (synopsis "Automata construction and matching using regular expressions")
-    (description
-     "Automata construction and matching using regular expressions.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-regex-test" ,rust-regex-test-0.1))))))
 
 (define-public rust-regex-automata-0.1
   (package
