@@ -71727,7 +71727,7 @@ that exposes the same functionality at the command line.")
 (define-public rust-tar-0.4
   (package
     (name "rust-tar")
-    (version "0.4.38")
+    (version "0.4.40")
     (source
       (origin
         (method url-fetch)
@@ -71735,14 +71735,14 @@ that exposes the same functionality at the command line.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1ikiz14wbfmaaw5mrv93msa8v6n3i595z5kw9p0fdqa40dy80mab"))))
+          "1nrd3v2kfhb2zh0a44ag0s2348xjcdxiqx8cl14ir2923zmgqsmi"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Test tarballs not included in crate.
        #:cargo-inputs
        (("rust-filetime" ,rust-filetime-0.2)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-xattr" ,rust-xattr-0.2))
+        ("rust-xattr" ,rust-xattr-1))
        #:cargo-development-inputs
        (("rust-tempfile" ,rust-tempfile-3))))
     (home-page "https://github.com/alexcrichton/tar-rs")
