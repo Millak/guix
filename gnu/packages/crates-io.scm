@@ -16645,30 +16645,25 @@ mile, ...).")
     (native-inputs (list pkg-config))
     (inputs (list zlib openssl libssh2 curl cmake))))
 
-(define-public rust-crates-io-0.35
+(define-public rust-crates-io-0.38
   (package
     (name "rust-crates-io")
-    (version "0.35.1")
+    (version "0.38.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "crates-io" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0bkypzxwchlff8nb6iy3a060lbph6hvhxsxj98k0f0m6gl3vdpz2"))))
+        (base32 "11gc58zp7xm4kk13m7q04h22r18anzbkhm1hiqplx067k5w5mlsb"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-test-flags
-       (list "--release" "--"
-             "--skip=Registry::new_handle")
-       #:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-curl" ,rust-curl-0.4)
+     `(#:cargo-inputs
+       (("rust-curl" ,rust-curl-0.4)
         ("rust-percent-encoding" ,rust-percent-encoding-2)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-thiserror" ,rust-thiserror-1)
         ("rust-url" ,rust-url-2))))
     (native-inputs
      (list curl openssl pkg-config zlib))
