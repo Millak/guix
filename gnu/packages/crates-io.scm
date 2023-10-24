@@ -20138,6 +20138,24 @@ verifying the contents.")
      "Decimal floating point arithmetic for Rust.")
     (license license:asl2.0)))
 
+(define-public rust-defer-0.1
+  (package
+    (name "rust-defer")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "defer" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1pmcz4av2wvw8zrccmac86dsyy34qlwacdhajp1qjpjx6jk0axk4"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/andrewhickman/defer/")
+    (synopsis "Utility to defer excecution of code")
+    (description
+     "Utility to defer excecution of code, inspired by go's defer statement.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-defer-drop-1
   (package
     (name "rust-defer-drop")
