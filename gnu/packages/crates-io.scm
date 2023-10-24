@@ -79930,6 +79930,24 @@ Unicode and Internationalization Crates (UNIC) project.")
      "Implementation of the Unicode Bidirectional Algorithm.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-unicode-bom-2
+  (package
+    (name "rust-unicode-bom")
+    (version "2.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "unicode-bom" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0lh5ckmw59v908mddgfgv19vv6yb0sm08z8adppd3m7hr5q0rscq"))))
+    (build-system cargo-build-system)
+    (home-page "https://gitlab.com/philbooth/unicode-bom")
+    (synopsis "Unicode byte-order mark detection for files and byte arrays")
+    (description
+     "Unicode byte-order mark detection for files and byte arrays.")
+    (license license:asl2.0)))
+
 (define-public rust-unicode-categories-0.1
   (package
     (name "rust-unicode-categories")
