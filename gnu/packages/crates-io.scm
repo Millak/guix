@@ -29844,6 +29844,35 @@ libcurl, which is intended to be used with the @code{git2} crate.")
         ("rust-log" ,rust-log-0.4)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-gix-sec-0.8
+  (package
+    (name "rust-gix-sec")
+    (version "0.8.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-sec" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1iz9rcyx7lpb4gxg5gyv93ygp0n321c5xmrcjkmqm2annkbcn5cn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-2)
+        ("rust-document-features" ,rust-document-features-0.2)
+        ("rust-gix-path" ,rust-gix-path-0.8)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-windows" ,rust-windows-0.48))
+       #:cargo-development-inputs
+       (("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Providing a shared trust model")
+    (description
+     "This package provides a crate of the gitoxide project providing a shared
+trust model.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-tempfile-6
   (package
     (name "rust-gix-tempfile")
