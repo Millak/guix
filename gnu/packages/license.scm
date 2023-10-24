@@ -73,7 +73,7 @@ Regexp::Pattern is a convention for organizing reusable regex patterns.")
 (define-public perl-string-copyright
   (package
     (name "perl-string-copyright")
-    (version "0.003006")
+    (version "0.003014")
     (source
      (origin
        (method url-fetch)
@@ -82,12 +82,12 @@ Regexp::Pattern is a convention for organizing reusable regex patterns.")
              version ".tar.gz"))
        (sha256
         (base32
-         "0fzymv065nn3glwnw34nkyadzw2dh4rcz8avmki4zrnk4k45m01a"))))
+         "0xdm0ml65r77sk1pklnq4spbmn9qid4m44rnva8hhh00b9044k9f"))))
     (build-system perl-build-system)
     (native-inputs
-     (list perl-number-range))
+     (list perl-test-without-module perl-test2-suite))
     (propagated-inputs
-     (list perl-exporter-tiny))
+     (list perl-exporter-tiny perl-set-intspan))
     (home-page "https://metacpan.org/release/String-Copyright")
     (synopsis "Representation of text-based copyright statements")
     (description "String::Copyright Parses common styles of copyright
