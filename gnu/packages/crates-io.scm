@@ -83885,8 +83885,35 @@ windows crate.")
                (base32
                 "17z8q25pd3dp6b84qm9nlayd3ym78sbryxlqmgcxvz9vpmy8qarz"))))))
 
+(define-public rust-winnow-0.5
+  (package
+    (name "rust-winnow")
+    (version "0.5.17")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "winnow" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0p7n0rp982pjpscq6dnvbalz6lm45lb60zr0rivn8wm6w3803f53"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; Cut the dependency graph.
+       #:cargo-inputs
+       (("rust-anstream" ,rust-anstream-0.3)
+        ("rust-anstyle" ,rust-anstyle-1)
+        ("rust-is-terminal" ,rust-is-terminal-0.4)
+        ("rust-memchr" ,rust-memchr-2)
+        ("rust-terminal-size" ,rust-terminal-size-0.2))))
+    (home-page "https://github.com/winnow-rs/winnow")
+    (synopsis "Byte-oriented, zero-copy, parser combinators library")
+    (description "This package provides a byte-oriented, zero-copy, parser
+combinators library.")
+    (license license:expat)))
+
 (define-public rust-winnow-0.4
   (package
+    (inherit rust-winnow-0.5)
     (name "rust-winnow")
     (version "0.4.1")
     (source (origin
@@ -83896,7 +83923,6 @@ windows crate.")
               (sha256
                (base32
                 "0a2b9f0n6fpn2a88jfbp1kdjj6xrhvf8arnny67qsjb6djrp12df"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t     ; Cut the dependency graph.
        #:cargo-inputs
@@ -83904,12 +83930,7 @@ windows crate.")
         ("rust-concolor" ,rust-concolor-0.0.8)
         ("rust-is-terminal" ,rust-is-terminal-0.4)
         ("rust-memchr" ,rust-memchr-2)
-        ("rust-terminal-size" ,rust-terminal-size-0.2))))
-    (home-page "https://github.com/winnow-rs/winnow")
-    (synopsis "Byte-oriented, zero-copy, parser combinators library")
-    (description "This package provides a byte-oriented, zero-copy, parser
-combinators library.")
-    (license license:expat)))
+        ("rust-terminal-size" ,rust-terminal-size-0.2))))))
 
 (define-public rust-winreg-0.10
   (package
