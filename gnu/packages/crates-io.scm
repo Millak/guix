@@ -72444,6 +72444,25 @@ values without proliferating generics.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-sval-dynamic-2
+  (package
+    (name "rust-sval-dynamic")
+    (version "2.10.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sval-dynamic" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1f2p3xvq5qyg0w721as7dxrgqgrfqsc0m7qp2r1pn7fvkqjx54wx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-sval" ,rust-sval-2))))
+    (home-page "https://github.com/sval-rs/sval")
+    (synopsis "Object-safe versions of sval::Stream and sval::Value")
+    (description "Object-safe versions of sval::Stream and sval::Value.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-sval-flatten-2
   (package
     (name "rust-sval-flatten")
