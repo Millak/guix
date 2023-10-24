@@ -63415,22 +63415,23 @@ in stable Rust.")
 (define-public rust-semver-1
   (package
     (name "rust-semver")
-    (version "1.0.16")
+    (version "1.0.20")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "semver" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0amsbj3572r1kx5wdcpcgfhfwbmcc17axp9adc6nkiwg6xkrbg2q"))))
+        (base32 "140hmbfa743hbmah1zjf07s8apavhvn04204qjigjiz5w6iscvw3"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-serde" ,rust-serde-1))))
-    (home-page "https://docs.rs/crate/semver")
+    (home-page "https://github.com/dtolnay/semver")
     (synopsis "Semantic version parsing and comparison")
     (description
-     "This package provides semantic version parsing and comparison.")
+     "This package provides the parser and evaluator for Cargo's flavor of
+Semantic Versioning.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-semver-0.11
