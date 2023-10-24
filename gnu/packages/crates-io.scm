@@ -72909,18 +72909,17 @@ library.")
 (define-public rust-termcolor-1
   (package
     (name "rust-termcolor")
-    (version "1.1.2")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "termcolor" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1x65i1ny4m6z1by62ra6wdcrd557p2ysm866x0pg60zby2cxizid"))))
+        (base32 "0r1byqaq6f97qd0wc7k09lza190apvj9301s2afsp6m6gp9vm4v0"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-winapi-util" ,rust-winapi-util-0.1))))
     (home-page "https://github.com/BurntSushi/termcolor")
     (synopsis "Library for writing colored text to a terminal")
