@@ -29844,6 +29844,30 @@ libcurl, which is intended to be used with the @code{git2} crate.")
         ("rust-log" ,rust-log-0.4)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-gix-hashtable-0.2
+  (package
+    (name "rust-gix-hashtable")
+    (version "0.2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-hashtable" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13f5v6vghfpzxm5xkmk86gjhsjfqng9rpam37hqjssgkxkk4qprq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-gix-hash" ,rust-gix-hash-0.11)
+        ("rust-hashbrown" ,rust-hashbrown-0.14)
+        ("rust-parking-lot" ,rust-parking-lot-0.12))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Hashtable based data structures optimized to utilize ObjectId keys")
+    (description
+     "This package provides a crate that provides hashtable based data structures
+optimized to utilize @code{ObjectId} keys.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-ignore-0.3
   (package
     (name "rust-gix-ignore")
