@@ -76429,18 +76429,18 @@ stream-based WebSocket implementation.")
 (define-public rust-toml-0.7
   (package
     (name "rust-toml")
-    (version "0.7.3")
+    (version "0.7.8")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "toml" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "08cvcr3w0kgnz8i963qhab2plnm7niy9c3bz7k4mj25vybvaq0xl"))))
+                "0mr2dpmzw4ndvzpnnli2dprcx61pdk62fq4mzw0b6zb27ffycyfx"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-indexmap" ,rust-indexmap-1)
+       (("rust-indexmap" ,rust-indexmap-2)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-spanned" ,rust-serde-spanned-0.6)
         ("rust-toml-datetime" ,rust-toml-datetime-0.6)
