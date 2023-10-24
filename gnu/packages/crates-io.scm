@@ -49294,14 +49294,14 @@ and would-block I/O operations.")
 (define-public rust-pasetors-0.6
   (package
     (name "rust-pasetors")
-    (version "0.6.6")
+    (version "0.6.7")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "pasetors" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0sgag8mxix45inzmvkcp2nahmnd5gdi62wdh5v7dxhaxp0rzcjw2"))))
+                "1h4li2j46hdy58dpnn5ji4z4b4clbr2a6689jmaqv409lfcmcxms"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
