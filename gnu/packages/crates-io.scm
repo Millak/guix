@@ -72380,8 +72380,33 @@ values without proliferating generics.")
      "Detects whether a terminal supports color, and gives details about that support.")
     (license license:asl2.0)))
 
+(define-public rust-sval-2
+  (package
+    (name "rust-sval")
+    (version "2.10.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sval" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wq8dpcwkxf9i5ivaqgi736kalqdsn88yhsb9fh1dhmpilmg2pdi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; can't find crate for `sval_derive_macros`
+       #:cargo-inputs
+       (("rust-sval-derive-macros" ,rust-sval-derive-macros-2))
+       #:cargo-development-inputs
+       (("rust-humantime" ,rust-humantime-2))))
+    (home-page "https://github.com/sval-rs/sval")
+    (synopsis "No-std, object-safe serialization framework")
+    (description
+     "This package provides a no-std, object-safe serialization framework.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-sval-1
   (package
+    (inherit rust-sval-2)
     (name "rust-sval")
     (version "1.0.0-alpha.5")
     (source
@@ -72391,18 +72416,12 @@ values without proliferating generics.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "025sy290xnn56nl15qkrkq0whxcwlvb4bzp996azbjl7gdyfxxj5"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-serde" ,rust-serde-1)
         ("rust-smallvec" ,rust-smallvec-1)
-        ("rust-sval-derive" ,rust-sval-derive-1))))
-    (home-page "https://github.com/sval-rs/sval")
-    (synopsis "No-std, object-safe serialization framework")
-    (description
-     "This package provides a no-std, object-safe serialization framework.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-sval-derive" ,rust-sval-derive-1))))))
 
 (define-public rust-sval-buffer-2
   (package
