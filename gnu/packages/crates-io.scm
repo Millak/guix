@@ -29844,6 +29844,44 @@ libcurl, which is intended to be used with the @code{git2} crate.")
         ("rust-log" ,rust-log-0.4)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-gix-index-0.17
+  (package
+    (name "rust-gix-index")
+    (version "0.17.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-index" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10kvzsrn7wjgwb3y4xwj9szcg9j81mlkab04z9ii5cdzz9cajsv1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-2)
+        ("rust-bstr" ,rust-bstr-1)
+        ("rust-btoi" ,rust-btoi-0.4)
+        ("rust-document-features" ,rust-document-features-0.2)
+        ("rust-filetime" ,rust-filetime-0.2)
+        ("rust-gix-bitmap" ,rust-gix-bitmap-0.2)
+        ("rust-gix-features" ,rust-gix-features-0.30)
+        ("rust-gix-hash" ,rust-gix-hash-0.11)
+        ("rust-gix-lock" ,rust-gix-lock-6)
+        ("rust-gix-object" ,rust-gix-object-0.30)
+        ("rust-gix-traverse" ,rust-gix-traverse-0.26)
+        ("rust-itoa" ,rust-itoa-1)
+        ("rust-memmap2" ,rust-memmap2-0.5)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis
+     "Crate of the gitoxide project dedicated implementing the git index file")
+    (description
+     "This package provides a work-in-progress crate of the gitoxide project
+dedicated implementing the git index file.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-lock-6
   (package
     (name "rust-gix-lock")
