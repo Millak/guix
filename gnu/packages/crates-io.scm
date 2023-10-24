@@ -83032,7 +83032,9 @@ first byte.")
         (base32
          "08nw3famk1w1zf9ck32pmklk24wd4n4nqnr9wl46qvxak2wf7ixw"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       '("--release" "--lib")
+       #:cargo-inputs
        (("rust-md5" ,rust-md5-0.3)
         ("rust-rand" ,rust-rand-0.3)
         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
