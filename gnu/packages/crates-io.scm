@@ -79566,6 +79566,26 @@ panic-free alternative to @code{core::fmt}.")
 arithmetic.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-uluru-3
+  (package
+    (name "rust-uluru")
+    (version "3.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "uluru" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1nr6s90iqy7wr0ddv9zfbmyw5dc7xjfbb09c8sjbcphz38k34jkr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arrayvec" ,rust-arrayvec-0.7))))
+    (home-page "https://github.com/servo/uluru")
+    (synopsis "LRU cache implementation")
+    (description
+     "This package provides a simple, fast, LRU cache implementation.")
+    (license license:mpl2.0)))
+
 (define-public rust-umask-1
   (package
     (name "rust-umask")
