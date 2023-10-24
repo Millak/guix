@@ -72444,6 +72444,28 @@ values without proliferating generics.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-sval-fmt-2
+  (package
+    (name "rust-sval-fmt")
+    (version "2.10.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sval-fmt" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hqkjb7blcdqjlawnffmw0bq5gxf98i52lbgcnjabxr64a47ybsk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-itoa" ,rust-itoa-1)
+        ("rust-ryu" ,rust-ryu-1)
+        ("rust-sval" ,rust-sval-2))))
+    (home-page "https://github.com/sval-rs/sval")
+    (synopsis "Integration between std::fmt::Debug and sval::Value")
+    (description "Integration between std::fmt::Debug and sval::Value.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-sval-json-2
   (package
     (name "rust-sval-json")
