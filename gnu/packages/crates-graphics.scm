@@ -4025,8 +4025,7 @@ the platform-specific getters provided by winit, or another library.")
        (uri (crate-uri "y4m" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1bhdgb7hgx7j92nm6ij5n8wisp50j8ff66ks14jzwdw2mwhrjam7"))))
-    (arguments `(#:skip-build? #t))))
+        (base32 "1bhdgb7hgx7j92nm6ij5n8wisp50j8ff66ks14jzwdw2mwhrjam7"))))))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
