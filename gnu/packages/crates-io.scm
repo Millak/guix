@@ -66736,23 +66736,34 @@ for later processing.")
 (define-public rust-serde-with-3
   (package
     (name "rust-serde-with")
-    (version "3.0.0")
+    (version "3.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "serde-with" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "04w5v0siychbb7l3anx57crvv9m3w866ckwjhkq5nf1wdsmdh0lz"))))
+        (base32 "08sw83b6hfwzylr0waf4mc29h6fxnb02g7vkwbkjjyhvrin27kb4"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f      ; could not find `Deserializer` in `serde_test`
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; Test fails in release tarball.
+         "--skip=test_serde_with_macros_dependency")
        #:cargo-inputs
        (("rust-base64" ,rust-base64-0.21)
         ("rust-chrono" ,rust-chrono-0.4)
         ("rust-doc-comment" ,rust-doc-comment-0.3)
+        ("rust-document-features" ,rust-document-features-0.2)
+        ("rust-hashbrown" ,rust-hashbrown-0.14)
         ("rust-hex" ,rust-hex-0.4)
         ("rust-indexmap" ,rust-indexmap-1)
+        ("rust-indexmap" ,rust-indexmap-2)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-serde-with-macros" ,rust-serde-with-macros-3)
@@ -66771,7 +66782,8 @@ for later processing.")
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-serde-test" ,rust-serde-test-1)
         ("rust-serde-yaml" ,rust-serde-yaml-0.9)
-        ("rust-version-sync" ,rust-version-sync-0.9))))
+        ("rust-version-sync" ,rust-version-sync-0.9)
+        ("rust-xml-rs" ,rust-xml-rs-0.8))))
     (home-page "https://github.com/jonasbb/serde_with/")
     (synopsis "Custom de/serialization functions for Rust's serde")
     (description "This package provides custom de/serialization functions for
