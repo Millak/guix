@@ -42375,21 +42375,19 @@ unstable -Z self-profile flag.")
 (define-public rust-memchr-2
   (package
     (name "rust-memchr")
-    (version "2.5.0")
+    (version "2.6.4")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "memchr" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "0vanfk5mzs1g1syqnj03q8n0syggnhn55dq535h2wxr7rwpfbzrd"))))
+         (base32 "0rq1ka8790ns41j147npvxcqcl2anxyngsdimy85ag2api0fwrgn"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
-        ("rust-libc" ,rust-libc-0.2)
+        ("rust-log" ,rust-log-0.4)
         ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))
        #:cargo-development-inputs
        (("rust-quickcheck" ,rust-quickcheck-1))))
