@@ -72444,6 +72444,28 @@ values without proliferating generics.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-sval-ref-2
+  (package
+    (name "rust-sval-ref")
+    (version "2.10.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sval-ref" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qd9w4iqp8z7v0mf7icz1409g48jnibyrh9nbnms1hmq5x7hbvbm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-sval" ,rust-sval-2))
+       #:cargo-development-inputs (("rust-sval-test" ,rust-sval-test-2))))
+    (home-page "https://github.com/sval-rs/sval")
+    (synopsis "A variant of sval::Value for types with internal references")
+    (description
+     "This package provides a variant of sval::Value for types with internal
+references")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-sval-serde-2
   (package
     (name "rust-sval-serde")
