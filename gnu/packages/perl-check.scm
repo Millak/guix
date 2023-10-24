@@ -97,7 +97,7 @@ lexically, just dynamically.")
 (define-public perl-test2-suite
   (package
     (name "perl-test2-suite")
-    (version "0.000072")
+    (version "0.000155")
     (source
       (origin
         (method url-fetch)
@@ -105,15 +105,17 @@ lexically, just dynamically.")
                             version ".tar.gz"))
         (sha256
          (base32
-          "0hgd6n29qjh1pwqvbglm2kb852yqshmixqqjhsr2kvvibdr58qpf"))))
+          "0gfmm95xfjy5c376cl0qxqqhr7ibnn1371knd61rgh4vsv26p3n7"))))
     (build-system perl-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'set-env
            (lambda _ (setenv "PERL_USE_UNSAFE_INC" "1") #t)))))
+    (native-inputs (list perl-json-maybexs))
     (propagated-inputs
-     (list perl-importer perl-term-table perl-sub-info))
+     (list perl-module-pluggable perl-term-size-any perl-term-table
+           perl-term-readkey perl-unicode-linebreak))
     (home-page "https://metacpan.org/pod/Test2-Suite")
     (synopsis "Full set of tools for Test2::Suite")
     (description "This package provides a rich set of tools, plugins, bundles,
