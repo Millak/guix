@@ -25059,6 +25059,43 @@ by @file{sysexits.h}.")
 testing.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-expectrl-0.7
+  (package
+    (name "rust-expectrl")
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "expectrl" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ykiqkh2r3ky1244r4j0x49hqawdrfdh1mai6fdapz2kb6989rzd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; These tests don't do well in the build environment
+         "--skip=bash_control_chars"
+         "--skip=python"
+         "--skip=send")
+         #:cargo-inputs
+       (("rust-async-io" ,rust-async-io-1)
+        ("rust-blocking" ,rust-blocking-1)
+        ("rust-conpty" ,rust-conpty-0.5)
+        ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+        ("rust-futures-lite" ,rust-futures-lite-1)
+        ("rust-futures-timer" ,rust-futures-timer-3)
+        ("rust-nix" ,rust-nix-0.26)
+        ("rust-polling" ,rust-polling-2)
+        ("rust-ptyprocess" ,rust-ptyprocess-0.4)
+        ("rust-regex" ,rust-regex-1))))
+    (home-page "https://github.com/zhiburt/expectrl")
+    (synopsis "Tool for automating terminal applications in Unix")
+    (description
+     "This package provides a tool for automating terminal applications in Unix
+like Don libes expect.")
+    (license license:expat)))
+
 (define-public rust-extend-0.1
   (package
     (name "rust-extend")
