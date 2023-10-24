@@ -84493,8 +84493,34 @@ languages.")
         ("rust-raw-cpuid" ,rust-raw-cpuid-8)
         ("rust-serde-json" ,rust-serde-json-1))))))
 
+(define-public rust-xattr-1
+  (package
+    (name "rust-xattr")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "xattr" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11b93igkwsq88b6m14x63c13zns418njh6ngvg2fbwqzyw4n0s7l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Tries to access files outside of build environment.
+       #:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2))
+       #:cargo-development-inputs
+       (("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/Stebalien/xattr")
+    (synopsis "Unix extended file system attributes")
+    (description
+     "This package provide a small library for setting, getting, and listing
+extended attributes.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-xattr-0.2
   (package
+    (inherit rust-xattr-1)
     (name "rust-xattr")
     (version "0.2.2")
     (source
@@ -84505,20 +84531,12 @@ languages.")
         (sha256
          (base32
           "0k556fb6f5jc907975j9c8iynl2fqz3rf0w6fiig83i4yi0kfk14"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-libc" ,rust-libc-0.2))
        #:cargo-development-inputs
-       (("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/Stebalien/xattr")
-    (synopsis "Unix extended file system attributes")
-    (description
-     "This package provide a small library for setting, getting, and listing
-extended attributes.")
-    (license (list license:asl2.0
-                   license:expat))))
+       (("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-xcb-1
   (package
