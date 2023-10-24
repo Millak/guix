@@ -13433,6 +13433,25 @@ be used.")
 
 ;;; END: Core module overrides
 
+(define-public perl-file-chdir
+  (package
+    (name "perl-file-chdir")
+    (version "0.1011")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/D/DA/DAGOLDEN/File-chdir-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "0ybcmw1qw2spwcgyv82i8g53l7wbsy09hjzpvs0xdma8vw9gksri"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/File-chdir")
+    (synopsis "A more sensible way to change directories")
+    (description "This module provides @code{$CWD} and @code{@@CWD} as
+alternatives to @code{chdir()}.")
+    (license (package-license perl))))
+
 (define-public perl-file-find-object
  (package
   (name "perl-file-find-object")
