@@ -17755,6 +17755,36 @@ abstractions around common WinAPI calls.")
        #:cargo-inputs
        (("rust-winapi" ,rust-winapi-0.3))))))
 
+(define-public rust-crosstermion-0.11
+  (package
+    (name "rust-crosstermion")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "crosstermion" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jbpxv2h08a1rvpw42iq59l2y0xbqvzpdq09043i8ihdc9nz8bhm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ansi-term" ,rust-ansi-term-0.12)
+        ("rust-async-channel" ,rust-async-channel-1)
+        ("rust-crossterm" ,rust-crossterm-0.26)
+        ("rust-futures-channel" ,rust-futures-channel-0.3)
+        ("rust-futures-core" ,rust-futures-core-0.3)
+        ("rust-futures-lite" ,rust-futures-lite-1)
+        ("rust-ratatui" ,rust-ratatui-0.20)
+        ("rust-termion" ,rust-termion-2)
+        ("rust-tui-react" ,rust-tui-react-0.20))))
+    (home-page "https://github.com/Byron/tui-crates")
+    (synopsis "Unification of crossterm and termion behind a common facade")
+    (description
+     "The unification of crossterm and termion behind a common facade for use with
+feature flags.")
+    (license license:expat)))
+
 (define-public rust-crunchy-0.2
   (package
     (name "rust-crunchy")
