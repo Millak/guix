@@ -52099,25 +52099,29 @@ library.")
 (define-public rust-polling-2
   (package
     (name "rust-polling")
-    (version "2.0.2")
+    (version "2.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "polling" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1r5xm3f6qs84ibg09nw1cz78r883521l3jaiakj35ri959mvr9x2"))))
+        (base32 "1kixxfq1af1k7gkmmk9yv4j2krpp4fji2r8j4cz6p6d7ihz34bab"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-cfg-if" ,rust-cfg-if-0.1)
+       (("rust-autocfg" ,rust-autocfg-1)
+        ("rust-bitflags" ,rust-bitflags-1)
+        ("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-concurrent-queue" ,rust-concurrent-queue-2)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-log" ,rust-log-0.4)
-        ("rust-wepoll-sys" ,rust-wepoll-sys-3)
-        ("rust-winapi" ,rust-winapi-0.3))
+        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+        ("rust-windows-sys" ,rust-windows-sys-0.48))
        #:cargo-development-inputs
-       (("rust-easy-parallel" ,rust-easy-parallel-3))))
-    (home-page "https://github.com/stjepang/polling")
+       (("rust-easy-parallel" ,rust-easy-parallel-3)
+        ("rust-fastrand" ,rust-fastrand-1))))
+    (home-page "https://github.com/smol-rs/polling")
     (synopsis "Portable interface to epoll, kqueue, event ports, and wepoll")
     (description
      "This package provides a portable interface to @code{epoll},
