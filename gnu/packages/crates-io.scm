@@ -7295,15 +7295,14 @@ and no more (caveat: black_box is still missing!).")
   (package
     (inherit rust-bigdecimal-0.3)
     (name "rust-bigdecimal")
-    (version "0.2.0")
+    (version "0.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "bigdecimal" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0fd5chyy76y4qb043w1bbgz1v22f9hw5703f5r90ac5hwqk3qh6c"))))
+        (base32 "0mkja6m149apsnbw5narzcxmb9b4ish58gn4qvvys03jwdi0brfi"))))
     (arguments
      `(#:cargo-inputs
        (("rust-num-bigint" ,rust-num-bigint-0.3)
