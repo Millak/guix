@@ -59,6 +59,7 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages avahi)
   #:use-module (gnu packages bash)
@@ -35125,6 +35126,29 @@ format.")
     (synopsis "Simple ivf muxer")
     (description "This package provides a simple ivf muxer.")
     (license license:bsd-2)))
+
+(define-public rust-jack-sys-0.2
+  (package
+    (name "rust-jack-sys")
+    (version "0.2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "jack-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1h9c9za19nyr1prx77gkia18ia93f73lpyjdiyrvmhhbs79g54bv"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs `(("rust-lazy-static" ,rust-lazy-static-1)
+                            ("rust-libc" ,rust-libc-0.2)
+                            ("rust-libloading" ,rust-libloading-0.6)
+                            ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (inputs (list jack-2))
+    (home-page "https://github.com/RustAudio/rust-jack/tree/main/jack-sys")
+    (synopsis "Low-level bindings to the JACK audio API")
+    (description "Low-level bindings to the JACK audio API.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-javascriptcore-rs-sys-0.2
   (package
