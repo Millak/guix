@@ -39,6 +39,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages web)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -108,10 +109,12 @@ lexically, just dynamically.")
           "0gfmm95xfjy5c376cl0qxqqhr7ibnn1371knd61rgh4vsv26p3n7"))))
     (build-system perl-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'set-env
-           (lambda _ (setenv "PERL_USE_UNSAFE_INC" "1") #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-env
+            (lambda _
+              (setenv "PERL_USE_UNSAFE_INC" "1"))))))
     (native-inputs (list perl-json-maybexs))
     (propagated-inputs
      (list perl-module-pluggable perl-term-size-any perl-term-table
