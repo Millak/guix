@@ -2521,14 +2521,7 @@ It will then write @code{fixup!} commits for each of those changes.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1815hz1a93brj6v9102xypds1qslf6gxgk9vcvxhxlhy1c2pfxvj"))
-       (snippet
-        #~(begin (use-modules (guix build utils))
-                 (substitute* "Cargo.toml"
-                   (("1\\.0\\.75") "1.0.68")    ; rust-anyhow
-                   (("0\\.4\\.19") "0.4.17")    ; rust-log
-                   (("1\\.9\\.4") "1.9.1")      ; regex
-                   (("3\\.3") "3.0"))))))       ; serde-with
+         "1815hz1a93brj6v9102xypds1qslf6gxgk9vcvxhxlhy1c2pfxvj"))))
     (build-system cargo-build-system)
     (arguments
      `(#:features '()
