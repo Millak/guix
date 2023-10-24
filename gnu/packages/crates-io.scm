@@ -63276,7 +63276,8 @@ native certificate store.")
         (base32
          "1f2rkvdkz92qcmwryyqiw9phkqkf95g4962ljpfq5nkjfsd477b2"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; Tests want network access
+       #:cargo-inputs
        (("rust-openssl-probe" ,rust-openssl-probe-0.1)
         ("rust-rustls" ,rust-rustls-0.18)
         ("rust-schannel" ,rust-schannel-0.1)
