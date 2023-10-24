@@ -13743,6 +13743,24 @@ contains all syscalls and related types.")
            license:asl2.0
            license:zlib))))
 
+(define-public rust-clru-0.6
+  (package
+    (name "rust-clru")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "clru" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "01xq2vm3pfkja6crsh5r7idzyhy0dhjd8dz2y1zn00rf62kiy6dq"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/marmeladema/clru-rs")
+    (synopsis "LRU cache implementation")
+    (description "An LRU cache implementation with constant time operations and
+weighted semantic.")
+    (license license:expat)))
+
 (define-public rust-cmac-0.7
   (package
     (name "rust-cmac")
