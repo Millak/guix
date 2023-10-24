@@ -5924,6 +5924,28 @@ objects, which execute a given code block when destroyed, and scoped guards,
 which are tied to the scope exit.")
     (license (package-license perl))))
 
+(define-public perl-hash-defhash
+  (package
+    (name "perl-hash-defhash")
+    (version "0.072")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/P/PE/PERLANCAR/Hash-DefHash-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1kmislv2lwj66n97jqi3wvzgc4s0icz4krp239ni128awqd2k061"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-test-exception))
+    (propagated-inputs
+     (list perl-regexp-pattern-defhash perl-string-trim-more))
+    (home-page "https://metacpan.org/release/Hash-DefHash")
+    (synopsis "Manipulate defhash")
+    (description "Routines to manipulate @dfn{defhash}, a convention to
+define things more precisely and uniformly using a hash, in Perl.")
+    (license (package-license perl))))
+
 (define-public perl-hash-fieldhash
   (package
     (name "perl-hash-fieldhash")
