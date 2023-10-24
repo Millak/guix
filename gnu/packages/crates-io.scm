@@ -29844,6 +29844,32 @@ libcurl, which is intended to be used with the @code{git2} crate.")
         ("rust-log" ,rust-log-0.4)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-gix-revwalk-0.1
+  (package
+    (name "rust-gix-revwalk")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-revwalk" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jnkyb5yk8y76q5gbmdykm2snxn5v9dbc4jy3walz4a7hyx269mw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-gix-commitgraph" ,rust-gix-commitgraph-0.16)
+        ("rust-gix-hash" ,rust-gix-hash-0.11)
+        ("rust-gix-hashtable" ,rust-gix-hashtable-0.2)
+        ("rust-gix-object" ,rust-gix-object-0.30)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Crate providing utilities for walking the revision graph")
+    (description "This package provides a crate providing utilities for walking
+the revision graph.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-sec-0.8
   (package
     (name "rust-gix-sec")
