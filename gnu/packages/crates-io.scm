@@ -29844,6 +29844,42 @@ libcurl, which is intended to be used with the @code{git2} crate.")
         ("rust-log" ,rust-log-0.4)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-gix-object-0.30
+  (package
+    (name "rust-gix-object")
+    (version "0.30.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-object" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1is6hkzcv38m9k2yzja39h3d9s5rvs9vqpfb17kw7pj43kswh9l9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bstr" ,rust-bstr-1)
+        ("rust-btoi" ,rust-btoi-0.4)
+        ("rust-document-features" ,rust-document-features-0.2)
+        ("rust-gix-actor" ,rust-gix-actor-0.21)
+        ("rust-gix-features" ,rust-gix-features-0.30)
+        ("rust-gix-hash" ,rust-gix-hash-0.11)
+        ("rust-gix-validate" ,rust-gix-validate-0.7)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-itoa" ,rust-itoa-1)
+        ("rust-nom" ,rust-nom-7)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis
+     "Immutable and mutable git objects with decoding and encoding support")
+    (description
+     "Immutable and mutable git objects with decoding and encoding support.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-odb-0.46
   (package
     (name "rust-gix-odb")
