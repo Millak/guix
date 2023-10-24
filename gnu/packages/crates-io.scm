@@ -38656,29 +38656,27 @@ Linux userspace APIs.")
            `(("rust-libc" ,rust-libc-0.2)
              ("rust-static-assertions" ,rust-static-assertions-1))))))
 
-(define-public rust-libssh2-sys-0.2
+(define-public rust-libssh2-sys-0.3
   (package
     (name "rust-libssh2-sys")
-    (version "0.2.19")
+    (version "0.3.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "libssh2-sys" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0mkhw4pksbz7gldj8hia7k6npc479n1x09i8r0pm275sac424ina"))
-        (modules '((guix build utils)))
-        (snippet
-         '(begin (delete-file-recursively "libssh2") #t))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libssh2-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1vkidqw5ll71ynqc93hgcq62iqkklzb5268zffd13ql7nwqa1j1d"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (delete-file-recursively "libssh2")))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
+       (("rust-cc" ,rust-cc-1)
+        ("rust-libc" ,rust-libc-0.2)
         ("rust-libz-sys" ,rust-libz-sys-1)
         ("rust-openssl-sys" ,rust-openssl-sys-0.9)
-        ;; Build dependencies:
-        ("rust-cc" ,rust-cc-1)
         ("rust-pkg-config" ,rust-pkg-config-0.3)
         ("rust-vcpkg" ,rust-vcpkg-0.2))))
     (native-inputs
@@ -38689,8 +38687,32 @@ Linux userspace APIs.")
     (synopsis "Native bindings to the libssh2 library")
     (description
      "This package provides native rust bindings to the @code{libssh2} library.")
-    (license (list license:asl2.0
-                   license:expat))))
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-libssh2-sys-0.2
+  (package
+    (inherit rust-libssh2-sys-0.3)
+    (name "rust-libssh2-sys")
+    (version "0.2.19")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "libssh2-sys" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32 "0mkhw4pksbz7gldj8hia7k6npc479n1x09i8r0pm275sac424ina"))
+        (modules '((guix build utils)))
+        (snippet
+         '(begin (delete-file-recursively "libssh2") #t))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-libz-sys" ,rust-libz-sys-1)
+        ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+        ;; Build dependencies:
+        ("rust-cc" ,rust-cc-1)
+        ("rust-pkg-config" ,rust-pkg-config-0.3)
+        ("rust-vcpkg" ,rust-vcpkg-0.2))))))
 
 (define-public rust-libtest-mimic-0.6
   (package
