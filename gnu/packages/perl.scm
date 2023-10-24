@@ -10086,6 +10086,25 @@ complex, nested and recursive structures, and allows you to parse and extract
 hierarchical data from it.")
     (license license:perl-license)))
 
+(define-public perl-regexp-pattern-defhash
+  (package
+    (name "perl-regexp-pattern-defhash")
+    (version "0.001")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/P/PE/PERLANCAR/Regexp-Pattern-DefHash-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1737hli8sn08rnbfckq0a7pfd8a1ihb6mnp34rlq2j8fkqldcrcq"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/Regexp-Pattern-DefHash")
+    (synopsis "Regexp patterns related to DefHash")
+    (description "Regexp patterns related to DefHash, a convention to define
+things more precisely and uniformly using a hash.")
+    (license (package-license perl))))
+
 (define-public perl-regexp-util
   (package
     (name "perl-regexp-util")
