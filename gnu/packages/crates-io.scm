@@ -59570,8 +59570,28 @@ uses finite automata and guarantees linear time matching on all inputs.")
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-toml" ,rust-toml-0.5)))))) ; 0.4
 
+(define-public rust-regex-syntax-0.8
+  (package
+    (name "rust-regex-syntax")
+    (version "0.8.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "regex-syntax" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17rd2s8xbiyf6lb4aj2nfi44zqlj98g2ays8zzj2vfs743k79360"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1))))
+    (home-page "https://github.com/rust-lang/regex/tree/master/regex-syntax")
+    (synopsis "Regular expression parser")
+    (description "This package provides a regular expression parser.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-regex-syntax-0.7
   (package
+    (inherit rust-regex-syntax-0.8)
     (name "rust-regex-syntax")
     (version "0.7.4")
     (source (origin
@@ -59581,13 +59601,8 @@ uses finite automata and guarantees linear time matching on all inputs.")
               (sha256
                (base32
                 "1qjczlc2w92kamn9ipjdr5pjql0jnccahpi9l3r6wp0rnsjr5sp5"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1))))
-    (home-page "https://github.com/rust-lang/regex/tree/master/regex-syntax")
-    (synopsis "Regular expression parser")
-    (description "This package provides a regular expression parser.")
-    (license (list license:expat license:asl2.0))))
+     `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1))))))
 
 (define-public rust-regex-syntax-0.6
   (package
