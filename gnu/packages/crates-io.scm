@@ -47445,18 +47445,17 @@ more.")
 (define-public rust-num-bigint-0.4
   (package
     (name "rust-num-bigint")
-    (version "0.4.3")
+    (version "0.4.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "num-bigint" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0py73wsa5j4izhd39nkqzqv260r0ma08vy30ky54ld3vkhlbcfpr"))))
+        (base32 "1h6d8pd0h7grpva2pa78i7lhvl69kqdq156qcaicpmy3nmcpd3k0"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-arbitrary" ,rust-arbitrary-1)
         ("rust-autocfg" ,rust-autocfg-1)
         ("rust-num-integer" ,rust-num-integer-0.1)
