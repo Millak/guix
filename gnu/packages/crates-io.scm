@@ -40752,7 +40752,7 @@ by inspecting the system for user preference.")
 (define-public rust-log-0.4
   (package
     (name "rust-log")
-    (version "0.4.17")
+    (version "0.4.20")
     (source
      (origin
        (method url-fetch)
@@ -40760,20 +40760,21 @@ by inspecting the system for user preference.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0biqlaaw1lsr8bpnmbcc0fvgjj34yy79ghqzyi0ali7vgil2xcdb"))))
+         "13rf7wphnwd61vazpxr7fiycin6cb1g8fmvgqg18i464p0y1drmm"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; Not all test files included in release.
        #:cargo-inputs
-       (("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-sval" ,rust-sval-1)
+       (("rust-serde" ,rust-serde-1)
+        ("rust-sval" ,rust-sval-2)
+        ("rust-sval-ref" ,rust-sval-ref-2)
         ("rust-value-bag" ,rust-value-bag-1))
        #:cargo-development-inputs
-       (("rust-rustversion" ,rust-rustversion-1)
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-test" ,rust-serde-test-1)
-        ("rust-sval" ,rust-sval-1)
+        ("rust-sval" ,rust-sval-2)
+        ("rust-sval-derive" ,rust-sval-derive-2)
         ("rust-value-bag" ,rust-value-bag-1))))
     (home-page "https://github.com/rust-lang/log")
     (synopsis "Lightweight logging facade for Rust")
