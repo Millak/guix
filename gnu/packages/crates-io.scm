@@ -32374,6 +32374,37 @@ characters in HTML, decoding and unescaping HTML entities as well.")
     (description "This library provides Rust bindings to HTSlib.")
     (license license:expat)))
 
+(define-public rust-jwalk-0.8
+  (package
+    (name "rust-jwalk")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "jwalk" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0miw0074ch6p89dbvrlnz9wp13rh7542cf1ak8bx4v1mcrsq8d97"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-crossbeam" ,rust-crossbeam-0.8)
+        ("rust-rayon" ,rust-rayon-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4)
+        ("rust-fs-extra" ,rust-fs-extra-1)
+        ("rust-ignore" ,rust-ignore-0.4)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-num-cpus" ,rust-num-cpus-1)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-walkdir" ,rust-walkdir-2))))
+    (home-page "https://github.com/byron/jwalk")
+    (synopsis
+     "Filesystem walk performed in parallel with streamed and sorted results")
+    (description
+     "Filesystem walk performed in parallel with streamed and sorted results.")
+    (license license:expat)))
+
 (define-public rust-kuchiki-0.8
   (package
     (name "rust-kuchiki")
