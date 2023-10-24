@@ -34791,6 +34791,32 @@ versions < 0.2.")
     ;; Either license can be chosen at the users option.
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-io-close-0.3
+  (package
+    (name "rust-io-close")
+    (version "0.3.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "io-close" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1g4hldfn436rkrx3jlm4az1y5gdmkcixdlhkwy64yx06gx2czbcw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-os-pipe" ,rust-os-pipe-0.9)
+        ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs
+       (("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://gitlab.com/wufz/io-close")
+    (synopsis "Safely dropping I/O writers such as File and BufWriter")
+    (description
+     "An extension trait for safely dropping I/O writers such as File and
+@code{BufWriter}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-io-lifetimes-1
   (package
     (name "rust-io-lifetimes")
