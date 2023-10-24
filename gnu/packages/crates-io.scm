@@ -83212,6 +83212,33 @@ for @code{Valuable} types.")
     (description "This package provides anonymous structured values.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-value-bag-sval2-1
+  (package
+    (name "rust-value-bag-sval2")
+    (version "1.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "value-bag-sval2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0i899mjnryxw0sp92n8qgnm1s2m56ba27l3qazsbnmqah486rq63"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-sval" ,rust-sval-2)
+        ("rust-sval-buffer" ,rust-sval-buffer-2)
+        ("rust-sval-dynamic" ,rust-sval-dynamic-2)
+        ("rust-sval-fmt" ,rust-sval-fmt-2)
+        ("rust-sval-json" ,rust-sval-json-2)
+        ("rust-sval-ref" ,rust-sval-ref-2)
+        ("rust-sval-serde" ,rust-sval-serde-2)
+        ("rust-sval-test" ,rust-sval-test-2))))
+    (home-page "https://github.com/sval-rs/value-bag")
+    (synopsis "Implementation detail for value-bag")
+    (description "Implementation detail for value-bag.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-vcell-0.1
   (package
     (name "rust-vcell")
