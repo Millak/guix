@@ -64427,13 +64427,13 @@ of a C-like enum.")
 (define-public rust-serde-spanned-0.6
   (package
     (name "rust-serde-spanned")
-    (version "0.6.1")
+    (version "0.6.3")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "serde-spanned" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "1x7wqhqay4bgkaq8dmvb9z01mk2z0j0g9jl5nb9ynv3aanpqrz8f"))))
+               (base32 "11p1l83r5g3k18pi88cqri2r9ai03pm8b4azj4j02ypx6scnqhln"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-serde" ,rust-serde-1))))
