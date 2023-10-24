@@ -25958,6 +25958,29 @@ prime field implementations in rust.")
     (description "An atomic utility for diffing files in testing.")
     (license license:bsd-3)))
 
+(define-public rust-filedescriptor-0.8
+  (package
+    (name "rust-filedescriptor")
+    (version "0.8.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "filedescriptor" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vplyh0cw35kzq7smmp2ablq0zsknk5rkvvrywqsqfrchmjxk6bi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/wez/wezterm")
+    (synopsis "More ergonomic wrappers around RawFd and RawHandle")
+    (description
+     "More ergonomic wrappers around @code{RawFd} and @code{RawHandle}.")
+    (license license:expat)))
+
 (define-public rust-filesize-0.2
   (package
     (name "rust-filesize")
