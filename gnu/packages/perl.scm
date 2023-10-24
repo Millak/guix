@@ -4854,6 +4854,26 @@ By itself it is not a particularly interesting module by any measure, however
 it ties together a family of modern toolchain modules.")
     (license (package-license perl))))
 
+(define-public perl-extutils-cchecker
+  (package
+    (name "perl-extutils-cchecker")
+    (version "0.11")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/P/PE/PEVANS/ExtUtils-CChecker-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1x8vafpff5nma18svxp1h3mp069fjmzlsdvnbcgn3z1pgrkkcxqi"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build perl-test-fatal))
+    (home-page "https://metacpan.org/release/ExtUtils-CChecker")
+    (synopsis "Configure time utilities for using C headers and libraries")
+    (description "This module provides configure time utilities for using
+C headers, libraries, or OS features.")
+    (license (package-license perl))))
+
 (define-public perl-extutils-cppguess
   (package
     (name "perl-extutils-cppguess")
