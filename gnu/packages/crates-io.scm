@@ -16162,7 +16162,18 @@ intrinsics.")
         (uri (crate-uri "cpal" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "05j11vz8rw19gqqvpd48i7wvm6j77v8fwx5lwhlkckqjllv7h4bl"))))
+         (base32 "05j11vz8rw19gqqvpd48i7wvm6j77v8fwx5lwhlkckqjllv7h4bl"))
+        (snippet
+         #~(begin (use-modules (guix build utils))
+                  ;; Force cpal-0.13.5 to accept any version of jack, so
+                  ;; that other packages like librespot-playback can use
+                  ;; the one they want.
+                  (substitute* "Cargo.toml.orig"
+                    (("(jack = \\{ version = \").*(\", optional.*)" _ jack optional)
+                     (string-append jack "*" optional))
+                    ;; Remove path for asio-sys, use packaged crate.
+                    ((", path =.*,") ","))
+                  (copy-file "Cargo.toml.orig" "Cargo.toml")))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-alsa" ,rust-alsa-0.6)
