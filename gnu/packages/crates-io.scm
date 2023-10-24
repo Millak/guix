@@ -52247,13 +52247,13 @@ overloading without macros in Rust.")
 (define-public rust-portable-atomic-1
   (package
     (name "rust-portable-atomic")
-    (version "1.0.1")
+    (version "1.4.3")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "portable-atomic" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "06p5dglnqj43m4fj70dwcqhv9rmy9amn9pdpgpzd8fx0hf30rh1r"))))
+               (base32 "12rkq21505js078704bz9mmcy4g0l1aszzq92sxm2z0his4ll49i"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f              ; Not all test dependencies declared.
@@ -52261,13 +52261,10 @@ overloading without macros in Rust.")
        (("rust-critical-section" ,rust-critical-section-1)
         ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
-       (("rust-critical-section" ,rust-critical-section-1)
+       (("rust-build-context" ,rust-build-context-0.1)
         ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
-        ("rust-fastrand" ,rust-fastrand-1)
-        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-fastrand" ,rust-fastrand-2)
         ("rust-paste" ,rust-paste-1)
-        ("rust-rustversion" ,rust-rustversion-1)
-        ("rust-serde" ,rust-serde-1)
         ("rust-serde-test" ,rust-serde-test-1)
         ("rust-sptr" ,rust-sptr-0.3)
         ("rust-static-assertions" ,rust-static-assertions-1))))
