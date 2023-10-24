@@ -42844,6 +42844,28 @@ general elements and for numerics.")
      "This package provides safe Rust bindings to the Android NDK.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ndk-0.6
+  (package
+    (inherit rust-ndk-0.7)
+    (name "rust-ndk")
+    (version "0.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ndk" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1m1dfjw35qpys1hr4qib6mm3zacd01k439l7cx5f7phd0dzcfci0"))))
+    (arguments
+     `(#:skip-build? #t     ; Android only
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-jni" ,rust-jni-0.18)
+                       ("rust-jni-glue" ,rust-jni-glue-0.0)
+                       ("rust-jni-sys" ,rust-jni-sys-0.3)
+                       ("rust-ndk-sys" ,rust-ndk-sys-0.3)
+                       ("rust-num-enum" ,rust-num-enum-0.5)
+                       ("rust-thiserror" ,rust-thiserror-1))))))
+
 (define-public rust-ndk-0.5
   (package
     (inherit rust-ndk-0.7)
