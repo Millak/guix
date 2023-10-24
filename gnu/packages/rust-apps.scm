@@ -2099,38 +2099,37 @@ support for Rust.")
 (define-public rust-cargo-c
   (package
     (name "rust-cargo-c")
-    (version "0.9.18+cargo-0.69")
+    (version "0.9.27+cargo-0.74.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "cargo-c" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "191d0813g4m2g1c1h8ykgrfp00blkbds6pg3zl044iyxaclng29h"))))
+         (base32 "1xsw17zcxzlg7d7pg40anm9w8g95kvnxfp7ln9sbgv3zhsc9wggq"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-cargo" ,rust-cargo-0.69)
+        ("rust-cargo" ,rust-cargo-0.74)
         ("rust-cargo-util" ,rust-cargo-util-0.2)
-        ("rust-cbindgen" ,rust-cbindgen-0.24)
+        ("rust-cbindgen" ,rust-cbindgen-0.26)
         ("rust-cc" ,rust-cc-1)
         ("rust-clap" ,rust-clap-4)
         ("rust-glob" ,rust-glob-0.3)
-        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-itertools" ,rust-itertools-0.11)
         ("rust-log" ,rust-log-0.4)
         ("rust-regex" ,rust-regex-1)
         ("rust-semver" ,rust-semver-1)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-toml" ,rust-toml-0.7))))
+        ("rust-toml" ,rust-toml-0.7)
+        ("rust-windows-sys" ,rust-windows-sys-0.48))))
     (native-inputs
      (list pkg-config))
     (inputs
-     (list curl libgit2 libssh2 openssl zlib))
+     (list curl libgit2-1.6 libssh2 openssl zlib))
     (home-page "https://github.com/lu-zero/cargo-c")
     (synopsis "Build and install C-compatible libraries")
     (description
