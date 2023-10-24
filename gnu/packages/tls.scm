@@ -988,14 +988,14 @@ number generator")
         (base32 "070i5pxciw04swfqk1rmdprhsafn4cias3dlmkm467pqpjnhb394"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list "-DUSE_SHARED_MBEDTLS_LIBRARY=ON"
-             "-DUSE_STATIC_MBEDTLS_LIBRARY=OFF")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'make-source-writable
-           (lambda _
-             (for-each make-file-writable (find-files ".")))))))
+     (list #:configure-flags
+           #~(list "-DUSE_SHARED_MBEDTLS_LIBRARY=ON"
+                   "-DUSE_STATIC_MBEDTLS_LIBRARY=OFF")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'make-source-writable
+                 (lambda _
+                   (for-each make-file-writable (find-files ".")))))))
     (native-inputs
      (list perl python))
     (synopsis "Small TLS library")
