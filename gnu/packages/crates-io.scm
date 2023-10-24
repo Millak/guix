@@ -46617,16 +46617,14 @@ combinators library.")
   (package
     (inherit rust-nom-6)
     (name "rust-nom")
-    (version "5.1.2")
+    (version "5.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nom" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1br74rwdp3c2ddga03bphnf355spn4mzwf1slg0a30zd4qnjdd7z"))))
+        (base32 "0jyxc4d3pih60pp8hvzpg5ajh16s273cpnsdpzp04qv7g8w9m588"))))
     (arguments
      `(#:tests? #f  ; Tests require example directory, not included in tarball.
        #:cargo-inputs
@@ -46645,8 +46643,7 @@ combinators library.")
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((jemalloc (assoc-ref inputs "jemalloc")))
                (setenv "JEMALLOC_OVERRIDE"
-                       (string-append jemalloc "/lib/libjemalloc_pic.a")))
-             #t)))))))
+                       (string-append jemalloc "/lib/libjemalloc_pic.a"))))))))))
 
 (define-public rust-nom-4
   (package
