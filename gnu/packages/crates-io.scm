@@ -11366,6 +11366,29 @@ the library crate of Cargo.")
 GNOME libsecret.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-cargo-credential-macos-keychain-0.3
+  (package
+    (name "rust-cargo-credential-macos-keychain")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo-credential-macos-keychain" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15i7gq5z6a3896aq2bci9mc9h77g91ziij87c2zhhd91g1pf41rs"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cargo-credential" ,rust-cargo-credential-0.3)
+        ("rust-security-framework" ,rust-security-framework-2))))
+    (home-page "https://github.com/rust-lang/cargo")
+    (synopsis "Cargo credential process that stores tokens in a macOS keychain")
+    (description
+     "This package provides a Cargo credential process that stores tokens in a
+@code{macOS} keychain.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-cargo-metadata-0.15
   (package
     (name "rust-cargo-metadata")
