@@ -29844,6 +29844,35 @@ libcurl, which is intended to be used with the @code{git2} crate.")
         ("rust-log" ,rust-log-0.4)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-gix-path-0.8
+  (package
+    (name "rust-gix-path")
+    (version "0.8.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-path" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0z5733b3z2wbnz1x0y2aq3gpanrhrlrqr4v4gjlqwl68ps69qq0q"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bstr" ,rust-bstr-1)
+        ("rust-gix-trace" ,rust-gix-trace-0.1)
+        ("rust-home" ,rust-home-0.5)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis
+     "Crate of the gitoxide project dealing paths and their conversions")
+    (description
+     "This package provides a crate of the gitoxide project dealing paths and their
+conversions.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-prompt-0.5
   (package
     (name "rust-gix-prompt")
