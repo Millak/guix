@@ -1401,8 +1401,8 @@ the Guile compiler tower to generate the DSL from AWS JSON specifications.")
       (license license:gpl3+))))
 
 (define-public guile-simple-zmq
-  (let ((commit "ff0b39aec9312517fb48681564e261bd000aaf63")
-        (revision "10"))
+  (let ((commit "d25d1865e3378d93c44e2b4f5246a70b078a489d")
+        (revision "11"))
     (package
       (name "guile-simple-zmq")
       (version (git-version "0.0.0" revision commit))
@@ -1414,7 +1414,7 @@ the Guile compiler tower to generate the DSL from AWS JSON specifications.")
                (commit commit)))
          (sha256
           (base32
-           "0qfnljap1cxkfsydadarvhcw4p6cgayxzbhqr6r1y0as0m8250q3"))
+           "1aq1s0f0z5g6qsv9jqr0663qv4rwxd9j1pmg1g8v6rl09xb8g8lp"))
          (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments
