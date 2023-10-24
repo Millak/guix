@@ -13467,6 +13467,24 @@ provided that can be used to do various manipulations with LilyPond files.")
 should be stored on various operating systems.")
     (license license:expat)))
 
+(define-public python-google-pasta
+  (package
+    (name "python-google-pasta")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "google-pasta" version))
+       (sha256
+        (base32 "0vm1r1jlaiagj0l9yf7j6zn9w3733dr2169911c0svgrr3gwiwn9"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-six))
+    (home-page "https://github.com/google/pasta")
+    (synopsis "pasta is an AST-based Python refactoring library")
+    (description "This package provides \"pasta\", an AST-based Python
+refactoring library.")
+    (license license:asl2.0)))
+
 (define-public python-gorilla
   (package
     (name "python-gorilla")
