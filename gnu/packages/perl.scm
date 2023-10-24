@@ -8968,6 +8968,28 @@ the locale information or can be specified by the user.")
 number exists in a given range, and to be able to manipulate the range.")
     (license (package-license perl))))
 
+(define-public perl-object-pad
+  (package
+    (name "perl-object-pad")
+    (version "0.79")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/P/PE/PEVANS/Object-Pad-" version
+                    ".tar.gz"))
+              (sha256
+               (base32
+                "1miawakw2w4q6ifygj4g03x57db0bysivckapmjl3mb2kvw102zv"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build perl-test2-suite
+                         perl-xs-parse-keyword perl-xs-parse-sublike))
+    (propagated-inputs (list perl-xs-parse-keyword perl-xs-parse-sublike))
+    (home-page "https://metacpan.org/release/Object-Pad")
+    (synopsis "Syntax for lexical field-based objects")
+    (description "This module provides a simple syntax for creating object
+classes.")
+    (license (package-license perl))))
+
 (define-public perl-object-signature
   (package
     (name "perl-object-signature")
