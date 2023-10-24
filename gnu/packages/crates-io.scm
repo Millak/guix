@@ -29844,6 +29844,30 @@ libcurl, which is intended to be used with the @code{git2} crate.")
         ("rust-log" ,rust-log-0.4)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-gix-lock-6
+  (package
+    (name "rust-gix-lock")
+    (version "6.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-lock" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lpqi927lacn2vz22q2mhacc4plkrlz5whm779ax65kky3kdbi9y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-gix-tempfile" ,rust-gix-tempfile-6)
+        ("rust-gix-utils" ,rust-gix-utils-0.1)
+        ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Git-style lock-file implementation")
+    (description "This package provides a git-style lock-file implementation.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-mailmap-0.13
   (package
     (name "rust-gix-mailmap")
