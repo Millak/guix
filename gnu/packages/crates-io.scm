@@ -43025,6 +43025,19 @@ general elements and for numerics.")
     (description "This package provides FFI bindings for the Android NDK.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ndk-sys-0.3
+  (package
+    (inherit rust-ndk-sys-0.4)
+    (name "rust-ndk-sys")
+    (version "0.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ndk-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "15zsq4p6k5asf4mc0rknd8cz9wxrwvi50qdspgf87qcfgkknlnkf"))))))
+
 (define-public rust-ndk-sys-0.2
   (package
     (inherit rust-ndk-sys-0.4)
