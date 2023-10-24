@@ -52540,6 +52540,25 @@ overloading without macros in Rust.")
 128-bit atomics, atomic float, etc.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-portable-atomic-util-0.1
+  (package
+    (name "rust-portable-atomic-util")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "portable-atomic-util" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1k64a1yq96f8xdvgqls58qf630gpjhjjfmv2cfbx0r3jvgbzf12v"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-portable-atomic" ,rust-portable-atomic-1))))
+    (home-page "https://github.com/taiki-e/portable-atomic")
+    (synopsis "Synchronization primitives built with portable-atomic")
+    (description "Synchronization primitives built with portable-atomic.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-portaudio-rs-0.3
   (package
     (name "rust-portaudio-rs")
