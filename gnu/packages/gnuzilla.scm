@@ -1057,10 +1057,12 @@ variable defined below.  It requires guile-json to be installed."
             (lambda* (#:key (make-flags '()) (parallel-build? #t)
                       #:allow-other-keys)
               (apply invoke "./mach" "build"
-                     ;; mach will use parallel build if possible by default
-                     `(,@(if parallel-build?
-                             '()
-                             '("-j1"))
+                     ;; mach will use a wide parallel build if possible by
+                     ;; default, so reign it in if requested.
+                     `(,(string-append
+                         "-j" (number->string (if parallel-build?
+                                                  (parallel-job-count)
+                                                  1)))
                        ,@make-flags))))
           (add-after 'build 'neutralise-store-references
             (lambda _
