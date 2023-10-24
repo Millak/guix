@@ -72404,6 +72404,30 @@ values without proliferating generics.")
      "This package provides a no-std, object-safe serialization framework.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-sval-buffer-2
+  (package
+    (name "rust-sval-buffer")
+    (version "2.10.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sval-buffer" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0yglk3ma67605f28mwip09maf531mm1fak2pdr2a1klapib0bs2p"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-sval" ,rust-sval-2)
+        ("rust-sval-ref" ,rust-sval-ref-2))
+       #:cargo-development-inputs
+       (("rust-sval-derive-macros" ,rust-sval-derive-macros-2)
+        ("rust-sval-test" ,rust-sval-test-2))))
+    (home-page "https://github.com/sval-rs/sval")
+    (synopsis "Value buffering for sval")
+    (description "Value buffering for sval.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-sval-derive-2
   (package
     (name "rust-sval-derive")
