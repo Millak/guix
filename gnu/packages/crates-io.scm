@@ -72444,6 +72444,30 @@ values without proliferating generics.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-sval-flatten-2
+  (package
+    (name "rust-sval-flatten")
+    (version "2.10.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sval-flatten" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "121ac1pn2b113rgkf98n65kpwn2j80rikjzdwn5yaknxp9yqqcr3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; can't find crate for `sval_derive_macros`
+       #:cargo-inputs
+       (("rust-itoa" ,rust-itoa-1)
+        ("rust-ryu" ,rust-ryu-1)
+        ("rust-sval" ,rust-sval-2)
+        ("rust-sval-buffer" ,rust-sval-buffer-2))))
+    (home-page "https://github.com/sval-rs/sval")
+    (synopsis "Value flattening for sval")
+    (description "Value flattening for sval.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-sval-fmt-2
   (package
     (name "rust-sval-fmt")
