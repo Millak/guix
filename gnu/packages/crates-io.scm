@@ -29844,6 +29844,36 @@ libcurl, which is intended to be used with the @code{git2} crate.")
         ("rust-log" ,rust-log-0.4)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-gix-revision-0.15
+  (package
+    (name "rust-gix-revision")
+    (version "0.15.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-revision" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1mrcjg8180n3kgbsngfaavzlfsqbmr905gjc0fdwx1x4sxngai2h"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bstr" ,rust-bstr-1)
+        ("rust-document-features" ,rust-document-features-0.2)
+        ("rust-gix-date" ,rust-gix-date-0.5)
+        ("rust-gix-hash" ,rust-gix-hash-0.11)
+        ("rust-gix-hashtable" ,rust-gix-hashtable-0.2)
+        ("rust-gix-object" ,rust-gix-object-0.30)
+        ("rust-gix-revwalk" ,rust-gix-revwalk-0.1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Finding names for revisions and parsing specifications")
+    (description
+     "This package provides a crate of the gitoxide project dealing with finding
+names for revisions and parsing specifications.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-revwalk-0.1
   (package
     (name "rust-gix-revwalk")
