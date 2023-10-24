@@ -47762,14 +47762,14 @@ easy and usable crypto while trying to minimize the use of unsafe code.")
 (define-public rust-os-info-3
   (package
     (name "rust-os-info")
-    (version "3.6.0")
+    (version "3.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "os_info" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1h5q42l0azly64b80gb36f0lsm296idkn0dc7247gq0mip34nhjw"))))
+        (base32 "0pndk46gl8lnyjb89p0k4bnn9ryxzrqh78pdh0c6ydl8p3al4vh0"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
