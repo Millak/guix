@@ -29844,6 +29844,44 @@ libcurl, which is intended to be used with the @code{git2} crate.")
         ("rust-log" ,rust-log-0.4)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-gix-protocol-0.33
+  (package
+    (name "rust-gix-protocol")
+    (version "0.33.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-protocol" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "093c9zlqxy8248nynyb909g12xkfxsv5z32j8w41yijwnic718cj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-async-trait" ,rust-async-trait-0.1)
+        ("rust-bstr" ,rust-bstr-1)
+        ("rust-btoi" ,rust-btoi-0.4)
+        ("rust-document-features" ,rust-document-features-0.2)
+        ("rust-futures-io" ,rust-futures-io-0.3)
+        ("rust-futures-lite" ,rust-futures-lite-1)
+        ("rust-gix-credentials" ,rust-gix-credentials-0.15)
+        ("rust-gix-features" ,rust-gix-features-0.30)
+        ("rust-gix-hash" ,rust-gix-hash-0.11)
+        ("rust-gix-transport" ,rust-gix-transport-0.32)
+        ("rust-maybe-async" ,rust-maybe-async-0.2)
+        ("rust-nom" ,rust-nom-7)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-async-std" ,rust-async-std-1)
+        ("rust-gix-packetline" ,rust-gix-packetline-0.16))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Crate of the gitoxide project for implementing git protocols")
+    (description
+     "This package provides a crate of the gitoxide project for implementing git
+protocols.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-quote-0.4
   (package
     (name "rust-gix-quote")
