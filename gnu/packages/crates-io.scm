@@ -59399,21 +59399,21 @@ memory to speed up reallocation.")
 (define-public rust-regex-1
   (package
     (name "rust-regex")
-    (version "1.9.1")
+    (version "1.10.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "regex" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0xdmrvs8fy7yw2bdk76mjbhzqibms7g4ljg468jwzxr0qa7ydsmj"))))
+        (base32 "0hxkd814n4irind8im5c9am221ri6bprx49nc7yxv02ykhd9a2rq"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-aho-corasick" ,rust-aho-corasick-1)
         ("rust-memchr" ,rust-memchr-2)
-        ("rust-regex-automata" ,rust-regex-automata-0.3)
-        ("rust-regex-syntax" ,rust-regex-syntax-0.7))
+        ("rust-regex-automata" ,rust-regex-automata-0.4)
+        ("rust-regex-syntax" ,rust-regex-syntax-0.8))
        #:cargo-development-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-doc-comment" ,rust-doc-comment-0.3)
