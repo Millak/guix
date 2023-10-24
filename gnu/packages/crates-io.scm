@@ -48455,7 +48455,8 @@ the Cocoa Foundation framework.")
                 "04h5wns3hxmc9g652hr9xqzrijs4ij9sdnlgc0ha202v050srz5b"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-objc-sys" ,rust-objc-sys-0.2))))
+     `(#:tests? #f      ; Test suite wants gcc-objc
+       #:cargo-inputs (("rust-objc-sys" ,rust-objc-sys-0.2))))
     (home-page "https://github.com/madsmtm/objc2")
     (synopsis "Objective-C type-encoding representation and parsing")
     (description "This package provides objective-C type-encoding
