@@ -83057,8 +83057,34 @@ color in a Windows console.")
        #:cargo-inputs
        (("rust-winapi" ,rust-winapi-0.3))))))
 
+(define-public rust-windows-0.48
+  (package
+    (name "rust-windows")
+    (version "0.48.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "03vh89ilnxdxdh0n9np4ns4m10fvm93h3b0cc05ipg3qq1mqi1p6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-windows-implement" ,rust-windows-implement-0.48)
+        ("rust-windows-interface" ,rust-windows-interface-0.48)
+        ("rust-windows-targets" ,rust-windows-targets-0.48))))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Rust for Windows")
+    (description "The windows crate lets you call any Windows API past,
+present, and future using code generated on the fly directly from the metadata
+describing the API and right into your Rust package where you can call them as
+if they were just another Rust module.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-0.46
   (package
+    (inherit rust-windows-0.48)
     (name "rust-windows")
     (version "0.46.0")
     (source (origin
@@ -83068,19 +83094,11 @@ color in a Windows console.")
               (sha256
                (base32
                 "098crdz9gxgy3614ygznqqhn28q097r498b3rg35584nd8gb9b6d"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-windows-implement" ,rust-windows-implement-0.46)
         ("rust-windows-interface" ,rust-windows-interface-0.46)
-        ("rust-windows-targets" ,rust-windows-targets-0.42))))
-    (home-page "https://github.com/microsoft/windows-rs")
-    (synopsis "Rust for Windows")
-    (description "The windows crate lets you call any Windows API past,
-present, and future using code generated on the fly directly from the metadata
-describing the API and right into your Rust package where you can call them as
-if they were just another Rust module.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-windows-targets" ,rust-windows-targets-0.42))))))
 
 (define-public rust-windows-0.32
   (package
