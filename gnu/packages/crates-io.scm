@@ -51392,8 +51392,41 @@ provides comprehensive coverage of that portion of the specification
 along with strong support for variations and the core header tables.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-piper-0.2
+  (package
+    (name "rust-piper")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "piper" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1m45fkdq7q5l9mv3b0ra10qwm0kb67rjp2q8y91958gbqjqk33b6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-atomic-waker" ,rust-atomic-waker-1)
+        ("rust-fastrand" ,rust-fastrand-2)
+        ("rust-futures-io" ,rust-futures-io-0.3)
+        ("rust-portable-atomic" ,rust-portable-atomic-1)
+        ("rust-portable-atomic-util" ,rust-portable-atomic-util-0.1))
+       #:cargo-development-inputs
+       (("rust-async-channel" ,rust-async-channel-1)
+        ("rust-async-executor" ,rust-async-executor-1)
+        ("rust-async-io" ,rust-async-io-1)
+        ("rust-criterion" ,rust-criterion-0.4)
+        ("rust-easy-parallel" ,rust-easy-parallel-3)
+        ("rust-futures-lite" ,rust-futures-lite-1))))
+    (home-page "https://github.com/smol-rs/piper")
+    (synopsis "Async pipes, channels, mutexes, and more")
+    (description
+     "This crate provides async pipes, channels, mutexes, and more.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-piper-0.1
   (package
+    (inherit rust-piper-0.2)
     (name "rust-piper")
     (version "0.1.3")
     (source
@@ -51403,7 +51436,6 @@ along with strong support for variations and the core header tables.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "062zdv9w7l5037g113bh7r72wmygz92ajzr0z41v3bqdd3x8nq01"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #false
        #:cargo-inputs
@@ -51412,12 +51444,7 @@ along with strong support for variations and the core header tables.")
         ("rust-futures-sink" ,rust-futures-sink-0.3)
         ("rust-futures-util" ,rust-futures-util-0.3))
        #:cargo-development-inputs
-       (("rust-futures" ,rust-futures-0.3))))
-    (home-page "https://crates.io/crates/piper")
-    (synopsis "Async pipes, channels, mutexes, and more")
-    (description
-     "This crate provides async pipes, channels, mutexes, and more.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-futures" ,rust-futures-0.3))))))
 
 (define-public rust-pkcs1-0.7
   (package
