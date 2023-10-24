@@ -72444,6 +72444,29 @@ values without proliferating generics.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-sval-test-2
+  (package
+    (name "rust-sval-test")
+    (version "2.10.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sval-test" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bgbcdl7vniil0xiyvxscmzcwymhz2w2iywqgxjmc5c0krzg0hd4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-sval" ,rust-sval-2)
+        ("rust-sval-fmt" ,rust-sval-fmt-2))
+       #:cargo-development-inputs
+       (("rust-sval-dynamic" ,rust-sval-dynamic-2))))
+    (home-page "https://github.com/sval-rs/sval")
+    (synopsis "Utilities for testing sval::Value implementations")
+    (description "Utilities for testing sval::Value implementations.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-svd-parser-0.10
   (package
     (name "rust-svd-parser")
