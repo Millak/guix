@@ -1252,13 +1252,13 @@ using just two functions: melt and dcast (or acast).")
 (define-public r-ggplot2
   (package
     (name "r-ggplot2")
-    (version "3.4.3")
+    (version "3.4.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggplot2" version))
        (sha256
-        (base32 "0hx5j47y2fxrcg4fxavyn5jjycpwkmsiqsjh6kj7nwp7dg79mqjw"))))
+        (base32 "0iiywrzv8j0npasvzgkxwhw0zqisf4xmpx06jl0lsq1ybl3fqxid"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
@@ -1268,10 +1268,10 @@ using just two functions: melt and dcast (or acast).")
            r-lifecycle
            r-mass
            r-mgcv
-           r-tibble
            r-rlang
            r-scales
            r-svglite ; Needed for 'ggsave'
+           r-tibble
            r-vctrs
            r-withr))
     (native-inputs
