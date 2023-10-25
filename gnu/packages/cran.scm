@@ -6016,14 +6016,14 @@ functions and compiled functions callable by other packages.")
 (define-public r-rcppthread
   (package
     (name "r-rcppthread")
-    (version "2.1.5")
+    (version "2.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RcppThread" version))
        (sha256
         (base32
-         "0rra7qqbq2y4bj54x76559p5ghpj3r03c4vlpg96phwafwnc2y8m"))))
+         "1997ka0dd36d79fb4crqq0ar3bgzdv4mw5hd6v2pmq7555g0qiz9"))))
     (properties `((upstream-name . "RcppThread")))
     (build-system r-build-system)
     (native-inputs (list r-r-rsp))
