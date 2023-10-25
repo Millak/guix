@@ -4328,7 +4328,7 @@ guix build -f guix.scm --target=x86_64-w64-mingw32
 @end lisp
 
 You can also use @dfn{package transformations} to test package variants
-(@pxref{Package Transformations,,, guix, GNU Guix Reference Manual}):
+(@pxref{Package Transformation Options,,, guix, GNU Guix Reference Manual}):
 
 @example
 # What if we built with Clang instead of GCC?
