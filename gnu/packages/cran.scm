@@ -7872,25 +7872,25 @@ to access PostgreSQL database systems.")
 (define-public r-rpostgres
   (package
     (name "r-rpostgres")
-    (version "1.4.5")
+    (version "1.4.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RPostgres" version))
        (sha256
         (base32
-         "15y732ylnq1h1hw16nh1ichnygh3l76h23m2893avpaipa689zvh"))))
+         "1ld03r9rzfxx6gzy3yn8jhzp9sp2qd9wydpxz955ggjxwdklpvnr"))))
     (properties `((upstream-name . "RPostgres")))
     (build-system r-build-system)
     (inputs (list postgresql))
     (propagated-inputs
      (list r-bit64
            r-blob
+           r-cpp11
            r-dbi
            r-hms
            r-lubridate
            r-plogr
-           r-rcpp
            r-withr))
     (native-inputs
      (list pkg-config r-knitr))
