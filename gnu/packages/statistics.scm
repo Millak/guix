@@ -1316,19 +1316,19 @@ agnes cluster diagrams.")
 (define-public r-gdtools
   (package
     (name "r-gdtools")
-    (version "0.3.3")
+    (version "0.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gdtools" version))
        (sha256
         (base32
-         "10rlx1ciyvh0ayic03kckv360idl9s1zyc2ar5lisns786c1hnns"))))
+         "00mak9js1s05j5bmkda24nl2z023jsyg8zc60nm4h2xs7w1l7mxa"))))
     (build-system r-build-system)
     (native-inputs
      (list pkg-config))
     (inputs
-     (list cairo fontconfig freetype))
+     (list cairo fontconfig freetype zlib))
     (propagated-inputs
      (list r-curl
            r-fontquiver
