@@ -37692,14 +37692,14 @@ supply the workflow to create thematic maps.  This package also facilitates
 (define-public r-rtweet
   (package
     (name "r-rtweet")
-    (version "1.1.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rtweet" version))
        (sha256
         (base32
-         "0dq6ckf2mp6wm6y8xzjby21s356760fmck1m8nsnv5gz8lhy6dhg"))))
+         "18ynravc5vz7ywm1n7ww48gx06dndcishl6lq8nqajxsjwiphq3r"))))
     (properties `((upstream-name . "rtweet")))
     (build-system r-build-system)
     (propagated-inputs
