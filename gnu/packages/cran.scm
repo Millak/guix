@@ -38193,17 +38193,18 @@ utility operations.")
 (define-public r-rsq
   (package
     (name "r-rsq")
-    (version "2.5")
+    (version "2.6")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "rsq" version))
               (sha256
                (base32
-                "1r628srxhhf7b51lnj4qrzgbqajkm0ls47a9rzjkvmfq4ax5i73f"))))
+                "01b9rl2ng1sq0ibpfsf50agkwh01pfpw354vvgdjd0lzh9dxmsgp"))))
     (properties `((upstream-name . "rsq")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-deriv
+     (list r-deming
+           r-deriv
            r-lme4
            r-mass
            r-matrix
