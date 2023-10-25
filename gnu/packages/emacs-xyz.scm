@@ -795,6 +795,35 @@ configuration language which makes it trivial to write your own themes.")
 Common Lisp or Smalltalk, but for Emacs Lisp.")
       (license license:gpl3+))))
 
+(define-public emacs-treebundel
+  (package
+    (name "emacs-treebundel")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/purplg/treebundel")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hk2xnjsr85in48h02xbzi8lsccp36li2bp9v9j0r8qn1bis2vv9"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-compat))
+    (home-page "https://github.com/purplg/treebundel")
+    (synopsis "Bundle related git-worktrees together")
+    (description
+     "This package is used for bundling related git-worktrees from multiple
+repositories together.  This helps switch quickly between repositories and
+ensure you're on the correct branch.  When you're done with your changes, you
+can use the repositories in the workspace and know which ones were modified to
+simplify the process of getting the changes merged in together.  Additionally,
+git metadata is shared between all projects.  You can stash, pop, and pull
+changes in from the same repository in other workspaces thanks to the power of
+git-worktrees.")
+    (license license:expat)))
+
 (define-public emacs-tree-inspector
   (let ((commit "bbb8d2dfe84fbf857fcc1579de5a1324b09a877e"))
     (package
