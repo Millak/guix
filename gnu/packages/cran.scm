@@ -8223,14 +8223,14 @@ for certain use cases.")
 (define-public r-ggrepel
   (package
     (name "r-ggrepel")
-    (version "0.9.3")
+    (version "0.9.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggrepel" version))
        (sha256
         (base32
-         "0p00kb1x3q0krk5g8mmwqknnjlsznqs4i7mlfq1dp17fxpia1sxr"))))
+         "0gngsx87rcqijdr684bgpnazdlz3vj4brzw0fic0jdsrf1rb9aw1"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2 r-rcpp r-rlang r-scales r-withr))
