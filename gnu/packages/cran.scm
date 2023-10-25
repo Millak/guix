@@ -3583,6 +3583,27 @@ without affecting the current R process at all.  This package does exactly
 that.")
     (license license:expat)))
 
+(define-public r-deming
+  (package
+    (name "r-deming")
+    (version "1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "deming" version))
+       (sha256
+        (base32 "1yx3qrbik6jpqgsi0gqgc7y2cra13qlisg2gq8rvnv57nvcvb421"))))
+    (properties `((upstream-name . "deming")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-boot))
+    (home-page "https://cran.r-project.org/package=deming")
+    (synopsis
+     "Deming, Theil-Sen, Passing-Bablock and Total Least Squares regression")
+    (description
+     "This package implements generalized Deming regression, Theil-Sen
+regression and Passing-Bablock regression functions.")
+    (license license:lgpl2.0+)))
+
 (define-public r-depmixs4
   (package
     (name "r-depmixs4")
