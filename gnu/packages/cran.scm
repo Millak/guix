@@ -34982,14 +34982,14 @@ results.")
 (define-public r-tidyposterior
   (package
     (name "r-tidyposterior")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tidyposterior" version))
        (sha256
         (base32
-         "19cyyhh417i5xcchb8kq3iycaf4y7aznr7y9r004h2k2vk3svc86"))))
+         "1yi0pihglp683dmfg0bn9lnb0qsl2xprj3al65v642rcfzrr7h4h"))))
     (properties `((upstream-name . "tidyposterior")))
     (build-system r-build-system)
     (propagated-inputs
