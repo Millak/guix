@@ -61493,6 +61493,27 @@ contains the API endpoint response objects.")
 and table-based tests.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rstest-0.13
+  (package
+    (inherit rust-rstest-0.15)
+    (name "rust-rstest")
+    (version "0.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rstest" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1p04kbsvk2xna7fk5657p0zi76qrcglrxkw33ay147fbjdgjjfdr"))))
+    (arguments
+     `(#:skip-build? #t     ; Cut the dependency graph.
+       #:cargo-inputs
+       (("rust-async-std" ,rust-async-std-1)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-futures-timer" ,rust-futures-timer-3)
+        ("rust-rstest-macros" ,rust-rstest-macros-0.13)
+        ("rust-rustc-version" ,rust-rustc-version-0.4))))))
+
 (define-public rust-rstest-0.12
   (package
     (inherit rust-rstest-0.15)
