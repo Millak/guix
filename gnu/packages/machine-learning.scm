@@ -151,6 +151,42 @@ representations and sentence classification.")
     (inputs (list fasttext))
     (native-inputs (list pybind11))))
 
+(define-public python-funsor
+  (package
+    (name "python-funsor")
+    (version "0.4.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "funsor" version))
+       (sha256
+        (base32 "0cgysij0dix0fikyz2x4f8jvaskm5s5a04s07chzaz2dw1fpxdq8"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-makefun python-multipledispatch
+                             python-numpy python-opt-einsum
+                             python-typing-extensions))
+    (native-inputs (list python-black
+                         python-flake8
+                         python-isort
+                         python-nbsphinx
+                         python-pandas
+                         python-pillow
+                         python-pyro-api
+                         python-pytest
+                         python-pytest-xdist
+                         python-requests
+                         python-scipy
+                         python-sphinx
+                         python-sphinx-gallery
+                         python-sphinx-rtd-theme
+                         python-torchvision))
+    (home-page "https://github.com/pyro-ppl/funsor")
+    (synopsis "Tensor-like library for functions and distributions")
+    (description
+     "This package provides a tensor-like library for functions and
+distributions.")
+    (license license:asl2.0)))
+
 (define-public fann
   ;; The last release is >100 commits behind, so we package from git.
   (let ((commit "d71d54788bee56ba4cf7522801270152da5209d7"))
