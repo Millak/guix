@@ -34734,14 +34734,14 @@ different palettes and includes both diverging and sequential types.")
 (define-public r-slider
   (package
     (name "r-slider")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "slider" version))
        (sha256
         (base32
-         "18gw0bxpbb00qcafmyv2avyj83s710hrj10x998ch9qbbyx1fsmw"))))
+         "1c19lk0ddh5qh0jzx7178l314zyygmlpmbvn7670bcmdbxwjc2i0"))))
     (properties `((upstream-name . "slider")))
     (build-system r-build-system)
     (propagated-inputs
