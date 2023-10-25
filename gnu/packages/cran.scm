@@ -37670,18 +37670,18 @@ supply the workflow to create thematic maps.  This package also facilitates
 (define-public r-rworldmap
   (package
     (name "r-rworldmap")
-    (version "1.3-6")
+    (version "1.3-8")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "rworldmap" version))
         (sha256
           (base32
-            "1q1h0n9qr0m5pdx10swrh9ddsvdj8kv5nqngrf3lnx9rg9iwivjk"))))
+            "007avjl7jhllybp82illrn8v38a85j6xbzk5pvykfx8ayx4wc3m6"))))
     (properties `((upstream-name . "rworldmap")))
     (build-system r-build-system)
     (propagated-inputs
-      (list r-fields r-maptools r-sp))
+      (list r-fields r-raster r-sp r-terra))
     (home-page
       "https://github.com/AndySouth/rworldmap/")
     (synopsis "Mapping Global Data")
