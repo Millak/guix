@@ -36552,6 +36552,31 @@ library.")
              ("rust-tokio" ,rust-tokio-1)
              ("rust-windows-sys" ,rust-windows-sys-0.42))))))
 
+(define-public rust-io-uring-0.5
+  (package
+    (name "rust-io-uring")
+    (version "0.5.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "io-uring" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0k4qrzhnc8j50g79ki8n79d4yffvcmwq5dj3bj6gs95rrw0il7nx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.61)
+                       ("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-sc" ,rust-sc-0.2))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-slab" ,rust-slab-0.4)
+                                   ("rust-socket2" ,rust-socket2-0.4))))
+    (home-page "https://github.com/tokio-rs/io-uring")
+    (synopsis "Low-level `io_uring` userspace interface for Rust")
+    (description "The low-level `io_uring` userspace interface for Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-iovec-0.1
   (package
     (name "rust-iovec")
