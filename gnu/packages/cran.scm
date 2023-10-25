@@ -14229,14 +14229,14 @@ visualization and candidate genes around SNPs.")
 (define-public r-precrec
   (package
     (name "r-precrec")
-    (version "0.14.2")
+    (version "0.14.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "precrec" version))
        (sha256
         (base32
-         "159vxdnp7vi6na3cji1rbsr1311ciqn1aldg0nwnd6sb3hgb14w2"))))
+         "03hvp5h7fz4v2aswxim0mqgj9rdrhnk5xqz212161kpcrw6m67z8"))))
     (properties `((upstream-name . "precrec")))
     (build-system r-build-system)
     (propagated-inputs
