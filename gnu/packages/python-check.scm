@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2019, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -58,6 +58,24 @@
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix utils))
+
+(define-public python-assertpy
+  (package
+    (name "python-assertpy")
+    (version "1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "assertpy" version))
+       (sha256
+        (base32 "0cs8xya465wvb9dw0kdl7cvkxwrslhbma66y44r1mmsajcll7imc"))))
+    (build-system pyproject-build-system)
+    (home-page "https://github.com/assertpy/assertpy")
+    (synopsis "Simple assertion library for unit testing")
+    (description
+     "This package provides a simple assertion library for unit testing in
+Python with a fluent API.")
+    (license license:bsd-3)))
 
 (define-public python-tappy
   (package
