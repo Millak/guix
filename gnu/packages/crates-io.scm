@@ -55735,7 +55735,8 @@ trait of proptest.")
         (base32
          "0nziczbm7w0jisjrd216hh2j45fs5m363ga7r6nawwxcxlbxn7nk"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f          ; Needs nightly features.
+       #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-0.4)
         ("rust-quote" ,rust-quote-0.6)
         ("rust-syn" ,rust-syn-0.15))
