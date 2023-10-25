@@ -41134,23 +41134,20 @@ image together with its neighboring pixels.")
         ("rust-rayon" ,rust-rayon-1)
         ("rust-time" ,rust-time-0.2))))))
 
-(define-public rust-lru-0.7
+(define-public rust-lru-0.9
   (package
     (name "rust-lru")
-    (version "0.7.2")
+    (version "0.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "lru" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "07sdl7gpg30hbz7cgph75n2xl8915rshi90c7jqr5j9mi62m6hr7"))))
+        (base32 "05yz4qqx7wxbhgxs5hx22j13g8mv9z3gn2pkspykyq48winx9rvi"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-hashbrown" ,rust-hashbrown-0.11))
+     `(#:cargo-inputs (("rust-hashbrown" ,rust-hashbrown-0.13))
        #:cargo-development-inputs
        (("rust-scoped-threadpool" ,rust-scoped-threadpool-0.1)
         ("rust-stats-alloc" ,rust-stats-alloc-0.1))))
@@ -41158,6 +41155,25 @@ image together with its neighboring pixels.")
     (synopsis "LRU cache")
     (description "This package provides a LRU cache implementation.")
     (license license:expat)))
+
+(define-public rust-lru-0.7
+  (package
+    (inherit rust-lru-0.9)
+    (name "rust-lru")
+    (version "0.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lru" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07sdl7gpg30hbz7cgph75n2xl8915rshi90c7jqr5j9mi62m6hr7"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-hashbrown" ,rust-hashbrown-0.11))
+       #:cargo-development-inputs
+       (("rust-scoped-threadpool" ,rust-scoped-threadpool-0.1)
+        ("rust-stats-alloc" ,rust-stats-alloc-0.1))))))
 
 (define-public rust-lru-cache-0.1
   (package
