@@ -10025,15 +10025,16 @@ rules with R.")
 (define-public r-leaflet-providers
   (package
     (name "r-leaflet-providers")
-    (version "1.13.0")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "leaflet.providers" version))
        (sha256
-        (base32 "1jrfhqmr735maa0mr3ia7441vzd3q95msgicclzdpglmk4aqhhhh"))))
+        (base32 "0rl69bfx2l10x80rl8cppqch3fnd05sk9w29h8589jc8h3ffmkn5"))))
     (properties `((upstream-name . "leaflet.providers")))
     (build-system r-build-system)
+    (propagated-inputs (list r-htmltools))
     (home-page "https://github.com/rstudio/leaflet.providers")
     (synopsis "Leaflet map tile providers")
     (description
