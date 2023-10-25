@@ -956,8 +956,32 @@ during testing.")
         ("rust-serde" ,rust-serde-1)
         ("rust-string" ,rust-string-0.2))))))
 
+(define-public rust-actix-rt-2
+  (package
+    (name "rust-actix-rt")
+    (version "2.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "actix-rt" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "078mjccgha4xlqk2hjb9hxfg26pmpra9v2h2w0m40gvx5102vwr8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; use of undeclared crate or module `hyper`
+       #:cargo-inputs (("rust-actix-macros" ,rust-actix-macros-0.2)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-uring" ,rust-tokio-uring-0.4))))
+    (home-page "https://actix.rs")
+    (synopsis "Actix runtime")
+    (description "This package provides Actix runtime.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-actix-rt-1
   (package
+    (inherit rust-actix-rt-2)
     (name "rust-actix-rt")
     (version "1.1.1")
     (source
@@ -967,7 +991,6 @@ during testing.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "09xj7pxy0ng13rd6hya1md98dhk0586p4bsfrwmxxlg028lwqgql"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-actix-macros" ,rust-actix-macros-0.1)
@@ -976,11 +999,7 @@ during testing.")
         ("rust-futures-channel" ,rust-futures-channel-0.3)
         ("rust-futures-util" ,rust-futures-util-0.3)
         ("rust-smallvec" ,rust-smallvec-1)
-        ("rust-tokio" ,rust-tokio-0.2))))
-    (home-page "https://actix.rs")
-    (synopsis "Actix runtime")
-    (description "This package provides Actix runtime.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-tokio" ,rust-tokio-0.2))))))
 
 (define-public rust-actix-rt-0.2
   (package
