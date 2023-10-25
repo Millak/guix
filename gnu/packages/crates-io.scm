@@ -68786,8 +68786,39 @@ extensions.")
 diff output.")
     (license license:asl2.0)))
 
+(define-public rust-simplelog-0.12
+  (package
+    (name "rust-simplelog")
+    (version "0.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "simplelog" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0sa3hjdifxhcb9lnlg549fr2cc7vz89nygwbih2dbqsx3h20ivmc"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "Cargo.toml"
+                   (("1\\.1\\.\\*") "1.1"))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-ansi-term" ,rust-ansi-term-0.12)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-paris" ,rust-paris-1)
+                       ("rust-termcolor" ,rust-termcolor-1)
+                       ("rust-time" ,rust-time-0.3))))
+    (home-page "https://github.com/drakulix/simplelog.rs")
+    (synopsis "Simple and easy-to-use logging facility for Rust's log crate")
+    (description
+     "This package provides a simple and easy-to-use logging facility for Rust's
+@code{log} crate.  It aims to be a maintainable, easy to integrate facility for
+small to medium sized project")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-simplelog-0.11
   (package
+    (inherit rust-simplelog-0.12)
     (name "rust-simplelog")
     (version "0.11.1")
     (source
@@ -68797,7 +68828,6 @@ diff output.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "11h8q8lykc829f4bd5llw35p4qi9g6mp0mk1p281fq8qi48w1azc"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -68805,14 +68835,7 @@ diff output.")
         ("rust-chrono" ,rust-chrono-0.4)
         ("rust-log" ,rust-log-0.4)
         ("rust-paris" ,rust-paris-1)
-        ("rust-termcolor" ,rust-termcolor-1))))
-    (home-page "https://github.com/drakulix/simplelog.rs")
-    (synopsis "Simple and easy-to-use logging facility for Rust's log crate")
-    (description
-     "This package provides a simple and easy-to-use logging facility for Rust's
-@code{log} crate.  It aims to be a maintainable, easy to integrate facility for
-small to medium sized project")
-    (license (list license:expat license:asl2.0))))
+        ("rust-termcolor" ,rust-termcolor-1))))))
 
 (define-public rust-simple-logger-2
   (package
