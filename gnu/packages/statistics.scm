@@ -4711,13 +4711,13 @@ features present in other programming languages.")
 (define-public r-plotly
   (package
     (name "r-plotly")
-    (version "4.10.2")
+    (version "4.10.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "plotly" version))
               (sha256
                (base32
-                "0y2jiyfx895f15wcpizybssic4draw1vgvqz2b7f82z73319m01b"))
+                "13sxmanx2xck8dn0prn2fplgx4bafb7h2kk2wjmci21h8hk6qylb"))
               (modules '((guix build utils)))
               (snippet
                '(with-directory-excursion "inst/htmlwidgets/lib/"
