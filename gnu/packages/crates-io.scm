@@ -70692,8 +70692,31 @@ OIDs)")
     (description "This package provides sptr, The Strict Provenance Polyfill.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-sqlite-0.30
+  (package
+    (name "rust-sqlite")
+    (version "0.30.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlite" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lbfa0gjkqlhcmj4jy72kzfgd6a57z8gs1y7g34cbp4msvm4rk3f"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-sqlite3-sys" ,rust-sqlite3-sys-0.15))
+       #:cargo-development-inputs (("rust-temporary" ,rust-temporary-0.6))))
+    (inputs (list sqlite))
+    (home-page "https://github.com/stainless-steel/sqlite")
+    (synopsis "Interface to SQLite")
+    (description "The package provides an interface to SQLite.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-sqlite-0.26
   (package
+    (inherit rust-sqlite-0.30)
     (name "rust-sqlite")
     (version "0.26.0")
     (source
@@ -70703,16 +70726,11 @@ OIDs)")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0snvg09bs0n8skcxkx52lcymdn0l130a2m8fpvxpdhkyq0sabc9z"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
-        ("rust-sqlite3-sys" ,rust-sqlite3-sys-0.13))))
-    (home-page "https://github.com/stainless-steel/sqlite")
-    (synopsis "Interface to SQLite")
-    (description "The package provides an interface to SQLite.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-sqlite3-sys" ,rust-sqlite3-sys-0.13))))))
 
 (define-public rust-sqlite3-src-0.5
   (package
