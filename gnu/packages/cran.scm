@@ -4338,13 +4338,13 @@ jQuery.")
 (define-public r-jqr
   (package
     (name "r-jqr")
-    (version "1.3.0")
+    (version "1.3.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "jqr" version))
               (sha256
                (base32
-                "0gys1b2fiafmm49mkj9iazziwql87s52rjx093ahn8g3v79amirh"))))
+                "0dlz9wwkgz06mnnmwaq4pr68x7zywp2iczfw0bjpzrgpbzkn2972"))))
     (properties `((upstream-name . "jqr")))
     (build-system r-build-system)
     (inputs (list jq))
