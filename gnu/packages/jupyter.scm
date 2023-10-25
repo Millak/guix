@@ -410,6 +410,32 @@ endpoints—to Jupyter web applications.")
 are interactive HTML widgets for Jupyter notebooks and the IPython kernel.")
     (license license:bsd-3)))
 
+(define-public python-jupyterlite-core
+  (package
+    (name "python-jupyterlite-core")
+    (version "0.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jupyterlite_core" version))
+       (sha256
+        (base32 "18ysrqlsh7a31sknfnng419r7wpx9nfj59lxxd6zl1kcj6wazh34"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-doit python-importlib-metadata
+                             python-jupyter-core))
+    (native-inputs (list python-ansi2html
+                         python-hatchling
+                         python-pytest-console-scripts
+                         python-pytest-cov
+                         python-pytest-xdist
+                         python-tornado-6))
+    (home-page "https://github.com/jupyterlite/jupyterlite")
+    (synopsis "Core functionality for building JupyterLite websites")
+    (description "The jupyterlite-core package provides the core functionality
+for building JupyterLite websites, the jupyter-lite CLI, and extension points
+for authoring custom addons.")
+    (license license:bsd-3)))
+
 (define-public python-jupyter-server-mathjax
   (package
     (name "python-jupyter-server-mathjax")
