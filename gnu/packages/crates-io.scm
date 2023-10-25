@@ -61595,6 +61595,27 @@ and table-based tests.")
 @code{rstest}.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rstest-macros-0.13
+  (package
+    (inherit rust-rstest-macros-0.14)
+    (name "rust-rstest-macros")
+    (version "0.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rstest-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05k1q6jij3v3iapxcr83m92ygsvnv33qx4j0jfjjny13h62bm2pp"))))
+    (arguments
+     `(#:skip-build? #t     ; Cut the dependency graph.
+       #:cargo-inputs
+       (("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-rustc-version" ,rust-rustc-version-0.4)
+        ("rust-syn" ,rust-syn-1))))))
+
 (define-public rust-rstest-reuse-0.4
   (package
     (name "rust-rstest-reuse")
