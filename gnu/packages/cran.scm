@@ -22277,14 +22277,14 @@ tessellation.")
 (define-public r-wk
   (package
     (name "r-wk")
-    (version "0.8.0")
+    (version "0.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "wk" version))
        (sha256
         (base32
-         "1300x3rfb4fk11mrxzs0vy6aj4nbsvd7zisvdxxhrdibmz38l1xa"))))
+         "1nmrgdp3swl34kr51hypm3azf8yhcalg5nngp70l56afsbaskyqh"))))
     (properties `((upstream-name . "wk")))
     (build-system r-build-system)
     (home-page "https://paleolimbot.github.io/wk/")
