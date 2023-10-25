@@ -34965,6 +34965,27 @@ with hyper.")
     (description "This package provides async closure macro for hyprland-rs.")
     (license license:gpl3+)))
 
+(define-public rust-iai-macro-0.1
+  (package
+    (name "rust-iai-macro")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "iai-macro" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12xx8qn2740dhxldivc2zhhvqmfb488ry1dr2qyxw1n4ps2pyli5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1))
+       #:cargo-development-inputs (("rust-iai" ,rust-iai-0.1))))
+    (home-page "https://github.com/bheisler/iai")
+    (synopsis "Custom Test Framework macro for Iai")
+    (description "Custom Test Framework macro for Iai.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-iana-time-zone-haiku-0.1
   (package
     (name "rust-iana-time-zone-haiku")
