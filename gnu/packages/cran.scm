@@ -1598,13 +1598,13 @@ larger than memory.")
 (define-public r-bwstest
   (package
     (name "r-bwstest")
-    (version "0.2.2")
+    (version "0.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "BWStest" version))
        (sha256
-        (base32 "02amzlfprmw5pyis0dg0kg0x8xqh50a4vfdcxxmklrzik3b1vzzs"))))
+        (base32 "1chlszmshda84000jj4q5j2swflj512vfj3h97361aphzhkwri2b"))))
     (properties `((upstream-name . "BWStest")))
     (build-system r-build-system)
     (propagated-inputs (list r-memoise r-rcpp))
