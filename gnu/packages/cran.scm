@@ -7631,13 +7631,13 @@ variable models.")
 (define-public r-drat
   (package
     (name "r-drat")
-    (version "0.2.3")
+    (version "0.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "drat" version))
        (sha256
-        (base32 "191yxlj9jccakmz27g7n9izfcy19kj3fgnw4w6zl9iq66787qpm6"))))
+        (base32 "13v7dj2688ix6j9nzhvf8q9ynfihwzkppfdjkis6q1r5m4nikya3"))))
     (properties `((upstream-name . "drat")))
     (build-system r-build-system)
     (native-inputs (list r-simplermarkdown))
