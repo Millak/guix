@@ -70714,8 +70714,40 @@ OIDs)")
     (description "The package provides an interface to SQLite.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-sqlite3-src-0.5
+  (package
+    (name "rust-sqlite3-src")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlite3-src" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0m74wrkpify3z0xvrw4i2yssn9m9sjwqa5ipk6aq6f7fl58mmjdz"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 ;; Only allow for linking to system sqlite3.
+                 (delete-file-recursively "source")
+                 (delete-file "build.rs")
+                 (with-output-to-file "build.rs"
+                   (lambda _
+                     (format #t "fn main (){~@
+                             println!(\"cargo:rustc-link-lib=sqlite3\");~@
+                             }~%")))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (inputs (list sqlite))
+    (home-page "https://github.com/stainless-steel/sqlite3-src")
+    (synopsis "Provider of SQLite")
+    (description "The package provides SQLite.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-sqlite3-src-0.3
   (package
+    (inherit rust-sqlite3-src-0.5)
     (name "rust-sqlite3-src")
     (version "0.3.0")
     (source
@@ -70725,15 +70757,10 @@ OIDs)")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "18ygmfcpkccs8s9m5s9q31rrx1mrdps387w9yp3481jswxyb0q52"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-cc" ,rust-cc-1)
-        ("rust-pkg-config" ,rust-pkg-config-0.3))))
-    (home-page "https://github.com/stainless-steel/sqlite3-src")
-    (synopsis "Provider of SQLite")
-    (description "The package provides SQLite.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-pkg-config" ,rust-pkg-config-0.3))))))
 
 (define-public rust-sqlite3-sys-0.15
   (package
