@@ -22975,13 +22975,13 @@ that accept short and long options.")
 (define-public r-osqp
   (package
     (name "r-osqp")
-    (version "0.6.3.1")
+    (version "0.6.3.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "osqp" version))
               (sha256
                (base32
-                "178vvv0yajjy02ww4brrjb4197dp7c0n8zmk1zwh44h9msnnacj3"))))
+                "0i1jh3fr8d45b7inq9s6iyqszhh18hps8jpzkm0hzgj2k8r3nm0q"))))
     (properties `((upstream-name . "osqp")))
     (build-system r-build-system)
     (propagated-inputs (list r-matrix r-r6 r-rcpp))
