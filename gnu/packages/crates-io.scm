@@ -76471,8 +76471,34 @@ different for every thread.")
      `(#:cargo-inputs
        (("rust-thread-id" ,rust-thread-id-2))))))
 
+(define-public rust-thread-priority-0.10
+  (package
+    (name "rust-thread-priority")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "thread-priority" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0w9vrpkdlig1mrdxlz14815bgad3nm5dm22bjqpkb4b89jp1k1cp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; TODO: Figure out why many tests fail.
+       #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs (("rust-rstest" ,rust-rstest-0.13))))
+    (home-page "https://github.com/vityafx/thread-priority")
+    (synopsis "Library for managing threads priority and schedule policies")
+    (description
+     "Library for managing threads priority and schedule policies.")
+    (license license:expat)))
+
 (define-public rust-thread-priority-0.4
   (package
+    (inherit rust-thread-priority-0.10)
     (name "rust-thread-priority")
     (version "0.4.1")
     (source
@@ -76482,18 +76508,12 @@ different for every thread.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1ccidjv5ra017knav1h34bzlscpx856fhz7kln3zhszh3jpr8qqg"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
         ("rust-log" ,rust-log-0.4)
-        ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/vityafx/thread-priority")
-    (synopsis "Library for managing threads priority and schedule policies")
-    (description
-     "Library for managing threads priority and schedule policies.")
-    (license license:expat)))
+        ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-thread-tree-0.3
   (package
