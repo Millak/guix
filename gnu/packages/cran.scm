@@ -777,6 +777,43 @@ dumbbell charts, the ability to encircle points and coordinate-system-based
 text annotations.")
     (license license:agpl3)))
 
+(define-public r-ggdist
+  (package
+    (name "r-ggdist")
+    (version "3.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "ggdist" version))
+       (sha256
+        (base32 "0b15b972wrllsvqqn0nc2c81fd9jl618fvqsfi50hjxwwpdach8l"))))
+    (properties `((upstream-name . "ggdist")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cli
+                             r-distributional
+                             r-dplyr
+                             r-ggplot2
+                             r-glue
+                             r-numderiv
+                             r-quadprog
+                             r-rlang
+                             r-scales
+                             r-tibble
+                             r-tidyselect
+                             r-vctrs
+                             r-withr))
+    (native-inputs (list r-knitr))
+    (home-page "https://mjskay.github.io/ggdist/")
+    (synopsis "Visualizations of distributions and uncertainty")
+    (description
+     "This package provides primitives for visualizing distributions using
+ggplot2 that are particularly tuned for visualizing uncertainty in either a
+frequentist or Bayesian mode.  Both analytical distributions (such as
+frequentist confidence distributions or Bayesian priors) and distributions
+represented as samples (such as bootstrap distributions or Bayesian posterior
+samples) are easily visualized.")
+    (license license:gpl3+)))
+
 (define-public r-ggfittext
   (package
     (name "r-ggfittext")
