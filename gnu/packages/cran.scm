@@ -26026,14 +26026,15 @@ function and interfaces to external frameworks.")
 (define-public r-covr
   (package
     (name "r-covr")
-    (version "3.6.2")
+    (version "3.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "covr" version))
        (sha256
-        (base32 "0ns8xbq1l21mg8p2aiqv5h306a3vpn64j6jrgzbv8iv1a7kqrrmc"))
+        (base32 "17m2zzgfghr7gzcdgim21vsl12nd4714867dcp9xfb6ili31ikn0"))
        (modules '((guix build utils)))
+       ;; TODO: still need to replace highlight.js/highlight.pack.js
        (snippet
         '(with-directory-excursion "inst/www/shared"
            (for-each delete-file
