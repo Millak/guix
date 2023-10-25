@@ -34965,6 +34965,25 @@ with hyper.")
     (description "This package provides async closure macro for hyprland-rs.")
     (license license:gpl3+)))
 
+(define-public rust-iai-0.1
+  (package
+    (name "rust-iai")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "iai" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0y6nhl8kany25njkkka4i5crlk4bf45mj1sdhfjql9a2gk4ida3i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-iai-macro" ,rust-iai-macro-0.1))))
+    (home-page "https://github.com/bheisler/iai")
+    (synopsis "One-shot benchmarking library")
+    (description "One-shot benchmarking library.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-iai-macro-0.1
   (package
     (name "rust-iai-macro")
