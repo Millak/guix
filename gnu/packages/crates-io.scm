@@ -12279,14 +12279,14 @@ XChaCha20, XChaCha12 and XChaCha8 stream ciphers, and also optional
 (define-public rust-chacha20poly1305-0.9
   (package
     (name "rust-chacha20poly1305")
-    (version "0.9.0")
+    (version "0.9.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "chacha20poly1305" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0alawaaakczsll1b98qf4m6r6kfaw28506ljvsysjyjz3mnyv11v"))
+        (base32 "1xfgn306nfch4a4wwddha8lz6qpnhng50iy4prxlagg6kfq4d151"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -12302,7 +12302,7 @@ XChaCha20, XChaCha12 and XChaCha8 stream ciphers, and also optional
         ("rust-zeroize" ,rust-zeroize-1))
        #:cargo-development-inputs
        (("rust-aead" ,rust-aead-0.4))))
-    (home-page "https://github.com/RustCrypto/AEADs")
+    (home-page "https://github.com/RustCrypto/AEADs/tree/master/chacha20poly1305")
     (synopsis
      "Pure Rust implementation of ChaCha20Poly1305 Authenticated Encryption")
     (description
