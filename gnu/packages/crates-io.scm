@@ -70735,8 +70735,31 @@ OIDs)")
     (description "The package provides SQLite.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-sqlite3-sys-0.15
+  (package
+    (name "rust-sqlite3-sys")
+    (version "0.15.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlite3-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0fq6m21dnd5yqrzknsmnl2565nahdwa29s7x12xhxr1kjik2qxgj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-sqlite3-src" ,rust-sqlite3-src-0.5))
+       #:cargo-development-inputs (("rust-temporary" ,rust-temporary-0.6))))
+    (inputs (list sqlite))
+    (home-page "https://github.com/stainless-steel/sqlite3-sys")
+    (synopsis "Bindings to SQLite")
+    (description "The package provides bindings to SQLite.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-sqlite3-sys-0.13
   (package
+    (inherit rust-sqlite3-sys-0.15)
     (name "rust-sqlite3-sys")
     (version "0.13.0")
     (source
@@ -70746,16 +70769,11 @@ OIDs)")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0m1f5r4xg5i3r6795q8vwqfdcq3gh1qlfjwkywnka57bz8lg1lh4"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
-        ("rust-sqlite3-src" ,rust-sqlite3-src-0.3))))
-    (home-page "https://github.com/stainless-steel/sqlite3-sys")
-    (synopsis "Bindings to SQLite")
-    (description "The package provides bindings to SQLite.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-sqlite3-src" ,rust-sqlite3-src-0.3))))))
 
 (define-public rust-st-map-0.1
   (package
