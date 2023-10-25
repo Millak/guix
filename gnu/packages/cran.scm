@@ -8505,13 +8505,13 @@ distances.")
 (define-public r-useful
   (package
    (name "r-useful")
-   (version "1.2.6")
+   (version "1.2.6.1")
    (source (origin
             (method url-fetch)
             (uri (cran-uri "useful" version))
             (sha256
              (base32
-              "0n50v1q75k518sq23id14jphwla35q4sasahrnrnllwrachl67v1"))))
+              "1gb9hqvbm6pr56dfqlsgz26lan7xargfsm8jpdja18mpgli2gyvc"))))
    (properties `((upstream-name . "useful")))
    (build-system r-build-system)
    (propagated-inputs
