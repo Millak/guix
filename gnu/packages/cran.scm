@@ -9562,14 +9562,14 @@ packages maintained by Yihui Xie.")
 (define-public r-utf8
   (package
     (name "r-utf8")
-    (version "1.2.3")
+    (version "1.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "utf8" version))
        (sha256
         (base32
-         "0iv3ppy7sddzl4sm3qlghpc64k6zx5j0jzcia8xx8jhzb638da60"))))
+         "0zbv2s5dkzxim3ydyk12479m28f68mak9m50v396in4wpm5q53s1"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr r-rmarkdown)) ; for vignettes
