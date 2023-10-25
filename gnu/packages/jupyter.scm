@@ -436,6 +436,28 @@ for building JupyterLite websites, the jupyter-lite CLI, and extension points
 for authoring custom addons.")
     (license license:bsd-3)))
 
+(define-public python-jupyterlite-sphinx
+  (package
+    (name "python-jupyterlite-sphinx")
+    (version "0.9.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jupyterlite_sphinx" version))
+       (sha256
+        (base32 "05h7zrvsx0xzxlddsqfz1fxdgld66yhn6nxfp4jz20wbx6csrr4v"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #false))  ;there are none
+    (propagated-inputs (list python-docutils python-jupyter-server
+                             python-jupyterlab-server python-jupyterlite-core
+                             python-sphinx))
+    (native-inputs (list python-hatchling))
+    (home-page "https://github.com/jupyterlite/jupyterlite")
+    (synopsis "Sphinx extension for deploying JupyterLite")
+    (description "This package provides a Sphinx extension for deploying
+@code{JupyterLite}.")
+    (license license:bsd-3)))
+
 (define-public python-jupyter-server-mathjax
   (package
     (name "python-jupyter-server-mathjax")
