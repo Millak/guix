@@ -64359,6 +64359,23 @@ motivation for writing this library.
 @end itemize")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-sc-0.2
+  (package
+    (name "rust-sc")
+    (version "0.2.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sc" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12x3c3mn36am3jfamswqfsd0vpr0hz3kdck6wskla7gx7fyih3h1"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/japaric/syscall.rs")
+    (synopsis "Raw system calls")
+    (description "This package provides raw system calls for Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-scale-info-1
   (package
     (name "rust-scale-info")
