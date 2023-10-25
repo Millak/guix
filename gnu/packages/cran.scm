@@ -3812,40 +3812,24 @@ Zucchini.")
 (define-public r-httpuv
   (package
     (name "r-httpuv")
-    (version "1.6.11")
+    (version "1.6.12")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "httpuv" version))
               (sha256
                (base32
-                "1xgf7q8ah9sbgbbjm9nwvry154g8i0gwfrn55npls9sihc59x9wb"))
+                "0x2y5yjj1ha99dv5c8j6pxm8fqhdcx010jl4rcw2qw20qaqp5ndi"))
               (modules '((guix build utils)))
               ;; Cannot unbundle http-parser, because it contains local
               ;; modifications.
               (snippet
                '(delete-file-recursively "src/libuv"))))
     (build-system r-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'unbundle-libuv
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "src/Makevars"
-               (("PKG_LIBS = ./libuv/.libs/libuv.a")
-                "PKG_LIBS = -luv")
-               (("\\$\\(SHLIB\\): libuv/.libs/libuv.a")
-                "$(SHLIB): "))
-             (substitute* (find-files "src" "\\.cpp$|\\.h$")
-               (("\"libuv/include/uv\\.h\"")
-                "<uv.h>"))
-             ;; Fix https://github.com/rstudio/httpuv/issues/282
-             (substitute* "src/http.cpp"
-               (("uv_pipe_init\\(pLoop, &pSocket->handle\\.pipe, true\\);")
-                "uv_pipe_init(pLoop, &pSocket->handle.pipe, 0);")))))))
     (inputs
      (list libuv-for-r-httpuv zlib))
     (propagated-inputs
      (list r-later r-promises r-r6 r-rcpp))
+    (native-inputs (list pkg-config))
     (home-page "https://github.com/rstudio/httpuv")
     (synopsis "HTTP and WebSocket server library for R")
     (description
