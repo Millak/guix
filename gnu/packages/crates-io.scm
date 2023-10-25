@@ -75200,6 +75200,26 @@ directories.")
      "This package provides support for Linux-specific tempfile extensions.")
     (license license:expat)))
 
+(define-public rust-temporary-0.6
+  (package
+    (name "rust-temporary")
+    (version "0.6.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "temporary" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1llj529jcbxxc5g76mdyqkysrpy9009n43k028kj1ywv7qqfvmxc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-random" ,rust-random-0.12))))
+    (home-page "https://github.com/stainless-steel/temporary")
+    (synopsis "Manage temporary files and folders")
+    (description
+     "The package provides means of managing temporary files and folders.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-temptree-0.2
   (package
     (name "rust-temptree")
