@@ -81175,7 +81175,7 @@ the Trust-DNS client to use rustls for TLS.")
 (define-public rust-try-lock-0.2
   (package
     (name "rust-try-lock")
-    (version "0.2.2")
+    (version "0.2.4")
     (source
       (origin
         (method url-fetch)
@@ -81183,7 +81183,7 @@ the Trust-DNS client to use rustls for TLS.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "10p36rx6pqi9d0zr876xa8vksx2m66ha45myakl50rn08dxyn176"))))
+          "1vc15paa4zi06ixsxihwbvfn24d708nsyg1ncgqwcrn42byyqa1m"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/seanmonstar/try-lock")
     (synopsis "Lightweight atomic lock")
