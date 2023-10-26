@@ -46,6 +46,7 @@
 ;;; Copyright © 2022, 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2023 Andrew Tropin <andrew@trop.in>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -119,6 +120,7 @@
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages tree-sitter)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xdisorg)
@@ -4586,6 +4588,52 @@ models and also supports a rich set of boolean query operators.")
     (description "This package provides facilities for working with
 @code{.torrent} or metainfo files.  Implements a bencode reader and writer
 according to Bitorrent BEP003.")
+    (license license:gpl3+)))
+
+(define-public guile-ts
+  (package
+    (name "guile-ts")
+    (version "0.1.0")
+    (source (origin (method git-fetch)
+                    (uri (git-reference
+                          (url
+                           "https://github.com/Z572/guile-ts")
+                          (commit (string-append "v" version))))
+                    (file-name (git-file-name name version))
+                    (sha256
+                     (base32
+                      "0xmq2d3mv921m0g1hqw6bjzh4m622g2c7pal11ks7vjn0m8d4bxj"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags #~(list "GUILE_AUTO_COMPILE=0")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'set-extension-path
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (substitute*
+                       (find-files "." ".*\\.scm")
+                     (("\\(load-extension \"libguile_ts\" *\"(.*)\"\\)" _ o)
+                      (string-append
+                       (object->string
+                        `(or (false-if-exception
+                              (load-extension "libguile_ts" ,o))
+                             (load-extension
+                              ,(string-append
+                                #$output
+                                "/lib/libguile_ts.so")
+                              ,o)))))))))))
+    (native-inputs
+     (list autoconf automake libtool texinfo pkg-config guile-3.0))
+    (inputs
+     (list guile-3.0 tree-sitter))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "TREE_SITTER_GRAMMAR_PATH")
+            (files '("lib/tree-sitter")))))
+    (synopsis "Guile bindings to the Tree-sitter parsing library")
+    (description "This package provides Guile bindings to the Tree-sitter
+parsing library.")
+    (home-page "https://github.com/Z572/guile-ts")
     (license license:gpl3+)))
 
 (define-public guile-irc
