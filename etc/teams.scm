@@ -657,6 +657,10 @@ GLib/GIO, GTK, GStreamer and Webkit."
                        "me@bonfacemunyoki.com")
   python lisp)
 
+(define-member (person "Gabriel Wicki"
+                       "gabriel@erlikon.ch")
+  audio)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
