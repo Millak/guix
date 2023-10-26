@@ -78544,18 +78544,16 @@ Rust.")
   (package
     (inherit rust-tokio-sync-0.2)
     (name "rust-tokio-sync")
-    (version "0.1.6")
+    (version "0.1.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tokio-sync" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1ryalh7dcmnz46xj1va8aaw3if6vd4mj87r67dqvrqhpyf7j8qi1"))))
+        (base32 "1vkxz0y7qf9sshfpxvn506pvxy4vza8piavd8p64y5n85cam1zpd"))))
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f
        #:cargo-inputs
        (("rust-fnv" ,rust-fnv-1)
         ("rust-futures" ,rust-futures-0.1))
