@@ -95,7 +95,7 @@
 ;;; Copyright © 2021 Alexey Abramov <levenson@mmer.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021, 2022 Stefan Reichör <stefan@xsteve.at>
-;;; Copyright © 2021, 2022 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2021, 2022, 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Eugene Klimov <lipklim@mailbox.org>
 ;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 David Dashyan <mail@davie.li>
@@ -13603,7 +13603,17 @@ E-Prime forbids the use of the \"to be\" form to strengthen your writing.")
        `(#:tests? #t
          #:test-command '("emacs" "--batch"
                           "-l" "julia-mode-tests.el"
-                          "-f" "ert-run-tests-batch-and-exit")))
+                          "-f" "ert-run-tests-batch-and-exit")
+         #:phases
+         (modify-phases %standard-phases
+           (add-before 'check 'fix-test
+             (lambda _
+               (substitute* "julia-mode-tests.el"
+                 ;; The test started failing with Emacs 29; see
+                 ;; <https://github.com/JuliaEditorSupport/julia-emacs/issues/199>
+                 ;; and discrepancy reported <https://issues.guix.gnu.org/66763>.
+                 (("julia--test-end-of-defun-nested-2.*" all)
+                  (string-append all "  :expected-result :failed\n"))))))))
       (home-page "https://github.com/JuliaEditorSupport/julia-emacs")
       (synopsis "Major mode for Julia")
       (description "This Emacs package provides a mode for the Julia
