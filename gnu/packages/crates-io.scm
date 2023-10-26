@@ -78028,22 +78028,30 @@ streams.")
 (define-public rust-tokio-openssl-0.6
   (package
     (name "rust-tokio-openssl")
-    (version "0.6.1")
+    (version "0.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tokio-openssl" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0khjqv8wap79ki7h0l91rs8j0b4ix097lb40b4s1x9sa19ffq6xc"))))
+        (base32 "12l7a01sid095zmdkcmjnds9hwfcyjn9539r3c6b5w89g3xrz3y0"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=test::google")
        #:cargo-inputs
        (("rust-futures" ,rust-futures-0.3)
         ("rust-openssl" ,rust-openssl-0.10)
-        ("rust-pin-project" ,rust-pin-project-1)
-        ("rust-tokio" ,rust-tokio-1))))
+        ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+        ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs
+       (("rust-tokio" ,rust-tokio-1))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list openssl))
     (home-page "https://github.com/alexcrichton/tokio-openssl")
     (synopsis "SSL streams for Tokio backed by OpenSSL")
     (description
