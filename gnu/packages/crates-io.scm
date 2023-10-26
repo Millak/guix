@@ -78346,16 +78346,17 @@ Rustls.")
   (package
     (inherit rust-tokio-rustls-0.13)
     (name "rust-tokio-rustls")
-    (version "0.12.2")
+    (version "0.12.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tokio-rustls" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1k6rpw4nmgsamh8vbf8xqrf4rr5sqs18i93561bydflajz0gw6hl"))))
+        (base32 "0xcpzwx53lj15a0mq9cfz9iwr1v7crrnnkbjh5vb6j8ran8xhs1h"))))
     (arguments
-     `(;; These tests require network access.
+     `(#:tests? #f      ; Bundled test certificates expired
+       ;; These tests require network access.
        #:cargo-test-flags '("--release" "--" "--skip=tls12" "--skip=modern")
        #:cargo-inputs
        (("rust-bytes" ,rust-bytes-0.5)
