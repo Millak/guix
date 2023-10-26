@@ -77880,21 +77880,22 @@ operations.")
   (package
     (inherit rust-tokio-macros-2)
     (name "rust-tokio-macros")
-    (version "1.7.0")
+    (version "1.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tokio-macros" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1ds34qsfvgf63cjgdx3gr4pl7i76fifyar15ksbillcc8hpzfmxm"))))
+        (base32 "1y3dphh8i4971wcfqxjhd662nain1i86rsf3y79mazr8vq7w0rnj"))))
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags
+       '("--release" "--lib")
        #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))))
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs (("rust-tokio" ,rust-tokio-1))))))
 
 (define-public rust-tokio-macros-0.3
   (package
