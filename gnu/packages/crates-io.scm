@@ -84275,7 +84275,7 @@ specified across Unix and Windows platforms.")
 (define-public rust-want-0.3
   (package
     (name "rust-want")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
@@ -84283,7 +84283,7 @@ specified across Unix and Windows platforms.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "181b2zmwfq389x9n2g1n37cvcvvdand832zz6v8i1l8wrdlaks0w"))))
+         "03hbfrnvqqdchb5kgxyavb9jabwza0dmh2vw5kg0dq8rxl57d9xz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
