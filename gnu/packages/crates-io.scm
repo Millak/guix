@@ -77985,20 +77985,43 @@ applications backed by buffers.")
 (define-public rust-tokio-native-tls-0.3
   (package
     (name "rust-tokio-native-tls")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tokio-native-tls" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0yvikgmph2qjq0ni2h2wfaxkzhbnc09c2544av0zidyj1dk9bngp"))))
+        (base32 "1wkfg6zn85zckmv4im7mv20ca6b1vmlib5xwz9p7g19wjfmpdbmv"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; These tests need network connectivity
+         "--skip=self_signed"
+         "--skip=expired"
+         "--skip=wrong_host"
+         "--skip=untrusted_root"
+         "--skip=fetch_google")
        #:cargo-inputs
        (("rust-native-tls" ,rust-native-tls-0.2)
-        ("rust-tokio" ,rust-tokio-1))))
+        ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs
+       (("rust-cfg-if" ,rust-cfg-if-0.1)
+        ("rust-env-logger" ,rust-env-logger-0.6)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-openssl" ,rust-openssl-0.10)
+        ("rust-schannel" ,rust-schannel-0.1)
+        ("rust-security-framework" ,rust-security-framework-0.2)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-util" ,rust-tokio-util-0.6)
+        ("rust-winapi" ,rust-winapi-0.3))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list openssl))
     (home-page "https://tokio.rs")
     (synopsis "TLS/SSL streams for Tokio")
     (description
