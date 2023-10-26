@@ -4568,6 +4568,30 @@ popup for completion candidates when using @code{emacs-corfu}.  It can
 be regarded as @code{emacs-company-quickhelp} for @code{emacs-corfu}.")
     (license license:gpl3+)))
 
+(define-public emacs-corfu-candidate-overlay
+  (package
+    (name "emacs-corfu-candidate-overlay")
+    (version "1.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://code.bsdgeek.org/adam/corfu-candidate-overlay")
+             (commit "265438b16155e899d82a869aebca16105665c998")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0i36g2i7435pby32vcapv4ydmp6rqn0r51qm91wqyzan1f3n3qck"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-corfu))
+    (license license:gpl3)
+    (home-page "https://code.bsdgeek.org/adam/corfu-candidate-overlay")
+    (synopsis "Show first Corfu's completion candidate in an overlay while
+ typing")
+    (description
+     "Simple corfu as-you-type auto-suggestion candidate overlay with a visual
+ indication of whether there are many or exactly one candidate available.")))
+
 (define-public emacs-cape
   (package
     (name "emacs-cape")
