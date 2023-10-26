@@ -406,7 +406,7 @@ interface and is based on GNU Guile.")
 (define-public swineherd
   (package
     (name "swineherd")
-    (version "0.0.1")
+    (version "0.0.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -415,7 +415,7 @@ interface and is based on GNU Guile.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "18nk0sy5s0dm2rhxnrrn8g0m098b110mxnnxa2vnl1dnvfdzszw8"))))
+                "0il1ikaj478n7xs4vqgawbshvmwq3nd0gp235mwqvmf4knra6j3g"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--localstatedir=/var")
