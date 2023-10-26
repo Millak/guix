@@ -78530,7 +78530,8 @@ Rust.")
          "1lirf9s9pibgv8cypqzlddy8q9bxfp4z29qfx83p83slhnvaw6jg"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; use of undeclared crate or module `tokio_test`
+       #:cargo-inputs
        (("rust-fnv" ,rust-fnv-1)
         ("rust-futures-core-preview" ,rust-futures-core-preview-0.3)
         ("rust-futures-sink-preview" ,rust-futures-sink-preview-0.3)
