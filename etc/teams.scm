@@ -522,6 +522,12 @@ GLib/GIO, GTK, GStreamer and Webkit."
         #:scope (list "gnu/packages/lxqt.scm"
                       "gnu/packages/qt.scm")))
 
+(define-team audio
+  (team 'audio
+        #:name "Audio team"
+        #:description "Audio related packages."
+        #:scope (list "gnu/packages/audio.scm")))
+
 
 (define-member (person "Eric Bavier"
                        "bavier@posteo.net")
