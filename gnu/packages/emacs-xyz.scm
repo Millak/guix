@@ -13585,40 +13585,44 @@ E-Prime forbids the use of the \"to be\" form to strengthen your writing.")
       (license license:gpl3+))))
 
 (define-public emacs-julia-mode
+  ;; Last release was in March 2020.
+  (let ((commit "7a8c868e0d3e51ba4a2c621ee22ca9599e0e4bbb")
+        (revision "0"))
     (package
       (name "emacs-julia-mode")
-      (version "0.4")
+      (version (git-version "0.4" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/JuliaEditorSupport/julia-emacs")
-               (commit version)))
+               (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1w131jb9mhvyjxa0p93iwfhzidgbcs6b8i6jg79yisqb9wchik99"))))
+           "0xwd4kq69ray6bk8hwjxnqf7myc3mn36chc2l9jn7a0x1f8x6k10"))))
       (build-system emacs-build-system)
       (arguments
-       `(#:tests? #t
-         #:test-command '("emacs" "--batch"
-                          "-l" "julia-mode-tests.el"
-                          "-f" "ert-run-tests-batch-and-exit")
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'check 'fix-test
-             (lambda _
-               (substitute* "julia-mode-tests.el"
-                 ;; The test started failing with Emacs 29; see
-                 ;; <https://github.com/JuliaEditorSupport/julia-emacs/issues/199>
-                 ;; and discrepancy reported <https://issues.guix.gnu.org/66763>.
-                 (("julia--test-end-of-defun-nested-2.*" all)
-                  (string-append all "  :expected-result :failed\n"))))))))
+       (list
+        #:tests? #t
+        #:test-command #~(list "emacs" "--batch"
+                               "-l" "julia-mode-tests.el"
+                               "-f" "ert-run-tests-batch-and-exit")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'fix-test
+              (lambda _
+                (substitute* "julia-mode-tests.el"
+                  ;; The test started failing with Emacs 29; see
+                  ;; <https://github.com/JuliaEditorSupport/julia-emacs/issues/199>
+                  ;; and discrepancy reported <https://issues.guix.gnu.org/66763>.
+                  (("julia--test-end-of-defun-nested-2.*" all)
+                   (string-append all "  :expected-result :failed\n"))))))))
       (home-page "https://github.com/JuliaEditorSupport/julia-emacs")
       (synopsis "Major mode for Julia")
       (description "This Emacs package provides a mode for the Julia
 programming language.")
-      (license license:expat)))
+      (license license:expat))))
 
 (define-public emacs-julia-repl
   (package
