@@ -78401,25 +78401,22 @@ Rustls.")
 (define-public rust-tokio-signal-0.2
   (package
     (name "rust-tokio-signal")
-    (version "0.2.7")
+    (version "0.2.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tokio-signal" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "15l27cvhfcjsahwnm2pgsm0690w0xj1h1sbdl5wy6p50dqkwavfx"))))
+        (base32 "04pz3awjxnh73g288n2mhl5n2ymqrfkkvfhw699i044gaip4rhyh"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-futures" ,rust-futures-0.1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-mio" ,rust-mio-0.6)
         ("rust-mio-uds" ,rust-mio-uds-0.6)
-        ("rust-signal-hook" ,rust-signal-hook-0.1)
+        ("rust-signal-hook-registry" ,rust-signal-hook-registry-1)
         ("rust-tokio-executor" ,rust-tokio-executor-0.1)
         ("rust-tokio-io" ,rust-tokio-io-0.1)
         ("rust-tokio-reactor" ,rust-tokio-reactor-0.1)
@@ -78427,8 +78424,7 @@ Rustls.")
        #:cargo-development-inputs
        (("rust-tokio" ,rust-tokio-0.1))))
     (home-page "https://github.com/tokio-rs/tokio")
-    (synopsis
-     "Asynchronous Unix signal handling backed futures")
+    (synopsis "Asynchronous Unix signal handling backed futures")
     (description
      "An implementation of an asynchronous Unix signal handling backed
 futures.")
