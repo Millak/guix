@@ -14206,14 +14206,14 @@ sets of intervals.")
 (define-public rust-color-print-0.3
   (package
     (name "rust-color-print")
-    (version "0.3.4")
+    (version "0.3.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "color-print" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1l26nrk0w21kzh7hs15wfqs7lm80xbngwl46jra8ar6q9r8fd9gj"))))
+                "0p9xlsmpnahxsji2pr73ms14alxwlkr0998fnfqvkfhlzxr871bs"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
