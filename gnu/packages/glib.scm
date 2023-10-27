@@ -1256,7 +1256,7 @@ Some codes examples can be find at:
   ;; file.
   (package
     (name "sdbus-c++")
-    (version "1.3.0")
+    (version "1.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1265,7 +1265,7 @@ Some codes examples can be find at:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "03maivi3nj4g5wcydk9ih703ivmqkc93yip47wlyjni6dhikzzsb"))))
+                "111l2rl0pg9r5cdrhqpac4v22cnq41skxxfk3cng81l0n05v1sh0"))))
     (build-system cmake-build-system)
     (arguments
      (list
