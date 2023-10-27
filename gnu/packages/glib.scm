@@ -1305,42 +1305,44 @@ of abstraction on top of @code{sd-bus}, the C D-Bus implementation by systemd.")
                 "15lbrmyx94cf6p6svq02yiskh31xidq092c711pqs16mml06a9bi"))))
     (build-system meson-build-system)
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("gsettings" ,gsettings-desktop-schemas) ; for ‘org.gnome.system.proxy’
-       ("glib:bin" ,glib "bin")         ; for glib-compile-resources
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal
+           `(,glib "bin") ;for glib-compile-resources
+           gsettings-desktop-schemas ;for ‘org.gnome.system.proxy’
+           pkg-config))
     (propagated-inputs
-     `(("gcab" ,gcab) ; for .pc file
-       ("gdk-pixbuf" ,gdk-pixbuf) ; for .pc file
-       ("libuuid" ,util-linux "lib"))) ; for .pc file
+     (list gcab ;for .pc file
+           gdk-pixbuf ;same
+           `(,util-linux "lib"))) ;libuuid, for .pc file
     (inputs
-     `(("glib" ,glib)
-       ("gperf" ,gperf)
-       ("gtk+" ,gtk+)
-       ("json-glib" ,json-glib)
-       ("libarchive" ,libarchive)
-       ("curl" ,curl)))
+     (list curl
+           gperf
+           gtk+
+           json-glib
+           libarchive
+           glib))
     (arguments
-     `(#:configure-flags
-       (list "-Ddep11=false"
-             "-Dintrospection=false"    ; avoid g-ir-scanner dependency
-             "-Drpm=false"
-             "-Dstemmer=false")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-tests
-           (lambda _
-             (substitute* "libappstream-glib/as-self-test.c"
-               (("g_test_add_func.*as_test_store_local_appdata_func);") ""))
-             #t))
-         (add-before 'check 'set-home
-           (lambda _
-             ;; Some tests want write access there.
-             (setenv "HOME" "/tmp"))))))
+     (list
+      #:configure-flags
+      #~(list "-Ddep11=false"
+              "-Dintrospection=false"    ; avoid g-ir-scanner dependency
+              "-Drpm=false"
+              "-Dstemmer=false")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              (substitute* "libappstream-glib/as-self-test.c"
+                (("g_test_add_func.*as_test_store_local_appdata_func);") ""))))
+          (add-before 'check 'set-home
+            (lambda _
+              ;; Some tests want write access there.
+              (setenv "HOME" "/tmp"))))))
     (home-page "https://github.com/hughsie/appstream-glib")
     (synopsis "Library for reading and writing AppStream metadata")
-    (description "This library provides objects and helper methods to help
-reading and writing @uref{https://www.freedesktop.org/wiki/Distributions/AppStream,AppStream}
+    (description
+     "This library provides objects and helper methods to help
+reading and writing
+@uref{https://www.freedesktop.org/wiki/Distributions/AppStream,AppStream}
 metadata.")
     (license license:lgpl2.1+)))
 
