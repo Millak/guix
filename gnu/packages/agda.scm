@@ -44,7 +44,7 @@
 (define-public agda
   (package
     (name "agda")
-    (version "2.6.3")
+    (version "2.6.4")
     (source
      (origin
        (method git-fetch)
@@ -53,12 +53,14 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1s7zd01i8pmvi90ywx497kc07z50nah7h0fc2dn6jzb132k5sh1q"))
-       (patches (search-patches "agda-libdirs-env-variable.patch"))))
+        (base32 "0n4avd58j45rdcmnwgrmz5s0ril0z4n2z711mwwbahl50f7359ky"))
+       (patches (search-patches "agda-libdirs-env-variable.patch"
+                                "agda-use-sphinx-5.patch"))))
     (build-system haskell-build-system)
     (inputs
      (list ghc-aeson
            ghc-alex
+           ghc-ansi-terminal
            ghc-async
            ghc-blaze-html
            ghc-boxes
@@ -73,9 +75,11 @@
            ghc-monad-control
            ghc-murmur-hash
            ghc-parallel
+           ghc-peano
            ghc-regex-tdfa
            ghc-split
            ghc-strict
+           ghc-text-icu
            ghc-unordered-containers
            ghc-uri-encode
            ghc-vector-hashtables
@@ -91,6 +95,7 @@
                        (guix build utils)
                        (srfi srfi-26)
                        (ice-9 match))
+           #:configure-flags #~(list "-foptimise-heavily" "-fenable-cluster-counting")
            #:phases
            #~(modify-phases %standard-phases
                ;; This allows us to call the 'agda' binary before installing.

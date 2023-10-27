@@ -900,6 +900,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/agda-categories-remove-incompatible-flags.patch	\
   %D%/packages/patches/agda-categories-use-find.patch	\
   %D%/packages/patches/agda-libdirs-env-variable.patch	\
+  %D%/packages/patches/agda-use-sphinx-5.patch	\
   %D%/packages/patches/agda-stdlib-use-runhaskell.patch	\
   %D%/packages/patches/agg-am_c_prototype.patch			\
   %D%/packages/patches/agg-2.5-gcc8.patch			\
