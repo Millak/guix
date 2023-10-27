@@ -586,13 +586,13 @@ are too large to conveniently hard-code them in the tests.")
 (define-public python-pytest-doctestplus
   (package
     (name "python-pytest-doctestplus")
-    (version "0.12.1")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-doctestplus" version))
        (sha256
-        (base32 "10ciqylgziihxwxryxvxgmkqgws51pqcarn0gbh1d4cxx55rx5vs"))))
+        (base32 "17ylfnrcvvp6sd13bfj40jl40paqmjsbywysszb3xqgdr86l8l7n"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags
