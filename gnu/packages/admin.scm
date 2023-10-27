@@ -2973,13 +2973,13 @@ provides the following commands:
 (define-public ansible
   (package
     (name "ansible")
-    (version "7.4.0")
+    (version "8.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ansible" version))
        (sha256
-        (base32 "142barhwz0wx5kn74xi0bfl21iwq2yq3jp14kxajsg9nggndcr09"))))
+        (base32 "0bazj5h12wraf30bb2schzwk553y20n9vh45km4b5kgmvadm0z1j"))))
     (build-system python-build-system)
     (propagated-inputs (list ansible-core))
     ;; The Ansible collections are found by ansible-core via the Python search
