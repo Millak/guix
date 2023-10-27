@@ -79764,7 +79764,8 @@ One-Time Password library.")
         (base32 "073wncyqav4sak1p755hf6vl66njgfc1z1g1di9rxx3cvvh9pymq"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f ; no method named `map_request` found for struct `ServiceBuilder`
+       #:cargo-inputs
        (("rust-futures-core" ,rust-futures-core-0.3)
         ("rust-futures-util" ,rust-futures-util-0.3)
         ("rust-hdrhistogram" ,rust-hdrhistogram-7)
