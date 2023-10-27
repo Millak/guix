@@ -3534,13 +3534,21 @@ functions, so that they can be called with scalar or array inputs.")
 (define-public python-pynbody
   (package
     (name "python-pynbody")
-    (version "1.3.1")
+    (version "1.4.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pynbody" version))
+       (method git-fetch) ;PyPi doesn't have not prebuit version.
+       (uri (git-reference
+             (url "https://github.com/pynbody/pynbody")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1yp7ja66zqmbnh7bbwbyimxq1nkrmjrcif2rzfm1hswm0fp2fbga"))))
+        (base32 "1vl1yif3bsazcil6saghrpa4qsg47fnr7xnkjpqnp44b7ipww27r"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Symlink goes to not existing directory.
+        #~(for-each delete-file '("docs/testdata"
+                                  "docs/tutorials/example_code/testdata")))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags #~(list
