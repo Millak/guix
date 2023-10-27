@@ -13217,29 +13217,26 @@ how to behave across the three main input sources")
 (define-public rust-clap-4
   (package
     (name "rust-clap")
-    (version "4.3.19")
+    (version "4.4.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "clap" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ba5mbnkfr5v92yrr00f194w8k2rwyi9ckjcy1bqm5gz1fi09lsz"))))
+        (base32 "0yzilqlyf5xid5i7qvk8sqpnbggsqk2ndbfmclsci67cvh05wjdc"))))
     (build-system cargo-build-system)
     (arguments
      (list #:cargo-inputs
            `(("rust-clap-builder" ,rust-clap-builder-4)
-             ("rust-clap-derive" ,rust-clap-derive-4)
-             ("rust-once-cell" ,rust-once-cell-1))
+             ("rust-clap-derive" ,rust-clap-derive-4))
            #:cargo-development-inputs
            `(("rust-humantime" ,rust-humantime-2)
              ("rust-rustversion" ,rust-rustversion-1)
              ("rust-shlex" ,rust-shlex-1)
              ("rust-snapbox" ,rust-snapbox-0.4)
-             ("rust-static-assertions" ,rust-static-assertions-1)
              ("rust-trybuild" ,rust-trybuild-1)
-             ("rust-trycmd" ,rust-trycmd-0.14)
-             ("rust-unic-emoji-char" ,rust-unic-emoji-char-0.9))))
+             ("rust-trycmd" ,rust-trycmd-0.14))))
     (home-page "https://clap.rs/")
     (synopsis "Command Line Argument Parser")
     (description
