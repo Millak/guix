@@ -1015,33 +1015,31 @@ useful for C++.")
                            (version-major+minor version)
                            "/pygobject-" version ".tar.xz"))
        (sha256
-        (base32
-         "1z6aagb46fhhdd0bb3zk6dfdw3s4y2fva0vv3jpwjj6mvar0hq22"))
+        (base32 "1z6aagb46fhhdd0bb3zk6dfdw3s4y2fva0vv3jpwjj6mvar0hq22"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           ;; We disable these tests in a snippet so that they are inherited
-           ;; by the Python 2 variant which is built differently.
-           (with-directory-excursion "tests"
-             ;; FIXME: These tests require Gdk and/or Gtk 4.
-             (for-each delete-file
-                       '("test_atoms.py" "test_overrides_gtk.py"
-                         "test_overrides_gdk.py"))
-             #t)))))
+        ;; We disable these tests in a snippet so that they are inherited
+        ;; by the Python 2 variant which is built differently.
+        #~(with-directory-excursion "tests"
+            ;; FIXME: These tests require Gdk and/or Gtk 4.
+            (for-each delete-file
+                      '("test_atoms.py" "test_overrides_gtk.py"
+                        "test_overrides_gdk.py"))))))
     (build-system meson-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; The default 90 seconds can be too low on slower machines.
-               (invoke "meson" "test" "--timeout-multiplier" "5")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; The default 90 seconds can be too low on slower machines.
+                (invoke "meson" "test" "--timeout-multiplier" "5")))))))
     (native-inputs
-     `(("glib-bin" ,glib "bin")
-       ("pkg-config" ,pkg-config)
-       ("python-pytest" ,python-pytest)
-       ("python-wrapper" ,python-wrapper))) ; For patching shebangs
+     (list `(,glib "bin")
+           pkg-config
+           python-pytest
+           python-wrapper)) ; For patching shebangs
     (inputs
      (list python python-pycairo gobject-introspection))
     (propagated-inputs
