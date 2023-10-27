@@ -1996,13 +1996,13 @@ code to be greatly simplified.")
 (define-public python-ephem
   (package
     (name "python-ephem")
-    (version "4.1.4")
+    (version "4.1.5")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "ephem" version))
               (sha256
                (base32
-                "0q67z79lgwdylxagbsjm42xvsmk5jmgvghy36m2n5lb2446rz9bk"))))
+                "0ainqbnvw320pc61q5b6ad6f2mhn1pvrlnq489cwfx0m82mahr0c"))))
     (build-system python-build-system)
     (native-inputs (list tzdata))
     (home-page "https://rhodesmill.org/pyephem/")
