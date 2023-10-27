@@ -79261,8 +79261,42 @@ stream-based WebSocket implementation.")
      "This package provides asynchronous Virtio socket support for Rust.")
     (license license:asl2.0)))
 
+(define-public rust-toml-0.8
+  (package
+    (name "rust-toml")
+    (version "0.8.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "toml" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "007qybpfp0n0j780d6lldvsy9m9vjx6lxkkwak63jlwdqwkz3yiy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-spanned" ,rust-serde-spanned-0.6)
+                       ("rust-toml-datetime" ,rust-toml-datetime-0.6)
+                       ("rust-toml-edit" ,rust-toml-edit-0.20))
+       #:cargo-development-inputs
+       (("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-snapbox" ,rust-snapbox-0.4)
+        ("rust-toml-test-data" ,rust-toml-test-data-1)
+        ("rust-toml-test-harness" ,rust-toml-test-harness-0.4))))
+    (home-page "https://github.com/toml-rs/toml")
+    (synopsis "Rust encoder and decoder of TOML-formatted files and streams")
+    (description
+     "This package provides a native Rust encoder and decoder of TOML-formatted
+files and streams.  Provides implementations of the standard
+Serialize/Deserialize traits for TOML data to facilitate deserializing and
+serializing Rust structures.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-toml-0.7
   (package
+    (inherit rust-toml-0.8)
     (name "rust-toml")
     (version "0.7.8")
     (source (origin
@@ -79272,7 +79306,6 @@ stream-based WebSocket implementation.")
               (sha256
                (base32
                 "0mr2dpmzw4ndvzpnnli2dprcx61pdk62fq4mzw0b6zb27ffycyfx"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-indexmap" ,rust-indexmap-2)
@@ -79284,15 +79317,7 @@ stream-based WebSocket implementation.")
        (("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-snapbox" ,rust-snapbox-0.4)
-        ("rust-toml-test-harness" ,rust-toml-test-harness-0.4))))
-    (home-page "https://github.com/toml-rs/toml")
-    (synopsis "Rust encoder and decoder of TOML-formatted files and streams")
-    (description
-     "This package provides a native Rust encoder and decoder of TOML-formatted
-files and streams.  Provides implementations of the standard
-Serialize/Deserialize traits for TOML data to facilitate deserializing and
-serializing Rust structures.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-toml-test-harness" ,rust-toml-test-harness-0.4))))))
 
 (define-public rust-toml-0.6
   (package
