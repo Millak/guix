@@ -45,6 +45,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages elf)
@@ -1293,7 +1294,7 @@ of abstraction on top of @code{sd-bus}, the C D-Bus implementation by systemd.")
 (define-public appstream-glib
   (package
     (name "appstream-glib")
-    (version "0.7.18")
+    (version "0.8.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://people.freedesktop.org/~hughsient/"
@@ -1301,7 +1302,7 @@ of abstraction on top of @code{sd-bus}, the C D-Bus implementation by systemd.")
                                   "appstream-glib-" version ".tar.xz"))
               (sha256
                (base32
-                "00j0kkgf224nzmrha72g8pd72mymhph7vaisj35i4ffy7cpd47na"))))
+                "15lbrmyx94cf6p6svq02yiskh31xidq092c711pqs16mml06a9bi"))))
     (build-system meson-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)
@@ -1318,7 +1319,7 @@ of abstraction on top of @code{sd-bus}, the C D-Bus implementation by systemd.")
        ("gtk+" ,gtk+)
        ("json-glib" ,json-glib)
        ("libarchive" ,libarchive)
-       ("libsoup" ,libsoup-minimal-2)))
+       ("curl" ,curl)))
     (arguments
      `(#:configure-flags
        (list "-Ddep11=false"
