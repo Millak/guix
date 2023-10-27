@@ -528,13 +528,13 @@ Astropy project, but is optimized for use with astropy-related projects.")
 (define-public python-pytest-astropy
   (package
     (name "python-pytest-astropy")
-    (version "0.10.0")
+    (version "0.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-astropy" version))
        (sha256
-        (base32 "04g2rh261s3s6ym8mwi4iv2a6anbgwvwzcvkyilfck6yxrncdqw5"))))
+        (base32 "1d9rcxnc57rjp96xag1gq725pwl11b3k5hdaz7c3w5lixncsmbjf"))))
     (build-system python-build-system)
     (arguments (list #:tests? #f)) ; there are no tests
     (native-inputs
