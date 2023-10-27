@@ -37,6 +37,7 @@
 
 (define-module (gnu packages glib)
   #:use-module (gnu packages)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -106,7 +107,7 @@
 (define dbus
   (package
     (name "dbus")
-    (version "1.14.0")
+    (version "1.15.8")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -114,49 +115,57 @@
                     version ".tar.xz"))
               (sha256
                (base32
-                "1m7bibavml4gx9d67j403l0kzd1a4z8lhrpxb2as3q4nfpiwrmyc"))
+                "016j3rqc8m62bg0h7z4rpvbvm5bg0hbjrld733f0aby8drz5kz44"))
               (patches (search-patches "dbus-helper-search-path.patch"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags
-       (list
-        ;; Install the system bus socket under /var.
-        "--localstatedir=/var"
+     (list
+      #:configure-flags
+      #~(list
+         ;; Install the system bus socket under /var.
+         "--localstatedir=/var"
 
-        ;; Install the session bus socket under /tmp.
-        "--with-session-socket-dir=/tmp"
+         ;; Install the session bus socket under /tmp.
+         "--with-session-socket-dir=/tmp"
 
-        ;; Build shared libraries only.
-        "--disable-static"
+         ;; Build shared libraries only.
+         "--disable-static"
 
-        ;; Use /etc/dbus-1 for system-wide config.
-        ;; Look for configuration file under
-        ;; /etc/dbus-1.  This is notably required by
-        ;; 'dbus-daemon-launch-helper', which looks for
-        ;; the 'system.conf' file in that place,
-        ;; regardless of what '--config-file' was
-        ;; passed to 'dbus-daemon' on the command line;
-        ;; see <https://bugs.freedesktop.org/show_bug.cgi?id=92458>.
-        "--sysconfdir=/etc")
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'install
-                  (lambda _
-                    ;; Don't try to create /var and /etc.
-                    (invoke "make"
-                            "localstatedir=/tmp/dummy"
-                            "sysconfdir=/tmp/dummy"
-                            "install"))))))
+         ;; Use /etc/dbus-1 for system-wide config.
+         ;; Look for configuration file under
+         ;; /etc/dbus-1.  This is notably required by
+         ;; 'dbus-daemon-launch-helper', which looks for
+         ;; the 'system.conf' file in that place,
+         ;; regardless of what '--config-file' was
+         ;; passed to 'dbus-daemon' on the command line;
+         ;; see <https://bugs.freedesktop.org/show_bug.cgi?id=92458>.
+         "--sysconfdir=/etc")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'install
+            (lambda _
+              ;; Don't try to create /var and /etc.
+              (invoke "make"
+                      "localstatedir=/tmp/dummy"
+                      "sysconfdir=/tmp/dummy"
+                      "install"))))))
     (native-inputs
-     (list pkg-config
-           ;; Dependencies to generate the doc.
+     ;; Some dependencies are required to generate the documentation.  Also,
+     ;; quoting NEWS for 1.15.8: “Autotools-generated files are no longer
+     ;; included in the tarball release.”
+     (list autoconf
+           autoconf-archive
+           automake
            docbook-xml-4.4
            docbook-xsl
            doxygen
-           xmlto
+           libtool
            libxml2 ;for XML_CATALOG_FILES
            libxslt
-           yelp-tools))
+           which
+           xmlto
+           yelp-tools
+           pkg-config))
     (inputs
      (list expat
            ;; Add a dependency on libx11 so that 'dbus-launch' has support for
