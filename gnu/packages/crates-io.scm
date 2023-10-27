@@ -56574,22 +56574,22 @@ ecosystem.")
 (define-public rust-pyo3-log-0.8
   (package
     (name "rust-pyo3-log")
-    (version "0.8.2")
+    (version "0.8.4")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "pyo3-log" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0i0lwnzp0gizijidcddas3888zrzqpa60pmqs3bmibkbb99zcky9"))))
+                "1hrvdialyynmpnvydnfsnjm0mkmnv83acv237nkxhf35kcs2p760"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-arc-swap" ,rust-arc-swap-1)
         ("rust-log" ,rust-log-0.4)
-        ("rust-pyo3" ,rust-pyo3-0.16))
+        ("rust-pyo3" ,rust-pyo3-0.19))
        #:cargo-development-inputs
-       (("rust-pyo3" ,rust-pyo3-0.16)
+       (("rust-pyo3" ,rust-pyo3-0.19)
         ("rust-syn" ,rust-syn-1))))
     (inputs (list python))
     (home-page "https://github.com/vorner/pyo3-log")
