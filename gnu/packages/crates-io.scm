@@ -79418,13 +79418,13 @@ serializing Rust structures.")
 (define-public rust-toml-datetime-0.6
   (package
     (name "rust-toml-datetime")
-    (version "0.6.3")
+    (version "0.6.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "toml_datetime" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "0jsy7v8bdvmzsci6imj8fzgd255fmy5fzp6zsri14yrry7i77nkw"))))
+               (base32 "1wds4pm2cn6agd38f0ivm65xnc7c7bmk9m0fllcaq82nd3lz8l1m"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-serde" ,rust-serde-1))))
