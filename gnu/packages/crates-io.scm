@@ -68369,26 +68369,25 @@ words, like Python's shlex.")
   (package
     (inherit rust-signal-hook-0.3)
     (name "rust-signal-hook")
-    (version "0.1.16")
+    (version "0.1.17")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "signal-hook" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1v85mgs4dbgw0765b9nx0jd8lamv55425aawjbhxz6cb870hhib0"))))
+        (base32 "0a97migr3gcy4sfkgxdp29082s3f3lbf4was3dkpl13gq51d8cby"))))
     (arguments
      `(#:cargo-inputs
        (("rust-futures" ,rust-futures-0.1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-mio" ,rust-mio-0.7)
         ("rust-mio-uds" ,rust-mio-uds-0.6)
-        ("rust-signal-hook-registry" ,rust-signal-hook-registry-1.2)
+        ("rust-signal-hook-registry" ,rust-signal-hook-registry-1)
         ("rust-tokio-reactor" ,rust-tokio-reactor-0.1))
        #:cargo-development-inputs
-       (("rust-tokio" ,rust-tokio-0.1)
+       (("rust-mio" ,rust-mio-0.7)
+        ("rust-tokio" ,rust-tokio-0.1)
         ("rust-version-sync" ,rust-version-sync-0.8))))))
 
 (define-public rust-signal-hook-mio-0.2
@@ -68437,30 +68436,6 @@ words, like Python's shlex.")
     (synopsis "Backend crate for signal-hook")
     (description "This package is a backend crate for @code{signal-hook}.")
     (license (list license:asl2.0 license:expat))))
-
-;; XXX: This package is needed for `rust-signal-hook-0.1', where "Cargo.toml"
-;; contains "~1.2".
-(define-public rust-signal-hook-registry-1.2
-  (package
-    (inherit rust-signal-hook-registry-1)
-    (name "rust-signal-hook-registry")
-    (version "1.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "signal-hook-registry" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0haz828bif1lbp3alx17zkcy5hwy15bbpmvks72j8iznx7npix4l"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-arc-swap" ,rust-arc-swap-0.4)
-        ("rust-libc" ,rust-libc-0.2))
-       #:cargo-development-inputs
-       (("rust-signal-hook" ,rust-signal-hook-0.1)
-        ("rust-version-sync" ,rust-version-sync-0.8))))))
 
 (define-public rust-signature-2
   (package
