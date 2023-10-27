@@ -81470,17 +81470,17 @@ the Trust-DNS client to use rustls for TLS.")
 (define-public rust-trycmd-0.14
   (package
     (name "rust-trycmd")
-    (version "0.14.16")
+    (version "0.14.19")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "trycmd" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "13i5bmw4c8pansylgixfzknzm79g5n602rmi3qy1fax1d0cff999"))))
+               (base32 "1yz4prkmnb1y406p0aq3r8yf11alj8i94yvnz3k07c9glir9607d"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-anstream" ,rust-anstream-0.3)
+       (("rust-anstream" ,rust-anstream-0.6)
         ("rust-escargot" ,rust-escargot-0.5)
         ("rust-glob" ,rust-glob-0.3)
         ("rust-humantime" ,rust-humantime-2)
@@ -81491,7 +81491,7 @@ the Trust-DNS client to use rustls for TLS.")
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-shlex" ,rust-shlex-1)
         ("rust-snapbox" ,rust-snapbox-0.4)
-        ("rust-toml-edit" ,rust-toml-edit-0.19))))
+        ("rust-toml-edit" ,rust-toml-edit-0.20))))
     (home-page "https://github.com/assert-rs/trycmd")
     (synopsis "Snapshot testing for a herd of CLI tests")
     (description "trycmd is a test harness that will enumerate test case files
