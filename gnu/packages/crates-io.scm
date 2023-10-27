@@ -87460,6 +87460,9 @@ non-cryptographic hashing algorithm and random number generator.")
          (base32
           "05028bk49b2ix1lz22sj65fnlxr0f29j2klkaqjxp6az3c6hprl5"))))
     (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--" "--skip=exit")))
     (home-page "https://myrrlyn.net/crates/wyz")
     (synopsis "Collection of utility functions")
     (description
