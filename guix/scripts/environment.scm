@@ -1123,11 +1123,11 @@ command-line option processing with 'parse-command-line'."
       (when no-cwd?
         (leave (G_ "--no-cwd cannot be used without '--container'~%")))
       (when emulate-fhs?
-        (leave (G_ "'--emulate-fhs' cannot be used without '--container~%'")))
+        (leave (G_ "'--emulate-fhs' cannot be used without '--container'~%")))
       (when nesting?
-        (leave (G_ "'--nesting' cannot be used without '--container~%'")))
+        (leave (G_ "'--nesting' cannot be used without '--container'~%")))
       (when (pair? symlinks)
-        (leave (G_ "'--symlink' cannot be used without '--container~%'"))))
+        (leave (G_ "'--symlink' cannot be used without '--container'~%"))))
 
     (with-store/maybe store
       (with-status-verbosity (assoc-ref opts 'verbosity)
