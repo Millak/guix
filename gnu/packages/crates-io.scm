@@ -10509,14 +10509,14 @@ in a byte slice, fast.")
 (define-public rust-byteorder-1
   (package
     (name "rust-byteorder")
-    (version "1.4.3")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "byteorder" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0456lv9xi1a5bcm32arknf33ikv76p3fr9yzki4lb2897p2qkh8l"))))
+        (base32 "0jzncxyf404mwqdbspihyzpkndfgda450l0893pz5xj685cg5l0z"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
