@@ -577,14 +577,14 @@ be used when cross-compiling."
 (define gobject-introspection
   (package
     (name "gobject-introspection")
-    (version "1.76.1")
+    (version "1.78.1")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnome/sources/"
                    "gobject-introspection/" (version-major+minor version)
                    "/gobject-introspection-" version ".tar.xz"))
              (sha256
-              (base32 "1grq6wmbi2nbnwffgvsljd481zm6darnk12dvkf02m9lcjzphq8r"))
+              (base32 "1d0vhi83q0xc7kg3zn32wy7n16f3dd5blicyh5v8w9gpkbcsnyxx"))
              (patches (search-patches
                        "gobject-introspection-cc.patch"
                        "gobject-introspection-girepository.patch"
