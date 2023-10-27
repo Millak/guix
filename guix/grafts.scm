@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -176,11 +176,8 @@ references."
                     (append-map (cut references/cached store <>) items))))
       (append-map (cut references/cached store <>) items)))
 
-  (let ((refs (references* (map (cut derivation->output-path drv <>)
-                                outputs)))
-        (self (match (derivation->output-paths drv)
-                (((names . items) ...)
-                 items))))
+  (let* ((self (map (cut derivation->output-path drv <>) outputs))
+         (refs (references* self)))
     (remove (cut member <> self) refs)))
 
 (define %graft-cache
@@ -207,7 +204,7 @@ references."
            (return result)))))))
 
 (define (reference-origins drv items)
-  "Return the derivation/output pairs among the inputs of DRV, recursively,
+  "Return the derivation/output pairs among DRV and its inputs, recursively,
 that produce ITEMS.  Elements of ITEMS not produced by a derivation (i.e.,
 it's a content-addressed \"source\"), or not produced by a dependency of DRV,
 have no corresponding element in the resulting list."
@@ -238,13 +235,10 @@ have no corresponding element in the resulting list."
              ((set-contains? visited drv)
               (loop rest items result visited))
              (else
-              (let* ((inputs
-                      (map derivation-input-derivation
-                           (derivation-inputs drv)))
-                     (result items
-                             (fold2 lookup-derivers
-                                    result items inputs)))
-                (loop (append rest inputs)
+              (let ((result items (lookup-derivers drv result items)))
+                (loop (append rest
+                              (map derivation-input-derivation
+                                   (derivation-inputs drv)))
                       items result
                       (set-insert drv visited)))))))))
 
@@ -258,16 +252,17 @@ GRAFTS to the dependencies of DRV.  Return the resulting list of grafts.
 
 This is a monadic procedure in %STATE-MONAD where the state is a vhash mapping
 derivations to the corresponding set of grafts."
-  (define (graft-origin? drv graft)
-    ;; Return true if DRV corresponds to the origin of GRAFT.
+  (define (graft-origin? drv output graft)
+    ;; Return true if DRV and OUTPUT correspond to the origin of GRAFT.
     (match graft
-      (($ <graft> (? derivation? origin) output)
-       (match (assoc-ref (derivation->output-paths drv) output)
-         ((? string? result)
-          (string=? result
-                    (derivation->output-path origin output)))
-         (_
-          #f)))
+      (($ <graft> (? derivation? origin) origin-output)
+       (and (string=? origin-output output)
+            (match (assoc-ref (derivation->output-paths drv) output)
+              ((? string? result)
+               (string=? result
+                         (derivation->output-path origin output)))
+              (_
+               #f))))
       (_
        #f)))
 
@@ -278,7 +273,7 @@ derivations to the corresponding set of grafts."
               ((drv . output)
                ;; If GRAFTS already contains a graft from DRV, do not
                ;; override it.
-               (if (find (cut graft-origin? drv <>) grafts)
+               (if (find (cut graft-origin? drv output <>) grafts)
                    (state-return grafts)
                    (cumulative-grafts store drv grafts
                                       #:outputs (list output)

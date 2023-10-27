@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2019, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2019, 2022-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Mark H Weaver <mhw@netris.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -267,6 +267,54 @@
                 (string=? (derivation->output-path p1 "two")
                           (readlink (string-append out "/two")))
                 (file-exists? (string-append out "/one/replacement")))))))
+
+(test-assert "graft-derivation, multiple outputs need to be replaced"
+  ;; Build a reference graph like this:
+  ;;
+  ;;         ,- p2:out --.
+  ;;         v           v
+  ;;      p1:one <---- p1:two
+  ;;         |
+  ;;         `-> p0
+  ;;
+  ;; Graft p0r in lieu of p0, and make sure all the paths from the grafted p2
+  ;; lead to p0r.  See <https://issues.guix.gnu.org/66662>.
+  (let* ((p0  (build-expression->derivation
+               %store "p0" '(mkdir (assoc-ref %outputs "out"))))
+         (p0r (build-expression->derivation
+               %store "P0"
+               '(let ((out (assoc-ref %outputs "out")))
+                  (mkdir out)
+                  (call-with-output-file (string-append out "/replacement")
+                    (const #t)))))
+         (p1  (build-expression->derivation
+               %store "p1"
+               `(let ((one (assoc-ref %outputs "one"))
+                      (two (assoc-ref %outputs "two"))
+                      (p0  (assoc-ref %build-inputs "p0")))
+                  (mkdir one)
+                  (mkdir two)
+                  (symlink p0 (string-append one "/p0"))
+                  (symlink one (string-append two "/link")))
+               #:inputs `(("p0" ,p0))
+               #:outputs '("one" "two")))
+         (p2  (build-expression->derivation
+               %store "p2"
+               `(let ((out (assoc-ref %outputs "out")))
+                  (mkdir out) (chdir out)
+                  (symlink (assoc-ref %build-inputs "p1:one") "one")
+                  (symlink (assoc-ref %build-inputs "p1:two") "two"))
+               #:inputs `(("p1:one" ,p1 "one")
+                          ("p1:two" ,p1 "two"))))
+         (p0g (list (graft
+                      (origin p0)
+                      (replacement p0r))))
+         (p2d (graft-derivation %store p2 p0g)))
+
+    (build-derivations %store (list p2d))
+    (let ((out (derivation->output-path (pk 'p2d p2d))))
+      (equal? (stat (string-append out "/one/p0/replacement"))
+              (stat (string-append out "/two/link/p0/replacement"))))))
 
 (test-assert "graft-derivation with #:outputs"
   ;; Call 'graft-derivation' with a narrowed set of outputs passed as
