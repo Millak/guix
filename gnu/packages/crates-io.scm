@@ -13444,17 +13444,17 @@ for programs written with Clap.")
 with Clap to generate Fig completion scripts.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-clap-lex-0.5
+(define-public rust-clap-lex-0.6
   (package
     (name "rust-clap-lex")
-    (version "0.5.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "clap-lex" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "06vcvpvp65qggc5agbirzqk2di00gxg6vazzc3qlwzkw70qxm9id"))))
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "clap-lex" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1l8bragdvim7mva9flvd159dskn2bdkpl0jqrr41wnjfn8pcfbvh"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/clap-rs/clap/tree/master/clap_lex")
     (synopsis "Command line parser for Clap")
@@ -13464,6 +13464,19 @@ to a declarative parser, @code{rust-clap-lex} processes arguments as a
 stream of tokens.")
     ;; The user can choose either license.
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-clap-lex-0.5
+  (package
+    (inherit rust-clap-lex-0.6)
+    (name "rust-clap-lex")
+    (version "0.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "clap-lex" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "06vcvpvp65qggc5agbirzqk2di00gxg6vazzc3qlwzkw70qxm9id"))))))
 
 (define-public rust-clap-lex-0.3
   (package
