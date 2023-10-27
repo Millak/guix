@@ -293,10 +293,10 @@ agda-stdlib but using cubical methods.")
     (license license:expat)))
 
 (define-public agda-1lab
-  ;; Upstream doesn't do releases (yet).  Use a commit that builds with 2.6.3,
+  ;; Upstream doesn't do releases (yet).  Use a commit that builds with 2.6.4,
   ;; since they use Agda HEAD.
-  (let* ((revision "1")
-         (commit "47ca1d23640a6f49a3abe3c2fe27738bcc10c9c6"))
+  (let* ((revision "2")
+         (commit "549fdb1c948a975e90e70f871993a4a4239aa280"))
     (package
       (name "agda-1lab")
       (version (git-version "0.0" revision commit))
@@ -309,10 +309,12 @@ agda-stdlib but using cubical methods.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0j7mp6c0xd0849skdxzncklkxynxnyfrbpcjv4qp5p1xfn0dnfqx"))))
+           "1k4zj8dibyplakpxaw4a8hpsaqhakynjb83dqxrva4h4ssj6gkqj"))))
       (build-system agda-build-system)
       (arguments
-       (list #:plan '(("src/index\\.lagda\\.md$"))))
+       ;; Check files individually first, to avoid running out of heap :(
+       (list #:plan '(("src/.+/.+\\.lagda\\.md$")
+                      ("src/index\\.lagda\\.md$"))))
       (synopsis "Reference resource for mathematics done in Homotopy Type Theory")
       (description "A formalised, cross-linked reference resource for
 mathematics done in Homotopy Type Theory.  Unlike the HoTT book, the 1lab is
