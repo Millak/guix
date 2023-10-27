@@ -1007,7 +1007,7 @@ useful for C++.")
 (define-public python-pygobject
   (package
     (name "python-pygobject")
-    (version "3.44.1")
+    (version "3.46.0")
     (source
      (origin
        (method url-fetch)
@@ -1016,7 +1016,7 @@ useful for C++.")
                            "/pygobject-" version ".tar.xz"))
        (sha256
         (base32
-         "042pmpyaz7bsbr68znnwdqyhs3j3cajib0k45v1hrs8v6b8has1w"))
+         "1z6aagb46fhhdd0bb3zk6dfdw3s4y2fva0vv3jpwjj6mvar0hq22"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -1025,7 +1025,8 @@ useful for C++.")
            (with-directory-excursion "tests"
              ;; FIXME: These tests require Gdk and/or Gtk 4.
              (for-each delete-file
-                       '("test_atoms.py" "test_overrides_gtk.py"))
+                       '("test_atoms.py" "test_overrides_gtk.py"
+                         "test_overrides_gdk.py"))
              #t)))))
     (build-system meson-build-system)
     (arguments
