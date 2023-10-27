@@ -1435,7 +1435,7 @@ simple methods via GObject-Introspection.")
 (define-public xdg-dbus-proxy
   (package
     (name "xdg-dbus-proxy")
-    (version "0.1.2")
+    (version "0.1.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/flatpak/xdg-dbus-proxy"
@@ -1443,7 +1443,7 @@ simple methods via GObject-Introspection.")
                                   "/xdg-dbus-proxy-" version ".tar.xz"))
               (sha256
                (base32
-                "03sj1h0c2l08xa8phw013fnxr4fgav7l2mkjhzf9xk3dykwxcj8p"))))
+                "1yv10v7gpv5z0iii7p3rs2h9wx6sigldycjlkpyyal06iapwy786"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config
