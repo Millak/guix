@@ -70035,21 +70035,21 @@ algorithm.  Includes streaming compression and decompression.")
 (define-public rust-snapbox-macros-0.3
   (package
     (name "rust-snapbox-macros")
-    (version "0.3.4")
+    (version "0.3.6")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "snapbox-macros" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0cfaq1vwy90g3csmmzm773kk0i91422r3432x4myishfkzghkbza"))))
+                "13mj53zkgz85f80pk3g3nixkwhqdjhzbxf926gfnlscazyx5j5gd"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-anstream" ,rust-anstream-0.3))))
+     `(#:cargo-inputs (("rust-anstream" ,rust-anstream-0.6))))
     (home-page "https://github.com/assert-rs/trycmd/tree/main/crates/snapbox")
     (synopsis "Snapshot testing toolbox")
     (description
-     "snapbox is a snapshot-testing toolbox that is ready to use for verifying
+     "Snapbox is a snapshot-testing toolbox that is ready to use for verifying
 output from
 
 @itemize
