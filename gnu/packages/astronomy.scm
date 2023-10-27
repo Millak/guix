@@ -3489,13 +3489,13 @@ exposures and high-level data products (mosaics, extracted spectra, etc.).")
 (define-public python-pyerfa
   (package
     (name "python-pyerfa")
-    (version "2.0.0.3")
+    (version "2.0.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyerfa" version))
        (sha256
-        (base32 "0f8zykzxjsiwv5ibdn5asla2ng2xl0xdkrcrrd61j31mb3xbnzyp"))
+        (base32 "0swsdkipnk73iflsa7qbaw89wahbnfyvplqaxwi0yfrxippp9b6v"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -3506,6 +3506,7 @@ exposures and high-level data products (mosaics, extracted spectra, etc.).")
      (list
       ;; Disable only one failing test:
       ;; AttributeError: __warningregistry__
+      ;; See https://github.com/liberfa/pyerfa/issues/126
       #:test-flags #~(list "-k" "not test_errwarn_reporting")
       #:phases
       #~(modify-phases %standard-phases
