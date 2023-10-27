@@ -79587,8 +79587,32 @@ parser.")
          ("rust-pretty-assertions" ,rust-pretty-assertions-1)
          ("rust-snapbox" ,rust-snapbox-0.2))))))
 
+(define-public rust-toml-test-1
+  (package
+    (name "rust-toml-test")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "toml-test" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1h0lfd4bsix6c7mqlqg9r73dgc34b8kmh5vym20y2cgv6ll8khqy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-ryu" ,rust-ryu-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1))
+       #:cargo-development-inputs (("rust-toml-test-data" ,rust-toml-test-data-1))))
+    (home-page "https://github.com/epage/toml-test-rs")
+    (synopsis "Verify Rust TOML parsers")
+    (description "This package can be used to verify Rust TOML parsers.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-toml-test-0.3
   (package
+    (inherit rust-toml-test-1)
     (name "rust-toml-test")
     (version "0.3.5")
     (source (origin
@@ -79597,29 +79621,24 @@ parser.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32 "042dgaqjk1v715my4rziqdadylsad31ny4y6askx878xvbw0r3s8"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-chrono" ,rust-chrono-0.4)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1))
        #:cargo-development-inputs
-       (("rust-toml-test-data" ,rust-toml-test-data-1))))
-    (home-page "https://github.com/epage/toml-test-rs")
-    (synopsis "Verify Rust TOML parsers")
-    (description "This package can be used to verify Rust TOML parsers.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-toml-test-data" ,rust-toml-test-data-1))))))
 
 (define-public rust-toml-test-data-1
   (package
     (name "rust-toml-test-data")
-    (version "1.3.0")
+    (version "1.4.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "toml-test-data" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "0ii6llfpz9fbcag2jkfz87s3cmphrnhkr9fln01fhph0ssv53wwk"))))
+               (base32 "0bgdwyjsqgpwwi5s1w483a1g3qrwmq0l3742k07575qzcc6sx0h0"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-include-dir" ,rust-include-dir-0.7))))
