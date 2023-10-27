@@ -1,0 +1,28 @@
+From 76d3863a5e6e7b9ee948f10a3faec3420a2020f1 Mon Sep 17 00:00:00 2001
+Message-ID: <76d3863a5e6e7b9ee948f10a3faec3420a2020f1.1698265016.git.dev@jpoiret.xyz>
+From: Josselin Poiret <dev@jpoiret.xyz>
+Date: Wed, 25 Oct 2023 22:15:43 +0200
+Subject: [PATCH] Bump stdlib to 1.7.3
+
+From: Josselin Poiret <dev@jpoiret.xyz>
+
+---
+ agda-categories.agda-lib | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/agda-categories.agda-lib b/agda-categories.agda-lib
+index 5b19c405..4d63d415 100644
+--- a/agda-categories.agda-lib
++++ b/agda-categories.agda-lib
+@@ -1,3 +1,3 @@
+ name: agda-categories
+-depend: standard-library-1.7.2
++depend: standard-library-1.7.3
+ include: src/
+
+base-commit: 9d61106740147a67fa2cae0a89ac066897b24a51
+prerequisite-patch-id: 508dabd923ba9ac1ee4d8dab6697432b4bd8ba18
+prerequisite-patch-id: b5f39b4fc9e4c9993ab31300de041ed2c7eb696b
+-- 
+2.41.0
+

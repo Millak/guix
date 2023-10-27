@@ -246,7 +246,8 @@ try agda-prelude instead.")
                (base32
                 "0xwgm2mfl2pxipsv31bin8p14y1yhd9n27lv3clvsxd4z9yc034m"))
               (patches (search-patches "agda-categories-remove-incompatible-flags.patch"
-                                       "agda-categories-use-find.patch"))))
+                                       "agda-categories-use-find.patch"
+                                       "agda-categories-use-stdlib-1.7.3.patch"))))
     (build-system agda-build-system)
     (arguments
      (list
