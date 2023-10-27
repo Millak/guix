@@ -12529,39 +12529,34 @@ Encoding Standard.")
 (define-public rust-chrono-0.4
   (package
     (name "rust-chrono")
-    (version "0.4.24")
+    (version "0.4.31")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "chrono" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0fv7idr8c7vdb0xi32w45a7pafnyzk7m0bknfggj5pva0qcmjg2f"))))
+        (base32 "0f6vg67pipm8cziad2yms6a639pssnvysk1m05dd9crymmdnhb3z"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-arbitrary" ,rust-arbitrary-1)
-        ("rust-criterion" ,rust-criterion-0.4)
+       (("rust-android-tzdata" ,rust-android-tzdata-0.1)
+        ("rust-arbitrary" ,rust-arbitrary-1)
         ("rust-iana-time-zone" ,rust-iana-time-zone-0.1)
         ("rust-js-sys" ,rust-js-sys-0.3)
-        ("rust-num-integer" ,rust-num-integer-0.1)
         ("rust-num-traits" ,rust-num-traits-0.2)
-        ("rust-pure-rust-locales" ,rust-pure-rust-locales-0.5)
+        ("rust-pure-rust-locales" ,rust-pure-rust-locales-0.7)
         ("rust-rkyv" ,rust-rkyv-0.7)
         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
         ("rust-serde" ,rust-serde-1)
-        ("rust-time" ,rust-time-0.1)
         ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
-        ("rust-winapi" ,rust-winapi-0.3))
+        ("rust-windows-targets" ,rust-windows-targets-0.48))
        #:cargo-development-inputs
        (("rust-bincode" ,rust-bincode-1)
-        ("rust-doc-comment" ,rust-doc-comment-0.3)
-        ("rust-num-iter" ,rust-num-iter-0.1)
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3)
+        ("rust-windows-bindgen" ,rust-windows-bindgen-0.51))
        #:features '("unstable-locales")
        #:tests? #f))
     (home-page "https://github.com/chronotope/chrono")
