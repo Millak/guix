@@ -270,5 +270,5 @@ guix build hello -d
 env="$(type -P pre-inst-env)"
 guix shell -C -D guix -- "$env" guix build hello -d && false # cannot work
 hello_drv="$(guix build hello -d)"
-hello_drv_nested="$(cd "$(dirname env)" && guix shell --bootstrap -CW -D guix -- "$env" guix build hello -d)"
+hello_drv_nested="$(cd "$(dirname env)" && guix shell --bootstrap -E GUIX_BUILD_OPTIONS -CW -D guix -- "$env" guix build hello -d)"
 test "$hello_drv" = "$hello_drv_nested"
