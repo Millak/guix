@@ -56391,30 +56391,43 @@ they were parsed from")
     (description "This package provides a library for async wake signals.")
     (license license:asl2.0)))
 
+(define-public rust-pure-rust-locales-0.7
+  (package
+    (name "rust-pure-rust-locales")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pure-rust-locales" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0cl46srhxzj0jlvfp73l8l9qw54qwa04zywaxdf73hidwqlsh0pd"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:tests? #f))    ; Not all files included.
+    (home-page "https://github.com/cecton/pure-rust-locales")
+    (synopsis "Pure Rust locales imported directly from the GNU C Library")
+    (description
+     "Pure Rust locales imported directly from the GNU C Library.
+@code{LC_COLLATE} and @code{LC_CTYPE} are not yet supported.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pure-rust-locales-0.5
   (package
+    (inherit rust-pure-rust-locales-0.7)
     (name "rust-pure-rust-locales")
     (version "0.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pure-rust-locales" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0ryjj0gs4hfadqx9vl4sgi32zyb2dlvwpxca1m1kmrw9hk1g7gv5"))))
-    (build-system cargo-build-system)
+        (base32 "0ryjj0gs4hfadqx9vl4sgi32zyb2dlvwpxca1m1kmrw9hk1g7gv5"))))
     (arguments
      `(#:cargo-inputs
        (("rust-itertools" ,rust-itertools-0.8)
-        ("rust-nom" ,rust-nom-5))))
-    (home-page "https://github.com/cecton/pure-rust-locales")
-    (synopsis "Pure Rust locales imported directly from the GNU C Library")
-    (description
-     "Pure Rust locales imported directly from the GNU C Library.
-@code{LC_COLLATE} and @code{LC_CTYPE} are not yet supported.")
-    (license license:expat)))
+        ("rust-nom" ,rust-nom-5))))))
 
 (define-public rust-pyo3-build-config-0.19
   (package
