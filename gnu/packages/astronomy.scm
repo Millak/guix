@@ -1466,13 +1466,13 @@ accurately in real time at any rate desired.")
 (define-public python-astropy
   (package
     (name "python-astropy")
-    (version "5.3.3")
+    (version "5.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astropy" version))
        (sha256
-        (base32 "1fwk7x4q1hgdf9m8q613c6q7045sam1g934vgqv588ksbngxyc03"))
+        (base32 "1n7iwvjari4xv37094cpiapmjhhm57b04hi4r40wqb5czbigg46l"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -1527,7 +1527,9 @@ accurately in real time at any rate desired.")
                              "not remote_data"
                              ;; XXX: Check why this tests failing.
                              " and not test_ignore_sigint"
-                             " and not test_parquet_filter"))))))))
+                             " and not test_parquet_filter"
+                             ;; See https://github.com/astropy/astropy/issues/15537
+                             " and not test_pvstar"))))))))
     (native-inputs
      (list pkg-config
            python-colorlog
