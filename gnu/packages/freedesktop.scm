@@ -486,8 +486,8 @@ display servers.  It supports many different languages and emoji.")
 (define xdgmime
   ;; No public release, match commit to the one used in the
   ;; shared-mime-info release.
-  (let ((commit "de283fc430460b9b3a7e61432a6d273cd64cb102")
-        (revision "1"))
+  (let ((commit "179296748e92bd91bf531656632a1056307fb7b7")
+        (revision "2"))
     (package
       (name "xdgmime")
       (version (git-version "0.0" revision commit))
@@ -499,7 +499,7 @@ display servers.  It supports many different languages and emoji.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0m9k7nfxgchb9j0xh9cwsldz6564qisqdkvlhgkcgc0grd4nfbn9"))))
+                  "04bpbqlkmwi2pqx1lj3awa9f9gwp4n91fpnz8hbbd0hl8x41przm"))))
       (build-system gnu-build-system)
       (arguments
        (list
