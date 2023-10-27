@@ -2611,12 +2611,7 @@ of axis order, spatial projections, and spectral units that exist in the wild.
       #~(modify-phases %standard-phases
           (add-after 'unpack 'preparations
             (lambda _
-              ;; Fixing: setuptools-scm was unable to detect version for ...
-              (substitute* "setup.py"
-                (("use_scm_version=True")
-                 (format #f "version=~s" #$version))
-                (("setup_requires=\\['setuptools_scm'\\],.*")
-                 ""))
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
               ;; Use our own libraries in place of bundles.
               (setenv "USE_SYSTEM_QD" "1"))))))
     (native-inputs
