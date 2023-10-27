@@ -75718,8 +75718,31 @@ writing colored text to a terminal.")
     (description "Markdown Renderer for the Terminal.")
     (license license:expat)))
 
+(define-public rust-terminal-size-0.3
+  (package
+    (name "rust-terminal-size")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "terminal-size" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xqdzdjq77smg41z67vg3qwrcilf1zf5330gdrgm22lyghmvzgi1"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:tests? #f          ;tests require /dev/stderr
+           #:cargo-inputs `(("rust-rustix" ,rust-rustix-0.38)
+                            ("rust-windows-sys" ,rust-windows-sys-0.48))))
+    (home-page "https://github.com/eminence/terminal-size")
+    (synopsis "Gets the size of your Linux or Windows terminal")
+    (description
+     "This package gets the size of your Linux or Windows terminal.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-terminal-size-0.2
   (package
+    (inherit rust-terminal-size-0.3)
     (name "rust-terminal-size")
     (version "0.2.2")
     (source (origin
@@ -75729,16 +75752,10 @@ writing colored text to a terminal.")
               (sha256
                (base32
                 "0yhza8sc6jkka6j0nq5sl749ckx1jagvxp3b38yhh4px6k291jj0"))))
-    (build-system cargo-build-system)
     (arguments
      (list #:tests? #f          ;tests require /dev/stderr
            #:cargo-inputs
-           `(("rust-rustix" ,rust-rustix-0.35))))
-    (home-page "https://github.com/eminence/terminal-size")
-    (synopsis "Gets the size of your Linux or Windows terminal")
-    (description
-     "This package gets the size of your Linux or Windows terminal.")
-    (license (list license:expat license:asl2.0))))
+           `(("rust-rustix" ,rust-rustix-0.35))))))
 
 (define-public rust-terminal-size-0.1
   (package
