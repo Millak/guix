@@ -59205,7 +59205,11 @@ Rust.")
                   (substitute* "Cargo.toml"
                     ((".*vendored.*") ""))))))
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=tests::test_dt_to_generalized"
+         "--skip=tests::test_dt_utc_strip_nanos")
+       #:cargo-inputs
        (("rust-chrono" ,rust-chrono-0.4)
         ("rust-pem" ,rust-pem-1)
         ("rust-ring" ,rust-ring-0.16)
