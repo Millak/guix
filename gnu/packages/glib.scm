@@ -866,7 +866,7 @@ credentials and service-specific settings.")
 (define libsigc++
   (package
     (name "libsigc++")
-    (version "3.0.6")
+    (version "3.6.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/libsigc++/"
@@ -874,7 +874,7 @@ credentials and service-specific settings.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1kn57b039lg20182lnchl1ys27vf34brn43f895cal8nc7sdq3mp"))))
+                "05qf10lp5vxsi5fbzdphqhbzmys12mxvg4gh14p9zqynvwvkpln3"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
