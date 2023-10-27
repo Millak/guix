@@ -79450,8 +79450,40 @@ serializing Rust structures.")
     (arguments
      `(#:cargo-inputs (("rust-serde" ,rust-serde-1))))))
 
+(define-public rust-toml-edit-0.20
+  (package
+    (name "rust-toml-edit")
+    (version "0.20.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "toml-edit" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "119aw7xa5dykicrd9l1ngxpzgb3jajbyh1alhpkw2qgpvp1gcavq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-kstring" ,rust-kstring-2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-spanned" ,rust-serde-spanned-0.6)
+                       ("rust-toml-datetime" ,rust-toml-datetime-0.6)
+                       ("rust-winnow" ,rust-winnow-0.5))
+       #:cargo-development-inputs
+       (("rust-libtest-mimic" ,rust-libtest-mimic-0.6)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-snapbox" ,rust-snapbox-0.4)
+        ("rust-toml-test-data" ,rust-toml-test-data-1)
+        ("rust-toml-test-harness" ,rust-toml-test-harness-0.4))))
+    (home-page "https://github.com/toml-rs/toml")
+    (synopsis "Yet another format-preserving TOML parser")
+    (description "This package provides yet another format-preserving TOML
+parser.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-toml-edit-0.19
   (package
+    (inherit rust-toml-edit-0.20)
     (name "rust-toml-edit")
     (version "0.19.15")
     (source
@@ -79461,7 +79493,6 @@ serializing Rust structures.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32 "08bl7rp5g6jwmfpad9s8jpw8wjrciadpnbaswgywpr9hv9qbfnqv"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-indexmap" ,rust-indexmap-2)
@@ -79475,12 +79506,7 @@ serializing Rust structures.")
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-snapbox" ,rust-snapbox-0.4)
         ("rust-toml-test-data" ,rust-toml-test-data-1)
-        ("rust-toml-test-harness" ,rust-toml-test-harness-0.4))))
-    (home-page "https://github.com/toml-rs/toml")
-    (synopsis "Yet another format-preserving TOML parser")
-    (description "This package provides yet another format-preserving TOML
-parser.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-toml-test-harness" ,rust-toml-test-harness-0.4))))))
 
 (define-public rust-toml-edit-0.18
   (package
