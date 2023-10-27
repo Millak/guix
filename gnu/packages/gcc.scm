@@ -1235,6 +1235,10 @@ provides the GNU compiler for the Go programming language."))
 (define-public gccgo-12
   (make-gccgo gcc-12))
 
+;; Provides go-1.18
+(define-public gccgo-13
+  (make-gccgo gcc-13))
+
 (define %objc-search-paths
   (list (search-path-specification
          (variable "OBJC_INCLUDE_PATH")
