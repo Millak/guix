@@ -71874,22 +71874,21 @@ developed as part of the Servo project.")
 as defined in RFC 3454.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-strip-ansi-escapes-0.1
+(define-public rust-strip-ansi-escapes-0.2
   (package
     (name "rust-strip-ansi-escapes")
-    (version "0.1.1")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "strip-ansi-escapes" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1n36ly9vxb1wr5q76i7995xr7c0pb1pc8g7a3a3n47vwrwwvn701"))))
+        (base32 "1ymwcax1vyacqxx5xisfsynm7n1bvmhskvsaylac915k8gwqxzsm"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-vte" ,rust-vte-0.10))))
+     `(#:cargo-inputs (("rust-vte" ,rust-vte-0.11))
+       #:cargo-development-inputs (("rust-doc-comment" ,rust-doc-comment-0.3))))
     (home-page "https://github.com/luser/strip-ansi-escapes")
     (synopsis "Strip ANSI escape sequences from byte streams")
     (description
@@ -71899,6 +71898,23 @@ This can be used to take output from a program that includes escape sequences
 and write it somewhere that does not easily support them, such as a log
 file.")
     (license (list license:asl2.0 license:expat))))
+
+(define-public rust-strip-ansi-escapes-0.1
+  (package
+    (inherit rust-strip-ansi-escapes-0.2)
+    (name "rust-strip-ansi-escapes")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "strip-ansi-escapes" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1n36ly9vxb1wr5q76i7995xr7c0pb1pc8g7a3a3n47vwrwwvn701"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-vte" ,rust-vte-0.10))))))
 
 (define-public rust-strong-xml-0.6
   (package
