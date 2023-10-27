@@ -3,7 +3,7 @@
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2021-2022 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -114,12 +114,19 @@ commit hash and its date rather than a proper release tag."
   (let ((go (resolve-interface '(gnu packages golang))))
     (module-ref go 'go)))
 
+(define (default-gccgo)
+  ;; Lazily resolve the binding to avoid a circular dependency.
+  (let ((gcc (resolve-interface '(gnu packages gcc))))
+    (module-ref gcc 'gccgo-12)))
+
 (define (make-go-std)
   (module-ref (resolve-interface '(gnu packages golang)) 'make-go-std))
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system target
-                (go (default-go))
+                (go (if (supported-package? (default-go))
+                      (default-go)
+                      (default-gccgo)))
                 #:allow-other-keys
                 #:rest arguments)
   "Return a bag for NAME."
