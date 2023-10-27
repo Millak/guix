@@ -45243,23 +45243,22 @@ implementation.")
 (define-public rust-nb-connect-1
   (package
     (name "rust-nb-connect")
-    (version "1.0.2")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nb-connect" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1649m71wc0cg1rqgl8vbh0489znkhpwgl0isjd5x8mz470ash8w1"))))
+        (base32 "05fadcyxaz0r8pbh498y24xay3b2gb73ih3fj7hwylggqq6m9fxi"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
-        ("rust-winapi" ,rust-winapi-0.3))
+        ("rust-socket2" ,rust-socket2-0.4))
        #:cargo-development-inputs
        (("rust-polling" ,rust-polling-2))))
-    (home-page "https://github.com/stjepang/nb-connect")
+    (home-page "https://github.com/smol-rs/nb-connect")
     (synopsis "Non-blocking TCP or Unix connect")
     (description
      "This crate allows you to create a TcpStream or a UnixStream in
