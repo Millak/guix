@@ -1409,18 +1409,15 @@ other API remains the same.")
                 "00x5yq1yidxxv6hmlvblpp2k0vf60s0xzyi0psplbmss70bpl5iv"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags '("-D" "gtk_doc=true")))
-    (inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib" ,glib)
-       ("gobject-introspection" ,gobject-introspection)))
+     (list #:configure-flags #~'("-D" "gtk_doc=true")))
+    (inputs (list gettext-minimal glib gobject-introspection))
     (native-inputs
-     `(("bison" ,bison)
-       ("flex" ,flex)
-       ("glib:bin" ,glib "bin") ;; For glib-mkenums
-       ("gtk-doc" ,gtk-doc/stable)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)))
+     (list bison
+           flex
+           `(,glib "bin") ;for glib-mkenums
+           gtk-doc/stable
+           pkg-config
+           vala))
     (home-page "https://gitlab.gnome.org/GNOME/template-glib")
     (synopsis "Library for template expansion")
     (description
