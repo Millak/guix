@@ -533,7 +533,7 @@ display servers.  It supports many different languages and emoji.")
 (define-public shared-mime-info
   (package
     (name "shared-mime-info")
-    (version "2.2")
+    (version "2.3")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -542,7 +542,7 @@ display servers.  It supports many different languages and emoji.")
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "04dfnnflspprxg7qia3whz1754lfvgi4ihvmihg379936zy5xd22"))
+               "0w8sbhz00sk6k8pyiykfig4rm22jyibalj7g22j9qf3d2nfy8ivh"))
              (patches (search-patches "shared-mime-info-xdgmime-path.patch"))))
     (build-system meson-build-system)
     (arguments
