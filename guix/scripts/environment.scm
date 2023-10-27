@@ -1153,7 +1153,8 @@ command-line option processing with 'parse-command-line'."
                               store
                               (if bootstrap?
                                   %bootstrap-guile
-                                  (default-guile))))))
+                                  (default-guile))
+                              system))))
           (run-with-store store
             ;; Containers need a Bourne shell at /bin/sh.
             (mlet* %store-monad ((bash       (environment-bash container?
