@@ -265,12 +265,9 @@ try agda-prelude instead.")
     (license license:expat)))
 
 (define-public agda-cubical
-  ;; Upstream's HEAD follows the latest Agda release, but they don't release
-  ;; until a newer Agda release comes up, so their releases are always one
-  ;; version late.
   (package
     (name "agda-cubical")
-    (version "0.5")
+    (version "0.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -279,7 +276,7 @@ try agda-prelude instead.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0yfg7gr55n08ly1qgzpcp16s15k1abycppbcdi9lzg1hjryqxcg3"))))
+                "0zq0z328zcjmm43mrv2ks27i1dnbylcf8mhzja2hd4gvz1kq1ays"))))
     (build-system agda-build-system)
     (arguments
      (list
