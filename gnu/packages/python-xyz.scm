@@ -5819,13 +5819,13 @@ flexibility and power of the Python language.")
 (define-public python-dm-tree
   (package
     (name "python-dm-tree")
-    (version "0.1.7")
+    (version "0.1.8")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "dm-tree" version))
               (sha256
-               (base32 "0apxfxgmqh22qpk92zmmf3acqkavhwxz78lnwz026a5rlnncizih"))))
-    (build-system python-build-system)
+               (base32 "0c4l9gpaqd7j34qwnpjibv53j9sm0nyl0wcy8dvh76772jxspjhg"))))
+    (build-system pyproject-build-system)
     (inputs (list pybind11 abseil-cpp python))
     (propagated-inputs (list python-wheel
                              python-absl-py
@@ -5867,13 +5867,16 @@ flexibility and power of the Python language.")
                       (string-append "-Wl," "-rpath=" python "/lib")
                       "-fno-semantic-interposition"
                       "build/temp/tree/tree.o"
+                      "-Wl,--whole-archive"
                       "-L" (string-append python "/lib")
                       "-L" (string-append abseil-cpp "/lib")
                       "-l" "absl_int128"
                       "-l" "absl_raw_hash_set"
                       "-l" "absl_raw_logging_internal"
                       "-l" "absl_strings"
+                      "-l" "absl_strings_internal"
                       "-l" "absl_throw_delegate"
+                      "-Wl,--no-whole-archive"
                       "-o" "build/lib/tree/_tree.so")))))))
     (home-page "https://github.com/deepmind/tree")
     (synopsis "Work with nested data structures in Python")
