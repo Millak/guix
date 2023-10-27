@@ -2601,19 +2601,22 @@ of axis order, spatial projections, and spectral units that exist in the wild.
        (file-name (git-file-name name version))
        (sha256
         (base32 "0kzcncqir4v7nhk9lxj9gxr32p3krkaqa58y2i4kksgxxy24qw4z"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
-      ;; NOTE: (Sharlatan-20220523T231348+0100): Tests depends on old Python2
-      ;; libarry `sphere'
-      #:tests? #f
+      ;; XXX: Disable one failing test
+      ;; See https://github.com/spacetelescope/spherical_geometry/issues/252
+      #:test-flags #~(list "-k" "not test_overlap")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'preparations
             (lambda _
               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
               ;; Use our own libraries in place of bundles.
-              (setenv "USE_SYSTEM_QD" "1"))))))
+              (setenv "USE_SYSTEM_QD" "1")))
+          (add-before 'check 'build-extensions
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (native-inputs
      (list python-pytest
            python-setuptools-scm))
