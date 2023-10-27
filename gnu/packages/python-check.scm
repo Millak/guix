@@ -753,13 +753,13 @@ were inadvertently left open at the end of a unit test.")
 (define-public python-pytest-remotedata
   (package
     (name "python-pytest-remotedata")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-remotedata" version))
        (sha256
-        (base32 "1j5106j331cfdyfcwzrbs3yby84mq1b0kddfysq12z2dwdcca8dy"))))
+        (base32 "0ndvnj9zghfj17haphrygiri9iy38wb8lwq1xdkfvlfd73v8ph05"))))
     (build-system pyproject-build-system)
     (arguments
      (list
