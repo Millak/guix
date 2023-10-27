@@ -53458,7 +53458,10 @@ along with strong support for variations and the core header tables.")
         (base32 "1m45fkdq7q5l9mv3b0ra10qwm0kb67rjp2q8y91958gbqjqk33b6"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=Writer::is_full")
+       #:cargo-inputs
        (("rust-atomic-waker" ,rust-atomic-waker-1)
         ("rust-fastrand" ,rust-fastrand-2)
         ("rust-futures-io" ,rust-futures-io-0.3)
