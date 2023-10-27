@@ -3769,32 +3769,23 @@ between image and reference catalogs. Currently only aligning images with
 @code{FITS WCS} and @code{JWST gWCS} are supported.")
     (license license:bsd-3)))
 
-(define-public python-asdf
+(define-public python-asdf-3.0
   (package
     (name "python-asdf")
-    (version "2.15.0")
+    (version "3.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asdf" version))
        (sha256
-        (base32 "11s56797l5330kkhppkyz0bsvms016knmyswj4gx91zrxf8iqvv8"))))
+        (base32 "1a6lf75q9w8fsyq3hn6a7fyldkkyqxddlq21fwdfjwij40dzh3s8"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list #:test-flags
-           #~(list "-k" (string-append
-                         "not test_overwrite"
-                         " and not test_tagging_scalars"
-                         " and not test_info_command"
-                         " and not test_array_inline_threshold_recursive"))))
     (native-inputs
-     (list python-astropy
-           python-fsspec
+     (list python-fsspec
            python-packaging
            python-psutil
            python-pytest
            python-pytest-doctestplus
-           python-pytest-openfiles
            python-pytest-remotedata
            python-semantic-version
            python-setuptools-scm))
@@ -3802,10 +3793,9 @@ between image and reference catalogs. Currently only aligning images with
      (list python-asdf-standard
            python-asdf-transform-schemas
            python-asdf-unit-schemas
+           python-attrs ;; for vendorized jsonschema
            python-importlib-metadata
-           python-importlib-resources
            python-jmespath
-           python-jsonschema
            python-lz4
            python-numpy
            python-pyyaml))
@@ -3816,6 +3806,34 @@ between image and reference catalogs. Currently only aligning images with
 interchange format for scientific data.  This package contains the Python
 implementation of the ASDF Standard.")
     (license license:bsd-3)))
+
+(define-public python-asdf-2.15
+  (package
+    (inherit python-asdf-3.0)
+    (version "2.15.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "asdf" version))
+       (sha256
+        (base32 "11s56797l5330kkhppkyz0bsvms016knmyswj4gx91zrxf8iqvv8"))))
+    (arguments
+     (list #:test-flags
+           #~(list "-k" (string-append
+                         "not test_overwrite"
+                         " and not test_tagging_scalars"
+                         " and not test_info_command"
+                         " and not test_array_inline_threshold_recursive"))))
+    (native-inputs
+     (modify-inputs (package-native-inputs python-asdf-3.0)
+       (prepend python-astropy python-pytest-openfiles)))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs python-asdf-3.0)
+       (prepend python-jsonschema python-importlib-resources)))))
+
+(define-public python-asdf
+  ;; Default version of ASDF..
+  python-asdf-2.15)
 
 (define-public python-asdf-standard
   (package
