@@ -84290,8 +84290,34 @@ hardware registers.")
      "This package provides a pure FFI to Jon Blow's VS discovery script.")
     (license license:expat)))
 
+(define-public rust-vte-0.11
+  (package
+    (name "rust-vte")
+    (version "0.11.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "vte" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15r1ff4j8ndqj9vsyil3wqwxhhl7jsz5g58f31n0h1wlpxgjn0pm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-arrayvec" ,rust-arrayvec-0.7)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-utf8parse" ,rust-utf8parse-0.2)
+        ("rust-vte-generate-state-changes" ,rust-vte-generate-state-changes-0.1))))
+    (home-page "https://github.com/alacritty/vte")
+    (synopsis "Parser for implementing terminal emulators")
+    (description
+     "This package provides a parser for implementing terminal emulators.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-vte-0.10
   (package
+    (inherit rust-vte-0.11)
     (name "rust-vte")
     (version "0.10.0")
     (source
@@ -84301,19 +84327,13 @@ hardware registers.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1mnjw3f071xbvapdgdf8mcdglw60dadcc5hhvz5zpljm53nmzwid"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-arrayvec" ,rust-arrayvec-0.5)
         ("rust-utf8parse" ,rust-utf8parse-0.2)
         ("rust-vte-generate-state-changes"
-         ,rust-vte-generate-state-changes-0.1))))
-    (home-page "https://github.com/jwilm/vte")
-    (synopsis "Parser for implementing terminal emulators")
-    (description
-     "This package provides a parser for implementing terminal emulators.")
-    (license (list license:asl2.0 license:expat))))
+         ,rust-vte-generate-state-changes-0.1))))))
 
 (define-public rust-vte-0.9
   (package
