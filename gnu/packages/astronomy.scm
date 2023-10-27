@@ -3231,19 +3231,8 @@ It can be used to calculate the trajectory of satellites.")
         (base32 "0a6wb1a9adwd01dmy0r03xxp8iz9y7mvh30088ajilhj4lf90vxa"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ;no test provided
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (mkdir-p "build")
-             (chdir "build")
-             (invoke
-              "cmake"
-              "-G" "Unix Makefiles"
-              "-DCMAKE_BUILD_TYPE=Release"
-              (string-append "-DCMAKE_INSTALL_PREFIX=" (assoc-ref outputs "out"))
-              ".."))))))
+     (list ;; No test provided
+      #:tests? #f))
     (native-inputs
      (list boost pkg-config))
     (inputs
