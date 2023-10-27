@@ -199,7 +199,7 @@ come from Agda's standard library.")
 (define-public agda-stdlib
   (package
     (name "agda-stdlib")
-    (version "1.7.2")
+    (version "1.7.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -208,7 +208,7 @@ come from Agda's standard library.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "065hf24xjpciwdrvk4isslgcgi01q0k93ql0y1sjqqvy5ryg5xmy"))))
+                "0y6rns64rrkh8hw7mamcf6797329pi4ravpak5zijpnkzdagmlmy"))))
     (build-system agda-build-system)
     (arguments
      (list
