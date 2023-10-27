@@ -1085,14 +1085,14 @@ up the Gnome environment, and are used in many unrelated projects.")
 (define-public perl-glib-object-introspection
   (package
     (name "perl-glib-object-introspection")
-    (version "0.049")
+    (version "0.051")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/X/XA/XAOC/"
                            "Glib-Object-Introspection-" version ".tar.gz"))
        (sha256
-        (base32 "0mxg6pz8qfyipw0ypr54alij0c4adzg94f62702b2a6hkp5jhij6"))))
+        (base32 "12802l87mx65lswiwlc394fkb74cmsqn88n2qy119b40rhfn2sb5"))))
     (build-system perl-build-system)
     (native-inputs
      (list perl-extutils-depends perl-extutils-pkgconfig))
