@@ -86646,6 +86646,23 @@ crate.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-windows-metadata-0.51
+  (package
+    (name "rust-windows-metadata")
+    (version "0.51.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-metadata" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "03h0c6qs1yyl0z69p4k1hdq636j868qdxnri1dy47nprjvckacbm"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Windows metadata reader")
+    (description "Windows metadata reader.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-sys-0.48
   (package
     (name "rust-windows-sys")
