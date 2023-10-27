@@ -11902,7 +11902,8 @@ box''.")
          "16p3bqi3qad1qdjgjc1r0x72iinj1aw2k8fw5zx2l51s52sdl92c"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; lint `const_err` has been removed
+       #:cargo-inputs
        (("rust-rustc-version" ,rust-rustc-version-0.4))
        #:cargo-development-inputs
        (("rust-quickcheck" ,rust-quickcheck-0.9))))))
