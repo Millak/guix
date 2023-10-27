@@ -32926,7 +32926,10 @@ their key-value pairs in a user controllable order.")
         (base32 "1a1al1rfxcqmx0n9h100ggvg036f4rv69fq12kimazvw9zsvj6bz"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=sync::mt_record_static")
+       #:cargo-inputs
        (("rust-base64" ,rust-base64-0.13)
         ("rust-byteorder" ,rust-byteorder-1)
         ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
@@ -32938,6 +32941,8 @@ their key-value pairs in a user controllable order.")
         ("rust-ieee754" ,rust-ieee754-0.2)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-rug" ,rust-rug-1))))
+    (inputs
+     (list gmp mpc mpfr))
     (home-page "https://github.com/HdrHistogram/HdrHistogram_rust")
     (synopsis "Port of HdrHistogram to Rust")
     (description "This package provides a port of @code{HdrHistogram} to Rust.")
