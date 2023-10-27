@@ -42071,7 +42071,7 @@ statement, the first matching branch is the item that gets emitted.")
 (define-public rust-matches-0.1
   (package
     (name "rust-matches")
-    (version "0.1.9")
+    (version "0.1.10")
     (source
       (origin
         (method url-fetch)
@@ -42079,7 +42079,7 @@ statement, the first matching branch is the item that gets emitted.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0gw5ib38jfgyyah8nyyxr036grqv1arkf1srgfa4h386dav7iqx3"))))
+          "1994402fq4viys7pjhzisj4wcw894l53g798kkm2y74laxk0jci5"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/SimonSapin/rust-std-candidates")
     (synopsis "Macro to evaluate whether an expression matches a pattern")
