@@ -13322,14 +13322,14 @@ Command Line Argument Parser.")
 (define-public rust-clap-builder-4
   (package
     (name "rust-clap-builder")
-    (version "4.3.19")
+    (version "4.4.7")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "clap-builder" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1qg9xrshy9h5cmavg4zfc1gzjkcwq2p97qyg6lm6dr8zizqa7ih1"))))
+                "0qvnxjf6csr5v00zpd8yxabf6cna0nfx402x2wkwmrk25aixjzn7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
@@ -13338,24 +13338,17 @@ Command Line Argument Parser.")
              "--skip=builder::range::ValueRange::new"
              "--skip=builder::value_parser::value_parser")
        #:cargo-inputs
-       (("rust-anstream" ,rust-anstream-0.3)
+       (("rust-anstream" ,rust-anstream-0.6)
         ("rust-anstyle" ,rust-anstyle-1)
         ("rust-backtrace" ,rust-backtrace-0.3)
-        ("rust-clap-lex" ,rust-clap-lex-0.5)
-        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-clap-lex" ,rust-clap-lex-0.6)
         ("rust-strsim" ,rust-strsim-0.10)
-        ("rust-terminal-size" ,rust-terminal-size-0.2)
+        ("rust-terminal-size" ,rust-terminal-size-0.3)
         ("rust-unicase" ,rust-unicase-2)
         ("rust-unicode-width" ,rust-unicode-width-0.1))
        #:cargo-development-inputs
        (("rust-color-print" ,rust-color-print-0.3)
-        ("rust-humantime" ,rust-humantime-2)
-        ("rust-rustversion" ,rust-rustversion-1)
-        ("rust-shlex" ,rust-shlex-1)
-        ("rust-snapbox" ,rust-snapbox-0.4)
         ("rust-static-assertions" ,rust-static-assertions-1)
-        ("rust-trybuild" ,rust-trybuild-1)
-        ("rust-trycmd" ,rust-trycmd-0.14)
         ("rust-unic-emoji-char" ,rust-unic-emoji-char-0.9))))
     (home-page "https://github.com/clap-rs/clap")
     (synopsis "Full-featured Command Line Argument Parser")
