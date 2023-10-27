@@ -923,7 +923,7 @@ astronomical image-processing packages like Drizzle, Swarp or SExtractor.")
            libtirpc
            qtbase-5
            zlib))
-    (home-page "https://projets.lam.fr/projects/unsio/wiki")
+    (home-page "https://projets.lam.fr/projects/glnemo2/wiki/Wiki")
     (synopsis "3D interactive visualization program for n-body like particles")
     (description
      "GLNEMO2 is an interactive 3D visualization program which displays
