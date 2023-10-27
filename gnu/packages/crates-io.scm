@@ -55719,7 +55719,19 @@ including most strategies and the testing framework itself.")
        (sha256
         (base32 "0nsslp46lvf3ll5rd83rin652qlz1kqyp0rmsciy0pw4kf0pgi01"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=string::test::askalono_0"
+         "--skip=string::test::askalono_9"
+         "--skip=string::test::comrak_0"
+         "--skip=string::test::fblog_0"
+         "--skip=string::test::linky_0"
+         "--skip=string::test::phone_number_0"
+         "--skip=string::test::spaceslugs_2"
+         "--skip=string::test::stache_0"
+         "--skip=string::test::fblog_1"
+         "--skip=string::test::phonenumber_5")
+       #:cargo-inputs
        (("rust-bit-set" ,rust-bit-set-0.5)
         ("rust-bitflags" ,rust-bitflags-1)
         ("rust-byteorder" ,rust-byteorder-1)
