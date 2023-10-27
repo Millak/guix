@@ -71730,16 +71730,14 @@ configurable byte storage.")
 (define-public rust-string-cache-0.8
   (package
     (name "rust-string-cache")
-    (version "0.8.4")
+    (version "0.8.7")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "string-cache" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "020ahbx93gp85s3k3k5c342j10ml0b77i4q4hri180xmlavr8d11"))))
+         (base32 "0fr90a54ibsrnfjq5la77yjd641g6vqv8f1v3pmpbxa2cbkkh4gr"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
