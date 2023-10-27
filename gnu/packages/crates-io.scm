@@ -3449,6 +3449,26 @@ it outputs messages to Android's logcat.")
      "This package provides a minimal Android system properties wrapper.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-android-tzdata-0.1
+  (package
+    (name "rust-android-tzdata")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "android-tzdata" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1w7ynjxrfs97xg3qlcdns4kgfpwcdv824g611fq32cag4cdr96g9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included
+       #:cargo-development-inputs (("rust-zip" ,rust-zip-0.6))))
+    (home-page "https://github.com/RumovZ/android-tzdata")
+    (synopsis "Parser for the Android-specific tzdata file")
+    (description "Parser for the Android-specific tzdata file.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-anes-0.1
   (package
     (name "rust-anes")
