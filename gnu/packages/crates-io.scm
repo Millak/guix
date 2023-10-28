@@ -74828,18 +74828,17 @@ files.")
 (define-public rust-tectonic-cfg-support-0.1
   (package
     (name "rust-tectonic-cfg-support")
-    (version "0.1.3")
+    (version "0.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_cfg_support" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1j2ib1jwfj31kx45xdxqlqck5zikvrqaq51p81smvi4755s0417b"))))
+        (base32 "07pd5fpqshxa7x8iky3hg4dznsx6xxf51s4336ynbvfw82ycis12"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-lazy-static" ,rust-lazy-static-1))))
     (home-page "https://tectonic-typesetting.github.io/")
     (synopsis "Support crate for @code{CARGO_CFG_TARGET_*} variables")
