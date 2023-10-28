@@ -47638,18 +47638,17 @@ underline) in rust.")
 (define-public rust-num-0.4
   (package
     (name "rust-num")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "num" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "01j6k8kjad0a96297j3qjhdhrc6cgmzhf52i0sd7yd0d2z8ndns3"))))
+        (base32 "1bz7kvj94pyw4zi1pm7knziljzii218sw79ap8qfb81xkvb80ldh"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-num-bigint" ,rust-num-bigint-0.4)
         ("rust-num-complex" ,rust-num-complex-0.4)
         ("rust-num-integer" ,rust-num-integer-0.1)
