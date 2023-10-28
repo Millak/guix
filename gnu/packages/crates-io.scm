@@ -75173,14 +75173,14 @@ streams.")
 (define-public rust-tectonic-pdf-io-0.4
   (package
     (name "rust-tectonic-pdf-io")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_pdf_io" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0rmk31n96r299k5j2ydyqryzywn2dbfbnl1rwh0lx86zaqac9qcn"))))
+        (base32 "0d3pj1q1hyn0kkh6fyw9b2z5ppwz6bck4s5236wx3a1kpp1k5irr"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
