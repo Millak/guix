@@ -113,6 +113,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages dejagnu)
+  #:use-module (gnu packages dns)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
@@ -4066,7 +4067,7 @@ powerful route filtering syntax and an easy-to-use configuration interface.")
                 "199pcs20054xhp5c0dnxf9ny5cf5cynkqpx68dpn46nq8ly76n2y"))))
     (build-system gnu-build-system)
     (inputs
-     (list dbus ell (package-source ell) readline))
+     (list dbus ell (package-source ell) openresolv readline))
     (native-inputs
      (list autoconf
            automake
@@ -4102,6 +4103,13 @@ powerful route filtering syntax and an easy-to-use configuration interface.")
                         (copy-file (string-append ell-header-dir "/" file-name)
                                    (string-append target-dir "/" file-name)))
                       '("asn1-private.h" "useful.h")))))
+               (add-after 'unpack 'patch-resolvconf-path
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "src/resolve.c"
+                     (("getenv\\(\"PATH\"\\)")
+                      (format #f "\"~a\""
+                              (dirname (search-input-file
+                                        inputs "sbin/resolvconf")))))))
                (add-after 'configure 'patch-Makefile
                  (lambda _
                    (substitute* "Makefile"
