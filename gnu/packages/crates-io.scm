@@ -48293,23 +48293,22 @@ directly.")
   (package
     (inherit rust-num-rational-0.4)
     (name "rust-num-rational")
-    (version "0.3.0")
+    (version "0.3.2")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "num-rational" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0f41j1l1kn5jj36a8xdy8kv242wlwq0ka578vm8gnb1n1wvdgd55"))))
+          "01sgiwny9iflyxh2xz02sak71v2isc3x608hfdpwwzxi3j5l5b0j"))))
     (arguments
      `(#:cargo-inputs
-       (("rust-num-bigint" ,rust-num-bigint-0.3)
+       (("rust-autocfg" ,rust-autocfg-1)
+        ("rust-num-bigint" ,rust-num-bigint-0.3)
         ("rust-num-integer" ,rust-num-integer-0.1)
         ("rust-num-traits" ,rust-num-traits-0.2)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-autocfg" ,rust-autocfg-1))))))
+        ("rust-serde" ,rust-serde-1))))))
 
 (define-public rust-num-rational-0.2
   (package
