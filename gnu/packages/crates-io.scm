@@ -48242,7 +48242,7 @@ directly.")
 (define-public rust-num-iter-0.1
   (package
     (name "rust-num-iter")
-    (version "0.1.42")
+    (version "0.1.43")
     (source
      (origin
        (method url-fetch)
@@ -48250,7 +48250,7 @@ directly.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0ndd9wb9qar50fdr16xm3i1zk6h2g9br56nml2n22kd56y1iq0mj"))))
+         "0lp22isvzmmnidbq9n5kbdh8gj0zm3yhxv1ddsn5rp65530fc0vx"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
