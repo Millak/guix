@@ -80169,6 +80169,28 @@ automatically instrumenting functions.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-tracing-error-0.2
+  (package
+    (name "rust-tracing-error")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tracing-error" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vi0rns7r8iny2milg0kikz1mhgcl9wz5clpy1vi4jrq1wffr1nn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=backtrace::SpanTrace::capture")
+       #:cargo-inputs (("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (home-page "https://tokio.rs")
+    (synopsis "Utilities for enriching errors with `tracing`")
+    (description "Utilities for enriching errors with `tracing`.")
+    (license license:expat)))
+
 (define-public rust-tracing-futures-0.2
   (package
     (name "rust-tracing-futures")
