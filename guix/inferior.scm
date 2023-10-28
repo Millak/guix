@@ -872,14 +872,17 @@ prefix, resolve it; and if 'commit' is unset, fetch CHANNEL's branch tip."
                                   (authenticate? #t)
                                   (cache-directory (%inferior-cache-directory))
                                   (ttl (* 3600 24 30))
-                                  validate-channels)
+                                  (reference-channels '())
+                                  (validate-channels (const #t)))
   "Return a directory containing a guix filetree defined by CHANNELS, a list of channels.
 The directory is a subdirectory of CACHE-DIRECTORY, where entries can be
 reclaimed after TTL seconds.  This procedure opens a new connection to the
 build daemon.  AUTHENTICATE? determines whether CHANNELS are authenticated.
-VALIDATE-CHANNELS, if specified, must be a one argument procedure accepting a
-list of channels that can be used to validate the channels; it should raise an
-exception in case of problems."
+
+VALIDATE-CHANNELS must be a four-argument procedure used to validate channel
+instances against REFERENCE-CHANNELS; it is passed as #:validate-pull to
+'latest-channel-instances' and should raise an exception in case a target
+channel commit is deemed \"invalid\"."
   (define commits
     ;; Since computing the instances of CHANNELS is I/O-intensive, use a
     ;; cheaper way to get the commit list of CHANNELS.  This limits overhead
@@ -927,30 +930,31 @@ exception in case of problems."
 
   (if (file-exists? cached)
       cached
-      (begin
-        (when (procedure? validate-channels)
-          (validate-channels channels))
-        (run-with-store store
-          (mlet* %store-monad ((instances
-                                -> (latest-channel-instances store channels
-                                                             #:authenticate?
-                                                             authenticate?))
-                               (profile
-                                (channel-instances->derivation instances)))
-            (mbegin %store-monad
-              ;; It's up to the caller to install a build handler to report
-              ;; what's going to be built.
-              (built-derivations (list profile))
+      (run-with-store store
+        (mlet* %store-monad ((instances
+                              -> (latest-channel-instances store channels
+                                                           #:authenticate?
+                                                           authenticate?
+                                                           #:current-channels
+                                                           reference-channels
+                                                           #:validate-pull
+                                                           validate-channels))
+                             (profile
+                              (channel-instances->derivation instances)))
+          (mbegin %store-monad
+            ;; It's up to the caller to install a build handler to report
+            ;; what's going to be built.
+            (built-derivations (list profile))
 
-              ;; Cache if and only if AUTHENTICATE? is true.
-              (if authenticate?
-                  (mbegin %store-monad
-                    (symlink* (derivation->output-path profile) cached)
-                    (add-indirect-root* cached)
-                    (return cached))
-                  (mbegin %store-monad
-                    (add-temp-root* (derivation->output-path profile))
-                    (return (derivation->output-path profile))))))))))
+            ;; Cache if and only if AUTHENTICATE? is true.
+            (if authenticate?
+                (mbegin %store-monad
+                  (symlink* (derivation->output-path profile) cached)
+                  (add-indirect-root* cached)
+                  (return cached))
+                (mbegin %store-monad
+                  (add-temp-root* (derivation->output-path profile))
+                  (return (derivation->output-path profile)))))))))
 
 (define* (inferior-for-channels channels
                                 #:key
