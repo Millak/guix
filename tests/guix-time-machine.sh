@@ -1,5 +1,6 @@
 # GNU Guix --- Functional package management for GNU
 # Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+# Copyright © 2023 Ludovic Courtès <ludo@gnu.org>
 #
 # This file is part of GNU Guix.
 #
@@ -20,9 +21,26 @@
 # Test the 'guix time-machine' command-line utility.
 #
 
-guix time-machine --version
+if [ -d "$abs_top_srcdir/.git" ] \
+   || guile -c '(getaddrinfo "www.gnu.org" "80" AI_NUMERICSERV)' 2> /dev/null
+then
+    guix time-machine --version
+else
+    echo "This test requires networking or a local Git checkout; skipping." >&2
+    exit 77
+fi
 
-# Visiting a commit older than v1.0.0 fails.
-! guix time-machine --commit=v0.15.0
+if [ -d "$abs_top_srcdir/.git" ]
+then
+    # Note: No "file://" prefix because that makes cloning much more expensive
+    # for some reason.
+    EXTRA_OPTIONS="--url=$abs_top_srcdir"
+else
+    EXTRA_OPTIONS=""
+fi
 
-exit 0
+# Visiting a commit older than v1.0.0 must fail (this test is expensive
+# because it clones the whole repository).
+guix time-machine -q --commit=v0.15.0 $EXTRA_OPTIONS -- describe && false
+
+true
