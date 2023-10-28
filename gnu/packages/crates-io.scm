@@ -48113,14 +48113,14 @@ primitives and enums easier.")
 (define-public rust-num-enum-derive-0.5
   (package
     (name "rust-num-enum-derive")
-    (version "0.5.7")
+    (version "0.5.11")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "num_enum_derive" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1kj6b8f2fx8prlcl6y1k97668s5aiia4f9gjlk0nmpak3rj9h11v"))))
+        (base32 "16f7r4jila0ckcgdnfgqyhhb90w9m2pdbwayyqmwcci0j6ygkgyw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f                      ;FIXME: some doc tests fail
