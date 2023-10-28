@@ -74795,14 +74795,14 @@ bindings.")
 (define-public rust-tectonic-bundles-0.3
   (package
     (name "rust-tectonic-bundles")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_bundles" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ccykccvddvx31h1dfkzdxsnqhgyls21ks2qbvad09m1jzqzl5nj"))))
+        (base32 "1qgprq4p7pgmgzrzq3zjghh0b045i66nmk8kwxwlp5qx8nx4myah"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -74812,7 +74812,7 @@ bindings.")
         ("rust-tectonic-geturl" ,rust-tectonic-geturl-0.3)
         ("rust-tectonic-io-base" ,rust-tectonic-io-base-0.4)
         ("rust-tectonic-status-base" ,rust-tectonic-status-base-0.2)
-        ("rust-zip" ,rust-zip-0.5))))
+        ("rust-zip" ,rust-zip-0.6))))
     (native-inputs
      (list pkg-config))
     (inputs
