@@ -54660,6 +54660,51 @@ I/O library.")
 and Postgres values.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-powerfmt-0.2
+  (package
+    (name "rust-powerfmt")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "powerfmt" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14ckj2xdpkhv3h6l5sdmb9f1d57z8hbfpdldjc2vl5givq2y77j3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-powerfmt-macros" ,rust-powerfmt-macros-0.1))))
+    (home-page "https://github.com/jhpratt/powerfmt")
+    (synopsis "Library that provides utilities for formatting values")
+    (description
+     "`powerfmt` is a library that provides utilities for formatting values.
+This crate makes it significantly easier to support filling to a minimum width
+with alignment, avoid heap allocation, and avoid repetitive calculations.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-powerfmt-macros-0.1
+  (package
+    (name "rust-powerfmt-macros")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "powerfmt-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "097ir0g2hjq6sx20nc3k7r7cnyyflgn5lv64jmghyp5g63i5bwx8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/jhpratt/powerfmt")
+    (synopsis "Procedural macros for `powerfmt`")
+    (description
+     "Procedural macros for `powerfmt`.  This crate is an implementation detail
+and should not be relied upon directly.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ppv-lite86-0.2
   (package
     (name "rust-ppv-lite86")
