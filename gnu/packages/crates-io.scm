@@ -74937,8 +74937,7 @@ document model, including the @file{Tectonic.toml} file.")
         (base32 "15nxgx20x3ii9ksdj2w9jis1qm1rd451kw3jh87ydvwqnzg88f3m"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-byteorder" ,rust-byteorder-1)
         ("rust-percent-encoding" ,rust-percent-encoding-2)
         ("rust-pinot" ,rust-pinot-0.1)
@@ -74949,6 +74948,8 @@ document model, including the @file{Tectonic.toml} file.")
         ("rust-tectonic-xdv" ,rust-tectonic-xdv-0.2)
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-tera" ,rust-tera-1))))
+    (inputs (list zlib))
+    (native-inputs (list pkg-config))
     (home-page "https://tectonic-typesetting.github.io/")
     (synopsis "Tectonic engine that converts SPX output to HTML")
     (description "This crate implements the Tectonic engine that converts SPX
