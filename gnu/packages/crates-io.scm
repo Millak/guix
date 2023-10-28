@@ -60112,7 +60112,7 @@ crate unless you're working on a regex implementation.")
 (define-public rust-relative-path-1
   (package
     (name "rust-relative-path")
-    (version "1.3.2")
+    (version "1.9.0")
     (source
      (origin
        (method url-fetch)
@@ -60120,10 +60120,12 @@ crate unless you're working on a regex implementation.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "152zdks8chgsq4vmp562bx6whvixm7gzivab1cf8rs1r634ggbv5"))))
+         "1jl32g41ww8pm8lbdmxm6ahagzwkz8b02q1gxzps47g1zj52j1y7"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags       ; Skip the doctests.
+       '("--release" "--lib" "--bins" "--tests")
+       #:cargo-inputs
        (("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
        (("rust-serde" ,rust-serde-1))))
