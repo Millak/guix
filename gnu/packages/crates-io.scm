@@ -74735,22 +74735,30 @@ with no Rust bindings.")
 (define-public rust-tectonic-bridge-harfbuzz-0.2
   (package
     (name "rust-tectonic-bridge-harfbuzz")
-    (version "0.2.2")
+    (version "0.2.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_bridge_harfbuzz" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "01f307014bndmby6prpygzkf7wxdxfrl36pvcw7s5mika7s7bw9k"))))
+        (base32 "18mn8yjrnh2dv7r40ipzj8qzqda09cn3c7dsl7134wv1whn42hvb"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "harfbuzz")
+                 (substitute* "Cargo.toml"
+                   (("external-harfbuzz")
+                    (string-append "default = ['external-harfbuzz']\n"
+                                   "external-harfbuzz")))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-cc" ,rust-cc-1)
         ("rust-tectonic-bridge-graphite2" ,rust-tectonic-bridge-graphite2-0.2)
         ("rust-tectonic-bridge-icu" ,rust-tectonic-bridge-icu-0.2)
         ("rust-tectonic-dep-support" ,rust-tectonic-dep-support-0.1))))
+    (inputs (list freetype graphite2 harfbuzz icu4c))
+    (native-inputs (list pkg-config))
     (home-page "https://tectonic-typesetting.github.io/")
     (synopsis "Expose the Harfbuzz C/C++ APIs to Rust/Cargo")
     (description
