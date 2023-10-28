@@ -48218,16 +48218,15 @@ directly.")
 (define-public rust-num-integer-0.1
   (package
     (name "rust-num-integer")
-    (version "0.1.44")
+    (version "0.1.45")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "num-integer" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1nq152y3304as1iai95hqz8prqnc94lks1s7q05sfjdmcf56kk6j"))))
+         "1ncwavvwdmsqzxnn65phv6c6nn72pnv9xhpmjd6a429mzf4k6p92"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
