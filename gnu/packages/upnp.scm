@@ -6,6 +6,7 @@
 ;;; Copyright © 2019 Jens Mølgaard <jens@zete.tk>
 ;;; Copyright © 2020 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,17 +26,27 @@
 (define-module (gnu packages upnp)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages curl)
+  #:use-module (gnu packages file)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages javascript)
+  #:use-module (gnu packages linux)
+  #:use-module (gnu packages logging)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages photo)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages video)
   #:use-module (gnu packages xiph)
+  #:use-module (gnu packages xml)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -161,4 +172,49 @@ and others.")
     (description "ReadyMedia (formerly known as MiniDLNA) is a simple media
 server, which serves multimedia content to compatible clients on the network.
 It aims to be fully compliant with DLNA and UPnP-AV standards.")
+    (license license:gpl2)))
+
+(define-public gerbera
+  (package
+    (name "gerbera")
+    (version "1.12.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gerbera/gerbera")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jz3jpg6ja9vi5zykcdh410r07ysrn6g0kzyj0v7d3689jxp94lg"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DWITH_SYSTEMD=NO"
+              "-DWITH_AVCODEC=YES"
+              "-DWITH_TESTS=YES")))
+    (inputs
+     (list curl
+           duktape
+           ffmpeg
+           file
+           fmt
+           libebml
+           libexif
+           libmatroska
+           libupnp
+           pugixml
+           spdlog
+           sqlite
+           taglib
+           `(,util-linux "lib")
+           zlib))
+    (native-inputs
+     (list googletest pkg-config))
+    (home-page "https://gerbera.io/")
+    (synopsis "UPnP media server")
+    (description "Gerbera is a UPnP media server which allows you to stream
+your digital media through your home network and consume it on a variety of
+UPnP compatible devices.")
     (license license:gpl2)))
