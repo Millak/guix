@@ -47871,18 +47871,17 @@ Rust.")
   (package
     (inherit rust-num-bigint-dig-0.8)
     (name "rust-num-bigint-dig")
-    (version "0.7.0")
+    (version "0.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "num-bigint-dig" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1004mmipvc7pvaf3kf13i1nqh3vxf789bj72d8wl51y185aywis5"))))
+        (base32 "1k7sd30r6flkk8xpqqcbb9pn34g9w0js8r4wsm7h0gk8zlv3xg7r"))))
     (arguments
      `(#:cargo-inputs
-       (("rust-autocfg" ,rust-autocfg-0.1)
-        ("rust-byteorder" ,rust-byteorder-1)
+       (("rust-byteorder" ,rust-byteorder-1)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-libm" ,rust-libm-0.2)
         ("rust-num-integer" ,rust-num-integer-0.1)
