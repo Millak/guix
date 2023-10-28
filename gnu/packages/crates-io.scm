@@ -33222,7 +33222,7 @@ that don't require dynamic memory allocation.")
   (package
     (inherit rust-heapless-0.6)
     (name "rust-heapless")
-    (version "0.5.5")
+    (version "0.5.6")
     (source
      (origin
        (method url-fetch)
@@ -33230,9 +33230,10 @@ that don't require dynamic memory allocation.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1h1d6s1f9zn0rz2vkdn0b42kcnkmlpd90yhfyqqhpirv38ws5a3k"))))
+         "1wc444z7w5ahxs1phbwcdy86wfvfafywy35wc7xzr335l5l1m4bl"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; could not find `pool` in `heapless`
+       #:cargo-inputs
        (("rust-as-slice" ,rust-as-slice-0.1)
         ("rust-generic-array" ,rust-generic-array-0.13)
         ("rust-hash32" ,rust-hash32-0.1)
