@@ -1071,10 +1071,10 @@ want what you have.")
     (license license:cc-by-sa3.0)))
 
 (define-public cockatrice
-  (let ((release-date "2021-01-26"))
+  (let ((release-date "2023-09-14"))
     (package
       (name "cockatrice")
-      (version "2.8.0")
+      (version "2.9.0")
       (source
        (origin
          (method git-fetch)
@@ -1084,7 +1084,7 @@ want what you have.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0q8ffcklb2b7hcqhy3d2f9kz9aw22pp04pc9y4sslyqmf17pwnz9"))
+           "1jhn6pprd3j8m312mm8nlb9hwcchg3qkks5rw0x7d22alk922dlv"))
          (modules '((guix build utils)))
          (snippet
           ;; Strip image URLs as they point towards non-free web services
