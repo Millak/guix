@@ -2446,26 +2446,7 @@ It will then write @code{fixup!} commits for each of those changes.")
            `(("rust-assert-cmd" ,rust-assert-cmd-2)
              ("rust-rstest" ,rust-rstest-0.15)
              ("rust-rstest-reuse" ,rust-rstest-reuse-0.4)
-             ("rust-tempfile" ,rust-tempfile-3))
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'use-older-rust
-                 (lambda _
-                   (setenv "RUSTC_BOOTSTRAP" "1")
-                   (substitute* "Cargo.toml"
-                     (("^rust-version = .*$")
-                      (string-append
-                       "rust-version = \""
-                       #$(package-version rust)
-                       "\"\n")))
-                   (substitute* "src/main.rs"
-                     (("#!\\[allow\\(clippy::single_component_path_imports)]")
-                      "#![feature(total_cmp)]"))
-                   (substitute* "src/cmd/query.rs"
-                     (("let handle = &mut io::stdout\\()\\.lock\\();")
-                      "\
-let _stdout = io::stdout();
-let handle = &mut _stdout.lock();")))))))
+             ("rust-tempfile" ,rust-tempfile-3))))
     (home-page "https://github.com/ajeetdsouza/zoxide/")
     (synopsis "Fast way to navigate your file system")
     (description
