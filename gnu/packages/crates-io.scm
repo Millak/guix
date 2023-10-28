@@ -74625,26 +74625,27 @@ tools.")
 (define-public rust-tectonic-bridge-core-0.3
   (package
     (name "rust-tectonic-bridge-core")
-    (version "0.3.0")
+    (version "0.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_bridge_core" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0wdc6w0nwqgpsaja55vbx7n7329cbdyqwfqaxpcdfpsf2gfz1s31"))))
+        (base32 "0zqhyn00wx6qxs4a0m9iy1qmd1451vx2i3b31ng256x7rm0k6dx4"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-cc" ,rust-cc-1)
         ("rust-flate2" ,rust-flate2-1)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-md-5" ,rust-md-5-0.9)
+        ("rust-md-5" ,rust-md-5-0.10)
         ("rust-tectonic-errors" ,rust-tectonic-errors-0.2)
-        ("rust-tectonic-io-base" ,rust-tectonic-io-base-0.3)
+        ("rust-tectonic-io-base" ,rust-tectonic-io-base-0.4)
         ("rust-tectonic-status-base" ,rust-tectonic-status-base-0.2))))
+    (inputs (list zlib))
+    (native-inputs (list pkg-config))
     (home-page "https://tectonic-typesetting.github.io/")
     (synopsis "Expose core backend APIs to the Tectonic C/C++ code")
     (description
