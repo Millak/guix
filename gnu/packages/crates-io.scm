@@ -3494,29 +3494,43 @@ it outputs messages to Android's logcat.")
     ;; The user can choose either license.
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ansi-parser-0.8
+  (package
+    (name "rust-ansi-parser")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ansi-parser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09vi51kdnbwj6c4vdiiydpqxiiwyppn7kbynf22ij9xzg4h3kcmw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-heapless" ,rust-heapless-0.5)
+                       ("rust-nom" ,rust-nom-4))))
+    (home-page "https://gitlab.com/DavidBittner/ansi-parser")
+    (synopsis "Library using nom for parsing ANSI Escape Codes")
+    (description
+     "This package provides a library using nom for parsing ANSI Escape Codes.")
+    (license license:mpl2.0)))
+
 (define-public rust-ansi-parser-0.6
   (package
+    (inherit rust-ansi-parser-0.8)
     (name "rust-ansi-parser")
     (version "0.6.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ansi-parser" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "152idb8a6gwdxzj6m099h3xgx8vw0sjc6skgw94nm2k3y5swc6kn"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-heapless" ,rust-heapless-0.5)
-        ("rust-nom" ,rust-nom-4))))
-    (home-page "https://gitlab.com/DavidBittner/ansi-parser")
-    (synopsis "Library using nom for parsing ANSI escape codes")
-    (description
-     "This package provides a library using nom for parsing ANSI
-escape codes.")
-    (license license:mpl2.0)))
+        ("rust-nom" ,rust-nom-4))))))
 
 (define-public rust-anstream-0.6
   (package
