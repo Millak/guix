@@ -14323,6 +14323,35 @@ and well formatted error reports for all kinds of errors.")
 colors.")
     (license license:expat)))
 
+(define-public rust-color-spantrace-0.2
+  (package
+    (name "rust-color-spantrace")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "color-spantrace" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kldrjm5j3mzz6c84brxshnzm1qbvjglgg7c4z5xrv29jhymp9qv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-owo-colors" ,rust-owo-colors-3)
+                       ("rust-tracing-core" ,rust-tracing-core-0.1)
+                       ("rust-tracing-error" ,rust-tracing-error-0.2))
+       #:cargo-development-inputs
+       (("rust-ansi-parser" ,rust-ansi-parser-0.8)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (home-page "https://github.com/yaahc/color-spantrace")
+    (synopsis
+     "Pretty printer for tracing_error::SpanTrace based on color-backtrace")
+    (description
+     "This package provides a pretty printer for tracing_error::@code{SpanTrace}
+based on color-backtrace.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-colorchoice-1
   (package
     (name "rust-colorchoice")
