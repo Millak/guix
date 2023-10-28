@@ -74780,9 +74780,10 @@ bindings.")
         (base32 "0kbqi4gn26ymjxlg912p1f2v9rb8a39fr3mvpg2j2hm503vh4dj5"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-tectonic-dep-support" ,rust-tectonic-dep-support-0.1))))
+    (inputs (list icu4c))
+    (native-inputs (list pkg-config))
     (home-page "https://tectonic-typesetting.github.io/")
     (synopsis "Expose a subset of the ICU Unicode APIs to Rust/Cargo")
     (description
