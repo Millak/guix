@@ -179,21 +179,22 @@ to %OLDEST-POSSIBLE-COMMIT is not that of an ancestor."
             (ref          (assoc-ref opts 'ref))
             (substitutes?  (assoc-ref opts 'substitutes?))
             (authenticate? (assoc-ref opts 'authenticate-channels?)))
-       (when command-line
-         (let* ((directory
-                 (with-store store
-                   (with-status-verbosity (assoc-ref opts 'verbosity)
-                     (with-build-handler (build-notifier #:use-substitutes?
-                                                         substitutes?
-                                                         #:verbosity
-                                                         (assoc-ref opts 'verbosity)
-                                                         #:dry-run? #f)
-                       (set-build-options-from-command-line store opts)
-                       (cached-channel-instance store channels
-                                                #:authenticate? authenticate?
-                                                #:reference-channels
-                                                %reference-channels
-                                                #:validate-channels
-                                                validate-guix-channel)))))
-                (executable (string-append directory "/bin/guix")))
-           (apply execl (cons* executable executable command-line))))))))
+       (if command-line
+           (let* ((directory
+                   (with-store store
+                     (with-status-verbosity (assoc-ref opts 'verbosity)
+                       (with-build-handler (build-notifier #:use-substitutes?
+                                                           substitutes?
+                                                           #:verbosity
+                                                           (assoc-ref opts 'verbosity)
+                                                           #:dry-run? #f)
+                         (set-build-options-from-command-line store opts)
+                         (cached-channel-instance store channels
+                                                  #:authenticate? authenticate?
+                                                  #:reference-channels
+                                                  %reference-channels
+                                                  #:validate-channels
+                                                  validate-guix-channel)))))
+                  (executable (string-append directory "/bin/guix")))
+             (apply execl (cons* executable executable command-line)))
+           (warning (G_ "no command specified; nothing to do~%")))))))
