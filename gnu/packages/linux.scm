@@ -500,7 +500,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    linux-libre-6.5-version
    linux-libre-6.5-gnu-revision
    (base32 "01mm6v67bcrhgm97axsw46x0iix9im7hmlb765f3bkjhwklpxdy7")
-   (base32 "132ps1jprxw6kqyscsar38fn7s12kg416mfhz7w702f4ajgq1ndi")))
+   (base32 "066z5lw5vrfayhv23hpfcm6fh6b7zmn2v13kfv1g3z3jl1wblhfh")))
 (define-public linux-libre-6.5-pristine-source
   (let ((version linux-libre-6.5-version)
         (hash (base32 "1mcg0lpxr832mwyqlbn0s5gssvsk2nn2xhq9w0qbymizf5j2yrn6")))
