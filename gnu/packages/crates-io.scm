@@ -74693,9 +74693,10 @@ that include C code that require flate2 functionality.")
         (base32 "1vnn6c4cp1qaqnr74bi9mzh25l6dxi8h753lqrfkqz5wb57fv29b"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-tectonic-dep-support" ,rust-tectonic-dep-support-0.1))))
+    (inputs (list freetype))
+    (native-inputs (list pkg-config))
     (home-page "https://tectonic-typesetting.github.io/")
     (synopsis "Expose the FreeType2 library C APIs to Rust/Cargo")
     (description
