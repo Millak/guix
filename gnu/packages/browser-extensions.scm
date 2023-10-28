@@ -174,13 +174,12 @@ ungoogled-chromium.")
       #:builder
       #~(begin
           (use-modules (guix build utils))
-          (setenv "PATH" (string-join
-                          (list #$(file-append coreutils "/bin")
-                                #$(file-append grep "/bin")
-                                #$(file-append password-store "/bin")
-                                #$(file-append python "/bin")
-                                #$(file-append sed "/bin")
-                                #$(file-append which "/bin")) ":"))
+          (setenv "PATH" (string-join '(#$coreutils
+                                        #$grep
+                                        #$password-store
+                                        #$python
+                                        #$sed
+                                        #$which) "/bin:" 'suffix))
           (copy-recursively #$source ".")
           (substitute* "src/install_host_app.sh"
             (("#!/usr/bin/env sh") #$(file-append bash-minimal "/bin/sh"))
