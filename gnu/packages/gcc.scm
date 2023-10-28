@@ -1058,7 +1058,6 @@ as the 'native-search-paths' field."
                  (package-outputs gcc)
                  (delete "lib" (package-outputs gcc))))
     (native-search-paths search-paths)
-    (properties (alist-delete 'hidden? (package-properties gcc)))
     (arguments
      (substitute-keyword-arguments (package-arguments gcc)
        ((#:modules modules %gnu-build-system-modules)
@@ -1078,7 +1077,9 @@ as the 'native-search-paths' field."
                 (for-each
                  delete-file
                  (find-files (string-append (assoc-ref outputs "out") "/bin")
-                             ".*(c\\+\\+|cpp|g\\+\\+|gcov|gcc|lto)(-.*)?$"))))))))))
+                             ".*(c\\+\\+|cpp|g\\+\\+|gcov|gcc|lto)(-.*)?$"))))))))
+    (properties `((upstream-name . "gcc")
+                  ,@(alist-delete 'hidden? (package-properties gcc))))))
 
 (define %generic-search-paths
   ;; This is the language-neutral search path for GCC.  Entries in $CPATH are
