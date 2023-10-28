@@ -47833,14 +47833,14 @@ more.")
 (define-public rust-num-bigint-dig-0.8
   (package
     (name "rust-num-bigint-dig")
-    (version "0.8.2")
+    (version "0.8.4")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "num-bigint-dig" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "01b9lnqkjgwr1fv8jlw8w8y8pf70h2h9panq969r0pxw793ck693"))))
+                "0lb12df24wgxxbspz4gw1sf1kdqwvpdcpwq4fdlwg4gj41c1k16w"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
