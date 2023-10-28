@@ -74876,20 +74876,20 @@ process.")
 (define-public rust-tectonic-docmodel-0.2
   (package
     (name "rust-tectonic-docmodel")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_docmodel" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1z3yhw7h11a5xggi3bjip3kz1931mjl5gi53vx2zwd89rg99373y"))))
+        (base32 "176wl4f1na18s0bjmxf9chw3854jbpkh64nzsm32d2bvgja9acih"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-serde" ,rust-serde-1)
         ("rust-tectonic-errors" ,rust-tectonic-errors-0.2)
-        ("rust-toml" ,rust-toml-0.5))))
+        ("rust-toml" ,rust-toml-0.7))))
     (home-page "https://tectonic-typesetting.github.io/")
     (synopsis "Tectonic document model")
     (description
