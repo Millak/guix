@@ -20883,6 +20883,31 @@ targets")
         ("rust-pretty-assertions" ,rust-pretty-assertions-0.7)
         ("rust-test-case" ,rust-test-case-1))))))
 
+(define-public rust-deranged-0.3
+  (package
+    (name "rust-deranged")
+    (version "0.3.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "deranged" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lqzxgxqa1jdsvh4r7fbckpxvvfr8b819vwzdzd2f166494x0chg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-powerfmt" ,rust-powerfmt-0.2)
+                       ("rust-quickcheck" ,rust-quickcheck-1)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-rand" ,rust-rand-0.8)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/jhpratt/deranged")
+    (synopsis "Ranged integers")
+    (description "Ranged integers.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-derivative-2
   (package
     (name "rust-derivative")
