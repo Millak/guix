@@ -44894,7 +44894,9 @@ transformations and statically-sized or dynamically-sized matrices.")
           "11ili22n4ffgcjbgvbjqmpbd67qrl2acqbpymg6z7d2h7my19dnn"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags       ; Skip the doctests.
+       '("--release" "--lib" "--bins" "--tests")
+       #:cargo-inputs
        (("rust-abomonation" ,rust-abomonation-0.7)
         ("rust-alga" ,rust-alga-0.9)
         ("rust-approx" ,rust-approx-0.3)
