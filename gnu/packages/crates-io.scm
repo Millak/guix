@@ -47928,16 +47928,15 @@ Rust.")
   (package
     (inherit rust-num-complex-0.4)
     (name "rust-num-complex")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "num-complex" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1dczd81f2xb092dhb0brbdbf19pyfn0v9xmkf6qm0w4pv1dx0nmh"))))
+          "1igjwm5kk2df9mxmpb260q6p40xfnkrq4smymgdqg2sm1hn66zbl"))))
     (arguments
      `(#:cargo-inputs
        (("rust-num-traits" ,rust-num-traits-0.2)
