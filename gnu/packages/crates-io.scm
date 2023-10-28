@@ -75265,14 +75265,14 @@ used by XeTeX and Tectonic.")
 (define-public rust-tectonic-xetex-layout-0.2
   (package
     (name "rust-tectonic-xetex-layout")
-    (version "0.2.1")
+    (version "0.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_xetex_layout" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "102z52hhazz2b2qsbr93dn2y4q0103s548ixzws40il7imzg99ly"))))
+        (base32 "0n7wlmxzcn78gvidrqmc9vbrim1zlwsfj4d7qhpj5fspxpsi24b2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -75290,6 +75290,7 @@ used by XeTeX and Tectonic.")
      (list fontconfig
            freetype
            graphite2
+           harfbuzz
            icu4c
            zlib))
     (home-page "https://tectonic-typesetting.github.io/")
