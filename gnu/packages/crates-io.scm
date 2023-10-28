@@ -74850,18 +74850,17 @@ with @code{CARGO_CFG_TARGET_*} variables.")
 (define-public rust-tectonic-dep-support-0.1
   (package
     (name "rust-tectonic-dep-support")
-    (version "0.1.0")
+    (version "0.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_dep_support" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0l901rjcjmx0d5wjrj95b32rj3lnnhb89hn4i0d29agndn45qw6j"))))
+        (base32 "1sr9yvxar239qmhhzb9ql7j79iqlma11r83shalv9h82nzcky2cv"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-pkg-config" ,rust-pkg-config-0.3)
         ("rust-vcpkg" ,rust-vcpkg-0.2))))
     (home-page "https://tectonic-typesetting.github.io/")
