@@ -1534,7 +1534,7 @@ of the project is to be runnable on untrusted networks without crashing.")
         (base32 "1q4mz2c32gfypx33zlzgd1q9h4322jrk13fzvsf8h676ylclqzpc"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-build-flags '("--release" "--features" "external-harfbuzz")
+     `(#:install-source? #f
        #:cargo-inputs
        (("rust-atty" ,rust-atty-0.2)
         ("rust-byte-unit" ,rust-byte-unit-4)
