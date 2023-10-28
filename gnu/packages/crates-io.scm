@@ -75097,25 +75097,26 @@ interface for fetching URLs using one of several HTTP backends.")
 (define-public rust-tectonic-io-base-0.4
   (package
     (name "rust-tectonic-io-base")
-    (version "0.4.0")
+    (version "0.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_io_base" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0x1r4m5bkqqvz24sql9q8ycnjczlqjlhzfyaylzhxi2xx4flqdfn"))))
+        (base32 "0zb04vlg5i082wlv7cfjrkg7yrzd8mhkc7chw15dh26x2z96is18"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-app-dirs2" ,rust-app-dirs2-2)
         ("rust-flate2" ,rust-flate2-1)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-sha2" ,rust-sha2-0.9)
+        ("rust-sha2" ,rust-sha2-0.10)
         ("rust-tectonic-errors" ,rust-tectonic-errors-0.2)
         ("rust-tectonic-status-base" ,rust-tectonic-status-base-0.2)
         ("rust-thiserror" ,rust-thiserror-1))))
+    (inputs (list zlib))
+    (native-inputs (list pkg-config))
     (home-page "https://tectonic-typesetting.github.io/")
     (synopsis "Basic types for Tectonic's pluggable I/O backend system")
     (description
