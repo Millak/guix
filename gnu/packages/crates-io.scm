@@ -75130,23 +75130,22 @@ streams.")
   (package
     (inherit rust-tectonic-io-base-0.4)
     (name "rust-tectonic-io-base")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_io_base" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0xpcavx3chld8d5qa24ikf5v4l5slzkakqr4ylibx0f91ssy3bsm"))))
+        (base32 "0i74dlahsrz2yzdlirpwhpnfqpyidh5bz1z1iqnqv9ds9krw6yvb"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-app-dirs2" ,rust-app-dirs2-2)
         ("rust-flate2" ,rust-flate2-1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-sha2" ,rust-sha2-0.9)
         ("rust-tectonic-errors" ,rust-tectonic-errors-0.2)
-        ("rust-tectonic-status-base" ,rust-tectonic-status-base-0.1)
+        ("rust-tectonic-status-base" ,rust-tectonic-status-base-0.2)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-tectonic-io-base-0.2
