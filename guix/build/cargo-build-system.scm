@@ -264,7 +264,11 @@ directory = '" port)
                               (unless (eq? (stat:type s) 'symlink)
                                 (utime file 0 0 0 0))))
                           (find-files dir #:directories? #t))
+
                 (apply invoke "tar" "czf" (string-append dir ".crate")
+                       ;; avoid non-determinism in the archive
+                       "--sort=name" "--mtime=@0"
+                       "--owner=root:0" "--group=root:0"
                        (find-files dir #:directories? #t))
                 (delete-file-recursively dir)))
             (find-files "." "\\.crate$")))))
