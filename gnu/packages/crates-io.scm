@@ -75069,25 +75069,25 @@ error type and utilities.")
 (define-public rust-tectonic-geturl-0.3
   (package
     (name "rust-tectonic-geturl")
-    (version "0.3.0")
+    (version "0.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_geturl" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ifgqhqipb2mpd80crzc40nlri4iv5dxhf7kja8wqaqrpgw364vr"))))
+        (base32 "19rr4072na5h9sh9fpyzs1n9k3zrwj1gw4l9344alcsznn5fyryz"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-curl" ,rust-curl-0.4)
         ("rust-reqwest" ,rust-reqwest-0.11)
         ("rust-tectonic-errors" ,rust-tectonic-errors-0.2)
         ("rust-tectonic-status-base" ,rust-tectonic-status-base-0.2))))
-    (home-page
-     "https://tectonic-typesetting.github.io/")
+    (inputs (list openssl))
+    (native-inputs (list pkg-config))
+    (home-page "https://tectonic-typesetting.github.io/")
     (synopsis "Interface for HTTP GETs and byte-range requests")
     (description
      "This crate is part of the Tectonic project.  It provides an
