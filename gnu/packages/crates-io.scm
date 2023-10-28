@@ -74708,14 +74708,14 @@ Rust bindings.")
 (define-public rust-tectonic-bridge-graphite2-0.2
   (package
     (name "rust-tectonic-bridge-graphite2")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_bridge_graphite2" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1lkpqxz0y7m2ib1g0k850g2d7g6z8062niaw7vgvql33f2n94xkr"))))
+        (base32 "0r0bi0qs0393vnh7q3yh71niwvqlm5qdzi0yq13z5v4przqi7lpc"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
