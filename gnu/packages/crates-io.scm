@@ -74959,14 +74959,14 @@ output to HTML.")
 (define-public rust-tectonic-engine-xetex-0.4
   (package
     (name "rust-tectonic-engine-xetex")
-    (version "0.4.1")
+    (version "0.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_engine_xetex" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ckx9sg1nwyghg7142zk5x75g32f4s19psk6c50y0n0ikf5xq9sd"))))
+        (base32 "1hkby5n9hsyzxkgmwzp2xdm0n53f7rp0vs198ns8zgxy5rvl8xv8"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -74986,6 +74986,7 @@ output to HTML.")
      (list fontconfig
            freetype
            graphite2
+           harfbuzz
            icu4c
            zlib))
     (home-page "https://tectonic-typesetting.github.io/")
