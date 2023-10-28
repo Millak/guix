@@ -74657,21 +74657,21 @@ the various C/C++ ``engines`` implementing the TeX software.")
 (define-public rust-tectonic-bridge-flate-0.1
   (package
     (name "rust-tectonic-bridge-flate")
-    (version "0.1.1")
+    (version "0.1.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_bridge_flate" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0fa1jj1zcm9grlfrrdd1r2kjpzblfbrwv6a4vasczng93xiyprxx"))))
+        (base32 "0hz274rzlx528a8szlrpjxlv35sqw558wzybm2y63yy1s317z316"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-cbindgen" ,rust-cbindgen-0.16)
-        ("rust-flate2" ,rust-flate2-1)
+     `(#:cargo-inputs
+       (("rust-flate2" ,rust-flate2-1)
         ("rust-libc" ,rust-libc-0.2))))
+    (inputs (list zlib))
+    (native-inputs (list pkg-config))
     (home-page "https://tectonic-typesetting.github.io/")
     (synopsis "Expose flate compression to the Tectonic C code")
     (description
