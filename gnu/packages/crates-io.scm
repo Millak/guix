@@ -82383,6 +82383,40 @@ panic-free alternative to @code{core::fmt}.")
     (description "This package provides @code{μfmt}'s @code{uWrite} trait.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ui-test-0.7
+  (package
+    (name "rust-ui-test")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ui-test" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jzlccdw15psgjx4albqnrznl9ypgvfwcjr2x99lvdxrqsm4nnrb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-cargo-platform" ,rust-cargo-platform-0.1)
+                       ("rust-cargo-metadata" ,rust-cargo-metadata-0.15)
+                       ("rust-color-eyre" ,rust-color-eyre-0.6)
+                       ("rust-colored" ,rust-colored-2)
+                       ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+                       ("rust-diff" ,rust-diff-0.1)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-rustc-version" ,rust-rustc-version-0.4)
+                       ("rust-rustfix" ,rust-rustfix-0.6)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/oli-obk/ui_test")
+    (synopsis "Test framework for testing rustc diagnostics output")
+    (description
+     "This package provides a test framework for testing rustc diagnostics output.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-uint-0.9
   (package
     (name "rust-uint")
