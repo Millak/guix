@@ -44,7 +44,6 @@
 (define-module (gnu packages rust-apps)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system pyproject)
-  #:use-module (guix build-system trivial)
   #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -81,7 +80,6 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
-  #:use-module (gnu packages rust)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
@@ -1865,32 +1863,6 @@ to hold the keys in memory, similar to the way that ssh-agent or gpg-agent
 work.  This allows the client to be used in a much simpler way, with the
 background agent taking care of maintaining the necessary state.")
     (license license:expat)))
-
-(define-public rust-analyzer
-  (package
-    (name "rust-analyzer")
-    (version (package-version rust))
-    (source #f)
-    (build-system trivial-build-system)
-    (arguments
-     (list
-       #:modules '((guix build utils))
-       #:builder
-       #~(begin
-           (use-modules (guix build utils))
-           (let ((rust (assoc-ref %build-inputs "rust")))
-             (install-file (string-append rust "/bin/rust-analyzer")
-                           (string-append #$output "/bin"))
-             (copy-recursively (string-append rust "/share")
-                               (string-append #$output "/share"))))))
-    (inputs
-     (list (list rust "tools")))
-    (home-page "https://rust-analyzer.github.io/")
-    (synopsis "Experimental Rust compiler front-end for IDEs")
-    (description "Rust-analyzer is a modular compiler frontend for the Rust
-language.  It is a part of a larger rls-2.0 effort to create excellent IDE
-support for Rust.")
-    (license (list license:expat license:asl2.0))))
 
 ;;; Note: keep in sync with our current Rust/Cargo version.
 (define-public rust-cargo-c

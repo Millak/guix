@@ -55,12 +55,14 @@
   #:use-module (gnu packages)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system trivial)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module ((guix build utils) #:select (alist-replace))
   #:use-module (guix utils)
+  #:use-module (guix gexp)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-26))
 
@@ -1037,3 +1039,29 @@ safety and thread safety guarantees.")
       (native-inputs (cons* `("gdb" ,gdb/pinned)
                             `("procps" ,procps)
                             (package-native-inputs base-rust))))))
+
+(define-public rust-analyzer
+  (package
+    (name "rust-analyzer")
+    (version (package-version rust))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments
+     (list
+       #:modules '((guix build utils))
+       #:builder
+       #~(begin
+           (use-modules (guix build utils))
+           (let ((rust (assoc-ref %build-inputs "rust")))
+             (install-file (string-append rust "/bin/rust-analyzer")
+                           (string-append #$output "/bin"))
+             (copy-recursively (string-append rust "/share")
+                               (string-append #$output "/share"))))))
+    (inputs
+     (list (list rust "tools")))
+    (home-page "https://rust-analyzer.github.io/")
+    (synopsis "Experimental Rust compiler front-end for IDEs")
+    (description "Rust-analyzer is a modular compiler frontend for the Rust
+language.  It is a part of a larger rls-2.0 effort to create excellent IDE
+support for Rust.")
+    (license (list license:expat license:asl2.0))))
