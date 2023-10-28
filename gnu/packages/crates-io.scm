@@ -74999,14 +74999,14 @@ engine as a reusable crate.")
 (define-public rust-tectonic-engine-xdvipdfmx-0.4
   (package
     (name "rust-tectonic-engine-xdvipdfmx")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_engine_xdvipdfmx" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ajmb9pcq5pak28z4bhsnxfgfy9hpr1mm02bp6ph16nvdn8m2ir1"))))
+        (base32 "1h8lslv1h6g8971787sa818g6yhpqr00g13sw6ij14m6k9bi1dq7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
