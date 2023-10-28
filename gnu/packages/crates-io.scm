@@ -77020,32 +77020,37 @@ introspection APIs.")
 (define-public rust-time-0.3
   (package
     (name "rust-time")
-    (version "0.3.19")
+    (version "0.3.28")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "time" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1hnnp3138zxk42r077jxhk1kma16bn9di1w5k3yzi3zd7wxhl9ak"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin (substitute* "Cargo.toml"
-                  (("=0\\.2\\.7") "^0.2.7"))))))
+        (base32 "0j3yl5q4w9vcw55hxxb1a3crls1w82v5dahicj7c4ifjgxavpxhp"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-itoa" ,rust-itoa-1)
-        ("rust-js-sys" ,rust-js-sys-0.3)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-num-threads" ,rust-num-threads-0.1)
-        ("rust-quickcheck" ,rust-quickcheck-1)
+     `(#:tests? #f      ; Not all files included
+       #:cargo-inputs (("rust-deranged" ,rust-deranged-0.3)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-js-sys" ,rust-js-sys-0.3)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-num-threads" ,rust-num-threads-0.1)
+                       ("rust-quickcheck" ,rust-quickcheck-1)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-time-core" ,rust-time-core-0.1)
+                       ("rust-time-macros" ,rust-time-macros-0.2))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.5)
+        ("rust-quickcheck-macros" ,rust-quickcheck-macros-1)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-serde" ,rust-serde-1)
-        ("rust-time-core" ,rust-time-core-0.1)
-        ("rust-time-macros" ,rust-time-macros-0.2))))
-    (home-page "https://github.com/time-rs/time")
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-serde-test" ,rust-serde-test-1)
+        ("rust-time-macros" ,rust-time-macros-0.2)
+        ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://time-rs.github.io")
     (synopsis "Date and time library")
     (description "This package provides a date and time library.  It is fully
 interoperable with the standard library, and is mostly compatible with
