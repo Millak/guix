@@ -14219,6 +14219,43 @@ diagnostics easy and relatively painless for everyone!")
 sets of intervals.")
     (license license:expat)))
 
+(define-public rust-color-eyre-0.6
+  (package
+    (name "rust-color-eyre")
+    (version "0.6.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "color-eyre" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "014j49slcblg6cnsh974k9yjmi1khbm4dpmqdm1zii58rj1parjs"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=test_error_backwards_compatibility")
+       #:cargo-inputs (("rust-backtrace" ,rust-backtrace-0.3)
+                       ("rust-color-spantrace" ,rust-color-spantrace-0.2)
+                       ("rust-eyre" ,rust-eyre-0.6)
+                       ("rust-indenter" ,rust-indenter-0.3)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-owo-colors" ,rust-owo-colors-3)
+                       ("rust-tracing-error" ,rust-tracing-error-0.2)
+                       ("rust-url" ,rust-url-2))
+       #:cargo-development-inputs
+       (("rust-ansi-parser" ,rust-ansi-parser-0.8)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
+    (home-page "https://github.com/yaahc/color-eyre")
+    (synopsis "Error report handler for panics")
+    (description
+     "An error report handler for panics and eyre::Reports for colorful, consistent,
+and well formatted error reports for all kinds of errors.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-color-print-0.3
   (package
     (name "rust-color-print")
