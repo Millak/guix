@@ -77119,15 +77119,15 @@ in Rust.")
 (define-public rust-time-core-0.1
   (package
     (name "rust-time-core")
-    (version "0.1.0")
+    (version "0.1.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "time-core" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "1z803zwzyh16nk3c4nmkw8v69nyj0r4v8s3yag68mvya38gkw59f"))))
+               (base32 "1yz6d246zbmx9v6wpfg1jyfjlsgagirz7km96pr1mp6snkpzn03k"))))
     (build-system cargo-build-system)
-    (arguments '(#:tests? #f))      ; Doc tests fail.
+    (arguments '(#:tests? #f))      ; use of undeclared crate or module `time`
     (home-page "https://github.com/time-rs/time")
     (synopsis "Implementation for the time crate")
     (description "This crate is an implementation detail for the time crate and
