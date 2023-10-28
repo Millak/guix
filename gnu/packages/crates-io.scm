@@ -63561,7 +63561,15 @@ rustc compiler.")
         ("rust-sct" ,rust-sct-0.7)
         ("rust-webpki" ,rust-webpki-0.22))
         #:cargo-development-inputs
-        (("rust-cbindgen" ,rust-cbindgen-0.19))))
+        (("rust-cbindgen" ,rust-cbindgen-0.26))
+        #:phases
+        (modify-phases %standard-phases
+          (add-after 'unpack 'adjust-cbindgen-requirement
+            ;; The Cargo.toml in the git repository doesn't specify
+            ;; a version requirement for cbindgen.
+            (lambda _
+              (substitute* "Cargo.toml"
+                (("0\\.19\\.0") "*")))))))
     (native-inputs
      (list perl))
     (home-page "https://github.com/rustls/rustls-ffi")
