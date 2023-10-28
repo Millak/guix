@@ -66791,28 +66791,26 @@ programs in rust.")
 (define-public rust-serde-path-to-error-0.1
   (package
     (name "rust-serde-path-to-error")
-    (version "0.1.9")
+    (version "0.1.14")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "serde-path-to-error" version))
-        (file-name
-          (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "0hbkdhmz82hwx5bxasym776f74jlvnivsx00l4qi7jb3nli4zc16"))))
+         (base32 "0dc31z4bg0jwn69gcqsczbmcy5y4w6r0vdcc4c38vma9x2ycivjb"))))
     (build-system cargo-build-system)
     (arguments
-      `(#:cargo-inputs
-        (("rust-serde" ,rust-serde-1))
-        #:cargo-development-inputs
-        (("rust-serde-derive" ,rust-serde-derive-1)
-         ("rust-serde-json" ,rust-serde-json-1.0.73))))
-    (home-page
-      "https://github.com/dtolnay/path-to-error")
-    (synopsis
-      "Path to the element that failed to deserialize")
+     `(#:cargo-inputs
+       (("rust-itoa" ,rust-itoa-1)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/dtolnay/path-to-error")
+    (synopsis "Path to the element that failed to deserialize")
     (description
-      "This package provides a path to the element that failed to deserialize.")
+     "This package provides a path to the element that failed to deserialize.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-serde-qs-0.7
