@@ -1465,35 +1465,6 @@ rebase.")
     (native-inputs
      (list python-cython))))
 
-(define-public rust-cbindgen-0.16
-  (package
-    (inherit rust-cbindgen)
-    (name "rust-cbindgen")
-    (version "0.16.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "cbindgen" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "049cai626nzw0km03parx4sxwaxgbr7i5ifjbjwnfxkqkj5k2i4k"))))
-    (arguments
-     `(#:tests? #false                  ;missing files
-       #:cargo-inputs
-       (("rust-clap" ,rust-clap-2)
-        ("rust-heck" ,rust-heck-0.3)
-        ("rust-indexmap" ,rust-indexmap-1)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-syn" ,rust-syn-1)
-        ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-toml" ,rust-toml-0.5))
-       #:cargo-development-inputs
-       (("rust-serial-test" ,rust-serial-test-0.5))))))
-
 (define-public sniffglue
   (package
     (name "sniffglue")
