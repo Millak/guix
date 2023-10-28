@@ -80396,32 +80396,30 @@ application authors using tracing to instrument their applications.")
 (define-public rust-tracing-tree-0.2
   (package
     (name "rust-tracing-tree")
-    (version "0.2.0")
+    (version "0.2.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tracing-tree" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1rrlw6kc61q0g5y4d4i3zjfn9167xqqa5m2d13z62zrcjv4qks9w"))))
+        (base32 "0b8bic1gnpy65my99xkk2rfhky3r5cqcd31hiaq924qvnk5aviif"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f      ; Not all files included
        #:cargo-inputs
-       (("rust-ansi-term" ,rust-ansi-term-0.12)
-        ("rust-atty" ,rust-atty-0.2)
+       (("rust-nu-ansi-term" ,rust-nu-ansi-term-0.46)
+        ("rust-time" ,rust-time-0.3)
         ("rust-tracing-core" ,rust-tracing-core-0.1)
         ("rust-tracing-log" ,rust-tracing-log-0.1)
         ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))
        #:cargo-development-inputs
-       (("rust-tracing" ,rust-tracing-0.1)
-        ("rust-glob" ,rust-glob-0.3)
-        ("rust-assert-cmd" ,rust-assert-cmd-1)
-        ("rust-log" ,rust-log-0.4))))
-    (home-page
-     "https://github.com/davidbarsky/tracing-tree")
-    (synopsis
-     "Tracing Layer which prints a tree of spans and events")
+       (("rust-futures" ,rust-futures-0.3)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-ui-test" ,rust-ui-test-0.7))))
+    (home-page "https://github.com/davidbarsky/tracing-tree")
+    (synopsis "Tracing Layer which prints a tree of spans and events")
     (description
      "This package provides a Tracing Layer which prints a tree of spans and
 events.")
