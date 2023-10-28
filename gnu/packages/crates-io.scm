@@ -47901,20 +47901,22 @@ Rust.")
 (define-public rust-num-complex-0.4
   (package
     (name "rust-num-complex")
-    (version "0.4.0")
+    (version "0.4.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "num-complex" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "11ahq51ibf7x30rsabgp3a29zw6d6bfilz53sj152z5vpdkkd1r6"))))
+        (base32 "051j73vvdj07kdlpqv056s3a50ragsx3183cbpl1shc51355g88v"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-num-traits" ,rust-num-traits-0.2)
+     `(#:cargo-inputs
+       (("rust-bytecheck" ,rust-bytecheck-0.6)
+        ("rust-bytemuck" ,rust-bytemuck-1)
+        ("rust-num-traits" ,rust-num-traits-0.2)
         ("rust-rand" ,rust-rand-0.8)
+        ("rust-rkyv" ,rust-rkyv-0.7)
         ("rust-serde" ,rust-serde-1))))
     (home-page "https://github.com/rust-num/num-complex")
     (synopsis "Complex numbers implementation for Rust")
