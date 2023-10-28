@@ -44941,7 +44941,9 @@ statically-sized or dynamically-sized matrices.")
          (base32
           "0i87k57nav221lnr9z7ljlwxh8073qsx33bajdm146y00q805fqa"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags       ; Skip the doctests.
+       '("--release" "--lib" "--bins" "--tests")
+       #:cargo-inputs
        (("rust-abomonation" ,rust-abomonation-0.7)
         ("rust-alga" ,rust-alga-0.9)
         ("rust-approx" ,rust-approx-0.3)
