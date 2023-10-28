@@ -48064,14 +48064,14 @@ Rust.")
 (define-public rust-num-enum-0.5
   (package
     (name "rust-num-enum")
-    (version "0.5.7")
+    (version "0.5.11")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "num_enum" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1j8rq7i4xnbzy72z82k41469xlj1bmn4ixagd9wlbvv2ark9alyg"))))
+        (base32 "1japmqhcxwn1d3k7q8jw58y7xfby51s16nzd6dkj483cj2pnqr0z"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #false                  ;missing files
