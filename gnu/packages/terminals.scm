@@ -603,7 +603,18 @@ to all types of devices that provide serial consoles.")
                      ;; The build environment lacks /dev/{console,tty*}.
                      ;; In fact, even nckx's regular Guix System lacks ttyS1…
                      ((": Permission denied")
-                      ": No such file or directory")))))))
+                      ": No such file or directory"))))
+               (add-before 'install 'install-rules
+                 (lambda _
+                   (mkdir-p (string-append #$output "/etc/udev/rules.d"))
+                   (with-output-to-file
+                       (string-append #$output
+                                      "/etc/udev/rules.d/70-pcspkr-beep.rules")
+                     (lambda _
+                       (display (string-append "\
+ACTION==\"add\", SUBSYSTEM==\"input\", ATTRS{name}==\"PC Speaker\", "
+                                               "ENV{DEVNAME}!=\"\", "
+                                               "TAG+=\"uaccess\"")))))))))
     (synopsis "Linux command-line utility to control the PC speaker")
     (description "beep allows the user to control the PC speaker with precision,
 allowing different sounds to indicate different events.  While it can be run
