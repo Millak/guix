@@ -75243,19 +75243,18 @@ types for reporting status messages to a user.")
 (define-public rust-tectonic-xdv-0.2
   (package
     (name "rust-tectonic-xdv")
-    (version "0.2.0")
+    (version "0.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_xdv" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1fcys9v5zcdavfkq72h5ajkz2pxjpc6km6wqajk29qc65870xd5k"))))
+        (base32 "0dc9hs4nyxligv53nbn20mpqysfv5awrw24bm3bgzawiv7vf17gm"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-byteorder" ,rust-byteorder-1))))
+     `(#:cargo-inputs (("rust-byteorder" ,rust-byteorder-1))
+       #:cargo-development-inputs (("rust-clap" ,rust-clap-2))))
     (home-page "https://tectonic-typesetting.github.io/")
     (synopsis "Decoder for the XDV and SPX file formats")
     (description
