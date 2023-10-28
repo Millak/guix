@@ -47667,16 +47667,15 @@ more.")
   (package
     (inherit rust-num-0.4)
     (name "rust-num")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "num" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0jng6s3i51k3227id2z8h348l2da8x3jq4p3az9slkxwj5hifgmb"))))
+         "13vsnqr0kasn7rwfq5r1vqdd0sy0y5ar3x4xhvzy4fg0wndqwylb"))))
     (arguments
      `(#:cargo-inputs
        (("rust-num-bigint" ,rust-num-bigint-0.3)
