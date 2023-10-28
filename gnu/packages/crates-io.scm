@@ -48011,16 +48011,15 @@ Rust.")
 (define-public rust-num-derive-0.3
   (package
     (name "rust-num-derive")
-    (version "0.3.2")
+    (version "0.3.3")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "num-derive" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1czs5215ypgbwg0qgy2i515xj3vfcgm8fw7gi4gmwsyv3a2bj2bg"))))
+          "0gbl94ckzqjdzy4j8b1p55mz01g6n1l9bckllqvaj0wfz7zm6sl7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
