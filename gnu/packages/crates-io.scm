@@ -21766,25 +21766,23 @@ Diesel.")
 (define-public rust-diff-0.1
   (package
     (name "rust-diff")
-    (version "0.1.12")
+    (version "0.1.13")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "diff" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "16b40bhsa2qgvgvxs983l625pkxyp6m0mzmpwg2605cvj53yl98f"))))
+         "1j0nzjxci2zqx63hdcihkp0a4dkdmzxd7my4m7zk6cjyfy34j9an"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-development-inputs
-       (("rust-quickcheck" ,rust-quickcheck-0.9)
+     `(#:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-quickcheck" ,rust-quickcheck-1)
         ("rust-speculate" ,rust-speculate-0.1))))
     (home-page "https://github.com/utkarshkukreti/diff.rs")
-    (synopsis
-     "LCS based slice and string diffing implementation")
+    (synopsis "LCS based slice and string diffing implementation")
     (description
      "An LCS based slice and string diffing implementation.")
     (license (list license:expat license:asl2.0))))
