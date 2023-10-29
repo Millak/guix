@@ -39458,8 +39458,40 @@ algorithm and related formats (ZLIB, GZIP).")
     (license
      (list license:expat license:asl2.0 license:ncsa))))
 
+(define-public rust-libgit2-sys-0.16
+  (package
+    (name "rust-libgit2-sys")
+    (version "0.16.1+1.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libgit2-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "030dnq7hz79qs4rxdllc3ailvqzc432jwwxk7g8av55hh0vbp8pj"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin (delete-file-recursively "libgit2")))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libssh2-sys" ,rust-libssh2-sys-0.3)
+                       ("rust-libz-sys" ,rust-libz-sys-1)
+                       ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (native-inputs (list pkg-config))
+    (inputs (list libgit2-1.7 openssl zlib))
+    (home-page "https://github.com/rust-lang/git2-rs")
+    (synopsis "Native bindings to the libgit2 library")
+    (description
+     "This package provides native Rust bindings to the @code{libgit2}
+library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-libgit2-sys-0.15
   (package
+    (inherit rust-libgit2-sys-0.16)
     (name "rust-libgit2-sys")
     (version "0.15.2+1.6.4")
     (source
@@ -39472,7 +39504,6 @@ algorithm and related formats (ZLIB, GZIP).")
        (modules '((guix build utils)))
        (snippet
         '(begin (delete-file-recursively "libgit2")))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-cc" ,rust-cc-1)
@@ -39481,16 +39512,7 @@ algorithm and related formats (ZLIB, GZIP).")
         ("rust-libz-sys" ,rust-libz-sys-1)
         ("rust-openssl-sys" ,rust-openssl-sys-0.9)
         ("rust-pkg-config" ,rust-pkg-config-0.3))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list libgit2-1.6 openssl zlib))
-    (home-page "https://github.com/rust-lang/git2-rs")
-    (synopsis "Native bindings to the libgit2 library")
-    (description
-     "This package provides native Rust bindings to the @code{libgit2}
-library.")
-    (license (list license:expat license:asl2.0))))
+    (inputs (list libgit2-1.6 openssl zlib))))
 
 (define-public rust-libgit2-sys-0.14
   (package
