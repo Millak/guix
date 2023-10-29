@@ -51765,6 +51765,28 @@ and would-block I/O operations.")
         ("rust-tokio-core" ,rust-tokio-core-0.1))))
     (license license:bsd-3)))
 
+(define-public rust-partition-identity-0.3
+  (package
+    (name "rust-partition-identity")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "partition-identity" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "08cymccnyf2b0pwc7x4wj889k1knqmrb8500idsjslybpvwjbacz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/pop-os/partition-identity")
+    (synopsis
+     "Find the ID of a device by its path, or find a device path by its ID")
+    (description
+     "This package provides the ability to find ID of a device by its path, or
+find a device path by its ID.")
+    (license license:expat)))
+
 (define-public rust-pasetors-0.6
   (package
     (name "rust-pasetors")
