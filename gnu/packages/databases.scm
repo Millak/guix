@@ -61,6 +61,7 @@
 ;;; Copyright © 2021, 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Felix Gruber <felgru@posteo.ne
 ;;; Copyright © 2023 Munyoki Kilyungi <me@bonfacemunyoki.com>
+;;; Copyright © 2023 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3111,6 +3112,48 @@ Relational Mapper) inspired by Django.  Tortoise ORM was built with relations
 in mind and admiration for the excellent and popular Django ORM.  It's
 engraved in its design that you are working not with just tables, you work
 with relational data.")
+    (license license:asl2.0)))
+
+(define-public aerich
+  (package
+    (name "aerich")
+    (version "0.7.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tortoise/aerich")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0pcy945bg890p12s7cyw0mg7hxwsxyy570j600sbf7kwj2d3lilg"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list poetry
+           python-bandit
+           python-cryptography
+           python-isort
+           python-pydantic
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-mock
+           python-pytest-xdist))
+    (propagated-inputs
+     (list python-asyncmy
+           python-asyncpg
+           python-click
+           python-ddlparse
+           python-dictdiffer
+           python-tomlkit
+           python-tortoise-orm))
+    (home-page "https://github.com/tortoise/aerich")
+    (synopsis "Database migrations tool for Tortoise @acronym{ORM, Object Relational
+Mapper}")
+    (description
+     "This package provides @code{aerich}, a Python database migrations tool
+for Tortoise @acronym{ORM, Object Relational Mapper}.  It can be used both
+programmatically or as a standalone CLI application.")
     (license license:asl2.0)))
 
 (define-public sqlcipher
