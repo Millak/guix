@@ -15346,7 +15346,8 @@ implementation.")
         (base32 "0sjscbi3qgwn3wcpq5lz7k4gam69h0svh8wbhxcbskr9ys1rmysp"))))
     (build-system emacs-build-system)
     (arguments
-     '(#:exclude                        ;don't exclude 'cider-test.el'
+     '(#:include (cons* "^lein\\.sh$" "^clojure\\.sh$" %default-include)
+       #:exclude                        ;don't exclude 'cider-test.el'
        '("^\\.dir-locals\\.el$" "^test/")
        #:phases
        ;; XXX: file "test/cider-tests.el" contains a bogus "/bin/command"
