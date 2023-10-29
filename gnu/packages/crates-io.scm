@@ -53094,14 +53094,14 @@ and graph algorithms.")
 (define-public rust-phf-0.11
   (package
     (name "rust-phf")
-    (version "0.11.1")
+    (version "0.11.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "phf" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1354fbpb52cp9gs5mlkaygc5qhdx6r07rfv3xy482m4kvqsnb34j"))))
+                "1p03rsw66l7naqhpgr1a34r9yzi1gv9jh16g3fsk6wrwyfwdiqmd"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f          ; Doc tests fail.
