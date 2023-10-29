@@ -29872,8 +29872,44 @@ dirty state into your program.")
      "This is an internal macro crate for git-version.")
     (license license:bsd-2)))
 
+(define-public rust-git2-0.18
+  (package
+    (name "rust-git2")
+    (version "0.18.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "git2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kf0kvg3i7p1223zs2h9fz99ndm0l9kdx3hcw63g73dh5nlppygv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags (list "--release" "--"
+                                "--skip=cred::test::credential_helper5")
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libgit2-sys" ,rust-libgit2-sys-0.16)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-openssl-probe" ,rust-openssl-probe-0.1)
+                       ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+                       ("rust-url" ,rust-url-2))
+       #:cargo-development-inputs (("rust-structopt" ,rust-structopt-0.3)
+                                   ("rust-tempfile" ,rust-tempfile-3)
+                                   ("rust-time" ,rust-time-0.1))))
+    (native-inputs (list pkg-config))
+    (inputs (list libgit2-1.7 libssh2 openssl zlib))
+    (home-page "https://github.com/rust-lang/git2-rs")
+    (synopsis "Rust bindings to libgit2")
+    (description
+     "This package provides bindings to libgit2 for interoperating with git
+repositories.  This library is both threadsafe and memory safe and allows both
+reading and writing git repositories.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-git2-0.17
   (package
+    (inherit rust-git2-0.18)
     (name "rust-git2")
     (version "0.17.2")
     (source
@@ -29883,7 +29919,6 @@ dirty state into your program.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0i00kg3yizh7mn6hnj3yz3hpniisidlavifgy8n3cnm9gim9v63v"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
@@ -29900,15 +29935,7 @@ dirty state into your program.")
     (native-inputs
      (list pkg-config
            git-minimal))                ;for a single test
-    (inputs
-     (list libgit2-1.6 libssh2 openssl zlib))
-    (home-page "https://github.com/rust-lang/git2-rs")
-    (synopsis "Rust bindings to libgit2")
-    (description
-     "This package provides bindings to libgit2 for interoperating with git
-repositories.  This library is both threadsafe and memory safe and allows both
-reading and writing git repositories.")
-    (license (list license:expat license:asl2.0))))
+    (inputs (list libgit2-1.6 libssh2 openssl zlib))))
 
 (define-public rust-git2-0.16
   (package
@@ -29936,6 +29963,9 @@ reading and writing git repositories.")
         ("rust-structopt" ,rust-structopt-0.3)
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-time" ,rust-time-0.1))))
+    (native-inputs
+     (list pkg-config
+           git-minimal))                ;for a single test
     (inputs
      (list libgit2 libssh2 openssl zlib))))
 
