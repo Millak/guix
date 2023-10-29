@@ -168,6 +168,12 @@ environment with the store shared with the host.  MAPPINGS is a list of
                      file-systems
                      #:volatile-root? volatile?
                      rest)))
+    ;; The (QEMU-only) "cirrus" graphics driver is still expected by some
+    ;; VPS with old QEMU versions.  See <https://bugs.gnu.org/36069>.
+    (initrd-modules (let ((modules (operating-system-initrd-modules os)))
+                      (if (member "cirrus" modules)
+                          modules
+                          (cons "cirrus" modules))))
 
     ;; Disable swap.
     (swap-devices '())
