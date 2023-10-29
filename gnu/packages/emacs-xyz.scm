@@ -16513,8 +16513,6 @@ programming and reproducible research.")
          (add-after 'unpack 'enter-source-directory
            (lambda _
              (chdir "lisp"))))))
-    (native-inputs
-     (list emacs-cider))
     (propagated-inputs
      (list emacs-org))
     (home-page "https://git.sr.ht/~bzg/org-contrib")
