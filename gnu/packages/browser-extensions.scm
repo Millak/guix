@@ -181,11 +181,12 @@ ungoogled-chromium.")
                                         #$sed
                                         #$which) "/bin:" 'suffix))
           (copy-recursively #$source ".")
+          (patch-shebang "src/install_host_app.sh"
+                         (list (in-vicinity #$bash-minimal "bin")))
           (substitute* "src/install_host_app.sh"
-            (("#!/usr/bin/env sh") #$(file-append bash-minimal "/bin/sh"))
             (("(TARGET_DIR_FIREFOX=).*" all var)
-             (string-append var #$output
-                            "/lib/icecat/native-messaging-hosts")))
+             (string-append var #$output "/lib/icecat/native-messaging-hosts"
+                            "\n")))
           (invoke #$(file-append gnu-make "/bin/make")
                   (string-append "VERSION=" #$version) "install-unix"))))
     (synopsis "Host app for the WebExtension PassFF")
