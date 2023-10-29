@@ -55938,6 +55938,26 @@ in terms of the upstream unstable API.")
 macro use case.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-proc-mounts-0.3
+  (package
+    (name "rust-proc-mounts")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "proc-mounts" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wpw3z2qq8wm3da8d0253a1h95nma6lad41m9yzp1ayh6n22yr8d"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-partition-identity" ,rust-partition-identity-0.3))))
+    (home-page "https://github.com/pop-os/proc-mounts")
+    (synopsis "Fetch active mounts and swaps on a Linux system")
+    (description
+     "This package provides fetching active mounts and swaps on a Linux system.")
+    (license license:expat)))
+
 (define-public rust-procedural-masquerade-0.1
   (package
     (name "rust-procedural-masquerade")
