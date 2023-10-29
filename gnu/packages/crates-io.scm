@@ -53552,14 +53552,14 @@ function data structures.")
 (define-public rust-phf-shared-0.11
   (package
     (name "rust-phf-shared")
-    (version "0.11.1")
+    (version "0.11.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "phf-shared" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0xp6krf3cd411rz9rbk7p6xprlz786a215039j6jlxvbh9pmzyz1"))))
+                "0azphb0a330ypqx3qvyffal5saqnks0xvl8rj73jlk3qxxgbkz4h"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
