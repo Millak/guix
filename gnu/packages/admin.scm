@@ -6035,6 +6035,6 @@ Discover other RouterOS devices or @command{mactelnetd} hosts.
     (description
      "Bfs is a variant of the UNIX @command{find} command that operates
 breadth-first rather than depth-first.  It is otherwise compatible with many
-versions of command{find}, including POSIX, GNU, and *BSD find.")
+versions of @command{find}, including POSIX, GNU, and *BSD find.")
     (home-page "https://tavianator.com/projects/bfs.html")
     (license license:bsd-0)))
