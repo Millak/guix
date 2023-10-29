@@ -25,6 +25,7 @@
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2023 Arnav Andrew Jose <arnav.jose@gmail.com>
 ;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
+;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -469,6 +470,96 @@ Features include:
     (description "@code{exa} is a modern replacement for the command-line
 program @code{ls}.  It uses colours to distinguish file types and metadata.  It
 also knows about symlinks, extended attributes, and Git.")
+    (license license:expat)))
+
+(define-public eza
+  (package
+    (name "eza")
+    (version "0.15.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "eza" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14qapnxc1rwqsq6c13b35wgaiypn23niajk39c44i1w3if91rd85"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:cargo-inputs `(("rust-ansiterm" ,rust-ansiterm-0.12)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-git2" ,rust-git2-0.18)
+                       ("rust-glob" ,rust-glob-0.3)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-locale" ,rust-locale-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-natord" ,rust-natord-1)
+                       ("rust-num-cpus" ,rust-num-cpus-1)
+                       ("rust-number-prefix" ,rust-number-prefix-0.4)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-percent-encoding" ,rust-percent-encoding-2)
+                       ("rust-phf" ,rust-phf-0.11)
+                       ("rust-proc-mounts" ,rust-proc-mounts-0.3)
+                       ("rust-scoped-threadpool" ,rust-scoped-threadpool-0.1)
+                       ("rust-terminal-size" ,rust-terminal-size-0.3)
+                       ("rust-timeago" ,rust-timeago-0.4)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1)
+                       ("rust-uutils-term-grid" ,rust-uutils-term-grid-0.3)
+                       ("rust-uzers" ,rust-uzers-0.11)
+                       ("rust-windows-sys" ,rust-windows-sys-0.48)
+                       ("rust-zoneinfo-compiled" ,rust-zoneinfo-compiled-0.5))
+      #:cargo-development-inputs `(("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-trycmd" ,rust-trycmd-0.14))
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'build 'build-manual
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (when (assoc-ref inputs "pandoc")
+                         (map (lambda (page)
+                                (with-output-to-file page
+                                  (lambda _
+                                    (invoke "pandoc" "--standalone"
+                                            "-f" "markdown"
+                                            "-t" "man"
+                                            (string-append "man/" page ".md")))))
+                              (list "eza.1" "eza_colors.5")))))
+                   (add-after 'install 'install-extras
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       (let* ((out (assoc-ref outputs "out"))
+                              (share (string-append out "/share"))
+                              (man1 (string-append share "/man/man1"))
+                              (man5 (string-append share "/man/man5")))
+                         (when (file-exists? "eza.1")
+                           (install-file "eza.1" man1))
+                         (when (file-exists? "eza_colors.5")
+                           (install-file "eza_colors.5" man5))
+                         (mkdir-p (string-append out "/etc/bash_completion.d"))
+                         (mkdir-p (string-append
+                                    share "/fish/vendor_completions.d"))
+                         (mkdir-p (string-append share "/zsh/site-functions"))
+                         (copy-file "completions/bash/eza"
+                                    (string-append
+                                      out "/etc/bash_completion.d/eza"))
+                         (copy-file "completions/fish/eza.fish"
+                                    (string-append
+                                      share "/fish/vendor_completions.d/eza.fish"))
+                         (copy-file "completions/zsh/_eza"
+                                    (string-append
+                                      share "/zsh/site-functions/_eza"))))))))
+    (native-inputs
+     (append
+       (list pkg-config)
+       (if (supported-package? pandoc)
+         (list pandoc)
+         '())))
+    (inputs (list libgit2-1.7 zlib))
+    (home-page "https://github.com/eza-community/eza")
+    (synopsis "Modern replacement for ls")
+    (description
+     "@code{eza} is a modern replacement for the command-line
+program @code{ls}.  It uses colours to distinguish file types and
+metadata.  It also knows about symlinks, extended attributes, and Git.
+This package is the community maintained fork of @code{exa}.")
     (license license:expat)))
 
 (define-public fd
