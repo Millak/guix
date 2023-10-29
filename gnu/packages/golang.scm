@@ -7692,14 +7692,14 @@ implementation of generics.")
     (home-page "https://github.com/cheekybits/genny/")
     (license license:expat)))
 
-(define-public go-github-com-lucas-clemente-quic-go
+(define-public go-github-com-quic-go-quic-go
   (package
-    (name "go-github-com-lucas-clemente-quic-go")
+    (name "go-github-com-quic-go-quic-go")
     (version "0.14.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/lucas-clemente/quic-go")
+                     (url "https://github.com/quic-go/quic-go")
                      (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
@@ -7707,19 +7707,30 @@ implementation of generics.")
                 "04l3gqbc3gh079n8vgnrsf8ypgv8sl63xjf28jqfrb45v2l73vyz"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/lucas-clemente/quic-go"
+     '(#:import-path "github.com/quic-go/quic-go"
        ;; XXX More packages required...
-       #:tests? #f))
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-repository-path
+           (lambda _
+             (substitute* (find-files "src/github.com/quic-go/quic-go/" ".*\\.go|.*\\.mod")
+               (("lucas-clemente")
+                "quic-go")))))))
     (propagated-inputs
-     (list go-golang-org-x-crypto go-github-com-cheekybits-genny
+     (list go-golang-org-x-crypto
+           go-github-com-cheekybits-genny
            go-github-com-marten-seemann-chacha20
            go-github-com-marten-seemann-qtls
            go-github-com-golang-protobuf-proto))
     (synopsis "QUIC in Go")
     (description "This package provides a Go language implementation of the QUIC
 network protocol.")
-    (home-page "https://github.com/lucas-clemente/quic-go")
+    (home-page "https://github.com/quic-go/quic-go")
     (license license:expat)))
+
+(define-public go-github-com-lucas-clemente-quic-go
+  (deprecated-package "go-github-com-lucas-clemente-quic-go" go-github-com-quic-go-quic-go))
 
 (define-public go-github-com-lunixbochs-vtclean
   (package
