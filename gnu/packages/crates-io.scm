@@ -53421,14 +53421,14 @@ function data structures.")
 (define-public rust-phf-macros-0.11
   (package
     (name "rust-phf-macros")
-    (version "0.11.1")
+    (version "0.11.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "phf-macros" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0rncvjimjri2vancig85icbk8h03a5s3z4cyasd70s37y72wvalj"))))
+                "0js61lc0bhzzrbd9vhpcqp11vvwckdkz3g7k95z5h1k651p68i1l"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
