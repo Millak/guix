@@ -63,7 +63,7 @@
 ;;; Copyright © 2019, 2020 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019, 2020, 2021, 2022, 2023 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019 Jacob MacDonald <jaccarmac@gmail.com>
-;;; Copyright © 2019, 2020, 2021 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2019-2021, 2023 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2019 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2019, 2020, 2021, 2022 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2019, 2021-2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
@@ -4880,6 +4880,30 @@ between Julian dates and Gregorian dates.")
    (description "@code{jsondiff} is a Python library which lets you
 compare, diff, and patch JSON and JSON-like structures in Python.")
    (license license:expat)))
+
+(define-public python-ddlparse
+  (package
+    (name "python-ddlparse")
+    (version "1.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ddlparse" version))
+       (sha256
+        (base32 "1nh8m6rxslwk05daxshxmgk41qfp18yynydba49b13l4m8dnh634"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-codecov
+           python-coveralls
+           python-pytest
+           python-pytest-cov
+           python-tox))
+    (propagated-inputs (list python-pyparsing))
+    (home-page "https://github.com/shinichi-takii/ddlparse")
+    (synopsis "Parses and converts DDL to BigQuery JSON schema")
+    (description "This package provides @{ddlparse}, a Python library to parse
+and convert DDL to BigQuery JSON schema.")
+    (license license:bsd-3)))
 
 (define-public python-jsonschema
   (package
