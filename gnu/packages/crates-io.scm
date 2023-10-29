@@ -77425,6 +77425,28 @@ in Rust.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-timeago-0.4
+  (package
+    (name "rust-timeago")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "timeago" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1rnh92sh1l4jbjvz4g7xvcvmfh7nk5k7mm2w56pnm9z0kmc0wwd1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-isolang" ,rust-isolang-2))))
+    (home-page "https://github.com/vi/timeago")
+    (synopsis "Time formatting library in Rust")
+    (description
+     "This package provides a time formatting library in Rust that converts
+durations into strings.  For example, \"1 hour ago\" or \"01hou\".")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-time-core-0.1
   (package
     (name "rust-time-core")
