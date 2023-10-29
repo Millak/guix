@@ -37264,6 +37264,32 @@ stream runs in a TTY.")
     (description "Parsing ISO8601 dates using nom.")
     (license license:expat)))
 
+(define-public rust-isolang-2
+  (package
+    (name "rust-isolang")
+    (version "2.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "isolang" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wg07gh7a1cvx0c1w238d7l4vh17cwwvjmw729qqnw5wn4fj43zq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags `("--release" "--"
+                            "--skip=generated_code_table_if_outdated")
+       #:cargo-inputs (("rust-phf" ,rust-phf-0.11)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-phf-codegen" ,rust-phf-codegen-0.11)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/humenda/isolang-rs")
+    (synopsis "Efficient, static lookup table for ISO 639 language codes")
+    (description
+     "This package provides an efficient, static lookup table for ISO 639
+language codes.")
+    (license license:asl2.0)))
+
 (define-public rust-itertools-0.11
   (package
     (name "rust-itertools")
