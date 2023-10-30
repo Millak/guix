@@ -20365,6 +20365,35 @@ sizes.  Big-endian order is used.  WARNING: Block must be aligned!")
     (description "Framework for writing D-Bus method handlers in Rust.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-dbus-tokio-0.7
+  (package
+    (name "rust-dbus-tokio")
+    (version "0.7.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dbus-tokio" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10112g227iasjiid7y9wrvnmxypfrczcymj2k5yjvcjk1i5ag88j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ;tests require X11 $DISPLAY
+       #:cargo-inputs (("rust-dbus" ,rust-dbus-0.9)
+                       ("rust-dbus-crossroads" ,rust-dbus-crossroads-0.5)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-dbus-tree" ,rust-dbus-tree-0.9)
+                                   ("rust-futures" ,rust-futures-0.3)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (native-inputs (list pkg-config))
+    (inputs (list dbus))
+    (home-page "https://github.com/diwic/dbus-rs")
+    (synopsis "Access to D-Bus when using Rust's @code{Tokio} async framework")
+    (description
+     "Access to D-Bus when using Rust's @code{Tokio} async framework.")
+    (license license:expat)))
+
 (define-public rust-dbus-tree-0.9
   (package
     (name "rust-dbus-tree")
