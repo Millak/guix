@@ -26,6 +26,7 @@
 ;;; Copyright © 2023 Arnav Andrew Jose <arnav.jose@gmail.com>
 ;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
+;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2187,6 +2188,66 @@ consecutive lines and since program start.")
 
 (define-public rust-skim-0.7
   (deprecated-package "rust-skim-0.7" skim-0.7))
+
+(define-public spotifyd
+  (package
+    (name "spotifyd")
+    (version "0.3.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "spotifyd" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1g6k8xmx8xvc2dpak14y8cc2221djhdflzsjczygvqa9gk5jiadd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:install-source? #f
+       #:cargo-inputs (("rust-alsa" ,rust-alsa-0.7)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-color-eyre" ,rust-color-eyre-0.6)
+                       ("rust-daemonize" ,rust-daemonize-0.5)
+                       ("rust-dbus" ,rust-dbus-0.9)
+                       ("rust-dbus-crossroads" ,rust-dbus-crossroads-0.5)
+                       ("rust-dbus-tokio" ,rust-dbus-tokio-0.7)
+                       ("rust-fern" ,rust-fern-0.6)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-gethostname" ,rust-gethostname-0.4)
+                       ("rust-hex" ,rust-hex-0.4)
+                       ("rust-keyring" ,rust-keyring-2)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-librespot-audio" ,rust-librespot-audio-0.4)
+                       ("rust-librespot-connect" ,rust-librespot-connect-0.4)
+                       ("rust-librespot-core" ,rust-librespot-core-0.4)
+                       ("rust-librespot-discovery" ,rust-librespot-discovery-0.4)
+                       ("rust-librespot-playback" ,rust-librespot-playback-0.4)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-rspotify" ,rust-rspotify-0.11)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-sha-1" ,rust-sha-1-0.10)
+                       ("rust-structopt" ,rust-structopt-0.3)
+                       ("rust-syslog" ,rust-syslog-6)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-stream" ,rust-tokio-stream-0.1)
+                       ("rust-toml" ,rust-toml-0.7)
+                       ("rust-url" ,rust-url-2)
+                       ("rust-whoami" ,rust-whoami-1)
+                       ("rust-xdg" ,rust-xdg-2))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.10))
+       #:features (list "alsa_backend"
+                        "dbus_keyring"
+                        ;"dbus_mpris"   ; Conflicts with rust-chrono-0.4 version.
+                        "pulseaudio_backend"
+                        "rodio_backend")))
+    (native-inputs (list perl pkg-config))
+    (inputs (list alsa-lib dbus pulseaudio))
+    (home-page "https://github.com/Spotifyd/spotifyd")
+    (synopsis "Spotify streaming daemon with Spotify Connect support")
+    (description
+     "This package provides a light-weight daemon that connects to the Spotify
+music service.  A Spotifyd instance can be controlled by clients that use the
+Spotify Connect protocol, which includes the official Spotify mobile apps.")
+    (license license:gpl3)))
 
 (define-public svd2rust
   (package
