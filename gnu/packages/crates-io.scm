@@ -69668,6 +69668,28 @@ a readable output format.")
          ("rust-log" ,rust-log-0.4)
          ("rust-winapi" ,rust-winapi-0.3))))))
 
+(define-public rust-simple-logging-2
+  (package
+    (name "rust-simple-logging")
+    (version "2.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "simple-logging" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hmm523f0ax76yljf3z178rn9cm0q6knwa52haqnnckmavl4h3dh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-thread-id" ,rust-thread-id-3))
+       #:cargo-development-inputs (("rust-regex" ,rust-regex-1))))
+    (home-page "https://github.com/Ereski/simple-logging")
+    (synopsis "Simple logger for the log facade")
+    (description "This package provides a simple logger for the log facade.")
+    (license license:bsd-3)))
+
 (define-public rust-simple-mutex-1
   (package
     (name "rust-simple-mutex")
