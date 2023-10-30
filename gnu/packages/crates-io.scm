@@ -68387,20 +68387,18 @@ functionality and without weak references.")
 (define-public rust-sha-1-0.10
   (package
     (name "rust-sha-1")
-    (version "0.10.5")
+    (version "0.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sha-1" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1jr2a7pi67s8nxm4m09df9nnzsdlpif5hnk29hl8xk55fx975y2y"))))
+         "1700fs5aiiailpd5h0ax4sgs2ngys0mqf3p4j0ry6j2p2zd8l1gm"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f      ; use of undeclared crate or module `sha1`
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-cpufeatures" ,rust-cpufeatures-0.2)
         ("rust-digest" ,rust-digest-0.10)
