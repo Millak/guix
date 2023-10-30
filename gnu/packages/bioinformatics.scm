@@ -18796,6 +18796,73 @@ transcriptional derivatives and visualization of the resulting velocity
 patterns.")
       (license license:gpl3))))
 
+(define-public r-voltron
+  (let ((commit "5057b703479239a9aaba761f07e65d849f6111f8")
+        (revision "1"))
+    (package
+      (name "r-voltron")
+      (version (git-version "1.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/BIMSBbioinfo/VoltRon")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1nximl4708a7fdwn8ysxpni3mp6dx33cphavlay7hh1pa55pnzgn"))
+                (modules '((guix build utils)))
+                ;; The tripack package is not available under a free license,
+                ;; but interp provides free implementations of "tri.mesh" and
+                ;; "neighbours".
+                (snippet
+                 '(substitute* '("DESCRIPTION" "NAMESPACE" "R/spatial.R")
+                    (("tripack") "interp")))))
+      (properties `((upstream-name . "VoltRon")))
+      (build-system r-build-system)
+      (inputs (list opencv tbb zlib))
+      (propagated-inputs (list r-anndata
+                               r-data-table
+                               r-dplyr
+                               r-ebimage
+                               r-fastdummies
+                               r-fnn
+                               r-ggforce
+                               r-ggplot2
+                               r-ggpubr
+                               r-ggrepel
+                               r-hdf5r
+                               r-htmltools
+                               r-igraph
+                               r-interp
+                               r-irlba
+                               r-magick
+                               r-matrix
+                               r-morpho
+                               r-raster
+                               r-rcpp
+                               r-reshape2
+                               r-rjson
+                               r-rlang
+                               r-s4vectors
+                               r-scales
+                               r-shiny
+                               r-shinyjs
+                               r-stringr
+                               r-terra
+                               r-umap
+                               r-xml))
+      (native-inputs (list pkg-config))
+      (home-page "https://github.com/BIMSBbioinfo/VoltRon")
+      (synopsis "VoltRon for Spatial Data Integration and Analysis")
+      (description
+       "@code{VoltRon} is a toolbox for spatial data analysis, multi-omics
+integration using spatial image registration.  @code{VoltRon} is capable of
+analyzing multiple types and modalities of spatially-aware datasets.
+@code{VoltRon} visualizes and analyzes regions of interests (ROIs), spots,
+cells and even molecules.")
+      (license license:expat))))
+
 (define-public methyldackel
   (package
     (name "methyldackel")
