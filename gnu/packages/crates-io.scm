@@ -60771,29 +60771,47 @@ avoided if possible.")
 Should not be used directly.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-reopen-0.3
+(define-public rust-reopen-1
   (package
     (name "rust-reopen")
-    (version "0.3.0")
+    (version "1.0.3")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "reopen" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "12b3mfxkwb8akdfa701nzvqr6lsc6n84vrq088gmjy8lxlmr4an6"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "reopen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14w2v7a4dav23jzfrxj9lgacp731xizvng4bn7slan7qmk1wwhpz"))))
     (build-system cargo-build-system)
     (arguments
-      `(#:skip-build? #t
-        #:cargo-inputs
-        (("rust-signal-hook" ,rust-signal-hook-0.1)
-         ("rust-libc" ,rust-libc-0.2))))
+     `(#:cargo-inputs (("rust-autocfg" ,rust-autocfg-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-signal-hook" ,rust-signal-hook-0.3))
+       #:cargo-development-inputs (("rust-log" ,rust-log-0.4)
+                                   ("rust-partial-io" ,rust-partial-io-0.3)
+                                   ("rust-simple-logging" ,rust-simple-logging-2)
+                                   ("rust-version-sync" ,rust-version-sync-0.9))))
     (home-page "https://github.com/vorner/reopen")
     (synopsis "File reopening utility")
     (description "File reopening utility.")
     (license (list license:asl2.0 license:expat))))
+
+(define-public rust-reopen-0.3
+  (package
+    (inherit rust-reopen-1)
+    (name "rust-reopen")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "reopen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12b3mfxkwb8akdfa701nzvqr6lsc6n84vrq088gmjy8lxlmr4an6"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-signal-hook" ,rust-signal-hook-0.1)
+                       ("rust-libc" ,rust-libc-0.2))))))
 
 (define-public rust-repr-offset-0.2
   (package
