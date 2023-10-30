@@ -20313,14 +20313,15 @@ sizes.  Big-endian order is used.  WARNING: Block must be aligned!")
 (define-public rust-dbus-0.9
   (package
     (name "rust-dbus")
-    (version "0.9.2")
+    (version "0.9.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "dbus" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ny01n0gzfdmcy5ydn4q78pamidj4c5q9ixz7gr97dbrza6y15zm"))))
+        (base32
+         "06vdv4aarjs4w6byg9nqajr67c8qvlhk3153ic2i65pvp63ikchv"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f          ;it needs display and sockets and launches daemons
