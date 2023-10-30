@@ -934,6 +934,51 @@ bar.  It is also compatible with sway.")
 @code{just} is a handy way to save and run project-specific commands.")
     (license license:cc0)))
 
+(define-public kibi
+  (package
+    (name "kibi")
+    (version "0.2.2")
+    (source
+     (origin
+       ;; crates.io doesn't have the config files
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ilai-deutel/kibi")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1s9ka3pfhpssms2y5707f33n59ljnqqwp7jarh2l55a9dhlnl7d3"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:cargo-test-flags `(list "--release" "--"
+                                "--skip=syntax::tests::syntax_d_files")
+      #:cargo-inputs `(("rust-libc" ,rust-libc-0.2)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1)
+                       ("rust-winapi" ,rust-winapi-0.3)
+                       ("rust-winapi-util" ,rust-winapi-util-0.1))
+      #:cargo-development-inputs `(("rust-serial-test" ,rust-serial-test-0.5)
+                                   ("rust-tempfile" ,rust-tempfile-3))
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'install 'install-extras
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       (let* ((out (assoc-ref outputs "out"))
+                              (share (string-append out "/share"))
+                              (syntax.d (string-append share "/syntax.d"))
+                              (etc (string-append out "/etc")))
+                         (mkdir-p syntax.d)
+                         (copy-recursively "syntax.d" syntax.d)
+                         (rename-file "config_example.ini" "config.ini")
+                         (install-file "config.ini" etc)))))))
+    (home-page "https://github.com/ilai-deutel/kibi")
+    (synopsis "Featureful text editor in less than 1024 lines of code")
+    (description
+     "Inspired by the kilo text editor in C, this package provides a text
+editor in less than 1024 lines of code with syntax higlighting, search and
+more.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public maturin
   (package
     (name "maturin")
