@@ -34,6 +34,7 @@
 ;;; Copyright © 2023 Arnav Andrew Jose <arnav.jose@gmail.com>
 ;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
+;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40272,6 +40273,39 @@ single-cell and single-nucleus sequencing data.")
     (description
      "Part of Librespot, an open source client library for Spotify.  This
 package contains the audio fetching logic.")
+    (license license:expat)))
+
+(define-public rust-librespot-connect-0.4
+  (package
+    (name "rust-librespot-connect")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "librespot-connect" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1v6k20173hx27g34d24vkb4a67av7dbr3mfmng64b51y8imgpyjg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-form-urlencoded" ,rust-form-urlencoded-1)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-librespot-core" ,rust-librespot-core-0.4)
+                       ("rust-librespot-discovery" ,rust-librespot-discovery-0.4)
+                       ("rust-librespot-playback" ,rust-librespot-playback-0.4)
+                       ("rust-librespot-protocol" ,rust-librespot-protocol-0.4)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-protobuf" ,rust-protobuf-2)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-stream" ,rust-tokio-stream-0.1))))
+    (home-page "https://github.com/librespot-org/librespot")
+    (synopsis "Discovery and Spotify Connect logic for Librespot")
+    (description
+     "Librespot is an open source client library for Spotify.  This package
+contains the discovery and Spotify Connect logic.")
     (license license:expat)))
 
 (define-public rust-librespot-core-0.4
