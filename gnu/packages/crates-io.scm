@@ -29342,8 +29342,32 @@ Rust.")
 interfaces on the system.")
     (license (list license:expat license:bsd-3))))
 
+(define-public rust-gethostname-0.4
+  (package
+    (name "rust-gethostname")
+    (version "0.4.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gethostname" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "063qqhznyckwx9n4z4xrmdv10s0fi6kbr17r6bi1yjifki2y0xh1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags (list "--release" "--"
+                                "--skip=gethostname_matches_system_hostname")
+       #:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-windows-targets" ,rust-windows-targets-0.48))))
+    (home-page "https://github.com/swsnr/gethostname.rs")
+    (synopsis "Rust implementation of gethostname for all platforms")
+    (description "A Rust library that provides @code{gethostname()} for all
+platforms.")
+    (license license:asl2.0)))
+
 (define-public rust-gethostname-0.3
   (package
+    (inherit rust-gethostname-0.4)
     (name "rust-gethostname")
     (version "0.3.0")
     (source
@@ -29353,7 +29377,6 @@ interfaces on the system.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0xy1wbx5k2bzi4cbaqj9wqgqsbn4f8pm6nsm1d86mibk66xd8rdv"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        '("--release" "--"
@@ -29361,12 +29384,7 @@ interfaces on the system.")
          "--skip=gethostname_matches_system_hostname")
        #:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
-        ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/swsnr/gethostname.rs")
-    (synopsis "Gethostname for all platforms")
-    (description "This library provides @code{gethostname()} for all
-platforms.")
-    (license license:asl2.0)))
+        ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-gethostname-0.2
   (package
