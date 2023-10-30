@@ -20342,6 +20342,29 @@ sizes.  Big-endian order is used.  WARNING: Block must be aligned!")
     (description "This package provides Rust bindings to D-Bus.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-dbus-crossroads-0.5
+  (package
+    (name "rust-dbus-crossroads")
+    (version "0.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dbus-crossroads" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1q3dyywazr3hppm052fa8q2366q66ml789r42jjlnm47f51q6k1s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; use of undeclared crate or module `dbus_tokio`
+       #:cargo-inputs (("rust-dbus" ,rust-dbus-0.9))
+       #:cargo-development-inputs (("rust-tokio", rust-tokio-1))))
+    (native-inputs (list pkg-config))
+    (inputs (list dbus-glib))
+    (home-page "https://github.com/diwic/dbus-rs/")
+    (synopsis "Framework for writing D-Bus method handlers")
+    (description "Framework for writing D-Bus method handlers in Rust.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-dbus-tree-0.9
   (package
     (name "rust-dbus-tree")
