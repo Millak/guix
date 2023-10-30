@@ -39344,23 +39344,20 @@ macros on libc without stdlib.")
 (define-public rust-libdbus-sys-0.2
   (package
     (name "rust-libdbus-sys")
-    (version "0.2.1")
+    (version "0.2.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "libdbus-sys" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1w06ycq2mw8zfp9j73macgdl8d2881bnxbzdyyxys90ljyya64nw"))))
+        (base32 "0wjw93q6ckrn8qdrxzdi02f0ma9g7nnlpgkrkcll1mjhnw95a206"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-pkg-config" ,rust-pkg-config-0.3))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list dbus))
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (native-inputs (list pkg-config))
+    (inputs (list dbus))
     (home-page "https://github.com/diwic/dbus-rs")
     (synopsis "FFI bindings to libdbus")
     (description "This package provides FFI bindings to libdbus.")
