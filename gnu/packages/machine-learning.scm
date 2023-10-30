@@ -296,6 +296,42 @@ classification.")
      (list python))
     (synopsis "Python bindings of libSVM")))
 
+(define-public python-ml-collections
+  (package
+    (name "python-ml-collections")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ml_collections" version))
+       (sha256
+        (base32 "1k38psfzqsqnl99fl578bd07zdmvfkja61r3sgjs2fj3xircrvrz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; TODO: we can't seem to run the config_flags tests, because
+                ;; the installed Python files conflict with those from the
+                ;; source directory, resulting in constants to be defined more
+                ;; than once.
+                (invoke "pytest" "ml_collections/config_dict/tests"
+                        ;; This one fails because we're testing the __main__
+                        ;; class, not config_dict_test.
+                        "-k" "not testJSONConversionBestEffort")))))))
+    (propagated-inputs
+     (list python-absl-py python-contextlib2 python-pyyaml python-six))
+    (native-inputs (list python-mock python-pytest))
+    (home-page "https://github.com/google/ml_collections")
+    (synopsis "Python collections designed for Machine Learning usecases")
+    (description
+     "ML Collections is a library of Python collections designed for Machine
+Learning usecases.")
+    (license license:asl2.0)))
+
 (define-public ghmm
   ;; The latest release candidate is several years and a couple of fixes have
   ;; been published since.  This is why we download the sources from the SVN
