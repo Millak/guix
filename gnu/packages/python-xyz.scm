@@ -5851,7 +5851,10 @@ flexibility and power of the Python language.")
               (sha256
                (base32 "0c4l9gpaqd7j34qwnpjibv53j9sm0nyl0wcy8dvh76772jxspjhg"))))
     (build-system pyproject-build-system)
-    (inputs (list pybind11 abseil-cpp python))
+    ;; We link the static abseil libraries here to avoid problems in
+    ;; downstream libraries using potentially different variants of
+    ;; abseil-cpp.  This is also what's done in the upstream CMake build.
+    (inputs (list pybind11 static-abseil-cpp python))
     (propagated-inputs (list python-wheel
                              python-absl-py
                              python-attrs
@@ -5894,13 +5897,12 @@ flexibility and power of the Python language.")
                       "build/temp/tree/tree.o"
                       "-Wl,--whole-archive"
                       "-L" (string-append python "/lib")
-                      "-L" (string-append abseil-cpp "/lib")
-                      "-l" "absl_int128"
-                      "-l" "absl_raw_hash_set"
-                      "-l" "absl_raw_logging_internal"
-                      "-l" "absl_strings"
-                      "-l" "absl_strings_internal"
-                      "-l" "absl_throw_delegate"
+                      (string-append abseil-cpp "/lib/libabsl_int128.a")
+                      (string-append abseil-cpp "/lib/libabsl_raw_hash_set.a")
+                      (string-append abseil-cpp "/lib/libabsl_raw_logging_internal.a")
+                      (string-append abseil-cpp "/lib/libabsl_strings.a")
+                      (string-append abseil-cpp "/lib/libabsl_strings_internal.a")
+                      (string-append abseil-cpp "/lib/libabsl_throw_delegate.a")
                       "-Wl,--no-whole-archive"
                       "-o" "build/lib/tree/_tree.so")))))))
     (home-page "https://github.com/deepmind/tree")
