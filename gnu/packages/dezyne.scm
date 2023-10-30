@@ -32,14 +32,14 @@
 (define-public dezyne
   (package
     (name "dezyne")
-    (version "2.17.6")
+    (version "2.17.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://dezyne.org/download/dezyne/"
                            name "-" version ".tar.gz"))
        (sha256
-        (base32 "0z019yyvf1ac1l95j29wlayi2gmwa9sjqg31a4r89za1bijmk19k"))))
+        (base32 "09w2rl2ghm8z6fv3iflxnikcj2q98119imvlgvkmkhch5cplx7ny"))))
     (inputs (list bash-minimal
                   guile-3.0-latest
                   guile-json-4
