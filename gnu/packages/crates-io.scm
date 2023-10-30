@@ -74943,8 +74943,32 @@ processors, disks, components and networks.")
 processors, disks, components and networks.")
     (license license:expat)))
 
+(define-public rust-syslog-6
+  (package
+    (name "rust-syslog")
+    (version "6.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "syslog" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vzrwwv3v9bwfinp7yz4kcdxxs00ikz89gzl61fj3qfcridyjd3l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-error-chain" ,rust-error-chain-0.12)
+                       ("rust-hostname" ,rust-hostname-0.3)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-time" ,rust-time-0.3))))
+    (home-page "https://github.com/Geal/rust-syslog")
+    (synopsis "Send log messages to syslog")
+    (description "Rust crate to send messages to Syslog.")
+    (license license:expat)))
+
 (define-public rust-syslog-4
   (package
+    (inherit rust-syslog-6)
     (name "rust-syslog")
     (version "4.0.1")
     (source
@@ -74956,21 +74980,17 @@ processors, disks, components and networks.")
         (sha256
          (base32
           "09ykcbvwx8icvf303mqyz76ji8j6fgyyx97zpr23s788ni112r50"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-time" ,rust-time-0.1)
         ("rust-error-chain" ,rust-error-chain-0.11)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-log" ,rust-log-0.4))))
-    (home-page "https://github.com/Geal/rust-syslog")
-    (synopsis "Send log messages to syslog")
-    (description "Send log messages to syslog.")
-    (license license:expat)))
+        ("rust-log" ,rust-log-0.4))))))
 
 (define-public rust-syslog-3
   (package
+    (inherit rust-syslog-6)
     (name "rust-syslog")
     (version "3.3.0")
     (source
@@ -74982,18 +75002,13 @@ processors, disks, components and networks.")
         (sha256
          (base32
           "0hpdnk2zm6xawpz6fv6qbn0ncfm5p0wm5c6gq7yhaz2gvsnb1jdv"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-time" ,rust-time-0.1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-log" ,rust-log-0.3)
-        ("rust-unix-socket" ,rust-unix-socket-0.5))))
-    (home-page "https://github.com/Geal/rust-syslog")
-    (synopsis "Send log messages to syslog")
-    (description "Send log messages to syslog.")
-    (license license:expat)))
+        ("rust-unix-socket" ,rust-unix-socket-0.5))))))
 
 (define-public rust-system-deps-6
   (package
