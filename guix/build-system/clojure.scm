@@ -83,8 +83,8 @@
                             #:clojure #:jdk #:zip)))
 
     (if target
-        (error "No cross-compilation for clojure-build-system yet: LOWER"
-               target) ; FIXME
+        #f                              ; FIXME: No cross-compilation for
+                                        ; clojure-build-system yet
         (bag (name name)
              (system system)
              (host-inputs `(,@(if source
