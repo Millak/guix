@@ -7847,6 +7847,51 @@ multiple sequence alignments to assess basepair conservation and covariation,
 with numerical methods for computing statistics for each.")
     (license license:gpl3)))
 
+(define-public r-radiogx
+  (package
+    (name "r-radiogx")
+    (version "2.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "RadioGx" version))
+       (sha256
+        (base32 "18zqfnwjil4mv7fgh4wvnniyybmyqkg0hk2wc57rcn0mlppa3602"))))
+    (properties `((upstream-name . "RadioGx")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-assertthat
+           r-biobase
+           r-biocgenerics
+           r-biocparallel
+           r-catools
+           r-coregx
+           r-data-table
+           r-downloader
+           r-magicaxis
+           r-matrixstats
+           r-rcolorbrewer
+           r-reshape2
+           r-s4vectors
+           r-scales
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/RadioGx")
+    (synopsis "Analysis of large-scale radio-genomic data")
+    (description
+     "This package is a computational tool box for radio-genomic analysis
+which integrates radio-response data, radio-biological modelling and
+comprehensive cell line annotations for hundreds of cancer cell lines.  The
+@code{RadioSet} class enables creation and manipulation of standardized
+datasets including information about cancer cells lines, radio-response assays
+and dose-response indicators.  Included methods allow fitting and plotting
+dose-response data using established radio-biological models along with
+quality control to validate results.  Additional functions related to fitting
+and plotting dose response curves, quantifying statistical correlation and
+calculating @acronym{AUC, area under the curve} or @acronym{SF, survival
+fraction} are included.")
+    (license license:gpl3)))
+
 (define-public r-raggedexperiment
   (package
     (name "r-raggedexperiment")
