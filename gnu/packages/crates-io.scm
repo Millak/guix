@@ -88816,6 +88816,27 @@ if they were just another Rust module.")
         ("rust-windows-interface" ,rust-windows-interface-0.44)
         ("rust-windows-targets" ,rust-windows-targets-0.42))))))
 
+(define-public rust-windows-0.39
+  (package
+    (inherit rust-windows-0.46)
+    (name "rust-windows")
+    (version "0.39.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jkr4rxj6jn7brqxycr1pjgvnixsimsiywl4a7v20q5ca05bvi7i"))))
+    (arguments
+     `(#:cargo-inputs (("rust-windows-implement" ,rust-windows-implement-0.39)
+                       ("rust-windows-interface" ,rust-windows-interface-0.39)
+                       ("rust-windows-aarch64-msvc" ,rust-windows-aarch64-msvc-0.39)
+                       ("rust-windows-i686-gnu" ,rust-windows-i686-gnu-0.39)
+                       ("rust-windows-i686-msvc" ,rust-windows-i686-msvc-0.39)
+                       ("rust-windows-x86-64-gnu" ,rust-windows-x86-64-gnu-0.39)
+                       ("rust-windows-x86-64-msvc" ,rust-windows-x86-64-msvc-0.39))))))
+
 (define-public rust-windows-0.32
   (package
     (inherit rust-windows-0.46)
