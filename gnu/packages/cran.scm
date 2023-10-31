@@ -33985,18 +33985,18 @@ aggregation for comparing different implementations in order to provide a
 (define-public r-rfast
   (package
     (name "r-rfast")
-    (version "2.0.8")
+    (version "2.0.9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Rfast" version))
        (sha256
         (base32
-         "1c64j8hg6id4ri3m32aa1r0qyn09kl3dvl865dzf43qdb3qcichv"))))
+         "12jl5kqjn571zcqh4n351d7nx86b3jh46ds8krqz92f0z6fjmkzz"))))
     (properties `((upstream-name . "Rfast")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-rcpp r-rcpparmadillo r-rcppziggurat))
+     (list r-rcpp r-rcpparmadillo r-rcppparallel r-rcppziggurat))
     (home-page "https://github.com/RfastOfficial/Rfast")
     (synopsis "Collection of efficient and fast R functions")
     (description
