@@ -1326,6 +1326,37 @@ engines that convert R Markdown into HTML pages.  Various themes and syntax
 highlight styles are supported.")
     (license license:asl2.0)))
 
+(define-public r-profmem
+  (package
+    (name "r-profmem")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "profmem" version))
+       (sha256
+        (base32 "0gg6ja0ifwn9jj42rw1gnyil55sl9r2y5rjb6yjcvqwd5arajp3l"))))
+    (properties `((upstream-name . "profmem")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'install 'set-HOME
+           (lambda _
+             ;; Needed for building vignettes
+             (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list r-r-rsp r-markdown)) ;for vignettes
+    (home-page "https://github.com/HenrikBengtsson/profmem")
+    (synopsis "Simple memory profiling for R")
+    (description
+     "This package provides a simple and light-weight API for memory profiling
+of R expressions.  The profiling is built on top of R's built-in memory
+profiler @code{utils::Rprofmem()}, which records every memory allocation done
+by R (also native code).")
+    (license license:lgpl2.1+)))
+
 (define-public r-proj4
   (package
     (name "r-proj4")
