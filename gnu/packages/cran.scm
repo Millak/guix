@@ -4176,15 +4176,31 @@ applications.")
 (define-public r-htmltable
   (package
     (name "r-htmltable")
-    (version "2.4.1")
+    (version "2.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "htmlTable" version))
        (sha256
-        (base32 "14qg65nw0bpikqs1hb1x7apzdzrnnl3ykjnks67kkp46v1skwzrs"))))
+        (base32 "039nnxnvw5l284n7w8q0hnplm0b58nwhsrpjfi5asg61f9hxv0va"))))
     (properties `((upstream-name . "htmlTable")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:modules
+      '((guix build r-build-system)
+        (guix build minify-build-system)
+        (guix build utils))
+      #:imported-modules
+      `(,@%r-build-system-modules
+        (guix build minify-build-system))
+      #:phases
+      #~(modify-phases (@ (guix build r-build-system) %standard-phases)
+          (add-after 'unpack 'replace-bundled-minified-JavaScript
+            (lambda* (#:key inputs #:allow-other-keys)
+              (minify (assoc-ref inputs "js-jquery")
+                      #:target
+                      "inst/htmlwidgets/lib/jquery/jquery.min.js"))))))
     (propagated-inputs
      (list r-checkmate
            r-htmltools
@@ -4194,7 +4210,15 @@ applications.")
            r-rstudioapi
            r-stringr))
     (native-inputs
-     (list r-knitr))
+     `(("esbuild" ,esbuild)
+       ("js-jquery"
+        ,(origin
+           (method url-fetch)
+           (uri "https://code.jquery.com/jquery-3.7.1.js")
+           (sha256
+            (base32
+             "1zicjv44sx6n83vrkd2lwnlbf7qakzh3gcfjw0lhq48b5z55ma3q"))))
+       ("r-knitr" ,r-knitr)))
     (home-page "http://gforge.se/packages/")
     (synopsis "Advanced tables for Markdown/HTML")
     (description
