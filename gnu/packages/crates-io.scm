@@ -89571,17 +89571,17 @@ if they were just another Rust module.")
         ("rust-windows-x86-64-gnullvm" ,rust-windows-x86-64-gnullvm-0.42)
         ("rust-windows-x86-64-msvc" ,rust-windows-x86-64-msvc-0.42))))))
 
-(define-public rust-windows-tokens-0.32
+(define-public rust-windows-tokens-0.39
   (package
     (name "rust-windows-tokens")
-    (version "0.32.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "windows-tokens" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1rrqbxjkyk6h6p6jjzbcxr0mhqbz0yfndd2s2dsgmbl75f4yy7gn"))))
+    (version "0.39.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-tokens" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15zmsz8ji6z7471xwznrm4hqp6j94s7pjjz7i34vmrjzw4pxwf7q"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t))
@@ -89590,6 +89590,19 @@ if they were just another Rust module.")
     (description "This package provides code generation support for the
 windows crate.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-windows-tokens-0.32
+  (package
+    (inherit rust-windows-tokens-0.39)
+    (name "rust-windows-tokens")
+    (version "0.32.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "windows-tokens" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1rrqbxjkyk6h6p6jjzbcxr0mhqbz0yfndd2s2dsgmbl75f4yy7gn"))))))
 
 (define-public rust-windows-x86-64-gnu-0.48
   (package
