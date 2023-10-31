@@ -678,7 +678,7 @@ any X11 window.")
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (requisites '("getopt" "git" "gpg" "qrencode" "sed"
-                                  "tree" "which" "wl-copy" "xclip"))
+                                  "tail" "tree" "which" "wl-copy" "xclip"))
                     (path (map (lambda (pkg)
                                  (dirname (search-input-file
                                            inputs (string-append "/bin/" pkg))))
@@ -699,7 +699,8 @@ any X11 window.")
             (separator #f)             ;single entry
             (files '("lib/password-store/extensions")))))
     (inputs
-     (list dmenu
+     (list coreutils
+           dmenu
            util-linux
            git
            gnupg
