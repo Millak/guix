@@ -497,6 +497,30 @@ for computer graphics.")
        (;("rust-glium" ,rust-glium-0.19)
         ("rust-serde-json" ,rust-serde-json-1))))))
 
+(define-public rust-color-to-tui-0.2
+  (package
+    (name "rust-color-to-tui")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "color-to-tui" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1k3vyp2fl0lcqs8iwssv56562kag6ljqaixirrci77ydmcq3zi0s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
+                       ("rust-tui" ,rust-tui-0.16))
+       #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://git.uttarayan.me/uttarayan/color-to-tui")
+    (synopsis
+     "Parse colors and convert them to @code{ratatui::style::Colors}")
+    (description
+     "This package provides parsing colors and converting them to
+@code{ratatui::style::Colors}.")
+    (license license:expat)))
+
 (define-public rust-core-graphics-0.22
   (package
     (name "rust-core-graphics")
