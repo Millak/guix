@@ -1540,6 +1540,26 @@ Singularity containers.  You can execute a command inside a container, mount a
 volume or copy a file.")
     (license license:expat)))
 
+(define-public r-bench
+  (package
+    (name "r-bench")
+    (version "1.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "bench" version))
+       (sha256
+        (base32 "05zky7l6103gabv9y0g3qlx8sgkq1sn9yl9jd3x8834cmlh67bmz"))))
+    (properties `((upstream-name . "bench")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-glue r-pillar r-profmem r-rlang r-tibble))
+    (home-page "https://bench.r-lib.org/")
+    (synopsis "High precision timing of R expressions")
+    (description
+     "This package provides tools to accurately benchmark and analyze execution
+times for R expressions.")
+    (license license:expat)))
+
 (define-public r-benchmarkmedata
   (package
     (name "r-benchmarkmedata")
