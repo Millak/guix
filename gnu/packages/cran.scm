@@ -3516,6 +3516,27 @@ convenience functions useful for using CSS selectors on XML nodes.  This
 package is a port of the Python package @code{cssselect}.")
     (license license:bsd-3)))
 
+(define-public r-relations
+  (package
+    (name "r-relations")
+    (version "0.6-13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "relations" version))
+       (sha256
+        (base32 "1nnr0kcr3whbwzi36sg7wn46jp7r0hfkvcwlybvjsjhczcvc6ngq"))))
+    (properties `((upstream-name . "relations")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cluster r-sets r-slam))
+    (home-page "https://cran.r-project.org/package=relations")
+    (synopsis "Data structures and algorithms for relations")
+    (description
+     "This package provides data structures and algorithms for k-ary relations
+with arbitrary domains, featuring relational algebra, predicate functions, and
+fitters for consensus relations.")
+    (license license:gpl2)))
+
 (define-public r-repmis
   (package
     (name "r-repmis")
