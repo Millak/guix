@@ -54063,6 +54063,31 @@ in pure Rust.")
 library.")
     (license license:expat)))
 
+(define-public rust-pciid-parser-0.6
+  (package
+    (name "rust-pciid-parser")
+    (version "0.6.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pciid-parser" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0d6pliaab6xs2m1vnialy1biaw3nv6g9s0ykdrracx2a5h1p4jdd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f
+       #:cargo-inputs (("rust-serde" ,rust-serde-1)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-ureq" ,rust-ureq-2))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (home-page "https://github.com/ilyazzz/pci-id-parser")
+    (synopsis "Library for parsing PCI ID tables")
+    (description "This package provides a library for parsing PCI ID tables.")
+    (license license:expat)))
+
 (define-public rust-pcre2-0.2
   (package
     (name "rust-pcre2")
