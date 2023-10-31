@@ -24622,6 +24622,27 @@ accessor functions on enums.")
 increasing their method call speed up to 10x.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-enum-iterator-derive-1
+  (package
+    (name "rust-enum-iterator-derive")
+    (version "1.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "enum-iterator-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jzxgfhz4i0hvnw5qzqhwscky8vsmxljv89g0navisacay4qbkzf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/stephaneyfx/enum-iterator")
+    (synopsis "Procedural macro to derive Sequence")
+    (description "This package provides a procedural macro to derive Sequence.")
+    (license license:bsd-0)))
+
 (define-public rust-enum-map-derive-0.4
   (package
     (name "rust-enum-map-derive")
