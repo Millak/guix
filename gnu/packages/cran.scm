@@ -9882,6 +9882,27 @@ implementation of an approximate nearest neighbor search using hierarchical
 supports arbitrary vertex/edge/graph attributes.")
     (license license:gpl2+)))
 
+(define-public r-nistunits
+  (package
+    (name "r-nistunits")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "NISTunits" version))
+       (sha256
+        (base32 "0km9l3k9p35sb1qrhrz4ijjsdihvsp6j7cz5kh46lgf7nn6xdk7a"))))
+    (properties `((upstream-name . "NISTunits")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=NISTunits")
+    (synopsis "Fundamental physical constants and unit conversions")
+    (description
+     "This package provides fundamental physical constants (quantity, value,
+uncertainty, unit) for @acronym{SI, International System of Units} and non-SI
+units, plus unit conversions based on the data from @acronym{NIST, National
+Institute of Standards and Technology}, USA.")
+    (license license:gpl3+)))
+
 (define-public r-stabs
   (package
     (name "r-stabs")
