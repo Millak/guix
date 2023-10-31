@@ -89663,7 +89663,7 @@ windows crate.")
                (base32
                 "12ipr1knzj2rwjygyllfi5mkd0ihnbi3r61gag5n2jgyk5bmyl8s"))
               (snippet
-               '(delete-file "lib/windows.0.48.0.lib"))))
+               #~(delete-file "lib/windows.0.48.0.lib"))))
     (build-system cargo-build-system)
     (arguments (list #:skip-build? #t))
     (home-page "https://github.com/microsoft/windows-rs")
@@ -89685,8 +89685,23 @@ windows crate.")
                (base32
                 "1w5r0q0yzx827d10dpjza2ww0j8iajqhmb54s735hhaj66imvv4s"))
               (snippet
-               '(delete-file "lib/windows.lib"))))
+               #~(delete-file "lib/windows.lib"))))
     (arguments (list #:skip-build? #t))))
+
+(define-public rust-windows-x86-64-msvc-0.39
+  (package
+    (inherit rust-windows-x86-64-msvc-0.42)
+    (name "rust-windows-x86-64-msvc")
+    (version "0.39.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows_x86_64_msvc" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02g8fy1sv8g0p4fi2yk62j9a5zwhcfknp9vwg1ifkjp97a440kay"))
+        (snippet
+         #~(delete-file "lib/windows.lib"))))))
 
 (define-public rust-windows-x86-64-msvc-0.36
   (package
