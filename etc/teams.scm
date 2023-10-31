@@ -1,4 +1,5 @@
 #!/bin/sh
+# -*- mode: scheme; -*-
 # Extra care is taken here to ensure this script can run in most environments,
 # since it is invoked by 'git send-email'.
 pre_inst_env_maybe=
