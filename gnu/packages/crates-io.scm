@@ -89545,7 +89545,7 @@ windows crate.")
                (base32
                 "1cblz5m6a8q6ha09bz4lz233dnq5sw2hpra06k9cna3n3xk8laya"))
               (snippet
-               '(delete-file "lib/libwindows.0.48.0.a"))))
+               #~(delete-file "lib/libwindows.0.48.0.a"))))
     (build-system cargo-build-system)
     (arguments
      (list #:skip-build? #t))
@@ -89568,9 +89568,24 @@ windows crate.")
                (base32
                 "0dnbf2xnp3xrvy8v9mgs3var4zq9v9yh9kv79035rdgyp2w15scd"))
               (snippet
-               '(delete-file "lib/libwindows.a"))))
+               #~(delete-file "lib/libwindows.a"))))
     (arguments
      (list #:skip-build? #t))))
+
+(define-public rust-windows-x86-64-gnu-0.39
+  (package
+    (inherit rust-windows-x86-64-gnu-0.42)
+    (name "rust-windows-x86-64-gnu")
+    (version "0.39.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows_x86_64_gnu" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0r9b4lmapq66nn2dga7a0mkdv5sgbp184kfwx3hklrbxcdjw2s38"))
+       (snippet
+        #~(delete-file "lib/libwindows.a"))))))
 
 (define-public rust-windows-x86-64-gnu-0.36
   (package
