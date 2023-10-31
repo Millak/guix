@@ -7779,6 +7779,29 @@ the Human Protein Atlas project.")
 interactions from 3C-seq assay.")
     (license license:gpl3)))
 
+(define-public r-r4rna
+  (package
+    (name "r-r4rna")
+    (version "1.28.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "R4RNA" version))
+       (sha256
+        (base32 "1i4c9477xsp3hq5kxydrimhl6g8vshwbqgnhap5n1ykxbsval1pp"))))
+    (properties `((upstream-name . "R4RNA")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biostrings))
+    (home-page "https://www.e-rna.org/r-chie/")
+    (synopsis "RNA visualization and analysis")
+    (description
+     "This package provides a package for RNA basepair analysis, including the
+visualization of basepairs as arc diagrams for easy comparison and annotation of
+sequence and structure.  Arc diagrams can additionally be projected onto
+multiple sequence alignments to assess basepair conservation and covariation,
+with numerical methods for computing statistics for each.")
+    (license license:gpl3)))
+
 (define-public r-raggedexperiment
   (package
     (name "r-raggedexperiment")
