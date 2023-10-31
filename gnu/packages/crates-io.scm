@@ -86674,21 +86674,23 @@ in your code via the @code{env!} macro")
   (package
     (inherit rust-vergen-7)
     (name "rust-vergen")
-    (version "3.1.0")
+    (version "3.2.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "vergen" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1jrr0wihm9si98qz8ghjfnalfvmfv8rqvkgj2npqa7yzjs4hvrac"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "vergen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0npi6z9daviwhbay1pj5gasw680bmq6s5y6my4cqk77hb921w577"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-chrono" ,rust-chrono-0.4)
-        ("rust-bitflags" ,rust-bitflags-1))))))
+     `(#:cargo-test-flags `("--release"
+                            ;; Not the doc tests.
+                            "--lib" "--bins" "--tests")
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-rustc-version" ,rust-rustc-version-0.4))
+       #:cargo-development-inputs (("rust-lazy-static" ,rust-lazy-static-1)
+                                   ("rust-regex" ,rust-regex-1))))))
 
 (define-public rust-version-check-0.9
   (package
