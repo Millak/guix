@@ -88908,7 +88908,7 @@ if they were just another Rust module.")
                (base32
                 "1wvwipchhywcjaw73h998vzachf668fpqccbhrxzrz5xszh2gvxj"))
               (snippet
-               '(delete-file "lib/windows.0.48.0.lib"))))
+               #~(delete-file "lib/windows.0.48.0.lib"))))
     (build-system cargo-build-system)
     (arguments
      (list #:skip-build? #t))
@@ -88931,9 +88931,24 @@ crate.")
                (base32
                 "0hsdikjl5sa1fva5qskpwlxzpc5q9l909fpl1w6yy1hglrj8i3p0"))
               (snippet
-               '(delete-file "lib/windows.lib"))))
+               #~(delete-file "lib/windows.lib"))))
     (arguments
      (list #:skip-build? #t))))
+
+(define-public rust-windows-aarch64-msvc-0.39
+  (package
+    (inherit rust-windows-aarch64-msvc-0.42)
+    (name "rust-windows-aarch64-msvc")
+    (version "0.39.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows_aarch64_msvc" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wj0nfmyli4bn5af243r4s3zncxv0n4j6dd8zyb41gcnc1k12xzc"))
+       (snippet
+        #~(delete-file "lib/windows.lib"))))))
 
 (define-public rust-windows-aarch64-msvc-0.36
   (package
