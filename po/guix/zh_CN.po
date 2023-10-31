@@ -11,21 +11,22 @@
 # Julien Lepiller <fedora-account@lepiller.eu>, 2022.
 # Wen Wu Song <iyzsong@envs.net>, 2023.
 # Hilton Chain <yareli@ultrarare.space>, 2023.
+# a x <meruarasu@email1.io>, 2023.
 #: guix/diagnostics.scm:159
 msgid ""
 msgstr ""
 "Project-Id-Version: guix 0.14.0\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2023-06-19 03:18+0000\n"
-"PO-Revision-Date: 2023-06-06 07:20+0000\n"
-"Last-Translator: Hilton Chain <yareli@ultrarare.space>\n"
+"PO-Revision-Date: 2023-10-06 19:36+0000\n"
+"Last-Translator: a x <meruarasu@email1.io>\n"
 "Language-Team: Chinese (Simplified) <https://translate.fedoraproject.org/projects/guix/guix/zh_CN/>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.17\n"
+"X-Generator: Weblate 5.0.2\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 #: gnu.scm:81
@@ -182,11 +183,12 @@ msgid ""
 msgstr "这是 @dfn{system profile} ，位于 @file{/run/current-system/profile} 。它包含了系统管理员想要的对所有系统用户全局可用的软件包。"
 
 #: gnu/services.scm:942
+#, fuzzy
 msgid ""
 "Make ``firmware'' files loadable by the operating system\n"
 "kernel.  Firmware may then be uploaded to some of the machine's devices, such\n"
 "as Wifi cards."
-msgstr ""
+msgstr "让固件文件可以被系统加载。这样固件可以被载入到这台机器的设备中，比如说无线网卡。"
 
 #: gnu/services.scm:973
 msgid ""
@@ -195,34 +197,36 @@ msgid ""
 msgstr ""
 
 #: gnu/services.scm:1031
+#, fuzzy
 msgid ""
 "Builds the linux-libre kernel profile, containing\n"
 "the kernel itself and any linux-loadable kernel modules.  This can be extended\n"
 "with a function that accepts the current configuration and returns a new\n"
 "configuration."
-msgstr ""
+msgstr "建构linux-libre内核profile，包括内核和linux可装载的内核模块。这可以用一个输入当前配置返回新配置的函数来拓展。"
 
 #: gnu/services.scm:1053
+#, fuzzy
 msgid ""
 "Adds packages and package outputs as modules\n"
 "included in the booted linux-libre profile.  Other services can extend this\n"
 "service type to add particular modules to the set of linux-loadable modules."
-msgstr ""
+msgstr "添加包和包输出作为启动的linux-libre profile的模块。其他服务可已拓展此类服务以向linux可载的模块中添加特定模块。"
 
 #: gnu/services.scm:1080
-#, scheme-format
+#, fuzzy, scheme-format
 msgid "no target of type '~a' for service '~a'"
-msgstr ""
+msgstr "没有为服务'~a'找到类为'~a'的目标"
 
 #: gnu/services.scm:1106 gnu/services.scm:1225
-#, scheme-format
+#, fuzzy, scheme-format
 msgid "more than one target service of type '~a'"
-msgstr ""
+msgstr "多余一个类为'~a'的目标服务"
 
 #: gnu/services.scm:1215
-#, scheme-format
+#, fuzzy, scheme-format
 msgid "service of type '~a' not found"
-msgstr ""
+msgstr "未找到类为'~a'的服务"
 
 #: gnu/system.scm:217
 #, scheme-format
@@ -235,17 +239,17 @@ msgid "unrecognized uuid ~a at '~a'~%"
 msgstr "有无法识别的 UUID ~a 在 '~a' 中~%"
 
 #: gnu/system.scm:485
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "unrecognized crypto-devices ~S at '~a'~%"
-msgstr "无法识别的选项: ~a~%"
+msgstr ""
 
 #: gnu/system.scm:505
 #, fuzzy, scheme-format
 msgid "unrecognized boot parameters at '~a'~%"
-msgstr "无法识别的选项: ~a~%"
+msgstr "无法识别的启动选项: ~a~%"
 
 #: gnu/system.scm:508
-#, scheme-format
+#, fuzzy, scheme-format
 msgid ""
 "This probably means that this version\n"
 "of Guix is older than the one that created @file{~a}.  To address this, you\n"
@@ -255,6 +259,11 @@ msgid ""
 "guix pull\n"
 "@end example"
 msgstr ""
+"这大概意味着此版本的Guix比使用@file{~a}创建的版本更老。为了解决此问题，需要更新Guix：\n"
+"\n"
+"@example\n"
+"guix pull\n"
+"@end example"
 
 #: gnu/system.scm:645
 #, scheme-format
@@ -2018,7 +2027,7 @@ msgstr "分区表"
 
 #: gnu/installer/newt/partition.scm:134
 msgid "Please select a partition type."
-msgstr ""
+msgstr "请选择分区类型。"
 
 #: gnu/installer/newt/partition.scm:135
 msgid "Partition type"
@@ -2038,8 +2047,9 @@ msgstr ""
 
 #: gnu/installer/newt/partition.scm:164 gnu/installer/newt/partition.scm:169
 #: gnu/installer/newt/partition.scm:174
+#, fuzzy
 msgid "Creation error"
-msgstr ""
+msgstr "创建错误"
 
 #: gnu/installer/newt/partition.scm:168
 msgid "Extended partition creation error."
@@ -2055,8 +2065,9 @@ msgid "Please enter the password for the encryption of partition ~a (label: ~a).
 msgstr ""
 
 #: gnu/installer/newt/partition.scm:189 gnu/installer/newt/wifi.scm:92
+#, fuzzy
 msgid "Password required"
-msgstr ""
+msgstr "需要密码"
 
 #: gnu/installer/newt/partition.scm:194
 #, scheme-format
@@ -2089,20 +2100,20 @@ msgstr ""
 
 #: gnu/installer/newt/partition.scm:327
 msgid "Encryption label"
-msgstr ""
+msgstr "加密标签"
 
 #: gnu/installer/newt/partition.scm:344
 #, scheme-format
 msgid "Please enter the size of the partition. The maximum size is ~a."
-msgstr ""
+msgstr "请输入分区大小。最大为~a。"
 
 #: gnu/installer/newt/partition.scm:346
 msgid "Partition size"
-msgstr ""
+msgstr "分区容量"
 
 #: gnu/installer/newt/partition.scm:364
 msgid "The percentage can not be superior to 100."
-msgstr ""
+msgstr "百分比不得超过100。"
 
 #: gnu/installer/newt/partition.scm:365 gnu/installer/newt/partition.scm:370
 #: gnu/installer/newt/partition.scm:375
@@ -2137,20 +2148,20 @@ msgstr ""
 
 #: gnu/installer/newt/partition.scm:465
 msgid "Partition creation"
-msgstr ""
+msgstr "分区创建"
 
 #: gnu/installer/newt/partition.scm:466
 msgid "Partition edit"
-msgstr ""
+msgstr "分区编辑"
 
 #: gnu/installer/newt/partition.scm:647
-#, scheme-format
+#, fuzzy, scheme-format
 msgid "Are you sure you want to delete everything on disk ~a?"
-msgstr ""
+msgstr "您确定要删除盘~a上的所有内容吗？"
 
 #: gnu/installer/newt/partition.scm:649
 msgid "Delete disk"
-msgstr ""
+msgstr "删除盘幅"
 
 #: gnu/installer/newt/partition.scm:664
 msgid "You cannot delete a free space area."
@@ -2199,8 +2210,9 @@ msgid "Cannot read the ~a partition UUID. You may need to format it."
 msgstr ""
 
 #: gnu/installer/newt/partition.scm:737
+#, fuzzy
 msgid "Wrong partition format"
-msgstr ""
+msgstr "错误分区格式"
 
 #: gnu/installer/newt/partition.scm:768
 msgid "Guided - using the entire disk"
@@ -2216,15 +2228,15 @@ msgstr "手动"
 
 #: gnu/installer/newt/partition.scm:772
 msgid "Please select a partitioning method."
-msgstr ""
+msgstr "请选择分区方法。"
 
 #: gnu/installer/newt/partition.scm:773
 msgid "Partitioning method"
-msgstr ""
+msgstr "分区方法"
 
 #: gnu/installer/newt/services.scm:39
 msgid "Please select the desktop environment(s) you wish to install.  If you select multiple desktop environments here, you will be able to choose from them later when you log in."
-msgstr ""
+msgstr "请选择需要安装的桌面环境。如果此处选中了多个桌面环境，可在登录之后选择性使用。"
 
 #: gnu/installer/newt/services.scm:42
 msgid "Desktop environment"
@@ -2288,7 +2300,7 @@ msgstr ""
 
 #: gnu/installer/newt/timezone.scm:59
 msgid "Please select a timezone."
-msgstr ""
+msgstr "请选择时区。"
 
 #: gnu/installer/newt/user.scm:47
 msgid "Name"
@@ -2330,7 +2342,7 @@ msgstr ""
 
 #: gnu/installer/newt/user.scm:190
 msgid "System administrator password"
-msgstr ""
+msgstr "系统管理员密码"
 
 #: gnu/installer/newt/user.scm:203
 msgid "Please add at least one user to system using the 'Add' button."
@@ -2778,7 +2790,7 @@ msgstr ""
 
 #: guix/scripts.scm:89
 msgid "internal commands"
-msgstr ""
+msgstr "内部命令"
 
 #: guix/scripts.scm:90
 msgid "extension commands"
