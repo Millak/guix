@@ -2979,13 +2979,13 @@ excellent candidate for labeling of a polygon.")
 (define-public r-poorman
   (package
     (name "r-poorman")
-    (version "0.2.6")
+    (version "0.2.7")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "poorman" version))
               (sha256
                (base32
-                "0x1pk00ca7wjxnqfh1jphgsxcrq37s0c1nawv52yh5qgc4z0m3ij"))))
+                "1amlcbgfnm6yh7lmlzhs7aalv4mdm2ir3s2kpx33ppnz7hlii508"))))
     (properties `((upstream-name . "poorman")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
