@@ -52088,6 +52088,26 @@ easy and usable crypto while trying to minimize the use of unsafe code.")
         ("rust-nix" ,rust-nix-0.8)
         ("rust-winapi" ,rust-winapi-0.2))))))
 
+(define-public rust-os-release-0.1
+  (package
+    (name "rust-os-release")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "os-release" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09zckcazggm33cbhjgdajm8rg41x9y75yf13rhcyqlqvyzi9mwl2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-lazy-static" ,rust-lazy-static-1))))
+    (home-page "https://github.com/pop-os/os-release")
+    (synopsis "Parse @code{/etc/os-release} files on Linux distributions")
+    (description "This package provides parsing @code{/etc/os-release} files
+on Linux distributions.")
+    (license license:expat)))
+
 (define-public rust-os-str-bytes-6
   (package
     (name "rust-os-str-bytes")
