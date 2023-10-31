@@ -3317,13 +3317,13 @@ a column in data frame.")
 (define-public r-rsqlite
   (package
     (name "r-rsqlite")
-    (version "2.3.1")
+    (version "2.3.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RSQLite" version))
               (sha256
                (base32
-                "1jil3wgfh1asfb9c4cr9qyr74wb9f87r7sa03kj187201hb3xlly"))))
+                "09vbx3akqws8a07ai6qbp3jn1w05qsmazl79wl2dyvvjpzs8b62x"))))
     (properties `((upstream-name . "RSQLite")))
     (build-system r-build-system)
     (propagated-inputs
@@ -3332,8 +3332,8 @@ a column in data frame.")
            r-cpp11
            r-dbi
            r-memoise
-           r-plogr
-           r-pkgconfig))
+           r-pkgconfig
+           r-plogr))
     (native-inputs
      (list r-knitr))
     (home-page "https://github.com/rstats-db/RSQLite")
