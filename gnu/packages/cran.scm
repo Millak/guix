@@ -305,6 +305,30 @@ are included as well.")
     ;; Any version of the GPL.
     (license license:gpl3+)))
 
+(define-public r-celestial
+  (package
+    (name "r-celestial")
+    (version "1.4.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "celestial" version))
+       (sha256
+        (base32 "1gls0qvr8mxz79lsmk76v253f747g0cqys8p8wjmpijs8r0pyr4z"))))
+    (properties `((upstream-name . "celestial")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-nistunits r-pracma r-rann))
+    (home-page "https://cran.r-project.org/package=celestial")
+    (synopsis
+     "Collection of common astronomical conversion routines and functions")
+    (description
+     "This package contains a number of common astronomy conversion routines,
+particularly the HMS and degrees schemes, which can be fiddly to convert between
+on mass due to the textural nature of the former.  It allows users to coordinate
+match datasets quickly.  It also contains functions for various cosmological
+calculations.")
+    (license license:gpl3)))
+
 ;; The package sources include multiple non-minified JavaScript files and the
 ;; v5.1.0 variant of d3.js.  The d3.js file is not minified.
 (define-public r-chromomap
