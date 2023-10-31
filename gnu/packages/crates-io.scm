@@ -89349,6 +89349,19 @@ crate.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-windows-interface-0.39
+  (package
+    (inherit rust-windows-interface-0.46)
+    (name "rust-windows-interface")
+    (version "0.39.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows-interface" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "00h56znmak3p8bh28y3s48m5zv6q7dn40vnvf3dzf0sz5rszrym2"))))))
+
 (define-public rust-windows-metadata-0.51
   (package
     (name "rust-windows-metadata")
