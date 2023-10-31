@@ -23257,14 +23257,14 @@ handle missing genotypes at some SNPs.")
 (define-public r-sampling
   (package
     (name "r-sampling")
-    (version "2.9")
+    (version "2.10")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sampling" version))
        (sha256
         (base32
-         "11xis4vzn2ga8ml9xrgfgqzccvwbnabq35aidzdvpnvciybsanvz"))))
+         "0x976wblv663aidqmcif1rjv72nbxf4nzms901lmryxbq1p9gv7x"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lpsolve r-mass))
