@@ -4129,13 +4129,13 @@ Grace Roman Space Telescope.")
 (define-public python-radio-beam
   (package
     (name "python-radio-beam")
-    (version "0.3.4")
+    (version "0.3.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "radio-beam" version))
        (sha256
-        (base32 "0293hlbxb61h8js7yrvrbiw8108qn5s0rh2iy9rkhc012mzjacp0"))))
+        (base32 "19c6gmm1wvyp5nn1yfbzl428rkysdq273j2yaarxpivv7cwj7qjk"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-astropy
@@ -4143,7 +4143,7 @@ Grace Roman Space Telescope.")
            python-numpy
            python-scipy
            python-six))
-    (native-inputs (list python-pytest-astropy))
+    (native-inputs (list python-pytest-astropy python-setuptools-scm))
     (home-page "https://radio-beam.readthedocs.io/en/latest/")
     (synopsis "Operations for radio astronomy beams with Astropy")
     (description
