@@ -73387,6 +73387,24 @@ OIDs)")
     (description "The package provides bindings to SQLite.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-sqlite3-sys-0.14
+  (package
+    (inherit rust-sqlite3-sys-0.15)
+    (name "rust-sqlite3-sys")
+    (version "0.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlite3-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1vmrzgchmbqk9jk1dq1jp1lq6id0p3h8vwna02x60ly59y19jz6l"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-sqlite3-src" ,rust-sqlite3-src-0.4))
+       #:cargo-development-inputs (("rust-temporary" ,rust-temporary-0.6))))))
+
 (define-public rust-sqlite3-sys-0.13
   (package
     (inherit rust-sqlite3-sys-0.15)
