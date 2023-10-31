@@ -13479,3 +13479,44 @@ historical battery usage and related statistics.")
     (home-page "http://xffm.org/")
     (license license:gpl3+)
     (properties '((upstream-name . "xffm")))))
+
+(define-public libcall-ui
+  (package
+    (name "libcall-ui")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.gnome.org/World/Phosh/libcall-ui")
+             (commit "6798b38d4d66d069751151b3e9a202c6de8d7f3c")))
+       (file-name (git-file-name "libcall-ui" version))
+       (sha256
+        (base32
+         "0zfrxh77ag8garqj319amnxjcdyp3ig12dkxfkl6wbwn1mvyrwx8"))
+       (patches (search-patches "libcall-ui-make-it-installable.patch"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" (getcwd))
+              ;; Tests require a running X server.
+              (system "Xvfb :1 &")
+              (setenv "DISPLAY" ":1"))))))
+    (propagated-inputs ; All these in call-ui.pc.
+     (list glib
+           gtk+
+           (@ (gnu packages telephony) libcallaudio)
+           libhandy))
+    (native-inputs
+     (list `(,glib "bin") ; glib-mkenums
+           pkg-config
+           xorg-server-for-tests))
+    (synopsis "Common User Interfaces for call handling")
+    (description "This package provides common user interfaces to make and
+receive calls.")
+    (home-page "https://gitlab.gnome.org/World/Phosh/libcall-ui")
+    (license license:lgpl2.1+)))

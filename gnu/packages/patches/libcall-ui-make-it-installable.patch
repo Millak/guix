@@ -1,0 +1,81 @@
+From 1a79c18e85232a6f56a58ec99271b92d5b0e6dca Mon Sep 17 00:00:00 2001
+Message-ID: <1a79c18e85232a6f56a58ec99271b92d5b0e6dca.1698606228.git.vivien@planete-kraus.eu>
+From: Vivien Kraus <vivien@planete-kraus.eu>
+Date: Sun, 29 Oct 2023 19:42:55 +0100
+Subject: [PATCH] Install libcall-ui.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Tracked at https://gitlab.gnome.org/World/Phosh/libcall-ui/-/issues/27
+
+* src/meson.build: Require pkgconfig.  Install a pkg-config
+definition.  Install the headers.
+(call_ui_lib): Install it.  Use “library”, not “static_library”.
+* meson.build (config_h): Install the config.h file.
+(call_ui_enum_sources): Install the header file.
+---
+ meson.build     |  1 +
+ src/meson.build | 22 +++++++++++++++++++---
+ 2 files changed, 20 insertions(+), 3 deletions(-)
+
+diff --git a/meson.build b/meson.build
+index 6d96178..80514ba 100644
+--- a/meson.build
++++ b/meson.build
+@@ -93,6 +93,7 @@ configure_file(
+   input: 'cui-config.h.in',
+   output: 'cui-config.h',
+   configuration: config_h,
++  install_dir: get_option('includedir')
+ )
+ 
+ #subdir('data')
+diff --git a/src/meson.build b/src/meson.build
+index bdb347c..2f9fa0c 100644
+--- a/src/meson.build
++++ b/src/meson.build
+@@ -1,7 +1,11 @@
++pkg = import('pkgconfig')
++
+ call_ui_enum_headers = files(['cui-call.h',
+                              ])
+ call_ui_enum_sources = gnome.mkenums_simple('cui-enums',
+-                                            sources : call_ui_enum_headers)
++                                            sources : call_ui_enum_headers,
++                                            install_header: true,
++                                            install_dir: get_option('includedir'))
+ 
+ call_ui_resources = gnome.compile_resources(
+    'cui-resources',
+@@ -50,11 +54,23 @@ call_ui_c_args = [
+   '-DG_LOG_DOMAIN="Cui"',
+ ]
+ 
+-call_ui_lib = static_library('call-ui',
++call_ui_lib = library('call-ui',
+   call_ui_sources,
+   c_args: call_ui_c_args,
+   include_directories: [ root_inc, src_inc ],
+-  dependencies: call_ui_deps)
++  dependencies: call_ui_deps,
++  install: true)
++
++pkg.generate(call_ui_lib)
++
++install_headers(
++ 'call-ui.h',
++ 'cui-call.h',
++ 'cui-call-display.h',
++ 'cui-main.h',
++ 'cui-dialpad.h',
++ 'cui-keypad.h',
++)
+ 
+ libcall_ui_dep = declare_dependency(
+   sources: call_ui_enum_sources,
+
+base-commit: 817d770cfa6876d37c4a6d09b00c9bdedfdce8b7
+-- 
+2.41.0
+
