@@ -175,6 +175,8 @@ Linux-libre.")
                     (guix build gnu-build-system)
                     (guix build utils))
          #:tests? #f                    ; no tests
+         #:make-flags `(,(string-append "PREFIX=" (assoc-ref %outputs "out"))
+                        ,(string-append "CC=" ,(cc-for-target)))
          #:phases
          (let ((subdirs '("assembler" "disassembler")))
            (modify-phases %standard-phases
@@ -182,24 +184,19 @@ Linux-libre.")
              (add-before 'build 'patch-/bin/true
                (lambda _
                  (substitute* (find-files "." "Makefile")
-                   (("/bin/true") ":"))
-                 #t))
+                   (("/bin/true") ":"))))
              (replace 'build
-               (lambda _
+               (lambda* (#:key (make-flags '()) #:allow-other-keys)
                  (for-each (lambda (dir)
-                             (invoke "make" "-C" dir "CC=gcc"))
-                           subdirs)
-                 #t))
+                             (apply invoke "make" "-C" dir make-flags))
+                           subdirs)))
              (replace 'install
-               (lambda* (#:key outputs #:allow-other-keys)
+               (lambda* (#:key outputs (make-flags '()) #:allow-other-keys)
                  (let ((out (assoc-ref outputs "out")))
                    (mkdir-p (string-append out "/bin"))
                    (for-each (lambda (dir)
-                               (invoke "make" "-C" dir
-                                       (string-append "PREFIX=" out)
-                                       "install"))
-                             subdirs)
-                   #t)))))))
+                               (apply invoke "make" "-C" dir "install" make-flags))
+                             subdirs))))))))
       (home-page
        "https://bues.ch/cms/hacking/misc.html#linux_b43_driver_firmware_tools")
       (synopsis "Collection of tools for the b43 wireless driver")
