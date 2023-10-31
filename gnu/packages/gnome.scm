@@ -12915,6 +12915,33 @@ both peers support it.  You might want that when communicating on a single
 host to avoid parser overhead and memory-allocator fragmentation.")
     (license license:lgpl2.1+)))
 
+(define-public gmobile
+  (package
+    (name "gmobile")
+    (version "0.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.gnome.org/guidog/gmobile")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "gmobile" version))
+       (sha256
+        (base32
+         "0lr22nj4ypzxbjim1a7ay07nh4vx3dqc895qql437gda6x0rvn2p"))
+       (patches
+        (search-patches "gmobile-make-it-installable.patch"))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list `(,glib "bin") ; for glib-compile-resources
+           pkg-config))
+    (propagated-inputs
+     (list glib json-glib))
+    (synopsis "Functions useful in mobile related, glib based projects")
+    (description "This package provides functions for mobiles.")
+    (home-page "https://gitlab.gnome.org/guidog/gmobile")
+    (license license:lgpl2.1+)))
+
 (define-public feedbackd
   (package
     (name "feedbackd")
