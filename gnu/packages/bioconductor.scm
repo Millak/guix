@@ -9109,6 +9109,43 @@ isotypes. This R package enables the identification and classification of such
 domain isotypes from pfam data.")
     (license license:expat)))
 
+(define-public r-piano
+  (package
+    (name "r-piano")
+    (version "2.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "piano" version))
+       (sha256
+        (base32 "0rm9afgq4n7yinmx09b0xd17wgzhbswm80vcjmmwxr6fv1741xfy"))))
+    (properties `((upstream-name . "piano")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biobase
+           r-biocgenerics
+           r-dt
+           r-fgsea
+           r-gplots
+           r-htmlwidgets
+           r-igraph
+           r-marray
+           r-relations
+           r-scales
+           r-shiny
+           r-shinydashboard
+           r-shinyjs
+           r-visnetwork))
+    (native-inputs (list r-knitr))
+    (home-page "https://varemo.github.io/piano/")
+    (synopsis "Platform for integrative analysis of omics data")
+    (description
+     "Piano performs gene set analysis using various statistical methods, from
+different gene level statistics and a wide range of gene-set collections.  The
+package contains functions for combining the results of multiple runs of gene
+set analyses.")
+    (license license:gpl2+)))
+
 ;; This is a CRAN package, but it depends on a Bioconductor package:
 ;; r-aroma-light, r-dnacopy..
 (define-public r-pscbs
