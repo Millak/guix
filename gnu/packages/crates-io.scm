@@ -43598,19 +43598,20 @@ lexer.")
 (define-public rust-mach-0.3
   (package
     (name "rust-mach")
-    (version "0.3.0")
+    (version "0.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "mach" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0a895rhg3a1l3ws4qf83s5mx0g29v1fzgjmbag1h36v62hmg1vi8"))))
+        (base32 "1yksa8lwzqh150gr4417rls1wk20asy9vhp8kq5g9n7z58xyh8xq"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2))))
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))))
     (home-page "https://github.com/fitzgen/mach")
     (synopsis "Rust interface to the Mach 3.0 kernel that underlies OSX")
     (description
