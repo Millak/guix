@@ -1,0 +1,44 @@
+From 33b75bfcda3437b12b6155addeeddcea697a4270 Mon Sep 17 00:00:00 2001
+Message-ID: <33b75bfcda3437b12b6155addeeddcea697a4270.1698608762.git.vivien@planete-kraus.eu>
+From: Vivien Kraus <vivien@planete-kraus.eu>
+Date: Sun, 29 Oct 2023 20:45:24 +0100
+Subject: [PATCH] Disable the direct call SIP test.
+
+* plugins/provider/tests/test-sip.c (main): Disable it.
+---
+
+This test passes in a guix shell --container --network but not in
+guix shell --container.  The most likely cause is it requires access to the
+network.
+
+ plugins/provider/tests/test-sip.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/plugins/provider/tests/test-sip.c b/plugins/provider/tests/test-sip.c
+index 185d372..4e83d40 100644
+--- a/plugins/provider/tests/test-sip.c
++++ b/plugins/provider/tests/test-sip.c
+@@ -442,8 +442,11 @@ main (int   argc,
+   g_test_add ("/Calls/SIP/origin_call_lists", SipFixture, NULL,
+               setup_sip_origins, test_sip_origin_call_lists, tear_down_sip_origins);
+ 
+-  g_test_add ("/Calls/SIP/calls_direct_call", SipFixture, NULL,
+-              setup_sip_origins, test_sip_call_direct_calls, tear_down_sip_origins);
++  /* The direct call fails in the Guix build environment, possibly
++   * because the network is more restricted. */
++
++  /* g_test_add ("/Calls/SIP/calls_direct_call", SipFixture, NULL,
++    setup_sip_origins, test_sip_call_direct_calls, tear_down_sip_origins); */
+ 
+   ret = g_test_run ();
+ 
+
+base-commit: 936d36287324163b958c6ea0c4297c7a607ee18c
+prerequisite-patch-id: 20f8a81da35ce1797635eb310e1f85ac5ff814f6
+prerequisite-patch-id: 96768617d0a8ee8c66faa00220a1612e0f527292
+prerequisite-patch-id: 444c1ee57c24ba4b8165497b0a5885844110c59b
+prerequisite-patch-id: 9415b848ca9ee277bccbad7c3fff23230d5016f1
+prerequisite-patch-id: 3ca2a45be430041875b21f6c8dfac0bc17916abf
+-- 
+2.41.0
+

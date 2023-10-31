@@ -212,6 +212,7 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages swig)
+  #:use-module (gnu packages telephony)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
@@ -13509,7 +13510,7 @@ historical battery usage and related statistics.")
     (propagated-inputs ; All these in call-ui.pc.
      (list glib
            gtk+
-           (@ (gnu packages telephony) libcallaudio)
+           libcallaudio
            libhandy))
     (native-inputs
      (list `(,glib "bin") ; glib-mkenums
@@ -13520,3 +13521,65 @@ historical battery usage and related statistics.")
 receive calls.")
     (home-page "https://gitlab.gnome.org/World/Phosh/libcall-ui")
     (license license:lgpl2.1+)))
+
+(define-public calls
+  (package
+    (name "calls")
+    (version "45.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/" name "/"
+                                  (version-major version) "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1mvnrm5wbl69xbcjg8nxd6l6nj2fd3whbyh70axlm75c7l7d5j5r"))
+              (patches
+               (search-patches "calls-disable-application-test.patch"
+                               "calls-disable-sip-test.patch"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:configure-flags #~'("-Dgtk_doc=true")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" (getcwd))
+              ;; Tests require a running X server.
+              (system "Xvfb :1 &")
+              (setenv "DISPLAY" ":1"))))))
+    (inputs
+     (list evolution-data-server
+           feedbackd
+           folks
+           glib
+           gom
+           gstreamer
+           gst-plugins-base
+           gst-plugins-good
+           gst-plugins-bad
+           gtk+
+           libcall-ui
+           libgee
+           libpeas
+           libhandy
+           modem-manager
+           sofia-sip))
+    (native-inputs
+     (list desktop-file-utils           ;update-desktop-database
+           gettext-minimal
+           `(,glib "bin")               ;glib-mkenums
+           gtk-doc                      ;gtkdoc-scan
+           `(,gtk+ "bin")               ;gtk-update-icon-cache
+           pkg-config
+           python-docutils              ;rst2man
+           vala
+           xorg-server-for-tests))
+    (home-page "https://gitlab.gnome.org/GNOME/calls")
+    (synopsis "Phone dialer and call handler")
+    (description "Calls can make and answer phone calls using different
+backends, such as ModemManager for phones and @acronym{SIP, Session Initiation
+Protocol} for @acronym{VoIP, Voice over @acronym{IP, Internet Protocol}}.")
+    (license license:gpl3+)))

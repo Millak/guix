@@ -989,6 +989,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/calibre-no-updates-dialog.patch		\
   %D%/packages/patches/calibre-remove-test-sqlite.patch		\
   %D%/packages/patches/calibre-remove-test-unrar.patch		\
+  %D%/packages/patches/calls-disable-application-test.patch	\
+  %D%/packages/patches/calls-disable-sip-test.patch		\
   %D%/packages/patches/camlboot-dynamically-allocate-stack-signal.patch	\
   %D%/packages/patches/catdoc-CVE-2017-11110.patch		\
   %D%/packages/patches/ccextractor-add-missing-header.patch	\
