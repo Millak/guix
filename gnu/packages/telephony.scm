@@ -95,6 +95,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system qt))
 
 (define-public phonesim
@@ -1168,3 +1169,27 @@ software foruses such as @acronym{VoIP, Voice over @acronym{IP, Internet
 Protocol}}, @acronym{IM, Instant Messaging}, and many other real-time and
 person-to-person communication services.")
     (license license:lgpl2.1)))
+
+(define-public libcallaudio
+  (package
+    (name "libcallaudio")
+    (version "0.1.9")
+    (source (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/mobian1/callaudiod/")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0qnllb28101c2ss1k3iwr04gljfyjqmbla5csj6vkq1y63aagr9s"))))
+    (build-system meson-build-system)
+    (inputs (list alsa-lib glib pulseaudio))
+    (native-inputs
+     (list `(,glib "bin")          ;for gdbus-codegen
+           pkg-config))
+    (home-page "https://gitlab.com/mobian1/callaudiod")
+    (synopsis "Library for audio routing during voice calls")
+    (description "This package provides @command{callaudiod}, a daemon to
+route audio during phone calls, and a library.")
+    (license license:gpl3+)))
