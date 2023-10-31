@@ -37530,13 +37530,13 @@ user streams, and to parse the output into data frames.")
 (define-public r-strex
   (package
     (name "r-strex")
-    (version "1.6.0")
+    (version "1.6.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "strex" version))
               (sha256
                (base32
-                "1fxg07n8cjvvgpbzqhyx5ma5bv6vax1yw0rbfdqfzr79v6k5x3n7"))))
+                "1vz5zrvf052bg2y48yvkci4hciknvyw5gpbvnklgyny5lzlqvyiq"))))
     (properties `((upstream-name . "strex")))
     (build-system r-build-system)
     (propagated-inputs
