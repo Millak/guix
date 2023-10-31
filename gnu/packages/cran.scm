@@ -13842,16 +13842,16 @@ contains or can be specified by the user.")
 (define-public r-wrs2
   (package
     (name "r-wrs2")
-    (version "1.1-4")
+    (version "1.1-5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "WRS2" version))
               (sha256
                (base32
-                "1838wy59cqd65s0bw6c24xcvx7zflypqcbgs35l9s2fj87vw2hdc"))))
+                "028xs424m879siaf3rrhzl1dacp9j7wcl5fpikyx2n0cc7anq4vq"))))
     (properties `((upstream-name . "WRS2")))
     (build-system r-build-system)
-    (propagated-inputs (list r-mass r-mc2d r-plyr r-reshape))
+    (propagated-inputs (list r-mass r-plyr r-reshape))
     (native-inputs (list r-knitr))
     (home-page "https://r-forge.r-project.org/projects/psychor/")
     (synopsis "Collection of robust statistical methods")
