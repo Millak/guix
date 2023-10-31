@@ -70671,20 +70671,22 @@ shell.")
        (sha256
         (base32 "0jnrw3f174974fsi2hg48l0klpy24767ib28w0xcvi2ll5axxb1r"))))))
 
-(define-public rust-shellexpand-2
+(define-public rust-shellexpand-3
   (package
     (name "rust-shellexpand")
-    (version "2.1.2")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "shellexpand" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1r0i1r2r3dv0rc82xc5vhxmwl3zbvblf91sgmwls0k8chiv81k3w"))))
+        (base32 "0jz1i14ziz8gbyj71212s7dqrw6q96f25i48zkmy66fcjhxzl0ys"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-dirs" ,rust-dirs-4))))
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-dirs" ,rust-dirs-5)
+                       ("rust-os-str-bytes" ,rust-os-str-bytes-6))))
     (home-page "https://github.com/netvl/shellexpand")
     (synopsis "Shell-like expansions in strings")
     (description
@@ -70694,6 +70696,21 @@ perform shell-like expansions in strings, that is, to expand variables like
 @samp{~} in the beginning of a string into the home directory (again, inside
 some context).")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-shellexpand-2
+  (package
+    (inherit rust-shellexpand-3)
+    (name "rust-shellexpand")
+    (version "2.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "shellexpand" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1r0i1r2r3dv0rc82xc5vhxmwl3zbvblf91sgmwls0k8chiv81k3w"))))
+    (arguments
+     `(#:cargo-inputs (("rust-dirs" ,rust-dirs-4))))))
 
 (define-public rust-shlex-1
   (package
