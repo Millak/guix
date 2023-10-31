@@ -6,7 +6,7 @@
 ;;; Copyright © 2016 Lukas Gradl <lgradl@openmailbox.org>
 ;;; Copyright © 2016 Francesco Frassinelli <fraph24@gmail.com>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2017, 2018 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2018, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2018, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Adonay Felipe Nogueira <https://libreplanet.org/wiki/User:Adfeno> <adfeno@hyperbola.info>
 ;;; Copyright © 2018 Jovany Leandro G.C <bit4bit@riseup.net>
@@ -901,7 +901,7 @@ telephony functionality into custom Telegram clients.")
 (define-public coturn
   (package
     (name "coturn")
-    (version "4.6.1")
+    (version "4.6.2")
     (source
      (origin
        (method git-fetch)
@@ -910,7 +910,7 @@ telephony functionality into custom Telegram clients.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04d3c2lxc496zxx3nzqr9fskm2w57kqijdfq3wsa0yp2dp28yjkj"))))
+        (base32 "16rr8666spi84qcc8l2qga42hpskjmvrpj1w58jbanxnpsijv8h4"))))
     (inputs
      (list openssl
            sqlite
