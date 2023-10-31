@@ -12945,7 +12945,7 @@ host to avoid parser overhead and memory-allocator fragmentation.")
 (define-public feedbackd
   (package
     (name "feedbackd")
-    (version "0.0.0+git20200527")
+    (version "0.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -12954,12 +12954,18 @@ host to avoid parser overhead and memory-allocator fragmentation.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wbkzxnqjydfgjvp7vz4ghczcz740zcb1yn90cb6gb5md4n6qx2y"))))
+                "1acwpb8cgzyvzriphrb42k3d7njwcn88j66i5wz75yx2sbfaf93q"))
+              (patches
+               (search-patches "feedbackd-use-system-gmobile.patch"))
+              (snippet
+               #~(begin
+                   (use-modules (guix build utils))
+                   (delete-file-recursively "subprojects")))))
     (build-system meson-build-system)
     (native-inputs
      (list `(,glib "bin") gobject-introspection pkg-config vala))
     (inputs
-     (list dbus gsound json-glib libgudev))
+     (list dbus gmobile gsound json-glib libgudev))
     (propagated-inputs
      (list glib)) ; in Requires of libfeedback-0.0.pc
     (synopsis "Haptic/visual/audio feedback via DBus")
