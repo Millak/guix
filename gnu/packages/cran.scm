@@ -7842,6 +7842,33 @@ a variety of functions for the manipulation and analysis of arbitrarily
 dimensioned arrays.")
     (license license:gpl2)))
 
+(define-public r-magicaxis
+  (package
+    (name "r-magicaxis")
+    (version "2.2.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "magicaxis" version))
+       (sha256
+        (base32 "1gqnivn6qjmf7axdi0pff6a40clklbipcr6qvm6ivzqbqhpbcb7v"))))
+    (properties `((upstream-name . "magicaxis")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-celestial
+           r-mapproj
+           r-mass
+           r-plotrix
+           r-rann
+           r-sm))
+    (home-page "https://cran.r-project.org/package=magicaxis")
+    (synopsis "Scientific plotting with minor-tick and log minor-tick support")
+    (description
+     "This package provides functions to make useful (and pretty) plots for
+scientific plotting.  Additional plotting features are added for base plotting,
+with particular emphasis on making attractive log axis plots.")
+    (license license:gpl3)))
+
 (define-public r-rmysql
   (package
     (name "r-rmysql")
