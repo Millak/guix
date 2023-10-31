@@ -6923,13 +6923,13 @@ print, summary, etc.")
 (define-public r-lambertw
   (package
     (name "r-lambertw")
-    (version "0.6.8")
+    (version "0.6.9")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "LambertW" version))
               (sha256
                (base32
-                "10lqsz44ndm8pl8z75j35fzd1s313q09rs9bs3lkym8d43k50pha"))))
+                "0260sa4w5i4vwxg13g3q0dmairsrbyaijr2gxlppy09nxriccwbr"))))
     (properties `((upstream-name . "LambertW")))
     (build-system r-build-system)
     (propagated-inputs (list r-ggplot2
