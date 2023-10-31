@@ -70674,19 +70674,17 @@ shell.")
 (define-public rust-shellexpand-2
   (package
     (name "rust-shellexpand")
-    (version "2.1.0")
+    (version "2.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "shellexpand" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0a981ynym0hipnvkd93ihszdszjqs0cslj5ilzsdv19d3f1vggc3"))))
+        (base32 "1r0i1r2r3dv0rc82xc5vhxmwl3zbvblf91sgmwls0k8chiv81k3w"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-dirs-next" ,rust-dirs-next-2))))
+     `(#:cargo-inputs (("rust-dirs" ,rust-dirs-4))))
     (home-page "https://github.com/netvl/shellexpand")
     (synopsis "Shell-like expansions in strings")
     (description
