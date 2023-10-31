@@ -40,7 +40,7 @@
 ;;; Copyright © 2021 Frank Pursel <frank.pursel@gmail.com>
 ;;; Copyright © 2021 Rovanion Luckey <rovanion.luckey@gmail.com>
 ;;; Copyright © 2021 Justin Veilleux <terramorpha@cock.li>
-;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2021, 2022, 2023 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Thomas Albers Raviola <thomas@thomaslabs.org>
@@ -553,7 +553,7 @@ you create custom user interfaces for your MIDI hardware.")
 (define-public strawberry
   (package
     (name "strawberry")
-    (version "1.0.18")
+    (version "1.0.21")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -562,7 +562,7 @@ you create custom user interfaces for your MIDI hardware.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1knijckphq2jxrz8nmv4cb64zl1rz3bjyq5ipac09hnj2gvv5rmw"))
+                "1ibs7x7i1zz2r13wg238c5bhr1j4x8vl7hvjg01vdl5hfrh2gk1i"))
               (modules '((guix build utils)
                          (ice-9 regex)))
               (snippet
@@ -619,6 +619,7 @@ you create custom user interfaces for your MIDI hardware.")
            gst-plugins-good
            icu4c
            libcdio
+           libebur128
            libmtp
            protobuf
            pulseaudio
