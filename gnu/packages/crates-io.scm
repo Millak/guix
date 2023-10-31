@@ -73331,6 +73331,23 @@ OIDs)")
     (description "The package provides SQLite.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-sqlite3-src-0.4
+  (package
+    (inherit rust-sqlite3-src-0.5)
+    (name "rust-sqlite3-src")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sqlite3-src" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14ancc9jafw5ql9carg27icjxcfrdz5izxk4bj7fp5n909x5m0fi"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cc" ,rust-cc-1)
+        ("rust-pkg-config" ,rust-pkg-config-0.3))))))
+
 (define-public rust-sqlite3-src-0.3
   (package
     (inherit rust-sqlite3-src-0.5)
