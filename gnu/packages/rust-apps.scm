@@ -983,6 +983,57 @@ editor in less than 1024 lines of code with syntax higlighting, search and
 more.")
     (license (list license:expat license:asl2.0))))
 
+(define-public macchina
+  (package
+    (name "macchina")
+    (version "6.1.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "macchina" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "044bygdazv8l1d5sf7pxn2xp26pmnx2b65122qzb37m1ylb1ksg6"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:cargo-inputs `(("rust-ansi-to-tui" ,rust-ansi-to-tui-2)
+                       ("rust-atty" ,rust-atty-0.2)
+                       ("rust-bytesize" ,rust-bytesize-1)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-color-to-tui" ,rust-color-to-tui-0.2)
+                       ("rust-colored" ,rust-colored-2)
+                       ("rust-dirs" ,rust-dirs-4)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-libmacchina" ,rust-libmacchina-6)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-shellexpand" ,rust-shellexpand-3)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-toml" ,rust-toml-0.5)
+                       ("rust-tui" ,rust-tui-0.19)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1)
+                       ("rust-vergen" ,rust-vergen-7))
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'install 'install-extras
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       (let* ((out (assoc-ref outputs "out"))
+                              (share (string-append out "/share"))
+                              (contrib (string-append share "/contrib")))
+                         (mkdir-p contrib)
+                         (copy-recursively "contrib" contrib)))))))
+    (native-inputs (list pkg-config))
+    (inputs (list libgit2 sqlite zlib))
+    (home-page "https://github.com/Macchina-CLI/macchina")
+    (synopsis "System information fetcher with an emphasis on performance")
+    (description
+     "This package provides a system information fetcher with an emphasis on
+performance.  Similar to neofetch, this package prints out system information
+on the terminal in a visually appealing way.")
+    (license license:expat)))
+
 (define-public maturin
   (package
     (name "maturin")
