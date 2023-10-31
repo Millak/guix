@@ -29692,18 +29692,17 @@ retrieving random data from system source.")
 (define-public rust-getset-0.1
   (package
     (name "rust-getset")
-    (version "0.1.1")
+    (version "0.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "getset" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "016590lxhlqga016z1qnavl0zavk59b97aix2zcd4wad3b02icr4"))))
+        (base32 "1f8yc83hm5b7vzscxq20ivdv7wlfvabn79j653zh9k3m1qjjfmz4"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-proc-macro-error" ,rust-proc-macro-error-1)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
