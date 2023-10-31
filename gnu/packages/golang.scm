@@ -10826,7 +10826,7 @@ additions.")
 (define-public go-github-com-hjson-hjson-go
   (package
     (name "go-github-com-hjson-hjson-go")
-    (version "3.1.0")
+    (version "4.3.1")
     (source
      (origin
        (method git-fetch)
@@ -10836,7 +10836,7 @@ additions.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1dfdiahimg6z9idg8jiqxwnlwjnmasbjccx8gnag49cz4yfqskaz"))))
+         "138vmbnrwzxf64cia27k407clrydvs2jx927dlv6ziydiqyvy7m3"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/hjson/hjson-go"))
