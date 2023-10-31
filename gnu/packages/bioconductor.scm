@@ -7747,6 +7747,38 @@ matrix to solve the memory problem.")
 the Human Protein Atlas project.")
     (license license:artistic2.0)))
 
+(define-public r-r3cseq
+  (package
+    (name "r-r3cseq")
+    (version "1.46.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "r3Cseq" version))
+       (sha256
+        (base32 "1wpjsiy9qh45h3k5s79w4zhkma5h4gvyf2sa8l934mx0jl16k0q2"))))
+    (properties `((upstream-name . "r3Cseq")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biostrings
+           r-data-table
+           r-genomeinfodb
+           r-genomicranges
+           r-iranges
+           r-qvalue
+           r-rcolorbrewer
+           r-rsamtools
+           r-rtracklayer
+           r-sqldf
+           r-vgam))
+    (home-page "http://r3cseq.genereg.net/Site/index.html")
+    (synopsis
+     "Analysis of Chromosome conformation capture and Next-generation sequencing")
+    (description
+     "This package is used for the analysis of long-range chromatin
+interactions from 3C-seq assay.")
+    (license license:gpl3)))
+
 (define-public r-raggedexperiment
   (package
     (name "r-raggedexperiment")
