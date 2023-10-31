@@ -4422,6 +4422,51 @@ omics protocols.  The package can also be used to explore functional pathways
 enrichment in single cell data.")
     (license license:gpl3)))
 
+(define-public r-coregx
+  (package
+    (name "r-coregx")
+    (version "2.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "CoreGx" version))
+       (sha256
+        (base32 "09pv117g8sxhrij960mparrz1r9vx8s20gmpvn1h667kl1bc0jm9"))))
+    (properties `((upstream-name . "CoreGx")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-bench
+           r-biobase
+           r-biocgenerics
+           r-biocparallel
+           r-bumpymatrix
+           r-checkmate
+           r-crayon
+           r-data-table
+           r-glue
+           r-lsa
+           r-matrixgenerics
+           r-multiassayexperiment
+           r-piano
+           r-rlang
+           r-s4vectors
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/CoreGx")
+    (synopsis
+     "Classes and functions to serve as the basis for other Gx packages")
+    (description
+     "This package provides a collection of functions and classes which serve
+as the foundation for packages such as PharmacoGx and RadioGx.  It was created
+to abstract shared functionality to increase ease of maintainability and
+reduce code repetition in current and future Gx suite programs.  Major
+features include a @code{CoreSet} class, from which RadioSet and PharmacoSet
+are derived, along with get and set methods for each respective slot.
+Additional functions related to fitting and plotting dose response curves,
+quantifying statistical correlation and calculating @acronym{AUC, area under
+the curve} or @acronym{SF, survival fraction} are included.")
+    (license license:gpl3+)))
+
 (define-public r-coverageview
   (package
     (name "r-coverageview")
