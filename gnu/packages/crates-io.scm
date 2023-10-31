@@ -76574,29 +76574,28 @@ no_std compatible by default, only relying on alloc.")
 (define-public rust-sysctl-0.4
   (package
     (name "rust-sysctl")
-    (version "0.4.0")
+    (version "0.4.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sysctl" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0p6bfjsw3v12nb2qsgm6r9klwb5qyh4w55zzmccv8r5aqb8g0085"))))
+        (base32 "1a6g8cb8c7wk0rsz6ixydbmaxhs0i8d3hmywd1qi1bfh08zlhpi2"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1)
-        ("rust-byteorder" ,rust-byteorder-1)
-        ("rust-failure" ,rust-failure-0.1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-walkdir" ,rust-walkdir-2))))
+     `(#:cargo-test-flags `("--"
+                            "--skip=ctl_value::tests_linux::ctl_value_string"
+                            "--skip=sys::ctl_iter::tests::ctl_iter_below_compare_outputs")
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-walkdir" ,rust-walkdir-2))))
     (home-page "https://github.com/johalun/sysctl-rs")
     (synopsis "Simplified interface to libc::sysctl")
     (description
-     "Simplified interface to libc::sysctl.")
+     "This package provides a simplified interface to libc::sysctl.")
     (license license:expat)))
 
 (define-public rust-sysctl-0.1
