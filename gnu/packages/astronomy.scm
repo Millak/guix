@@ -2535,13 +2535,13 @@ elevation, solar azimuth, rahukaalam, and the phases of the moon.")
 (define-public python-spectral-cube
   (package
     (name "python-spectral-cube")
-    (version "0.6.2")
+    (version "0.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "spectral-cube" version))
        (sha256
-        (base32 "1xyqdflnz084hdx1pbrqd1jrfyyc7f8v3564rww2v1hjylzgsnnh"))))
+        (base32 "10q76rsgf9w4j7y68mfa870bpxf06m6kqvivj4340jmgnsrfy1zg"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-astropy
@@ -2566,7 +2566,8 @@ elevation, solar azimuth, rahukaalam, and the phases of the moon.")
            ;; python-pvextractor
            python-pytest-astropy
            python-regions
-           python-semantic-version))
+           python-semantic-version
+           python-setuptools-scm))
     (home-page "https://spectral-cube.readthedocs.io/en/latest/")
     (synopsis "Library for reading and analyzing astrophysical spectral data cubes")
     (description
