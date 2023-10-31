@@ -5164,13 +5164,25 @@ software to answer ad hoc questions.")
            python-pysam
            python-pyyaml
            python-scipy
+           r-biocmanager
+           r-dplyr
+           r-genomicranges
+           r-here
+           r-openxlsx
+           r-optparse
+           r-readr
+           r-rsamtools
+           r-stringr
+           r-tidyr
+           r-upsetr
+           r-yaml
            snakemake-7))
     (native-inputs (list python-cython python-pyfakefs python-pytest))
     (home-page "https://github.com/dieterich-lab/Baltica")
     (synopsis "Integrated splice junction usage analysis")
     (description
      "This framework facilitates the execution of @dfn{differential junction
-usage} (DJU) methods. Additionally, it enables the integration of results from
+usage} (DJU) methods.  Additionally, it enables the integration of results from
 multiple DJU methods.")
     (license license:expat)))
 
