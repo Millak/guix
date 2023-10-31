@@ -19110,13 +19110,13 @@ handling.")
 (define-public r-gridpattern
   (package
     (name "r-gridpattern")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gridpattern" version))
        (sha256
-        (base32 "19g8mnc5y68w9pybckmcvr56qkwbs5z9z6zhj0bxmlprwanq4f8x"))))
+        (base32 "1v7xfgbnrr4v3arr7nm0663aywn47xb89sd0rn9s9dcz7r50aa2i"))))
     (properties `((upstream-name . "gridpattern")))
     (build-system r-build-system)
     (propagated-inputs
