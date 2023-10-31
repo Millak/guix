@@ -368,13 +368,13 @@ Shiny applications.")
 (define-public r-consort
   (package
     (name "r-consort")
-    (version "1.2.0")
+    (version "1.2.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "consort" version))
               (sha256
                (base32
-                "1jshk53121w58i4if593qzxm6lcrrggz8parwhqvv6hnbx51rhck"))))
+                "03xkypy4r84mdif6m331c27haxnyi1s87vvj2f83xxw0m0s5im5j"))))
     (properties `((upstream-name . "consort")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
