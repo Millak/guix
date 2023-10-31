@@ -41456,6 +41456,53 @@ functions and static variables these libraries contain.")
         (base32
          "16pc0gx4gkg0q2s1ssq8268brn14j8344623vwhadmivc4lsmivz"))))))
 
+(define-public rust-libmacchina-6
+  (package
+    (name "rust-libmacchina")
+    (version "6.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libmacchina" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ag3dy24a1hs5926a7131v66j75cmgszmrhkq9z9p2c81fi6v2dn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-core-foundation" ,rust-core-foundation-0.9)
+                       ("rust-core-graphics" ,rust-core-graphics-0.22)
+                       ("rust-core-video-sys" ,rust-core-video-sys-0.1)
+                       ("rust-dirs" ,rust-dirs-4)
+                       ("rust-home" ,rust-home-0.5)
+                       ("rust-if-addrs" ,rust-if-addrs-0.6)
+                       ("rust-itertools" ,rust-itertools-0.10)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-local-ip-address" ,rust-local-ip-address-0.4)
+                       ("rust-mach" ,rust-mach-0.3)
+                       ("rust-nix" ,rust-nix-0.24)
+                       ("rust-num-cpus" ,rust-num-cpus-1)
+                       ("rust-os-release" ,rust-os-release-0.1)
+                       ("rust-pciid-parser" ,rust-pciid-parser-0.6)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-sqlite" ,rust-sqlite-0.27)
+                       ("rust-sysctl" ,rust-sysctl-0.4)
+                       ("rust-vergen" ,rust-vergen-7)
+                       ("rust-walkdir" ,rust-walkdir-2)
+                       ("rust-windows" ,rust-windows-0.39)
+                       ("rust-winreg" ,rust-winreg-0.10)
+                       ("rust-wmi" ,rust-wmi-0.12)
+                       ("rust-x11rb" ,rust-x11rb-0.10))))
+    (inputs (list sqlite))
+    (native-inputs (list python-minimal-wrapper))   ; For the tests.
+    (home-page "https://github.com/Macchina-CLI/libmacchina")
+    (synopsis "Library that can fetch all sorts of system information")
+    (description
+     "This package provides a library that can fetch all sorts of system
+information.")
+    (license license:expat)))
+
 (define-public rust-libmimalloc-sys-0.1
   (package
     (name "rust-libmimalloc-sys")
