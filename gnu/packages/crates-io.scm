@@ -42842,6 +42842,32 @@ can also be used outside of a proc-macro context.")
 by inspecting the system for user preference.")
     (license license:expat)))
 
+(define-public rust-local-ip-address-0.4
+  (package
+    (name "rust-local-ip-address")
+    (version "0.4.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "local-ip-address" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xc88i6v43rx5f5im0zadd8nl3k7wvf2lv351q20d05h5w4pzawy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; Integration test with local IP address.
+       #:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-neli" ,rust-neli-0.5)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-windows-sys" ,rust-windows-sys-0.42))))
+    (home-page "https://github.com/EstebanBorai/local-ip-address")
+    (synopsis
+     "Retrieve system's local IP address and network interfaces/adapters")
+    (description
+     "This package provides retrieving the system's local IP address and
+network interfaces/adapters.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-lock-api-0.4
   (package
     (name "rust-lock-api")
