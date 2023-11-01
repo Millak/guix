@@ -24,12 +24,9 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
-  #:use-module (guix build-system trivial)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu build chromium-extension)
   #:use-module (gnu build icecat-extension)
-  #:use-module (gnu packages base)
-  #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages password-utils)
   #:use-module (gnu packages python))
@@ -167,28 +164,26 @@ ungoogled-chromium.")
               (sha256
                (base32
                 "1p18l1jh20x4v8dj64z9qjlp96fxsl5h069iynxfpbkzj6hd74yl"))))
-    (build-system trivial-build-system)
+    (build-system copy-build-system)
     (arguments
-     (list
-      #:modules '((guix build utils))
-      #:builder
-      #~(begin
-          (use-modules (guix build utils))
-          (setenv "PATH" (string-join '(#$coreutils
-                                        #$grep
-                                        #$password-store
-                                        #$python
-                                        #$sed
-                                        #$which) "/bin:" 'suffix))
-          (copy-recursively #$source ".")
-          (patch-shebang "src/install_host_app.sh"
-                         (list (in-vicinity #$bash-minimal "bin")))
-          (substitute* "src/install_host_app.sh"
-            (("(TARGET_DIR_FIREFOX=).*" all var)
-             (string-append var #$output "/lib/icecat/native-messaging-hosts"
-                            "\n")))
-          (invoke #$(file-append gnu-make "/bin/make")
-                  (string-append "VERSION=" #$version) "install-unix"))))
+     (let ((native-manifests "lib/icecat/native-messaging-hosts"))
+       (list
+        #:install-plan
+        `'(("src" ,native-manifests #:include ("passff.json" "passff.py")))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'substitute
+              (lambda _
+                (substitute* "src/passff.json"
+                  (("PLACEHOLDER")
+                   (format #f "~a/~a/passff.py" #$output #$native-manifests)))
+                (substitute* "src/passff.py"
+                  (("_VERSIONHOLDER_") #$version)
+                  (("^COMMAND = .*")
+                   (format #f "COMMAND = \"~a/bin/pass\"~%"
+                           #$(this-package-input "password-store"))))
+                (patch-shebang "src/passff.py")))))))
+    (inputs (list password-store python))
     (synopsis "Host app for the WebExtension PassFF")
     (description "This piece of software wraps around the zx2c4 pass shell
 command.  It has to be installed for the PassFF browser extension to work
