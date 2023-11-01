@@ -104,16 +104,16 @@
 (define-public duplicity
   (package
     (name "duplicity")
-    (version "0.8.21")
+    (version "2.1.4")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "https://code.launchpad.net/duplicity/"
-                          (version-major+minor version)
-                          "-series/" version "/+download/duplicity-"
-                          version ".tar.gz"))
-      (sha256
-       (base32 "0ld4bhsi6iv4bvy99pblbr7vlwy9jbgfd6flyvb8qwbl8rvadzjp"))))
+      (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/duplicity/duplicity")
+             (commit (string-append "rel." version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14x5brpq1l400i9l2hnyqmbn19cc1hnbmj5fn8cs8zzwzbgrfxng"))))
     (build-system python-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)     ; for msgfmt
@@ -155,6 +155,10 @@
              (substitute* '("testing/functional/__init__.py"
                             "testing/overrides/bin/lftp")
                (("/bin/sh") (which "sh")))))
+         (add-before 'build 'fix-version
+           (lambda _
+             (substitute* "duplicity/__init__.py"
+               (("\\$version") ,(package-version this-package)))))
          (add-before 'check 'set-up-tests
            (lambda* (#:key inputs #:allow-other-keys)
              (setenv "HOME" (getcwd))   ; gpg needs to write to $HOME
