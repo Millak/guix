@@ -29173,7 +29173,8 @@ Rust.")
         (base32 "0j5bypizbk59jhkaw1abkx7ydj79pplfvwq03hcnpwvcfkxzj10d"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; `plugin_as_library` has been removed
+       #:cargo-inputs
        (("rust-gcc" ,rust-gcc-0.3)
         ("rust-libc" ,rust-libc-0.2))))
     (home-page "https://github.com/maidsafe-archive/get_if_addrs")
