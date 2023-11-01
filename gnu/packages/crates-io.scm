@@ -13041,7 +13041,8 @@ traits.")
          (base32
           "1r50dwy5hj5gq07dn0qf8222d07qv0970ymx0j8n9779yayc3w3f"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; Needs older clang
+       #:cargo-inputs
        (("rust-glob" ,rust-glob-0.2)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-libloading" ,rust-libloading-0.5))))))
