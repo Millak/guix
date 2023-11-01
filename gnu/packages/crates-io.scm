@@ -10338,7 +10338,8 @@ of built-in fundamental numeric types.")
                 "09xnpjfhw36a973dpdd2mcmb93rrix539j49vkkgcqf878174qwb"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs
        (("rust-bytecheck-derive" ,rust-bytecheck-derive-0.6)
         ("rust-ptr-meta" ,rust-ptr-meta-0.1)
         ("rust-simdutf8" ,rust-simdutf8-0.1)
