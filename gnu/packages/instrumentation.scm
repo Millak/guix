@@ -85,7 +85,9 @@
      `(#:tests? #f  ; FIXME - When Python's bindings are enabled, tests do not
                     ; pass.
        #:make-flags
-       ,#~(list (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
+       ,#~(list
+           (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib")
+           "DISTSETUPOPTS=--single-version-externally-managed") ;no .egg files
        #:configure-flags
        '("--enable-debug-info"
          "--enable-man-pages"
