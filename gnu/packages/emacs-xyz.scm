@@ -31585,13 +31585,13 @@ current tree.")
      "This package dynamically generates org-agenda-files.")
     (license license:gpl3+)))
 
-(define-public emacs-org-ql-dynamic-agenda
+(define-public emacs-org-dynamic-agenda-ql
   (package
     (inherit emacs-org-dynamic-agenda)
-    (name "emacs-org-ql-dynamic-agenda")
+    (name "emacs-org-dynamic-agenda-ql")
     (arguments
      (list #:include
-           #~(list "org-ql-dynamic-agenda\\.el" "README\\.org")))
+           #~(list "org-dynamic-agenda-ql\\.el" "README\\.org")))
     (propagated-inputs (list emacs-org-ql))
     (description
      "This package dynamically generates org-agenda-files, and take advantage
