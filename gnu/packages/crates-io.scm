@@ -71275,7 +71275,9 @@ Rust.")
         (base32 "10hk9194ig21w08947yavf4l97g0106ph4xxlzn8ps2kwrnnzqfc"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       '("--release" "--lib" "--bins" "--tests")
+       #:cargo-inputs
        (("rust-rand" ,rust-rand-0.7))))
     (home-page "https://github.com/statrs-dev/statrs")
     (synopsis "Statistical computing library for Rust")
