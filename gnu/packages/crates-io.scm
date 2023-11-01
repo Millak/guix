@@ -62775,11 +62775,15 @@ should be using the real rayon crate, not rustc-rayon.")
      `(#:tests? #f                      ;XXX can not find rayon?
        #:cargo-inputs
        (("rust-autocfg" ,rust-autocfg-1)
-        ("rust-crossbeam-deque" ,rust-crossbeam-deque-0.7)
+        ("rust-crossbeam-deque" ,rust-crossbeam-deque-0.8)
         ("rust-either" ,rust-either-1)
         ("rust-rustc-rayon-core" ,rust-rustc-rayon-core-0.4))
        #:cargo-development-inputs
-       (("rust-docopt" ,rust-docopt-1))))))
+       (("rust-docopt" ,rust-docopt-1)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rand-xorshift" ,rust-rand-xorshift-0.3)
+        ("rust-serde" ,rust-serde-1))))))
 
 (define-public rust-rustc-rayon-core-0.5
   (package
