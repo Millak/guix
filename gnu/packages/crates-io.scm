@@ -5198,25 +5198,30 @@ assertions on the result of your program's run.")
 (define-public rust-assert-fs-1
   (package
     (name "rust-assert-fs")
-    (version "1.0.7")
+    (version "1.0.13")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "assert-fs" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1gm1xsxmv1s8810kbjiw4rnikqi76a3yhrb8b717g90dw1rbn2fg"))))
+        (base32 "0j2vhxyb12ng6knln2bckywp5yqqxqhdd3gf0rfyvhp5d1x62w7h"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-concolor" ,rust-concolor-0.0.8)
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; Not all files included.
+         "--skip=assert::test::into_path_from_bytes"
+         "--skip=assert::test::into_path_from_str")
+       #:cargo-inputs
+       (("rust-anstream" ,rust-anstream-0.3)
+        ("rust-anstyle" ,rust-anstyle-1)
         ("rust-doc-comment" ,rust-doc-comment-0.3)
         ("rust-globwalk" ,rust-globwalk-0.8)
-        ("rust-predicates" ,rust-predicates-2)
+        ("rust-predicates" ,rust-predicates-3)
         ("rust-predicates-core" ,rust-predicates-core-1)
         ("rust-predicates-tree" ,rust-predicates-tree-1)
-        ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-yansi" ,rust-yansi-0.5))))
+        ("rust-tempfile" ,rust-tempfile-3))))
     (home-page "https://github.com/assert-rs/assert_fs")
     (synopsis "Filesystem fixtures and assertions for testing")
     (description
