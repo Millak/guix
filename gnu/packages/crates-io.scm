@@ -2716,7 +2716,8 @@ using AES-NI for high performance.")
         (base32
          "05qjnr0wccch0gg2kghg0xyh8qd5gfqd15q9dd6r1lamcs375zg8"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f  ; `#![feature]` may not be used on the stable release channel
+       #:cargo-inputs
        (("rust-const-random" ,rust-const-random-0.1))
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.3)
