@@ -97,11 +97,9 @@
        (modify-phases %standard-phases
          ;; These are recommended in the project's README for a development
          ;; build configuration.
-         (add-before 'configure 'set-environment-variables
+         (add-after 'unpack 'reconfigure
            (lambda _
-             (setenv "BABELTRACE_DEV_MODE" "1")
-             (setenv "BABELTRACE_MINIMAL_LOG_LEVEL" "TRACE")
-             (invoke "autoreconf" "-vfi"))))))
+             (delete-file "configure"))))))
     (inputs
      (list glib))
     ;; NOTE - elfutils is used for the LTTng debug information filter
@@ -142,6 +140,21 @@ implementation of the Common Trace Format (CTF), produced by tools such as
 LTTng and barectf.  This package provides a library with a C API, Python 3
 bindings, and the command-line tool @command{babeltrace2}.")
     (license license:expat)))
+
+(define-public babeltrace/dev
+  (package/inherit babeltrace
+    ;; This dev variant of the package babeltrace is slower but allows better
+    ;; development of plugins as recommended by the authors.
+    (name "babeltrace-dev")
+    (synopsis "Trace manipulation toolkit (variant for plugin developers)")
+    (arguments
+     (substitute-keyword-arguments (package-arguments babeltrace)
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (add-before 'configure 'set-environment-variables
+             (lambda _
+               (setenv "BABELTRACE_DEV_MODE" "1")
+               (setenv "BABELTRACE_MINIMAL_LOG_LEVEL" "TRACE")))))))))
 
 (define-public barectf
   (package
