@@ -1666,7 +1666,7 @@ relies on the @file{etc/teams.scm} script, which can also be invoked
 manually if you do not use the preferred @command{git send-email}
 command to submit patches.  To list the available actions of the script,
 you can invoke it via the @command{etc/teams.scm help} command.  For
-more information regarding teams, see @xref{Teams}.
+more information regarding teams, @pxref{Teams}.
 
 @unnumberedsubsubsec Multiple Patches
 @anchor{Multiple Patches}
