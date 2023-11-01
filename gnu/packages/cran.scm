@@ -23314,29 +23314,24 @@ the corresponding outputs (tables and graphs).")
     (properties `((upstream-name . "rJava")))
     (build-system r-build-system)
     (arguments
-     `(#:modules ((guix build utils)
-                  (guix build r-build-system)
-                  (ice-9 match))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'set-JAVA_HOME
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((jdk (assoc-ref inputs "jdk")))
-               (setenv "JAVA_HOME" jdk)
-               (setenv "JAVA" (which "java"))
-               (setenv "JAR" (which "jar"))
-               (setenv "JAVAC" (which "javac"))
-               (setenv "JAVAH" (which "javah"))
-               (setenv "JAVA_CPPFLAGS"
-                       (string-append "-I" jdk "/include "
-                                      "-I" jdk "/include/linux"))
-               (match (find-files (string-append jdk "/jre/lib/") "libjvm.so")
-                 ((lib) (setenv "JAVA_LIBS" lib))
-                 (_ (error "Could not find libjvm.so"))))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-JAVA_HOME
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((jdk (assoc-ref inputs "jdk")))
+                (setenv "JAVA_HOME" jdk)
+                (setenv "JAVA" (which "java"))
+                (setenv "JAR" (which "jar"))
+                (setenv "JAVAC" (which "javac"))
+                (setenv "JAVAH" (which "javah"))
+                (setenv "JAVA_CPPFLAGS"
+                        (string-append "-I" jdk "/include "
+                                       "-I" jdk "/include/linux"))
+                (setenv "JAVA_LIBS" (search-input-file inputs "/lib/libjvm.so"))))))))
     (inputs
      `(("icu4c" ,icu4c)
-       ("jdk" ,icedtea-8 "jdk")
+       ("jdk" ,openjdk11 "jdk")
        ("zlib" ,zlib)))
     (home-page "https://www.rforge.net/rJava/")
     (synopsis "Low-Level R to Java interface")
