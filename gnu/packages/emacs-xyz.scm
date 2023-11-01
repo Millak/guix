@@ -33053,7 +33053,7 @@ time.")
 (define-public emacs-mastodon
   (package
     (name "emacs-mastodon")
-    (version "1.0.6")
+    (version "1.0.13")
     (source
      (origin
        (method git-fetch)
@@ -33062,7 +33062,7 @@ time.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1z5lmzxhindxa0f6qi6z361k9smqcz68alr6w6jbmwg279qmk8jj"))))
+        (base32 "143wmg9jhdi79y1gdi0y9xxpp8vyn7qbhvaysq1sf7g1h0jskxc2"))))
     (build-system emacs-build-system)
     (arguments
      (list
