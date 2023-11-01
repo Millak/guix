@@ -67811,7 +67811,9 @@ functionality and without weak references.")
         (base32
          "1pv387q0r7llk2cqzyq0nivzvkgqgzsiygqzlv7b68z9xl5lvngp"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       '("--release" "--lib" "--bins" "--tests")
+       #:cargo-inputs
        (("rust-block-buffer" ,rust-block-buffer-0.7)
         ("rust-digest" ,rust-digest-0.8)
         ("rust-fake-simd" ,rust-fake-simd-0.1)
