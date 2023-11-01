@@ -41,6 +41,7 @@
 ;;; Copyright © 2022 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
+;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -11971,7 +11972,7 @@ dependencies and a simple API.")
 (define-public go-github-com-arceliar-ironwood
   (package
     (name "go-github-com-arceliar-ironwood")
-    (version "0.0.0-20221115123222-ec61cea2f439")
+    (version "v0.0.0-20231028101932-ceac99571f43")
     (source
      (origin
        (method git-fetch)
@@ -11981,7 +11982,7 @@ dependencies and a simple API.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0jdfhsr1yci0a4fpf2pmh9n4d7iryjx12y3549gv9nfjf91rs225"))))
+         "1shxpmi847jf7rfa5mb0m4nflwmlg65hjgjm9v7ynjvcp0licsi4"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/Arceliar/ironwood"
