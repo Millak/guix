@@ -28897,29 +28897,27 @@ Rust.")
 
 (define-public rust-generator-0.6
   (package
+    (inherit rust-generator-0.7)
     (name "rust-generator")
-    (version "0.6.20")
+    (version "0.6.25")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "generator" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0f07mwkarwrqrykhkzqpvfnd5crz20dd8l24psn01kiqzc71dana"))))
-    (build-system cargo-build-system)
+         "1ik62cj1gm0lmj3xpksz2zn9jybcjszq5l9vz9b9sizcmzhkn786"))))
     (arguments
-     `(#:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             "--skip=test_scope_yield_from_send")
+       #:cargo-inputs
+       (("rust-cc" ,rust-cc-1)
+        ("rust-libc" ,rust-libc-0.2)
         ("rust-log" ,rust-log-0.4)
-        ("rust-winapi" ,rust-winapi-0.3)
-        ("rust-cc" ,rust-cc-1)
-        ("rust-rustc-version" ,rust-rustc-version-0.2))))
-    (home-page "https://github.com/Xudong-Huang/generator-rs")
-    (synopsis "Stackfull Generator Library in Rust")
-    (description "Stackfull Generator Library in Rust.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-generic-array-0.14
   (package
