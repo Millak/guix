@@ -80072,7 +80072,8 @@ automatically instrumenting functions.")
          "0k4vd3jyqz9cx8rbwbp0p93qfp1w6rfk7sc6c1jh1ai18zqvcyxb"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs
        (("rust-futures" ,rust-futures-0.3)
         ("rust-futures-task" ,rust-futures-task-0.3)
         ("rust-pin-project" ,rust-pin-project-0.4)
