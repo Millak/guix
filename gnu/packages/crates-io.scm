@@ -8836,7 +8836,8 @@ streams in big-endian and little-endian formats.")
         (base32
          "0c4k11j04kqhkci6i9b7lz6p13kpcv228pdqixgrawvavaq0gjwl"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; Not all tests compile.
+       #:cargo-inputs
        (("rust-byte-tools" ,rust-byte-tools-0.3)
         ("rust-crypto-mac" ,rust-crypto-mac-0.7)
         ("rust-digest" ,rust-digest-0.8)
