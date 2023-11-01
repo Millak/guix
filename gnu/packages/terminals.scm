@@ -230,7 +230,7 @@ managers.")
 (define-public asciinema
   (package
     (name "asciinema")
-    (version "2.3.0")
+    (version "2.4.0")
     (source
      (origin
        (method git-fetch)
@@ -239,7 +239,7 @@ managers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mqn12h51nqdmn1ya7hw1l2z2893937dqq4b1zh32y6bazd807fl"))))
+        (base32 "0qhf4sc5fl81rpq3rgzy7qcch620dh12scvsbdfczfbyjb10ps2i"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases
