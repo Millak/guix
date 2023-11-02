@@ -13655,6 +13655,33 @@ and allows building a Java object model for JSON text using API classes
 parse, generate, transform and query) JSON messages.  This package contains
 a reference implementation of that API.")))
 
+(define-public java-jakarta-json
+  (package
+    (name "java-jakarta-json")
+    (version "2.1.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/jakartaee/jsonp-api")
+                     (commit (string-append version "-RELEASE"))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1q600harqfhlf763l75j4fx7ai7ybp7ga06aiky2a2hg8mhz0s5f"))))
+    (build-system ant-build-system)
+    (arguments
+     `(#:jar-name "jakarta-json.jar"
+       #:source-dir "api/src/main/java"
+       #:tests? #f; no tests
+       #:jdk ,openjdk11))
+    (home-page "https://github.com/jakartaee/jsonp-api")
+    (synopsis "Portable API for JSON handling in Java")
+    (description "This project contains API and Compatible Implementation of
+Jakarta JSON Processing specification.  Jakarta JSON Processing provides
+portable APIs to parse, generate, transform, and query JSON documents.")
+    ;; with classpath exception
+    (license license:epl2.0)))
+
 (define-public java-xmp
   (package
     (name "java-xmp")
