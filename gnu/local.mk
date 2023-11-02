@@ -508,6 +508,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/photo.scm			\
   %D%/packages/phabricator.scm 			\
   %D%/packages/php.scm				\
+  %D%/packages/php-xyz.scm			\
   %D%/packages/piet.scm			\
   %D%/packages/pikchr.scm			\
   %D%/packages/pkg-config.scm			\
