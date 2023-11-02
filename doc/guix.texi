@@ -14539,6 +14539,26 @@ Additional options include:
 Traverse the dependency graph of the given upstream package recursively
 and generate package expressions for all those packages that are not yet
 in Guix.
+@end table
+
+@item composer
+@cindex Composer
+@cindex PHP
+Import metadata from the @uref{https://getcomposer.org/, Composer} package
+archive used by the PHP community, as in this example:
+
+@example
+guix import composer phpunit/phpunit
+@end example
+
+Additional options include:
+
+@table @code
+@item --recursive
+@itemx -r
+Traverse the dependency graph of the given upstream package recursively
+and generate package expressions for all those packages that are not yet
+in Guix.
 @item --repo
 By default, packages are searched in the official OPAM repository.  This
 option, which can be used more than once, lets you add other repositories
