@@ -13682,6 +13682,43 @@ portable APIs to parse, generate, transform, and query JSON documents.")
     ;; with classpath exception
     (license license:epl2.0)))
 
+(define-public java-parsson
+  (package
+    (name "java-parsson")
+    (version "1.1.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/eclipse-ee4j/parsson")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "06vvr6qv1ihnk212gdxg4x0sd61lgxk7wf062s7gym5k2h7fms0p"))))
+    (build-system ant-build-system)
+    (arguments
+     `(#:jar-name "parsson.jar"
+       #:source-dir "impl/src/main/java"
+       #:test-dir "impl/src/test"
+       #:use-java-modules? #t
+       #:jdk ,openjdk11
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'copy-resources
+           (lambda _
+             (copy-recursively "impl/src/main/resources"
+                               "build/classes"))))))
+    (inputs
+      (list java-jakarta-json))
+    (native-inputs
+      (list java-junit))
+    (home-page "https://github.com/eclipse-ee4j/parsson")
+    (synopsis "Implementation of Jakarta JSON API")
+    (description "Eclipse Parsson is an implementation of the Jakarta JSON
+Processing specification.")
+    ;; with classpath exception
+    (license license:epl2.0)))
+
 (define-public java-xmp
   (package
     (name "java-xmp")
