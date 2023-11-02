@@ -9598,6 +9598,20 @@ debugging information''), which roughly means that code is compiled with
 @code{-O2 -g}, as is the case for Autoconf-based packages by default.
 @end defvar
 
+@defvar composer-build-system
+This variable is exported by @code{(guix build-system composer)}.  It
+implements the build procedure for packages using
+@url{https://getcomposer.org/, Composer}, the PHP package manager.
+
+It automatically adds the @code{php} package to the set of inputs.  Which
+package is used can be specified with the @code{#:php} parameter.
+
+The @code{#:test-target} parameter is used to control which script is run
+for the tests.  By default, the @code{test} script is run if it exists.  If
+the script does not exist, the build system will run @code{phpunit} from the
+source directory, assuming there is a @file{phpunit.xml} file.
+@end defvar
+
 @defvar dune-build-system
 This variable is exported by @code{(guix build-system dune)}.  It
 supports builds of packages using @uref{https://dune.build/, Dune}, a build

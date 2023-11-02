@@ -154,6 +154,7 @@ MODULES =					\
   guix/build-system/clojure.scm		\
   guix/build-system/cmake.scm			\
   guix/build-system/copy.scm			\
+  guix/build-system/composer.scm		\
   guix/build-system/dub.scm			\
   guix/build-system/dune.scm			\
   guix/build-system/elm.scm			\
@@ -212,6 +213,7 @@ MODULES =					\
   guix/build/cargo-utils.scm			\
   guix/build/chicken-build-system.scm		\
   guix/build/cmake-build-system.scm		\
+  guix/build/composer-build-system.scm		\
   guix/build/dub-build-system.scm		\
   guix/build/dune-build-system.scm		\
   guix/build/elm-build-system.scm		\
@@ -420,6 +422,7 @@ dist_noinst_DATA =				\
 AUX_FILES =						\
   gnu/packages/aux-files/chromium/master-preferences.json		\
   gnu/packages/aux-files/emacs/guix-emacs.el		\
+  gnu/packages/aux-files/findclass.php			\
   gnu/packages/aux-files/guix.vim			\
   gnu/packages/aux-files/linux-libre/6.6-arm.conf	\
   gnu/packages/aux-files/linux-libre/6.6-arm64.conf	\
