@@ -32989,7 +32989,7 @@ simple but powerful Org contents.")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://gitlab.com/nsavage/ox-rss")
+                      (url "https://github.com/BenedictHW/ox-rss")
                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
