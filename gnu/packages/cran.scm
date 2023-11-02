@@ -10007,6 +10007,43 @@ implementation of an approximate nearest neighbor search using hierarchical
 @acronym{NSW, Navigable Small World} graphs.")
     (license license:asl2.0)))
 
+(define-public r-nestedcv
+  (package
+    (name "r-nestedcv")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "nestedcv" version))
+       (sha256
+        (base32 "0jpg4il1niyizfq8kkk391x7anhp2s38mrfypa86skr08ca46zss"))))
+    (properties `((upstream-name . "nestedcv")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-caret
+                             r-data-table
+                             r-doparallel
+                             r-foreach
+                             r-ggplot2
+                             r-glmnet
+                             r-matrixstats
+                             r-matrixtests
+                             r-proc
+                             r-rfast
+                             r-rlang))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/myles-lewis/nestedcv")
+    (synopsis "Nested cross-validation with glmnet and caret")
+    (description
+     "This package implements nested cross-validation applied to the
+@code{glmnet} and @code{caret} packages.  With glmnet this includes
+cross-validation of elastic net alpha parameter.  A number of feature
+selection filter functions (t-test, Wilcoxon test, ANOVA, Pearson/Spearman
+correlation, random forest, ReliefF) for feature selection are provided and
+can be embedded within the outer loop of the nested CV.  Nested CV can be also
+be performed with the @code{caret} package giving access to the large number
+of prediction methods available in @code{caret}.")
+    (license license:expat)))
+
 (define-public r-network
   (package
     (name "r-network")
