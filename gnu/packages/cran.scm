@@ -3125,6 +3125,27 @@ functions, including @code{sort}, @code{order}, and @code{match}.  The
 functions are simplified but can be faster or have other advantages.")
     (license license:gpl3)))
 
+(define-public r-matrixtests
+  (package
+    (name "r-matrixtests")
+    (version "0.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "matrixTests" version))
+       (sha256
+        (base32 "0d7i00cxzszfdnjm8q5b72ildic8nig6fbw7rba6acdnllpp7sza"))))
+    (properties `((upstream-name . "matrixTests")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-matrixstats))
+    (home-page "https://github.com/karoliskoncevicius/matrixTests")
+    (synopsis "Statistical hypothesis tests on rows and columns of matrices")
+    (description
+     "This package offers quick statistical hypothesis testing for matrix
+rows/columns.  The main goals are speed through vectorization, detailed and
+user-friendly output, and compatibility with tests implemented in R.")
+    (license license:gpl2)))
+
 (define-public r-matrix-utils
   (package
     (name "r-matrix-utils")
