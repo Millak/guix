@@ -9843,13 +9843,13 @@ pre-processed data.")
 (define-public r-rtracklayer
   (package
     (name "r-rtracklayer")
-    (version "1.60.1")
+    (version "1.62.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "rtracklayer" version))
               (sha256
                (base32
-                "06z02sz8zjg2lxp2q4qwhvh6dsi6srirdmhcdvmi3as50nnjmzd8"))))
+                "1jxhv2fq62lz0j6kbwq43c8ggk14ccsjg0xgfqjqy941dj9ig0n2"))))
     (build-system r-build-system)
     (arguments
      `(#:phases
