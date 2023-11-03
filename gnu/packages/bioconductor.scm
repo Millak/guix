@@ -7712,13 +7712,13 @@ linear models via the extra sum of squares principle.")
 (define-public r-globaltest
   (package
     (name "r-globaltest")
-    (version "5.54.0")
+    (version "5.56.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "globaltest" version))
               (sha256
                (base32
-                "0jjhhg4vi44xqlvmcd80m30m93qyd4c79i7m9jn5hz3mw211xaig"))))
+                "14kcsx1gynl0fijq67qb5zvfxn4yqj8809p7535y455rd0vddp5r"))))
     (properties `((upstream-name . "globaltest")))
     (build-system r-build-system)
     (propagated-inputs
