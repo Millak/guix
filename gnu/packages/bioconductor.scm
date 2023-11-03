@@ -10294,14 +10294,14 @@ methylation array data.  Both the 450k and EPIC array are supported.")
 (define-public r-shortread
   (package
     (name "r-shortread")
-    (version "1.58.0")
+    (version "1.60.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ShortRead" version))
        (sha256
         (base32
-         "0wpr3ksr7j5yk6m1zaa47dwdgznajsz8as4p9vf7schaqvhq1wc4"))))
+         "0fgiszb5qhplppfngpi4s33sx62ff5sdhd6n31a3b6l7fnlvk51m"))))
     (properties `((upstream-name . "ShortRead")))
     (build-system r-build-system)
     (inputs
@@ -10314,11 +10314,11 @@ methylation array data.  Both the 450k and EPIC array are supported.")
            r-genomeinfodb
            r-genomicalignments
            r-genomicranges
-           r-rhtslib
            r-hwriter
            r-iranges
            r-lattice
            r-latticeextra
+           r-rhtslib
            r-rsamtools
            r-s4vectors
            r-xvector
