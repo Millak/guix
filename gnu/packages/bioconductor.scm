@@ -18607,14 +18607,14 @@ directly interact with SingleCellExperiment and Seurat objects.")
 (define-public r-unifiedwmwqpcr
   (package
     (name "r-unifiedwmwqpcr")
-    (version "1.36.0")
+    (version "1.38.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "unifiedWMWqPCR" version))
        (sha256
         (base32
-         "1gza678sd5m2rbki0l5hniki6gmds2cljkmywmk5v5m9swh9azq7"))))
+         "0v3jpnm3nq66xvckmc8447xl7wngfhhiwq6vjx54wgc6f586vmgd"))))
     (properties
      `((upstream-name . "unifiedWMWqPCR")))
     (build-system r-build-system)
