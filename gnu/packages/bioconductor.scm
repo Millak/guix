@@ -8435,13 +8435,13 @@ experiments.")
 (define-public r-maser
   (package
     (name "r-maser")
-    (version "1.18.0")
+    (version "1.20.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "maser" version))
               (sha256
                (base32
-                "1ma5d1i56gw8hm2pgvzzvmdd1cm2xb42rgf5lb6sf4v47yzlyb9f"))))
+                "0h7x1fyfvnjc30w9ydbnlqijz58q2kcxv4yy784rf4adsrdhwh45"))))
     (properties `((upstream-name . "maser")))
     (build-system r-build-system)
     (propagated-inputs
