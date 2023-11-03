@@ -5224,17 +5224,21 @@ array-like objects like @code{DataFrame} objects (typically with Rle columns),
 (define-public r-densvis
   (package
     (name "r-densvis")
-    (version "1.10.3")
+    (version "1.12.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "densvis" version))
               (sha256
                (base32
-                "1nkii02bj49z9qm3rj8lzwpz7dllrsa5zf7dn5ffcczyxr3b1ap9"))))
+                "164pyy5l69qhdgqkxjginapvfjy0rjx4p6m83cijz6jbz6kf6gks"))))
     (properties `((upstream-name . "densvis")))
     (build-system r-build-system)
-    (propagated-inputs (list r-assertthat r-basilisk r-irlba r-rcpp
-                             r-reticulate))
+    (propagated-inputs (list r-assertthat
+                             r-basilisk
+                             r-irlba
+                             r-rcpp
+                             r-reticulate
+                             r-rtsne))
     (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/densvis")
     (synopsis
