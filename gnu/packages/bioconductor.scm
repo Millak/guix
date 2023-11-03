@@ -22977,14 +22977,14 @@ fragments by exact matching.")
 (define-public r-dmrseq
   (package
     (name "r-dmrseq")
-    (version "1.20.1")
+    (version "1.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "dmrseq" version))
        (sha256
         (base32
-         "1lxrirgy42xnpdj7b2nrabbki33an8ri6j1mgxp3jn4h0a88c280"))))
+         "0z53vh5qirkyn7yw3g2m2kj6dzii96l81vc8j59n2dl7p602l9a2"))))
     (properties `((upstream-name . "dmrseq")))
     (build-system r-build-system)
     (propagated-inputs
