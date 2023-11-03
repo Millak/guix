@@ -10224,13 +10224,13 @@ reference point and sorted by a user defined feature.")
 (define-public r-sesame
   (package
     (name "r-sesame")
-    (version "1.18.4")
+    (version "1.20.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "sesame" version))
               (sha256
                (base32
-                "1il33ygys6y72l8p3fhx301q16w9kylfy6w92b64n8gqkn6dmsmn"))))
+                "0yh4mrsj3pqhjkrq5dwmcpcqwixs0pmjy7dfa3cr0mf52fgzcvmr"))))
     (properties `((upstream-name . "sesame")))
     (build-system r-build-system)
     (propagated-inputs (list r-biocfilecache
