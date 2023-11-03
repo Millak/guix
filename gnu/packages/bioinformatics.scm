@@ -10665,6 +10665,40 @@ of transcriptional heterogeneity among single cells.")
     ;; See https://github.com/hms-dbmi/scde/issues/38
     (license license:gpl2)))
 
+(define-public r-miamiplot
+  (let ((commit "beede9c5d6431b4d822aa42e064e01baeb5dd4a0")
+        (revision "1"))
+    (package
+      (name "r-miamiplot")
+      (version (git-version "1.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/juliedwhite/miamiplot")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0wxxk1lk9jbf0imf59qp302ffasvs84idinkvzirs3dw9w3589n9"))))
+      (properties `((upstream-name . "miamiplot")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-checkmate
+                               r-dplyr
+                               r-ggplot2
+                               r-ggrepel
+                               r-gridextra
+                               r-magrittr
+                               r-rlang))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/juliedwhite/miamiplot")
+      (synopsis "Create a ggplot2 miami plot")
+      (description
+       "This package generates a Miami plot with centered chromosome labels.
+The output is a ggplot2 object.  Users can specify which data they want
+plotted on top vs. bottom, whether to display significance line(s), what
+colors to give chromosomes, and what points to label.")
+      (license license:gpl2))))
+
 (define-public r-millefy
   (package
     (name "r-millefy")
