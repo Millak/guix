@@ -3454,37 +3454,37 @@ create an alternative mapping from sequences.")
 (define-public r-aneufinder
   (package
     (name "r-aneufinder")
-    (version "1.28.0")
+    (version "1.30.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "AneuFinder" version))
               (sha256
                (base32
-                "1l33yb20pynkvlla1dmgbwjhnhxh067fci0ciryxmbzqwq2sn1kc"))))
+                "0x7v60j1c1g12qlqxgshpmbnwzjbmlnkrfh60wl43inr0wyllq1l"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
     (propagated-inputs
-     (list r-genomicranges
-           r-aneufinderdata
+     (list r-aneufinderdata
+           r-bamsignals
+           r-biocgenerics
+           r-biostrings
+           r-cowplot
+           r-dnacopy
+           r-doparallel
            r-ecp
            r-foreach
-           r-doparallel
-           r-biocgenerics
-           r-s4vectors
            r-genomeinfodb
-           r-iranges
-           r-rsamtools
-           r-bamsignals
-           r-dnacopy
-           r-biostrings
            r-genomicalignments
-           r-ggplot2
-           r-reshape2
+           r-genomicranges
            r-ggdendro
+           r-ggplot2
            r-ggrepel
+           r-iranges
            r-mclust
-           r-cowplot))
+           r-reshape2
+           r-rsamtools
+           r-s4vectors))
     (home-page "https://bioconductor.org/packages/AneuFinder/")
     (synopsis "Copy number variation analysis in single-cell-sequencing data")
     (description "This package implements functions for copy number variant
