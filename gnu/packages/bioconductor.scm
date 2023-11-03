@@ -81,9 +81,35 @@
         (base32 "1brzrnafvyh76h8a663gk5lprhixxpi9xi65vwgxwf7jh6yw0was"))))
     (properties `((upstream-name . "HPO.db")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'avoid-internet-access
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((cache (string-append #$output "/share/HPO.db/cache"))
+                     (file (string-append cache "/118333")))
+                (mkdir-p cache)
+                (copy-file #$(this-package-native-input "HPO.sqlite") file)
+                (substitute* "R/zzz.R"
+                  (("ah <- suppressMessages\\(AnnotationHub\\(\\)\\)" m)
+                   (string-append
+                    "if (Sys.getenv(\"NIX_BUILD_TOP\") == \"\") { " m " };"))
+                  (("dbfile <- ah.*" m)
+                   (string-append
+                    "if (Sys.getenv(\"NIX_BUILD_TOP\") != \"\") { dbfile <- \""
+                    file "\";} else { " m " }\n")))))))))
     (propagated-inputs
      (list r-annotationdbi r-annotationhub r-biocfilecache r-dbi))
-    (native-inputs (list r-knitr))
+    (native-inputs
+     `(("r-knitr" ,r-knitr)
+       ("HPO.sqlite"
+        ,(origin
+           (method url-fetch)
+           (uri "https://annotationhub.bioconductor.org/fetch/118333")
+           (file-name "HPO.sqlite")
+           (sha256
+            (base32 "1wwdwf27iil0p41183qgygh2ifphhmlljjkgjm2h8sr25qycf0md"))))))
     (home-page "https://bioconductor.org/packages/HPO.db")
     (synopsis
      "Annotation maps describing the entire Human Phenotype Ontology")
