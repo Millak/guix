@@ -4477,20 +4477,20 @@ stochastic dropout events as well as systematic allelic imbalance is used.")
 (define-public r-cellid
   (package
     (name "r-cellid")
-    (version "1.8.1")
+    (version "1.10.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "CelliD" version))
               (sha256
                (base32
-                "0vigvqjrlqbi5kviaj8qvyq3v8afgbc5pjrz7zmx2ckf4hdp0g03"))))
+                "1x4kp8i204rqas2bgg4qanwdncafilymlpvxvfyv39zpdji91yv5"))))
     (properties `((upstream-name . "CelliD")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-data-table
-           r-biocparallel
+     (list r-biocparallel
+           r-data-table
            r-fastmatch
-	   r-fgsea
+           r-fgsea
            r-ggplot2
            r-glue
            r-irlba
@@ -4501,13 +4501,14 @@ stochastic dropout events as well as systematic allelic imbalance is used.")
            r-rcpparmadillo
            r-reticulate
            r-rtsne
+           r-scater
            r-seurat
+           r-singlecellexperiment
            r-stringr
-           r-tictoc
-	   r-singlecellexperiment
            r-summarizedexperiment
+           r-tictoc
            r-umap))
-    (native-inputs (list r-knitr r-scater))
+    (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/CelliD")
     (synopsis
      "Single cell gene signature extraction using multiple correspondence analysis")
