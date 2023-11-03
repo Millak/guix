@@ -10378,13 +10378,13 @@ and comparing the clusterings.")
 (define-public r-singscore
   (package
     (name "r-singscore")
-    (version "1.20.0")
+    (version "1.22.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "singscore" version))
               (sha256
                (base32
-                "1s1kyvkbfgwskf0hi4b44c2yx256rjp1yk9ijpld9qlm7z7pi67q"))))
+                "0hafzbhbik1512pisjvnnzmy8pl2shrgra6l06kpvsrczkqlmi04"))))
     (properties `((upstream-name . "singscore")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase
