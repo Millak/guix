@@ -22505,14 +22505,14 @@ the Bioconductor project.")
 (define-public r-biodb
   (package
     (name "r-biodb")
-    (version "1.8.1")
+    (version "1.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biodb" version))
        (sha256
         (base32
-         "18j70ma85qb42qqpzz8fw3g4x6cav4j0pc2ab5ym22791dr8izck"))))
+         "18w062s0wwdisl6a9a79in6h4052x3janinc5isip0x6p9g9d9bk"))))
     (properties `((upstream-name . "biodb")))
     (build-system r-build-system)
     (propagated-inputs
