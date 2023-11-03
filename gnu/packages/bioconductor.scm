@@ -20860,13 +20860,13 @@ This package wraps C++ code from the MOODS motif calling library.")
 (define-public r-chromvar
   (package
     (name "r-chromvar")
-    (version "1.22.1")
+    (version "1.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "chromVAR" version))
        (sha256
-        (base32 "001133rfcwmf4p3dbif933y9i1mkr3krw38g646wj4ikycszwih4"))))
+        (base32 "1vy650625b9b2dgnkgh5h0kw5bkdvfin133091asf1nw4jgnn1vx"))))
     (properties `((upstream-name . "chromVAR")))
     (build-system r-build-system)
     (propagated-inputs
