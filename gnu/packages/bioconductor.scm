@@ -16361,14 +16361,14 @@ that arising from 16s metagenomic surveys.")
 (define-public r-wiggleplotr
   (package
     (name "r-wiggleplotr")
-    (version "1.24.0")
+    (version "1.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "wiggleplotr" version))
        (sha256
         (base32
-         "15gbs10bi1alxxbxaj4h3hzfgck4nxygy896y34x81w1rn7in3vp"))))
+         "1gq0hxmnnis0g1y6hiphz02dmk3pfjz874xb2bxqw49z7387fwm8"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-assertthat
