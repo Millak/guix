@@ -7132,14 +7132,14 @@ code{dittoColors()}.")
 (define-public r-edaseq
   (package
     (name "r-edaseq")
-    (version "2.34.0")
+    (version "2.36.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "EDASeq" version))
        (sha256
         (base32
-         "0gf4k02b5qywrg5rpg6hs9gyzcdlpw36ndgz3ca19plicair4mih"))))
+         "0xvi5mynkf1n74bn2k6gxmyhp1piwzsljd37biibdfzy14r1ir08"))))
     (properties `((upstream-name . "EDASeq")))
     (build-system r-build-system)
     (propagated-inputs
