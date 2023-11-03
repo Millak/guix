@@ -11327,14 +11327,14 @@ saving AnnData objects to disk.")
 (define-public r-geneplotter
   (package
     (name "r-geneplotter")
-    (version "1.78.0")
+    (version "1.80.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "geneplotter" version))
        (sha256
         (base32
-         "03x90l7rvxk0z03p5immqbyyhiygi3mkik636al1cjdcxl9dr5f8"))))
+         "0zvb84jlsvmr2dvwyy4xjqv353qrxpls0v2vz0nmj1q4m7lrpl1k"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotate
@@ -11343,6 +11343,8 @@ saving AnnData objects to disk.")
            r-biocgenerics
            r-lattice
            r-rcolorbrewer))
+    (native-inputs
+     (list r-knitr))
     (home-page "https://bioconductor.org/packages/geneplotter")
     (synopsis "Graphics functions for genomic data")
     (description
