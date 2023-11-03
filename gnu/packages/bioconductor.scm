@@ -8308,13 +8308,13 @@ different technologies, including microarrays, RNA-seq, and quantitative PCR.")
 (define-public r-maaslin2
   (package
     (name "r-maaslin2")
-    (version "1.14.1")
+    (version "1.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Maaslin2" version))
        (sha256
-        (base32 "06mb72hbzihdficv73yqbb2m86bkw78w3vbw1rm98n0npxq2fch6"))))
+        (base32 "1d95dv46b36ncwb7zdn0wvshg4v73qjfs3hij0jmbkkxvf2il9iq"))))
     (properties `((upstream-name . "Maaslin2")))
     (build-system r-build-system)
     (propagated-inputs
