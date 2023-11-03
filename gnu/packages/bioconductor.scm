@@ -14758,28 +14758,6 @@ mRNA levels or buffering, a mechanism regulating translational efficiency so
 that protein levels remain constant despite fluctuating total mRNA levels.")
     (license license:gpl3)))
 
-(define-public r-sigpathway
-  (package
-    (name "r-sigpathway")
-    (version "1.66.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (bioconductor-uri "sigPathway" version))
-        (sha256
-          (base32
-            "0k86hlz7zbbw7559bd2sl59pr441kihgwvg8nr75mj8d50n783sy"))))
-    (properties `((upstream-name . "sigPathway")))
-    (build-system r-build-system)
-    (home-page "https://www.pnas.org/cgi/doi/10.1073/pnas.0506577102")
-    (synopsis "Pathway analysis")
-    (description
-     "This package is used to conduct pathway analysis by calculating the NT_k
-and NE_k statistics in a statistical framework for determining whether a
-specified group of genes for a pathway has a coordinated association with a
-phenotype of interest.")
-    (license license:gpl2)))
-
 (define-public r-fcscan
   (package
     (name "r-fcscan")
