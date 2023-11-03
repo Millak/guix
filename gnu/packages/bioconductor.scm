@@ -20973,6 +20973,43 @@ cell-specific biases, assignment of cell cycle phase, and detection of highly
 variable and significantly correlated genes.")
     (license license:gpl3)))
 
+(define-public r-sparsearray
+  (package
+    (name "r-sparsearray")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "SparseArray" version))
+       (sha256
+        (base32 "0a1xg8vkjybgdr09bk2z4i82m06qnw2nhbzviyijadxiwvz6pgsz"))))
+    (properties `((upstream-name . "SparseArray")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocgenerics
+                             r-iranges
+                             r-matrix
+                             r-matrixgenerics
+                             r-matrixstats
+                             r-s4arrays
+                             r-s4vectors
+                             r-xvector))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/SparseArray")
+    (synopsis
+     "Efficient in-memory representation of multidimensional sparse arrays")
+    (description
+     "The @code{SparseArray} package is an infrastructure package that
+provides an array-like container for efficient in-memory representation of
+multidimensional sparse data in R.  The package defines the @code{SparseArray}
+virtual class and two concrete subclasses: @code{COO_SparseArray} and
+@code{SVT_SparseArray}.  Each subclass uses its own internal representation of
+the nonzero multidimensional data, the \"COO layout\" and the \"SVT layout\",
+respectively.  @code{SVT_SparseArray} objects mimic as much as possible the
+behavior of ordinary matrix and array objects in base R.  In particular, they
+suppport most of the \"standard matrix and array API\" defined in base R and
+in the @code{matrixStats} package from CRAN.")
+    (license license:artistic2.0)))
+
 (define-public r-sparsematrixstats
   (package
     (name "r-sparsematrixstats")
