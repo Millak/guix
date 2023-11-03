@@ -98,6 +98,39 @@ It retrieves this data from the Genome Aggregation Database
 (@code{gnomAD} version 3.1.2) for the human genome version GRCh38.")
     (license license:artistic2.0)))
 
+(define-public r-mpo-db
+  (package
+    (name "r-mpo-db")
+    (version "0.99.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "MPO.db" version
+                              'annotation))
+       (sha256
+        (base32 "0x1rcikg189akbd71yh0p02482km9hry6i69s2srdf5mlgqficvl"))))
+    (properties `((upstream-name . "MPO.db")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-annotationdbi r-annotationhub r-biocfilecache r-dbi))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/YuLab-SMU/MPO.db")
+    (synopsis "set of annotation maps describing the Mouse Phenotype Ontology")
+    (description
+     "This is the human disease ontology R package HDO.db, which provides the
+semantic relationship between human diseases.  Relying on the DOSE and
+GO@code{SemSim} packages, this package can carry out disease enrichment and
+semantic similarity analyses.  Many biological studies are achieved through
+mouse models, and a large number of data indicate the association between
+genotypes and phenotypes or diseases.  The study of model organisms can be
+transformed into useful knowledge about normal human biology and disease to
+facilitate treatment and early screening for diseases.  Organism-specific
+genotype-phenotypic associations can be applied to cross-species phenotypic
+studies to clarify previously unknown phenotypic connections in other species.
+Using the same principle to diseases can identify genetic associations and
+even help to identify disease associations that are not obvious.")
+    (license license:artistic2.0)))
+
 (define-public r-org-eck12-eg-db
   (package
     (name "r-org-eck12-eg-db")
