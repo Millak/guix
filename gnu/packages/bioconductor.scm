@@ -21361,14 +21361,14 @@ relevant, and the minimum expression of the most abundant condition.")
 (define-public r-catalyst
   (package
     (name "r-catalyst")
-    (version "1.24.0")
+    (version "1.26.0")
     (source
       (origin
         (method url-fetch)
         (uri (bioconductor-uri "CATALYST" version))
         (sha256
           (base32
-            "0f6h0qngv7my83k402rydvi1pla695r5kxq02k1s5caxcsi1caza"))))
+            "0dfg9ib0imk8bmhycqrspnn8yvfdlchwvx39wgqxi5fb9zrppfz4"))))
     (properties `((upstream-name . "CATALYST")))
     (build-system r-build-system)
     (propagated-inputs
@@ -21385,7 +21385,6 @@ relevant, and the minimum expression of the most abundant condition.")
             r-ggrepel
             r-ggridges
             r-gridextra
-            r-magrittr
             r-matrix
             r-matrixstats
             r-nnls
