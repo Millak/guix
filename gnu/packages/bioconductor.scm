@@ -14231,14 +14231,14 @@ into account multi-gene associated probes.")
 (define-public r-methylumi
   (package
     (name "r-methylumi")
-    (version "2.46.0")
+    (version "2.48.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "methylumi" version))
        (sha256
         (base32
-         "1aa0pwjyp2p9a4mx4n4qw88ndgrj56p669yzdkd7hxhc3x55nzlf"))))
+         "1vracrvy56kk3hc9midxdaxhad2zf1lspn0zzxjjbsyzx3r0ip0n"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotate
