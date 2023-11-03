@@ -68,6 +68,33 @@
 
 ;;; Annotations
 
+(define-public r-hpo-db
+  (package
+    (name "r-hpo-db")
+    (version "0.99.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "HPO.db" version
+                              'annotation))
+       (sha256
+        (base32 "1brzrnafvyh76h8a663gk5lprhixxpi9xi65vwgxwf7jh6yw0was"))))
+    (properties `((upstream-name . "HPO.db")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-annotationdbi r-annotationhub r-biocfilecache r-dbi))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/HPO.db")
+    (synopsis
+     "Annotation maps describing the entire Human Phenotype Ontology")
+    (description
+     "Human Phenotype Ontology (HPO) was developed to create a consistent
+description of gene products with disease perspectives, and is essential for
+supporting functional genomics in disease context.  Accurate disease
+descriptions can discover new relationships between genes and disease, and new
+functions for previous uncharacteried genes and alleles.")
+    (license license:artistic2.0)))
+
 (define-public r-mafh5-gnomad-v3-1-2-grch38
   (package
     (name "r-mafh5-gnomad-v3-1-2-grch38")
