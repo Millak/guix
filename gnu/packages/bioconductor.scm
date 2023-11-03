@@ -10291,6 +10291,49 @@ a scRNA-seq experiment onto the cell-types or individual cells identified in a
 different experiment.")
     (license license:gpl3)))
 
+(define-public r-screpertoire
+  (package
+    (name "r-screpertoire")
+    (version "1.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "scRepertoire" version))
+       (sha256
+        (base32 "1wgs8dv5zl82iciy86w5ws1gq8v2piklcifbw7gmbw60kijyr2l1"))))
+    (properties `((upstream-name . "scRepertoire")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-doparallel
+           r-dplyr
+           r-ggalluvial
+           r-ggplot2
+           r-ggraph
+           r-igraph
+           r-plyr
+           r-powertcr
+           r-reshape2
+           r-rlang
+           r-seuratobject
+           r-singlecellexperiment
+           r-stringdist
+           r-stringr
+           r-summarizedexperiment
+           r-tidygraph
+           r-vegan))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/scRepertoire")
+    (synopsis "Toolkit for single-cell immune receptor profiling")
+    (description
+     "The scRepertoire package was built to process data derived from the 10x
+Genomics Chromium Immune Profiling for both @acronym{TCR, T-cell receptor} and
+@acronym{Ig, immunoglobulin} enrichment workflows and subsequently interacts with
+the popular Seurat and SingleCellExperiment R packages.  It also allows for
+general analysis of single-cell clonotype information without the use of
+expression information.  The package functions as a wrapper for Startrac and
+powerTCR R packages.")
+    (license license:gpl2)))
+
 (define-public r-scry
   (package
     (name "r-scry")
