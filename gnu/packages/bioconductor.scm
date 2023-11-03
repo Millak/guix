@@ -7369,14 +7369,14 @@ analysis using other methods.")
 (define-public r-genefilter
   (package
     (name "r-genefilter")
-    (version "1.82.1")
+    (version "1.84.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "genefilter" version))
        (sha256
         (base32
-         "1wpg8banz6s6smycfqf9hqryp4kf2gs069s7npyvpq53wy0kxyny"))))
+         "0q80z872d3z1jy69b53qxzvmshf5zx4qssmp4gj7fwdpfxj9qqjw"))))
     (build-system r-build-system)
     (native-inputs
      (list gfortran r-knitr))
