@@ -20604,17 +20604,17 @@ packages.")
 (define-public r-beachmat
   (package
     (name "r-beachmat")
-    (version "2.16.0")
+    (version "2.18.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "beachmat" version))
        (sha256
         (base32
-         "0ga9y9npl885jdx7gw5h6lh7fr0z5p7cvcwpz3hvwm4dy235j6gj"))))
+         "1yixv6vs1q2k4vx17bq4nar3g4v2076i5dq77gh63mlka46qr3g2"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-biocgenerics r-delayedarray r-matrix r-rcpp))
+     (list r-biocgenerics r-delayedarray r-matrix r-rcpp r-sparsearray))
     (native-inputs
      (list r-knitr))
     (home-page "https://bioconductor.org/packages/beachmat")
