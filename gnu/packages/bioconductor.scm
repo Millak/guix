@@ -18240,14 +18240,14 @@ genome sequence.")
 (define-public r-reqon
   (package
     (name "r-reqon")
-    (version "1.46.0")
+    (version "1.48.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ReQON" version))
        (sha256
         (base32
-         "1knzla5d8n22121a9licrjh2rxrmh05304a9d4bs2f1r7aiwhgnh"))))
+         "0w28b3ma8r8rshijdm5jj1z64v91my7hcvw18r9pdwjprh05bw0g"))))
     (properties `((upstream-name . "ReQON")))
     (build-system r-build-system)
     (propagated-inputs
