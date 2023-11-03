@@ -20660,13 +20660,13 @@ quality assessment and low-level analysis are provided.")
 (define-public r-beadarraysnp
   (package
     (name "r-beadarraysnp")
-    (version "1.66.0")
+    (version "1.68.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "beadarraySNP" version))
        (sha256
-        (base32 "1pymsm4j3wiyjvgsjb3vhjwdvhfmh91pxdhg4ihrj71pqpif3w9m"))))
+        (base32 "1vrizh7fpzv1w2gki0qxhphrfj1jj6m6bjsjsbw0b4n4invybzps"))))
     (properties `((upstream-name . "beadarraySNP")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase r-quantsmooth))
