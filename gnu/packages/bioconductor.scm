@@ -14950,14 +14950,14 @@ attempts to assess their statistical significance.")
 (define-public r-clusterprofiler
   (package
     (name "r-clusterprofiler")
-    (version "4.8.3")
+    (version "4.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "clusterProfiler" version))
        (sha256
         (base32
-         "1kihrpa8cb2bqk5dck0w6yzgfpl72qxlrxwpidg1ar27q3ivz8w3"))))
+         "1vlrybyczfci5qnw50k0y2j2853r2p1ff5bpj35rdca4ja0iqh2q"))))
     (properties
      `((upstream-name . "clusterProfiler")))
     (build-system r-build-system)
@@ -14970,6 +14970,8 @@ attempts to assess their statistical significance.")
            r-go-db
            r-gosemsim
            r-gson
+           r-httr
+           r-igraph
            r-magrittr
            r-plyr
            r-qvalue
