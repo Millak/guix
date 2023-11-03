@@ -6611,14 +6611,14 @@ genome data packages and support for efficient SNP representation.")
 (define-public r-category
   (package
     (name "r-category")
-    (version "2.66.0")
+    (version "2.68.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Category" version))
        (sha256
         (base32
-         "1wjf6xbnys7nv8z4xrzck1wk5xifkdni672kigs0aqdxqj8d80f5"))))
+         "19qyxqky1gsrjylmc2h0sndbqlk2ibrps7123gqwn19p8kg4nhf0"))))
     (properties `((upstream-name . "Category")))
     (build-system r-build-system)
     (propagated-inputs
@@ -6626,12 +6626,12 @@ genome data packages and support for efficient SNP representation.")
            r-annotationdbi
            r-biobase
            r-biocgenerics
+           r-dbi
            r-genefilter
            r-graph
            r-gseabase
            r-matrix
-           r-rbgl
-           r-dbi))
+           r-rbgl))
     (home-page "https://bioconductor.org/packages/Category")
     (synopsis "Category analysis")
     (description
