@@ -8726,6 +8726,7 @@ retrieve text and metadata from PDFs as well as merge entire files together.")
            python-attrs
            python-coverage
            python-hypothesis
+           python-setuptools-scm
            python-psutil
            python-pytest
            python-pytest-cov
