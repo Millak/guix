@@ -11071,15 +11071,16 @@ R, enabling interactive analysis and visualization of genome-scale data.")
 (define-public r-variantannotation
   (package
     (name "r-variantannotation")
-    (version "1.46.0")
+    (version "1.48.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "VariantAnnotation" version))
               (sha256
                (base32
-                "0masx496cd4ypz6r0l8kk8vi81sipqdnx4iyifjvkrds1p87mvsm"))))
+                "1r1cyimr5l5jzgxvmrm3vq8mvz3f1klfdwy9mz31xvnvgjacr58p"))))
     (properties
      `((upstream-name . "VariantAnnotation")))
+    (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi
            r-biobase
@@ -11092,14 +11093,14 @@ R, enabling interactive analysis and visualization of genome-scale data.")
            r-genomicranges
            r-iranges
            r-matrixgenerics
-           r-summarizedexperiment
            r-rhtslib
            r-rsamtools
            r-rtracklayer
            r-s4vectors
+           r-summarizedexperiment
            r-xvector
            r-zlibbioc))
-    (build-system r-build-system)
+    (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/VariantAnnotation")
     (synopsis "Package for annotation of genetic variants")
     (description "This R package can annotate variants, compute amino acid
