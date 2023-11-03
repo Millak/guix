@@ -8637,6 +8637,44 @@ on the basis that cells of the same type should have more similar gene expressio
 profiles than cells of different types.")
     (license license:expat)))
 
+(define-public r-methylaid
+  (package
+    (name "r-methylaid")
+    (version "1.36.0")
+    (source
+    (origin
+      (method url-fetch)
+      (uri (bioconductor-uri "MethylAid" version))
+      (sha256
+        (base32 "0mzml9j6f7yycf9747ikkpfvxnwji07h8jhwa9a54ix2d0wyxk3d"))))
+    (properties `((upstream-name . "MethylAid")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biobase
+           r-biocgenerics
+           r-biocparallel
+           r-ggplot2
+           r-gridbase
+           r-hexbin
+           r-matrixstats
+           r-minfi
+           r-rcolorbrewer
+           r-shiny
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://git.bioconductor.org/packages/MethylAid")
+    (synopsis
+     "Quality control of large Illumina DNA Methylation array data sets")
+    (description
+     "This package provides a visual and interactive web application using
+RStudio's shiny package.  Bad quality samples are detected using sample-dependent
+and sample-independent controls present on the array and user adjustable
+thresholds.  In depth exploration of bad quality samples can be performed using
+several interactive diagnostic plots of the quality control probes present on
+the array.  Furthermore, the impact of any batch effect provided by the user can
+be explored.")
+    (license license:gpl2+)))
+
 (define-public r-methylkit
   (package
     (name "r-methylkit")
