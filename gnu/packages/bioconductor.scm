@@ -7313,18 +7313,19 @@ chromosome region or transcript models of lincRNA genes.")
 (define-public r-fastseg
   (package
     (name "r-fastseg")
-    (version "1.46.0")
+    (version "1.48.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "fastseg" version))
        (sha256
         (base32
-         "0gygyf1xq1z6vzand43n965p366zh0k3rv58gnyqa81whj4dvcq3"))))
+         "10g9mdh7nzdz2b1k5gg5hk35lpapcnbs3p3z17k15aq040lpm236"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase r-biocgenerics r-genomicranges r-iranges
            r-s4vectors))
+    (native-inputs (list r-knitr))
     (home-page "https://www.bioinf.jku.at/software/fastseg/index.html")
     (synopsis "Fast segmentation algorithm for genetic sequencing data")
     (description
