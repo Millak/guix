@@ -10266,13 +10266,13 @@ and advanced quality control routines.")
 (define-public r-shinymethyl
   (package
     (name "r-shinymethyl")
-    (version "1.36.1")
+    (version "1.38.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "shinyMethyl" version))
               (sha256
                (base32
-                "0hq1q66vjd9pwdwm9zx8q45ws65bn6cm87zmjmyc3md8dwvb8cck"))))
+                "1gkj15q1rxvsdzbsp3gkk02kvvx0kq4wsqycf3ln1bszb9688jw6"))))
     (properties `((upstream-name . "shinyMethyl")))
     (build-system r-build-system)
     (propagated-inputs
