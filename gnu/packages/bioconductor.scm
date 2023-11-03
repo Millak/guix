@@ -11810,17 +11810,17 @@ the batches considered.")
 (define-public r-multtest
   (package
     (name "r-multtest")
-    (version "2.56.0")
+    (version "2.58.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "multtest" version))
        (sha256
         (base32
-         "19c6l8pkyp0m2zdzhr81cnmx5lqf501sap9h6ig5iiv66sf2ysmz"))))
+         "0s8x2rg2xp6awg2cikybgxrxpi9f91jah7dskk5dnfkazd20di4j"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-survival r-biocgenerics r-biobase r-mass))
+     (list r-biobase r-biocgenerics r-mass r-survival))
     (home-page "https://bioconductor.org/packages/multtest")
     (synopsis "Resampling-based multiple hypothesis testing")
     (description
