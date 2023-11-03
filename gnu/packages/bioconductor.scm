@@ -4595,13 +4595,13 @@ how the coverage distributed across the genome.")
 (define-public r-cummerbund
   (package
    (name "r-cummerbund")
-   (version "2.42.0")
+   (version "2.44.0")
    (source (origin
              (method url-fetch)
              (uri (bioconductor-uri "cummeRbund" version))
              (sha256
               (base32
-               "1xin1azby96xxp4yyd4wc3rfcjc2g9p01ksfd89bk2vxcclccqxn"))))
+               "1a5x3jzagd1a385yk1brs4say02r0l21qqjak4cl6fsv8ihhy05s"))))
    (build-system r-build-system)
    (propagated-inputs
     (list r-biobase
