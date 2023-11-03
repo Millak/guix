@@ -38376,15 +38376,11 @@ EasyPG and latest Emacs.")
 
 (define-public emacs-wanderlust
   ;; No release since Jan 15, 2010.
-  ;; FIXME: Building with emacs-next-pgtk would yield a void variable related
-  ;; macro-expansion failure at runtime, so don't rewrite emacs input of this
-  ;; package.
-  (let ((version "2.15.9")
-        (revision "791")
-        (commit "8369b2d5170a174652294835dd9a18ed21a38cb2"))
+  (let ((commit "3e8cf26abd9c5c8e4fc611032e259ca930665641")
+        (revision "803"))
     (package
       (name "emacs-wanderlust")
-      (version (git-version version revision commit))
+      (version (git-version "2.15.9" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -38402,7 +38398,7 @@ EasyPG and latest Emacs.")
                            (("package-user-dir") "NONE"))))
                 (sha256
                  (base32
-                  "0nqa9z61r308j61rgglacjsfddncbm185gp3rnzqkrpb5qsjzngk"))))
+                  "0k9r3j7pcnvnnj0km8ggjdrf2nfgn1mfq7r7267bk3r3x92cvqh9"))))
       (build-system emacs-build-system)
       (arguments
        (list #:phases
