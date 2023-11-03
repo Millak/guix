@@ -17625,14 +17625,14 @@ standard to exchange gated cytometry data with other software platforms.")
 (define-public r-flowsom
   (package
     (name "r-flowsom")
-    (version "2.8.0")
+    (version "2.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "FlowSOM" version))
        (sha256
         (base32
-         "13y0ny61skj14mfhjwpa5zmflzdqxy2vf6gd4m9358g4wxfbhkv0"))))
+         "170xz3b4kfsxpqirfz9vk4j8dkdmz4qd0a1nm3yaya1rddpg9m3l"))))
     (properties `((upstream-name . "FlowSOM")))
     (build-system r-build-system)
     (propagated-inputs
