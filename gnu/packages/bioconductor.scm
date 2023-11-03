@@ -7393,16 +7393,16 @@ high-throughput sequencing experiments.")
 (define-public r-geneoverlap
   (package
     (name "r-geneoverlap")
-    (version "1.36.0")
+    (version "1.38.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GeneOverlap" version))
               (sha256
                (base32
-                "1bimsayaf68j15im591r6rbvydhbmiqcp1pphd5zzg6hzp6va927"))))
+                "074d3inz8sh8xxjliisa0p99rgy6r9fg9ljaka5bf1waxwpknzpw"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-rcolorbrewer r-gplots))
+     (list r-gplots r-rcolorbrewer))
     (home-page "https://www.bioconductor.org/packages/GeneOverlap/")
     (synopsis "Test and visualize gene overlaps")
     (description "This package can be used to test two sets of gene lists
