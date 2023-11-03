@@ -7954,13 +7954,13 @@ with numerical methods for computing statistics for each.")
 (define-public r-radiogx
   (package
     (name "r-radiogx")
-    (version "2.4.0")
+    (version "2.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "RadioGx" version))
        (sha256
-        (base32 "18zqfnwjil4mv7fgh4wvnniyybmyqkg0hk2wc57rcn0mlppa3602"))))
+        (base32 "0ykmvva5h1y7x9bxhqqfc18car9nasy06v1jjban7dlm95dl8nmk"))))
     (properties `((upstream-name . "RadioGx")))
     (build-system r-build-system)
     (propagated-inputs
