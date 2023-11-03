@@ -18068,14 +18068,14 @@ regulatory networks from expression data.")
 (define-public r-roc
   (package
     (name "r-roc")
-    (version "1.76.0")
+    (version "1.78.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ROC" version))
        (sha256
         (base32
-         "0fq59bwc5i8zdw0v0jr5j5lm4hk6p7b88i2xndsgj4fq65yr50g1"))))
+         "12msc6skvcx4ajk20l71k32rj8lsiafjxwcsrd51kyy5x2yj2v4m"))))
     (properties `((upstream-name . "ROC")))
     (build-system r-build-system)
     (native-inputs
