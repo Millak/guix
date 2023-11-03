@@ -8384,6 +8384,32 @@ array against the quality of the other arrays.  Then, arrays with unusually
 high distances can be flagged as potentially low-quality.")
     (license license:lgpl2.0+)))
 
+(define-public r-metabocoreutils
+  (package
+    (name "r-metabocoreutils")
+    (version "1.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "MetaboCoreUtils" version))
+       (sha256
+        (base32 "0bs24dwqlm8isp231jds51l7v16q0gjli1qmhjxyva3qmi5yb4dl"))))
+    (properties `((upstream-name . "MetaboCoreUtils")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-mscoreutils))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/RforMassSpectrometry/MetaboCoreUtils")
+    (synopsis "Core utils for Metabolomics data")
+    (description
+     "@code{MetaboCoreUtils} defines metabolomics-related core functionality
+provided as low-level functions to allow a data structure-independent usage
+across various R packages.  This includes functions to calculate between
+ion (adduct) and compound mass-to-charge ratios and masses or functions to
+work with chemical formulas.  The package provides also a set of adduct
+definitions and information on some commercially available internal standard
+mixes commonly used in MS experiments.")
+    (license license:artistic2.0)))
+
 (define-public r-metagenomeseq
   (package
     (name "r-metagenomeseq")
