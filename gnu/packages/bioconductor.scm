@@ -9710,24 +9710,8 @@ the available RAM.")
     (build-system r-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'use-system-libraries
-            (lambda _
-              (substitute* "src/blosc/Makefile.in"
-                (("libblosc.a: blosc") "libwhatever.a:")
-                (("libblosc.a")
-                 (string-append #$(this-package-input "c-blosc")
-                                "/lib/libblosc.so"))
-                (("../zstd/libzstd.a") "-lzstd"))
-              (substitute* "src/bzip2/Makefile"
-                (("libH5Zbz2.so: bzip2-1.0.8/libbz2.a") "libH5Zbz2.so:")
-                (("./bzip2-1.0.8/libbz2.a") "-lbz2"))
-              (substitute* "src/zstd/Makefile"
-                (("libH5Zzstd.so: libzstd.a") "libH5Zzstd.so:")
-                (("libzstd.a") "-lzstd"))
-              (substitute* "src/vbz/Makefile"
-                (("../zstd/libzstd.a") "-lzstd")))))))
+      #:configure-flags
+      '(list "--without-bundled-libs")))
     (propagated-inputs
      (list r-rhdf5lib))
     (inputs
