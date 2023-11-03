@@ -21913,13 +21913,13 @@ methods based on resistant statistics.")
 (define-public r-pathview
   (package
     (name "r-pathview")
-    (version "1.40.0")
+    (version "1.42.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "pathview" version))
        (sha256
-        (base32 "0mld7vys6s5k8snk1gniph9wkw3726vsx430nhyyr76fp4ps2mks"))))
+        (base32 "17kl7yvpjhsb52kz1pw3jnk6s480lnpvvh9rragndixsl8bkmqmc"))))
     (properties `((upstream-name . "pathview")))
     (build-system r-build-system)
     (propagated-inputs
