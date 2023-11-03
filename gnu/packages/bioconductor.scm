@@ -7198,13 +7198,13 @@ CAGE.")
 (define-public r-enhancedvolcano
   (package
     (name "r-enhancedvolcano")
-    (version "1.18.0")
+    (version "1.20.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "EnhancedVolcano" version))
               (sha256
                (base32
-                "1mcyhgdvfmkkh0rlhf51an7j1zi96lqdhifki2aqmlx0lqvg4qxq"))))
+                "097w3957m47m03iy8xc1m7pdgm3qy0kzqbllic8pd79qglrla802"))))
     (properties `((upstream-name . "EnhancedVolcano")))
     (build-system r-build-system)
     (propagated-inputs (list r-ggplot2 r-ggrepel))
