@@ -13311,14 +13311,14 @@ to install interface to SYMPHONY.")
 (define-public r-ihw
   (package
     (name "r-ihw")
-    (version "1.28.0")
+    (version "1.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "IHW" version))
        (sha256
         (base32
-         "0i4yahgkrg9rnc0xldm026k6bd1bn5nkgkaf6kpyyday41rxzyq8"))))
+         "1pix38lg9snw0jdihh8sifnmckyw1lniwp95r93ca524g6swfc8b"))))
     (properties `((upstream-name . "IHW")))
     (build-system r-build-system)
     (propagated-inputs
