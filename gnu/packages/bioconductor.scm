@@ -15459,40 +15459,29 @@ Bioconductor.")
 (define-public r-motifstack
   (package
     (name "r-motifstack")
-    (version "1.44.1")
+    (version "1.46.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "motifStack" version))
        (sha256
         (base32
-         "1g46cxn1h3cqr0yrj6ancshzygiqr9finf1vmmig3h9g0ijgr5lz"))
+         "10hmqwkysifd59as9zx00p3gj595lwj30ywn9pqb1920q6f5mx2i"))
        (snippet
         '(delete-file "inst/htmlwidgets/lib/d3/d3.v4.min.js"))))
     (properties `((upstream-name . "motifStack")))
     (build-system r-build-system)
     (arguments
      (list
-      #:modules '((guix build utils)
-                  (guix build r-build-system)
-                  (srfi srfi-1))
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'process-javascript
            (lambda* (#:key inputs #:allow-other-keys)
              (with-directory-excursion "inst/htmlwidgets/lib/d3"
-               (call-with-values
-                   (lambda ()
-                     (unzip2
-                      `((,(assoc-ref inputs "_")
-                         "d3.v4.min.js"))))
-                 (lambda (sources targets)
-                   (for-each (lambda (source target)
-                               (format #true "Processing ~a --> ~a~%"
-                                       source target)
-                               (invoke "esbuild" source "--minify"
-                                       (string-append "--outfile=" target)))
-                             sources targets)))))))))
+               (let ((source (assoc-ref inputs "_"))
+                     (target "d3.v4.min.js"))
+                 (invoke "esbuild" source "--minify"
+                         (string-append "--outfile=" target)))))))))
     (propagated-inputs
      (list r-ade4
            r-biostrings
