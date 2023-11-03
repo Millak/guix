@@ -7837,13 +7837,13 @@ manner.")
 (define-public r-harshlight
   (package
     (name "r-harshlight")
-    (version "1.72.0")
+    (version "1.74.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "Harshlight" version))
               (sha256
                (base32
-                "1rg3gx42a68jqbdmbqx7lh97y0rird1lci7146hnxa4svj827d5p"))))
+                "1djs95l04b3qrqcb7jkzhfmxzbsn2riyydz8p2lmilg6z9rkdqx7"))))
     (properties `((upstream-name . "Harshlight")))
     (build-system r-build-system)
     (propagated-inputs
