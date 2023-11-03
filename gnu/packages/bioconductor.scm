@@ -1841,6 +1841,40 @@ LC-MSMS and MRM files from proteomics experiments; and PSI mzIdentML example
 files for various search engines.")
     (license license:gpl2+)))
 
+(define-public r-msexperiment
+  (package
+    (name "r-msexperiment")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "MsExperiment" version))
+       (sha256
+        (base32 "06m0i60zh3xjqmsz6dpp0il833xzdfj0fm6xbhl7kmicvfrcnyfg"))))
+    (properties `((upstream-name . "MsExperiment")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-iranges
+                             r-protgenerics
+                             r-qfeatures
+                             r-s4vectors
+                             r-spectra
+                             r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/RforMassSpectrometry/MsExperiment")
+    (synopsis "Infrastructure for Mass Spectrometry experiments")
+    (description
+     "This package provides infrastructure to store and manage all aspects
+related to a complete proteomics or metabolomics mass spectrometry (MS)
+experiment.  The @code{MsExperiment} package provides light-weight and
+flexible containers for MS experiments building on the new MS infrastructure
+provided by the Spectra, QFeatures and related packages.  Along with raw data
+representations, links to original data files and sample annotations,
+additional metadata or annotations can also be stored within the
+@code{MsExperiment} container.  To guarantee maximum flexibility only minimal
+constraints are put on the type and content of the data within the
+containers.")
+    (license license:artistic2.0)))
+
 (define-public r-msigdb
   (package
     (name "r-msigdb")
