@@ -10455,13 +10455,13 @@ identifier translation via the GDC API.")
 (define-public r-tkwidgets
   (package
     (name "r-tkwidgets")
-    (version "1.78.0")
+    (version "1.80.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "tkWidgets" version))
               (sha256
                (base32
-                "1xp0gdfrhhfzfww4ig3y90f7334y24rhzrmlxmm4wav8slvcran2"))))
+                "11a8rflmga2d63l5nzdlbkyfnzsf20dzg2sy6qr143hg9sjzqrrj"))))
     (properties `((upstream-name . "tkWidgets")))
     (build-system r-build-system)
     (propagated-inputs (list r-dyndoc r-widgettools))
