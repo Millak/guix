@@ -5189,13 +5189,13 @@ fold changes mean and variability for each selected gene.")
 (define-public r-delayedarray
   (package
     (name "r-delayedarray")
-    (version "0.26.7")
+    (version "0.28.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "DelayedArray" version))
               (sha256
                (base32
-                "1xsq85nm1gk537mw6ppsyykpw70kczv6wn1nll63b0k8xs4wj0ha"))))
+                "0mf30vdns64mpm11zcz9qx6nh5clr6krjvcmr7dqv2xg5ig0a1f7"))))
     (properties
      `((upstream-name . "DelayedArray")))
     (build-system r-build-system)
@@ -5205,7 +5205,8 @@ fold changes mean and variability for each selected gene.")
            r-matrix
            r-matrixgenerics
            r-s4arrays
-           r-s4vectors))
+           r-s4vectors
+           r-sparsearray))
     (native-inputs
      (list r-knitr))
     (home-page "https://bioconductor.org/packages/DelayedArray")
