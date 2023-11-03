@@ -22741,14 +22741,14 @@ scoring subnetwork.")
 (define-public r-bionetstat
   (package
     (name "r-bionetstat")
-    (version "1.20.0")
+    (version "1.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BioNetStat" version))
        (sha256
         (base32
-         "0bvfgppsdih6s70iizd7zh3zkb0hg4s4h1728xmyjqbvkl8fsdf4"))
+         "1rbb36v64b9xbk2dsf6wsyrhwwbkysrj8fp1g22y3gisdk170sg8"))
        (snippet
         '(delete-file "inst/datatables/js/jquery.dataTables.min.js"))))
     (properties `((upstream-name . "BioNetStat")))
