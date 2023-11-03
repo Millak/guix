@@ -13207,18 +13207,23 @@ and regression inferences from RNA-sequencing data.")
 (define-public r-ebseq
   (package
     (name "r-ebseq")
-    (version "1.40.0")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "EBSeq" version))
        (sha256
         (base32
-         "0y23k607f61csj2ciaqnl8pzsjisqlcnnhlasv36446n8f3silx5"))))
+         "07x9fh8akgiixsv1xddkvs2q8xxfsibas01kdx0kw6wak3nihn4w"))))
     (properties `((upstream-name . "EBSeq")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-blockmodeling r-gplots r-testthat))
+     (list r-bh
+           r-blockmodeling
+           r-gplots
+           r-rcpp
+           r-rcppeigen
+           r-testthat))
     (home-page "https://bioconductor.org/packages/EBSeq")
     (synopsis "Differential expression analysis of RNA-seq data")
     (description
