@@ -9993,13 +9993,13 @@ cell types based on specific research needs.")
 (define-public r-scdblfinder
   (package
     (name "r-scdblfinder")
-    (version "1.14.0")
+    (version "1.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scDblFinder" version))
        (sha256
-        (base32 "0lvacrgfj9i8mwlcv5ykxs69hd3bm6bvr6fsddxffsr7cckpn31w"))))
+        (base32 "1f3n1m6fjx965wm2jllzk51ssj92ifxb4bln4vwk25qxd3g0bna8"))))
     (properties `((upstream-name . "scDblFinder")))
     (build-system r-build-system)
     (propagated-inputs
