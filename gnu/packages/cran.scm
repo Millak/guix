@@ -7253,6 +7253,35 @@ univariate and bivariate maxima models, and for univariate and bivariate
 threshold models.")
     (license license:gpl3)))
 
+(define-public r-evmix
+  (package
+    (name "r-evmix")
+    (version "2.12")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "evmix" version))
+       (sha256
+        (base32 "02rabc9snci00s1x7h0svfr66lmw1wjcdg0149wc52mnccsdaivf"))))
+    (properties `((upstream-name . "evmix")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-gsl
+           r-mass
+           r-sparsem))
+    (home-page "http://www.math.canterbury.ac.nz/~c.scarrott/evmix.shtml")
+    (synopsis
+     "Extreme value threshold estimation and uncertainty quantification")
+    (description
+     "This package provides the usual distribution functions, maximum likelihood
+inference and model diagnostics for univariate stationary extreme value mixture
+models.  Also, there are provided kernel density estimation including various
+boundary corrected kernel density estimation methods and a wide choice of kernels,
+with cross-validation likelihood based bandwidth estimator.  Reasonable
+consistency with the base functions in the evd package is provided, so that users
+can safely interchange most code.")
+    (license license:gpl3)))
+
 (define-public r-excelr
   (package
     (name "r-excelr")
