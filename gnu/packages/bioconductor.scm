@@ -4568,21 +4568,21 @@ the curve} or @acronym{SF, survival fraction} are included.")
 (define-public r-coverageview
   (package
     (name "r-coverageview")
-    (version "1.38.0")
+    (version "1.40.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "CoverageView" version))
               (sha256
                (base32
-                "1ci07y75nvvv1mxy23v6jp5xb6n023fvlqh9il5lsdqwyfl5nz9s"))))
+                "1sj1vr84nsbygkh5mmp7zm21zzk4zcw3bwcvcazmy54zs553blpf"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-s4vectors
-           r-iranges
+     (list r-genomicalignments
            r-genomicranges
-           r-genomicalignments
+           r-iranges
+           r-rsamtools
            r-rtracklayer
-           r-rsamtools))
+           r-s4vectors))
     (home-page "https://bioconductor.org/packages/CoverageView/")
     (synopsis "Coverage visualization package for R")
     (description "This package provides a framework for the visualization of
