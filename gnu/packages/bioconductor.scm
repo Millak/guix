@@ -18886,14 +18886,14 @@ gene expression.")
 (define-public r-bgx
   (package
     (name "r-bgx")
-    (version "1.66.0")
+    (version "1.68.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "bgx" version))
        (sha256
         (base32
-         "1g6k3ryj8dz17asa4imnrk77z4dk9an5ssrqr17r0g797d5f4qjm"))))
+         "0v85i0lwmxq5yq9ygfzljgy8fsflqq1p53rq8aasnndd6gsm8ld2"))))
     (properties `((upstream-name . "bgx")))
     (build-system r-build-system)
     (arguments
