@@ -16296,13 +16296,13 @@ data for high-throughput, untargeted analyte profiling.")
 (define-public r-wppi
   (package
     (name "r-wppi")
-    (version "1.8.0")
+    (version "1.10.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "wppi" version))
               (sha256
                (base32
-                "06y4pq8msjzwrw1jgyj9yskgpfhvcz54qcsv0h14bakhyrwk00pg"))))
+                "04wg645c0gww8mq3vg70gqlwm12dmqxmvk704zvmxcpifhrvpn2b"))))
     (properties `((upstream-name . "wppi")))
     (build-system r-build-system)
     ;; This is necessary because omnipathr attempts to write a configuration
