@@ -164,9 +164,35 @@ It retrieves this data from the Genome Aggregation Database
         (base32 "0x1rcikg189akbd71yh0p02482km9hry6i69s2srdf5mlgqficvl"))))
     (properties `((upstream-name . "MPO.db")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'avoid-internet-access
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((cache (string-append #$output "/share/MPO.db/cache"))
+                     (file (string-append cache "/118299")))
+                (mkdir-p cache)
+                (copy-file #$(this-package-native-input "MPO.sqlite") file)
+                (substitute* "R/zzz.R"
+                  (("ah <- suppressMessages\\(AnnotationHub\\(\\)\\)" m)
+                   (string-append
+                    "if (Sys.getenv(\"NIX_BUILD_TOP\") == \"\") { " m " };"))
+                  (("dbfile <- ah.*" m)
+                   (string-append
+                    "if (Sys.getenv(\"NIX_BUILD_TOP\") != \"\") { dbfile <- \""
+                    file "\";} else { " m " }\n")))))))))
     (propagated-inputs
      (list r-annotationdbi r-annotationhub r-biocfilecache r-dbi))
-    (native-inputs (list r-knitr))
+    (native-inputs
+     `(("r-knitr" ,r-knitr)
+       ("MPO.sqlite"
+        ,(origin
+           (method url-fetch)
+           (uri "https://annotationhub.bioconductor.org/fetch/118299")
+           (file-name "MPO.sqlite")
+           (sha256
+            (base32 "12rf5dpnjrpw55bgnbn68dni2g0p87nvs9c7mamqk0ayafs61zl0"))))))
     (home-page "https://github.com/YuLab-SMU/MPO.db")
     (synopsis "set of annotation maps describing the Mouse Phenotype Ontology")
     (description
