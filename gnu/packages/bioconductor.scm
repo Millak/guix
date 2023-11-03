@@ -18488,34 +18488,6 @@ model, amino acid change consequence, minor allele frequencies across human
 populations, splice site strength, conservation, etc.")
     (license license:artistic2.0)))
 
-(define-public r-genomegraphs
-  (package
-    (name "r-genomegraphs")
-    (version "1.46.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (bioconductor-uri "GenomeGraphs" version))
-       (sha256
-        (base32
-         "05vavhz936v7cknig2f2mn3fd9fiy54r3swlvifpawramblp1ags"))))
-    (properties `((upstream-name . "GenomeGraphs")))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-biomart))
-    (home-page "https://bioconductor.org/packages/GenomeGraphs/")
-    (synopsis "Plotting genomic information from Ensembl")
-    (description
-     "Genomic data analyses requires integrated visualization of known genomic
-information and new experimental data.  GenomeGraphs uses the biomaRt package
-to perform live annotation queries to Ensembl and translates this to e.g.
-gene/transcript structures in viewports of the grid graphics package.  This
-results in genomic information plotted together with your data.  Another
-strength of GenomeGraphs is to plot different data types such as array CGH,
-gene expression, sequencing and other data, together in one plot using the
-same genome coordinate system.")
-    (license license:artistic2.0)))
-
 (define-public r-variancepartition
   (package
     (name "r-variancepartition")
