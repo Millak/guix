@@ -7459,13 +7459,13 @@ genomic intervals.  In addition, it can use BAM or BigWig files as input.")
 (define-public r-genomeinfodb
   (package
     (name "r-genomeinfodb")
-    (version "1.36.4")
+    (version "1.38.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GenomeInfoDb" version))
               (sha256
                (base32
-                "0wwh72sj894m3awk4g2zmkkwqafdjyxzsr49vnd1fiyz909hw02a"))))
+                "1a82xx1ijmfxk6d4pjqy45cdrnf75yrs7l7l64brl5d5dif45s42"))))
     (properties
      `((upstream-name . "GenomeInfoDb")))
     (build-system r-build-system)
