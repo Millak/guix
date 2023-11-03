@@ -5192,7 +5192,6 @@ including:
 @item character vector operations
 @item factor manipulation
 @item obtaining information about R objects
-@item manipulating MS-Excel formatted files
 @item generating fixed-width format files
 @item extricating components of date and time objects
 @item operations on columns of data frames
