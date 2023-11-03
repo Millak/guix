@@ -5406,13 +5406,13 @@ results.")
 (define-public r-dropletutils
   (package
     (name "r-dropletutils")
-    (version "1.20.0")
+    (version "1.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "DropletUtils" version))
        (sha256
-        (base32 "09xwfb4ihpsp465vb1zbcwm6ww6qi3spn9d8p4i1gczyc0p9pf1y"))))
+        (base32 "0bnxk72a0ygh4nqwyjzzi79zc4md8pwk0pr6jn43in0wdk054wf6"))))
     (properties `((upstream-name . "DropletUtils")))
     (build-system r-build-system)
     (propagated-inputs
