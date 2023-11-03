@@ -11295,13 +11295,13 @@ libraries for systems that do not have these available via other means.")
 (define-public r-zellkonverter
   (package
     (name "r-zellkonverter")
-    (version "1.10.1")
+    (version "1.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "zellkonverter" version))
        (sha256
-        (base32 "1p89i2dfwcgrdchdnxrywp3jjjn5jjs5bisrx5kav26yh2pyx1wk"))))
+        (base32 "02q9icblcnh0l7vah29mnhcczw8w0gpgd57v19gy7222nrqpcd9m"))))
     (properties `((upstream-name . "zellkonverter")))
     (build-system r-build-system)
     (propagated-inputs
