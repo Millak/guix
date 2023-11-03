@@ -11594,13 +11594,13 @@ posterior for individual coefficients.")
 (define-public r-greylistchip
   (package
    (name "r-greylistchip")
-   (version "1.32.1")
+   (version "1.34.0")
    (source (origin
             (method url-fetch)
             (uri (bioconductor-uri "GreyListChIP" version))
             (sha256
              (base32
-              "0z89yikglx077x18qhq6f8f2fa9xni12jz8my9p5sa6zmvnj4dnm"))))
+              "1k974cvfbkl8ffn7k2la843bv2pf33cr5f6fahiiy24d68lxwifr"))))
    (properties `((upstream-name . "GreyListChIP")))
    (build-system r-build-system)
    (propagated-inputs
