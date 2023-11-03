@@ -18516,37 +18516,6 @@ gene expression, sequencing and other data, together in one plot using the
 same genome coordinate system.")
     (license license:artistic2.0)))
 
-(define-public r-wavetiling
-  (package
-    (name "r-wavetiling")
-    (version "1.28.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (bioconductor-uri "waveTiling" version))
-       (sha256
-        (base32
-         "0d7l559zlmly8mncmh1zhkqmsml0bwwfpm7ccp8l26y852vwf7hf"))))
-    (properties `((upstream-name . "waveTiling")))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-affy
-           r-biobase
-           r-biostrings
-           r-genomegraphs
-           r-genomicranges
-           r-iranges
-           r-oligo
-           r-oligoclasses
-           r-preprocesscore
-           r-waveslim))
-    (home-page "https://r-forge.r-project.org/projects/wavetiling/")
-    (synopsis "Wavelet-based models for tiling array transcriptome analysis")
-    (description
-     "This package is designed to conduct transcriptome analysis for tiling
-arrays based on fast wavelet-based functional models.")
-    (license license:gpl2+)))
-
 (define-public r-variancepartition
   (package
     (name "r-variancepartition")
