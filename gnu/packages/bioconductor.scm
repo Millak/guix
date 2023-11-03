@@ -8101,16 +8101,17 @@ of other R packages who wish to make use of HTSlib.")
 microarray data, using nearest neighbor averaging.")
     (license license:gpl2+)))
 
+;; TODO: check javascript
 (define-public r-interactivedisplay
   (package
     (name "r-interactivedisplay")
-    (version "1.38.0")
+    (version "1.40.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "interactiveDisplay" version))
               (sha256
                (base32
-                "1y9fdnpz1bagrwhyj8jikp2q5fd9y74j48l5z7f0s88v88sa7szl"))
+                "0w81c5kc48gjavln50ysgr3vaf8s4fb6632ckzb1q225j9ik2gia"))
               (snippet
                '(for-each delete-file
                           '("inst/www/js/jquery.js"
@@ -8147,9 +8148,7 @@ microarray data, using nearest neighbor averaging.")
     (propagated-inputs
      (list r-annotationdbi
            r-biocgenerics
-           r-biocmanager
            r-category
-           r-dt
            r-ggplot2
            r-gridsvg
            r-interactivedisplaybase
@@ -8157,7 +8156,6 @@ microarray data, using nearest neighbor averaging.")
            r-rcolorbrewer
            r-reshape2
            r-shiny
-           r-zlibbioc
            r-xml))
     (native-inputs
      `(("esbuild" ,esbuild)
