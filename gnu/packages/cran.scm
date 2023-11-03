@@ -13187,6 +13187,30 @@ packages.  It contains also functions for simplifying some clustering analysis
 steps and provides ggplot2-based elegant data visualization.")
     (license license:gpl2)))
 
+(define-public r-fancova
+  (package
+    (name "r-fancova")
+    (version "0.6-1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "fANCOVA" version))
+       (sha256
+        (base32 "04mw0blgpwdk6wdg8llrig43psgc0vb42cbimvzbnym8v503dsn3"))))
+    (properties `((upstream-name . "fANCOVA")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=fANCOVA")
+    (synopsis "Nonparametric analysis of covariance")
+    (description
+     "This package provides a collection of R functions to perform
+nonparametric analysis of covariance for regression curves or surfaces.
+Testing the equality or parallelism of nonparametric curves or surfaces is
+equivalent to analysis of variance (ANOVA) or analysis of covariance (ANCOVA)
+for one-sample functional data.  Three different testing methods are available
+in the package, including one based on L-2 distance, one based on an ANOVA
+statistic, and one based on variance estimators.")
+    (license license:gpl3)))
+
 (define-public r-fansi
   (package
     (name "r-fansi")
