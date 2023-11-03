@@ -856,6 +856,27 @@ dumbbell charts, the ability to encircle points and coordinate-system-based
 text annotations.")
     (license license:agpl3)))
 
+(define-public r-ggbreak
+  (package
+    (name "r-ggbreak")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "ggbreak" version))
+       (sha256
+        (base32 "14rx16v66xd0fjlywi89dq9dbw41zn7hpq14wgvf0178cxdp2fw4"))))
+    (properties `((upstream-name . "ggbreak")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-aplot r-ggfun r-ggplot2 r-ggplotify r-rlang))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/YuLab-SMU/ggbreak")
+    (synopsis "Set axis break for ggplot2")
+    (description
+     "This package provides an implementation of scale functions for setting
+axis breaks of a ggplot.")
+    (license license:artistic2.0)))
+
 (define-public r-ggdist
   (package
     (name "r-ggdist")
