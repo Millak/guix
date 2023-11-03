@@ -5525,21 +5525,21 @@ and evaluate clustering results.")
 (define-public r-ideoviz
   (package
     (name "r-ideoviz")
-    (version "1.36.0")
+    (version "1.37.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "IdeoViz" version))
               (sha256
                (base32
-                "1za1cxf734mar9hbvqrijdg61g0jag9jdzmi8p8ka62xbikxqa3s"))))
+                "1bhari5ghag5f5dlrgm79hckbh0bamd9567z04qi0spnfr97wf3s"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase
-           r-iranges
+           r-genomeinfodb
            r-genomicranges
+           r-iranges
            r-rcolorbrewer
-           r-rtracklayer
-           r-genomeinfodb))
+           r-rtracklayer))
     (home-page "https://bioconductor.org/packages/IdeoViz/")
     (synopsis "Plots data along a chromosomal ideogram")
     (description "This package provides functions to plot data associated with
