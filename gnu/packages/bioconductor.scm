@@ -6537,14 +6537,14 @@ biological sequences or sets of sequences.")
 (define-public r-biovizbase
   (package
     (name "r-biovizbase")
-    (version "1.48.0")
+    (version "1.50.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biovizBase" version))
        (sha256
         (base32
-         "0na37f2nfavgxd2xhprfb6bv68zm2h6glbkffspc3gsnw1q5h6da"))))
+         "01hli49aq1fjjgpk465znq1ki0qi7nxg71pqg18fz6nblg3ny9z5"))))
     (properties `((upstream-name . "biovizBase")))
     (build-system r-build-system)
     (propagated-inputs
