@@ -13234,13 +13234,13 @@ gene and isoform level using RNA-seq data")
 (define-public r-karyoploter
   (package
     (name "r-karyoploter")
-    (version "1.26.0")
+    (version "1.28.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "karyoploteR" version))
               (sha256
                (base32
-                "1nqcm2jlazm8wsa4p6a59m1j8y1qdwg0w3kii4dqnkann3q2q68x"))))
+                "0jr9lp250s9066hh40vxb6c6yhdd8yrnk0zklwylkf3jpbdgl621"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi
