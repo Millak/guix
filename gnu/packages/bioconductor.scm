@@ -9646,14 +9646,14 @@ the available RAM.")
 (define-public r-rhdf5filters
   (package
     (name "r-rhdf5filters")
-    (version "1.12.1")
+    (version "1.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "rhdf5filters" version))
        (sha256
         (base32
-         "1v9wxa5q0iwphrmkf9x70jpbq9r9rqz2hm94smqnnpfxszila49m"))))
+         "1appjnggyljrn77nvv9adkwxplbrrlgkrrd1bf2b5r0nsa505hdc"))))
     (properties `((upstream-name . "rhdf5filters")))
     (build-system r-build-system)
     (arguments
@@ -9681,7 +9681,7 @@ the available RAM.")
     (inputs
      (list bzip2 c-blosc zlib (list zstd "lib")))
     (native-inputs
-     (list r-biocstyle r-knitr r-rmarkdown))
+     (list r-knitr))
     (home-page "https://github.com/grimbough/rhdf5filters")
     (synopsis "HDF5 compression filters")
     (description
