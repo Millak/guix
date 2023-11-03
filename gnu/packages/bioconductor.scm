@@ -5718,13 +5718,13 @@ AE et al 2011, <doi: 10.1093/bioinformatics/btr171>).")
 (define-public r-italics
   (package
     (name "r-italics")
-    (version "2.60.0")
+    (version "2.62.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ITALICS" version))
        (sha256
-        (base32 "09yia158mrv9r32iw88jlbfd6l7hzmglv8ni7i28x18qvnhp2a08"))))
+        (base32 "0zk9n94nqw6vpw908ka32zppxwqkki9krzxib06y1nic3bri3w9i"))))
     (properties `((upstream-name . "ITALICS")))
     (build-system r-build-system)
     (propagated-inputs
