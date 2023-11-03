@@ -2811,13 +2811,13 @@ well as on dataset of gene expression data.")
 (define-public r-airpart
   (package
     (name "r-airpart")
-    (version "1.8.0")
+    (version "1.10.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "airpart" version))
               (sha256
                (base32
-                "024vcxf23irlysc8srqii3zqhhldpwdcj0i4zzhz18x3bdy9cbj0"))))
+                "1bdlg078nlpibbn3y1cbkglhlm440crx3alzhv9k0psv6arg2kqb"))))
     (properties `((upstream-name . "airpart")))
     (build-system r-build-system)
     (propagated-inputs
