@@ -10936,14 +10936,14 @@ unmodeled, or latent sources of noise.")
 (define-public r-systempiper
   (package
     (name "r-systempiper")
-    (version "2.6.3")
+    (version "2.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "systemPipeR" version))
        (sha256
         (base32
-         "068rikfq32awhvj0abl30bghv5k2z4zlfkbxpmsdapxhmdzhgnba"))))
+         "01amqib9ahrf19xpy4ivlsss82zyp3w7fbgwrwp53zfbg0cninga"))))
     (properties `((upstream-name . "systemPipeR")))
     (build-system r-build-system)
     (propagated-inputs
