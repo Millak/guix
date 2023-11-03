@@ -22281,26 +22281,29 @@ protocol for PureScript programming language.  It features:
       (license license:gpl3+))))
 
 (define-public emacs-evil-anzu
-  (package
-    (name "emacs-evil-anzu")
-    (version "0.03")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/syohex/emacs-evil-anzu")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0lw7fg4gqwj30r0l6k2ni36sxqkf65zf0d0z3rxnpwbxlf8dlkrr"))))
-    (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-evil emacs-anzu))
-    (home-page "https://github.com/syohex/emacs-evil-anzu")
-    (synopsis "Anzu for evil-mode")
-    (description "@code{anzu} provides a minor mode that displays the current
+  ;; No release since January 2015
+  (let ((commit "d1e98ee6976437164627542909a25c6946497899")
+        (revision "0"))
+    (package
+      (name "emacs-evil-anzu")
+      (version (git-version "0.03" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/emacsorphanage/evil-anzu")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1i8f360lq5a32knkzbwdw10ql9cxsmgfd4iiwnr7vcwacm34zq88"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-evil emacs-anzu))
+      (home-page "https://github.com/emacsorphanage/evil-anzu")
+      (synopsis "Anzu for evil-mode")
+      (description
+       "@code{anzu} provides a minor mode that displays the current
 match and total match information in the mode-line in various search modes.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-pg
   (package
