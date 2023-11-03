@@ -12665,14 +12665,14 @@ accessiblity for new Bioconductor users is hopefully increased.")
 (define-public r-inspect
   (package
     (name "r-inspect")
-    (version "1.30.0")
+    (version "1.31.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "INSPEcT" version))
        (sha256
         (base32
-         "1nyfl78fjj956bk1xf32k3jdqhlffx6grbl7vajn48q5ldsx8kcx"))))
+         "0c7bw9cnav41vals2scv2gh5mj5nx2mgzagdb8g99sprdqv5924n"))))
     (properties `((upstream-name . "INSPEcT")))
     (build-system r-build-system)
     (propagated-inputs
