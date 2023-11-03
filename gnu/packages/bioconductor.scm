@@ -10905,22 +10905,22 @@ of risk prediction (survival) models.")
 (define-public r-sva
   (package
     (name "r-sva")
-    (version "3.48.0")
+    (version "3.50.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "sva" version))
        (sha256
         (base32
-         "1f6ia57fn2sn7c2zdfswvj9kx8xayssrgf5q6hrr9nrxc0jq19g3"))))
+         "0p4zgw1pi5vnaqxn6jmvhpy0h5hnnqp41n0k2v0chhqgqxgn67x1"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-edger
+     (list r-biocparallel
+           r-edger
            r-genefilter
-           r-mgcv
-           r-biocparallel
+           r-limma
            r-matrixstats
-           r-limma))
+           r-mgcv))
     (home-page "https://bioconductor.org/packages/sva")
     (synopsis "Surrogate variable analysis")
     (description
