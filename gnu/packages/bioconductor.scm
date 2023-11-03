@@ -4723,13 +4723,13 @@ set analyses, and can deal with repeated or longitudinal data.")
 (define-public r-debcam
   (package
     (name "r-debcam")
-    (version "1.18.0")
+    (version "1.20.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "debCAM" version))
               (sha256
                (base32
-                "11vqfkyd3fklc8fhn850kklph8x4pmwclb9xbqji4i21222m89hh"))
+                "1swqqrlwin2i2qq46qyfziblbfsfyd5hf6w39hygp7fdkpic14b7"))
               (snippet
                '(for-each delete-file
                           '("inst/java/CornerDetect.jar"
@@ -4738,9 +4738,6 @@ set analyses, and can deal with repeated or longitudinal data.")
     (build-system r-build-system)
     (arguments
      (list
-      ;; XXX: since the upgrade to R 4.3.0 this package takes too long to be
-      ;; loaded.
-      #:tests? #false
       #:configure-flags '(list "--fake")
       #:modules
       '((guix build r-build-system)
@@ -4768,7 +4765,7 @@ set analyses, and can deal with repeated or longitudinal data.")
          (add-after 'install 'strip-jar-timestamps
            (assoc-ref ant:%standard-phases 'strip-jar-timestamps)))))
     (inputs
-     (list (list icedtea "jdk")
+     (list (list openjdk11 "jdk")
            java-pj))
     (propagated-inputs
      (list r-apcluster
