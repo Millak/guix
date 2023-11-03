@@ -7226,13 +7226,13 @@ parameter configurations.")
 (define-public r-enmix
   (package
     (name "r-enmix")
-    (version "1.36.0")
+    (version "1.38.01")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ENmix" version))
               (sha256
                (base32
-                "1cwj45rnb6ra1bnd0plkjfvfsix25xr51yh6rwrfj524c35r70w1"))))
+                "1wh9lri9dp3904c2n6562z7p9gqx39dmag55imx8zrqnayxamc03"))))
     (properties `((upstream-name . "ENmix")))
     (build-system r-build-system)
     (propagated-inputs
@@ -7249,9 +7249,9 @@ parameter configurations.")
            r-illuminaio
            r-impute
            r-iranges
+           r-irlba
            r-matrixstats
            r-minfi
-           r-preprocesscore
            r-quadprog
            r-rpmm
            r-s4vectors
