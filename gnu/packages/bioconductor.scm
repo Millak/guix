@@ -10471,16 +10471,17 @@ identifier translation via the GDC API.")
      "This package implements widgets to provide user interfaces.")
     (license license:artistic2.0)))
 
+;; TODO: check javascript
 (define-public r-trackviewer
   (package
     (name "r-trackviewer")
-    (version "1.36.2")
+    (version "1.38.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "trackViewer" version))
               (sha256
                (base32
-                "1ngfpd308y8i3vgv07cggk2azs64lsyyc9zfi3pz0gapr33ha6a1"))
+                "15agkyqx6gl5zzdxra5nl0czd4j7mw456r587w039l9hzwznwbr8"))
               (snippet
                '(delete-file "inst/htmlwidgets/lib/d3/d3.v4.min.js"))))
     (properties `((upstream-name . "trackViewer")))
