@@ -2573,13 +2573,13 @@ limma packages.")
 (define-public r-affyplm
   (package
     (name "r-affyplm")
-    (version "1.76.1")
+    (version "1.78.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "affyPLM" version))
        (sha256
-        (base32 "1660nn4541f2k5qpzxkkkf9h92ndzqr0j1jpzh4czs466766kn8y"))))
+        (base32 "0l7rfwj1bdkk9vd5j0zby2ijpapmd5k0s6l84zy4ld47vabxyaa6"))))
     (properties `((upstream-name . "affyPLM")))
     (build-system r-build-system)
     (inputs (list zlib))
