@@ -7268,14 +7268,14 @@ visualization of Illumina DNA methylation array data.")
 (define-public r-ensembldb
   (package
     (name "r-ensembldb")
-    (version "2.24.1")
+    (version "2.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ensembldb" version))
        (sha256
         (base32
-         "1x73lln0rlnypl8iia54srl3wrazs94f8rspmjsaqsxwknkym319"))))
+         "010fp03x1splddxmhpxlfv1i3paqgbcxm7l9z2lmm6zfixhb158a"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi
