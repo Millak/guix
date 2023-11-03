@@ -20797,13 +20797,13 @@ provides a wrapper of de novo motif discovery software.")
 (define-public r-maftools
   (package
     (name "r-maftools")
-    (version "2.16.0")
+    (version "2.18.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "maftools" version))
        (sha256
-        (base32 "1jvmqn33hxzscr8j7y9zw5sngglcy0zkl0386053lx5dl5s5iqyq"))))
+        (base32 "025wlqnx13ldzyrf72mrfj492d62i4xyjbhpmgavgld0jwfmr3ga"))))
     (properties `((upstream-name . "maftools")))
     (build-system r-build-system)
     (propagated-inputs
