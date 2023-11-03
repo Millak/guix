@@ -9169,14 +9169,14 @@ functionality of the @code{TxDb} packages (e.g.,
 (define-public r-organismdbi
   (package
     (name "r-organismdbi")
-    (version "1.42.0")
+    (version "1.44.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "OrganismDbi" version))
        (sha256
         (base32
-         "1pw3qd6n0xf7vq3x73612bndcqhwrqkpi29f6crazdzjcy3fivlb"))))
+         "0g75y21lqmwsh28nx99zp2gxr6rhlhbw76f66qx5hrh6bm2zpm7j"))))
     (properties `((upstream-name . "OrganismDbi")))
     (build-system r-build-system)
     (propagated-inputs
