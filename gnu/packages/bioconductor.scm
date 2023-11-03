@@ -7797,13 +7797,13 @@ Enrichment Analysis} (GSEA).")
 (define-public r-gsva
   (package
     (name "r-gsva")
-    (version "1.48.3")
+    (version "1.50.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GSVA" version))
               (sha256
                (base32
-                "0ljfw65ray9ks8g55bfzn0c1w4412y4a7996zddywn5qj5pkjkfb"))))
+                "01w5j7fmi3hsfd282kcn4v41mi58z2yfhapff2zgf9swdfps4m6z"))))
     (properties `((upstream-name . "GSVA")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase
