@@ -7231,6 +7231,28 @@ T distribution.  There is only one exported function, @code{e_trunct},
 which should be seen for details.")
    (license license:expat)))
 
+(define-public r-evd
+  (package
+    (name "r-evd")
+    (version "2.3-6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "evd" version))
+       (sha256
+        (base32 "0wc95hfj0gwkyghipdrhwd3s6q2agh9x2wy6y7dr6mjw7wnmjb36"))))
+    (properties `((upstream-name . "evd")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=evd")
+    (synopsis "Functions for extreme value distributions")
+    (description
+     "This package extends simulation, distribution, quantile and density
+functions to univariate and multivariate parametric extreme value distributions,
+and provides fitting functions which calculate maximum likelihood estimates for
+univariate and bivariate maxima models, and for univariate and bivariate
+threshold models.")
+    (license license:gpl3)))
+
 (define-public r-excelr
   (package
     (name "r-excelr")
