@@ -1063,11 +1063,11 @@ plotnames, filenames and paths.")
       (license license:gpl3))))
 
 (define-public r-readwriter
-  (let ((commit "71454f4aa706f5d2fbe606acd95abc14224e7058")
+  (let ((commit "12d32cb6533ef4b9eab4d707d1502525c2034aee")
         (revision "1"))
     (package
       (name "r-readwriter")
-      (version (git-version "0.2.9" revision commit))
+      (version (git-version "0.3.2" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -1076,7 +1076,7 @@ plotnames, filenames and paths.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0sp27smhdva2hi2x0svia2l56k8xrh7p5akn78g5b0lcvz4x3hd7"))))
+                  "1hy47g8d7zppr2i9zlkwl2yb0ii8x710hqk07h089ldx9171qxab"))))
       (properties `((upstream-name . "ReadWriter")))
       (build-system r-build-system)
       (propagated-inputs
