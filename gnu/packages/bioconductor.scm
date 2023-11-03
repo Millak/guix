@@ -7023,13 +7023,13 @@ exploration of the results.")
 (define-public r-diffcyt
   (package
     (name "r-diffcyt")
-    (version "1.20.0")
+    (version "1.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "diffcyt" version))
        (sha256
-        (base32 "1vsn9z06vmfw6741x7dri3d9wh4rqhzak9r506y3c3h2gjjwilv1"))))
+        (base32 "1k3gzzgda29m2v7v8hqw7c2s8z778p0plqxag443lhsxcm6izcxi"))))
     (properties `((upstream-name . "diffcyt")))
     (build-system r-build-system)
     (propagated-inputs
