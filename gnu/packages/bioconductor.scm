@@ -8169,6 +8169,42 @@ nucleotide sequence analysis.  The package is primarily useful to developers
 of other R packages who wish to make use of HTSlib.")
     (license license:lgpl2.0+)))
 
+(define-public r-rnbeads
+  (package
+    (name "r-rnbeads")
+    (version "2.20.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "RnBeads" version))
+       (sha256
+        (base32 "15z7l4nmpy01xm19717l27nwf3rfsn6wjv211fn2y4ls40mz75qp"))))
+    (properties `((upstream-name . "RnBeads")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocgenerics
+           r-cluster
+           r-ff
+           r-fields
+           r-genomicranges
+           r-ggplot2
+           r-gplots
+           r-gridextra
+           r-illuminaio
+           r-iranges
+           r-limma
+           r-mass
+           r-matrixstats
+           r-methylumi
+           r-plyr
+           r-s4vectors))
+    (home-page "https://bioconductor.org/packages/RnBeads")
+    (synopsis "RnBeads")
+    (description
+     "@code{RnBeads} facilitates comprehensive analysis of various types of DNA
+methylation data at the genome scale.")
+    (license license:gpl3)))
+
 (define-public r-impute
   (package
     (name "r-impute")
