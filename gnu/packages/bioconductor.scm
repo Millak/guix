@@ -5371,13 +5371,13 @@ possibly confounded by SNPs and cross-hybridisation.  It includes
 (define-public r-drimseq
   (package
     (name "r-drimseq")
-    (version "1.28.0")
+    (version "1.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "DRIMSeq" version))
        (sha256
-        (base32 "1i9lcp31g94mllkwcyfablj27qr8v7vqk9j96ywrdfpj8dmcrw98"))))
+        (base32 "1nf044cfqywfnglm081xbppamva87z2j2xz0f51z8mra11apj6i6"))))
     (properties `((upstream-name . "DRIMSeq")))
     (build-system r-build-system)
     (propagated-inputs
