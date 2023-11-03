@@ -19025,13 +19025,13 @@ validating output, provides an S4 SBML DOM, converts SBML to R graph objects.")
 (define-public r-hybridmtest
   (package
     (name "r-hybridmtest")
-    (version "1.44.0")
+    (version "1.46.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "HybridMTest" version))
        (sha256
-        (base32 "19pycad35hc7ylnsz75bv029y1r6j9xvrbhzk4i64i7jn8gi7ngh"))))
+        (base32 "1jkihcad453d7jqb78fl03yfqz169jz75c40y53569ndp2j4rg71"))))
     (properties `((upstream-name . "HybridMTest")))
     (build-system r-build-system)
     (propagated-inputs
