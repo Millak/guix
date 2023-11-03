@@ -12984,14 +12984,14 @@ possible, parallelization is achieved using the BiocParallel framework.")
 (define-public r-destiny
   (package
     (name "r-destiny")
-    (version "3.14.0")
+    (version "3.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "destiny" version))
        (sha256
         (base32
-         "0hc85dq68h7dy5jcflpjj05231ny7na9i4lksfsw89jhmxgzhacd"))))
+         "06xwyqlsas98lxmd0qw5ysjwbk397kyapd5jq5pzjrynsj4r9xn6"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase
