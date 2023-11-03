@@ -12163,16 +12163,16 @@ the @code{arrayCGH} packages.")
 (define-public r-cghcall
   (package
    (name "r-cghcall")
-   (version "2.62.0")
+   (version "2.64.0")
    (source (origin
             (method url-fetch)
             (uri (bioconductor-uri "CGHcall" version))
             (sha256
-             (base32 "02d8j0al062k33h6n3ihn7kwbqp3pjwg9zzbr45ay1m1jm6bappi"))))
+             (base32 "1x2zfr40bm42zd1bljwpbz3cz1q23a3yy1g277lwsp78gxbn3zly"))))
    (properties `((upstream-name . "CGHcall")))
    (build-system r-build-system)
    (propagated-inputs
-    (list r-biobase r-cghbase r-impute r-dnacopy r-snowfall))
+    (list r-biobase r-cghbase r-dnacopy r-impute r-snowfall))
    (home-page "https://bioconductor.org/packages/CGHcall")
    (synopsis "Base functions and classes for arrayCGH data analysis")
    (description "This package contains functions and classes that are needed by
