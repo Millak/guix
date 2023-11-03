@@ -18216,18 +18216,18 @@ with multiple R processes supported by the package @code{parallel}.")
 (define-public r-seqbias
   (package
     (name "r-seqbias")
-    (version "1.48.0")
+    (version "1.50.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "seqbias" version))
        (sha256
         (base32
-         "1sspl03m2hf6s5rw6nfqrycb236nvcgygql6apdlg3cjnikf090j"))))
+         "18pdpi855y1hhka96xc5886nqffjn1jhz9jr9p305iikdrsvmjp1"))))
     (properties `((upstream-name . "seqbias")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-biostrings r-genomicranges r-rhtslib))
+     (list r-biostrings r-genomicranges r-rhtslib r-zlibbioc))
     (home-page "https://bioconductor.org/packages/seqbias/")
     (synopsis "Estimation of per-position bias in high-throughput sequencing data")
     (description
