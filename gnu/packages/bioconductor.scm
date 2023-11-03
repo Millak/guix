@@ -11699,13 +11699,13 @@ processing to visualization and annotation.")
 (define-public r-mbecs
   (package
     (name "r-mbecs")
-    (version "1.4.0")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MBECS" version))
        (sha256
-        (base32 "0gfr3c5k7xjd342zfdksgh22mrk3ryr4cp89nar0mlpgzxg4l4vz"))))
+        (base32 "1j7vb26n2fnf5fkk8hfz552yx91g4zg719alhg4hg2vvjd1qx2l1"))))
     (properties `((upstream-name . "MBECS")))
     (build-system r-build-system)
     (arguments
@@ -11724,7 +11724,6 @@ processing to visualization and annotation.")
            r-lme4
            r-lmertest
            r-magrittr
-           r-markdown
            r-matrix
            r-pheatmap
            r-phyloseq
