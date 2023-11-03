@@ -9283,14 +9283,14 @@ application encapsulates the whole analysis.")
 (define-public r-pcamethods
   (package
     (name "r-pcamethods")
-    (version "1.92.0")
+    (version "1.94.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "pcaMethods" version))
        (sha256
         (base32
-         "14awrgq56s948x74j4iv9k1yy5b7axw1kqzg827y5znjc1i3aqy6"))))
+         "1asm4iafdzm98iv2j9sxvn5y9ss2p679cx7gwjipq8mf1d7bzfp0"))))
     (properties `((upstream-name . "pcaMethods")))
     (build-system r-build-system)
     (propagated-inputs
