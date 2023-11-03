@@ -68,6 +68,42 @@
 
 ;;; Annotations
 
+(define-public r-bsgenome-hsapiens-ucsc-hg38-masked
+  (package
+    (name "r-bsgenome-hsapiens-ucsc-hg38-masked")
+    (version "1.4.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "BSgenome.Hsapiens.UCSC.hg38.masked" version
+                              'annotation))
+       (sha256
+        (base32 "0j71hdxqvvc0s8mc6jp6zk502mrf095qazj95yzzb4rm6sjvd20m"))))
+    (properties `((upstream-name . "BSgenome.Hsapiens.UCSC.hg38.masked")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bsgenome r-bsgenome-hsapiens-ucsc-hg38
+                             r-genomeinfodb))
+    (home-page
+     "https://bioconductor.org/packages/BSgenome.Hsapiens.UCSC.hg38.masked")
+    (synopsis
+     "Full masked genomic sequences for Homo sapiens (UCSC version hg38)")
+    (description
+     "This package provides the complete genome sequences for Homo sapiens as
+provided by UCSC (genome hg38, based on assembly GRCh38.p14 since 2023/01/31).
+The sequences are the same as in BSgenome.Hsapiens.UCSC.hg38, except that each
+of them has the 4 following masks on top:
+
+@enumerate
+@item the mask of assembly gaps (AGAPS mask);
+@item the mask of intra-contig ambiguities (AMB mask);
+@item the mask of repeats from @code{RepeatMasker} (RM mask);
+@item the mask of repeats from Tandem Repeats Finder (TRF mask).
+@end enumerate
+
+Only the AGAPS and AMB masks are \"active\" by default.  The sequences are stored
+in @code{MaskedDNAString} objects.")
+    (license license:artistic2.0)))
+
 (define-public r-hpo-db
   (package
     (name "r-hpo-db")
