@@ -8975,6 +8975,30 @@ distribution with mean equal to @code{mean} and standard deviation equal to
 functions, as well as a random generation function.")
     (license license:gpl2)))
 
+(define-public r-truncdist
+  (package
+    (name "r-truncdist")
+    (version "1.0-2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "truncdist" version))
+       (sha256
+        (base32 "02ihw4ixhadwr3sqm6r264i8vpcaz8pn69vkzabd8fwqvn5vcj5q"))))
+    (properties `((upstream-name . "truncdist")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-evd))
+    (home-page "https://cran.r-project.org/package=truncdist")
+    (synopsis "Truncated random variables")
+    (description
+     "This package provides a collection of tools to evaluate probability density
+functions, cumulative distribution functions, quantile functions and random
+numbers for truncated random variables.  These functions are provided to also
+compute the expected value and variance.  @acronym{Q-Q, quantile–quantile} plots
+can be produced.  All the probability functions in the stats, stats4 and evd
+packages are automatically available for truncation.")
+    (license license:gpl2+)))
+
 (define-public r-rsolnp
   (package
     (name "r-rsolnp")
