@@ -11110,14 +11110,14 @@ coding changes and predict coding outcomes.")
 (define-public r-vsn
   (package
     (name "r-vsn")
-    (version "3.68.0")
+    (version "3.70.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "vsn" version))
        (sha256
         (base32
-         "0i6c0wyhj0gcq0mw13zyk60cza2baq4yrj1n2dzqgsqkmhm5lfla"))))
+         "0li0yxf8m34xpmrgv5vciy8zdsbfdlajl9cmnxr4g4nmarik2bkh"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-affy r-biobase r-ggplot2 r-lattice r-limma))
