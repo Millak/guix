@@ -9891,6 +9891,51 @@ tasks.")
 Pore-C concatemers.")
       (license license:gpl3))))
 
+(define-public r-dnamcrosshyb
+  ;; There aren't any releases.
+  (let ((commit "fe8acb33667e81f00dcb84e0fa75c87ab2db5d8f")
+        (revision "1"))
+    (package
+      (name "r-dnamcrosshyb")
+      (version (git-version "0.0.0.9000" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/pjhop/DNAmCrosshyb")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "12j1xsiqpvny5rp23z1az0k4cj5ajbcwkg65z00s16vywi2rx6nb"))))
+      (properties `((upstream-name . "DNAmCrosshyb")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-biocgenerics
+             r-biocparallel
+             r-biostrings
+             r-bsgenome-hsapiens-ucsc-hg19-masked
+             r-bsgenome-hsapiens-ucsc-hg38-masked
+             r-dplyr
+             r-genomicranges
+             r-ggplot2
+             r-iranges
+             r-magrittr
+             r-minfi
+             r-purrr
+             r-s4vectors
+             r-shiny
+             r-stringi
+             r-stringr
+             r-tibble
+             r-tidyr
+             r-watermelon))
+      (home-page "https://github.com/pjhop/DNAmCrosshyb")
+      (synopsis "DNAmCrosshyb")
+      (description
+       "This package provides helper functions to detect cross-hybridization
+on Illumina DNAm arrays.")
+      (license license:gpl3))))
+
 (define-public r-doubletcollection
   (let ((commit "c0d62f1853942ee6a087eaf7b000d9e4261e2dfd")
         (revision "1"))
