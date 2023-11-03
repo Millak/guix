@@ -9529,6 +9529,37 @@ package contains functions for combining the results of multiple runs of gene
 set analyses.")
     (license license:gpl2+)))
 
+(define-public r-powertcr
+  (package
+    (name "r-powertcr")
+    (version "1.22.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "powerTCR" version))
+       (sha256
+        (base32 "06fmphdq95pjbbvm8m8h1wajbp3vhl0zj7ddbzks9fy7ankp1n3i"))))
+    (properties `((upstream-name . "powerTCR")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-cubature
+           r-doparallel
+           r-evmix
+           r-foreach
+           r-magrittr
+           r-purrr
+           r-truncdist
+           r-vegan
+           r-vgam))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/powerTCR")
+    (synopsis "Model-based comparative analysis of the TCR repertoire")
+    (description
+     "This package provides a model for the clone size distribution of the
+@acronym{TCR, T-cell receptor} repertoire.  Further, it permits comparative
+analysis of TCR repertoire libraries based on theoretical model fits.")
+    (license license:artistic2.0)))
+
 ;; This is a CRAN package, but it depends on a Bioconductor package:
 ;; r-aroma-light, r-dnacopy..
 (define-public r-pscbs
