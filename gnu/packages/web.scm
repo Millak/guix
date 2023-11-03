@@ -64,6 +64,7 @@
 ;;; Copyright © 2023 David Thompson <dthompson2@worcester.edu>
 ;;; Copyright © 2023 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
+;;; Copyright © 2023 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -7909,6 +7910,35 @@ features include:
 @item logging with multiple log levels.
 @end enumerate\n")
     (license license:expat)))
+
+(define-public monsterid
+  (let ((commit "5597f177b473343ff5cad9a6e0e5b255312c6096")
+        (revision "0"))
+    (package
+      (name "monsterid")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/splitbrain/monsterID")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0ixyrrcbw96plcdna2rx1pqwisqy9hnr57kvamgj13lzlv2whdb3"))))
+      (build-system copy-build-system)
+      (arguments
+       '(#:install-plan '(("monsterid.php" "share/web/monsterid/")
+                          ("parts/" "share/web/monsterid/parts/"
+                           #:include-regexp ("\\.png$")))))
+      (home-page "https://www.splitbrain.org/projects/monsterid")
+      (synopsis "The original MonsterID implementation")
+      (description
+       "MonsterID is a method to generate a unique monster image based upon a
+certain identifier (IP address, email address, whatever).  It can be
+used to automatically provide personal avatar images in blog comments
+or other community services.")
+      (license license:expat))))
 
 (define-public cat-avatar-generator
   (let ((commit "9360ea33f79d1dad3e43494b09878b5e3f6b41fa")
