@@ -13597,13 +13597,13 @@ several functions from the R igraph package.")
 (define-public r-sangerseqr
   (package
     (name "r-sangerseqr")
-    (version "1.36.0")
+    (version "1.38.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "sangerseqR" version))
               (sha256
                (base32
-                "0hhq5zsx4srd9ndr370m44f80qdlrqafjv1838wf65gzijffhfqb"))))
+                "1vggjvxfmmm2gcyfay22wahkib15i164ic148jdps36pxapl6hi3"))))
     (properties `((upstream-name . "sangerseqR")))
     (build-system r-build-system)
     (propagated-inputs (list r-biostrings r-shiny r-stringr))
