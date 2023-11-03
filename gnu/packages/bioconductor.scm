@@ -3994,13 +3994,13 @@ SNP-led changes in motif matches.")
 (define-public r-attract
   (package
     (name "r-attract")
-    (version "1.52.0")
+    (version "1.54.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "attract" version))
               (sha256
                (base32
-                "1lb6npxm5f82z8278v6fh7k5w8d4z73881iplm3ashc27wiw6sz3"))))
+                "0lk8gfbccrxly7gn629497sxz0mj3m9wcwdahqv1m7l6fjnf5563"))))
     (properties `((upstream-name . "attract")))
     (build-system r-build-system)
     (propagated-inputs
