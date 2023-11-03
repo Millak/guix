@@ -4523,13 +4523,13 @@ enrichment in single cell data.")
 (define-public r-coregx
   (package
     (name "r-coregx")
-    (version "2.4.0")
+    (version "2.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "CoreGx" version))
        (sha256
-        (base32 "09pv117g8sxhrij960mparrz1r9vx8s20gmpvn1h667kl1bc0jm9"))))
+        (base32 "0ffbi5afw759mi5r657h67hdh9yr5jrzvl3aigp960jzb5542105"))))
     (properties `((upstream-name . "CoreGx")))
     (build-system r-build-system)
     (propagated-inputs
