@@ -4964,7 +4964,12 @@ from within R.")
           (add-after 'mkdist 'no-mtune
             (lambda _
               (substitute* "src/Makevars"
-                (("-mtune=native") "")))))))
+                (("-mtune=native") ""))))
+          (add-after 'no-mtune 'use-c++11
+            (lambda _
+              (substitute* "src/Makevars"
+                (("-DUSE_BLAS_LIB" m)
+                 (string-append m " -std=c++11"))))))))
     (native-inputs
      (list hevea
            perl
