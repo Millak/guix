@@ -810,7 +810,7 @@ functions and around einops with an API and features adapted to xarray.")
 (define-public python-pytensor
   (package
     (name "python-pytensor")
-    (version "2.14.2")
+    (version "2.17.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -819,7 +819,7 @@ functions and around einops with an API and features adapted to xarray.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1428l1v7yrnls8875xjx1svn48cmz0q83sv7sg0xdqghkfnyi7xx"))))
+                "1694apl8gjdrl6hrfly9yixmfimmmh51vacxmxx63nn4k5qnsgbg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
