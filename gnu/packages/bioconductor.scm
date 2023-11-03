@@ -19248,14 +19248,14 @@ add-on package rather than used directly.")
 (define-public r-chemminer
   (package
     (name "r-chemminer")
-    (version "3.52.0")
+    (version "3.54.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ChemmineR" version))
        (sha256
         (base32
-         "1m4vgq3z0kya7kbncawr9csvbwnh74mh012w7g2ialwd3nwdf91x"))))
+         "1328mwmghflrvir1i3crlq8q36wq60x2an11saabg63hnx4paa81"))))
     (properties `((upstream-name . "ChemmineR")))
     (build-system r-build-system)
     (propagated-inputs
