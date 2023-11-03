@@ -20569,8 +20569,6 @@ block processing.")
                (substitute* "Makevars"
                  (("@BUILD_HDF5@") "")
                  (("@COPY_SZIP@") "")
-                 (("@ZLIB_LIB@") "-lz")
-                 (("@ZLIB_INCLUDE@") "")
                  (("HDF5_CXX_LIB=.*")
                   (string-append "HDF5_CXX_LIB="
                                  (assoc-ref inputs "hdf5") "/lib/libhdf5_cpp.a\n"))
@@ -20587,6 +20585,9 @@ block processing.")
                  (("HDF5_HL_CXX_LIB=.*")
                   (string-append "HDF5_HL_CXX_LIB="
                                  (assoc-ref inputs "hdf5") "/lib/libhdf5_hl_cpp.a\n"))
+                 (("@ZLIB_LIB_PATH@") "-lz")
+                 (("@ZLIB_INCLUDE_PATH@") "")
+
                  ;; szip is non-free software
                  (("cp \"\\$\\{SZIP_LIB\\}.*") "")
                  (("PKG_LIBS =.*") "PKG_LIBS = -lz -lhdf5\n"))))))))
