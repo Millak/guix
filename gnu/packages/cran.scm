@@ -3223,6 +3223,27 @@ user-friendly output, and compatibility with tests implemented in R.")
 objects.")
     (license license:gpl3)))
 
+(define-public r-mblm
+  (package
+    (name "r-mblm")
+    (version "0.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "mblm" version))
+       (sha256
+        (base32 "1fipb3bryaimr30lcxsxrn0ymv24z39swca7s4z7p9xcfg3ban1b"))))
+    (properties `((upstream-name . "mblm")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/web/packages/mblm/index.html")
+    (synopsis "Median-based linear models")
+    (description
+     "This package provides linear models based on Theil-Sen single median and
+Siegel repeated medians.  They are very robust (29 or 50 percent breakdown
+point, respectively), and if no outliers are present, the estimators are very
+similar to OLS.")
+    (license license:gpl2+)))
+
 (define-public r-mboost
   (package
    (name "r-mboost")
