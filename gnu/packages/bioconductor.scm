@@ -3211,19 +3211,22 @@ to transform JSON responses to formats more amenable to manipulation in R.")
 (define-public r-aldex2
   (package
     (name "r-aldex2")
-    (version "1.32.0")
+    (version "1.34.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ALDEx2" version))
               (sha256
                (base32
-                "0gdkc8qwx3vpk5i09znlfrag7gk87piz61z90k96v6bm6x8sclb8"))))
+                "0wchlw9dprw7vkw26h26ypx06xv2j0cxbidw61pcqaxmrrh14dhz"))))
     (properties `((upstream-name . "ALDEx2")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biocparallel
+           r-directlabels
            r-genomicranges
            r-iranges
+           r-lattice
+           r-latticeextra
            r-multtest
            r-rfast
            r-s4vectors
