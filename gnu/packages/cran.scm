@@ -388,6 +388,38 @@ for the creation a standard CONSORT diagram.  Human effort by supplying text
 labels on the node can also be achieved.")
     (license license:expat)))
 
+(define-public r-collapse
+  (package
+    (name "r-collapse")
+    (version "2.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "collapse" version))
+       (sha256
+        (base32 "16y4qxqr4k04690xn8s6c9fr3igpk34pgxygxkc41gc1na0ym37v"))))
+    (properties `((upstream-name . "collapse")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp))
+    (native-inputs (list r-knitr))
+    (home-page "https://sebkrantz.github.io/collapse/")
+    (synopsis "Advanced and fast data transformation")
+    (description
+     "This is a C/C++ based package for advanced data transformation and
+statistical computing in R that is extremely fast, class-agnostic, robust and
+programmer friendly.  Core functionality includes a rich set of S3 generic
+grouped and weighted statistical functions for vectors, matrices and data
+frames, which provide efficient low-level vectorizations, @code{OpenMP}
+multithreading, and skip missing values by default.  These are integrated with
+fast grouping and ordering algorithms (also callable from C), and efficient
+data manipulation functions.  The package also provides a flexible and
+rigorous approach to time series and panel data in R.  It further includes
+fast functions for common statistical procedures, detailed (grouped, weighted)
+summary statistics, powerful tools to work with nested data, fast data object
+conversions, functions for memory efficient R programming, and helpers to
+effectively deal with variable labels, attributes, and missing data.")
+    (license (list license:gpl2+))))
+
 (define-public r-collections
   (package
     (name "r-collections")
