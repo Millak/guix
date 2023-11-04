@@ -29998,7 +29998,7 @@ reading and writing git repositories.")
         ("rust-log" ,rust-log-0.4)
         ("rust-openssl-probe" ,rust-openssl-probe-0.1)
         ("rust-openssl-sys" ,rust-openssl-sys-0.9)
-        ("rust-url" ,rust-url-1))
+        ("rust-url" ,rust-url-2))
        #:cargo-development-inputs
        (("rust-docopt" ,rust-docopt-1)
         ("rust-serde" ,rust-serde-1)
