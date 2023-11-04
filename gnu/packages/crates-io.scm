@@ -62980,7 +62980,12 @@ forth, as well as the ability to create custom thread-pools with ThreadPool.")
        (("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
         ("rust-crossbeam-deque" ,rust-crossbeam-deque-0.8)
         ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
-        ("rust-num-cpus" ,rust-num-cpus-1))))))
+        ("rust-num-cpus" ,rust-num-cpus-1))
+       #:cargo-development-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rand-xorshift" ,rust-rand-xorshift-0.3)
+        ("rust-scoped-tls" ,rust-scoped-tls-1))))))
 
 (define-public rust-rustc-serialize-0.3
   (package
