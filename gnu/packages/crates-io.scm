@@ -43541,6 +43541,7 @@ embedded migrations.")
     (arguments
      `(#:cargo-inputs
        (("rust-libmimalloc-sys" ,rust-libmimalloc-sys-0.1))))
+    (inputs (list mimalloc))
     (home-page "https://crates.io/crates/mimalloc")
     (synopsis "Performance and security oriented drop-in allocator")
     (description "This package provides a performance and security oriented
