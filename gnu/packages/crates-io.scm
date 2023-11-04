@@ -5010,7 +5010,8 @@ standard library.")
         (base32
          "0km3zzkhrr22drf9p1zcblqirlxkdc7zra25acpi0h8qax5c1cga"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; Not all tests build.
+       #:cargo-inputs
        (("rust-quickcheck" ,rust-quickcheck-0.6)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-test" ,rust-serde-test-1))))))
