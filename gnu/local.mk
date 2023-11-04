@@ -31,7 +31,7 @@
 # Copyright © 2020 R Veera Kumar <vkor@vkten.in>
 # Copyright © 2020 Nicolò Balzarotti <nicolo@nixo.xyz>
 # Copyright © 2020 Michael Rohleder <mike@rohleder.de>
-# Copyright © 2020, 2021, 2022 Felix Gruber <felgru@posteo.net>
+# Copyright © 2020, 2021, 2022, 2023 Felix Gruber <felgru@posteo.net>
 # Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 # Copyright © 2020 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 # Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
@@ -1761,6 +1761,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/prusa-slicer-fix-tests.patch		\
   %D%/packages/patches/prusa-slicer-with-cereal-1.3.1.patch	\
   %D%/packages/patches/pthreadpool-system-libraries.patch	\
+  %D%/packages/patches/python-accupy-use-matplotx.patch		\
+  %D%/packages/patches/python-accupy-fix-use-of-perfplot.patch	\
   %D%/packages/patches/python-chai-drop-python2.patch		\
   %D%/packages/patches/python-docrepr-fix-tests.patch		\
   %D%/packages/patches/python-feedparser-missing-import.patch	\

@@ -3650,6 +3650,47 @@ Cassowary solver with typical use cases gaining a 40x improvement.  Memory
 savings are consistently > 5x.")
     (license license:bsd-3)))
 
+(define-public python-accupy
+  (package
+    (name "python-accupy")
+    (version "0.3.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/diego-hayashi/accupy")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sxkwpp2xy2jgakhdxr4nh1cspqv8l89kz6s832h05pbpyc0n767"))
+       (patches (search-patches "python-accupy-use-matplotx.patch"
+                                "python-accupy-fix-use-of-perfplot.patch"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-eigen-include-dir
+            (lambda _
+              (substitute* "setup.py"
+                (("include_dirs=\\[\"\\/usr\\/include\\/eigen3\\/\"\\]," _)
+                 (string-append "include_dirs=[\""
+                                #$(file-append (this-package-input "eigen")
+                                             "/include/eigen3/")
+                                "\"],"))))))))
+    (propagated-inputs (list eigen python-mpmath python-pyfma))
+    (native-inputs (list pybind11
+                         python-matplotx
+                         python-perfplot
+                         python-pytest))
+    (home-page "https://github.com/diego-hayashi/accupy")
+    (synopsis "Accurate calculation of sums and dot products")
+    (description
+      "@code{accupy} is a Python library for accurately computing sums
+and (dot) products.  It implements Kahan summation, Shewchuck's
+algorithm and summation in K-fold precision.")
+    (license license:gpl3+)))
+
 (define-public slepc
   (package
     (name "slepc")
