@@ -45814,10 +45814,10 @@ general elements and for numerics.")
                 "1k535wlg0khac2gz3q84rlcqc5r89jyw73ww25vfgc04plzc9d3z"))))
     (build-system cargo-build-system)
     (arguments
-     ;; Two tests fail due to missing files.
-     ;; - parser::fastq::test::test_bad_headers
-     ;; - parser::fastq::test::test_fastq_with_random_tsv_inside
-     `(#:tests? #false
+     `(#:cargo-test-flags
+       '("--release" "--lib" "--bins" "--tests" "--"
+         "--skip=parser::fastq::test::test_bad_headers"
+         "--skip=parser::fastq::test::test_fastq_with_random_tsv_inside")
        #:cargo-inputs
        (("rust-buf-redux" ,rust-buf-redux-0.8)
         ("rust-bytecount" ,rust-bytecount-0.6)
