@@ -7824,7 +7824,9 @@ bindings to C and C++ libraries.")
          (base32
           "0mzy2gjiaggl602yn4a11xzrxfj18kl7pwqa5yv32njkxd257j7i"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       '("--release" "--lib" "--bins" "--tests")
+       #:cargo-inputs
        (("rust-shlex" ,rust-shlex-0.1)
         ("rust-cfg-if" ,rust-cfg-if-0.1)
         ("rust-peeking-take-while"
