@@ -14459,9 +14459,7 @@ based on color-backtrace.")
         (base32 "1m7s43cpi36vihmlda217xxgsdni3pbwgwfsa9zimdghhjfnxv9m"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-development-inputs
-       (("rust-partial-io" ,rust-partial-io-0.3))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-bytes" ,rust-bytes-1)
         ("rust-bytes" ,rust-bytes-0.5)
         ("rust-futures-core" ,rust-futures-core-0.3)
@@ -14472,7 +14470,20 @@ based on color-backtrace.")
         ("rust-tokio" ,rust-tokio-1)
         ("rust-tokio" ,rust-tokio-0.3)
         ("rust-tokio" ,rust-tokio-0.2)
-        ("rust-tokio-util" ,rust-tokio-util-0.7))))
+        ("rust-tokio-util" ,rust-tokio-util-0.7))
+       #:cargo-development-inputs
+       (("rust-async-std" ,rust-async-std-1)
+        ("rust-bytes" ,rust-bytes-1)
+        ("rust-bytes" ,rust-bytes-0.5)
+        ("rust-criterion" ,rust-criterion-0.3)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-partial-io" ,rust-partial-io-0.3)
+        ("rust-quick-error" ,rust-quick-error-1)
+        ("rust-quickcheck" ,rust-quickcheck-0.6)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio" ,rust-tokio-0.3)
+        ("rust-tokio" ,rust-tokio-0.2))))
     (home-page "https://github.com/Marwes/combine")
     (synopsis "Parser combinators on arbitrary streams with zero-copy support")
     (description
