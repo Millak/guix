@@ -174,6 +174,7 @@
   #:use-module (gnu packages scheme)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages shells)
+  #:use-module (gnu packages simulation)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages swig)
@@ -3714,6 +3715,47 @@ algorithm and summation in K-fold precision.")
       "@code{ndim} computes all kinds of volumes and integrals of
 monomials over such volumes in a fast, numerically stable way, using
 recurrence relations.")
+    (license license:gpl3+)))
+
+(define-public python-orthopy
+  (package
+    (name "python-orthopy")
+    (version "0.9.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/diego-hayashi/orthopy")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00s2rwjdlq38zkf7wl1gvm2aw057r30266lkzfxkrfzr4i705xnq"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+      (list python-importlib-metadata
+            python-ndim
+            python-numpy
+            python-sympy))
+    (native-inputs (list ;python-cplot  ;only used in deselected tests
+                         python-matplotx
+                         python-meshio
+                         python-meshzoo
+                         python-pytest
+                         python-scipy))
+    (arguments
+     (list
+      #:test-flags
+      ;; These tests fails with unexpected keyword arguments
+      ;; in calls to cplot.
+      #~(list "--deselect" "tests/test_u3.py::test_write_single"
+              "--deselect" "tests/test_u3.py::test_write_tree")))
+    (home-page "https://github.com/diego-hayashi/orthopy")
+    (synopsis "Tools for orthogonal polynomials, Gaussian quadrature")
+    (description "@code{orthopy} provides various orthogonal polynomial
+classes for lines, triangles, quadrilaterals, disks, spheres, hexahedra,
+and n-cubes.  All computations are done using numerically stable
+recurrence schemes.  Furthermore, all functions are fully vectorized and
+can return results in exact arithmetic.")
     (license license:gpl3+)))
 
 (define-public slepc
