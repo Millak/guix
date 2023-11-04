@@ -1172,7 +1172,9 @@ EUI-64, also known as MAC-48 media access control addresses.")
         (base32
          "1ggyyqn7dvz4yx5ygqfvnxwfb78wvdm5y6xqw5my1b4x61dv6wak"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       '("--release" "--lib" "--bins" "--tests")
+       #:cargo-inputs
        (("rust-android-glue" ,rust-android-glue-0.2)
         ("rust-cgl" ,rust-cgl-0.2)
         ("rust-cocoa" ,rust-cocoa-0.18)
