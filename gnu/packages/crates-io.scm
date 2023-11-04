@@ -82336,7 +82336,7 @@ with the Unicode character database.")
 (define-public rust-ufmt-0.1
   (package
     (name "rust-ufmt")
-    (version "0.1.0")
+    (version "0.1.2")
     (source
      (origin
        (method url-fetch)
@@ -82344,14 +82344,16 @@ with the Unicode character database.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1844qwbmc4m69nfi6xmdcdf4fmjjvypi9rpfg3wgilvrxykwwzif"))))
+         "1pbc0gcfi7m21ly00x460pv1k2h12zb184f7wpcckpqj6g3c1lri"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       '("--release" "--lib" "--bins" "--tests")
+       #:cargo-inputs
        (("rust-proc-macro-hack" ,rust-proc-macro-hack-0.5)
-        ("rust-ufmt-macros" ,rust-ufmt-macros-0.1)
+        ("rust-ufmt-macros" ,rust-ufmt-macros-0.2)
         ("rust-ufmt-write" ,rust-ufmt-write-0.1))))
-    (home-page "https://crates.io/crates/ufmt")
+    (home-page "https://github.com/japaric/ufmt")
     (synopsis "Faster and panic-free alternative to @code{core::fmt}")
     (description "This package provides a (6-40x) smaller, (2-9x) faster and
 panic-free alternative to @code{core::fmt}.")
