@@ -8381,6 +8381,30 @@ clean plots with a minimalistic style.")
 complex-valued functions.")
     (license license:gpl3+)))
 
+(define-public python-perfplot
+  (package
+    (name "python-perfplot")
+    (version "0.10.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "perfplot" version))
+              (sha256
+               (base32
+                "0hbyv17f9ra6l6albcrqx4rylmfv2m6z4qsnhb4bar256dralvfp"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-matplotlib
+                             python-matplotx
+                             python-numpy
+                             python-rich))
+    (native-inputs (list python-flit-core
+                         python-pytest))
+    (home-page "https://github.com/nschloe/perfplot")
+    (synopsis "Performance plots for Python code snippets")
+    (description "@code{perfplot} extends Python's timeit by testing
+snippets with input parameters (e.g., the size of an array) and plotting
+the results.")
+    (license license:gpl3+)))
+
 (define-public python-pysnptools
   (package
     (name "python-pysnptools")
