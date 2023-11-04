@@ -41387,12 +41387,16 @@ image together with its neighboring pixels.")
         (sha256
          (base32 "1wqnmibs8qzi6pr3ig4h3sg6bfkkgyv4ngdng81x069725r056ml"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             ;; Not all files included
+             "--skip=parser_aux::load_and_save")
+       #:cargo-inputs
        (("rust-chrono" ,rust-chrono-0.4)
         ("rust-dtoa" ,rust-dtoa-0.4)
         ("rust-encoding" ,rust-encoding-0.2)
         ("rust-flate2" ,rust-flate2-1)
-        ("rust-image" ,rust-image-0.20)
+        ("rust-image" ,rust-image-0.23)
         ("rust-itoa" ,rust-itoa-0.4)
         ("rust-linked-hash-map" ,rust-linked-hash-map-0.5)
         ("rust-log" ,rust-log-0.4)
