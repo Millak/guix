@@ -25971,6 +25971,8 @@ descriptors limit.")
         (base32 "1nhif9zpr2f17gagf0qb0v914wc3jr9sfjzvnpi7b7pcs73ksnl3"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/tov/feature-probe-rs")
+    (arguments
+     `(#:tests? #f))        ; Tests don't compile
     (synopsis "Probe for rustc features from build.rs")
     (description "To support multiple versions of Rust, it's often necessary
 to conditionally compile parts of our libraries or programs.  It's possible to
