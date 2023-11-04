@@ -39380,7 +39380,9 @@ library.")
         ("rust-libssh2-sys" ,rust-libssh2-sys-0.2)
         ("rust-libz-sys" ,rust-libz-sys-1)
         ("rust-openssl-sys" ,rust-openssl-sys-0.9)
-        ("rust-pkg-config" ,rust-pkg-config-0.3))))))
+        ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (inputs
+     (list libgit2 openssl zlib))))
 
 (define-public rust-libgit2-sys-0.13
   (package
