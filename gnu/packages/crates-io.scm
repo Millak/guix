@@ -19088,7 +19088,7 @@ use with bindgen.")
         ("rust-openssl-probe" ,rust-openssl-probe-0.1)
         ("rust-openssl-sys" ,rust-openssl-sys-0.9)
         ("rust-schannel" ,rust-schannel-0.1)
-        ("rust-socket2" ,rust-socket2-0.3)
+        ("rust-socket2" ,rust-socket2-0.4)
         ("rust-winapi" ,rust-winapi-0.3))
        #:cargo-development-inputs
        (("rust-anyhow" ,rust-anyhow-1)
