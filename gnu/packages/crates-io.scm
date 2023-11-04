@@ -25883,7 +25883,8 @@ floats.")
                         (delete-file-recursively "tests/fixtures")))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; Test files removed.
+       #:cargo-inputs
        (("rust-goblin" ,rust-goblin-0.7)
         ("rust-llvm-bitcode" ,rust-llvm-bitcode-0.1))))
     (home-page "https://github.com/messense/fat-macho-rs.git")
