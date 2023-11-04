@@ -29851,7 +29851,9 @@ reading and writing git repositories.")
        (("rust-paste" ,rust-paste-1)
         ("rust-structopt" ,rust-structopt-0.3)
         ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-time" ,rust-time-0.1))))))
+        ("rust-time" ,rust-time-0.1))))
+    (inputs
+     (list libgit2 libssh2 openssl zlib))))
 
 (define-public rust-git2-0.15
   (package
