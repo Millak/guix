@@ -50585,7 +50585,7 @@ signing/verification, and general purpose curve arithmetic support.")
     (description "Portable Packed SIMD vectors.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-packed-struct
+(define-public rust-packed-struct-0.3
   (package
     (name "rust-packed-struct")
     (version "0.3.1")
