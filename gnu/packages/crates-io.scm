@@ -42792,7 +42792,10 @@ for searching bytes.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0yjyja34pzhipdl855q3m21w1lyih4lw79x2dp3czwdla4pap3ql"))))))
+         "0yjyja34pzhipdl855q3m21w1lyih4lw79x2dp3czwdla4pap3ql"))))
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))
+       #:cargo-development-inputs (("rust-quickcheck" ,rust-quickcheck-0.4))))))
 
 (define-public rust-memchr-0.1
   (package
