@@ -7466,6 +7466,28 @@ capabilities.")
     (description "This package provides the complete NumPy documentation in
 the Texinfo, HTML, and PDF formats.")))
 
+(define-public python-npx
+  (package
+    (name "python-npx")
+    (version "0.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "npx" version))
+              (sha256
+               (base32
+                "1m0v2p5mh3aqrypl4ipgzvr5nhx7bk5vv9ah2xr9l1xgj6nnmqnc"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list python-flit-core python-networkx python-pytest))
+    (home-page "https://github.com/nschloe/npx")
+    (synopsis "Extensions for NumPy")
+    (description "NumPy is a large library used everywhere in scientific
+computing.  That's why breaking backwards-compatibility comes at a
+significant cost and is almost always avoided, even if the API of some
+methods is arguably lacking.  This package provides drop-in wrappers
+\"fixing\" those.")
+    (license license:bsd-3)))
+
 (define-public python-munch
   (package
     (name "python-munch")
