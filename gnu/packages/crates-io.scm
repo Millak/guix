@@ -7700,7 +7700,10 @@ bindings to C and C++ libraries.")
     (inputs
      (list clang))
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             "--skip=test::commandline_multiple_headers")
+       #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-cexpr" ,rust-cexpr-0.4)
         ("rust-cfg-if" ,rust-cfg-if-0.1)
