@@ -25468,7 +25468,10 @@ traits but without the boilerplate.")
                 "1sy7x8p74jfx1mvj4ifl0lxkxaqvmswdgdr84y1dqb6055d6nasc"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-indenter" ,rust-indenter-0.3)
+     `(#:cargo-test-flags (list "--release" "--"
+                                "--skip=macros::bail"
+                                "--skip=macros::ensure")
+       #:cargo-inputs (("rust-indenter" ,rust-indenter-0.3)
                        ("rust-once-cell" ,rust-once-cell-1)
                        ("rust-pyo3" ,rust-pyo3-0.13))
        #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
