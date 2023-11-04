@@ -457,6 +457,41 @@ volume computations for simple domains like regular polygons, disks,
 spheres, cubes, etc.")
     (license license:gpl3+)))
 
+(define-public python-pyamg
+  (package
+    (name "python-pyamg")
+    (version "5.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pyamg" version))
+              (sha256
+               (base32
+                "0l3dliwynxyjvbgpmi2k8jqvkkw6fc00c8w69h6swhrkfh0ql12z"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Test installed package in order to find C++ modules.
+      #~(list "--pyargs" "pyamg.tests")))
+    (native-inputs (list pybind11 python-pytest python-setuptools-scm))
+    (propagated-inputs (list python-numpy python-scipy))
+    (home-page "https://github.com/pyamg/pyamg")
+    (synopsis "Algebraic Multigrid Solvers in Python")
+    (description "PyAMG is a Python library of Algebraic Multigrid
+(AMG) solvers.
+
+PyAMG features implementations of:
+@itemize
+@item Ruge-Stuben (RS) or Classical AMG
+@item AMG based on Smoothed Aggregation (SA)
+@item Adaptive Smoothed Aggregation (αSA)
+@item Compatible Relaxation (CR)
+@item Krylov methods such as CG, GMRES, FGMRES, BiCGStab, MINRES, etc.
+@end itemize
+PyAMG is primarily written in Python with supporting C++ code for
+performance critical operations.")
+    (license license:expat)))
+
 (define-public python-tspex
   (package
     (name "python-tspex")
