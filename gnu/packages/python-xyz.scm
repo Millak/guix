@@ -108,7 +108,7 @@
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021, 2022, 2023 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
 ;;; Copyright © 2021, 2022 Pradana Aumars <paumars@courrier.dev>
-;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2021, 2022, 2023 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Sébastien Lerique <sl@eauchat.org>
 ;;; Copyright © 2021 Raphaël Mélotte <raphael.melotte@mind.be>
 ;;; Copyright © 2021 ZmnSCPxj <ZmnSCPxj@protonmail.com>
@@ -8295,6 +8295,43 @@ Jupyter.")
     (description
      "This package provides tools for plotting area-proportional two- and
 three-way Venn diagrams in @code{matplotlib}.")
+    (license license:expat)))
+
+(define-public python-matplotx
+  (package
+    (name "python-matplotx")
+    (version "0.3.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nschloe/matplotx")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1j301mr7ai2jmbm5mkva0jd99fzxhyq585pqzqfmrf5pil8j4q8i"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+      (list python-matplotlib
+            python-numpy
+            ;; optional dependencies
+            python-networkx
+            python-pypng
+            python-scipy))
+    (native-inputs (list python-imageio
+                         python-meshzoo
+                         python-pytest
+                         python-scikit-fem))
+    (arguments
+     (list
+      #:test-flags
+      ;; This test fails with ValueError: not enough values to unpack.
+      #~(list "--deselect" "tests/test_spy.py::test_cli")))
+    (home-page "https://github.com/nschloe/matplotx")
+    (synopsis "Minimal matplotlib styles")
+    (description
+      "This package includes some extensions for Matplotlib to create
+clean plots with a minimalistic style.")
     (license license:expat)))
 
 (define-public python-pysnptools
