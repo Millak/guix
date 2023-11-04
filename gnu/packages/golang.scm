@@ -8674,22 +8674,22 @@ efficient space usage.")
 (define-public go-github-com-willf-bitset
   (deprecated-package "go-github-com-willf-bitset" go-github-com-bits-and-blooms-bitset))
 
-(define-public go-github-com-willf-bloom
+(define-public go-github-com-bits-and-blooms-bloom
   (package
-    (name "go-github-com-willf-bloom")
-    (version "2.0.3")
+    (name "go-github-com-bits-and-blooms-bloom")
+    (version "3.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/willf/bloom")
-                     (commit (string-append "v" version))))
+                    (url "https://github.com/bits-and-blooms/bloom")
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ygan8pgcay7wx3cs3ja8rdqj7nly7v3and97ddcc66020jxchzg"))))
+                "02rpjlgl7k3755qnlsk519xazgqlk73b8wvkpqlvccywms5w77bq"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/willf/bloom"
+     '(#:import-path "github.com/bits-and-blooms/bloom"
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-import-path
@@ -8697,16 +8697,19 @@ efficient space usage.")
              ;; See 'go.mod' in the source distribution of Syncthing 1.5.0 for
              ;; more information.
              ;; <https://github.com/spaolacci/murmur3/issues/29>
-             (substitute* "src/github.com/willf/bloom/bloom.go"
+             (substitute* "src/github.com/bits-and-blooms/bloom/bloom.go"
                (("spaolacci") "twmb"))
              #t)))))
     (propagated-inputs
-     (list go-github-com-twmb-murmur3 go-github-com-willf-bitset))
+     (list go-github-com-twmb-murmur3 go-github-com-bits-and-blooms-bitset))
     (synopsis "Bloom filters in Go")
     (description "This package provides a Go implementation of bloom filters,
 based on murmurhash.")
-    (home-page "https://github.com/willf/bloom")
+    (home-page "https://github.com/bits-and-blooms/bitset")
     (license license:bsd-2)))
+
+(define-public go-github-com-willf-bloom
+  (deprecated-package "go-github-com-willf-bloom" go-github-com-bits-and-blooms-bloom))
 
 (define-public go-golang-org-rainycape-unidecode
   (let ((commit "cb7f23ec59bec0d61b19c56cd88cee3d0cc1870c")
