@@ -37603,13 +37603,13 @@ introspection APIs.")
 (define-public rust-jemalloc-sys-0.5
   (package
     (name "rust-jemalloc-sys")
-    (version "0.5.3+5.3.0-patched")
+    (version "0.5.4+5.3.0-patched")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "jemalloc-sys" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "18bwwikzq2krgafq3811n1zlsrjrayk0kqmjf6smivd7drhmvggr"))
+               (base32 "1wpbpwhfs6wd484cdfpl0zdf441ann9wj0fypy67i8ffw531jv5c"))
               (modules '((guix build utils)))
               (snippet
                '(begin (delete-file-recursively "jemalloc")))))
