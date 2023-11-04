@@ -36862,7 +36862,8 @@ network configuration for Windows.")
         (base32
          "1mzsagc6bk3i3fpggqlq8am5rxn4hgs297rsaya90w79xj5g3qpp"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f  ; failed to resolve: could not find `computer` in `ipconfig`
+       #:cargo-inputs
        (("rust-socket2" ,rust-socket2-0.3)
         ("rust-widestring" ,rust-widestring-0.4)
         ("rust-winapi" ,rust-winapi-0.3)
