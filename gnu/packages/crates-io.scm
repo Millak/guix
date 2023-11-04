@@ -82357,10 +82357,10 @@ with the Unicode character database.")
 panic-free alternative to @code{core::fmt}.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-ufmt-macros-0.1
+(define-public rust-ufmt-macros-0.2
   (package
     (name "rust-ufmt-macros")
-    (version "0.1.1")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
@@ -82368,7 +82368,7 @@ panic-free alternative to @code{core::fmt}.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0sf0z9f6kjw5h15xd1hlj46dgri59lqwin1fxrcdradzl8s3x0gd"))))
+         "1nfpgpimg04n08cxi0mcsz803kh3kzpmllmxm2a6768cyf96raz4"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
