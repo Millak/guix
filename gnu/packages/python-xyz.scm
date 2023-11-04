@@ -8356,6 +8356,31 @@ three-way Venn diagrams in @code{matplotlib}.")
 clean plots with a minimalistic style.")
     (license license:expat)))
 
+(define-public python-cplot
+  (package
+    (name "python-cplot")
+    (version "0.9.3")
+    (source
+     (origin
+       (method git-fetch)   ;for tests
+       (uri (git-reference
+             (url "https://github.com/nschloe/cplot")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zk7hpq358sbympmkms7w2wjs7nw8mdfvkvdasblg2nhqayv42qz"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-matplotlib
+                             python-matplotx
+                             python-npx
+                             python-numpy))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/nschloe/cplot")
+    (synopsis "Plot complex-valued functions")
+    (description "@code{cplot} is a Python library for plotting
+complex-valued functions.")
+    (license license:gpl3+)))
+
 (define-public python-pysnptools
   (package
     (name "python-pysnptools")
