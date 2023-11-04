@@ -50568,7 +50568,8 @@ signing/verification, and general purpose curve arithmetic support.")
              (("version = \"=") "version = \"^"))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:skip-build? #t ; `#![feature]` may not be used on the stable release channel
+       #:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-core-arch" ,rust-core-arch-0.1)
         ("rust-libm" ,rust-libm-0.1)
@@ -50577,12 +50578,7 @@ signing/verification, and general purpose curve arithmetic support.")
        (("rust-arrayvec" ,rust-arrayvec-0.5)
         ("rust-paste" ,rust-paste-0.1)
         ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
-        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'enable-unstable-features
-           (lambda _
-             (setenv "RUSTC_BOOTSTRAP" "1"))))))
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
     (home-page "https://github.com/rust-lang-nursery/packed_simd")
     (synopsis "Portable Packed SIMD vectors")
     (description "Portable Packed SIMD vectors.")
