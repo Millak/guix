@@ -54506,7 +54506,7 @@ for constructing a Message Authentication Code (MAC).")
   (package
     (inherit rust-polyval-0.6)
     (name "rust-polyval")
-    (version "0.4.0")
+    (version "0.4.5")
     (source
      (origin
        (method url-fetch)
@@ -54514,17 +54514,15 @@ for constructing a Message Authentication Code (MAC).")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1p0765j30qxr50zh74aflafx540xkxqb7pv8kw7fvcssnm1039fr"))))
+         "1kdpcjhc3666g8xaqichsyf6fhn8rry3z70dqhmvv6hb2jmc9g7f"))))
     (arguments
      `(#:cargo-inputs
-       (("rust-cfg-if" ,rust-cfg-if-0.1)
+       (("rust-cpuid-bool" ,rust-cpuid-bool-0.2)
+        ("rust-opaque-debug" ,rust-opaque-debug-0.3)
         ("rust-universal-hash" ,rust-universal-hash-0.4)
         ("rust-zeroize" ,rust-zeroize-1))
        #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.3)
-        ("rust-criterion-cycles-per-byte"
-         ,rust-criterion-cycles-per-byte-0.1)
-        ("rust-hex-literal" ,rust-hex-literal-0.1))))))
+       (("rust-hex-literal" ,rust-hex-literal-0.2))))))
 
 (define-public rust-polyval-0.3
   (package
