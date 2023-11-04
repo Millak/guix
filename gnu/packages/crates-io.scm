@@ -74197,7 +74197,9 @@ intelligence using Sublime Text's grammars.")
          "0iqhircpr723da1g97xrrj8smqqz3gxw91cf03sckasjzri4gb8k"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       '("--release" "--lib" "--bins" "--tests")
+       #:cargo-inputs
        (("rust-rustc-serialize" ,rust-rustc-serialize-0.3))))
     (home-page "https://github.com/serde-rs/syntex")
     (synopsis "Backport of libsyntax_pos")
