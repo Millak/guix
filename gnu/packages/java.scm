@@ -518,6 +518,8 @@
                                                    "/lib/arm")
                                                   ("aarch64-linux"
                                                    "/lib/aarch64")
+                                                  ("powerpc-linux"
+                                                   "/lib/ppc")
                                                   ;; We need a catch-all, dropping
                                                   ;; '-linux' works in most cases.
                                                   (_
