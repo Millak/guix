@@ -75574,7 +75574,10 @@ directories.")
          "1c3vip59sqwxn148i714nmkrvjzbk7105vj0h92s6r64bw614jnj"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             "--skip=tendril::test::assert_sizes")
+       #:cargo-inputs
        (("rust-encoding" ,rust-encoding-0.2)
         ("rust-encoding-rs" ,rust-encoding-rs-0.8)
         ("rust-futf" ,rust-futf-0.1)
