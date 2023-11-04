@@ -37687,20 +37687,24 @@ introspection APIs.")
 (define-public rust-jemallocator-0.5
   (package
     (name "rust-jemallocator")
-    (version "0.5.0")
+    (version "0.5.4")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "jemallocator" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "19kfd64hhh2anzfqm1c0yg0mg0nkmlzmcaw2njq543486x0m3hhn"))))
+               (base32 "1g6k9ly6wxj53bp8lz9lg9nj4s662k6612jydw71aqwfkx53gpm0"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             "--skip=background_threads_enabled")
+       #:cargo-inputs
        (("rust-jemalloc-sys" ,rust-jemalloc-sys-0.5)
         ("rust-libc" ,rust-libc-0.2))
        #:cargo-development-inputs
-       (("rust-paste" ,rust-paste-1))
+       (("rust-jemalloc-ctl" ,rust-jemalloc-ctl-0.5)
+        ("rust-paste" ,rust-paste-1))
        #:phases
        (modify-phases %standard-phases
          (add-after 'configure 'override-jemalloc
