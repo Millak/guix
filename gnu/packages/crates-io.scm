@@ -55881,7 +55881,8 @@ property-based testing and fuzzing.")
                 "1xizaahjxxvcz9n91pgpji3nd7b755qgq3m2kmmg53zwjwv9nnsx"))))
     (build-system cargo-build-system)
     (arguments
-     (list #:cargo-inputs
+     (list #:tests? #f      ; use of undeclared crate or module `propfuzz`
+           #:cargo-inputs
            `(("rust-proc-macro2" ,rust-proc-macro2-1)
              ("rust-quote" ,rust-quote-1)
              ("rust-syn" ,rust-syn-1))))
