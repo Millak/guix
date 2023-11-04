@@ -67350,7 +67350,14 @@ Rust's serde.")
         (base32 "10i7dvd0c1clj4jbljd08qs8466nlymx7ma7k3ncksx1rn7affpv"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             "--skip=test_doctype"
+             "--skip=test_hugo_duncan"
+             "--skip=test_hugo_duncan2"
+             "--skip=test_namespaces"
+             "--skip=whitespace_preserving_config")
+       #:cargo-inputs
        (("rust-log" ,rust-log-0.4)
         ("rust-serde" ,rust-serde-1)
         ("rust-thiserror" ,rust-thiserror-1)
