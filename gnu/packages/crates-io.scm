@@ -70629,19 +70629,19 @@ maximal amount of configuration possible intended.")
 (define-public rust-speedy-derive-0.8
   (package
     (name "rust-speedy-derive")
-    (version "0.8.5")
+    (version "0.8.6")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "speedy-derive" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1xx4v0h2i6ncnvi7v5y5l44xh12v4pjfkakahk6f27c0c084lazb"))))
+                "1ixn6kx8axs72cs3sshg63h4qxmgq0646yppa18n4y37rdk5hfbx"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-quote" ,rust-quote-1)
-                       ("rust-syn" ,rust-syn-1))))
+                       ("rust-syn" ,rust-syn-2))))
     (home-page "https://github.com/koute/speedy")
     (synopsis "Binary serialization framework")
     (description
