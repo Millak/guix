@@ -190,7 +190,7 @@ After updating the repository, @command{make} might fail with an error
 similar to the following example:
 
 @example
-error: failed to load 'gnu/packages/dunst.scm':
+error: failed to load 'gnu/packages/linux.scm':
 ice-9/eval.scm:293:34: In procedure abi-check: #<record-type <origin>>: record ABI mismatch; recompilation needed
 @end example
 
