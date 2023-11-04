@@ -1015,15 +1015,16 @@ utilities to ease adding new glyphs to the font.")
 (define-public font-google-noto
   (package
     (name "font-google-noto")
-    (version "20171025")
+    (version "23.11.1")
     (source
      (origin
-       (method url-fetch/zipbomb)
-       (uri (string-append "https://noto-website-2.storage.googleapis.com/"
-                           "pkgs/Noto-hinted.zip"))
-       (file-name (string-append name "-" version ".zip"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/notofonts/notofonts.github.io")
+             (commit (string-append "noto-monthly-release-" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1bp42whyin7xcgmrbnfvz3rvd98xmxaz3ywqybbjmqzwaa9llyw3"))))
+        (base32 "0vvxhky35l4i0ha60yw0gj26f3v33hpf2zax17yyj16mww4cn4d8"))))
     (build-system font-build-system)
     (home-page "https://www.google.com/get/noto/")
     (synopsis "Fonts to cover all languages")
