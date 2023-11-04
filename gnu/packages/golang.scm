@@ -8648,28 +8648,31 @@ directories.  It is optimized for filewalking.")
 @code{database/sql}.")
     (license license:expat)))
 
-(define-public go-github-com-willf-bitset
+(define-public go-github-com-bits-and-blooms-bitset
   (package
-    (name "go-github-com-willf-bitset")
+    (name "go-github-com-bits-and-blooms-bitset")
     (version "1.1.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/willf/bitset")
-                     (commit (string-append "v" version))))
+                    (url "https://github.com/bits-and-blooms/bitset")
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
                 "0wpaxg6va3qwd0hq0b8rpb1hswvzzbfm2h8sjmcsdpbkydjjx9zg"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/willf/bitset"))
+     '(#:import-path "github.com/bits-and-blooms/bitset"))
     (synopsis "Bitsets in Go")
     (description "This package provides a Go implementation of bitsets, which
 are a mapping between non-negative integers and boolean values focused on
 efficient space usage.")
-    (home-page "https://github.com/willf/bitset")
+    (home-page "https://github.com/bits-and-blooms/bitset")
     (license license:bsd-3)))
+
+(define-public go-github-com-willf-bitset
+  (deprecated-package "go-github-com-willf-bitset" go-github-com-bits-and-blooms-bitset))
 
 (define-public go-github-com-willf-bloom
   (package
