@@ -8651,7 +8651,7 @@ directories.  It is optimized for filewalking.")
 (define-public go-github-com-bits-and-blooms-bitset
   (package
     (name "go-github-com-bits-and-blooms-bitset")
-    (version "1.1.10")
+    (version "1.11.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8660,7 +8660,7 @@ directories.  It is optimized for filewalking.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0wpaxg6va3qwd0hq0b8rpb1hswvzzbfm2h8sjmcsdpbkydjjx9zg"))))
+                "1ialciixmr98p10rh61rnnkxpqi1j9hycbkv9rnjl0vnmsnpy0cy"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/bits-and-blooms/bitset"))
