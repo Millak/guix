@@ -37565,6 +37565,41 @@ format.")
      "Sys functions for the Rust bindings of the javacriptcore library.")
     (license license:expat)))
 
+(define-public rust-jemalloc-ctl-0.5
+  (package
+    (name "rust-jemalloc-ctl")
+    (version "0.5.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "jemalloc-ctl" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0g5nb2aam7kc9vbbps25j99z80hlb7p14p8k9q2lqd2a882wgzvw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-jemalloc-sys" ,rust-jemalloc-sys-0.5)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-paste" ,rust-paste-1))
+       #:cargo-development-inputs (("rust-jemallocator" ,rust-jemallocator-0.5))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'configure 'override-jemalloc
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((jemalloc (assoc-ref inputs "jemalloc")))
+               ;; This flag is needed when not using the bundled jemalloc.
+               ;; https://github.com/tikv/jemallocator/issues/19
+               (setenv "CARGO_FEATURE_UNPREFIXED_MALLOC_ON_SUPPORTED_PLATFORMS" "1")
+               (setenv "JEMALLOC_OVERRIDE"
+                       (string-append jemalloc "/lib/libjemalloc_pic.a"))))))))
+    (native-inputs (list jemalloc))
+    (home-page "https://github.com/tikv/jemallocator")
+    (synopsis "Wrapper over jemalloc's control and introspection APIs")
+    (description
+     "This package provides a safe wrapper over jemalloc's control and
+introspection APIs.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-jemalloc-sys-0.5
   (package
     (name "rust-jemalloc-sys")
