@@ -17564,22 +17564,25 @@ message passing.")
 (define-public rust-crossbeam-epoch-0.9
   (package
     (name "rust-crossbeam-epoch")
-    (version "0.9.13")
+    (version "0.9.15")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "crossbeam-epoch" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0nlxkmx3q93jvsshnmwaiich6bf7ddq1jzhzmaw4pxrf9hgsza81"))))
+        (base32 "1ixwc3cq816wb8rlh3ix4jnybqbyyq4l61nwlx0mfm3ck0s148df"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             "--skip=guard::unprotected")
+       #:cargo-inputs
        (("rust-autocfg" ,rust-autocfg-1)
         ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
         ("rust-loom" ,rust-loom-0.5)
-        ("rust-memoffset" ,rust-memoffset-0.7)
+        ("rust-memoffset" ,rust-memoffset-0.9)
         ("rust-scopeguard" ,rust-scopeguard-1))
        #:cargo-development-inputs
        (("rust-rand" ,rust-rand-0.8)
