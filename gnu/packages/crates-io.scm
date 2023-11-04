@@ -8645,8 +8645,32 @@ streams in big-endian and little-endian formats.")
         ("rust-serde-test" ,rust-serde-test-1)
         ("rust-static-assertions" ,rust-static-assertions-1))))))
 
+(define-public rust-blake2-0.10
+  (package
+    (name "rust-blake2")
+    (version "0.10.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "blake2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zlf7w7gql12v61d9jcbbswa3dw8qxsjglylsiljp9f9b3a2ll26"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-digest" ,rust-digest-0.10))
+       #:cargo-development-inputs
+       (("rust-digest" ,rust-digest-0.10)
+        ("rust-hex-literal" ,rust-hex-literal-0.2))))
+    (home-page "https://github.com/RustCrypto/hashes")
+    (synopsis "BLAKE2 hash functions")
+    (description "This package provides BLAKE2 hash functions in Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-blake2-0.9
   (package
+    (inherit rust-blake2-0.10)
     (name "rust-blake2")
     (version "0.9.2")
     (source
@@ -8656,7 +8680,6 @@ streams in big-endian and little-endian formats.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0x7i67c0hn3bzcwny08rgjrrnarqnqw10qpmh2blbx9hd78kfkha"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-crypto-mac" ,rust-crypto-mac-0.8)
@@ -8665,14 +8688,11 @@ streams in big-endian and little-endian formats.")
        #:cargo-development-inputs
        (("rust-crypto-mac" ,rust-crypto-mac-0.8)
         ("rust-digest" ,rust-digest-0.9)
-        ("rust-hex-literal" ,rust-hex-literal-0.2))))
-    (home-page "https://github.com/RustCrypto/hashes")
-    (synopsis "BLAKE2 hash functions")
-    (description "This package provides BLAKE2 hash functions in Rust.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-hex-literal" ,rust-hex-literal-0.2))))))
 
 (define-public rust-blake2-0.8
   (package
+    (inherit rust-blake2-0.10)
     (name "rust-blake2")
     (version "0.8.1")
     (source
@@ -8684,7 +8704,6 @@ streams in big-endian and little-endian formats.")
        (sha256
         (base32
          "0c4k11j04kqhkci6i9b7lz6p13kpcv228pdqixgrawvavaq0gjwl"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-byte-tools" ,rust-byte-tools-0.3)
@@ -8694,11 +8713,7 @@ streams in big-endian and little-endian formats.")
        #:cargo-development-inputs
        (("rust-crypto-mac" ,rust-crypto-mac-0.7)
         ("rust-digest" ,rust-digest-0.8)
-        ("rust-hex-literal" ,rust-hex-literal-0.1))))
-    (home-page "https://github.com/RustCrypto/hashes")
-    (synopsis "BLAKE2 hash functions")
-    (description "This package provides BLAKE2 hash functions in Rust.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-hex-literal" ,rust-hex-literal-0.1))))))
 
 (define-public rust-blake2b-simd-1
   (package
