@@ -30,7 +30,9 @@ fi
 guix pack --version
 
 # Use --no-substitutes because we need to verify we can do this ourselves.
-GUIX_BUILD_OPTIONS="--no-substitutes"
+# Use --no-grafts to avoid interference--e.g., --dry-run passing even when
+# given an unsupported package.
+GUIX_BUILD_OPTIONS="--no-substitutes --no-grafts"
 export GUIX_BUILD_OPTIONS
 
 test_directory="`mktemp -d`"

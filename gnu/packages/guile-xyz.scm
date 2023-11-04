@@ -46,6 +46,7 @@
 ;;; Copyright © 2022, 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2023 Andrew Tropin <andrew@trop.in>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -119,6 +120,7 @@
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages tree-sitter)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xdisorg)
@@ -728,7 +730,7 @@ you send to a FIFO file.")
 (define-public guile-dsv
   (package
     (name "guile-dsv")
-    (version "0.7.0")
+    (version "0.7.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -737,7 +739,7 @@ you send to a FIFO file.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0shrzmbh6x3n3xzpcijkxk3f73z6m1i50zgc2dnnccwf4j1c78p2"))))
+                "18v8snh45ibh13mvihhajs226yflxpl6v09wqndyfj1da8cdmkzk"))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf
                          automake
@@ -757,6 +759,7 @@ you send to a FIFO file.")
        #:imported-modules ((guix build guile-build-system)
                            ,@%gnu-build-system-modules)
        #:phases (modify-phases %standard-phases
+                  (delete 'strip)
                   (add-after 'install 'wrap-program
                     (lambda* (#:key inputs outputs #:allow-other-keys)
                       (let* ((out (assoc-ref outputs "out"))
@@ -1401,8 +1404,8 @@ the Guile compiler tower to generate the DSL from AWS JSON specifications.")
       (license license:gpl3+))))
 
 (define-public guile-simple-zmq
-  (let ((commit "ff0b39aec9312517fb48681564e261bd000aaf63")
-        (revision "10"))
+  (let ((commit "d25d1865e3378d93c44e2b4f5246a70b078a489d")
+        (revision "11"))
     (package
       (name "guile-simple-zmq")
       (version (git-version "0.0.0" revision commit))
@@ -1414,7 +1417,7 @@ the Guile compiler tower to generate the DSL from AWS JSON specifications.")
                (commit commit)))
          (sha256
           (base32
-           "0qfnljap1cxkfsydadarvhcw4p6cgayxzbhqr6r1y0as0m8250q3"))
+           "1aq1s0f0z5g6qsv9jqr0663qv4rwxd9j1pmg1g8v6rl09xb8g8lp"))
          (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments
@@ -4587,6 +4590,52 @@ models and also supports a rich set of boolean query operators.")
 according to Bitorrent BEP003.")
     (license license:gpl3+)))
 
+(define-public guile-ts
+  (package
+    (name "guile-ts")
+    (version "0.1.0")
+    (source (origin (method git-fetch)
+                    (uri (git-reference
+                          (url
+                           "https://github.com/Z572/guile-ts")
+                          (commit (string-append "v" version))))
+                    (file-name (git-file-name name version))
+                    (sha256
+                     (base32
+                      "0xmq2d3mv921m0g1hqw6bjzh4m622g2c7pal11ks7vjn0m8d4bxj"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags #~(list "GUILE_AUTO_COMPILE=0")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'set-extension-path
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (substitute*
+                       (find-files "." ".*\\.scm")
+                     (("\\(load-extension \"libguile_ts\" *\"(.*)\"\\)" _ o)
+                      (string-append
+                       (object->string
+                        `(or (false-if-exception
+                              (load-extension "libguile_ts" ,o))
+                             (load-extension
+                              ,(string-append
+                                #$output
+                                "/lib/libguile_ts.so")
+                              ,o)))))))))))
+    (native-inputs
+     (list autoconf automake libtool texinfo pkg-config guile-3.0))
+    (inputs
+     (list guile-3.0 tree-sitter))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "TREE_SITTER_GRAMMAR_PATH")
+            (files '("lib/tree-sitter")))))
+    (synopsis "Guile bindings to the Tree-sitter parsing library")
+    (description "This package provides Guile bindings to the Tree-sitter
+parsing library.")
+    (home-page "https://github.com/Z572/guile-ts")
+    (license license:gpl3+)))
+
 (define-public guile-irc
   (let ((commit "7d08ce6fdcb87ac668c5d3bfd5584247805507bb")
         (revision "1"))
@@ -5292,7 +5341,7 @@ locations.")
 (define-public guile-netlink
   (package
     (name "guile-netlink")
-    (version "1.2")
+    (version "1.2.1")
     (source
      (origin
        (method git-fetch)
@@ -5302,7 +5351,7 @@ locations.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "06ls830nrshzi2j532di5vdf03fp8cy1275ll4ms93x1hv2g8dk0"))))
+         "181drjshcz7pi5zwydwd702h7v8p1nh50q6slsw9q372k2bzyl4a"))))
     (build-system gnu-build-system)
     (inputs
      (list guile-3.0))

@@ -1,4 +1,5 @@
 #!/bin/sh
+# -*- mode: scheme; -*-
 # Extra care is taken here to ensure this script can run in most environments,
 # since it is invoked by 'git send-email'.
 pre_inst_env_maybe=
@@ -522,6 +523,12 @@ GLib/GIO, GTK, GStreamer and Webkit."
         #:scope (list "gnu/packages/lxqt.scm"
                       "gnu/packages/qt.scm")))
 
+(define-team audio
+  (team 'audio
+        #:name "Audio team"
+        #:description "Audio related packages."
+        #:scope (list "gnu/packages/audio.scm")))
+
 
 (define-member (person "Eric Bavier"
                        "bavier@posteo.net")
@@ -650,6 +657,10 @@ GLib/GIO, GTK, GStreamer and Webkit."
 (define-member (person "Munyoki Kilyungi"
                        "me@bonfacemunyoki.com")
   python lisp)
+
+(define-member (person "Gabriel Wicki"
+                       "gabriel@erlikon.ch")
+  audio)
 
 
 (define (find-team name)

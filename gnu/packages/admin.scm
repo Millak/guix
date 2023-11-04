@@ -406,7 +406,7 @@ interface and is based on GNU Guile.")
 (define-public swineherd
   (package
     (name "swineherd")
-    (version "0.0.1")
+    (version "0.0.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -415,7 +415,7 @@ interface and is based on GNU Guile.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "18nk0sy5s0dm2rhxnrrn8g0m098b110mxnnxa2vnl1dnvfdzszw8"))))
+                "0il1ikaj478n7xs4vqgawbshvmwq3nd0gp235mwqvmf4knra6j3g"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--localstatedir=/var")
@@ -2835,13 +2835,13 @@ specified directories.")
 (define-public ansible-core
   (package
     (name "ansible-core")
-    (version "2.14.4")
+    (version "2.15.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ansible-core" version))
        (sha256
-        (base32 "057g87smxcn6zc558xk4zr6ga4q8clmkyxghn5gx60a94sy61clh"))))
+        (base32 "00hnwjk4dxgxbz4xlza2wqx20yks5xr7074hzlzsyja3ip5kkicc"))))
     (build-system python-build-system)
     (arguments
      `(#:modules ((guix build python-build-system)
@@ -2911,14 +2911,6 @@ test_context)" all)
              (when tests?
                ;; Otherwise Ansible fails to create its config directory.
                (setenv "HOME" "/tmp")
-               ;; This test module messes up with sys.path and causes many
-               ;; test failures.
-               (delete-file "test/units/_vendor/test_vendor.py")
-               ;; The test fails when run in the container, for reasons
-               ;; unknown.
-               (delete-file "test/units/utils/test_display.py")
-               ;; This test fail for reasons unknown.
-               (delete-file "test/units/cli/test_adhoc.py")
                ;; These tests fail in the container; it appears that the
                ;; mocking of the absolute file names such as /usr/bin/svcs do
                ;; not work as intended there.
@@ -2933,7 +2925,7 @@ test_command_nonexisting.py")
                ;; does some extra environment setup.  Taken from
                ;; https://raw.githubusercontent.com/ansible/ansible/\
                ;; devel/test/utils/shippable/shippable.sh.
-               (invoke "ansible-test" "units" "-v"
+               (invoke "./bin/ansible-test" "units" "-v"
                        "--num-workers" (number->string
                                         (parallel-job-count)))))))))
     (native-inputs
@@ -2954,7 +2946,7 @@ test_command_nonexisting.py")
            python-jinja2
            python-pyyaml
            python-packaging             ;for version number parsing
-           python-resolvelib-0.5))
+           python-resolvelib))
     (home-page "https://www.ansible.com/")
     (synopsis "Radically simple IT automation")
     (description "Ansible aims to be a radically simple IT automation system.
@@ -2981,13 +2973,13 @@ provides the following commands:
 (define-public ansible
   (package
     (name "ansible")
-    (version "7.4.0")
+    (version "8.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ansible" version))
        (sha256
-        (base32 "142barhwz0wx5kn74xi0bfl21iwq2yq3jp14kxajsg9nggndcr09"))))
+        (base32 "0bazj5h12wraf30bb2schzwk553y20n9vh45km4b5kgmvadm0z1j"))))
     (build-system python-build-system)
     (propagated-inputs (list ansible-core))
     ;; The Ansible collections are found by ansible-core via the Python search

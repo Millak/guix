@@ -278,14 +278,14 @@
 (define-public httpd
   (package
     (name "httpd")
-    (version "2.4.57")
+    (version "2.4.58")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://apache/httpd/httpd-"
                                  version ".tar.bz2"))
              (sha256
               (base32
-               "0ajdz5f2w9nbmqydip2mv9m4xlnc4swmw7mqzgnrbq4mxr5bik6v"))))
+               "1id45r2ccgkbjm9i998997ch32lvicpyynyx8x6aa4420wmdf5ps"))))
     (build-system gnu-build-system)
     (native-inputs (list `(,pcre "bin")))       ;for 'pcre-config'
     (inputs (list apr apr-util openssl perl)) ; needed to run bin/apxs
@@ -448,7 +448,7 @@ replacing them with data URIs.")
 (define-public monolith
   (package
     (name "monolith")
-    (version "2.6.1")
+    (version "2.7.0")
     (source
      (origin
        (method git-fetch)
@@ -457,23 +457,24 @@ replacing them with data URIs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pj4wnsw5a4ys79sqw68ib6zimaqlkplb89x6yncg949a6hj8516"))))
+        (base32 "0ccwjsp8gdgp0wafc3zvlfmx3f58axc1k1ac80qha3g60xccqn56"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-atty" ,rust-atty-0.2)
         ("rust-base64" ,rust-base64-0.13)
         ("rust-chrono" ,rust-chrono-0.4)
-        ("rust-clap" ,rust-clap-2)
-        ("rust-cssparser" ,rust-cssparser-0.28)
+        ("rust-clap" ,rust-clap-3)
+        ("rust-cssparser" ,rust-cssparser-0.29)
         ("rust-encoding-rs" ,rust-encoding-rs-0.8)
         ("rust-html5ever" ,rust-html5ever-0.24)
+        ("rust-percent-encoding" ,rust-percent-encoding-2)
         ("rust-regex" ,rust-regex-1)
         ("rust-reqwest" ,rust-reqwest-0.11)
-        ("rust-sha2" ,rust-sha2-0.9)
+        ("rust-sha2" ,rust-sha2-0.10)
         ("rust-url" ,rust-url-2))
        #:cargo-development-inputs
-       (("rust-assert-cmd" ,rust-assert-cmd-1))))
+       (("rust-assert-cmd" ,rust-assert-cmd-2))))
     (native-inputs
      (list pkg-config))
     (inputs
@@ -1003,7 +1004,7 @@ similar to live activity monitoring provided with NGINX plus.")
 (define-public lighttpd
   (package
     (name "lighttpd")
-    (version "1.4.71")
+    (version "1.4.72")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.lighttpd.net/lighttpd/"
@@ -1011,7 +1012,7 @@ similar to live activity monitoring provided with NGINX plus.")
                                   "lighttpd-" version ".tar.xz"))
               (sha256
                (base32
-                "1b5g4l9q84sjfwx9x1d7bqp9n5j0wkaj8cyzak1zv5h3l9fr3dmq"))))
+                "1v2m9vavrg3ibbl0kfq3rjlnqicbrlrkqih1iisa0m5pd56xxjpp"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
@@ -7958,6 +7959,7 @@ derivation by David Revoy from the original MonsterID by Andreas Gohr.")
   (package
     (name "nghttp2")
     (version "1.49.0")
+    (replacement nghttp2-1.57)
     (source
      (origin
        (method url-fetch)
@@ -8067,6 +8069,19 @@ compressed JSON header blocks.
                    ;; Convert to tuples for a more reliable check.
                    (("print \\(ver >= '3\\.8'\\)")
                     "print (tuple(map(int, ver.split('.'))) >= (3,8))")))))))))))
+
+(define-public nghttp2-1.57
+  (package
+    (inherit nghttp2)
+    (version "1.57.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/nghttp2/nghttp2/"
+                                  "releases/download/v" version "/"
+                                  "nghttp2-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0n598w7w8rqdqiay2fad3a11253hibakan5c4vjkpx09648v044j"))))))
 
 (define-public hpcguix-web
   (package

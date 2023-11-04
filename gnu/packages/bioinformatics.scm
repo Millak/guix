@@ -1063,11 +1063,11 @@ plotnames, filenames and paths.")
       (license license:gpl3))))
 
 (define-public r-readwriter
-  (let ((commit "71454f4aa706f5d2fbe606acd95abc14224e7058")
+  (let ((commit "12d32cb6533ef4b9eab4d707d1502525c2034aee")
         (revision "1"))
     (package
       (name "r-readwriter")
-      (version (git-version "0.2.9" revision commit))
+      (version (git-version "0.3.2" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -1076,7 +1076,7 @@ plotnames, filenames and paths.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0sp27smhdva2hi2x0svia2l56k8xrh7p5akn78g5b0lcvz4x3hd7"))))
+                  "1hy47g8d7zppr2i9zlkwl2yb0ii8x710hqk07h089ldx9171qxab"))))
       (properties `((upstream-name . "ReadWriter")))
       (build-system r-build-system)
       (propagated-inputs
@@ -5164,13 +5164,25 @@ software to answer ad hoc questions.")
            python-pysam
            python-pyyaml
            python-scipy
+           r-biocmanager
+           r-dplyr
+           r-genomicranges
+           r-here
+           r-openxlsx
+           r-optparse
+           r-readr
+           r-rsamtools
+           r-stringr
+           r-tidyr
+           r-upsetr
+           r-yaml
            snakemake-7))
     (native-inputs (list python-cython python-pyfakefs python-pytest))
     (home-page "https://github.com/dieterich-lab/Baltica")
     (synopsis "Integrated splice junction usage analysis")
     (description
      "This framework facilitates the execution of @dfn{differential junction
-usage} (DJU) methods. Additionally, it enables the integration of results from
+usage} (DJU) methods.  Additionally, it enables the integration of results from
 multiple DJU methods.")
     (license license:expat)))
 
@@ -10652,6 +10664,40 @@ which applies pathway and gene set overdispersion analysis to identify aspects
 of transcriptional heterogeneity among single cells.")
     ;; See https://github.com/hms-dbmi/scde/issues/38
     (license license:gpl2)))
+
+(define-public r-miamiplot
+  (let ((commit "beede9c5d6431b4d822aa42e064e01baeb5dd4a0")
+        (revision "1"))
+    (package
+      (name "r-miamiplot")
+      (version (git-version "1.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/juliedwhite/miamiplot")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0wxxk1lk9jbf0imf59qp302ffasvs84idinkvzirs3dw9w3589n9"))))
+      (properties `((upstream-name . "miamiplot")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-checkmate
+                               r-dplyr
+                               r-ggplot2
+                               r-ggrepel
+                               r-gridextra
+                               r-magrittr
+                               r-rlang))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/juliedwhite/miamiplot")
+      (synopsis "Create a ggplot2 miami plot")
+      (description
+       "This package generates a Miami plot with centered chromosome labels.
+The output is a ggplot2 object.  Users can specify which data they want
+plotted on top vs. bottom, whether to display significance line(s), what
+colors to give chromosomes, and what points to label.")
+      (license license:gpl2))))
 
 (define-public r-millefy
   (package
@@ -18795,6 +18841,73 @@ pairs.")
 transcriptional derivatives and visualization of the resulting velocity
 patterns.")
       (license license:gpl3))))
+
+(define-public r-voltron
+  (let ((commit "5057b703479239a9aaba761f07e65d849f6111f8")
+        (revision "1"))
+    (package
+      (name "r-voltron")
+      (version (git-version "1.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/BIMSBbioinfo/VoltRon")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1nximl4708a7fdwn8ysxpni3mp6dx33cphavlay7hh1pa55pnzgn"))
+                (modules '((guix build utils)))
+                ;; The tripack package is not available under a free license,
+                ;; but interp provides free implementations of "tri.mesh" and
+                ;; "neighbours".
+                (snippet
+                 '(substitute* '("DESCRIPTION" "NAMESPACE" "R/spatial.R")
+                    (("tripack") "interp")))))
+      (properties `((upstream-name . "VoltRon")))
+      (build-system r-build-system)
+      (inputs (list opencv tbb zlib))
+      (propagated-inputs (list r-anndata
+                               r-data-table
+                               r-dplyr
+                               r-ebimage
+                               r-fastdummies
+                               r-fnn
+                               r-ggforce
+                               r-ggplot2
+                               r-ggpubr
+                               r-ggrepel
+                               r-hdf5r
+                               r-htmltools
+                               r-igraph
+                               r-interp
+                               r-irlba
+                               r-magick
+                               r-matrix
+                               r-morpho
+                               r-raster
+                               r-rcpp
+                               r-reshape2
+                               r-rjson
+                               r-rlang
+                               r-s4vectors
+                               r-scales
+                               r-shiny
+                               r-shinyjs
+                               r-stringr
+                               r-terra
+                               r-umap
+                               r-xml))
+      (native-inputs (list pkg-config))
+      (home-page "https://github.com/BIMSBbioinfo/VoltRon")
+      (synopsis "VoltRon for Spatial Data Integration and Analysis")
+      (description
+       "@code{VoltRon} is a toolbox for spatial data analysis, multi-omics
+integration using spatial image registration.  @code{VoltRon} is capable of
+analyzing multiple types and modalities of spatially-aware datasets.
+@code{VoltRon} visualizes and analyzes regions of interests (ROIs), spots,
+cells and even molecules.")
+      (license license:expat))))
 
 (define-public methyldackel
   (package

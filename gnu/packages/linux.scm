@@ -493,17 +493,17 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-6.5-version "6.5.7")
+(define-public linux-libre-6.5-version "6.5.9")
 (define-public linux-libre-6.5-gnu-revision "gnu")
 (define deblob-scripts-6.5
   (linux-libre-deblob-scripts
    linux-libre-6.5-version
    linux-libre-6.5-gnu-revision
    (base32 "01mm6v67bcrhgm97axsw46x0iix9im7hmlb765f3bkjhwklpxdy7")
-   (base32 "132ps1jprxw6kqyscsar38fn7s12kg416mfhz7w702f4ajgq1ndi")))
+   (base32 "066z5lw5vrfayhv23hpfcm6fh6b7zmn2v13kfv1g3z3jl1wblhfh")))
 (define-public linux-libre-6.5-pristine-source
   (let ((version linux-libre-6.5-version)
-        (hash (base32 "135v3y2vgc83dca4xi7q52wqi4dkfal74k1y73jwzj85h12fl28d")))
+        (hash (base32 "1mcg0lpxr832mwyqlbn0s5gssvsk2nn2xhq9w0qbymizf5j2yrn6")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.5)))
@@ -511,7 +511,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-6.1-version "6.1.58")
+(define-public linux-libre-6.1-version "6.1.60")
 (define-public linux-libre-6.1-gnu-revision "gnu")
 (define deblob-scripts-6.1
   (linux-libre-deblob-scripts
@@ -521,12 +521,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1c73516nbhnz0cxjz38b5794dxygb8sznv9idiibw7ablmjbhd11")))
 (define-public linux-libre-6.1-pristine-source
   (let ((version linux-libre-6.1-version)
-        (hash (base32 "1b913ina3rcw4dx2s7n37kynv8rqsmrqa2ialsib6h7nsb9px66f")))
+        (hash (base32 "02pvymr1dgd36mp7yikxqqv0sfrpwi1grnvxvx6jbbx6wmx0wljq")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.1)))
 
-(define-public linux-libre-5.15-version "5.15.135")
+(define-public linux-libre-5.15-version "5.15.137")
 (define-public linux-libre-5.15-gnu-revision "gnu")
 (define deblob-scripts-5.15
   (linux-libre-deblob-scripts
@@ -536,12 +536,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1c3lm0j401lv2lk39dmr4mlf5ic173snm7cc0cckl6czyvxr5ysy")))
 (define-public linux-libre-5.15-pristine-source
   (let ((version linux-libre-5.15-version)
-        (hash (base32 "0w3i8jvzqvfnlarcvg89k1144ln96fszv16lzrn16zr3kri5x0ql")))
+        (hash (base32 "1xxjbxldrhmnh2q6rykpxyfbj8xqgl82q30n8sfavrzr14bb4jcp")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
 
-(define-public linux-libre-5.10-version "5.10.198")
+(define-public linux-libre-5.10-version "5.10.199")
 (define-public linux-libre-5.10-gnu-revision "gnu1")
 (define deblob-scripts-5.10
   (linux-libre-deblob-scripts
@@ -551,12 +551,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0nnp46mn32yk436swd2qh34igmzinfgkwvbzp3lqyy45f06hbc2j")))
 (define-public linux-libre-5.10-pristine-source
   (let ((version linux-libre-5.10-version)
-        (hash (base32 "01gsw96anw44nh8ii3zipp6vh61m1n8yf0bv2fzznr23k771y51b")))
+        (hash (base32 "1h944syk7n6c4j1djlx19n77alzwbxcdza77c9ykicgfynhpgsm0")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.10)))
 
-(define-public linux-libre-5.4-version "5.4.258")
+(define-public linux-libre-5.4-version "5.4.259")
 (define-public linux-libre-5.4-gnu-revision "gnu1")
 (define deblob-scripts-5.4
   (linux-libre-deblob-scripts
@@ -566,12 +566,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0sw67b2pk3lng4y67diqqnhxaggnp3nbkx8dxc5fs27rinfxr4m1")))
 (define-public linux-libre-5.4-pristine-source
   (let ((version linux-libre-5.4-version)
-        (hash (base32 "0gk2xav1ng565l1qsqlr8ja6m4j5g8rfj66vad1fmdd1lwaihw1r")))
+        (hash (base32 "195v4fidavzm637glj6580006mrcaygnbj4za874imb62bxf9rpz")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.4)))
 
-(define-public linux-libre-4.19-version "4.19.296")
+(define-public linux-libre-4.19-version "4.19.297")
 (define-public linux-libre-4.19-gnu-revision "gnu1")
 (define deblob-scripts-4.19
   (linux-libre-deblob-scripts
@@ -581,12 +581,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1425mhkfxn18vxn05bb4h3li7x1jl7l1hf1zi8xhnqv3wa31h9wl")))
 (define-public linux-libre-4.19-pristine-source
   (let ((version linux-libre-4.19-version)
-        (hash (base32 "1bk051canr4fb00j6x9ff2wam2f20whw4h4z767x2cn2kmv6cqb3")))
+        (hash (base32 "0c9xxqgv2i36hrr06dwz7f3idc04xpv0a5pxg08xdh03cnyf12cx")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.19)))
 
-(define-public linux-libre-4.14-version "4.14.327")
+(define-public linux-libre-4.14-version "4.14.328")
 (define-public linux-libre-4.14-gnu-revision "gnu1")
 (define deblob-scripts-4.14
   (linux-libre-deblob-scripts
@@ -596,7 +596,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1faagsj4i31z2bp83hflx3q9vrddjnn37a3ah2b47iaplva7z1nd")))
 (define-public linux-libre-4.14-pristine-source
   (let ((version linux-libre-4.14-version)
-        (hash (base32 "0nharfyxlr17yan86zrhlbq7idm0g3zvvvmy2zbw7m9dhgc8bw5z")))
+        (hash (base32 "1igcpvnhwwrczfdsafmszvi0456k7f6j4cgpfw6v6afw09p95d8x")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.14)))
@@ -3673,7 +3673,7 @@ processes currently causing I/O.")
 (define-public iotop
   (package
     (name "iotop")
-    (version "1.23")
+    (version "1.25")
     (source
      (origin
        (method git-fetch)
@@ -3682,7 +3682,7 @@ processes currently causing I/O.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1i5m2w0jzxzxn2xvragygidw35p87skjs6bfjakrz6bd96sxhd70"))))
+        (base32 "0h8fb7zzqszdrybk9zzzqqkiz78i8z2zr0f2nj84jja6visdd2v4"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags

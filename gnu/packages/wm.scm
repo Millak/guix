@@ -1988,7 +1988,7 @@ core/thread.")
 (define-public wlr-randr
   (package
     (name "wlr-randr")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method git-fetch)
@@ -1997,7 +1997,7 @@ core/thread.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cj24fb6s7n8nphvhrp8ldrivjdcrjw64i5v9rsfb6z80q4qg548"))))
+        (base32 "13mya6j5z7cwg2a973y28ya8w36kxhj0fgj8bk9z6yf2w0ryr5xv"))))
     (build-system meson-build-system)
     (inputs (list wayland))
     (native-inputs (list pkg-config))
@@ -2943,7 +2943,7 @@ read and write, and compatible with JSON.")
 (define-public labwc
   (package
     (name "labwc")
-    (version "0.6.4")
+    (version "0.6.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2952,13 +2952,14 @@ read and write, and compatible with JSON.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00ajr7s8qywdfa9vhlfc02p1wwdcqaaa09pm1im9w6mrvb904lzh"))))
+                "04401k1i6b9s2v6mbhw5llla8fdpkhmgz826iva246iqch9z20lx"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config gettext-minimal scdoc))
     (inputs
      (list cairo
            glib
+           librsvg
            libxcb
            libxml2
            pango

@@ -810,7 +810,7 @@ functions and around einops with an API and features adapted to xarray.")
 (define-public python-pytensor
   (package
     (name "python-pytensor")
-    (version "2.14.2")
+    (version "2.17.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -819,7 +819,7 @@ functions and around einops with an API and features adapted to xarray.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1428l1v7yrnls8875xjx1svn48cmz0q83sv7sg0xdqghkfnyi7xx"))))
+                "1694apl8gjdrl6hrfly9yixmfimmmh51vacxmxx63nn4k5qnsgbg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2028,6 +2028,33 @@ documentation for more information.")
     (description "Vaex is a high performance Python library for lazy
 Out-of-Core DataFrames (similar to Pandas), to visualize and explore big
 tabular datasets.  This package provides the core modules of Vaex.")
+    (license license:expat)))
+
+(define-public python-salib
+  (package
+    (name "python-salib")
+    (version "1.4.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/SALib/SALib")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "18xfyzircsx2q2lmfc9lxb6xvkxicnc83qzghd7df1jsprr5ymch"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-matplotlib
+                             python-multiprocess
+                             python-numpy
+                             python-pandas
+                             python-scipy))
+    (native-inputs (list python-hatchling python-pytest python-pytest-cov))
+    (home-page "https://salib.readthedocs.io/en/latest/")
+    (synopsis "Tools for global sensitivity analysis")
+    (description "SALib provides tools for global sensitivity analysis.  It
+contains Sobol', Morris, FAST, DGSM, PAWN, HDMR, Moment Independent and
+fractional factorial methods.")
     (license license:expat)))
 
 (define-public python-pylems

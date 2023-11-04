@@ -435,7 +435,10 @@ activation.")))
          ;; after complete logout/reboot.
          (if (file-exists? xdg-runtime-dir)
              (when (claim-first-run flag-file-path)
-               (begin #$@gexps))            ;GEXPS can be empty, hence 'begin'
+               ;; GEXPS can be empty, hence 'begin *unspecified*'. Having just
+               ;; 'begin' without '*unspecified*' leads to
+               ;; "Syntax error: ... sequence of zero expressions in form (begin)"
+               (begin *unspecified* #$@gexps))
              ;; TRANSLATORS: 'on-first-login' is the name of a service and
              ;; shouldn't be translated
              (warning (G_ "XDG_RUNTIME_DIR doesn't exists, on-first-login script

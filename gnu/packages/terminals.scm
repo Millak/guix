@@ -37,6 +37,7 @@
 ;;; Copyright © 2023 Aaron Covrig <aaron.covrig.us@ieee.org>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -230,7 +231,7 @@ managers.")
 (define-public asciinema
   (package
     (name "asciinema")
-    (version "2.3.0")
+    (version "2.4.0")
     (source
      (origin
        (method git-fetch)
@@ -239,7 +240,7 @@ managers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mqn12h51nqdmn1ya7hw1l2z2893937dqq4b1zh32y6bazd807fl"))))
+        (base32 "0qhf4sc5fl81rpq3rgzy7qcch620dh12scvsbdfczfbyjb10ps2i"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases
@@ -834,33 +835,34 @@ eye-candy, customizable, and reasonably lightweight.")
 (define-public foot
   (package
     (name "foot")
-    (version "1.15.3")
+    (version "1.16.2")
     (home-page "https://codeberg.org/dnkl/foot")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference (url home-page) (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1a224i2i7qk170kf2rzyxqcv3lnx9f548lwa37jgjr7i339x4zwf"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00wac8li1ac8ncmnlqvz3xnr5pi8gj4v3v341n0h2zzaayv9ngw5"))))
     (build-system meson-build-system)
     (arguments
-     `(;; Using a "release" build is recommended both for performance, and
-       ;; also to address a GCC 10 issue when doing PGO builds.
-       #:build-type "release"
-       ;; Enable LTO as recommended by INSTALL.md.
-       #:configure-flags '("-Db_lto=true")))
-    (native-inputs
-     (list ncurses ;for 'tic'
-           pkg-config scdoc wayland-protocols))
+     (list
+      ;; Using a "release" build is recommended both for performance, and
+      ;; also to address a GCC 10 issue when doing PGO builds.
+      #:build-type "release"
+      ;; Enable LTO as recommended by INSTALL.md.
+      #:configure-flags #~'("-Db_lto=true")))
+    (native-inputs (list ncurses ;for 'tic'
+                         pkg-config scdoc wayland-protocols))
     (native-search-paths
      ;; FIXME: This should only be located in 'ncurses'.  Nonetheless it is
      ;; provided for usability reasons.  See <https://bugs.gnu.org/22138>.
      (list (search-path-specification
             (variable "TERMINFO_DIRS")
             (files '("share/terminfo")))))
-    (inputs
-     (list fcft libxkbcommon wayland))
+    (inputs (list fcft libxkbcommon wayland))
     (synopsis "Wayland-native terminal emulator")
     (description
      "@command{foot} is a terminal emulator for systems using the Wayland

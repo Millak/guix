@@ -18,6 +18,7 @@
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2023 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -111,6 +112,7 @@
             cxx-for-target
             ld-for-target
             pkg-config-for-target
+            strip-for-target
 
             version-compare
             version>?
@@ -783,6 +785,11 @@ architecture (x86_64)?"
   (if target
       (string-append target "-pkg-config")
       "pkg-config"))
+
+(define* (strip-for-target #:optional (target (%current-target-system)))
+  (if target
+      (string-append target "-strip")
+      "strip"))
 
 (define version-compare
   (let ((strverscmp

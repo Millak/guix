@@ -52,6 +52,10 @@
 
             rottlog-configuration
             rottlog-configuration?
+            rottlog-configuration-rottlog
+            rottlog-configuration-rc-file
+            rottlog-configuration-rotations
+            rottlog-configuration-jobs
             rottlog-service
             rottlog-service-type
 
@@ -193,25 +197,25 @@ for ROTATION."
 (define-record-type* <rottlog-configuration>
   rottlog-configuration make-rottlog-configuration
   rottlog-configuration?
-  (rottlog            rottlog-rottlog             ;file-like
+  (rottlog            rottlog-configuration-rottlog             ;file-like
                       (default rottlog))
-  (rc-file            rottlog-rc-file             ;file-like
+  (rc-file            rottlog-configuration-rc-file             ;file-like
                       (default (file-append rottlog "/etc/rc")))
-  (rotations          rottlog-rotations           ;list of <log-rotation>
+  (rotations          rottlog-configuration-rotations           ;list of <log-rotation>
                       (default %default-rotations))
-  (jobs               rottlog-jobs                ;list of <mcron-job>
+  (jobs               rottlog-configuration-jobs                ;list of <mcron-job>
                       (default #f)))
 
 (define (rottlog-etc config)
   `(("rottlog"
      ,(file-union "rottlog"
-                  (cons `("rc" ,(rottlog-rc-file config))
+                  (cons `("rc" ,(rottlog-configuration-rc-file config))
                         (log-rotations->/etc-entries
-                         (rottlog-rotations config)))))))
+                         (rottlog-configuration-rotations config)))))))
 
 (define (rottlog-jobs-or-default config)
-  (or (rottlog-jobs config)
-      (default-jobs (rottlog-rottlog config))))
+  (or (rottlog-configuration-jobs config)
+      (default-jobs (rottlog-configuration-rottlog config))))
 
 (define rottlog-service-type
   (service-type
@@ -226,12 +230,12 @@ Old log files are removed or compressed according to the configuration.")
                      ;; Add Rottlog to the global profile so users can access
                      ;; the documentation.
                      (service-extension profile-service-type
-                                        (compose list rottlog-rottlog))))
+                                        (compose list rottlog-configuration-rottlog))))
    (compose concatenate)
    (extend (lambda (config rotations)
              (rottlog-configuration
               (inherit config)
-              (rotations (append (rottlog-rotations config)
+              (rotations (append (rottlog-configuration-rotations config)
                                  rotations)))))
    (default-value (rottlog-configuration))))
 

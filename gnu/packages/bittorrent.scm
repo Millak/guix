@@ -83,7 +83,7 @@
 (define-public transmission
   (package
     (name "transmission")
-    (version "4.0.3")
+    (version "4.0.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/transmission/transmission"
@@ -91,7 +91,7 @@
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0njlmpcdsxwx8vwdk9dvsby51l6f6awks9d0mgvi9fs2ivaizc5n"))))
+                "19nm7f4x3zq610da5fl63vpycj4kv07np6ldm8czpgyziwqv9xqm"))))
     (build-system cmake-build-system)
     (outputs '("out"                      ; library and command-line interface
                "gui"))                    ; graphical user interface
@@ -112,8 +112,9 @@
            (replace 'check
              (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
                (if tests?
-                   ;; XXX this test fails...
-                   (invoke "ctest" "-E" "usesBootstrapFile"
+                   (invoke "ctest"
+                           ;; XXX this test fails...
+                           "-E" "usesBootstrapFile"
                            "-j" (if parallel-tests?
                                     (number->string (parallel-job-count))
                                     "1"))
@@ -155,7 +156,7 @@
     (native-inputs
      (list intltool pkg-config))
     (home-page "https://transmissionbt.com/")
-    (synopsis "Fast and easy BitTorrent client")
+    (synopsis "BitTorrent client")
     (description
      "Transmission is a BitTorrent client that comes with graphical,
 textual, and Web user interfaces.  Transmission also has a daemon for

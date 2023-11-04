@@ -1302,14 +1302,14 @@ in the terminal or with an external viewer.")
 (define-public gnuplot
   (package
     (name "gnuplot")
-    (version "5.4.8")
+    (version "5.4.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/gnuplot/gnuplot/"
                                   version "/gnuplot-"
                                   version ".tar.gz"))
        (sha256
-        (base32 "1kzmj4yyxvlxqzqbrw6sx6dnvhj1zzqnciyb8ryzy6mdrb3pj4lk"))))
+        (base32 "15vabi30s4ln4vi82csx4nvfms3ik8704rk0prcm9h1xylhs0a53"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config (texlive-updmap.cfg)))
@@ -1317,7 +1317,8 @@ in the terminal or with an external viewer.")
      (list cairo gd lua pango readline))
     (arguments
      (list #:configure-flags
-           #~(list (string-append "--with-texdir=" #$output
+           #~(list "--with-qt=no"
+                   (string-append "--with-texdir=" #$output
                                   "/texmf-local/tex/latex/gnuplot"))
            ;; Plot on a dumb terminal during tests.
            #:make-flags #~'("GNUTERM=dumb")))
@@ -3179,6 +3180,54 @@ This is the certified version of the Open Cascade Technology (OCCT) library.")
     (description "Fast Downward is a portfolio-based planning system that
 supports the propositional fragment of PDDL2.2.")
     (license license:gpl3+)))
+
+(define-public popf
+  (package
+    (name "popf")
+    (version "0.0.15")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/fmrico/popf")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1i1am3h6japn8fgapi5s5mnyrm31a05jkjhzgk48cd2n42c5060v"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-cmake
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (find-files "." "CMakeLists\\.txt")
+                (("/usr/local/opt/flex/include")
+                 (dirname (search-input-file inputs "include/FlexLexer.h"))))
+              (substitute* "CMakeLists.txt"
+                (("find_package\\(ament_cmake REQUIRED\\)") "")
+                (("ament_.*") "")
+                (("(RUNTIME DESTINATION) .*" all dst)
+                 (string-append dst " libexec/${PROJECT_NAME}")))))
+          (add-after 'install 'symlink
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out")))
+                (mkdir-p (string-append out "/bin"))
+                (for-each (lambda (link)
+                            (symlink
+                             (string-append out "/libexec/popf/" (cdr link))
+                             (string-append out "/bin/" (car link))))
+                          '(("popf" . "popf") ("VAL" . "validate")))))))))
+    (inputs (list cbc flex))
+    (native-inputs (list flex bison perl))
+    (home-page "https://github.com/fmrico/popf")
+    (synopsis "Forward-chaining temporal planner")
+    (description "This package contains an implementation of the @acronym{POPF,
+Partial Order Planning Forwards} planner described in @cite{Forward-Chaining
+Partial Order Planning}, that has been updated to compile with newer C++
+compilers.")
+    (license license:gpl2+)))
 
 (define-public gmsh
   (package
@@ -8519,15 +8568,15 @@ management via the GIMPS project's Primenet server.")
 (define-public nauty
   (package
     (name "nauty")
-    (version "2.7r4")
+    (version "2.8.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "https://pallini.di.uniroma1.it/"
-             "nauty" (string-join (string-split version #\.) "") ".tar.gz"))
+             "nauty" (string-join (string-split version #\.) "_") ".tar.gz"))
        (sha256
-        (base32 "19j8i10cgnqavphj0p7kq939azxckj9ayjpjr6sg76g2dxdch45q"))))
+        (base32 "1yp6wpz2drq0viww8px1vl4pw919nq3xgxrmrrdhycx8bhi9ikpj"))))
     (build-system gnu-build-system)
     (outputs '("out" "lib"))
     (arguments
@@ -8536,37 +8585,11 @@ management via the GIMPS project's Primenet server.")
       #:configure-flags #~(list "--enable-generic") ;prevent -march-native
       #:phases
       #~(modify-phases %standard-phases
-          ;; Default make target does not build all available
-          ;; executables.  Create them now.
-          (add-after 'build 'build-extra-programs
+          (add-after 'unpack 'normalize-pkgconfig-files-location
             (lambda _
-              (for-each (lambda (target) (invoke "make" target))
-                        '("blisstog" "bliss2dre" "checks6" "sumlines"))))
-          ;; Upstream does not provide any install target.
-          (replace 'install
-            (lambda _
-              (let* ((bin (string-append #$output "/bin"))
-                     (doc (string-append #$output "/share/doc/nauty/"))
-                     (include (string-append #$output:lib "/include/nauty"))
-                     (lib (string-append #$output:lib "/lib/nauty")))
-                (for-each (lambda (f) (install-file f bin))
-                          '("addedgeg"  "amtog" "assembleg" "biplabg" "blisstog"
-                            "bliss2dre" "catg" "checks6" "complg" "converseg"
-                            "copyg" "countg" "cubhamg" "deledgeg" "delptg"
-                            "directg"  "dreadnaut" "dretodot" "dretog" "genbg"
-                            "genbgL" "geng" "genquarticg" "genrang" "genspecialg"
-                            "gentourng" "gentreeg" "hamheuristic" "labelg"
-                            "linegraphg" "listg" "multig" "newedgeg" "pickg"
-                            "planarg" "ranlabg" "shortg" "showg" "subdivideg"
-                            "sumlines" "twohamg" "underlyingg" "vcolg"
-                            "watercluster2" "NRswitchg"))
-                (for-each (lambda (f) (install-file f include))
-                          (find-files "." "\\.h$"))
-                (for-each (lambda (f) (install-file f lib))
-                          (find-files "." "\\.a$"))
-                (for-each (lambda (f) (install-file f doc))
-                          (append '("formats.txt" "README" "schreier.txt")
-                              (find-files "." "\\.pdf$")))))))))
+              (substitute* "makefile.in"
+                (("^(pkgconfigexecdir=).*" _ prefix)
+                 (string-append prefix "${libdir}/pkgconfig\n"))))))))
     (inputs
      (list gmp))                        ;for sumlines
     (home-page "https://pallini.di.uniroma1.it/")

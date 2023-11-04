@@ -95,7 +95,7 @@
 ;;; Copyright © 2021 Alexey Abramov <levenson@mmer.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021, 2022 Stefan Reichör <stefan@xsteve.at>
-;;; Copyright © 2021, 2022 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2021, 2022, 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Eugene Klimov <lipklim@mailbox.org>
 ;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 David Dashyan <mail@davie.li>
@@ -794,6 +794,35 @@ configuration language which makes it trivial to write your own themes.")
        "This package provides an introspection tool similar to those found in
 Common Lisp or Smalltalk, but for Emacs Lisp.")
       (license license:gpl3+))))
+
+(define-public emacs-treebundel
+  (package
+    (name "emacs-treebundel")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/purplg/treebundel")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hk2xnjsr85in48h02xbzi8lsccp36li2bp9v9j0r8qn1bis2vv9"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-compat))
+    (home-page "https://github.com/purplg/treebundel")
+    (synopsis "Bundle related git-worktrees together")
+    (description
+     "This package is used for bundling related git-worktrees from multiple
+repositories together.  This helps switch quickly between repositories and
+ensure you're on the correct branch.  When you're done with your changes, you
+can use the repositories in the workspace and know which ones were modified to
+simplify the process of getting the changes merged in together.  Additionally,
+git metadata is shared between all projects.  You can stash, pop, and pull
+changes in from the same repository in other workspaces thanks to the power of
+git-worktrees.")
+    (license license:expat)))
 
 (define-public emacs-tree-inspector
   (let ((commit "bbb8d2dfe84fbf857fcc1579de5a1324b09a877e"))
@@ -1729,6 +1758,27 @@ leveraging built-in functionality.")
       (description "This package provides an Emacs front-end for Fzf general
 purpose finder.")
       (license license:gpl3+))))
+
+(define-public emacs-pacfiles-mode
+  (package
+    (name "emacs-pacfiles-mode")
+    (version "1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/UndeadKernel/pacfiles-mode")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1d61s846r9ncmyx97f44r8i3p1ikgi4bab8k7xk868lja96y2ij7"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/UndeadKernel/pacfiles-mode")
+    (synopsis "ArchLinux's pacnew and pacsave merging tool")
+    (description
+     "This Emacs major mode helps manage @file{.pacnew} and @file{.pacsave}
+files left by ArchLinux's pacman.")
+    (license license:expat)))
 
 (define-public emacs-minions
   (package
@@ -4547,6 +4597,30 @@ popup for completion candidates when using @code{emacs-corfu}.  It can
 be regarded as @code{emacs-company-quickhelp} for @code{emacs-corfu}.")
     (license license:gpl3+)))
 
+(define-public emacs-corfu-candidate-overlay
+  (package
+    (name "emacs-corfu-candidate-overlay")
+    (version "1.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://code.bsdgeek.org/adam/corfu-candidate-overlay")
+             (commit "265438b16155e899d82a869aebca16105665c998")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0i36g2i7435pby32vcapv4ydmp6rqn0r51qm91wqyzan1f3n3qck"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-corfu))
+    (license license:gpl3)
+    (home-page "https://code.bsdgeek.org/adam/corfu-candidate-overlay")
+    (synopsis "Show first Corfu's completion candidate in an overlay while
+ typing")
+    (description
+     "Simple corfu as-you-type auto-suggestion candidate overlay with a visual
+ indication of whether there are many or exactly one candidate available.")))
+
 (define-public emacs-cape
   (package
     (name "emacs-cape")
@@ -5067,6 +5141,30 @@ using the DOT syntax, and use Graphviz to convert these files to diagrams.")
 This buffer is typically shown as a sidebar (Emacs vertically splits the
 window).")
       (license license:gpl3+))))
+
+(define-public emacs-imenu-anywhere
+  (package
+    (name "emacs-imenu-anywhere")
+    (version "1.1.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/vspinu/imenu-anywhere")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0lbwfhcl40ayxskvmsvdrg8p63qp086xpzw61bqk4b3fxndxl04h"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/vspinu/imenu-anywhere")
+    (synopsis
+     "Imenu tag selection across buffers with the same mode/project")
+    (description
+     "This Emacs package provides navigation for imenu tags across all buffers
+that satisfy a filtering criteria.  Available criteria are all buffers with
+the same major mode, same project buffers, and user-defined list of friendly
+mode buffers.")
+    (license license:gpl3+)))
 
 (define-public emacs-mmm-mode
   (package
@@ -9895,68 +9993,71 @@ in @code{html-mode}.")
     (license license:gpl3+)))
 
 (define-public emacs-slime
-  (package
-    (name "emacs-slime")
-    (version "2.28")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/slime/slime")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1acmm4w1mv1qzpnkgc4wyiilbx8l0dk16sx8wv815ri5ks289rll"))))
-    (build-system emacs-build-system)
-    (arguments
-     (list
-      #:include #~(cons* "\\.lisp$" "\\.asd$"
-                         "contrib"
-                         "lib/hyperspec.el"
-                         %default-include)
-      #:exclude #~(list "^slime-tests.el" "^contrib/test/"
-                        "^contrib/Makefile$" "^contrib/README.md$")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'install 'configure
-            (lambda* _
-              (emacs-substitute-variables "slime.el"
-                ("inferior-lisp-program" "sbcl"))))
-          (add-before 'install 'install-doc
-            (lambda _
-              (let ((info-dir (string-append #$output "/share/info"))
-                    (doc-dir (string-append #$output "/share/doc/"
-                                            #$name "-" #$version))
-                    (doc-files '("doc/slime-refcard.pdf"
-                                 "README.md" "NEWS" "PROBLEMS"
-                                 "CONTRIBUTING.md")))
-                (with-directory-excursion "doc"
-                  (substitute* "Makefile"
-                    (("infodir=/usr/local/info")
-                     (string-append "infodir=" info-dir)))
-                  (invoke "make" "html/index.html")
-                  (invoke "make" "slime.info")
-                  (install-file "slime.info" info-dir)
-                  (copy-recursively "html" (string-append doc-dir "/html")))
-                (for-each (lambda (f)
-                            (install-file f doc-dir)
-                            (delete-file f))
-                          doc-files)
-                (delete-file-recursively "doc")))))))
-    (propagated-inputs
-     (list emacs-macrostep))
-    (native-inputs
-     (list texinfo))
-    (home-page "https://github.com/slime/slime")
-    (synopsis "Superior Lisp Interaction Mode for Emacs")
-    (description
-     "SLIME extends Emacs with support for interactive programming in
+  ;; Update together with sbcl-slime-swank.
+  (let ((commit "0cc2e736112a0bc2a048ef6efd11dd67e3fbf7ad")
+        (revision "0"))
+    (package
+      (name "emacs-slime")
+      (version (git-version "2.28" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/slime/slime")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0iq9r4007rrnabj290y79i926x2m4j20j6b0x701pkywz926sn02"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:include #~(cons* "\\.lisp$" "\\.asd$"
+                           "contrib"
+                           "lib/hyperspec.el"
+                           %default-include)
+        #:exclude #~(list "^slime-tests.el" "^contrib/test/"
+                          "^contrib/Makefile$" "^contrib/README.md$")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'install 'configure
+              (lambda* _
+                (emacs-substitute-variables "slime.el"
+                  ("inferior-lisp-program" "sbcl"))))
+            (add-before 'install 'install-doc
+              (lambda _
+                (let ((info-dir (string-append #$output "/share/info"))
+                      (doc-dir (string-append #$output "/share/doc/"
+                                              #$name "-" #$version))
+                      (doc-files '("doc/slime-refcard.pdf"
+                                   "README.md" "NEWS" "PROBLEMS"
+                                   "CONTRIBUTING.md")))
+                  (with-directory-excursion "doc"
+                    (substitute* "Makefile"
+                      (("infodir=/usr/local/info")
+                       (string-append "infodir=" info-dir)))
+                    (invoke "make" "html/index.html")
+                    (invoke "make" "slime.info")
+                    (install-file "slime.info" info-dir)
+                    (copy-recursively "html" (string-append doc-dir "/html")))
+                  (for-each (lambda (f)
+                              (install-file f doc-dir)
+                              (delete-file f))
+                            doc-files)
+                  (delete-file-recursively "doc")))))))
+      (propagated-inputs
+       (list emacs-macrostep))
+      (native-inputs
+       (list texinfo))
+      (home-page "https://github.com/slime/slime")
+      (synopsis "Superior Lisp Interaction Mode for Emacs")
+      (description
+       "SLIME extends Emacs with support for interactive programming in
 Common Lisp.  The features are centered around @command{slime-mode},
 an Emacs minor mode that complements the standard @command{lisp-mode}.
 While lisp-mode supports editing Lisp source files, @command{slime-mode}
 adds support for interacting with a running Common Lisp process
 for compilation, debugging, documentation lookup, and so on.")
-    (license (list license:gpl2+ license:public-domain))))
+      (license (list license:gpl2+ license:public-domain)))))
 
 (define-public emacs-popup
   (package
@@ -13016,7 +13117,7 @@ allowing unprefixed keys to insert their respective characters as expected.")
 (define-public emacs-clojure-mode
   (package
     (name "emacs-clojure-mode")
-    (version "5.17.0")
+    (version "5.18.0")
     (source
      (origin
        (method git-fetch)
@@ -13025,7 +13126,7 @@ allowing unprefixed keys to insert their respective characters as expected.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0knx3y53z0dn49xisa78bac55vhhkwxs2iw3jvalx41wfwvkirxc"))))
+        (base32 "0g4x587fpzcj9y59k8sb1g7c6yvga9gjs8ximpmar7d8jq2cv5qa"))))
     (build-system emacs-build-system)
     (native-inputs
      (list emacs-buttercup emacs-dash emacs-paredit emacs-s))
@@ -13068,7 +13169,7 @@ Clojure projects from templates.")
 (define-public emacs-clj-refactor
   (package
     (name "emacs-clj-refactor")
-    (version "3.9.4")
+    (version "3.10.0")
     (source
      (origin
        (method git-fetch)
@@ -13077,7 +13178,7 @@ Clojure projects from templates.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1j9pkkpnbvyl9p45dycngdiq2kyj6bmyb709pdxj3nar2d8ryl1h"))))
+        (base32 "100ngpgvff0xvw1h5krvh40sa3ympl241imwskcv62yk29m9z411"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-cider
@@ -13484,30 +13585,44 @@ E-Prime forbids the use of the \"to be\" form to strengthen your writing.")
       (license license:gpl3+))))
 
 (define-public emacs-julia-mode
+  ;; Last release was in March 2020.
+  (let ((commit "7a8c868e0d3e51ba4a2c621ee22ca9599e0e4bbb")
+        (revision "0"))
     (package
       (name "emacs-julia-mode")
-      (version "0.4")
+      (version (git-version "0.4" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/JuliaEditorSupport/julia-emacs")
-               (commit version)))
+               (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1w131jb9mhvyjxa0p93iwfhzidgbcs6b8i6jg79yisqb9wchik99"))))
+           "0xwd4kq69ray6bk8hwjxnqf7myc3mn36chc2l9jn7a0x1f8x6k10"))))
       (build-system emacs-build-system)
       (arguments
-       `(#:tests? #t
-         #:test-command '("emacs" "--batch"
-                          "-l" "julia-mode-tests.el"
-                          "-f" "ert-run-tests-batch-and-exit")))
+       (list
+        #:tests? #t
+        #:test-command #~(list "emacs" "--batch"
+                               "-l" "julia-mode-tests.el"
+                               "-f" "ert-run-tests-batch-and-exit")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'fix-test
+              (lambda _
+                (substitute* "julia-mode-tests.el"
+                  ;; The test started failing with Emacs 29; see
+                  ;; <https://github.com/JuliaEditorSupport/julia-emacs/issues/199>
+                  ;; and discrepancy reported <https://issues.guix.gnu.org/66763>.
+                  (("julia--test-end-of-defun-nested-2.*" all)
+                   (string-append all "  :expected-result :failed\n"))))))))
       (home-page "https://github.com/JuliaEditorSupport/julia-emacs")
       (synopsis "Major mode for Julia")
       (description "This Emacs package provides a mode for the Julia
 programming language.")
-      (license license:expat)))
+      (license license:expat))))
 
 (define-public emacs-julia-repl
   (package
@@ -15219,7 +15334,7 @@ implementation.")
 (define-public emacs-cider
   (package
     (name "emacs-cider")
-    (version "1.7.0")
+    (version "1.9.0")
     (source
      (origin
        (method git-fetch)
@@ -15228,10 +15343,11 @@ implementation.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jqjgygdvny1vhjbx7k0l492fhamwndsjcbb2mccwp9j47k4qar9"))))
+        (base32 "0sjscbi3qgwn3wcpq5lz7k4gam69h0svh8wbhxcbskr9ys1rmysp"))))
     (build-system emacs-build-system)
     (arguments
-     '(#:exclude                        ;don't exclude 'cider-test.el'
+     '(#:include (cons* "^lein\\.sh$" "^clojure\\.sh$" %default-include)
+       #:exclude                        ;don't exclude 'cider-test.el'
        '("^\\.dir-locals\\.el$" "^test/")
        #:phases
        ;; XXX: file "test/cider-tests.el" contains a bogus "/bin/command"
@@ -16398,8 +16514,6 @@ programming and reproducible research.")
          (add-after 'unpack 'enter-source-directory
            (lambda _
              (chdir "lisp"))))))
-    (native-inputs
-     (list emacs-cider))
     (propagated-inputs
      (list emacs-org))
     (home-page "https://git.sr.ht/~bzg/org-contrib")
@@ -18858,7 +18972,7 @@ It should enable you to implement low-level X11 applications.")
 (define-public emacs-exwm
   (package
     (name "emacs-exwm")
-    (version "0.27")
+    (version "0.28")
     (synopsis "Emacs X window manager")
     (source
      (origin
@@ -18866,7 +18980,7 @@ It should enable you to implement low-level X11 applications.")
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "exwm-" version ".tar"))
        (sha256
-        (base32 "094k33clmxhnab0wniyrs48sdz28kna2g6fmkhsd7n20nmhhc4sn"))))
+        (base32 "00h5awqazk807zxvb02a9dp8gd5ifi3y1kcwmr1czk6kdmkjx32l"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-xelb))
@@ -28172,6 +28286,27 @@ editors to read the file format and adhere to defined styles.  EditorConfig
 files are easily readable and they work nicely with version control systems.")
     (license license:gpl3+)))
 
+(define-public emacs-nerd-icons
+  (package
+    (name "emacs-nerd-icons")
+    (version "0.1.0")
+    (home-page "https://github.com/rainstormstudio/nerd-icons.el")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference (url home-page) (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0ggj6lm02m7nb5gxnqs2v2lkxsclml6kq176vam9qyg1fsm7yvdw"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list #:include #~(cons "^data\\/" %default-include)))
+    (synopsis "Library for easily using nerd font icons inside Emacs")
+    (description "Nerd-icons an alternative to all-the-icons.  It works on both
+GUI and terminal, and requires a nerd font installed on your system.")
+    (license license:gpl3+)))
+
 (define-public emacs-all-the-icons
   (package
     (name "emacs-all-the-icons")
@@ -32854,7 +32989,7 @@ simple but powerful Org contents.")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://gitlab.com/nsavage/ox-rss")
+                      (url "https://github.com/BenedictHW/ox-rss")
                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
@@ -32918,7 +33053,7 @@ time.")
 (define-public emacs-mastodon
   (package
     (name "emacs-mastodon")
-    (version "1.0.6")
+    (version "1.0.13")
     (source
      (origin
        (method git-fetch)
@@ -32927,7 +33062,7 @@ time.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1z5lmzxhindxa0f6qi6z361k9smqcz68alr6w6jbmwg279qmk8jj"))))
+        (base32 "143wmg9jhdi79y1gdi0y9xxpp8vyn7qbhvaysq1sf7g1h0jskxc2"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -33980,7 +34115,7 @@ contributed packages to Telega.")))
 (define-public emacs-doom-modeline
   (package
     (name "emacs-doom-modeline")
-    (version "3.4.0")
+    (version "4.0.1")
     (source
      (origin
        (method git-fetch)
@@ -33988,14 +34123,14 @@ contributed packages to Telega.")))
              (url "https://github.com/seagle0128/doom-modeline")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1z5cqn33v7sjihs05ycz1yzi5wcg90yn3cy09qj9g5g8pjs8qdki"))
+        (base32 "0pwfmj01cqij84dig5qj86n7f4cva5mdjqahr0061byrlv9xrpzb"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (arguments
      `(#:test-command '("ert-runner")))
     (native-inputs (list emacs-ert-runner))
     (propagated-inputs
-     (list emacs-all-the-icons emacs-compat emacs-dash emacs-shrink-path))
+     (list emacs-nerd-icons emacs-compat emacs-shrink-path))
     (synopsis "Fancy and fast mode-line inspired by minimalism design")
     (description "Doom modeline is a complete modeline for GNU Emacs inspired
 by the Doom theme collection.  This modeline features support for mode-specific
@@ -35898,6 +36033,26 @@ delete the placeholder so you can immediately start typing the text that
 should replace it.  However, if you call them again immediately after, they
 restore that occurrence of the placeholder and move to the next.")
       (license license:gpl3+))))
+
+(define-public emacs-pddl-mode
+  (package
+    (name "emacs-pddl-mode")
+    (version "0.100")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/emacsmirror/pddl-mode")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1zq5a0sv8am1c1gxky80dsi39gqsgnwbasv3nw4993r3ccz180r8"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/emacsmirror/pddl-mode")
+    (synopsis "Emacs mode for PDDL files")
+    (description "This package provides a major mode for browsing and editing
+PDDL files with syntax highlighting, templates, auto-completion, and more.")
+    (license license:gpl2+)))
 
 (define-public emacs-plantuml-mode
   (package

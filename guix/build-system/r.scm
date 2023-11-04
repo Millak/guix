@@ -60,7 +60,7 @@ release corresponding to NAME and VERSION."
                          "/src/contrib/"
                          name "_" version ".tar.gz")
           ;; TODO: use %bioconductor-version from (guix import cran)
-          (string-append "https://bioconductor.org/packages/3.17"
+          (string-append "https://bioconductor.org/packages/3.18"
                          type-url-part
                          "/src/contrib/"
                          name "_" version ".tar.gz"))))

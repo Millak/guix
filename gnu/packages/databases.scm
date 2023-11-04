@@ -61,6 +61,7 @@
 ;;; Copyright © 2021, 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Felix Gruber <felgru@posteo.ne
 ;;; Copyright © 2023 Munyoki Kilyungi <me@bonfacemunyoki.com>
+;;; Copyright © 2023 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2973,14 +2974,16 @@ can autogenerate peewee models using @code{pwiz}, a model generator.")
 (define-public python-pypika-tortoise
   (package
     (name "python-pypika-tortoise")
-    (version "0.1.5")
+    (version "0.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pypika-tortoise" version))
        (sha256
-        (base32 "0j20574s2yrq8d7fav3816vj1nfpihkm2mj8jzh2ank4zixp8brf"))))
-    (build-system python-build-system)
+        (base32 "0dmzpsnlqjjz0vm0r9xjk69xfsm235bpnk3jccr8ww4s8y7qc0nq"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list poetry))
     (home-page "https://github.com/tortoise/pypika-tortoise")
     (synopsis "Pypika fork for tortoise-orm")
     (description "Pypika-tortoise is a fork of pypika which has been
@@ -3075,20 +3078,25 @@ of PyMySQL.  @code{aiomysql} tries to preserve the same API as the
 (define-public python-tortoise-orm
   (package
     (name "python-tortoise-orm")
-    (version "0.19.1")
+    (version "0.20.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "tortoise-orm" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tortoise/tortoise-orm")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "17yk71dlx5ai98i6ivqgsplkwivdxackz9jfn6z42bpcdgbpiwhg"))))
-    (build-system python-build-system)
+        (base32 "19rgyvs2y9gn27x71y7djdz6rb6bszgvprv55q1hr4266wy6g999"))))
+    (build-system pyproject-build-system)
     ;; The test suite relies on asynctest, which is abandoned and doesn't
     ;; support Python >= 3.8.
     (arguments '(#:tests? #f))
+    (native-inputs
+     (list poetry))
     (propagated-inputs
      (list python-aiomysql
-           python-aiosqlite
+           python-aiosqlite-0.17
            python-asyncmy
            python-asyncpg
            python-ciso8601
@@ -3104,6 +3112,48 @@ Relational Mapper) inspired by Django.  Tortoise ORM was built with relations
 in mind and admiration for the excellent and popular Django ORM.  It's
 engraved in its design that you are working not with just tables, you work
 with relational data.")
+    (license license:asl2.0)))
+
+(define-public aerich
+  (package
+    (name "aerich")
+    (version "0.7.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tortoise/aerich")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0pcy945bg890p12s7cyw0mg7hxwsxyy570j600sbf7kwj2d3lilg"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list poetry
+           python-bandit
+           python-cryptography
+           python-isort
+           python-pydantic
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-mock
+           python-pytest-xdist))
+    (propagated-inputs
+     (list python-asyncmy
+           python-asyncpg
+           python-click
+           python-ddlparse
+           python-dictdiffer
+           python-tomlkit
+           python-tortoise-orm))
+    (home-page "https://github.com/tortoise/aerich")
+    (synopsis "Database migrations tool for Tortoise @acronym{ORM, Object Relational
+Mapper}")
+    (description
+     "This package provides @code{aerich}, a Python database migrations tool
+for Tortoise @acronym{ORM, Object Relational Mapper}.  It can be used both
+programmatically or as a standalone CLI application.")
     (license license:asl2.0)))
 
 (define-public sqlcipher
@@ -3777,6 +3827,33 @@ into Python.")
 async versions of all the standard connection and cursor methods, and context
 managers for automatically closing connections.")
     (license license:expat)))
+
+(define-public python-aiosqlite-0.17
+  (package
+    (inherit python-aiosqlite)
+    (version "0.17.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/omnilib/aiosqlite")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name (package-name python-aiosqlite)
+                                        version))
+              (sha256
+               (base32
+                "1agh7b9g7rgryvb8flph85i8m80ai1rinpljxzlsrs0s0y616qgg"))))
+    (build-system pyproject-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (if tests?
+                          (invoke "python" "-m" "unittest" "aiosqlite.tests")
+                          (format #t "test suite not run~%")))))))
+    (propagated-inputs
+     (list python-typing-extensions))
+    (native-inputs
+     (list python-flit-core python-aiounittest))))
 
 (define-public python-databases
   (package

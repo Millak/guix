@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Dennis Mungai <dmngaie@gmail.com>
-;;; Copyright © 2016, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2018, 2019, 2020, 2021, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2018–2022 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -1970,25 +1970,27 @@ requirements according to version 1.1 of the OpenCL specification.")
     (build-system python-build-system)
     (outputs '("out"))
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-before 'build 'change-directory
-                    (lambda _
-                      (chdir "bindings/python")))
-                  (add-before 'build 'create-setup-py
-                    (lambda _
-                      ;; Generate a basic "setup.py", enough so it can be
-                      ;; built and installed.
-                      (with-output-to-file "setup.py"
-                        (lambda ()
-                          (display "from setuptools import setup
-setup(name=\"clang\", packages=[\"clang\"])\n")))))
-                  (add-before 'build 'set-libclang-file-name
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      ;; Record the absolute file name of libclang.so.
-                      (let ((libclang (search-input-file inputs
-                                                         "/lib/libclang.so")))
-                        (substitute* "clang/cindex.py"
-                          (("libclang\\.so") libclang))))))))
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'build 'change-directory
+                     (lambda _
+                       (chdir "bindings/python")))
+                   (add-before 'build 'create-setup-py
+                     (lambda _
+                       ;; Generate a basic "setup.py", enough so it can be
+                       ;; built and installed.
+                       (with-output-to-file "setup.py"
+                         (lambda ()
+                           (format #true "from setuptools import setup
+setup(name=\"clang\", version=\"~a\", packages=[\"clang\"])\n"
+                                   #$(package-version this-package))))))
+                   (add-before 'build 'set-libclang-file-name
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       ;; Record the absolute file name of libclang.so.
+                       (let ((libclang (search-input-file inputs
+                                                          "/lib/libclang.so")))
+                         (substitute* "clang/cindex.py"
+                           (("libclang\\.so") libclang))))))))
     (inputs (list clang))
     (synopsis "Python bindings to libclang")))
 

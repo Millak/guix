@@ -187,6 +187,11 @@
                       (string=? (package-full-name dep)
                                 (package-full-name findutils)))))))))))
 
+;; The following test requires grafting enabled, but it becomes extremely
+;; expensive if there's a graft on glibc or other package deep in the graph.
+(when (package-replacement (@ (gnu packages commencement) glibc-final))
+  (test-skip 1))
+
 (test-assert "options->transformation, with-graft"
   (let* ((p (dummy-package "guix.scm"
               (inputs `(("foo" ,grep)

@@ -993,7 +993,7 @@ if not found."
   (anym %store-monad
         entry-lookup-package (manifest-entries manifest)))
 
-(define (info-dir-file manifest)
+(define* (info-dir-file manifest #:optional system)
   "Return a derivation that builds the 'dir' file for all the entries of
 MANIFEST."
   (define texinfo                                 ;lazy reference
@@ -1051,13 +1051,14 @@ MANIFEST."
                                    '#$(manifest-inputs manifest)))))))
 
   (gexp->derivation "info-dir" build
+                    #:system system
                     #:local-build? #t
                     #:substitutable? #f
                     #:properties
                     `((type . profile-hook)
                       (hook . info-dir))))
 
-(define (ghc-package-cache-file manifest)
+(define* (ghc-package-cache-file manifest #:optional system)
   "Return a derivation that builds the GHC 'package.cache' file for all the
 entries of MANIFEST, or #f if MANIFEST does not have any GHC packages."
   (define ghc                                     ;lazy reference
@@ -1108,6 +1109,7 @@ entries of MANIFEST, or #f if MANIFEST does not have any GHC packages."
     (if (any (cut string-prefix? "ghc" <>)
              (map manifest-entry-name (manifest-entries manifest)))
         (gexp->derivation "ghc-package-cache" build
+                          #:system system
                           #:local-build? #t
                           #:substitutable? #f
                           #:properties
@@ -1115,7 +1117,7 @@ entries of MANIFEST, or #f if MANIFEST does not have any GHC packages."
                             (hook . ghc-package-cache)))
         (return #f))))
 
-(define (ca-certificate-bundle manifest)
+(define* (ca-certificate-bundle manifest #:optional system)
   "Return a derivation that builds a single-file bundle containing the CA
 certificates in the /etc/ssl/certs sub-directories of the packages in
 MANIFEST.  Single-file bundles are required by programs such as Git and Lynx."
@@ -1179,13 +1181,14 @@ MANIFEST.  Single-file bundles are required by programs such as Git and Lynx."
                #t))))))
 
   (gexp->derivation "ca-certificate-bundle" build
+                    #:system system
                     #:local-build? #t
                     #:substitutable? #f
                     #:properties
                     `((type . profile-hook)
                       (hook . ca-certificate-bundle))))
 
-(define (emacs-subdirs manifest)
+(define* (emacs-subdirs manifest #:optional system)
   (define build
     (with-imported-modules (source-module-closure
                             '((guix build profiles)
@@ -1219,13 +1222,14 @@ MANIFEST.  Single-file bundles are required by programs such as Git and Lynx."
                   (newline port)
                   #t)))))))
   (gexp->derivation "emacs-subdirs" build
+                    #:system system
                     #:local-build? #t
                     #:substitutable? #f
                     #:properties
                     `((type . profile-hook)
                       (hook . emacs-subdirs))))
 
-(define (gdk-pixbuf-loaders-cache-file manifest)
+(define* (gdk-pixbuf-loaders-cache-file manifest #:optional system)
   "Return a derivation that produces a loaders cache file for every gdk-pixbuf
 loaders discovered in MANIFEST."
   (define gdk-pixbuf                    ;lazy reference
@@ -1264,6 +1268,7 @@ loaders discovered in MANIFEST."
 
     (if gdk-pixbuf
         (gexp->derivation "gdk-pixbuf-loaders-cache-file" build
+                          #:system system
                           #:local-build? #t
                           #:substitutable? #f
                           #:properties
@@ -1271,7 +1276,7 @@ loaders discovered in MANIFEST."
                             (hook . gdk-pixbuf-loaders-cache-file)))
         (return #f))))
 
-(define (glib-schemas manifest)
+(define* (glib-schemas manifest #:optional system)
   "Return a derivation that unions all schemas from manifest entries and
 creates the Glib 'gschemas.compiled' file."
   (define glib  ; lazy reference
@@ -1318,6 +1323,7 @@ creates the Glib 'gschemas.compiled' file."
     ;; Don't run the hook when there's nothing to do.
     (if %glib
         (gexp->derivation "glib-schemas" build
+                          #:system system
                           #:local-build? #t
                           #:substitutable? #f
                           #:properties
@@ -1325,7 +1331,7 @@ creates the Glib 'gschemas.compiled' file."
                             (hook . glib-schemas)))
         (return #f))))
 
-(define (gtk-icon-themes manifest)
+(define* (gtk-icon-themes manifest #:optional system)
   "Return a derivation that unions all icon themes from manifest entries and
 creates the GTK+ 'icon-theme.cache' file for each theme."
   (define gtk+  ; lazy reference
@@ -1377,6 +1383,7 @@ creates the GTK+ 'icon-theme.cache' file for each theme."
     ;; Don't run the hook when there's nothing to do.
     (if %gtk+
         (gexp->derivation "gtk-icon-themes" build
+                          #:system system
                           #:local-build? #t
                           #:substitutable? #f
                           #:properties
@@ -1384,7 +1391,7 @@ creates the GTK+ 'icon-theme.cache' file for each theme."
                             (hook . gtk-icon-themes)))
         (return #f))))
 
-(define (gtk-im-modules manifest)
+(define* (gtk-im-modules manifest #:optional system)
   "Return a derivation that builds the cache files for input method modules
 for both major versions of GTK+."
 
@@ -1454,6 +1461,7 @@ for both major versions of GTK+."
                            #t))))
       (if (or gtk+ gtk+-2)
           (gexp->derivation "gtk-im-modules" gexp
+                            #:system system
                             #:local-build? #t
                             #:substitutable? #f
                             #:properties
@@ -1461,7 +1469,7 @@ for both major versions of GTK+."
                               (hook . gtk-im-modules)))
           (return #f)))))
 
-(define (linux-module-database manifest)
+(define* (linux-module-database manifest #:optional system)
   "Return a derivation that unites all the kernel modules of the manifest
 and creates the dependency graph of all these kernel modules.
 
@@ -1511,13 +1519,14 @@ This is meant to be used as a profile hook."
                 (_ (error "Specified Linux kernel and Linux kernel modules
 are not all of the same version"))))))))
   (gexp->derivation "linux-module-database" build
+                    #:system system
                     #:local-build? #t
                     #:substitutable? #f
                     #:properties
                     `((type . profile-hook)
                       (hook . linux-module-database))))
 
-(define (xdg-desktop-database manifest)
+(define* (xdg-desktop-database manifest #:optional system)
   "Return a derivation that builds the @file{mimeinfo.cache} database from
 desktop files.  It's used to query what applications can handle a given
 MIME type."
@@ -1551,6 +1560,7 @@ MIME type."
     ;; Don't run the hook when 'glib' is not referenced.
     (if glib
         (gexp->derivation "xdg-desktop-database" build
+                          #:system system
                           #:local-build? #t
                           #:substitutable? #f
                           #:properties
@@ -1558,7 +1568,7 @@ MIME type."
                             (hook . xdg-desktop-database)))
         (return #f))))
 
-(define (xdg-mime-database manifest)
+(define* (xdg-mime-database manifest #:optional system)
   "Return a derivation that builds the @file{mime.cache} database from manifest
 entries.  It's used to query the MIME type of a given file."
   (define shared-mime-info  ; lazy reference
@@ -1605,6 +1615,7 @@ entries.  It's used to query the MIME type of a given file."
     ;; Don't run the hook when there are no GLib based applications.
     (if glib
         (gexp->derivation "xdg-mime-database" build
+                          #:system system
                           #:local-build? #t
                           #:substitutable? #f
                           #:properties
@@ -1615,7 +1626,7 @@ entries.  It's used to query the MIME type of a given file."
 ;; Several font packages may install font files into same directory, so
 ;; fonts.dir and fonts.scale file should be generated here, instead of in
 ;; packages.
-(define (fonts-dir-file manifest)
+(define* (fonts-dir-file manifest #:optional system)
   "Return a derivation that builds the @file{fonts.dir} and @file{fonts.scale}
 files for the fonts of the @var{manifest} entries."
   (define mkfontscale
@@ -1676,6 +1687,7 @@ files for the fonts of the @var{manifest} entries."
                             directories)))))))
 
   (gexp->derivation "fonts-dir" build
+                    #:system system
                     #:modules '((guix build utils)
                                 (guix build union)
                                 (srfi srfi-26))
@@ -1685,7 +1697,7 @@ files for the fonts of the @var{manifest} entries."
                     `((type . profile-hook)
                       (hook . fonts-dir))))
 
-(define (manual-database manifest)
+(define* (manual-database manifest #:optional system)
   "Return a derivation that builds the manual page database (\"mandb\") for
 the entries in MANIFEST."
   (define gdbm-ffi
@@ -1761,23 +1773,24 @@ the entries in MANIFEST."
               (force-output))))))
 
   (gexp->derivation "manual-database" build
+                    #:system system
                     #:substitutable? #f
                     #:local-build? #t
                     #:properties
                     `((type . profile-hook)
                       (hook . manual-database))))
 
-(define (manual-database/optional manifest)
+(define* (manual-database/optional manifest #:optional system)
   "Return a derivation to build the manual database of MANIFEST, but only if
 MANIFEST contains the \"man-db\" package.  Otherwise, return #f."
   ;; Building the man database (for "man -k") is expensive and rarely used.
   ;; Build it only if the profile also contains "man-db".
   (mlet %store-monad ((man-db (manifest-lookup-package manifest "man-db")))
     (if man-db
-        (manual-database manifest)
+        (manual-database manifest system)
         (return #f))))
 
-(define (texlive-font-maps manifest)
+(define* (texlive-font-maps manifest #:optional system)
   "Return a derivation that builds the TeX Live font maps for the entries in
 MANIFEST."
   (define entry->texlive-input
@@ -1898,6 +1911,7 @@ MANIFEST."
     ;; incomplete modular TeX Live installations to generate errors.
     (if (any texlive-scripts-entry? (manifest-entries manifest))
         (gexp->derivation "texlive-font-maps" build
+                          #:system system
                           #:substitutable? #f
                           #:local-build? #t
                           #:properties
@@ -1977,7 +1991,8 @@ are cross-built for TARGET."
                        (extras (if (null? (manifest-entries manifest))
                                    (return '())
                                    (mapm/accumulate-builds (lambda (hook)
-                                                             (hook manifest))
+                                                             (hook manifest
+                                                                   system))
                                                            hooks))))
     (define extra-inputs
       (filter-map (lambda (drv)

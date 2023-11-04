@@ -391,7 +391,7 @@ CommonMark C library libcmark.  It closely follows the original API.")
   (package
     (inherit cmark)
     (name "cmark-gfm")
-    (version "0.29.0.gfm.2")
+    (version "0.29.0.gfm.13")
     (home-page "https://github.com/github/cmark-gfm")
     (source (origin
               (method git-fetch)
@@ -399,16 +399,15 @@ CommonMark C library libcmark.  It closely follows the original API.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0vz6zs3m22k7jzfj4782lahciwfjlbi4m3qz5crsmssip3rwdy7h"))))
+                "1apy9i76rgs0bmgdlpjszv0fpqhlap2s12m68wvnsv8j3fsqc90y"))))
     (arguments
-     '(#:test-target "test"
-       #:phases (modify-phases %standard-phases
-                  (add-after 'install 'install-config
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let ((out (assoc-ref outputs "out")))
-                        ;; XXX: cmark-gfm-core-extensions.h includes this file.
-                        (install-file "src/config.h"
-                                      (string-append out "/include"))))))))
+     (list #:test-target "test"
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'install 'install-config
+                          (lambda _
+                            ;; XXX: cmark-gfm-core-extensions.h includes this file.
+                            (install-file "src/config.h"
+                                          (string-append #$output "/include")))))))
     (synopsis "GitHub flavored CommonMark")
     (description
      "This package is a fork of @code{cmark}, with GitHub-specific Markdown

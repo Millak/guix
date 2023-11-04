@@ -151,6 +151,42 @@ representations and sentence classification.")
     (inputs (list fasttext))
     (native-inputs (list pybind11))))
 
+(define-public python-funsor
+  (package
+    (name "python-funsor")
+    (version "0.4.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "funsor" version))
+       (sha256
+        (base32 "0cgysij0dix0fikyz2x4f8jvaskm5s5a04s07chzaz2dw1fpxdq8"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-makefun python-multipledispatch
+                             python-numpy python-opt-einsum
+                             python-typing-extensions))
+    (native-inputs (list python-black
+                         python-flake8
+                         python-isort
+                         python-nbsphinx
+                         python-pandas
+                         python-pillow
+                         python-pyro-api
+                         python-pytest
+                         python-pytest-xdist
+                         python-requests
+                         python-scipy
+                         python-sphinx
+                         python-sphinx-gallery
+                         python-sphinx-rtd-theme
+                         python-torchvision))
+    (home-page "https://github.com/pyro-ppl/funsor")
+    (synopsis "Tensor-like library for functions and distributions")
+    (description
+     "This package provides a tensor-like library for functions and
+distributions.")
+    (license license:asl2.0)))
+
 (define-public fann
   ;; The last release is >100 commits behind, so we package from git.
   (let ((commit "d71d54788bee56ba4cf7522801270152da5209d7"))
@@ -259,6 +295,42 @@ classification.")
     (inputs
      (list python))
     (synopsis "Python bindings of libSVM")))
+
+(define-public python-ml-collections
+  (package
+    (name "python-ml-collections")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ml_collections" version))
+       (sha256
+        (base32 "1k38psfzqsqnl99fl578bd07zdmvfkja61r3sgjs2fj3xircrvrz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; TODO: we can't seem to run the config_flags tests, because
+                ;; the installed Python files conflict with those from the
+                ;; source directory, resulting in constants to be defined more
+                ;; than once.
+                (invoke "pytest" "ml_collections/config_dict/tests"
+                        ;; This one fails because we're testing the __main__
+                        ;; class, not config_dict_test.
+                        "-k" "not testJSONConversionBestEffort")))))))
+    (propagated-inputs
+     (list python-absl-py python-contextlib2 python-pyyaml python-six))
+    (native-inputs (list python-mock python-pytest))
+    (home-page "https://github.com/google/ml_collections")
+    (synopsis "Python collections designed for Machine Learning usecases")
+    (description
+     "ML Collections is a library of Python collections designed for Machine
+Learning usecases.")
+    (license license:asl2.0)))
 
 (define-public ghmm
   ;; The latest release candidate is several years and a couple of fixes have
@@ -1672,7 +1744,7 @@ for k-neighbor-graph construction and approximate nearest neighbor search.")
 (define-public python-opentsne
   (package
     (name "python-opentsne")
-    (version "0.7.1")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch) ; no tests in PyPI release
@@ -1681,7 +1753,7 @@ for k-neighbor-graph construction and approximate nearest neighbor search.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12wp98mh67v6v683yi7wbv8zhpafrfz21z349bww4wgi2q7bl3il"))))
+        (base32 "05qzpq1zjs42bl0z8girfwcj3nfxs1a99c5525vp3589sglk351g"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -2030,13 +2102,13 @@ discrete, and conditional dimensions.")
 (define-public python-deepxde
   (package
     (name "python-deepxde")
-    (version "1.9.3")
+    (version "1.10.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "DeepXDE" version))
               (sha256
                (base32
-                "1zw2gqssc0s3maf4gdjckxmzx1d3036hbp1iir26kd08hxj93vzs"))))
+                "0fdxrjrm7l19yx6n8vaklxlhwzx0bw9n08vp8idikzdifybz5gij"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f                  ; there are no tests

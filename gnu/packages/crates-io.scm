@@ -59,6 +59,7 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages avahi)
   #:use-module (gnu packages bash)
@@ -81,6 +82,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages mail)
+  #:use-module (gnu packages mp3)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages pcre)
@@ -2788,6 +2790,28 @@ using AES-NI for high performance.")
         ("rust-rand" ,rust-rand-0.3)
         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3))))))
 
+(define-public rust-al-sys-0.6
+  (package
+    (name "rust-al-sys")
+    (version "0.6.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "al-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "08whlcfrhn4gqi4nbglkdqv5ysdpnvnlsqg51q34q9hh9l7rp3gz"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-cmake" ,rust-cmake-0.1)
+             ("rust-libloading" ,rust-libloading-0.5)
+             ("rust-rental" ,rust-rental-0.5))))
+    (home-page "https://github.com/jpernst/alto")
+    (synopsis "Raw bindings for OpenAL 1.1")
+    (description "Rust bindings for OpenAL, this crate contains FFI elements.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-alacritty-config-0.1
   (package
     (name "rust-alacritty-config")
@@ -3068,6 +3092,125 @@ be used with the stdlib.")
     (home-page "https://github.com/zakarumych/allocator-api2")
     (synopsis "Mirror of Rust's allocator API")
     (description "Mirror of Rust's allocator API.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-alsa-0.7
+  (package
+    (name "rust-alsa")
+    (version "0.7.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "alsa" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0iwbdgb6lr81iji9sr4f91mys24pia5avnkgbkv8kxzhvkc2lmp2"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-test-flags `(list "--release"
+                                     ;; Not the doc tests.
+                                     "--lib" "--bins" "--tests"
+                                     "--"
+                                     ;; These try to use the audio interface
+                                     "--skip=pcm::drop"
+                                     "--skip=pcm::info_from_default"
+                                     "--skip=pcm::playback_to_default"
+                                     "--skip=pcm::record_from_default"
+                                     "--skip=seq::print_seqs"
+                                     "--skip=seq::seq_loopback"
+                                     "--skip=seq::seq_portsubscribeiter"
+                                     "--skip=seq::seq_subscribe")
+           #:cargo-inputs `(("rust-alsa-sys" ,rust-alsa-sys-0.3)
+                            ("rust-bitflags" ,rust-bitflags-1)
+                            ("rust-libc" ,rust-libc-0.2)
+                            ("rust-nix" ,rust-nix-0.24))))
+    (native-inputs (list pkg-config alsa-lib))
+    (home-page "https://github.com/diwic/alsa-rs")
+    (synopsis "Thin and safe wrapper around ALSA")
+    (description
+     "A thin and safe wrapper around ALSA.  Provides APIs for
+many parts of ALSA including audio playback, audio recording, HCtl API, raw
+MIDI and MIDI sequencer.")
+    (license license:expat)))
+
+(define-public rust-alsa-0.6
+  (package
+    (inherit rust-alsa-0.7)
+    (name "rust-alsa")
+    (version "0.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "alsa" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0szx8finhqbffh08fp3bgh4ywz0b572vcdyh4hwyhrfgw8pza5ar"))))
+    (arguments
+     (list #:cargo-test-flags `(list "--release"
+                                     ;; Not the doc tests.
+                                     "--lib" "--bins" "--tests"
+                                     "--"
+                                     ;; These try to use the audio interface
+                                     "--skip=pcm::drop"
+                                     "--skip=pcm::info_from_default"
+                                     "--skip=pcm::playback_to_default"
+                                     "--skip=pcm::record_from_default"
+                                     "--skip=seq::print_seqs"
+                                     "--skip=seq::seq_loopback"
+                                     "--skip=seq::seq_portsubscribeiter"
+                                     "--skip=seq::seq_subscribe")
+           #:cargo-inputs `(("rust-alsa-sys" ,rust-alsa-sys-0.3)
+                            ("rust-bitflags" ,rust-bitflags-1)
+                            ("rust-libc" ,rust-libc-0.2)
+                            ("rust-nix" ,rust-nix-0.23))))))
+
+(define-public rust-alsa-sys-0.3
+  (package
+    (name "rust-alsa-sys")
+    (version "0.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "alsa-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "09qmmnpmlcj23zcgx2xsi4phcgm5i02g9xaf801y7i067mkfx3yv"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:tests? #f  ; doc tests fail
+           #:cargo-inputs `(("rust-libc" ,rust-libc-0.2)
+                            ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (native-inputs (list pkg-config alsa-lib))
+    (home-page "https://github.com/diwic/alsa-sys")
+    (synopsis "FFI bindings for the ALSA sound API")
+    (description
+     "FFI bindings for the ALSA sound API.  This package contains
+the code to interact with the underlying operating system ALSA interface.")
+    (license license:expat)))
+
+(define-public rust-alto-3
+  (package
+    (name "rust-alto")
+    (version "3.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "alto" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1rgsdmh346s3rwhzqacjc6nz7jap4dd72c1gfmkaq9sgzh9fhnyp"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:tests? #f  ; Not all files included.
+           #:cargo-inputs
+           `(("rust-al-sys" ,rust-al-sys-0.6)
+             ("rust-lazy-static" ,rust-lazy-static-0.2)
+             ("rust-parking-lot" ,rust-parking-lot-0.4))))
+    (home-page "https://github.com/jpernst/alto")
+    (synopsis
+     "Idiomatic Rust bindings for OpenAL 1.1 and extensions (including EFX)")
+    (description
+     "Rust bindings for OpenAL 1.1 and extensions (including EFX).")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-always-assert-0.1
@@ -3946,6 +4089,26 @@ initializing large arrays (greater than 32 elements), or arrays of types which
 do not implement the copy or default traits.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-array-init-2
+  (package
+    (name "rust-array-init")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "array-init" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1z0bh6grrkxlbknq3xyipp42rasngi806y92fiddyb2n99lvfqix"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/Manishearth/array-init/")
+    (synopsis "Safe wrapper for initializing fixed-size arrays")
+    (description
+     "A crate that removes the need to fill an array before running
+initialisers.  Provides an init closure that's called for each element of the
+array.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-array-macro-1
   (package
     (name "rust-array-macro")
@@ -4315,6 +4478,33 @@ the abi_stable and structural crates.")
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-syn" ,rust-syn-1))))))
+
+(define-public rust-asio-sys-0.2
+  (package
+    (name "rust-asio-sys")
+    (version "0.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "asio-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "16lbavksj2aasadyxbdnbrll6a1m8cwl4skbxgbvr1ma2wpwv82c"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:skip-build? #t
+           #:cargo-inputs `(("rust-bindgen" ,rust-bindgen-0.56)
+                            ("rust-cc" ,rust-cc-1)
+                            ("rust-num-derive" ,rust-num-derive-0.3)
+                            ("rust-num-traits" ,rust-num-traits-0.2)
+                            ("rust-once-cell" ,rust-once-cell-1)
+                            ("rust-walkdir" ,rust-walkdir-2))))
+    (home-page "https://github.com/RustAudio/cpal/")
+    (synopsis
+     "Low-level interface and binding generation for the Steinberg ASIO SDK")
+    (description
+     "Low-level interface and binding generation for the Steinberg ASIO SDK.")
+    (license license:asl2.0)))
 
 (define-public rust-askama-escape-0.10
   (package
@@ -7327,6 +7517,41 @@ bindings to C and C++ libraries.")
         ("rust-shlex" ,rust-shlex-0.1))))
     (inputs
      (list clang))))
+
+(define-public rust-bindgen-0.56
+  (package
+    (inherit rust-bindgen-0.57)
+    (name "rust-bindgen")
+    (version "0.56.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "bindgen" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0fajmgk2064ca1z9iq1jjkji63qwwz38z3d67kv6xdy0xgdpk8rd"))))
+    (arguments
+     (list #:cargo-test-flags ``("--release" "--"
+                                 "--skip=test::commandline_multiple_headers")
+           #:cargo-inputs `(("rust-bitflags" ,rust-bitflags-1)
+                            ("rust-cexpr" ,rust-cexpr-0.4)
+                            ("rust-clang-sys" ,rust-clang-sys-1)
+                            ("rust-clap" ,rust-clap-2)
+                            ("rust-env-logger" ,rust-env-logger-0.8)
+                            ("rust-lazy-static" ,rust-lazy-static-1)
+                            ("rust-lazycell" ,rust-lazycell-1)
+                            ("rust-log" ,rust-log-0.4)
+                            ("rust-peeking-take-while" ,rust-peeking-take-while-0.1)
+                            ("rust-proc-macro2" ,rust-proc-macro2-1)
+                            ("rust-quote" ,rust-quote-1)
+                            ("rust-regex" ,rust-regex-1)
+                            ("rust-rustc-hash" ,rust-rustc-hash-1)
+                            ("rust-shlex" ,rust-shlex-0.1)
+                            ("rust-which" ,rust-which-3))
+           #:cargo-development-inputs `(("rust-clap" ,rust-clap-2)
+                                        ("rust-diff" ,rust-diff-0.1)
+                                        ("rust-shlex" ,rust-shlex-0.1))))
+    (inputs (list clang))))
 
 (define-public rust-bindgen-0.55
   (package
@@ -12418,6 +12643,25 @@ usage.")
     (description "This package provides Rust bindings for libclang.")
     (license license:asl2.0)))
 
+(define-public rust-claxon-0.4
+  (package
+    (name "rust-claxon")
+    (version "0.4.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "claxon" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1206mxvw833ysg10029apcsjjwly8zmsvksgza5cm7ma4ikzbysb"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:skip-build? #t)) ; Cut the dependency graph.
+    (home-page "https://github.com/ruuda/claxon#readme")
+    (synopsis "FLAC decoding library")
+    (description "This package provides a FLAC decoding library.")
+    (license license:asl2.0)))
+
 (define-public rust-cipher-0.4
   (package
     (name "rust-cipher")
@@ -15362,6 +15606,50 @@ contents of the OS-level clipboard.")
 numbers using the CORDIC method.")
     (license license:bsd-3)))
 
+(define-public rust-coreaudio-rs-0.10
+  (package
+    (name "rust-coreaudio-rs")
+    (version "0.10.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "coreaudio-rs" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "125d4zr3n363ybga4629p41ym7iqjfb2alnwrc1zj7zyxch4p28i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ; Only builds for macos or ios.
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-coreaudio-sys" ,rust-coreaudio-sys-0.2))))
+    (home-page "https://github.com/RustAudio/coreaudio-rs")
+    (synopsis "Rust interface for Apple's CoreAudio API")
+    (description
+     "This package provides a rust interface for Apple's CoreAudio API.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-coreaudio-sys-0.2
+  (package
+    (name "rust-coreaudio-sys")
+    (version "0.2.12")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "coreaudio-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "091b4sq3kl8n4dy86l4mxq9vjzsn8w8b51xzfcpxwjkciqjv4d7h"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ; Only builds for macos or ios.
+       #:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.64))))
+    (home-page "https://github.com/RustAudio/coreaudio-sys")
+    (synopsis
+     "Bindings for Apple's CoreAudio frameworks generated via rust-bindgen")
+    (description
+     "Bindings for Apple's CoreAudio frameworks generated via rust-bindgen.")
+    (license license:expat)))
+
 (define-public rust-core-extensions-1
   (package
     (name "rust-core-extensions")
@@ -15863,6 +16151,63 @@ intrinsics.")
     (description
      "This package provides a counts the number of live instances of types.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-cpal-0.13
+  (package
+    (name "rust-cpal")
+    (version "0.13.5")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "cpal" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32 "05j11vz8rw19gqqvpd48i7wvm6j77v8fwx5lwhlkckqjllv7h4bl"))
+        (snippet
+         #~(begin (use-modules (guix build utils))
+                  ;; Force cpal-0.13.5 to accept any version of jack, so
+                  ;; that other packages like librespot-playback can use
+                  ;; the one they want.
+                  (substitute* "Cargo.toml.orig"
+                    (("(jack = \\{ version = \").*(\", optional.*)" _ jack optional)
+                     (string-append jack "*" optional))
+                    ;; Remove path for asio-sys, use packaged crate.
+                    ((", path =.*,") ","))
+                  (copy-file "Cargo.toml.orig" "Cargo.toml")))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-alsa" ,rust-alsa-0.6)
+                       ("rust-asio-sys" ,rust-asio-sys-0.2)
+                       ("rust-core-foundation-sys" ,rust-core-foundation-sys-0.8)
+                       ("rust-coreaudio-rs" ,rust-coreaudio-rs-0.10)
+                       ("rust-jack" ,rust-jack-0.8)
+                       ("rust-jni" ,rust-jni-0.19)
+                       ("rust-js-sys" ,rust-js-sys-0.3)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-mach" ,rust-mach-0.3)
+                       ("rust-ndk" ,rust-ndk-0.6)
+                       ("rust-ndk-glue" ,rust-ndk-glue-0.6)
+                       ("rust-nix" ,rust-nix-0.23)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-oboe" ,rust-oboe-0.4)
+                       ("rust-parking-lot" ,rust-parking-lot-0.11)
+                       ("rust-stdweb" ,rust-stdweb-0.1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+                       ("rust-web-sys" ,rust-web-sys-0.3)
+                       ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-clap" ,rust-clap-3)
+                                   ("rust-hound" ,rust-hound-3)
+                                   ("rust-ringbuf" ,rust-ringbuf-0.2))))
+    (native-inputs (list pkg-config))
+    (inputs (list alsa-lib))
+    (home-page "https://github.com/rustaudio/cpal")
+    (synopsis "Low-level cross-platform audio I/O library in pure Rust")
+    (description "Low-level cross-platform audio I/O library in pure Rust.
+Supports Linux through either JACK or ALSA.")
+    (license license:asl2.0)))
 
 (define-public rust-cpp-demangle-0.4
   (package
@@ -17244,6 +17589,34 @@ abstractions around common WinAPI calls.")
      "The Crunchy unroller deterministically unrolls constant loops, for
 number ``crunching``.")
     (license license:expat)))
+
+(define-public rust-rodio-0.15
+  (package
+    (name "rust-rodio")
+    (version "0.15.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rodio" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07kkrx0hxfcqgkpg0lrh9355bj1rl0k65nwsk3qwdri6yvlkj2gc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-claxon" ,rust-claxon-0.4)
+                       ("rust-cpal" ,rust-cpal-0.13)
+                       ("rust-hound" ,rust-hound-3)
+                       ("rust-lewton" ,rust-lewton-0.10)
+                       ("rust-minimp3" ,rust-minimp3-0.5)
+                       ("rust-symphonia" ,rust-symphonia-0.4))
+       #:cargo-development-inputs (("rust-quickcheck" ,rust-quickcheck-0.9))))
+    (native-inputs (list pkg-config))
+    (inputs (list alsa-lib))
+    (home-page "https://github.com/RustAudio/rodio")
+    (synopsis "Pure Rust audio playback library")
+    (description "Audio playback library written in pure Rust that supports
+many formats including AAC, FLAC, MP3, MP4 and WAV.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-roxmltree-0.14
   (package
@@ -25249,6 +25622,31 @@ Atom, RSS 2.0, RSS 1.0, RSS 0.x and JSON Feed")
      "This package provides a simple, efficient logging system for Rust.")
     (license license:expat)))
 
+(define-public rust-fetch-unroll-0.3
+  (package
+    (name "rust-fetch-unroll")
+    (version "0.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "fetch_unroll" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1l3cf8fhcrw354hdmjf03f5v4bxgn2wkjna8n0fn8bgplh8b3666"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:tests? #f  ; Tries to connect to github.com
+           #:cargo-inputs `(("rust-libflate" ,rust-libflate-1)
+                            ("rust-tar" ,rust-tar-0.4)
+                            ("rust-ureq" ,rust-ureq-2))))
+    ; perl required for building rust-ring
+    (inputs (list perl))
+    (home-page "https://github.com/katyo/fetch_unroll")
+    (synopsis "Simple utilities for fetching and unrolling .tar.gz archives")
+    (description
+     "Simple utilities for fetching and unrolling .tar.gz archives.")
+    (license license:asl2.0)))
+
 (define-public rust-fever-api-0.2
   (package
     (name "rust-fever-api")
@@ -31539,6 +31937,25 @@ Hash-based Message Authentication Code algorithm} for SHA1.")
        (("rust-libc" ,rust-libc-0.2)
         ("rust-winutil" ,rust-winutil-0.1))))))
 
+(define-public rust-hound-3
+  (package
+    (name "rust-hound")
+    (version "3.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "hound" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0kw5yybfc7hdwxwm6d3m3h4ms52fkw0n0zch35drb52ci2xsmbb2"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:skip-build? #t)) ; Cut the dependency graph.
+    (home-page "https://github.com/ruuda/hound")
+    (synopsis "Wav encoding and decoding library")
+    (description "This package provides a wav encoding and decoding library.")
+    (license license:asl2.0)))
+
 (define-public rust-html5ever-0.26
   (package
     (name "rust-html5ever")
@@ -34854,6 +35271,101 @@ format.")
     (description "This package provides a simple ivf muxer.")
     (license license:bsd-2)))
 
+(define-public rust-jack-0.10
+  (package
+    (name "rust-jack")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "jack" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0djs3j0icxbzbivhj73vgjrvjw6ncpfak2vyxjcbn4wvl9ajcwnf"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:tests? #f
+           #:cargo-inputs
+           `(("rust-bitflags" ,rust-bitflags-1)
+             ("rust-jack-sys" ,rust-jack-sys-0.4)
+             ("rust-lazy-static" ,rust-lazy-static-1)
+             ("rust-libc" ,rust-libc-0.2)
+             ("rust-log" ,rust-log-0.4))
+           #:cargo-development-inputs
+           `(("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5))))
+    (native-inputs (list pkg-config))
+    (inputs (list jack-2))
+    (home-page "https://github.com/RustAudio/rust-jack")
+    (synopsis "Real time audio and midi with JACK")
+    (description "Real time audio and midi with JACK.")
+    (license license:expat)))
+
+(define-public rust-jack-0.8
+  (package
+    (inherit rust-jack-0.10)
+    (name "rust-jack")
+    (version "0.8.4")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "jack" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0lz10s0n2gy128m65pf96is9ip00vfgvnkfja0y9ydmv24pw2ajx"))))
+    (arguments
+     (list #:tests? #f
+           #:cargo-inputs `(("rust-bitflags" ,rust-bitflags-1)
+                            ("rust-jack-sys" ,rust-jack-sys-0.2)
+                            ("rust-lazy-static" ,rust-lazy-static-1)
+                            ("rust-libc" ,rust-libc-0.2)
+                            ("rust-log" ,rust-log-0.4)
+                            ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5))))))
+
+(define-public rust-jack-sys-0.4
+  (package
+    (name "rust-jack-sys")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "jack-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17vaq4i8q5nx39rjqx9sixqn1xraf1vxs3bmrf618v8nzxchbmz9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; cannot find value `library` in this scope
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libloading" ,rust-libloading-0.7)
+        ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (native-inputs (list pkg-config))
+    (inputs (list jack-2))
+    (home-page "https://github.com/RustAudio/rust-jack/tree/main/jack-sys")
+    (synopsis "Low-level binding to the JACK audio API")
+    (description "Low-level binding to the JACK audio API.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-jack-sys-0.2
+  (package
+    (inherit rust-jack-sys-0.4)
+    (name "rust-jack-sys")
+    (version "0.2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "jack-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1h9c9za19nyr1prx77gkia18ia93f73lpyjdiyrvmhhbs79g54bv"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs `(("rust-lazy-static" ,rust-lazy-static-1)
+                            ("rust-libc" ,rust-libc-0.2)
+                            ("rust-libloading" ,rust-libloading-0.6)
+                            ("rust-pkg-config" ,rust-pkg-config-0.3))))))
+
 (define-public rust-javascriptcore-rs-sys-0.2
   (package
     (name "rust-javascriptcore-rs-sys")
@@ -36078,6 +36590,34 @@ requires non-const function calls to be computed.")
 sending emails from Rust applications.")
     (license license:expat)))
 
+(define-public rust-lewton-0.10
+  (package
+    (name "rust-lewton")
+    (version "0.10.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "lewton" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0c60fn004awg5c3cvx82d6na2pirf0qdz9w3b93mbcdakbglhyvp"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-byteorder" ,rust-byteorder-1)
+             ("rust-futures" ,rust-futures-0.1)
+             ("rust-ogg" ,rust-ogg-0.8)
+             ("rust-tinyvec" ,rust-tinyvec-1)
+             ("rust-tokio-io" ,rust-tokio-io-0.1))
+           #:cargo-development-inputs
+           `(("rust-alto" ,rust-alto-3)
+             ("rust-ogg" ,rust-ogg-0.8))))
+    (home-page "https://github.com/RustAudio/lewton")
+    (synopsis "Pure Rust Vorbis decoder")
+    (description "A pure Rust Vorbis decoder.  Vorbis is a free and open
+source audio format.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-lexical-core-0.8
   (package
     (name "rust-lexical-core")
@@ -37082,21 +37622,17 @@ file.
 @end itemize")
     (license license:gpl2+)))
 
-;; https://github.com/jnqnfe/pulse-binding-rust/blob/c788a8069f455f864d2ba5f0aa5f62e6648dfd26/pulse-sys/build.rs
-;; fix location of pulseaudio
 (define-public rust-libpulse-binding-2
   (package
     (name "rust-libpulse-binding")
-    (version "2.23.1")
+    (version "2.28.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "libpulse-binding" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1qx85j489mmad9cvw5k71271l3qy4s8a5qq8a9wac6cfi4viz5fv"))))
+        (base32 "1zza12f22wf1qs6h71lq1i73aj3kmv3036hqc7qci063vyi5fdgd"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -37109,7 +37645,7 @@ file.
        #:phases
        (modify-phases %standard-phases
          (add-before 'check 'set-HOME
-           (lambda _ (setenv "HOME" "/tmp") #t)))))
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list pkg-config))
     (inputs
@@ -37121,19 +37657,67 @@ file.
 library.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-libpulse-simple-binding-2
+  (package
+    (name "rust-libpulse-simple-binding")
+    (version "2.28.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "libpulse-simple-binding" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                 "139hiksmxrmj8zcdqvswgjnwl1rivh915vg6cl92asizydl6pz85"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libpulse-binding" ,rust-libpulse-binding-2)
+                       ("rust-libpulse-simple-sys" ,rust-libpulse-simple-sys-1)
+                       ("rust-libpulse-sys" ,rust-libpulse-sys-1))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
+    (native-inputs (list pkg-config))
+    (inputs (list pulseaudio))
+    (home-page "https://github.com/jnqnfe/pulse-binding-rust")
+    (synopsis "Rust language bindings for PulseAudio's libpulse-simple library")
+    (description
+     "A Rust language binding for the PulseAudio libpulse-simple library.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-libpulse-simple-sys-1
+  (package
+    (name "rust-libpulse-simple-sys")
+    (version "1.21.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "libpulse-simple-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0lj13ibdwf69ghy1zlldxq5vsyxi1h13wqpvvh79z2wx36s16rpa"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libpulse-sys" ,rust-libpulse-sys-1)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (native-inputs (list pkg-config))
+    (inputs (list pulseaudio))
+    (home-page "https://github.com/jnqnfe/pulse-binding-rust")
+    (synopsis "FFI indings for PulseAudio's libpulse-simple system library")
+    (description
+     "FFI bindings for the PulseAudio libpulse-simple system library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-libpulse-sys-1
   (package
     (name "rust-libpulse-sys")
-    (version "1.18.0")
+    (version "1.21.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "libpulse-sys" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "10msfr8f951v86ag0fl2bsm4a3siq2r7hz9bqhhg7i234s1yj5yg"))))
+        (base32 "16vs0qk6xadckb5qxlrhg0f4jn2zakfd7xih1lk1fb7lzc8f26dw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -37366,6 +37950,54 @@ Spotify.  This package contains the discovery logic.")
     (synopsis "The metadata elements of Librespot")
     (description "Part of Librespot, an open source client library for
 Spotify.  This package contains the metadata logic.")
+    (license license:expat)))
+
+(define-public rust-librespot-playback-0.4
+  (package
+    (name "rust-librespot-playback")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "librespot-playback" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dygnzldvkv1qpagr9nl62hmqh0xfcf4lsva37j0xxy7pjws142i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-alsa" ,rust-alsa-0.6)
+        ("rust-byteorder" ,rust-byteorder-1)
+        ("rust-cpal" ,rust-cpal-0.13)
+        ("rust-futures-executor" ,rust-futures-executor-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-glib" ,rust-glib-0.15)
+        ("rust-gstreamer" ,rust-gstreamer-0.18)
+        ("rust-gstreamer-app" ,rust-gstreamer-app-0.18)
+        ("rust-gstreamer-audio" ,rust-gstreamer-audio-0.18)
+        ("rust-jack" ,rust-jack-0.10)
+        ("rust-lewton" ,rust-lewton-0.10)
+        ("rust-libpulse-binding" ,rust-libpulse-binding-2)
+        ("rust-libpulse-simple-binding" ,rust-libpulse-simple-binding-2)
+        ("rust-librespot-audio" ,rust-librespot-audio-0.4)
+        ("rust-librespot-core" ,rust-librespot-core-0.4)
+        ("rust-librespot-metadata" ,rust-librespot-metadata-0.4)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-ogg" ,rust-ogg-0.8)
+        ("rust-parking-lot" ,rust-parking-lot-0.12)
+        ("rust-portaudio-rs" ,rust-portaudio-rs-0.3)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rand-distr" ,rust-rand-distr-0.4)
+        ("rust-rodio" ,rust-rodio-0.15)
+        ("rust-sdl2" ,rust-sdl2-0.35)
+        ("rust-shell-words" ,rust-shell-words-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-zerocopy" ,rust-zerocopy-0.6))))
+    (home-page "https://github.com/librespot-org/librespot")
+    (synopsis "Audio playback for Librespot")
+    (description "Audio playback for Librespot, an open source client
+library for Spotify.")
     (license license:expat)))
 
 (define-public rust-librespot-protocol-0.4
@@ -40867,6 +41499,53 @@ efficient round-trip float parsing. Minimal-lexical implements a correct, fast
 float parser.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-minimp3-0.5
+  (package
+    (name "rust-minimp3")
+    (version "0.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "minimp3" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0wj3nzj1swnvwsk3a4a3hkfj1d21jsi7babi40wlrxzbbzvkhm4q"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; no method named `next_frame_future` found for struct `Decoder`
+       #:cargo-inputs (("rust-minimp3-sys" ,rust-minimp3-sys-0.3)
+                       ("rust-slice-deque" ,rust-slice-deque-0.3)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-futures" ,rust-futures-0.3)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/germangb/minimp3-rs")
+    (synopsis "Rust bindings for the minimp3 library")
+    (description "Rust bindings for the minimp3 library.")
+    (license license:expat)))
+
+(define-public rust-minimp3-sys-0.3
+  (package
+    (name "rust-minimp3-sys")
+    (version "0.3.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "minimp3-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "144vmf3s89kad0smjprzigcp2c9r5dm95n4ydilrbp399irp6772"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs (("rust-cc" ,rust-cc-1))))
+    (native-inputs (list pkg-config))
+    (inputs (list minimp3))
+    (home-page "https://github.com/germangb/minimp3-rs")
+    (synopsis "Rust bindings for the minimp3 library")
+    (description "Rust bindings for the minimp3 library.")
+    (license license:expat)))
+
 (define-public rust-miniz-oxide-0.7
   (package
     (name "rust-miniz-oxide")
@@ -41451,6 +42130,27 @@ select the mock struct at compile time.  Used with the Mockall crate.")
     (home-page "https://github.com/alfg/mp4-rust")
     (synopsis "MP4 reader and writer library in Rust")
     (description "mp4 is a Rust library to read and write ISO-MP4 files.")
+    (license license:expat)))
+
+(define-public rust-muldiv-1
+  (package
+    (name "rust-muldiv")
+    (version "1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "muldiv" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1c6ljsp41n8ijsx7zicwfm135drgyhcms12668ivvsbm1r98frwm"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs `(("rust-quickcheck" ,rust-quickcheck-1))))
+    (home-page "https://github.com/sdroege/rust-muldiv")
+    (synopsis "Trait for numeric types to combine multiplication and division")
+    (description
+     "This package provides a trait for numeric types to perform combined
+multiplication and division with overflow protection.")
     (license license:expat)))
 
 (define-public rust-multimap-0.8
@@ -42631,6 +43331,28 @@ general elements and for numerics.")
      "This package provides safe Rust bindings to the Android NDK.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ndk-0.6
+  (package
+    (inherit rust-ndk-0.7)
+    (name "rust-ndk")
+    (version "0.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ndk" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1m1dfjw35qpys1hr4qib6mm3zacd01k439l7cx5f7phd0dzcfci0"))))
+    (arguments
+     `(#:skip-build? #t     ; Android only
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-jni" ,rust-jni-0.18)
+                       ("rust-jni-glue" ,rust-jni-glue-0.0)
+                       ("rust-jni-sys" ,rust-jni-sys-0.3)
+                       ("rust-ndk-sys" ,rust-ndk-sys-0.3)
+                       ("rust-num-enum" ,rust-num-enum-0.5)
+                       ("rust-thiserror" ,rust-thiserror-1))))))
+
 (define-public rust-ndk-0.5
   (package
     (inherit rust-ndk-0.7)
@@ -42696,34 +43418,55 @@ general elements and for numerics.")
      "This package provides handles for accessing Android APIs.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-ndk-glue-0.5
+(define-public rust-ndk-glue-0.6
   (package
     (name "rust-ndk-glue")
-    (version "0.5.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "ndk-glue" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1m44jh4f9sirs757ikc8sracg6dzw77h9l4bw9vm8s1dly7fw6y7"))))
+    (version "0.6.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ndk-glue" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0pz6cdmmlzsb2jhrfvkma5d5vw2i331dlghqnkk2c0l6hdxll30d"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #true              ;XXX: Android only
-       #:cargo-inputs
-       (("rust-android-logger" ,rust-android-logger-0.10)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-ndk" ,rust-ndk-0.5)
-        ("rust-ndk-context" ,rust-ndk-context-0.1)
-        ("rust-ndk-macro" ,rust-ndk-macro-0.3)
-        ("rust-ndk-sys" ,rust-ndk-sys-0.2))))
-    (home-page "https://github.com/rust-windowing/android-ndk-rs")
+     (list #:skip-build? #t ;XXX: Android only
+           #:cargo-inputs `(("rust-android-logger" ,rust-android-logger-0.10)
+                            ("rust-lazy-static" ,rust-lazy-static-1)
+                            ("rust-libc" ,rust-libc-0.2)
+                            ("rust-log" ,rust-log-0.4)
+                            ("rust-ndk" ,rust-ndk-0.6)
+                            ("rust-ndk-context" ,rust-ndk-context-0.1)
+                            ("rust-ndk-macro" ,rust-ndk-macro-0.3)
+                            ("rust-ndk-sys" ,rust-ndk-sys-0.3))))
+    (home-page "https://github.com/rust-mobile/ndk")
     (synopsis "Startup code for Android binaries")
-    (description
-     "This package provides startup code for Android binaries.")
+    (description "This package provides startup code for Android binaries.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-ndk-glue-0.5
+  (package
+    (inherit rust-ndk-glue-0.6)
+    (name "rust-ndk-glue")
+    (version "0.5.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ndk-glue" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1m44jh4f9sirs757ikc8sracg6dzw77h9l4bw9vm8s1dly7fw6y7"))))
+    (arguments
+     (list #:skip-build? #t ;XXX: Android only
+           #:cargo-inputs `(("rust-android-logger" ,rust-android-logger-0.10)
+                            ("rust-lazy-static" ,rust-lazy-static-1)
+                            ("rust-libc" ,rust-libc-0.2)
+                            ("rust-log" ,rust-log-0.4)
+                            ("rust-ndk" ,rust-ndk-0.5)
+                            ("rust-ndk-context" ,rust-ndk-context-0.1)
+                            ("rust-ndk-macro" ,rust-ndk-macro-0.3)
+                            ("rust-ndk-sys" ,rust-ndk-sys-0.2))))))
 
 (define-public rust-ndk-glue-0.2
   (package
@@ -42811,6 +43554,19 @@ general elements and for numerics.")
     (synopsis "FFI bindings for the Android NDK")
     (description "This package provides FFI bindings for the Android NDK.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-ndk-sys-0.3
+  (package
+    (inherit rust-ndk-sys-0.4)
+    (name "rust-ndk-sys")
+    (version "0.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ndk-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "15zsq4p6k5asf4mc0rknd8cz9wxrwvi50qdspgf87qcfgkknlnkf"))))))
 
 (define-public rust-ndk-sys-0.2
   (package
@@ -45912,6 +46668,57 @@ file formats.")
         ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
         ("rust-wasmparser" ,rust-wasmparser-0.57))))))
 
+(define-public rust-oboe-0.4
+  (package
+    (name "rust-oboe")
+    (version "0.4.6")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "oboe" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1hd5626s8qkpgrl2alwz73i8rh1rzifbxj6pxz7zp82gicskrxi7"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:skip-build? #t ; requires Android libs
+           #:cargo-inputs `(("rust-jni" ,rust-jni-0.19)
+                            ("rust-ndk" ,rust-ndk-0.6)
+                            ("rust-ndk-context" ,rust-ndk-context-0.1)
+                            ("rust-num-derive" ,rust-num-derive-0.3)
+                            ("rust-num-traits" ,rust-num-traits-0.2)
+                            ("rust-oboe-sys" ,rust-oboe-sys-0.4))))
+    (home-page "https://github.com/katyo/oboe-rs")
+    (synopsis
+     "Safe interface for oboe an android library for low latency audio IO")
+    (description
+     "Safe interface for oboe an android library for low latency audio IO.")
+    (license license:asl2.0)))
+
+(define-public rust-oboe-sys-0.4
+  (package
+    (name "rust-oboe-sys")
+    (version "0.4.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "oboe-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1gcl494yy880h2gfgsbdd32g2h0s1n94v58j5hil9mrf6yvsnw1k"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:skip-build? #t ; requires Android libs
+           #:cargo-inputs `(("rust-bindgen" ,rust-bindgen-0.59)
+                            ("rust-cc" ,rust-cc-1)
+                            ("rust-fetch-unroll" ,rust-fetch-unroll-0.3))))
+    (home-page "https://github.com/katyo/oboe-rs")
+    (synopsis
+     "Unsafe bindings for oboe an android library for low latency audio IO")
+    (description
+     "Unsafe bindings for oboe an android library for low latency audio IO.")
+    (license license:asl2.0)))
+
 (define-public rust-odds-0.3
   (package
     (name "rust-odds")
@@ -45969,6 +46776,32 @@ Things in odds may move to more appropriate crates if we find them.")
         ("rust-lazy-static" ,rust-lazy-static-0.2)
         ("rust-memchr" ,rust-memchr-2)
         ("rust-quickcheck" ,rust-quickcheck-0.4))))))
+
+(define-public rust-ogg-0.8
+  (package
+    (name "rust-ogg")
+    (version "0.8.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ogg" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0vjxmqcv9252aj8byy70iy2krqfjknfcxg11lcyikj11pzlb8lb9"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-byteorder" ,rust-byteorder-1)
+             ("rust-bytes" ,rust-bytes-0.4)
+             ("rust-futures" ,rust-futures-0.1)
+             ("rust-tokio-io" ,rust-tokio-io-0.1))
+           #:cargo-development-inputs
+           `(("rust-rand" ,rust-rand-0.3))))
+    (home-page "https://github.com/RustAudio/ogg")
+    (synopsis "Ogg container decoder and encoder written in pure Rust")
+    (description "An Ogg decoder and encoder.  Implements the xiph.org Ogg
+spec in pure Rust.")
+    (license license:expat)))
 
 (define-public rust-oid-registry-0.6
   (package
@@ -46520,6 +47353,27 @@ system for OpenSSL.")
     (synopsis "Extends `Option` with additional operations")
     (description "Extends `Option` with additional operations")
     (license license:mpl2.0)))
+
+(define-public rust-option-operations-0.4
+  (package
+    (name "rust-option-operations")
+    (version "0.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "option-operations" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "18jhy5sc56gwdvqc3asr6az685zc9zkgv8p8n69s94bcj6bibc22"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs `(("rust-paste" ,rust-paste-1))))
+    (home-page "https://github.com/fengalin/option-operations")
+    (synopsis "Improved arithmetic operations when dealing with Rust Options")
+    (description
+     "Traits and auto-implementations to improve arithmetic operations
+usability when dealing with Rust Options.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-option-set-0.2
   (package
@@ -47180,6 +48034,22 @@ platform-native strings.")
 owner with them.  This can sometimes be useful because Rust borrowing rules
 normally prevent moving a type that has been borrowed from.")
     (license license:expat)))
+
+(define-public rust-owning-ref-0.3
+  (package
+    (inherit rust-owning-ref-0.4)
+    (name "rust-owning-ref")
+    (version "0.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "owning-ref" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0dqgf5hwbmvkf2ffbik5xmhvaqvqi6iklhwk9x47n0wycd0lzy6d"))))
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))))
 
 (define-public rust-p256-0.13
   (package
@@ -47858,6 +48728,26 @@ synchronization primitives.")
         ("rust-rand" ,rust-rand-0.4)
         ("rust-rustc-version" ,rust-rustc-version-0.2))))))
 
+(define-public rust-parking-lot-0.4
+  (package
+    (inherit rust-parking-lot-0.9)
+    (name "rust-parking-lot")
+    (version "0.4.8")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "parking-lot" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0ph0kv3dfcxpjbi83wkzammqb7lm95j8in7w7hz17hgkjxdqz78l"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-parking-lot-core" ,rust-parking-lot-core-0.2)
+             ("rust-owning-ref" ,rust-owning-ref-0.3))
+           #:cargo-development-inputs
+           `(("rust-rand" ,rust-rand-0.3))))))
+
 (define-public rust-parking-lot-core-0.9
   (package
     (name "rust-parking-lot-core")
@@ -48031,6 +48921,28 @@ synchronization primitives.")
         ("rust-thread-id" ,rust-thread-id-3)
         ("rust-winapi" ,rust-winapi-0.3)
         ("rust-rustc-version" ,rust-rustc-version-0.2))))))
+
+(define-public rust-parking-lot-core-0.2
+  (package
+    (inherit rust-parking-lot-core-0.6)
+    (name "rust-parking-lot-core")
+    (version "0.2.14")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "parking-lot-core" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1yip8m6npxb87ilnn0q774psp1zd0vgv66fcjkkvr9rlyz6aicad"))))
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-backtrace" ,rust-backtrace-0.3)
+             ("rust-libc" ,rust-libc-0.2)
+             ("rust-petgraph" ,rust-petgraph-0.4)
+             ("rust-rand" ,rust-rand-0.4)
+             ("rust-smallvec" ,rust-smallvec-0.6)
+             ("rust-thread-id" ,rust-thread-id-3)
+             ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-parquet-5
   (package
@@ -51268,6 +52180,53 @@ overloading without macros in Rust.")
 128-bit atomics, atomic float, etc.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-portaudio-rs-0.3
+  (package
+    (name "rust-portaudio-rs")
+    (version "0.3.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "portaudio-rs" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0qnmc7amk0fzbcs985ixv0k4955f0fmpkhrl9ps9pk3cz7pvbdnd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-portaudio-sys" ,rust-portaudio-sys-0.1))))
+    (native-inputs (list pkg-config))
+    (inputs (list portaudio alsa-lib))
+    (home-page "https://github.com/RustAudio/rust-portaudio")
+    (synopsis "Rust bindings for PortAudio a cross-platfomr audio library")
+    (description "Rusting bindings for PortAudio an open source, cross-platform
+audio I/O library.")
+    (license license:expat)))
+
+(define-public rust-portaudio-sys-0.1
+  (package
+    (name "rust-portaudio-sys")
+    (version "0.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "portaudio-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1xdpywirpr1kqkbak7hnny62gmsc93qgc3ij3j2zskrvjpxa952i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (native-inputs (list pkg-config))
+    (inputs (list portaudio alsa-lib))
+    (home-page "https://github.com/RustAudio/rust-portaudio")
+    (synopsis "Bindings for PortAudio a cross-platform audio library")
+    (description "Bindings for PortAudio an open source, cross-platform audio
+I/O library.")
+    (license license:expat)))
+
 (define-public rust-postgres-0.19
   (package
     (name "rust-postgres")
@@ -51856,6 +52815,25 @@ replacements, adding colorful diffs.")
     (description
      "This package provides a minimal `syn` syntax tree pretty-printer.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-pretty-hex-0.3
+  (package
+    (name "rust-pretty-hex")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pretty-hex" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1mf8xvlfri4impj2paj4azx7hxh7l0i38cjyib1hiikwvlqhiyn6"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-development-inputs `(("rust-heapless" ,rust-heapless-0.5))))
+    (home-page "https://github.com/wolandr/pretty-hex")
+    (synopsis "Prettified output of hexadecimal byte slices")
+    (description "Pretty hex dump of byte slices in the common style.")
+    (license license:expat)))
 
 (define-public rust-prettytable-rs-0.8
   (package
@@ -56713,6 +57691,55 @@ crate unless you're working on a regex implementation.")
 Rust.")
     (license license:expat)))
 
+(define-public rust-rental-0.5
+  (package
+    (name "rust-rental")
+    (version "0.5.6")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rental" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0bhzz2pfbg0yaw8p1l31bggq4jn077wslf6ifhj22vf3r8mgx2fc"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:tests? #f  ; cannot move out of `foo` because it is borrowed
+           #:cargo-inputs
+           `(("rust-rental-impl" ,rust-rental-impl-0.5)
+             ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))))
+    (home-page "https://github.com/jpernst/rental")
+    (synopsis "Macro to generate safe self-referential structs")
+    (description
+     "A macro to generate safe self-referential structs, plus
+premade types for common use-cases.  This crate is frozen and should be
+avoided if possible.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-rental-impl-0.5
+  (package
+    (name "rust-rental-impl")
+    (version "0.5.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rental-impl" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1pj0qgmvwwsfwyjqyjxzikkwbwc3vj7hm3hdykr47dy5inbnhpj7"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:skip-build? #f
+           #:cargo-inputs
+           `(("rust-proc-macro2" ,rust-proc-macro2-1)
+             ("rust-quote" ,rust-quote-1)
+             ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/jpernst/rental")
+    (synopsis "Implementation details of the rust-rental crate")
+    (description "Implementation details for the rust-rental crate.
+Should not be used directly.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-reopen-0.3
   (package
     (name "rust-reopen")
@@ -57229,6 +58256,28 @@ Digital Signature Algorithm} (ECDSA).")
                (with-output-to-file "curve25519_tables.h"
                  (lambda _
                    (invoke "python" "make_curve25519_tables.py")))))))))))
+
+(define-public rust-ringbuf-0.2
+  (package
+    (name "rust-ringbuf")
+    (version "0.2.6")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ringbuf" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1wxd2sb5b0kjwc5mcv8qrmzl0spfs0agznrxain3xhrr769g6q3c"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs `(("rust-cache-padded" ,rust-cache-padded-1))))
+    (home-page "https://github.com/agerasev/ringbuf")
+    (synopsis
+     "Lock-free SPSC FIFO ring buffer with direct access to inner data")
+    (description
+     "Lock-free @acronym{SPSC, Single Producer Single Consumer} @acronym{FIFO,
+First In First Out} ring buffer with direct access to inner data.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-ripemd-0.1
   (package
@@ -65753,8 +66802,32 @@ implementations.")
      "Rust FFI bindings to the SLEEF Vectorized Math Library.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-slice-deque-0.3
+  (package
+    (name "rust-slice-deque")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "slice-deque" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "098gvqjw52qw4gac567c9hx3y6hw9al7hjqb5mnvmvydh3i6xvri"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-mach" ,rust-mach-0.3)
+        ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/gnzlbg/slice_deque")
+    (synopsis "Double-ended queue that Deref's into a slice")
+    (description
+     "This package provides a double-ended queue that Deref's into a slice.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-slice-deque-0.2
   (package
+    (inherit rust-slice-deque-0.3)
     (name "rust-slice-deque")
     (version "0.2.4")
     (source
@@ -65764,18 +66837,12 @@ implementations.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1mq78l0vfwabnyanb85amgzakfhdaxx455yq6cszd5zmynagbpgz"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
         ("rust-mach" ,rust-mach-0.2)
-        ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/gnzlbg/slice_deque")
-    (synopsis "Double-ended queue that Deref's into a slice")
-    (description
-     "This package provides a double-ended queue that Deref's into a slice.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-slog-2
   (package
@@ -67709,6 +68776,24 @@ on verbosity specified")
 Web.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-stdweb-0.1
+  (package
+    (inherit rust-stdweb-0.4)
+    (name "rust-stdweb")
+    (version "0.1.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "stdweb" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0gjk7ch31a3kgdc39kj4zqinf10yqaf717wanh9kwwbbwg430m7g"))))
+    (arguments
+     (list #:skip-build? #t
+           #:cargo-inputs `(("rust-clippy" ,rust-clippy-0.0)
+                            ("rust-serde" ,rust-serde-1)
+                            ("rust-serde-json" ,rust-serde-json-1))))))
+
 (define-public rust-stdweb-derive-0.5
   (package
     (name "rust-stdweb-derive")
@@ -69315,6 +70400,305 @@ executed by swayipc.")
     "This package provides a library containing Type defintions from sway's IPC
 interface")
    (license license:expat)))
+
+(define-public rust-symphonia-0.4
+  (package
+    (name "rust-symphonia")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symphonia" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dx4v5libbksi4rd6b9290nci3h8xqyakymhxd72yybyl25g7rd7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-symphonia-bundle-flac" ,rust-symphonia-bundle-flac-0.4)
+                       ("rust-symphonia-bundle-mp3" ,rust-symphonia-bundle-mp3-0.4)
+                       ("rust-symphonia-codec-aac" ,rust-symphonia-codec-aac-0.4)
+                       ("rust-symphonia-codec-pcm" ,rust-symphonia-codec-pcm-0.4)
+                       ("rust-symphonia-codec-vorbis" ,rust-symphonia-codec-vorbis-0.4)
+                       ("rust-symphonia-core" ,rust-symphonia-core-0.4)
+                       ("rust-symphonia-format-isomp4" ,rust-symphonia-format-isomp4-0.4)
+                       ("rust-symphonia-format-ogg" ,rust-symphonia-format-ogg-0.4)
+                       ("rust-symphonia-format-wav" ,rust-symphonia-format-wav-0.4)
+                       ("rust-symphonia-metadata" ,rust-symphonia-metadata-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis
+     "Symphonia is a pure Rust media container and audio decoding library")
+    (description
+     "Symphonia is a pure Rust media container and audio decoding library
+that supports a wide range of audio formats.")
+    (license license:mpl2.0)))
+
+(define-public rust-symphonia-bundle-flac-0.4
+  (package
+    (name "rust-symphonia-bundle-flac")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symphonia-bundle-flac" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "00jxn9izfg1g07srhgglpqgadmzwsr88sqnnxw3mskpvyl958vhi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-symphonia-core" ,rust-symphonia-core-0.4)
+                       ("rust-symphonia-metadata" ,rust-symphonia-metadata-0.4)
+                       ("rust-symphonia-utils-xiph" ,rust-symphonia-utils-xiph-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "FLAC demuxer and decoder for the Symphonia library")
+    (description
+     "Symphonia is a pure Rust audio decoding and media demuxing library
+supporting a wide range of audio formats.  This package contains a FLAC demuxer
+and decoder.")
+    (license license:mpl2.0)))
+
+(define-public rust-symphonia-core-0.4
+  (package
+    (name "rust-symphonia-core")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symphonia-core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1j84q4a9p9qa23976spxap9s6ns3fm6fzrfz65n6cjhgpsbmw4zs"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arrayvec" ,rust-arrayvec-0.7)
+                       ("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-bytemuck" ,rust-bytemuck-1)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-log" ,rust-log-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "Shared elements for Symphonia a Rust audio library")
+    (description
+     "Symphonia is a pure Rust audio decoding and media demuxing
+library supporting a wide range of audio formats.  This package contains
+shared structs, traits, and features.")
+    (license license:mpl2.0)))
+
+(define-public rust-symphonia-metadata-0.4
+  (package
+    (name "rust-symphonia-metadata")
+    (version "0.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "symphonia-metadata" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "06lvwy24kirc84r6d23ncad544525fsb6gna0plqz3d1mffmjq2j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-encoding-rs" ,rust-encoding-rs-0.8)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-symphonia-core" ,rust-symphonia-core-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "Multimedia tag and metadata readers for the Symphonia library")
+    (description "Symphonia is a pure Rust audio decoding and media demuxing
+library supporting a wide range of audio formats.  This package contains
+multimedia tag and metadata readers.")
+    (license license:mpl2.0)))
+
+(define-public rust-symphonia-bundle-mp3-0.4
+  (package
+    (name "rust-symphonia-bundle-mp3")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symphonia-bundle-mp3" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14074njhgrcgh2p5iryrd68mgdzcxf9v7p8xfm8ldkhylv29fkgc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-symphonia-core" ,rust-symphonia-core-0.4)
+                       ("rust-symphonia-metadata" ,rust-symphonia-metadata-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "MP1, MP2, and MP3 demuxers and decoders written in pure Rust")
+    (description
+     "Symphonia is a pure Rust audio decoding and media demuxing library
+supporting a wide range of aduio formats.  This package contains support for
+MP1, MP2 and MP3.")
+    (license license:mpl2.0)))
+
+(define-public rust-symphonia-codec-aac-0.4
+  (package
+    (name "rust-symphonia-codec-aac")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symphonia-codec-aac" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13smaxgb1jadl4jyay7hixqgwaiqrjvsvmzdvlbdzdxrgsrplgdx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-symphonia-core" ,rust-symphonia-core-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "Pure Rust AAC decoder from Symphonia")
+    (description
+     "Symphonia is a pure Rust audio decoding and media demuxing library
+that supports a wide range of audio formats.  This package contains an AAC
+decoder.")
+    (license license:mpl2.0)))
+
+(define-public rust-symphonia-codec-pcm-0.4
+  (package
+    (name "rust-symphonia-codec-pcm")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symphonia-codec-pcm" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1is49qjnfy541zpgzz498hnpz0nsq7i4nfky2133b6aqhxrm87ds"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-symphonia-core" ,rust-symphonia-core-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "Pure Rust PCM audio decoder, part of Symphonia")
+    (description
+     "Symphonia is a pure Rust audio decoding and media demuxing library
+that supports a wide range of audio formats.  This package contains a
+@acronym{PCM, Pulse-Code Modulation} audio decoder.")
+    (license license:mpl2.0)))
+
+(define-public rust-symphonia-codec-vorbis-0.4
+  (package
+    (name "rust-symphonia-codec-vorbis")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symphonia-codec-vorbis" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1yj1si92fnnzdfkw27cq324h6y1s958s8r2hl0szpvvqh1sdd7m2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-symphonia-core" ,rust-symphonia-core-0.4)
+                       ("rust-symphonia-utils-xiph" ,rust-symphonia-utils-xiph-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "Pure Rust Vorbis decoder, part of the Symphonia project")
+    (description
+     "Symphonia is a pure Rust audio decoding and media demuxing library
+that supports a wide range of audio formats.  This package is a Vorbis
+decoder.")
+    (license license:mpl2.0)))
+
+(define-public rust-symphonia-format-isomp4-0.4
+  (package
+    (name "rust-symphonia-format-isomp4")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symphonia-format-isomp4" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dap5yh286j74sybjsam378v1jxkpdl3hvvm81sipv7725vkmvpy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-encoding-rs" ,rust-encoding-rs-0.8)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-symphonia-core" ,rust-symphonia-core-0.4)
+                       ("rust-symphonia-metadata" ,rust-symphonia-metadata-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "Rust ISO/MP4 demuxer from the Symphonia project")
+    (description
+     "Symphonia is a pure Rust audio decoding and media demuxing library
+that supports a wide range of audio formats.  This package contains an
+ISO/MP4 demuxer.")
+    (license license:mpl2.0)))
+
+(define-public rust-symphonia-format-ogg-0.4
+  (package
+    (name "rust-symphonia-format-ogg")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symphonia-format-ogg" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06d5327m4yk8a6yq7zzyiv2sbkwnjq28dz9cagndz6m7i1r3bcnp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-symphonia-core" ,rust-symphonia-core-0.4)
+                       ("rust-symphonia-metadata" ,rust-symphonia-metadata-0.4)
+                       ("rust-symphonia-utils-xiph" ,rust-symphonia-utils-xiph-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "Pure Rust OGG demuxer, part of Symphonia")
+    (description
+     "Symphonia is a pure Rust decoding and media demuxing library that
+supports a wide range of audio formats.  This package is an OGG demuxer.")
+    (license license:mpl2.0)))
+
+(define-public rust-symphonia-format-wav-0.4
+  (package
+    (name "rust-symphonia-format-wav")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symphonia-format-wav" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1b8x213s44xis4pb1ibnqr1a20hsxf3phm527dvadpi0nkjsb7vd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-symphonia-core" ,rust-symphonia-core-0.4)
+                       ("rust-symphonia-metadata" ,rust-symphonia-metadata-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "Rust WAV demuxer from the Symphonia project")
+    (description
+     "Symphonia is a pure Rust decoding and media demuxing library that
+supports a wide range of audio formats.  This package is a WAV demuxer.")
+    (license license:mpl2.0)))
+
+(define-public rust-symphonia-utils-xiph-0.4
+  (package
+    (name "rust-symphonia-utils-xiph")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "symphonia-utils-xiph" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1sg1y7s607rk1akrrzyhdsqimiwwaw440jzr1cp89zs8d5n04dva"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-symphonia-core" ,rust-symphonia-core-0.4)
+                       ("rust-symphonia-metadata" ,rust-symphonia-metadata-0.4))))
+    (home-page "https://github.com/pdeljanov/Symphonia")
+    (synopsis "Xiph codecs and formats for Rust's Symphonia")
+    (description
+     "Symphonia is a pure Rust audio decoding and media demuxing
+library that supports a wide range of audio formats.  This package contains Xiph
+codecs and formats.")
+    (license license:mpl2.0)))
 
 (define-public rust-syn-2
   (package

@@ -14,6 +14,7 @@
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -41,6 +42,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix utils)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages audio)
@@ -562,6 +564,31 @@ directory.")
        ;; In Requires.private of SDL2_ttf.pc.
        (prepend harfbuzz freetype)))
     (properties '((upstream-name . "SDL2_ttf")))))
+
+(define-public sdl2-gamecontrollerdb
+  (let ((commit "6f3c4edcb5a2e2ed090ca8af40d2c0f00dcd77f6")
+        (revision "0"))
+    (package
+      (name "sdl2-gamecontrollerdb")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/gabomdq/SDL_GameControllerDB")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1gciqc8qm2qgcjj5s9jpclznznsp6awl4ldrnj7g01chkcx0l6a3"))))
+      (build-system copy-build-system)
+      (arguments
+       '(#:install-plan '(("gamecontrollerdb.txt" "share/sdl2/"))))
+      (home-page "https://github.com/gabomdq/SDL_GameControllerDB")
+      (synopsis "SDL2 game controller database")
+      (description
+       "This package provides a community sourced database of game controller
+mappings intended for the use with SDL2's game controller functionality.")
+      (license license:zlib))))
 
 (define-public guile-sdl
   (package

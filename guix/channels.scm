@@ -926,7 +926,7 @@ specified."
                        (entries ->  (map instance->entry instances derivations)))
     (return (manifest entries))))
 
-(define (package-cache-file manifest)
+(define* (package-cache-file manifest #:optional system)
   "Build a package cache file for the instance in MANIFEST.  This is meant to
 be used as a profile hook."
   ;; Note: Emit a profile in format version 3, which was introduced in 2017
@@ -961,6 +961,7 @@ be used as a profile hook."
 
     (gexp->derivation-in-inferior "guix-package-cache" build
                                   profile
+                                  #:system system
 
                                   ;; If the Guix in PROFILE is too old and
                                   ;; lacks 'guix repl', don't build the cache

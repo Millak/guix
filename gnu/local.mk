@@ -61,6 +61,7 @@
 # Copyright © 2023 Andy Tai <atai@atai.org>
 # Copyright © 2023 B. Wilson <elaexuotee@wilsonb.com>
 # Copyright © 2023 Bruno Victal <mirai@makinata.eu>
+# Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 #
 # This file is part of GNU Guix.
 #
@@ -1409,6 +1410,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/heimdal-CVE-2022-45142.patch		\
   %D%/packages/patches/helm-fix-gcc-9-build.patch		\
   %D%/packages/patches/highlight-gui-data-dir.patch		\
+  %D%/packages/patches/hplip-usb-timeout.patch			\
   %D%/packages/patches/http-parser-CVE-2020-8287.patch		\
   %D%/packages/patches/htslib-for-stringtie.patch		\
   %D%/packages/patches/hubbub-sort-entities.patch		\
@@ -1710,6 +1712,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/omake-fix-non-determinism.patch	\
   %D%/packages/patches/oneko-remove-nonfree-characters.patch	\
   %D%/packages/patches/onionshare-cli-async-mode.patch		\
+  %D%/packages/patches/online-judge-tools.patch		\
   %D%/packages/patches/onnx-optimizer-system-library.patch	\
   %D%/packages/patches/onnx-use-system-googletest.patch	\
   %D%/packages/patches/onnx-shared-libraries.patch	\
@@ -1869,6 +1872,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-fixtures-remove-monkeypatch-test.patch	\
   %D%/packages/patches/python-hiredis-fix-header.patch		\
   %D%/packages/patches/python-hiredis-use-system-hiredis.patch	\
+  %D%/packages/patches/python-online-judge-api-client-tests.patch \
   %D%/packages/patches/python-pdoc3-tests.patch			\
   %D%/packages/patches/python-peachpy-determinism.patch	\
   %D%/packages/patches/python-pep8-stdlib-tokenize-compat.patch \
@@ -1882,8 +1886,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-parso-unit-tests-in-3.10.patch    \
   %D%/packages/patches/python-packaging-test-arch.patch		\
   %D%/packages/patches/python-paste-remove-timing-test.patch	\
-  %D%/packages/patches/python-pycrypto-CVE-2013-7459.patch	\
-  %D%/packages/patches/python-pycrypto-time-clock.patch		\
   %D%/packages/patches/python-pyan3-fix-absolute-path-bug.patch \
   %D%/packages/patches/python-pyan3-fix-positional-arguments.patch \
   %D%/packages/patches/python-pygpgme-fix-pinentry-tests.patch	\

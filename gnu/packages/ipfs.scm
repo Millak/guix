@@ -219,10 +219,10 @@ powerful and simple.")
 written in Go.")
     (license license:expat)))
 
-(define-public go-ipfs
+(define-public kubo
   (package
-    (name "go-ipfs")
-    (version "0.14.0")
+    (name "kubo")
+    (version "0.15.0")
     (source
      (origin
        (method url-fetch/tarbomb)
@@ -230,7 +230,7 @@ written in Go.")
              "https://dist.ipfs.io/kubo/v" version
              "/kubo-source.tar.gz"))
        (sha256
-        (base32 "0n7nfiymh6knj3h672gdrb24g9vz9j15x3vn6aml2nk7pv9dsy7p"))
+        (base32 "0ss5k8xnzn9qk977dni5ja89yygcysdw7r3mdk67cac2dpa9hhqs"))
        (file-name (string-append name "-" version "-source"))
        (modules '((guix build utils)))
        (snippet '(for-each delete-file-recursively
@@ -368,3 +368,6 @@ like a single bittorrent swarm, exchanging git objects.  IPFS provides an
 interface as simple as the HTTP web, but with permanence built in.  You can
 also mount the world at @code{/ipfs}.")
     (license license:expat)))
+
+(define-public go-ipfs
+  (deprecated-package "go-ipfs" kubo))

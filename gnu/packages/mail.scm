@@ -118,6 +118,7 @@
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages language)
+  #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libffi)
@@ -1837,14 +1838,14 @@ addons which can add many functionalities to the base client.")
 (define-public msmtp
   (package
     (name "msmtp")
-    (version "1.8.24")
+    (version "1.8.25")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://marlam.de/msmtp/releases"
                            "/msmtp-" version ".tar.xz"))
        (sha256
-        (base32 "0nda218iz72pvh6v10s2qlihp1mdxzir6yb4hqdxc5xbmaql8rmx"))))
+        (base32 "0f6pa8kdlfingw6yf61dshnxgygx5v6ykcmnn3h6zllpnfxivzid"))))
     (build-system gnu-build-system)
     (inputs
      (list libsecret gnutls zlib gsasl))
@@ -3183,26 +3184,32 @@ from the Cyrus IMAP project.")
 (define-public opensmtpd
   (package
     (name "opensmtpd")
-    (version "7.3.0p2")
+    (version "7.4.0p0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.opensmtpd.org/archives/"
                            "opensmtpd-" version ".tar.gz"))
        (sha256
-        (base32 "0kjs5cxbh9lq51b8p20hxmiah61cfm8yzkcwpw9005cdp72zpkgw"))))
+        (base32 "0x731hi7i01mxaz07p1l5q3gwmyl422h404yc61ya4aa8g1wr0f1"))))
     (build-system gnu-build-system)
     (inputs
+     ;; OpenSMTPd bundled (a subset of) libasr and libtls, which we use.  See
+     ;; https://www.mail-archive.com/misc@opensmtpd.org/msg05909.html for why.
      (list bdb
+           libbsd          ;https://github.com/OpenSMTPD/OpenSMTPD/issues/1233
            libevent
            libressl
            linux-pam
            zlib))
     (native-inputs
-     (list bison groff))               ; for man pages
+     (list bison
+           groff                        ;for man pages
+           pkg-config))
     (arguments
      `(#:configure-flags
        (list "--localstatedir=/var"
+             "--with-libbsd"
              ;; This is the default only if it exists at build time—it doesn't.
              "--with-path-socket=/var/run"
              "--with-path-CAfile=/etc/ssl/certs/ca-certificates.crt"

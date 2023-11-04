@@ -493,6 +493,60 @@ in FITS files.")
     (license (license:non-copyleft "file://License.txt"
                                    "See License.txt in the distribution."))))
 
+(define-public python-aplpy
+  (package
+    (name "python-aplpy")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "aplpy" version))
+       (sha256
+        (base32 "0ph9jhv4q4i4z6nkqr6hjw9148kdlnayxsn83qgv5dqn0h3nc9r8"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-astropy
+           python-matplotlib
+           python-numpy
+           python-pillow
+           python-pyavm
+           python-pyregion
+           python-reproject
+           python-scikit-image
+           python-shapely))
+    (native-inputs
+     (list python-pytest-astropy
+           python-pytest-mpl
+           python-semantic-version))
+    (home-page "http://aplpy.github.io")
+    (synopsis "Astronomical Plotting Library in Python")
+    (description
+     "@acronym{APLpy, the Astronomical Plotting Library in Python} is a Python
+module aimed at producing publication-quality plots of astronomical imaging data
+in FITS format.  The module uses @code{matplotlib}, a powerful and interactive
+plotting package.  It is capable of creating output files in several graphical
+formats, including EPS, PDF, PS, PNG, and SVG.
+
+Main features:
+@itemize
+@item Make plots interactively or using scripts
+@item Show grayscale, colorscale, and 3-color RGB images of FITS files
+@item Generate co-aligned FITS cubes to make 3-color RGB images
+@item Make plots from FITS files with arbitrary WCS (e.g. position-velocity)
+@item Slice multi-dimensional FITS cubes
+@item Overlay any number of contour sets
+@item Overlay markers with fully customizable symbols
+@item Plot customizable shapes like circles, ellipses, and rectangles
+@item Overlay ds9 region files
+@item Overlay coordinate grids
+@item Show colorbars, scalebars, and beams
+@item Customize the appearance of labels and ticks
+@item Hide, show, and remove different contour and marker layers
+@item Pan, zoom, and save any view as a full publication-quality plot
+@item Save plots as EPS, PDF, PS, PNG, and SVG
+@end itemize")
+    (license license:expat)))
+
 (define-public python-astroml
   (package
     (name "python-astroml")
@@ -2166,6 +2220,29 @@ cases for which diffractive rather than geometric optics is the topic of
 interest, and which require portability between platforms or ease of scripting.")
     (license license:bsd-3)))
 
+(define-public python-pyavm
+  (package
+    (name "python-pyavm")
+    (version "0.9.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "PyAVM" version))
+       (sha256
+        (base32 "0vgjqvddq4a5lnmg8msm7fwqs3r6fc748xzvnhyvc387h0z8pdxk"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-astropy python-numpy))
+    (native-inputs
+     (list python-pillow python-pytest python-setuptools-scm))
+    (home-page "https://astrofrog.github.io/pyavm/")
+    (synopsis "Simple pure-python AVM meta-data handling")
+    (description
+     "PyAVM is a module to represent, read, and write metadata following the
+@acronym{AVM, Astronomy Visualization Metadata} standard provided by
+@url{https://www.virtualastronomy.org/avm_metadata.php, vamp} project.")
+    (license license:expat)))
+
 (define-public python-pyvo
   (package
     (name "python-pyvo")
@@ -2454,6 +2531,60 @@ SolarSoft data analysis environment.")
 positions of the sun: dawn, sunrise, solar noon, sunset, dusk, solar
 elevation, solar azimuth, rahukaalam, and the phases of the moon.")
     (license license:asl2.0)))
+
+(define-public python-spectral-cube
+  (package
+    (name "python-spectral-cube")
+    (version "0.6.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "spectral-cube" version))
+       (sha256
+        (base32 "10q76rsgf9w4j7y68mfa870bpxf06m6kqvivj4340jmgnsrfy1zg"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-astropy
+           python-aplpy
+           python-casa-formats-io
+           python-dask
+           python-distributed
+           python-fsspec
+           ;; python-glue-core ; Not packed http://glueviz.org/, optional.
+           python-joblib
+           python-matplotlib
+           python-numpy
+           python-radio-beam
+           python-reproject
+           python-scipy
+           python-six
+           ;; python-yt ; Not packed https://yt-project.org/, optional.
+           python-zarr))
+    (native-inputs
+     (list ;; XXX: Introduce cycle with pvextractor, listed as extra requiremnts
+           ;; in [noviz] option.
+           ;; python-pvextractor
+           python-pytest-astropy
+           python-regions
+           python-semantic-version
+           python-setuptools-scm))
+    (home-page "https://spectral-cube.readthedocs.io/en/latest/")
+    (synopsis "Library for reading and analyzing astrophysical spectral data cubes")
+    (description
+     "The spectral-cube package provides an easy way to read, manipulate,
+analyze, and write data cubes with two positional dimensions and one spectral
+dimension, optionally with Stokes parameters.
+
+It provides the following main features:
+@itemize
+@item A uniform interface to spectral cubes, robust to the wide range of conventions
+of axis order, spatial projections, and spectral units that exist in the wild.
+@item Easy extraction of cube sub-regions using physical coordinates.
+@item Ability to easily create, combine, and apply masks to datasets.
+@item Basic summary statistic methods like moments and array aggregates.
+@item Designed to work with datasets too large to load into memory.
+@end itemize")
+    (license license:bsd-3)))
 
 (define-public python-spherical-geometry
   (package
@@ -3471,6 +3602,46 @@ astrophysical simulations supporting PKDGRAV/Gasoline, Gadget, Gadget4/Arepo,
 N-Chilada and RAMSES AMR outputs.")
     (license license:gpl3+)))
 
+(define-public python-pyregion
+  (package
+    (name "python-pyregion")
+    (version "2.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyregion" version))
+       (sha256
+        (base32 "0l7qb7r8fnv46mdih4m5b8jaxixgpw6m7v37dpikjkblgh0vigaw"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'build-extensions
+            (lambda _
+              ;; Cython extensions have to be built before running the tests.
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (propagated-inputs
+     (list python-astropy python-numpy python-pyparsing))
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-pytest-astropy-header
+           python-setuptools-scm))
+    (home-page "https://github.com/astropy/pyregion")
+    (synopsis "Python parser for ds9 region files")
+    (description
+     "@code{pyregion} is a python module to parse ds9 region files.  It also
+supports ciao region files.
+Features:
+@itemize
+@item ds9 and ciao region files.
+@item (physical, WCS) coordinate conversion to the image coordinate.
+@item convert regions to matplotlib patches.
+@item convert regions to spatial filter (i.e., generate mask images)
+@end itemize")
+    (license license:expat)))
+
 (define-public python-pysynphot
   (package
     (name "python-pysynphot")
@@ -3953,6 +4124,40 @@ schemas for the Nancy Grace Roman Space Telescope shared attributes for
 processing and archive.  These schemas are schemas for the ASDF file file
 format, which are used by ASDF to serialize and deserialize data for the Nancy
 Grace Roman Space Telescope.")
+    (license license:bsd-3)))
+
+(define-public python-radio-beam
+  (package
+    (name "python-radio-beam")
+    (version "0.3.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "radio-beam" version))
+       (sha256
+        (base32 "19c6gmm1wvyp5nn1yfbzl428rkysdq273j2yaarxpivv7cwj7qjk"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-astropy
+           python-matplotlib
+           python-numpy
+           python-scipy
+           python-six))
+    (native-inputs (list python-pytest-astropy python-setuptools-scm))
+    (home-page "https://radio-beam.readthedocs.io/en/latest/")
+    (synopsis "Operations for radio astronomy beams with Astropy")
+    (description
+     "Radio Beam is a simple toolkit for reading beam information from FITS
+headers and manipulating beams.
+Some example applications include:
+@itemize
+@item Convolution and deconvolution
+@item Unit conversion (Jy to/from K)
+@item Handle sets of beams for spectral cubes with varying resolution between
+channels
+@item Find the smallest common beam from a set of beams
+@item Add the beam shape to a matplotlib plot
+@end itemize")
     (license license:bsd-3)))
 
 (define-public python-roman-datamodels

@@ -49,6 +49,7 @@
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages jupyter)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
@@ -528,35 +529,42 @@ Sphinx documentation into your web application.  It provides tools to
 integrate Sphinx documents in web templates and to handle searches.")
     (license license:bsd-3)))
 
-
 (define-public python-sphinx-gallery
   (package
     (name "python-sphinx-gallery")
-    (version "0.10.1")
+    (version "0.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sphinx-gallery" version))
        (sha256
-        (base32 "1r07sa34511fbnwi2s32q00qdyv5d23d05imyfgnh2ivhfq34gwm"))))
-    (build-system python-build-system)
+        (base32 "1hj380d5bjhbzxmhjw8f8b71jy1wk8crad0g3n750m990fphljia"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'writable-files-for-tests
+     (list
+      #:test-flags
+      '(list "--pyargs" "sphinx_gallery" "-k"
+             (string-append
+              ;; These tests require online data.
+              "not test_embed_code_links_get_data"
+              " and not test_run_sphinx"
+              ;; Requires webp support
+              " and not test_image_formats"
+              ;; Needs graphviz
+              " and not test_rebuild"
+              ;; Fails because we've deleted an example file, so the numbers
+              ;; don't match.
+              " and not test_junit"
+              ;; AssertionError.
+              " and not test_embed_links_and_styles"))
+      #:phases
+      '(modify-phases %standard-phases
+         ;; TODO: Our version of matplotlib does not support webp.
+         (add-after 'unpack 'delete-webp-example
            (lambda _
-             (for-each make-file-writable (find-files "."))))
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest" "--pyargs" "sphinx_gallery" "-k"
-                       (string-append
-                        ;; These tests require online data.
-                        "not test_embed_code_links_get_data"
-                        " and not test_run_sphinx"
-                        ;; AssertionError.
-                        " and not test_embed_links_and_styles"))))))))
+             (delete-file "sphinx_gallery/tests/tinybuild/examples/plot_webp.py"))))))
+    (propagated-inputs
+     (list python-jupyterlite-sphinx))
     (native-inputs
      (list python-joblib
            python-matplotlib

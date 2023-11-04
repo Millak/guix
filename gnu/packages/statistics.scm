@@ -652,13 +652,13 @@ estimation) corresponding to the book: Wand, M.P. and Jones, M.C. (1995)
 (define-public r-lattice
   (package
     (name "r-lattice")
-    (version "0.21-9")
+    (version "0.22-5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "lattice" version))
               (sha256
                (base32
-                "0ak9k6s6drd1a25m7mwzb426ms92a2p3ps04h2pacifwnk74ca59"))))
+                "1wd5dlxi0hd4l08g999y3xnxnaq06gwvflcqr9ym0cx131gbw7xs"))))
     (build-system r-build-system)
     (home-page "https://lattice.r-forge.r-project.org/")
     (synopsis "High-level data visualization system")
@@ -757,14 +757,14 @@ single hidden layer, and for multinomial log-linear models.")
 (define-public r-rpart
   (package
     (name "r-rpart")
-    (version "4.1.19")
+    (version "4.1.21")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rpart" version))
        (sha256
         (base32
-         "0rcm4hk2k0ag9qmb0f933yqrq8jpnclwrzp6825swgsqnp83wwpy"))))
+         "0av28n5as53qrxm41hcrwv59qdv7gfli668q32z0a5r1bdkiqz77"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/rpart")
     (synopsis "Recursive partitioning and regression trees")
@@ -1252,13 +1252,13 @@ using just two functions: melt and dcast (or acast).")
 (define-public r-ggplot2
   (package
     (name "r-ggplot2")
-    (version "3.4.3")
+    (version "3.4.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggplot2" version))
        (sha256
-        (base32 "0hx5j47y2fxrcg4fxavyn5jjycpwkmsiqsjh6kj7nwp7dg79mqjw"))))
+        (base32 "0iiywrzv8j0npasvzgkxwhw0zqisf4xmpx06jl0lsq1ybl3fqxid"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
@@ -1268,10 +1268,10 @@ using just two functions: melt and dcast (or acast).")
            r-lifecycle
            r-mass
            r-mgcv
-           r-tibble
            r-rlang
            r-scales
            r-svglite ; Needed for 'ggsave'
+           r-tibble
            r-vctrs
            r-withr))
     (native-inputs
@@ -1316,19 +1316,19 @@ agnes cluster diagrams.")
 (define-public r-gdtools
   (package
     (name "r-gdtools")
-    (version "0.3.3")
+    (version "0.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gdtools" version))
        (sha256
         (base32
-         "10rlx1ciyvh0ayic03kckv360idl9s1zyc2ar5lisns786c1hnns"))))
+         "00mak9js1s05j5bmkda24nl2z023jsyg8zc60nm4h2xs7w1l7mxa"))))
     (build-system r-build-system)
     (native-inputs
      (list pkg-config))
     (inputs
-     (list cairo fontconfig freetype))
+     (list cairo fontconfig freetype zlib))
     (propagated-inputs
      (list r-curl
            r-fontquiver
@@ -1534,13 +1534,13 @@ data derived from /etc/mime.types in UNIX-type systems.")
 (define-public r-markdown
   (package
     (name "r-markdown")
-    (version "1.9")
+    (version "1.11")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "markdown" version))
               (sha256
                (base32
-                "0201v3spgl8a5c5xkddac5a3z9zh8d0nm9yg6alyhhj4cjwmgibh"))))
+                "052zrb6bnr6k3p9pmm3vfh3g7z20g6pjvphjdiqyjb4mb9sn3z27"))))
     (build-system r-build-system)
     ;; Skip check phase because the tests require the r-knitr package to be
     ;; installed. This prevents installation failures. Knitr normally
@@ -1578,13 +1578,13 @@ emitter (http://pyyaml.org/wiki/LibYAML) for R.")
 (define-public r-knitr
   (package
     (name "r-knitr")
-    (version "1.44")
+    (version "1.45")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "knitr" version))
               (sha256
                (base32
-                "015ylljvx0q2himch4k813021nvh0l7p5x3aqdkj3w0ax8x8k3ki"))))
+                "1yw4fnzm8lvh6kpcdlvr1fahz7421h5mmaris58zlgn57fjxwbpf"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-evaluate r-highr r-xfun r-yaml))
@@ -1866,14 +1866,14 @@ database.")
 (define-public r-dbplyr
   (package
     (name "r-dbplyr")
-    (version "2.3.4")
+    (version "2.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dbplyr" version))
        (sha256
         (base32
-         "1b6y1jhf5ix4vry165vwid5nqm0d99q61vxak6aw3vfkj379vgk9"))))
+         "1rzi8112fi0bx2fj0j5ak9bfgqgjk5k5dv66qrb890gsf5bz6m4i"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-blob
@@ -2182,7 +2182,7 @@ comparison and diagnostics.")
 (define-public python-pymc
   (package
     (name "python-pymc")
-    (version "5.7.2")
+    (version "5.9.1")
     (source (origin
               (method git-fetch)        ; no tests in PyPI
               (uri (git-reference
@@ -2191,7 +2191,7 @@ comparison and diagnostics.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1r3lxpfc782f0wphdqfgsskbz52i0gwgrmxb65307k6cqia69s3r"))))
+                "1y90xa85q38zwsi69q5bv95vyjg3jp1hs0z18sg5jyi17irgw8x7"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f ; tests are too computationally intensive
@@ -2317,6 +2317,29 @@ uncertainties and are backed by strong theoretical guarantees thanks to
 conformal prediction methods intervals.")
     (license license:bsd-3)))
 
+(define-public python-emcee
+  (package
+    (name "python-emcee")
+    (version "3.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "emcee" version))
+       (sha256
+        (base32 "1vbz67cwzig28dlndkm6g246p1vcvj6yy2w65z8cdyffigf1j3lf"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list python-coverage
+                         python-pytest
+                         python-pytest-cov
+                         python-setuptools-scm))
+    (home-page "https://emcee.readthedocs.io/en/stable/")
+    (synopsis "Ensemble sampling toolkit for MCMC")
+    (description
+     "@code{emcee} is a Python implementation of the affine-invariant ensemble
+sampler for Markov chain Monte Carlo (MCMC).")
+    (license license:expat)))
+
 (define-public python-statsmodels
   (package
     (name "python-statsmodels")
@@ -2374,7 +2397,7 @@ inference for statistical models.")
 (define-public python-openturns
   (package
     (name "python-openturns")
-    (version "1.21")
+    (version "1.21.1")
     (source
      (origin
        (method git-fetch)
@@ -2383,7 +2406,7 @@ inference for statistical models.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05lbx8npvvk7jyakvfpgi9ggdp6cnzwv2hjmjrkji2s42axv0q6d"))))
+        (base32 "147pyh7j5nqp9bl9hfikcfzqj5qp95an0qrna9g5qq07md13c3if"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -2615,14 +2638,14 @@ R version.")
 (define-public r-checkmate
   (package
     (name "r-checkmate")
-    (version "2.2.0")
+    (version "2.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "checkmate" version))
        (sha256
         (base32
-         "064i6l0n4w4jncpnk5wnj6sxak0jirdz757iirglcxg8ayq19v4n"))))
+         "1m41idv7iwq6mby8dyvsbljj5jkyhj65k7caz2na17a83s2inwl8"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-backports))
@@ -2966,13 +2989,13 @@ tools to simplify the devolpment of R packages.")
 (define-public r-withr
   (package
     (name "r-withr")
-    (version "2.5.1")
+    (version "2.5.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "withr" version))
               (sha256
                (base32
-                "1kndhxl0fxn40v9yx0iglilani3ym3ywbjf6zbg1pnb52ncf0nm9"))))
+                "01a27nqlrrf1pws57hi9631f3aj33a9dashd640m5nlgf9nzmdnm"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
@@ -3317,13 +3340,13 @@ a column in data frame.")
 (define-public r-rsqlite
   (package
     (name "r-rsqlite")
-    (version "2.3.1")
+    (version "2.3.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RSQLite" version))
               (sha256
                (base32
-                "1jil3wgfh1asfb9c4cr9qyr74wb9f87r7sa03kj187201hb3xlly"))))
+                "09vbx3akqws8a07ai6qbp3jn1w05qsmazl79wl2dyvvjpzs8b62x"))))
     (properties `((upstream-name . "RSQLite")))
     (build-system r-build-system)
     (propagated-inputs
@@ -3332,8 +3355,8 @@ a column in data frame.")
            r-cpp11
            r-dbi
            r-memoise
-           r-plogr
-           r-pkgconfig))
+           r-pkgconfig
+           r-plogr))
     (native-inputs
      (list r-knitr))
     (home-page "https://github.com/rstats-db/RSQLite")
@@ -4711,13 +4734,13 @@ features present in other programming languages.")
 (define-public r-plotly
   (package
     (name "r-plotly")
-    (version "4.10.2")
+    (version "4.10.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "plotly" version))
               (sha256
                (base32
-                "0y2jiyfx895f15wcpizybssic4draw1vgvqz2b7f82z73319m01b"))
+                "13sxmanx2xck8dn0prn2fplgx4bafb7h2kk2wjmci21h8hk6qylb"))
               (modules '((guix build utils)))
               (snippet
                '(with-directory-excursion "inst/htmlwidgets/lib/"
@@ -4964,7 +4987,12 @@ from within R.")
           (add-after 'mkdist 'no-mtune
             (lambda _
               (substitute* "src/Makevars"
-                (("-mtune=native") "")))))))
+                (("-mtune=native") ""))))
+          (add-after 'no-mtune 'use-c++11
+            (lambda _
+              (substitute* "src/Makevars"
+                (("-DUSE_BLAS_LIB" m)
+                 (string-append m " -std=c++11"))))))))
     (native-inputs
      (list hevea
            perl
@@ -5164,17 +5192,15 @@ tests for whether a value is missing, empty or contains only @code{NA} and
 (define-public r-gdata
   (package
     (name "r-gdata")
-    (version "2.19.0")
+    (version "3.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gdata" version))
        (sha256
         (base32
-         "1lv3cz990f7m2bfcf62fjm6wz6zd2ycrci06b7mfd0xmcn3bwifi"))))
+         "0zxi0634dkgczw7gicj8r6mhb83cpkxhsy2iivz0b9v52y9bjmm4"))))
     (build-system r-build-system)
-    (inputs
-     (list perl))
     (propagated-inputs
      (list r-gtools))
     (home-page "https://cran.r-project.org/web/packages/gdata")
@@ -5189,7 +5215,6 @@ including:
 @item character vector operations
 @item factor manipulation
 @item obtaining information about R objects
-@item manipulating MS-Excel formatted files
 @item generating fixed-width format files
 @item extricating components of date and time objects
 @item operations on columns of data frames
@@ -5703,14 +5728,14 @@ and resampling-based inference.")
 (define-public r-prabclus
   (package
     (name "r-prabclus")
-    (version "2.3-2")
+    (version "2.3-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "prabclus" version))
        (sha256
         (base32
-         "0hg4d7y1w18jpgvw10z8833bbbcnlkwiasx0wh6iwa2pnnybq8gl"))))
+         "1haq8dvvi21fdnzl7ykm28sif5nv9pybir96vrqfcmy3k8500p80"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-mass r-mclust))
@@ -7171,14 +7196,14 @@ or eta squared effect size.")
 (define-public r-logspline
   (package
     (name "r-logspline")
-    (version "2.1.20")
+    (version "2.1.21")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "logspline" version))
         (sha256
           (base32
-            "1nsrgz9sh9qg2fj0x7k48lqhpgzq1z78jfz89ckzp5xm4r8lpgcb"))))
+            "0xqbk3h28gkx3haj7hdg314616x673cmg9ia148g0q9j3zqkqflf"))))
     (properties `((upstream-name . "logspline")))
     (build-system r-build-system)
     (native-inputs (list gfortran))

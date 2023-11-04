@@ -1940,6 +1940,81 @@ thumbnailer uses ffmpeg to decode frames from the video files, so supported
 videoformats depend on the configuration flags of ffmpeg.")
     (license license:gpl2+)))
 
+(define-public ffmpeg-progress-yield
+  (package
+    (name "ffmpeg-progress-yield")
+    (version "0.7.8")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "ffmpeg-progress-yield" version))
+              (sha256
+               (base32
+                "07j6m8p8z8ybl75h0d4xzjl1pvkfzr0i73siysqcgrrahdgsxrls"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; Not sure if the test file actually does anything.
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "python" "test/test.py"))))
+                        (add-after 'wrap 'wrap-program
+                          ;; Wrap ffmpeg on the executable.
+                          (lambda* (#:key inputs outputs #:allow-other-keys)
+                            (let ((fpy "bin/ffmpeg-progress-yield")
+                                  (ffm "bin/ffmpeg"))
+                              (wrap-program (search-input-file outputs fpy)
+                                `("PATH" ":" prefix
+                                  (,(search-input-file inputs ffm))))))))))
+    (inputs (list bash-minimal ffmpeg))
+    (home-page "https://github.com/slhck/ffmpeg-progress-yield")
+    (synopsis "Run an ffmpeg command with progress")
+    (description "This package allows an ffmpeg command to run with progress.
+It is usually a complement to @code{ffmpeg-normalize}.")
+    (license license:expat)))
+
+(define-public ffmpeg-normalize
+  (package
+    (name "ffmpeg-normalize")
+    (version "1.27.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "ffmpeg-normalize" version))
+              (sha256
+               (base32
+                "0idqqgsr3p840vx2x3idn851qwghjdbm6v4yrq2kprppyfvglni7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "python" "-m" "pytest"
+                             "test/test.py"))))
+               (add-after 'wrap 'wrap-ffmpeg
+                 ;; Wrap ffmpeg on the executable.
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (let ((ffn (search-input-file outputs
+                                                 "bin/ffmpeg-normalize"))
+                         (ffm (search-input-file inputs "bin/ffmpeg")))
+                     (wrap-program ffn
+                       `("FFMPEG_PATH" = (,ffm)))))))))
+    (native-inputs (list python-pytest))
+    (inputs (list bash-minimal ffmpeg))
+    (propagated-inputs (list ffmpeg-progress-yield
+                             python-colorama
+                             python-colorlog
+                             python-tqdm))
+    (home-page "https://github.com/slhck/ffmpeg-normalize")
+    (synopsis "Normalize audio via ffmpeg")
+    (description "This program normalizes media files to a certain loudness
+level using the EBU R128 loudness normalization procedure.  It can also
+perform RMS-based normalization (where the mean is lifted or attenuated),
+or peak normalization to a certain target level.  Batch processing of several
+input files is possible, including video files.")
+    (license license:expat)))
+
 (define-public vlc
   (package
     (name "vlc")

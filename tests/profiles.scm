@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Alex Kost <alezost@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -381,6 +381,28 @@
        (bindir ->  (string-append profile "/bin"))
        (_          (built-derivations (list drv))))
     (return (file-exists? (string-append bindir "/guile")))))
+
+(test-assertm "profile-derivation, #:system, and hooks"
+  ;; Make sure all the profile hooks are built for the system specified with
+  ;; #:system, even if that does not match (%current-system).
+  ;; See <https://issues.guix.gnu.org/65225>.
+  (mlet* %store-monad
+      ((system -> (if (string=? (%current-system) "riscv64-linux")
+                      "x86_64-linux"
+                      "riscv64-linux"))
+       (entry -> (package->manifest-entry packages:coreutils))
+       (_        (set-guile-for-build (default-guile) system))
+       (drv      (profile-derivation (manifest (list entry))
+                                     #:system system))
+       (refs     (references* (derivation-file-name drv))))
+    (return (and (string=? (derivation-system drv) system)
+                 (pair? refs)
+                 (every (lambda (ref)
+                          (or (not (string-suffix? ".drv" ref))
+                              (let ((drv (read-derivation-from-file ref)))
+                                (string=? (derivation-system drv)
+                                          system))))
+                        refs)))))
 
 (test-assertm "profile-derivation relative symlinks, one entry"
   (mlet* %store-monad

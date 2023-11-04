@@ -28,6 +28,7 @@
   #:use-module (gnu build chromium-extension)
   #:use-module (gnu build icecat-extension)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages password-utils)
   #:use-module (gnu packages python))
 
 (define play-to-kodi
@@ -150,3 +151,73 @@ ungoogled-chromium.")
 
 (define-public ublock-origin/icecat
   (make-icecat-extension ublock-origin "firefox"))
+
+(define-public passff-host
+  (package
+    (name "passff-host")
+    (version "1.2.3")
+    (home-page "https://github.com/passff/passff-host")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference (url home-page) (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1p18l1jh20x4v8dj64z9qjlp96fxsl5h069iynxfpbkzj6hd74yl"))))
+    (build-system copy-build-system)
+    (arguments
+     (let ((native-manifests "lib/icecat/native-messaging-hosts"))
+       (list
+        #:install-plan
+        `'(("src" ,native-manifests #:include ("passff.json" "passff.py")))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'substitute
+              (lambda _
+                (substitute* "src/passff.json"
+                  (("PLACEHOLDER")
+                   (format #f "~a/~a/passff.py" #$output #$native-manifests)))
+                (substitute* "src/passff.py"
+                  (("_VERSIONHOLDER_") #$version)
+                  (("^COMMAND = .*")
+                   (format #f "COMMAND = \"~a/bin/pass\"~%"
+                           #$(this-package-input "password-store"))))
+                (patch-shebang "src/passff.py")))))))
+    (inputs (list password-store python))
+    (synopsis "Host app for the WebExtension PassFF")
+    (description "This piece of software wraps around the zx2c4 pass shell
+command.  It has to be installed for the PassFF browser extension to work
+properly.")
+    (license license:gpl2+)))
+
+(define passff
+  (package
+    (name "passff")
+    (version "1.15")
+    (home-page "https://github.com/passff/passff")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference (url home-page) (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1gymqyqppr8k9fqv5js7f6pk6hcc47qpf51x5cy6aahsk2v1qssj"))))
+    (propagated-inputs (list passff-host))
+    (build-system copy-build-system)
+    (properties '((addon-id . "passff@invicem.pro")))
+    (arguments
+     `(#:install-plan '(("src" ,(assq-ref properties 'addon-id)))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'substitute-placeholder
+           (lambda _
+             (substitute* "src/manifest.json"
+               (("_VERSIONHOLDER_") ,version)))))))
+    (synopsis "zx2c4 pass management extension for Mozilla Firefox")
+    (description "This extension will allow you to access your zx2c4 pass
+repository directly from your web browser.  You can choose to automatically
+fill and submit login forms if a matching password entry is found.")
+    (license license:gpl2+)))
+
+(define-public passff/icecat
+  (make-icecat-extension passff))

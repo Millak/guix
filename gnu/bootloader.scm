@@ -2,7 +2,7 @@
 ;;; Copyright © 2017 David Craven <david@craven.ch>
 ;;; Copyright © 2017, 2020, 2022 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2019, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2022 Josselin Poiret <dev@jpoiret.xyz>
 ;;; Copyright © 2022 Reza Alizadeh Majd <r.majd@pantherx.org>
@@ -335,7 +335,7 @@ FILES may contain file like objects produced by procedures like plain-file,
 local-file, etc., or package contents produced with file-append.
 
 HOOKS lists additional hook functions to modify the profile."
-  (define (efi-bootloader-profile-hook manifest)
+  (define* (efi-bootloader-profile-hook manifest #:optional system)
     (define build
         (with-imported-modules '((guix build utils))
           #~(begin
@@ -383,6 +383,7 @@ HOOKS lists additional hook functions to modify the profile."
 
     (gexp->derivation "efi-bootloader-profile"
                       build
+                      #:system system
                       #:local-build? #t
                       #:substitutable? #f
                       #:properties

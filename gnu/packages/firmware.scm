@@ -10,6 +10,7 @@
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -174,6 +175,8 @@ Linux-libre.")
                     (guix build gnu-build-system)
                     (guix build utils))
          #:tests? #f                    ; no tests
+         #:make-flags `(,(string-append "PREFIX=" (assoc-ref %outputs "out"))
+                        ,(string-append "CC=" ,(cc-for-target)))
          #:phases
          (let ((subdirs '("assembler" "disassembler")))
            (modify-phases %standard-phases
@@ -181,24 +184,19 @@ Linux-libre.")
              (add-before 'build 'patch-/bin/true
                (lambda _
                  (substitute* (find-files "." "Makefile")
-                   (("/bin/true") ":"))
-                 #t))
+                   (("/bin/true") ":"))))
              (replace 'build
-               (lambda _
+               (lambda* (#:key (make-flags '()) #:allow-other-keys)
                  (for-each (lambda (dir)
-                             (invoke "make" "-C" dir "CC=gcc"))
-                           subdirs)
-                 #t))
+                             (apply invoke "make" "-C" dir make-flags))
+                           subdirs)))
              (replace 'install
-               (lambda* (#:key outputs #:allow-other-keys)
+               (lambda* (#:key outputs (make-flags '()) #:allow-other-keys)
                  (let ((out (assoc-ref outputs "out")))
                    (mkdir-p (string-append out "/bin"))
                    (for-each (lambda (dir)
-                               (invoke "make" "-C" dir
-                                       (string-append "PREFIX=" out)
-                                       "install"))
-                             subdirs)
-                   #t)))))))
+                               (apply invoke "make" "-C" dir "install" make-flags))
+                             subdirs))))))))
       (home-page
        "https://bues.ch/cms/hacking/misc.html#linux_b43_driver_firmware_tools")
       (synopsis "Collection of tools for the b43 wireless driver")
@@ -397,6 +395,7 @@ broadband modem as found, for example, on PinePhone.")
       #:test-target "tests"
       #:make-flags
       #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "STRIP=" #$(strip-for-target))
               (string-append "DESTDIR=" #$output))
       #:phases
       #~(modify-phases %standard-phases

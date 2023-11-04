@@ -1431,7 +1431,7 @@ as RetroArch.")
 (define-public retroarch
   (package
     (name "retroarch")
-    (version "1.15.0")
+    (version "1.16.0.3")
     (source
      (origin
        (method git-fetch)
@@ -1440,7 +1440,7 @@ as RetroArch.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ii31mc7wfd386rzyxqk8nmx5a13f9iqz47991z4zx0d8gqcchzg"))))
+        (base32 "1nvvd78hx1s73nif7g02pqms29b9v072mxnld0vmsh78236qngq5"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
@@ -1471,26 +1471,36 @@ as RetroArch.")
                  ;; Non-free software are available through the core updater,
                  ;; disable it.  See <https://issues.guix.gnu.org/38360>.
                  "--disable-update_cores"
-                 "--disable-builtinzlib")))))))
+                 "--disable-builtinmbedtls"
+                 "--disable-builtinbearssl"
+                 "--disable-builtinzlib"
+                 "--disable-builtinflac"
+                 "--disable-builtinglslang")))))))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("ffmpeg" ,ffmpeg-4)
-       ("freetype" ,freetype)
-       ("libxinerama" ,libxinerama)
-       ("libxkbcommon" ,libxkbcommon)
-       ("libxml2" ,libxml2)
-       ("libxrandr" ,libxrandr)
-       ("libxv" ,libxv)
-       ("mesa" ,mesa)
-       ("openal" ,openal)
-       ("pulseaudio" ,pulseaudio)
-       ("python" ,python)
-       ("qtbase" ,qtbase-5)
-       ("sdl" ,sdl2)
-       ("udev" ,eudev)
-       ("vulkan-loader" ,vulkan-loader)
-       ("wayland" ,wayland)
-       ("zlib" ,zlib)))
+     (list alsa-lib
+           eudev
+           ffmpeg
+           flac
+           freetype
+           glslang
+           libxinerama
+           libxkbcommon
+           libxml2
+           libxrandr
+           libxv
+           mbedtls-apache
+           mesa
+           openal
+           openssl
+           pulseaudio
+           python
+           qtbase-5
+           sdl2
+           spirv-headers
+           spirv-tools
+           vulkan-loader
+           wayland
+           zlib))
     (native-inputs
      (list pkg-config wayland-protocols which))
     (native-search-paths

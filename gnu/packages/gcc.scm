@@ -706,17 +706,16 @@ It also includes runtime support libraries for these languages.")
 (define-public gcc-10
   (package
    (inherit gcc-8)
-   (version "10.4.0")
+   (version "10.5.0")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/gcc/gcc-"
                                 version "/gcc-" version ".tar.xz"))
             (sha256
              (base32
-              "1wg4xdizkksmwi66mvv2v4pk3ja8x64m7v9gzhykzd3wrmdpsaf9"))
+              "1h87lcfaga0ydsf4pkhwlnjr8mky5ix8npbv6iy3jvzlzm1ra415"))
             (patches (search-patches "gcc-9-strmov-store-file-names.patch"
-                                     "gcc-5.0-libvtv-runpath.patch"
-                                     "gcc-10-tree-sra-union-handling.patch"))
+                                     "gcc-5.0-libvtv-runpath.patch"))
             (modules '((guix build utils)))
             (snippet gcc-canadian-cross-objdump-snippet)))
    (properties
@@ -1059,7 +1058,6 @@ as the 'native-search-paths' field."
                  (package-outputs gcc)
                  (delete "lib" (package-outputs gcc))))
     (native-search-paths search-paths)
-    (properties (alist-delete 'hidden? (package-properties gcc)))
     (arguments
      (substitute-keyword-arguments (package-arguments gcc)
        ((#:modules modules %gnu-build-system-modules)
@@ -1079,7 +1077,9 @@ as the 'native-search-paths' field."
                 (for-each
                  delete-file
                  (find-files (string-append (assoc-ref outputs "out") "/bin")
-                             ".*(c\\+\\+|cpp|g\\+\\+|gcov|gcc|lto)(-.*)?$"))))))))))
+                             ".*(c\\+\\+|cpp|g\\+\\+|gcov|gcc|lto)(-.*)?$"))))))))
+    (properties `((upstream-name . "gcc")
+                  ,@(alist-delete 'hidden? (package-properties gcc))))))
 
 (define %generic-search-paths
   ;; This is the language-neutral search path for GCC.  Entries in $CPATH are
@@ -1224,14 +1224,21 @@ provides the GNU compiler for the Go programming language."))
               ;; a cyclic dependency.  <http://debbugs.gnu.org/18101>
               #:separate-lib-output? #f))
 
+;; Provides go-1.14.6
 (define-public gccgo-10
   (make-gccgo gcc-10))
 
+;; Provides go-1.16.5
 (define-public gccgo-11
   (make-gccgo gcc-11))
 
+;; Provides go-1.18
 (define-public gccgo-12
   (make-gccgo gcc-12))
+
+;; Provides go-1.18
+(define-public gccgo-13
+  (make-gccgo gcc-13))
 
 (define %objc-search-paths
   (list (search-path-specification

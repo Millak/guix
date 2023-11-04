@@ -1112,6 +1112,10 @@ portable applications targeting all major HPC platforms.  For that purpose it
 provides abstractions for both parallel execution of code and data management.
 Kokkos is designed to target complex node architectures with N-level memory
 hierarchies and multiple types of execution resources.")
+
+    ;; Code exhibits integer size mismatches when compiled on 32-bit systems.
+    (supported-systems %64bit-supported-systems)
+
     (license license:asl2.0))) ; With LLVM exception
 
 (define-public tweeny
@@ -1250,11 +1254,24 @@ Google's C++ code base.")
                                      (number->string version))
                     #$flags))))))))
 
+(define (make-static-abseil-cpp version)
+  (let ((base abseil-cpp))
+    (hidden-package
+     (package/inherit base
+       (arguments
+        (substitute-keyword-arguments (package-arguments base)
+          ((#:configure-flags flags)
+           #~(cons* "-DCMAKE_POSITION_INDEPENDENT_CODE=ON"
+                    (delete "-DBUILD_SHARED_LIBS=ON" #$flags)))))))))
+
 (define-public abseil-cpp-cxxstd17
   (abseil-cpp-for-c++-standard 17))             ;XXX: the default with GCC 11?
 
 (define-public abseil-cpp-cxxstd11
   (abseil-cpp-for-c++-standard 11))
+
+(define-public static-abseil-cpp
+  (make-static-abseil-cpp abseil-cpp))
 
 (define-public pegtl
   (package
