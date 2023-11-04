@@ -50894,7 +50894,8 @@ Concatenating Aggregated Little Endians.")
         (base32 "09zdgdqalc8d2zsjc9v1ayqxwg5rh7xxq5ldasdmqng0fq202mqm"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f  ; Could not find `parity-scale-codec` in `dependencies`
+       #:cargo-inputs
        (("rust-proc-macro-crate" ,rust-proc-macro-crate-1)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
