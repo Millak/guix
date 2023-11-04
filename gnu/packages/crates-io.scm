@@ -16718,6 +16718,23 @@ to the @code{is_x86_feature_detected!} macro.")
        (sha256
         (base32 "1j0i97325c2grndsfgnm3lqk0xbyvdl2dbgn8i5dd9yhnmycc07d"))))))
 
+(define-public rust-cpuid-bool-0.2
+  (package
+    (name "rust-cpuid-bool")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cpuid-bool" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1fpzag3g655p1lr08jgf5n89snjc2ycqx30mm0w3irc9fc3mvcnw"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/RustCrypto/utils/tree/master/cpufeatures")
+    (synopsis "replaced by the `cpufeatures` crate")
+    (description "This package has been replaced by the `cpufeatures` crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-cpuprofiler-0.0
   (package
     (name "rust-cpuprofiler")
