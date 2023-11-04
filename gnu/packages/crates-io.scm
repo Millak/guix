@@ -50588,18 +50588,19 @@ signing/verification, and general purpose curve arithmetic support.")
 (define-public rust-packed-struct
   (package
     (name "rust-packed-struct")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "packed_struct" version))
-        (file-name
-          (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "10b2fmxchmcigwagnhi42frj74dl02wyv0xwmbr9839qfh7gijlh"))))
+         (base32 "1pvc0b8zpwlwx7kmvnvzh06nfdfrlqxf3p1xr0k1b3xm33xhzcd2"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags       ; Skip the doctests.
+       '("--release" "--lib" "--bins" "--tests")
+       #:cargo-inputs
        (("rust-serde" ,rust-serde-1)
         ("rust-serde-derive" ,rust-serde-derive-1))))
     (home-page "http://www.hashmismatch.net/libraries/packed-struct/")
