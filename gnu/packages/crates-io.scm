@@ -70601,24 +70601,27 @@ maximal amount of configuration possible intended.")
 (define-public rust-speedy-0.8
   (package
     (name "rust-speedy")
-    (version "0.8.5")
+    (version "0.8.6")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "speedy" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "02crzzdlaadz2ya2ij86wamsixbklhp6lbbnji6wz46rkdhqdmip"))))
+                "114vf8kbzpwvx538ydchgy7n9fhjzfaxy23hql2v2s8m38fqchkn"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
-                       ("rust-glam" ,rust-glam-0.17)
+                       ("rust-glam" ,rust-glam-0.23)
                        ("rust-indexmap" ,rust-indexmap-1)
-                       ("rust-memoffset" ,rust-memoffset-0.7)
+                       ("rust-memoffset" ,rust-memoffset-0.8)
                        ("rust-regex" ,rust-regex-1)
                        ("rust-smallvec" ,rust-smallvec-1)
                        ("rust-speedy-derive" ,rust-speedy-derive-0.8)
-                       ("rust-uuid" ,rust-uuid-1))))
+                       ("rust-uuid" ,rust-uuid-1))
+       #:cargo-development-inputs (("rust-paste" ,rust-paste-1)
+                                   ("rust-quickcheck" ,rust-quickcheck-0.9)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
     (home-page "https://github.com/koute/speedy")
     (synopsis "Binary serialization framework")
     (description
