@@ -61793,16 +61793,25 @@ contains the API endpoint response objects.")
   (package
     (inherit rust-rstar-0.9)
     (name "rust-rstar")
-    (version "0.8.3")
+    (version "0.8.4")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "rstar" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1b6vjfwvpcgy0q8ywywz548vhxrmhbz2sm6xyhnmj5p5xd1xfqff"))))))
+          "0z52954pcb8mvl4p0hq7ggpcbncspicg5ijmgvcy8dsdh3lc0i9s"))))
+    (arguments
+     `(#:cargo-inputs (("rust-heapless" ,rust-heapless-0.6)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-pdqselect" ,rust-pdqselect-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1))
+       #:cargo-development-inputs (("rust-approx" ,rust-approx-0.3)
+                                   ("rust-rand" ,rust-rand-0.7)
+                                   ("rust-rand-hc" ,rust-rand-hc-0.2)
+                                   ("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-rstest-0.15
   (package
