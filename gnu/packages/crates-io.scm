@@ -31778,7 +31778,8 @@ OpenGL's old and error-prone API.")
         (base32
          "0mhjly07x10lxg802ppg16wbxddhh4fdnlg10i99qwpfamvqhzbd"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; Tests require XDG_RUNTIME_DIR
+       #:cargo-inputs
        (("rust-backtrace" ,rust-backtrace-0.3)
         ("rust-fnv" ,rust-fnv-1)
         ("rust-gl-generator" ,rust-gl-generator-0.11)
