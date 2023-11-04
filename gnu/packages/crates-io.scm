@@ -38570,7 +38570,7 @@ grammars.")
        ("rust-sha2" ,rust-sha2-0.8)
        ("rust-string-cache" ,rust-string-cache-0.7)
        ("rust-term" ,rust-term-0.5)
-       ("rust-unicode-xid" ,rust-unicode-xid-0.2))
+       ("rust-unicode-xid" ,rust-unicode-xid-0.1))
       #:cargo-development-inputs
       (("rust-rand" ,rust-rand-0.6))))))
 
