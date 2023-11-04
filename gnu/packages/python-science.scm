@@ -14,7 +14,7 @@
 ;;; Copyright © 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2021, 2023 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
 ;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
@@ -419,6 +419,31 @@ a full featured and well tested Trimesh object which allows for easy
 manipulation and analysis, in the style of the Polygon object in the Shapely
 library.")
     (license license:expat)))
+
+(define-public python-meshzoo
+  (package
+    (name "python-meshzoo")
+    (version "0.9.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/diego-hayashi/meshzoo")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "107byfppbq16fqyp2hw7ydcvvahspzq0hzvlvzqg2zxi1aigbr68"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+      (list python-numpy))
+    (native-inputs (list python-flit-core python-matplotlib python-pytest))
+    (home-page "https://github.com/diego-hayashi/meshzoo")
+    (synopsis "Mesh generator for simple geometries")
+    (description
+      "@code{meshzoo} is a mesh generator for finite element or finite
+volume computations for simple domains like regular polygons, disks,
+spheres, cubes, etc.")
+    (license license:gpl3+)))
 
 (define-public python-tspex
   (package
