@@ -137,6 +137,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages image-processing)
   #:use-module (gnu packages java)
   #:use-module (gnu packages less)
   #:use-module (gnu packages lisp)
@@ -165,6 +166,7 @@
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -3756,6 +3758,40 @@ classes for lines, triangles, quadrilaterals, disks, spheres, hexahedra,
 and n-cubes.  All computations are done using numerically stable
 recurrence schemes.  Furthermore, all functions are fully vectorized and
 can return results in exact arithmetic.")
+    (license license:gpl3+)))
+
+(define-public python-quadpy
+  (package
+    (name "python-quadpy")
+    (version "0.16.10")
+    (source
+      (origin
+        (method url-fetch)
+        ; Download zipfile from zenodo, because git checkout is missing
+        ; some data files that are stored via git-lfs.
+        (uri (string-append
+               "https://zenodo.org/records/5541216/files/nschloe/quadpy-v"
+               version
+               ".zip"))
+        (sha256
+          (base32
+            "1f989dipv7lqxvalfrvvlmhlxyl67a87lavyyqrr1mh88glhl592"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+      (list python-importlib-metadata
+            python-numpy
+            python-orthopy
+            python-scipy
+            python-sympy))
+    (native-inputs (list python-accupy python-pytest unzip vtk))
+    (home-page "https://github.com/diego-hayashi/quadpy")
+    (synopsis "Numerical integration, quadrature for various domains")
+    (description
+      "More than 1500 numerical integration schemes for line segments, circles,
+disks, triangles, quadrilaterals, spheres, balls, tetrahedra, hexahedra,
+wedges, pyramids, n-spheres, n-balls, n-cubes, n-simplices, and the
+1D/2D/3D/nD spaces with weight functions exp(-r) and exp(-r2) for fast
+integration of real-, complex-, and vector-valued functions.")
     (license license:gpl3+)))
 
 (define-public slepc
