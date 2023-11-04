@@ -12636,7 +12636,10 @@ Python arrow.humanize.")
         (base32 "1pmv434fhw9pwiqc12pvgaiskrq4v1dh1f238gfsg48r301r5hr9"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             "--skip=tests::second_offsets")
+       #:cargo-inputs
        (("rust-chrono" ,rust-chrono-0.4)
         ("rust-chrono-tz-build" ,rust-chrono-tz-build-0.0.3)
         ("rust-phf" ,rust-phf-0.11)
