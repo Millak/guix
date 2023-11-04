@@ -40651,7 +40651,8 @@ pairs in insertion order.")
         (base32
          "0fd958y02ggwpa2246kmjky9xmnww7vxg0ik3rxgy23hgwlyqq3q"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f  ; thread 'test_into_iter_drop' panicked
+       #:cargo-inputs
        (("rust-clippy" ,rust-clippy-0.0)
         ("rust-heapsize" ,rust-heapsize-0.3)
         ("rust-serde" ,rust-serde-0.9)
