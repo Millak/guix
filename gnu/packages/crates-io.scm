@@ -36312,20 +36312,19 @@ written in Rust.")
 (define-public rust-inotify-sys-0.1
   (package
     (name "rust-inotify-sys")
-    (version "0.1.3")
+    (version "0.1.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "inotify-sys" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1h2nwgajz80qddjm4mpma94zahxw84nscbycy9pgzbjrgjl1ljp7"))))
+         "1syhjgvkram88my04kv03s0zwa66mdwa5v7ddja3pzwvx2sh4p70"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))
-    (home-page "https://github.com/inotify-rs/inotify-sys")
+    (home-page "https://github.com/hannobraun/inotify-sys")
     (synopsis "Inotify bindings for Rust")
     (description
      "This package provides inotify bindings for the Rust programming language.")
