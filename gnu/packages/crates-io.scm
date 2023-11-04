@@ -33586,7 +33586,8 @@ compile time.")
         (base32
          "0ffnn5g9q5xhdmzj2ic5hk9y18kyqflbmqcssqcya9gixs5r5hnx"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; cannot find macro `proc_macro_call` in this scope
+       #:cargo-inputs
        (("rust-hex-literal-impl" ,rust-hex-literal-impl-0.1)
         ("rust-proc-macro-hack" ,rust-proc-macro-hack-0.4))))))
 
