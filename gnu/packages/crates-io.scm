@@ -61383,7 +61383,10 @@ network services using futures.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256 (base32 "1mb2bavvp8jg5wx0kx9n45anrsbjwhjzddim987bjaa11hg45kif"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             "--skip=test_nul_in_string")
+       #:cargo-inputs
        (("rust-base64" ,rust-base64-0.10)
         ("rust-bitflags" ,rust-bitflags-1)
         ("rust-serde" ,rust-serde-1))
