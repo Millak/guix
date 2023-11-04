@@ -34697,7 +34697,8 @@ SystemTime}}.")
         (base32
          "1symcnba2y03b8lj6xp2wd994lk3xyk3wizacjg5s60njzfshs1y"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; Not all files included
+       #:cargo-inputs
        (("rust-bytes" ,rust-bytes-0.5)
         ("rust-futures-channel" ,rust-futures-channel-0.3)
         ("rust-futures-core" ,rust-futures-core-0.3)
