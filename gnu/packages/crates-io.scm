@@ -78615,7 +78615,8 @@ Rustls.")
         (base32
          "16l8kx3j7i3jxq36qs3hnmys6cd2zqcixc1n0kf3kymwanr32a71"))))
     (arguments
-     `(;; These tests require network access.
+     `(#:tests? #f          ; Issue with the certificate test dates.
+       ;; These tests require network access.
        #:cargo-test-flags '("--release" "--" "--skip=tls12" "--skip=modern")
        #:cargo-inputs
        (("rust-bytes" ,rust-bytes-0.5)
