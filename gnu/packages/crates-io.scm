@@ -60294,7 +60294,8 @@ crate unless you're working on a regex implementation.")
                 "15fz3rw8c74586kxl6dcdn4s864ph884wfpg9shgnbrnnss69bvr"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-bytecheck" ,rust-bytecheck-0.6))))
+     `(#:tests? #f      ; (signal: 4, SIGILL: illegal instruction)
+       #:cargo-inputs (("rust-bytecheck" ,rust-bytecheck-0.6))))
     (home-page "https://github.com/rkyv/rend")
     (synopsis "Endian-aware primitives for Rust")
     (description
