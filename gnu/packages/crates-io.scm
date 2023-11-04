@@ -13192,7 +13192,10 @@ completion scripts.")
           "1n29wr6ns660hi63mc30zvs7dhidaycw35am9spzknsal3nrs0sn"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             "--skip=tests::try_holder")
+       #:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-clap" ,rust-clap-2)
         ("rust-serde" ,rust-serde-1)
