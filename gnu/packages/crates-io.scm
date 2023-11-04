@@ -82432,14 +82432,14 @@ panic-free alternative to @code{core::fmt}.")
 (define-public rust-uint-0.9
   (package
     (name "rust-uint")
-    (version "0.9.1")
+    (version "0.9.5")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "uint" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32 "0pys10znj928lijvsq2rvnzns90a91j7199pl2afigc2yi8anw34"))))
+          (base32 "0ljb2q0waadsr56w6j5wwchwibby8bbsf09wnv54zc2k5jx4pxkn"))))
     (build-system cargo-build-system)
     (arguments
       `(#:cargo-inputs
@@ -82447,13 +82447,14 @@ panic-free alternative to @code{core::fmt}.")
          ("rust-byteorder" ,rust-byteorder-1)
          ("rust-crunchy" ,rust-crunchy-0.2)
          ("rust-hex" ,rust-hex-0.4)
-         ("rust-quickcheck" ,rust-quickcheck-0.9)
-         ("rust-rand" ,rust-rand-0.7)
+         ("rust-quickcheck" ,rust-quickcheck-1)
          ("rust-static-assertions" ,rust-static-assertions-1))
         #:cargo-development-inputs
-        (("rust-criterion" ,rust-criterion-0.3)
+        (("rust-criterion" ,rust-criterion-0.4)
          ("rust-num-bigint" ,rust-num-bigint-0.4)
          ("rust-rug" ,rust-rug-1))))
+    (inputs
+     (list gmp mpc mpfr))
     (home-page "https://parity.io")
     (synopsis "Large, fixed-size integer arithmetic in Rust")
     (description "This package is a Rust library for large, fixed-size integer
