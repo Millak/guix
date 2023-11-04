@@ -42628,7 +42628,8 @@ async code in Rust.")
          (base32
           "1j5rfxy2p76xf5f1lgaw85xla0b1bbv2lknvdhv1j0ibmzfg72m1"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; cannot find macro `proc_macro_call` in this scope
+       #:cargo-inputs
        (("rust-block-buffer" ,rust-block-buffer-0.7)
         ("rust-digest" ,rust-digest-0.8)
         ("rust-md5-asm" ,rust-md5-asm-0.4)
