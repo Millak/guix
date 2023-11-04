@@ -79683,7 +79683,8 @@ parser.")
         (sha256
          (base32 "08bl7rp5g6jwmfpad9s8jpw8wjrciadpnbaswgywpr9hv9qbfnqv"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs
        (("rust-indexmap" ,rust-indexmap-2)
         ("rust-kstring" ,rust-kstring-2)
         ("rust-serde" ,rust-serde-1)
