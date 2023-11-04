@@ -14967,7 +14967,8 @@ everywhere.")
         (base32 "05ja8yy5ar34k2cplk0qp1d8qabxzj16mb8jn8790fivwwb6r39i"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; cannot find function `set` in crate `concolor`
+       #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-concolor-query" ,rust-concolor-query-0.1)
         ("rust-is-terminal" ,rust-is-terminal-0.4))))
