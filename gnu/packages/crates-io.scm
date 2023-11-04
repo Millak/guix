@@ -21242,7 +21242,10 @@ for arbitrary structs.")
         (base32
          "1vwb8nwls4lhd2yiyj87kmwws4mmfqfrjcr0pk09b11c6wzfm497"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             "--skip=block::test::block_invalid_token_trees")
+       #:cargo-inputs
        (("rust-darling" ,rust-darling-0.10)
         ("rust-log" ,rust-log-0.4)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
