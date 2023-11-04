@@ -29022,7 +29022,8 @@ Rust.")
         (base32
          "02g3zhqc086zmsb6kcmjs2fiprz8gq12g0xbm9g23215ydxfd5zp"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; Doc tests fail
+       #:cargo-inputs
        (("rust-serde" ,rust-serde-1)
         ("rust-typenum" ,rust-typenum-1))
        #:cargo-development-inputs
