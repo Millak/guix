@@ -164,6 +164,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -3689,6 +3690,30 @@ savings are consistently > 5x.")
       "@code{accupy} is a Python library for accurately computing sums
 and (dot) products.  It implements Kahan summation, Shewchuck's
 algorithm and summation in K-fold precision.")
+    (license license:gpl3+)))
+
+(define-public python-ndim
+  (package
+    (name "python-ndim")
+    (version "0.1.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/diego-hayashi/ndim")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hri82k7pcpw9dns8l1f2asa3dm7hjv71wnxi3752258ia2qa44v"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-sympy))
+    (native-inputs (list python-flit-core python-pytest))
+    (home-page "https://github.com/diego-hayashi/ndim")
+    (synopsis "Multidimensional volumes and monomial integrals")
+    (description
+      "@code{ndim} computes all kinds of volumes and integrals of
+monomials over such volumes in a fast, numerically stable way, using
+recurrence relations.")
     (license license:gpl3+)))
 
 (define-public slepc
