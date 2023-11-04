@@ -29557,7 +29557,7 @@ authenticated encryption cipher.")
   (package
     (inherit rust-ghash-0.5)
     (name "rust-ghash")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
@@ -29565,13 +29565,14 @@ authenticated encryption cipher.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0c957q9sk1q93pqqfvhcmflfm1zvbr14aznfpm25kqd6i437zqnn"))))
+         "0xd362xh17hadc2194dd6kjjq0ak1j4x7kkmfmpq9hw2s564wc4p"))))
     (arguments
      `(#:cargo-inputs
-       (("rust-polyval" ,rust-polyval-0.4)
+       (("rust-opaque-debug" ,rust-opaque-debug-0.3)
+        ("rust-polyval" ,rust-polyval-0.4)
         ("rust-zeroize" ,rust-zeroize-1))
        #:cargo-development-inputs
-       (("rust-hex-literal" ,rust-hex-literal-0.1))))))
+       (("rust-hex-literal" ,rust-hex-literal-0.2))))))
 
 (define-public rust-ghash-0.2
   (package
