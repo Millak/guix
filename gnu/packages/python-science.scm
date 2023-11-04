@@ -1891,6 +1891,31 @@ Python, from the Sheffield machine learning group.  GPy implements a range of
 machine learning algorithms based on GPs.")
     (license license:bsd-3)))
 
+(define-public python-pyfma
+  (package
+    (name "python-pyfma")
+    (version "0.1.6")
+    (source (origin
+              (method git-fetch)   ;for tests
+              (uri (git-reference
+                    (url "https://github.com/nschloe/pyfma")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "12i68jj9n1qj9phjnj6f0kmfhlsd3fqjlk9p6d4gs008azw5m8yn"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list pybind11 python-pytest))
+    (home-page "https://github.com/nschloe/pyfma")
+    (synopsis "Fused multiply-add for Python")
+    (description "@code{pyfma} provides an implementation of fused
+multiply-add which computes @code{(x*y) + z} with a single rounding.
+This is useful for dot products, matrix multiplications, polynomial
+evaluations (e.g., with Horner's rule), Newton's method for evaluating
+functions, convolutions, artificial neural networks etc.")
+    (license license:expat)))
+
 (define-public python-pydicom
   (package
     (name "python-pydicom")
