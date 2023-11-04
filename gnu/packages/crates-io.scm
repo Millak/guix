@@ -57847,7 +57847,8 @@ integers, floats, tuples, booleans, lists, strings, options and results.")
         ("rust-unreachable" ,rust-unreachable-1))
        #:cargo-development-inputs
        (("rust-itertools" ,rust-itertools-0.7)
-        ("rust-num-traits" ,rust-num-traits-0.2))))
+        ("rust-num-traits" ,rust-num-traits-0.1)
+        ("rust-rand" ,rust-rand-0.4))))
     (home-page "https://github.com/notriddle/quickersort")
     (synopsis "Fast sorting")
     (description
