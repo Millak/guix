@@ -62720,11 +62720,12 @@ please consider using @code{async-std} or @code{tokio}.")
         (base32 "08n9sqpiwbjm7scyqz0xp57nggzb15rb0sydidw50lx0j0k9xn2n"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-runtime-raw" ,rust-runtime-raw-0.3))))
     (home-page "https://github.com/rustasync/runtime")
     (synopsis "Proc Macro attributes for the Runtime crate")
     (description
