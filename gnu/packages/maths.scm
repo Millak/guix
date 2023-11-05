@@ -104,6 +104,7 @@
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
@@ -9530,7 +9531,7 @@ computation is supported via MPI.")
 (define-public scilab
   (package
     (name "scilab")
-    (version "2023.1.0")
+    (version "2024.0.0")
     (source
      (origin
        (method git-fetch)
@@ -9540,10 +9541,9 @@ computation is supported via MPI.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0hbqsnc67b4f8zc690kl79bwhjaasykjlmqbln8iymnjcn3l5ypd"))
+         "08nyfli3x7gd396ffd1a8zn9fj3gm6a8yw0ggm547c09sp2rgvl7"))
        (modules '((guix build utils)
                   (ice-9 ftw)))
-       (patches (search-patches "scilab-hdf5-1.8-api.patch"))
        (snippet
         #~(begin
             ;; Delete everything except for scilab itself:
@@ -9598,7 +9598,7 @@ computation is supported via MPI.")
                         "modules/ast/src/cpp/parse/parsescilab.cpp"))))))
     (build-system gnu-build-system)
     (native-inputs
-     (list autoconf
+     (list autoconf-2.71
            autoconf-archive
            automake
            bison
@@ -9615,8 +9615,9 @@ computation is supported via MPI.")
                   curl
                   fftw
                   gettext-minimal
-                  hdf5-1.14
+                  hdf5-1.10
                   lapack
+                  libarchive
                   libx11
                   libxml2
                   matio
@@ -9661,6 +9662,11 @@ computation is supported via MPI.")
                       "modules/scicos/src/translator/makefile.mak"
                       "modules/scicos/src/modelica_compiler/makefile.mak")
                   (("nums\\.cmx?a") ""))))
+            (add-after 'unpack 'fix-linking
+              (lambda _
+                (substitute* "modules/Makefile.am"
+                  (("libscilab_cli_la_LDFLAGS = .*\\)" all)
+                   (string-append all " -lcurl")))))
             (add-after 'unpack 'restrain-to-scilab-cli
               (lambda _
                 ;; Install only scilab-cli.desktop
