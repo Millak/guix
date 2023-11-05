@@ -118,15 +118,22 @@
               (rename-file (string-append #$output "/share/man/man3")
                            (string-append #$output:doc "/share/man/man3"))))
           (replace 'check
-            (lambda* (#:key tests? make-flags #:allow-other-keys)
+            (lambda* (#:key tests? parallel-tests? make-flags #:allow-other-keys)
               (substitute* "tests/runtests.pl"
                 (("/bin/sh") (which "sh")))
               (when tests?
-                (let ((arguments `("-C" "tests" "test"
-                                   ,@(if #$(system-hurd?)
+                (let* ((job-count (string-append
+                                   "-j"
+                                   (if parallel-tests?
+                                       (number->string (parallel-job-count))
+                                       "1")))
+                       (arguments `("-C" "tests" "test"
+                                    ,@make-flags
+                                    ,(if #$(system-hurd?)
                                          ;; protocol FAIL
-                                         (list make-flags "TFLAGS=~1474")
-                                         make-flags))))
+                                         (string-append "TFLAGS=\"~1474 "
+                                                        job-count "\"")
+                                         (string-append "TFLAGS=" job-count)))))
                   ;; The top-level "make check" does "make -C tests quiet-test", which
                   ;; is too quiet.  Use the "test" target instead, which is more
                   ;; verbose.
