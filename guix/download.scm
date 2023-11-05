@@ -129,7 +129,7 @@
        "ftp://ftp.hu.netfilter.org/"
        "ftp://www.lt.netfilter.org/pub/")
       (kernel.org
-       "http://linux-kernel.uio.no/pub/"
+       "https://cdn.kernel.org/pub/"
        "http://ftp.be.debian.org/pub/"
        "https://mirrors.edge.kernel.org/pub/"
        "ftp://ftp.funet.fi/pub/mirrors/ftp.kernel.org/pub/")
