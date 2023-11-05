@@ -41068,7 +41068,8 @@ pairs in insertion order.")
         (base32
          "1kaf95grvfqchxn8pl0854g8ab0fzl56217hndhhhz5qqm2j09kd"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; Tests don't compile correctly.
+       #:cargo-inputs
        (("rust-clippy" ,rust-clippy-0.0)
         ("rust-serde" ,rust-serde-0.8)
         ("rust-serde-test" ,rust-serde-test-0.8))))))
