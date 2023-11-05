@@ -21917,7 +21917,13 @@ Builder for PostgreSQL, SQLite, and MySQL.")
          "1lsq133fwk0zj8xvxhdxqgg0xs31zf3abnwdyshaf0ldca7hkxa5"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; cannot find type `SqliteConnection` in this scope
+       #:cargo-test-flags
+       '("--release"
+         "--features" "sqlite"
+         "--"
+         "--skip=expression::count::count")
+       #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))
@@ -21925,6 +21931,7 @@ Builder for PostgreSQL, SQLite, and MySQL.")
        (("rust-cfg-if" ,rust-cfg-if-0.1)
         ("rust-diesel" ,rust-diesel-1)
         ("rust-dotenv" ,rust-dotenv-0.10))))
+    (native-inputs (list sqlite))
     (home-page "https://diesel.rs")
     (synopsis "Crate internal to Diesel")
     (description "You should not use this crate directly, it is internal to
