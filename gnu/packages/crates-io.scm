@@ -67744,6 +67744,27 @@ for data that potentially contains secrets (e.g. cryptographic keys).")
        (("rust-itertools" ,rust-itertools-0.10)
         ("rust-tokio" ,rust-tokio-1))))))
 
+(define-public rust-serial-test-0.7
+  (package
+    (inherit rust-serial-test-2)
+    (name "rust-serial-test")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serial-test" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1x69v41r2d3l1dby8ppr9vxb1xamjpml5w42zvdwwix1k6wvz7fi"))))
+    (arguments
+     `(#:cargo-inputs (("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-fslock" ,rust-fslock-0.2)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-serial-test-derive" ,rust-serial-test-derive-0.7))
+       #:cargo-development-inputs (("rust-itertools" ,rust-itertools-0.10))))))
+
 (define-public rust-serial-test-0.6
   (package
     (inherit rust-serial-test-1)
