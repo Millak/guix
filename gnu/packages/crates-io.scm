@@ -68800,11 +68800,12 @@ words, like Python's shlex.")
         (base32 "0098nsah04spqf3n8niirmfym4wsdgjl57c78kmzijlq8xymh8c6"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-cc" ,rust-cc-1)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-signal-hook-registry" ,rust-signal-hook-registry-1))))
+        ("rust-signal-hook-registry" ,rust-signal-hook-registry-1))
+       #:cargo-development-inputs
+       (("rust-serial-test" ,rust-serial-test-0.7))))
     (home-page "https://github.com/vorner/signal-hook")
     (synopsis "Unix signal handling")
     (description "This package provides Unix signal handling.")
