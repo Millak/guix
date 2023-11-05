@@ -2975,7 +2975,9 @@ Alacritty terminal emulator.")
           "1wl4z8ini9269x04g8wwdz1nn3hmmvaaysq4jwhymikyg81kv0jg"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       '("--release" "--lib" "--bins" "--tests")
+       #:cargo-inputs
        (("rust-approx" ,rust-approx-0.3)
         ("rust-decimal" ,rust-decimal-2)
         ("rust-num-complex" ,rust-num-complex-0.2)
