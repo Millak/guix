@@ -1030,11 +1030,19 @@ safety and thread safety guarantees.")
                    (copy-recursively "src" (string-append out dest "/src")))))
              (add-after 'install-rust-src 'wrap-rust-analyzer
                (lambda* (#:key outputs #:allow-other-keys)
-                 (wrap-program (string-append (assoc-ref outputs "tools")
-                                              "/bin/rust-analyzer")
-                   `("RUST_SRC_PATH" ":" =
-                     (,(string-append (assoc-ref outputs "rust-src")
-                                      "/lib/rustlib/src/rust/library"))))))))))
+                 (let ((bin (string-append (assoc-ref outputs "tools") "/bin")))
+                   (rename-file (string-append bin "/rust-analyzer")
+                                (string-append bin "/.rust-analyzer-real"))
+                   (call-with-output-file (string-append bin "/rust-analyzer")
+                     (lambda (port)
+                       (format port "#!~a
+if test -z \"${RUST_SRC_PATH}\";then export RUST_SRC_PATH=~S;fi;
+exec -a \"$0\" \"~a\" \"$@\""
+                               (which "bash")
+                               (string-append (assoc-ref outputs "rust-src")
+                                              "/lib/rustlib/src/rust/library")
+                               (string-append bin "/.rust-analyzer-real"))))
+                   (chmod (string-append bin "/rust-analyzer") #o755))))))))
       ;; Add test inputs.
       (native-inputs (cons* `("gdb" ,gdb/pinned)
                             `("procps" ,procps)
