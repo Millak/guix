@@ -9627,8 +9627,6 @@ computation is supported via MPI.")
                   tk))
     (arguments
      (list
-      ;; The tests require java code.
-      #:tests? #f
       #:configure-flags
       #~(list
          "--enable-relocatable"
@@ -9668,12 +9666,31 @@ computation is supported via MPI.")
                   "modules/scicos/src/translator/makefile.mak"
                   "modules/scicos/src/modelica_compiler/makefile.mak")
                 (("nums\\.cmx?a") ""))))
-          ;; Install only scilab-cli.desktop
-          (add-after 'unpack 'remove-desktop-files
-            (lambda _
-              (substitute* "desktop/Makefile.am"
-                (("desktop_DATA =")
-                 "desktop_DATA = scilab-cli.desktop\nDUMMY ="))))
+            (add-after 'unpack 'restrain-to-scilab-cli
+              (lambda _
+                ;; Install only scilab-cli.desktop
+                (substitute* "desktop/Makefile.am"
+                  (("desktop_DATA =")
+                   "desktop_DATA = scilab-cli.desktop\nDUMMY ="))
+                ;; Replace scilab with scilab-cli for tests.
+                (substitute* "Makefile.incl.am"
+                  (("scilab-bin") "scilab-cli-bin")
+                  (("scilab -nwni") "scilab-cli")
+                  ;; Do not install tests, demos and examples.
+                  ;; This saves up to 140 Mo in the final output.
+                  (("(TESTS|DEMOS|EXAMPLES)_DIR=.*" all kind)
+                   (string-append kind "_DIR=")))))
+            (add-before 'check 'disable-failing-tests
+              (lambda _
+                (substitute* "Makefile"
+                  (("TESTS = .*")
+                   "TESTS =\n"))
+                (substitute* "modules/functions_manager/Makefile"
+                  (("check:.*")
+                   "check:\n"))
+                (substitute* "modules/types/Makefile"
+                  (("\\$\\(MAKE\\) \\$\\(AM_MAKEFLAGS\\) check-am")
+                   ""))))
           ;; These generated files are assumed to be present during
           ;; the build.
           (add-after 'bootstrap 'bootstrap-dynamic_link-scripts
