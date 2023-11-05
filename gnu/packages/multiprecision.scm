@@ -252,17 +252,16 @@ error.  Additionally, iRRAM uses the concept of multi-valued functions.")
 (define-public qd
   (package
     (name "qd")
-    (version "2.3.23")
+    (version "2.3.24")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://crd-legacy.lbl.gov/~dhbailey/mpdist/qd-"
                            version ".tar.gz"))
        (sha256
-        (base32 "09pfd77rmy370hy7qdqw84z21y9zpl3fcwzf93rhiv0kwhfg9smk"))))
+        (base32 "0f0fwsyh23p5zfyrj6n16q7b56g213fnhdc8dbl22r3fz1rnqyx4"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list gfortran))
+    (native-inputs (list automake autoconf gfortran))
     (arguments
      (list
       #:configure-flags
