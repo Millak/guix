@@ -10,6 +10,7 @@
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -263,18 +264,18 @@ error.  Additionally, iRRAM uses the concept of multi-valued functions.")
     (native-inputs
      (list gfortran))
     (arguments
-     `(#:configure-flags `("--disable-enable_fma" ;weird :/
-                           "--disable-static"
-                           "--enable-shared"
-                           ,,@(if (string-prefix? "aarch64"
-                                                  (or (%current-target-system)
-                                                      (%current-system)))
-                                  ;; XXX: The qd_test test fails numerical
-                                  ;; accuracy checks for 'dd_real::exp()' on
-                                  ;; aarch64 with GCC 5.4 at -O2.  Disabling
-                                  ;; expensive optimizations lets it pass.
-                                  '("CXXFLAGS=-O3 -fno-expensive-optimizations")
-                                  '("CXXFLAGS=-O3")))))
+     (list
+      #:configure-flags
+      #~(list "--disable-enable_fma" ;weird :/
+              "--disable-static"
+              "--enable-shared"
+              #$@(if (target-aarch64?)
+                     ;; XXX: The qd_test test fails numerical
+                     ;; accuracy checks for 'dd_real::exp()' on
+                     ;; aarch64 with GCC 5.4 at -O2.  Disabling
+                     ;; expensive optimizations lets it pass.
+                     '("CXXFLAGS=-O3 -fno-expensive-optimizations")
+                     '("CXXFLAGS=-O3")))))
     (home-page "https://www.davidhbailey.com/dhbsoftware/")
     (synopsis "Double-double and quad-double library")
     (description "This package supports both a double-double
