@@ -5044,7 +5044,7 @@ is a library for creating graphical user interfaces.")
 (define-public sbcl-cl-webkit
   (package
     (name "sbcl-cl-webkit")
-    (version "3.5.9")
+    (version "3.5.10")
     (source
      (origin
        (method git-fetch)
@@ -5054,7 +5054,7 @@ is a library for creating graphical user interfaces.")
        (file-name (git-file-name "cl-webkit" version))
        (sha256
         (base32
-         "00h61p5mrvvbycp703isy0wvgqlfb7k0cidw4vg75y7s29m3k6k0"))))
+         "0bn8idvbi58kg0g76lanvjzkgnkcy41yn9vbp7f80q9fa7w892rq"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      `(("cffi" ,sbcl-cffi)
