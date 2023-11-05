@@ -5332,16 +5332,15 @@ Wayland.")
 (define-public libx11
   (package
     (name "libx11")
-    (version "1.8.1")
-    (replacement libx11-fixed)          ;security fixes
+    (version "1.8.7")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://xorg.freedesktop.org/archive/"
-                           "/individual/lib/libX11-" version ".tar.xz"))
+       (uri (string-append "mirror://xorg/individual/lib/libX11-"
+                           version ".tar.xz"))
        (sha256
         (base32
-         "1xyry8i7zqmlkvpbyyqwi18rrdw6ycczlvfp63rh2570pfhimi0v"))))
+         "1vlrgrdibp4lr84wgmsdy1ihzaai8bvvqc68npi1m19wir36gwh5"))))
     (build-system gnu-build-system)
     (outputs '("out"
                "doc"))                  ;8 MiB of man pages + XML
@@ -5362,19 +5361,6 @@ Wayland.")
     (synopsis "Xorg Core X11 protocol client library")
     (description "Xorg Core X11 protocol client library.")
     (license license:x11)))
-
-(define-public libx11-fixed
-  (package
-    (inherit libx11)
-    (version "1.8.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://xorg/individual/lib/libX11-"
-                           version ".tar.xz"))
-       (sha256
-        (base32
-         "1vlrgrdibp4lr84wgmsdy1ihzaai8bvvqc68npi1m19wir36gwh5"))))))
 
 ;; packages of height 5 in the propagated-inputs tree
 
