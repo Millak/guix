@@ -88334,7 +88334,9 @@ non-cryptographic hashing algorithm and random number generator.")
          "126irvwn63kxgqjk5ap1pw3p3grw2sskyg32h0v4bqawsrx057hj"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       '("--release" "--lib" "--bins" "--tests")
+       #:cargo-inputs
        (("rust-once-cell" ,rust-once-cell-1)
         ("rust-tap" ,rust-tap-1)
         ("rust-typemap" ,rust-typemap-0.3))))
