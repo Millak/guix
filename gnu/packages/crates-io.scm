@@ -3408,8 +3408,33 @@ applications on Android with NativeActivity or GameActivity.")
         (base32 "0klq7cp4lm74gjf9p12zdjcr159blbicrfvadmaqvfxbi8njw1dq"))))
     (arguments `(#:skip-build? #true)))) ;XXX: Android only
 
+(define-public rust-android-logger-0.11
+  (package
+    (name "rust-android-logger")
+    (version "0.11.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "android-logger" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0fl8ix7q1cj73lzy6xcwyrqwpvnx5aaxszawidivv9ra4h6bh6c6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-android-log-sys" ,rust-android-log-sys-0.2)
+                       ("rust-env-logger" ,rust-env-logger-0.10)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-once-cell" ,rust-once-cell-1))))
+    (home-page "https://github.com/rust-mobile/android_logger-rs")
+    (synopsis "Logging implementation for @code{log}")
+    (description
+     "This library is a drop-in replacement for @code{env_logger}.  Instead,
+it outputs messages to Android's logcat.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-android-logger-0.10
   (package
+    (inherit rust-android-logger-0.11)
     (name "rust-android-logger")
     (version "0.10.1")
     (source
@@ -3419,19 +3444,12 @@ applications on Android with NativeActivity or GameActivity.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0rigzgkaik2y7pvsilpjdy19mdq1kkamw2rdf9fjkvb5hfqhkvfr"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-android-log-sys" ,rust-android-log-sys-0.2)
         ("rust-env-logger" ,rust-env-logger-0.8)
         ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-log" ,rust-log-0.4))))
-    (home-page "https://github.com/Nercury/android_logger-rs")
-    (synopsis "Logging implementation for @code{log}")
-    (description
-     "This library is a drop-in replacement for @code{env_logger}.  Instead,
-it outputs messages to Android's logcat.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-log" ,rust-log-0.4))))))
 
 (define-public rust-android-logger-0.8
   (package
