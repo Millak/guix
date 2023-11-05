@@ -83199,7 +83199,13 @@ panic-free alternative to @code{core::fmt}.")
         #:cargo-development-inputs
         (("rust-criterion" ,rust-criterion-0.4)
          ("rust-num-bigint" ,rust-num-bigint-0.4)
-         ("rust-rug" ,rust-rug-1))))
+         ("rust-rug" ,rust-rug-1))
+        #:phases
+        (modify-phases %standard-phases
+          (add-after 'unpack 'adjust-cargo-toml
+            (lambda _
+              (substitute* "Cargo.toml"
+                (("integer") "default")))))))
     (inputs
      (list gmp mpc mpfr))
     (home-page "https://parity.io")
