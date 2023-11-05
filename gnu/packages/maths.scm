@@ -9667,6 +9667,13 @@ computation is supported via MPI.")
                 (substitute* "modules/Makefile.am"
                   (("libscilab_cli_la_LDFLAGS = .*\\)" all)
                    (string-append all " -lcurl")))))
+            (add-after 'unpack 'set-version
+              (lambda _
+                (substitute* "modules/core/includes/version.h.in"
+                  (("scilab-branch-main")  ; version
+                   (string-append
+                    "scilab-"
+                    #$(version-major+minor (package-version this-package)))))))
             (add-after 'unpack 'restrain-to-scilab-cli
               (lambda _
                 ;; Install only scilab-cli.desktop
