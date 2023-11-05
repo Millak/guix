@@ -28885,6 +28885,7 @@ for the @code{futures-rs} library.")
        (("rust-futures" ,rust-futures-0.1)
         ("rust-futures-channel-preview" ,rust-futures-channel-preview-0.3)
         ("rust-futures-core-preview" ,rust-futures-core-preview-0.3)
+        ("rust-futures-join-macro-preview" ,rust-futures-join-macro-preview-0.3)
         ("rust-futures-io-preview" ,rust-futures-io-preview-0.3)
         ("rust-futures-select-macro-preview"
          ,rust-futures-select-macro-preview-0.3)
@@ -28894,10 +28895,7 @@ for the @code{futures-rs} library.")
         ("rust-proc-macro-hack" ,rust-proc-macro-hack-0.5)
         ("rust-proc-macro-nested" ,rust-proc-macro-nested-0.1)
         ("rust-slab" ,rust-slab-0.4)
-        ("rust-tokio-io" ,rust-tokio-io-0.1))
-       #:cargo-development-inputs
-       (("rust-futures-join-macro-preview"
-         ,rust-futures-join-macro-preview-0.3))))
+        ("rust-tokio-io" ,rust-tokio-io-0.1))))
     (home-page "https://github.com/rust-lang/futures-rs")
     (synopsis "Utilities and extension traits for futures-rs library")
     (description
