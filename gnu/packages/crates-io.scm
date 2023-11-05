@@ -46159,8 +46159,37 @@ general elements and for numerics.")
      "This package provides handles for accessing Android APIs.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ndk-glue-0.7
+  (package
+    (name "rust-ndk-glue")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ndk-glue" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0zyniqkkrzx3l3akf87h7kq1fdrkgddiv8wcfsmhlpn1sayzld04"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ;XXX: Android only
+       #:cargo-inputs (("rust-android-logger" ,rust-android-logger-0.11)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-ndk" ,rust-ndk-0.7)
+                       ("rust-ndk-context" ,rust-ndk-context-0.1)
+                       ("rust-ndk-macro" ,rust-ndk-macro-0.3)
+                       ("rust-ndk-sys" ,rust-ndk-sys-0.4)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12))))
+    (home-page "https://github.com/rust-windowing/android-ndk-rs")
+    (synopsis "Startup code for Android binaries")
+    (description "This package provides startup code for Android binaries.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ndk-glue-0.6
   (package
+    (inherit rust-ndk-glue-0.7)
     (name "rust-ndk-glue")
     (version "0.6.2")
     (source (origin
@@ -46170,7 +46199,6 @@ general elements and for numerics.")
               (sha256
                (base32
                 "0pz6cdmmlzsb2jhrfvkma5d5vw2i331dlghqnkk2c0l6hdxll30d"))))
-    (build-system cargo-build-system)
     (arguments
      (list #:skip-build? #t ;XXX: Android only
            #:cargo-inputs `(("rust-android-logger" ,rust-android-logger-0.10)
@@ -46180,11 +46208,7 @@ general elements and for numerics.")
                             ("rust-ndk" ,rust-ndk-0.6)
                             ("rust-ndk-context" ,rust-ndk-context-0.1)
                             ("rust-ndk-macro" ,rust-ndk-macro-0.3)
-                            ("rust-ndk-sys" ,rust-ndk-sys-0.3))))
-    (home-page "https://github.com/rust-mobile/ndk")
-    (synopsis "Startup code for Android binaries")
-    (description "This package provides startup code for Android binaries.")
-    (license (list license:expat license:asl2.0))))
+                            ("rust-ndk-sys" ,rust-ndk-sys-0.3))))))
 
 (define-public rust-ndk-glue-0.5
   (package
