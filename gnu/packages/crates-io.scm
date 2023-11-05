@@ -7123,14 +7123,14 @@ c6e7d37.  However, this package works only up to 128 bytes.")
 (define-public rust-base64-0.21
   (package
     (name "rust-base64")
-    (version "0.21.4")
+    (version "0.21.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "base64" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "18jhmsli1l7zn6pgslgjdrnghqnz12g68n25fv48ids3yfk3x94v"))))
+                "1y8x2xs9nszj5ix7gg4ycn5a6wy7ca74zxwqri3bdqzdjha6lqrm"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
