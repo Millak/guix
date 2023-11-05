@@ -67847,6 +67847,27 @@ for data that potentially contains secrets (e.g. cryptographic keys).")
        #:cargo-development-inputs
        (("rust-env-logger" ,rust-env-logger-0.9))))))
 
+(define-public rust-serial-test-derive-0.7
+  (package
+    (inherit rust-serial-test-derive-2)
+    (name "rust-serial-test-derive")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serial-test-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wjrhql36lsgjw9zg5c95px0mq74ry5m46hwiwgnh7dyn98217nb"))))
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro-error" ,rust-proc-macro-error-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-rustversion" ,rust-rustversion-1)
+                       ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.9)
+                                   ("rust-trybuild" ,rust-trybuild-1))))))
+
 (define-public rust-serial-test-derive-0.6
   (package
     (inherit rust-serial-test-derive-1)
