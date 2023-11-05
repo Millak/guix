@@ -7611,7 +7611,29 @@ symmetric matrices.")
                  (base32
                   "06xcs4ic60ndcf2hq19gr8yjwdsnphpcyhapab41rkw726z4lm7p"))))
       (build-system cmake-build-system)
-      (home-page "https://github.com/elemental/Elemental")
+      (arguments
+       (list
+        #:build-type "Release" ;default RelWithDebInfo not supported
+        #:configure-flags
+        #~(list "-DEL_DISABLE_PARMETIS:BOOL=YES"
+                "-DEL_AVOID_COMPLEX_MPI:BOOL=NO"
+                "-DEL_CACHE_WARNINGS:BOOL=YES"
+                "-DEL_TESTS:BOOL=YES"
+                "-DCMAKE_INSTALL_LIBDIR=lib"
+                "-DGFORTRAN_LIB=gfortran")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'mpi-setup
+                 #$%openmpi-setup)
+            (add-before 'check 'setup-tests
+              (lambda _                ;; Parallelism is done at the MPI layer.
+                (setenv "OMP_NUM_THREADS" "1")))
+            (add-after 'install 'remove-tests
+              (lambda _
+                ;; Tests are installed, with no easy configuration
+                ;; switch to prevent this, so delete them.
+                (delete-file-recursively
+                 (string-append  #$output "/bin/test")))))))
       (native-inputs
        (list gfortran))
       (inputs
@@ -7624,29 +7646,7 @@ symmetric matrices.")
              openmpi
              qd
              openblas))
-      (arguments
-       `(#:build-type "Release"           ;default RelWithDebInfo not supported
-         #:configure-flags `("-DEL_DISABLE_PARMETIS:BOOL=YES"
-                             "-DEL_AVOID_COMPLEX_MPI:BOOL=NO"
-                             "-DEL_CACHE_WARNINGS:BOOL=YES"
-                             "-DEL_TESTS:BOOL=YES"
-                             "-DCMAKE_INSTALL_LIBDIR=lib"
-                             "-DGFORTRAN_LIB=gfortran")
-         #:phases (modify-phases %standard-phases
-                    (add-before 'check 'mpi-setup
-                      ,%openmpi-setup)
-                    (add-before 'check 'setup-tests
-                      (lambda _
-                        ;; Parallelism is done at the MPI layer.
-                        (setenv "OMP_NUM_THREADS" "1")
-                        #t))
-                    (add-after 'install 'remove-tests
-                      (lambda* (#:key outputs #:allow-other-keys)
-                        ;; Tests are installed, with no easy configuration
-                        ;; switch to prevent this, so delete them.
-                        (delete-file-recursively
-                         (string-append (assoc-ref outputs "out") "/bin"))
-                        #t)))))
+      (home-page "https://github.com/elemental/Elemental")
       (synopsis "Dense and sparse-direct linear algebra and optimization")
       (description "Elemental is a modern C++ library for distributed-memory
 dense and sparse-direct linear algebra, conic optimization, and lattice
