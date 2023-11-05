@@ -62745,8 +62745,7 @@ please consider using @code{async-std} or @code{tokio}.")
         (base32 "1h6cp6c3wr3rmix01mfxm5vy5d6xai60qap711ylv5dzr53a8rv8"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-async-datagram" ,rust-async-datagram-3)
         ("rust-futures" ,rust-futures-0.1)
         ("rust-futures-preview" ,rust-futures-preview-0.3)
