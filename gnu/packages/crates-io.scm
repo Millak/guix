@@ -10570,7 +10570,7 @@ in a byte slice, fast.")
 (define-public rust-bytemuck-derive-1
   (package
     (name "rust-bytemuck-derive")
-    (version "1.3.0")
+    (version "1.5.0")
     (source
       (origin
         (method url-fetch)
@@ -10578,16 +10578,14 @@ in a byte slice, fast.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1d1j74dgq9b0wx73hvirsyzr3hmi7ip16bfvwc3q0bzic2wk7qjz"))))
+          "1cgj75df2v32l4fmvnp25xxkkz4lp6hz76f7hfhd55wgbzmvfnln"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f      ; unresolved import `bytemuck`
        #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))
-       #:cargo-development-inputs
-       (("rust-bytemuck" ,rust-bytemuck-1))))
+        ("rust-syn" ,rust-syn-2))))
     (home-page "https://github.com/Lokathor/bytemuck")
     (synopsis "Derive proc-macros for @code{bytemuck}")
     (description
