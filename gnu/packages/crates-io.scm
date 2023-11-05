@@ -14560,7 +14560,10 @@ combinator.")
        (sha256
         (base32 "1006sbl3ybiky3d5q28p0lyph37hk7sipls1rkhikv11lfxacgfs"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=parser::Parser::boxed")
+       #:cargo-inputs
        (("rust-ascii" ,rust-ascii-0.9)
         ("rust-byteorder" ,rust-byteorder-1)
         ("rust-combine-regex-1" ,rust-combine-regex-1-1)
@@ -14573,7 +14576,10 @@ combinator.")
         ("rust-bytes" ,rust-bytes-0.4)
         ("rust-futures" ,rust-futures-0.1)
         ("rust-partial-io" ,rust-partial-io-0.3)
-        ("rust-tokio-codec" ,rust-tokio-codec-0.1))))))
+        ("rust-quick-error" ,rust-quick-error-1)
+        ("rust-quickcheck" ,rust-quickcheck-0.6)
+        ("rust-tokio-codec" ,rust-tokio-codec-0.1)
+        ("rust-tokio-io" ,rust-tokio-io-0.1))))))
 
 (define-public rust-combine-regex-1-1
   (package
