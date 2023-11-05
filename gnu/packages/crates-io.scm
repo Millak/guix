@@ -21864,10 +21864,13 @@ example.")
         (base32
          "0hpmwrc0zx3zvpgwp9zrm6wj8d8i8q8990grlrnfzlivbi6zqyq4"))))
     (build-system cargo-build-system)
-    (native-inputs
-     (list sqlite))
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       '("--release"
+         "--features" "sqlite"
+         "--"
+         "--skip=expression::count::count")
+       #:cargo-inputs
        (("rust-bigdecimal" ,rust-bigdecimal-0.1)
         ("rust-bitflags" ,rust-bitflags-1)
         ("rust-byteorder" ,rust-byteorder-1)
@@ -21892,13 +21895,8 @@ example.")
        (("rust-cfg-if" ,rust-cfg-if-0.1)
         ("rust-dotenv" ,rust-dotenv-0.10)
         ("rust-quickcheck" ,rust-quickcheck-0.4)
-        ("rust-tempdir" ,rust-tempdir-0.3))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "cargo" "test" "--features" "sqlite" "--"
-                     "--skip=expression::count::count"))))))
+        ("rust-tempdir" ,rust-tempdir-0.3))))
+    (native-inputs (list sqlite))
     (home-page "https://diesel.rs")
     (synopsis "Safe, extensible ORM and Query Builder")
     (description "This package provides a safe, extensible ORM and Query
