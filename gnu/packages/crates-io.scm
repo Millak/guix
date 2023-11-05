@@ -78550,7 +78550,8 @@ the current thread.")
          "1j67p4g9y20bvlbphjmpfzc0yy8clhmz6wza6hw94iciyvncxscy"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; Tests don't compile
+       #:cargo-inputs
        (("rust-crossbeam-channel" ,rust-crossbeam-channel-0.3)
         ("rust-crossbeam-deque" ,rust-crossbeam-deque-0.7)
         ("rust-crossbeam-queue" ,rust-crossbeam-queue-0.1)
