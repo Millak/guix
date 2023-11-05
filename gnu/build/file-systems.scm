@@ -3,7 +3,7 @@
 ;;; Copyright © 2016, 2017 David Craven <david@craven.ch>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2019–2021, 2024 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 David C. Trudgian <dave@trudgian.net>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Oleg Pykhalov <go.wigust@gmail.com>
@@ -447,6 +447,116 @@ fix only those considered safe to repair automatically."
         (0 'pass)
         (_ 'fatal-error))
       'pass))
+
+
+;;;
+;;; exFAT file systems.
+;;;
+
+;; <https://learn.microsoft.com/en-us/windows/win32/fileio/exfat-specification>.
+
+(define-syntax %exfat-endianness
+  (identifier-syntax (endianness little)))
+
+(define (exfat-superblock? sblock)
+  "Return #t when SBLOCK, a bytevector of at least length 512, is an exFAT
+superblock, called main boot sector in the exFAT specification."
+  (and (bytevector=? (string->utf8 "EXFAT   ")
+                     (sub-bytevector sblock 3 8)) ;FileSystemName
+       (bytevector=? (make-bytevector 53 0)
+                     (sub-bytevector sblock 11 53)) ;MustBeZero
+       (bytevector=? #vu8(#x55 #xaa)
+                     (sub-bytevector sblock 510 2)))) ;BootSignature
+
+(define (exfat-bytes-per-sector-shift sblock)
+  (bytevector-u8-ref sblock 108))
+
+(define (exfat-sectors-per-cluster-shift sblock)
+  (bytevector-u8-ref sblock 109))
+
+(define (exfat-root-directory-offset sblock)
+  (let ((cluster-heap-offset    (bytevector-u32-ref sblock 88
+                                                    %exfat-endianness))
+        (root-directory-cluster (bytevector-u32-ref sblock 96
+                                                    %exfat-endianness)))
+    (define (cluster->sector cluster)
+      (let ((first-data-cluster 2))
+        (+ cluster-heap-offset (ash (- cluster first-data-cluster)
+                                    (exfat-sectors-per-cluster-shift sblock)))))
+    (ash (cluster->sector root-directory-cluster)
+         (exfat-bytes-per-sector-shift sblock))))
+
+(define (exfat-cluster-size sblock)
+  (ash 1 (+ (exfat-bytes-per-sector-shift sblock)
+            (exfat-sectors-per-cluster-shift sblock))))
+
+;; exFAT stores the volume name in a directory entry with no fixed location.  We
+;; search an arbitrary number of entries before giving up: 128 for devices <256M
+;; (4K clusters), 1024 for those <32G (32K clusters), or 4096 for others (128K).
+;; It's silly but mostly matches what util-linux's libblkid does with its higher
+;; arbitrary number of 10,000 tries.  To match that, we'd not only have to look
+;; up subsequent clusters in the FAT, but redesign this entire module not to
+;; assume that all file systems have a `superblock' that both fits neatly into
+;; RAM, and just happens to politely contain all the metadata we'll ever need.
+(define (read-exfat-superblock+root-directory-cluster device sblock)
+  "Return as a bytevector the raw contents of DEVICE's exFAT `superblock' from
+main boot sector up to the RootDirectoryCluster expected to contain the volume
+label."
+  (let* ((span (+ (exfat-root-directory-offset sblock)
+                  (exfat-cluster-size sblock))))
+    (read-superblock device 0 span (const #t))))
+
+(define (read-exfat-superblock device)
+  "Return the raw contents of DEVICE's exFAT superblock as a bytevector, or #f
+if DEVICE does not contain an exFAT file system."
+  (and=> (read-superblock device 0 512 exfat-superblock?)
+         (cut read-exfat-superblock+root-directory-cluster device <>)))
+
+(define (exfat-superblock-volume-name sblock)
+  "Return as a string the volume name belonging to an exFAT file system
+beginning with bytevector SBLOCK, which includes directory entries.
+Return #f if no volume name was found within our arbitrary limit."
+  ;; Defined in section 7.3 of the exFAT specification.
+  (let ((root-directory (exfat-root-directory-offset sblock))
+        (cluster-size   (exfat-cluster-size sblock))
+        (entry-size 32))                ;bytes
+    (let loop ((cluster-offset 0))
+      (if (< cluster-offset cluster-size)
+          (let ((offset (+ root-directory cluster-offset)))
+            (match (bytevector-u8-ref sblock offset)
+              ((or #x00                 ;end of directory
+                   #x03)                ;type 3 & not in use
+               #f)
+              (#x83                     ;type 3 & in use
+               (let* ((length (min 11 (bytevector-u8-ref sblock (+ 1 offset))))
+                      (label (sub-bytevector sblock (+ 2 offset) (* 2 length))))
+                 (utf16->string label %exfat-endianness)))
+              (_ (loop (+ entry-size offset)))))
+          #f))))
+
+(define (exfat-superblock-uuid sblock)
+  "Return the Volume Serial Number of exFAT superblock SBLOCK as a bytevector.
+This 4-byte identifier is guaranteed to exist, unlike the optional 16-byte
+Volume GUID from section 7.5 of the exFAT specification."
+  (sub-bytevector sblock 100 4))
+
+(define (check-exfat-file-system device force? repair)
+  "Return the health of an unmounted exFAT file system on DEVICE.  If FORCE?
+is true, check the file system even if it's marked as clean.  If REPAIR is
+false, do not write to the file system to fix errors.  If it's #t, fix all
+errors.  Otherwise, fix only those considered safe to repair automatically."
+  (match (status:exit-val
+          (apply system*/tty "fsck.exfat" "-sv"
+                 `(,@(if force? '("-b") '())
+                   ,@(match repair
+                       (#f '("-n"))
+                       (#t '("-y"))
+                       (_  '("-p")))
+                   ,device)))
+    (0 'pass)
+    (1 'errors-corrected)
+    (2 'reboot-required)
+    (_ 'fatal-error)))
 
 
 ;;;
@@ -937,6 +1047,8 @@ partition field reader that returned a value."
                                 bcachefs-superblock-volume-name)
         (partition-field-reader read-btrfs-superblock
                                 btrfs-superblock-volume-name)
+        (partition-field-reader read-exfat-superblock
+                                exfat-superblock-volume-name)
         (partition-field-reader read-fat32-superblock
                                 fat32-superblock-volume-name)
         (partition-field-reader read-fat16-superblock
@@ -959,6 +1071,8 @@ partition field reader that returned a value."
                                 bcachefs-superblock-external-uuid)
         (partition-field-reader read-btrfs-superblock
                                 btrfs-superblock-uuid)
+        (partition-field-reader read-exfat-superblock
+                                exfat-superblock-uuid)
         (partition-field-reader read-fat32-superblock
                                 fat32-superblock-uuid)
         (partition-field-reader read-fat16-superblock
@@ -1079,6 +1193,7 @@ an exception in such cases but perform the nearest sane action."
      ((string-prefix? "ext" type) check-ext2-file-system)
      ((string-prefix? "bcachefs" type) check-bcachefs-file-system)
      ((string-prefix? "btrfs" type) check-btrfs-file-system)
+     ((string-suffix? "exfat" type) check-exfat-file-system)
      ((string-suffix? "fat" type) check-fat-file-system)
      ((string-prefix? "jfs" type) check-jfs-file-system)
      ((string-prefix? "f2fs" type) check-f2fs-file-system)
