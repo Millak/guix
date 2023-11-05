@@ -9559,7 +9559,8 @@ computation is supported via MPI.")
             (for-each delete-file-recursively
                       '("scilab"
                         "config"
-                        "libs/GetWindowsVersion"))
+                        "libs/GetWindowsVersion"
+                        "Visual-Studio-settings"))
             (for-each delete-file
                       (cons* "aclocal.m4"
                              "configure"
@@ -9571,6 +9572,7 @@ computation is supported via MPI.")
                              "m4/ltversion.m4"
                              "m4/lt~obsolete.m4"
                              "m4/pkg.m4"
+                             "Scilab.sln"
                              (find-files "." "^Makefile\\.in$")))
 
             ;; And finally some files in the modules directory:
@@ -9654,10 +9656,7 @@ computation is supported via MPI.")
                         (search-input-directory %build-inputs "include/eigen3"))
          ;; Find and link to the OCaml Num package
          "OCAMLC=ocamlfind ocamlc -package num"
-         "OCAMLOPT=ocamlfind ocamlopt -package num -linkpkg"
-         ;; There are some 2018-fortran errors that are ignored
-         ;; with this fortran compiler flag.
-         "FFLAGS=-fallow-argument-mismatch")
+         "OCAMLOPT=ocamlfind ocamlopt -package num -linkpkg")
       #:phases
       #~(modify-phases %standard-phases
           ;; The Num library is specified with the OCAMLC and
@@ -9685,14 +9684,12 @@ computation is supported via MPI.")
             (lambda* (#:key inputs #:allow-other-keys)
               ;; Fix scilab script.
               (substitute* "bin/scilab"
-                (("\\/bin\\/ls")
+                (("/bin/ls")
                  (search-input-file inputs "bin/ls")))
               ;; Fix core.start.
               (substitute* "modules/core/etc/core.start"
                 (("'SCI/modules")
-                 "SCI+'/modules"))
-              ;; Set SCIHOME to /tmp before macros compilation.
-              (setenv "SCIHOME" "/tmp")))
+                 "SCI+'/modules"))))
           ;; Prevent race condition
           (add-after 'pre-build 'build-parsers
             (lambda* (#:key (make-flags #~'()) #:allow-other-keys)
