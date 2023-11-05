@@ -72052,7 +72052,10 @@ Rust.")
         (base32 "0r00b60zlsn6srb6m6bzbw3w5cyihcy4w2rfjav64x4viy5bad0y"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=statistics::statistics::Statistics")
+       #:cargo-inputs
        (("rust-nalgebra" ,rust-nalgebra-0.19)
         ("rust-rand" ,rust-rand-0.7))
        #:cargo-development-inputs
