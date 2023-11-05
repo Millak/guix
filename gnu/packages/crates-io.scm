@@ -18037,8 +18037,7 @@ terminals.")
                (base32 "0axbfb2ykbwbpf1hmxwpawwfs8wvmkcka5m561l7yp36ldi7rpdc"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-winapi" ,rust-winapi-0.3))))
     (home-page "https://github.com/crossterm-rs/crossterm-winapi")
     (synopsis "Basic simple abstractions around common WinAPI calls")
