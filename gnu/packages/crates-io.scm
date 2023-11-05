@@ -88321,30 +88321,21 @@ non-cryptographic hashing algorithm and random number generator.")
 
 (define-public rust-wyz-0.4
   (package
+    (inherit rust-wyz-0.5)
     (name "rust-wyz")
     (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wyz" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "126irvwn63kxgqjk5ap1pw3p3grw2sskyg32h0v4bqawsrx057hj"))))
-    (build-system cargo-build-system)
+        (base32 "126irvwn63kxgqjk5ap1pw3p3grw2sskyg32h0v4bqawsrx057hj"))))
     (arguments
-     `(#:cargo-test-flags
-       '("--release" "--lib" "--bins" "--tests")
-       #:cargo-inputs
-       (("rust-once-cell" ,rust-once-cell-1)
-        ("rust-tap" ,rust-tap-1)
-        ("rust-typemap" ,rust-typemap-0.3))))
-    (home-page "https://myrrlyn.net/crates/wyz")
-    (synopsis "Collection of utility functions")
-    (description
-     "This package provides a collection of utility functions.")
-    (license license:expat)))
+     `(#:cargo-test-flags '("--release" "--lib" "--bins" "--tests")
+       #:cargo-inputs (("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-tap" ,rust-tap-1)
+                       ("rust-typemap" ,rust-typemap-0.3))))))
 
 (define-public rust-wyz-0.2
   (package
