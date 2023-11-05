@@ -62775,8 +62775,7 @@ please consider using @code{async-std} or @code{tokio}.")
         (base32 "0k02nd0cg27s5ixflzsxqhil5rfzw4z3v0yvqbxzlhps90rq19y1"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-futures-preview" ,rust-futures-preview-0.3))))
     (home-page "https://github.com/rustasync/runtime")
     (synopsis "Traits to implement custom Runtimes")
