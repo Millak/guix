@@ -36672,7 +36672,10 @@ over in-place and buffer-to-buffer modes of operation.")
         (base32
          "1vhqlirp75nx8qalz87qk2wjs7mzwxww0n09n2ircgw1phd94zk1"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=runtime::test_format_rust_expression")
+       #:cargo-inputs
        (("rust-backtrace" ,rust-backtrace-0.3)
         ("rust-console" ,rust-console-0.11)
         ("rust-difference" ,rust-difference-2)
