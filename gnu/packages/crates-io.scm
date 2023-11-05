@@ -78473,23 +78473,24 @@ writing asynchronous I/O backed applications.")
 (define-public rust-tokio-core-0.1
   (package
     (name "rust-tokio-core")
-    (version "0.1.17")
+    (version "0.1.18")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tokio-core" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0wbgg59mxfvrhzv97y56nh3gmnmw3jj9dhgkmvz27410jjxzpvxf"))
+         "1m7zij19xy13wmlb7a1bghvi4vs8s1hlyggnaajvqfj46i9kkcc7"))
        (snippet
         #~(begin (use-modules (guix build utils))
+                 ;; rust-flate2 doesn't have a 'tokio' feature.
                  (substitute* "Cargo.toml"
                    (("features = \\[\"tokio\"\\]") ""))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; Wants an old version of flate2
+       #:cargo-inputs
        (("rust-bytes" ,rust-bytes-0.4)
         ("rust-futures" ,rust-futures-0.1)
         ("rust-iovec" ,rust-iovec-0.1)
