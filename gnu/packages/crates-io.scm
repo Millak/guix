@@ -33647,7 +33647,8 @@ compile time.")
         (base32 "0dyl16cf15hka32hv3l7dwgr3xj3brpfr27iyrbpdhlzdfgh46kr"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; use of undeclared crate or module `sha1`
+       #:cargo-inputs
        (("rust-hmac" ,rust-hmac-0.12))
        #:cargo-development-inputs
        (("rust-blobby" ,rust-blobby-0.3)
