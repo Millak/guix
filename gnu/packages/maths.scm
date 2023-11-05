@@ -9708,7 +9708,27 @@ computation is supported via MPI.")
                 (apply invoke "make"
                        "src/cpp/parse/parsescilab.cpp"
                        "src/cpp/parse/scanscilab.cpp"
-                       make-flags))))))))
+                       make-flags))))
+          ;; The startup script is mostly there to define the following env
+            ;; variables properly. We can do this with guix directly.
+            (add-after 'install 'rewrap-scilab-cli
+              (lambda _
+                (define (bin path) (string-append #$output "/bin/" path))
+                (delete-file (bin "scilab-cli"))
+                (wrap-program (bin "scilab-cli-bin")
+                  `("SCI" = (,(string-append #$output "/share/scilab")))
+                  `("LD_LIBRARY_PATH" ":" prefix
+                    (,(string-append #$output "/lib/scilab")))
+                  `("TCL_LIBRARY" = (,(string-append #$tcl "/lib")))
+                  `("TK_LIBRARY" = (,(string-append #$tk "/lib"))))
+                (copy-file (bin "scilab-cli-bin") (bin "scilab-cli"))
+                (copy-file (bin ".scilab-cli-bin-real") (bin "scilab-cli-bin"))
+                (delete-file (bin ".scilab-cli-bin-real"))
+                (substitute* (bin "scilab-cli")
+                  (("\\.scilab-cli-bin-real")
+                   "scilab-cli-bin")
+                  (("export SCI=")
+                   "unset LANGUAGE\nexport SCI="))))))))
     (home-page "https://www.scilab.org/")
     (synopsis "Software for engineers and scientists")
     (description "This package provides the non-graphical version of the Scilab
