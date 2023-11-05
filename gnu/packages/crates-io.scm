@@ -36225,7 +36225,10 @@ of reference counted pointers.")
         ("rust-rayon" ,rust-rayon-1)
         ("rust-regex" ,rust-regex-1)
         ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
-        ("rust-unicode-width" ,rust-unicode-width-0.1))))
+        ("rust-unicode-width" ,rust-unicode-width-0.1))
+       #:cargo-development-inputs
+       (("rust-rand" ,rust-rand-0.8)
+        ("rust-tokio" ,rust-tokio-1))))
     (home-page "https://github.com/console-rs/indicatif")
     (synopsis "Progress bar and cli reporting library for Rust")
     (description
