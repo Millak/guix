@@ -32692,7 +32692,7 @@ of gzip files based on the gzip header implementation in the @code{flate2} crate
   (package
     (inherit rust-h2-0.3)
     (name "rust-h2")
-    (version "0.2.6")
+    (version "0.2.7")
     (source
      (origin
        (method url-fetch)
@@ -32700,9 +32700,10 @@ of gzip files based on the gzip header implementation in the @code{flate2} crate
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0lvdrzn43iikl521dlrb7z96lsmy7l6nnm35ylf00q7dmq5rwgwr"))))
+         "0dd5jyxmmy88pdmvag7n41k9z1qs6sliagcyx4jss5292byjhisy"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs
        (("rust-bytes" ,rust-bytes-0.5)
         ("rust-fnv" ,rust-fnv-1)
         ("rust-futures-core" ,rust-futures-core-0.3)
@@ -32713,7 +32714,8 @@ of gzip files based on the gzip header implementation in the @code{flate2} crate
         ("rust-slab" ,rust-slab-0.4)
         ("rust-tokio" ,rust-tokio-0.2)
         ("rust-tokio-util" ,rust-tokio-util-0.3)
-        ("rust-tracing" ,rust-tracing-0.1))
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-tracing-futures" ,rust-tracing-futures-0.2))
        #:cargo-development-inputs
        (("rust-env-logger" ,rust-env-logger-0.5)
         ("rust-hex" ,rust-hex-0.2)
@@ -32726,7 +32728,8 @@ of gzip files based on the gzip header implementation in the @code{flate2} crate
         ("rust-tokio-rustls" ,rust-tokio-rustls-0.12)
         ("rust-walkdir" ,rust-walkdir-1)
         ("rust-webpki" ,rust-webpki-0.21)
-        ("rust-webpki-roots" ,rust-webpki-roots-0.17))))))
+        ("rust-webpki-roots" ,rust-webpki-roots-0.17))))
+    (native-inputs (list perl))))
 
 (define-public rust-h2-0.1
   (package
