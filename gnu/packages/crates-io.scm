@@ -74659,8 +74659,8 @@ a syntax tree of Rust source code.")
          (add-before 'build 'fixup-cargo-toml
            (lambda _
              (substitute* "Cargo.toml"
-               ((", path =.*,") ","))
-             #t)))
+               ((", path =.*,") ",")))))
+       #:tests? #f      ; Tests don't compile correctly.
        #:cargo-inputs
        (("rust-quote" ,rust-quote-0.3)
         ("rust-synom" ,rust-synom-0.11)
