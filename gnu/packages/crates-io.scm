@@ -74472,7 +74472,9 @@ a syntax tree of Rust source code.")
         (base32
          "0hgpgi8lcvkfd5jnma5fxq41ycb9kna635b4c2wl4z1rmbnfj6i6"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       '("--release" "--lib" "--bins" "--tests")
+       #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-0.4)
         ("rust-quote" ,rust-quote-0.6)
         ("rust-unicode-xid" ,rust-unicode-xid-0.1))
