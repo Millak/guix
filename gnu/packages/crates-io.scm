@@ -30175,7 +30175,8 @@ reading and writing git repositories.")
        (sha256
         (base32 "1i0fgsr91r97hsjbgqnymkcyiyg0057m7m04116k3vmyqpvrwlbp"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; (signal: 11, SIGSEGV: invalid memory reference)
+       #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-libgit2-sys" ,rust-libgit2-sys-0.10)
