@@ -9739,8 +9739,12 @@ computation is supported via MPI.")
                 (copy-file (bin ".scilab-cli-bin-real") (bin "scilab-cli-bin"))
                 (delete-file (bin ".scilab-cli-bin-real"))
                 (substitute* (bin "scilab-cli")
-                  (("\\.scilab-cli-bin-real")
-                   "scilab-cli-bin")
+                  ;; Also set SCIHOME to sensible XDG base dirs value.
+                  (("\\.scilab-cli-bin-real\"")
+                   (string-append
+                    "scilab-cli-bin\" -scihome "
+                    "\"${XDG_STATE_HOME:-$HOME/.local/state}/scilab/"
+                    #$(package-version this-package) "\""))
                   (("export SCI=")
                    "unset LANGUAGE\nexport SCI="))))))))
     (home-page "https://www.scilab.org/")
