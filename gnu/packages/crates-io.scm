@@ -62683,13 +62683,21 @@ console applications.")
         (base32 "04aj2jslnndwhhbvp9ysdgh98vfy6lk6f0rzqsan5wlfpd70nzc3"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-futures-preview" ,rust-futures-preview-0.3)
         ("rust-pin-project" ,rust-pin-project-0.4)
         ("rust-runtime-attributes" ,rust-runtime-attributes-0.3)
         ("rust-runtime-native" ,rust-runtime-native-0.3)
-        ("rust-runtime-raw" ,rust-runtime-raw-0.3))))
+        ("rust-runtime-raw" ,rust-runtime-raw-0.3))
+       #:cargo-development-inputs
+       (("rust-failure" ,rust-failure-0.1)
+        ("rust-futures" ,rust-futures-0.1)
+        ("rust-futures-preview" ,rust-futures-preview-0.3)
+        ("rust-juliex" ,rust-juliex-0.3)
+        ("rust-mio" ,rust-mio-0.6)
+        ("rust-rand" ,rust-rand-0.7)
+        ("rust-runtime-tokio" ,rust-runtime-tokio-0.3)
+        ("rust-tokio" ,rust-tokio-0.1))))
     (home-page "https://github.com/rustasync/runtime")
     (synopsis "Empowering everyone to build asynchronous software")
     (description
