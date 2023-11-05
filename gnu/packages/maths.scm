@@ -7615,15 +7615,15 @@ symmetric matrices.")
       (native-inputs
        (list gfortran))
       (inputs
-       `(("blas" ,openblas)
-         ("gfortran:lib" ,gfortran "lib")
-         ("gmp" ,gmp)
-         ("lapack" ,lapack)
-         ("metis" ,metis)
-         ("mpc" ,mpc)
-         ("mpfr" ,mpfr)
-         ("mpi" ,openmpi)
-         ("qd" ,qd)))
+       (list `(,gfortran "lib")
+             gmp
+             lapack
+             metis
+             mpc
+             mpfr
+             openmpi
+             qd
+             openblas))
       (arguments
        `(#:build-type "Release"           ;default RelWithDebInfo not supported
          #:configure-flags `("-DEL_DISABLE_PARMETIS:BOOL=YES"
