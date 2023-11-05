@@ -58,6 +58,7 @@
 ;;; Copyright © 2022, 2023 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2022 Maximilian Heisinger <mail@maxheisinger.at>
 ;;; Copyright © 2022 Akira Kyle <akira@akirakyle.com>
+;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
 ;;; Copyright © 2023 Camilo Q.S. (Distopico) <distopico@riseup.net>
@@ -9577,18 +9578,18 @@ computation is supported via MPI.")
 
             ;; And finally some files in the modules directory:
             (for-each
-              (lambda (file)
-                (delete-file
-                  (string-append "modules/dynamic_link/src/scripts/" file)))
-              '("aclocal.m4"
-                "configure"
-                "compile"
-                "config.guess"
-                "config.sub"
-                "ltmain.sh"
-                "depcomp"
-                "install-sh"
-                "missing"))
+             (lambda (file)
+               (delete-file
+                (string-append "modules/dynamic_link/src/scripts/" file)))
+             '("aclocal.m4"
+               "configure"
+               "compile"
+               "config.guess"
+               "config.sub"
+               "ltmain.sh"
+               "depcomp"
+               "install-sh"
+               "missing"))
             (delete-file-recursively "modules/dynamic_link/src/scripts/m4")
             (for-each delete-file
                       '("modules/ast/src/cpp/parse/scanscilab.cpp"
@@ -9628,38 +9629,38 @@ computation is supported via MPI.")
     (arguments
      (let* ((tcl (this-package-input "tcl"))
             (tk (this-package-input "tk")))
-     (list
-      #:configure-flags
-      #~(list
-         "--enable-relocatable"
-         "--disable-static-system-lib"
-         "--enable-build-parser"
-         ;; Disable all java code.
-         "--without-gui"
-         "--without-javasci"
-         "--disable-build-help"
-         "--with-external-scirenderer"
-         ;; Tcl and Tk library locations.
-         (string-append "--with-tcl-include=" #$tcl "/include")
-         (string-append "--with-tcl-library=" #$tcl "/lib")
-         (string-append "--with-tk-include=" #$tk "/include")
-         (string-append "--with-tk-library=" #$tk "/lib")
-         (string-append "--with-eigen-include="
-                        (search-input-directory %build-inputs "include/eigen3"))
-         ;; Find and link to the OCaml Num package
-         "OCAMLC=ocamlfind ocamlc -package num"
-         "OCAMLOPT=ocamlfind ocamlopt -package num -linkpkg")
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; The Num library is specified with the OCAMLC and
-          ;; OCAMLOPT variables above.
-          (add-after 'unpack 'fix-ocaml-num
-            (lambda _
-              (substitute*
-                '("modules/scicos/Makefile.modelica.am"
-                  "modules/scicos/src/translator/makefile.mak"
-                  "modules/scicos/src/modelica_compiler/makefile.mak")
-                (("nums\\.cmx?a") ""))))
+       (list
+        #:configure-flags
+        #~(list
+           "--enable-relocatable"
+           "--disable-static-system-lib"
+           "--enable-build-parser"
+           ;; Disable all java code.
+           "--without-gui"
+           "--without-javasci"
+           "--disable-build-help"
+           "--with-external-scirenderer"
+           ;; Tcl and Tk library locations.
+           (string-append "--with-tcl-include=" #$tcl "/include")
+           (string-append "--with-tcl-library=" #$tcl "/lib")
+           (string-append "--with-tk-include=" #$tk "/include")
+           (string-append "--with-tk-library=" #$tk "/lib")
+           (string-append "--with-eigen-include="
+                          (search-input-directory %build-inputs "include/eigen3"))
+           ;; Find and link to the OCaml Num package
+           "OCAMLC=ocamlfind ocamlc -package num"
+           "OCAMLOPT=ocamlfind ocamlopt -package num -linkpkg")
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; The Num library is specified with the OCAMLC and
+            ;; OCAMLOPT variables above.
+            (add-after 'unpack 'fix-ocaml-num
+              (lambda _
+                (substitute*
+                    '("modules/scicos/Makefile.modelica.am"
+                      "modules/scicos/src/translator/makefile.mak"
+                      "modules/scicos/src/modelica_compiler/makefile.mak")
+                  (("nums\\.cmx?a") ""))))
             (add-after 'unpack 'restrain-to-scilab-cli
               (lambda _
                 ;; Install only scilab-cli.desktop
@@ -9685,31 +9686,31 @@ computation is supported via MPI.")
                 (substitute* "modules/types/Makefile"
                   (("\\$\\(MAKE\\) \\$\\(AM_MAKEFLAGS\\) check-am")
                    ""))))
-          ;; These generated files are assumed to be present during
-          ;; the build.
-          (add-after 'bootstrap 'bootstrap-dynamic_link-scripts
-            (lambda _
-              (with-directory-excursion "modules/dynamic_link/src/scripts"
-                ((assoc-ref %standard-phases 'bootstrap)))))
-          (add-before 'build 'pre-build
-            (lambda* (#:key inputs #:allow-other-keys)
-              ;; Fix scilab script.
-              (substitute* "bin/scilab"
-                (("/bin/ls")
-                 (search-input-file inputs "bin/ls")))
-              ;; Fix core.start.
-              (substitute* "modules/core/etc/core.start"
-                (("'SCI/modules")
-                 "SCI+'/modules"))))
-          ;; Prevent race condition
-          (add-after 'pre-build 'build-parsers
-            (lambda* (#:key (make-flags #~'()) #:allow-other-keys)
-              (with-directory-excursion "modules/ast"
-                (apply invoke "make"
-                       "src/cpp/parse/parsescilab.cpp"
-                       "src/cpp/parse/scanscilab.cpp"
-                       make-flags))))
-          ;; The startup script is mostly there to define the following env
+            ;; These generated files are assumed to be present during
+            ;; the build.
+            (add-after 'bootstrap 'bootstrap-dynamic_link-scripts
+              (lambda _
+                (with-directory-excursion "modules/dynamic_link/src/scripts"
+                  ((assoc-ref %standard-phases 'bootstrap)))))
+            (add-before 'build 'pre-build
+              (lambda* (#:key inputs #:allow-other-keys)
+                ;; Fix scilab script.
+                (substitute* "bin/scilab"
+                  (("/bin/ls")
+                   (search-input-file inputs "bin/ls")))
+                ;; Fix core.start.
+                (substitute* "modules/core/etc/core.start"
+                  (("'SCI/modules")
+                   "SCI+'/modules"))))
+            ;; Prevent race condition
+            (add-after 'pre-build 'build-parsers
+              (lambda* (#:key (make-flags #~'()) #:allow-other-keys)
+                (with-directory-excursion "modules/ast"
+                  (apply invoke "make"
+                         "src/cpp/parse/parsescilab.cpp"
+                         "src/cpp/parse/scanscilab.cpp"
+                         make-flags))))
+            ;; The startup script is mostly there to define the following env
             ;; variables properly. We can do this with guix directly.
             (add-after 'install 'rewrap-scilab-cli
               (lambda _
