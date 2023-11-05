@@ -89933,7 +89933,8 @@ in Pure Rust.")
                 "131kaczf10psc8clzlndcc52dym5vi4g22kqf0qwaq6rw2z93cj4"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f  ; overflow evaluating the requirement `PhantomData<Vec<u8>>:
+       #:cargo-inputs
        (("rust-arrayvec" ,rust-arrayvec-0.7)
         ("rust-byteorder" ,rust-byteorder-1)
         ("rust-chrono" ,rust-chrono-0.4)
