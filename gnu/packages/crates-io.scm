@@ -3845,25 +3845,27 @@ type.")
 (define-public rust-app-dirs2-2
   (package
     (name "rust-app-dirs2")
-    (version "2.3.1")
+    (version "2.5.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "app_dirs2" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "04v2q3jkqr32mwqs4niqfyhbkvvgrcsw0dajwqaz83nc5hs1igsm"))))
+        (base32 "0bimzwj54fv8dvailkfb4l9sdsmnsn6hi183p76c3a736dbv7rx7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-jni" ,rust-jni-0.18)
-        ("rust-ndk-glue" ,rust-ndk-glue-0.2)
+       (("rust-jni" ,rust-jni-0.21)
+        ("rust-ndk-context" ,rust-ndk-context-0.1)
         ("rust-winapi" ,rust-winapi-0.3)
         ("rust-xdg" ,rust-xdg-2))
        #:cargo-development-inputs
-       (("rust-lazy-static" ,rust-lazy-static-1)
+       (("rust-log" ,rust-log-0.4)
+        ("rust-ndk-glue" ,rust-ndk-glue-0.7)
+        ("rust-once-cell" ,rust-once-cell-1)
         ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-test-case" ,rust-test-case-1))))
+        ("rust-test-case" ,rust-test-case-2))))
     (home-page "https://lib.rs/app_dirs2")
     (synopsis "Put app's data in the right place on every platform")
     (description
