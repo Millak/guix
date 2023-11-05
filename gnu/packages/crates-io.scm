@@ -70073,7 +70073,8 @@ algebra.")
         (base32 "1sc481y42rb08hmww525m4539ppl8k0w14kwxp13vg2dasdzrh09"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f  ; `async_await` has been stable since `1.39.0`
+       #:cargo-inputs
        (("rust-paw-attributes" ,rust-paw-attributes-1)
         ("rust-paw-raw" ,rust-paw-raw-1))
        #:cargo-development-inputs
