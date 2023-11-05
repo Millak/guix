@@ -85363,8 +85363,7 @@ specified across Unix and Windows platforms.")
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-log" ,rust-log-0.4)
-        ("rust-try-lock" ,rust-try-lock-0.2))
+       (("rust-try-lock" ,rust-try-lock-0.2))
        #:cargo-development-inputs
        (("rust-tokio-executor" ,rust-tokio-executor-0.2)
         ("rust-tokio-sync" ,rust-tokio-sync-0.2))))
