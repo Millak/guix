@@ -80596,7 +80596,10 @@ robust clients and servers.")
         (base32 "1l7i17k9vlssrdg4s3b0ia5jjkmmxsvv8s9y9ih0jfi8ssz8s362"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-development-inputs
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=layer_fn::layer_fn")
+       #:cargo-development-inputs
        (("rust-tower" ,rust-tower-0.4)
         ("rust-tower-service" ,rust-tower-service-0.3))))
     (home-page "https://github.com/tower-rs/tower")
