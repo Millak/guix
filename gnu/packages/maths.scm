@@ -9626,6 +9626,8 @@ computation is supported via MPI.")
                   tcl
                   tk))
     (arguments
+     (let* ((tcl (this-package-input "tcl"))
+            (tk (this-package-input "tk")))
      (list
       #:configure-flags
       #~(list
@@ -9638,18 +9640,10 @@ computation is supported via MPI.")
          "--disable-build-help"
          "--with-external-scirenderer"
          ;; Tcl and Tk library locations.
-         (string-append "--with-tcl-include="
-                        (dirname
-                          (search-input-file %build-inputs "include/tcl.h")))
-         (string-append "--with-tcl-library="
-                        (dirname
-                          (search-input-directory %build-inputs "lib/tcl8")))
-         (string-append "--with-tk-include="
-                        (dirname
-                          (search-input-file %build-inputs "include/tk.h")))
-         (string-append "--with-tk-library="
-                        (dirname
-                          (search-input-directory %build-inputs "lib/tk8.6")))
+         (string-append "--with-tcl-include=" #$tcl "/include")
+         (string-append "--with-tcl-library=" #$tcl "/lib")
+         (string-append "--with-tk-include=" #$tk "/include")
+         (string-append "--with-tk-library=" #$tk "/lib")
          (string-append "--with-eigen-include="
                         (search-input-directory %build-inputs "include/eigen3"))
          ;; Find and link to the OCaml Num package
@@ -9714,7 +9708,7 @@ computation is supported via MPI.")
                 (apply invoke "make"
                        "src/cpp/parse/parsescilab.cpp"
                        "src/cpp/parse/scanscilab.cpp"
-                       make-flags)))))))
+                       make-flags))))))))
     (home-page "https://www.scilab.org/")
     (synopsis "Software for engineers and scientists")
     (description "This package provides the non-graphical version of the Scilab
