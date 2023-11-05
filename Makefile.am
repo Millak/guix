@@ -48,7 +48,7 @@ do_subst = $(SED)					\
   -e 's,[@]abs_top_builddir[@],$(abs_top_builddir),g'	\
   -e 's,[@]localedir[@],$(localedir),g'
 
-scripts/guix: scripts/guix.in Makefile
+scripts/guix: scripts/guix.in Makefile guile$(EXEEXT)
 	$(AM_V_at)rm -f $@ $@-t
 	$(AM_V_at)$(MKDIR_P) "$(@D)"
 	$(AM_V_GEN)$(do_subst) < "$(srcdir)/$@.in" > "$@-t"

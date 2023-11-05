@@ -46,6 +46,12 @@ export PATH
 GUIX="$abs_top_builddir/scripts/guix"
 export GUIX
 
+# Sanity check.
+if [ "$1" = "guix" ] && [ ! -f "$GUIX" ]; then
+    echo "$GUIX is not built.  Please run 'make scripts/guix'."
+    exit 1
+fi
+
 # Define $GUIX_UNINSTALLED to prevent `guix' from
 # prepending @guilemoduledir@ to the Guile load paths.
 
