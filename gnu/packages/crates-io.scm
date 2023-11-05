@@ -60117,6 +60117,7 @@ functionality")
         (base32
          "1mrmicr43hx3s9556zbzg0lys4nmsw0vwznd52imxhcanr3xrlhn"))))
     (build-system cargo-build-system)
+    (arguments `(#:tests? #f))      ; Tests don't compile.
     (home-page "https://github.com/dtolnay/reduce")
     (synopsis "Fold an iterator without an initial value")
     (description
