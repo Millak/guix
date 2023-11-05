@@ -66274,7 +66274,8 @@ macOS and iOS.")
         (base32
          "0axwlax65j1f79rsm4ylc8rc6p2knbi3dgnpbdq7a1bzh5k2hl5d"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; Not all files included
+       #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-core-foundation" ,rust-core-foundation-0.7)
         ("rust-core-foundation-sys" ,rust-core-foundation-sys-0.7)
