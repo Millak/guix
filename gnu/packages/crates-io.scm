@@ -1714,7 +1714,8 @@ Rust.")
        (sha256
         (base32 "1frs0id6k1vjczhnfhwh8q8birp27imlvgi6jylfxh911r9372h6"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; cannot subtract `chrono::Duration` from `Tm`
+       #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))
