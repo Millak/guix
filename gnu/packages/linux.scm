@@ -6021,7 +6021,7 @@ devices that can inject events directly into the input subsystem.")
 (define-public interception-dual-function-keys
   (package
     (name "interception-dual-function-keys")
-    (version "1.4.0")
+    (version "1.5.0")
     (home-page "https://gitlab.com/interception/linux/plugins/dual-function-keys")
     (source (origin
               (method git-fetch)
@@ -6031,7 +6031,7 @@ devices that can inject events directly into the input subsystem.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0s49vbg3j4rwh78i8rx8qr7myql09p7b3lhrjl0p7dd98xp6ann6"))))
+                "17jc02wh45yk427qryb0ydyim16607i31wyghbsahahd6mrh9ylv"))))
     (build-system gnu-build-system)
     (inputs
      (list libevdev yaml-cpp))
