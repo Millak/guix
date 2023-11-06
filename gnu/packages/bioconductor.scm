@@ -22897,6 +22897,26 @@ mutations or polymorphisms and variants called in the data may additionally be
 included in the plots.")
     (license license:lgpl3)))
 
+(define-public r-bcrank
+  (package
+    (name "r-bcrank")
+    (version "1.64.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "BCRANK" version))
+       (sha256
+        (base32 "1m1ccacryf8wjzp0d37n9n1kpa6734ddb8nvv1sy0sz5gplrars9"))))
+    (properties `((upstream-name . "BCRANK")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biostrings))
+    (home-page "https://bioconductor.org/packages/BCRANK")
+    (synopsis "Predicting binding site consensus from ranked DNA sequences")
+    (description
+     "This package provides functions and classes for de novo prediction of
+transcription factor binding consensus by heuristic search.")
+    (license license:gpl2)))
+
 (define-public r-biocthis
   (package
     (name "r-biocthis")
