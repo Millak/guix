@@ -22622,6 +22622,56 @@ viewpoint can be visualized as a coverage plot based on a running median
 approach and a multi-scale contact profile.")
     (license license:lgpl3)))
 
+(define-public r-basics
+  (package
+    (name "r-basics")
+    (version "2.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "BASiCS" version))
+       (sha256
+        (base32 "0kf215n151sxphc5w9h4i2xsk7lmysi4abwcpyz4slbwhpki3ac8"))))
+    (properties `((upstream-name . "BASiCS")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-assertthat
+           r-biobase
+           r-biocgenerics
+           r-biocparallel
+           r-coda
+           r-cowplot
+           r-ggextra
+           r-ggplot2
+           r-hexbin
+           r-mass
+           r-matrix
+           r-matrixstats
+           r-posterior
+           r-rcpp
+           r-rcpparmadillo
+           r-reshape2
+           r-s4vectors
+           r-scran
+           r-scuttle
+           r-singlecellexperiment
+           r-summarizedexperiment
+           r-viridis))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/catavallejos/BASiCS")
+    (synopsis "Bayesian analysis of single-cell sequencing data")
+    (description
+     "@acronym{BASiCS, Bayesian analysis of single-cell sequencing data} is an
+integrated Bayesian hierarchical model to perform statistical analyses of
+single-cell RNA sequencing datasets in the context of supervised experiments
+(where the groups of cells of interest are known a priori.  BASiCS performs
+built-in data normalisation (global scaling) and technical noise quantification
+(based on spike-in genes).  BASiCS provides an intuitive detection criterion
+for highly (or lowly) variable genes within a single group of cells.
+Additionally, BASiCS can compare gene expression patterns between two or more
+pre-specified groups of cells.")
+    (license license:gpl3)))
+
 (define-public r-basilisk-utils
   (package
     (name "r-basilisk-utils")
