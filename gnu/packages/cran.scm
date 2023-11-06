@@ -6206,6 +6206,30 @@ and Francois (2011, JSS), and the book by Eddelbuettel (2013, Springer); see
 performs global optimization by differential evolution.")
     (license license:gpl2+)))
 
+(define-public r-rcppdist
+  (package
+    (name "r-rcppdist")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "RcppDist" version))
+       (sha256
+        (base32 "02g57xwfipdcljv06krhm02dbqn9kfyj2km6rdg0a7vq9prwdz1x"))))
+    (properties `((upstream-name . "RcppDist")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp r-rcpparmadillo))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/duckmayr/RcppDist")
+    (synopsis "Integration of additional probability distributions")
+    (description
+     "RcppDist provides a header-only C++ library with functions for
+additional statistical distributions that can be called from C++ when writing
+code using Rcpp or RcppArmadillo.  Functions are available that return a
+@code{NumericVector} as well as doubles, and for multivariate or matrix
+distributions, Armadillo vectors and matrices.")
+    (license license:gpl2+)))
+
 (define-public r-rcppml
   (package
     (name "r-rcppml")
