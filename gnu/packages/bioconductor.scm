@@ -1611,6 +1611,26 @@ biscuiteer.")
 demonstrate functionalities of the @code{breakpointR} package.")
     (license license:expat)))
 
+(define-public r-breastcancervdx
+  (package
+    (name "r-breastcancervdx")
+    (version "1.40.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "breastCancerVDX" version
+                              'experiment))
+       (sha256
+        (base32 "12r8zql30ssr0cxy8v1qawwsky54321c737ny19n2yrl7sm08gf0"))))
+    (properties `((upstream-name . "breastCancerVDX")))
+    (build-system r-build-system)
+    (home-page "https://bioconductor.org/packages/breastCancerVDX")
+    (synopsis "Gene expression datasets")
+    (description
+     "This package is a collection of gene expression data from a breast
+cancer study published in Wang et al. 2005 and Minn et al 2007.")
+    (license license:artistic2.0)))
+
 (define-public r-celldex
   (package
     (name "r-celldex")
