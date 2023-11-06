@@ -22828,6 +22828,45 @@ resolution of the low-dimensional representation into \"sub-spots\", for which
 features such as gene expression or cell type composition can be imputed.")
     (license license:expat)))
 
+(define-public r-baynorm
+  (package
+    (name "r-baynorm")
+    (version "1.20.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "bayNorm" version))
+       (sha256
+        (base32 "01lv4w1x43x3f9sdrqikhsr1gdvkgqzrgcd9wnjj76qsljn57ifq"))))
+    (properties `((upstream-name . "bayNorm")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-bb
+           r-biocparallel
+           r-dosnow
+           r-fitdistrplus
+           r-foreach
+           r-iterators
+           r-locfit
+           r-mass
+           r-matrix
+           r-rcpp
+           r-rcpparmadillo
+           r-rcppprogress
+           r-singlecellexperiment
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/WT215/bayNorm")
+    (synopsis "Single-cell RNA sequencing data normalization")
+    (description
+     "The bayNorm package is used for normalizing single-cell RNA-seq data.
+The main function is @code{bayNorm}, which is a wrapper function for gene
+specific prior parameter estimation and normalization.  The input is a matrix
+of scRNA-seq data with rows different genes and coloums different cells.  The
+output is either point estimates from posterior (2D array) or samples from
+posterior (3D array).")
+    (license license:gpl2+)))
+
 (define-public r-biocthis
   (package
     (name "r-biocthis")
