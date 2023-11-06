@@ -22672,6 +22672,41 @@ Additionally, BASiCS can compare gene expression patterns between two or more
 pre-specified groups of cells.")
     (license license:gpl3)))
 
+(define-public r-basicstarrseq
+  (package
+    (name "r-basicstarrseq")
+    (version "1.30.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "BasicSTARRseq" version))
+       (sha256
+        (base32 "1dw6bv1qk2bn0l3m458sqgvm3s1karh4n3431pl7r0jj2r3mr6xa"))))
+    (properties `((upstream-name . "BasicSTARRseq")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-genomeinfodb
+           r-genomicalignments
+           r-genomicranges
+           r-iranges
+           r-s4vectors))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/BasicSTARRseq")
+    (synopsis "Basic peak calling on STARR-seq data")
+    (description
+     "This package implements a method that aims to identify enhancers on
+large scale.  The STARR-seq data consists of two sequencing datasets of the
+same targets in a specifc genome.  The input sequences show which regions
+where tested for enhancers.  Significant enriched peaks i.e. a lot more
+sequences in one region than in the input where enhancers in the genomic DNA
+are, can be identified.  So the approach pursued is to call peak every region
+in which there is a lot more
+(significant in a binomial model) STARR-seq signal than input signal and
+propose an enhancer at that very same position.  Enhancers then are called
+weak or strong dependent of there degree of enrichment in comparison to
+input.")
+    (license license:lgpl3)))
+
 (define-public r-basilisk-utils
   (package
     (name "r-basilisk-utils")
