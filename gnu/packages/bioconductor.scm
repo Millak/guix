@@ -4221,6 +4221,27 @@ BaalChIP is able to account for copy number differences between the two
 alleles, a known phenotypical feature of cancer samples.")
     (license license:artistic2.0)))
 
+(define-public r-bags
+  (package
+    (name "r-bags")
+    (version "2.42.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "BAGS" version))
+       (sha256
+        (base32 "0356ragpcldr48yycqj91sn3bcqvvfp5spv2z02r8g6hs0dndwdh"))))
+    (properties `((upstream-name . "BAGS")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase r-breastcancervdx))
+    (home-page "https://bioconductor.org/packages/BAGS")
+    (synopsis "Bayesian approach for geneset selection")
+    (description
+     "This R package is providing functions to perform geneset significance
+analysis over simple cross-sectional data between 2 and 5 phenotypes of
+interest.")
+    (license license:artistic2.0)))
+
 (define-public r-basespacer
   (package
     (name "r-basespacer")
