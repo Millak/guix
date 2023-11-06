@@ -543,6 +543,28 @@ Finder (TRF mask).  Only the AGAPS and AMB masks are \"active\" by default.")
 as provided by UCSC (danRer11, May 2017) and stored in Biostrings objects.")
     (license license:artistic2.0)))
 
+(define-public r-bsgenome-ecoli-ncbi-20080805
+  (package
+    (name "r-bsgenome-ecoli-ncbi-20080805")
+    (version "1.3.1000")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "BSgenome.Ecoli.NCBI.20080805" version
+                              'annotation))
+       (sha256
+        (base32 "1l7mjyys1kaq4mbia9jamyw6sd0ij1wypwxvwy8aksan3gcfnh27"))))
+    (properties `((upstream-name . "BSgenome.Ecoli.NCBI.20080805")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bsgenome))
+    (home-page
+     "https://bioconductor.org/packages/BSgenome.Ecoli.NCBI.20080805")
+    (synopsis "Escherichia coli full genomes")
+    (description
+     "This package provides Escherichia coli full genomes for several strains
+as provided by NCBI on 2008/08/05 and stored in Biostrings objects.")
+    (license license:artistic2.0)))
+
 (define-public r-bsgenome-hsapiens-1000genomes-hs37d5
   (package
     (name "r-bsgenome-hsapiens-1000genomes-hs37d5")
