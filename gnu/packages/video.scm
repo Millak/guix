@@ -2430,7 +2430,7 @@ images and image hosting sites.")
 (define-public mpv-mpris
   (package
     (name "mpv-mpris")
-    (version "1.0")
+    (version "1.1")
     (source
       (origin
         (method git-fetch)
@@ -2439,7 +2439,7 @@ images and image hosting sites.")
                (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1vpx4kzyg4pssn1hql2ci4s9x08sdx2v0kphw4aryywnz04yjhzf"))))
+         (base32 "1384y8n3l0xk8hbad1nsj9ljzb1h02g3ln3jysd8bd6shbl0x4mx"))))
     (build-system copy-build-system)
     (arguments
      '(#:install-plan
@@ -2453,7 +2453,7 @@ images and image hosting sites.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list glib mpv))
+     (list ffmpeg glib mpv))
     (home-page "https://github.com/hoyon/mpv-mpris")
     (synopsis "MPRIS plugin for mpv")
     (description "This package provides an @dfn{MPRIS} (Media Player Remote
