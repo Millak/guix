@@ -6340,6 +6340,27 @@ with Rcpp and retrieve an @code{XPtr} that can be passed to other C++
 components.")
     (license license:expat)))
 
+(define-public r-bb
+  (package
+    (name "r-bb")
+    (version "2019.10-1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "BB" version))
+       (sha256
+        (base32 "0kf9sfsm3n036a8a8gjfpc9qdryvadb019kqjh80n1szdv7bdl04"))))
+    (properties `((upstream-name . "BB")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-quadprog))
+    (home-page "https://publichealth.jhu.edu/")
+    (synopsis "Solving and optimizing large-scale nonlinear systems")
+    (description
+     "This package implements Barzilai-Borwein spectral methods for solving
+nonlinear system of equations, and for optimizing nonlinear objective
+functions subject to simple constraints.")
+    (license license:gpl3)))
+
 (define-public r-bindr
   (package
     (name "r-bindr")
