@@ -124,6 +124,7 @@
                ("libtiff" ,libtiff)
                ("libpng" ,libpng)
                ("libjpeg" ,libjpeg-turbo)
+               ("libwebp" ,libwebp)
                ("pango" ,pango)
                ("freetype" ,freetype)
                ("bzip2" ,bzip2)
