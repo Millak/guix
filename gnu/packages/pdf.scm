@@ -117,7 +117,7 @@
 (define-public capypdf
   (package
     (name "capypdf")
-    (version "0.5.0")
+    (version "0.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -125,7 +125,7 @@
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1mb3i0jq04gg5cm1l07mn9kal5s748miql97j6fpaf1x1j2lcrsx"))))
+               (base32 "15l8zwc83l65xh739s0qddlv5qv537wnx74s8fcwlm1r8y7kf2x4"))))
     (build-system meson-build-system)
     (arguments
      (list #:meson meson/newer
