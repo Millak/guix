@@ -81,6 +81,7 @@
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages jemalloc)
+  #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages mail)
@@ -46877,7 +46878,8 @@ nitrokey crate and others using it.")
         ("rust-syn" ,rust-syn-1))
        #:cargo-development-inputs
        (("rust-nitrokey" ,rust-nitrokey-0.9)
-        ("rust-nitrokey-test-state" ,rust-nitrokey-test-state-0.1))))))
+        ("rust-nitrokey-test-state" ,rust-nitrokey-test-state-0.1))))
+    (inputs (list hidapi))))
 
 (define-public rust-nitrokey-test-state-0.1
   (package
