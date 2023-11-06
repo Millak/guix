@@ -46826,6 +46826,7 @@ with Nitrokey devices.")
       `(#:cargo-inputs
         (("rust-bindgen" ,rust-bindgen-0.55)
          ("rust-cc" ,rust-cc-1))))
+    (inputs (list hidapi))
     (home-page "https://git.sr.ht/~ireas/nitrokey-sys-rs")
     (synopsis "Low-level Rust bindings for libnitrokey")
     (description
