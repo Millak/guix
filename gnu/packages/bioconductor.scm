@@ -22781,6 +22781,53 @@ variable is the knocked-down gene, while the other genes are potential
 targets.  It can also be used for differential expression/2-class data.")
     (license license:gpl3)))
 
+(define-public r-bayesspace
+  (package
+    (name "r-bayesspace")
+    (version "1.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "BayesSpace" version))
+       (sha256
+        (base32 "1mqgsylnrvf197cin5zzihjv31bm2q0m5a612ncbglys6n1jd105"))))
+    (properties `((upstream-name . "BayesSpace")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-assertthat
+           r-biocfilecache
+           r-biocsingular
+           r-coda
+           r-dirichletreg
+           r-ggplot2
+           r-matrix
+           r-mclust
+           r-purrr
+           r-rcpp
+           r-rcpparmadillo
+           r-rcppdist
+           r-rcppprogress
+           r-rcurl
+           r-rhdf5
+           r-s4vectors
+           r-scales
+           r-scater
+           r-scran
+           r-singlecellexperiment
+           r-summarizedexperiment
+           r-xgboost))
+    (native-inputs (list r-knitr))
+    (home-page "https://www.ezstatconsulting.com/BayesSpace/")
+    (synopsis "Clustering and resolution enhancement of spatial transcriptomes")
+    (description
+     "This package provides tools for clustering and enhancing the resolution
+of spatial gene expression experiments.  BayesSpace clusters a low-dimensional
+representation of the gene expression matrix, incorporating a spatial prior to
+encourage neighboring spots to cluster together.  The method can enhance the
+resolution of the low-dimensional representation into \"sub-spots\", for which
+features such as gene expression or cell type composition can be imputed.")
+    (license license:expat)))
+
 (define-public r-biocthis
   (package
     (name "r-biocthis")
