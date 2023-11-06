@@ -47847,16 +47847,15 @@ notification library.")
   (package
     (inherit rust-notify-5)
     (name "rust-notify")
-    (version "4.0.15")
+    (version "4.0.17")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "notify" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1gadf8jf1vz7sip37rlwa66vw85ripy6977ibcfbiynii1v4mbl0"))))
+         "0msjyj1l30l12v6q9mjc1ascx7dwyz7z07sp7v9bz9yvag4ch0xf"))))
     (arguments
      `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
