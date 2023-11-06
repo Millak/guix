@@ -179,6 +179,7 @@
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -3272,33 +3273,45 @@ and custom quantization matrices.")
 (define-public streamlink
   (package
     (name "streamlink")
-    (version "3.2.0")
+    (version "6.3.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "streamlink" version))
         (sha256
          (base32
-          "09nrspga15svzi0hmakcarbciav0nzf30hg1ff53gia473cd4w4p"))))
+          "0i2qym2plm4gpcq50vl67j69m8a4zz9mb8gi2xryx28pbnpdzh4k"))
+        (snippet
+         #~(begin (use-modules (guix build utils))
+                  (substitute* "pyproject.toml"
+                    (("trio >=0\\.22") "trio >=0.21"))))))
     (build-system python-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
+     `(#:phases
+       (modify-phases %standard-phases
          (replace 'check
           (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                   (invoke "python" "-m" "pytest")))))))
     (native-inputs
-     (list python-freezegun python-mock python-pytest
-           python-requests-mock))
+     (list python-freezegun
+           python-requests-mock
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-trio))
     (propagated-inputs
-     (list python-pysocks
-           python-websocket-client
+     (list python-certifi
            python-isodate
            python-lxml
            python-pycountry
            python-pycryptodome
+           python-pysocks
            python-requests
-           python-urllib3))
+           python-trio
+           python-trio-websocket
+           python-typing-extensions
+           python-urllib3
+           python-websocket-client))
     (home-page "https://github.com/streamlink/streamlink")
     (synopsis "Extract streams from various services")
     (description "Streamlink is command-line utility that extracts streams
