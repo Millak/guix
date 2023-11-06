@@ -15926,7 +15926,7 @@ programmatically with command-line parsers like @code{getopt} and
 (define-public python-pythonanywhere
   (package
     (name "python-pythonanywhere")
-    (version "0.9.10")
+    (version "0.12.1")
     (source
       (origin
         (method git-fetch)
@@ -15936,7 +15936,7 @@ programmatically with command-line parsers like @code{getopt} and
         (file-name (git-file-name name version))
         (sha256
           (base32
-           "0vzzc1g8pl7cb9yvm3n1j5zlzxf0jd423rzspc2kvpb8yhvydklx"))))
+           "12898jrq8bi90s5v3wirj7zprk08smwzwdx09y07x770frqd80vl"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -15967,8 +15967,9 @@ programmatically with command-line parsers like @code{getopt} and
     (home-page "https://github.com/pythonanywhere/helper_scripts/")
     (synopsis "PythonAnywhere helper tools for users")
     (description "PythonAnywhere provides a command-line interface and an
-application programming interface that allows managing Web apps and scheduled
-tasks.  It includes single-command deployment for the Django Girls tutorial.")
+application programming interface that allows managing files Web apps, scheduled
+tasks and students.  It includes single-command deployment for the Django Girls
+tutorial.")
     (license license:expat)))
 
 (define-public python-pythondialog
