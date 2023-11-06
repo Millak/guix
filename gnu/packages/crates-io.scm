@@ -46802,6 +46802,7 @@ applications written in Rust.  Its API is inspired by the popular
        #:cargo-development-inputs
        (("rust-nitrokey-test" ,rust-nitrokey-test-0.3)
         ("rust-nitrokey-test-state" ,rust-nitrokey-test-state-0.1))))
+    (inputs (list hidapi))
     (home-page "https://git.sr.ht/~ireas/nitrokey-rs")
     (synopsis "Rust bindings to libnitrokey")
     (description
