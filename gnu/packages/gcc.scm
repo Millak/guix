@@ -134,7 +134,7 @@ where the OS part is overloaded to denote a specific ABI---into GCC
             (list 'quasiquote
                   (append
                    '("--enable-plugin"
-                     "--enable-languages=c,c++"
+                     "--enable-languages=c,c++,objc,obj-c++"
                      "--disable-multilib"
                      "--with-system-zlib"
 
@@ -1325,102 +1325,6 @@ provides the GNU compiler for the Go programming language."))
 ;; Provides go-1.18
 (define-public gccgo-14
   (make-gccgo gcc-14))
-
-(define %objc-search-paths
-  (list (search-path-specification
-         (variable "OBJC_INCLUDE_PATH")
-         (files '("include")))
-        $LIBRARY_PATH))
-
-(define-public gcc-objc-4.8
-  (custom-gcc gcc-4.8 "gcc-objc" '("objc")
-              %objc-search-paths))
-
-(define-public gcc-objc-4.9
-  (custom-gcc gcc-4.9 "gcc-objc" '("objc")
-              %objc-search-paths))
-
-(define-public gcc-objc-5
-  (custom-gcc gcc-5 "gcc-objc" '("objc")
-              %objc-search-paths))
-
-(define-public gcc-objc-6
-  (custom-gcc gcc-6 "gcc-objc" '("objc")
-              %objc-search-paths))
-
-(define-public gcc-objc-7
-  (custom-gcc gcc-7 "gcc-objc" '("objc")
-              %objc-search-paths))
-
-(define-public gcc-objc-8
-  (custom-gcc gcc-8 "gcc-objc" '("objc")
-              %objc-search-paths))
-
-(define-public gcc-objc-9
-  (custom-gcc gcc-9 "gcc-objc" '("objc")
-              %objc-search-paths))
-
-(define-public gcc-objc-10
-  (custom-gcc gcc-10 "gcc-objc" '("objc")
-              %objc-search-paths))
-
-(define-public gcc-objc-11
-  (custom-gcc gcc-11 "gcc-objc" '("objc")
-              %objc-search-paths))
-
-(define-public gcc-objc-12
-  (custom-gcc gcc-12 "gcc-objc" '("objc")
-              %objc-search-paths))
-
-(define-public gcc-objc gcc-objc-11)
-
-(define %objc++-search-paths
-  (list (search-path-specification
-         (variable "OBJCPLUS_INCLUDE_PATH")
-         (files '("include")))
-        $LIBRARY_PATH))
-
-(define-public gcc-objc++-4.8
-  (custom-gcc gcc-4.8 "gcc-objc++" '("obj-c++")
-              %objc++-search-paths))
-
-(define-public gcc-objc++-4.9
-  (custom-gcc gcc-4.9 "gcc-objc++" '("obj-c++")
-              %objc++-search-paths))
-
-(define-public gcc-objc++-5
-  (custom-gcc gcc-5 "gcc-objc++" '("obj-c++")
-              %objc++-search-paths))
-
-(define-public gcc-objc++-6
-  (custom-gcc gcc-6 "gcc-objc++" '("obj-c++")
-              %objc++-search-paths))
-
-(define-public gcc-objc++-7
-  (custom-gcc gcc-7 "gcc-objc++" '("obj-c++")
-              %objc++-search-paths))
-
-(define-public gcc-objc++-8
-  (custom-gcc gcc-8 "gcc-objc++" '("obj-c++")
-              %objc++-search-paths))
-
-(define-public gcc-objc++-9
-  (custom-gcc gcc-9 "gcc-objc++" '("obj-c++")
-              %objc++-search-paths))
-
-(define-public gcc-objc++-10
-  (custom-gcc gcc-10 "gcc-objc++" '("obj-c++")
-              %objc++-search-paths))
-
-(define-public gcc-objc++-11
-  (custom-gcc gcc-11 "gcc-objc++" '("obj-c++")
-              %objc++-search-paths))
-
-(define-public gcc-objc++-12
-  (custom-gcc gcc-12 "gcc-objc++" '("obj-c++")
-              %objc++-search-paths))
-
-(define-public gcc-objc++ gcc-objc++-11)
 
 (define (make-libstdc++-doc gcc)
   "Return a package with the libstdc++ documentation for GCC."

@@ -35,6 +35,8 @@
 
             $CPLUS_INCLUDE_PATH
             $C_INCLUDE_PATH
+            $OBJC_INCLUDE_PATH
+            $OBJCPLUS_INCLUDE_PATH
             $LIBRARY_PATH
             $GUIX_EXTENSIONS_PATH
             $PATH
@@ -90,6 +92,16 @@
    (variable "C_INCLUDE_PATH")
    (files '("include"))))
 
+(define $OBJC_INCLUDE_PATH
+  (search-path-specification
+   (variable "OBJC_INCLUDE_PATH")
+   (files '("include"))))
+
+(define $OBJCPLUS_INCLUDE_PATH
+  (search-path-specification
+   (variable "OBJCPLUS_INCLUDE_PATH")
+   (files '("include"))))
+
 (define $LIBRARY_PATH
   (search-path-specification
    (variable "LIBRARY_PATH")
@@ -103,6 +115,8 @@
   ;; the typical /usr/include headers on an FHS system.
   (list $C_INCLUDE_PATH
         $CPLUS_INCLUDE_PATH
+        $OBJC_INCLUDE_PATH
+        $OBJCPLUS_INCLUDE_PATH
         $LIBRARY_PATH))
 
 (define $PATH
