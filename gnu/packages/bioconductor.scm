@@ -22757,6 +22757,30 @@ Functions are also provided to enable smooth interoperability of multiple
 Python environments in a single R session.")
     (license license:gpl3)))
 
+(define-public r-bayesknockdown
+  (package
+    (name "r-bayesknockdown")
+    (version "1.28.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "BayesKnockdown" version))
+       (sha256
+        (base32 "1argd4gfld2yb0vvpgb5k7m6agmi58712f6g5dj4gnb7kg4rp1l8"))))
+    (properties `((upstream-name . "BayesKnockdown")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase))
+    (home-page "https://bioconductor.org/packages/BayesKnockdown")
+    (synopsis "Posterior probabilities for edges from knockdown data")
+    (description
+     "This package provides a simple, fast Bayesian method for computing
+posterior probabilities for relationships between a single predictor variable
+and multiple potential outcome variables, incorporating prior probabilities of
+relationships.  In the context of knockdown experiments, the predictor
+variable is the knocked-down gene, while the other genes are potential
+targets.  It can also be used for differential expression/2-class data.")
+    (license license:gpl3)))
+
 (define-public r-biocthis
   (package
     (name "r-biocthis")
