@@ -22867,6 +22867,36 @@ output is either point estimates from posterior (2D array) or samples from
 posterior (3D array).")
     (license license:gpl2+)))
 
+(define-public r-bbcanalyzer
+  (package
+    (name "r-bbcanalyzer")
+    (version "1.32.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "BBCAnalyzer" version))
+       (sha256
+        (base32 "108jcgsf5hyj348y17hcw8m3zcfjgzpx8nz4n5jgxp2lgxjyizy1"))))
+    (properties `((upstream-name . "BBCAnalyzer")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biostrings
+           r-genomicranges
+           r-iranges
+           r-rsamtools
+           r-summarizedexperiment
+           r-variantannotation))
+    (home-page "https://bioconductor.org/packages/BBCAnalyzer")
+    (synopsis "Visualizing base counts")
+    (description
+     "BBCAnalyzer is a package for visualizing the relative or absolute number
+of bases, deletions and insertions at defined positions in sequence alignment
+data available as bam files in comparison to the reference bases.  Markers for
+the relative base frequencies, the mean quality of the detected bases, known
+mutations or polymorphisms and variants called in the data may additionally be
+included in the plots.")
+    (license license:lgpl3)))
+
 (define-public r-biocthis
   (package
     (name "r-biocthis")
