@@ -744,6 +744,16 @@ rasterisation.")
              (_ ''()))
            #:phases
            #~(modify-phases %standard-phases
+               ;; A typo in a previous upstream commit disabled building
+               ;; libdrm_intel by default on supported platforms.  This was
+               ;; fixed by the following change in upstream commit
+               ;; 8a933c778a0eb36526bf3fc8a289e25add9ff8b0.
+               ;; TODO: Remove on next update of libdrm.
+               (add-after 'unpack 'build-intel-by-default
+                 (lambda _
+                   (substitute* "meson.build"
+                     (("system\\(\\)\\.startswith")
+                      "cpu_family().startswith"))))
                (replace 'check
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests?
