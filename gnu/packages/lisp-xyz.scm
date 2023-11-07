@@ -21262,10 +21262,8 @@ running into parallelism problems when having to change directory.")
 Common Lisp.")
       (license license:expat))))
 
-;; NOTE: (Sharlatan-20221112T214131+0000): There is no ecl-moptilities variable
-;; required for tests.
-;;
-;; ecl-metacopy
+(define-public ecl-metacopy
+  (sbcl-package->ecl-package sbcl-metacopy))
 
 (define-public cl-metacopy
   (sbcl-package->cl-source-package sbcl-metacopy))
