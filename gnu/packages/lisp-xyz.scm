@@ -9216,8 +9216,8 @@ discontiguous ranges of time.")
   (sbcl-package->ecl-package sbcl-periods))
 
 (define-public sbcl-metatilities-base
-  (let ((commit "6eaa9e3ff0939a93a92109dd0fcd218de85417d5")
-        (revision "1"))
+  (let ((commit "ef04337759972fd622c9b27b53149f3d594a841f")
+        (revision "2"))
     (package
       (name "sbcl-metatilities-base")
       (version (git-version "0.6.6" revision commit))
@@ -9225,12 +9225,12 @@ discontiguous ranges of time.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/gwkkwg/metatilities-base")
+               (url "https://github.com/hraban/metatilities-base")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0xpa86pdzlnf4v5g64j3ifaplx71sx2ha8b7vvakswi652679ma0"))))
+           "069rk5ncwvjnnzvvky6xiriynl72yzvjpnzl6jw9jf3b8na14zrk"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-lift))
