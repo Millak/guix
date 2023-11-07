@@ -17740,12 +17740,14 @@ bringing dynamism to class definition.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/gwkkwg/cl-markdown")
+               (url "https://github.com/hraban/cl-markdown")
                (commit commit)))
          (file-name (git-file-name "cl-markdown" version))
          (sha256
           (base32 "1algqwmafipyf194cx9wfhg0pdx1ppx6s444p1pm8yaycbsyla1v"))))
       (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-lift sbcl-trivial-shell))
       (inputs
        `(("anaphora" ,sbcl-anaphora)
          ("cl-containers" ,sbcl-cl-containers)
@@ -17753,10 +17755,6 @@ bringing dynamism to class definition.")
          ("dynamic-classes" ,sbcl-dynamic-classes)
          ("metabang-bind" ,sbcl-metabang-bind)
          ("metatilities-base" ,sbcl-metatilities-base)))
-      (arguments
-       ;; NOTE: (Sharlatan-20210107213629+0000) Tests depend on too many not
-       ;; available systems, which  themself are abandoned.
-       `(#:tests? #f))
       (home-page "https://common-lisp.net/project/cl-markdown/")
       (synopsis "Common Lisp rewrite of Markdown")
       (description
@@ -17764,7 +17762,14 @@ bringing dynamism to class definition.")
       (license license:expat))))
 
 (define-public ecl-cl-markdown
-  (sbcl-package->ecl-package sbcl-cl-markdown))
+  (let ((pkg (sbcl-package->ecl-package sbcl-cl-markdown)))
+    (package
+      (inherit pkg)
+      (arguments
+       ;; XXX: Tests fail with "The function LIFT::GET-BACKTRACE-AS-STRING is
+       ;; undefined" on ECL.
+       ;; See https://github.com/hraban/cl-markdown/issues/11
+       '(#:tests? #f)))))
 
 (define-public cl-markdown
   (sbcl-package->cl-source-package sbcl-cl-markdown))
