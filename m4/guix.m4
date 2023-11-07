@@ -1,7 +1,7 @@
 dnl GNU Guix --- Functional package management for GNU
 dnl Copyright © 2012, 2013, 2014, 2015, 2016, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 dnl Copyright © 2014 Mark H Weaver <mhw@netris.org>
-dnl Copyright © 2017, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+dnl Copyright © 2017, 2020, 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 dnl Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 dnl
 dnl This file is part of GNU Guix.
@@ -128,7 +128,7 @@ dnl GUIX_CHECK_GUILE_SSH
 dnl
 dnl Check whether a recent-enough Guile-SSH is available.
 AC_DEFUN([GUIX_CHECK_GUILE_SSH], [
-  dnl Check whether '#:nodelay' paramater to 'make-session' (introduced in
+  dnl Check whether '#:nodelay' parameter to 'make-session' (introduced in
   dnl 0.13.0) is present.
   AC_CACHE_CHECK([whether Guile-SSH is available and recent enough],
     [guix_cv_have_recent_guile_ssh],
@@ -306,7 +306,7 @@ AC_DEFUN([GUIX_CHECK_FILE_NAME_LIMITS], [
   AC_REQUIRE([GUIX_TEST_HASH_BANG_LENGTH])
 
   if test "$ac_cv_guix_socket_file_name_length" -ge ]SOCKET_FILE_NAME_LIMIT[; then
-    AC_MSG_ERROR([socket file name would exceed the maxium allowed length])
+    AC_MSG_ERROR([socket file name would exceed the maximum allowed length])
   fi
   if test "$ac_cv_guix_test_socket_file_name_length" -ge ]SOCKET_FILE_NAME_LIMIT[; then
     AC_MSG_WARN([socket file name limit may be exceeded when running tests])
