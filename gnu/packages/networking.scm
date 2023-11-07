@@ -60,6 +60,7 @@
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4407,7 +4408,7 @@ QUIC protocol.")
 (define-public yggdrasil
   (package
     (name "yggdrasil")
-    (version "0.4.7")
+    (version "0.5.2")
     (source
      (origin
        (method git-fetch)
@@ -4418,8 +4419,8 @@ QUIC protocol.")
          (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01mllfrsr55lnfivxwa57cfrjas6w4shsvx9k81pw8jixc124myk"))
-       (patches (search-patches "yggdrasil-extra-config.patch"))))
+        (base32 "0ahgb94s30sq1wwyc8h53mjj3j43ifr0aanj8262rsm6rqk04kzq"))
+      (patches (search-patches "yggdrasil-extra-config.patch"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/yggdrasil-network/yggdrasil-go"
@@ -4445,32 +4446,37 @@ QUIC protocol.")
                       (list "github.com/yggdrasil-network/yggdrasil-go/cmd/yggdrasil"
                             "github.com/yggdrasil-network/yggdrasil-go/cmd/yggdrasilctl"
                             "github.com/yggdrasil-network/yggdrasil-go/cmd/genkeys"))))))))
-    ;; https://github.com/kardianos/minwinsvc is windows only
     (propagated-inputs
-     (list ;;("go-golang-zx2c4-com-wireguard-windows"
-           ;; ,go-golang-zx2c4-com-wireguard-windows)
-           go-golang-zx2c4-com-wireguard
-           go-golang-org-x-text
-           go-golang-org-x-sys
-           go-golang-org-x-net
-           go-golang-org-x-crypto
-           go-golang-org-x-tools
-           go-netns
-           go-netlink
-           go-github-com-olekukonko-tablewriter
-           go-github-com-mitchellh-mapstructure
-           go-github-com-mattn-go-runewidth
-           go-github-com-mattn-go-isatty
-           go-github-com-mattn-go-colorable
-           go-github-com-kardianos-minwinsvc
-           go-github-com-hjson-hjson-go
-           go-github-com-hashicorp-go-syslog
-           go-github-com-gologme-log
-           go-github-com-fatih-color
-           go-github-com-cheggaaa-pb-v3
-           go-github-com-vividcortex-ewma
-           go-github-com-arceliar-phony
-           go-github-com-arceliar-ironwood))
+     (let ((p (package-input-rewriting
+               `((,go-golang-org-x-sys . ,go-golang-org-x-sys-0.8))
+               #:deep? #true)))
+       (cons go-golang-org-x-sys-0.8
+             (map p
+                  (list go-golang-zx2c4-com-wireguard
+                        go-golang-org-x-text
+                        go-golang-org-x-net
+                        go-golang-org-x-crypto
+                        go-golang-org-x-tools
+                        go-netns
+                        go-netlink
+                        go-github-com-bits-and-blooms-bitset
+                        go-github-com-bits-and-blooms-bloom
+                        go-github-com-quic-go-quic-go
+                        go-github-com-hjson-hjson-go
+                        go-github-com-olekukonko-tablewriter
+                        go-github-com-mitchellh-mapstructure
+                        go-github-com-mattn-go-runewidth
+                        go-github-com-mattn-go-isatty
+                        go-github-com-mattn-go-colorable
+                        go-github-com-kardianos-minwinsvc
+                        go-github-com-hjson-hjson-go
+                        go-github-com-hashicorp-go-syslog
+                        go-github-com-gologme-log
+                        go-github-com-fatih-color
+                        go-github-com-cheggaaa-pb-v3
+                        go-github-com-vividcortex-ewma
+                        go-github-com-arceliar-phony
+                        go-github-com-arceliar-ironwood)))))
     (home-page "https://yggdrasil-network.github.io/blog.html")
     (synopsis
      "Experiment in scalable routing as an encrypted IPv6 overlay network")
