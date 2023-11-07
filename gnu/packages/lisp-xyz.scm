@@ -17749,12 +17749,12 @@ bringing dynamism to class definition.")
       (native-inputs
        (list sbcl-lift sbcl-trivial-shell))
       (inputs
-       `(("anaphora" ,sbcl-anaphora)
-         ("cl-containers" ,sbcl-cl-containers)
-         ("cl-ppcre" ,sbcl-cl-ppcre)
-         ("dynamic-classes" ,sbcl-dynamic-classes)
-         ("metabang-bind" ,sbcl-metabang-bind)
-         ("metatilities-base" ,sbcl-metatilities-base)))
+       (list sbcl-anaphora
+             sbcl-cl-containers
+             sbcl-cl-ppcre
+             sbcl-dynamic-classes
+             sbcl-metabang-bind
+             sbcl-metatilities-base))
       (home-page "https://common-lisp.net/project/cl-markdown/")
       (synopsis "Common Lisp rewrite of Markdown")
       (description
