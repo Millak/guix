@@ -8635,7 +8635,10 @@ Cisco's AnyConnect SSL VPN.")
                   libsecret
                   network-manager
                   openfortivpn
-                  ppp))
+
+                  ;; ppp < 2.5.0 is currently required:
+                  ;; https://gitlab.gnome.org/GNOME/NetworkManager-fortisslvpn/-/commit/084ef529c5fb816927ca54866f66b340265aa9f6
+                  ppp-2.4.9))
     (home-page "https://wiki.gnome.org/Projects/NetworkManager/VPN")
     (synopsis "Fortinet SSLVPN plug-in for NetworkManager")
     (description
