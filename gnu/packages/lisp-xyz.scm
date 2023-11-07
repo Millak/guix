@@ -9248,8 +9248,8 @@ which implements a set of utilities.")
   (sbcl-package->ecl-package sbcl-metatilities-base))
 
 (define-public sbcl-cl-containers
-  (let ((commit "3d1df53c22403121bffb5d553cf7acb1503850e7")
-        (revision "3"))
+  (let ((commit "781ebfe0888bae46f07c018f7d473898b1bd4f5f")
+        (revision "4"))
     (package
       (name "sbcl-cl-containers")
       (version (git-version "0.12.1" revision commit))
@@ -9257,12 +9257,12 @@ which implements a set of utilities.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/gwkkwg/cl-containers")
+               (url "https://github.com/hraban/cl-containers")
                (commit commit)))
          (file-name (git-file-name "cl-containers" version))
          (sha256
           (base32
-           "18s6jfq11n8nv9k4biz32pm1s7y9zl054ry1gmdbcf39nisy377y"))))
+           "1nrql8s1j123v5gscy99lxvhlzp0ijig9x94w30v3lwfa58hf90l"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-lift))
