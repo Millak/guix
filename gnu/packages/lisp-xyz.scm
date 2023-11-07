@@ -17692,31 +17692,34 @@ It aims to be implementation-agnostic and to climb the syntax trees.")
   (sbcl-package->ecl-package sbcl-agnostic-lizard))
 
 (define-public sbcl-dynamic-classes
-  (package
-    (name "sbcl-dynamic-classes")
-    (version "1.0.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/gwkkwg/dynamic-classes")
-             (commit (string-append "version-" version))))
-       (file-name (git-file-name "dynamic-classes" version))
-       (sha256
-        (base32 "1z3ag6w4ff0v6715xa9zhvwjqnp4i6zrjfmxdz8m115sklbwgm6c"))))
-    (build-system asdf-build-system/sbcl)
-    (inputs
-     `(("metatilities-base" ,sbcl-metatilities-base)))
-    (arguments
-     ;; NOTE: (Sharlatan-20210106222900+0000) Circular dependencies and failing
-     ;; test suites. lift-standard.config contains referances to deprecated
-     ;; functionality.
-     `(#:tests? #f))
-    (home-page "https://common-lisp.net/project/dynamic-classes/")
-    (synopsis "Dynamic class definition for Common Lisp")
-    (description "Dynamic-Classes helps to ease the prototyping process by
+  (let ((commit "ebd7405603f67b16e8f2bc08ce8e2bcfcf439501")
+        (revision "0"))
+    (package
+      (name "sbcl-dynamic-classes")
+      (version (git-version "1.0.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/hraban/dynamic-classes")
+               (commit commit)))
+         (file-name (git-file-name "dynamic-classes" version))
+         (sha256
+          (base32 "1k9lkchwyi2xhygp2v8ifq3kg1l3wcnihhzgr06jrivjxgdqpc1a"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       `(("metatilities-base" ,sbcl-metatilities-base)))
+      (arguments
+       ;; NOTE: (Sharlatan-20210106222900+0000) Circular dependencies and failing
+       ;; test suites. lift-standard.config contains referances to deprecated
+       ;; functionality.
+       ;; See https://github.com/hraban/dynamic-classes/issues/2
+       `(#:tests? #f))
+      (home-page "https://common-lisp.net/project/dynamic-classes/")
+      (synopsis "Dynamic class definition for Common Lisp")
+      (description "Dynamic-Classes helps to ease the prototyping process by
 bringing dynamism to class definition.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public ecl-dynamic-classes
   (sbcl-package->ecl-package sbcl-dynamic-classes))
