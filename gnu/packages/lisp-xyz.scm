@@ -7726,8 +7726,8 @@ CPython implementation of Python) and Common Lisp.")
   (sbcl-package->ecl-package sbcl-burgled-batteries3))
 
 (define-public sbcl-metabang-bind
-  (let ((commit "c93b7f7e1c18c954c2283efd6a7fdab36746ab5e")
-        (revision "1"))
+  (let ((commit "08196426cb099db0623e6cae2aeca566e0b788b2")
+        (revision "2"))
     (package
       (name "sbcl-metabang-bind")
       (version (git-version "0.8.0" revision commit))
@@ -7735,12 +7735,12 @@ CPython implementation of Python) and Common Lisp.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/gwkkwg/metabang-bind")
+               (url "https://github.com/hraban/metabang-bind")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0hd0kr91795v77akpbcyqiss9p0p7ypa9dznrllincnmgvsxlmf0"))))
+           "14g7k3zhm8cd6bssc5mm5h6iq1dv5lfhiq33aimcmj5a6vbiq47d"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-lift))
