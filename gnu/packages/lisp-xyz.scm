@@ -2704,8 +2704,8 @@ arbitrary Lisp data.")
   (sbcl-package->ecl-package sbcl-cl-dot))
 
 (define-public sbcl-cl-graph
-  (let ((commit "3cb786797b24883d784b7350e7372e8b1e743508")
-        (revision "1"))
+  (let ((commit "c617de35390cb02db88bc5b5febffafdb8947ae8")
+        (revision "2"))
     (package
       (name "sbcl-cl-graph")
       (version (git-version "0.10.2" revision commit))
@@ -2713,11 +2713,11 @@ arbitrary Lisp data.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/gwkkwg/cl-graph")
+               (url "https://github.com/hraban/cl-graph")
                (commit commit)))
          (file-name (git-file-name "cl-graph" version))
          (sha256
-          (base32 "1748rj52f2jmd5jvsy9jwhn0zf73sjzjhwhnljvq6yi2kdqr30kl"))))
+          (base32 "0g1abkph9zb0m9zz6q2471ml9q9acdhwyapk8ra3bisqpwlxvpyf"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        ;; TODO: (Sharlatan-20221118T215839+0000): Tests failed
