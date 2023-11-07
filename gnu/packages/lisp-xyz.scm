@@ -17097,12 +17097,21 @@ not so easy to copy (ssyntax, argument destructuring, etc.).")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/gwkkwg/trivial-shell")
+               (url "https://github.com/hraban/trivial-shell")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32 "08mpkl5ij5sjfsyn8pq2kvsvpvyvr7ha1r8g1224fa667b8k2q85"))))
       (build-system asdf-build-system/sbcl)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-paths
+              (lambda _
+                (substitute* "dev/definitions.lisp"
+                  (("/bin/sh")
+                   (which "sh"))))))))
       (native-inputs
        (list sbcl-lift))
       (home-page "https://common-lisp.net/project/trivial-shell/")
