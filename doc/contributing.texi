@@ -1862,7 +1862,7 @@ browse issues:
 interface@footnote{The web interface at
 @url{https://issues.guix.gnu.org} is powered by Mumi, a nice piece of
 software written in Guile, and you can help!  See
-@url{https://git.elephly.net/gitweb.cgi?p=software/mumi.git}.} to browse
+@url{https://git.savannah.gnu.org/cgit/guix/mumi.git}.} to browse
 bug reports and patches, and to participate in discussions;
 @item
 @url{https://bugs.gnu.org/guix} lists bug reports;
