@@ -1264,10 +1264,6 @@ and Gopher website hosting.")
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-lift))
-      (arguments
-       ;; NOTE: (Sharlatan-20210202T231437+0000): Due to the age of this library
-       ;; tests use some deprecated functionality and keep failing.
-       `(#:tests? #f))
       (home-page "https://github.com/hraban/trivial-timeout")
       (synopsis "Timeout library for Common Lisp")
       (description
