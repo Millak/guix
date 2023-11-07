@@ -21234,8 +21234,8 @@ running into parallelism problems when having to change directory.")
   (sbcl-package->cl-source-package sbcl-simple-inferiors))
 
 (define-public sbcl-metacopy
-  (let ((commit "1b5bf443206cc1dea7801ae23d1167bd02122d30")
-        (revision "1"))
+  (let ((commit "df7856f2a43fa91124fe780ef22f792040bc130c")
+        (revision "2"))
     (package
       (name "sbcl-metacopy")
       (version (git-version "0.2.0" revision commit))
@@ -21243,17 +21243,19 @@ running into parallelism problems when having to change directory.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/gwkkwg/metacopy")
+               ;; Upstream changed the maintaner.
+               ;; legacy https://github.com/gwkkwg/metacopy
+               (url "https://github.com/hraban/metacopy")
                (commit commit)))
          (file-name (git-file-name "cl-metacopy" version))
          (sha256
-          (base32 "1rzp112djgw5n76s6hy2aq92bc43p0zd5bgzvqwvgvws4pls42s9"))))
+          (base32 "0l5ryg8pvqz9sn9s8bsvd0plvcnm7crsx86iqk5wxblkialaizip"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-asdf-system-connections sbcl-lift))
       (inputs
        (list sbcl-contextl sbcl-moptilities))
-      (home-page "https://github.com/gwkkwg/metacopy")
+      (home-page "https://github.com/hraban/metacopy")
       (synopsis "Flexible Common Lisp shallow/deep copy mechanism")
       (description
        "This package provides a flexible shallow/deep copy mechanism for
