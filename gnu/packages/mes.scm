@@ -176,7 +176,7 @@ parsers to allow execution with Guile as extension languages.")))
             (else
              '())))
        (list graphviz help2man
-             m2-planet
+             m2-planet-1.9.0
              perl                               ;build-aux/gitlog-to-changelog
              texinfo)))
     (build-system gnu-build-system)
