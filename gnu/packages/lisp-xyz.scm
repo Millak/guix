@@ -1247,8 +1247,8 @@ and Gopher website hosting.")
               (delete 'build-program))))))))
 
 (define-public sbcl-trivial-timeout
-  (let ((commit "feb869357f40f5e109570fb40abad215fb370c6c")
-        (revision "1"))
+  (let ((commit "e70d9b4f7caeab83ea6ac50d724470fe49561e66")
+        (revision "2"))
     (package
       (name "sbcl-trivial-timeout")
       (version (git-version "0.1.5" revision commit))
@@ -1256,11 +1256,11 @@ and Gopher website hosting.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/gwkkwg/trivial-timeout/")
+               (url "https://github.com/hraban/trivial-timeout")
                (commit commit)))
          (file-name (git-file-name "trivial-timeout" version))
          (sha256
-          (base32 "1kninxwvvih9nhh7a9y8lfgi7pdr76675y1clw4ss17vz8fbim5p"))))
+          (base32 "0s8z9aj6b3kv21yiyk13cjylzf5zlnw9v86vcff477m1gk9yddjs"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-lift))
@@ -1268,7 +1268,7 @@ and Gopher website hosting.")
        ;; NOTE: (Sharlatan-20210202T231437+0000): Due to the age of this library
        ;; tests use some deprecated functionality and keep failing.
        `(#:tests? #f))
-      (home-page "https://github.com/gwkkwg/trivial-timeout/")
+      (home-page "https://github.com/hraban/trivial-timeout")
       (synopsis "Timeout library for Common Lisp")
       (description
        "This library provides an OS and implementation independent access to
