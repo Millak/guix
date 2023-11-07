@@ -625,8 +625,8 @@ to make test code more informative.
   (sbcl-package->cl-source-package sbcl-kaputt))
 
 (define-public sbcl-lift
-  (let ((commit "2594160d6ca3a77d8750110dfa63214256aab852")
-        (revision "2"))
+  (let ((commit "a7941845a9de72be60e66ea941aa34cbee35bf23")
+        (revision "3"))
     (package
       (name "sbcl-lift")
       (version (git-version "1.7.1" revision commit))
@@ -634,10 +634,10 @@ to make test code more informative.
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/gwkkwg/lift")
+               (url "https://github.com/hraban/lift")
                (commit commit)))
          (sha256
-          (base32 "01xvz9sl5l5lai4h9dabmcjnm659wf5zllaxqbs55lffskp6jwq3"))
+          (base32 "1513n46fkqw8rnvz69s7xnwj476qm8ibdlwsr63qj9yh0mib0q6x"))
          (file-name (git-file-name "lift" version))
          (modules '((guix build utils)))
          (snippet
