@@ -7791,7 +7791,7 @@ the Go standard library}.")
 (define-public go-github-com-quic-go-quic-go
   (package
     (name "go-github-com-quic-go-quic-go")
-    (version "0.14.4")
+    (version "0.39.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7800,25 +7800,29 @@ the Go standard library}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04l3gqbc3gh079n8vgnrsf8ypgv8sl63xjf28jqfrb45v2l73vyz"))))
+                "0acabl3cz48nxpggc5s7fwxpmr5amyi09jygn5m5xxkkbhqs2cxq"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/quic-go/quic-go"
-       ;; XXX More packages required...
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-repository-path
-           (lambda _
-             (substitute* (find-files "src/github.com/quic-go/quic-go/" ".*\\.go|.*\\.mod")
-               (("lucas-clemente")
-                "quic-go")))))))
+     (list #:import-path "github.com/quic-go/quic-go"
+           ;; XXX More packages required...
+           #:tests? #f
+           #:go go-1.20))
     (propagated-inputs
-     (list go-golang-org-x-crypto
-           go-github-com-cheekybits-genny
-           go-github-com-marten-seemann-chacha20
-           go-github-com-marten-seemann-qtls
-           go-github-com-golang-protobuf-proto))
+     (let ((p (package-input-rewriting
+               `((,go-golang-org-x-sys . ,go-golang-org-x-sys-0.8))
+               #:deep? #true)))
+       (cons go-golang-org-x-sys-0.8
+             (map p
+                  (list go-github-com-quic-go-qtls-go1-20
+                        go-github-com-quic-go-qpack
+                        go-golang-org-x-crypto
+                        go-github-com-cheekybits-genny
+                        go-github-com-marten-seemann-chacha20
+                        go-github-com-golang-protobuf-proto
+                        go-golang-org-x-crypto
+                        go-golang-org-x-exp
+                        go-golang-org-x-net
+                        go-golang-org-x-sync)))))
     (synopsis "QUIC in Go")
     (description "This package provides a Go language implementation of the QUIC
 network protocol.")
