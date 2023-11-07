@@ -19492,7 +19492,7 @@ immediately loaded.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/gwkkwg/cl-mathstats")
+               (url "https://github.com/hraban/cl-mathstats")
                (commit commit)))
          (file-name (git-file-name "cl-mathstats" version))
          (sha256
@@ -19502,7 +19502,7 @@ immediately loaded.")
        (list sbcl-lift))
       (inputs
        (list sbcl-cl-containers sbcl-metatilities-base))
-      (home-page "https://github.com/gwkkwg/cl-mathstats")
+      (home-page "https://github.com/hraban/cl-mathstats")
       (synopsis "Common Lisp collection of mathematical routines")
       (description
        "This package provides Common Lisp math and statistics routines.")
