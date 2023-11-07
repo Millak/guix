@@ -825,7 +825,9 @@ others.")
     (native-inputs
      (list autoconf automake pkg-config))
     (inputs
-     (list openssl ppp))
+     ;; ppp < 2.5.0 is required due to
+     ;; <https://github.com/adrienverge/openfortivpn/pull/1148>.
+     (list openssl ppp-2.4.9))
     (home-page "https://github.com/adrienverge/openfortivpn")
     (synopsis "Client for PPP+SSL VPN tunnel services")
     (description "Openfortivpn is a client for PPP+SSL VPN tunnel services.  It
