@@ -17335,14 +17335,14 @@ customizable by the user.")
 (define-public emacs-zones
   (package
     (name "emacs-zones")
-    (version "2019.7.13")
+    (version "2023.6.11")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
-                           "zones-" version ".el"))
+                           "zones-" version ".tar"))
        (sha256
-        (base32 "0qp1ba2pkqx9d35g7z8hf8qs2k455krf2a92l4rka3ipsbnmq5k1"))))
+        (base32 "1znz720s9pchc7r9g1mpz9jcnz122bppimmh09g1rn94fh3m6vm3"))))
     (build-system emacs-build-system)
     (home-page "https://www.emacswiki.org/emacs/Zones")
     (synopsis "Define and act on multiple zones of buffer text")
