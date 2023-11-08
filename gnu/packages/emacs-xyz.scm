@@ -12566,16 +12566,16 @@ hydras with one column per group of heads.")))
 (define-public emacs-ivy
   (package
     (name "emacs-ivy")
-    (version "0.14.0")
+    (version "0.14.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/ivy-" version ".tar"))
        (sha256
-        (base32 "1fzl7xcmxjg005g4676ac3jcshgmcmdr81ywmxvjcs8wj71v56jv"))))
+        (base32 "1zjksh0jvxyqhzgwmh9i26gaip6c04q400xckh730r2gjs287pjj"))))
     (build-system emacs-build-system)
     (propagated-inputs
-     (list emacs-hydra))
+     (list))
     (home-page "https://github.com/abo-abo/swiper")
     (synopsis "Incremental vertical completion for Emacs")
     (description
