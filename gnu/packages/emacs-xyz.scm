@@ -5880,7 +5880,7 @@ or if you want to ensure that some modes have no ligatures at all.")
 (define-public emacs-olivetti
   (package
     (name "emacs-olivetti")
-    (version "2.0.4")
+    (version "2.0.5")
     (source
      (origin
        (method git-fetch)
@@ -5889,7 +5889,7 @@ or if you want to ensure that some modes have no ligatures at all.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wc0rki4zvzdxs126g5c8d92h1vfn9slfkdx831rr9d0jx93wc7s"))))
+        (base32 "1v5f0glp0ggmmzzhaxlijc58w4ip1nlik9lx7rcl6symsqcmqmq1"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/rnkn/olivetti")
     (synopsis "Emacs minor mode for a nice writing environment")
