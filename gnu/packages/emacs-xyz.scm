@@ -28120,16 +28120,16 @@ and comments.")
 (define-public emacs-yeetube
   (package
     (name "emacs-yeetube")
-    (version "2.0.5")
+    (version "2.0.7")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://git.thanosapollo.com/yeetube")
+             (url "https://git.thanosapollo.org/yeetube")
              (commit version)))
        (sha256
         (base32
-         "1pb6pb624icnjp7210vqrxj4sb38kydfaxc88bj1xmk1dh332h1k"))
+         "05w33431dfr1ldcg3yq01qvz0alpv8q88r0dsb278qbwszw9cfz6"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (arguments
