@@ -35026,14 +35026,14 @@ example code.")
 (define-public emacs-buffer-env
   (package
     (name "emacs-buffer-env")
-    (version "0.4")
+    (version "0.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://elpa.gnu.org/packages/buffer-env-"
                                   version ".tar"))
               (sha256
                (base32
-                "0y8ik87dqldhn6q631zp2ln9z5byqgm9icrvr4xrdx6g8mr9c56z"))))
+                "17q0flxp0rp52ksyh5ijcamvvm003icbyzv28r6vknrw3qsphb3p"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-compat))
     (home-page "https://github.com/astoff/buffer-env")
