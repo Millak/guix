@@ -28157,20 +28157,20 @@ This package also includes a @code{yt-dlp} front-end.")
 (define-public emacs-org-web-tools
   (package
     (name "emacs-org-web-tools")
-    (version "1.1.1")
+    (version "1.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/alphapapa/org-web-tools")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0v4qad54r0z7dr7kg5lpfdsazi44qvrbybx9aciyl4w9grfajphb"))))
+         "1w24d1cxzgjqycqz894kg3707n3ckwpv5cmbywfaffsz1v5i2p3a"))))
     (build-system emacs-build-system)
     (propagated-inputs
-     (list emacs-dash emacs-esxml emacs-request emacs-s))
+     (list emacs-compat emacs-dash emacs-esxml emacs-request emacs-s))
     (inputs
      (list pandoc))
     (arguments
