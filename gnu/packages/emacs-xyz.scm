@@ -26825,7 +26825,7 @@ image, rotate it, save modified images, and more.")
 (define-public emacs-package-lint
   (package
     (name "emacs-package-lint")
-    (version "0.19")
+    (version "0.20")
     (source
      (origin
        (method git-fetch)
@@ -26835,10 +26835,11 @@ image, rotate it, save modified images, and more.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0afqvsqz5rx39k7k84ffcnf97px8ckmdgq23w19gdxxnzh7vv87z"))))
+         "1v12l8mbsrgkq5rmgzypkiabhfrd5cq6nrnmsairnpw8rrz4w739"))))
     (arguments
      '(#:include (cons "^data/" %default-include)))
     (build-system emacs-build-system)
+    (propagated-inputs (list emacs-compat))
     (home-page "https://github.com/purcell/package-lint")
     (synopsis "Linting library for Elisp package authors")
     (description
