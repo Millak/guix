@@ -26174,11 +26174,10 @@ be changed by customizing the appropriate variables.")
     (license license:gpl3+)))
 
 (define-public emacs-org-caldav
-  (let ((commit "8569941a0a5a9393ba51afc8923fd7b77b73fa7a")
-        (revision "2"))
+  (let ((commit "754989ae500b3f576bdb94fe2ef3059f12eaf7d7")) ;version bump
     (package
       (name "emacs-org-caldav")
-      (version (git-version "0.0.0" revision commit))
+      (version "3.0")
       (source
        (origin
          (method git-fetch)
@@ -26187,7 +26186,7 @@ be changed by customizing the appropriate variables.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "05lgxqaffnqaqnzl24frafdkskran88hl2ml05qvyjhs4jjbgw9g"))))
+          (base32 "0vx465di6imfxmxxkhd8lsdgywyz3gnindg0fyvb2zshg3zz80bg"))))
       (build-system emacs-build-system)
       (arguments
        ;; Tests require to have two specific calendars on a test server.
