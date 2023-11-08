@@ -26837,7 +26837,7 @@ image, rotate it, save modified images, and more.")
         (base32
          "1v12l8mbsrgkq5rmgzypkiabhfrd5cq6nrnmsairnpw8rrz4w739"))))
     (arguments
-     '(#:include (cons "^data/" %default-include)))
+     (list #:include #~(cons "^data/" %default-include)))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-compat))
     (home-page "https://github.com/purcell/package-lint")
