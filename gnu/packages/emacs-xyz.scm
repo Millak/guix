@@ -8802,14 +8802,14 @@ by a query, so both a link can refer to several mails.")
 (define-public emacs-debbugs
   (package
     (name "emacs-debbugs")
-    (version "0.36")
+    (version "0.37")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/debbugs-"
                            version ".tar"))
        (sha256
-        (base32 "1rzv13shadbvy583vjj4zg13v920zpiqrsnn10r3cqqyli89ivn2"))
+        (base32 "0xj0sv5d3y88fsbm7yhm0v59mzj1srxayng1hr418v89ky43rxpr"))
        (patches (search-patches "emacs-debbugs-keep-patch-subject.patch"))))
     (build-system emacs-build-system)
     (arguments '(#:include '("\\.el$" "\\.wsdl$" "\\.info$")))
