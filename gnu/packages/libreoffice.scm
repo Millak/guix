@@ -353,7 +353,7 @@ working with graphics in the WPG (WordPerfect Graphics) format.")
     (name "libcmis")
     ;; Note: Use an unreleased version because libreoffice requires it and
     ;; is the only user (see <https://github.com/tdf/libcmis/pull/43>).
-    (version "0.5.2-46-gf264a61")
+    (version "0.6.0")
     (home-page "https://github.com/tdf/libcmis")
     (source
      (origin
@@ -363,7 +363,7 @@ working with graphics in the WPG (WordPerfect Graphics) format.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "06ff5vw0xrymvvna18wlaayyk20755sk2541i1gh7zpbmncs2ni6"))))
+         "17jx9fb7nmyp6jhz9nlmb3wcp8k03vhcv7sqql6a7jhsjnw3hq0k"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool cppunit pkg-config))
