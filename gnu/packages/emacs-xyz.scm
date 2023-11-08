@@ -12590,17 +12590,17 @@ expression.")
 (define-public emacs-counsel
   (package
     (name "emacs-counsel")
-    (version "0.14.0")
+    (version "0.14.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "counsel-" version ".tar"))
        (sha256
-        (base32 "03n1qk66dcbh9xlnlzpwkb441c2xdpfc7bzx4i2szw0xh4a6g5sj"))))
+        (base32 "13119alyzr2xipk3jra3iawplqkqgvv0gdcm4yd527z592b0s7f0"))))
     (build-system emacs-build-system)
     (propagated-inputs
-     (list emacs-swiper))
+     (list emacs-ivy emacs-swiper))
     (home-page "https://github.com/abo-abo/swiper")
     (synopsis "Various completion functions using Ivy")
     (description
