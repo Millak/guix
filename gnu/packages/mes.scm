@@ -280,18 +280,3 @@ building GNU Mes.")
     (home-page "https://github.com/oriansj/m2-planet")
     (license gpl3+)))
 
-(define-public m2-planet-1.9.0
-  (package
-    (inherit m2-planet)
-    (name "m2-planet")
-    (version "1.9.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/oriansj/m2-planet")
-                    (commit (string-append "Release_" version))
-                    (recursive? #t)))   ;for M2libc
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0cgvvq91cbxxm93k8ayyvhpaf3c2lv10qw4wyqwn3hc1qb1cfyvr"))))))
