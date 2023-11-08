@@ -9047,14 +9047,14 @@ commands and user options are usually not implemented here.")
 (define-public emacs-company
   (package
     (name "emacs-company")
-    (version "0.9.13")
+    (version "0.10.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "company-" version ".tar"))
        (sha256
-        (base32 "1c9x9wlzzsn7vrsm57l2l44nqx455saa6wrm853szzg09qn8dlnw"))))
+        (base32 "0j2qrnx2w2al4f2n37b89q0pkabh5ccv00gsknvgaylhy0za5gq9"))))
     (build-system emacs-build-system)
     (home-page "https://company-mode.github.io/")
     (synopsis "Modular text completion framework")
