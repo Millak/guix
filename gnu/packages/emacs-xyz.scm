@@ -28174,23 +28174,24 @@ This package also includes a @code{yt-dlp} front-end.")
     (inputs
      (list pandoc))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-exec-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((pandoc (assoc-ref inputs "pandoc")))
-               (substitute* "org-web-tools.el"
-                 (("\"pandoc\"") (string-append "\"" pandoc "/bin/pandoc\"")))
-               #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-exec-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((pandoc (search-input-file inputs "/bin/pandoc")))
+                (substitute* "org-web-tools.el"
+                  (("\"pandoc\"") (string-append "\"" pandoc "\"")))))))))
     (home-page "https://github.com/alphapapa/org-web-tools")
-    (synopsis "Display/Process web page as Org-mode content")
-    (description "This package contains library functions and commands useful
-for retrieving web page content and processing it into Org-mode content.
+    (synopsis "Display/Process web page as Org mode content")
+    (description
+     "This package contains library functions and commands useful
+for retrieving web page content and processing it into Org mode content.
 
-For example, you can copy a URL to the clipboard or kill-ring, then run a
-command that downloads the page, isolates the “readable” content with
-@command{eww-readable}, converts it to Org-mode content with Pandoc, and
-displays it in an Org-mode buffer.  Another command does all of that but
+For example, you can copy a URL to the clipboard or kill-ring, then run
+a command that downloads the page, isolates the ``readable'' content with
+@command{eww-readable}, converts it to Org mode content with Pandoc, and
+displays it in an Org mode buffer.  Another command does all of that but
 inserts it as an Org entry instead of displaying it in a new buffer.")
     (license license:gpl3+)))
 
