@@ -3188,26 +3188,33 @@ will reconstruct the object along its delta-base chain and return it.")
                #$(file-append (this-package-input "go-golang-org-x-net")
                               "/src/golang.org/x/net/publicsuffix/data")
                "src/golang.org/x/net/publicsuffix/data")))
-          (add-before 'build 'man-gen
-            ;; Without this, the binary generated in 'build
-            ;; phase won't have any embedded usage-text.
-            (lambda _
-              (with-directory-excursion "src/github.com/git-lfs/git-lfs"
-                (invoke "make" "mangen"))))
-          (add-after 'build 'build-man-pages
-            (lambda _
-              (with-directory-excursion "src/github.com/git-lfs/git-lfs"
-                (invoke "make" "man"))))
-          (add-after 'install 'install-man-pages
-            (lambda* (#:key outputs #:allow-other-keys)
-              (with-directory-excursion "src/github.com/git-lfs/git-lfs/man"
-                (for-each
-                 (lambda (manpage)
-                   (install-file manpage
-                                 (string-append #$output "/share/man/man1")))
-                 (find-files "." "^git-lfs.*\\.1$"))))))))
+          ;; Only build the man pages if ruby-asciidoctor is available.
+          #$@(if (this-package-native-input "ruby-asciidoctor")
+               #~((add-before 'build 'man-gen
+                    ;; Without this, the binary generated in 'build
+                    ;; phase won't have any embedded usage-text.
+                    (lambda _
+                      (with-directory-excursion "src/github.com/git-lfs/git-lfs"
+                        (invoke "make" "mangen"))))
+                  (add-after 'build 'build-man-pages
+                    (lambda _
+                      (with-directory-excursion "src/github.com/git-lfs/git-lfs"
+                        (invoke "make" "man"))))
+                  (add-after 'install 'install-man-pages
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (with-directory-excursion "src/github.com/git-lfs/git-lfs/man"
+                        (for-each
+                         (lambda (manpage)
+                           (install-file manpage
+                                         (string-append #$output "/share/man/man1")))
+                         (find-files "." "^git-lfs.*\\.1$"))))))
+               #~()))))
     ;; make `ronn` available during build for man page generation
-    (native-inputs (list ronn-ng git-minimal ruby-asciidoctor))
+    (native-inputs
+     (append (list git-minimal)
+             (if (supported-package? ruby-asciidoctor)
+               (list ronn-ng ruby-asciidoctor)
+               '())))
     (propagated-inputs
      (list go-github-com-xeipuuv-gojsonschema
            go-github-com-xeipuuv-gojsonreference
