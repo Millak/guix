@@ -6584,7 +6584,7 @@ intended to be.")
 (define-public emacs-ef-themes
   (package
     (name "emacs-ef-themes")
-    (version "1.3.0")
+    (version "1.4.0")
     (source
      (origin
        (method git-fetch)
@@ -6594,7 +6594,7 @@ intended to be.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0a52zm9h7nsif5b6ig428d9i0gh8c0qcfyarvsmpv8cwk59iba0z"))))
+         "029pcca3ppbs22isym2hi3zzynmvk5dg7jcimpm7nd8m4qk46f49"))))
     (build-system emacs-build-system)
     (home-page "https://git.sr.ht/~protesilaos/ef-themes")
     (synopsis "Colorful and legible themes")
