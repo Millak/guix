@@ -13,6 +13,7 @@
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 Ryan Tolboom <ryan@using.tech>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1662,13 +1663,19 @@ instances over the network, and general QSO and DXpedition logging.")
         (base32 "1lqd77v9xm58k9g9kfwxva3mmzm1yyk1v27nws5j1a293zfg2hkw"))))
     (build-system qt-build-system)
     (arguments
-     (list #:tests? #f)) ; No test suite
+     (list #:tests? #f   ; No test suite
+           #:configure-flags
+           (if (this-package-native-input "ruby-asciidoctor")
+             #~'()
+             #~(list "-DWSJT_GENERATE_DOCS=OFF"))))
     (native-inputs
-     (list asciidoc
-           gfortran
-           pkg-config
-           qttools-5
-           ruby-asciidoctor))
+     (append (list asciidoc
+                   gfortran
+                   pkg-config
+                   qttools-5)
+             (if (supported-package? ruby-asciidoctor)
+               (list ruby-asciidoctor)
+               '())))
     (inputs
      (list boost
            fftw
