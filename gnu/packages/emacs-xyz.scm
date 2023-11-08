@@ -32415,14 +32415,14 @@ advice system without dropping support for Emacs<24.4.")
 (define-public emacs-url-http-ntlm
   (package
     (name "emacs-url-http-ntlm")
-    (version "2.0.4")
+    (version "2.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
-                           "url-http-ntlm-" version ".el"))
+                           "url-http-ntlm-" version ".tar"))
        (sha256
-        (base32 "1cakq2ykraci7d1gl8rnpv4f2f5ffyaidhqb1282g7i72adwmb98"))))
+        (base32 "0bpjif0c4yzz75v59wsv7hilkpj2gv4kyc0rdk8h3d9hvmlq7791"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-ntlm))
     (home-page "https://elpa.gnu.org/packages/url-http-ntlm.html")
