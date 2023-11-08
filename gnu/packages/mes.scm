@@ -33,6 +33,7 @@
   #:use-module (gnu packages texinfo)
   #:use-module (guix build-system gnu)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix licenses)
   #:use-module (guix packages)
@@ -209,9 +210,8 @@ Guile.")
     (version "1.5.0")
     (source (origin
               (method url-fetch)
-              (uri (string-append
-                    "https://github.com/oriansj/mescc-tools/releases/download/"
-                    "Release_" version "/" name "-" version ".tar.gz"))
+              (uri (string-append "mirror://savannah/" name "/"
+                                  name "-" version ".tar.gz"))
               (sha256
                (base32
                 "1vjczlajyrbjcx9ld35vhdqbxfdwwy3axg0jray3iwnrf70qr700"))))
@@ -220,10 +220,15 @@ Guile.")
                          "armhf-linux" "aarch64-linux"
                          "riscv64-linux"))
     (arguments
-     `(#:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:test-target "test"
-       #:phases (modify-phases %standard-phases
-                  (delete 'configure))))
+     (list
+      #:make-flags #~(list (string-append "PREFIX=" #$output))
+      #:test-target "test"
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)
+                   (add-after 'unpack 'patch-Kaem/test.sh
+                     (lambda _
+                       (substitute* "Kaem/test.sh"
+                         (("#/usr/") "#! /usr")))))))
     (native-inputs (list which))
     (synopsis "Tools for the full source bootstrapping process")
     (description
