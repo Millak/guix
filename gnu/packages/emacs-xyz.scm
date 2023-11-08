@@ -1355,7 +1355,7 @@ its mode line.")
 (define-public emacs-git-modes
   (package
     (name "emacs-git-modes")
-    (version "1.4.1")
+    (version "1.4.2")
     (source
      (origin
        (method git-fetch)
@@ -1364,7 +1364,7 @@ its mode line.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0b9fywqwccdvyg1cfnlzl61gq1gryjvzp32cw91l4igv7ppmq684"))))
+        (base32 "0npwjcm04gg1cy19gsha5m6my9xa0din860gv3h32cx8q3nizjjc"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-compat))
