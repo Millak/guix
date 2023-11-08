@@ -51,6 +51,7 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages cups)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
@@ -897,7 +898,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
 (define-public libreoffice
   (package
     (name "libreoffice")
-    (version "7.5.4.2")
+    (version "7.6.3.1")
     (source
      (origin
        (method url-fetch)
@@ -906,7 +907,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
          "https://download.documentfoundation.org/libreoffice/src/"
          (version-prefix version 3) "/libreoffice-" version ".tar.xz"))
        (sha256
-        (base32 "1s3592ick745kl60yjlv7ki3p7nnwswj0mgjh3nk6k7skyvx3fv8"))))
+        (base32 "148084acq370483y0xwvcvck30kxhr78cnmibp5lks17xqp5f9q7"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
@@ -1088,6 +1089,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
      (list bison
            cppunit
            flex
+           frozen                       ;header-only library
            pkg-config
            python-wrapper
            which
