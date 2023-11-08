@@ -12668,13 +12668,13 @@ the same name.")
 (define-public emacs-swiper
   (package
     (name "emacs-swiper")
-    (version "0.14.0")
+    (version "0.14.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/swiper-" version ".tar"))
        (sha256
-        (base32 "1p2qil6gj4y8y3ydqs8pbxn8j16q9r42nnc2f61c30hws504pkms"))))
+        (base32 "1x6jnc0nrk68kww12gq6w8nss6ny76xz0fgxf57550bbipx9pa8m"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-ivy))
