@@ -49,6 +49,7 @@
 ;;; Copyright © 2015, 2022 David Thompson <davet@gnu.org>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Kjartan Oli Agustsson <kjartanoli@disroot.org>
+;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -74,6 +75,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix hg-download)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
@@ -91,6 +93,7 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cook)
+  #:use-module (gnu packages crates-io)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages docbook)
@@ -1516,6 +1519,65 @@ and releases in bigger software projects.  The git-flow library of git
 subcommands helps automate some parts of the flow to make working with it a
 lot easier.")
     (license license:bsd-2)))
+
+(define-public stgit-2
+  (package
+    (name "stgit")
+    (version "2.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/stacked-git/stgit")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cgv7chxqkjaqmzi4691in26j2fm8r0vanw8xzb9cqnz6350wvvj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anstyle" ,rust-anstyle-1)
+                       ("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-bstr" ,rust-bstr-1)
+                       ("rust-bzip2-rs" ,rust-bzip2-rs-0.1)
+                       ("rust-clap" ,rust-clap-4)
+                       ("rust-ctrlc" ,rust-ctrlc-3)
+                       ("rust-curl" ,rust-curl-0.4)
+                       ("rust-encoding_rs" ,rust-encoding-rs-0.8)
+                       ("rust-flate2" ,rust-flate2-1)
+                       ("rust-gix" ,rust-gix-0.54)
+                       ("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-is-terminal" ,rust-is-terminal-0.4)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-strsim" ,rust-strsim-0.10)
+                       ("rust-tar" ,rust-tar-0.4)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-termcolor" ,rust-termcolor-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-time" ,rust-time-0.3))
+       #:install-source? #f))
+    (native-inputs (list pkg-config))
+    (inputs (list openssl zlib curl))
+    (home-page "https://stacked-git.github.io/")
+    (synopsis "Stacked Git (StGit) manages Git commits as a stack of patches")
+    (description "StGit uses a patch stack workflow.  Each individual patch
+focuses on a single concern, while a stack of patches forms a series of commits.
+Patches are stored as normal git commits, allowing easy merging of StGit
+patches into other repositories using standard Git.
+
+Features include:
+@itemize
+@item Import and export patches from Git with @command{stg commit} and
+@command{stg uncommit}
+@item Create new patches and add them to the stack with @command{stg new}
+@item Update a patch from the working tree with @command{stg refresh} and
+@command{stg edit}
+@item See information about the stack or patch with @command{stg series} and
+@command{stg show}
+@item Export and send a series of patches by email using @command{stg email}
+@end itemize")
+    (license license:gpl2)))
 
 (define-public stgit
   (package
