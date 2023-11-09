@@ -31822,8 +31822,35 @@ quotations used by git.")
     (description "This package provides a crate to handle git references.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-refspec-0.18
+  (package
+    (name "rust-gix-refspec")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-refspec" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07pniqh74kkm0n727m7wjxgrgwnaypljkhsh8nyw7wvh3rxwp588"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-gix-hash" ,rust-gix-hash-0.13)
+                       ("rust-gix-revision" ,rust-gix-revision-0.22)
+                       ("rust-gix-validate" ,rust-gix-validate-0.8)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Parsing and representing refspecs to Gitoxide")
+    (description
+     "This package parses and represents Git refspecs.  It's part of Gitoxide
+a pure Rust implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-refspec-0.11
   (package
+    (inherit rust-gix-refspec-0.18)
     (name "rust-gix-refspec")
     (version "0.11.0")
     (source
@@ -31833,7 +31860,6 @@ quotations used by git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1x0cayswa8m0yiybi8g3jimpc6jggfvrw6y53snxhvf8mciddgvj"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-1)
@@ -31841,13 +31867,7 @@ quotations used by git.")
         ("rust-gix-revision" ,rust-gix-revision-0.15)
         ("rust-gix-validate" ,rust-gix-validate-0.7)
         ("rust-smallvec" ,rust-smallvec-1)
-        ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Parsing and representing refspecs")
-    (description
-     "This package provides a crate of the gitoxide project for parsing and
-representing refspecs.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-revision-0.22
   (package
