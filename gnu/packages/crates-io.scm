@@ -30742,8 +30742,48 @@ way git does.")
      "Discover git repositories and check if a directory is a git repository.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-features-0.35
+  (package
+    (name "rust-gix-features")
+    (version "0.35.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-features" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1k98r3742xrlqwyaq13a9gazppm5swyx2h4hcmigg0s9mqiz97wv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+                       ("rust-bytesize" ,rust-bytesize-1)
+                       ("rust-crc32fast" ,rust-crc32fast-1)
+                       ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-flate2" ,rust-flate2-1)
+                       ("rust-gix-hash" ,rust-gix-hash-0.13)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-jwalk" ,rust-jwalk-0.8)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-prodash" ,rust-prodash-26)
+                       ("rust-sha1" ,rust-sha1-0.10)
+                       ("rust-sha1-smol" ,rust-sha1-smol-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-walkdir" ,rust-walkdir-2))
+       #:cargo-development-inputs (("rust-bstr" ,rust-bstr-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis
+     "Crate to integrate various capabilities using compile-time feature flags")
+    (description
+     "This package provides a crate to integrate various capabilities using
+compile-time feature flags.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-features-0.30
   (package
+    (inherit rust-gix-features-0.35)
     (name "rust-gix-features")
     (version "0.30.0")
     (source
@@ -30753,7 +30793,6 @@ way git does.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0543ggy5vxr2lpi1405mcq93bshj3gfvpjgf13a60q5z14s4k31s"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bytes" ,rust-bytes-1)
@@ -30773,13 +30812,7 @@ way git does.")
         ("rust-thiserror" ,rust-thiserror-1)
         ("rust-walkdir" ,rust-walkdir-2))
        #:cargo-development-inputs
-       (("rust-bstr" ,rust-bstr-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Integrate various capabilities using compile-time feature flags")
-    (description
-     "This package provides a crate to integrate various capabilities using
-compile-time feature flags.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-bstr" ,rust-bstr-1))))))
 
 (define-public rust-gix-fs-0.2
   (package
