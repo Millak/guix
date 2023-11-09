@@ -2311,7 +2311,9 @@ distribution.")))
                                         (string-append target new-name))))
                          (find-files "netbeans" "\\.so$"))))))))
     (propagated-inputs
-     (list java-openjfx-base java-swt))
+     (list java-openjfx-base))
+    (inputs
+     (list java-swt))
     ;; XXX: for unknown reasons
     ;; modules/graphics/src/main/native-prism-sw/JNativeSurface.c is missing
     ;; in this revision.
