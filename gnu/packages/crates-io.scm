@@ -31724,8 +31724,47 @@ terminals prompt.")
        (("rust-expectrl" ,rust-expectrl-0.7)
         ("rust-serial-test" ,rust-serial-test-2))))))
 
+(define-public rust-gix-protocol-0.40
+  (package
+    (name "rust-gix-protocol")
+    (version "0.40.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-protocol" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "16qc5q53z5jdqb433106lzzifhf321zgv89ha65bxj8cq86p0yyc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-async-trait" ,rust-async-trait-0.1)
+                       ("rust-bstr" ,rust-bstr-1)
+                       ("rust-btoi" ,rust-btoi-0.4)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-futures-io" ,rust-futures-io-0.3)
+                       ("rust-futures-lite" ,rust-futures-lite-1)
+                       ("rust-gix-credentials" ,rust-gix-credentials-0.20)
+                       ("rust-gix-date" ,rust-gix-date-0.8)
+                       ("rust-gix-features" ,rust-gix-features-0.35)
+                       ("rust-gix-hash" ,rust-gix-hash-0.13)
+                       ("rust-gix-transport" ,rust-gix-transport-0.37)
+                       ("rust-maybe-async" ,rust-maybe-async-0.2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-winnow" ,rust-winnow-0.5))
+       #:cargo-development-inputs
+       (("rust-async-std" ,rust-async-std-1)
+        ("rust-gix-packetline" ,rust-gix-packetline-0.16))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Implementation of Git protocols that's part of Gitoxide")
+    (description
+     "This package implements Git protocols for Gitoxide.  Gitoxide is a pure
+Rust implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-protocol-0.33
   (package
+    (inherit rust-gix-protocol-0.40)
     (name "rust-gix-protocol")
     (version "0.33.2")
     (source
@@ -31735,7 +31774,6 @@ terminals prompt.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "093c9zlqxy8248nynyb909g12xkfxsv5z32j8w41yijwnic718cj"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-async-trait" ,rust-async-trait-0.1)
@@ -31754,13 +31792,7 @@ terminals prompt.")
         ("rust-thiserror" ,rust-thiserror-1))
        #:cargo-development-inputs
        (("rust-async-std" ,rust-async-std-1)
-        ("rust-gix-packetline" ,rust-gix-packetline-0.16))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Crate of the gitoxide project for implementing git protocols")
-    (description
-     "This package provides a crate of the gitoxide project for implementing git
-protocols.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-gix-packetline" ,rust-gix-packetline-0.16))))))
 
 (define-public rust-gix-quote-0.4
   (package
