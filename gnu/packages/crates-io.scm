@@ -30450,8 +30450,40 @@ libcurl, which is intended to be used with the @code{git2} crate.")
     (description "This package provides a way to identify git actors.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-attributes-0.19
+  (package
+    (name "rust-gix-attributes")
+    (version "0.19.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-attributes" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "086qgrh8srr5vyswbchn72kw967f25szjgk27dss96vhf1g6cl94"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-byteyarn" ,rust-byteyarn-0.2)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-glob" ,rust-gix-glob-0.13)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-quote" ,rust-gix-quote-0.4)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-unicode-bom" ,rust-unicode-bom-2))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Part of Gitoxide, this crates deals with .gitattributes")
+    (description
+     "This package provides a crate from the Gitoxide project dealing with
+.gitattributes files.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-attributes-0.13
   (package
+    (inherit rust-gix-attributes-0.19)
     (name "rust-gix-attributes")
     (version "0.13.1")
     (source
@@ -30461,7 +30493,6 @@ libcurl, which is intended to be used with the @code{git2} crate.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0cfciacamnqbxl02l5fb7pcfbzn6r9gnyh86gvc80brqmj89bdvq"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-1)
@@ -30474,13 +30505,7 @@ libcurl, which is intended to be used with the @code{git2} crate.")
         ("rust-serde" ,rust-serde-1)
         ("rust-smallvec" ,rust-smallvec-1)
         ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-unicode-bom" ,rust-unicode-bom-2))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Crate of the gitoxide project dealing .gitattributes files")
-    (description
-     "This package provides a crate of the gitoxide project dealing .gitattributes
-files.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-unicode-bom" ,rust-unicode-bom-2))))))
 
 (define-public rust-gix-bitmap-0.2
   (package
