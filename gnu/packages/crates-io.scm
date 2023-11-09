@@ -31157,8 +31157,32 @@ optimized to utilize @code{ObjectId} keys.")
 dedicated implementing the git index file.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-lock-10
+  (package
+    (name "rust-gix-lock")
+    (version "10.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-lock" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15dazvw49bdx60366vngmrfn69rvxf0pr411a1ak6vbbigx9dz27"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-gix-tempfile" ,rust-gix-tempfile-10)
+                       ("rust-gix-utils" ,rust-gix-utils-0.1)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Git style lock files implemented in Rust")
+    (description "Part of Gitoxide, a pure rust implementation of Git.  This
+package provides git style lock files.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-lock-6
   (package
+    (inherit rust-gix-lock-10)
     (name "rust-gix-lock")
     (version "6.0.0")
     (source
@@ -31168,18 +31192,13 @@ dedicated implementing the git index file.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1lpqi927lacn2vz22q2mhacc4plkrlz5whm779ax65kky3kdbi9y"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-gix-tempfile" ,rust-gix-tempfile-6)
         ("rust-gix-utils" ,rust-gix-utils-0.1)
         ("rust-thiserror" ,rust-thiserror-1))
        #:cargo-development-inputs
-       (("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Git-style lock-file implementation")
-    (description "This package provides a git-style lock-file implementation.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-gix-mailmap-0.13
   (package
@@ -31751,8 +31770,7 @@ trust model.")
                        ("rust-signal-hook-registry" ,rust-signal-hook-registry-1)
                        ("rust-tempfile" ,rust-tempfile-3))))
     (home-page "https://github.com/Byron/gitoxide")
-    (synopsis
-     "Rust tempfile implementation with assured clean-up")
+    (synopsis "Rust tempfile implementation with assured clean-up")
     (description
      "Part of Gitoxide a Rust implementation of Git.  This package provides a
 tempfile capability with a global registry to assure clean-up.")
