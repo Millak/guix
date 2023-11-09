@@ -31187,8 +31187,47 @@ parsing mailmap files.")
 negotiation algorithms.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-object-0.37
+  (package
+    (name "rust-gix-object")
+    (version "0.37.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-object" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vzxayiss5k7pmlm0q4axaliidg9a3lq7bkv2ds775k7dihijzhy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-btoi" ,rust-btoi-0.4)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-actor" ,rust-gix-actor-0.27)
+                       ("rust-gix-date" ,rust-gix-date-0.8)
+                       ("rust-gix-features" ,rust-gix-features-0.35)
+                       ("rust-gix-hash" ,rust-gix-hash-0.13)
+                       ("rust-gix-validate" ,rust-gix-validate-0.8)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-winnow" ,rust-winnow-0.5))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.5)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis
+     "Immutable and mutable Git objects with decoding and encoding support")
+    (description
+     "Part of Gitoxide, a pure Rust Git implementation.  This package contains
+functions to handle immutable and mutable git objects with decoding and encoding
+support.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-object-0.30
   (package
+    (inherit rust-gix-object-0.37)
     (name "rust-gix-object")
     (version "0.30.0")
     (source
@@ -31198,7 +31237,6 @@ negotiation algorithms.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1is6hkzcv38m9k2yzja39h3d9s5rvs9vqpfb17kw7pj43kswh9l9"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-1)
@@ -31215,13 +31253,7 @@ negotiation algorithms.")
         ("rust-smallvec" ,rust-smallvec-1)
         ("rust-thiserror" ,rust-thiserror-1))
        #:cargo-development-inputs
-       (("rust-pretty-assertions" ,rust-pretty-assertions-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis
-     "Immutable and mutable git objects with decoding and encoding support")
-    (description
-     "Immutable and mutable git objects with decoding and encoding support.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
 
 (define-public rust-gix-odb-0.46
   (package
