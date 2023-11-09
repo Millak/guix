@@ -30737,8 +30737,40 @@ Gitoxide a Rust implementation of Git.")
         ("rust-serde" ,rust-serde-1)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-credentials-0.20
+  (package
+    (name "rust-gix-credentials")
+    (version "0.20.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-credentials" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12mwq0fah6wai26lnq9k3m71lr8cgih43rqy2in6mby59j40p426"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ;wants undeclared crate gix_testtools
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-command" ,rust-gix-command-0.2)
+                       ("rust-gix-config-value" ,rust-gix-config-value-0.14)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-prompt" ,rust-gix-prompt-0.7)
+                       ("rust-gix-sec" ,rust-gix-sec-0.10)
+                       ("rust-gix-url" ,rust-gix-url-0.24)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Git credentials handlers for Gitoxide")
+    (description
+     "Gitoxide is a Rust implementation of Git.  This package provides helpers
+to interact with Git credentials.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-credentials-0.15
   (package
+    (inherit rust-gix-credentials-0.20)
     (name "rust-gix-credentials")
     (version "0.15.0")
     (source
@@ -30748,7 +30780,6 @@ Gitoxide a Rust implementation of Git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0r8dr9d1xzfq74sg3j2bhd6zsyk3y5322155izpzaa6dibm9zy66"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; use of undeclared crate or module `gix_testtools`
        #:cargo-inputs
@@ -30761,13 +30792,7 @@ Gitoxide a Rust implementation of Git.")
         ("rust-gix-sec" ,rust-gix-sec-0.8)
         ("rust-gix-url" ,rust-gix-url-0.19)
         ("rust-serde" ,rust-serde-1)
-        ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Interact with git credentials helpers")
-    (description
-     "This package provides a crate of the gitoxide project to interact with git
-credentials helpers.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-date-0.8
   (package
