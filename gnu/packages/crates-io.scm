@@ -31363,6 +31363,32 @@ support.")
 pkt-line serialization format.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-packetline-blocking-0.16
+  (package
+    (name "rust-gix-packetline-blocking")
+    (version "0.16.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-packetline-blocking" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0f9dr79jz9y11qhf0syxwa4nvn4czpyka84hzshxd10wa3vrb0vx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-faster-hex" ,rust-faster-hex-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis
+     "Duplicate of @code{gix-packetline} with @code{blocking-io} selected")
+    (description
+     "Part of Gitoxide, a pure Rust implementation of Git.  This package is a
+duplicate of @code{gix-packetline} with the @code{blocking-io} feature pre-selected")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-path-0.10
   (package
     (name "rust-gix-path")
