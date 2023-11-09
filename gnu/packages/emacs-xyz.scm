@@ -3688,6 +3688,7 @@ the @code{Dracula} theme for Emacs and the @code{Gloom} theme for Atom.")
      ;; `vm-autoloads', from the VM package, with is neither in Emacs nor
      ;; packaged in Guix.  So, don't bother for now.
      `(#:exclude '("bbdb-vm\\.el")))
+    (inputs (list emacs-notmuch))
     (home-page "https://elpa.gnu.org/packages/bbdb.html")
     (synopsis "Contact management utility for Emacs")
     (description
