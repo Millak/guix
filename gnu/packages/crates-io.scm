@@ -31872,8 +31872,35 @@ Gitoxide, a pure Rust implementation of Git.")
         ("rust-smallvec" ,rust-smallvec-1)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-sec-0.10
+  (package
+    (name "rust-gix-sec")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-sec" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0a0g1b25hkgc68svxl2rx22a64d16703yyyislpc1a15q0m59fcj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-windows" ,rust-windows-0.48))
+       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Part of Gitoxide, this create provides a shared trust model")
+    (description
+     "This package is part of Gitoxide, it implements a shared trust model.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-sec-0.8
   (package
+    (inherit rust-gix-sec-0.10)
     (name "rust-gix-sec")
     (version "0.8.4")
     (source
@@ -31883,7 +31910,6 @@ Gitoxide, a pure Rust implementation of Git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1iz9rcyx7lpb4gxg5gyv93ygp0n321c5xmrcjkmqm2annkbcn5cn"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-2)
@@ -31893,13 +31919,7 @@ Gitoxide, a pure Rust implementation of Git.")
         ("rust-serde" ,rust-serde-1)
         ("rust-windows" ,rust-windows-0.48))
        #:cargo-development-inputs
-       (("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Providing a shared trust model")
-    (description
-     "This package provides a crate of the gitoxide project providing a shared
-trust model.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-gix-tempfile-10
   (package
