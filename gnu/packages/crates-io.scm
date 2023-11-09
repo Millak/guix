@@ -10772,6 +10772,23 @@ little-endian.")
      "This package provides a UTF-8 encoded string with Bytes as a storage.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-byteyarn-0.2
+  (package
+    (name "rust-byteyarn")
+    (version "0.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "byteyarn" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zs2r5qiqwhd6fj7bqg8ziha63sbggy5xmq6vfsan5zaq00l6lx7"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/mcy/byteyarn")
+    (synopsis "Hyper-compact strings")
+    (description "Hyper-compact and space efficient strings.")
+    (license license:asl2.0)))
+
 (define-public rust-bzip2-0.4
   (package
     (name "rust-bzip2")
