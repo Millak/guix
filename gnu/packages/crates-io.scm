@@ -11335,23 +11335,23 @@ remote procedure call protocol")
 (define-public rust-caps-0.5
   (package
     (name "rust-caps")
-    (version "0.5.2")
+    (version "0.5.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "caps" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0h4m9s09plj85y5lb5j9hck36r8w63ifpc9s09mzi0zjvvfz5260"))))
+        (base32 "02vk0w48rncgvfmj2mz2kpzvdgc14z225451w7lvvkwvaansl2qr"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-errno" ,rust-errno-0.2)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-thiserror" ,rust-thiserror-1))))
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1))))
     (home-page "https://github.com/lucab/caps-rs")
-    (synopsis "Pure-Rust library to work with Linux capabilities")
+    (synopsis "Pure Rust library to work with Linux capabilities")
     (description
      "This package provides a pure-Rust library to work with Linux
 capabilities.")
