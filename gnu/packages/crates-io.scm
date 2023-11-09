@@ -30938,8 +30938,31 @@ compile-time feature flags.")
 Git filters in Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-fs-0.7
+  (package
+    (name "rust-gix-fs")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-fs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0db6bj773ssqvy03mi28glzy963cd1aaaxcbj4nv7s9glsmmz089"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-gix-features" ,rust-gix-features-0.35))
+       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "File system utilities for Gitoxide")
+    (description
+     "Gitoxide is a pure Rust implementation of Git.  This package provides
+file system utilities for Gitoxide.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-fs-0.2
   (package
+    (inherit rust-gix-fs-0.7)
     (name "rust-gix-fs")
     (version "0.2.0")
     (source
@@ -30949,16 +30972,9 @@ Git filters in Rust.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1ddah0c5ljpfpy2ab1gmgblli2lz4bpbgghm9vwqgnwa02bqknih"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-gix-features" ,rust-gix-features-0.30))
-       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "File system specific utilities to `gitoxide`")
-    (description
-     "This package provides a crate providing file system specific utilities to
-`gitoxide`.")
-    (license (list license:expat license:asl2.0))))
+       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-gix-glob-0.13
   (package
