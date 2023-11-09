@@ -31237,8 +31237,36 @@ negotiation algorithms.")
 pkt-line serialization format.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-path-0.10
+  (package
+    (name "rust-gix-path")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-path" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0fx71d9p7iq4szgrijyw1nj82abg15ylyvaw7kh3l7hp2l0kf7ba"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-home" ,rust-home-0.5)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis
+     "Part of the Gitoxide project, this crate deals with paths and their conversions")
+    (description
+     "Part of the Gitoxide project, a lean and safe Rust implementation of
+Git.  This crate deals with paths and their conversions")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-path-0.8
   (package
+    (inherit rust-gix-path-0.10)
     (name "rust-gix-path")
     (version "0.8.4")
     (source
@@ -31248,7 +31276,6 @@ pkt-line serialization format.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0z5733b3z2wbnz1x0y2aq3gpanrhrlrqr4v4gjlqwl68ps69qq0q"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-1)
@@ -31257,14 +31284,7 @@ pkt-line serialization format.")
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-thiserror" ,rust-thiserror-1))
        #:cargo-development-inputs
-       (("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis
-     "Crate of the gitoxide project dealing paths and their conversions")
-    (description
-     "This package provides a crate of the gitoxide project dealing paths and their
-conversions.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-gix-prompt-0.5
   (package
