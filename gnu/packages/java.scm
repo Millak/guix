@@ -744,6 +744,10 @@ IcedTea build harness.")
                    "--enable-nss"
                    ,(string-append "--with-parallel-jobs="
                                    (number->string (parallel-job-count)))
+                   ;; Java Flight Recorder isn't supported on some architectures.
+                   ,@(if ,(target-ppc32?)
+                       `("--enable-jfr=no")
+                       '())
                    "--disable-downloading"
                    "--disable-system-pcsc"
                    "--disable-system-sctp"
