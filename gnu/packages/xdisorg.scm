@@ -554,6 +554,19 @@ X11 (yet).")
                                 "See 'COPYING' in the distribution."))
     (properties '((cpe-name . "xkbcommon")))))
 
+(define-public libxkbcommon-1.5
+  (package
+    (inherit libxkbcommon)
+    (version "1.5.0")
+    (source (origin
+              (inherit (package-source libxkbcommon))
+              (method url-fetch)
+              (uri (string-append "https://xkbcommon.org/download/libxkbcommon-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "05z08rpa464x8myjxddhix7jp9jcmakd7xrybx4hz8dwpg2123sn"))))))
+
 (define-public libfakekey
   (package
     (name "libfakekey")
