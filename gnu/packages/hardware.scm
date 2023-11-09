@@ -1089,11 +1089,17 @@ technology, such as head mounted displays with built in head tracking.")
                  (("dependencies/json")
                   (string-append #$(this-package-input "nlohmann-json")
                                  "/include/nlohmann")))))
+           (add-after 'unpack 'patch-chmod
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "scripts/build-udev-rules.sh"
+                (("/bin/chmod") (string-append (assoc-ref inputs "coreutils")
+                                               "/bin/chmod")))))
            ;; Call qmake instead of configure to create a Makefile.
            (replace 'configure
              (lambda _ (invoke "qmake" "PREFIX=/" "OpenRGB.pro"))))))
     (inputs
-     (list hidapi
+     (list coreutils
+           hidapi
            hueplusplus
            nlohmann-json
            libusb
