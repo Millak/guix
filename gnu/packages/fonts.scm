@@ -2123,6 +2123,20 @@ programming.  Iosevka is completely generated from its source code.")
        (sha256
         (base32 "0xsylys7ky1v0pb5w0d1dw9hsxpda4yqzjafbqgk98id3b08fvay"))))))
 
+(define-public font-iosevka-ss05
+  (package
+    (inherit font-iosevka)
+    (name "font-iosevka-ss05")
+    (version (package-version font-iosevka))
+    (source
+     (origin
+       (method url-fetch/zipbomb)
+       (uri (string-append "https://github.com/be5invis/Iosevka"
+                           "/releases/download/v" version
+                           "/ttc-iosevka-ss05-" version ".zip"))
+       (sha256
+        (base32 "0rpmw3cpzigv39nnirwmai118n5bnpmr58s90p20n4wgvr0rnfz2"))))))
+
 (define-public font-iosevka-ss08
   (package
     (inherit font-iosevka)
