@@ -406,7 +406,10 @@ system, and the core design of Django is reused in Grantlee.")
            libxfixes
            libxi
            libxinerama
-           libxkbcommon
+           ;; Use libxkbcommon-1.5 as 1.6.0 removed keysyms referenced in the
+           ;; qtbase source.
+           ;; TODO: Check if libxkbcommon can be used on next update.
+           libxkbcommon-1.5
            libxml2
            libxrandr
            libxrender
