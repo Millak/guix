@@ -90971,19 +90971,18 @@ implementation that works everywhere, even WASM!")
 (define-public rust-zip-0.6
   (package
     (name "rust-zip")
-    (version "0.6.4")
+    (version "0.6.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "zip" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1vydb0v9xl6skr63r6prjs9a67hjzcdc25j3kd9r7fr4r7xx0i84"))))
+        (base32 "0qcjbqfvbwxi5g9wbymf2r05cvziic2qqj4xy64q3hp48vi980vn"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-aes" ,rust-aes-0.7)
+       (("rust-aes" ,rust-aes-0.8)
         ("rust-byteorder" ,rust-byteorder-1)
         ("rust-bzip2" ,rust-bzip2-0.4)
         ("rust-constant-time-eq" ,rust-constant-time-eq-0.1)
@@ -91000,7 +90999,7 @@ implementation that works everywhere, even WASM!")
         ("rust-getrandom" ,rust-getrandom-0.2)
         ("rust-time" ,rust-time-0.3)
         ("rust-walkdir" ,rust-walkdir-2))))
-    (home-page "https://github.com/mvdnes/zip-rs.git")
+    (home-page "https://github.com/zip-rs/zip")
     (synopsis
      "Library to support the reading and writing of zip files")
     (description
