@@ -30419,8 +30419,41 @@ libcurl, which is intended to be used with the @code{git2} crate.")
     (description "Interact with git repositories just like git would.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-actor-0.27
+  (package
+    (name "rust-gix-actor")
+    (version "0.27.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-actor" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09sychqipf8bsmrwn62svpda457h8wj65qnl49qqk42j5jc0xih8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; use of undeclared crate or module `gix_testtools`
+       #:cargo-inputs
+       (("rust-bstr" ,rust-bstr-1)
+        ("rust-btoi" ,rust-btoi-0.4)
+        ("rust-document-features" ,rust-document-features-0.2)
+        ("rust-gix-date" ,rust-gix-date-0.8)
+        ("rust-gix-features" ,rust-gix-features-0.35)
+        ("rust-itoa" ,rust-itoa-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-winnow" ,rust-winnow-0.5))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Part of Gitoxide, a way to identify Git actors")
+    (description "Part of Gitoxide, a pure Rust implementation of Git.  This
+package provides a way to identify Git actors.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-actor-0.21
   (package
+    (inherit rust-gix-actor-0.27)
     (name "rust-gix-actor")
     (version "0.21.0")
     (source
@@ -30430,7 +30463,6 @@ libcurl, which is intended to be used with the @code{git2} crate.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0f6q1ivdcgj26jln48nl2hphwmps6sb9m4dysldvzbz1dfgkzrwz"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; use of undeclared crate or module `gix_testtools`
        #:cargo-inputs
@@ -30444,11 +30476,7 @@ libcurl, which is intended to be used with the @code{git2} crate.")
         ("rust-serde" ,rust-serde-1)
         ("rust-thiserror" ,rust-thiserror-1))
        #:cargo-development-inputs
-       (("rust-pretty-assertions" ,rust-pretty-assertions-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Identify git actors")
-    (description "This package provides a way to identify git actors.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
 
 (define-public rust-gix-attributes-0.19
   (package
