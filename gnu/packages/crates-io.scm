@@ -30649,8 +30649,47 @@ package provides read only access to git commitgraph file.")
         ("rust-serde" ,rust-serde-1)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-config-0.30
+  (package
+    (name "rust-gix-config")
+    (version "0.30.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-config" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dcaz3ylf2x763mjfg7jd4qhx65c8l7zqzp3g9kkyza8815m2wf1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bstr" ,rust-bstr-1)
+        ("rust-document-features" ,rust-document-features-0.2)
+        ("rust-gix-config-value" ,rust-gix-config-value-0.14)
+        ("rust-gix-features" ,rust-gix-features-0.35)
+        ("rust-gix-glob" ,rust-gix-glob-0.13)
+        ("rust-gix-path" ,rust-gix-path-0.10)
+        ("rust-gix-ref" ,rust-gix-ref-0.37)
+        ("rust-gix-sec" ,rust-gix-sec-0.10)
+        ("rust-memchr" ,rust-memchr-2)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-unicode-bom" ,rust-unicode-bom-2)
+        ("rust-winnow" ,rust-winnow-0.5))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.5))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Git-config file parser and editor from the Gitoxide project")
+    (description
+     "A git-config file parser and editor from the Gitoxide project.  Gitoxide
+is a pure Rust implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-config-0.23
   (package
+    (inherit rust-gix-config-0.30)
     (name "rust-gix-config")
     (version "0.23.0")
     (source
@@ -30660,7 +30699,6 @@ package provides read only access to git commitgraph file.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0738kwxlmdp409rypczzr0ampbcvrrv2icigll68zfp118911wsi"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-1)
@@ -30680,13 +30718,7 @@ package provides read only access to git commitgraph file.")
         ("rust-thiserror" ,rust-thiserror-1)
         ("rust-unicode-bom" ,rust-unicode-bom-2))
        #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.4))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Git-config file parser and editor from the gitoxide project")
-    (description
-     "This package provides a git-config file parser and editor from the gitoxide
-project.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-criterion" ,rust-criterion-0.4))))))
 
 (define-public rust-gix-config-value-0.14
   (package
