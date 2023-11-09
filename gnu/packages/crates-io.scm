@@ -31359,6 +31359,29 @@ package provides git style lock files.")
        #:cargo-development-inputs
        (("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-gix-macros-0.1
+  (package
+    (name "rust-gix-macros")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dhqxmj29k5b6l8y30ylkacscrzgz6ij18qr5l7mzmb8wrgcp2lx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs (("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Proc-macro utilities for gix")
+    (description "Proc-macro utilities for Gitoxide.  Gitoxide is a pure Rust
+implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-mailmap-0.19
   (package
     (name "rust-gix-mailmap")
