@@ -32183,6 +32183,39 @@ types and utilities.  Part of Gitoxide a pure Rust implementation of Git.")
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-walkdir" ,rust-walkdir-2))))))
 
+(define-public rust-gix-worktree-state-0.3
+  (package
+    (name "rust-gix-worktree-state")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-worktree-state" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1bcpspxpvl8yybz8b0p64pjxb69b7kmkhsyv9jgarigjc1lv1bn3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-gix-features" ,rust-gix-features-0.35)
+                       ("rust-gix-filter" ,rust-gix-filter-0.5)
+                       ("rust-gix-fs" ,rust-gix-fs-0.7)
+                       ("rust-gix-glob" ,rust-gix-glob-0.13)
+                       ("rust-gix-hash" ,rust-gix-hash-0.13)
+                       ("rust-gix-index" ,rust-gix-index-0.25)
+                       ("rust-gix-object" ,rust-gix-object-0.37)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-worktree" ,rust-gix-worktree-0.26)
+                       ("rust-io-close" ,rust-io-close-0.3)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis
+     "Gitoxide project functions that set Git's worktree to a particular state")
+    (description
+     "This package provides functions for setting the Git worktree to a particular
+state.  Used by Gitoxide a pure Rust implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gjson-0.8
   (package
     (name "rust-gjson")
