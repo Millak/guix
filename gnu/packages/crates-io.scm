@@ -31849,8 +31849,42 @@ quotations used by git.")
 representing refspecs.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-revision-0.22
+  (package
+    (name "rust-gix-revision")
+    (version "0.22.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-revision" version))
+       (file-name (string-append name "-" version
+                        ".tar.gz"))
+       (sha256
+        (base32
+        "128fi6mblg4ic6h1q5vy2zq6vly8hxhi9vxkpkskaymby9fb3i68"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-date" ,rust-gix-date-0.8)
+                       ("rust-gix-hash" ,rust-gix-hash-0.13)
+                       ("rust-gix-hashtable" ,rust-gix-hashtable-0.4)
+                       ("rust-gix-object" ,rust-gix-object-0.37)
+                       ("rust-gix-revwalk" ,rust-gix-revwalk-0.8)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis
+     "This Gitoxide crate finds names for revisions and parsing specifications")
+    (description
+     "This package is part of Gitoxide, a pure Rust implementation of Git.  It
+handles finding names and parsing specifications.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-revision-0.15
   (package
+    (inherit rust-gix-revision-0.22)
     (name "rust-gix-revision")
     (version "0.15.2")
     (source
@@ -31860,7 +31894,6 @@ representing refspecs.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1mrcjg8180n3kgbsngfaavzlfsqbmr905gjc0fdwx1x4sxngai2h"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-1)
@@ -31871,13 +31904,7 @@ representing refspecs.")
         ("rust-gix-object" ,rust-gix-object-0.30)
         ("rust-gix-revwalk" ,rust-gix-revwalk-0.1)
         ("rust-serde" ,rust-serde-1)
-        ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Finding names for revisions and parsing specifications")
-    (description
-     "This package provides a crate of the gitoxide project dealing with finding
-names for revisions and parsing specifications.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-revwalk-0.8
   (package
@@ -32000,8 +32027,7 @@ Gitoxide, a pure Rust implementation of Git.")
                        ("rust-gix-pathspec" ,rust-gix-pathspec-0.3)
                        ("rust-thiserror" ,rust-thiserror-1))))
     (home-page "https://github.com/Byron/gitoxide")
-    (synopsis
-     "Provides @code{git status} functionality")
+    (synopsis "Provides @code{git status} functionality")
     (description
      "This package provides @code{git status} functionality to Gitoxide, a
 Rust implementation of Git.")
