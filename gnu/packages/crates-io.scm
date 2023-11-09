@@ -30831,8 +30831,34 @@ compile-time feature flags.")
 matching.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-hash-0.13
+  (package
+    (name "rust-gix-hash")
+    (version "0.13.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-hash" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0q6c3jjp6q17w7879lwi7r1xw2zr489yk75yq4bm51x03sscg10q"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-faster-hex" ,rust-faster-hex-0.8)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis
+     "Borrowed and owned git hash digests used to identify git objects")
+    (description
+     "Borrowed and owned git hash digests used to identify git objects.  This
+package is part of Gitoxide, a pure Rust implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-hash-0.11
   (package
+    (inherit rust-gix-hash-0.13)
     (name "rust-gix-hash")
     (version "0.11.4")
     (source
@@ -30842,19 +30868,12 @@ matching.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0bq986grpsfc6ddav5dlb8zvz1aky264dnnnmax2h1lsmpr2yhjb"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-document-features" ,rust-document-features-0.2)
         ("rust-hex" ,rust-hex-0.4)
         ("rust-serde" ,rust-serde-1)
-        ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis
-     "Borrowed and owned git hash digests used to identify git objects")
-    (description
-     "Borrowed and owned git hash digests used to identify git objects.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-hashtable-0.2
   (package
