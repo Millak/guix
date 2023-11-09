@@ -1923,8 +1923,24 @@ guix repl <<EOF
                   font-iosevka-curly
                   font-iosevka-curly-slab
                   font-iosevka-etoile
+                  font-iosevka-ss01
+                  font-iosevka-ss02
+                  font-iosevka-ss03
+                  font-iosevka-ss04
+                  font-iosevka-ss05
+                  font-iosevka-ss06
+                  font-iosevka-ss07
                   font-iosevka-ss08
-                  font-iosevka-ss09))
+                  font-iosevka-ss09
+                  font-iosevka-ss10
+                  font-iosevka-ss11
+                  font-iosevka-ss12
+                  font-iosevka-ss13
+                  font-iosevka-ss14
+                  font-iosevka-ss15
+                  font-iosevka-ss16
+                  font-iosevka-ss17
+                  font-iosevka-ss18))
   (for-each (lambda (hash)
               (format #t "~a: ~a~%" (car hash) (cdr hash)))
             (reverse iosevka-hashes))
