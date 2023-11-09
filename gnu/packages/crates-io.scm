@@ -30698,8 +30698,35 @@ value parsing.")
 credentials helpers.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-gix-date-0.8
+  (package
+    (name "rust-gix-date")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-date" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "038yapmv9mm7d2xclhg18iakpc4hd3vl4xkk09ydr0lmcdlzczgw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-time" ,rust-time-0.3))
+       #:cargo-development-inputs (("rust-once-cell" ,rust-once-cell-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Part of Gitoxide, this crate parses dates the way Git does")
+    (description
+     "Part of Gitoxide, this crate parses dates the way git does.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-date-0.5
   (package
+    (inherit rust-gix-date-0.8)
     (name "rust-gix-date")
     (version "0.5.1")
     (source
@@ -30709,7 +30736,6 @@ credentials helpers.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "00jrc86398553z2mdljx9vh8skqgdydhsrr11ak3148fcx2l25mw"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bstr" ,rust-bstr-1)
@@ -30719,13 +30745,7 @@ credentials helpers.")
         ("rust-thiserror" ,rust-thiserror-1)
         ("rust-time" ,rust-time-0.3))
        #:cargo-development-inputs
-       (("rust-once-cell" ,rust-once-cell-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Parse dates the way git does")
-    (description
-     "This package provides a crate of the gitoxide project parsing dates the
-way git does.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-once-cell" ,rust-once-cell-1))))))
 
 (define-public rust-gix-diff-0.30
   (package
