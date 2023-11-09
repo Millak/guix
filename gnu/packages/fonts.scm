@@ -63,6 +63,7 @@
 ;;; Copyright © 2025 Ashvith Shetty <ashvithshetty10@gmail.com>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Josep Bigorra <jjbigorra@gmail.com>
+;;; Copyright © 2023 Santiago Payà Miralta <santiagopim@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2065,6 +2066,20 @@ programming.  Iosevka is completely generated from its source code.")
                            "/ttc-iosevka-etoile-" version ".zip"))
        (sha256
         (base32 "16lbcms4rnx7dh016c15wpz94b932hfvlng78jv1lhdr13w7s60z"))))))
+
+(define-public font-iosevka-ss01
+  (package
+    (inherit font-iosevka)
+    (name "font-iosevka-ss01")
+    (version (package-version font-iosevka))
+    (source
+     (origin
+       (method url-fetch/zipbomb)
+       (uri (string-append "https://github.com/be5invis/Iosevka"
+                           "/releases/download/v" version
+                           "/ttc-iosevka-ss01-" version ".zip"))
+       (sha256
+        (base32 "01awvcjp9yrvb57pr55ynp12kvjcjyl4yddbaqxh39if2hlp530n"))))))
 
 (define-public font-iosevka-ss08
   (package
