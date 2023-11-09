@@ -31092,8 +31092,33 @@ package is part of Gitoxide, a pure Rust implementation of Git.")
         ("rust-serde" ,rust-serde-1)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-hashtable-0.4
+  (package
+    (name "rust-gix-hashtable")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-hashtable" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05ka2z2z1qcxmfw8abvc5fgvygrrjfiaaz61h6701ba11146i4j0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-gix-hash" ,rust-gix-hash-0.13)
+                       ("rust-hashbrown" ,rust-hashbrown-0.14)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis
+     "Hashtable based data structures optimized to utilize ObjectId keys")
+    (description
+     "Hashtable based data structures optimized to utilize @code{ObjectId}
+keys.  Part of Gitoxide a Rust implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-hashtable-0.2
   (package
+    (inherit rust-gix-hashtable-0.4)
     (name "rust-gix-hashtable")
     (version "0.2.4")
     (source
@@ -31103,18 +31128,10 @@ package is part of Gitoxide, a pure Rust implementation of Git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "13f5v6vghfpzxm5xkmk86gjhsjfqng9rpam37hqjssgkxkk4qprq"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-gix-hash" ,rust-gix-hash-0.11)
-        ("rust-hashbrown" ,rust-hashbrown-0.14)
-        ("rust-parking-lot" ,rust-parking-lot-0.12))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Hashtable based data structures optimized to utilize ObjectId keys")
-    (description
-     "This package provides a crate that provides hashtable based data structures
-optimized to utilize @code{ObjectId} keys.")
-    (license (list license:expat license:asl2.0))))
+     `(#:cargo-inputs (("rust-gix-hash" ,rust-gix-hash-0.11)
+                       ("rust-hashbrown" ,rust-hashbrown-0.14)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12))))))
 
 (define-public rust-gix-ignore-0.3
   (package
