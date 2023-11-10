@@ -4059,6 +4059,7 @@ guix-daemon}).  It can also be disabled temporarily by passing the
 
 @node Getting Substitutes from Other Servers
 @subsection Getting Substitutes from Other Servers
+@c Note: This section name appears in a hint printed by 'guix weather'.
 
 @cindex substitute servers, adding more
 Guix can look up and fetch substitutes from several servers.  This is
@@ -4157,6 +4158,21 @@ Now you're all set!  Substitutes will be preferably taken from
 can list as many substitute servers as you like, with the caveat that
 substitute lookup can be slowed down if too many servers need to be
 contacted.
+
+@quotation Troubleshooting
+To diagnose problems, you can run @command{guix weather}.  For example,
+running:
+
+@example
+guix weather coreutils
+@end example
+
+@noindent
+not only tells you which of the currently-configured servers has
+substitutes for the @code{coreutils} package, it also reports whether
+one of these servers is unauthorized.  @xref{Invoking guix weather}, for
+more information.
+@end quotation
 
 Note that there are also situations where one may want to add the URL of
 a substitute server @emph{without} authorizing its key.
@@ -16499,7 +16515,10 @@ up building packages by yourself (@pxref{Substitutes}).  The
 specified servers so you can have an idea of whether you'll be grumpy
 today.  It can sometimes be useful info as a user, but it is primarily
 useful to people running @command{guix publish} (@pxref{Invoking guix
-publish}).
+publish}).  Sometimes substitutes @emph{are} available but they are not
+authorized on your system; @command{guix weather} reports it so you can
+authorize them if you want (@pxref{Getting Substitutes from Other
+Servers}).
 
 @cindex statistics, for substitutes
 @cindex availability of substitutes

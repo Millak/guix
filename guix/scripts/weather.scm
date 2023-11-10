@@ -35,6 +35,8 @@
   #:use-module ((guix build utils) #:select (every*))
   #:use-module (guix substitutes)
   #:use-module (guix narinfo)
+  #:use-module (guix pki)
+  #:autoload   (gcrypt pk-crypto) (canonical-sexp->string)
   #:use-module (guix http-client)
   #:use-module (guix ci)
   #:use-module (guix sets)
@@ -185,6 +187,44 @@ or #f if it could not be determined."
     (()
      #f)))
 
+(define (check-narinfo-authorization narinfo)
+  "Print a warning when NARINFO is not signed by an authorized key."
+  (define acl
+    (catch 'system-error
+      (lambda ()
+        (current-acl))
+      (lambda args
+        (warning (G_ "could not read '~a': ~a~%")
+                 %acl-file (strerror (system-error-errno args)))
+        (warning (G_ "'~a' is unreadable, cannot determine whether \
+substitutes are authorized~%")
+                 %acl-file)
+        #f)))
+
+  (unless (or (not acl) (valid-narinfo? narinfo acl))
+    (warning (G_ "substitutes from '~a' are unauthorized~%")
+             (narinfo-uri-base narinfo))
+    ;; The "all substitutes" below reflects the fact that, in reality, it *is*
+    ;; possible to download "unauthorized" substitutes, as long as they match
+    ;; authorized substitutes.
+    (display-hint (G_ "To authorize all substitutes from @uref{~a} to be
+downloaded, the following command needs to be run as root:
+
+@example
+guix archive --authorize <<EOF
+~a
+EOF
+@end example
+
+Alternatively, on Guix System, you can add the signing key above to the
+@code{authorized-keys} field of @code{guix-configuration}.
+
+See \"Getting Substitutes from Other Servers\" in the manual for more
+information.")
+                  (narinfo-uri-base narinfo)
+                  (canonical-sexp->string
+                   (signature-subject (narinfo-signature narinfo))))))
+
 (define* (report-server-coverage server items
                                  #:key display-missing?)
   "Report the subset of ITEMS available as substitutes on SERVER.
@@ -204,6 +244,12 @@ In case ITEMS is an empty list, return 1 instead."
                     #:make-progress-reporter
                     (lambda* (total #:key url #:allow-other-keys)
                       (progress-reporter/bar total)))))
+    (match narinfos
+      (() #f)
+      ((narinfo . _)
+       ;; Help diagnose missing substitute authorizations.
+       (check-narinfo-authorization narinfo)))
+
     (let ((obtained  (length narinfos))
           (requested (length items))
           (missing   (lset-difference string=?
@@ -586,8 +632,11 @@ SERVER.  Display information for packages with at least THRESHOLD dependents."
                            (with-store store
                              (substitute-urls store))
                            (begin
-                             (warning (G_ "could not determine current \
-substitute URLs; using defaults~%"))
+                             ;; Could not determine the daemon's current
+                             ;; substitute URLs, presumably because it's too
+                             ;; old.
+                             (warning (G_ "using default \
+substitute URLs~%"))
                              %default-substitute-urls)))
              (systems  (match (filter-map (match-lambda
                                             (('system . system) system)
