@@ -57,7 +57,7 @@
 (define-public d-tools
   (package
     (name "d-tools")
-    (version "2.100.0")
+    (version "2.105.3")
     (source
      (origin
        (method git-fetch)
@@ -66,7 +66,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jbn0hyskv4ykcckw0iganpyrm0bq2lggswspw21r4hgnxkmjbyw"))))
+        (base32 "0hvz786k0pi8697x1vk9x5bx52jiy7pvi13wmfkx15ddvv0x5j33"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
