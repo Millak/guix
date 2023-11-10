@@ -736,6 +736,23 @@ static void performOp(bool trusted, unsigned int clientVersion,
 	break;
     }
 
+    case wopSubstituteURLs: {
+	startWork();
+	Strings urls;
+	if (settings.get("build-use-substitutes", std::string("false")) == "true") {
+	    /* First check the client-provided substitute URLs, then those
+	       passed to the daemon.  */
+	    auto str = settings.get("untrusted-substitute-urls",  std::string(""));
+	    if (str.empty()) {
+		str = settings.get("substitute-urls",  std::string(""));
+	    }
+	    urls = tokenizeString<Strings>(str);
+	}
+	stopWork();
+	writeStrings(urls, to);
+	break;
+    }
+
     default:
         throw Error(format("invalid operation %1%") % op);
     }

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Florian Pelz <pelzflorian@pelzflorian.de>
@@ -145,6 +145,7 @@
             path-info-nar-size
 
             built-in-builders
+            substitute-urls
             references
             references/cached
             references*
@@ -199,7 +200,7 @@
             derivation-log-file
             log-file))
 
-(define %protocol-version #x163)
+(define %protocol-version #x164)
 
 (define %worker-magic-1 #x6e697863)               ; "nixc"
 (define %worker-magic-2 #x6478696f)               ; "dxio"
@@ -253,7 +254,8 @@
   (query-valid-derivers 33)
   (optimize-store 34)
   (verify-store 35)
-  (built-in-builders 80))
+  (built-in-builders 80)
+  (substitute-urls 81))
 
 (define-enumerate-type hash-algo
   ;; hash.hh
@@ -1779,6 +1781,16 @@ The result is always the empty list unless the daemon was started with
 
 This makes sense only when the daemon was started with '--cache-failures'."
   boolean)
+
+(define substitute-urls
+  (let ((urls (operation (substitute-urls)
+                         #f
+                         string-list)))
+    (lambda (store)
+      "Return the list of currently configured substitutes URLs for STORE, or
+#f if the daemon is too old and does not implement this RPC."
+      (and (>= (store-connection-version store) #x164)
+           (urls store)))))
 
 
 ;;;

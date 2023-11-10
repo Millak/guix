@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -105,7 +105,28 @@
               "/283gqy39v3g9dxjy26rynl0zls82fmcg-guile-2.0.7/bin/guile")))
        (not (direct-store-path? (%store-prefix)))))
 
-(test-skip (if %store 0 15))
+(test-skip (if %store 0 18))
+
+(test-equal "substitute-urls, default"
+  (list (getenv "GUIX_BINARY_SUBSTITUTE_URL"))
+  (with-store store
+    (set-build-options store #:use-substitutes? #t)
+    (substitute-urls store)))
+
+(test-equal "substitute-urls, client-specified URLs"
+  '("http://substitutes.example.org"
+    "http://other.example.org")
+  (with-store store
+    (set-build-options store #:use-substitutes? #t
+                       #:substitute-urls '("http://substitutes.example.org"
+                                           "http://other.example.org"))
+    (substitute-urls store)))
+
+(test-equal "substitute-urls, disabled"
+  '()
+  (with-store store
+    (set-build-options store #:use-substitutes? #f)
+    (substitute-urls store)))
 
 (test-equal "profiles/per-user exists and is not writable"
   #o755
