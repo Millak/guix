@@ -1532,6 +1532,54 @@ computing environments.")
 data analysis.")
     (license license:bsd-3)))
 
+(define-public python-scikit-learn-extra
+  (package
+    (name "python-scikit-learn-extra")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/scikit-learn-contrib/scikit-learn-extra")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yy6ka94ss88f3r7b6mpjf1l8lnv7aabhsg844pigfj8lfiv0wvl"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'build 'build-ext
+                 (lambda _
+                   (invoke "python" "setup.py" "build_ext"
+                           "--inplace")))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     ;; Restrict OpenBLAS threads to prevent segfaults while testing!
+                     (setenv "OPENBLAS_NUM_THREADS" "1")
+
+                     ;; Some tests require write access to $HOME.
+                     (setenv "HOME" "/tmp")
+
+                     ;; Step out of the source directory to avoid interference;
+                     ;; we want to run the installed code with extensions etc.
+                     (with-directory-excursion "/tmp"
+                       (invoke "pytest" "-vv" "--pyargs"
+                               "sklearn_extra"
+                               ;; ignore tests that require network
+                               "-k" "not test_build"))))))))
+    (propagated-inputs (list python-numpy python-scikit-learn python-scipy))
+    (native-inputs (list python-pytest python-pytest-cov python-cython))
+    (home-page "https://github.com/scikit-learn-contrib/scikit-learn-extra")
+    (synopsis "Set of tools for scikit-learn")
+    (description
+     "This package provides a Python module for machine learning that extends
+scikit-learn.  It includes algorithms that are useful but do not satisfy the
+scikit-learn inclusion criteria, for instance due to their novelty or lower
+citation number.")
+    (license license:bsd-3)))
+
 (define-public python-thinc
   (package
     (name "python-thinc")
