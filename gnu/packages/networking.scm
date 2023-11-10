@@ -327,42 +327,26 @@ Unix Domain Sockets, SCTP for both IPv4 and IPv6.")
 (define-public lcsync
   (package
     (name "lcsync")
-    (version "0.2.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://codeberg.org/librecast/lcsync")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0bsd3dkir2i647nmrmyb7skbv16v0f6f3gfwkpxz8g42978dlms5"))))
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/librecast/lcsync")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rhk80ybd2zranay76z1ysifnnm786lg9kiiijcwv76qy95in9ks"))))
     (build-system gnu-build-system)
     (arguments
      `(#:parallel-tests? #f
-       #:configure-flags
-       (list
-        (string-append "--prefix="
-                       (assoc-ref %outputs "out")))
+       #:configure-flags (list (string-append "--prefix="
+                                              (assoc-ref %outputs "out")))
        #:make-flags (let ((target ,(%current-target-system)))
                       (list ,(string-append "CC="
                                             (cc-for-target))))
-       #:test-target "test"
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'use-prefix-from-configure-in-doc-makefile
-                    ;; Use prefix from configure. Fixed upstream:
-                    ;; https://codeberg.org/librecast/lcsync/commit/4ba00f6
-                    ;; XXX: Remove for 0.2.2+
-                    (lambda _
-                      (substitute* "doc/Makefile.in"
-                        (("PREFIX .= /usr/local") "PREFIX ?= @prefix@"))))
-                  (add-before 'build 'add-library-paths
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (let* ((librecast (assoc-ref inputs "librecast")))
-                        (substitute* (list "./src/Makefile" "./test/Makefile")
-                          (("-llibrecast")
-                           (string-append "-L" librecast "/lib -llibrecast")))))))))
-    (inputs (list lcrq librecast libsodium))
+       #:test-target "test"))
+    (inputs (list lcrq librecast libsodium libbsd))
     (home-page "https://librecast.net/lcsync.html")
     (synopsis "Librecast file and data syncing tool")
     (description
