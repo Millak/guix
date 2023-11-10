@@ -16566,8 +16566,9 @@ The available options are listed below.
 @table @code
 @item --substitute-urls=@var{urls}
 @var{urls} is the space-separated list of substitute server URLs to
-query.  When this option is omitted, the default set of substitute
-servers is queried.
+query.  When this option is omitted, the URLs specified with the
+@option{--substitute-urls} option of @command{guix-daemon} are used or,
+as a last resort, the default set of substitute URLs.
 
 @item --system=@var{system}
 @itemx -s @var{system}

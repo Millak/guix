@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2020 Simon Tournier <zimon.toutoune@gmail.com>
@@ -391,7 +391,7 @@ Report the availability of substitutes.\n"))
          %standard-native-build-options))
 
 (define %default-options
-  `((substitute-urls . ,%default-substitute-urls)))
+  '())
 
 (define (load-manifest file)
   "Load the manifest from FILE and return the list of packages it refers to."
@@ -582,7 +582,13 @@ SERVER.  Display information for packages with at least THRESHOLD dependents."
       (let* ((opts     (parse-command-line args %options
                                            (list %default-options)
                                            #:build-options? #f))
-             (urls     (assoc-ref opts 'substitute-urls))
+             (urls     (or (assoc-ref opts 'substitute-urls)
+                           (with-store store
+                             (substitute-urls store))
+                           (begin
+                             (warning (G_ "could not determine current \
+substitute URLs; using defaults~%"))
+                             %default-substitute-urls)))
              (systems  (match (filter-map (match-lambda
                                             (('system . system) system)
                                             (_ #f))
