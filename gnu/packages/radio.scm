@@ -219,49 +219,46 @@ mathematical operations, and much more.")
     (license license:expat)))
 
 (define-public rtl-sdr
-  ;; No tagged release since 2018
-  (let ((commit "5e73f90f1d85d8db2e583f3dbf1cff052d71d59b")
-        (revision "1"))
-    (package
-      (name "rtl-sdr")
-      (version (git-version "0.6.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://git.osmocom.org/rtl-sdr/")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "106fwzyr7cba952f3p3wm3hdqzm9zvm0v3gcz4aks2n7fnvrgrvn"))))
-      (build-system cmake-build-system)
-      (inputs
-       (list libusb))
-      (native-inputs
-       (list pkg-config))
-      (arguments
-       `(#:configure-flags '("-DDETACH_KERNEL_DRIVER=ON"
-                             "-DINSTALL_UDEV_RULES=ON")
-         #:tests? #f ; No tests
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'fix-paths
-             (lambda* (#:key outputs #:allow-other-keys)
-               (substitute* "CMakeLists.txt"
-                 (("DESTINATION \"/etc/udev/")
-                  (string-append "DESTINATION \""
-                                 (assoc-ref outputs "out")
-                                 "/lib/udev/")))))
-           (add-after 'fix-paths 'fix-udev-rules
-             (lambda _
-               (substitute* "rtl-sdr.rules"
-                 ;; The plugdev group does not exist; use dialout as in
-                 ;; the hackrf package.
-                 (("GROUP=\"plugdev\"")
-                  "GROUP=\"dialout\"")))))))
-      (home-page "https://osmocom.org/projects/sdr/wiki/rtl-sdr")
-      (synopsis "Software defined radio driver for Realtek RTL2832U")
-      (description "DVB-T dongles based on the Realtek RTL2832U can be used as a
+  (package
+    (name "rtl-sdr")
+    (version "2.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.osmocom.org/rtl-sdr/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0z8dn0gdava894fb9fs9gcwvmik31fcj6ldkggylc0mhgw5145pr"))))
+    (build-system cmake-build-system)
+    (inputs
+     (list libusb))
+    (native-inputs
+     (list pkg-config))
+    (arguments
+     `(#:configure-flags '("-DDETACH_KERNEL_DRIVER=ON"
+                           "-DINSTALL_UDEV_RULES=ON")
+       #:tests? #f ; No tests
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-paths
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "CMakeLists.txt"
+               (("DESTINATION \"/etc/udev/")
+                (string-append "DESTINATION \""
+                               (assoc-ref outputs "out")
+                               "/lib/udev/")))))
+         (add-after 'fix-paths 'fix-udev-rules
+           (lambda _
+             (substitute* "rtl-sdr.rules"
+               ;; The plugdev group does not exist; use dialout as in
+               ;; the hackrf package.
+               (("GROUP=\"plugdev\"")
+                "GROUP=\"dialout\"")))))))
+    (home-page "https://osmocom.org/projects/sdr/wiki/rtl-sdr")
+    (synopsis "Software defined radio driver for Realtek RTL2832U")
+    (description "DVB-T dongles based on the Realtek RTL2832U can be used as a
 cheap software defined radio, since the chip allows transferring the raw I/Q
 samples to the host.  @code{rtl-sdr} provides drivers for this purpose.
 
@@ -276,7 +273,7 @@ system configuration:
 
 To install the rtl-sdr udev rules, you must extend 'udev-service-type' with
 this package.  E.g.: @code{(udev-rules-service 'rtl-sdr rtl-sdr)}")
-      (license license:gpl2+))))
+    (license license:gpl2+)))
 
 (define-public airspy
   (let ((commit "6f92f47146aa8a8fce59b60927cf8c53da6851b3")
