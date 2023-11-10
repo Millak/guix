@@ -4398,6 +4398,27 @@ client and server.  It allows you to use remote block devices over a TCP/IP
 network.")
     (license license:gpl2)))
 
+(define-public ngtcp2
+  (package
+    (name "ngtcp2")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/ngtcp2/ngtcp2/"
+                           "releases/download/v" version "/"
+                           "ngtcp2-" version ".tar.xz"))
+       (sha256
+        (base32 "0l84hnj9n4bfxjizgmqsqbz71jx7m00a7l1z43fg5ls3apx9ij11"))))
+    (build-system gnu-build-system)
+    (native-inputs (list cunit))
+    (home-page "https://nghttp2.org/ngtcp2/")
+    (synopsis "QUIC protocol implementation")
+    (description
+     "The ngtcp2 project is an effort to implement the RFC9000 (IETF)
+QUIC protocol.")
+    (license license:expat)))
+
 (define-public yggdrasil
   (package
     (name "yggdrasil")
