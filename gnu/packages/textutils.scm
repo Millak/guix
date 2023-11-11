@@ -1130,13 +1130,13 @@ documents into plain text.")
           "0im3kzvhxkjlx57w6h13mc9584c74ma1dyymgvpq2y61av3gc35v"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; no make check
-       #:make-flags (list "CC=gcc"
-                          (string-append "DESTDIR=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         ;; no configure script
-         (delete 'configure))))
+     (list #:tests? #f ; no make check
+           #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                                (string-append "DESTDIR=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; no configure script
+               (delete 'configure))))
     (inputs
      (list zlib))
     (home-page "https://github.com/dstosberg/odt2txt/")
