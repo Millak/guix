@@ -9496,6 +9496,34 @@ programs.")
     (description "Blowfish block cipher")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-borsh-0.10
+  (package
+    (name "rust-borsh")
+    (version "0.10.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "borsh" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0sq4l9jfik5dmpy1islcj40bing1jkji2q1qbrkvq1d02n92f521"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; the trait bound `BytesMut: BorshSerialize` is not satisfied
+       #:cargo-inputs
+       (("rust-borsh-derive" ,rust-borsh-derive-0.10)
+        ("rust-bytes" ,rust-bytes-1)
+        ("rust-hashbrown" ,rust-hashbrown-0.13))
+       #:cargo-development-inputs
+       (("rust-bytes" ,rust-bytes-1))))
+    (home-page "https://borsh.io")
+    (synopsis "Borsch is the binary object representation serializer for hashing")
+    (description "This crate implements @code{borsh}, the binary object
+representation serializer for hasing.  It is meant to be used in
+security-critical projects as it prioritizes consistency, safety, speed, and
+comes with a strict specification.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-borsh-derive-0.10
   (package
     (name "rust-borsh-derive")
