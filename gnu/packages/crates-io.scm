@@ -54367,6 +54367,34 @@ in pure Rust.")
         ("rust-sha-1" ,rust-sha-1-0.9)
         ("rust-sha2" ,rust-sha2-0.9))))))
 
+(define-public rust-pcap-0.7
+  (package
+    (name "rust-pcap")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pcap" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14blflnbj87z3ajlj1hszsl6k7rwa338y4aw2yjm2j0xdpjvj4pr"))))
+    (native-inputs (list libpcap))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; can't find crate for `futures`
+       #:cargo-inputs
+       (("rust-clippy" ,rust-clippy-0.0)
+        ("rust-futures" ,rust-futures-0.1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-mio" ,rust-mio-0.6)
+        ("rust-tokio-core" ,rust-tokio-core-0.1))
+       #:cargo-development-inputs
+       (("rust-tempdir" ,rust-tempdir-0.3))))
+    (home-page "https://github.com/rust-pcap/pcap")
+    (synopsis "Packet capture API around pcap/wpcap")
+    (description "This package provides a packet capture API around pcap/wpcap.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pcap-sys-0.1
   (package
     (name "rust-pcap-sys")
