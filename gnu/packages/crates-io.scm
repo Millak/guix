@@ -9496,6 +9496,28 @@ programs.")
     (description "Blowfish block cipher")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-borsh-derive-internal-0.10
+  (package
+    (name "rust-borsh-derive-internal")
+    (version "0.10.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "borsh-derive-internal" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1yx27ic6aal83bdi1h6v80wfs9ixvw51qzmdgcn8sn8rd4akid5g"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://borsh.io")
+    (synopsis "Borsh derive proc-macro internals")
+    (description "This crate contains derive proc-macro internals for @code{borsh}.")
+    (license license:asl2.0)))
+
 (define-public rust-borsh-schema-derive-internal-0.10
   (package
     (name "rust-borsh-schema-derive-internal")
