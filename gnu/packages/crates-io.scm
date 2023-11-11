@@ -78603,18 +78603,19 @@ writing colored text to a terminal.")
   (package
     (inherit rust-terminal-size-0.3)
     (name "rust-terminal-size")
-    (version "0.2.2")
+    (version "0.2.6")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "terminal_size" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0yhza8sc6jkka6j0nq5sl749ckx1jagvxp3b38yhh4px6k291jj0"))))
+                "0drj7gb77kay5r1cv53ysq3g9g4f8n0jkhld0kadi3lzkvqzcswf"))))
     (arguments
      (list #:tests? #f          ;tests require /dev/stderr
            #:cargo-inputs
-           `(("rust-rustix" ,rust-rustix-0.35))))))
+           `(("rust-rustix" ,rust-rustix-0.35)
+             ("rust-windows-sys" ,rust-windows-sys-0.48))))))
 
 (define-public rust-terminal-size-0.1
   (package
