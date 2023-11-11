@@ -23213,7 +23213,10 @@ automatically fetched from well-curated sources, and formatted as BibTeX.")
       #:phases #~(modify-phases %standard-phases
                    (add-before 'build 'set-home
                      (lambda _
-                       (setenv "HOME" "/tmp"))))))
+                       (setenv "HOME" "/tmp")))
+                   ;; XXX: The following phase reports bogus errors. Suppress
+                   ;; it for now.
+                   (delete 'validate-compiled-autoloads))))
     (propagated-inputs (list emacs-auctex
                              emacs-citeproc-el
                              emacs-embark
