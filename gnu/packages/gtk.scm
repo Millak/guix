@@ -1119,7 +1119,7 @@ application suites.")
 (define-public gtk
   (package
     (name "gtk")
-    (version "4.10.3")
+    (version "4.12.3")
     (source
      (origin
        (method url-fetch)
@@ -1127,11 +1127,10 @@ application suites.")
                            (version-major+minor version)  "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "1aff06l9v40j16s4s0qvdbj8cs54qxnh41d7w2v7wdwyswd48ia5"))
+        (base32 "128ahzsj016vz8brd8kplhfkxg2q7wy7kndibx2qfr68yrif530l"))
        (patches
         (search-patches "gtk4-respect-GUIX_GTK4_PATH.patch"))
-       (modules '((guix build utils)))
-       (snippet #~(begin (delete-file-recursively "subprojects/gi-docgen")))))
+       (modules '((guix build utils)))))
     (build-system meson-build-system)
     (outputs '("out" "bin" "doc"))
     (arguments
@@ -1157,6 +1156,7 @@ application suites.")
                             "--suite=gtk"
                             "--no-suite=failing"
                             "--no-suite=flaky"
+                            "--no-suite=headless" ; requires mutter…
                             "--no-suite=gsk-compare-broadway")
       #:phases
       #~(modify-phases %standard-phases
@@ -1179,6 +1179,9 @@ application suites.")
               (substitute* "meson.build"
                 (("gtk_update_icon_cache: true")
                  "gtk_update_icon_cache: false"))
+              (substitute* (find-files "testsuite/gsk/nodeparser/"
+                                       "^text-color.*\\.node$")
+                (("Noto Sans") "DejaVu Sans"))
               ;; Disable failing tests.
               (substitute* (find-files "testsuite" "meson.build")
                 (("[ \t]*'empty-text.node',") "")
