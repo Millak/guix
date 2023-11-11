@@ -3202,6 +3202,7 @@ initialize programs.")
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake
+           dbus-glib ;; for dbus-binding-tool
            `(,glib "bin") pkg-config))
     (inputs
      (list dbus-glib glib libx11))
