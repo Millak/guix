@@ -27,6 +27,7 @@
 ;;; Copyright © 2022 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2023 Reza Housseini <reza@housseini.me>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1289,13 +1290,14 @@ Mainland China, Taiwan, and Hong-Kong.")
                   "0anw0knr1iy4p9w3d3b3pbwzh1c43p1i2q4c28kw9zviw8kx2rly"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:tests? #f ; test for perl module
-         #:make-flags (list "CC=gcc" "CFLAGS=-O2 -Wall -pedantic"
-                            (string-append "prefix=" %output)
-                            "MKDIR=mkdir -p")
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)))) ; No ./configure script
+       (list #:tests? #f ; test for perl module
+             #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                                  "CFLAGS=-O2 -Wall -pedantic"
+                                  (string-append "prefix=" #$output)
+                                  "MKDIR=mkdir -p")
+             #:phases
+             #~(modify-phases %standard-phases
+                 (delete 'configure)))) ; No ./configure script
       (home-page "https://ja.osdn.net/projects/nkf/")
       (synopsis "Network Kanji Filter")
       (description "Nkf is yet another kanji code converter among networks,
