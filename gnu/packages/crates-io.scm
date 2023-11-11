@@ -63480,6 +63480,31 @@ MessagePack format.")
     (description "This crate provides Serde bindings for RMP.")
     (license license:expat)))
 
+(define-public rust-rmpv-1
+  (package
+   (name "rust-rmpv")
+   (version "1.0.1")
+   (source
+    (origin
+     (method url-fetch)
+     (uri (crate-uri "rmpv" version))
+     (file-name (string-append name "-" version ".tar.gz"))
+     (sha256
+      (base32 "1v01az3ahglmag94d75qgdygfcgwj9bh5921rvn49d52lha043if"))))
+   (build-system cargo-build-system)
+   (arguments
+    `(#:cargo-inputs
+      (("rust-num-traits" ,rust-num-traits-0.2)
+       ("rust-rmp" ,rust-rmp-0.8)
+       ("rust-serde" ,rust-serde-1)
+       ("rust-serde-bytes" ,rust-serde-bytes-0.11))
+      #:cargo-development-inputs
+      (("rust-quickcheck" ,rust-quickcheck-1))))
+   (home-page "https://github.com/3Hren/msgpack-rust")
+   (synopsis "Value variant for @code{rust-rmp}")
+   (description "This create provides a value variant for @code{rust-rmp}.")
+   (license license:expat)))
+
 (define-public rust-roadmap-0.5
   (package
     (name "rust-roadmap")
