@@ -9496,6 +9496,30 @@ programs.")
     (description "Blowfish block cipher")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-borsh-schema-derive-internal-0.10
+  (package
+    (name "rust-borsh-schema-derive-internal")
+    (version "0.10.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "borsh-schema-derive-internal" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kaw1xdprb8chqj50c8gxjb5dadx1rac91zg8s81njpp8g60ahk3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1))))
+    (home-page "https://borsh.io")
+    (synopsis "Schema generator for @code{borsh}")
+    (description "This crate implements schema generator for @code{borsh}.")
+    (license license:asl2.0)))
+
 (define-public rust-botan-0.10
   (package
     (name "rust-botan")
