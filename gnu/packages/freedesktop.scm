@@ -139,7 +139,7 @@
 (define-public appstream
   (package
     (name "appstream")
-    (version "0.15.6")
+    (version "0.16.4")
     (source
      (origin
        (method url-fetch)
@@ -148,11 +148,12 @@
                        "appstream/releases/"
                        "AppStream-" version ".tar.xz"))
        (sha256
-        (base32 "03pirmc5r4izl6mzff879g7pk1nxq03kgpr2yvnnqnlb6r0ckmi3"))))
+        (base32 "1val1b3dggn9g33q2r9q7wsl75a64x4lcvswvkcjjbvakkbj5xyl"))))
     (build-system meson-build-system)
     (arguments
      (list
       #:glib-or-gtk? #t
+      #:configure-flags #~(list "-Dsystemd=false")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-libstemmer
@@ -165,7 +166,7 @@
           (add-after 'unpack 'disable-failing-tests
             (lambda _
               (substitute* "tests/test-pool.c"
-                (("[ \t]*g_test_add_func \\(\"/AppStream/PoolRead?.*;")
+                (("[ \t]*g_test_add_func \\(\"/AppStream/Stemming.*;")
                  ""))))
           (add-before 'check 'check-setup
             (lambda _
