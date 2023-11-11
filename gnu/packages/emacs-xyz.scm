@@ -26566,7 +26566,7 @@ tracking.")
 (define-public emacs-helm-company
   (package
     (name "emacs-helm-company")
-    (version "0.2.5")
+    (version "0.2.7")
     (source
      (origin
        (method git-fetch)
@@ -26576,7 +26576,7 @@ tracking.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1ci37w6ahnqrfpb284gjvxmimlf61sdxb9k192yy9q983cksv2hx"))))
+         "0zg878i48kmgw9lj772c3kx5v13k9k2afz98j65jx2bjbcm9f338"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-helm emacs-company))
