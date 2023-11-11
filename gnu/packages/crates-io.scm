@@ -56593,6 +56593,34 @@ both WASM and native applications")
      "This crate implements fundamental base types and code used by pnet.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-pnet-datalink-0.27
+  (package
+    (name "rust-pnet-datalink")
+    (version "0.27.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pnet_datalink" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1iws7c2mf88ip43ccmr5p8r6kzb6lwsg3amgc4pvy8wx9nf1q02r"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ipnetwork" ,rust-ipnetwork-0.17)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-netmap-sys" ,rust-netmap-sys-0.1)
+        ("rust-pcap" ,rust-pcap-0.7)
+        ("rust-pnet-base" ,rust-pnet-base-0.27)
+        ("rust-pnet-sys" ,rust-pnet-sys-0.27)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/libpnet/libpnet")
+    (synopsis "Cross-platform, datalink layer networking")
+    (description
+     "This crate implements cross-platform, datalink layer networking.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pocket-resources-0.3
   (package
     (name "rust-pocket-resources")
