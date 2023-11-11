@@ -16860,14 +16860,14 @@ Supports Linux through either JACK or ALSA.")
 (define-public rust-cpufeatures-0.2
   (package
     (name "rust-cpufeatures")
-    (version "0.2.1")
+    (version "0.2.11")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cpufeatures" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0sgllzsvs8hinylaiigmd9c908gd8wclxnqz8dinpxbdyql981cm"))))
+        (base32 "1l0gzsyy576n017g9bf0vkv5hhg9cpz1h1libxyfdlzcgbh0yhnf"))))
     (build-system cargo-build-system)
     (arguments `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))
     (home-page "https://github.com/RustCrypto/utils")
