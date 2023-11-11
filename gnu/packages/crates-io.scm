@@ -9328,14 +9328,14 @@ and block modes.")
 (define-public rust-block-padding-0.3
   (package
     (name "rust-block-padding")
-    (version "0.3.2")
+    (version "0.3.3")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "block-padding" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "0y5v92alqzn9ikmyqfl3a4j6va87j967ii2n3jh2h330z4nyr40a"))))
+         (base32 "14wdad0r1qk5gmszxqd8cky6vx8qg7c153jv981mixzrpzmlz2d8"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-generic-array" ,rust-generic-array-0.14))))
