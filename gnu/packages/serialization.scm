@@ -16,6 +16,7 @@
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -512,16 +513,16 @@ character limit for implicit keys.")
 (define-public yaml-cpp
   (package
     (name "yaml-cpp")
-    (version "0.6.3")
+    (version "0.8.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/jbeder/yaml-cpp")
-             (commit (string-append "yaml-cpp-" version))))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ykkxzxcwwiv8l8r697gyqh1nl582krpvi7m7l6b40ijnk4pw30s"))))
+        (base32 "0whdn6pqa56532ml20h89p6rchcrrazdrvi5fz6zpmrkl15yiki7"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DYAML_BUILD_SHARED_LIBS=ON")))
