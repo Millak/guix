@@ -36476,18 +36476,17 @@ SystemTime}}.")
 (define-public rust-hyper-0.14
   (package
     (name "rust-hyper")
-    (version "0.14.24")
+    (version "0.14.27")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "hyper" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0k0nbykigwb9gmbqb13dyjdq7izc624j8ymaa21xns0bz9r160ay"))))
+        (base32 "0s2l74p3harvjgb0bvaxlxgxq71vpfrzv0cqz2p9w8d8akbczcgz"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-bytes" ,rust-bytes-1)
         ("rust-futures-channel" ,rust-futures-channel-0.3)
         ("rust-futures-core" ,rust-futures-core-0.3)
@@ -36497,14 +36496,28 @@ SystemTime}}.")
         ("rust-http-body" ,rust-http-body-0.4)
         ("rust-httparse" ,rust-httparse-1)
         ("rust-httpdate" ,rust-httpdate-1)
-        ("rust-itoa" ,rust-itoa-0.4)
+        ("rust-itoa" ,rust-itoa-1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-pin-project" ,rust-pin-project-lite-0.2)
         ("rust-socket2" ,rust-socket2-0.4)
         ("rust-tokio" ,rust-tokio-1)
         ("rust-tower-service" ,rust-tower-service-0.3)
         ("rust-tracing" ,rust-tracing-0.1)
-        ("rust-want" ,rust-want-0.3))))
+        ("rust-want" ,rust-want-0.3))
+       #:cargo-development-inputs
+       (("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-matches" ,rust-matches-0.1)
+        ("rust-num-cpus" ,rust-num-cpus-1)
+        ("rust-pnet-datalink" ,rust-pnet-datalink-0.27)
+        ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.4)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-spmc" ,rust-spmc-0.3)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-test" ,rust-tokio-test-0.4)
+        ("rust-tokio-util" ,rust-tokio-util-0.7)
+        ("rust-tower" ,rust-tower-0.4)
+        ("rust-url" ,rust-url-2))))
     (home-page "https://hyper.rs")
     (synopsis "Fast and correct HTTP library")
     (description "This package provides a fast and correct HTTP library.")
