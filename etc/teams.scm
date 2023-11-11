@@ -671,6 +671,10 @@ GLib/GIO, GTK, GStreamer and Webkit."
                        "gabriel@erlikon.ch")
   audio)
 
+(define-member (person "Ekaitz Zarraga"
+                       "ekaitz@elenq.tech")
+  bootstrap zig)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
