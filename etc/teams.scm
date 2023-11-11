@@ -529,6 +529,15 @@ GLib/GIO, GTK, GStreamer and Webkit."
         #:description "Audio related packages."
         #:scope (list "gnu/packages/audio.scm")))
 
+(define-team zig
+  (team 'zig
+        #:name "Zig team"
+        #:description "Zig, Zig packages, and the zig-build system"
+        #:scope (list "gnu/packages/zig.scm"
+                      "gnu/packages/zig-xyz.scm"
+                      "guix/build/zig-build-system.scm"
+                      "guix/build-system/zig.scm")))
+
 
 (define-member (person "Eric Bavier"
                        "bavier@posteo.net")
