@@ -1938,6 +1938,7 @@ table inet filter {
        (documentation "Run the PageKite service.")
        (provision '(pagekite))
        (requirement '(networking))
+       (actions (list (shepherd-configuration-action config-file)))
        (start #~(make-forkexec-constructor
                  (list #$pagekite
                        "--clean"
