@@ -192,6 +192,7 @@
             terminal-window-size
             terminal-columns
             terminal-rows
+            terminal-string-width
             openpty
             login-tty
 
@@ -2335,6 +2336,20 @@ always a positive integer."
 PORT, trying to guess a reasonable value if all else fails.  The result is
 always a positive integer."
   (terminal-dimension window-size-rows port (const 25)))
+
+(define terminal-string-width
+  (let ((mbstowcs (syscall->procedure int "mbstowcs" (list '* '* size_t)))
+        (wcswidth (syscall->procedure int "wcswidth" (list '* size_t))))
+    (lambda (str)
+      "Return the width of a string as it would be printed on the terminal.
+This procedure accounts for characters that have a different width than 1, such
+as CJK double-width characters."
+      (let ((wchar (make-bytevector (* (+ (string-length str) 1) 4))))
+        (mbstowcs (bytevector->pointer wchar)
+                  (string->pointer str)
+                  (string-length str))
+        (wcswidth (bytevector->pointer wchar)
+                  (string-length str))))))
 
 (define openpty
   (let ((proc (syscall->procedure int "openpty" '(* * * * *)

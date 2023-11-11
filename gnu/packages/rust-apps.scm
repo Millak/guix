@@ -2206,7 +2206,8 @@ consecutive lines and since program start.")
                      (bin (string-append out "/bin"))
                      (share (string-append out "/share"))
                      (man (string-append out "/share/man"))
-                     (vimfiles (string-append share "/vim/vimfiles/plugin"))
+                     (vimfiles (string-append
+                                 share "/vim/vimfiles/pack/guix/start/skim/plugin"))
                      (bash-completion
                       (string-append share "/bash-completions/completions"))
                      (zsh-site (string-append share "/zsh/site-functions"))

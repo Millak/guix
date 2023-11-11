@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2015, 2016, 2018 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2016, 2017 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021, 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -62,7 +62,11 @@
                  ;; Tests require a writable HOME.
                  (lambda _
                    (setenv "HOME" (getenv "TMPDIR")))))))
-    (native-inputs (list perl ruby-asciidoctor which))
+    (native-inputs
+     (append (list perl which)
+             (if (supported-package? ruby-asciidoctor)
+               (list ruby-asciidoctor)
+               '())))
     (inputs (list zlib `(,zstd "lib")))
     (home-page "https://ccache.dev/")
     (synopsis "Compiler cache")

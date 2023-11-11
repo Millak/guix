@@ -583,6 +583,12 @@
 (test-assert "terminal-rows"
   (> (terminal-rows) 0))
 
+(test-assert "terminal-string-width English"
+  (= (terminal-string-width "hello") 5))
+
+(test-assert "terminal-string-width Japanese"
+  (= (terminal-string-width "今日は") 6))
+
 (test-assert "openpty"
   (let ((head inferior (openpty)))
     (and (integer? head) (integer? inferior)

@@ -13,6 +13,7 @@
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 Ryan Tolboom <ryan@using.tech>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -218,49 +219,46 @@ mathematical operations, and much more.")
     (license license:expat)))
 
 (define-public rtl-sdr
-  ;; No tagged release since 2018
-  (let ((commit "5e73f90f1d85d8db2e583f3dbf1cff052d71d59b")
-        (revision "1"))
-    (package
-      (name "rtl-sdr")
-      (version (git-version "0.6.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://git.osmocom.org/rtl-sdr/")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "106fwzyr7cba952f3p3wm3hdqzm9zvm0v3gcz4aks2n7fnvrgrvn"))))
-      (build-system cmake-build-system)
-      (inputs
-       (list libusb))
-      (native-inputs
-       (list pkg-config))
-      (arguments
-       `(#:configure-flags '("-DDETACH_KERNEL_DRIVER=ON"
-                             "-DINSTALL_UDEV_RULES=ON")
-         #:tests? #f ; No tests
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'fix-paths
-             (lambda* (#:key outputs #:allow-other-keys)
-               (substitute* "CMakeLists.txt"
-                 (("DESTINATION \"/etc/udev/")
-                  (string-append "DESTINATION \""
-                                 (assoc-ref outputs "out")
-                                 "/lib/udev/")))))
-           (add-after 'fix-paths 'fix-udev-rules
-             (lambda _
-               (substitute* "rtl-sdr.rules"
-                 ;; The plugdev group does not exist; use dialout as in
-                 ;; the hackrf package.
-                 (("GROUP=\"plugdev\"")
-                  "GROUP=\"dialout\"")))))))
-      (home-page "https://osmocom.org/projects/sdr/wiki/rtl-sdr")
-      (synopsis "Software defined radio driver for Realtek RTL2832U")
-      (description "DVB-T dongles based on the Realtek RTL2832U can be used as a
+  (package
+    (name "rtl-sdr")
+    (version "2.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.osmocom.org/rtl-sdr/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0z8dn0gdava894fb9fs9gcwvmik31fcj6ldkggylc0mhgw5145pr"))))
+    (build-system cmake-build-system)
+    (inputs
+     (list libusb))
+    (native-inputs
+     (list pkg-config))
+    (arguments
+     `(#:configure-flags '("-DDETACH_KERNEL_DRIVER=ON"
+                           "-DINSTALL_UDEV_RULES=ON")
+       #:tests? #f ; No tests
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-paths
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "CMakeLists.txt"
+               (("DESTINATION \"/etc/udev/")
+                (string-append "DESTINATION \""
+                               (assoc-ref outputs "out")
+                               "/lib/udev/")))))
+         (add-after 'fix-paths 'fix-udev-rules
+           (lambda _
+             (substitute* "rtl-sdr.rules"
+               ;; The plugdev group does not exist; use dialout as in
+               ;; the hackrf package.
+               (("GROUP=\"plugdev\"")
+                "GROUP=\"dialout\"")))))))
+    (home-page "https://osmocom.org/projects/sdr/wiki/rtl-sdr")
+    (synopsis "Software defined radio driver for Realtek RTL2832U")
+    (description "DVB-T dongles based on the Realtek RTL2832U can be used as a
 cheap software defined radio, since the chip allows transferring the raw I/Q
 samples to the host.  @code{rtl-sdr} provides drivers for this purpose.
 
@@ -275,7 +273,7 @@ system configuration:
 
 To install the rtl-sdr udev rules, you must extend 'udev-service-type' with
 this package.  E.g.: @code{(udev-rules-service 'rtl-sdr rtl-sdr)}")
-      (license license:gpl2+))))
+    (license license:gpl2+)))
 
 (define-public airspy
   (let ((commit "6f92f47146aa8a8fce59b60927cf8c53da6851b3")
@@ -1662,13 +1660,19 @@ instances over the network, and general QSO and DXpedition logging.")
         (base32 "1lqd77v9xm58k9g9kfwxva3mmzm1yyk1v27nws5j1a293zfg2hkw"))))
     (build-system qt-build-system)
     (arguments
-     (list #:tests? #f)) ; No test suite
+     (list #:tests? #f   ; No test suite
+           #:configure-flags
+           (if (this-package-native-input "ruby-asciidoctor")
+             #~'()
+             #~(list "-DWSJT_GENERATE_DOCS=OFF"))))
     (native-inputs
-     (list asciidoc
-           gfortran
-           pkg-config
-           qttools-5
-           ruby-asciidoctor))
+     (append (list asciidoc
+                   gfortran
+                   pkg-config
+                   qttools-5)
+             (if (supported-package? ruby-asciidoctor)
+               (list ruby-asciidoctor)
+               '())))
     (inputs
      (list boost
            fftw
@@ -1914,7 +1918,7 @@ from devices on the 433 MHz, 868 MHz, 315 MHz, 345 MHz and 915 MHz ISM bands.")
 (define-public multimon-ng
   (package
     (name "multimon-ng")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -1923,7 +1927,7 @@ from devices on the 433 MHz, 868 MHz, 315 MHz, 345 MHz and 915 MHz ISM bands.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hm7391z1iz2sk4xkwfphqz8qvihqjzsh45csz14gb4jfs1p6ks2"))))
+        (base32 "1gd3kxb1w2fc6waa8g7af036yicjbg4a7hs0dgdci4d3aqwyz690"))))
     (build-system cmake-build-system)
     (inputs
      (list libx11 pulseaudio))
@@ -2569,7 +2573,7 @@ voice formats.")
 (define-public sdrangel
   (package
     (name "sdrangel")
-    (version "7.16.0")
+    (version "7.17.0")
     (source
      (origin
        (method git-fetch)
@@ -2578,7 +2582,7 @@ voice formats.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1c2pdxw2a3pysqlmr42gghg0ga33afwdp6wc97h7s6gwc5km6zlk"))))
+        (base32 "16hpnfzccpj8a3i24ryli870ym6kjih981sjapcqdc8va0q14qdz"))))
     (build-system qt-build-system)
     (native-inputs
      (list doxygen graphviz pkg-config))

@@ -154,7 +154,6 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
-  #:use-module (gnu packages ruby)
   #:use-module (gnu packages samba)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages shells)
@@ -867,25 +866,9 @@ publish/subscribe, RPC-style request/reply, or service discovery.")
        (sha256
         (base32 "01ddfzjlkf2dgijrmm3j3j8irccsnbgfvjcnwslsfaxnrmrq5s64"))))
     (build-system cmake-build-system)
-    (outputs '("out" "doc"))
     (arguments
      `(#:configure-flags
-       (list
-        "-DNN_ENABLE_COVERAGE=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'move-docs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (assoc-ref outputs "doc")))
-               (mkdir-p (string-append doc "/share/doc"))
-               (rename-file
-                (string-append out "/share/doc/nanomsg")
-                (string-append doc "/share/doc/nanomsg"))
-               #t))))))
-    (native-inputs
-     `(("asciidoctor" ,ruby-asciidoctor)
-       ("pkg-config" ,pkg-config)))
+       (list "-DNN_ENABLE_COVERAGE=ON")))
     (synopsis "Scalable socket library")
     (description "Nanomsg is a socket library that provides several common
 communication patterns.  It aims to make the networking layer fast, scalable,

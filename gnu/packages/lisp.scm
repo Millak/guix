@@ -1061,8 +1061,9 @@ the HTML documentation of TXR.")
                                '("txr-manpage.html" "txr-manpage.pdf")))))
                (add-after 'install 'install-vim-files
                  (lambda _
-                   (let ((syntax (string-append #$output
-                                                "/share/vim/vimfiles/syntax")))
+                   (let ((syntax (string-append
+                                   #$output
+                                   "/share/vim/vimfiles/pack/guix/start/txr/syntax")))
                      (install-file "tl.vim" syntax)
                      (install-file "txr.vim" syntax)))))))
     (native-inputs

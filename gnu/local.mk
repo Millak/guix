@@ -1097,7 +1097,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/elm-reactor-static-files.patch		\
   %D%/packages/patches/elogind-fix-rpath.patch			\
   %D%/packages/patches/emacs-all-the-icons-remove-duplicate-rs.patch	\
-  %D%/packages/patches/emacs-debbugs-keep-patch-subject.patch	\
   %D%/packages/patches/emacs-deferred-fix-number-of-arguments.patch	\
   %D%/packages/patches/emacs-elpy-dup-test-name.patch		\
   %D%/packages/patches/emacs-exec-path.patch			\

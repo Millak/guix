@@ -33,6 +33,8 @@
   #:use-module (guix store)
   #:use-module (guix utils)
   #:use-module (guix records)
+  #:use-module ((guix build syscalls)
+                #:select (terminal-string-width))
   #:use-module (guix gexp)
   #:autoload   (guix git-download)
   (git-reference-url git-reference-commit git-reference-recursive?)
@@ -154,7 +156,7 @@ the 'SSL_CERT_FILE' and 'SSL_CERT_DIR' environment variables."
   ;; TODO: Both should be handled & exposed by the PROGRESS-BAR API instead.
   (define width
     (max (- (current-terminal-columns)
-            (string-length label) 7)
+            (terminal-string-width label) 7)
          3))
 
   (define grain

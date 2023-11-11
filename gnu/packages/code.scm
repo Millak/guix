@@ -237,8 +237,9 @@ highlighting your own code that seemed comprehensible when you wrote it.")
                  (lambda _
                    ;; Install the plugin files in the right place.
                    (let* ((data (string-append #$output "/share/gtags"))
-                          (vim  (string-append #$output
-                                               "/share/vim/vimfiles/plugin"))
+                          (vim  (string-append
+                                  #$output
+                                  "/share/vim/vimfiles/pack/guix/start/global/plugin"))
                           (lisp (string-append #$output "/share/emacs/site-lisp/"
                                                #$(package-name this-package) "-"
                                                #$(package-version this-package))))

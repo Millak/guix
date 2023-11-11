@@ -4,6 +4,7 @@
 ;;; Copyright © 2019 Andrew Miloradovsky <andrew@interpretmath.pw>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Dion Mendel <guix@dm9.info>
+;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -74,14 +75,18 @@
     (arguments
      (list
       #:configure-flags
-      #~(list "--sysconfdir=/etc"
-              "--localstatedir=/var"
-              ;; Do not install sysv or systemd init scripts.
-              "--with-initscripttype=none"
-              ;; Disable support for DRBD 8.3 as it is only for
-              ;; Linux-Libre versions < 3.8.  8.4 is the latest
-              ;; kernel driver as of Linux 5.18.
-              "--without-83support")
+      #~(append
+          (list "--sysconfdir=/etc"
+                "--localstatedir=/var"
+                ;; Do not install sysv or systemd init scripts.
+                "--with-initscripttype=none"
+                ;; Disable support for DRBD 8.3 as it is only for
+                ;; Linux-Libre versions < 3.8.  8.4 is the latest
+                ;; kernel driver as of Linux 5.18.
+                "--without-83support")
+          #$(if (this-package-native-input "ruby-asciidoctor")
+               #~'()
+               #~(list "--without-manual")))
       #:test-target "test"
       #:make-flags #~(list "WANT_DRBD_REPRODUCIBLE_BUILD=yesplease")
       #:phases
@@ -126,16 +131,18 @@
                 (("\\$\\(DESTDIR\\)\\$\\(DRBD_LIB_DIR\\)")
                  "$(DESTDIR)$(prefix)$(DRBD_LIB_DIR)")))))))
     (native-inputs
-     (list clitest
-           eudev                        ;just to satisfy a configure check
-           flex
-           ;; For the documentation.
-           docbook-xml
-           docbook-xml-4.4              ;used by documentation/ra2refentry.xsl
-           docbook-xsl
-           libxml2                      ;for XML_CATALOG_FILES
-           libxslt                      ;for xsltproc
-           ruby-asciidoctor))
+     (append (list clitest
+                   eudev                        ;just to satisfy a configure check
+                   flex)
+             ;; For the documentation.
+             (if (supported-package? ruby-asciidoctor)
+               (list docbook-xml
+                     docbook-xml-4.4            ;used by documentation/ra2refentry.xsl
+                     docbook-xsl
+                     libxml2                    ;for XML_CATALOG_FILES
+                     libxslt                    ;for xsltproc
+                     ruby-asciidoctor)
+               '())))
     (home-page "https://www.linbit.com/drbd/")
     (synopsis "Replicate block devices between machines")
     (description

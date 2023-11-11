@@ -13,7 +13,7 @@
 # Copyright © 2018 Julien Lepiller <julien@lepiller.eu>
 # Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 # Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
-# Copyright © 2019 Efraim Flashner <efraim@flashner.co.il>
+# Copyright © 2019, 2023 Efraim Flashner <efraim@flashner.co.il>
 # Copyright © 2020, 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 # Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 # Copyright © 2021 Andrew Tropin <andrew@trop.in>
@@ -185,6 +185,7 @@ MODULES =					\
   guix/build-system/texlive.scm			\
   guix/build-system/tree-sitter.scm		\
   guix/build-system/trivial.scm			\
+  guix/build-system/vim.scm			\
   guix/build-system/zig.scm			\
   guix/ftp-client.scm				\
   guix/http-client.scm				\
@@ -243,6 +244,7 @@ MODULES =					\
   guix/build/scons-build-system.scm		\
   guix/build/texlive-build-system.scm		\
   guix/build/tree-sitter-build-system.scm	\
+  guix/build/vim-build-system.scm		\
   guix/build/waf-build-system.scm		\
   guix/build/haskell-build-system.scm		\
   guix/build/julia-build-system.scm		\

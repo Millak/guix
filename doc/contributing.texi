@@ -29,6 +29,7 @@ choice.
 * Submitting Patches::          Share your work.
 * Tracking Bugs and Changes::   Keeping it all organized.
 * Commit Access::               Pushing to the official repository.
+* Reviewing the Work of Others::  Some guidelines for sharing reviews.
 * Updating the Guix Package::   Updating the Guix package definition.
 * Writing Documentation::       Improving documentation in GNU Guix.
 * Translating Guix::            Make Guix speak your native language.
@@ -385,6 +386,7 @@ copyright-update}.  If you want to do it automatically after each buffer
 save then add @code{(add-hook 'after-save-hook 'copyright-update)} in
 Emacs.
 
+@node Viewing Bugs within Emacs
 @subsection Viewing Bugs within Emacs
 
 Emacs has a nice minor mode called @code{bug-reference}, which, when
@@ -452,6 +454,13 @@ configuration file:
           (group (zero-or-one "cgi/bugreport.cgi?bug="))
           (group-n 3 (one-or-more digit))
           line-end))
+
+;; Reduce the number of prompts with 'M-x debbugs-gnu'.
+(setq debbugs-gnu-default-packages '("guix" "guix-patches"))
+
+;; Show feature requests.
+(setq debbugs-gnu-default-severities
+ '("serious" "important" "normal" "minor" "wishlist"))
 @end lisp
 
 For more information, refer to @ref{Bug Reference,,, emacs, The GNU
@@ -1279,11 +1288,16 @@ implement low-level concepts, such as the @code{memoize} procedure.
 
 @node Modules
 @subsection Modules
-
+@cindex build-side modules
+@cindex host-side modules
 Guile modules that are meant to be used on the builder side must live in
 the @code{(guix build @dots{})} name space.  They must not refer to
 other Guix or GNU modules.  However, it is OK for a ``host-side'' module
-to use a build-side module.
+to use a build-side module.  As an example, the @code{(guix
+search-paths)} module should not be imported and used by a package since
+it isn't meant to be used as a ``build-side'' module.  It would also
+couple the module with the package's dependency graph, which is
+undesirable.
 
 Modules that deal with the broader GNU system should be in the
 @code{(gnu @dots{})} name space rather than @code{(guix @dots{})}.
@@ -1862,7 +1876,7 @@ browse issues:
 interface@footnote{The web interface at
 @url{https://issues.guix.gnu.org} is powered by Mumi, a nice piece of
 software written in Guile, and you can help!  See
-@url{https://git.elephly.net/gitweb.cgi?p=software/mumi.git}.} to browse
+@url{https://git.savannah.gnu.org/cgit/guix/mumi.git}.} to browse
 bug reports and patches, and to participate in discussions;
 @item
 @url{https://bugs.gnu.org/guix} lists bug reports;
@@ -1969,6 +1983,15 @@ For example, to list all open issues on @code{guix-patches}, hit:
 @kbd{C-u} @kbd{M-x} debbugs-gnu @kbd{RET} @kbd{RET} guix-patches @kbd{RET} n y
 @end example
 
+For a more convenient (shorter) way to access both the bugs and patches
+submissions, you may want to configure the
+@code{debbugs-gnu-default-packages} and
+@code{debbugs-gnu-default-severities} Emacs variables (@pxref{Viewing
+Bugs within Emacs}).
+
+To search for bugs, @samp{@kbd{M-x} debbugs-gnu-guix-search} can be
+used.
+
 @xref{Top,,, debbugs-ug, Debbugs User Guide}, for more information on
 this nifty tool!
 
@@ -1981,7 +2004,12 @@ Debbugs provides a feature called @dfn{usertags} that allows any user to
 tag any bug with an arbitrary label.  Bugs can be searched by usertag,
 so this is a handy way to organize bugs@footnote{The list of usertags is
 public information, and anyone can modify any user's list of usertags,
-so keep that in mind if you choose to use this feature.}.
+so keep that in mind if you choose to use this feature.}.  If you use
+Emacs Debbugs, the entry-point to consult existing usertags is the
+@samp{C-u M-x debbugs-gnu-usertags} procedure.  To set a usertag, press
+@samp{C} while consulting a bug within the *Guix-Patches* buffer opened
+with @samp{C-u M-x debbugs-gnu-bugs} buffer, then select @code{usertag}
+and follow the instructions.
 
 For example, to view all the bug reports (or patches, in the case of
 @code{guix-patches}) tagged with the usertag @code{powerpc64le-linux}
@@ -1994,9 +2022,9 @@ documentation for Debbugs or the documentation for whatever tool you use
 to interact with Debbugs.
 
 In Guix, we are experimenting with usertags to keep track of
-architecture-specific issues.  To facilitate collaboration, all our
-usertags are associated with the single user @code{guix}.  The following
-usertags currently exist for that user:
+architecture-specific issues, as well as reviewed ones.  To facilitate
+collaboration, all our usertags are associated with the single user
+@code{guix}.  The following usertags currently exist for that user:
 
 @table @code
 
@@ -2013,6 +2041,9 @@ system types, too.
 For issues related to reproducibility.  For example, it would be
 appropriate to assign this usertag to a bug report for a package that
 fails to build reproducibly.
+
+@item reviewed-looks-good
+You have reviewed the series and it looks good to you (LGTM).
 
 @end table
 
@@ -2282,6 +2313,100 @@ only push their own awesome changes, but also offer some of their time
 @emph{reviewing} and pushing other people's changes.  As a committer,
 you're welcome to use your expertise and commit rights to help other
 contributors, too!
+
+@node Reviewing the Work of Others
+@section Reviewing the Work of Others
+
+Perhaps the biggest action you can do to help GNU Guix grow as a project
+is to review the work contributed by others.  You do not need to be a
+committer to do so; applying, reading the source, building, linting and
+running other people's series and sharing your comments about your
+experience will give some confidence to committers.  Basically, you gmust
+ensure the check list found in the @ref{Submitting Patches} section has
+been correctly followed.  A reviewed patch series should give the best
+chances for the proposed change to be merged faster, so if a change you
+would like to see merged hasn't yet been reviewed, this is the most
+appropriate thing to do!
+
+@cindex reviewing, guidelines
+Review comments should be unambiguous; be as clear and explicit as you
+can about what you think should be changed, ensuring the author can take
+action on it.  Please try to keep the following guidelines in mind
+during review:
+
+@enumerate
+@item
+@emph{Be clear and explicit about changes you are suggesting}, ensuring
+the author can take action on it.  In particular, it is a good idea to
+explicitly ask for new revisions when you want it.
+
+@item
+@emph{Remain focused: do not change the scope of the work being
+reviewed.}  For example, if the contribution touches code that follows a
+pattern deemed unwieldy, it would be unfair to ask the submitter to fix
+all occurrences of that pattern in the code; to put it simply, if a
+problem unrelated to the patch at hand was already there, do not ask the
+submitter to fix it.
+
+@item
+@emph{Ensure progress.}  As they respond to review, submitters may
+submit new revisions of their changes; avoid requesting changes that you
+did not request in the previous round of comments.  Overall, the
+submitter should get a clear sense of progress; the number of items open
+for discussion should clearly decrease over time.
+
+@item
+@emph{Aim for finalization.}  Reviewing code is time-consuming.  Your
+goal as a reviewer is to put the process on a clear path towards
+integration, possibly with agreed-upon changes, or rejection, with a
+clear and mutually-understood reasoning.  Avoid leaving the review
+process in a lingering state with no clear way out.
+
+@item
+@emph{Review is a discussion.}  The submitter's and reviewer's views on
+how to achieve a particular change may not always be aligned.  To lead
+the discussion, remain focused, ensure progress and aim for
+finalization, spending time proportional to the stakes@footnote{The
+tendency to discuss minute details at length is often referred to as
+``bikeshedding'', where much time is spent discussing each one's
+preference for the color of the shed at the expense of progress made on
+the project to keep bikes dry.}.  As a reviewer, try hard to explain the
+rationale for suggestions you make, and to understand and take into
+account the submitter's motivation for doing things in a certain way.
+@end enumerate
+
+@cindex LGTM, Looks Good To Me
+@cindex review tags
+@cindex Reviewed-by, git trailer
+When you deem the proposed change adequate and ready for inclusion
+within Guix, the following well understood/codified
+@samp{Reviewed-by:@tie{}Your@tie{}Name<your-email@@example.com>}
+@footnote{The @samp{Reviewed-by} Git trailer is used by other projects
+such as Linux, and is understood by third-party tools such as the
+@samp{b4 am} sub-command, which is able to retrieve the complete
+submission email thread from a public-inbox instance and add the Git
+trailers found in replies to the commit patches.} line should be used to
+sign off as a reviewer, meaning you have reviewed the change and that it
+looks good to you:
+
+@itemize
+@item
+If the @emph{whole} series (containing multiple commits) looks good to
+you, reply with @samp{Reviewed-by:@tie{}Your@tie{}Name<your-email@@example.com>}
+to the cover page if it has one, or to the last patch of the series
+otherwise, adding another @samp{(for the whole series)} comment on the
+line below to explicit this fact.
+
+@item
+If you instead want to mark a @emph{single commit} as reviewed (but not
+the whole series), simply reply with
+@samp{Reviewed-by:@tie{}Your@tie{}Name<your-email@@example.com>} to that
+commit message.
+@end itemize
+
+If you are not a committer, you can help others find a @emph{series} you
+have reviewed more easily by adding a @code{reviewed-looks-good} usertag
+for the @code{guix} user (@pxref{Debbugs Usertags}).
 
 @node Updating the Guix Package
 @section Updating the Guix Package
