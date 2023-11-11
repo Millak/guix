@@ -22,6 +22,7 @@
 ;;; Copyright © 2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -348,6 +349,38 @@ library to minimize (very) expensive and noisy black-box functions.  It
 implements several methods for sequential model-based optimization.
 @code{skopt} aims to be accessible and easy to use in many contexts.")
     (license license:bsd-3)))
+
+(define-public python-tdda
+  (package
+    (name "python-tdda")
+    (version "2.0.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tdda" version))
+       (sha256
+        (base32 "1xs91s8b7cshjcqw88qsrjh10xly799k5rf2ycawqfz2mw8sy3br"))))
+    (build-system pyproject-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'relax-requirements
+                    (lambda _
+                      (substitute* "setup.py"
+                        (("pandas>=1.5.2")
+                         "pandas"))))
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "tdda" "test")))))))
+    (native-inputs (list python-numpy python-pandas))
+    (home-page "https://www.stochasticsolutions.com")
+    (synopsis "Test-driven data analysis library for Python")
+    (description
+     "The TDDA Python module provides command-line and Python API support
+for the overall process of data analysis, through tools that peform
+reference testing, constraint discovery for data, automatic inference
+of regular expressions from text data and automatic test generation.")
+    (license license:expat))) ; MIT License
 
 (define-public python-trimesh
   (package
