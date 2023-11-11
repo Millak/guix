@@ -56621,6 +56621,29 @@ both WASM and native applications")
      "This crate implements cross-platform, datalink layer networking.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-pnet-sys-0.27
+  (package
+    (name "rust-pnet-sys")
+    (version "0.27.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pnet_sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05gz5xixzvs5iw7a3l0r7sic7s44x8xmv9pqvzzs6wpdwz2f92bm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; Tries to use sockets.
+       #:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/libpnet/libpnet")
+    (synopsis "Access to network related system functions")
+    (description
+     "This crate providess access to network related system function and calls.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pocket-resources-0.3
   (package
     (name "rust-pocket-resources")
