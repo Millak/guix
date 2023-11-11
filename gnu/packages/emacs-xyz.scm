@@ -26583,13 +26583,12 @@ tracking.")
     (native-inputs
      (list emacs-ert-runner))
     (arguments
-     `(#:tests? #t
-       #:test-command '("ert-runner")))
+     (list #:tests? #t
+           #:test-command #~(list "ert-runner")))
     (home-page "https://github.com/Sodel-the-Vociferous/helm-company")
-    (synopsis "Helm interface for company-mode")
+    (synopsis "Helm interface for Company mode")
     (description
-     "This is a Helm interface to company-mode, a text completion
-framework.")
+     "This is a Helm interface to Company mode, a text completion framework.")
     (license license:gpl3+)))
 
 (define-public emacs-helm-descbinds
