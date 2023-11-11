@@ -35993,6 +35993,26 @@ characters in HTML, decoding and unescaping HTML entities as well.")
      "Filesystem walk performed in parallel with streamed and sorted results.")
     (license license:expat)))
 
+(define-public rust-koibumi-base32-0.0.2
+  (package
+    (name "rust-koibumi-base32")
+    (version "0.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "koibumi-base32" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1frb232m6rw50ly8ijhsbllcqfif5kcma1l6hrgm5g22c3c3il94"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-lazy-static" ,rust-lazy-static-1))))
+    (home-page "https://kashiko.gitlab.io/koibumi-rust/")
+    (synopsis "Base32 encoder/decoder library")
+    (description "This package provides a Base32 encoder/decoder library.")
+    (license license:gpl3+)))
+
 (define-public rust-kuchiki-0.8
   (package
     (name "rust-kuchiki")
