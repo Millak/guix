@@ -13375,7 +13375,7 @@ Document Analysis and Recognition program.")
 (define-public libadwaita
   (package
     (name "libadwaita")
-    (version "1.3.4")
+    (version "1.4.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/libadwaita/"
@@ -13383,7 +13383,7 @@ Document Analysis and Recognition program.")
                                   "libadwaita-" version ".tar.xz"))
               (sha256
                (base32
-                "1gdimh85f5hb6jhnivjaai4m08nz4x9iif5rxdckn8b0lzrwl740"))))
+                "1hj7kxza6263x662v4ffndlz8dhfx19cz3y4iwhnhdflaj50j6p5"))))
     (build-system meson-build-system)
     (arguments
      `(#:phases
@@ -13403,7 +13403,7 @@ Document Analysis and Recognition program.")
            vala
            xorg-server-for-tests))
     (propagated-inputs
-     (list gtk))                        ;libadwaita-1.pc 'Requires' it
+     (list appstream gtk))              ;libadwaita-1.pc 'Requires' it
     (home-page "https://gnome.pages.gitlab.gnome.org/libadwaita/")
     (synopsis "Building blocks for GNOME applications")
     (description
