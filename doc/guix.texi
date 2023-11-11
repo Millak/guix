@@ -22165,10 +22165,6 @@ signing and encryption keys are defined in @file{/etc/yggdrasil-private.conf}
 @example
 # sample content for /etc/yggdrasil-private.conf
 @{
-  # Your public key. Your peers may ask you for this to put
-  # into their AllowedPublicKeys configuration.
-  PublicKey: 64277...
-
   # Your private key. DO NOT share this with anyone!
   PrivateKey: 5c750...
 @}
@@ -22207,14 +22203,8 @@ should be stored, which are necessary to specify if you don't want a
 randomized address after each restart.  Use @code{#f} to disable.  Options
 defined in this file take precedence over @code{json-config}.  Use the output
 of @code{yggdrasil -genconf} as a starting point.  To configure a static
-address, delete everything except these options:
+address, delete everything except PrivateKey option.
 
-@itemize
-@item @code{EncryptionPublicKey}
-@item @code{EncryptionPrivateKey}
-@item @code{SigningPublicKey}
-@item @code{SigningPrivateKey}
-@end itemize
 @end table
 @end deftp
 
