@@ -56570,6 +56570,29 @@ both WASM and native applications")
     (description "This package provides utils for proc-macro.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-pnet-base-0.27
+  (package
+    (name "rust-pnet-base")
+    (version "0.27.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pnet_base" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1v8bcbv9jh581ill77qjzzw2ay76pl781982yclj3xky96m8hijf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-serde-test" ,rust-serde-test-1))))
+    (home-page "https://github.com/libpnet/libpnet")
+    (synopsis "Fundamental base types and code used by pnet")
+    (description
+     "This crate implements fundamental base types and code used by pnet.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pocket-resources-0.3
   (package
     (name "rust-pocket-resources")
