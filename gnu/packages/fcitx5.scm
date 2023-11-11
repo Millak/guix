@@ -29,6 +29,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages anthy)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages enchant)
@@ -164,19 +165,19 @@ client.")
 (define-public libime
   (package
     (name "libime")
-    (version "1.1.0")
+    (version "1.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.fcitx-im.org/fcitx5/libime/libime-"
                            version "_dict.tar.xz"))
        (sha256
-        (base32 "0jqr9riwygr3c9qzs8hx46smhgys68bf6m70fmam819903a9gpf0"))))
+        (base32 "0c1zn4bi71a84jh7x0fly3xqrsjm08ja3sglxrkfm9snk0x6ybhf"))))
     (build-system cmake-build-system)
     (inputs
-     (list fcitx5 boost))
+     (list fcitx5 boost (list zstd "lib")))
     (native-inputs
-     (list extra-cmake-modules python))             ;needed to run test
+     (list extra-cmake-modules pkg-config))
     (home-page "https://github.com/fcitx/libime")
     (synopsis "Library for implementing generic input methods")
     (description "Libime is a library for implementing various input method
