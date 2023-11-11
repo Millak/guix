@@ -81256,19 +81256,52 @@ futures.")
      "Event loop that drives Tokio I/O resources.")
     (license license:expat)))
 
+(define-public rust-tokio-rustls-0.24
+  (package
+    (name "rust-tokio-rustls")
+    (version "0.24.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tokio-rustls" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10bhibg57mqir7xjhb2xmf24xgfpx6fzpyw720a4ih8a737jg0y2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f          ; Issue with the certificate test dates.
+       #:cargo-inputs
+       (("rust-rustls" ,rust-rustls-0.21)
+        ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs
+       (("rust-argh" ,rust-argh-0.1)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-rustls-pemfile" ,rust-rustls-pemfile-1)
+        ("rust-rustls-webpki" ,rust-rustls-webpki-0.100)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-webpki-roots" ,rust-webpki-roots-0.23))))
+    (native-inputs
+     (list perl))
+    (home-page "https://github.com/tokio-rs/tls")
+    (synopsis "Asynchronous TLS/SSL streams for Tokio")
+    (description
+     "This package provides asynchronous TLS/SSL streams for Tokio using
+Rustls.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-tokio-rustls-0.23
   (package
+    (inherit rust-tokio-rustls-0.24)
     (name "rust-tokio-rustls")
     (version "0.23.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tokio-rustls" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0nfsmmi8l1lgpbfy6079d5i13984djzcxrdr9jc06ghi0cwyhgn4"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f          ; Issue with the certificate test dates.
        #:cargo-inputs
@@ -81280,15 +81313,7 @@ futures.")
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-rustls-pemfile" ,rust-rustls-pemfile-0.2)
         ("rust-tokio" ,rust-tokio-1)
-        ("rust-webpki-roots" ,rust-webpki-roots-0.22))))
-    (native-inputs
-     (list perl))
-    (home-page "https://github.com/tokio-rs/tls")
-    (synopsis "Asynchronous TLS/SSL streams for Tokio")
-    (description
-     "This package provides asynchronous TLS/SSL streams for Tokio using
-Rustls.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-webpki-roots" ,rust-webpki-roots-0.22))))))
 
 (define-public rust-tokio-rustls-0.22
   (package
