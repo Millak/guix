@@ -954,14 +954,19 @@ Executables included are:
               (lambda _
                 (let ((fmw (string-append #$output "/share/firmware")))
                   (mkdir-p fmw)
-                  (copy-file (string-append "Build/OvmfIa32/RELEASE_"
-                                            #$toolchain-ver "/FV/OVMF.fd")
-                             (string-append fmw "/ovmf_ia32.bin"))
-                  #$@(if (string=? "x86_64-linux" (%current-system))
-                       #~((copy-file (string-append "Build/OvmfX64/RELEASE_"
-                                                    #$toolchain-ver "/FV/OVMF.fd")
-                                     (string-append fmw "/ovmf_x64.bin")))
-                       #~())))))))
+                  (for-each
+                    (lambda (file)
+                      (copy-file (string-append "Build/OvmfIa32/RELEASE_"
+                                                #$toolchain-ver "/FV/" file ".fd")
+                                 (string-append fmw "/" (string-downcase file) "_ia32.bin"))
+                      #$@(if (string=? "x86_64-linux" (%current-system))
+                           #~((copy-file (string-append "Build/OvmfX64/RELEASE_"
+                                                        #$toolchain-ver "/FV/" file ".fd")
+                                         (string-append fmw "/" (string-downcase file) "_x64.bin")))
+                           #~()))
+                    (list "OVMF"
+                          "OVMF_CODE"
+                          "OVMF_VARS"))))))))
       (native-inputs
        `(("acpica" ,acpica)
          ("gcc@5" ,gcc-5)
