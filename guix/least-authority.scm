@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022-2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -41,6 +41,8 @@
 
 (define* (least-authority-wrapper program
                                   #:key (name "pola-wrapper")
+                                  (user #f)
+                                  (group #f)
                                   (guest-uid 1000)
                                   (guest-gid 1000)
                                   (mappings '())
@@ -55,7 +57,11 @@ symbols; it runs with GUEST-UID and GUEST-GID.  MAPPINGS is a list of
 <file-system-mapping> records indicating directories mirrored inside the
 execution environment of PROGRAM.  DIRECTORY is the working directory of the
 wrapped process.  Each environment listed in PRESERVED-ENVIRONMENT-VARIABLES
-is preserved; other environment variables are erased."
+is preserved; other environment variables are erased.
+
+When USER and GROUP are set and NAMESPACES does not include 'user, change UIDs
+and GIDs to these prior to executing PROGRAM.  This usually requires that the
+resulting wrapper be executed as root so it can call setgid(2) and setuid(2)."
   (define code
     (with-imported-modules (source-module-closure
                             '((gnu system file-systems)
@@ -113,6 +119,10 @@ is preserved; other environment variables are erased."
                                 #$program signal)
                         (exit (+ 128 signal))))))
 
+          (define namespaces '#$namespaces)
+          (define host-group '#$group)
+          (define host-user '#$user)
+
           ;; Note: 'call-with-container' creates a sub-process that this one
           ;; waits for.  This might seem suboptimal but unshare(2) isn't
           ;; really applicable: the process would still run in the same PID
@@ -123,6 +133,17 @@ is preserved; other environment variables are erased."
              (lambda ()
                (chdir #$directory)
                (environ variables)
+
+               (unless (memq 'user namespaces)
+                 ;; This process lives in its parent user namespace,
+                 ;; presumably as root; now is the time to setgid/setuid if
+                 ;; asked for it (the 'clone' call would fail with EPERM if we
+                 ;; changed UIDs/GIDs beforehand).
+                 (when host-group
+                   (setgid (group:gid (getgr host-group))))
+                 (when host-user
+                   (setuid (passwd:uid (getpw host-user)))))
+
                (apply execl #$program #$program (cdr (command-line))))
 
              ;; Don't assume PROGRAM can behave as an init process.
