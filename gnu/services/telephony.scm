@@ -34,6 +34,9 @@
   #:use-module (guix modules)
   #:use-module (guix packages)
   #:use-module (guix gexp)
+  #:autoload   (guix least-authority) (least-authority-wrapper)
+  #:autoload   (gnu system file-systems) (file-system-mapping)
+  #:autoload   (gnu build linux-container) (%namespaces)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-2)
   #:use-module (srfi srfi-26)
@@ -298,7 +301,28 @@ CONFIG, a <jami-configuration> object."
   (let* ((libjami (jami-configuration-libjami config))
          (nss-certs (jami-configuration-nss-certs config))
          (dbus (jami-configuration-dbus config))
-         (dbus-daemon (file-append dbus "/bin/dbus-daemon"))
+         (dbus-daemon (least-authority-wrapper
+                       (file-append dbus "/bin/dbus-daemon")
+                       #:name "dbus-daemon"
+                       #:user "jami"
+                       #:group "jami"
+                       #:preserved-environment-variables
+                       '("XDG_DATA_DIRS")
+                       #:mappings
+                       (list (file-system-mapping
+                              (source "/dev/log") ;for syslog
+                              (target source))
+                             (file-system-mapping
+                              (source "/var/run/jami")
+                              (target source)
+                              (writable? #t))
+                             (file-system-mapping
+                              (source (gexp-input libjami "bin"))
+                              (target source)))
+                       ;; 'dbus-daemon' wants to look up users in /etc/passwd
+                       ;; so run it in the global user namespace.
+                       #:namespaces
+                       (fold delq %namespaces '(net user))))
          (accounts (jami-configuration-accounts config))
          (declarative-mode? (maybe-value-set? accounts)))
 
@@ -490,8 +514,7 @@ argument, either a registered username or the fingerprint of the account.")
         (list (shepherd-service
                (documentation "Run a D-Bus session for the Jami daemon.")
                (provision '(jami-dbus-session))
-               (modules `((gnu build shepherd)
-                          (gnu build dbus-service)
+               (modules `((gnu build dbus-service)
                           (gnu build jami-service)
                           (gnu system file-systems)
                           ,@%default-modules))
@@ -499,26 +522,23 @@ argument, either a registered username or the fingerprint of the account.")
                ;; activation for D-Bus, such as a /etc/machine-id file.
                (requirement '(dbus-system syslogd))
                (start
-                #~(make-forkexec-constructor/container
-                   (list #$dbus-daemon "--session"
-                         "--address=unix:path=/var/run/jami/bus"
-                         "--syslog-only")
-                   #:pid-file "/var/run/jami/pid"
-                   #:mappings
-                   (list (file-system-mapping
-                          (source "/dev/log") ;for syslog
-                          (target source))
-                         (file-system-mapping
-                          (source "/var/run/jami")
-                          (target source)
-                          (writable? #t)))
-                   #:user "jami"
-                   #:group "jami"
-                   #:environment-variables
-                   ;; This is so that the cx.ring.Ring service D-Bus
-                   ;; definition is found by dbus-daemon.
-                   (list (string-append "XDG_DATA_DIRS="
-                                        #$libjami:bin "/share"))))
+                #~(lambda ()
+                    (define pid
+                      (fork+exec-command
+                       (list #$dbus-daemon "--session"
+                             "--address=unix:path=/var/run/jami/bus"
+                             "--syslog-only")
+                       #:environment-variables
+                       ;; This is so that the cx.ring.Ring service D-Bus
+                       ;; definition is found by dbus-daemon.
+                       (list (string-append "XDG_DATA_DIRS="
+                                            #$libjami:bin "/share"))))
+
+                    ;; The PID file contains the "wrong" PID (the one in the
+                    ;; separate PID namespace) so ignore it and return the
+                    ;; value returned by 'fork+exec-command'.
+                    (and (read-pid-file "/var/run/jami/pid")
+                         pid)))
                (stop #~(make-kill-destructor)))
 
               (shepherd-service
