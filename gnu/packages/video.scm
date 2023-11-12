@@ -66,6 +66,7 @@
 ;;; Copyright © 2023 Ott Joon <oj@vern.cc>
 ;;; Copyright © 2023 Dominik Delgado Steuter <dds@disroot.org>
 ;;; Copyright © 2023 Saku Laesvuori <saku@laesvuori.fi>
+;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2683,7 +2684,7 @@ YouTube.com and many more sites.")
 (define-public yt-dlp
   (package/inherit youtube-dl
     (name "yt-dlp")
-    (version "2023.09.24")
+    (version "2023.10.13")
     (source
      (origin
        (method git-fetch)
@@ -2692,7 +2693,7 @@ YouTube.com and many more sites.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15ngsg3cadf2bv700fa1k5az5xpsm0wqr0cixbz8fcbhwdflfq6f"))))
+        (base32 "1cy8cpqwq6yfsbrnln3qqp9lsjckn20m6w7b890ha7jahyir5m1n"))))
     (arguments
      (substitute-keyword-arguments (package-arguments youtube-dl)
        ((#:tests? _) (not (%current-target-system)))
