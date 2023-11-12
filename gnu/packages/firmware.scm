@@ -1018,36 +1018,39 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
       (supported-systems %supported-systems))))
 
 (define-public ovmf-arm
-  (package
-    (inherit ovmf)
-    (name "ovmf-arm")
-    (native-inputs
-     (append (package-native-inputs ovmf)
-             (if (not (string-prefix? "armhf" (%current-system)))
-                 `(("cross-gcc" ,(cross-gcc "arm-linux-gnueabihf"))
-                   ("cross-binutils" ,(cross-binutils "arm-linux-gnueabihf")))
-                 '())))
-    (arguments
-     (substitute-keyword-arguments (package-arguments ovmf)
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            #$@(if (string-prefix? "armhf" (%current-system))
-                   '()
-                   '((add-before 'configure 'set-env
-                       (lambda _
-                         (setenv "GCC49_ARM_PREFIX" "arm-linux-gnueabihf-")))))
-            (replace 'build
-              (lambda _
-                (invoke "build" "-a" "ARM" "-t" "GCC49"
-                        "-p" "ArmVirtPkg/ArmVirtQemu.dsc")))
-            (delete 'build-x64)
-            (replace 'install
-              (lambda _
-                (let ((fmw (string-append #$output "/share/firmware")))
-                  (mkdir-p fmw)
-                  (copy-file "Build/ArmVirtQemu-ARM/RELEASE_GCC49/FV/QEMU_EFI.fd"
-                             (string-append fmw "/ovmf_arm.bin")))))))))
-    (supported-systems %supported-systems)))
+  (let ((toolchain-ver "GCC5"))
+    (package
+      (inherit ovmf)
+      (name "ovmf-arm")
+      (native-inputs
+       (append (package-native-inputs ovmf)
+               (if (not (string-prefix? "armhf" (%current-system)))
+                   `(("cross-gcc" ,(cross-gcc "arm-linux-gnueabihf"))
+                     ("cross-binutils" ,(cross-binutils "arm-linux-gnueabihf")))
+                   '())))
+      (arguments
+       (substitute-keyword-arguments (package-arguments ovmf)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              #$@(if (string-prefix? "armhf" (%current-system))
+                     '()
+                     #~((add-before 'configure 'set-env
+                          (lambda _
+                            (setenv (string-append #$toolchain-ver "_ARM_PREFIX")
+                                    "arm-linux-gnueabihf-")))))
+              (replace 'build
+                (lambda _
+                  (invoke "build" "-a" "ARM" "-t" #$toolchain-ver
+                          "-p" "ArmVirtPkg/ArmVirtQemu.dsc")))
+              (delete 'build-x64)
+              (replace 'install
+                (lambda _
+                  (let ((fmw (string-append #$output "/share/firmware")))
+                    (mkdir-p fmw)
+                    (copy-file (string-append "Build/ArmVirtQemu-ARM/RELEASE_"
+                                              #$toolchain-ver "/FV/QEMU_EFI.fd")
+                               (string-append fmw "/ovmf_arm.bin")))))))))
+      (supported-systems %supported-systems))))
 
 (define* (make-arm-trusted-firmware platform
                                     #:key (triplet "aarch64-linux-gnu"))
