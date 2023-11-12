@@ -16771,11 +16771,12 @@ basic syntax highlighting and indentation.")
           (base32 "19lncwxzxyi73cn7439rk8cvgcj6l4x1kj6fykmw3b18s7rj555f"))))
       (build-system emacs-build-system)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'delete-screenshots
-             (lambda _
-               (delete-file-recursively "screenshots"))))))
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'delete-screenshots
+              (lambda _
+                (delete-file-recursively "screenshots"))))))
       (home-page "https://github.com/rails-to-cosmos/danneskjold-theme")
       (synopsis "High-contrast Emacs theme")
       (description
