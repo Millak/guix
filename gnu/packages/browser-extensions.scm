@@ -21,6 +21,7 @@
 (define-module (gnu packages browser-extensions)
   #:use-module (guix gexp)
   #:use-module (guix packages)
+  #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
@@ -251,3 +252,28 @@ with the @uref{https://keepassxc.org, KeePassXC} password manager.")
 
 (define-public keepassxc-browser/icecat
   (make-icecat-extension keepassxc-browser))
+
+(define noscript
+  (package
+    (name "noscript")
+    (version "11.4.29")
+    (source (origin
+              (method url-fetch/zipbomb)
+              (uri (string-append
+                    "https://noscript.net/download/releases/noscript-" version
+                    ".xpi"))
+              (sha256
+               (base32
+                "1k94zvv2ypmhc29f5d2zrvigwh1xgi5kwm1kqfxarwjyn108if85"))))
+    (build-system copy-build-system)
+    (properties '((addon-id . "{73a6fe31-595d-460b-a920-fcc0f8843232}")))
+    (arguments
+     `(#:install-plan '(("." ,(assq-ref properties 'addon-id)))))
+    (home-page "https://noscript.net")
+    (synopsis "Software providing extra protection for various browsers.")
+    (description "The NoScript Security Suite is a software providing extra
+protection for web browsers.")
+    (license license:gpl3+)))
+
+(define-public noscript/icecat
+  (make-icecat-extension noscript))
