@@ -393,6 +393,30 @@
                  (list item))
          (null? (lowered-gexp-inputs lexp)))))
 
+(test-equal "gexp references non-existent output"
+  "no-default-output"
+  (guard (c ((derivation-missing-output-error? c)
+             (derivation-name (derivation-error-derivation c))))
+    (let* ((obj  (computed-file "no-default-output"
+                                #~(mkdir #$output:bar)))
+           (exp  #~(symlink #$obj #$output))
+           (drv  (run-with-store %store (lower-gexp exp))))
+      (pk 'oops! drv #f))))
+
+(test-assert "gexp-input, as first-class input"
+  ;; Insert a <gexp-input> record in a gexp as a way to specify which output
+  ;; of OBJ should be used.
+  (let* ((obj  (computed-file "foo" #~(mkdir #$output:bar)))
+         (exp  #~(list #$(gexp-input obj "bar")))
+         (drv  (run-with-store %store (lower-object obj)))
+         (item (derivation->output-path drv "bar"))
+         (lexp (run-with-store %store (lower-gexp exp))))
+    (and (match (lowered-gexp-inputs lexp)
+           ((input)
+            (eq? (derivation-input-derivation input) drv)))
+         (equal? (lowered-gexp-sexp lexp)
+                 `(list ,item)))))
+
 (test-assertm "with-parameters for %current-system"
   (mlet* %store-monad ((system -> (match (%current-system)
                                     ("aarch64-linux" "x86_64-linux")

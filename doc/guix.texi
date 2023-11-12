@@ -12197,6 +12197,11 @@ This is like the form above, but referring explicitly to the
 @var{output} of @var{obj}---this is useful when @var{obj} produces
 multiple outputs (@pxref{Packages with Multiple Outputs}).
 
+Sometimes a gexp unconditionally refers to the @code{"out"} output, but
+the user of that gexp would still like to insert a reference to another
+output.  The @code{gexp-input} procedure aims to address that.
+@xref{gexp-input}.
+
 @item #+@var{obj}
 @itemx #+@var{obj}:output
 @itemx (ungexp-native @var{obj})
@@ -12590,6 +12595,39 @@ The example above returns an object that corresponds to the i686 build
 of Coreutils, regardless of the current value of @code{%current-system}.
 @end defmac
 
+@anchor{gexp-input}
+@deffn {Procedure} gexp-input @var{obj} [@var{output}] [#:native? #f]
+Return a @dfn{gexp input} record for the given @var{output} of file-like
+object @var{obj}, with @code{#:native?} determining whether this is a
+native reference (as with @code{ungexp-native}) or not.
+
+This procedure is helpful when you want to pass a reference to a
+specific output of an object to some procedure that may not know about
+that output.  For example, assume you have this procedure, which takes
+one file-like object:
+
+@lisp
+(define (make-symlink target)
+  (computed-file "the-symlink"
+                 #~(symlink #$target #$output)))
+@end lisp
+
+Here @code{make-symlink} can only ever refer to the default output of
+@var{target}---the @code{"out"} output (@pxref{Packages with Multiple
+Outputs}).  To have it refer to, say, the @code{"lib"} output of the
+@code{hwloc} package, you can call it like so:
+
+@lisp
+(make-symlink (gexp-input hwloc "lib"))
+@end lisp
+
+You can also compose it like any other file-like object:
+
+@lisp
+(make-symlink
+  (file-append (gexp-input hwloc "lib") "/lib/libhwloc.so"))
+@end lisp
+@end deffn
 
 Of course, in addition to gexps embedded in ``host'' code, there are
 also modules containing build tools.  To make it clear that they are
