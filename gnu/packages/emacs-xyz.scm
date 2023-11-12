@@ -16784,11 +16784,10 @@ basic syntax highlighting and indentation.")
       (license license:gpl3+))))
 
 (define-public emacs-dream-theme
-  (let* ((commit "107a11d74365046f28a1802a2bdb5e69e4a7488b")
-         (revision "1"))
+  (let ((commit "62caa37d5f1ddb1187ee0b9e7dd9833679cc5eb5")) ;version bump
     (package
       (name "emacs-dream-theme")
-      (version (string-append "0.0.0-" revision "." (string-take commit 7)))
+      (version "1.0")
       (source
        (origin
          (method git-fetch)
@@ -16798,7 +16797,7 @@ basic syntax highlighting and indentation.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0za18nfkq4xqm35k6006vsixcbmvmxqgma4iw5sw37h8vmcsdylk"))))
+           "13ziwd6cw8s8gyzbklxlvpvbx5dbchvvhlxq9pi8vn3zlzpprd6h"))))
       (build-system emacs-build-system)
       (home-page "https://github.com/djcb/dream-theme")
       (synopsis "High-contrast Emacs theme")
