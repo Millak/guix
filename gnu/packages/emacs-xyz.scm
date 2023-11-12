@@ -16756,11 +16756,10 @@ basic syntax highlighting and indentation.")
     (license license:gpl3+)))
 
 (define-public emacs-danneskjold-theme
-  (let* ((commit "e4d1f2c76245fe9d0d07133a841e789d139df28d")
-         (revision "2"))
+  (let ((commit "b3335e44f468c019c95a8210ce1ed9fe23c65735")) ;version bump
     (package
       (name "emacs-danneskjold-theme")
-      (version (git-version "0.0.0" revision commit))
+      (version "20231110.0")
       (source
        (origin
          (method git-fetch)
@@ -16769,7 +16768,7 @@ basic syntax highlighting and indentation.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1ii3cgf4hlclwaraisxksv98mmhajx517i60p1cgd7vapznn2b6v"))))
+          (base32 "19lncwxzxyi73cn7439rk8cvgcj6l4x1kj6fykmw3b18s7rj555f"))))
       (build-system emacs-build-system)
       (arguments
        `(#:phases
