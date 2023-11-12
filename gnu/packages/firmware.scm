@@ -872,21 +872,21 @@ Executables included are:
     (license license:bsd-2)))
 
 (define-public ovmf
-  (let ((commit "13a50a6fe1dcfa6600c38456ee24e0f9ecf51b5f")
-        (revision "1"))
+  (let ((toolchain-ver "GCC5"))
     (package
       (name "ovmf")
-      (version (git-version "20170116" revision commit))
+      (version "202308")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                       ;; OVMF is part of the edk2 source tree.
                       (url "https://github.com/tianocore/edk2")
-                      (commit commit)))
+                      (recursive? #t) ;edk2 now uses a lot of submodules
+                      (commit (string-append "edk2-stable" version))))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1gy2332kdqk8bjzpcsripx10896rbvgl0ic7r344kmpiwdgm948b"))))
+                  "04rnfnaqr2c7ayplj7ib730zp1snw157zx5rmykz5hz1zz2vb20j"))))
       (build-system gnu-build-system)
       (arguments
        (list
@@ -916,41 +916,58 @@ Executables included are:
                        (bin (string-append tools "/BinWrappers/PosixLike")))
                   (setenv "WORKSPACE" cwd)
                   (setenv "EDK_TOOLS_PATH" tools)
+                  (setenv "PYTHON3_ENABLE" "TRUE")
+                  (setenv "PYTHON_COMMAND" "python3")
                   (setenv "PATH" (string-append (getenv "PATH") ":" bin))
                   (invoke "bash" "edksetup.sh")
+                  (substitute* "Conf/tools_def.txt"
+                    ;; Guix gcc is compiled without pie
+                    ;; The -no-pie flag causes the Ia32 build to fail
+                    (("-no-pie") ""))
                   (substitute* "Conf/target.txt"
                     (("^TARGET[ ]*=.*$") "TARGET = RELEASE\n")
+                    (("^TOOL_CHAIN_TAG[ ]*=.*$")
+                     (string-append "TOOL_CHAIN_TAG = " #$toolchain-ver "\n"))
+                    (("^TARGET_ARCH[ ]*=.*$")
+                     (string-append "TARGET_ARCH = IA32"
+                                    #$@(if (string=? "x86_64-linux" (%current-system))
+                                         '(", X64")
+                                         '())
+                                    "\n"))
                     (("^MAX_CONCURRENT_THREAD_NUMBER[ ]*=.*$")
                      (format #f "MAX_CONCURRENT_THREAD_NUMBER = ~a~%"
                              (number->string (parallel-job-count)))))
                   ;; Build build support.
-                  (setenv "BUILD_CC" "gcc")
+                  (setenv "CC" "gcc")
                   (invoke "make" "-C" tools))))
             (replace 'build
               (lambda _
-                (invoke "build" "-a" "IA32" "-t" "GCC49"
+                (invoke "build" "-a" "IA32" "-t" #$toolchain-ver
                         "-p" "OvmfPkg/OvmfPkgIa32.dsc")))
             #$@(if (string=? "x86_64-linux" (%current-system))
                    #~((add-after 'build 'build-x64
                         (lambda _
-                          (invoke "build" "-a" "X64" "-t" "GCC49"
+                          (invoke "build" "-a" "X64" "-t" #$toolchain-ver
                                   "-p" "OvmfPkg/OvmfPkgX64.dsc"))))
                    #~())
             (replace 'install
               (lambda _
                 (let ((fmw (string-append #$output "/share/firmware")))
                   (mkdir-p fmw)
-                  (copy-file "Build/OvmfIa32/RELEASE_GCC49/FV/OVMF.fd"
+                  (copy-file (string-append "Build/OvmfIa32/RELEASE_"
+                                            #$toolchain-ver "/FV/OVMF.fd")
                              (string-append fmw "/ovmf_ia32.bin"))
                   #$@(if (string=? "x86_64-linux" (%current-system))
-                         '((copy-file "Build/OvmfX64/RELEASE_GCC49/FV/OVMF.fd"
-                                      (string-append fmw "/ovmf_x64.bin")))
-                         '())))))))
+                       #~((copy-file (string-append "Build/OvmfX64/RELEASE_"
+                                                    #$toolchain-ver "/FV/OVMF.fd")
+                                     (string-append fmw "/ovmf_x64.bin")))
+                       #~())))))))
       (native-inputs
        `(("acpica" ,acpica)
          ("gcc@5" ,gcc-5)
          ("nasm" ,nasm)
-         ("python-2" ,python-2)
+         ("perl" ,perl)
+         ("python-3" ,python-3)
          ("util-linux" ,util-linux "lib")))
       (supported-systems '("x86_64-linux" "i686-linux"))
       (home-page "https://www.tianocore.org")
