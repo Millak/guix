@@ -184,6 +184,15 @@ jami account used as part of the jami configuration are left *unspecified*."
                 %load-path)
              marionette))
 
+          (test-assert "dbus session is up"
+            (and (marionette-eval
+                  '(begin
+                     (use-modules (gnu services herd))
+                     (wait-for-service 'jami-dbus-session))
+                  marionette)
+                 (wait-for-unix-socket "/var/run/jami/bus"
+                                       marionette)))
+
           (test-assert "service is running"
             (marionette-eval
              '(begin
