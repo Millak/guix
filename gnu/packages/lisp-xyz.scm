@@ -3607,8 +3607,8 @@ writing code that contains string literals that contain code themselves.")
   (sbcl-package->ecl-package sbcl-pythonic-string-reader))
 
 (define-public sbcl-slime-swank
-  (let ((commit "0cc2e736112a0bc2a048ef6efd11dd67e3fbf7ad")
-        (revision "0"))
+  (let ((commit "735258a26bb97e85d25f39e4bef83c1f80c12f5d")
+        (revision "1"))
     (package
       (name "sbcl-slime-swank")
       (version (git-version "2.28" revision commit))
@@ -3620,7 +3620,7 @@ writing code that contains string literals that contain code themselves.")
                (url "https://github.com/slime/slime/")
                (commit commit)))
          (sha256
-          (base32 "0iq9r4007rrnabj290y79i926x2m4j20j6b0x701pkywz926sn02"))
+          (base32 "0prskgzfqjmn8sc7p9nklnd0n1plwcvh40slgh23km31raplmzk7"))
          (modules '((guix build utils)))
          (snippet
           ;; The doc folder drags `gawk' into the closure.  Doc is already
