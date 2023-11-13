@@ -934,6 +934,11 @@ When TARGET is true, use it as the cross-compilation target triplet."
 corresponding <derivation-input> or store item."
   (define tuple->gexp-input
     (match-lambda
+      (((? gexp-input? input))
+       ;; This case lets users specify the output of interest more
+       ;; conveniently, for instance by passing (gexp-input hwloc "lib") to
+       ;; the 'references-file' procedure.
+       input)
       ((thing)
        (%gexp-input thing "out" (not target)))
       ((thing output)
@@ -1152,10 +1157,9 @@ applicable.
 When REFERENCES-GRAPHS is true, it must be a list of tuples of one of the
 following forms:
 
-  (FILE-NAME PACKAGE)
-  (FILE-NAME PACKAGE OUTPUT)
-  (FILE-NAME DERIVATION)
-  (FILE-NAME DERIVATION OUTPUT)
+  (FILE-NAME OBJ)
+  (FILE-NAME OBJ OUTPUT)
+  (FILE-NAME GEXP-INPUT)
   (FILE-NAME STORE-ITEM)
 
 The right-hand-side of each element of REFERENCES-GRAPHS is automatically made

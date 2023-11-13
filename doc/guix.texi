@@ -12314,10 +12314,9 @@ When @var{references-graphs} is true, it must be a list of tuples of one of the
 following forms:
 
 @example
-(@var{file-name} @var{package})
-(@var{file-name} @var{package} @var{output})
-(@var{file-name} @var{derivation})
-(@var{file-name} @var{derivation} @var{output})
+(@var{file-name} @var{obj})
+(@var{file-name} @var{obj} @var{output})
+(@var{file-name} @var{gexp-input})
 (@var{file-name} @var{store-item})
 @end example
 

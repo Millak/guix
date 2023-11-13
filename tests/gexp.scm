@@ -1652,6 +1652,36 @@ importing.* \\(guix config\\) from the host"
                            read)
                          refs)))))))
 
+(test-assertm "references-file, non-default output"
+  (let* ((exp      #~(begin
+                       (mkdir #$output)
+                       (symlink #$%bootstrap-guile #$output:extra)))
+         (computed (computed-file "computed" exp
+                                  #:guile %bootstrap-guile))
+         (refs1    (references-file computed
+                                    #:guile %bootstrap-guile))
+         ;; Wrap COMPUTE in 'gexp-input' to get the "extra" output.
+         (refs2    (references-file (gexp-input computed "extra")
+                                    #:guile %bootstrap-guile)))
+    (mlet* %store-monad ((drv0 (lower-object %bootstrap-guile))
+                         (drv1 (lower-object computed))
+                         (drv2 (lower-object refs2))
+                         (drv3 (lower-object refs1)))
+      (mbegin %store-monad
+        (built-derivations (list drv2 drv3))
+        (mlet %store-monad ((refs ((store-lift requisites)
+                                   (list (derivation->output-path
+                                          drv1 "extra")))))
+          (return
+           (and (lset= string=?
+                       (call-with-input-file (derivation->output-path drv2)
+                         read)
+                       refs)
+                (lset= string=?
+                       (call-with-input-file (derivation->output-path drv3)
+                         read)
+                       (list (derivation->output-path drv1))))))))))
+
 (test-assert "lower-object & gexp-input-error?"
   (guard (c ((gexp-input-error? c)
              (gexp-error-invalid-input c)))
