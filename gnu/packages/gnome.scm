@@ -11409,7 +11409,7 @@ photo-booth-like software, such as Cheese.")
 (define-public cheese
   (package
     (name "cheese")
-    (version "43.0")
+    (version "44.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -11417,7 +11417,7 @@ photo-booth-like software, such as Cheese.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "02vzcvk2s6cwvdw6v6qmlq3znamy6zwv7l6nlbqjfwrj7i54qmvl"))))
+                "13pnz35yvwvmk1iyhcp1a94yal4rh610rxmsp3rdsm4yr728a8az"))))
     (arguments
      (list #:glib-or-gtk? #t
            #:phases
@@ -11425,8 +11425,9 @@ photo-booth-like software, such as Cheese.")
                (add-after 'unpack 'skip-gtk-update-icon-cache
                  (lambda _
                    ;; Don't create 'icon-theme.cache'.
-                   (substitute* "meson_post_install.py"
-                     (("gtk-update-icon-cache") (which "true")))))
+                   (substitute* "meson.build"
+                     (("gtk_update_icon_cache: true")
+                      "gtk_update_icon_cache: false"))))
                (add-after 'install 'wrap-cheese
                  (lambda* (#:key inputs outputs #:allow-other-keys)
                    (wrap-program (search-input-file outputs "bin/cheese")
