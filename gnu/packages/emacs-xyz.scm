@@ -8360,36 +8360,36 @@ for Flow files.")
         (base32 "0vsf0zsqqfaarwq1k34kg5sqgywzr6dklqv093imm9q6ys18p8c4"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:include (cons "\\.py$" %default-include)
-       #:exclude '("^test-profile.el$")
-       #:emacs ,emacs                   ;need libxml support
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'specify-python-location
-           ;; Hard-code python3 executable location in the library.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((python3 (search-input-file inputs "/bin/python3")))
-               (substitute* '("flycheck-grammalecte.el" "grammalecte.el")
-                 (("\"python3") (string-append "\"" python3)))
-               (substitute* '("conjugueur.py" "flycheck_grammalecte.py")
-                 (("/usr/bin/env python3?") python3)))))
-         (add-after 'unpack 'specify-grammalecte-location
-           ;; Use our own Grammalecte.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (make-file-writable "grammalecte.el")
-             (emacs-substitute-variables "grammalecte.el"
-               ("grammalecte-python-package-directory"
-                (search-input-directory
-                 inputs
-                 (string-append "lib/python"
-                                ,(version-major+minor (package-version python))
-                                "/site-packages/grammalecte"))))))
-         (add-after 'unpack 'do-not-phone-home
-           ;; Do not check for Grammalecte updates, ever.
-           (lambda _
-             (make-file-writable "grammalecte.el")
-             (emacs-substitute-variables "grammalecte.el"
-               ("grammalecte-check-upstream-version-delay" 0)))))))
+     (list
+      #:include #~(cons "\\.py$" %default-include)
+      #:emacs emacs-no-x                ;need libxml support
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'specify-python-location
+            ;; Hard-code python3 executable location in the library.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((python3 (search-input-file inputs "/bin/python3")))
+                (substitute* '("flycheck-grammalecte.el" "grammalecte.el")
+                  (("\"python3") (string-append "\"" python3)))
+                (substitute* '("conjugueur.py" "flycheck_grammalecte.py")
+                  (("/usr/bin/env python3?") python3)))))
+          (add-after 'unpack 'specify-grammalecte-location
+            ;; Use our own Grammalecte.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (make-file-writable "grammalecte.el")
+              (emacs-substitute-variables "grammalecte.el"
+                ("grammalecte-python-package-directory"
+                 (search-input-directory
+                  inputs
+                  (string-append "lib/python"
+                                 #$(version-major+minor (package-version python))
+                                 "/site-packages/grammalecte"))))))
+          (add-after 'unpack 'do-not-phone-home
+            ;; Do not check for Grammalecte updates, ever.
+            (lambda _
+              (make-file-writable "grammalecte.el")
+              (emacs-substitute-variables "grammalecte.el"
+                ("grammalecte-check-upstream-version-delay" 0)))))))
     (inputs
      (list grammalecte python))
     (propagated-inputs
