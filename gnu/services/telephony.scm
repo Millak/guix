@@ -261,9 +261,37 @@ consistent state."))
 (define (jami-configuration->command-line-arguments config)
   "Derive the command line arguments to used to launch the Jami daemon from
 CONFIG, a <jami-configuration> object."
+  (define (wrapper libjami)
+    (least-authority-wrapper
+     ;; XXX: 'gexp-input' is needed as the outer layer so that
+     ;; 'references-file' picks the right output of LIBJAMI.
+     (gexp-input (file-append (gexp-input libjami "bin") "/libexec/jamid")
+                 "bin")
+     #:mappings
+     (list (file-system-mapping
+            (source "/dev/log") ;for syslog
+            (target source))
+           (file-system-mapping
+            (source "/var/lib/jami")
+            (target source)
+            (writable? #t))
+           (file-system-mapping
+            (source "/var/run/jami")
+            (target source)
+            (writable? #t))
+           ;; Expose TLS certificates for GnuTLS.
+           (file-system-mapping
+            (source (file-append nss-certs "/etc/ssl/certs"))
+            (target "/etc/ssl/certs")))
+     #:preserved-environment-variables
+     '("DBUS_SESSION_BUS_ADDRESS" "SSL_CERT_DIR")
+     #:user "jami"
+     #:group "jami"
+     #:namespaces (fold delq %namespaces '(net user))))
+
   (match-record config <jami-configuration>
     (libjami dbus enable-logging? debug? auto-answer?)
-    `(,#~(string-append #$libjami:bin "/libexec/jamid")
+    `(,(wrapper libjami)
       "--persistent"                    ;stay alive after client quits
       ,@(if enable-logging?
             '()                         ;logs go to syslog by default
@@ -334,7 +362,6 @@ CONFIG, a <jami-configuration> object."
       (with-imported-modules (source-module-closure
                               '((gnu build dbus-service)
                                 (gnu build jami-service)
-                                (gnu build shepherd)
                                 (gnu system file-systems)))
 
         (define list-accounts-action
@@ -562,7 +589,6 @@ argument, either a registered username or the fingerprint of the account.")
                           (srfi srfi-26)
                           (gnu build dbus-service)
                           (gnu build jami-service)
-                          (gnu build shepherd)
                           (gnu system file-systems)
                           ,@%default-modules))
                (start
@@ -608,32 +634,14 @@ argument, either a registered username or the fingerprint of the account.")
 
                     ;; Start the daemon.
                     (define daemon-pid
-                      ((make-forkexec-constructor/container
-                        (list #$@(jami-configuration->command-line-arguments
-                                  config))
-                        #:mappings
-                        (list (file-system-mapping
-                               (source "/dev/log") ;for syslog
-                               (target source))
-                              (file-system-mapping
-                               (source "/var/lib/jami")
-                               (target source)
-                               (writable? #t))
-                              (file-system-mapping
-                               (source "/var/run/jami")
-                               (target source)
-                               (writable? #t))
-                              ;; Expose TLS certificates for GnuTLS.
-                              (file-system-mapping
-                               (source #$(file-append nss-certs "/etc/ssl/certs"))
-                               (target "/etc/ssl/certs")))
-                        #:user "jami"
-                        #:group "jami"
-                        #:environment-variables
-                        (list (string-append "DBUS_SESSION_BUS_ADDRESS="
-                                             "unix:path=/var/run/jami/bus")
-                              ;; Expose TLS certificates for OpenSSL.
-                              "SSL_CERT_DIR=/etc/ssl/certs"))))
+                      (fork+exec-command
+                       (list #$@(jami-configuration->command-line-arguments
+                                 config))
+                       #:environment-variables
+                       (list (string-append "DBUS_SESSION_BUS_ADDRESS="
+                                            "unix:path=/var/run/jami/bus")
+                             ;; Expose TLS certificates for OpenSSL.
+                             "SSL_CERT_DIR=/etc/ssl/certs")))
 
                     (setenv "DBUS_SESSION_BUS_ADDRESS"
                             "unix:path=/var/run/jami/bus")
