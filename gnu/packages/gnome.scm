@@ -10643,7 +10643,7 @@ functionality and behavior.")
 (define-public folks
   (package
     (name "folks")
-    (version "0.15.5")
+    (version "0.15.6")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -10652,7 +10652,7 @@ functionality and behavior.")
                     "folks-" version ".tar.xz"))
               (sha256
                (base32
-                "11lhfn6b7gml4ckj2dkm6g889j21wpvj90srwjp85k9hcf4qmzqg"))))
+                "0j02hi6j7rn7qhfmb3abryyad020rdkh59n7w6dwwa9zal666rn8"))))
     (build-system meson-build-system)
     (arguments
      '(#:phases
@@ -10660,8 +10660,9 @@ functionality and behavior.")
          (add-after 'unpack 'skip-gtk-update-icon-cache
            ;; Don't create 'icon-theme.cache'.
            (lambda _
-             (substitute* "meson_post_install.py"
-               (("gtk-update-icon-cache") "true")))))))
+             (substitute* "meson.build"
+               (("gtk_update_icon_cache: true")
+                "gtk_update_icon_cache: false")))))))
     (inputs
      (list bdb
            dbus-glib
