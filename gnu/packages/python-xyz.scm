@@ -145,6 +145,7 @@
 ;;; Copyright © c4droid <c4droid@foxmail.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023 Attila Lendvai <attila@lendvai.name>
+;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2954,6 +2955,40 @@ controller area network (CAN) support for Python developers; providing common
 abstractions to different hardware devices, and a suite of utilities for
 sending and receiving messages on a CAN bus.")
     (license license:lgpl3+)))
+
+(define-public python-canmatrix
+  (package
+    (name "python-canmatrix")
+    (version "1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "canmatrix" version))
+       (sha256
+        (base32 "046dzmggfm6h0fvfvwrblvih0blhc70ma0pqxzry3cphc08jvsrg"))
+       ;; The test suite uder ./test is a legacy test suite. The new test
+       ;; suite is defined under src/canmatrix/tests.
+       (modules '((guix build utils)))
+       (snippet '(delete-file-recursively "test"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "pytest")))))))
+    (propagated-inputs (list python-attrs python-click python-future
+                             python-six))
+    (native-inputs (list python-lxml python-pytest python-xlrd python-xlwt))
+    (home-page "https://github.com/ebroecker/canmatrix")
+    (synopsis "@acronym{CAN, Controller Area Network} matrices in Python")
+    (description
+     "This package implements a @acronym{CAN, Controller Area Network} matrix
+object in Python which describes the CAN-communication and its needed objects
+such as board units, frames, signals, and values.  It also includes two
+command-line tools (@command{canconvert} and @command{cancompare}) for
+converting and comparing CAN databases.")
+    (license license:bsd-2)))
 
 (define-public python-canopen
   (package
