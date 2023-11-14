@@ -2390,7 +2390,7 @@ the font would look under various sizes.")
 (define-public gcr
   (package
     (name "gcr")
-    (version "4.0.0")
+    (version "4.1.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -2398,7 +2398,7 @@ the font would look under various sizes.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0z7cviri25qy2v042hw6x731bj1azpx8plrd7ssbmrqf9y95an64"))))
+                "10x3yg0vp22lpib4hfivr7140wn6iv0qha3f46wikaab50lsvslw"))))
     (build-system meson-build-system)
     (arguments
      (list
