@@ -4432,6 +4432,9 @@ late.")
                      " *lmonpl = '\\0'"))
                   #t))))
     (build-system gnu-build-system)
+    (arguments
+     ;; GCC 11 defaults to c++17 but this package needs something older.
+     (list #:configure-flags #~'("CXXFLAGS=-std=c++14 -O2 -g")))
     (inputs
      (list openmpi
            munge
@@ -4439,7 +4442,7 @@ late.")
            libelf
            libgcrypt
            libgpg-error))
-    (synopsis "Infrastructue for large scale tool daemon launching")
+    (synopsis "Infrastructure for large-scale tool daemon launching")
     (description
      "LaunchMON is a software infrastructure that enables HPC run-time
 tools to co-locate tool daemons with a parallel job.  Its API allows a
