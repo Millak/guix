@@ -7135,7 +7135,7 @@ almost all of them.")
 (define-public epiphany
   (package
     (name "epiphany")
-    (version "42.5")
+    (version "44.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/epiphany/"
@@ -7143,7 +7143,7 @@ almost all of them.")
                                   "epiphany-" version ".tar.xz"))
               (sha256
                (base32
-                "0mln4iym0fqkri959650cccdhq3r4d4kfn8yld0vvdmzskmak4a6"))))
+                "1srdbn2rls4c0dvrjk0djfmxxnrd012jbji8aavslgkf8cs5mya4"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -7153,8 +7153,9 @@ almost all of them.")
           (add-after 'unpack 'skip-gtk-update-icon-cache
             ;; Don't create 'icon-theme.cache'.
             (lambda _
-              (substitute* "post_install.py"
-                (("gtk-update-icon-cache") "true"))))
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false"))))
           (add-after 'unpack 'disable-failing-tests
             (lambda _
               (substitute* "tests/meson.build"
@@ -7162,17 +7163,42 @@ almost all of them.")
                 ;; supports overriding the ftp schema web_app_utils fails due
                 ;; to missing network access.
                 (("(embed_shell|web_app_utils)_test,")
-                 "find_program('sh'), args: ['-c', 'exit 77'],"))))
-          (add-before 'check 'pre-check
-            (lambda _
-              ;; Tests require a running X server.
-              (system "Xvfb :1 &")
-              (setenv "DISPLAY" ":1"))))
+                 "find_program('sh'), args: ['-c', 'exit 77'],")
+                ;; web_view_test partially fails, because it can’t run bwrap.
+                (("web_view_test,")
+                 (string-append
+                  "web_view_test, args: ["
+                  (string-join
+                   (map (lambda (test)
+                          (string-append "'-s', '/embed/ephy-web-view/" test "'"))
+                        '("load_url"
+                          "provisional_load_failure_updates_back_forward_list"
+                          "error-pages-not-stored-in-history"))
+                   ", ")
+                  "],")))))
+          (replace 'check
+            (lambda* (#:key parallel-tests? tests? #:allow-other-keys)
+              (when tests?
+                (setenv "MESON_TESTTHREADS"
+                        (if parallel-tests?
+                            (number->string (parallel-job-count))
+                            "1"))
+                (setenv "XDG_CACHE_HOME" (getcwd))
+                ;; Tests require a running X server.
+                (system "Xvfb :1 &")
+                (setenv "DISPLAY" ":1")
+                (invoke "dbus-run-session" "--"
+                        "meson" "test" "--print-errorlogs" "-t" "0"))))
+         (add-after 'install 'gst-wrap
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((out             (assoc-ref outputs "out"))
+                   (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
+               (wrap-program (string-append out "/bin/epiphany")
+                 `("GST_PLUGIN_SYSTEM_PATH" ":" suffix (,gst-plugin-path)))))))
       #:configure-flags
       ;; Otherwise, the RUNPATH will lack the final 'epiphany' path component.
       #~(list (string-append "-Dc_link_args=-Wl,-rpath="
-                             #$output "/lib/epiphany")
-              "-Dsoup2=disabled")))     ;use libsoup 3
+                             #$output "/lib/epiphany"))))
     (propagated-inputs (list dconf))
     (native-inputs
      (list desktop-file-utils           ; for update-desktop-database
@@ -7184,15 +7210,18 @@ almost all of them.")
            xorg-server-for-tests))
     (inputs
      (list avahi
-           gcr-3
+           bash-minimal                 ; for wrap-program
+           gcr
            glib-networking
            gnome-desktop
            gsettings-desktop-schemas
+           gst-plugins-base
+           gst-plugins-good
+           gstreamer
            iso-codes
            json-glib
+           libadwaita
            libarchive
-           libdazzle
-           libhandy
            libnotify
            libportal
            (librsvg-for-system)         ; for loading SVG files
@@ -7201,7 +7230,7 @@ almost all of them.")
            libxslt
            nettle                       ; for hogweed
            sqlite
-           webkitgtk-for-gtk3))
+           webkitgtk))
     (home-page "https://wiki.gnome.org/Apps/Web")
     (synopsis "GNOME web browser")
     (description
