@@ -4469,7 +4469,9 @@ launch daemons into the relevant nodes.")
     (build-system gnu-build-system)
     (arguments '(#:configure-flags '("--enable-sec-launchmon"
                                      "--enable-sec-munge"
-                                     "--enable-sec-none")))
+                                     "--enable-sec-none"
+                                     ;; Fails to build as c++17.
+                                     "CXXFLAGS=-std=c++14 -O2 -g")))
     (inputs
      `(("mpi" ,openmpi)
        ("munge" ,munge)
