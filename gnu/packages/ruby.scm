@@ -34,6 +34,7 @@
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -129,7 +130,13 @@
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
-       #:configure-flags '("--enable-shared") ; dynamic linking
+       #:configure-flags
+       ,(if (%current-target-system)
+            '(list (string-append
+                    "LDFLAGS=-Wl,-rpath="
+                    (assoc-ref %outputs "out") "/lib")
+                   "--enable-shared")
+            ''("--enable-shared")) ; dynamic linking
        #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'replace-bin-sh-and-remove-libffi
@@ -147,6 +154,9 @@
                             "tool/rbinstall.rb")
                (("/bin/sh") (which "sh")))
              #t)))))
+    (native-inputs (if (%current-target-system)
+                       (list this-package)
+                       '()))
     (inputs
      (list readline openssl-1.1 libffi gdbm))
     (propagated-inputs
@@ -177,7 +187,13 @@ a focus on simplicity and productivity.")
          "042xrdk7hsv4072bayz3f8ffqh61i8zlhvck10nfshllq063n877"))))
     (arguments
      `(#:test-target "test"
-       #:configure-flags '("--enable-shared") ; dynamic linking
+       #:configure-flags
+       ,(if (%current-target-system)
+            '(list (string-append
+                    "LDFLAGS=-Wl,-rpath="
+                    (assoc-ref %outputs "out") "/lib")
+                   "--enable-shared")
+            ''("--enable-shared")) ; dynamic linking
        #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'replace-bin-sh-and-remove-libffi
@@ -204,7 +220,10 @@ a focus on simplicity and productivity.")
                      (delete-file "test/ruby/test_io.rb"))))
                '()))))
     (native-inputs
-     (list autoconf))))
+     (append (if (%current-target-system)
+                 (list this-package)
+                 '())
+             (list autoconf)))))
 
 (define ruby-2.7-fixed
   (package

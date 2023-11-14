@@ -18,6 +18,7 @@
 # Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 # Copyright © 2021 Andrew Tropin <andrew@trop.in>
 # Copyright © 2023 Clément Lassieur <clement@lassieur.org>
+# Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
 #
 # This file is part of GNU Guix.
 #
@@ -415,6 +416,10 @@ AUX_FILES =						\
   gnu/packages/aux-files/chromium/master-preferences.json		\
   gnu/packages/aux-files/emacs/guix-emacs.el		\
   gnu/packages/aux-files/guix.vim			\
+  gnu/packages/aux-files/linux-libre/6.6-arm.conf	\
+  gnu/packages/aux-files/linux-libre/6.6-arm64.conf	\
+  gnu/packages/aux-files/linux-libre/6.6-i686.conf	\
+  gnu/packages/aux-files/linux-libre/6.6-x86_64.conf	\
   gnu/packages/aux-files/linux-libre/6.5-arm.conf	\
   gnu/packages/aux-files/linux-libre/6.5-arm64.conf	\
   gnu/packages/aux-files/linux-libre/6.5-i686.conf	\

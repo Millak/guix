@@ -26,6 +26,7 @@
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -139,9 +140,19 @@ as \"x86_64-linux\"."
            (patches (map search-patch patches)))
          (llvm-monorepo (package-version llvm))))
     (build-system cmake-build-system)
-    (native-inputs (package-native-inputs llvm))
+    (native-inputs
+     (if (version>=? version "15")
+         ;; TODO: Remove this when GCC 12 is the default.
+         ;; libfuzzer fails to build with GCC 11
+         (modify-inputs (package-native-inputs llvm)
+           (prepend gcc-12))
+         (package-native-inputs llvm)))
     (inputs
-     (list llvm))
+     (append
+      (list llvm)
+      (if (version>=? version "15")
+          (list libffi)
+          '())))
     (arguments
      `(;; Don't use '-g' during the build to save space.
        #:build-type "Release"
@@ -150,6 +161,11 @@ as \"x86_64-linux\"."
                   (ice-9 match)
                   ,@%cmake-build-system-modules)
        #:phases (modify-phases (@ (guix build cmake-build-system) %standard-phases)
+                  ,@(if hash
+                        '()
+                        '((add-after 'unpack 'change-directory
+                            (lambda _
+                              (chdir "compiler-rt")))))
                   (add-after 'set-paths 'hide-glibc
                     ;; Work around https://issues.guix.info/issue/36882.  We need to
                     ;; remove glibc from CPLUS_INCLUDE_PATH so that the one hardcoded
@@ -342,6 +358,15 @@ until LLVM/Clang 14."
                                 (("@GLIBC_LIBDIR@")
                                  (string-append libc "/lib"))))))
                         #t)))
+                  ,@(if (version>=? version "17")
+                        '((add-after 'unpack 'include-test-runner
+                            (lambda _
+                              (substitute* "CMakeLists.txt"
+                                ((".*llvm_gtest" line)
+                                 (string-append
+                                  "add_subdirectory(${LLVM_THIRD_PARTY_DIR}/uni\
+ttest third-party/unittest)\n" line))))))
+                        '())
                   ;; Awkwardly, multiple phases added after the same phase,
                   ;; e.g. unpack, get applied in the reverse order.  In other
                   ;; words, adding 'change-directory last means it occurs
@@ -574,11 +599,15 @@ output), and Binutils.")
 
 (define %llvm-monorepo-hashes
   '(("14.0.6" . "14f8nlvnmdkp9a9a79wv67jbmafvabczhah8rwnqrgd5g3hfxxxx")
-    ("15.0.7" . "12sggw15sxq1krh1mfk3c1f07h895jlxbcifpwk3pznh4m1rjfy2")))
+    ("15.0.7" . "12sggw15sxq1krh1mfk3c1f07h895jlxbcifpwk3pznh4m1rjfy2")
+    ("16.0.6" . "0jxmapg7shwkl88m4mqgfjv4ziqdmnppxhjz6vz51ycp2x4nmjky")
+    ("17.0.3" . "1fhrnsv87if7kbqmrsxy2r7ykx3gnr9lmbmvkhvycc91ii4ihybx")))
 
 (define %llvm-patches
   '(("14.0.6" . ("clang-14.0-libc-search-path.patch"))
-    ("15.0.7" . ("clang-15.0-libc-search-path.patch"))))
+    ("15.0.7" . ("clang-15.0-libc-search-path.patch"))
+    ("16.0.6" . ("clang-16.0-libc-search-path.patch"))
+    ("17.0.3" . ("clang-17.0-libc-search-path.patch"))))
 
 (define (llvm-monorepo version)
   (origin
@@ -703,34 +732,10 @@ of programming tools as well as libraries with equivalent functionality.")
        ("perl"   ,perl)))))
 
 (define-public clang-runtime-15
-  (let ((template (clang-runtime-from-llvm llvm-15)))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:phases phases '(@ (guix build cmake-build-system) %standard-phases))
-          #~(modify-phases #$phases
-              (add-after 'unpack 'change-directory
-                (lambda _
-                  (chdir "compiler-rt")))))))
-      (native-inputs
-       (modify-inputs (package-native-inputs template)
-         (prepend gcc-12)))             ;libfuzzer fails to build with GCC 11
-      (inputs
-       (modify-inputs (package-inputs template)
-         (append libffi))))))
+  (clang-runtime-from-llvm llvm-15))
 
 (define-public clang-runtime-14
-  (let ((template (clang-runtime-from-llvm llvm-14)))
-    (package
-      (inherit template)
-      (arguments
-       (substitute-keyword-arguments (package-arguments template)
-         ((#:phases phases '(@ (guix build cmake-build-system) %standard-phases))
-          #~(modify-phases #$phases
-              (add-after 'unpack 'change-directory
-                (lambda _
-                  (chdir "compiler-rt"))))))))))
+  (clang-runtime-from-llvm llvm-14))
 
 (define-public clang-15
   (clang-from-llvm
@@ -1458,6 +1463,74 @@ Library.")
                    #:legacy-build-shared-libs? #t
                    #:patches '("clang-3.5-libc-search-path.patch")))
 
+(define-public llvm-16
+  (package
+    (inherit llvm-15)
+    (version "16.0.6")
+    (source (llvm-monorepo version))))
+
+(define-public clang-runtime-16
+  (clang-runtime-from-llvm llvm-16))
+
+(define-public clang-16
+  (clang-from-llvm
+   llvm-16 clang-runtime-16
+   #:tools-extra
+   (origin
+     (method url-fetch)
+     (uri (llvm-uri "clang-tools-extra"
+                    (package-version llvm-16)))
+     (sha256
+      (base32
+       "0cbgffciql06a1i0ybyyqbnkkr4g7x8cxaar5a5v3415vd27hk0p")))))
+
+(define-public libomp-16
+  (package
+    (inherit libomp-15)
+    (version (package-version llvm-16))
+    (source (llvm-monorepo version))
+    (native-inputs
+     (modify-inputs (package-native-inputs libomp-15)
+       (replace "clang" clang-16)
+       (replace "llvm" llvm-16)))))
+
+(define-public clang-toolchain-16
+  (make-clang-toolchain clang-16 libomp-16))
+
+(define-public llvm-17
+  (package
+    (inherit llvm-15)
+    (version "17.0.3")
+    (source (llvm-monorepo version))))
+
+(define-public clang-runtime-17
+  (clang-runtime-from-llvm llvm-17))
+
+(define-public clang-17
+  (clang-from-llvm
+   llvm-17 clang-runtime-17
+   #:tools-extra
+   (origin
+     (method url-fetch)
+     (uri (llvm-uri "clang-tools-extra"
+                    (package-version llvm-17)))
+     (sha256
+      (base32
+       "0an16xdc8rgrdf0dcq3sdg82ajyb00h4bff9n0gm7gqf48ds0da8")))))
+
+(define-public libomp-17
+  (package
+    (inherit libomp-15)
+    (version (package-version llvm-17))
+    (source (llvm-monorepo version))
+    (native-inputs
+     (modify-inputs (package-native-inputs libomp-15)
+       (replace "clang" clang-17)
+       (replace "llvm" llvm-17)))))
+
+(define-public clang-toolchain-17
+  (make-clang-toolchain clang-17 libomp-17))
+
 ;; Default LLVM and Clang version.
 (define-public libomp libomp-13)
 (define-public llvm llvm-13)
@@ -1601,6 +1674,20 @@ components which highly leverage existing libraries in the larger LLVM Project."
                 "077xyh7sij6mhp4dc4kdcmp9whrpz332fa12rwxnzp3wgd5bxrzg"))))
     (inputs (modify-inputs (package-inputs lld)
               (replace "llvm" llvm-11)))))
+
+(define-public lld-16
+  (package
+    (inherit lld-15)
+    (version (package-version llvm-16))
+    (source (llvm-monorepo version))
+    (inputs (list llvm-16))))
+
+(define-public lld-17
+  (package
+    (inherit lld-15)
+    (version (package-version llvm-17))
+    (source (llvm-monorepo version))
+    (inputs (list llvm-17))))
 
 (define-public lld lld-14)
 

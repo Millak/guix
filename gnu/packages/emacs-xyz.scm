@@ -8348,7 +8348,7 @@ for Flow files.")
 (define-public emacs-flycheck-grammalecte
   (package
     (name "emacs-flycheck-grammalecte")
-    (version "2.0")
+    (version "2.4")
     (source
      (origin
        (method git-fetch)
@@ -8357,39 +8357,39 @@ for Flow files.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "040mb9djj4cxpjsjch9i30pi36a2z7grkhnsnfdi5qyh341p4pq0"))))
+        (base32 "0vsf0zsqqfaarwq1k34kg5sqgywzr6dklqv093imm9q6ys18p8c4"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:include (cons "\\.py$" %default-include)
-       #:exclude '("^test-profile.el$")
-       #:emacs ,emacs                   ;need libxml support
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'specify-python-location
-           ;; Hard-code python3 executable location in the library.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((python3 (search-input-file inputs "/bin/python3")))
-               (substitute* '("flycheck-grammalecte.el" "grammalecte.el")
-                 (("\"python3") (string-append "\"" python3)))
-               (substitute* '("conjugueur.py" "flycheck_grammalecte.py")
-                 (("/usr/bin/env python3?") python3)))))
-         (add-after 'unpack 'specify-grammalecte-location
-           ;; Use our own Grammalecte.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (make-file-writable "grammalecte.el")
-             (emacs-substitute-variables "grammalecte.el"
-               ("grammalecte-python-package-directory"
-                (search-input-directory
-                 inputs
-                 (string-append "lib/python"
-                                ,(version-major+minor (package-version python))
-                                "/site-packages/grammalecte"))))))
-         (add-after 'unpack 'do-not-phone-home
-           ;; Do not check for Grammalecte updates, ever.
-           (lambda _
-             (make-file-writable "grammalecte.el")
-             (emacs-substitute-variables "grammalecte.el"
-               ("grammalecte-check-upstream-version-delay" 0)))))))
+     (list
+      #:include #~(cons "\\.py$" %default-include)
+      #:emacs emacs-no-x                ;need libxml support
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'specify-python-location
+            ;; Hard-code python3 executable location in the library.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((python3 (search-input-file inputs "/bin/python3")))
+                (substitute* '("flycheck-grammalecte.el" "grammalecte.el")
+                  (("\"python3") (string-append "\"" python3)))
+                (substitute* '("conjugueur.py" "flycheck_grammalecte.py")
+                  (("/usr/bin/env python3?") python3)))))
+          (add-after 'unpack 'specify-grammalecte-location
+            ;; Use our own Grammalecte.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (make-file-writable "grammalecte.el")
+              (emacs-substitute-variables "grammalecte.el"
+                ("grammalecte-python-package-directory"
+                 (search-input-directory
+                  inputs
+                  (string-append "lib/python"
+                                 #$(version-major+minor (package-version python))
+                                 "/site-packages/grammalecte"))))))
+          (add-after 'unpack 'do-not-phone-home
+            ;; Do not check for Grammalecte updates, ever.
+            (lambda _
+              (make-file-writable "grammalecte.el")
+              (emacs-substitute-variables "grammalecte.el"
+                ("grammalecte-check-upstream-version-delay" 0)))))))
     (inputs
      (list grammalecte python))
     (propagated-inputs
@@ -9017,14 +9017,14 @@ variables, and so on.  The mode also allows you to execute Tup commands.")
 (define-public emacs-compat
   (package
     (name "emacs-compat")
-    (version "29.1.4.3")
+    (version "29.1.4.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://elpa.gnu.org/packages/"
                                   "compat-" version ".tar"))
               (sha256
                (base32
-                "08lg6jph1hqkamf1fhm5ajwy4klh2a2260llr1z7wlbbq52032k5"))))
+                "0710g552b1nznnfx2774gmg6yizs27s0bakqm95nsjrp6kgznbfr"))))
     (build-system emacs-build-system)
     (home-page "https://git.sr.ht/~pkal/compat")
     (synopsis "Emacs Lisp Compatibility Library")
@@ -16416,7 +16416,7 @@ passive voice.")
 (define-public emacs-org
   (package
     (name "emacs-org")
-    (version "9.6.11")
+    (version "9.6.12")
     (source
      (origin
        (method git-fetch)
@@ -16425,7 +16425,7 @@ passive voice.")
              (commit (string-append "release_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "167cnc7iq5i278a7rph2rs9dhxb5anckzjz5d4anbkghzk48qa9x"))))
+        (base32 "1anzvsa7kj2rp419qc5rv8jz50h7np391lcgbxcin727njyc7wpr"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -16756,11 +16756,10 @@ basic syntax highlighting and indentation.")
     (license license:gpl3+)))
 
 (define-public emacs-danneskjold-theme
-  (let* ((commit "e4d1f2c76245fe9d0d07133a841e789d139df28d")
-         (revision "2"))
+  (let ((commit "b3335e44f468c019c95a8210ce1ed9fe23c65735")) ;version bump
     (package
       (name "emacs-danneskjold-theme")
-      (version (git-version "0.0.0" revision commit))
+      (version "20231110.0")
       (source
        (origin
          (method git-fetch)
@@ -16769,14 +16768,15 @@ basic syntax highlighting and indentation.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1ii3cgf4hlclwaraisxksv98mmhajx517i60p1cgd7vapznn2b6v"))))
+          (base32 "19lncwxzxyi73cn7439rk8cvgcj6l4x1kj6fykmw3b18s7rj555f"))))
       (build-system emacs-build-system)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'delete-screenshots
-             (lambda _
-               (delete-file-recursively "screenshots"))))))
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'delete-screenshots
+              (lambda _
+                (delete-file-recursively "screenshots"))))))
       (home-page "https://github.com/rails-to-cosmos/danneskjold-theme")
       (synopsis "High-contrast Emacs theme")
       (description
@@ -16784,11 +16784,10 @@ basic syntax highlighting and indentation.")
       (license license:gpl3+))))
 
 (define-public emacs-dream-theme
-  (let* ((commit "107a11d74365046f28a1802a2bdb5e69e4a7488b")
-         (revision "1"))
+  (let ((commit "62caa37d5f1ddb1187ee0b9e7dd9833679cc5eb5")) ;version bump
     (package
       (name "emacs-dream-theme")
-      (version (string-append "0.0.0-" revision "." (string-take commit 7)))
+      (version "1.0")
       (source
        (origin
          (method git-fetch)
@@ -16798,7 +16797,7 @@ basic syntax highlighting and indentation.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0za18nfkq4xqm35k6006vsixcbmvmxqgma4iw5sw37h8vmcsdylk"))))
+           "13ziwd6cw8s8gyzbklxlvpvbx5dbchvvhlxq9pi8vn3zlzpprd6h"))))
       (build-system emacs-build-system)
       (home-page "https://github.com/djcb/dream-theme")
       (synopsis "High-contrast Emacs theme")
@@ -16810,7 +16809,7 @@ by zenburn, sinburn and similar themes, but slowly diverging from them.")
 (define-public emacs-dracula-theme
   (package
     (name "emacs-dracula-theme")
-    (version "1.8.1")
+    (version "1.8.2")
     (source
      (origin
        (method git-fetch)
@@ -16819,7 +16818,7 @@ by zenburn, sinburn and similar themes, but slowly diverging from them.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mb7pix1wbmg4laba06fvcb8q822584iq0cw8mwf0nzaf1yh12l8"))))
+        (base32 "0hjimiv6a0kaszypndb5l0axhiv0zih728p8wffil6jff9k8pr38"))))
     (build-system emacs-build-system)
     (home-page "https://draculatheme.com/")
     (synopsis "Dark theme for Emacs")
@@ -17023,7 +17022,7 @@ you to deal with multiple log levels.")
 (define-public emacs-denote
   (package
     (name "emacs-denote")
-    (version "2.0.0")
+    (version "2.1.0")
     (source
      (origin
        (method git-fetch)
@@ -17032,7 +17031,7 @@ you to deal with multiple log levels.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nwqghh73lbw6v6yhkalcwwqjs1fyhxqi53d9y2dcfhfq58g1rb9"))))
+        (base32 "1gfjckqh170z8slhm0wdqf0570ywgni7b1wdnifxf5cb69h3izpr"))))
     (build-system emacs-build-system)
     (native-inputs (list texinfo))
     (home-page "https://protesilaos.com/emacs/denote/")
@@ -26830,7 +26829,7 @@ image, rotate it, save modified images, and more.")
 (define-public emacs-package-lint
   (package
     (name "emacs-package-lint")
-    (version "0.20")
+    (version "0.21")
     (source
      (origin
        (method git-fetch)
@@ -26840,7 +26839,7 @@ image, rotate it, save modified images, and more.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1v12l8mbsrgkq5rmgzypkiabhfrd5cq6nrnmsairnpw8rrz4w739"))))
+         "1y0h8rrmvi3j5maig6i69kxxr1igb96075vpzbycaqln3xn11g36"))))
     (arguments
      (list #:include #~(cons "^data/" %default-include)))
     (build-system emacs-build-system)

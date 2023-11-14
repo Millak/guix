@@ -1004,7 +1004,7 @@ similar to live activity monitoring provided with NGINX plus.")
 (define-public lighttpd
   (package
     (name "lighttpd")
-    (version "1.4.72")
+    (version "1.4.73")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.lighttpd.net/lighttpd/"
@@ -1012,7 +1012,7 @@ similar to live activity monitoring provided with NGINX plus.")
                                   "lighttpd-" version ".tar.xz"))
               (sha256
                (base32
-                "1v2m9vavrg3ibbl0kfq3rjlnqicbrlrkqih1iisa0m5pd56xxjpp"))))
+                "1a2cx3di07wf8qii7dpk4yr5wvaz8c9na1x7523smc0lng81d241"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
@@ -4955,8 +4955,8 @@ Cloud.")
     (license license:expat)))
 
 (define-public guix-data-service
-  (let ((commit "1c7539418743e0dfe3a9cad22c414fd732daef8f")
-        (revision "42"))
+  (let ((commit "37a07c2d6e8285877ad0440a7e4ae286b7b65177")
+        (revision "43"))
     (package
       (name "guix-data-service")
       (version (string-append "0.0.1-" revision "." (string-take commit 7)))
@@ -4968,7 +4968,7 @@ Cloud.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1gp4mhjssxky0jjjz916rfgz4w2f327wfd5ixb6lb00ydlfh5mws"))))
+                  "0h83j10bq7dyda2idbqh5y6dcvmbl3xgc147yq4pk6bkh10y29y6"))))
       (build-system gnu-build-system)
       (arguments
        (list

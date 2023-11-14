@@ -1783,14 +1783,14 @@ audio/video codec library.")
 (define-public ffmpeg-5
   (package
     (inherit ffmpeg)
-    (version "5.1.3")
+    (version "5.1.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0biil32xnshg1b4lwzbdc5rxv1g7lpfsr5gdgaz96wlhzy9ka48v"))))))
+                "0qwhyhil805hns7yksdxagnrcc90h60al7lz1rc65kd1j2w3nf2l"))))))
 
 (define-public ffmpeg-4
   (package
@@ -1813,14 +1813,14 @@ audio/video codec library.")
 (define-public ffmpeg-3.4
   (package
     (inherit ffmpeg-4)
-    (version "3.4.11")
+    (version "3.4.13")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
                                  version ".tar.xz"))
              (sha256
               (base32
-               "1rijdvcx8xjqwh084qchwz91vcj8wsvb4diax0g8miywpir00ccw"))))
+               "0np0yalqdrm7rn7iykgfzz3ly4vbgigrajg48c1l6n7qrzqvfszv"))))
     (arguments
      (substitute-keyword-arguments (package-arguments ffmpeg-4)
        ((#:modules modules %gnu-build-system-modules)
@@ -1838,14 +1838,14 @@ audio/video codec library.")
 (define-public ffmpeg-2.8
   (package
     (inherit ffmpeg-3.4)
-    (version "2.8.20")
+    (version "2.8.22")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1ivnfqmfnp3zmn1q2dxy4p85427y3r6d3jbnl5kprr7lqckf6rl5"))))
+                "0c8m4hhv2k5fybha908wzrpnf3wqkq52hayl658jq4bah0igdfqz"))))
     (arguments
      `(#:tests? #f               ; XXX: Enable them later, if required
        #:configure-flags

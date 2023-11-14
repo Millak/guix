@@ -65,6 +65,7 @@
   #:use-module (gnu packages haskell-check)
   #:use-module (gnu packages haskell-crypto)
   #:use-module (gnu packages haskell-web)
+  #:use-module (gnu packages icu4c)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
@@ -8351,6 +8352,46 @@ require aeson
     (synopsis "Safe conversions between textual types")
     (description "Safe conversions between textual types")
     (license license:isc)))
+
+(define-public ghc-text-icu
+  (package
+    (name "ghc-text-icu")
+    (version "0.8.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "text-icu" version))
+       (sha256
+        (base32 "1yj0jdjrsx12sy6lj1gizb2ys5likp9rcv8ryc6sjf2dw74097rd"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "text-icu")))
+    (inputs (list icu4c))
+    (native-inputs (list ghc-hunit
+                         ghc-quickcheck
+                         ghc-random
+                         ghc-test-framework
+                         ghc-test-framework-hunit
+                         ghc-test-framework-quickcheck2
+                         pkg-config))
+    (home-page "https://github.com/haskell/text-icu")
+    (synopsis "Bindings to the ICU library")
+    (description
+     "Haskell bindings to the International Components for Unicode (ICU) libraries.
+These libraries provide robust and full-featured Unicode services on a wide
+variety of platforms. .  Features include: . * Both pure and impure bindings, to
+allow for fine control over efficiency and ease of use. . * Breaking of strings
+on character, word, sentence, and line boundaries. . * Access to the Unicode
+Character Database (UCD) of character metadata. . * String collation functions,
+for locales where the conventions for lexicographic ordering differ from the
+simple numeric ordering of character codes. . * Character set conversion
+functions, allowing conversion between Unicode and over 220 character encodings.
+. * Unicode normalization. (When implementations keep strings in a normalized
+form, they can be assured that equivalent strings have a unique binary
+representation.) . * Regular expression search and replace. . * Security checks
+for visually confusable (spoofable) strings. . * Bidirectional Unicode algorithm
+. * Calendar objects holding dates and times. . * Number and calendar
+formatting.")
+    (license license:bsd-3)))
 
 (define-public ghc-text-short
   (package

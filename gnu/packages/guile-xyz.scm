@@ -1284,8 +1284,8 @@ works with Guile 1.4.x to 2.0.x.")
     (license license:gpl3+)))
 
 (define-public guile-prometheus
-  (let ((commit "35dc26c0ea44c3d70f1819f240d84e2cbb4b7b4c")
-        (revision "5"))
+  (let ((commit "4aaf902eb45b3a4c1003f854bda56c516fdf4f5b")
+        (revision "6"))
     (package
     (name "guile-prometheus")
     (version (git-version "0" revision commit))
@@ -1296,7 +1296,7 @@ works with Guile 1.4.x to 2.0.x.")
                     (commit commit)))
               (sha256
                (base32
-                "07822jj4appw37lf444kc4xlgl7nm64mgldag56072l55kwashgb"))
+                "03sr7wgksi9ys6jyzsnwanl2qqa8csi8jzcgrc3wfzp17vcc16yi"))
               (file-name (string-append name "-" version "-checkout"))))
     (build-system gnu-build-system)
     (native-inputs

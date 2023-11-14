@@ -15657,6 +15657,41 @@ analysing cytometry data in R.")
 spatial single-cell expression data.")
       (license license:expat))))
 
+;; Variant of r-illuminahumanmethylationepicmanifest in the
+;; (gnu packages bioconductor) module.
+(define-public r-illuminahumanmethylationepicmanifest-latest
+  (let ((commit "a9ffbad36f5e496ece6c4c37b80e2f4f7e02d0c3")
+        (revision "1"))
+    (package
+      (name "r-illuminahumanmethylationepicmanifest")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url
+                "https://github.com/achilleasNP/IlluminaHumanMethylationEPICmanifest")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0v8f0hl0v8gwi61vgqw56rn5j09h95hj54rb8pzbn0znm162n4fc"))))
+      (properties `((upstream-name . "IlluminaHumanMethylationEPICmanifest")))
+      (build-system r-build-system)
+      (home-page
+       "https://github.com/achilleasNP/IlluminaHumanMethylationEPICmanifest")
+      (synopsis "Illumina Human Methylation Manifest 1.0 B5 for R and minfi")
+      (description
+       "This is a drop-in replacement for the
+@code{IlluminaHumanMethylationEPIC} package.  It utilizes a Manifest based on
+1.0B5 annotation.  As of version 0.3.0, the
+@code{IlluminaHumanMethylationEPIC} package still employs the 1.0B2 annotation
+manifest.  A corresponding annotation package,
+@code{IlluminaHumanMethylationEPICanno.ilm10b5.hg38}, is available to ensure
+proper annotation.  The decision to maintain the same name is due to
+complications in downstream processing caused by array name lookup in certain
+preprocessing options.")
+      (license license:artistic2.0))))
+
 (define-public r-illuminahumanmethylationepicanno-ilm10b5-hg38
   (let ((commit "3db06910e27f626e0cc8b335ff45cf9a4050a36a")
         (revision "1"))
