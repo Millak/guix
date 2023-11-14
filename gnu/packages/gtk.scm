@@ -691,7 +691,7 @@ highlighting and other features typical of a source code editor.")
 (define-public gdk-pixbuf
   (package
     (name "gdk-pixbuf")
-    (version "2.42.8")
+    (version "2.42.10")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -699,12 +699,12 @@ highlighting and other features typical of a source code editor.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1iplb43nn74pp3w1wjwwn522i9man6jia85k6j8v4494rcxfmb44"))))
+                "0jz4kziz5lirnjjvbspbqzsigk8vnqknng1fga89d81vs5snr6zf"))))
     (build-system meson-build-system)
     (outputs '("out" "debug"))
     (arguments
      `(#:glib-or-gtk? #t             ; To wrap binaries and/or compile schemas
-       #:configure-flags '("-Dinstalled_tests=false")
+       #:configure-flags '("-Dinstalled_tests=false" "-Dgtk_doc=true")
        #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'disable-failing-tests
@@ -741,10 +741,8 @@ highlighting and other features typical of a source code editor.")
            pkg-config
 
            ;; For the documentation.
-           docbook-xml-4.3
-           docbook-xsl
-           libxml2                      ;for XML_CATALOG_FILES
-           libxslt))                    ;for xsltproc
+           gi-docgen
+           python-docutils))
     (native-search-paths
      ;; This file is produced by the gdk-pixbuf-loaders-cache-file
      ;; profile hook.
