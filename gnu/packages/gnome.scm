@@ -4812,7 +4812,7 @@ indicators etc).")
 (define-public glib-networking
   (package
     (name "glib-networking")
-    (version "2.72.2")
+    (version "2.76.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/glib-networking/"
@@ -4820,12 +4820,11 @@ indicators etc).")
                                   "glib-networking-" version ".tar.xz"))
               (sha256
                (base32
-                "0s42l6dkajciqc99zp6dc9l8yv9g8w7d8mgv97l7h7drgd60hand"))
-              (patches
-               (search-patches "glib-networking-gnutls-binding.patch"))))
+                "0ax4h0abi9yxrpmm1p491qjxc8d2k1kaa9hhzgyixrfxjjcqlsaw"))))
     (build-system meson-build-system)
     (native-inputs
-     (list pkg-config gettext-minimal))
+     (list `(,glib "bin") ; for gio-querymodules
+           pkg-config gettext-minimal))
     (inputs
      (list glib gnutls gsettings-desktop-schemas libproxy))
     (home-page "https://wiki.gnome.org/Projects/GLib")
