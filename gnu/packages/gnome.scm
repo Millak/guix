@@ -11089,7 +11089,7 @@ accessibility infrastructure.")
 (define-public orca
   (package
     (name "orca")
-    (version "42.3")
+    (version "44.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -11098,17 +11098,25 @@ accessibility infrastructure.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "097pyav3z5ssic8vwd7v1s7vynpycdpyfr324rr6c7mfzq5vmp7s"))))
+                "11jn925ga970y74did96ms78pc3lshkd9rd8v82i6zdzigxa7yvd"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
-         (add-before 'configure 'qualify-xkbcomp
+         (add-before 'configure 'qualify-programs
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((xkbcomp (string-append
-                             (assoc-ref inputs "xkbcomp") "/bin/xkbcomp")))
+                             (assoc-ref inputs "xkbcomp") "/bin/xkbcomp"))
+                   (pgrep (string-append
+                           (assoc-ref inputs "procps") "/bin/pgrep")))
                (substitute* "src/orca/orca.py"
-                 (("'xkbcomp'") (format #f "'~a'" xkbcomp))))))
+                 (("'xkbcomp'") (format #f "'~a'" xkbcomp)))
+               (substitute* "src/orca/debug.py"
+                 (("'pgrep %s'")
+                  (format #f "'~a %s'" pgrep)))
+               (substitute* "src/orca/orca_bin.py.in"
+                 (("'pgrep -u %s -x orca'")
+                  (format #f "'~a -u %s -x orca'" pgrep))))))
          (add-after 'install 'wrap-orca
            (lambda* (#:key outputs #:allow-other-keys)
              (wrap-program (search-input-file outputs "bin/orca")
@@ -11124,13 +11132,14 @@ accessibility infrastructure.")
            pkg-config
            libxml2))
     (inputs
-     (list at-spi2-atk
+     (list at-spi2-core
            bash-minimal
            gsettings-desktop-schemas
            gstreamer
            gst-plugins-base
            gst-plugins-good
            gtk+
+           procps                       ; for pgrep
            python
            python-pygobject
            python-pyatspi
