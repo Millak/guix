@@ -1783,14 +1783,14 @@ audio/video codec library.")
 (define-public ffmpeg-5
   (package
     (inherit ffmpeg)
-    (version "5.1.3")
+    (version "5.1.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0biil32xnshg1b4lwzbdc5rxv1g7lpfsr5gdgaz96wlhzy9ka48v"))))))
+                "0qwhyhil805hns7yksdxagnrcc90h60al7lz1rc65kd1j2w3nf2l"))))))
 
 (define-public ffmpeg-4
   (package
