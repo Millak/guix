@@ -129,7 +129,9 @@
                                        "1")))
                        (arguments `("-C" "tests" "test"
                                     ,@make-flags
-                                    ,(if #$(system-hurd?)
+                                    ,(if #$(or (system-hurd?)
+                                               (target-arm32?)
+                                               (target-aarch64?))
                                          ;; protocol FAIL
                                          (string-append "TFLAGS=\"~1474 "
                                                         job-count "\"")
