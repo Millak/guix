@@ -31297,6 +31297,29 @@ generating a temp buffer in which any useful Emacs utilities and modes can be
 invoked.")
       (license license:gpl3+))))
 
+(define-public emacs-exwm-mff
+  (let ((commit "89206f2e3189f589c27c56bd2b6203e906ee7100")
+        (revision "1"))
+    (package
+      (name "emacs-exwm-mff")
+      (version (git-version "1.2.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/emacs-weirdware/exwm-mff.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0ipmapyd4jmpnk34wk9kfbvqnl04x74yg2pmj298wqa61ylw1n9j"))))
+      (build-system emacs-build-system)
+      (home-page "https://codeberg.org/emacs-weirdware/exwm-mff")
+      (synopsis "Mouse follows focus for EXWM")
+      (description "This package provides a minor mode to automatically warp
+the mouse pointer to the center of a focused window, as well as a command to
+warp it to the currently selected window.")
+      (license (list license:gpl3+)))))
+
 (define-public emacs-exwm-modeline
   (package
     (name "emacs-exwm-modeline")
