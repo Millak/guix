@@ -12690,14 +12690,14 @@ automatically translated to the equivalent, but usually much faster,
 (define-public r-collapsibletree
   (package
     (name "r-collapsibletree")
-    (version "0.1.7")
+    (version "0.1.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "collapsibleTree" version))
        (sha256
         (base32
-         "0b65pbp1wnpsrayqi630ds4r98jvcvynnlp6wxdqrnnr9nzw5343"))
+         "1i5nmw5w7m8xdgxzim8z8n4w321f42isxbvvajl8ii59pg7drilq"))
        (snippet
         '(begin
            ;; Delete minified JavaScript file
