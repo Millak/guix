@@ -36465,6 +36465,30 @@ easily.  Four pre-set options are: @samp{shell}, @samp{terminal},
 you use some other configuration.")
       (license license:gpl3+))))
 
+(define-public emacs-shell-here
+  (let ((commit "eeb437ff26d62a5009046b1b3b4503b768e3131a")
+        (revision "1"))
+    (package
+      (name "emacs-shell-here")
+      (version (git-version "1.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/emacs-weirdware/shell-here.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0x8lnybxj7k6wj941lgqmm57f3qqnmb0gc7573l1fxwfhf39fl20"))))
+      (build-system emacs-build-system)
+      (home-page "https://codeberg.org/emacs-weirdware/shell-here")
+      (synopsis "Launch a shell relative to default-directory")
+      (description
+       "This package provides commands to open a shell buffer in (or relative
+to) the default-directory or – using projectile or find-file-in-project – a
+project root.")
+      (license (list license:gpl3+)))))
+
 (define-public emacs-tshell
   ;; XXX: Upstream has no tagged release.  Version is extracted from keyword
   ;; in main file.
