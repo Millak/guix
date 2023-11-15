@@ -17839,6 +17839,29 @@ in Org buffers and displays matching entries.")
 information inside the Dired buffer.")
       (license license:gpl3+))))
 
+(define-public emacs-diss
+  (let ((commit "8a99a1b34de4575087da49fe1e19bcf33ac49f46")
+        (revision "1"))
+    (package
+      (name "emacs-diss")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/emacs-weirdware/diss.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "06xvl85dkp3c2cw41f2gy7db2d7fy5pv5w1wr7vd7ccdlg3fq4gc"))))
+
+      (build-system emacs-build-system)
+      (home-page "https://codeberg.org/emacs-weirdware/diss")
+      (synopsis "Dired Image Slideshow")
+      (description "Diss is a full-featured image slideshow for Emacs, based
+on Dired and image-mode.")
+      (license (list license:gpl3+)))))
+
 (define-public emacs-dired-toggle-sudo
   (let ((commit "13bbe52c54893f5aa3e56228450ffdd0c9e1d169")
         (revision "0"))
