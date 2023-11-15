@@ -8589,6 +8589,17 @@ provided for those who need a drop-in replacement for Markdown.pl.")
        #:configure-flags #~(list "-fembed_data_files")
        #:phases
        #~(modify-phases %standard-phases
+           (add-after 'install 'install-more
+             (lambda _
+               (let ((bash (string-append #$output "/etc/bash_completion.d/pandoc"))
+                     (man1 (string-append #$output "/share/man/man1")))
+                 (mkdir-p (dirname bash))
+                 (with-output-to-file bash
+                   (lambda _
+                     (invoke (string-append #$output "/bin/pandoc")
+                             "--bash-completion")))
+                 (mkdir-p man1)
+                 (install-file "man/pandoc.1" man1))))
            (add-after 'register 'remove-libraries
              (lambda* (#:key outputs #:allow-other-keys)
                (delete-file-recursively (string-append (assoc-ref outputs "out") "/lib")))))
