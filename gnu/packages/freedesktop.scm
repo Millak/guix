@@ -148,7 +148,9 @@
                        "appstream/releases/"
                        "AppStream-" version ".tar.xz"))
        (sha256
-        (base32 "1val1b3dggn9g33q2r9q7wsl75a64x4lcvswvkcjjbvakkbj5xyl"))))
+        (base32 "1val1b3dggn9g33q2r9q7wsl75a64x4lcvswvkcjjbvakkbj5xyl"))
+       (patches
+        (search-patches "appstream-force-reload-stemmer.patch"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -163,11 +165,6 @@
               (substitute* "meson.build"
                 (("/usr/include")
                  (dirname libstemmer.h))))))
-          (add-after 'unpack 'disable-failing-tests
-            (lambda _
-              (substitute* "tests/test-pool.c"
-                (("[ \t]*g_test_add_func \\(\"/AppStream/Stemming.*;")
-                 ""))))
           (add-before 'check 'check-setup
             (lambda _
               (setenv "HOME" (getcwd)))))))
