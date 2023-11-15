@@ -18925,7 +18925,7 @@ protocol for Mastodon.")
 (define-public sbcl-croatoan
   (package
     (name "sbcl-croatoan")
-    (version "0.1")
+    (version "0.2")
     (source
      (origin
        (method git-fetch)
@@ -18934,7 +18934,7 @@ protocol for Mastodon.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "cl-croatoan" version))
        (sha256
-        (base32 "1whbvwc4df7zz0002xy3aczrpf4s3vk6kmyh9wydgwl112h060pd"))))
+        (base32 "0x2rlckyn8kn5mqy0fib8piggz694g3naarz2dvha1hsy4jhb1wg"))))
     (build-system asdf-build-system/sbcl)
     (arguments
      '(#:phases
