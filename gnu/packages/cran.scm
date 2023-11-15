@@ -40415,17 +40415,17 @@ formatting and delivering log messages with low overhead.")
 (define-public r-fasterize
   (package
     (name "r-fasterize")
-    (version "1.0.4")
+    (version "1.0.5")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "fasterize" version))
         (sha256
-          (base32 "1ckxi2iyxdahhgbliblcrkzziblfagzr54srjk27yp1lcgivvvs4"))))
+          (base32 "1d63q77hfbn2ly8cwsik4gaavdhidpi7idf7qj2y5bi9xhd10kyl"))))
     (properties `((upstream-name . "fasterize")))
     (build-system r-build-system)
     (propagated-inputs
-      (list r-raster r-rcpp r-rcpparmadillo r-sp))
+      (list r-raster r-rcpp r-rcpparmadillo r-wk))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/ecohealthalliance/fasterize")
     (synopsis "Fast Polygon to Raster Conversion")
