@@ -35147,14 +35147,14 @@ and regression metrics (e.g., RMSE).")
 (define-public r-warp
   (package
     (name "r-warp")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "warp" version))
        (sha256
         (base32
-         "0s0acddc5h14245hi1faycxp0fyvw6nlgaz2df7da4fpyd2f638f"))))
+         "1gj65kgs7x63f6y2vnv13k293b52k4afbmdlcam635h9vs8da2h2"))))
     (properties `((upstream-name . "warp")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
