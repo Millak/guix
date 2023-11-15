@@ -18891,7 +18891,7 @@ HTML documents.")
   (sbcl-package->cl-source-package sbcl-cl-html-diff))
 
 (define-public sbcl-tooter
-  (let ((commit "2e1b22f0993419c1e7e6d10ead45d7bcafb5b6cb")
+  (let ((commit "2dcc2facddcacd79d0cce545a8c4b73c35826fc1")
         (revision "4"))
     (package
       (name "sbcl-tooter")
@@ -18904,10 +18904,13 @@ HTML documents.")
                (commit commit)))
          (file-name (git-file-name "cl-tooter" version))
          (sha256
-          (base32 "02ys58gzasvk7r84jmz6k522qcw2hkbgv8p0ax5i8dggjhr04cz2"))))
+          (base32 "1zisrmslj4rnibm02vxh7hbas2cfsjh6iizs2nfdg3a3pn7bhf6h"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       (list sbcl-cl-ppcre sbcl-documentation-utils sbcl-drakma
+       (list sbcl-alexandria
+             sbcl-cl-ppcre
+             sbcl-documentation-utils
+             sbcl-drakma
              sbcl-yason))
       (synopsis "Common Lisp client library for Mastodon instances")
       (description
