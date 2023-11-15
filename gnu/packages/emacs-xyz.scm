@@ -36516,6 +36516,29 @@ directly where you want to go.  It’s for things that you use often, but not
 often enough to justify a dedicated binding.")
       (license (list license:gpl3+)))))
 
+(define-public emacs-nssh
+  (let ((commit "74d43738565749af680e4d1388e0c2f88e93498d")
+        (revision "1"))
+    (package
+      (name "emacs-nssh")
+      (version (git-version "0.9.12" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/emacs-weirdware/nssh.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0i2nnrg7xv7b2bbby6idszs9byk2jd83q7vqj6lxgn80w94i56nn"))))
+      (build-system emacs-build-system)
+      (home-page "https://codeberg.org/emacs-weirdware/nssh")
+      (synopsis "SSH mode for Emacs")
+      (description "This package provides an SSH mode for Emacs, built on
+top of Tramp and shell mode.  It keeps a history of previously connected
+hosts and supports auto-completion of known hosts.")
+      (license (list license:gpl3+)))))
+
 (define-public emacs-tshell
   ;; XXX: Upstream has no tagged release.  Version is extracted from keyword
   ;; in main file.
