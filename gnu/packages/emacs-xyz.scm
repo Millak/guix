@@ -5046,6 +5046,28 @@ written in the Go programming language.")
 directly inside Emacs.  It requires a Google Map Static API key to function.")
       (license license:gpl3+))))
 
+(define-public emacs-geoclue
+  (let ((commit "f409b544be4d2cfd848f4658618374b0bc76cb3c")
+        (revision "1"))
+    (package
+      (name "emacs-geoclue")
+      (version (git-version "0.8.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/emacs-weirdware/geoclue.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1ggyn9rvc6si3xy1rrw2f2hyw6cys4bgb9v0ah0qq65y3dnziq6m"))))
+      (build-system emacs-build-system)
+      (home-page "https://codeberg.org/emacs-weirdware/geoclue")
+      (synopsis "Determine your current location using GeoClue2 over D-Bus")
+      (description "This package provides an Emacs library which lets you
+determine your current location using GeoClue2 over D-Bus.")
+      (license (list license:gpl3+)))))
+
 (define-public emacs-nominatim
   (let ((revision "0")
         (commit "f814e16f8f4e2cfd633f52b29699a009ab704fbf"))
