@@ -9817,6 +9817,28 @@ interacting with the sbt shell and Scala console, compiling code and
 navigation to errors.")
     (license license:gpl3+)))
 
+(define-public emacs-9lc-mode
+  (let ((commit "7871476488fc7b66e05714797a9a5b8275988662")
+        (revision "1"))
+    (package
+      (name "emacs-9lc-mode")
+      (version (git-version  "0.7" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/emacs-weirdware/9lc-mode.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1kmx0c413yvvaq33v7lf3gzdjpxkr5faa1wj2j0m25lyyz8dsdm7"))))
+      (build-system emacs-build-system)
+      (home-page "https://codeberg.org/emacs-weirdware/geoclue")
+      (synopsis "Major mode for editing Fluke 9000 scripts")
+      (description
+       "This package provides a major mode for editing Fluke 9010a \"9LC\" files.")
+      (license (list license:gpl3+)))))
+
 (define-public emacs-scheme-complete
   ;; Upstream does not provide tags.  The commit below corresponds to the
   ;; exact version update.  Version is extracted from main file.
