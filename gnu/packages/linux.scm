@@ -8866,7 +8866,8 @@ privileges.")
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/intel/opa-psm2")
-                    (commit (string-append "PSM2_" version))))
+                    ;; tag 'psm-v12.0' = commit ad5dd1b
+                    (commit (string-append "psm-v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
