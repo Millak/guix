@@ -36489,6 +36489,33 @@ to) the default-directory or – using projectile or find-file-in-project – a
 project root.")
       (license (list license:gpl3+)))))
 
+(define-public emacs-hyperspace
+  (let ((commit "f574d07fd8715e806ba4f0487b73c699963baed3")
+        (revision "1"))
+    (package
+      (name "emacs-hyperspace")
+      (version (git-version "0.8.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/emacs-weirdware/hyperspace.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "19h3d12a99i7a92k3iw4zmjmw3dazsgnkc6j4965h033r1s40amx"))))
+      (build-system emacs-build-system)
+      (inputs (list emacs-s))
+      (home-page "https://codeberg.org/emacs-weirdware/hyperspace")
+      (synopsis "Get there from here")
+      (description
+       "Hyperspace is a way to get nearly anywhere from wherever
+you are, whether that's within Emacs or on the web.  It's somewhere in between
+Quicksilver and keyword URLs, giving you a single, consistent interface to get
+directly where you want to go.  It’s for things that you use often, but not
+often enough to justify a dedicated binding.")
+      (license (list license:gpl3+)))))
+
 (define-public emacs-tshell
   ;; XXX: Upstream has no tagged release.  Version is extracted from keyword
   ;; in main file.
