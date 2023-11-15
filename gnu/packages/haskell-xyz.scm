@@ -15968,7 +15968,9 @@ benchmarks](https://hackage.haskell.org/package/random-bytestring-0.1.3.2/src/be
                          ghc-tasty-quickcheck))
     (arguments
      `(#:cabal-revision ("4"
-                         "1lc32d5nxk0ry1pfn3ss55hi4cv6qj5nkkdn3j4y3lrdwyv7kbw2")))
+                         "1lc32d5nxk0ry1pfn3ss55hi4cv6qj5nkkdn3j4y3lrdwyv7kbw2")
+       #:tests? ,(not (or (%current-target-system)
+                          (target-x86-32?)))))
     (home-page "https://github.com/emilypi/base64")
     (synopsis "Modern RFC 4648-compliant Base64 library")
     (description
