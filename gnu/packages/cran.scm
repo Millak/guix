@@ -22290,14 +22290,14 @@ can be used with function approximation, eligibility traces (Singh & Sutton,
 (define-public r-lemon
   (package
     (name "r-lemon")
-    (version "0.4.6")
+    (version "0.4.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lemon" version))
        (sha256
         (base32
-         "0v1kbyk64yzsk92h6yq03kp9alc9632qprznsws61r8firiskim5"))))
+         "1r33n7bkfhjpyi23j7gsi387qvyazcy9b912dsd3vg2yqir8s26p"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2
