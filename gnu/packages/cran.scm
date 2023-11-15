@@ -37274,14 +37274,14 @@ chunks.")
 (define-public r-clustree
   (package
     (name "r-clustree")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "clustree" version))
        (sha256
         (base32
-         "1haam13aifak8fladyxwa0gz56anj1zfczfjgs07gbw90kf6azx8"))))
+         "05yizn8hcf4nsibypxahp2mz64sy10vli776mi0d2gvfb5p4kwmm"))))
     (properties `((upstream-name . "clustree")))
     (build-system r-build-system)
     (propagated-inputs
