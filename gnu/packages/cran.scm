@@ -4080,24 +4080,26 @@ particularly easy to create complete web applications using httpuv alone.")
 (define-public r-httr2
   (package
     (name "r-httr2")
-    (version "0.2.3")
+    (version "1.0.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "httr2" version))
               (sha256
                (base32
-                "0gabjyv2699p7fb4225jsr2kkbarx1w01kha8ipqzwhjjl13481m"))))
+                "0jaajfr1hr6bzb1vz2nw2csl2l09kbq619vsq5yrlchcarpjv1fb"))))
     (properties `((upstream-name . "httr2")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
            r-curl
            r-glue
+           r-lifecycle
            r-magrittr
            r-openssl
            r-r6
            r-rappdirs
            r-rlang
+           r-vctrs
            r-withr))
     (native-inputs (list r-knitr))
     (home-page "https://httr2.r-lib.org")
