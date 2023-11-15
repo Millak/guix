@@ -8393,7 +8393,7 @@ for Flow files.")
     (inputs
      (list grammalecte python))
     (propagated-inputs
-     (list emacs-flycheck))
+     (list emacs-flycheck emacs-pkg-info))
     (home-page "https://git.umaneti.net/flycheck-grammalecte/")
     (synopsis "Integrate Grammalecte with Flycheck")
     (description
