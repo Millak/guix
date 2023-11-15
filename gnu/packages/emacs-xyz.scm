@@ -34890,6 +34890,30 @@ on removable volumes in Linux.")
       (home-page "https://github.com/Akirak/helm-linux-disks")
       (license license:gpl3+))))
 
+(define-public emacs-debase
+  (let ((commit "0b6fc2af3440d68798e3a85d4c889341aae07936")
+        (revision "1"))
+    (package
+      (name "emacs-debase")
+      (version (git-version "0.7" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/emacs-weirdware/debase.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "112vk1svnc6516vhs47sx5jw6bg8lwrc15l99dxj0sc313lxjy3k"))))
+      (build-system emacs-build-system)
+      (inputs (list))
+      (home-page "https://codeberg.org/emacs-weirdware/debase")
+      (synopsis "D-Bus convenience layer for Emacs")
+      (description
+       "Debase provides a higher-level API for using and implementing D-Bus
+services inside Emacs.")
+      (license (list license:gpl3+)))))
+
 (define-public emacs-psession
   (let ((commit "3e97267c92b164584e06a6c70ee7491714c7c12c")
         (revision "1"))
