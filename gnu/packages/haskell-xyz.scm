@@ -8895,7 +8895,8 @@ numbers")
               (uri (hackage-uri "persistent" version))
               (sha256
                (base32
-                "0z69yvk0rd29dp5qdhi4p587b891y90azrzzpa3g10cxp3gyywvm"))))
+                "0z69yvk0rd29dp5qdhi4p587b891y90azrzzpa3g10cxp3gyywvm"))
+              (patches (search-patches "ghc-persistent-fix-32bit.patch"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "persistent")))
     (inputs (list ghc-conduit
