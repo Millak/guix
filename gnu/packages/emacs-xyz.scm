@@ -34914,6 +34914,28 @@ on removable volumes in Linux.")
 services inside Emacs.")
       (license (list license:gpl3+)))))
 
+(define-public emacs-discomfort
+  (let ((commit "873eea833bbae7196b92bb1102494b8bf5dc5df6")
+        (revision "1"))
+    (package
+      (name "emacs-discomfort")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/emacs-weirdware/discomfort.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "01p4bfiasqxfmp9x1bxdc7763bh712d3vlp2014y8pzrwb1jqdaq"))))
+      (build-system emacs-build-system)
+      (inputs (list emacs-debase))
+      (home-page "https://codeberg.org/emacs-weirdware/discomfort")
+      (synopsis "User interface to mount & unmount disks in Emacs.")
+      (description "Discomfort is an interface to mount and unmount disks in Emacs, using UDisks2.")
+      (license (list license:gpl3+)))))
+
 (define-public emacs-psession
   (let ((commit "3e97267c92b164584e06a6c70ee7491714c7c12c")
         (revision "1"))
