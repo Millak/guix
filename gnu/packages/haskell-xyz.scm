@@ -1063,31 +1063,26 @@ library for Haskell.")
 (define-public ghc-bloomfilter
   (package
     (name "ghc-bloomfilter")
-    (version "2.0.1.0")
+    (version "2.0.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (hackage-uri "bloomfilter" version))
        (sha256
         (base32
-         "03vrmncg1c10a2wcg5skq30m1yiknn7nwxz2gblyyfaxglshspkc"))
-       (patches (search-patches "ghc-bloomfilter-ghc9.2.patch"))))
+         "0klb26ldkw32axv3927w489j71r2rc9pangsvznqjbljib9970hp"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 ;; https://github.com/bos/bloomfilter/issues/7
+                 (substitute* "Data/BloomFilter/Easy.hs"
+                   ((" in if roundedBits <= 0 \\|\\| maxbitstoolarge roundedBits")
+                    " in if roundedBits <= 0"))))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "bloomfilter")))
     (native-inputs
      (list ghc-quickcheck ghc-random ghc-test-framework
            ghc-test-framework-quickcheck2))
-    (arguments
-     `(#:cabal-revision ("2"
-                         "1hi6hwvhv7lxqv0l6hv2854g1rvc52zcmr3ldvnaan1l1b666867")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'update-constraints
-           (lambda _
-             (substitute* "bloomfilter.cabal"
-               (("\\b(base)\\s+[^,]+" all dep)
-                dep)))))))
-    (home-page "https://github.com/bos/bloomfilter")
+    (home-page "https://github.com/haskell-pkg-janitors/bloomfilter")
     (synopsis "Pure and impure Bloom filter implementations")
     (description "This package provides both mutable and immutable Bloom
 filter data types, along with a family of hash functions and an easy-to-use
