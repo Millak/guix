@@ -12630,20 +12630,20 @@ JavaScript library) and interact with the igraph package.")
 (define-public r-data-tree
   (package
     (name "r-data-tree")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "data.tree" version))
        (sha256
         (base32
-         "0pizmx2312zsym4m42b97q2184bg3hibvbdrblcga05xln84qrs0"))))
+         "0qxd1g159phc6f18iddjljdg96sh09w63xqawjwbwyhg4blm9ddh"))))
     (properties `((upstream-name . "data.tree")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-r6 r-stringi))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-rmarkdown))
     (home-page "https://github.com/gluc/data.tree")
     (synopsis "General purpose hierarchical data structure")
     (description
