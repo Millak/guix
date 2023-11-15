@@ -15268,13 +15268,13 @@ Processing of very large files is supported.")
 (define-public r-mosaic
   (package
     (name "r-mosaic")
-    (version "1.8.4.2")
+    (version "1.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mosaic" version))
        (sha256
-        (base32 "12kpkb7vm54na9hjjkvzw6gm5plx0m6i0l9kihz2r30zanfx5jca"))))
+        (base32 "1dydqawljv5l9lmhdrhmr7wh3q1c2mnc61gc99jr0jbb1bmls327"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-dplyr
@@ -15287,6 +15287,7 @@ Processing of very large files is supported.")
            r-mosaicdata
            r-purrr
            r-rlang
+           r-tibble
            r-tidyr))
     (native-inputs
      (list r-knitr))
