@@ -15196,21 +15196,18 @@ haven package.")
 (define-public r-ggformula
   (package
     (name "r-ggformula")
-    (version "0.10.4")
+    (version "0.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggformula" version))
        (sha256
-        (base32 "07d9sq0dqi0g5x9h58icfk1f4hgg1xz4mhbp2z2rxg9qgs74fvdj"))))
+        (base32 "0vbpivyxms46px3wqkbl1wq199mqdxq94gsiplv4i7lz0lzghsfm"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-ggforce
-           r-ggplot2
+     (list r-ggplot2
            r-ggridges
-           r-ggstance
            r-labelled
-           r-magrittr
            r-mosaiccore
            r-rlang
            r-scales
