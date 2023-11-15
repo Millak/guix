@@ -5225,14 +5225,14 @@ in R and Shiny via the D3 visualization library.")
 (define-public r-wesanderson
   (package
     (name "r-wesanderson")
-    (version "0.3.6")
+    (version "0.3.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "wesanderson" version))
        (sha256
         (base32
-         "09mr6p2jmqdjq27cz974w5hyxgn929zp9z3inhxqmmh1582fmdi2"))))
+         "0kjyz5mrkrirg2glf57b0rhxj2fdp1m6q8zx947y0jg1w425cbn9"))))
     (properties `((upstream-name . "wesanderson")))
     (build-system r-build-system)
     (home-page "https://github.com/karthik/wesanderson")
