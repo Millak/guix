@@ -781,7 +781,8 @@ than @code{base-compat}, which has no dependencies.")
               (uri (hackage-uri "basement" version))
               (sha256
                (base32
-                "1d2xj5dmjps7nc7rwp5s0kyjcg9v8xfql6ik4yk1d3affnvazhjn"))))
+                "1d2xj5dmjps7nc7rwp5s0kyjcg9v8xfql6ik4yk1d3affnvazhjn"))
+              (patches (search-patches "ghc-basement-fix-32bit.patch"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "basement")))
     (home-page "https://github.com/haskell-foundation/foundation#readme")

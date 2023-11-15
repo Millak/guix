@@ -1269,6 +1269,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ghc-9.2-grep-warnings.patch \
   %D%/packages/patches/ghc-testsuite-dlopen-pie.patch		\
   %D%/packages/patches/ghc-testsuite-grep-compat.patch		\
+  %D%/packages/patches/ghc-basement-fix-32bit.patch		\
   %D%/packages/patches/ghc-bloomfilter-ghc9.2.patch	\
   %D%/packages/patches/ghc-bytestring-handle-ghc9.patch	\
   %D%/packages/patches/ghc-language-haskell-extract-ghc-8.10.patch	\
