@@ -9839,6 +9839,30 @@ navigation to errors.")
        "This package provides a major mode for editing Fluke 9010a \"9LC\" files.")
       (license (list license:gpl3+)))))
 
+(define-public emacs-tl1-mode
+  (let ((commit "48d12893cc81d7f92dc7b603d3751d8512ed0eb0")
+        (revision "1"))
+    (package
+      (name "emacs-tl1-mode")
+      (version (git-version "1.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/emacs-weirdware/tl1-mode.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1mf0wqbn9h0353hkhcykzrm2dk1jvyijqs4hsvgj3kwp1whws7br"))))
+      (build-system emacs-build-system)
+      (home-page "https://codeberg.org/emacs-weirdware/geoclue")
+      (synopsis "Major mode for editing Fluke 9100 TL/1 source code")
+      (description
+       "This package provides a major mode for editing Fluke TL/1 source code.
+TL/1 is a language used to control Fluke’s 9100 series of testing and
+troubleshooting mainframes.")
+      (license (list license:gpl3+)))))
+
 (define-public emacs-scheme-complete
   ;; Upstream does not provide tags.  The commit below corresponds to the
   ;; exact version update.  Version is extracted from main file.
