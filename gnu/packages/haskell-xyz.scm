@@ -15967,10 +15967,10 @@ benchmarks](https://hackage.haskell.org/package/random-bytestring-0.1.3.2/src/be
                          ghc-tasty-hunit
                          ghc-tasty-quickcheck))
     (arguments
-     `(#:cabal-revision ("2"
-                         "0cz3zzz9k490w9nfn4hpgdw4zx4w70fwqrwsfx8svcwqssqibqw3")))
+     `(#:cabal-revision ("4"
+                         "1lc32d5nxk0ry1pfn3ss55hi4cv6qj5nkkdn3j4y3lrdwyv7kbw2")))
     (home-page "https://github.com/emilypi/base64")
-    (synopsis "A modern RFC 4648-compliant Base64 library")
+    (synopsis "Modern RFC 4648-compliant Base64 library")
     (description
      "RFC 4648-compliant Base64 with an eye towards performance and modernity
 (additional support for RFC 7049 standards)")
