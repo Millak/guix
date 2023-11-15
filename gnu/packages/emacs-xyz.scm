@@ -31341,6 +31341,30 @@ warp it to the currently selected window.")
 workspaces.")
     (license license:gpl3+)))
 
+(define-public emacs-exwm-firefox-core
+  (let ((commit "e2fe2a895e8f973307ef52f8c9976b26e701cbd0")
+        (revision "1"))
+    (package
+      (name "emacs-exwm-firefox-core")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/walseb/exwm-firefox-core.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0k5jkjzx6f8nfmbkc61raj585p9pymycgzv7rr3fhv2drgkaa4yi"))))
+      (inputs (list emacs-exwm))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/walseb/exwm-firefox-core")
+      (synopsis "Control Firefox with EXWM")
+      (description
+       "This package contains functions that execute exwm
+keypresses mapped in firefox to the action described in the function name.")
+      (license (list license:gpl3+)))))
+
 (define-public emacs-ert-async
   (package
     (name "emacs-ert-async")
