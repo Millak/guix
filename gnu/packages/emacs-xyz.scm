@@ -31365,6 +31365,31 @@ workspaces.")
 keypresses mapped in firefox to the action described in the function name.")
       (license (list license:gpl3+)))))
 
+(define-public emacs-exwm-firefox
+  (let ((commit "7390c3bc425894aeda3c12c23f61a234bb71a2d9")
+        (revision "1"))
+    (package
+      (name "emacs-exwm-firefox")
+      (version (git-version "0.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/emacs-weirdware/exwm-firefox.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0xmgij04h4cbcgqafyyf9qajf0wp6mxpfpwjm6gi1jgisrql882d"))))
+      (build-system emacs-build-system)
+      (inputs (list emacs-exwm-firefox-core emacs-s emacs-exwm))
+      (home-page "https://codeberg.org/emacs-weirdware/exwm-firefox")
+      (synopsis "Enhanced support for Firefox under EXWM")
+      (description
+       "This package adds enhanced support for Firefox (and forks
+based on Firefox) under EXWM.  Keybindings intentionally mirror other Emacs
+navigation controls.")
+      (license (list license:gpl3+)))))
+
 (define-public emacs-ert-async
   (package
     (name "emacs-ert-async")
