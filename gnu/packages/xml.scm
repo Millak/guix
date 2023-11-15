@@ -107,7 +107,7 @@
     (inputs
      (list appstream-glib glib))
     (propagated-inputs
-     (list `(,zstd "lib")))             ; in Requires.private of xmlb.pc
+     (list xz `(,zstd "lib")))             ; in Requires.private of xmlb.pc
     (synopsis "Library to help create and query binary XML blobs")
     (description "Libxmlb library takes XML source, and converts it to a
 structured binary representation with a deduplicated string table; where the
