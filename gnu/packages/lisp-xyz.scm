@@ -12132,6 +12132,50 @@ for reading and writing JPEG image files.")
 (define-public ecl-cl-jpeg
   (sbcl-package->ecl-package sbcl-cl-jpeg))
 
+(define-public sbcl-jpeg-turbo
+  (let ((commit "f79c646cc266c107bdace53572a31664754c6e0c")
+        (revision "1"))
+    (package
+      (name "sbcl-jpeg-turbo")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/shamazmazum/jpeg-turbo/")
+               (commit commit)))
+         (file-name (git-file-name "cl-jpeg-turbo" version))
+         (sha256
+          (base32 "1andd1ibbk3224idnpsnrn96flr5d1wm9ja3di57fs04wn577sag"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-lib-paths
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "src/jpeg-turbo.lisp"
+                       (("\"libturbojpeg\\.so\\.0\"")
+                        (string-append "\""
+                                       (search-input-file inputs
+                                                          "/lib/libturbojpeg.so")
+                                       "\""))))))))
+      (native-inputs
+       (list sbcl-fiveam))
+      (inputs
+       (list libjpeg-turbo sbcl-cffi))
+      (synopsis "Common Lisp wrapper for libjpeg-turbo")
+      (description
+       "This is a Common Lisp wrapper for libjpeg-turbo library which provides
+TurboJPEG API for compressing and decompressing JPEG images.")
+      (home-page "https://github.com/shamazmazum/jpeg-turbo/")
+      (license license:bsd-2))))
+
+(define-public cl-jpeg-turbo
+  (sbcl-package->cl-source-package sbcl-jpeg-turbo))
+
+(define-public ecl-cl-jpeg-turbo
+  (sbcl-package->ecl-package sbcl-jpeg-turbo))
+
 (define-public sbcl-png
   (let ((commit "11b965fe378fd0561abe3616b18ff03af5179648")
         (revision "1"))
