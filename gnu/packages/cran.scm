@@ -31532,14 +31532,14 @@ network, tree, dendrogram, and Sankey graphs from R using data frames.")
 (define-public r-qgraph
   (package
     (name "r-qgraph")
-    (version "1.9.5")
+    (version "1.9.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "qgraph" version))
        (sha256
         (base32
-         "1mi19bjx83zb42wmgb716a3l4gvwch3rmybdqmm8k3dl8xr2qnjc"))))
+         "1m019j5nxc0184p0r2zgdn457g555nxsp2s08maa053nydj1va0l"))))
     (properties `((upstream-name . "qgraph")))
     (build-system r-build-system)
     (propagated-inputs
