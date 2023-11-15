@@ -28997,14 +28997,14 @@ be conducted.  A graphical user interface is also provided.")
 (define-public r-actcd
   (package
     (name "r-actcd")
-    (version "1.2-0")
+    (version "1.3-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ACTCD" version))
        (sha256
         (base32
-         "0mzjxxr2zfdidw8ibh6w8mvpkw3q3nvngqi05g9ind26ckvk053p"))))
+         "1a0gsznca5fv7i29xpcns4rkas5q88wv01rxvd4j66n64gw0ri4j"))))
     (properties `((upstream-name . "ACTCD")))
     (build-system r-build-system)
     (propagated-inputs
