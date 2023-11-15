@@ -36208,21 +36208,23 @@ other R users.")
 (define-public r-seurat
   (package
     (name "r-seurat")
-    (version "4.4.0")
+    (version "5.0.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "Seurat" version))
               (sha256
                (base32
-                "1pdlvjh5xs1fyj2zic98sfz9zazbb45qywfqnhfzqb34jyaxy5qg"))))
+                "1hvqxfskwpw06dxc9hc9zvxqb73wr7qjxgrqgyjklxaq1xhr335v"))))
     (properties `((upstream-name . "Seurat")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cluster
            r-cowplot
+           r-fastdummies
            r-fitdistrplus
            r-future
            r-future-apply
+           r-generics
            r-ggplot2
            r-ggrepel
            r-ggridges
@@ -36233,6 +36235,7 @@ other R users.")
            r-jsonlite
            r-kernsmooth
            r-leiden
+           r-lifecycle
            r-lmtest
            r-mass
            r-matrix
@@ -36249,10 +36252,12 @@ other R users.")
            r-rcpp
            r-rcppannoy
            r-rcppeigen
+           r-rcpphnsw
            r-rcppprogress
            r-reticulate
            r-rlang
            r-rocr
+           r-rspectra
            r-rtsne
            r-scales
            r-scattermore
