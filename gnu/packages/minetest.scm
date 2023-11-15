@@ -44,6 +44,7 @@
   #:use-module (guix packages)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
+  #:use-module (guix utils)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system minetest)
@@ -153,6 +154,41 @@ single player.  Mods and texture packs allow players to personalize the game
 in different ways.")
     (home-page "https://www.minetest.net/")
     (license license:lgpl2.1+)))
+
+(define-public minetest-server
+  (package
+    (inherit minetest)
+    (name "minetest-server")
+    (arguments
+     (substitute-keyword-arguments (package-arguments minetest)
+       ((#:configure-flags configure-flags)
+        #~(cons* "-DBUILD_CLIENT=FALSE"
+                 "-DBUILD_SERVER=TRUE"
+                 #$configure-flags))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (setenv "HOME" "/tmp")
+                  (invoke "src/minetestserver" "--run-unittests"))))))))
+    (inputs
+     (modify-inputs (package-inputs minetest)
+       (delete "libjpeg-turbo"
+               "libpng"
+               "libogg"
+               "libvorbis"
+               "libxxf86vm"
+               "mesa"
+               "openal")))
+    (synopsis "Infinite-world block sandbox game (server)")
+    (description
+     "Minetest is a sandbox construction game.  Players can create and destroy
+various types of blocks in a three-dimensional open world.  This allows
+forming structures in every possible creation, on multiplayer servers or as a
+single player.  Mods and texture packs allow players to personalize the game
+in different ways.  This package provides @command{minetestserver} to run a
+Minetest server.")))
 
 (define minetest-data
   (package
