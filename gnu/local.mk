@@ -1272,6 +1272,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ghc-basement-fix-32bit.patch		\
   %D%/packages/patches/ghc-bytestring-handle-ghc9.patch	\
   %D%/packages/patches/ghc-language-haskell-extract-ghc-8.10.patch	\
+  %D%/packages/patches/ghc-memory-fix-32bit.patch		\
   %D%/packages/patches/ghostscript-CVE-2023-36664.patch		\
   %D%/packages/patches/ghostscript-CVE-2023-36664-fixup.patch	\
   %D%/packages/patches/ghostscript-leptonica-hurd.patch		\

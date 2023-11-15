@@ -7055,7 +7055,8 @@ speed, flexibility, and quality of parse errors.")
               (uri (hackage-uri "memory" version))
               (sha256
                (base32
-                "0yl3ivvn7i9wbx910b7bzj9c3g0jjjk91j05wj74qb5zx2yyf9rk"))))
+                "0yl3ivvn7i9wbx910b7bzj9c3g0jjjk91j05wj74qb5zx2yyf9rk"))
+              (patches (search-patches "ghc-memory-fix-32bit.patch"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "memory")))
     (inputs (list ghc-basement))
