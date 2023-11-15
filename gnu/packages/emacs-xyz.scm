@@ -135,6 +135,7 @@
 ;;; Copyright © 2023 Sergiu Ivanov <sivanov@colimite.fr>
 ;;; Copyright © 2023 Camilo Q.S. (Distopico) <distopico@riseup.net>
 ;;; Copyright © 2023 Thanos Apollo <public@thanosapollo.com>
+;;; Copyright © 2023 Ian Eure <ian@retrospec.tv>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3294,6 +3295,29 @@ immediately activated.  Also filtering can be applied so selection can be
 incrementally confined in Isearch manner.")
     (license license:gpl3+)))
 
+(define-public emacs-dnt
+  (let ((commit "d28d232d682094ab79cfa78c97668c6ebd327c8c")
+        (revision "1"))
+    (package
+      (name "emacs-dnt")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/emacs-weirdware/dnt.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1bls9j1ibw0npjapslbrh6nmlbn3d4ajhjygsqlf6h9qg12sxm3r"))))
+      (inputs (list emacs-s))
+      (build-system emacs-build-system)
+      (home-page "https://codeberg.org/emacs-weirdware/dnt")
+      (synopsis "Strip trackers from URLs")
+      (description "This package provides a series of rules and helper functions
+to prevent advertisers from tracking you when you open URLs (or listen to
+podcasts) in Emacs.")
+      (license (list license:gpl3+)))))
 
 
 ;;;
