@@ -1520,3 +1520,38 @@ to the host system, optionally with filters applied.")
     (description "A small little utility to run a couple of executables under a
 new DBus session for testing.")
     (license license:gpl3)))
+
+(define-public libdex
+  (package
+    (name "libdex")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://gnome/sources/" name "/"
+                           (version-major+minor version) "/"
+                           name "-" version ".tar.xz"))
+       (sha256
+        (base32 "0fj4bggygdxgfsdrhc3zg1y2065g0skpz1l2bqwl0jqn9m3zbdc1"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:configure-flags #~'("-D" "docs=true")))
+    (native-inputs
+     (list gobject-introspection
+           gi-docgen
+           pkg-config
+           vala))
+    (inputs
+     (list glib
+           libsoup))
+    (home-page "https://gitlab.gnome.org/GNOME/libdex")
+    (synopsis "Library for future-based programming with glib")
+    (description
+     "Dex provides Future-based programming for GLib-based applications.
+
+It both integrates with and brings new features for application and library
+authors who want to manage concurrent code.
+
+Dex also provides Fibers which allow writing synchronous looking code in C
+that uses asynchronous and future-based APIs.")
+    (license license:lgpl2.1+)))
