@@ -12897,7 +12897,7 @@ audio files.")
 (define-public jsonrpc-glib
   (package
     (name "jsonrpc-glib")
-    (version "3.42.0")
+    (version "3.44.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -12905,13 +12905,17 @@ audio files.")
                                    name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0sr71110gwbv08qwjh410fnhq6v5swn849y4gm314am8gjjqj692"))))
+                "01nfsny3612c6l5q7qaazjpbzin0h357xblc81sm3k6ha016lh39"))))
     (build-system meson-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-Denable_gtk_doc=true")))
     (inputs
      (list glib
            json-glib))
     (native-inputs
-     (list `(,glib "bin") ; for glib-genmarshal, etc.
+     (list gi-docgen
+           `(,glib "bin") ; for glib-genmarshal, etc.
            gobject-introspection
            pkg-config
            vala))
