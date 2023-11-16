@@ -3078,7 +3078,7 @@ some form of information without getting in the user's way.")
 (define-public libpeas
   (package
     (name "libpeas")
-    (version "1.32.0")
+    (version "1.36.0")
     (source
      (origin
        (method url-fetch)
@@ -3087,21 +3087,23 @@ some form of information without getting in the user's way.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "03ixrhfkywcb409dd0hybyb6i291phwy8si4kc17g29fl07m49fn"))))
+         "0k3v4c9xs7pxpckkagl9ba70nlxl2n23w6ixc8bqd3ndrk1bjz19"))))
     (build-system meson-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'start-xserver
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((disp ":1"))
-               (setenv "DISPLAY" disp)
-               (setenv "XDG_CACHE_HOME" "/tmp/xdg-cache")
-               (setenv "XDG_CONFIG_HOME" "/tmp")
-               ;; Tests require a running X server.
-               (system (format #f "~a ~a &"
-                               (search-input-file inputs "bin/Xvfb")
-                               disp))))))))
+     (list
+      #:configure-flags #~'("-Dvapi=true" "-Dgtk_doc=true")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'start-xserver
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((disp ":1"))
+                (setenv "DISPLAY" disp)
+                (setenv "XDG_CACHE_HOME" "/tmp/xdg-cache")
+                (setenv "XDG_CONFIG_HOME" "/tmp")
+                ;; Tests require a running X server.
+                (system (format #f "~a ~a &"
+                                (search-input-file inputs "bin/Xvfb")
+                                disp))))))))
     (inputs
      (list gtk+
            glade3
@@ -3110,12 +3112,14 @@ some form of information without getting in the user's way.")
     (native-inputs
      (list pkg-config
            gettext-minimal
+           gi-docgen
            `(,glib "bin")
            gobject-introspection
-           xorg-server-for-tests))
+           xorg-server-for-tests
+           vala))
     (propagated-inputs
      ;; The .pc file "Requires" gobject-introspection.
-     (list gobject-introspection))
+     (list glib gobject-introspection))
     (home-page "https://wiki.gnome.org/Projects/Libpeas")
     (synopsis "GObject plugin system")
     (description
