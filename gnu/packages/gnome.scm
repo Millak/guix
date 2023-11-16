@@ -10813,18 +10813,19 @@ handling the startup notification side.")
          "0hqhnwaw7zam0r7b61ir68710hxmc5rxb0172mz9lc48kwr67rql"))))
     (build-system meson-build-system)
     (arguments
-     '(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           (lambda _
-             (substitute* "meson.build"
-               (("gtk_update_icon_cache: true")
-                "gtk_update_icon_cache: false"))))
-         (add-before 'check 'pre-check
-           (lambda _
-             ;; Tests require a writable HOME.
-             (setenv "HOME" (getcwd)))))))
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false"))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Tests require a writable HOME.
+              (setenv "HOME" (getcwd)))))))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")               ;for glib-compile-schemas, gio-2.0.
