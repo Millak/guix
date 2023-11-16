@@ -10801,7 +10801,7 @@ handling the startup notification side.")
 (define-public gnome-calculator
   (package
     (name "gnome-calculator")
-    (version "42.2")
+    (version "44.0")
     (source
      (origin
        (method url-fetch)
@@ -10810,7 +10810,7 @@ handling the startup notification side.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "1866qn0r9xp7b7j1436kry2k3bdh9ikhz2wm41jxcn1nljyb3nik"))))
+         "0hqhnwaw7zam0r7b61ir68710hxmc5rxb0172mz9lc48kwr67rql"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t
@@ -10837,11 +10837,13 @@ handling the startup notification side.")
            gtksourceview
            libadwaita
            libgee
-           libhandy
-           libsoup-minimal-2
+           libsoup
            libxml2
            mpc
            mpfr))
+    (propagated-inputs
+     ;; Marked as requires.private in either .pc
+     (list libgee glib gtk))
     (home-page "https://wiki.gnome.org/Apps/Calculator")
     (synopsis "Desktop calculator")
     (description
