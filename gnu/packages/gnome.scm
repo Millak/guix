@@ -12996,7 +12996,7 @@ GObject introspection bindings.")
 (define-public sysprof
   (package
     (name "sysprof")
-    (version "3.45.1")
+    (version "3.48.0")
     (source
      (origin
        (method url-fetch)
@@ -13004,12 +13004,13 @@ GObject introspection bindings.")
                            (version-major+minor version) "/"
                            "sysprof-" version ".tar.xz"))
        (sha256
-        (base32 "16nmr1qs7s2ylhwj58zj6b7in72nw7z72glaz746f2g7dbqs00k4"))))
+        (base32 "0s11jwkvdbnq2jyz26mwy47wcxfsbawg53zlackvabygcqd0in87"))))
     (build-system meson-build-system)
     (arguments
      (list
       #:configure-flags
-      #~(list (string-append "-Dsystemdunitdir=" #$output "/share/systemd"))
+      #~(list (string-append "-Dsystemdunitdir=" #$output "/share/systemd")
+              "-Dhelp=true")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'disable-post-install
@@ -13020,7 +13021,8 @@ GObject introspection bindings.")
                 (("update_desktop_database: true")
                  "update_desktop_database: false")))))))
     (propagated-inputs
-     (list polkit))
+     ;; Listed in sysprof-4.pc or sysprof-ui-5.pc
+     (list glib json-glib libadwaita polkit))
     (inputs
      (list glib
            gtk
