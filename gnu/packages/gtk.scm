@@ -2928,7 +2928,7 @@ Unix desktop environment under X11 as well as Wayland.")
 (define-public libpanel
   (package
     (name "libpanel")
-    (version "1.0.2")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -2937,20 +2937,26 @@ Unix desktop environment under X11 as well as Wayland.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10lkysbwg9w0lm1hj7lw4g7y9j8b88kmq07nfgx0r6f319znj12v"))))
+        (base32 "0wal073anl6iviyljyr8pw0m7av4ik6azpmrwzxw4snp95ib27aq"))))
     (build-system meson-build-system)
     (arguments
-     (list #:configure-flags #~(list "-Ddocs=disabled")  ;fontconfig issue
-           #:phases #~(modify-phases %standard-phases
-                        (add-after 'unpack 'disable-gtk-update-icon-cache
-                          (lambda _
-                            (substitute* "meson.build"
-                              (("gtk_update_icon_cache: true")
-                               "gtk_update_icon_cache: false")))))))
-    (native-inputs (list `(,glib "bin")
-                         gobject-introspection
-                         pkg-config
-                         vala))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-gtk-update-icon-cache
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false"))))
+          (add-before 'build 'set-home
+            (lambda _
+              (setenv "HOME" (getcwd)))))))
+    (native-inputs
+     (list gi-docgen
+           `(,glib "bin")
+           gobject-introspection
+           pkg-config
+           vala))
     (inputs (list glib gtk libadwaita))
     (home-page "https://gitlab.gnome.org/GNOME/libpanel")
     (synopsis "Dock and panel library for GTK 4")
