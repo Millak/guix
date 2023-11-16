@@ -221,6 +221,28 @@ satisfiability checking (SAT).")
     (description "Clingo computes answer sets for a given logic program.")
     (license license:expat)))
 
+(define-public clingo-dl
+  (package
+    (name "clingo-dl")
+    (version "1.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/potassco/clingo-dl")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0dncwj63vdm6958vb7355d5j9mdr7hm037j4z82yz6l77jg3sipw"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f        ; no tests
+                     #:configure-flags #~`("-DPYCLINGODL_ENABLE=off")))
+    (inputs (list clingo))
+    (home-page "https://github.com/potassco/clingo-dl")
+    (synopsis "Solver for answer set programs modulo difference constraints")
+    (description "Clingo-DL is an extension to Clingo that models constraints
+over difference logic.")
+    (license license:expat)))
+
 (define-public emacs-pasp-mode
   (let ((commit "59385eb0e8ebcfc8c11dd811fb145d4b0fa3cc92")
         (revision "1"))
