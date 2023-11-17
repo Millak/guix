@@ -2695,11 +2695,23 @@ task}.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; XXX: Fix failing tests. There are errors to load test files.
-      #:tests? #f))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Test steps are taken from GitHub Actions.
+          ;; See https://github.com/spacetelescope/stsci.stimage/issues/27
+          (replace 'check
+            (lambda _
+              (copy-file (string-append
+                #$(this-package-native-input "python-waf") "/bin/waf")
+               "waf")
+              (invoke "python" "waf" "configure" "build" "do_tests"))))))
     (propagated-inputs (list python-numpy))
-    (native-inputs (list python-codecov python-pytest python-pytest-cov
-                         python-setuptools-scm))
+    (native-inputs
+     (list python-codecov
+           python-pytest
+           python-pytest-cov
+           python-setuptools-scm
+           python-waf))
     (home-page "https://stscistimage.readthedocs.io/en/latest/")
     (synopsis "STScI image processing")
     (description "This package provides an astronomical Python package with
