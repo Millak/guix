@@ -3153,23 +3153,21 @@ Mercator, Mollweide, Peters, polyconic, orthographic and rectangular.")
        (sha256
         (base32 "0hwf97kng1zy8rxyglw04x89p0bg07zq30hgghm20yxiw2xc8ng7"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "CFLAGS=-O2 -g -fcommon")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              ;; Remove reference to non-existent file.
+              (substitute* "po/POTFILES.in"
+                (("src/gtk-sat-tree\\.c") "")))))))
     (native-inputs
-     `(("intltool" ,intltool)
-       ("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal intltool pkg-config))
     (inputs
      (list curl glib goocanvas gtk+))
-    (arguments
-     `(#:configure-flags '("CFLAGS=-O2 -g -fcommon")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-tests
-           (lambda _
-             ;; Remove reference to non-existent file.
-             (substitute* "po/POTFILES.in"
-               (("src/gtk-sat-tree\\.c")
-                ""))
-             #t)))))
+    (home-page "http://gpredict.oz9aec.net/index.php")
     (synopsis "Satellite tracking and orbit prediction application")
     (description
      "Gpredict is a real-time satellite tracking and orbit prediction
@@ -3177,7 +3175,6 @@ application.  It can track a large number of satellites and display their
 position and other data in lists, tables, maps, and polar plots (radar view).
 Gpredict can also predict the time of future passes for a satellite, and
 provide you with detailed information about each pass.")
-    (home-page "http://gpredict.oz9aec.net/index.php")
     (license license:gpl2+)))
 
 (define-public sgp4
