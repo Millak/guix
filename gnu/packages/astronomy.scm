@@ -2663,7 +2663,7 @@ Science Institute} image array manipulation functions.")
               (sha256
                (base32
                 "14457izlbnks84dyza75ib3nvx2w8nhlqm9vc1zb7hbhknb5gjvw"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f)) ;No tests
     (propagated-inputs (list python-numpy))
