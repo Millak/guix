@@ -2373,13 +2373,13 @@ changing the pixel resolution, orientation, coordinate system.")
 (define-public python-sgp4
   (package
     (name "python-sgp4")
-    (version "2.22")
+    (version "2.23")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sgp4" version))
        (sha256
-        (base32 "1yc6gcbhz80i875j0wf6ikx7rzs0m7m1qp72dmdhdjidmpma5w0p"))))
+        (base32 "0aalbmldks6ykgkcxwkvnp04q0avhv903m5zwvg8i7zvl99xrbfq"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-numpy))
