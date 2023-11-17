@@ -1614,19 +1614,27 @@ astronomy and astrophysics.")
        (uri (pypi-uri "astroquery" version))
        (sha256
         (base32 "1vhkzsqlgn3ji5by2rdf2gwklhbyzvpzb1iglalhqjkkrdaaaz1h"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'check 'writable-home
-                 (lambda _              ; some tests need a writable home
-                   (setenv "HOME" (getcwd))))
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "python" "-m" "pytest" "--pyargs" "astroquery"
-                             ;; Skip tests that require online data.
-                             "-m" "not remote_data")))))))
+     (list
+      #:test-flags
+      #~(list "--pyargs" "astroquery"
+              "-m" "not remote_data")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'prepare-test-environment
+            (lambda _
+              (setenv "HOME" (getcwd)) ; some tests need a writable home
+              ;; To solve pytest/conftest issue. Pytest tries to load all
+              ;; files with word 'test' in them.
+              ;;
+              ;; ImportError while loading conftest ...
+              ;; _pytest.pathlib.ImportPathMismatchError: ...
+              ;;
+              (call-with-output-file "pytest.ini"
+                (lambda (port)
+                  (format port "[pytest]
+python_files = test_*.py"))))))))
     (propagated-inputs
      (list python-astropy
            python-beautifulsoup4
@@ -1636,12 +1644,13 @@ astronomy and astrophysics.")
            python-pyvo
            python-requests))
     (native-inputs
-     (list python-flask
-           python-jinja2
+     (list python-astropy-healpix
            python-matplotlib
+           ;; python-mocpy : Not packed yet, optional
            python-pytest-astropy
-           python-pytest-dependency))
-    (home-page "https://www.astropy.org/astroquery/")
+           python-pytest-dependency
+           python-regions))
+    (home-page "https://astroquery.readthedocs.io/en/latest/index.html")
     (synopsis "Access online astronomical data resources")
     (description "Astroquery is a package that contains a collection of tools
 to access online Astronomical data.  Each web service has its own sub-package.")
