@@ -4216,7 +4216,7 @@ pipelines.")
 (define-public python-astroalign
   (package
     (name "python-astroalign")
-    (version "2.5.0")
+    (version "2.5.1")
     (source
      (origin
        ;; There are no tests in the PyPI tarball.
@@ -4226,7 +4226,7 @@ pipelines.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0br1v2l48jx214a1bcdr8wz1wggcswcbz4cqv8d19fd46fc4qlhy"))))
+        (base32 "1kr5cszcxvrdbksy7mvv3ps1h1jzrn4yamfr6x7whkbi6bpqf7xp"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-astropy
