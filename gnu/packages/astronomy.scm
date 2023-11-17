@@ -3712,9 +3712,21 @@ datetime object.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; XXX: Test needs more love to pass.
-      ;; ERROR collecting synphot/tests/test_utils.py
-      #:tests? #f))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'prepare-test-environment
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace")
+              ;; To solve pytest/conftest issue. Pytest tries to load all
+              ;; files with word 'test' in them.
+              ;;
+              ;; ImportError while loading conftest ...
+              ;; _pytest.pathlib.ImportPathMismatchError: ...
+              ;;
+              (call-with-output-file "pytest.ini"
+                (lambda (port)
+                  (format port "[pytest]
+python_files = test_*.py"))))))))
     (propagated-inputs (list python-astropy python-numpy python-scipy))
     (native-inputs (list python-pytest python-pytest-astropy
                          python-setuptools-scm))
