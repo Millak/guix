@@ -4279,13 +4279,13 @@ orbit around the Earth.")
 (define-public python-wiimatch
   (package
     (name "python-wiimatch")
-    (version "0.3.1")
+    (version "0.3.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "wiimatch" version))
               (sha256
                (base32
-                "0x6p5z6a2cqinckwlpinjxagvmswl149s1jn6ihmdxk4k0h8rrz0"))))
+                "15kq7z30m9i286ncs9xvpaq3dq1p5fa47jz21prq146qwr7j6dm8"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-numpy python-scipy))
     (native-inputs (list python-codecov python-pytest python-pytest-cov
