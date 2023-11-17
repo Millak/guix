@@ -1385,7 +1385,7 @@ any arbitrary astrometric projection defined in the WCS standard.")
 (define-public celestia
   (package
     (name "celestia")
-    (version "1.6.3")
+    (version "1.6.4")
     (source
      (origin
        (method git-fetch)
@@ -1394,7 +1394,7 @@ any arbitrary astrometric projection defined in the WCS standard.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dzci5n7gcnm1vq916gsn9zddkhbzhbsakqxrpnmvzibsqznn6c8"))))
+        (base32 "0nz9k5nd2zmrbwj1qhsfwmvqymqk8c4yjxpybck44isrild2ah9j"))))
     (build-system gnu-build-system)
     (arguments
      (list
