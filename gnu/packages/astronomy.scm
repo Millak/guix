@@ -2118,27 +2118,22 @@ of astronomical sources.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list "-m" "not remote_data"
+              ;; TODO: Review failing tests later when any upstream
+              ;; suggestions are provided:
+              ;; https://github.com/poliastro/poliastro/issues/1618
+              "-k" (string-append "not test_czml_add_trajectory"
+                                  " and not test_czml_custom_packet"
+                                  " and not test_czml_ground_station"
+                                  " and not test_czml_groundtrack"
+                                  " and not test_czml_preamble"))
       #:phases
       #~(modify-phases %standard-phases
           ;; NOTE: Tests take about 7-10 minutes to pass.
           (add-before 'check 'prepare-test-environment
             (lambda _
-              (setenv "HOME" "/tmp")
-              ;; TODO: Review failing tests later when any upstream
-              ;; suggestions are provided:
-              ;; https://github.com/poliastro/poliastro/issues/1618
-              (substitute* "tests/test_czml.py"
-              (("def test_czml_add_trajectory") "def __off_test_czml_add_trajectory")
-              (("def test_czml_custom_packet") "def __off_test_czml_custom_packet")
-              (("def test_czml_ground_station") "def __off_test_czml_ground_station")
-              (("def test_czml_groundtrack") "def __off_test_czml_groundtrack")
-              (("def test_czml_preamble") "def __off_test_czml_preamble"))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "python" "-m" "pytest"
-                        ;; Skip tests that need remote data.
-                        "-m" "not remote_data")))))))
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list python-coverage
            python-hypothesis
