@@ -1924,18 +1924,7 @@ Cesium.")
        (uri (pypi-uri "drms" version))
        (sha256
         (base32 "0mkrmr55fgca441z7hvsyri6x9cjsh0sfas3hrj0k1k10k8vszbw"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key inputs outputs tests?
-                      #:allow-other-keys)
-              (when tests?
-                (add-installed-pythonpath inputs outputs)
-                (setenv "JSOC_EMAIL" "jsoc@sunpy.org")
-                (invoke "python" "-m" "pytest" "-vv")))))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-astropy
            python-pytest-astropy
