@@ -3386,13 +3386,13 @@ Moon position, etc.")
 (define-public python-jplephem
   (package
     (name "python-jplephem")
-    (version "2.19")
+    (version "2.20")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jplephem" version))
        (sha256
-        (base32 "1kvdzwyh0invinvcnwfr14r9zbqzcwkdh0cpzw1m4vkdcm64aqn1"))))
+        (base32 "1yp1l3n07849411099f976ps0pyv8jk8k5l9da9nhv54ir86v65v"))))
     (build-system pyproject-build-system)
     (arguments
      (list
