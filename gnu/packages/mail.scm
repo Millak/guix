@@ -1206,14 +1206,14 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
 (define-public mu
   (package
     (name "mu")
-    (version "1.10.7")
+    (version "1.10.8")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/djcb/mu/releases/download/v"
                            version "/mu-" version ".tar.xz"))
        (sha256
-        (base32 "089w1m6sd0nk9l9j40d357fjym8kxmz7kwh3bclk58jxa6xckapa"))))
+        (base32 "129m6rz8vbd7370c3h3ma66bxqdkm6wsdix5qkmv1vm7sanxh4bb"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config
@@ -1221,7 +1221,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
            gnupg                        ; for tests
            texinfo))
     (inputs
-     (list glib gmime xapian))
+     (list glib gmime guile-3.0 xapian))
     (arguments
      (list
       #:modules '((guix build meson-build-system)
@@ -1229,6 +1229,8 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
                   (guix build utils))
       #:imported-modules `(,@%meson-build-system-modules
                            (guix build emacs-utils))
+      #:configure-flags
+      #~(list (format #f "-Dguile-extension-dir=~a/lib" #$output))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-bin-references
@@ -1241,6 +1243,11 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
               (substitute* '("lib/tests/bench-indexer.cc"
                              "lib/utils/mu-test-utils.cc")
                 (("/bin/rm") (which "rm")))))
+          (add-after 'install 'fix-ffi
+            (lambda _
+              (substitute* (find-files #$output "mu.scm")
+                (("\"libguile-mu\"")
+                 (format #f "\"~a/lib/libguile-mu\"" #$output)))))
           (add-after 'install 'install-emacs-autoloads
             (lambda* (#:key outputs #:allow-other-keys)
               (emacs-generate-autoloads
