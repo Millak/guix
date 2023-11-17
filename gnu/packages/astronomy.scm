@@ -2974,44 +2974,40 @@ low quality ones")
     (license license:gpl3+)))
 
 (define-public libpasastro
-  ;; NOTE: (Sharlatan-20210122T215921+0000): the version tag has a build
-  ;; error on spice which is resolved with the latest commit.
-  (let ((commit "e3c218d1502a18cae858c83a9a8812ab197fcb60")
-        (revision "1"))
-    (package
-      (name "libpasastro")
-      (version (git-version "1.4.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/pchev/libpasastro")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0asp2sn34nds5va2ghppwc41vb6j3d1mf049j949rgrll817kx47"))))
-      (build-system gnu-build-system)
-      (arguments
-       `(#:tests? #f
-         #:make-flags
-         (list
-          ,(match (or (%current-target-system) (%current-system))
-             ((or "aarch64-linux" "armhf-linux" "i686-linux" "x86_64-linux")
-              "OS_TARGET=linux")
-             (_ #f))
-          ,(match (or (%current-target-system) (%current-system))
-             ("i686-linux" "CPU_TARGET=i386")
-             ("x86_64-linux" "CPU_TARGET=x86_64")
-             ((or "armhf-linux" "aarch64-linux") "CPU_TARGET=armv7l")
-             (_ #f))
-          (string-append "PREFIX=" (assoc-ref %outputs "out")))
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure))))
-      (home-page "https://github.com/pchev/libpasastro")
-      (synopsis "Interface to astronomy library for use from Pascal program")
-      (description
-       "This package provides shared libraries to interface Pascal program with
+  (package
+    (name "libpasastro")
+    (version "1.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pchev/libpasastro")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h92p9ph3zi4w8krny1azd9wgwna2nf07ims983jcky1chkfm0is"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f
+       #:make-flags
+       (list
+        ,(match (or (%current-target-system) (%current-system))
+           ((or "aarch64-linux" "armhf-linux" "i686-linux" "x86_64-linux")
+            "OS_TARGET=linux")
+           (_ #f))
+        ,(match (or (%current-target-system) (%current-system))
+           ("i686-linux" "CPU_TARGET=i386")
+           ("x86_64-linux" "CPU_TARGET=x86_64")
+           ((or "armhf-linux" "aarch64-linux") "CPU_TARGET=armv7l")
+           (_ #f))
+        (string-append "PREFIX=" (assoc-ref %outputs "out")))
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure))))
+    (home-page "https://github.com/pchev/libpasastro")
+    (synopsis "Interface to astronomy library for use from Pascal program")
+    (description
+     "This package provides shared libraries to interface Pascal program with
 standard astronomy libraries:
 
 @itemize
@@ -3020,7 +3016,7 @@ standard astronomy libraries:
 @item @code{libpaswcs.so}: Interface with libwcs to work with FITS WCS.
 @item @code{libpasspice.so}: To work with NAIF/SPICE kernel.
 @end itemize\n")
-      (license license:gpl2+))))
+      (license license:gpl2+)))
 
 (define-public libxisf
   (package
