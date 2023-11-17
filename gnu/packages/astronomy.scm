@@ -3530,7 +3530,7 @@ functions, so that they can be called with scalar or array inputs.")
 (define-public python-pynbody
   (package
     (name "python-pynbody")
-    (version "1.4.1")
+    (version "1.4.2")
     (source
      (origin
        (method git-fetch) ;PyPi doesn't have not prebuit version.
@@ -3539,7 +3539,7 @@ functions, so that they can be called with scalar or array inputs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vl1yif3bsazcil6saghrpa4qsg47fnr7xnkjpqnp44b7ipww27r"))
+        (base32 "1lwjs8vf3pc4a64c93fa5k6r276g1c60722swns2r10ig1s4wk0a"))
        (modules '((guix build utils)))
        (snippet
         ;; Symlink goes to not existing directory.
