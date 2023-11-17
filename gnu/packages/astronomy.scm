@@ -589,13 +589,13 @@ mining in astronomy.")
 (define-public python-fitsio
   (package
     (name "python-fitsio")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fitsio" version))
        (sha256
-        (base32 "04fbg1ffj7qrlzw50xzzkfnlk6qjjqq96j0im7phprmwb1rbvzzh"))
+        (base32 "19him5rcpjyz14ghkmifnd1xl3ivlyy84h45k6j2pyr5ixc60ky6"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove the bundled cfitsio. When update the package check the
