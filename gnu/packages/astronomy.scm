@@ -3765,13 +3765,13 @@ between image and reference catalogs. Currently only aligning images with
 (define-public python-asdf-3.0
   (package
     (name "python-asdf")
-    (version "3.0.0")
+    (version "3.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asdf" version))
        (sha256
-        (base32 "1a6lf75q9w8fsyq3hn6a7fyldkkyqxddlq21fwdfjwij40dzh3s8"))))
+        (base32 "1jsk7b4mx04l0a08j832vnl309dba3gjnha9mbd61dzs9ridrfna"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-fsspec
