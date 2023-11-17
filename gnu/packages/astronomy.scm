@@ -4115,13 +4115,13 @@ default) to world coordinates.")
 (define-public python-rad
   (package
     (name "python-rad")
-    (version "0.17.1")
+    (version "0.18.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "rad" version))
               (sha256
                (base32
-                "11jhh3qmd00g8sn6hcfshbpb2qy1rfj0xkxn30pd63lqazg4ra3p"))))
+                "1wgnbhldgq0j55yzg33y11vd5k5nzwckiccxywvmq518qh19pky5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
