@@ -1726,13 +1726,13 @@ Herschel.")
 (define-public python-casa-formats-io
   (package
     (name "python-casa-formats-io")
-    (version "0.2.1")
+    (version "0.2.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "casa-formats-io" version))
               (sha256
                (base32
-                "07cchih2ws6jf6q1a4xhkv0jk96s3w08kzxx9l1911wzqk0pw9pj"))))
+                "16qwr6yq86qgdb0lvnmfm5mn6g2d29b1vrmfv26v77kxm6szxr8h"))))
     (build-system pyproject-build-system)
     (arguments
      (list
