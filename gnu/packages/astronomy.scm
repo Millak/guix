@@ -3575,7 +3575,12 @@ functions, so that they can be called with scalar or array inputs.")
                            "--ignore=tests/sph_smooth_test.py"
                            "--ignore=tests/subfind_test.py"
                            "--ignore=tests/subfindhdf_gadget4_test.py"
-                           "--ignore=tests/tipsy_test.py")))
+                           "--ignore=tests/tipsy_test.py")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'set-compiler
+                 (lambda _
+                   (setenv "CC" #$(cc-for-target)))))))
     (native-inputs
      (list python-cython
            python-pandas
