@@ -2,6 +2,7 @@
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,7 +36,9 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages hardware)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
@@ -193,6 +196,47 @@ applications.")
  recovery, FIPS compliant encryption (nss and/or openssl), automatic PMTUd and
  in general better performances compared to the old network protocol.")
     (license (list license:gpl2+ license:lgpl2.1+))))
+
+(define-public nats-server
+  (package
+    (name "nats-server")
+    (version "2.10.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nats-io/nats-server")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07dcn6him4r1chsqr9p4i7fnbfw60gq29f4zmlyljf2c47i58rf9"))))
+    (build-system go-build-system)
+    (inputs
+     (list go-github-com-klauspost-compress
+           go-github-com-minio-highwayhash
+           go-github-com-nats-io-jwt-v2
+           go-github-com-nats-io-nats-go
+           go-github-com-nats-io-nkeys
+           go-github-com-nats-io-nuid
+           go-go-uber-org-automaxprocs
+           go-golang-org-x-crypto
+           go-golang-org-x-sys
+           go-golang-org-x-time))
+    (arguments
+     (list
+      #:go go-1.20
+      #:import-path "github.com/nats-io/nats-server"
+      #:install-source? #f))
+    (home-page "https://github.com/nats-io/nats-server")
+    (synopsis "High performance message broker")
+    (description
+     "NATS is a simple, secure and performant communications system for digital
+systems, services and devices.  NATS is part of the Cloud Native Computing
+Foundation (CNCF).  NATS has over 40 client language implementations, and its
+server can run on-premise, in the cloud, at the edge, and even on a Raspberry
+Pi.  NATS can secure and simplify design and operation of modern distributed
+systems.")
+    (license license:asl2.0)))
 
 (define-public nsq
   (package
