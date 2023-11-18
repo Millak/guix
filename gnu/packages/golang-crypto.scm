@@ -15,6 +15,7 @@
 ;;; Copyright © 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
 ;;; Copyright © 2023 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2023 Jack Hill <jackhill@jackhill.us>
@@ -610,6 +611,31 @@ In addition to AVX there is also support for AVX2 as well as SSE.  Best
 performance is obtained with AVX2 which gives roughly a 4X performance
 increase approaching hashing speeds of 1GB/sec on a single core.")
       (license license:asl2.0))))
+
+(define-public go-github-com-minio-highwayhash
+  (package
+    (name "go-github-com-minio-highwayhash")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/minio/highwayhash")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1inrix7720273ccynxcyi7xsgc55cskxrw7gwn08qkmdj9xdxqai"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/minio/highwayhash"))
+    (propagated-inputs (list go-golang-org-x-sys))
+    (home-page "https://github.com/minio/highwayhash")
+    (synopsis "HighwayHash library for Go")
+    (description
+     "This package implements the pseudo-random-function (PRF) HighwayHash.
+HighwayHash is a fast hash function designed to defend hash-flooding attacks
+or to authenticate short-lived messages.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-minio-sha256-simd
   (package
