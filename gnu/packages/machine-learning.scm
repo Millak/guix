@@ -837,6 +837,42 @@ depend on language-specific pre- or post-processing.")
 cardinality matching from a bipartite graph.")
       (license license:gpl3))))
 
+(define-public python-persim
+  (package
+    (name "python-persim")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "persim" version))
+       (sha256
+        (base32 "0q8wfakx8q4h3ryvw8cba0v6z7xn9139qkrzs3mi1ggyzacnx9d7"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-deprecated
+                             python-hopcroftkarp
+                             python-joblib
+                             python-matplotlib
+                             python-numpy
+                             python-scikit-learn
+                             python-scipy))
+    (native-inputs (list python-pytest python-pytest-cov))
+    (home-page "https://persim.scikit-tda.org")
+    (synopsis "Tools for analyzing persistence diagrams in Python")
+    (description
+     "This package includes a variety of tools used to analyze persistence diagrams.
+It currently houses implementations of
+@itemize
+@item Persistence images
+@item Persistence landscapes
+@item Bottleneck distance
+@item Modified Gromov–Hausdorff distance
+@item Sliced Wasserstein kernel
+@item Heat kernel
+@item Diagram plotting
+@end itemize
+")
+    (license license:expat))) ; MIT License
+
 (define-public python-sacrebleu
   (package
     (name "python-sacrebleu")
