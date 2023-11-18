@@ -1,4 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
 ;;; Copyright © 2023 Thomas Ieong <th.ieong@free.fr>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
@@ -141,6 +142,31 @@ Differentiation between text and binary files}.
     (home-page "https://github.com/matryer/try")
     (synopsis "Simple idiomatic retry package for Go")
     (description "This package provides an idiomatic Go retry module.")
+    (license license:expat)))
+
+(define-public go-go-uber-org-automaxprocs
+  (package
+    (name "go-go-uber-org-automaxprocs")
+    (version "1.5.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/uber-go/automaxprocs")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03arxcfaj7k6iwfdk0liaynxf9rjfj9m5glsjp7ws01xjkgrdpbc"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "go.uber.org/automaxprocs"))
+    (native-inputs (list go-github-com-stretchr-testify
+                         go-github-com-prashantv-gostub))
+    (home-page "https://github.com/uber-go/automaxprocs")
+    (synopsis "CPU-count detection library for Go")
+    (description
+     "This package automatically set GOMAXPROCS to match Linux container
+CPU quota.")
     (license license:expat)))
 
 ;;;
