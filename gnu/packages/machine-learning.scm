@@ -873,6 +873,34 @@ It currently houses implementations of
 ")
     (license license:expat))) ; MIT License
 
+(define-public python-ripser
+  (package
+    (name "python-ripser")
+    (version "0.6.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ripser" version))
+       (sha256
+        (base32 "1575nwsn6b29z7w1mjk23ri83bxq2b4ld979hpgm174642a3x6vs"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy python-persim python-scikit-learn
+                             python-scipy))
+    (native-inputs (list python-cython python-pytest))
+    (home-page "https://ripser.scikit-tda.org")
+    (synopsis "Persistent homology library for Python")
+    (description
+     "This package implements a variety of persistent homology algorithms.  It
+provides an interface for
+@itemize
+@item computing persistence cohomology of sparse and dense data sets
+@item visualizing persistence diagrams
+@item computing lowerstar filtrations on images
+@item computing representative cochains
+@end itemize
+")
+    (license license:expat))) ; MIT License
+
 (define-public python-sacrebleu
   (package
     (name "python-sacrebleu")
