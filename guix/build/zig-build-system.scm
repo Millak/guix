@@ -47,6 +47,7 @@
                 zig-build-flags
                 zig-release-type       ;; "safe", "fast" or "small" empty for a
                                        ;; debug build"
+                target
                 #:allow-other-keys)
   "Build a given Zig package."
 
@@ -56,6 +57,9 @@
                      "--prefix-lib-dir"     "lib"
                      "--prefix-exe-dir"     "bin"
                      "--prefix-include-dir" "include"
+                     ,@(if target
+                         (list (string-append "-Dtarget=" target))
+                         '())
                      ,@(if zig-release-type
                          (list (string-append "-Drelease-" zig-release-type))
                          '())
@@ -65,9 +69,10 @@
 
 (define* (check #:key tests?
                 zig-test-flags
+                target
                 #:allow-other-keys)
   "Run all the tests"
-  (when tests?
+  (when (and tests? (not target))
     (let ((old-destdir (getenv "DESTDIR")))
       (setenv "DESTDIR" "test-out") ;; Avoid colisions with the build output
       (let ((call `("zig" "build" "test"
