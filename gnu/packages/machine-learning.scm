@@ -21,6 +21,7 @@
 ;;; Copyright © 2023 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2023 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -811,6 +812,30 @@ model---with the extension of direct training from raw sentences.
 SentencePiece allows us to make a purely end-to-end system that does not
 depend on language-specific pre- or post-processing.")
     (license license:asl2.0)))
+
+(define-public python-hopcroftkarp
+  ;; This commit fixes a broken import, but has not been released to PyPI.
+  (let ((commit "2846e1dd3265d95d2bddb0cf4190b830cbb4efe6")
+        (revision "1"))
+    (package
+      (name "python-hopcroftkarp")
+      (version (git-version "1.2.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sofiatolaosebikan/hopcroftkarp")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "018ilrp41fcclmb5lsml3aijwbmhbq3m7wy65hr1fryj0avic8fr"))))
+      (build-system pyproject-build-system)
+      (home-page "https://github.com/sofiatolaosebikan/hopcroftkarp")
+      (synopsis "Implementation of the Hopcroft-Karp algorithm")
+      (description
+       "This package implements the Hopcroft-Karp algorithm, producing a maximum
+cardinality matching from a bipartite graph.")
+      (license license:gpl3))))
 
 (define-public python-sacrebleu
   (package
