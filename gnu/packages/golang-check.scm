@@ -14,6 +14,7 @@
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
@@ -349,6 +350,30 @@ messages automatically.")
      "Ginkgo is a Behaviour-Driven Development testing framework for Go.  It
 builds on top of Go's builtin @code{testing} library and is complemented by the
 Gomega matcher library.")
+    (license license:expat)))
+
+(define-public go-github-com-prashantv-gostub
+  (package
+    (name "go-github-com-prashantv-gostub")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/prashantv/gostub")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "035xf5w4fqlicdbbjcflsqflc0z5gmrn6wr7q41xwqfwfpraf9ah"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/prashantv/gostub"))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/prashantv/gostub")
+    (synopsis "Stubbing library for Go")
+    (description
+     "Package gostub is used for stubbing variables in tests, and resetting the
+original value once the test has been run.")
     (license license:expat)))
 
 (define-public go-github-com-stretchr-testify
