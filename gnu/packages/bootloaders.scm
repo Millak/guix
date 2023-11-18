@@ -1188,6 +1188,21 @@ device while it's being turned on (and a while longer).")))
 version, contrary to Novena upstream, does not load u-boot.img from the first
 partition."))
 
+(define-public u-boot-orangepi-r1-plus-lts-rk3328
+  (let ((base (make-u-boot-package "orangepi-r1-plus-lts-rk3328" "aarch64-linux-gnu")))
+    (package
+      (inherit base)
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'set-environment
+                (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                  (setenv "BL31" (search-input-file inputs "bl31.elf"))))))))
+      (inputs
+       (modify-inputs (package-inputs base)
+         (append arm-trusted-firmware-rk3328))))))
+
 (define-public u-boot-cubieboard
   (make-u-boot-package "Cubieboard" "arm-linux-gnueabihf"))
 

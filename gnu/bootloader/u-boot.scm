@@ -5,6 +5,7 @@
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2023 Herman Rimm <herman_rimm@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,6 +38,7 @@
             u-boot-mx6cuboxi-bootloader
             u-boot-nintendo-nes-classic-edition-bootloader
             u-boot-novena-bootloader
+            u-boot-orangepi-r1-plus-lts-rk3328-bootloader
             u-boot-pine64-plus-bootloader
             u-boot-pine64-lts-bootloader
             u-boot-pinebook-bootloader
@@ -92,6 +94,15 @@
                               image (* 1 1024))
         (write-file-on-device u-boot (stat:size (stat u-boot))
                               image (* 69 1024)))))
+
+(define install-orangepi-r1-plus-lts-rk3328-u-boot
+  #~(lambda (bootloader root-index image)
+      (let ((idb (string-append bootloader "/libexec/idbloader.img"))
+            (u-boot (string-append bootloader "/libexec/u-boot.itb")))
+        (write-file-on-device idb (stat:size (stat idb))
+                              image (* 64 512))
+        (write-file-on-device u-boot (stat:size (stat u-boot))
+                              image (* 16384 512)))))
 
 (define install-puma-rk3399-u-boot
   #~(lambda (bootloader root-index image)
@@ -232,6 +243,12 @@
   (bootloader
    (inherit u-boot-imx-bootloader)
    (package u-boot-novena)))
+
+(define u-boot-orangepi-r1-plus-lts-rk3328-bootloader
+  (bootloader
+   (inherit u-boot-bootloader)
+   (package u-boot-orangepi-r1-plus-lts-rk3328)
+   (disk-image-installer install-orangepi-r1-plus-lts-rk3328-u-boot)))
 
 (define u-boot-pine64-plus-bootloader
   (bootloader
