@@ -1,0 +1,36 @@
+From 1dc188129950031243c5a0c80ec2562fab8ec549 Mon Sep 17 00:00:00 2001
+From: Ekaitz Zarraga <ekaitz@elenq.tech>
+Date: Sat, 18 Nov 2023 15:04:16 +0100
+Subject: [PATCH] Use `baseline` cpu by default.
+
+This helps Guix tune the package later. Tunning will only add
+`-Dcpu=whatever` which should override the standard behaviour.
+
+Zig by default uses `native`, which interferes with our build process.
+In our previous zig-build-system we chose to add `-Dcpu=baseline` flag
+in each `zig build` execution, but that doesn't allow us to tune the
+package later. Tunning is only designed to add extra flags in the
+command line call, and we already had one set for the baseline case.
+With this patch we set the standard behavior to `baseline` so we don't
+need to add the `-Dcpu=baseline` flag in the zig-build-system and we can
+tune with no issues.
+---
+ lib/std/zig/CrossTarget.zig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/std/zig/CrossTarget.zig b/lib/std/zig/CrossTarget.zig
+index 6c59a4a3a..f5ec065fe 100644
+--- a/lib/std/zig/CrossTarget.zig
++++ b/lib/std/zig/CrossTarget.zig
+@@ -12,7 +12,7 @@ const mem = std.mem;
+ /// `null` means native.
+ cpu_arch: ?Target.Cpu.Arch = null,
+ 
+-cpu_model: CpuModel = CpuModel.determined_by_cpu_arch,
++cpu_model: CpuModel = CpuModel.baseline,
+ 
+ /// Sparse set of CPU features to add to the set from `cpu_model`.
+ cpu_features_add: Target.Cpu.Feature.Set = Target.Cpu.Feature.Set.empty,
+-- 
+2.41.0
+
