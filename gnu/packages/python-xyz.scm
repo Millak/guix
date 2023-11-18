@@ -5045,13 +5045,13 @@ to Roman Numerals.")
 (define-public python-rollbar
   (package
     (name "python-rollbar")
-    (version "0.16.3")
+    (version "1.0.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "rollbar" version))
               (sha256
                (base32
-                "1qpd0j50wqli3867xmhwk65pm1cxjs60yg83mcvcf3kic3y3sc82"))))
+                "1bzkgp4r79d789q15vnjji2gcb34bnksx9l7q9pjkw12kzjbfiv3"))))
     (build-system python-build-system)
     (native-inputs (list python-pytest-runner python-unittest2))
     (inputs (list python-requests python-six python-httpx python-blinker
