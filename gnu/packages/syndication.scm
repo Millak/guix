@@ -287,6 +287,14 @@ cards.")
                      (("^doc:.*") "doc:\n")
                      (("install-podboat install-docs") "install-podboat")))))
              '())
+         (add-after 'unpack 'pre-build
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "CXX" ,(cxx-for-target))
+             (setenv "CXX_FOR_BUILD" (which "g++"))
+             (substitute* "config.sh"
+               (("if curl-config")
+                (string-append
+                  "if " (search-input-file inputs "/bin/curl-config"))))))
          (add-after 'configure 'dont-vendor-self
            (lambda* (#:key vendor-dir #:allow-other-keys)
              ;; Don't keep the whole tarball in the vendor directory
