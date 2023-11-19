@@ -6618,17 +6618,17 @@ by hand is no trivial task: @command{tmon} aims to make it understandable.")
     (source (package-source linux-libre))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no test suite
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'enter-subdirectory
-           (lambda _
-             (chdir "tools/power/x86/turbostat")
-             #t))
-         (delete 'configure))))         ; no configure script
+     (list
+      #:tests? #f                       ;no test suite
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'enter-subdirectory
+            (lambda _
+              (chdir "tools/power/x86/turbostat")))
+          (delete 'configure))))         ;no configure script
     (inputs
      (list libcap))
     (supported-systems '("i686-linux" "x86_64-linux"))
