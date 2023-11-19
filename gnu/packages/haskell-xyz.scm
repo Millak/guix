@@ -15669,6 +15669,25 @@ purposes.  See the
 <https://www.stackage.org/package/githash>")
     (license license:bsd-3)))
 
+(define-public ghc-git-lfs
+  (package
+    (name "ghc-git-lfs")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "git-lfs" version))
+       (sha256
+        (base32 "1iv3s1c7gwmsima9z3rsphjligpnf7h3vc5c96zgq9b71cx81lba"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "git-lfs")))
+    (inputs (list ghc-http-client ghc-http-types ghc-aeson ghc-network-uri
+                  ghc-case-insensitive))
+    (home-page "http://hackage.haskell.org/package/git-lfs")
+    (synopsis "git-lfs protocol")
+    (description "An implementation of the git-lfs protocol.")
+    (license license:agpl3)))
+
 (define-public ghc-nothunks
   (package
     (name "ghc-nothunks")
