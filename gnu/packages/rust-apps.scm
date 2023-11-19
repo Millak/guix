@@ -633,18 +633,19 @@ This package is the community maintained fork of @code{exa}.")
          (add-after 'install 'install-extra
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
-               (invoke "make" "completions")
                ;; Manpages
                (install-file "doc/fd.1" (string-append out "/share/man/man1"))
-               ;; Completions
-               (install-file "autocomplete/fd.bash"
-                             (string-append out "/etc/bash_completion.d"))
-               (install-file "autocomplete/fd.fish"
-                             (string-append out "/share/fish/vendor_completions.d"))
-               (install-file "autocomplete/_fd"
-                             (string-append out "/share/zsh/site-functions"))
-               (rename-file (string-append out "/etc/bash_completion.d/fd.bash")
-                            (string-append out "/etc/bash_completion.d/fd"))))))))
+               ;; Completions require running the built binary.
+               (unless ,(%current-target-system)
+                 (invoke "make" "completions")
+                 (install-file "autocomplete/fd.bash"
+                               (string-append out "/etc/bash_completion.d"))
+                 (install-file "autocomplete/fd.fish"
+                               (string-append out "/share/fish/vendor_completions.d"))
+                 (install-file "autocomplete/_fd"
+                               (string-append out "/share/zsh/site-functions"))
+                 (rename-file (string-append out "/etc/bash_completion.d/fd.bash")
+                              (string-append out "/etc/bash_completion.d/fd")))))))))
     (inputs (list jemalloc))
     (home-page "https://github.com/sharkdp/fd")
     (synopsis "Simple, fast and user-friendly alternative to find")
