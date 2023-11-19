@@ -1498,7 +1498,11 @@ treat it as part of their software base when porting.")
             "1zi0r6mqa1g0hhsp02cdsjcxmsbipiv0v65c1h4pl84fydcjikbm"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--disable-static")))
+     `(#:configure-flags '("--disable-static"
+                           ;; This fixes cross compiling.
+                           ,@(if (%current-target-system)
+                               '("--enable-malloc0returnsnull=yes")
+                               '()))))
     (propagated-inputs
       (list libx11 libxext xorgproto))
     (native-inputs
