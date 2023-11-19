@@ -368,10 +368,27 @@ to @code{cabal repl}).")
              ;; Undo `patch-shell-for-tests'.
              (copy-file "/tmp/Shell.hs" "Utility/Shell.hs")
              (apply (assoc-ref %standard-phases 'build) args)))
-         (add-after 'install 'install-manpages
+         (add-after 'install 'install-more
            (lambda* (#:key outputs #:allow-other-keys)
-             (setenv "PREFIX" (assoc-ref outputs "out"))
-             (invoke "make" "install-mans")))
+             (let* ((out (assoc-ref outputs "out"))
+                    (bash (string-append out "/etc/bash_completions.d"))
+                    (fish (string-append out "/share/fish/vendor_completions.d"))
+                    (zsh (string-append out "/share/zsh/site-functions")))
+             (setenv "PREFIX" out)
+             (invoke "make" "install-mans")
+             (mkdir-p bash)
+             (copy-file "bash-completion.bash"
+                        (string-append bash "/git-annex"))
+             (mkdir-p fish)
+             (with-output-to-file (string-append fish "/git-annex.fish")
+               (lambda _
+                 (invoke (string-append out "/bin/git-annex")
+                         "--fish-completion-script" "git-annex")))
+             (mkdir-p zsh)
+             (with-output-to-file (string-append zsh "/_git-annex")
+               (lambda _
+                 (invoke (string-append out "/bin/git-annex")
+                         "--zsh-completion-script" "git-annex"))))))
          (add-after 'install 'install-symlinks
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
