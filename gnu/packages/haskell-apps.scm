@@ -297,10 +297,14 @@ to @code{cabal repl}).")
     (version "10.20230828")
     (source
      (origin
-       (method url-fetch)
-       (uri (hackage-uri "git-annex" version))
+       ;; hackage release doesn't include everything needed for extra bits.
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.joeyh.name/git/git-annex.git")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0pb6834dwjs9kdki977rfkdyg58dfzy8wfwvswrz3n7h6bcnjd0b"))))
+        (base32 "1k13mspwlpw6wwnf0cjlqcy3563kyprc6s5parrmsh07dysff7fi"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "git-annex")))
     (arguments
@@ -348,16 +352,7 @@ to @code{cabal repl}).")
              (invoke "runhaskell" "PreConf.hs")))
          (add-after 'build 'build-manpages
            (lambda _
-             ;; The Setup.hs rewrite above removed custom code for building
-             ;; the man pages.  In addition to that code, git-annex's source
-             ;; tree has a file that's not included in the tarball but is used
-             ;; by the Makefile to build man pages.  Copy the core bits here.
-             (call-with-output-file "Build/MakeMans.hs"
-               (lambda (out)
-                 (format out "module Main where~%")
-                 (format out "import Build.Mans~%")
-                 (format out "main = buildMansOrWarn~%")))
-             (invoke "runhaskell" "Build/MakeMans.hs")))
+             (invoke "make" "mans")))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              ;; We need to set the path so that Git recognizes
@@ -375,11 +370,8 @@ to @code{cabal repl}).")
              (apply (assoc-ref %standard-phases 'build) args)))
          (add-after 'install 'install-manpages
            (lambda* (#:key outputs #:allow-other-keys)
-             (let ((man (string-append (assoc-ref outputs "out")
-                                       "/man/man1/")))
-               (mkdir-p man)
-               (for-each (lambda (file) (install-file file man))
-                         (find-files "man")))))
+             (setenv "PREFIX" (assoc-ref outputs "out"))
+             (invoke "make" "install-mans")))
          (add-after 'install 'install-symlinks
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
