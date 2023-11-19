@@ -6006,7 +6006,7 @@ Discover other RouterOS devices or @command{mactelnetd} hosts.
 (define-public bfs
   (package
     (name "bfs")
-    (version "3.0.2")
+    (version "3.0.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6015,7 +6015,7 @@ Discover other RouterOS devices or @command{mactelnetd} hosts.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "055qn2bhnyk9k96w8aviz7v4wip9hwsv7ak1m3yygm1x3fhdyhyz"))))
+                "0n2y9m81278j85m8vk242m9nsxdcw62rxsar4hzwszs6p5cjz5ny"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags #~(list (string-append "CC="
