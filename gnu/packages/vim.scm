@@ -1531,6 +1531,28 @@ be integrated with @acronym{CI, Continuous Integration} pipelines to
 automate testing and is compatible with Vim and Neovim.")
       (license license:expat)))) ;; Specified in README.md.
 
+(define-public vim-jedi-vim
+  (package
+    (name "vim-jedi-vim")
+    (version "0.11.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/davidhalter/jedi-vim")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03fj7f5cpchrdmz9szal6fdg05wdwb0j6260nnyp37nmpcpn13yc"))))
+    (build-system vim-build-system)
+    (arguments (list #:plugin-name "jedi-vim"))
+    (propagated-inputs (list python-jedi))
+    (home-page "https://github.com/davidhalter/jedi-vim")
+    (synopsis "Jedi autocompletion library for Vim")
+    (description
+     "@code{jedi-vim} is a VIM binding to the autocompletion library Jedi.")
+    (license license:expat)))
+
 (define-public vim-srcery-vim
   (package
     (name "vim-srcery-vim")
