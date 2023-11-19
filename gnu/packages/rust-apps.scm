@@ -1361,8 +1361,9 @@ touchscreen devices.")
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               (install-file "target/release/swc" bin)))))))
+                    (bin (string-append out "/bin"))
+                    (swc (car (find-files "target" "^swc$"))))
+               (install-file swc bin)))))))
     (home-page "https://swc.rs/")
     (synopsis "Typescript/javascript compiler")
     (description "@code{rust-swc} is a typescript/javascript compiler.  It
