@@ -15,6 +15,7 @@
 ;;; Copyright © 2022, 2023 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
 ;;; Copyright © 2023 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
+;;; Copyright © 2023 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1529,3 +1530,27 @@ intuitive test syntax for defining test cases and expectations, it also can
 be integrated with @acronym{CI, Continuous Integration} pipelines to
 automate testing and is compatible with Vim and Neovim.")
       (license license:expat)))) ;; Specified in README.md.
+
+(define-public vim-srcery-vim
+  (package
+    (name "vim-srcery-vim")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/srcery-colors/srcery-vim")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nwk81y9j5ljjm3k19kf1zmscdxiis4mwan026wv7cqp7f9qhxlr"))))
+    (build-system vim-build-system)
+    (arguments
+     (list #:plugin-name "srcery"
+           #:mode "opt"))
+    (home-page "https://srcery.sh")
+    (synopsis "Dark colorscheme for gvim and vim")
+    (description
+     "Srcery is a color scheme with clearly defined contrasting colors
+and a slightly earthy tone.")
+    (license license:expat)))
