@@ -11395,6 +11395,30 @@ package provides a light and a dark variant.")
 Solarized color scheme.")
       (license license:expat))))
 
+(define-public emacs-color-identifiers-mode
+  (let ((commit "a26d00d898e0a3295cb7da9323046397223ea1fe")
+        (revision "0"))
+    (package
+      (name "emacs-color-identifiers-mode")
+      (version (git-version "1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ankurdave/color-identifiers-mode")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1kky827f922ziiwasrfnv97vqdf62fp9yml36x1fjsm2h6qw0c8v"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-dash))
+      (home-page "https://github.com/ankurdave/color-identifiers-mode")
+      (synopsis "Minor mode for coloring identifiers based on their names")
+      (description
+       "This package provides an Emacs minor mode to highlight each source
+code identifier uniquely based on its name.")
+      (license license:gpl3+))))
+
 (define-public emacs-poet-theme
   (let ((commit "16eb694f0755c04c4db98614d0eca1199fddad70")
         (revision "1"))
