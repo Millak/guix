@@ -1180,6 +1180,7 @@ more.")
        #:modules ((ice-9 match)
                   (guix build cargo-build-system)
                   (guix build utils))
+       #:install-source? #f
        #:phases
        (modify-phases %standard-phases
          (add-after 'build 'install-manpage
