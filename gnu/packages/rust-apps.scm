@@ -929,6 +929,7 @@ bar.  It is also compatible with sway.")
                (with-output-to-file
                  (string-append share "/elvish/lib/just")
                  (lambda _ (invoke just "--completions" "elvish")))))))))
+    (inputs (list bash-minimal coreutils-minimal))
     (home-page "https://github.com/casey/just")
     (synopsis "Just a command runner")
     (description "This package provides @code{just}, a command runner.
