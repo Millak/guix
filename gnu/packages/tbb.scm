@@ -49,22 +49,33 @@
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
-       '(,@(if (target-riscv64?)
+       '(,@(if (or (target-riscv64?)
+                   (target-ppc32?))
             '("-DTBB_TEST_LINK_FLAGS=-latomic")
             `())
-         ,@(if (target-arm32?)
+         ,@(if (or (target-arm32?)
+                   (target-ppc32?))
              '("-DTBB_TEST_COMPILE_FLAGS=-DTBB_TEST_LOW_WORKLOAD")
              `())
          "-DTBB_STRICT=OFF")   ;; Don't fail on warnings
        #:phases
        (modify-phases %standard-phases
-         ,@(if (target-arm32?)
-             `((add-after 'unpack 'adjust-test-suite
-                 (lambda _
-                   (substitute* "test/CMakeLists.txt"
-                     ;; Bus error, skipped on mips.
-                     ((".*test_malloc_pools.*") "")))))
-             '()))))
+         ,@(cond
+             ((target-arm32?)
+              `((add-after 'unpack 'adjust-test-suite
+                  (lambda _
+                    (substitute* "test/CMakeLists.txt"
+                      ;; Bus error, skipped on mips.
+                      ((".*test_malloc_pools.*") ""))))))
+             ((target-ppc32?)
+              `((add-after 'unpack 'adjust-test-suite
+                  (lambda _
+                      (substitute* "test/CMakeLists.txt"
+                        ;; These tests hang forever.
+                        ((".*test_function_node.*") "")
+                        ((".*test_multifunction_node.*") "")
+                        ((".*test_async_node.*") ""))))))
+             (else '())))))
     (home-page "https://www.threadingbuildingblocks.org")
     (synopsis "C++ library for parallel programming")
     (description
