@@ -343,7 +343,7 @@ applications''.  These must be installed separately.")
 (define cups-minimal/fixed
   (package
     (inherit cups-minimal)
-    (version "2.4.6")
+    (version "2.4.7")
     (source
      (origin
        (method git-fetch)
@@ -352,7 +352,7 @@ applications''.  These must be installed separately.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "cups" version))
        (sha256
-        (base32 "0z70rhfd96qmdx82gdhh2nqjiia0lnvfdwpngjkag2sidw4cm3c1"))))))
+        (base32 "0cj3gs7ki9v0drj19l326s8f1kxrpq7jkzrdfdk7ykrlk7sj645f"))))))
 
 (define-public cups
   (package/inherit cups-minimal
