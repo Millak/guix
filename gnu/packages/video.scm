@@ -4387,7 +4387,7 @@ practically any type of media.")
 (define-public libmediainfo
   (package
     (name "libmediainfo")
-    (version "23.03")
+    (version "23.11")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://mediaarea.net/download/source/"
@@ -4395,7 +4395,7 @@ practically any type of media.")
                                   name "_" version ".tar.xz"))
               (sha256
                (base32
-                "1660lsilm02324c65sxxi41fn225hg78yxqyxff5dyf6fvyzyypm"))))
+                "0gc5brnwagdgaknkpyhkbpwc52q19vf5i3sayifhsg4yqzy58zhr"))))
     ;; TODO add a Big Buck Bunny webm for tests.
     (native-inputs
      (list autoconf automake libtool pkg-config))
