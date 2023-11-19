@@ -37665,10 +37665,10 @@ execute code split into cells according to certain magic comments.")
 
 (define-public emacs-ein
   ;; XXX: Upstream doesn't make any release, and didn't set any version.
-  (let ((commit "b2410dc96f61aa806a7934099d8f1e40c8f6ca18"))
+  (let ((commit "998ba22660be2035cd23bed1555e47748c4da8a2"))
     (package
       (name "emacs-ein")
-      (version "20220911")
+      (version "20230826")
       (source
        (origin
          (method git-fetch)
@@ -37679,7 +37679,7 @@ execute code split into cells according to certain magic comments.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "02392bxl0msda58cls0i79mzqjs73x39czx0mlb0sg2vxp84gy15"))))
+           "09qbswzz6kbxc74dmdgagrk5wgbm89sabf0bfy76j4qlcg6550mx"))))
       (build-system emacs-build-system)
       (arguments
        (list
