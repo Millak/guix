@@ -3917,6 +3917,27 @@ when used with GHC versions which already provide the
     (description "This library provides a fast logging system for Haskell.")
     (license license:bsd-3)))
 
+(define-public ghc-fdo-notify
+  (package
+    (name "ghc-fdo-notify")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "fdo-notify" version))
+       (sha256
+        (base32 "1n4zk1i7g34w0wk5zy8n4r63xbglxf62h8j78kv5fc2yn95l30vh"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "fdo-notify")))
+    (inputs (list ghc-dbus))
+    (home-page "http://bitbucket.org/taejo/fdo-notify/")
+    (synopsis "Desktop Notifications client")
+    (description
+     "This package provides a library for issuing notifications using
+@code{FreeDesktop.org's} Desktop Notifications protcol.  This protocol is
+supported by services such as Ubuntu's @code{NotifyOSD}.")
+    (license license:bsd-3)))
+
 (define-public ghc-feed
   (package
     (name "ghc-feed")
