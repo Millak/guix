@@ -1133,6 +1133,7 @@ more.")
                  (lambda _ (invoke maturin "completions" "elvish")))))))))
     (propagated-inputs
      (list python-tomli))
+    (inputs (list bzip2))
     (native-inputs
      (list perl
            python-wheel
