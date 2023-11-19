@@ -31,6 +31,7 @@
   #:export (laminar-configuration
             laminar-configuration?
             laminar-configuration-home-directory
+            laminar-configuration-supplementary-groups
             laminar-configuration-bind-http
             laminar-configuration-bind-rpc
             laminar-configuration-title
@@ -50,26 +51,28 @@
 (define-record-type* <laminar-configuration>
   laminar-configuration make-laminar-configuration
   laminar-configuration?
-  (laminar          laminars-configuration-laminar
-                    (default laminar))
-  (home-directory   laminar-configuration-home-directory
-                    (default "/var/lib/laminar"))
-  (bind-http        laminar-configuration-bind-http
-                    (default "*:8080"))
-  (bind-rpc         laminar-configuration-bind-rpc
-                    (default "unix-abstract:laminar"))
-  (title            laminar-configuration-title
-                    (default "Laminar"))
-  (keep-rundirs     laminar-keep-rundirs
-                    (default 0))
-  (archive-url      laminar-archive-url
-                    (default #f))
-  (base-url         laminar-base-url
-                    (default #f)))
+  (laminar              laminars-configuration-laminar
+                        (default laminar))
+  (home-directory       laminar-configuration-home-directory
+                        (default "/var/lib/laminar"))
+  (supplementary-groups laminar-configuration-supplementary-groups
+                        (default '()))
+  (bind-http            laminar-configuration-bind-http
+                        (default "*:8080"))
+  (bind-rpc             laminar-configuration-bind-rpc
+                        (default "unix-abstract:laminar"))
+  (title                laminar-configuration-title
+                        (default "Laminar"))
+  (keep-rundirs         laminar-keep-rundirs
+                        (default 0))
+  (archive-url          laminar-archive-url
+                        (default #f))
+  (base-url             laminar-base-url
+                        (default #f)))
 
 (define laminar-shepherd-service
   (match-lambda
-    (($ <laminar-configuration> laminar home-directory
+    (($ <laminar-configuration> laminar home-directory supplementary-groups
                                 bind-http bind-rpc
                                 title keep-rundirs archive-url
                                 base-url)
@@ -102,7 +105,8 @@
                                               #$base-url))
                               '()))
                       #:user "laminar"
-                      #:group "laminar"))
+                      #:group "laminar"
+                      #:supplementary-groups '#$supplementary-groups))
             (stop #~(make-kill-destructor)))))))
 
 (define (laminar-account config)
@@ -113,6 +117,8 @@
         (user-account
          (name "laminar")
          (group "laminar")
+         (supplementary-groups
+          (laminar-configuration-supplementary-groups config))
          (system? #t)
          (comment "Laminar privilege separation user")
          (home-directory (laminar-configuration-home-directory config))

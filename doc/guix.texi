@@ -34163,6 +34163,9 @@ The Laminar package to use.
 @item @code{home-directory} (default: @code{"/var/lib/laminar"})
 The directory for job configurations and run directories.
 
+@item @code{supplementary-groups} (default: @code{()})
+Supplementary groups for the Laminar user account.
+
 @item @code{bind-http} (default: @code{"*:8080"})
 The interface/port or unix socket on which laminard should listen for
 incoming connections to the web frontend.
