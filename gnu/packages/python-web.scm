@@ -5204,54 +5204,29 @@ with oauthlib.")
 (define-public whoogle-search
   (package
     (name "whoogle-search")
-    (version "0.8.2")
+    (version "0.8.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "whoogle-search" version))
               (sha256
                (base32
-                "1r6ymainwc3b8aar90b74mpnx3rsfscgzh0llwvsb03fbhiypw5g"))))
+                "09b9k97jflajvrs0npyz994rj8xkk400s98jw63b6vpsgw9q9nk4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       ;; The tests need network access
       #:tests? #f))
     (propagated-inputs
-     (list python-attrs
-           python-beautifulsoup4
-           python-cachelib
-           python-certifi
-           python-cffi
+     (list python-beautifulsoup4
            python-brotli
-           python-chardet
-           python-click
            python-cryptography
            python-cssutils
            python-defusedxml
            python-flask
-           python-flask-session
-           python-idna
-           python-itsdangerous
-           python-jinja2
-           python-markupsafe
-           python-more-itertools
-           python-packaging
-           python-pluggy
-           python-py
-           python-pycodestyle
-           python-pycparser
-           python-pyopenssl
-           python-pyparsing
-           python-pysocks
-           python-dateutil
+           python-dotenv
            python-requests
-           python-soupsieve
            python-stem
-           python-urllib3
-           python-waitress
-           python-wcwidth
-           python-werkzeug
-           python-dotenv))
+           python-waitress))
     (home-page "https://github.com/benbusby/whoogle-search")
     (synopsis "Self-hosted, ad-free, privacy-respecting metasearch engine")
     (description

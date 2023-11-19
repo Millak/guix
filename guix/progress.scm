@@ -21,6 +21,8 @@
 
 (define-module (guix progress)
   #:use-module (guix records)
+  #:use-module ((guix build syscalls)
+                #:select (terminal-string-width))
   #:use-module (srfi srfi-19)
   #:use-module (rnrs io ports)
   #:use-module (rnrs bytevectors)
@@ -307,7 +309,7 @@ tasks is performed.  Write PREFIX at the beginning of the line."
       (if (string-null? prefix)
           (display (progress-bar ratio (current-terminal-columns)) port)
           (let ((width (- (current-terminal-columns)
-                          (string-length prefix) 3)))
+                          (terminal-string-width prefix) 3)))
             (display prefix port)
             (display "  " port)
             (display (progress-bar ratio width) port)))

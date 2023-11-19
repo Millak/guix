@@ -235,7 +235,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/docbook.scm			\
   %D%/packages/docker.scm			\
   %D%/packages/documentation.scm		\
-  %D%/packages/dunst.scm			\
   %D%/packages/dvtm.scm				\
   %D%/packages/easyrpg.scm			\
   %D%/packages/ebook.scm			\
@@ -901,7 +900,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/aegisub-make43.patch			\
   %D%/packages/patches/agda-categories-remove-incompatible-flags.patch	\
   %D%/packages/patches/agda-categories-use-find.patch	\
+  %D%/packages/patches/agda-categories-use-stdlib-1.7.3.patch	\
   %D%/packages/patches/agda-libdirs-env-variable.patch	\
+  %D%/packages/patches/agda-use-sphinx-5.patch	\
   %D%/packages/patches/agda-stdlib-use-runhaskell.patch	\
   %D%/packages/patches/agg-am_c_prototype.patch			\
   %D%/packages/patches/agg-2.5-gcc8.patch			\
@@ -1020,6 +1021,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/clang-13.0-libc-search-path.patch	\
   %D%/packages/patches/clang-14.0-libc-search-path.patch	\
   %D%/packages/patches/clang-15.0-libc-search-path.patch	\
+  %D%/packages/patches/clang-16.0-libc-search-path.patch	\
+  %D%/packages/patches/clang-17.0-libc-search-path.patch	\
   %D%/packages/patches/clang-runtime-asan-build-fixes.patch	\
   %D%/packages/patches/clang-runtime-esan-build-fixes.patch	\
   %D%/packages/patches/clang-runtime-9-libsanitizer-mode-field.patch	\
@@ -1102,7 +1105,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/elm-reactor-static-files.patch		\
   %D%/packages/patches/elogind-fix-rpath.patch			\
   %D%/packages/patches/emacs-all-the-icons-remove-duplicate-rs.patch	\
-  %D%/packages/patches/emacs-debbugs-keep-patch-subject.patch	\
   %D%/packages/patches/emacs-deferred-fix-number-of-arguments.patch	\
   %D%/packages/patches/emacs-elpy-dup-test-name.patch		\
   %D%/packages/patches/emacs-exec-path.patch			\

@@ -126,7 +126,8 @@ If it is unknown, make an educated guess."
                    (/ total-old-size (expt 1024 2))
                    (/ total-new-size (expt 1024 2)))))))
 
-(define name-regexp (make-regexp "^name[ ]*=(.+)$"))
+(define name-regexp
+  (make-regexp "^name[[:space:]]*=[[:space:]]*([[:graph:]]+)[[:space:]]*$"))
 
 (define* (read-mod-name mod.conf #:optional not-found)
   "Read the name of a mod from MOD.CONF.  If MOD.CONF

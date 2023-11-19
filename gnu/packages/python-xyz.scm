@@ -8726,6 +8726,7 @@ retrieve text and metadata from PDFs as well as merge entire files together.")
            python-attrs
            python-coverage
            python-hypothesis
+           python-setuptools-scm
            python-psutil
            python-pytest
            python-pytest-cov
@@ -32572,13 +32573,13 @@ collection.")
 (define-public python-types-pytz
   (package
     (name "python-types-pytz")
-    (version "2021.3.6")
+    (version "2023.3.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "types-pytz" version))
        (sha256
-        (base32 "14yr5hg2ww8s4a0mz2bkd549fv8qgm538fnzxvqv92ld1pcpym3l"))))
+        (base32 "16mbinqac2fjjh4gqw2940q8ysjqwj0hrvj4p9mqz76l5hcx08yc"))))
     (build-system python-build-system)
     (home-page "https://github.com/python/typeshed")
     (synopsis "Typing stubs for pytz")

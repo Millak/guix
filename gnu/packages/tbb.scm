@@ -52,7 +52,19 @@
        '(,@(if (target-riscv64?)
             '("-DTBB_TEST_LINK_FLAGS=-latomic")
             `())
-         "-DTBB_STRICT=OFF"))) ;; Don't fail on warnings
+         ,@(if (target-arm32?)
+             '("-DTBB_TEST_COMPILE_FLAGS=-DTBB_TEST_LOW_WORKLOAD")
+             `())
+         "-DTBB_STRICT=OFF")   ;; Don't fail on warnings
+       #:phases
+       (modify-phases %standard-phases
+         ,@(if (target-arm32?)
+             `((add-after 'unpack 'adjust-test-suite
+                 (lambda _
+                   (substitute* "test/CMakeLists.txt"
+                     ;; Bus error, skipped on mips.
+                     ((".*test_malloc_pools.*") "")))))
+             '()))))
     (home-page "https://www.threadingbuildingblocks.org")
     (synopsis "C++ library for parallel programming")
     (description

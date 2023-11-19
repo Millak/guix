@@ -64,6 +64,7 @@
 ;;; Copyright © 2023 David Thompson <dthompson2@worcester.edu>
 ;;; Copyright © 2023 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
+;;; Copyright © 2023 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1004,7 +1005,7 @@ similar to live activity monitoring provided with NGINX plus.")
 (define-public lighttpd
   (package
     (name "lighttpd")
-    (version "1.4.72")
+    (version "1.4.73")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.lighttpd.net/lighttpd/"
@@ -1012,7 +1013,7 @@ similar to live activity monitoring provided with NGINX plus.")
                                   "lighttpd-" version ".tar.xz"))
               (sha256
                (base32
-                "1v2m9vavrg3ibbl0kfq3rjlnqicbrlrkqih1iisa0m5pd56xxjpp"))))
+                "1a2cx3di07wf8qii7dpk4yr5wvaz8c9na1x7523smc0lng81d241"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
@@ -4955,8 +4956,8 @@ Cloud.")
     (license license:expat)))
 
 (define-public guix-data-service
-  (let ((commit "1c7539418743e0dfe3a9cad22c414fd732daef8f")
-        (revision "42"))
+  (let ((commit "37a07c2d6e8285877ad0440a7e4ae286b7b65177")
+        (revision "43"))
     (package
       (name "guix-data-service")
       (version (string-append "0.0.1-" revision "." (string-take commit 7)))
@@ -4968,7 +4969,7 @@ Cloud.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1gp4mhjssxky0jjjz916rfgz4w2f327wfd5ixb6lb00ydlfh5mws"))))
+                  "0h83j10bq7dyda2idbqh5y6dcvmbl3xgc147yq4pk6bkh10y29y6"))))
       (build-system gnu-build-system)
       (arguments
        (list
@@ -7909,6 +7910,35 @@ features include:
 @item logging with multiple log levels.
 @end enumerate\n")
     (license license:expat)))
+
+(define-public monsterid
+  (let ((commit "5597f177b473343ff5cad9a6e0e5b255312c6096")
+        (revision "0"))
+    (package
+      (name "monsterid")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/splitbrain/monsterID")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0ixyrrcbw96plcdna2rx1pqwisqy9hnr57kvamgj13lzlv2whdb3"))))
+      (build-system copy-build-system)
+      (arguments
+       '(#:install-plan '(("monsterid.php" "share/web/monsterid/")
+                          ("parts/" "share/web/monsterid/parts/"
+                           #:include-regexp ("\\.png$")))))
+      (home-page "https://www.splitbrain.org/projects/monsterid")
+      (synopsis "The original MonsterID implementation")
+      (description
+       "MonsterID is a method to generate a unique monster image based upon a
+certain identifier (IP address, email address, whatever).  It can be
+used to automatically provide personal avatar images in blog comments
+or other community services.")
+      (license license:expat))))
 
 (define-public cat-avatar-generator
   (let ((commit "9360ea33f79d1dad3e43494b09878b5e3f6b41fa")

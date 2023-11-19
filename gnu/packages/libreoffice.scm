@@ -14,6 +14,7 @@
 ;;; Copyright © 2019 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2020 Marcin Karpezo <sirmacik@wioo.waw.pl>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -50,6 +51,7 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages cups)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
@@ -92,20 +94,19 @@
 (define-public ixion
   (package
     (name "ixion")
-    (version "0.17.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "http://kohei.us/files/ixion/src/libixion-"
-                           version ".tar.xz"))
-       (sha256
-        (base32
-         "07hhqkvns4da8xv990gr1smqz1zf40m531lg95nphfrz48wp3jak"))))
+    (version "0.19.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/ixion/ixion")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0nycbs3765wkaw9ff7aflm56ayxkn15dlfl5pbbb9b5i2rcv3dq6"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list mdds python spdlog))
+    (native-inputs (list autoconf automake libtool pkg-config))
+    (inputs (list mdds python spdlog))
     (home-page "https://gitlab.com/ixion/ixion")
     (synopsis "General purpose formula parser and interpreter")
     (description "Ixion is a library for calculating the results of formula
@@ -117,22 +118,22 @@ their dependencies automatically upon calculation.")
 (define-public orcus
   (package
     (name "orcus")
-    (version "0.17.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "http://kohei.us/files/orcus/src/lib"
-                           "orcus-" version ".tar.xz"))
-       (sha256
-        (base32
-         "1as04qb74jnlnwy4wh5jwaw2nnzgn2s3230ymvh3kx1w9r0rsl1h"))))
+    (version "0.19.0")
+    (source (origin
+              ;; The test suite requires data files store with Git Large
+              ;; File Storage.
+              (method git-fetch/lfs)
+              (uri (git-reference
+                    (url "https://gitlab.com/orcus/orcus")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "02prj6kgph56fkr89k8wlqarrmx65cq92863i4rrny5sqr8c2llr"))))
     (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags '("--disable-static")))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list ixion mdds python zlib))
+    (arguments (list #:configure-flags #~(list "--disable-static")))
+    (native-inputs (list autoconf automake libtool pkg-config))
+    (inputs (list ixion mdds python zlib))
     (home-page "https://gitlab.com/orcus/orcus")
     (synopsis "File import filter library for spreadsheet documents")
     (description "Orcus is a library that provides a collection of standalone
@@ -353,7 +354,7 @@ working with graphics in the WPG (WordPerfect Graphics) format.")
     (name "libcmis")
     ;; Note: Use an unreleased version because libreoffice requires it and
     ;; is the only user (see <https://github.com/tdf/libcmis/pull/43>).
-    (version "0.5.2-46-gf264a61")
+    (version "0.6.0")
     (home-page "https://github.com/tdf/libcmis")
     (source
      (origin
@@ -363,7 +364,7 @@ working with graphics in the WPG (WordPerfect Graphics) format.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "06ff5vw0xrymvvna18wlaayyk20755sk2541i1gh7zpbmncs2ni6"))))
+         "17jx9fb7nmyp6jhz9nlmb3wcp8k03vhcv7sqql6a7jhsjnw3hq0k"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool cppunit pkg-config))
@@ -897,7 +898,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
 (define-public libreoffice
   (package
     (name "libreoffice")
-    (version "7.5.4.2")
+    (version "7.6.3.1")
     (source
      (origin
        (method url-fetch)
@@ -906,7 +907,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
          "https://download.documentfoundation.org/libreoffice/src/"
          (version-prefix version 3) "/libreoffice-" version ".tar.xz"))
        (sha256
-        (base32 "1s3592ick745kl60yjlv7ki3p7nnwswj0mgjh3nk6k7skyvx3fv8"))))
+        (base32 "148084acq370483y0xwvcvck30kxhr78cnmibp5lks17xqp5f9q7"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
@@ -1088,6 +1089,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
      (list bison
            cppunit
            flex
+           frozen                       ;header-only library
            pkg-config
            python-wrapper
            which

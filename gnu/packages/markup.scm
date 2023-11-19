@@ -125,39 +125,39 @@ convert it to structurally valid XHTML (or HTML).")
                                    "See License.text in the distribution."))))
 
 (define-public lowdown
-  (let ((commit "1de10c1d71bfb4348ae0beaec8b1547d5e114969")
-        (revision "1"))
-    (package
-      (name "lowdown")
-      (version (git-version "0.10.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/kristapsdz/lowdown")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1wh07nkiihvp1m79sj4qlnqklnn0rfp3hwls8sqcp0bfd96wpa1h"))))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        #:test-target "regress"
-        #:phases
-        #~(modify-phases %standard-phases
-            (replace 'configure
-              (lambda _
-                (invoke "./configure"
-                        (string-append "PREFIX=" #$output)
-                        (string-append "MANDIR=" #$output "/share/man")))))
-        #:make-flags #~(list "CFLAGS=-fPIC")))
-      (native-inputs
-       (list which))
-      (home-page "https://kristaps.bsd.lv/lowdown/")
-      (synopsis "Simple Markdown translator")
-      (description "Lowdown is a Markdown translator producing HTML5,
-roff documents in the ms and man formats, LaTeX, gemini, and terminal output.")
-      (license license:isc))))
+  (package
+    (name "lowdown")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://kristaps.bsd.lv/lowdown/snapshots/lowdown-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "0y88gffrg1zrin0y53j4gbkmpia0r8p0kyklj501wavkqi83j7pk"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:test-target "regress"
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (invoke "./configure"
+                      (string-append "PREFIX=" #$output)
+                      (string-append "MANDIR=" #$output "/share/man"))))
+          (replace 'install
+            (lambda _
+              (invoke "make" "install" "install_libs"))))
+      #:make-flags #~(list "CFLAGS=-fPIC")))
+    (native-inputs
+     (list which))
+    (home-page "https://kristaps.bsd.lv/lowdown/")
+    (synopsis "Simple Markdown translator")
+    (description "Lowdown is a Markdown translator producing HTML5, roff
+documents in the ms and man formats, LaTeX, gemini, and terminal output.")
+    (license license:isc)))
 
 (define-public discount
   (package

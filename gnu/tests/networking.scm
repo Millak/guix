@@ -349,9 +349,8 @@ port 7, and a dict service on port 2628."
 
           ;; Make sure the PID file is created.
           (test-assert "PID file"
-            (marionette-eval
-             '(file-exists? "/var/run/inetd.pid")
-             marionette))
+            (wait-for-file "/var/run/inetd.pid" marionette
+                           #:timeout 30))
 
           ;; Test the echo service.
           (test-equal "echo response"

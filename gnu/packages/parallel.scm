@@ -9,7 +9,7 @@
 ;;; Copyright © 2017, 2018 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
-;;; Copyright © 2019-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;;
@@ -185,7 +185,7 @@ when jobs finish.")
 (define-public slurm
   (package
     (name "slurm")
-    (version "22.05.1")
+    (version "23.02.6")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -193,7 +193,7 @@ when jobs finish.")
                     version ".tar.bz2"))
               (sha256
                (base32
-                "0f3hhlki8g7slllsnyj1qikbsvr62i0hig85lcdcfnmsagzlhbyi"))
+                "08rz3r1rlnb3pmfdnbh542gm44ja0fdy8rkj4vm4lclc48cvqp2a"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -280,6 +280,20 @@ by managing a queue of pending work.")
 ;; releases here.  See also <https://issues.guix.gnu.org/44387>.
 ;; As noted in the link, YY.MM is the release scheme, and the 'maintenance'
 ;; digit does not introduce incompatibilities.
+
+(define-public slurm-22.05
+  (package
+    (inherit slurm)
+    (version "22.05.1")
+    (source (origin
+              (inherit (package-source slurm))
+              (method url-fetch)
+              (uri (string-append
+                    "https://download.schedmd.com/slurm/slurm-"
+                    version ".tar.bz2"))
+              (sha256
+               (base32
+                "0f3hhlki8g7slllsnyj1qikbsvr62i0hig85lcdcfnmsagzlhbyi"))))))
 
 (define-public slurm-21.08
   (package

@@ -174,8 +174,8 @@
   ;; Note: the 'update-guix-package.scm' script expects this definition to
   ;; start precisely like this.
   (let ((version "1.4.0")
-        (commit "e863274e67e2242b970845783172c9f4e49405ca")
-        (revision 13))
+        (commit "a60ff4611a8814d1f33d64af07401762afbcc597")
+        (revision 14))
     (package
       (name "guix")
 
@@ -191,7 +191,7 @@
                       (commit commit)))
                 (sha256
                  (base32
-                  "0g8p0w9qrqbzz3b4fzbvvqpdfgwhlxpz75n3ysa6haima5s19mp3"))
+                  "08czk2789y21cydg1xwwrmah8hjaprdnzvb993n7d7d70ccxk5kz"))
                 (file-name (string-append "guix-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1754,8 +1754,8 @@ in an isolated environment, in separate namespaces.")
     (license license:gpl3+)))
 
 (define-public nar-herder
-  (let ((commit "53682fac7e00cd2801406edbd014922c1720c347")
-        (revision "21"))
+  (let ((commit "bf539aa08edfe8010606a31c00e0296c3d400319")
+        (revision "22"))
     (package
       (name "nar-herder")
       (version (git-version "0" revision commit))
@@ -1766,7 +1766,7 @@ in an isolated environment, in separate namespaces.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "18mzrpc5ni8d6xbp1bg0nzdj0brmnji4jm1gyiq77dm17c118zyz"))
+                  "1i9q7ys26r6y2xa4qqy21bcxlqiynxp3p1wl5gmyj33jnb9ryjby"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments

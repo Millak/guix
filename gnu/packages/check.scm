@@ -2551,7 +2551,7 @@ mypy plugins.")
 (define-public python-pytest-perf
   (package
     (name "python-pytest-perf")
-    (version "0.12.0")
+    (version "0.13.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2560,26 +2560,21 @@ mypy plugins.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05mgknvrmyz1kmkgw8jzvisavc68wz1g2wxv69i6xvzgqxf17m9f"))))
-    (build-system python-build-system)
+                "1hrccvrbccqwba04pqj749hdzn4sgldmbpg74nf3fzz7wyg6jxqk"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-k"
-                        (string-append
-                         ;; Do not test the myproject.toml build as it tries to pull
-                         ;; dependencies from the internet.
-                         "not project "
-                         ;; The benchmark test attempts to install the
-                         ;; package, failing to pull its dependencies from the
-                         ;; network.
-                         "and not BenchmarkRunner "
-                         ;; The upstream_url test requires networking.
-                         "and not upstream_url"))))))))
+      #:test-flags '(list "-k"
+                          (string-append
+                           ;; Do not test the myproject.toml build as it tries to pull
+                           ;; dependencies from the internet.
+                           "not project "
+                           ;; The benchmark test attempts to install the
+                           ;; package, failing to pull its dependencies from the
+                           ;; network.
+                           "and not BenchmarkRunner "
+                           ;; The upstream_url test requires networking.
+                           "and not upstream_url"))))
     (native-inputs
      (list python-pytest
            python-pytest-black

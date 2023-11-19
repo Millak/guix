@@ -154,7 +154,6 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
-  #:use-module (gnu packages ruby)
   #:use-module (gnu packages samba)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages shells)
@@ -867,25 +866,9 @@ publish/subscribe, RPC-style request/reply, or service discovery.")
        (sha256
         (base32 "01ddfzjlkf2dgijrmm3j3j8irccsnbgfvjcnwslsfaxnrmrq5s64"))))
     (build-system cmake-build-system)
-    (outputs '("out" "doc"))
     (arguments
      `(#:configure-flags
-       (list
-        "-DNN_ENABLE_COVERAGE=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'move-docs
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (assoc-ref outputs "doc")))
-               (mkdir-p (string-append doc "/share/doc"))
-               (rename-file
-                (string-append out "/share/doc/nanomsg")
-                (string-append doc "/share/doc/nanomsg"))
-               #t))))))
-    (native-inputs
-     `(("asciidoctor" ,ruby-asciidoctor)
-       ("pkg-config" ,pkg-config)))
+       (list "-DNN_ENABLE_COVERAGE=ON")))
     (synopsis "Scalable socket library")
     (description "Nanomsg is a socket library that provides several common
 communication patterns.  It aims to make the networking layer fast, scalable,
@@ -4415,6 +4398,27 @@ client and server.  It allows you to use remote block devices over a TCP/IP
 network.")
     (license license:gpl2)))
 
+(define-public ngtcp2
+  (package
+    (name "ngtcp2")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/ngtcp2/ngtcp2/"
+                           "releases/download/v" version "/"
+                           "ngtcp2-" version ".tar.xz"))
+       (sha256
+        (base32 "0l84hnj9n4bfxjizgmqsqbz71jx7m00a7l1z43fg5ls3apx9ij11"))))
+    (build-system gnu-build-system)
+    (native-inputs (list cunit))
+    (home-page "https://nghttp2.org/ngtcp2/")
+    (synopsis "QUIC protocol implementation")
+    (description
+     "The ngtcp2 project is an effort to implement the RFC9000 (IETF)
+QUIC protocol.")
+    (license license:expat)))
+
 (define-public yggdrasil
   (package
     (name "yggdrasil")
@@ -4540,7 +4544,7 @@ on hub/switched networks.  It is based on @acronym{ARP} packets, it will send
 (define-public phantomsocks
   (package
     (name "phantomsocks")
-    (version "0.0.0-20230829023258-013a0002abe2")
+    (version "0.0.0-20231031033204-8b0ac27fc450")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4549,10 +4553,11 @@ on hub/switched networks.  It is based on @acronym{ARP} packets, it will send
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pqq4mh6dr7fb7i001wggwkxpvavxq0ps9h2cmm4gv8ygh4v6f10"))))
+                "1q4i8pgj6hzry9wzlczx729dmmgqdqfb26rfaim2ngmp1dyy9drl"))))
     (build-system go-build-system)
     (arguments
-     (list #:install-source? #f
+     (list #:go go-1.20
+           #:install-source? #f
            #:import-path "github.com/macronut/phantomsocks"
            #:build-flags #~'("-tags" #$(if (target-linux?)
                                            "rawsocket"

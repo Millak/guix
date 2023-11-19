@@ -738,14 +738,14 @@ source files.")
 (define-public node-lts
   (package
     (inherit node)
-    (version "18.17.1")
+    (version "18.18.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nodejs.org/dist/v" version
                                   "/node-v" version ".tar.gz"))
               (sha256
                (base32
-                "0dachvhf5jxrb1av8mn2dikbhwklxsgc9y2zg4h50fcwh5d54mqi"))
+                "0ci1faxjsbp0lv05kskh5anfljn6zawqcf7dawiby5d5qg7x572h"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -903,7 +903,26 @@ source files.")
                                           "/lib/node_modules/npm/node_modules"
                                           "/tar/lib/write-entry.js")))
                  (substitute* file
-                   (("this.stat.nlink > 1") "false")))))))))
+                   (("this.stat.nlink > 1") "false")))))
+           (add-after 'install 'install-node-gyp-wrapper
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (dir (string-append out "/lib/node_modules/npm/bin/node-gyp-bin"))
+                      (file (string-append dir "/node-gyp")))
+                 (mkdir-p dir)
+                 ;; See https://github.com/npm/cli/issues/6842
+                 (call-with-output-file file
+                   (lambda (port)
+                     (format port "#!~a/bin/sh
+if [ \"x$npm_config_node_gyp\" = \"x\" ]; then
+  ~a/bin/node \"~a/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js\" \"$@\"
+else
+  \"$npm_config_node_gyp\" \"$@\"
+fi"
+                             (assoc-ref inputs "bash")
+                             out
+                             out)))
+                 (chmod file #o555))))))))
     (native-inputs
      (list ;; Runtime dependencies for binaries used as a bootstrap.
            c-ares-for-node

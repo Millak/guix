@@ -876,6 +876,38 @@ attributes of microbiome data - zero-inflation and over-dispersion, are
 simultaneously considered.")
       (license license:gpl3))))
 
+(define-public r-ewastools
+  (let ((commit "f7646cacd73266708479b3fea5d625054d179f95")
+        (revision "1"))
+    (package
+      (name "r-ewastools")
+      (version (git-version "1.7.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/hhhh5/ewastools/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0irarlnxfnasa755adxsn67rxsy01zwhjhw18g4cag08cqiyyw41"))))
+      (properties `((upstream-name . "ewastools")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-data-table
+             r-igraph
+             r-illuminaio
+             r-mblm
+             r-quadprog))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/hhhh5/ewastools/")
+      (synopsis
+       "Quality control toolset for the Illumina Infinium DNA methylation")
+      (description
+       "This package provides a collection of useful functions for working
+with DNA methylation micro-array data.")
+      (license license:unlicense))))
+
 (define-public r-numbat
   (let ((commit "4ab7752e7d267a3f443756675728521a9b0a7295")
         (revision "1"))
@@ -9891,6 +9923,51 @@ tasks.")
 Pore-C concatemers.")
       (license license:gpl3))))
 
+(define-public r-dnamcrosshyb
+  ;; There aren't any releases.
+  (let ((commit "fe8acb33667e81f00dcb84e0fa75c87ab2db5d8f")
+        (revision "1"))
+    (package
+      (name "r-dnamcrosshyb")
+      (version (git-version "0.0.0.9000" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/pjhop/DNAmCrosshyb")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "12j1xsiqpvny5rp23z1az0k4cj5ajbcwkg65z00s16vywi2rx6nb"))))
+      (properties `((upstream-name . "DNAmCrosshyb")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-biocgenerics
+             r-biocparallel
+             r-biostrings
+             r-bsgenome-hsapiens-ucsc-hg19-masked
+             r-bsgenome-hsapiens-ucsc-hg38-masked
+             r-dplyr
+             r-genomicranges
+             r-ggplot2
+             r-iranges
+             r-magrittr
+             r-minfi
+             r-purrr
+             r-s4vectors
+             r-shiny
+             r-stringi
+             r-stringr
+             r-tibble
+             r-tidyr
+             r-watermelon))
+      (home-page "https://github.com/pjhop/DNAmCrosshyb")
+      (synopsis "DNAmCrosshyb")
+      (description
+       "This package provides helper functions to detect cross-hybridization
+on Illumina DNAm arrays.")
+      (license license:gpl3))))
+
 (define-public r-doubletcollection
   (let ((commit "c0d62f1853942ee6a087eaf7b000d9e4261e2dfd")
         (revision "1"))
@@ -15579,6 +15656,41 @@ analysing cytometry data in R.")
        "This package provides a toolbox to process, analyze and visualize
 spatial single-cell expression data.")
       (license license:expat))))
+
+;; Variant of r-illuminahumanmethylationepicmanifest in the
+;; (gnu packages bioconductor) module.
+(define-public r-illuminahumanmethylationepicmanifest-latest
+  (let ((commit "a9ffbad36f5e496ece6c4c37b80e2f4f7e02d0c3")
+        (revision "1"))
+    (package
+      (name "r-illuminahumanmethylationepicmanifest")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url
+                "https://github.com/achilleasNP/IlluminaHumanMethylationEPICmanifest")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0v8f0hl0v8gwi61vgqw56rn5j09h95hj54rb8pzbn0znm162n4fc"))))
+      (properties `((upstream-name . "IlluminaHumanMethylationEPICmanifest")))
+      (build-system r-build-system)
+      (home-page
+       "https://github.com/achilleasNP/IlluminaHumanMethylationEPICmanifest")
+      (synopsis "Illumina Human Methylation Manifest 1.0 B5 for R and minfi")
+      (description
+       "This is a drop-in replacement for the
+@code{IlluminaHumanMethylationEPIC} package.  It utilizes a Manifest based on
+1.0B5 annotation.  As of version 0.3.0, the
+@code{IlluminaHumanMethylationEPIC} package still employs the 1.0B2 annotation
+manifest.  A corresponding annotation package,
+@code{IlluminaHumanMethylationEPICanno.ilm10b5.hg38}, is available to ensure
+proper annotation.  The decision to maintain the same name is due to
+complications in downstream processing caused by array name lookup in certain
+preprocessing options.")
+      (license license:artistic2.0))))
 
 (define-public r-illuminahumanmethylationepicanno-ilm10b5-hg38
   (let ((commit "3db06910e27f626e0cc8b335ff45cf9a4050a36a")

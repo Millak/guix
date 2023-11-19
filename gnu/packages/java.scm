@@ -518,6 +518,8 @@
                                                    "/lib/arm")
                                                   ("aarch64-linux"
                                                    "/lib/aarch64")
+                                                  ("powerpc-linux"
+                                                   "/lib/ppc")
                                                   ;; We need a catch-all, dropping
                                                   ;; '-linux' works in most cases.
                                                   (_
@@ -878,7 +880,14 @@ new Date();"))
     (build-system gnu-build-system)
     (outputs '("out" "jdk" "doc"))
     (arguments
-     `(#:tests? #f; require jtreg
+     `(#:imported-modules
+       ((guix build ant-build-system)
+        ,@%gnu-build-system-modules)
+       #:modules
+       ((guix build utils)
+        (guix build gnu-build-system)
+        (ice-9 popen))
+       #:tests? #f; require jtreg
        #:make-flags '("all")
        #:disallowed-references ,(list (gexp-input icedtea-8)
                                       (gexp-input icedtea-8 "jdk"))
@@ -971,6 +980,80 @@ new Date();"))
                 (find-files "."
                             "\\.c$|\\.h$"))
                #t)))
+           ;; By default OpenJDK only generates an empty keystore.  In order to
+           ;; be able to use certificates in Java programs we need to generate a
+           ;; keystore from a set of certificates.  For convenience we use the
+           ;; certificates from the nss-certs package.
+           (add-after 'install 'install-keystore
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (use-modules (ice-9 rdelim))
+               (let* ((keystore  "cacerts")
+                      (certs-dir (search-input-directory inputs
+                                                         "etc/ssl/certs"))
+                      (keytool   (string-append (assoc-ref outputs "jdk")
+                                                "/bin/keytool")))
+                 (define (extract-cert file target)
+                   (call-with-input-file file
+                     (lambda (in)
+                       (call-with-output-file target
+                         (lambda (out)
+                           (let loop ((line (read-line in 'concat))
+                                      (copying? #f))
+                             (cond
+                              ((eof-object? line) #t)
+                              ((string-prefix? "-----BEGIN" line)
+                               (display line out)
+                               (loop (read-line in 'concat) #t))
+                              ((string-prefix? "-----END" line)
+                               (display line out)
+                               #t)
+                              (else
+                               (when copying? (display line out))
+                               (loop (read-line in 'concat) copying?)))))))))
+                 (define (import-cert cert)
+                   (format #t "Importing certificate ~a\n" (basename cert))
+                   (let ((temp "tmpcert"))
+                     (extract-cert cert temp)
+                     (let ((port (open-pipe* OPEN_WRITE keytool
+                                             "-import"
+                                             "-alias" (basename cert)
+                                             "-keystore" keystore
+                                             "-storepass" "changeit"
+                                             "-file" temp)))
+                       (display "yes\n" port)
+                       (when (not (zero? (status:exit-val (close-pipe port))))
+                         (format #t "failed to import ~a\n" cert)))
+                     (delete-file temp)))
+
+                 ;; This is necessary because the certificate directory contains
+                 ;; files with non-ASCII characters in their names.
+                 (setlocale LC_ALL "en_US.utf8")
+                 (setenv "LC_ALL" "en_US.utf8")
+
+                 (copy-file (string-append (assoc-ref outputs "out")
+                                           "/lib/security/cacerts")
+                            keystore)
+                 (chmod keystore #o644)
+                 (for-each import-cert (find-files certs-dir "\\.pem$"))
+                 (mkdir-p (string-append (assoc-ref outputs "out")
+                                         "/lib/security"))
+                 (mkdir-p (string-append (assoc-ref outputs "jdk")
+                                         "/lib/security"))
+
+                 ;; The cacerts files we are going to overwrite are chmod'ed as
+                 ;; read-only (444) in icedtea-8 (which derives from this
+                 ;; package).  We have to change this so we can overwrite them.
+                 (chmod (string-append (assoc-ref outputs "out")
+                                       "/lib/security/" keystore) #o644)
+                 (chmod (string-append (assoc-ref outputs "jdk")
+                                       "/lib/security/" keystore) #o644)
+
+                 (install-file keystore
+                               (string-append (assoc-ref outputs "out")
+                                              "/lib/security"))
+                 (install-file keystore
+                               (string-append (assoc-ref outputs "jdk")
+                                              "/lib/security")))))
          ;; Some of the libraries in the lib/ folder link to libjvm.so.
          ;; But that shared object is located in the server/ folder, so it
          ;; cannot be found.  This phase creates a symbolic link in the
@@ -1044,6 +1127,7 @@ new Date();"))
        ("icedtea-8:jdk" ,icedtea-8 "jdk")
        ;; XXX: The build system fails with newer versions of GNU Make.
        ("make@4.2" ,gnu-make-4.2)
+       ("nss-certs" ,nss-certs)
        ("unzip" ,unzip)
        ("which" ,which)
        ("zip" ,zip)))
@@ -1126,6 +1210,7 @@ new Date();"))
      `(("openjdk9" ,openjdk9)
        ("openjdk9:jdk" ,openjdk9 "jdk")
        ("make@4.2" ,gnu-make-4.2)
+       ("nss-certs" ,nss-certs)
        ("unzip" ,unzip)
        ("which" ,which)
        ("zip" ,zip)))))
@@ -1152,6 +1237,7 @@ new Date();"))
       #:modules `((guix build gnu-build-system)
                   (guix build utils)
                   (ice-9 match)
+                  (ice-9 popen)
                   (srfi srfi-1)
                   (srfi srfi-26))
       #:disallowed-references (list (gexp-input openjdk10)
@@ -1394,6 +1480,7 @@ new Date();"))
            openjdk10
            `(,openjdk10 "jdk")
            gnu-make-4.2
+           nss-certs
            pkg-config
            unzip
            which
@@ -13567,6 +13654,70 @@ and allows building a Java object model for JSON text using API classes
     (description "JSON Processing (JSON-P) is a Java API to process (e.g.
 parse, generate, transform and query) JSON messages.  This package contains
 a reference implementation of that API.")))
+
+(define-public java-jakarta-json
+  (package
+    (name "java-jakarta-json")
+    (version "2.1.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/jakartaee/jsonp-api")
+                     (commit (string-append version "-RELEASE"))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1q600harqfhlf763l75j4fx7ai7ybp7ga06aiky2a2hg8mhz0s5f"))))
+    (build-system ant-build-system)
+    (arguments
+     `(#:jar-name "jakarta-json.jar"
+       #:source-dir "api/src/main/java"
+       #:tests? #f; no tests
+       #:jdk ,openjdk11))
+    (home-page "https://github.com/jakartaee/jsonp-api")
+    (synopsis "Portable API for JSON handling in Java")
+    (description "This project contains API and Compatible Implementation of
+Jakarta JSON Processing specification.  Jakarta JSON Processing provides
+portable APIs to parse, generate, transform, and query JSON documents.")
+    ;; with classpath exception
+    (license license:epl2.0)))
+
+(define-public java-parsson
+  (package
+    (name "java-parsson")
+    (version "1.1.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/eclipse-ee4j/parsson")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "06vvr6qv1ihnk212gdxg4x0sd61lgxk7wf062s7gym5k2h7fms0p"))))
+    (build-system ant-build-system)
+    (arguments
+     `(#:jar-name "parsson.jar"
+       #:source-dir "impl/src/main/java"
+       #:test-dir "impl/src/test"
+       #:use-java-modules? #t
+       #:jdk ,openjdk11
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'copy-resources
+           (lambda _
+             (copy-recursively "impl/src/main/resources"
+                               "build/classes"))))))
+    (inputs
+      (list java-jakarta-json))
+    (native-inputs
+      (list java-junit))
+    (home-page "https://github.com/eclipse-ee4j/parsson")
+    (synopsis "Implementation of Jakarta JSON API")
+    (description "Eclipse Parsson is an implementation of the Jakarta JSON
+Processing specification.")
+    ;; with classpath exception
+    (license license:epl2.0)))
 
 (define-public java-xmp
   (package

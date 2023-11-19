@@ -68,6 +68,42 @@
 
 ;;; Annotations
 
+(define-public r-bsgenome-hsapiens-ucsc-hg38-masked
+  (package
+    (name "r-bsgenome-hsapiens-ucsc-hg38-masked")
+    (version "1.4.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "BSgenome.Hsapiens.UCSC.hg38.masked" version
+                              'annotation))
+       (sha256
+        (base32 "0j71hdxqvvc0s8mc6jp6zk502mrf095qazj95yzzb4rm6sjvd20m"))))
+    (properties `((upstream-name . "BSgenome.Hsapiens.UCSC.hg38.masked")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bsgenome r-bsgenome-hsapiens-ucsc-hg38
+                             r-genomeinfodb))
+    (home-page
+     "https://bioconductor.org/packages/BSgenome.Hsapiens.UCSC.hg38.masked")
+    (synopsis
+     "Full masked genomic sequences for Homo sapiens (UCSC version hg38)")
+    (description
+     "This package provides the complete genome sequences for Homo sapiens as
+provided by UCSC (genome hg38, based on assembly GRCh38.p14 since 2023/01/31).
+The sequences are the same as in BSgenome.Hsapiens.UCSC.hg38, except that each
+of them has the 4 following masks on top:
+
+@enumerate
+@item the mask of assembly gaps (AGAPS mask);
+@item the mask of intra-contig ambiguities (AMB mask);
+@item the mask of repeats from @code{RepeatMasker} (RM mask);
+@item the mask of repeats from Tandem Repeats Finder (TRF mask).
+@end enumerate
+
+Only the AGAPS and AMB masks are \"active\" by default.  The sequences are stored
+in @code{MaskedDNAString} objects.")
+    (license license:artistic2.0)))
+
 (define-public r-hpo-db
   (package
     (name "r-hpo-db")
@@ -505,6 +541,28 @@ Finder (TRF mask).  Only the AGAPS and AMB masks are \"active\" by default.")
     (description
      "This package provides full genome sequences for Danio rerio (Zebrafish)
 as provided by UCSC (danRer11, May 2017) and stored in Biostrings objects.")
+    (license license:artistic2.0)))
+
+(define-public r-bsgenome-ecoli-ncbi-20080805
+  (package
+    (name "r-bsgenome-ecoli-ncbi-20080805")
+    (version "1.3.1000")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "BSgenome.Ecoli.NCBI.20080805" version
+                              'annotation))
+       (sha256
+        (base32 "1l7mjyys1kaq4mbia9jamyw6sd0ij1wypwxvwy8aksan3gcfnh27"))))
+    (properties `((upstream-name . "BSgenome.Ecoli.NCBI.20080805")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bsgenome))
+    (home-page
+     "https://bioconductor.org/packages/BSgenome.Ecoli.NCBI.20080805")
+    (synopsis "Escherichia coli full genomes")
+    (description
+     "This package provides Escherichia coli full genomes for several strains
+as provided by NCBI on 2008/08/05 and stored in Biostrings objects.")
     (license license:artistic2.0)))
 
 (define-public r-bsgenome-hsapiens-1000genomes-hs37d5
@@ -1574,6 +1632,26 @@ biscuiteer.")
      "This package is a collection of Strand-seq data.  The main purpose is to
 demonstrate functionalities of the @code{breakpointR} package.")
     (license license:expat)))
+
+(define-public r-breastcancervdx
+  (package
+    (name "r-breastcancervdx")
+    (version "1.40.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "breastCancerVDX" version
+                              'experiment))
+       (sha256
+        (base32 "12r8zql30ssr0cxy8v1qawwsky54321c737ny19n2yrl7sm08gf0"))))
+    (properties `((upstream-name . "breastCancerVDX")))
+    (build-system r-build-system)
+    (home-page "https://bioconductor.org/packages/breastCancerVDX")
+    (synopsis "Gene expression datasets")
+    (description
+     "This package is a collection of gene expression data from a breast
+cancer study published in Wang et al. 2005 and Minn et al 2007.")
+    (license license:artistic2.0)))
 
 (define-public r-celldex
   (package
@@ -4163,6 +4241,27 @@ control) steps to remove problematic variants, and utilizes a Bayesian
 framework to identify statistically significant allele-specific events.
 BaalChIP is able to account for copy number differences between the two
 alleles, a known phenotypical feature of cancer samples.")
+    (license license:artistic2.0)))
+
+(define-public r-bags
+  (package
+    (name "r-bags")
+    (version "2.42.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "BAGS" version))
+       (sha256
+        (base32 "0356ragpcldr48yycqj91sn3bcqvvfp5spv2z02r8g6hs0dndwdh"))))
+    (properties `((upstream-name . "BAGS")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase r-breastcancervdx))
+    (home-page "https://bioconductor.org/packages/BAGS")
+    (synopsis "Bayesian approach for geneset selection")
+    (description
+     "This R package is providing functions to perform geneset significance
+analysis over simple cross-sectional data between 2 and 5 phenotypes of
+interest.")
     (license license:artistic2.0)))
 
 (define-public r-basespacer
@@ -8133,6 +8232,42 @@ nucleotide sequence analysis.  The package is primarily useful to developers
 of other R packages who wish to make use of HTSlib.")
     (license license:lgpl2.0+)))
 
+(define-public r-rnbeads
+  (package
+    (name "r-rnbeads")
+    (version "2.20.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "RnBeads" version))
+       (sha256
+        (base32 "15z7l4nmpy01xm19717l27nwf3rfsn6wjv211fn2y4ls40mz75qp"))))
+    (properties `((upstream-name . "RnBeads")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocgenerics
+           r-cluster
+           r-ff
+           r-fields
+           r-genomicranges
+           r-ggplot2
+           r-gplots
+           r-gridextra
+           r-illuminaio
+           r-iranges
+           r-limma
+           r-mass
+           r-matrixstats
+           r-methylumi
+           r-plyr
+           r-s4vectors))
+    (home-page "https://bioconductor.org/packages/RnBeads")
+    (synopsis "RnBeads")
+    (description
+     "@code{RnBeads} facilitates comprehensive analysis of various types of DNA
+methylation data at the genome scale.")
+    (license license:gpl3)))
+
 (define-public r-impute
   (package
     (name "r-impute")
@@ -8636,6 +8771,44 @@ replicability across datasets using neighbor voting.  @code{MetaNeighbor} works
 on the basis that cells of the same type should have more similar gene expression
 profiles than cells of different types.")
     (license license:expat)))
+
+(define-public r-methylaid
+  (package
+    (name "r-methylaid")
+    (version "1.36.0")
+    (source
+    (origin
+      (method url-fetch)
+      (uri (bioconductor-uri "MethylAid" version))
+      (sha256
+        (base32 "0mzml9j6f7yycf9747ikkpfvxnwji07h8jhwa9a54ix2d0wyxk3d"))))
+    (properties `((upstream-name . "MethylAid")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biobase
+           r-biocgenerics
+           r-biocparallel
+           r-ggplot2
+           r-gridbase
+           r-hexbin
+           r-matrixstats
+           r-minfi
+           r-rcolorbrewer
+           r-shiny
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://git.bioconductor.org/packages/MethylAid")
+    (synopsis
+     "Quality control of large Illumina DNA Methylation array data sets")
+    (description
+     "This package provides a visual and interactive web application using
+RStudio's shiny package.  Bad quality samples are detected using sample-dependent
+and sample-independent controls present on the array and user adjustable
+thresholds.  In depth exploration of bad quality samples can be performed using
+several interactive diagnostic plots of the quality control probes present on
+the array.  Furthermore, the impact of any batch effect provided by the user can
+be explored.")
+    (license license:gpl2+)))
 
 (define-public r-methylkit
   (package
@@ -9419,6 +9592,37 @@ package contains functions for combining the results of multiple runs of gene
 set analyses.")
     (license license:gpl2+)))
 
+(define-public r-powertcr
+  (package
+    (name "r-powertcr")
+    (version "1.22.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "powerTCR" version))
+       (sha256
+        (base32 "06fmphdq95pjbbvm8m8h1wajbp3vhl0zj7ddbzks9fy7ankp1n3i"))))
+    (properties `((upstream-name . "powerTCR")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-cubature
+           r-doparallel
+           r-evmix
+           r-foreach
+           r-magrittr
+           r-purrr
+           r-truncdist
+           r-vegan
+           r-vgam))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/powerTCR")
+    (synopsis "Model-based comparative analysis of the TCR repertoire")
+    (description
+     "This package provides a model for the clone size distribution of the
+@acronym{TCR, T-cell receptor} repertoire.  Further, it permits comparative
+analysis of TCR repertoire libraries based on theoretical model fits.")
+    (license license:artistic2.0)))
+
 ;; This is a CRAN package, but it depends on a Bioconductor package:
 ;; r-aroma-light, r-dnacopy..
 (define-public r-pscbs
@@ -10149,6 +10353,49 @@ two different experiments.  @code{scmap} is a method for projecting cells from
 a scRNA-seq experiment onto the cell-types or individual cells identified in a
 different experiment.")
     (license license:gpl3)))
+
+(define-public r-screpertoire
+  (package
+    (name "r-screpertoire")
+    (version "1.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "scRepertoire" version))
+       (sha256
+        (base32 "1wgs8dv5zl82iciy86w5ws1gq8v2piklcifbw7gmbw60kijyr2l1"))))
+    (properties `((upstream-name . "scRepertoire")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-doparallel
+           r-dplyr
+           r-ggalluvial
+           r-ggplot2
+           r-ggraph
+           r-igraph
+           r-plyr
+           r-powertcr
+           r-reshape2
+           r-rlang
+           r-seuratobject
+           r-singlecellexperiment
+           r-stringdist
+           r-stringr
+           r-summarizedexperiment
+           r-tidygraph
+           r-vegan))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/scRepertoire")
+    (synopsis "Toolkit for single-cell immune receptor profiling")
+    (description
+     "The scRepertoire package was built to process data derived from the 10x
+Genomics Chromium Immune Profiling for both @acronym{TCR, T-cell receptor} and
+@acronym{Ig, immunoglobulin} enrichment workflows and subsequently interacts with
+the popular Seurat and SingleCellExperiment R packages.  It also allows for
+general analysis of single-cell clonotype information without the use of
+expression information.  The package functions as a wrapper for Startrac and
+powerTCR R packages.")
+    (license license:gpl2)))
 
 (define-public r-scry
   (package
@@ -11956,13 +12203,13 @@ rectangular layout tree built by ggtree with the grammar of ggplot2.")
 (define-public r-ggpicrust2
   (package
     (name "r-ggpicrust2")
-    (version "1.7.2")
+    (version "1.7.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggpicrust2" version))
               (sha256
                (base32
-                "0yk62cc0vmv6dyfiwvvbgpsqlvp1cw61db60153xvzmcdvd077cl"))))
+                "0zjlsvzl2f74fvqw4ijnai23qwhlcpgd5p8z9dclnwnsgdbm6hcq"))))
     (properties `((upstream-name . "ggpicrust2")))
     (build-system r-build-system)
     (propagated-inputs (list r-aldex2
@@ -18780,14 +19027,14 @@ using whole genome sequencing data.")
 (define-public r-activepathways
   (package
     (name "r-activepathways")
-    (version "2.0.2")
+    (version "2.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ActivePathways" version))
        (sha256
         (base32
-         "1h0ih87pf6b5mdhmh65frv3nqx7v5adqv37wn2p3gkpszd6hwc79"))))
+         "0mgvxpqaq0jncr1kzmwhqkv3pajx2fz6vwhv5arw7fgla6w09p9h"))))
     (properties
      `((upstream-name . "ActivePathways")))
     (build-system r-build-system)
@@ -21782,14 +22029,14 @@ on the plot.")
 (define-public r-abn
   (package
     (name "r-abn")
-    (version "3.0.2")
+    (version "3.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "abn" version))
        (sha256
         (base32
-         "06n69cbkdqpwpxks8276h43132c9v57n4hg33vsjjyxjifwbwxwh"))))
+         "1yh9nhfphalxh77132r0fkpp71mqsfhb8jk11is4d5nvlvr5316z"))))
     (build-system r-build-system)
     (inputs
      (list gsl))
@@ -22344,6 +22591,122 @@ within a certain time frame are deleted.  This aims to reduce disk usage by
 eliminating obsolete caches generated by old versions of packages.")
     (license license:gpl3)))
 
+(define-public r-basic4cseq
+  (package
+    (name "r-basic4cseq")
+    (version "1.38.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "Basic4Cseq" version))
+       (sha256
+        (base32 "1vlrrkg885w77w34m2q8hngr95hhh5bkw9hrzyhnp39igjkcwqx4"))))
+    (properties `((upstream-name . "Basic4Cseq")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biostrings
+           r-bsgenome-ecoli-ncbi-20080805
+           r-catools
+           r-genomicalignments
+           r-genomicranges
+           r-rcircos))
+    (home-page "https://bioconductor.org/packages/Basic4Cseq")
+    (synopsis "Analyzing 4C-seq data")
+    (description
+     "Basic4Cseq is an R package for basic filtering, analysis and subsequent
+visualization of @acronym{4C-seq, circular chromosome conformation capture
+sequencing} data.  Virtual fragment libraries can be created for any BSGenome
+package, and filter functions for both reads and fragments and basic quality
+controls are included.  Fragment data in the vicinity of the experiment's
+viewpoint can be visualized as a coverage plot based on a running median
+approach and a multi-scale contact profile.")
+    (license license:lgpl3)))
+
+(define-public r-basics
+  (package
+    (name "r-basics")
+    (version "2.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "BASiCS" version))
+       (sha256
+        (base32 "0kf215n151sxphc5w9h4i2xsk7lmysi4abwcpyz4slbwhpki3ac8"))))
+    (properties `((upstream-name . "BASiCS")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-assertthat
+           r-biobase
+           r-biocgenerics
+           r-biocparallel
+           r-coda
+           r-cowplot
+           r-ggextra
+           r-ggplot2
+           r-hexbin
+           r-mass
+           r-matrix
+           r-matrixstats
+           r-posterior
+           r-rcpp
+           r-rcpparmadillo
+           r-reshape2
+           r-s4vectors
+           r-scran
+           r-scuttle
+           r-singlecellexperiment
+           r-summarizedexperiment
+           r-viridis))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/catavallejos/BASiCS")
+    (synopsis "Bayesian analysis of single-cell sequencing data")
+    (description
+     "@acronym{BASiCS, Bayesian analysis of single-cell sequencing data} is an
+integrated Bayesian hierarchical model to perform statistical analyses of
+single-cell RNA sequencing datasets in the context of supervised experiments
+(where the groups of cells of interest are known a priori.  BASiCS performs
+built-in data normalisation (global scaling) and technical noise quantification
+(based on spike-in genes).  BASiCS provides an intuitive detection criterion
+for highly (or lowly) variable genes within a single group of cells.
+Additionally, BASiCS can compare gene expression patterns between two or more
+pre-specified groups of cells.")
+    (license license:gpl3)))
+
+(define-public r-basicstarrseq
+  (package
+    (name "r-basicstarrseq")
+    (version "1.30.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "BasicSTARRseq" version))
+       (sha256
+        (base32 "1dw6bv1qk2bn0l3m458sqgvm3s1karh4n3431pl7r0jj2r3mr6xa"))))
+    (properties `((upstream-name . "BasicSTARRseq")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-genomeinfodb
+           r-genomicalignments
+           r-genomicranges
+           r-iranges
+           r-s4vectors))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/BasicSTARRseq")
+    (synopsis "Basic peak calling on STARR-seq data")
+    (description
+     "This package implements a method that aims to identify enhancers on
+large scale.  The STARR-seq data consists of two sequencing datasets of the
+same targets in a specifc genome.  The input sequences show which regions
+where tested for enhancers.  Significant enriched peaks i.e. a lot more
+sequences in one region than in the input where enhancers in the genomic DNA
+are, can be identified.  So the approach pursued is to call peak every region
+in which there is a lot more
+(significant in a binomial model) STARR-seq signal than input signal and
+propose an enhancer at that very same position.  Enhancers then are called
+weak or strong dependent of there degree of enrichment in comparison to
+input.")
+    (license license:lgpl3)))
+
 (define-public r-basilisk-utils
   (package
     (name "r-basilisk-utils")
@@ -22393,6 +22756,166 @@ Python environment that can be used reliably by Bioconductor packages.
 Functions are also provided to enable smooth interoperability of multiple
 Python environments in a single R session.")
     (license license:gpl3)))
+
+(define-public r-bayesknockdown
+  (package
+    (name "r-bayesknockdown")
+    (version "1.28.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "BayesKnockdown" version))
+       (sha256
+        (base32 "1argd4gfld2yb0vvpgb5k7m6agmi58712f6g5dj4gnb7kg4rp1l8"))))
+    (properties `((upstream-name . "BayesKnockdown")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase))
+    (home-page "https://bioconductor.org/packages/BayesKnockdown")
+    (synopsis "Posterior probabilities for edges from knockdown data")
+    (description
+     "This package provides a simple, fast Bayesian method for computing
+posterior probabilities for relationships between a single predictor variable
+and multiple potential outcome variables, incorporating prior probabilities of
+relationships.  In the context of knockdown experiments, the predictor
+variable is the knocked-down gene, while the other genes are potential
+targets.  It can also be used for differential expression/2-class data.")
+    (license license:gpl3)))
+
+(define-public r-bayesspace
+  (package
+    (name "r-bayesspace")
+    (version "1.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "BayesSpace" version))
+       (sha256
+        (base32 "1mqgsylnrvf197cin5zzihjv31bm2q0m5a612ncbglys6n1jd105"))))
+    (properties `((upstream-name . "BayesSpace")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-assertthat
+           r-biocfilecache
+           r-biocsingular
+           r-coda
+           r-dirichletreg
+           r-ggplot2
+           r-matrix
+           r-mclust
+           r-purrr
+           r-rcpp
+           r-rcpparmadillo
+           r-rcppdist
+           r-rcppprogress
+           r-rcurl
+           r-rhdf5
+           r-s4vectors
+           r-scales
+           r-scater
+           r-scran
+           r-singlecellexperiment
+           r-summarizedexperiment
+           r-xgboost))
+    (native-inputs (list r-knitr))
+    (home-page "https://www.ezstatconsulting.com/BayesSpace/")
+    (synopsis "Clustering and resolution enhancement of spatial transcriptomes")
+    (description
+     "This package provides tools for clustering and enhancing the resolution
+of spatial gene expression experiments.  BayesSpace clusters a low-dimensional
+representation of the gene expression matrix, incorporating a spatial prior to
+encourage neighboring spots to cluster together.  The method can enhance the
+resolution of the low-dimensional representation into \"sub-spots\", for which
+features such as gene expression or cell type composition can be imputed.")
+    (license license:expat)))
+
+(define-public r-baynorm
+  (package
+    (name "r-baynorm")
+    (version "1.20.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "bayNorm" version))
+       (sha256
+        (base32 "01lv4w1x43x3f9sdrqikhsr1gdvkgqzrgcd9wnjj76qsljn57ifq"))))
+    (properties `((upstream-name . "bayNorm")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-bb
+           r-biocparallel
+           r-dosnow
+           r-fitdistrplus
+           r-foreach
+           r-iterators
+           r-locfit
+           r-mass
+           r-matrix
+           r-rcpp
+           r-rcpparmadillo
+           r-rcppprogress
+           r-singlecellexperiment
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/WT215/bayNorm")
+    (synopsis "Single-cell RNA sequencing data normalization")
+    (description
+     "The bayNorm package is used for normalizing single-cell RNA-seq data.
+The main function is @code{bayNorm}, which is a wrapper function for gene
+specific prior parameter estimation and normalization.  The input is a matrix
+of scRNA-seq data with rows different genes and coloums different cells.  The
+output is either point estimates from posterior (2D array) or samples from
+posterior (3D array).")
+    (license license:gpl2+)))
+
+(define-public r-bbcanalyzer
+  (package
+    (name "r-bbcanalyzer")
+    (version "1.32.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "BBCAnalyzer" version))
+       (sha256
+        (base32 "108jcgsf5hyj348y17hcw8m3zcfjgzpx8nz4n5jgxp2lgxjyizy1"))))
+    (properties `((upstream-name . "BBCAnalyzer")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biostrings
+           r-genomicranges
+           r-iranges
+           r-rsamtools
+           r-summarizedexperiment
+           r-variantannotation))
+    (home-page "https://bioconductor.org/packages/BBCAnalyzer")
+    (synopsis "Visualizing base counts")
+    (description
+     "BBCAnalyzer is a package for visualizing the relative or absolute number
+of bases, deletions and insertions at defined positions in sequence alignment
+data available as bam files in comparison to the reference bases.  Markers for
+the relative base frequencies, the mean quality of the detected bases, known
+mutations or polymorphisms and variants called in the data may additionally be
+included in the plots.")
+    (license license:lgpl3)))
+
+(define-public r-bcrank
+  (package
+    (name "r-bcrank")
+    (version "1.64.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "BCRANK" version))
+       (sha256
+        (base32 "1m1ccacryf8wjzp0d37n9n1kpa6734ddb8nvv1sy0sz5gplrars9"))))
+    (properties `((upstream-name . "BCRANK")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biostrings))
+    (home-page "https://bioconductor.org/packages/BCRANK")
+    (synopsis "Predicting binding site consensus from ranked DNA sequences")
+    (description
+     "This package provides functions and classes for de novo prediction of
+transcription factor binding consensus by heuristic search.")
+    (license license:gpl2)))
 
 (define-public r-biocthis
   (package

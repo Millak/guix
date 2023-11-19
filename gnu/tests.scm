@@ -33,6 +33,10 @@
   #:use-module (gnu services base)
   #:use-module (gnu services shepherd)
   #:use-module (guix discovery)
+  #:use-module (guix monads)
+  #:use-module ((guix store) #:select (%store-monad))
+  #:use-module ((guix utils)
+                #:select (%current-system %current-target-system))
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9 gnu)
   #:use-module (ice-9 match)
@@ -284,8 +288,9 @@ the system under test."
 (define-gexp-compiler (compile-system-test (test <system-test>)
                                            system target)
   "Compile TEST to a derivation."
-  ;; XXX: SYSTEM and TARGET are ignored.
-  (system-test-value test))
+  (mparameterize %store-monad ((%current-system system)
+                               (%current-target-system target))
+    (system-test-value test)))
 
 (define (test-modules)
   "Return the list of modules that define system tests."

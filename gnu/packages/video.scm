@@ -179,6 +179,7 @@
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -1782,14 +1783,14 @@ audio/video codec library.")
 (define-public ffmpeg-5
   (package
     (inherit ffmpeg)
-    (version "5.1.3")
+    (version "5.1.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0biil32xnshg1b4lwzbdc5rxv1g7lpfsr5gdgaz96wlhzy9ka48v"))))))
+                "0qwhyhil805hns7yksdxagnrcc90h60al7lz1rc65kd1j2w3nf2l"))))))
 
 (define-public ffmpeg-4
   (package
@@ -1812,14 +1813,14 @@ audio/video codec library.")
 (define-public ffmpeg-3.4
   (package
     (inherit ffmpeg-4)
-    (version "3.4.11")
+    (version "3.4.13")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
                                  version ".tar.xz"))
              (sha256
               (base32
-               "1rijdvcx8xjqwh084qchwz91vcj8wsvb4diax0g8miywpir00ccw"))))
+               "0np0yalqdrm7rn7iykgfzz3ly4vbgigrajg48c1l6n7qrzqvfszv"))))
     (arguments
      (substitute-keyword-arguments (package-arguments ffmpeg-4)
        ((#:modules modules %gnu-build-system-modules)
@@ -1837,14 +1838,14 @@ audio/video codec library.")
 (define-public ffmpeg-2.8
   (package
     (inherit ffmpeg-3.4)
-    (version "2.8.20")
+    (version "2.8.22")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1ivnfqmfnp3zmn1q2dxy4p85427y3r6d3jbnl5kprr7lqckf6rl5"))))
+                "0c8m4hhv2k5fybha908wzrpnf3wqkq52hayl658jq4bah0igdfqz"))))
     (arguments
      `(#:tests? #f               ; XXX: Enable them later, if required
        #:configure-flags
@@ -2430,7 +2431,7 @@ images and image hosting sites.")
 (define-public mpv-mpris
   (package
     (name "mpv-mpris")
-    (version "1.0")
+    (version "1.1")
     (source
       (origin
         (method git-fetch)
@@ -2439,7 +2440,7 @@ images and image hosting sites.")
                (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1vpx4kzyg4pssn1hql2ci4s9x08sdx2v0kphw4aryywnz04yjhzf"))))
+         (base32 "1384y8n3l0xk8hbad1nsj9ljzb1h02g3ln3jysd8bd6shbl0x4mx"))))
     (build-system copy-build-system)
     (arguments
      '(#:install-plan
@@ -2453,7 +2454,7 @@ images and image hosting sites.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list glib mpv))
+     (list ffmpeg glib mpv))
     (home-page "https://github.com/hoyon/mpv-mpris")
     (synopsis "MPRIS plugin for mpv")
     (description "This package provides an @dfn{MPRIS} (Media Player Remote
@@ -3272,33 +3273,45 @@ and custom quantization matrices.")
 (define-public streamlink
   (package
     (name "streamlink")
-    (version "3.2.0")
+    (version "6.3.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "streamlink" version))
         (sha256
          (base32
-          "09nrspga15svzi0hmakcarbciav0nzf30hg1ff53gia473cd4w4p"))))
+          "0i2qym2plm4gpcq50vl67j69m8a4zz9mb8gi2xryx28pbnpdzh4k"))
+        (snippet
+         #~(begin (use-modules (guix build utils))
+                  (substitute* "pyproject.toml"
+                    (("trio >=0\\.22") "trio >=0.21"))))))
     (build-system python-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
+     `(#:phases
+       (modify-phases %standard-phases
          (replace 'check
           (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                   (invoke "python" "-m" "pytest")))))))
     (native-inputs
-     (list python-freezegun python-mock python-pytest
-           python-requests-mock))
+     (list python-freezegun
+           python-requests-mock
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-trio))
     (propagated-inputs
-     (list python-pysocks
-           python-websocket-client
+     (list python-certifi
            python-isodate
            python-lxml
            python-pycountry
            python-pycryptodome
+           python-pysocks
            python-requests
-           python-urllib3))
+           python-trio
+           python-trio-websocket
+           python-typing-extensions
+           python-urllib3
+           python-websocket-client))
     (home-page "https://github.com/streamlink/streamlink")
     (synopsis "Extract streams from various services")
     (description "Streamlink is command-line utility that extracts streams

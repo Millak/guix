@@ -493,7 +493,22 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-6.5-version "6.5.9")
+(define-public linux-libre-6.6-version "6.6.1")
+(define-public linux-libre-6.6-gnu-revision "gnu")
+(define deblob-scripts-6.6
+  (linux-libre-deblob-scripts
+   linux-libre-6.6-version
+   linux-libre-6.6-gnu-revision
+   (base32 "0g8m0rb15b0231dv8ji456s75a67szsaim71may3yprplycz6pav")
+   (base32 "1hg3ck1j8288fhlhcvhgs1zzwh3i62nfvphw7x3vsaqr75kiwbjp")))
+(define-public linux-libre-6.6-pristine-source
+  (let ((version linux-libre-6.6-version)
+        (hash (base32 "0d42b1hbvv9w3y3q4wydr6il0g5a823n54a06p4p5vcpgkadf7ns")))
+   (make-linux-libre-source version
+                            (%upstream-linux-source version hash)
+                            deblob-scripts-6.6)))
+
+(define-public linux-libre-6.5-version "6.5.11")
 (define-public linux-libre-6.5-gnu-revision "gnu")
 (define deblob-scripts-6.5
   (linux-libre-deblob-scripts
@@ -503,7 +518,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "066z5lw5vrfayhv23hpfcm6fh6b7zmn2v13kfv1g3z3jl1wblhfh")))
 (define-public linux-libre-6.5-pristine-source
   (let ((version linux-libre-6.5-version)
-        (hash (base32 "1mcg0lpxr832mwyqlbn0s5gssvsk2nn2xhq9w0qbymizf5j2yrn6")))
+        (hash (base32 "06dmb4hbwrms0lp4axphwgj8wbnzsym70sx55lxr501b53wlmqif")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.5)))
@@ -511,52 +526,52 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-6.1-version "6.1.60")
+(define-public linux-libre-6.1-version "6.1.62")
 (define-public linux-libre-6.1-gnu-revision "gnu")
 (define deblob-scripts-6.1
   (linux-libre-deblob-scripts
    linux-libre-6.1-version
    linux-libre-6.1-gnu-revision
    (base32 "1sf80f2i4vf888xjcn84ymn4w5ynn30ib9033zwmv7f09yvfhapy")
-   (base32 "1c73516nbhnz0cxjz38b5794dxygb8sznv9idiibw7ablmjbhd11")))
+   (base32 "1hdibv43xbn1lv83i6qjgfmf1bvqxvq17fryfsq4r4sjgs9212js")))
 (define-public linux-libre-6.1-pristine-source
   (let ((version linux-libre-6.1-version)
-        (hash (base32 "02pvymr1dgd36mp7yikxqqv0sfrpwi1grnvxvx6jbbx6wmx0wljq")))
+        (hash (base32 "1v453q4sf0j8708ivs1zmdf645hgimqvxfc8xz7czgnnmipn3zdr")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.1)))
 
-(define-public linux-libre-5.15-version "5.15.137")
+(define-public linux-libre-5.15-version "5.15.138")
 (define-public linux-libre-5.15-gnu-revision "gnu")
 (define deblob-scripts-5.15
   (linux-libre-deblob-scripts
    linux-libre-5.15-version
    linux-libre-5.15-gnu-revision
    (base32 "18ac30kxg2mf2f6gk3p935hzhz2qs110jy4xwk21kblnnkskbxj8")
-   (base32 "1c3lm0j401lv2lk39dmr4mlf5ic173snm7cc0cckl6czyvxr5ysy")))
+   (base32 "1idjrn2w8jrixj8ifkk1awxyyq5042nc4p2mld4rda96azlnp948")))
 (define-public linux-libre-5.15-pristine-source
   (let ((version linux-libre-5.15-version)
-        (hash (base32 "1xxjbxldrhmnh2q6rykpxyfbj8xqgl82q30n8sfavrzr14bb4jcp")))
+        (hash (base32 "1ajaxy97gx0c9cdxiyxa49ykfsykir22i9abfrcizh71ci0yb15g")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
 
-(define-public linux-libre-5.10-version "5.10.199")
+(define-public linux-libre-5.10-version "5.10.200")
 (define-public linux-libre-5.10-gnu-revision "gnu1")
 (define deblob-scripts-5.10
   (linux-libre-deblob-scripts
    linux-libre-5.10-version
    linux-libre-5.10-gnu-revision
    (base32 "1b33rkn32b923025iiz4xzxiy8y5ii9j5qk4021mg575890rl4ch")
-   (base32 "0nnp46mn32yk436swd2qh34igmzinfgkwvbzp3lqyy45f06hbc2j")))
+   (base32 "0xrrnmb5kcc5r21bdm24aq0fnkk1imn367c1cxlj78b6l6gigx4b")))
 (define-public linux-libre-5.10-pristine-source
   (let ((version linux-libre-5.10-version)
-        (hash (base32 "1h944syk7n6c4j1djlx19n77alzwbxcdza77c9ykicgfynhpgsm0")))
+        (hash (base32 "012i41bj8rcqn0vhfxrwq3gg82nb6pp2cwq8n146wj47pwgrcbcx")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.10)))
 
-(define-public linux-libre-5.4-version "5.4.259")
+(define-public linux-libre-5.4-version "5.4.260")
 (define-public linux-libre-5.4-gnu-revision "gnu1")
 (define deblob-scripts-5.4
   (linux-libre-deblob-scripts
@@ -566,27 +581,27 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0sw67b2pk3lng4y67diqqnhxaggnp3nbkx8dxc5fs27rinfxr4m1")))
 (define-public linux-libre-5.4-pristine-source
   (let ((version linux-libre-5.4-version)
-        (hash (base32 "195v4fidavzm637glj6580006mrcaygnbj4za874imb62bxf9rpz")))
+        (hash (base32 "1zpbaipd2j3idj8h9iznlj0ywcq5nkhwj707a1f9ixf82h3q4c4q")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.4)))
 
-(define-public linux-libre-4.19-version "4.19.297")
+(define-public linux-libre-4.19-version "4.19.298")
 (define-public linux-libre-4.19-gnu-revision "gnu1")
 (define deblob-scripts-4.19
   (linux-libre-deblob-scripts
    linux-libre-4.19-version
    linux-libre-4.19-gnu-revision
-   (base32 "0ghdizzs6969872rnjcv9p6sl9rcbs29v3ismk125yyvjaczd428")
+   (base32 "0pjal2cc2f99cvw8r4icb4l24j41k48jkj6bqk7pcahzcgx33ycb")
    (base32 "1425mhkfxn18vxn05bb4h3li7x1jl7l1hf1zi8xhnqv3wa31h9wl")))
 (define-public linux-libre-4.19-pristine-source
   (let ((version linux-libre-4.19-version)
-        (hash (base32 "0c9xxqgv2i36hrr06dwz7f3idc04xpv0a5pxg08xdh03cnyf12cx")))
+        (hash (base32 "0mhgq6hdcls1af7nj999x1mds5b37s7vwin8nsb4q0lnx2y1da4x")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.19)))
 
-(define-public linux-libre-4.14-version "4.14.328")
+(define-public linux-libre-4.14-version "4.14.329")
 (define-public linux-libre-4.14-gnu-revision "gnu1")
 (define deblob-scripts-4.14
   (linux-libre-deblob-scripts
@@ -596,7 +611,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1faagsj4i31z2bp83hflx3q9vrddjnn37a3ah2b47iaplva7z1nd")))
 (define-public linux-libre-4.14-pristine-source
   (let ((version linux-libre-4.14-version)
-        (hash (base32 "1igcpvnhwwrczfdsafmszvi0456k7f6j4cgpfw6v6afw09p95d8x")))
+        (hash (base32 "1dvb4xf0b7snabznl7bg7gga7ffdmywy8vr8q65pzl9yf6fnhdny")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.14)))
@@ -628,6 +643,11 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
     (inherit source)
     (patches (append (origin-patches source)
                      patches))))
+
+(define-public linux-libre-6.6-source
+  (source-with-patches linux-libre-6.6-pristine-source
+                       (list %boot-logo-patch
+                             %linux-libre-arm-export-__sync_icache_dcache-patch)))
 
 (define-public linux-libre-6.5-source
   (source-with-patches linux-libre-6.5-pristine-source
@@ -747,6 +767,11 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
     (synopsis "GNU Linux-Libre kernel headers")
     (description "Headers of the Linux-Libre kernel.")
     (license license:gpl2)))
+
+(define-public linux-libre-headers-6.6
+  (make-linux-libre-headers* linux-libre-6.6-version
+                             linux-libre-6.6-gnu-revision
+                             linux-libre-6.6-source))
 
 (define-public linux-libre-headers-6.5
   (make-linux-libre-headers* linux-libre-6.5-version
@@ -1091,6 +1116,14 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
 ;;;
 ;;; Generic kernel packages.
 ;;;
+
+(define-public linux-libre-6.6
+  (make-linux-libre* linux-libre-6.6-version
+                     linux-libre-6.6-gnu-revision
+                     linux-libre-6.6-source
+                     '("x86_64-linux" "i686-linux" "armhf-linux"
+                       "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
+                     #:configuration-file kernel-config))
 
 (define-public linux-libre-6.5
   (make-linux-libre* linux-libre-6.5-version
@@ -6739,7 +6772,7 @@ from the ntfs-3g package.  It is meant to be used in initrds.")
 (define-public rdma-core
   (package
     (name "rdma-core")
-    (version "44.0")
+    (version "48.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/linux-rdma/rdma-core"
@@ -6747,7 +6780,7 @@ from the ntfs-3g package.  It is meant to be used in initrds.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "12w5v74wz1akac09frw7qk1yd06b00239zh7bvbvqyzjc0g61mi5"))))
+                "0h281dw2yph8pzfsr1wblqy6pb8nd9yj1pdf5c62zwc1l9b2fa3q"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ;no tests
@@ -8562,7 +8595,7 @@ comparing system environments.")
 (define-public libfabric
   (package
     (name "libfabric")
-    (version "1.11.2")
+    (version "1.19.0")
     (source
      (origin
        (method url-fetch)
@@ -8570,7 +8603,7 @@ comparing system environments.")
         (string-append "https://github.com/ofiwg/libfabric/releases/download/v"
                        version "/libfabric-" version ".tar.bz2"))
        (sha256
-        (base32 "1nnpfkwxhim2nqjkb1vwrb4wj4j3l6w6yvvy69fqam2snlhshazz"))))
+        (base32 "17pg0fb4fa77r1bmp0xk535m8n8fadpfdg93cb280ghhx55pck7i"))))
     (build-system gnu-build-system)
     (inputs `(("rdma-core" ,rdma-core)
               ,@(match (%current-system)
@@ -8851,16 +8884,17 @@ privileges.")
 (define-public psm2
   (package
     (name "psm2")
-    (version "11.2.230")
+    (version "12.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/intel/opa-psm2")
-                    (commit (string-append "PSM2_" version))))
+                    ;; tag 'psm-v12.0' = commit ad5dd1b
+                    (commit (string-append "psm-v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1bm7ndhi8qzmd0plnggj2h52yb34bab4k38530nsnkmv9smwdivl"))))
+                "04nar65ac11qqx41vkfs7iip8kfiah0zms7l4rmsxncpiz2iqfik"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags

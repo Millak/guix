@@ -356,11 +356,11 @@ experience.")
   (sbcl-package->ecl-package sbcl-clunit))
 
 (define-public sbcl-clunit2
-  (let ((commit "c3159275a6c5af166e60b592c3b7e22eaa69c048")
+  (let ((commit "b24c56851ee6ee6c4a9dc3725a634c06b604f207")
         (revision "2"))
     (package
       (name "sbcl-clunit2")
-      (version (git-version "0.5.2" revision commit))
+      (version (git-version "0.6.1" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -369,7 +369,7 @@ experience.")
                (commit commit)))
          (file-name (git-file-name "cl-clunit2" version))
          (sha256
-          (base32 "0n92z98dqfik3kfp25nz7yqycx4bpxlqbn69i5skcdnrj2ywmv01"))))
+          (base32 "03k4wc2zz31wcqcxy8fhq095i8xzcaxrzgrlrn2va10lcjs4v51b"))))
       (build-system asdf-build-system/sbcl)
       (synopsis "Unit testing framework for Common Lisp")
       (description
@@ -625,8 +625,8 @@ to make test code more informative.
   (sbcl-package->cl-source-package sbcl-kaputt))
 
 (define-public sbcl-lift
-  (let ((commit "2594160d6ca3a77d8750110dfa63214256aab852")
-        (revision "2"))
+  (let ((commit "a7941845a9de72be60e66ea941aa34cbee35bf23")
+        (revision "3"))
     (package
       (name "sbcl-lift")
       (version (git-version "1.7.1" revision commit))
@@ -634,10 +634,10 @@ to make test code more informative.
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/gwkkwg/lift")
+               (url "https://github.com/hraban/lift")
                (commit commit)))
          (sha256
-          (base32 "01xvz9sl5l5lai4h9dabmcjnm659wf5zllaxqbs55lffskp6jwq3"))
+          (base32 "1513n46fkqw8rnvz69s7xnwj476qm8ibdlwsr63qj9yh0mib0q6x"))
          (file-name (git-file-name "lift" version))
          (modules '((guix build utils)))
          (snippet

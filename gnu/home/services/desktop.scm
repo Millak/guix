@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2023 conses <contact@conses.eu>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
@@ -30,7 +30,9 @@
   #:use-module (guix gexp)
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match)
-  #:export (home-redshift-configuration
+  #:export (home-x11-service-type
+
+            home-redshift-configuration
             home-redshift-configuration?
             home-redshift-service-type
 
@@ -42,6 +44,79 @@
 
             home-xmodmap-configuration
             home-xmodmap-service-type))
+
+
+;;;
+;;; Waiting for X11.
+;;;
+
+(define (x11-shepherd-service delay)
+  (list (shepherd-service
+         (provision '(x11-display))
+         (modules '((ice-9 ftw)
+                    (ice-9 match)
+                    (srfi srfi-1)))
+         (start
+          #~(lambda* (#:optional (display (getenv "DISPLAY")))
+              (define x11-directory
+                "/tmp/.X11-unix")
+
+              (define (find-display delay)
+                ;; Wait for an accessible socket to show up in X11-DIRECTORY,
+                ;; up to DELAY seconds.
+                (let loop ((attempts delay))
+                  (define socket
+                    (find (match-lambda
+                            ((or "." "..") #f)
+                            (name
+                             (let ((name (in-vicinity x11-directory
+                                                      name)))
+                               (access? name O_RDWR))))
+                          (or (scandir x11-directory) '())))
+
+                  (if (and socket (string-prefix? "X" socket))
+                      (let ((display (string-append
+                                      ":" (string-drop socket 1))))
+                        (format #t "X11 display server found at ~s.~%"
+                                display)
+                        display)
+                      (if (zero? attempts)
+                          (begin
+                            (format (current-error-port)
+                                    "X11 display server did not show up; \
+giving up.\n")
+                            #f)
+                          (begin
+                            (sleep 1)
+                            (loop (- attempts 1)))))))
+
+              (let ((display (or display (find-display #$delay))))
+                (when display
+                  ;; Note: 'make-forkexec-constructor' calls take their
+                  ;; default #:environment-variables value before this service
+                  ;; is started and are thus unaffected by the 'setenv' call
+                  ;; below.  Users of this service have to explicitly query
+                  ;; its value.
+                  (setenv "DISPLAY" display))
+                display)))
+         (stop #~(lambda (_)
+                   (unsetenv "DISPLAY")
+                   #f))
+         (respawn? #f))))
+
+(define home-x11-service-type
+  (service-type
+   (name 'home-x11-display)
+   (extensions (list (service-extension home-shepherd-service-type
+                                        x11-shepherd-service)))
+   (default-value 10)
+   (description
+    "Create a @code{x11-display} Shepherd service that waits for the X
+Window (or ``X11'') graphical display server to be up and running, up to a
+configurable delay, and sets the @code{DISPLAY} environment variable of
+@command{shepherd} itself accordingly.  If no accessible X11 server shows up
+during that time, the @code{x11-display} service is marked as failing to
+start.")))
 
 
 ;;;
@@ -169,11 +244,25 @@ format."))
   (list (shepherd-service
          (documentation "Redshift program.")
          (provision '(redshift))
-         ;; FIXME: This fails to start if Home is first activated from a
-         ;; non-X11 session.
-         (start #~(make-forkexec-constructor
-                   (list #$(file-append (home-redshift-configuration-redshift config) "/bin/redshift")
-                         "-c" #$config-file)))
+
+         ;; Depend on 'x11-display', which sets 'DISPLAY' if an X11 server is
+         ;; available, and fails to start otherwise.
+         (requirement '(x11-display))
+
+         (modules '((srfi srfi-1)
+                    (srfi srfi-26)))
+         (start #~(lambda _
+                    (fork+exec-command
+                     (list #$(file-append
+                              (home-redshift-configuration-redshift config)
+                              "/bin/redshift")
+                           "-c" #$config-file)
+
+                     ;; Inherit the 'DISPLAY' variable set by 'x11-display'.
+                     #:environment-variables
+                     (cons (string-append "DISPLAY=" (getenv "DISPLAY"))
+                           (remove (cut string-prefix? "DISPLAY=" <>)
+                                   (default-environment-variables))))))
          (stop #~(make-kill-destructor))
          (actions (list (shepherd-configuration-action config-file))))))
 
@@ -181,7 +270,11 @@ format."))
   (service-type
    (name 'home-redshift)
    (extensions (list (service-extension home-shepherd-service-type
-                                        redshift-shepherd-service)))
+                                        redshift-shepherd-service)
+                     ;; Ensure 'home-x11-service-type' is instantiated so we
+                     ;; can depend on the Shepherd 'x11-display' service.
+                     (service-extension home-x11-service-type
+                                        (const #t))))
    (default-value (home-redshift-configuration))
    (description
     "Run Redshift, a program that adjusts the color temperature of display

@@ -8,7 +8,7 @@
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2018, 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018, 2020, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2018, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019, 2020 Giacomo Leidi <goodoldpaul@autistici.org>
@@ -44,6 +44,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages llvm)
@@ -445,15 +446,18 @@ signals and slots system.")
 (define-public mdds
   (package
     (name "mdds")
-    (version "2.0.3")
+    (version "2.1.1")
     (source (origin
-             (method url-fetch)
-             (uri (string-append "https://kohei.us/files/mdds/src/mdds-"
-                                 version ".tar.xz"))
-             (sha256
-              (base32
-               "1r68kxqppmhfg0dhz54d0hqzs5882cqrv1x6wpg7lak6gyyws0bc"))))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/mdds/mdds")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0866020brc1kmiryh7dmhjamnywlsd56ks649hy87283k0p7d3bb"))))
     (build-system gnu-build-system)
+    (native-inputs (list autoconf automake))
     (propagated-inputs
       (list boost)) ; inclusion of header files
     (home-page "https://gitlab.com/mdds/mdds")

@@ -13,11 +13,12 @@
 # Copyright © 2018 Julien Lepiller <julien@lepiller.eu>
 # Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 # Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
-# Copyright © 2019 Efraim Flashner <efraim@flashner.co.il>
+# Copyright © 2019, 2023 Efraim Flashner <efraim@flashner.co.il>
 # Copyright © 2020, 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 # Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 # Copyright © 2021 Andrew Tropin <andrew@trop.in>
 # Copyright © 2023 Clément Lassieur <clement@lassieur.org>
+# Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
 #
 # This file is part of GNU Guix.
 #
@@ -185,6 +186,7 @@ MODULES =					\
   guix/build-system/texlive.scm			\
   guix/build-system/tree-sitter.scm		\
   guix/build-system/trivial.scm			\
+  guix/build-system/vim.scm			\
   guix/build-system/zig.scm			\
   guix/ftp-client.scm				\
   guix/http-client.scm				\
@@ -243,6 +245,7 @@ MODULES =					\
   guix/build/scons-build-system.scm		\
   guix/build/texlive-build-system.scm		\
   guix/build/tree-sitter-build-system.scm	\
+  guix/build/vim-build-system.scm		\
   guix/build/waf-build-system.scm		\
   guix/build/haskell-build-system.scm		\
   guix/build/julia-build-system.scm		\
@@ -413,6 +416,10 @@ AUX_FILES =						\
   gnu/packages/aux-files/chromium/master-preferences.json		\
   gnu/packages/aux-files/emacs/guix-emacs.el		\
   gnu/packages/aux-files/guix.vim			\
+  gnu/packages/aux-files/linux-libre/6.6-arm.conf	\
+  gnu/packages/aux-files/linux-libre/6.6-arm64.conf	\
+  gnu/packages/aux-files/linux-libre/6.6-i686.conf	\
+  gnu/packages/aux-files/linux-libre/6.6-x86_64.conf	\
   gnu/packages/aux-files/linux-libre/6.5-arm.conf	\
   gnu/packages/aux-files/linux-libre/6.5-arm64.conf	\
   gnu/packages/aux-files/linux-libre/6.5-i686.conf	\
