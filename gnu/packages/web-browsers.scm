@@ -95,6 +95,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages tcl)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xorg))
@@ -852,16 +853,16 @@ http, and https via third-party applications.")
 (define-public tinmop
   (package
     (name "tinmop")
-    (version "0.9.9.141")
+    (version "0.9.9.1414213")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://notabug.org/cage/tinmop")
+             (url "https://codeberg.org/cage/tinmop")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hx52kaq0q9iccalkxk50q1v3mf9ypardjgv56d5sdrbhfqyashl"))))
+        (base32 "0rlgnqld6ls46452xvcr8k4ji4lwmlsrxib5ii9l9clkm0s477wv"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
@@ -872,6 +873,7 @@ http, and https via third-party applications.")
            nano
            openssl
            sbcl
+           tk
            unzip
            xdg-utils))
     (inputs
@@ -893,10 +895,12 @@ http, and https via third-party applications.")
            sbcl-crypto-shortcuts
            sbcl-drakma
            sbcl-esrap
+           sbcl-flexi-streams
            sbcl-ieee-floats
            sbcl-local-time
            sbcl-log4cl
            sbcl-marshal
+           sbcl-nodgui
            sbcl-osicat
            sbcl-parse-number
            sbcl-percent-encoding
@@ -907,6 +911,7 @@ http, and https via third-party applications.")
            sbcl-trivial-clipboard
            sbcl-unix-opts
            sbcl-usocket
+           sbcl-yason
            sqlite))
     (arguments
      `(#:tests? #f
@@ -937,10 +942,10 @@ http, and https via third-party applications.")
                    "--eval \"(push \\\"$$(pwd)/\\\" asdf:*central-registry*)\"  "))))
              #t)))))
     (synopsis
-     "Gemini, gopher, kami and pleroma client with a terminal interface")
+     "Gemini, gopher, kami and mastodon/pleroma client with a terminal interface")
     (description
-     "This package provides a Gemini, gopher, kami and pleroma client with a
-terminal interface.")
+     "This package provides a Gemini, gopher, kami and mastodon/pleroma client
+with a terminal interface, for Gemini also a GUI is available.")
     (home-page "https://www.autistici.org/interzona/tinmop.html")
     (license license:gpl3+)))
 
