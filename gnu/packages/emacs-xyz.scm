@@ -27115,7 +27115,7 @@ them in your web browser.")
 (define-public emacs-srht
   (package
     (name "emacs-srht")
-    (version "0.2")
+    (version "0.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -27124,7 +27124,7 @@ them in your web browser.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10271yp9w9z27gjjpb7bnsqcrhqyvggrbmic6x1nlrn06vin1qkz"))))
+                "1kwc792r0kmnb7xhmggjgs8ii14c2rng9ci2k2zwy2zxqm0bynns"))))
     (build-system emacs-build-system)
     (arguments
      (list
