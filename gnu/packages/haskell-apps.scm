@@ -415,10 +415,12 @@ to @code{cabal repl}).")
            ghc-cryptonite
            ghc-data-default
            ghc-dav
+           ghc-dbus
            ghc-disk-free-space
            ghc-dlist
            ghc-edit-distance
            ghc-exceptions
+           ghc-fdo-notify
            ghc-feed
            ghc-filepath-bytestring
            ghc-free
