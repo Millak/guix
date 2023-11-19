@@ -309,9 +309,10 @@ cards.")
          (replace 'build
            (assoc-ref gnu:%standard-phases 'build))
          (replace 'check
-           (lambda args
-             ((assoc-ref gnu:%standard-phases 'check)
-              #:test-target "test")))
+           (lambda* (#:key tests? #:allow-other-keys #:rest args)
+             (when tests?
+               ((assoc-ref gnu:%standard-phases 'check)
+                #:test-target "test"))))
          (replace 'install
            (assoc-ref gnu:%standard-phases 'install)))))
     (native-search-paths
