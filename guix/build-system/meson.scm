@@ -182,6 +182,7 @@ TRIPLET."
                       (imported-modules %meson-build-system-modules)
                       (modules '((guix build meson-build-system)
                                  (guix build utils)))
+                      (substitutable? #t)
                       allowed-references
                       disallowed-references)
   "Build SOURCE using MESON, and with INPUTS, assuming that SOURCE
@@ -266,6 +267,7 @@ has a 'meson.build' file."
                             (imported-modules %meson-build-system-modules)
                             (modules '((guix build meson-build-system)
                                        (guix build utils)))
+                            (substitutable? #t)
                             allowed-references
                             disallowed-references)
   "Cross-build SOURCE for TARGET using MESON, and with INPUTS, assuming that
