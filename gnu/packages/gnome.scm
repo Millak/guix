@@ -13624,3 +13624,32 @@ receive calls.")
 backends, such as ModemManager for phones and @acronym{SIP, Session Initiation
 Protocol} for @acronym{VoIP, Voice over @acronym{IP, Internet Protocol}}.")
     (license license:gpl3+)))
+
+(define-public gtk-frdp
+  (package
+    (name "gtk-frdp")
+    ;; The latest published tag is 3.37.1, but it is very old:
+    ;; https://gitlab.gnome.org/GNOME/gtk-frdp/-/issues/39
+    (version "3.37.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.gnome.org/GNOME/gtk-frdp")
+             (commit "62fc62c5ccb7634f0bc87c57a4673877c24c94ed")))
+       (file-name (git-file-name "gtk-frdp" version))
+       (sha256
+        (base32
+         "0msw7qpsyf9hkyq9ddhvl4g4vk1fnyi7g0bddca9x6p9d0arprqz"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:glib-or-gtk? #t))
+    (inputs
+     (list freerdp fuse gtk+))
+    (native-inputs
+     (list `(,glib "bin") gobject-introspection pkg-config vala))
+    (home-page "https://gitlab.gnome.org/GNOME/gtk-frdp")
+    (synopsis "RDP viewer widget for Gtk")
+    (description "This library provides a widget to view
+@acronym{RDP,Remote Desktop Protocol} sessions.")
+    (license license:gpl3+)))
