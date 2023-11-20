@@ -13653,3 +13653,52 @@ Protocol} for @acronym{VoIP, Voice over @acronym{IP, Internet Protocol}}.")
     (description "This library provides a widget to view
 @acronym{RDP,Remote Desktop Protocol} sessions.")
     (license license:gpl3+)))
+
+(define-public gnome-connections
+  (package
+    (name "gnome-connections")
+    (version "44.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/" name "/"
+                                  (version-major version) "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0sv238bq0dhi68ksr3bcl4q44i3ishk5i10c2325qz879f92sshk"))
+              (snippet
+               #~(begin
+                   (use-modules (guix build utils))
+                   (delete-file-recursively "subprojects")))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-meson
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false")
+                (("update_desktop_database: true")
+                 "update_desktop_database: false"))))
+          (add-after 'unpack 'disable-onboarding-dialog
+            (lambda _
+              (substitute* "src/application.vala"
+                (("\\(new OnboardingDialog \\(main_window\\)\\).present \\(\\);")
+                 "// Skip the onboarding dialog")))))))
+    (inputs
+     (list gtk+ gtk-frdp gtk-vnc libhandy libsecret libxml2))
+    (native-inputs
+     (list gettext-minimal
+           `(,glib "bin")
+           itstool
+           pkg-config
+           vala))
+    (home-page "https://apps.gnome.org/Connections")
+    (synopsis "View and use other desktops")
+    (description "Connections allows the user to connect to different
+real or virtual machines, using @acronym{VNC,Virtual Network Computing}
+or @acronym{RDP,Remote Desktop Protocol}.")
+    (license license:gpl3+)))
