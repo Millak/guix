@@ -3632,9 +3632,10 @@ for dealing with different structured file formats.")
           (replace 'build
             (assoc-ref gnu:%standard-phases 'build))
           (replace 'check
-            (lambda* args
-              ((assoc-ref gnu:%standard-phases 'check)
-               #:test-target "check")))
+            (lambda* (#:key tests? #:allow-other-keys #:rest args)
+              (when tests?
+                ((assoc-ref gnu:%standard-phases 'check)
+                 #:test-target "check"))))
           (replace 'install
             (assoc-ref gnu:%standard-phases 'install)))))
     (native-inputs (list `(,glib "bin") gobject-introspection pkg-config vala))
