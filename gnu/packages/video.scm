@@ -1047,14 +1047,14 @@ H.264 (MPEG-4 AVC) video streams.")
 (define-public mkvtoolnix
   (package
     (name "mkvtoolnix")
-    (version "52.0.0")
+    (version "80.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://mkvtoolnix.download/sources/"
                            "mkvtoolnix-" version ".tar.xz"))
        (sha256
-        (base32 "15y7ahlifsclnkl70wn5w34dil8nwcwcjnw3k2ydqc6dz4vb0j5s"))
+        (base32 "1x9k9pmw7mzm2amvm251a45dlj9p9iqfank5p4w2fizxkapws25v"))
        (modules '((guix build utils)))
        (snippet '(begin
                    ;; Delete bundled libraries.
@@ -1070,6 +1070,7 @@ H.264 (MPEG-4 AVC) video streams.")
     (outputs '("out" "gui")) ; "mkvtoolnix-gui" brings the closure size from ~300 MB to 1.5+ GB.
     (inputs
      (list boost
+           gmp
            bzip2
            cmark
            libebml
@@ -1083,8 +1084,9 @@ H.264 (MPEG-4 AVC) video streams.")
            lzo
            pcre2
            pugixml
-           qtbase-5
-           qtmultimedia-5
+           qtbase
+           qtmultimedia
+           qtsvg
            utfcpp
            zlib))
     (native-inputs
@@ -1096,8 +1098,8 @@ H.264 (MPEG-4 AVC) video streams.")
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)
        ("po4a" ,po4a)
-       ("qttools-5" ,qttools-5)
-       ("ruby" ,ruby-2.7)))
+       ("qttools" ,qttools)
+       ("ruby" ,ruby-3.2)))
     (arguments
      `(#:configure-flags
        (list (string-append "--with-boost="
