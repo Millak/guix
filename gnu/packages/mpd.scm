@@ -57,6 +57,7 @@
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages ruby)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
@@ -622,7 +623,7 @@ mpdevil loads all tags and covers on demand.")
 (define-public mympd
   (package
     (name "mympd")
-    (version "12.1.1")
+    (version "13.0.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -631,22 +632,29 @@ mpdevil loads all tags and covers on demand.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1bal31xmdmq46bi0qmia07sqcwy695vcz5y5hxwkz71rcfywbsf9"))))
+                "1ly3iw4irybfxyafgrldldwc28a879wwnd1pg32m2sgrwyhr0czm"))))
+    (outputs '("out" "doc"))
     (build-system cmake-build-system)
     (arguments
      (list
       #:configure-flags
-      #~(list "-DMYMPD_BUILD_TESTING=ON"
-              ;; Handled by 'strip' phase.
-              "-DMYMPD_STRIP_BINARY=OFF")
+      #~(list "-DCMAKE_INSTALL_LOCALSTATEDIR=/var"
+              "-DMYMPD_BUILD_TESTING=ON"
+              "-DMYMPD_DOC_HTML=ON")
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 ;; The following test requires network connectivity.
-                (invoke "ctest" "--exclude-regex" "test_http_client")))))))
-    (native-inputs (list jq perl pkg-config))
+                (invoke "ctest" "--exclude-regex" "test_http_client"))))
+          (add-after 'install 'move-doc
+            (lambda _
+              (let ((old (string-append #$output "/share/doc"))
+                    (new (string-append #$output:doc "/share/doc")))
+                (mkdir-p (dirname new))
+                (rename-file old new)))))))
+    (native-inputs (list jekyll jq perl pkg-config))
     (inputs (list flac libid3tag lua openssl pcre2))
     (home-page "https://jcorporation.github.io/")
     (synopsis "Web-based MPD client")
