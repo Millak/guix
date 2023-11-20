@@ -2068,7 +2068,7 @@ to other formats.")
 (define-public gnome-characters
   (package
     (name "gnome-characters")
-    (version "42.0")
+    (version "44.0")
     (source
      (origin
        (method url-fetch)
@@ -2077,7 +2077,7 @@ to other formats.")
                            "/gnome-characters-" version ".tar.xz"))
        (sha256
         (base32
-         "1y40g7k7yyzikbbxhf69q4c0221lga1cli1p617v99pq2swgz82x"))))
+         "02zm3w43lvsnld3681z9w1428pwdza2gv4k05vwsx461ih15rc85"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -2085,7 +2085,11 @@ to other formats.")
       #:phases #~(modify-phases %standard-phases
                    (add-after 'unpack 'disable-gtk-update-icon-cache
                      (lambda _
-                       (setenv "DESTDIR" "/")))
+                       (substitute* "meson.build"
+                         (("gtk_update_icon_cache: true")
+                          "gtk_update_icon_cache: false")
+                         (("update_desktop_database: true")
+                          "update_desktop_database: false"))))
                    (add-after 'install 'wrap
                      (lambda* (#:key outputs #:allow-other-keys)
                        ;; GNOME Characters needs Typelib files from GTK and
@@ -2100,13 +2104,13 @@ to other formats.")
            pkg-config
            python-minimal))
     (inputs
-     (list gjs
+     (list bash-minimal  ;for wrap-program
+           gjs
            gnome-desktop
            gtk
            libadwaita
-           libhandy
            libunistring))
-    (home-page "https://wiki.gnome.org/Apps/CharacterMap")
+    (home-page "https://wiki.gnome.org/Apps/Characters")
     (synopsis "Find and insert unusual characters")
     (description "Characters is a simple utility application to find
 and insert unusual characters.  It allows you to quickly find the
