@@ -3620,9 +3620,7 @@ for dealing with different structured file formats.")
               (apply (assoc-ref gnu:%standard-phases 'configure)
                      #:configure-flags
                      (list "--disable-static"
-                           "--enable-vala"
-                           (string-append "--with-html-dir=" #$output
-                                          "/share/gtk-doc/html"))
+                           "--enable-vala")
                      args)))
           (add-after 'configure 'dont-vendor-self
             (lambda* (#:key vendor-dir #:allow-other-keys)
