@@ -1957,13 +1957,13 @@ that allows you to run services and through them access the Bitcoin Cash network
 (define-public beancount
   (package
     (name "beancount")
-    (version "2.3.5")
+    (version "2.3.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "beancount" version))
        (sha256
-        (base32 "0sn3x6c5vwvdfak1qm0y4vv284izrc4dly31mqyd9jz9l8jmdqql"))
+        (base32 "0nj7sdh7wxc0hv8wxwqhw9v1zgx1sn4w92368ci2wzdmssz967w0"))
        (patches (search-patches "beancount-disable-googleapis-fonts.patch"))))
     (build-system python-build-system)
     (arguments
