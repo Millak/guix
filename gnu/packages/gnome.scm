@@ -6546,7 +6546,7 @@ as possible!")
 (define-public grilo
   (package
     (name "grilo")
-    (version "0.3.15")
+    (version "0.3.16")
     (source
      (origin
        (method url-fetch)
@@ -6554,7 +6554,7 @@ as possible!")
                            (version-major+minor version) "/"
                            "grilo-" version ".tar.xz"))
        (sha256
-        (base32 "0bbvaxw2das8826663z23y0acbdmcvggwdh64ws9jrk56vvsqlpk"))))
+        (base32 "15mxffs7f7ndzimpvpq4lj48km5p6i9gyqxa4ggq1qpcqpl80ic8"))))
     (build-system meson-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
@@ -6569,6 +6569,7 @@ as possible!")
            pkg-config
            gobject-introspection
            gtk-doc/stable
+           python
            vala))
     (inputs
      (list cyrus-sasl
@@ -6583,7 +6584,7 @@ as possible!")
             (variable "GRL_PLUGIN_PATH")
             (files (list (string-append "lib/grilo-"
                                         (version-major+minor version)))))))
-    (home-page "https://wiki.gnome.org/action/show/Projects/Grilo")
+    (home-page "https://wiki.gnome.org/Projects/Grilo")
     (synopsis "Framework for discovering and browsing media")
     (description
      "Grilo is a framework focused on making media discovery and browsing easy
