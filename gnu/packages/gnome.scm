@@ -900,32 +900,33 @@ cloud integration is offered through GNOME Online Accounts.")
          "0l8xiw1nv8agskrpgiyr7kinna3gms1hv5d64hh4fqifaz4smlcv"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           ;; Don't create 'icon-theme.cache'.
-           (lambda _
-             (substitute* "meson.build"
-               (("gtk_update_icon_cache: true")
-                "gtk_update_icon_cache: false"))))
-         (add-after 'install 'wrap-gnome-music
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let*
-                 ((out (assoc-ref outputs "out"))
-                  (pylib (string-append out "/lib/python"
-                                        ,(version-major+minor
-                                          (package-version python))
-                                        "/site-packages")))
-               (wrap-program (string-append out "/bin/gnome-music")
-                 `("GI_TYPELIB_PATH" =
-                   (,(getenv "GI_TYPELIB_PATH")))
-                 `("GST_PLUGIN_SYSTEM_PATH" suffix
-                   (,(getenv "GST_PLUGIN_SYSTEM_PATH")))
-                 `("GRL_PLUGIN_PATH" =
-                   (,(getenv "GRL_PLUGIN_PATH")))
-                 `("GUIX_PYTHONPATH" =
-                   (,(getenv "GUIX_PYTHONPATH") ,pylib)))))))))
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            ;; Don't create 'icon-theme.cache'.
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false"))))
+          (add-after 'install 'wrap-gnome-music
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (pylib (string-append out "/lib/python"
+                                           #$(version-major+minor
+                                              (package-version
+                                               (this-package-input "python")))
+                                           "/site-packages")))
+                (wrap-program (string-append out "/bin/gnome-music")
+                  `("GI_TYPELIB_PATH" =
+                    (,(getenv "GI_TYPELIB_PATH")))
+                  `("GST_PLUGIN_SYSTEM_PATH" suffix
+                    (,(getenv "GST_PLUGIN_SYSTEM_PATH")))
+                  `("GRL_PLUGIN_PATH" =
+                    (,(getenv "GRL_PLUGIN_PATH")))
+                  `("GUIX_PYTHONPATH" =
+                    (,(getenv "GUIX_PYTHONPATH") ,pylib)))))))))
     (native-inputs
      (list desktop-file-utils
            gettext-minimal
