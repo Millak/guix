@@ -2338,7 +2338,7 @@ The gnome-about program helps find which version of GNOME is installed.")
 (define-public gnome-font-viewer
   (package
     (name "gnome-font-viewer")
-    (version "42.0")
+    (version "44.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gnome-font-viewer/"
@@ -2346,7 +2346,7 @@ The gnome-about program helps find which version of GNOME is installed.")
                                   "/gnome-font-viewer-" version ".tar.xz"))
               (sha256
                (base32
-                "1k4dhk5dmkpxb5xpr9vrl7k2fdpi2fidzni1l2hhb891zzgvi8ng"))))
+                "15wzpdbx9wrw4r5l04srw89ak3j3jcmrvpbm27pw53121grisld1"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -2372,7 +2372,6 @@ The gnome-about program helps find which version of GNOME is installed.")
            gnome-desktop
            gtk
            libadwaita
-           libhandy
            libxml2))
     (home-page "https://gitlab.gnome.org/GNOME/gnome-font-viewer")
     (synopsis "GNOME Fonts")
