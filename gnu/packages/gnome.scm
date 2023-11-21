@@ -814,7 +814,7 @@ tomorrow, the rest of the week and for special occasions.")
 (define-public gnome-photos
   (package
     (name "gnome-photos")
-    (version "43.1")
+    (version "44.0")
     (source
      (origin
        (method url-fetch)
@@ -824,7 +824,7 @@ tomorrow, the rest of the week and for special occasions.")
                        name "-" version ".tar.xz"))
        (sha256
         (base32
-         "1axhabxrrmf4r2xw2hvrzwj62inkckpmrc0gfbjcrwic04d6gqgk"))))
+         "17l2bkdg8iracgw2mgx5vqfs3d6cdvd22mfdqq4jiinkjw1j33p7"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -857,6 +857,7 @@ tomorrow, the rest of the week and for special occasions.")
            pkg-config))
     (inputs
      (list babl
+           bash-minimal
            cairo
            gegl-0.4.44
            geocode-glib
