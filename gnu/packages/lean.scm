@@ -40,19 +40,20 @@
 (define-public lean
   (package
     (name "lean")
-    (version "3.41.0")
-    (home-page "https://github.com/leanprover-community/lean")
+    (version "3.51.1")
+    (home-page "https://lean-lang.org" )
     (source (origin
               (method git-fetch)
-              (uri (git-reference (url home-page)
-                                  (commit (string-append "v" version))))
+              (uri (git-reference
+                    (url "https://github.com/leanprover-community/lean")
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0mpxlfjq460x1vi3v6qzgjv74asg0qlhykd51pj347795x5b1hf1"))))
+                "17g4d3lqnbl1yfy2pjannf73v8qhc5003d2jkmrqiy05zkqs8d9n"))))
     (build-system cmake-build-system)
     (inputs
-     (list bash-minimal gmp))
+     (list gmp))
     (arguments
      (list
       #:build-type "Release"            ; default upstream build type
@@ -65,17 +66,6 @@
                                (string-prefix? "armhf" arch)))))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'patch-source-shebangs 'patch-tests-shebangs
-            (lambda _
-              (let ((sh (which "sh"))
-                    (bash (which "bash")))
-                (substitute* (find-files "tests/lean" "\\.sh$")
-                  (("#![[:blank:]]?/bin/sh")
-                   (string-append "#!" sh))
-                  (("#![[:blank:]]?/bin/bash")
-                   (string-append "#!" bash))
-                  (("#![[:blank:]]?usr/bin/env bash")
-                   (string-append "#!" bash))))))
           (add-before 'configure 'chdir-to-src
             (lambda _ (chdir "src"))))))
     (synopsis "Theorem prover and programming language")
