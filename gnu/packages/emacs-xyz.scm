@@ -6100,32 +6100,42 @@ english words between singular and plural.")
     (license license:gpl3+)))
 
 (define-public emacs-blight
-  (let ((commit "6bf9c6192d2bf979eebbfae1963401ef3ff4ef5d")
-        (revision "0"))
-    (package
-      (name "emacs-blight")
-      (version (git-version "0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://codeberg.org/emacs-weirdware/blight")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1x7s1fcva5kkl9iyb5grd6crf38rrz3zb0c6wb85khi9far10vgq"))))
-      (build-system emacs-build-system)
-      (home-page "https://codeberg.org/emacs-weirdware/blight")
-      (synopsis "Control display brightness")
-      (description
-       "Blight allows you to control display brightness from Emacs.  It
-features object-oriented code using EIEIO, a base class implementing
-a reasonable API which focuses on the @emph{set the back light to this
-percentage} functionality, it includes a concrete implementation that uses
-SysFS to control brightness.  Other systems (D-Bus, xbacklight, XELB using
-XRandR) are easily supportable, giving the same experience across
-environments.")
-      (license license:gpl3+))))
+  (package
+    (name "emacs-blight")
+    (version "1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/emacs-weirdware/blight")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1k1w1jr56pp8dgcpdxrymiam1hxsdy7nh6gi5l17pimwba3r4wbm"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-udev-rules-absolute-path-bins
+            (lambda _
+              (substitute* "20-backlight.rules"
+                (("/bin/chgrp") (which "chgrp"))
+                (("/bin/chmod") (which "chmod")))))
+          (add-after 'install 'install-udev-rules
+            (lambda _
+              (install-file "20-backlight.rules"
+                            (string-append #$output "/lib/udev/rules.d")))))))
+    (home-page "https://codeberg.org/emacs-weirdware/blight")
+    (synopsis "Control display brightness")
+    (description
+     "Blight allows you to control display brightness from Emacs.  It features
+object-oriented code using EIEIO, a base class implementing a reasonable API
+which focuses on the @emph{set the back light to this percentage}
+functionality, it includes a concrete implementation that uses SysFS to
+control brightness.  Other systems (D-Bus, xbacklight, XELB using XRandR) are
+easily supportable, giving the same experience across environments.")
+    (license license:gpl3+)))
 
 (define-public emacs-symon
   (package
