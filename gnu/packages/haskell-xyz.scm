@@ -3913,6 +3913,27 @@ when used with GHC versions which already provide the
     (description "This library provides a fast logging system for Haskell.")
     (license license:bsd-3)))
 
+(define-public ghc-fdo-notify
+  (package
+    (name "ghc-fdo-notify")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "fdo-notify" version))
+       (sha256
+        (base32 "1n4zk1i7g34w0wk5zy8n4r63xbglxf62h8j78kv5fc2yn95l30vh"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "fdo-notify")))
+    (inputs (list ghc-dbus))
+    (home-page "http://bitbucket.org/taejo/fdo-notify/")
+    (synopsis "Desktop Notifications client")
+    (description
+     "This package provides a library for issuing notifications using
+@code{FreeDesktop.org's} Desktop Notifications protcol.  This protocol is
+supported by services such as Ubuntu's @code{NotifyOSD}.")
+    (license license:bsd-3)))
+
 (define-public ghc-feed
   (package
     (name "ghc-feed")
@@ -15682,6 +15703,25 @@ purposes.  See the
     (description "Please see the README and documentation at
 <https://www.stackage.org/package/githash>")
     (license license:bsd-3)))
+
+(define-public ghc-git-lfs
+  (package
+    (name "ghc-git-lfs")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "git-lfs" version))
+       (sha256
+        (base32 "1iv3s1c7gwmsima9z3rsphjligpnf7h3vc5c96zgq9b71cx81lba"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "git-lfs")))
+    (inputs (list ghc-http-client ghc-http-types ghc-aeson ghc-network-uri
+                  ghc-case-insensitive))
+    (home-page "http://hackage.haskell.org/package/git-lfs")
+    (synopsis "git-lfs protocol")
+    (description "An implementation of the git-lfs protocol.")
+    (license license:agpl3)))
 
 (define-public ghc-nothunks
   (package

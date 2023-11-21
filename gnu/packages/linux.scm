@@ -6749,7 +6749,7 @@ from the ntfs-3g package.  It is meant to be used in initrds.")
 (define-public rdma-core
   (package
     (name "rdma-core")
-    (version "44.0")
+    (version "48.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/linux-rdma/rdma-core"
@@ -6757,7 +6757,7 @@ from the ntfs-3g package.  It is meant to be used in initrds.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "12w5v74wz1akac09frw7qk1yd06b00239zh7bvbvqyzjc0g61mi5"))))
+                "0h281dw2yph8pzfsr1wblqy6pb8nd9yj1pdf5c62zwc1l9b2fa3q"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ;no tests
@@ -8572,7 +8572,7 @@ comparing system environments.")
 (define-public libfabric
   (package
     (name "libfabric")
-    (version "1.11.2")
+    (version "1.19.0")
     (source
      (origin
        (method url-fetch)
@@ -8580,7 +8580,7 @@ comparing system environments.")
         (string-append "https://github.com/ofiwg/libfabric/releases/download/v"
                        version "/libfabric-" version ".tar.bz2"))
        (sha256
-        (base32 "1nnpfkwxhim2nqjkb1vwrb4wj4j3l6w6yvvy69fqam2snlhshazz"))))
+        (base32 "17pg0fb4fa77r1bmp0xk535m8n8fadpfdg93cb280ghhx55pck7i"))))
     (build-system gnu-build-system)
     (inputs `(("rdma-core" ,rdma-core)
               ,@(match (%current-system)
@@ -8861,16 +8861,17 @@ privileges.")
 (define-public psm2
   (package
     (name "psm2")
-    (version "11.2.230")
+    (version "12.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/intel/opa-psm2")
-                    (commit (string-append "PSM2_" version))))
+                    ;; tag 'psm-v12.0' = commit ad5dd1b
+                    (commit (string-append "psm-v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1bm7ndhi8qzmd0plnggj2h52yb34bab4k38530nsnkmv9smwdivl"))))
+                "04nar65ac11qqx41vkfs7iip8kfiah0zms7l4rmsxncpiz2iqfik"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags

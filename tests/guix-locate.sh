@@ -70,3 +70,9 @@ then
     $cmd_store guile | grep "$(guix build guile-bootstrap)/bin/guile"
     $cmd_store boot-9.scm | grep ^guile-bootstrap
 fi
+
+# The command below is an error: "no files to search for"...
+guix locate && false
+
+# ... but this one is fine.
+guix locate --clear

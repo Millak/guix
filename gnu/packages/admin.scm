@@ -4432,6 +4432,9 @@ late.")
                      " *lmonpl = '\\0'"))
                   #t))))
     (build-system gnu-build-system)
+    (arguments
+     ;; GCC 11 defaults to c++17 but this package needs something older.
+     (list #:configure-flags #~'("CXXFLAGS=-std=c++14 -O2 -g")))
     (inputs
      (list openmpi
            munge
@@ -4439,7 +4442,7 @@ late.")
            libelf
            libgcrypt
            libgpg-error))
-    (synopsis "Infrastructue for large scale tool daemon launching")
+    (synopsis "Infrastructure for large-scale tool daemon launching")
     (description
      "LaunchMON is a software infrastructure that enables HPC run-time
 tools to co-locate tool daemons with a parallel job.  Its API allows a
@@ -4452,7 +4455,7 @@ launch daemons into the relevant nodes.")
 (define-public spindle
   (package
     (name "spindle")
-    (version "0.10")
+    (version "0.13")
     (source (origin
               ;; We use git checkout to avoid github auto-generated tarballs
               (method git-fetch)
@@ -4462,16 +4465,15 @@ launch daemons into the relevant nodes.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "15n3ay0qq81r5v7fif61q1vdjcq44pp2nynkh3fvbzc9fj3c39wd"))))
+                "1z594nhash1him9v00qmyqv9jvikzrs4wxqy1cvnfwqwnrrkp707"))))
     (build-system gnu-build-system)
     (arguments '(#:configure-flags '("--enable-sec-launchmon"
                                      "--enable-sec-munge"
-                                     "--enable-sec-none")))
+                                     "--enable-sec-none"
+                                     ;; Fails to build as c++17.
+                                     "CXXFLAGS=-std=c++14 -O2 -g")))
     (inputs
-     `(("mpi" ,openmpi)
-       ("munge" ,munge)
-       ("launchmon" ,launchmon)
-       ("libgcrypt" ,libgcrypt)))
+     (list openmpi munge launchmon libgcrypt))
     (synopsis "Scalable library loading in HPC environments")
     (description
      "Spindle is a tool for improving the performance of dynamic library and

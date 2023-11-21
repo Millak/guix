@@ -46,7 +46,7 @@
 (define-public opensm
   (package
     (name "opensm")
-    (version "3.3.22")
+    (version "3.3.24")
     (source
      (origin
        (method url-fetch)
@@ -54,7 +54,7 @@
         (string-append "https://github.com/linux-rdma/opensm/releases/download/"
                        version "/opensm-" version ".tar.gz"))
        (sha256
-        (base32 "19scwwpwqhqsyq4hbr5cflcmypss828lalxxd36yby7mbimca38y"))))
+        (base32 "0q74sx8y23h7picdzb4g5r84wcvc9hr9vzsdawkl812b38vmwcx3"))))
     (build-system gnu-build-system)
     (native-inputs
      (list bison
@@ -66,18 +66,20 @@
     (inputs
      (list rdma-core))
     (arguments
-     `(#:configure-flags '("--disable-static")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((base (assoc-ref outputs "out"))
-                    (doc  (string-append base "/share/doc/"
-                                         ,name "-" ,version)))
-               (for-each (lambda (file)
-                           (install-file file doc))
-                         (find-files "doc"))
-               #t))))))
+     (list
+      #:configure-flags #~'("--disable-static")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-doc
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((base (assoc-ref outputs "out"))
+                     (doc (string-append base "/share/doc/"
+                                         #$(package-name this-package)
+                                         "-"
+                                         #$(package-version this-package))))
+                (for-each (lambda (file)
+                            (install-file file doc))
+                          (find-files "doc"))))))))
     (home-page "https://www.openfabrics.org/")
     (synopsis "OpenIB InfiniBand Subnet Manager and management utilities")
     (description "\
@@ -183,7 +185,7 @@ testing InfiniBand networks.")
 (define-public ucx
   (package
     (name "ucx")
-    (version "1.14.0")
+    (version "1.15.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -193,7 +195,7 @@ testing InfiniBand networks.")
               (patches (search-patches "ucx-tcp-iface-ioctl.patch"))
               (sha256
                (base32
-                "0ki2r768wqm92qv06wxrh3kv2nl2yj4ds9fz0s0b5rr2ycjiw9ir"))))
+                "1mk46vyfp8hsivk88s8gv0nf458jfs59fczpf66wwa3a9yp324jp"))))
     (build-system gnu-build-system)
     (arguments
      (list

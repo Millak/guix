@@ -1663,45 +1663,42 @@ and forecasting.")
 (define-public python-imbalanced-learn
   (package
     (name "python-imbalanced-learn")
-    (version "0.9.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "imbalanced-learn" version))
-              (sha256
-               (base32
-                "0qnrmysnqpc8ii1w5n8mci20gcjhmjr7khvk7f2apdbqc2pgf52f"))))
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "imbalanced-learn" version))
+       (sha256
+        (base32 "1p4gdgc8nsq0vjmw4y4d2bp9g0m1c23d0zgrzs90pnz6b24ax0km"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'unbreak-tests
-           (lambda _
-             ;; The doctests require tensorflow
-             (substitute* "setup.cfg"
-               (("--doctest-modules") ""))
-             ;; Some tests require a home directory
-             (setenv "HOME" (getcwd))
-             ;; We don't have keras
-             (delete-file "imblearn/keras/tests/test_generator.py")
-             ;; We don't have tensorflow
-             (delete-file "imblearn/tensorflow/tests/test_generator.py"))))))
-    (propagated-inputs
-     (list python-joblib
-           python-numpy
-           python-scikit-learn
-           python-scipy
-           python-threadpoolctl))
-    (native-inputs
-     (list python-black
-           python-flake8
-           python-mypy
-           python-pandas
-           python-pytest
-           python-pytest-cov))
+      #:test-flags '(list "-k"
+                     ;; Although we cannot satify the Tensorflow and Keras requirements
+                     ;; (python-keras >= 2.4.3 and tensorflow >= 2.4.3), all tests
+                     ;; besides these pass.
+                     "not balanced_batch_generator and not BalancedBatchGenerator")
+      #:phases '(modify-phases %standard-phases
+                  (add-after 'unpack 'unbreak-tests
+                    (lambda _
+                      ;; Some tests require a home directory
+                      (setenv "HOME"
+                              (getcwd)))))))
+    (propagated-inputs (list python-joblib python-numpy python-scikit-learn
+                             python-scipy python-threadpoolctl))
+    (native-inputs (list python-black
+                         python-flake8
+                         python-keras
+                         python-mypy
+                         python-numpydoc
+                         python-pandas
+                         python-pytest
+                         python-pytest-cov
+                         tensorflow))
     (home-page "https://github.com/scikit-learn-contrib/imbalanced-learn")
     (synopsis "Toolbox for imbalanced dataset in machine learning")
-    (description "This is a Python package offering a number of re-sampling
+    (description
+     "This is a Python package offering a number of re-sampling
 techniques commonly used in datasets showing strong between-class imbalance.
 It is compatible with @code{scikit-learn}.")
     (license license:expat)))

@@ -2796,9 +2796,16 @@ Wayland and @code{wlroots} by leveraging @command{grim} and @command{slurp}.")
            #~(list (string-append "-Dzshcompletiondir=" #$output
                                   "/share/zsh/site-functions")
                    (string-append "-Dfishcompletiondir=" #$output
-                                  "/share/fish/completions"))
+                                  "/share/fish/vendor_completions.d"))
            #:phases
            #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-bash-completion-dir
+                 (lambda _
+                   (substitute* "completions/bash/meson.build"
+                     (("bash_completion_dir =.*")
+                      (string-append "bash_completion_dir = "
+                                     "join_paths(get_option('sysconfdir'), "
+                                     "'bash_completion.d')\n")))))
                (add-after 'unpack 'patch-file-names
                  (lambda* (#:key inputs #:allow-other-keys)
                    (substitute* (find-files "src" "\\.c$")

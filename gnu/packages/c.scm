@@ -3,7 +3,7 @@
 ;;; Copyright © 2016, 2017, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2019, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019, 2020, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -1198,7 +1198,7 @@ Telemetry Transport (MQTT) publish-subscribe messaging protocol.")
 (define-public mimalloc
   (package
     (name "mimalloc")
-    (version "2.0.9")
+    (version "2.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1207,10 +1207,13 @@ Telemetry Transport (MQTT) publish-subscribe messaging protocol.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19w0i28p6knjd192rrcw1ayc3x0qp6rcm48cwkls4kwn8fng81fj"))))
+                "1pyf05snc1ib7zjjm9kspvbmynd8lmxqw72qcpz8lcyzyywmz24i"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:build-type "Release"))
+     `(#:build-type "Release"
+       ,@(if (target-ppc32?)
+           `(#:configure-flags '("-DMI_USE_LIBATOMIC=ON"))
+           '())))
     (synopsis "General purpose memory allocator")
     (description "@code{mimalloc} is a drop-in replacement for @code{malloc}.")
     (home-page "https://microsoft.github.io/mimalloc/")

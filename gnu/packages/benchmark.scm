@@ -137,7 +137,7 @@ is to write a job file matching the I/O load one wants to simulate.")
 (define-public intel-mpi-benchmarks/openmpi
   (package
     (name "intel-mpi-benchmarks")
-    (version "2019.6")
+    (version "2021.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -146,7 +146,7 @@ is to write a job file matching the I/O load one wants to simulate.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02hxbk9g9nl59bk5qcfl3djj7b58vsqys340m1xdbyqwcrbnahh9"))
+                "04kczch2hlfzbgk929vcxx480kc6raba8rbz246j7d26k1z1zh8h"))
               (modules '((guix build utils)))
               (snippet
                '(begin

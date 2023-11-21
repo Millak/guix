@@ -3607,8 +3607,8 @@ writing code that contains string literals that contain code themselves.")
   (sbcl-package->ecl-package sbcl-pythonic-string-reader))
 
 (define-public sbcl-slime-swank
-  (let ((commit "0cc2e736112a0bc2a048ef6efd11dd67e3fbf7ad")
-        (revision "0"))
+  (let ((commit "735258a26bb97e85d25f39e4bef83c1f80c12f5d")
+        (revision "1"))
     (package
       (name "sbcl-slime-swank")
       (version (git-version "2.28" revision commit))
@@ -3620,7 +3620,7 @@ writing code that contains string literals that contain code themselves.")
                (url "https://github.com/slime/slime/")
                (commit commit)))
          (sha256
-          (base32 "0iq9r4007rrnabj290y79i926x2m4j20j6b0x701pkywz926sn02"))
+          (base32 "0prskgzfqjmn8sc7p9nklnd0n1plwcvh40slgh23km31raplmzk7"))
          (modules '((guix build utils)))
          (snippet
           ;; The doc folder drags `gawk' into the closure.  Doc is already
@@ -12132,6 +12132,50 @@ for reading and writing JPEG image files.")
 (define-public ecl-cl-jpeg
   (sbcl-package->ecl-package sbcl-cl-jpeg))
 
+(define-public sbcl-jpeg-turbo
+  (let ((commit "f79c646cc266c107bdace53572a31664754c6e0c")
+        (revision "1"))
+    (package
+      (name "sbcl-jpeg-turbo")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/shamazmazum/jpeg-turbo/")
+               (commit commit)))
+         (file-name (git-file-name "cl-jpeg-turbo" version))
+         (sha256
+          (base32 "1andd1ibbk3224idnpsnrn96flr5d1wm9ja3di57fs04wn577sag"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-lib-paths
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "src/jpeg-turbo.lisp"
+                       (("\"libturbojpeg\\.so\\.0\"")
+                        (string-append "\""
+                                       (search-input-file inputs
+                                                          "/lib/libturbojpeg.so")
+                                       "\""))))))))
+      (native-inputs
+       (list sbcl-fiveam))
+      (inputs
+       (list libjpeg-turbo sbcl-cffi))
+      (synopsis "Common Lisp wrapper for libjpeg-turbo")
+      (description
+       "This is a Common Lisp wrapper for libjpeg-turbo library which provides
+TurboJPEG API for compressing and decompressing JPEG images.")
+      (home-page "https://github.com/shamazmazum/jpeg-turbo/")
+      (license license:bsd-2))))
+
+(define-public cl-jpeg-turbo
+  (sbcl-package->cl-source-package sbcl-jpeg-turbo))
+
+(define-public ecl-cl-jpeg-turbo
+  (sbcl-package->ecl-package sbcl-jpeg-turbo))
+
 (define-public sbcl-png
   (let ((commit "11b965fe378fd0561abe3616b18ff03af5179648")
         (revision "1"))
@@ -12206,11 +12250,11 @@ Scalable Vector Graphics files.")
   (sbcl-package->cl-source-package sbcl-cl-svg))
 
 (define-public sbcl-nodgui
-  (let ((commit "b1d15fa9cca8550926f7823dbdd8be3b34387f1a")
-        (revision "2"))
+  (let ((commit "6baccf45371afd4dcc8cd3f38332b300614783b6")
+        (revision "1"))
     (package
       (name "sbcl-nodgui")
-      (version (git-version "0.4.8.5" revision commit))
+      (version (git-version "0.4.8.6" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -12219,19 +12263,20 @@ Scalable Vector Graphics files.")
                (commit commit)))
          (file-name (git-file-name "cl-nodgui" version))
          (sha256
-          (base32 "1gsxg8igiavs8fr39vgw8ypa42wjqaq9sszwqiifpm7yvq54lls7"))))
+          (base32 "0fjz8362qmvkbzj9ylyllkdxg7vvj38l3y5qn4xi2gim92x4lx67"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria
              sbcl-bordeaux-threads
              sbcl-cl-colors2
-             sbcl-cl-jpeg
              sbcl-cl-ppcre-unicode
              sbcl-cl-unicode
              sbcl-clunit2
              sbcl-esrap
+             sbcl-jpeg-turbo
              sbcl-named-readtables
              sbcl-parse-number
+             sbcl-pngload
              tk
              tklib))
       (arguments
@@ -18847,7 +18892,7 @@ HTML documents.")
   (sbcl-package->cl-source-package sbcl-cl-html-diff))
 
 (define-public sbcl-tooter
-  (let ((commit "2e1b22f0993419c1e7e6d10ead45d7bcafb5b6cb")
+  (let ((commit "2dcc2facddcacd79d0cce545a8c4b73c35826fc1")
         (revision "4"))
     (package
       (name "sbcl-tooter")
@@ -18860,10 +18905,13 @@ HTML documents.")
                (commit commit)))
          (file-name (git-file-name "cl-tooter" version))
          (sha256
-          (base32 "02ys58gzasvk7r84jmz6k522qcw2hkbgv8p0ax5i8dggjhr04cz2"))))
+          (base32 "1zisrmslj4rnibm02vxh7hbas2cfsjh6iizs2nfdg3a3pn7bhf6h"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       (list sbcl-cl-ppcre sbcl-documentation-utils sbcl-drakma
+       (list sbcl-alexandria
+             sbcl-cl-ppcre
+             sbcl-documentation-utils
+             sbcl-drakma
              sbcl-yason))
       (synopsis "Common Lisp client library for Mastodon instances")
       (description
@@ -18881,7 +18929,7 @@ protocol for Mastodon.")
 (define-public sbcl-croatoan
   (package
     (name "sbcl-croatoan")
-    (version "0.1")
+    (version "0.2")
     (source
      (origin
        (method git-fetch)
@@ -18890,7 +18938,7 @@ protocol for Mastodon.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "cl-croatoan" version))
        (sha256
-        (base32 "1whbvwc4df7zz0002xy3aczrpf4s3vk6kmyh9wydgwl112h060pd"))))
+        (base32 "0x2rlckyn8kn5mqy0fib8piggz694g3naarz2dvha1hsy4jhb1wg"))))
     (build-system asdf-build-system/sbcl)
     (arguments
      '(#:phases

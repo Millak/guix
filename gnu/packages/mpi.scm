@@ -141,7 +141,7 @@ bind processes, and much more.")
 (define-public hwloc-2
   (package
     (inherit hwloc-1)
-    (version "2.9.2")
+    (version "2.9.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.open-mpi.org/release/hwloc/v"
@@ -149,7 +149,7 @@ bind processes, and much more.")
                                   "/hwloc-" version ".tar.bz2"))
               (sha256
                (base32
-                "1kv0n3b9knb8aawf0hxaxn9wc9bbpwh676r2gmb0pc7qfzvgv1qa"))))
+                "1v0dzzgzp40slakdwdb8vy0hy4m2ff3gnzqpzi8k8vbgap764h2w"))))
 
     ;; libnuma is no longer needed.
     (inputs (modify-inputs (package-inputs hwloc-1)
@@ -184,7 +184,7 @@ bind processes, and much more.")
 (define-public openmpi
   (package
     (name "openmpi")
-    (version "4.1.5")
+    (version "4.1.6")
     (source
      (origin
        (method url-fetch)
@@ -192,7 +192,7 @@ bind processes, and much more.")
                            (version-major+minor version)
                            "/downloads/openmpi-" version ".tar.bz2"))
        (sha256
-        (base32 "1qyvc77diyrxmviirdwqpibgm32c4vkdlvw8g79rsf2pq9mrhh56"))
+        (base32 "05g4245v0pdqcyjmgn50519ry5v5q8ig26iinmiynvaihm29jh7p"))
        (patches (search-patches "openmpi-mtl-priorities.patch"))))
 
     (properties

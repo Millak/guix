@@ -5045,13 +5045,13 @@ to Roman Numerals.")
 (define-public python-rollbar
   (package
     (name "python-rollbar")
-    (version "0.16.3")
+    (version "1.0.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "rollbar" version))
               (sha256
                (base32
-                "1qpd0j50wqli3867xmhwk65pm1cxjs60yg83mcvcf3kic3y3sc82"))))
+                "1bzkgp4r79d789q15vnjji2gcb34bnksx9l7q9pjkw12kzjbfiv3"))))
     (build-system python-build-system)
     (native-inputs (list python-pytest-runner python-unittest2))
     (inputs (list python-requests python-six python-httpx python-blinker
@@ -32573,13 +32573,13 @@ collection.")
 (define-public python-types-pytz
   (package
     (name "python-types-pytz")
-    (version "2021.3.6")
+    (version "2023.3.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "types-pytz" version))
        (sha256
-        (base32 "14yr5hg2ww8s4a0mz2bkd549fv8qgm538fnzxvqv92ld1pcpym3l"))))
+        (base32 "16mbinqac2fjjh4gqw2940q8ysjqwj0hrvj4p9mqz76l5hcx08yc"))))
     (build-system python-build-system)
     (home-page "https://github.com/python/typeshed")
     (synopsis "Typing stubs for pytz")

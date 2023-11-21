@@ -524,7 +524,7 @@ We also recommend that you run @code{:set autoindent} so that your code is
 automatically indented as you type.
 
 For the interaction with Git,
-@uref{https://www.vim.org/scripts/script.php?script_id=2975
+@uref{https://www.vim.org/scripts/script.php?script_id=2975,
 @code{fugitive.vim}} is the most commonly used plugin:
 
 @example

@@ -7593,60 +7593,65 @@ symmetric matrices.")
     (synopsis "Eigenvalue solvers for symmetric matrices (with MPI support)")))
 
 (define-public elemental
-  (package
-    (name "elemental")
-    (version "0.87.7")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/elemental/Elemental")
-                     (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1687xpjjzig27y2pnqv7hv09smpijyfdpz7qjgmcxf4shfajlfkc"))))
-    (build-system cmake-build-system)
-    (home-page "https://github.com/elemental/Elemental")
-    (native-inputs
-     (list gfortran))
-    (inputs
-     `(("blas" ,openblas)
-       ("gfortran:lib" ,gfortran "lib")
-       ("gmp" ,gmp)
-       ("lapack" ,lapack)
-       ("metis" ,metis)
-       ("mpc" ,mpc)
-       ("mpfr" ,mpfr)
-       ("mpi" ,openmpi)
-       ("qd" ,qd)))
-    (arguments
-     `(#:build-type "Release"           ;default RelWithDebInfo not supported
-       #:configure-flags `("-DEL_DISABLE_PARMETIS:BOOL=YES"
-                           "-DEL_AVOID_COMPLEX_MPI:BOOL=NO"
-                           "-DEL_CACHE_WARNINGS:BOOL=YES"
-                           "-DEL_TESTS:BOOL=YES"
-                           "-DCMAKE_INSTALL_LIBDIR=lib"
-                           "-DGFORTRAN_LIB=gfortran")
-       #:phases (modify-phases %standard-phases
-                  (add-before 'check 'mpi-setup
-                    ,%openmpi-setup)
-                  (add-before 'check 'setup-tests
-                    (lambda _
-                      ;; Parallelism is done at the MPI layer.
-                      (setenv "OMP_NUM_THREADS" "1")
-                      #t))
-                  (add-after 'install 'remove-tests
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      ;; Tests are installed, with no easy configuration
-                      ;; switch to prevent this, so delete them.
-                      (delete-file-recursively
-                        (string-append (assoc-ref outputs "out") "/bin"))
-                      #t)))))
-    (synopsis "Dense and sparse-direct linear algebra and optimization")
-    (description "Elemental is a modern C++ library for distributed-memory
+  ;; The build of 0.87.7 is failed for a long time due to new version of GCC. The
+  ;; latest commit has fixes.
+  ;; See https://github.com/elemental/Elemental/issues/254
+  (let ((commit "6eb15a0da2a4998bf1cf971ae231b78e06d989d9")
+        (revision "0"))
+    (package
+      (name "elemental")
+      (version (git-version "0.87.7" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/elemental/Elemental")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "06xcs4ic60ndcf2hq19gr8yjwdsnphpcyhapab41rkw726z4lm7p"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:build-type "Release" ;default RelWithDebInfo not supported
+        #:configure-flags
+        #~(list "-DEL_DISABLE_PARMETIS:BOOL=YES"
+                "-DEL_AVOID_COMPLEX_MPI:BOOL=NO"
+                "-DEL_CACHE_WARNINGS:BOOL=YES"
+                "-DEL_TESTS:BOOL=YES"
+                "-DCMAKE_INSTALL_LIBDIR=lib"
+                "-DGFORTRAN_LIB=gfortran")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'mpi-setup
+                 #$%openmpi-setup)
+            (add-before 'check 'setup-tests
+              (lambda _                ;; Parallelism is done at the MPI layer.
+                (setenv "OMP_NUM_THREADS" "1")))
+            (add-after 'install 'remove-tests
+              (lambda _
+                ;; Tests are installed, with no easy configuration
+                ;; switch to prevent this, so delete them.
+                (delete-file-recursively
+                 (string-append  #$output "/bin/test")))))))
+      (native-inputs
+       (list gfortran))
+      (inputs
+       (list `(,gfortran "lib")
+             gmp
+             lapack
+             metis
+             mpc
+             mpfr
+             openmpi
+             qd
+             openblas))
+      (home-page "https://github.com/elemental/Elemental")
+      (synopsis "Dense and sparse-direct linear algebra and optimization")
+      (description "Elemental is a modern C++ library for distributed-memory
 dense and sparse-direct linear algebra, conic optimization, and lattice
 reduction.")
-    (license license:bsd-2)))
+      (license license:bsd-2))))
 
 (define-public mcrl2
   (package

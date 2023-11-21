@@ -8393,7 +8393,7 @@ for Flow files.")
     (inputs
      (list grammalecte python))
     (propagated-inputs
-     (list emacs-flycheck))
+     (list emacs-flycheck emacs-pkg-info))
     (home-page "https://git.umaneti.net/flycheck-grammalecte/")
     (synopsis "Integrate Grammalecte with Flycheck")
     (description
@@ -9992,8 +9992,8 @@ in @code{html-mode}.")
 
 (define-public emacs-slime
   ;; Update together with sbcl-slime-swank.
-  (let ((commit "0cc2e736112a0bc2a048ef6efd11dd67e3fbf7ad")
-        (revision "0"))
+  (let ((commit "735258a26bb97e85d25f39e4bef83c1f80c12f5d")
+        (revision "1"))
     (package
       (name "emacs-slime")
       (version (git-version "2.28" revision commit))
@@ -10005,7 +10005,7 @@ in @code{html-mode}.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0iq9r4007rrnabj290y79i926x2m4j20j6b0x701pkywz926sn02"))))
+          (base32 "0prskgzfqjmn8sc7p9nklnd0n1plwcvh40slgh23km31raplmzk7"))))
       (build-system emacs-build-system)
       (arguments
        (list
@@ -27115,7 +27115,7 @@ them in your web browser.")
 (define-public emacs-srht
   (package
     (name "emacs-srht")
-    (version "0.2")
+    (version "0.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -27124,7 +27124,7 @@ them in your web browser.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10271yp9w9z27gjjpb7bnsqcrhqyvggrbmic6x1nlrn06vin1qkz"))))
+                "1kwc792r0kmnb7xhmggjgs8ii14c2rng9ci2k2zwy2zxqm0bynns"))))
     (build-system emacs-build-system)
     (arguments
      (list

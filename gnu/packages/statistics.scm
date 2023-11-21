@@ -672,14 +672,14 @@ also flexible enough to handle most nonstandard requirements.")
 (define-public r-matrix
   (package
     (name "r-matrix")
-    (version "1.6-1.1")
+    (version "1.6-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Matrix" version))
        (sha256
         (base32
-         "1hlcxr38p4ybb67n25cc1ssh2q2r8cj0flc59lid8hclzvqv27ik"))))
+         "094n9qf5j7bzi4cyxhm276qx2b2qp676ad8w9gql0qhzhfc889li"))))
     (properties `((upstream-name . "Matrix")))
     (build-system r-build-system)
     (propagated-inputs
@@ -1178,14 +1178,14 @@ solution for sending email, including attachments, from within R.")
 (define-public r-stringi
   (package
     (name "r-stringi")
-    (version "1.7.12")
+    (version "1.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "stringi" version))
        (sha256
         (base32
-         "02g0464sbprrbjlacx727p9ad1s5nbxl2mnvfmm9h7q000lsrs7g"))))
+         "0jm2f5wh231dzs46g7ic2k4633x9v9bd2a03dlpmq5rr46j299ay"))))
     (build-system r-build-system)
     (inputs (list icu4c))
     (native-inputs (list pkg-config))
@@ -1204,13 +1204,13 @@ transliteration, concatenation, date-time formatting and parsing, etc.")
 (define-public r-stringr
   (package
     (name "r-stringr")
-    (version "1.5.0")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "stringr" version))
        (sha256
-        (base32 "0fk34ql5ak57f06l10ai300kxay6r7kkkyfanh8r24qaf3bmkcaj"))))
+        (base32 "1pj5xwg8kq2jllmszgkw96qj37wlb0x0vx4f3m5j211zpd8yrbd4"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli r-glue r-lifecycle r-magrittr r-rlang r-stringi r-vctrs))
@@ -1448,13 +1448,13 @@ for template use among CRAN packages.")
 (define-public r-evaluate
   (package
     (name "r-evaluate")
-    (version "0.22")
+    (version "0.23")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "evaluate" version))
               (sha256
                (base32
-                "0sz4zimz4brbd9sawdazfgipkmfzzdmdq01b5m8pnrql5xrxhiwh"))))
+                "0p540jl6sixpgk08cp2h9470d28p7n66pfafiskvz3rba0vrrky9"))))
     (build-system r-build-system)
     (home-page "https://github.com/hadley/evaluate")
     (synopsis "Parsing and evaluation tools for R")
@@ -1782,13 +1782,13 @@ defined in different packages.")
 (define-public r-rlang
   (package
     (name "r-rlang")
-    (version "1.1.1")
+    (version "1.1.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "rlang" version))
               (sha256
                (base32
-                "16fsibxbh4fy62x6fw358qbniw085qs1wjyr75n22xv9g6kwjpjy"))))
+                "14l0dz36wav2jbz0dd3w34va68lrhr7fgd9dqf1v4nawdvff23ia"))))
     (build-system r-build-system)
     (home-page "http://rlang.tidyverse.org")
     (synopsis "Functions for base types, core R and Tidyverse features")
@@ -3063,13 +3063,13 @@ disk (or a connection).")
 (define-public r-plotrix
   (package
     (name "r-plotrix")
-    (version "3.8-2")
+    (version "3.8-4")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "plotrix" version))
               (sha256
                (base32
-                "07xwq3505qb2yak7pfda22yqwifj6m78f8b5rm0ym74808qrawmv"))))
+                "1mp8mb79prgf5fzlaix4fvslr4q67hrzxqdv3kr7mik1mf9jv8p6"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/plotrix")
     (synopsis "Various plotting functions")
@@ -3126,13 +3126,13 @@ well as additional utilities such as panel and axis annotation functions.")
 (define-public r-rcpparmadillo
   (package
     (name "r-rcpparmadillo")
-    (version "0.12.6.4.0")
+    (version "0.12.6.6.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RcppArmadillo" version))
               (sha256
                (base32
-                "1k7xq2yl4pkc7krz1bcdnx5kfj6n4zjmnm40nly2da2ji87agv49"))))
+                "171yflg07xi6570ich5gxhzsqqs7k3rxyhwg96amlkm1qn8v2pnk"))))
     (properties `((upstream-name . "RcppArmadillo")))
     (build-system r-build-system)
     (propagated-inputs
@@ -3195,14 +3195,14 @@ encoder/decoder, round-off-error-free sum and cumsum, etc.")
 (define-public r-rprojroot
   (package
     (name "r-rprojroot")
-    (version "2.0.3")
+    (version "2.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rprojroot" version))
        (sha256
         (base32
-         "15zq606s544wmbvk5dw13xq0sspr9dsxyxlvzvn0r48f8x3l4q2h"))))
+         "16bf6ga5fgm83j3m67plw5i54az2vdbvw5m99ixaqkd24pxn7x5m"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
@@ -3340,13 +3340,13 @@ a column in data frame.")
 (define-public r-rsqlite
   (package
     (name "r-rsqlite")
-    (version "2.3.2")
+    (version "2.3.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RSQLite" version))
               (sha256
                (base32
-                "09vbx3akqws8a07ai6qbp3jn1w05qsmazl79wl2dyvvjpzs8b62x"))))
+                "0i1cjhqcclglv62j4dclxraaj5jmqdwyj4bs3qfbd8jd8v5d1c9j"))))
     (properties `((upstream-name . "RSQLite")))
     (build-system r-build-system)
     (propagated-inputs
@@ -3370,13 +3370,13 @@ engine (version 3.8.8.2) is included.")
 (define-public r-rcurl
   (package
     (name "r-rcurl")
-    (version "1.98-1.12")
+    (version "1.98-1.13")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RCurl" version))
               (sha256
                (base32
-                "1ci6lsxm0f13yzw712gcbq23syl54x5llvhs2w1b8wwm9vqgx0qs"))))
+                "01pkmip1sllislmp34c25i9m9mlrid9b48xfjbf93sml55ijz985"))))
     (properties `((upstream-name . "RCurl")))
     (build-system r-build-system)
     (arguments
@@ -3412,13 +3412,13 @@ ldap, and also supports cookies, redirects, authentication, etc.")
 (define-public r-xml
   (package
     (name "r-xml")
-    (version "3.99-0.14")
+    (version "3.99-0.15")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "XML" version))
               (sha256
                (base32
-                "1ygi65ddgbsamxw2rm0p2clfak1xj44xyisgk48y72cd9ldaddic"))))
+                "0giv03bixc4kcq4dmcwzra7gp01i41hfr1710fd1v2hacya4d8cq"))))
     (properties
      `((upstream-name . "XML")))
     (build-system r-build-system)
@@ -4543,13 +4543,13 @@ t-probabilities, quantiles, random deviates and densities.")
 (define-public r-matrixstats
   (package
     (name "r-matrixstats")
-    (version "1.0.0")
+    (version "1.1.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "matrixStats" version))
               (sha256
                (base32
-                "0vxd7g1fm4x0f72bs1xfik1d4yklvpjdyg1hpx86pl8fwr86i1wl"))))
+                "0h85hjvsmc8s3hyjdj83fykb2vl8jc7pb9ynp2xsl0q9v1sihrxl"))))
     (properties `((upstream-name . "matrixStats")))
     (build-system r-build-system)
     (arguments
@@ -6014,18 +6014,18 @@ based on an interface to Fortran implementations by M. J. D. Powell.")
 (define-public r-rcppeigen
   (package
     (name "r-rcppeigen")
-    (version "0.3.3.9.3")
+    (version "0.3.3.9.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RcppEigen" version))
        (sha256
         (base32
-         "0xhwgn77166ir7qnzl25mj0byskkqr0b36hihrpr2zaqsrzs8wsq"))))
+         "1faz1phvg7g14bchi88vizn5mfhgiwmsjg7jzkyf1yjg0f6vpsj1"))))
     (properties `((upstream-name . "RcppEigen")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-rcpp r-matrix))
+     (list r-rcpp))
     (home-page "http://eigen.tuxfamily.org")
     (synopsis "Rcpp integration for the Eigen templated linear algebra library")
     (description
@@ -6060,14 +6060,14 @@ metrics for evaluating models.")
 (define-public r-matrixmodels
   (package
     (name "r-matrixmodels")
-    (version "0.5-2")
+    (version "0.5-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "MatrixModels" version))
        (sha256
         (base32
-         "0ap3mfzb2psjwlksfjzs2ycl5598bllwzx5hfmf9db4yjsydn1hw"))))
+         "03zjfxjk4l2dl1117slz163w0ky675d23sjfni4d7fdhqq359ny2"))))
     (properties `((upstream-name . "MatrixModels")))
     (build-system r-build-system)
     (propagated-inputs
@@ -6142,14 +6142,14 @@ algorithms.")
 (define-public r-lme4
   (package
     (name "r-lme4")
-    (version "1.1-34")
+    (version "1.1-35.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lme4" version))
        (sha256
         (base32
-         "1bbaxkrd5m3d40y6jdyrdr4vsjyzkfixbqjwj6c8inmks98f2wp8"))))
+         "0nzv1a22pfsf2ryw91h16ic4cb8y8g6wh0gx3msr7gv8dwwi3974"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-boot
@@ -6395,14 +6395,14 @@ diagnostic tools (@code{ctlcurves} and @code{DiscrFact}).")
 (define-public r-ranger
   (package
     (name "r-ranger")
-    (version "0.15.1")
+    (version "0.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ranger" version))
        (sha256
         (base32
-         "0bibv9xf6w8k8nsc13f2yd4kx99aq0i758h3wfh089szgkpdjrad"))))
+         "12c52gqqwaaid5b062gad18ir1vala1z3a0z5j4af1xqzlxgk583"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp r-matrix r-rcppeigen))

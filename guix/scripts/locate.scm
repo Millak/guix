@@ -657,7 +657,7 @@ Locate FILE and return the list of packages that contain it.\n"))
                                  files)))
             (()
              (if (null? files)
-                 (unless update?
+                 (unless (or update? (assoc-ref opts 'clear?))
                    (leave (G_ "no files to search for~%")))
                  (leave (N_ "file~{ '~a'~} not found in database '~a'~%"
                             "files~{ '~a'~} not found in database '~a'~%"

@@ -12203,13 +12203,13 @@ rectangular layout tree built by ggtree with the grammar of ggplot2.")
 (define-public r-ggpicrust2
   (package
     (name "r-ggpicrust2")
-    (version "1.7.2")
+    (version "1.7.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggpicrust2" version))
               (sha256
                (base32
-                "0yk62cc0vmv6dyfiwvvbgpsqlvp1cw61db60153xvzmcdvd077cl"))))
+                "0zjlsvzl2f74fvqw4ijnai23qwhlcpgd5p8z9dclnwnsgdbm6hcq"))))
     (properties `((upstream-name . "ggpicrust2")))
     (build-system r-build-system)
     (propagated-inputs (list r-aldex2
@@ -19027,14 +19027,14 @@ using whole genome sequencing data.")
 (define-public r-activepathways
   (package
     (name "r-activepathways")
-    (version "2.0.2")
+    (version "2.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ActivePathways" version))
        (sha256
         (base32
-         "1h0ih87pf6b5mdhmh65frv3nqx7v5adqv37wn2p3gkpszd6hwc79"))))
+         "0mgvxpqaq0jncr1kzmwhqkv3pajx2fz6vwhv5arw7fgla6w09p9h"))))
     (properties
      `((upstream-name . "ActivePathways")))
     (build-system r-build-system)
@@ -22029,14 +22029,14 @@ on the plot.")
 (define-public r-abn
   (package
     (name "r-abn")
-    (version "3.0.2")
+    (version "3.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "abn" version))
        (sha256
         (base32
-         "06n69cbkdqpwpxks8276h43132c9v57n4hg33vsjjyxjifwbwxwh"))))
+         "1yh9nhfphalxh77132r0fkpp71mqsfhb8jk11is4d5nvlvr5316z"))))
     (build-system r-build-system)
     (inputs
      (list gsl))

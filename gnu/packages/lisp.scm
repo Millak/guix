@@ -1247,7 +1247,7 @@ including a built-in database engine and a GUI system.")
 (define-public janet
   (package
     (name "janet")
-    (version "1.29.1")
+    (version "1.32.1")
     (source
      (origin
        (method git-fetch)
@@ -1256,7 +1256,7 @@ including a built-in database engine and a GUI system.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18684mxnb0jk63mkzi36zlmd8rjjv0msx3xxpmn67mhrnwz4x861"))))
+        (base32 "1nnqbpql6749597m0lp56i2zqm003pg690399l0g8kb9kwvpv1yv"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags

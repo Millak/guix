@@ -5001,7 +5001,9 @@ The drivers officially supported by @code{libdbi} are:
      `(#:configure-flags
        ;; C++11 (-DSOCI_CXX11) is OFF by default.  hyperledger-iroha needs it.
        (list "-DCMAKE_CXX_STANDARD=17"
-             "-DSOCI_LIBDIR=lib")
+             "-DSOCI_LIBDIR=lib"
+             ;; This is for relocation when linking statically
+             "-DCMAKE_CXX_FLAGS=-fPIE")
        #:tests? #f))         ; may require running database management systems
     (synopsis "C++ Database Access Library")
     (description

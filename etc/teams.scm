@@ -300,6 +300,7 @@ asdf-build-system."
   (team 'go
         #:name "Go team"
         #:scope (list "gnu/packages/golang.scm"
+                      "gnu/packages/golang-check.scm"
                       "guix/build/go-build-system.scm"
                       "guix/build-system/go.scm"
                       "guix/import/go.scm"
