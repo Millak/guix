@@ -920,6 +920,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/aoflagger-use-system-provided-pybind11.patch \
   %D%/packages/patches/apr-fix-atomics.patch			\
   %D%/packages/patches/apr-skip-getservbyname-test.patch	\
+  %D%/packages/patches/aria2-unbundle-wslay.patch		\
   %D%/packages/patches/ark-skip-xar-test.patch			\
   %D%/packages/patches/arpack-ng-propagate-rng-state.patch	\
   %D%/packages/patches/asli-use-system-libs.patch		\
