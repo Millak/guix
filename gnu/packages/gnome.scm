@@ -2142,7 +2142,7 @@ commonly used macros.")
 (define-public gnome-contacts
   (package
     (name "gnome-contacts")
-    (version "42.0")
+    (version "44.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gnome-contacts/"
@@ -2150,17 +2150,21 @@ commonly used macros.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "05jj5kiab13crm18r166w7h31jpny7f3px98q7d2ix93vj7w60l8"))))
+                "1vbvvv8954j4znczqa41j892rvj36k21ah5f5lwgcsphq4xidlbx"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           (lambda _
-             (substitute* "meson.build"
-               (("gtk_update_icon_cache: true")
-                "gtk_update_icon_cache: false")))))))
+     (list
+      #:glib-or-gtk? #t
+      ;; FIXME: Cannot build the Valadoc, because both gtk+ and gtk are in the
+      ;; same profile (evolution-data-server propagates both).
+      #:configure-flags #~'("-Ddocs=false")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false")))))))
     (native-inputs
      (list desktop-file-utils
            docbook-xml
@@ -2172,19 +2176,19 @@ commonly used macros.")
            libxslt
            pkg-config))
     (inputs
-     (list evolution-data-server-3.44
+     (list evolution-data-server
            gnome-desktop
-           gnome-online-accounts-3.44
+           gnome-online-accounts
            gst-plugins-base
            gtk
            libadwaita
            libgee
-           libhandy
            libportal
+           qrencode
            telepathy-glib
            vala))
     (propagated-inputs
-     (list folks-with-libsoup2
+     (list folks
            telepathy-mission-control))
     (synopsis "GNOME's integrated address book")
     (description
