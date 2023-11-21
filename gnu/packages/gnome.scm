@@ -6594,7 +6594,7 @@ for application developers.")
 (define-public grilo-plugins
   (package
     (name "grilo-plugins")
-    (version "0.3.15")
+    (version "0.3.16")
     (source
      (origin
        (method url-fetch)
@@ -6602,7 +6602,7 @@ for application developers.")
                            (version-major+minor version) "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "0cxbxg7i9qd1pyfjj7c15x9lawvaw5608jk2apcrac7rakcw6645"))))
+        (base32 "1jydhk822sigyda3mswn59j9s01dy81f553382i8nsvcb2z4svzy"))))
     (build-system meson-build-system)
     (native-inputs
      (list gettext-minimal
@@ -6628,20 +6628,21 @@ for application developers.")
            tracker
            tracker-miners))
     (arguments
-     `(#:glib-or-gtk? #t
-       ;;Disable lua-factory as it needs missing dependencies
-       #:configure-flags '("-Denable-lua-factory=no")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'set-shell
-           (lambda _
-             (setenv "SHELL" (which "bash"))))
-         ;; Disable the tracker test that requires the UPower daemon.
-         (add-before 'configure 'fix-tests
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "tests/tracker3/meson.build"
-               (("'test_tracker3'.*") "")))))))
-    (home-page "https://live.gnome.org/Grilo")
+     (list
+      #:glib-or-gtk? #t
+      ;;Disable lua-factory as it needs missing dependencies
+      #:configure-flags #~'("-Denable-lua-factory=no")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'set-shell
+            (lambda _
+              (setenv "SHELL" (which "bash"))))
+          ;; Disable the tracker test that requires the UPower daemon.
+          (add-before 'configure 'fix-tests
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "tests/tracker3/meson.build"
+                (("'test_tracker3'.*") "")))))))
+    (home-page "https://wiki.gnome.org/Projects/Grilo")
     (synopsis "Plugins for the Grilo media discovery library")
     (description
      "Grilo is a framework focused on making media discovery and browsing easy
