@@ -22596,6 +22596,26 @@ objects.  All objects have to share a common superclass and subclasses cannot
 add any additional instance slots.")
     (license license:gpl3)))
 
+(define-public emacs-sql-indent
+  (package
+    (name "emacs-sql-indent")
+    (version "1.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/sql-indent-" version
+                           ".tar"))
+       (sha256
+        (base32 "043qcy97a5hx68w0ac7xsk380l2i7bphgrdz6aby2zfpp90vrjpn"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/alex-hhh/emacs-sql-indent")
+    (synopsis "Support for indenting code in SQL files")
+    (description
+     "This package provides a minor mode that enables syntax-based indentation
+for SQL mode buffers.  Indentation rules are flexible and can be customized to
+match your personal coding style.")
+    (license license:gpl3+)))
+
 (define-public emacs-epkg
   (package
     (name "emacs-epkg")
