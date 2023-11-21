@@ -9167,7 +9167,7 @@ properties, screen resolution, and other GNOME parameters.")
 (define-public gnome-shell
   (package
     (name "gnome-shell")
-    (version "44.3")
+    (version "44.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -9175,7 +9175,7 @@ properties, screen resolution, and other GNOME parameters.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1grizh3fbks5dgizaj38300cz97ay81q0hlk1pvawkpfq9qlnsam"))))
+                "0gvhlvcw6rd8xa71qfxw39kyqgnv15x8xv8my6h5215kx3il1acb"))))
     (build-system meson-build-system)
     (arguments
      (let ((disallowed-references
@@ -9315,6 +9315,7 @@ printf '~a is deprecated.  Use the \"gnome-extensions\" CLI or \
            xorg-server-for-tests))
     (inputs
      (list accountsservice
+           bash-minimal
            docbook-xsl
            evolution-data-server
            gcr
