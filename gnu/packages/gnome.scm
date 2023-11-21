@@ -887,7 +887,7 @@ cloud integration is offered through GNOME Online Accounts.")
 (define-public gnome-music
   (package
     (name "gnome-music")
-    (version "42.1")
+    (version "44.0")
     (source
      (origin
        (method url-fetch)
@@ -897,7 +897,7 @@ cloud integration is offered through GNOME Online Accounts.")
                        name "-" version ".tar.xz"))
        (sha256
         (base32
-         "0w42xnp6xy3sfakb4s0wq7xfg7p507whz5gzss5b2mkbm2k7yx67"))))
+         "0l8xiw1nv8agskrpgiyr7kinna3gms1hv5d64hh4fqifaz4smlcv"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -920,7 +920,7 @@ cloud integration is offered through GNOME Online Accounts.")
                (wrap-program (string-append out "/bin/gnome-music")
                  `("GI_TYPELIB_PATH" =
                    (,(getenv "GI_TYPELIB_PATH")))
-                 `("GST_PLUGIN_SYSTEM_PATH" =
+                 `("GST_PLUGIN_SYSTEM_PATH" suffix
                    (,(getenv "GST_PLUGIN_SYSTEM_PATH")))
                  `("GRL_PLUGIN_PATH" =
                    (,(getenv "GRL_PLUGIN_PATH")))
@@ -934,7 +934,8 @@ cloud integration is offered through GNOME Online Accounts.")
            itstool
            pkg-config))
     (inputs
-     (list gnome-online-accounts
+     (list bash-minimal
+           gnome-online-accounts
            grilo
            grilo-plugins
            gst-plugins-base
@@ -946,7 +947,7 @@ cloud integration is offered through GNOME Online Accounts.")
            libadwaita
            libdazzle
            libmediaart
-           libsoup-minimal-2
+           libsoup
            python-pycairo
            python-pygobject
            python
