@@ -9038,7 +9038,7 @@ devices using the GNOME desktop.")
 (define-public gnome-control-center
   (package
     (name "gnome-control-center")
-    (version "44.3")
+    (version "44.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -9046,7 +9046,7 @@ devices using the GNOME desktop.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0yhcm0c0ghkfqswqlkwcln3jpaz6jzvqaph2c3lgmv635w2nash6"))
+                "0mz134argczbkfnxzqsfa1vydx3v44wrldcczyzjanvrq7ia7hli"))
               (patches
                (search-patches
                 "gnome-control-center-firmware-security.patch"))))
