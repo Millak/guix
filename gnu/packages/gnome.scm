@@ -146,6 +146,7 @@
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages hardware)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages ibus)
   #:use-module (gnu packages icu4c)
@@ -13530,6 +13531,100 @@ historical battery usage and related statistics.")
     (home-page "http://xffm.org/")
     (license license:gpl3+)
     (properties '((upstream-name . "xffm")))))
+
+(define-public gnome-remote-desktop
+  (package
+    (name "gnome-remote-desktop")
+    (version "44.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/" name "/"
+                                  (version-major version) "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "13kvr1f2vk0qfqr9alpz7wb542b5d5i9ypk74rnn7jsz3csgv7vs"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:configure-flags
+           #~'("-Dsystemd=false"
+               ;; RDP support requires CUDA (ffnvcodec)
+               "-Drdp=false"
+               ;; This is for the RDP back-end
+               "-Dfdk_aac=false"
+               ;; Enable VNC support
+               "-Dvnc=true")
+           #:glib-or-gtk? #t
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'shorten-vnc-test
+                 (lambda _
+                   ;; The VNC test sets up the connection, parses a message
+                   ;; from the server, and then waits forever.  This
+                   ;; modification lets it succeed once it has parsed a
+                   ;; message from the server.
+                   (substitute* "tests/test-client-vnc.c"
+                     (("while \\(TRUE\\)")
+                      "int ret = 0; while (ret == 0)")
+                     (("int ret;") ""))))
+               (delete 'check)
+               (add-after 'install 'check
+                 (assoc-ref %standard-phases
+                            'check))
+               (add-before 'check 'pre-check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (setenv "HOME" "/tmp")
+                     (setenv "XDG_RUNTIME_DIR" (string-append (getcwd) "/runtime-dir"))
+                     (mkdir (getenv "XDG_RUNTIME_DIR"))
+                     (chmod (getenv "XDG_RUNTIME_DIR") #o700)
+                     (setenv "GSETTINGS_SCHEMA_DIR"
+                             (string-append #$output "/share/glib-2.0/schemas"))
+                     ;; Unless enabled by the user, the VNC server will not
+                     ;; start.
+                     (invoke "gsettings"
+                             "set"
+                             "org.gnome.desktop.remote-desktop.vnc"
+                             "enable" "true")
+                     ;; Pipewire is required.
+                     (setenv "PIPEWIRE_DEBUG" "2")
+                     (setenv "PIPEWIRE_LOG" "meson-logs/pipewire.log")
+                     (invoke "pipewire" "--version")
+                     (system "pipewire &")))))))
+    (inputs
+     (list cairo
+           glib
+           libdrm
+           libepoxy
+           libgudev
+           libnotify
+           libsecret
+           ;; Cyclic modular dependency
+           (module-ref
+            (resolve-interface
+             '(gnu packages vnc))
+            'libvnc)
+           pipewire
+           tpm2-tss))
+    (native-inputs
+     (list asciidoc
+           dbus
+           docbook-xsl
+           docbook-xml-4.3
+           gettext-minimal
+           `(,glib "bin")
+           itstool
+           libxml2
+           libxslt
+           mutter
+           pkg-config
+           python
+           python-dbus
+           python-pygobject))
+    (home-page "https://gitlab.gnome.org/GNOME/gnome-remote-desktop")
+    (synopsis "Share GNOME desktop with remote sessions")
+    (description "This package provides a remote desktop server for GNOME.")
+    (license license:gpl2+)))
 
 (define-public libcall-ui
   (package
