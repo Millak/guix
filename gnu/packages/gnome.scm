@@ -1938,7 +1938,7 @@ and running smart commands.")
 (define-public gnome-user-docs
   (package
    (name "gnome-user-docs")
-   (version "42.0")
+   (version "44.6")
    (source
     (origin
       (method url-fetch)
@@ -1946,7 +1946,7 @@ and running smart commands.")
                           (version-major version)
                           "/gnome-user-docs-" version ".tar.xz"))
       (sha256
-       (base32 "01g9smkk2sj3yrih2wjn6vx9av855n7w6nqf9wpxvfq086h7vcmj"))))
+       (base32 "0ds2mccrgmb4jgw196jjm7xzlvnir8k80g1v55sd4nn00prc1b9g"))))
    (build-system gnu-build-system)
    (native-inputs
     (list gettext-minimal itstool pkg-config libxml2))
@@ -1955,7 +1955,7 @@ and running smart commands.")
     "The GNOME User Documentation explains how to use the GNOME desktop and its
 components.  It covers usage and setup of the core GNOME programs by end-users
 and system administrators.")
-   (home-page "https://live.gnome.org/DocumentationProject")
+   (home-page "https://wiki.gnome.org/DocumentationProject")
    (license license:cc-by3.0)))
 
 (define-public dia
