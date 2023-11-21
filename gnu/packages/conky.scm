@@ -2,7 +2,7 @@
 ;;; Copyright © 2015 Siniša Biđin <sinisa@bidin.eu>
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2019 Vasile Dumitrascu <va511e@yahoo.com>
+;;; Copyright © 2019, 2023 Vasile Dumitrascu <va511e@yahoo.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,7 +40,7 @@
   (package
     (name "conky")
     (home-page "https://github.com/brndnmtthws/conky")
-    (version "1.19.4")
+    (version "1.19.6")
     (source
      (origin
        (method git-fetch)
@@ -49,7 +49,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03zzssdg1qdv83p4c3dbjgr0g1n0spc0ndk9bds1rd2n82i6g6sy"))))
+        (base32 "02mdqsizc36v3zqhxnyv2mch9w0gqnl4a25yxishka9yv5ni5iig"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
