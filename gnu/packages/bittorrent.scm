@@ -285,7 +285,7 @@ Transmission BitTorrent daemon.")
 (define-public aria2
   (package
     (name "aria2")
-    (version "1.36.0")
+    (version "1.37.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/aria2/aria2/releases/"
@@ -293,7 +293,7 @@ Transmission BitTorrent daemon.")
                                   "/aria2-" version ".tar.xz"))
               (sha256
                (base32
-                "1987x4ywnnrhhfs9hi2h820c200d7nas9nd35414yh0jiihfglaq"))))
+                "0sxng4pynhj2qinranpv6wyzys3d42kz1gg2nrn63sw5f2nj1930"))))
     (build-system gnu-build-system)
     (arguments
      (list
