@@ -53,6 +53,7 @@
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
 ;;; Copyright © 2024 Hilton Chain <hako@ultrarare.space>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Suhail Singh <suhail@bayesians.ca>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -835,9 +836,9 @@ logs to GNU ChangeLog format.")
        (file-name (git-file-name name version))))
     (build-system python-build-system)
     (arguments
-     #~(list
-        #:phases
-        (modify-phases %standard-phases
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
           (add-before 'build 'loosen-requirements
             (lambda _
               (substitute* "setup.py"
