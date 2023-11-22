@@ -398,7 +398,7 @@ return #f and #f."
            (values #f #f)))
       ((('nesting? . #t) . rest)
        (loop rest system file (append specs '("nested guix"))))
-      ((('load . ('package candidate)) . rest)
+      ((('load . (_ candidate)) . rest)
        (if (and (not file) (null? specs))
            (loop rest system candidate specs)
            (values #f #f)))
