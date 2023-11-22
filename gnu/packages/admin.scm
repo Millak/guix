@@ -63,6 +63,7 @@
 ;;; Copyright © 2023 Tobias Kortkamp <tobias.kortkamp@gmail.com>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2023 Tomás Ortín Fernández <tomasortin@mailbox.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -152,6 +153,7 @@
   #:use-module (gnu packages mcrypt)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages nettle)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages openldap)
   #:use-module (gnu packages package-management)
@@ -6119,3 +6121,34 @@ breadth-first rather than depth-first.  It is otherwise compatible with many
 versions of @command{find}, including POSIX, GNU, and *BSD find.")
     (home-page "https://tavianator.com/projects/bfs.html")
     (license license:bsd-0)))
+
+(define-public rdfind
+  (package
+    (name "rdfind")
+    (version "1.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://rdfind.pauldreik.se/" name "-" version
+                           ".tar.gz"))
+       (sha256
+        (base32 "0y9j1w3nbgjks0k4kgm6qq92yrwgv66n212ncmlmhsl8y676wh3s"))))
+    (build-system gnu-build-system)
+    (native-inputs (list which))
+    (inputs (list nettle))
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'check 'patch-tests
+                     (lambda _
+                       (display (which "echo"))
+                       (substitute* "testcases/common_funcs.sh"
+                         (("/bin/echo")
+                          (which "echo"))))))))
+    (home-page "https://rdfind.pauldreik.se")
+    (synopsis "Find duplicate files")
+    (description
+     "Rdfind is a command line tool that finds duplicate files based on
+their content instead of their file names.  It is useful for compressing
+backup directories or just finding duplicate files.")
+    (license license:gpl2+)))
