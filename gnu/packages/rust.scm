@@ -110,6 +110,8 @@
     ("riscv64-linux"  "riscv64gc-unknown-linux-gnu")
     ("i586-gnu" "i686-unknown-hurd-gnu")
     ("i686-gnu" "i686-unknown-hurd-gnu")
+    ("i686-mingw" "i686-pc-windows-gnu")
+    ("x86_64-mingw" "x86_64-pc-windows-gnu")
     (_                (nix-system->gnu-triplet system))))
 
 (define* (rust-uri version #:key (dist "static"))
