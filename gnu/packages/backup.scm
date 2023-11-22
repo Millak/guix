@@ -146,12 +146,14 @@
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "duplicity/gpginterface.py"
                (("self.call = u'gpg'")
-                (string-append "self.call = '" (assoc-ref inputs "gnupg") "/bin/gpg'")))
+                (string-append "self.call = '"
+                               (search-input-file inputs "/bin/gpg")
+                               "'")))
              (substitute* "duplicity/backends/giobackend.py"
                (("subprocess.Popen\\(\\[u'dbus-launch'\\]")
                 (string-append "subprocess.Popen([u'"
-                               (assoc-ref inputs "dbus")
-                               "/bin/dbus-launch']")))
+                               (search-input-file inputs "/bin/dbus-launch")
+                               "']")))
              (substitute* '("testing/functional/__init__.py"
                             "testing/overrides/bin/lftp")
                (("/bin/sh") (which "sh")))))
