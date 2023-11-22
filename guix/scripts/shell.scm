@@ -398,10 +398,17 @@ return #f and #f."
            (values #f #f)))
       ((('nesting? . #t) . rest)
        (loop rest system file (append specs '("nested guix"))))
-      ((('load . (_ candidate)) . rest)
+      ((('load . ('package candidate)) . rest)
+       ;; This is 'guix shell -D -f guix.scm'.
        (if (and (not file) (null? specs))
            (loop rest system candidate specs)
            (values #f #f)))
+      ((('load . ('ad-hoc-package candidate)) . rest)
+       ;; When running 'guix shell -f guix.scm', one typically expects
+       ;; 'guix.scm' to be evaluated every time because it may contain
+       ;; references like (local-file "." #:recursive? #t).  Thus, disable
+       ;; caching.
+       (values #f #f))
       ((('manifest . candidate) . rest)
        (if (and (not file) (null? specs))
            (loop rest system candidate specs)
