@@ -20,6 +20,7 @@
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023 pinoaffe <pinoaffe@gmail.com>
 ;;; Copyright © 2024 Sören Tempel <soeren@soeren-tempel.net>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1696,9 +1697,9 @@ definitions.")
                     ,(map (lambda (input)
                             (string-append (assoc-ref inputs input)
                                            "/lib"))
-                          '("libtiff" "libjpeg" "libpng" "libungif"
+                          '("libtiff" "libjpeg-turbo" "libpng" "libungif"
                             "libxml2" "zlib" "libspiro" "freetype"
-                            "pango" "cairo" "fontconfig")))
+                            "pango" "cairo" "fontconfig-minimal")))
                   ;; Checks for potrace program at runtime
                   `("PATH" ":" prefix (,potrace)))))))))
     (synopsis "Outline font editor")
