@@ -2631,7 +2631,8 @@ It will then write @code{fixup!} commits for each of those changes.")
         (base32 "0y5v2vgl9f3n0n0w4b3iddbfyxv0hls0vw5406ry0hcvnnjyy2l3"))))
     (build-system cargo-build-system)
     (arguments
-     (list #:cargo-inputs
+     (list #:install-source? #f
+           #:cargo-inputs
            `(("rust-anyhow" ,rust-anyhow-1)
              ("rust-askama" ,rust-askama-0.11)
              ("rust-bincode" ,rust-bincode-1)
