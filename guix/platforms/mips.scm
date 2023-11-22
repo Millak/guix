@@ -26,4 +26,5 @@
    (target "mips64el-linux-gnu")
    (system "mips64el-linux")
    (linux-architecture "mips")
+   (rust-target "mips64el-unknown-linux-gnuabi64")
    (glibc-dynamic-linker "/lib/ld.so.1")))

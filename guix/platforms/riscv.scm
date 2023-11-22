@@ -26,4 +26,5 @@
    (target "riscv64-linux-gnu")
    (system "riscv64-linux")
    (linux-architecture "riscv")
+   (rust-target "riscv64gc-unknown-linux-gnu")
    (glibc-dynamic-linker "/lib/ld-linux-riscv64-lp64d.so.1")))

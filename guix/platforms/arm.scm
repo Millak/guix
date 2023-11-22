@@ -27,6 +27,7 @@
    (target "arm-linux-gnueabihf")
    (system "armhf-linux")
    (linux-architecture "arm")
+   (rust-target "armv7-unknown-linux-gnueabihf")
    (glibc-dynamic-linker "/lib/ld-linux-armhf.so.3")))
 
 (define aarch64-linux
@@ -34,4 +35,5 @@
    (target "aarch64-linux-gnu")
    (system "aarch64-linux")
    (linux-architecture "arm64")
+   (rust-target "aarch64-unknown-linux-gnu")
    (glibc-dynamic-linker "/lib/ld-linux-aarch64.so.1")))
