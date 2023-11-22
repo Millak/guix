@@ -76,15 +76,17 @@ all the dependencies and appropriate environment variables are set up to
 hack on Guix:
 
 @example
-guix shell -D guix --pure
+guix shell -D guix -CPW
 @end example
 
 or even, from within a Git worktree for Guix:
 
 @example
-guix shell --pure
+guix shell -CPW
 @end example
 
+If @option{-C} (short for @option{--container}) is not supported on your
+system, try @command{--pure} instead of @option{-CPW}.
 @xref{Invoking guix shell}, for more information on that command.
 
 If you are unable to use Guix when building Guix from a checkout, the
