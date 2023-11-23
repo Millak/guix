@@ -1149,3 +1149,31 @@ on the XPTest package by Craig Brozensky and the JUnit package by Kent Beck.")
 
 (define-public ecl-xlunit
   (sbcl-package->ecl-package sbcl-xlunit))
+
+(define-public sbcl-lisp-critic
+  (package
+    (name "sbcl-lisp-critic")
+    (version "0.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/g000001/lisp-critic")
+             (commit "fb70c69dc61a53fb069b24edebcfb0de813a176b")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "059vfdn8ds44hihhjmylp059zl2gzghiipcigvjd51sb6zc6f0zy"))))
+    (build-system asdf-build-system/sbcl)
+    (synopsis "Common Lisp linter")
+    (description "The Lisp Critic scans your code for instances of bad
+Lisp programming practice.")
+    (home-page
+     "https://courses.cs.northwestern.edu/325/exercises/critic.html#critic")
+    (license license:expat)))
+
+(define-public cl-lisp-critic
+  (sbcl-package->cl-source-package sbcl-lisp-critic))
+
+(define-public ecl-lisp-critic
+  (sbcl-package->ecl-package sbcl-lisp-critic))
+
