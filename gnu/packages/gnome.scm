@@ -4697,7 +4697,7 @@ configuration storage systems.")
 (define-public json-glib-minimal
   (package
     (name "json-glib-minimal")
-    (version "1.6.2")
+    (version "1.6.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/json-glib/"
@@ -4705,14 +4705,16 @@ configuration storage systems.")
                                   "/json-glib-" version ".tar.xz"))
               (sha256
                (base32
-                "092g2dyy1hhl0ix9kp33wcab0pg1qicnsv0cj5ms9g9qs336cgd3"))))
+                "03j9ba2sccbz954smk3n1swwnvpzl8yhwwin6vixvxligaz9iv4n"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t))           ; To wrap binaries and/or compile schemas
+     (list #:glib-or-gtk? #t            ;to wrap binaries, compile schemas
+           #:configure-flags #~(list "-Dgtk_doc=disabled")))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib" ,glib "bin")             ;for glib-mkenums and glib-genmarshal
-       ("pkg-config" ,pkg-config)))
+     (list
+      gettext-minimal
+      `(,glib "bin")                     ;for glib-mkenums and glib-genmarshal
+      pkg-config))
     (inputs
      (list bash-minimal))
     (propagated-inputs
@@ -4731,8 +4733,7 @@ GLib and GObject, and integrates JSON with GLib data types.")
     (arguments
      (substitute-keyword-arguments (package-arguments json-glib-minimal)
        ((#:configure-flags _)
-        #~(list "-Ddocs=true"
-                "-Dman=true"
+        #~(list "-Dman=true"
                 #$@(if (%current-target-system)
                        ;; If enabled, gtkdoc-scangobj will try to execute a
                        ;; cross-compiled binary.
@@ -4740,7 +4741,8 @@ GLib and GObject, and integrates JSON with GLib data types.")
                           ;; Trying to build introspection data when cross-compiling
                           ;; causes errors during linking.
                           "-Dintrospection=disabled")
-                       #~())))
+                       #~("-Dgtk_doc=enabled"
+                          "-Dintrospection=enabled"))))
        ((#:phases phases '%standard-phases)
         #~(modify-phases #$phases
             ;; When cross-compiling, there are no docs to move.
@@ -4753,16 +4755,13 @@ GLib and GObject, and integrates JSON with GLib data types.")
                         (lambda _
                           (mkdir-p (string-append #$output:doc "/share"))
                           (rename-file
-                           (string-append #$output "/share/gtk-doc")
+                           (string-append #$output "/share/doc")
                            (string-append #$output:doc
-                                          "/share/gtk-doc"))))))))))
+                                          "/share/doc"))))))))))
     (native-inputs
      (modify-inputs (package-native-inputs json-glib-minimal)
-       (prepend docbook-xml-4.3
-                docbook-xsl
-                gobject-introspection
-                gtk-doc
-                libxslt)))))
+       (prepend gi-docgen
+                gobject-introspection)))))
 
 (define-public libxklavier
   (package
