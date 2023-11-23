@@ -1556,8 +1556,34 @@ lot easier.")
                        ("rust-termcolor" ,rust-termcolor-1)
                        ("rust-thiserror" ,rust-thiserror-1)
                        ("rust-time" ,rust-time-0.3))
-       #:install-source? #f))
-    (native-inputs (list pkg-config))
+       #:install-source? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'build 'build-extras
+           (lambda _
+             (substitute* "Documentation/Makefile"
+               (("docbook2x-texi") "docbook2texi"))
+             (setenv "PERL_PATH" "perl")
+             (invoke "make" "-C" "Documentation" "info")
+             (invoke "make" "-C" "completion" "stgit.bash")
+             (invoke "make" "-C" "completion" "stg.fish")))
+         (add-after 'install 'install-extras
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (invoke "make" "-C" "Documentation" "install-info"
+                       (string-append "prefix=" out))
+               (invoke "make" "-C" "completion" "install"
+                       (string-append "prefix=" out)
+                       (string-append "bashdir=" out "/etc/bash_completion.d/"))))))))
+    (native-inputs
+     (list pkg-config
+           ;; For the documentation
+           asciidoc
+           docbook2x
+           libxslt
+           perl
+           texinfo
+           xmlto))
     (inputs (list openssl zlib curl))
     (home-page "https://stacked-git.github.io/")
     (synopsis "Stacked Git (StGit) manages Git commits as a stack of patches")
