@@ -2802,6 +2802,43 @@ Main features:
 @end itemize")
     (license license:expat)))
 
+(define-public mapbox-variant
+  (package
+    (name "mapbox-variant")
+    (version "1.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mapbox/variant")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "03cmxm34ralh8y07bs80gz3v4pql51206dn5h7lcnm7vishkk241"))
+              (modules '((guix build utils)))
+              (snippet #~(begin
+                           (delete-file "test/include/catch.hpp")
+                           (substitute* (find-files "test" "\\.[ch]pp")
+                             (("\"catch.hpp\"") "<catch/catch.hpp>"))))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:test-target "test"
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'bootstrap)
+               (delete 'configure)
+               (delete 'build)
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (copy-recursively "include"
+                                     (string-append (assoc-ref outputs "out")
+                                                    "/include")))))))
+    (native-inputs (list catch2-1))
+    (home-page "https://github.com/mapbox/variant")
+    (synopsis "Implementation of std::variant for C++11/14")
+    (description "This package provides a header-only implementation of
+std::variant (formerly boost::variant) for C++11/14.")
+    (license license:bsd-3)))
+
 (define-public mpark-variant
   (package
     (name "mpark-variant")
