@@ -3693,6 +3693,22 @@ contain over 620 classes.")
     (description "Sip module support for PyQt5")
     (license license:lgpl2.1+)))
 
+(define-public python-pyqt6-sip
+  (package
+    (inherit python-pyqt5-sip)
+    (name "python-pyqt6-sip")
+    (version "13.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "PyQt6_sip" version))
+       (sha256
+        (base32 "0y2pgc1kzskq3q230b5d48izvzy9dl4hkfjpcr7kv53ih1cf31i4"))))
+    (synopsis "Sip module support for PyQt6")
+    (description
+     "SIP is used to write self contained extension modules, i.e. without a library
+to be wrapped. This SIP extension module provides support for the PyQt6 package.")))
+
 (define-public python-pyqtwebengine
   (package
     (name "python-pyqtwebengine")
