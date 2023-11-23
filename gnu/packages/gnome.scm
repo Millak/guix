@@ -6953,7 +6953,7 @@ part of udev-extras, then udev, then systemd.  It's now a project on its own.")
 (define-public gvfs
   (package
     (name "gvfs")
-    (version "1.50.3")
+    (version "1.50.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gvfs/"
@@ -6961,13 +6961,14 @@ part of udev-extras, then udev, then systemd.  It's now a project on its own.")
                                   "gvfs-" version ".tar.xz"))
               (sha256
                (base32
-                "1z8332qg4kpa3lm3lbwb3xir4rba9ajsbqbq4yfh45mvjyg135v8"))))
+                "0cgjlxrs4qr08igqjpkhfxpzydj8m9y9n92z091knkj5170x5bbj"))))
     (build-system meson-build-system)
     (arguments
      (list #:glib-or-gtk? #t
            #:configure-flags
            #~(list "-Dsystemduserunitdir=no"
                    "-Dtmpfilesdir=no"
+                   "-Dman=true"
                    ;; Otherwise, the RUNPATH will lack the final path component.
                    (string-append "-Dc_link_args=-Wl,-rpath="
                                   #$output "/lib/gvfs"))))
@@ -7006,7 +7007,7 @@ part of udev-extras, then udev, then systemd.  It's now a project on its own.")
            openssh
            polkit
            udisks))
-    (home-page "https://wiki.gnome.org/gvfs/")
+    (home-page "https://wiki.gnome.org/Projects/gvfs")
     (synopsis "Userspace virtual file system for GIO")
     (description
      "GVFS is a userspace virtual file system designed to work with the I/O
