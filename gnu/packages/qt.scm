@@ -3811,6 +3811,40 @@ set of three modules.  Prior to v5.12 these bindings were part of PyQt
 itself.")
     (license license:gpl3)))
 
+(define-public python-pyqtwebengine-6
+  (package
+    (inherit python-pyqtwebengine)
+    (version "6.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "PyQt6_WebEngine" version))
+       (sha256
+        (base32 "11wlnggs5vi7z465xhmnz664wbaj44ki6mmijbk0kr457x69h2ym"))))
+    (native-inputs (list python python-sip python-pyqt-builder
+                         ;; qtbase is required for qmake
+                         qtbase))
+    (inputs (list python-pyqt-6 qtbase qtdeclarative qtwebchannel qtwebengine))
+    (arguments
+     (list
+      #:tests? #f ;No tests.
+      #:configure-flags #~`(@ ("--verbose" . "") ;Print commands run.
+                              ("--jobs" unquote
+                               (number->string (parallel-job-count))))
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'set-include-dirs
+                     (lambda* (#:key inputs outputs #:allow-other-keys)
+                       (let* ((python (assoc-ref inputs "python"))
+                              (sip-include-dirs (search-input-directory inputs
+                                                 (string-append "/lib/python"
+                                                  (python-version python)
+                                                  "/site-packages/PyQt6/bindings"))))
+                         (setenv "SIP_INCLUDE_DIRS" sip-include-dirs)))))))
+    (description
+     "PyQtWebEngine is a set of Python bindings for The Qt Company's Qt
+WebEngine libraries.  The bindings sit on top of PyQt6 and are implemented as a
+set of three modules.")))
+
 (define-public python-pyqt-builder
   (package
    (name "python-pyqt-builder")
