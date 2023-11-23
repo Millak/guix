@@ -29,6 +29,7 @@
 ;;; Copyright © 2022 Yash Tiwari <yasht@mailbox.org>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3673,6 +3674,50 @@ module provides support functions to the automatically generated code.")
 framework.  The bindings are implemented as a set of Python modules and
 contain over 620 classes.")
     (license license:gpl3)))
+
+(define-public python-pyqt-6
+  (package
+    (inherit python-pyqt)
+    (version "6.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "PyQt6" version))
+       (file-name (string-append "PyQt6-" version ".tar.gz"))
+       (sha256
+        (base32 "100jh1iiz5gx821qzgicfrqv7hjjj98pchdbc1nvdzzra1ryx1ql"))))
+    (inputs ;Qt5 dependencies only in python-pyqt:
+            ;; (qt)connectivity, location, sensors, serialport, x11extras, xmlpatterns.
+            (list python-wrapper
+                  qtbase
+                  qtdeclarative
+                  qtmultimedia
+                  qtpositioning
+                  qtsvg
+                  qttools
+                  qtwebchannel
+                  qtwebsockets))
+    (propagated-inputs (list python-sip python-pyqt6-sip))
+    (native-inputs (list python-pyqt-builder qtbase)) ;qtbase is required for qmake.
+    (arguments
+     (list
+      #:tests? #f ;No tests.
+      #:configure-flags #~`(@ ("--verbose" . "") ;Print commands run.
+                              ("--confirm-license" . "")
+                              ("--jobs" unquote
+                               (number->string (parallel-job-count))))
+      #:phases #~(modify-phases %standard-phases
+                   ;; When building python-pyqtwebengine, <qprinter.h> cannot be
+                   ;; included.  Here we substitute the full path to the header in the
+                   ;; store.
+                   (add-after 'unpack 'substitute-source
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (let* ((qprinter.h (search-input-file inputs
+                                           "/include/qt6/QtPrintSupport/qprinter.h")))
+                         (substitute* (list "sip/QtPrintSupport/qprinter.sip"
+                                       "sip/QtPrintSupport/qpyprintsupport_qlist.sip")
+                           (("qprinter.h")
+                            qprinter.h))))))))))
 
 (define-public python-pyqt5-sip
   (package
