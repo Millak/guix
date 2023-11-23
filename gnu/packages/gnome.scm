@@ -5110,7 +5110,7 @@ and the GLib main loop, to integrate well with GNOME applications.")
 (define-public libsoup
   (package/inherit libsoup-minimal
     (name "libsoup")
-    (version "3.1.4")
+    (version "3.4.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/libsoup/"
@@ -5118,7 +5118,7 @@ and the GLib main loop, to integrate well with GNOME applications.")
                                   "libsoup-" version ".tar.xz"))
               (sha256
                (base32
-                "0m5mf2ahb462jzr40d916swv3040h9500jcmr87vnilpr4zrj584"))))
+                "1an5n2sa70f40my4g20lk38s5ib99c32bzzg8gm91v9nbxr6f719"))))
     (outputs (cons "doc" (package-outputs libsoup-minimal)))
     (arguments
      (substitute-keyword-arguments (package-arguments libsoup-minimal)
@@ -5148,7 +5148,7 @@ and the GLib main loop, to integrate well with GNOME applications.")
                 (rename-file (string-append #$output "/share/doc")
                              (string-append #$output:doc "/share/doc"))))))))
     (native-inputs (modify-inputs (package-native-inputs libsoup-minimal)
-                     (prepend gi-docgen)))))
+                     (prepend gettext-minimal gi-docgen)))))
 
 (define-public libsecret
   (package
