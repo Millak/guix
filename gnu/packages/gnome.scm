@@ -5886,7 +5886,7 @@ services for numerous locations.")
   (package
     (inherit libgweather)
     (name "libgweather4")
-    (version "4.1.1")
+    (version "4.2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/libgweather/"
@@ -5894,7 +5894,7 @@ services for numerous locations.")
                                   "libgweather-" version ".tar.xz"))
               (sha256
                (base32
-                "1wh3asniv5yiqp0dsk96as2bkx72hamh3ij2md8k0is9yd7ppbjm"))))
+                "00v2rb9dizfvcsq3bgrz68bsi1k04ln5fqhx1q06m5yql0nq32mg"))))
     (arguments
      (list
       #:configure-flags
