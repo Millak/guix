@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021-2022 Maxime Devos <maximedevos@telenet.be>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -826,38 +826,39 @@
                          (call-with-output-file (string-append #$output "/two")
                            (lambda (port)
                              (display "This is the second one." port))))))
-        (build-drv #~(begin
-                       (use-modules (guix build store-copy)
-                                    (guix build utils)
-                                    (srfi srfi-1))
+        (build-drv
+         (with-imported-modules '((guix build store-copy)
+                                  (guix build syscalls)
+                                  (guix progress)
+                                  (guix records)
+                                  (guix sets)
+                                  (guix build utils))
+           #~(begin
+               (use-modules (guix build store-copy)
+                            (guix build utils)
+                            (srfi srfi-1))
 
-                       (define (canonical-file? file)
-                         ;; Copied from (guix tests).
-                         (let ((st (lstat file)))
-                           (or (not (string-prefix? (%store-directory) file))
-                               (eq? 'symlink (stat:type st))
-                               (and (= 1 (stat:mtime st))
-                                    (zero? (logand #o222 (stat:mode st)))))))
+               (define (canonical-file? file)
+                 ;; Copied from (guix tests).
+                 (let ((st (lstat file)))
+                   (or (not (string-prefix? (%store-directory) file))
+                       (eq? 'symlink (stat:type st))
+                       (and (= 1 (stat:mtime st))
+                            (zero? (logand #o222 (stat:mode st)))))))
 
-                       (mkdir #$output)
-                       (populate-store '("graph") #$output
-                                       #:deduplicate? #f)
+               (mkdir #$output)
+               (populate-store '("graph") #$output
+                               #:deduplicate? #f)
 
-                       ;; Check whether 'populate-store' canonicalizes
-                       ;; permissions and timestamps.
-                       (unless (every canonical-file? (find-files #$output))
-                         (error "not canonical!" #$output)))))
+               ;; Check whether 'populate-store' canonicalizes
+               ;; permissions and timestamps.
+               (unless (every canonical-file? (find-files #$output))
+                 (error "not canonical!" #$output))))))
     (mlet* %store-monad ((one (gexp->derivation "one" build-one))
                          (two (gexp->derivation "two" (build-two one)))
                          (drv (gexp->derivation "store-copy" build-drv
                                                 #:references-graphs
-                                                `(("graph" ,two))
-                                                #:modules
-                                                '((guix build store-copy)
-                                                  (guix progress)
-                                                  (guix records)
-                                                  (guix sets)
-                                                  (guix build utils))))
+                                                `(("graph" ,two))))
                          (ok? (built-derivations (list drv)))
                          (out -> (derivation->output-path drv)))
       (let ((one (derivation->output-path one))
