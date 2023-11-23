@@ -217,7 +217,7 @@ shared NFS home directories.")
     (name "dbus-verbose")
     (arguments (substitute-keyword-arguments (package-arguments dbus)
                  ((#:configure-flags flags '())
-                  `(cons "--enable-verbose-mode" ,flags))))
+                  #~(cons "--enable-verbose-mode" #$flags))))
     (synopsis "D-Bus with verbose mode enabled for debugging")
     (description "This variant D-Bus package is built with verbose mode, which
 eases debugging of D-Bus services by printing various debug information when
