@@ -1381,7 +1381,7 @@ a debugging tool, @command{gssdp-device-sniffer}.")
 (define-public gupnp
   (package
     (name "gupnp")
-    (version "1.5.4")
+    (version "1.6.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -1389,17 +1389,20 @@ a debugging tool, @command{gssdp-device-sniffer}.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0y0v0m6afnx879hjvhj2lrawp9qhpyp8mbds0yp544imghajk0wq"))))
+                "0kx0ymsab4x927ir2a5f7mfk9sck5kswbig6n38r4dwbqzl51p69"))))
     (build-system meson-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'pre-check
-           (lambda _
-             ;; Tests require a writable HOME.
-             (setenv "HOME" (getcwd)))))))
+     (list
+      #:configure-flags #~'("-Dgtk_doc=true")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Tests require a writable HOME.
+              (setenv "HOME" (getcwd)))))))
     (native-inputs
      (list gettext-minimal
+           gi-docgen
            `(,glib "bin")
            gobject-introspection
            gtk-doc/stable
