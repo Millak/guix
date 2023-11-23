@@ -10874,6 +10874,35 @@ representation, with support for both SI and binary units.")
         ("rust-rand" ,rust-rand-0.3)
         ("rust-tokio-core" ,rust-tokio-core-0.1))))))
 
+(define-public rust-bzip2-rs-0.1
+  (package
+    (name "rust-bzip2-rs")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bzip2-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0dgp83kixqrqj6q6574qr5zsfpbsiiwhqs3krhvsn4f8wkkmksxy"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 ;; Don't suggest nightly features of tinyvec.
+                 (substitute* "Cargo.toml"
+                   (("\"tinyvec/nightly_const_generics\", ") ""))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-crc32fast" ,rust-crc32fast-1)
+                       ("rust-tinyvec" ,rust-tinyvec-1))
+       #:cargo-development-inputs
+       (("rust-bzip2" ,rust-bzip2-0.4)
+        ("rust-criterion" ,rust-criterion-0.3)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-0.6))))
+    (home-page "https://github.com/paolobarbolini/bzip2-rs")
+    (synopsis "Pure Rust bzip2 decompressor")
+    (description "Pure Rust bzip2 decompressor.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-bzip2-sys-0.1
   (package
     (name "rust-bzip2-sys")
