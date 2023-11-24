@@ -20731,6 +20731,39 @@ an array-based heap.")
 (define-public cl-priority-queue
   (sbcl-package->cl-source-package sbcl-priority-queue))
 
+(define-public sbcl-cl-messagepack
+  (let ((commit "8ff2060ed20677feef8ac01558690df0aeac30b6")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-messagepack")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mbrezu/cl-messagepack")
+               (commit commit)))
+         (file-name (git-file-name "cl-messagepack" version))
+         (sha256
+          (base32 "1hjd1q18lz46k46afz94ljflp76mfr30d6z4jrsgd26y2lc4gchc"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-cl-json sbcl-fiveam))
+      (inputs (list sbcl-babel sbcl-closer-mop sbcl-flexi-streams))
+      (synopsis "Common Lisp implementation of MessagePack")
+      (description
+       "This is a Common Lisp implementation of the MessagePack
+(@url{http://msgpack.org/}) serialization/deserialization format,
+implemented according to
+@url{http://wiki.msgpack.org/display/MSGPACK/Format+specification}.")
+      (home-page "https://github.com/mbrezu/cl-messagepack")
+      (license license:bsd-2))))
+
+(define-public ecl-cl-messagepack
+  (sbcl-package->ecl-package sbcl-cl-messagepack))
+
+(define-public cl-messagepack
+  (sbcl-package->cl-source-package sbcl-cl-messagepack))
+
 (define-public sbcl-messagebox
   (let ((commit "ea3688d9a9954bee7079c0173bc7b3f327021e9f")
         (revision "1"))
