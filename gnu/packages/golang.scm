@@ -5577,7 +5577,8 @@ values.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01b0wjb7yzv8wzzz2iim8mjpkwjnykcanrwiq06pkl89lr6gv8hn"))))
+        (base32 "01b0wjb7yzv8wzzz2iim8mjpkwjnykcanrwiq06pkl89lr6gv8hn"))
+       (patches (search-patches "go-gopkg-in-yaml-v3-32bit.patch"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "gopkg.in/yaml.v3"))
