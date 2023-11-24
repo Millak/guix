@@ -4915,11 +4915,12 @@ remote SMTP server.")
                         (string-append
                          "\"" (search-input-file inputs "bin/sh")
                          "\"")))
-                     (substitute* "commands/z.go"
-                       (("\"zoxide\"")
-                        (string-append
-                         "\"" (search-input-file inputs "bin/zoxide")
-                         "\"")))
+                     (when (assoc-ref inputs "zoxide")
+                       (substitute* "commands/z.go"
+                         (("\"zoxide\"")
+                          (string-append
+                            "\"" (search-input-file inputs "bin/zoxide")
+                            "\""))))
                      (substitute* (list "lib/crypto/gpg/gpg.go"
                                         "lib/crypto/gpg/gpg_test.go"
                                         "lib/crypto/gpg/gpgbin/keys.go"
@@ -4939,45 +4940,49 @@ remote SMTP server.")
                    (invoke "make" "CC=gcc" "install" "-C"
                            (string-append "src/" import-path)
                            (string-append "PREFIX=" #$output)))))))
-    (inputs (list gnupg
-                  go-github-com-zenhack-go-notmuch
-                  go-golang-org-x-oauth2
-                  go-github-com-xo-terminfo
-                  go-github-com-stretchr-testify
-                  go-github-com-riywo-loginshell
-                  go-github-com-pkg-errors
-                  go-github-com-mitchellh-go-homedir
-                  go-github-com-miolini-datacounter
-                  go-github-com-mattn-go-runewidth
-                  go-github-com-mattn-go-isatty
-                  go-github-com-lithammer-fuzzysearch
-                  go-github-com-kyoh86-xdg
-                  go-github-com-imdario-mergo
-                  go-github-com-google-shlex
-                  go-github-com-go-ini-ini
-                  go-github-com-gdamore-tcell-v2
-                  go-github-com-gatherstars-com-jwz
-                  go-github-com-fsnotify-fsnotify
-                  go-github-com-emersion-go-smtp
-                  go-github-com-emersion-go-sasl
-                  go-github-com-emersion-go-pgpmail
-                  go-github-com-emersion-go-message
-                  go-github-com-emersion-go-maildir
-                  go-github-com-emersion-go-imap-sortthread
-                  go-github-com-emersion-go-imap
-                  go-github-com-emersion-go-msgauth
-                  go-github-com-emersion-go-mbox
-                  go-github-com-ddevault-go-libvterm
-                  go-github-com-danwakefield-fnmatch
-                  go-github-com-creack-pty
-                  go-github-com-arran4-golang-ical
-                  go-github-com-protonmail-go-crypto
-                  go-github-com-syndtr-goleveldb-leveldb
-                  go-git-sr-ht-sircmpwn-getopt
-                  go-git-sr-ht-rockorager-tcell-term
-                  python
-                  python-vobject
-                  zoxide))
+    (inputs
+     (append
+       (list gnupg
+             go-github-com-zenhack-go-notmuch
+             go-golang-org-x-oauth2
+             go-github-com-xo-terminfo
+             go-github-com-stretchr-testify
+             go-github-com-riywo-loginshell
+             go-github-com-pkg-errors
+             go-github-com-mitchellh-go-homedir
+             go-github-com-miolini-datacounter
+             go-github-com-mattn-go-runewidth
+             go-github-com-mattn-go-isatty
+             go-github-com-lithammer-fuzzysearch
+             go-github-com-kyoh86-xdg
+             go-github-com-imdario-mergo
+             go-github-com-google-shlex
+             go-github-com-go-ini-ini
+             go-github-com-gdamore-tcell-v2
+             go-github-com-gatherstars-com-jwz
+             go-github-com-fsnotify-fsnotify
+             go-github-com-emersion-go-smtp
+             go-github-com-emersion-go-sasl
+             go-github-com-emersion-go-pgpmail
+             go-github-com-emersion-go-message
+             go-github-com-emersion-go-maildir
+             go-github-com-emersion-go-imap-sortthread
+             go-github-com-emersion-go-imap
+             go-github-com-emersion-go-msgauth
+             go-github-com-emersion-go-mbox
+             go-github-com-ddevault-go-libvterm
+             go-github-com-danwakefield-fnmatch
+             go-github-com-creack-pty
+             go-github-com-arran4-golang-ical
+             go-github-com-protonmail-go-crypto
+             go-github-com-syndtr-goleveldb-leveldb
+             go-git-sr-ht-sircmpwn-getopt
+             go-git-sr-ht-rockorager-tcell-term
+             python
+             python-vobject)
+       (if (supported-package? zoxide)
+           (list zoxide)
+           '())))
     (native-inputs (list scdoc))
     (home-page "https://git.sr.ht/~rjarry/aerc")
     (synopsis "Email client for the terminal")
