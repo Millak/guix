@@ -543,6 +543,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/toys.scm				\
   %D%/packages/tryton.scm			\
   %D%/packages/qt.scm				\
+  %D%/packages/quantum.scm			\
   %D%/packages/racket.scm			\
   %D%/packages/radio.scm			\
   %D%/packages/ragel.scm			\
