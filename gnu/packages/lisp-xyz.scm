@@ -20672,6 +20672,37 @@ a program is running.")
 (define-public cl-metering
   (sbcl-package->cl-source-package sbcl-metering))
 
+(define-public sbcl-cl-grnm
+  (let ((commit "778a312e9eb3d3de7541457b516ea3d9055a15aa")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-grnm")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/quil-lang/cl-grnm")
+               (commit commit)))
+         (file-name (git-file-name "cl-grnm" version))
+         (sha256
+          (base32 "1hb5n37n3x2ylrghcqsia2g9a6f5wg24l659jiz4ncpi5bsv4m3s"))))
+      (build-system asdf-build-system/sbcl)
+      (synopsis "Common Lisp implementation of (grid restrained) Nelder-Mead")
+      (description
+       "These common lisp sources contain two variants of the Nelder-Mead
+algorithm.  The original algorithm and a provably convergent, reliable variant
+by A. Bürmen et al, called the
+@acronym{GRNMA, Grid Restrained Nelder Mead Algorithm}.")
+      (home-page "https://github.com/quil-lang/cl-grnm")
+      (license license:expat))))
+
+(define-public ecl-cl-grnm
+  (sbcl-package->ecl-package sbcl-cl-grnm))
+
+(define-public cl-grnm
+  (sbcl-package->cl-source-package sbcl-cl-grnm))
+
 (define-public sbcl-messagebox
   (let ((commit "ea3688d9a9954bee7079c0173bc7b3f327021e9f")
         (revision "1"))
