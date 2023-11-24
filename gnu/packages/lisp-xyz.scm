@@ -20573,6 +20573,44 @@ function @emph{prototypes} that a valid implementation must implement.")
 (define-public cl-interface
   (sbcl-package->cl-source-package sbcl-interface))
 
+(define-public sbcl-cl-syslog
+  (let ((commit "d5d46f777f0735938e6f650cf17d814b88b70305")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-syslog")
+      (version (git-version "0.2.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mmaul/cl-syslog")
+               (commit commit)))
+         (file-name (git-file-name "cl-syslog" version))
+         (sha256
+          (base32 "1qcz55jiqwk91b01hsahxnha884f6zf2883j2m51sqph0mvj69mh"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-babel
+             sbcl-cffi
+             sbcl-global-vars
+             sbcl-local-time
+             sbcl-split-sequence
+             sbcl-usocket))
+      (arguments
+       (list #:tests? #f))
+      (synopsis "Common Lisp interface to local and remote Syslog facilities")
+      (description "@code{cl-syslog} is a Common Lisp library that provides
+access to the syslog logging facility.")
+      (home-page "https://cl-syslog.common-lisp.dev/")
+      (license license:bsd-3))))
+
+(define-public ecl-cl-syslog
+  (sbcl-package->ecl-package sbcl-cl-syslog))
+
+(define-public cl-syslog
+  (sbcl-package->cl-source-package sbcl-cl-syslog))
+
 (define-public sbcl-messagebox
   (let ((commit "ea3688d9a9954bee7079c0173bc7b3f327021e9f")
         (revision "1"))
