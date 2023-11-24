@@ -20703,6 +20703,34 @@ by A. Bürmen et al, called the
 (define-public cl-grnm
   (sbcl-package->cl-source-package sbcl-cl-grnm))
 
+(define-public sbcl-priority-queue
+  (let ((commit "011b8d52ef7ba7f8e6bc26608eedef222b38aaa8")
+        (revision "0"))
+    (package
+      (name "sbcl-priority-queue")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/dsorokin/priority-queue")
+               (commit commit)))
+         (file-name (git-file-name "cl-priority-queue" version))
+         (sha256
+          (base32 "0y5a1fid8xzzl58hfdj64n8mrzq0kr06a0lnmdjpgi0czc3x0jcy"))))
+      (build-system asdf-build-system/sbcl)
+      (synopsis "Priority queue for Common Lisp")
+      (description "This package provides a priority queue implemented with
+an array-based heap.")
+      (home-page "https://github.com/dsorokin/priority-queue")
+      (license license:expat))))
+
+(define-public ecl-priority-queue
+  (sbcl-package->ecl-package sbcl-priority-queue))
+
+(define-public cl-priority-queue
+  (sbcl-package->cl-source-package sbcl-priority-queue))
+
 (define-public sbcl-messagebox
   (let ((commit "ea3688d9a9954bee7079c0173bc7b3f327021e9f")
         (revision "1"))
