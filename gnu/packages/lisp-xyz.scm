@@ -20611,6 +20611,36 @@ access to the syslog logging facility.")
 (define-public cl-syslog
   (sbcl-package->cl-source-package sbcl-cl-syslog))
 
+(define-public sbcl-alexa
+  (package
+    (name "sbcl-alexa")
+    (version "2.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/quil-lang/alexa")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-alexa" version))
+       (sha256
+        (base32 "1y9jyz9gfmd02h492kf7v3mmpbhc0yfh4ka2rzd1vczq6fl8qgqv"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs (list sbcl-fiasco))
+    (inputs (list sbcl-alexandria sbcl-cl-ppcre))
+    (synopsis "Lexical Analyzer Generator for Common Lisp")
+    (description
+     "ALEXA is a tool similar to lex or flex for generating lexical analyzers.
+Unlike tools like lex, however, ALEXA defines a domain-specific language
+within your Lisp program, so you don't need to invoke a separate tool.")
+    (home-page "https://github.com/quil-lang/alexa")
+    (license license:bsd-3)))
+
+(define-public ecl-alexa
+  (sbcl-package->ecl-package sbcl-alexa))
+
+(define-public cl-alexa
+  (sbcl-package->cl-source-package sbcl-alexa))
+
 (define-public sbcl-messagebox
   (let ((commit "ea3688d9a9954bee7079c0173bc7b3f327021e9f")
         (revision "1"))
