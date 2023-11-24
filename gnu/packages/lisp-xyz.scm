@@ -20641,6 +20641,37 @@ within your Lisp program, so you don't need to invoke a separate tool.")
 (define-public cl-alexa
   (sbcl-package->cl-source-package sbcl-alexa))
 
+(define-public sbcl-metering
+  (let ((commit "62dbaa5e8d29d2f213b881d740114941c2c3d1be")
+        (revision "0"))
+    (package
+      (name "sbcl-metering")
+      (version (git-version "3.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.common-lisp.net/dkochmanski/metering")
+               (commit commit)))
+         (file-name (git-file-name "cl-metering" version))
+         (sha256
+          (base32 "0jx3ypk8m815yp7208xkcxkvila847mvna25a2p22ihnj0ms9rn1"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-fiveam))
+      (synopsis "Common Lisp code profiling tool")
+      (description
+       "The Metering System is a portable Common Lisp code profiling tool.
+It gathers timing and consing statistics for specified functions while
+a program is running.")
+      (home-page "https://gitlab.common-lisp.net/dkochmanski/metering")
+      (license license:public-domain))))
+
+(define-public ecl-metering
+  (sbcl-package->ecl-package sbcl-metering))
+
+(define-public cl-metering
+  (sbcl-package->cl-source-package sbcl-metering))
+
 (define-public sbcl-messagebox
   (let ((commit "ea3688d9a9954bee7079c0173bc7b3f327021e9f")
         (revision "1"))
