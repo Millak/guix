@@ -1140,7 +1140,7 @@ as a \"boring window manager for the adult in you.\"")
 (define-public mm-common
   (package
     (name "mm-common")
-    (version "1.0.3")
+    (version "1.0.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/mm-common/"
@@ -1148,26 +1148,21 @@ as a \"boring window manager for the adult in you.\"")
                                   "mm-common-" version ".tar.xz"))
               (sha256
                (base32
-                "1x8yvjy0yg17qyhmqws8xh2k8dvzrhpwqz7j1cfwzalrb1i9c5g8"))
-              (patches
-               (search-patches
-                "mm-common-reproducible-tarball.patch"))))
+                "1am5dmz7862hr2p4xbkdikpvd4kc0hdzqv73wjyjjshiyhlnsp3h"))))
     (build-system meson-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "util/mm-common-prepare.in"
-               (("ln") (search-input-file inputs "/bin/ln"))
-               (("cp") (search-input-file inputs "/bin/cp"))
-               (("sed") (search-input-file inputs "/bin/sed"))
-               (("cat") (search-input-file inputs "/bin/cat"))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "util/mm-common-prepare.in"
+                (("ln") (search-input-file inputs "/bin/ln"))
+                (("cp") (search-input-file inputs "/bin/cp"))
+                (("sed") (search-input-file inputs "/bin/sed"))
+                (("cat") (search-input-file inputs "/bin/cat"))))))))
     (native-inputs
-     `(("coreutils" ,coreutils)
-       ("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)
-       ("sed" ,sed)))
+     (list coreutils gettext-minimal pkg-config sed))
     (inputs
      (list python))
     (synopsis "Module of GNOME C++ bindings")
