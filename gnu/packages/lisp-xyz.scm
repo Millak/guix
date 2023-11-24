@@ -41,6 +41,7 @@
 ;;; Copyright © 2023 ykonai <mail@ykonai.net>
 ;;; Copyright © 2023 Gabriel Hondet <gabriel.hondet@cominety.net>
 ;;; Copyright © 2023 Raven Hallsby <karl@hallsby.com>
+;;; Copyright © 2024 Michal Atlas <michal_atlas+git@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20539,6 +20540,38 @@ most modern systems and compilers.")
 
 (define-public cl-3d-quaternions
   (sbcl-package->cl-source-package sbcl-3d-quaternions))
+
+(define-public sbcl-interface
+  (let ((commit "6d8bd74214053debcbc0b174d65ea73c271c1563")
+        (revision "0"))
+    (package
+      (name "sbcl-interface")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/stylewarning/interface")
+               (commit commit)))
+         (file-name (git-file-name "cl-interface" version))
+         (sha256
+          (base32 "0h1bckhyig2znl6nrd3agjzz7knrm2kyh2vfyk7j60kzki9rpzxy"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs (list sbcl-alexandria sbcl-global-vars))
+      (synopsis "System for defining interfaces")
+      (description
+       "This library contains an implementation of interfaces and
+implementations.  They're sometimes called protocols in other
+languages.  Broadly speaking, an @emph{interface} is some collection of
+function @emph{prototypes} that a valid implementation must implement.")
+      (home-page "https://github.com/stylewarning/interface")
+      (license license:bsd-3))))
+
+(define-public ecl-interface
+  (sbcl-package->ecl-package sbcl-interface))
+
+(define-public cl-interface
+  (sbcl-package->cl-source-package sbcl-interface))
 
 (define-public sbcl-messagebox
   (let ((commit "ea3688d9a9954bee7079c0173bc7b3f327021e9f")
