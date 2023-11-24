@@ -20764,6 +20764,44 @@ implemented according to
 (define-public cl-messagepack
   (sbcl-package->cl-source-package sbcl-cl-messagepack))
 
+(define-public sbcl-cl-permutation
+  (let ((commit "20c10e9ca56452d2fafc3ec0984dcdf78b4f4b19")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-permutation")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/stylewarning/cl-permutation")
+               (commit commit)))
+         (file-name (git-file-name "cl-permutation" version))
+         (sha256
+          (base32 "0i932g0k50y24hxizni6zfya4kcw77yk3b0llivm9g50s7fxj9dk"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-fiasco))
+      (inputs
+       (list sbcl-alexandria
+             sbcl-bordeaux-fft
+             sbcl-cl-algebraic-data-type
+             sbcl-cl-cont
+             sbcl-closer-mop
+             sbcl-iterate
+             sbcl-priority-queue))
+      (synopsis "Permutations and permutation groups in Common Lisp")
+      (description
+       "This is a Commin Lisp library for operating on permutations and
+permutation groups.")
+      (home-page "https://github.com/stylewarning/cl-permutation")
+      (license license:bsd-3))))
+
+(define-public ecl-cl-permutation
+  (sbcl-package->ecl-package sbcl-cl-permutation))
+
+(define-public cl-permutation
+  (sbcl-package->cl-source-package sbcl-cl-permutation))
+
 (define-public sbcl-messagebox
   (let ((commit "ea3688d9a9954bee7079c0173bc7b3f327021e9f")
         (revision "1"))
