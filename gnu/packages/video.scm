@@ -3618,18 +3618,15 @@ and JACK.")
 (define-public obs-looking-glass
   (package
     (name "obs-looking-glass")
-    (version "B5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/gnif/LookingGlass")
-             (commit version)
-             (recursive? #t)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "09mn544x5hg1z31l92ksk7fi7yj9r8xdk0dcl9fk56ivcr452ylm"))))
+    (version "B6")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://looking-glass.io/artifact/" version
+                                  "/source"))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "15d7wwbzfw28yqbz451b6n33ixy50vv8acyzi8gig1mq5a8gzdib"))))
     (build-system cmake-build-system)
     (arguments
      (list
