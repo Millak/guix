@@ -7809,7 +7809,7 @@ to display dialog boxes from the commandline and shell scripts.")
 (define-public mutter
   (package
     (name "mutter")
-    (version "44.3")
+    (version "44.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -7817,10 +7817,7 @@ to display dialog boxes from the commandline and shell scripts.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0l85qyn6x5hyaaclzcbqd44xpd582gdindqfam8f9lsh46zvwp0q"))
-              ;; TODO: Remove on update as this was merged upstream.  See
-              ;; <https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/3047>.
-              (patches (search-patches "mutter-fix-inverted-test.patch"))))
+                "1a0j1ygph6bz83da4gr2z02xqf2l5y1x10482vyh3d34arqhph26"))))
     ;; NOTE: Since version 3.21.x, mutter now bundles and exports forked
     ;; versions of cogl and clutter.  As a result, many of the inputs,
     ;; propagated-inputs, and configure flags used in cogl and clutter are
@@ -7960,9 +7957,8 @@ to display dialog boxes from the commandline and shell scripts.")
            python-dbus
            python-dbusmock))
     (propagated-inputs
-     (list gsettings-desktop-schemas      ;required by libmutter.pc
-           gtk+                           ;required by libmutter.pc
-           ;; mutter-clutter-1.0.pc and mutter-cogl-1.0.pc refer to these:
+     (list gsettings-desktop-schemas      ;required by libmutter-12.pc
+           ;; mutter-clutter-12.pc and mutter-cogl-12.pc refer to these:
            at-spi2-core
            cairo
            eudev
