@@ -3496,7 +3496,7 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
           ("gcc" ,gcc-final)
           ("libc" ,glibc-final)
           ("libc:static" ,glibc-final "static")
-          ("locales" ,(if (target-hurd?)
+          ("locales" ,(if (target-hurd? (%current-system))
                           glibc-utf8-locales-final/hurd
                           glibc-utf8-locales-final)))))))
 
