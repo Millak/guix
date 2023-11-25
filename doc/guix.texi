@@ -35823,7 +35823,7 @@ guix shell tigervnc-client -- vncviewer localhost:5900
 
 The default configuration (see @code{hurd-vm-configuration} below)
 spawns a secure shell (SSH) server in your GNU/Hurd system, which QEMU
-(the virtual machine emulator) redirects to port 10222 on the host.
+(the virtual machine emulator) redirects to port 10022 on the host.
 By default, the service enables @dfn{offloading} such that the host
 @code{guix-daemon} automatically offloads GNU/Hurd builds to the
 childhurd (@pxref{Daemon Offload Setup}).  This is what happens when
