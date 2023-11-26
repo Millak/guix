@@ -8,6 +8,7 @@
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -156,8 +157,11 @@ data in motion, or as a file format for data at rest.")
                             (install-file file slib)
                             (delete-file file))
                           (find-files lib "\\.a$"))))))))
-    (native-inputs (list googletest))
-    (inputs (list zlib))
+    (native-inputs (append (if (%current-target-system)
+                               (list this-package)
+                               '())
+                           (list googletest)))
+    (inputs (list zlib googletest))
     (home-page "https://github.com/protocolbuffers/protobuf")
     (synopsis "Data encoding for remote procedure calls (RPCs)")
     (description

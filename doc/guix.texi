@@ -22165,10 +22165,6 @@ signing and encryption keys are defined in @file{/etc/yggdrasil-private.conf}
 @example
 # sample content for /etc/yggdrasil-private.conf
 @{
-  # Your public key. Your peers may ask you for this to put
-  # into their AllowedPublicKeys configuration.
-  PublicKey: 64277...
-
   # Your private key. DO NOT share this with anyone!
   PrivateKey: 5c750...
 @}
@@ -22207,14 +22203,8 @@ should be stored, which are necessary to specify if you don't want a
 randomized address after each restart.  Use @code{#f} to disable.  Options
 defined in this file take precedence over @code{json-config}.  Use the output
 of @code{yggdrasil -genconf} as a starting point.  To configure a static
-address, delete everything except these options:
+address, delete everything except PrivateKey option.
 
-@itemize
-@item @code{EncryptionPublicKey}
-@item @code{EncryptionPrivateKey}
-@item @code{SigningPublicKey}
-@item @code{SigningPrivateKey}
-@end itemize
 @end table
 @end deftp
 
@@ -35823,7 +35813,7 @@ guix shell tigervnc-client -- vncviewer localhost:5900
 
 The default configuration (see @code{hurd-vm-configuration} below)
 spawns a secure shell (SSH) server in your GNU/Hurd system, which QEMU
-(the virtual machine emulator) redirects to port 10222 on the host.
+(the virtual machine emulator) redirects to port 10022 on the host.
 By default, the service enables @dfn{offloading} such that the host
 @code{guix-daemon} automatically offloads GNU/Hurd builds to the
 childhurd (@pxref{Daemon Offload Setup}).  This is what happens when
@@ -39559,6 +39549,137 @@ The service does not install a daemon; instead, it installs helper programs as
 setuid-root (@pxref{Setuid Programs}) such that unprivileged users can invoke
 @command{singularity run} and similar commands.
 @end defvar
+
+@cindex OCI-backed, Shepherd services
+@subsubheading OCI backed services
+
+Should you wish to manage your Docker containers with the same consistent
+interface you use for your other Shepherd services,
+@var{oci-container-service-type} is the tool to use: given an
+@acronym{Open Container Initiative, OCI} container image, it will run it in a
+Shepherd service.  One example where this is useful: it lets you run services
+that are available as Docker/OCI images but not yet packaged for Guix.
+
+@defvar oci-container-service-type
+
+This is a thin wrapper around Docker's CLI that executes OCI images backed
+processes as Shepherd Services.
+
+@lisp
+(service oci-container-service-type
+         (list
+          (oci-container-configuration
+           (image "prom/prometheus")
+           (network "host")
+           (ports
+             '(("9000" . "9000")
+               ("9090" . "9090"))))
+          (oci-container-configuration
+           (image "grafana/grafana:10.0.1")
+           (network "host")
+           (ports
+             '(("3000" . "3000")))
+           (volumes
+             '("/var/lib/grafana:/var/lib/grafana")))))
+@end lisp
+
+In this example two different Shepherd services are going be added to the
+system.  Each @code{oci-container-configuration} record translates to a
+@code{docker run} invocation and its fields directly map to options.  You can
+refer to the
+@url{https://docs.docker.com/engine/reference/commandline/run,upstream},
+documentation for the semantics of each value.  If the images are not found they
+will be
+@url{https://docs.docker.com/engine/reference/commandline/pull/,pulled}.  The
+spawned services are going to be attached to the host network and are supposed
+to behave like other processes.
+
+@end defvar
+
+@c %start of fragment
+
+@deftp {Data Type} oci-container-configuration
+Available @code{oci-container-configuration} fields are:
+
+@table @asis
+@item @code{user} (default: @code{"oci-container"}) (type: string)
+The user under whose authority docker commands will be run.
+
+@item @code{group} (default: @code{"docker"}) (type: string)
+The group under whose authority docker commands will be run.
+
+@item @code{command} (default: @code{()}) (type: list-of-strings)
+Overwrite the default command (@code{CMD}) of the image.
+
+@item @code{entrypoint} (default: @code{""}) (type: string)
+Overwrite the default entrypoint (@code{ENTRYPOINT}) of the image.
+
+@item @code{environment} (default: @code{()}) (type: list)
+Set environment variables. This can be a list of pairs or strings, even mixed:
+
+@lisp
+(list '("LANGUAGE" . "eo:ca:eu")
+      "JAVA_HOME=/opt/java")
+@end lisp
+
+String are passed directly to the Docker CLI. You can refer to the
+@uref{https://docs.docker.com/engine/reference/commandline/run/#env,upstream}
+documentation for semantics.
+
+@item @code{image} (type: string)
+The image used to build the container.  Images are resolved by the
+Docker Engine, and follow the usual format
+@code{myregistry.local:5000/testing/test-image:tag}.
+
+@item @code{provision} (default: @code{""}) (type: string)
+Set the name of the provisioned Shepherd service.
+
+@item @code{network} (default: @code{""}) (type: string)
+Set a Docker network for the spawned container.
+
+@item @code{ports} (default: @code{()}) (type: list)
+Set the port or port ranges to expose from the spawned container.  This can be a
+list of pairs or strings, even mixed:
+
+@lisp
+(list '("8080" . "80")
+      "10443:443")
+@end lisp
+
+String are passed directly to the Docker CLI.  You can refer to the
+@uref{https://docs.docker.com/engine/reference/commandline/run/#publish,upstream}
+documentation for semantics.
+
+@item @code{volumes} (default: @code{()}) (type: list)
+Set volume mappings for the spawned container.  This can be a
+list of pairs or strings, even mixed:
+
+@lisp
+(list '("/root/data/grafana" . "/var/lib/grafana")
+      "/gnu/store:/gnu/store")
+@end lisp
+
+String are passed directly to the Docker CLI.  You can refer to the
+@uref{https://docs.docker.com/engine/reference/commandline/run/#volume,upstream}
+documentation for semantics.
+
+@item @code{container-user} (default: @code{""}) (type: string)
+Set the current user inside the spawned container.  You can refer to the
+@url{https://docs.docker.com/engine/reference/run/#user,upstream}
+documentation for semantics.
+
+@item @code{workdir} (default: @code{""}) (type: string)
+Set the current working for the spawned Shepherd service.
+You can refer to the
+@url{https://docs.docker.com/engine/reference/run/#workdir,upstream}
+documentation for semantics.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
 
 @cindex Audit
 @subsubheading Auditd Service

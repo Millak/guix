@@ -1512,6 +1512,11 @@ command.")
            (delete 'build)))))                  ; nothing to build
     (supported-systems %hurd-systems)))
 
+(define-public glibc-utf8-locales/hurd
+  ;; Locales for the libc version used on GNU/Hurd.
+  (hidden-package
+   (make-glibc-utf8-locales glibc/hurd)))
+
 (define* (libc-for-target #:optional
                           (target (or (%current-target-system)
                                       (%current-system))))

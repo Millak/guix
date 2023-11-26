@@ -135,6 +135,7 @@
 ;;; Copyright © 2023 Sergiu Ivanov <sivanov@colimite.fr>
 ;;; Copyright © 2023 Camilo Q.S. (Distopico) <distopico@riseup.net>
 ;;; Copyright © 2023 Thanos Apollo <public@thanosapollo.com>
+;;; Copyright © 2023 Ian Eure <ian@retrospec.tv>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3294,6 +3295,29 @@ immediately activated.  Also filtering can be applied so selection can be
 incrementally confined in Isearch manner.")
     (license license:gpl3+)))
 
+(define-public emacs-dnt
+  (let ((commit "d28d232d682094ab79cfa78c97668c6ebd327c8c")
+        (revision "1"))
+    (package
+      (name "emacs-dnt")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/emacs-weirdware/dnt.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1bls9j1ibw0npjapslbrh6nmlbn3d4ajhjygsqlf6h9qg12sxm3r"))))
+      (inputs (list emacs-s))
+      (build-system emacs-build-system)
+      (home-page "https://codeberg.org/emacs-weirdware/dnt")
+      (synopsis "Strip trackers from URLs")
+      (description "This package provides a series of rules and helper functions
+to prevent advertisers from tracking you when you open URLs (or listen to
+podcasts) in Emacs.")
+      (license (list license:gpl3+)))))
 
 
 ;;;
@@ -5021,6 +5045,28 @@ written in the Go programming language.")
       (description "The @code{google-maps} package displays Google Maps
 directly inside Emacs.  It requires a Google Map Static API key to function.")
       (license license:gpl3+))))
+
+(define-public emacs-geoclue
+  (let ((commit "f409b544be4d2cfd848f4658618374b0bc76cb3c")
+        (revision "1"))
+    (package
+      (name "emacs-geoclue")
+      (version (git-version "0.8.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/emacs-weirdware/geoclue.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1ggyn9rvc6si3xy1rrw2f2hyw6cys4bgb9v0ah0qq65y3dnziq6m"))))
+      (build-system emacs-build-system)
+      (home-page "https://codeberg.org/emacs-weirdware/geoclue")
+      (synopsis "Determine your current location using GeoClue2 over D-Bus")
+      (description "This package provides an Emacs library which lets you
+determine your current location using GeoClue2 over D-Bus.")
+      (license (list license:gpl3+)))))
 
 (define-public emacs-nominatim
   (let ((revision "0")
@@ -9770,6 +9816,52 @@ interacting with sbt inside Emacs.  The core functionality includes
 interacting with the sbt shell and Scala console, compiling code and
 navigation to errors.")
     (license license:gpl3+)))
+
+(define-public emacs-9lc-mode
+  (let ((commit "7871476488fc7b66e05714797a9a5b8275988662")
+        (revision "1"))
+    (package
+      (name "emacs-9lc-mode")
+      (version (git-version  "0.7" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/emacs-weirdware/9lc-mode.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1kmx0c413yvvaq33v7lf3gzdjpxkr5faa1wj2j0m25lyyz8dsdm7"))))
+      (build-system emacs-build-system)
+      (home-page "https://codeberg.org/emacs-weirdware/geoclue")
+      (synopsis "Major mode for editing Fluke 9000 scripts")
+      (description
+       "This package provides a major mode for editing Fluke 9010a \"9LC\" files.")
+      (license (list license:gpl3+)))))
+
+(define-public emacs-tl1-mode
+  (let ((commit "48d12893cc81d7f92dc7b603d3751d8512ed0eb0")
+        (revision "1"))
+    (package
+      (name "emacs-tl1-mode")
+      (version (git-version "1.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/emacs-weirdware/tl1-mode.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1mf0wqbn9h0353hkhcykzrm2dk1jvyijqs4hsvgj3kwp1whws7br"))))
+      (build-system emacs-build-system)
+      (home-page "https://codeberg.org/emacs-weirdware/geoclue")
+      (synopsis "Major mode for editing Fluke 9100 TL/1 source code")
+      (description
+       "This package provides a major mode for editing Fluke TL/1 source code.
+TL/1 is a language used to control Fluke’s 9100 series of testing and
+troubleshooting mainframes.")
+      (license (list license:gpl3+)))))
 
 (define-public emacs-scheme-complete
   ;; Upstream does not provide tags.  The commit below corresponds to the
@@ -17746,6 +17838,29 @@ in Org buffers and displays matching entries.")
       (description "This Emacs package provides a minor mode which shows git
 information inside the Dired buffer.")
       (license license:gpl3+))))
+
+(define-public emacs-diss
+  (let ((commit "8a99a1b34de4575087da49fe1e19bcf33ac49f46")
+        (revision "1"))
+    (package
+      (name "emacs-diss")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/emacs-weirdware/diss.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "06xvl85dkp3c2cw41f2gy7db2d7fy5pv5w1wr7vd7ccdlg3fq4gc"))))
+
+      (build-system emacs-build-system)
+      (home-page "https://codeberg.org/emacs-weirdware/diss")
+      (synopsis "Dired Image Slideshow")
+      (description "Diss is a full-featured image slideshow for Emacs, based
+on Dired and image-mode.")
+      (license (list license:gpl3+)))))
 
 (define-public emacs-dired-toggle-sudo
   (let ((commit "13bbe52c54893f5aa3e56228450ffdd0c9e1d169")
@@ -31182,6 +31297,29 @@ generating a temp buffer in which any useful Emacs utilities and modes can be
 invoked.")
       (license license:gpl3+))))
 
+(define-public emacs-exwm-mff
+  (let ((commit "89206f2e3189f589c27c56bd2b6203e906ee7100")
+        (revision "1"))
+    (package
+      (name "emacs-exwm-mff")
+      (version (git-version "1.2.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/emacs-weirdware/exwm-mff.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0ipmapyd4jmpnk34wk9kfbvqnl04x74yg2pmj298wqa61ylw1n9j"))))
+      (build-system emacs-build-system)
+      (home-page "https://codeberg.org/emacs-weirdware/exwm-mff")
+      (synopsis "Mouse follows focus for EXWM")
+      (description "This package provides a minor mode to automatically warp
+the mouse pointer to the center of a focused window, as well as a command to
+warp it to the currently selected window.")
+      (license (list license:gpl3+)))))
+
 (define-public emacs-exwm-modeline
   (package
     (name "emacs-exwm-modeline")
@@ -31202,6 +31340,78 @@ invoked.")
     (description "This package provides a modeline segment to display EXWM
 workspaces.")
     (license license:gpl3+)))
+
+(define-public emacs-exwm-firefox-core
+  (let ((commit "e2fe2a895e8f973307ef52f8c9976b26e701cbd0")
+        (revision "1"))
+    (package
+      (name "emacs-exwm-firefox-core")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/walseb/exwm-firefox-core.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0k5jkjzx6f8nfmbkc61raj585p9pymycgzv7rr3fhv2drgkaa4yi"))))
+      (inputs (list emacs-exwm))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/walseb/exwm-firefox-core")
+      (synopsis "Control Firefox with EXWM")
+      (description
+       "This package contains functions that execute exwm
+keypresses mapped in firefox to the action described in the function name.")
+      (license (list license:gpl3+)))))
+
+(define-public emacs-exwm-firefox
+  (let ((commit "7390c3bc425894aeda3c12c23f61a234bb71a2d9")
+        (revision "1"))
+    (package
+      (name "emacs-exwm-firefox")
+      (version (git-version "0.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/emacs-weirdware/exwm-firefox.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0xmgij04h4cbcgqafyyf9qajf0wp6mxpfpwjm6gi1jgisrql882d"))))
+      (build-system emacs-build-system)
+      (inputs (list emacs-exwm-firefox-core emacs-s emacs-exwm))
+      (home-page "https://codeberg.org/emacs-weirdware/exwm-firefox")
+      (synopsis "Enhanced support for Firefox under EXWM")
+      (description
+       "This package adds enhanced support for Firefox (and forks
+based on Firefox) under EXWM.  Keybindings intentionally mirror other Emacs
+navigation controls.")
+      (license (list license:gpl3+)))))
+
+(define-public emacs-exwm-ss
+  (let ((commit "b11d3df7a50c39b4e1b92ef8a6685cf80b53912c")
+        (revision "1"))
+    (package
+      (name "emacs-exwm-ss")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/emacs-weirdware/exwm-ss.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "045b0cjycf7nf52ap89w5dz16l1qyh940qxwvdi76v6al78amrap"))))
+      (build-system emacs-build-system)
+      (inputs (list emacs-exwm))
+      (home-page "https://codeberg.org/emacs-weirdware/exwm-ss")
+      (synopsis "Automatically inhibit screensaver activation in EXWM")
+      (description "This package provides a global minor mode to inhibit
+screensaver activation in EXWM.")
+      (license (list license:gpl3+)))))
 
 (define-public emacs-ert-async
   (package
@@ -34680,6 +34890,52 @@ on removable volumes in Linux.")
       (home-page "https://github.com/Akirak/helm-linux-disks")
       (license license:gpl3+))))
 
+(define-public emacs-debase
+  (let ((commit "0b6fc2af3440d68798e3a85d4c889341aae07936")
+        (revision "1"))
+    (package
+      (name "emacs-debase")
+      (version (git-version "0.7" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/emacs-weirdware/debase.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "112vk1svnc6516vhs47sx5jw6bg8lwrc15l99dxj0sc313lxjy3k"))))
+      (build-system emacs-build-system)
+      (inputs (list))
+      (home-page "https://codeberg.org/emacs-weirdware/debase")
+      (synopsis "D-Bus convenience layer for Emacs")
+      (description
+       "Debase provides a higher-level API for using and implementing D-Bus
+services inside Emacs.")
+      (license (list license:gpl3+)))))
+
+(define-public emacs-discomfort
+  (let ((commit "873eea833bbae7196b92bb1102494b8bf5dc5df6")
+        (revision "1"))
+    (package
+      (name "emacs-discomfort")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/emacs-weirdware/discomfort.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "01p4bfiasqxfmp9x1bxdc7763bh712d3vlp2014y8pzrwb1jqdaq"))))
+      (build-system emacs-build-system)
+      (inputs (list emacs-debase))
+      (home-page "https://codeberg.org/emacs-weirdware/discomfort")
+      (synopsis "User interface to mount & unmount disks in Emacs.")
+      (description "Discomfort is an interface to mount and unmount disks in Emacs, using UDisks2.")
+      (license (list license:gpl3+)))))
+
 (define-public emacs-psession
   (let ((commit "3e97267c92b164584e06a6c70ee7491714c7c12c")
         (revision "1"))
@@ -36209,6 +36465,80 @@ easily.  Four pre-set options are: @samp{shell}, @samp{terminal},
 you use some other configuration.")
       (license license:gpl3+))))
 
+(define-public emacs-shell-here
+  (let ((commit "eeb437ff26d62a5009046b1b3b4503b768e3131a")
+        (revision "1"))
+    (package
+      (name "emacs-shell-here")
+      (version (git-version "1.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/emacs-weirdware/shell-here.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0x8lnybxj7k6wj941lgqmm57f3qqnmb0gc7573l1fxwfhf39fl20"))))
+      (build-system emacs-build-system)
+      (home-page "https://codeberg.org/emacs-weirdware/shell-here")
+      (synopsis "Launch a shell relative to default-directory")
+      (description
+       "This package provides commands to open a shell buffer in (or relative
+to) the default-directory or – using projectile or find-file-in-project – a
+project root.")
+      (license (list license:gpl3+)))))
+
+(define-public emacs-hyperspace
+  (let ((commit "f574d07fd8715e806ba4f0487b73c699963baed3")
+        (revision "1"))
+    (package
+      (name "emacs-hyperspace")
+      (version (git-version "0.8.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/emacs-weirdware/hyperspace.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "19h3d12a99i7a92k3iw4zmjmw3dazsgnkc6j4965h033r1s40amx"))))
+      (build-system emacs-build-system)
+      (inputs (list emacs-s))
+      (home-page "https://codeberg.org/emacs-weirdware/hyperspace")
+      (synopsis "Get there from here")
+      (description
+       "Hyperspace is a way to get nearly anywhere from wherever
+you are, whether that's within Emacs or on the web.  It's somewhere in between
+Quicksilver and keyword URLs, giving you a single, consistent interface to get
+directly where you want to go.  It’s for things that you use often, but not
+often enough to justify a dedicated binding.")
+      (license (list license:gpl3+)))))
+
+(define-public emacs-nssh
+  (let ((commit "74d43738565749af680e4d1388e0c2f88e93498d")
+        (revision "1"))
+    (package
+      (name "emacs-nssh")
+      (version (git-version "0.9.12" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://codeberg.org/emacs-weirdware/nssh.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0i2nnrg7xv7b2bbby6idszs9byk2jd83q7vqj6lxgn80w94i56nn"))))
+      (build-system emacs-build-system)
+      (home-page "https://codeberg.org/emacs-weirdware/nssh")
+      (synopsis "SSH mode for Emacs")
+      (description "This package provides an SSH mode for Emacs, built on
+top of Tramp and shell mode.  It keeps a history of previously connected
+hosts and supports auto-completion of known hosts.")
+      (license (list license:gpl3+)))))
+
 (define-public emacs-tshell
   ;; XXX: Upstream has no tagged release.  Version is extracted from keyword
   ;; in main file.
@@ -37335,10 +37665,10 @@ execute code split into cells according to certain magic comments.")
 
 (define-public emacs-ein
   ;; XXX: Upstream doesn't make any release, and didn't set any version.
-  (let ((commit "b2410dc96f61aa806a7934099d8f1e40c8f6ca18"))
+  (let ((commit "998ba22660be2035cd23bed1555e47748c4da8a2"))
     (package
       (name "emacs-ein")
-      (version "20220911")
+      (version "20230826")
       (source
        (origin
          (method git-fetch)
@@ -37349,7 +37679,7 @@ execute code split into cells according to certain magic comments.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "02392bxl0msda58cls0i79mzqjs73x39czx0mlb0sg2vxp84gy15"))))
+           "09qbswzz6kbxc74dmdgagrk5wgbm89sabf0bfy76j4qlcg6550mx"))))
       (build-system emacs-build-system)
       (arguments
        (list

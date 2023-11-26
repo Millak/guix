@@ -1732,7 +1732,7 @@ less if you are working in front of the screen at night.")
 (define-public xscreensaver
   (package
     (name "xscreensaver")
-    (version "6.04")
+    (version "6.08")
     (source
      (origin
        (method url-fetch)
@@ -1740,7 +1740,7 @@ less if you are working in front of the screen at night.")
         (string-append "https://www.jwz.org/xscreensaver/xscreensaver-"
                        version ".tar.gz"))
        (sha256
-        (base32 "0lmiyvp3qs2gngd53f191jmlizs9l04i2gnrqbn96mqckyr18w3q"))
+        (base32 "18vnbs2ns42cgnnsvwn0zh98wcfzxf2k9mib5x5zkv6f4njjpxaw"))
        (modules '((guix build utils)))
        (snippet
         ;; 'configure.ac' checks for $ac_unrecognized_opts and exits if it's
@@ -1787,14 +1787,13 @@ less if you are working in front of the screen at night.")
            libjpeg-turbo
            linux-pam
            pango
-           gdk-pixbuf-xlib
            gtk+
            perl
            cairo
            bc
            libxrandr
            glu
-           glib))
+           `(,glib "bin")))
     (home-page "https://www.jwz.org/xscreensaver/")
     (synopsis "Classic screen saver suite supporting screen locking")
     (description
@@ -3225,6 +3224,7 @@ initialize programs.")
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake
+           dbus-glib ;; for dbus-binding-tool
            `(,glib "bin") pkg-config))
     (inputs
      (list dbus-glib glib libx11))

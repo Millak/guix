@@ -60,6 +60,7 @@
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -127,6 +128,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages kde-frameworks)
+  #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libidn)
   #:use-module (gnu packages libusb)
@@ -326,42 +328,26 @@ Unix Domain Sockets, SCTP for both IPv4 and IPv6.")
 (define-public lcsync
   (package
     (name "lcsync")
-    (version "0.2.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://codeberg.org/librecast/lcsync")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0bsd3dkir2i647nmrmyb7skbv16v0f6f3gfwkpxz8g42978dlms5"))))
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/librecast/lcsync")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rhk80ybd2zranay76z1ysifnnm786lg9kiiijcwv76qy95in9ks"))))
     (build-system gnu-build-system)
     (arguments
      `(#:parallel-tests? #f
-       #:configure-flags
-       (list
-        (string-append "--prefix="
-                       (assoc-ref %outputs "out")))
+       #:configure-flags (list (string-append "--prefix="
+                                              (assoc-ref %outputs "out")))
        #:make-flags (let ((target ,(%current-target-system)))
                       (list ,(string-append "CC="
                                             (cc-for-target))))
-       #:test-target "test"
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'use-prefix-from-configure-in-doc-makefile
-                    ;; Use prefix from configure. Fixed upstream:
-                    ;; https://codeberg.org/librecast/lcsync/commit/4ba00f6
-                    ;; XXX: Remove for 0.2.2+
-                    (lambda _
-                      (substitute* "doc/Makefile.in"
-                        (("PREFIX .= /usr/local") "PREFIX ?= @prefix@"))))
-                  (add-before 'build 'add-library-paths
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (let* ((librecast (assoc-ref inputs "librecast")))
-                        (substitute* (list "./src/Makefile" "./test/Makefile")
-                          (("-llibrecast")
-                           (string-append "-L" librecast "/lib -llibrecast")))))))))
-    (inputs (list lcrq librecast libsodium))
+       #:test-target "test"))
+    (inputs (list lcrq librecast libsodium libbsd))
     (home-page "https://librecast.net/lcsync.html")
     (synopsis "Librecast file and data syncing tool")
     (description
@@ -522,16 +508,16 @@ GLib-based library, libnice, as well as GStreamer elements to use it.")
 (define-public librecast
   (package
     (name "librecast")
-    (version "0.7.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://codeberg.org/librecast/librecast")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0y0km0fv39m3i227pyg7fcr7d94gbji51fkcywqyrjgmk4j1hp1n"))))
+    (version "0.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/librecast/librecast")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01m0q4n2hy3csbzil8ivjyzb1mh4w9jlh9iiv6z53kasl7aas27i"))))
     (build-system gnu-build-system)
     (arguments
      `(#:parallel-tests? #f
@@ -541,7 +527,7 @@ GLib-based library, libnice, as well as GStreamer elements to use it.")
                             (string-append "PREFIX="
                                            (assoc-ref %outputs "out"))))
        #:test-target "test"))
-    (inputs (list libsodium lcrq))
+    (inputs (list libsodium lcrq libbsd))
     (synopsis "IPv6 multicast library")
     (description "Librecast is a C library which supports IPv6 multicast
 networking.")
@@ -4422,7 +4408,7 @@ QUIC protocol.")
 (define-public yggdrasil
   (package
     (name "yggdrasil")
-    (version "0.4.7")
+    (version "0.5.2")
     (source
      (origin
        (method git-fetch)
@@ -4433,8 +4419,8 @@ QUIC protocol.")
          (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01mllfrsr55lnfivxwa57cfrjas6w4shsvx9k81pw8jixc124myk"))
-       (patches (search-patches "yggdrasil-extra-config.patch"))))
+        (base32 "0ahgb94s30sq1wwyc8h53mjj3j43ifr0aanj8262rsm6rqk04kzq"))
+      (patches (search-patches "yggdrasil-extra-config.patch"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/yggdrasil-network/yggdrasil-go"
@@ -4460,32 +4446,37 @@ QUIC protocol.")
                       (list "github.com/yggdrasil-network/yggdrasil-go/cmd/yggdrasil"
                             "github.com/yggdrasil-network/yggdrasil-go/cmd/yggdrasilctl"
                             "github.com/yggdrasil-network/yggdrasil-go/cmd/genkeys"))))))))
-    ;; https://github.com/kardianos/minwinsvc is windows only
     (propagated-inputs
-     (list ;;("go-golang-zx2c4-com-wireguard-windows"
-           ;; ,go-golang-zx2c4-com-wireguard-windows)
-           go-golang-zx2c4-com-wireguard
-           go-golang-org-x-text
-           go-golang-org-x-sys
-           go-golang-org-x-net
-           go-golang-org-x-crypto
-           go-golang-org-x-tools
-           go-netns
-           go-netlink
-           go-github-com-olekukonko-tablewriter
-           go-github-com-mitchellh-mapstructure
-           go-github-com-mattn-go-runewidth
-           go-github-com-mattn-go-isatty
-           go-github-com-mattn-go-colorable
-           go-github-com-kardianos-minwinsvc
-           go-github-com-hjson-hjson-go
-           go-github-com-hashicorp-go-syslog
-           go-github-com-gologme-log
-           go-github-com-fatih-color
-           go-github-com-cheggaaa-pb-v3
-           go-github-com-vividcortex-ewma
-           go-github-com-arceliar-phony
-           go-github-com-arceliar-ironwood))
+     (let ((p (package-input-rewriting
+               `((,go-golang-org-x-sys . ,go-golang-org-x-sys-0.8))
+               #:deep? #true)))
+       (cons go-golang-org-x-sys-0.8
+             (map p
+                  (list go-golang-zx2c4-com-wireguard
+                        go-golang-org-x-text
+                        go-golang-org-x-net
+                        go-golang-org-x-crypto
+                        go-golang-org-x-tools
+                        go-netns
+                        go-netlink
+                        go-github-com-bits-and-blooms-bitset
+                        go-github-com-bits-and-blooms-bloom
+                        go-github-com-quic-go-quic-go
+                        go-github-com-hjson-hjson-go
+                        go-github-com-olekukonko-tablewriter
+                        go-github-com-mitchellh-mapstructure
+                        go-github-com-mattn-go-runewidth
+                        go-github-com-mattn-go-isatty
+                        go-github-com-mattn-go-colorable
+                        go-github-com-kardianos-minwinsvc
+                        go-github-com-hjson-hjson-go
+                        go-github-com-hashicorp-go-syslog
+                        go-github-com-gologme-log
+                        go-github-com-fatih-color
+                        go-github-com-cheggaaa-pb-v3
+                        go-github-com-vividcortex-ewma
+                        go-github-com-arceliar-phony
+                        go-github-com-arceliar-ironwood)))))
     (home-page "https://yggdrasil-network.github.io/blog.html")
     (synopsis
      "Experiment in scalable routing as an encrypted IPv6 overlay network")

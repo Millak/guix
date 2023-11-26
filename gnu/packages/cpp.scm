@@ -1397,7 +1397,7 @@ standard GNU style syntax for options.")
 (define-public folly
   (package
     (name "folly")
-    (version "2022.10.31.00")
+    (version "2023.11.06.00")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1406,7 +1406,7 @@ standard GNU style syntax for options.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "06r9xnj8ilghc0vv6r17k5apl3w19iwd76nr02svnv96c74bz2aa"))))
+                "0z0jhkma2qacc2kc27qsiwqwqkv07i9mwpc4vwcbawyzdajq6hd0"))))
     (build-system cmake-build-system)
     (arguments
      '(;; Tests must be explicitly enabled

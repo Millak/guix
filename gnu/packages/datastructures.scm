@@ -6,6 +6,7 @@
 ;;; Copyright © 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -444,28 +445,26 @@ better with a poor hash function.")
     (license license:expat)))
 
 (define-public zix
-  (let ((commit "a13ae5ad9dc70075740f11139f1db96cc79faa59")
-        (revision "0"))
-    (package
-      (name "zix")
-      (version (git-version "0.3.3" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://gitlab.com/drobilla/zix.git")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1njyb8lz1d5qzf0k14pb3rq13xkxnddwbz090dj69138ymz1xgyl"))))
-      (build-system meson-build-system)
-      (arguments
-       (list #:configure-flags #~(list "-Ddocs=disabled"))) ;needs "sphinxygen"
-      (native-inputs (list pkg-config))
-      (home-page "https://gitlab.com/drobilla/zix")
-      (synopsis "C library of portability wrappers and data structures")
-      (description
-       "Zix is a C library of portability wrappers and data structures.  It
+  (package
+    (name "zix")
+    (version "0.4.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/drobilla/zix.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "07pbq4bi64iv39swldfbcp7131b5n4hs64pgd417gqlwv8qvgjcw"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-Ddocs=disabled"))) ;needs "sphinxygen"
+    (native-inputs (list pkg-config))
+    (home-page "https://gitlab.com/drobilla/zix")
+    (synopsis "C library of portability wrappers and data structures")
+    (description
+     "Zix is a C library of portability wrappers and data structures.  It
 provides the following components:
 @table @code
 @item ZixAllocator A customizable allocator.
@@ -480,4 +479,4 @@ provides the following components:
 zix/filesystem.h Functions for working with filesystems.
 @item zix/path.h Functions for working with filesystem paths lexically.
 @end table")
-      (license license:isc))))
+    (license license:isc)))

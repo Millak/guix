@@ -6090,7 +6090,7 @@ Conventions Manual) and some of the @dfn{EWMH}
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config autoconf automake))
+     (list util-macros pkg-config autoconf automake))
     (inputs
      (list libx11
            libxext

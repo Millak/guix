@@ -32496,13 +32496,13 @@ Psycopg 2 is both Unicode and Python 3 friendly.")
 (define-public python-pyfuse3
   (package
     (name "python-pyfuse3")
-    (version "3.2.1")
+    (version "3.3.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "pyfuse3" version))
         (sha256
-          (base32 "0cvybynv9igssfa4l13q09gb6m7afmwk34wsbq8jk14sqpd4dl92"))))
+          (base32 "1gbkwmk7gpyy70cqj9226qvwrx13xlwxfz86l86n5ybr4i0zwc9b"))))
     (build-system python-build-system)
     (native-inputs (list pkg-config))
     (inputs (list fuse))

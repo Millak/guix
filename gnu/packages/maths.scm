@@ -58,6 +58,7 @@
 ;;; Copyright © 2022, 2023 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2022 Maximilian Heisinger <mail@maxheisinger.at>
 ;;; Copyright © 2022 Akira Kyle <akira@akirakyle.com>
+;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
 ;;; Copyright © 2023 Camilo Q.S. (Distopico) <distopico@riseup.net>
@@ -103,6 +104,7 @@
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
@@ -9529,7 +9531,7 @@ computation is supported via MPI.")
 (define-public scilab
   (package
     (name "scilab")
-    (version "2023.1.0")
+    (version "2024.0.0")
     (source
      (origin
        (method git-fetch)
@@ -9539,10 +9541,9 @@ computation is supported via MPI.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0hbqsnc67b4f8zc690kl79bwhjaasykjlmqbln8iymnjcn3l5ypd"))
+         "08nyfli3x7gd396ffd1a8zn9fj3gm6a8yw0ggm547c09sp2rgvl7"))
        (modules '((guix build utils)
                   (ice-9 ftw)))
-       (patches (search-patches "scilab-hdf5-1.8-api.patch"))
        (snippet
         #~(begin
             ;; Delete everything except for scilab itself:
@@ -9559,7 +9560,8 @@ computation is supported via MPI.")
             (for-each delete-file-recursively
                       '("scilab"
                         "config"
-                        "libs/GetWindowsVersion"))
+                        "libs/GetWindowsVersion"
+                        "Visual-Studio-settings"))
             (for-each delete-file
                       (cons* "aclocal.m4"
                              "configure"
@@ -9571,22 +9573,23 @@ computation is supported via MPI.")
                              "m4/ltversion.m4"
                              "m4/lt~obsolete.m4"
                              "m4/pkg.m4"
+                             "Scilab.sln"
                              (find-files "." "^Makefile\\.in$")))
 
             ;; And finally some files in the modules directory:
             (for-each
-              (lambda (file)
-                (delete-file
-                  (string-append "modules/dynamic_link/src/scripts/" file)))
-              '("aclocal.m4"
-                "configure"
-                "compile"
-                "config.guess"
-                "config.sub"
-                "ltmain.sh"
-                "depcomp"
-                "install-sh"
-                "missing"))
+             (lambda (file)
+               (delete-file
+                (string-append "modules/dynamic_link/src/scripts/" file)))
+             '("aclocal.m4"
+               "configure"
+               "compile"
+               "config.guess"
+               "config.sub"
+               "ltmain.sh"
+               "depcomp"
+               "install-sh"
+               "missing"))
             (delete-file-recursively "modules/dynamic_link/src/scripts/m4")
             (for-each delete-file
                       '("modules/ast/src/cpp/parse/scanscilab.cpp"
@@ -9595,7 +9598,7 @@ computation is supported via MPI.")
                         "modules/ast/src/cpp/parse/parsescilab.cpp"))))))
     (build-system gnu-build-system)
     (native-inputs
-     (list autoconf
+     (list autoconf-2.71
            autoconf-archive
            automake
            bison
@@ -9612,8 +9615,9 @@ computation is supported via MPI.")
                   curl
                   fftw
                   gettext-minimal
-                  hdf5-1.14
+                  hdf5-1.10
                   lapack
+                  libarchive
                   libx11
                   libxml2
                   matio
@@ -9624,83 +9628,125 @@ computation is supported via MPI.")
                   tcl
                   tk))
     (arguments
-     (list
-      ;; The tests require java code.
-      #:tests? #f
-      #:configure-flags
-      #~(list
-         "--enable-relocatable"
-         "--disable-static-system-lib"
-         "--enable-build-parser"
-         ;; Disable all java code.
-         "--without-gui"
-         "--without-javasci"
-         "--disable-build-help"
-         "--with-external-scirenderer"
-         ;; Tcl and Tk library locations.
-         (string-append "--with-tcl-include="
-                        (dirname
-                          (search-input-file %build-inputs "include/tcl.h")))
-         (string-append "--with-tcl-library="
-                        (dirname
-                          (search-input-directory %build-inputs "lib/tcl8")))
-         (string-append "--with-tk-include="
-                        (dirname
-                          (search-input-file %build-inputs "include/tk.h")))
-         (string-append "--with-tk-library="
-                        (dirname
-                          (search-input-directory %build-inputs "lib/tk8.6")))
-         (string-append "--with-eigen-include="
-                        (search-input-directory %build-inputs "include/eigen3"))
-         ;; Find and link to the OCaml Num package
-         "OCAMLC=ocamlfind ocamlc -package num"
-         "OCAMLOPT=ocamlfind ocamlopt -package num -linkpkg"
-         ;; There are some 2018-fortran errors that are ignored
-         ;; with this fortran compiler flag.
-         "FFLAGS=-fallow-argument-mismatch")
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; The Num library is specified with the OCAMLC and
-          ;; OCAMLOPT variables above.
-          (add-after 'unpack 'fix-ocaml-num
-            (lambda _
-              (substitute*
-                '("modules/scicos/Makefile.modelica.am"
-                  "modules/scicos/src/translator/makefile.mak"
-                  "modules/scicos/src/modelica_compiler/makefile.mak")
-                (("nums\\.cmx?a") ""))))
-          ;; Install only scilab-cli.desktop
-          (add-after 'unpack 'remove-desktop-files
-            (lambda _
-              (substitute* "desktop/Makefile.am"
-                (("desktop_DATA =")
-                 "desktop_DATA = scilab-cli.desktop\nDUMMY ="))))
-          ;; These generated files are assumed to be present during
-          ;; the build.
-          (add-after 'bootstrap 'bootstrap-dynamic_link-scripts
-            (lambda _
-              (with-directory-excursion "modules/dynamic_link/src/scripts"
-                ((assoc-ref %standard-phases 'bootstrap)))))
-          (add-before 'build 'pre-build
-            (lambda* (#:key inputs #:allow-other-keys)
-              ;; Fix scilab script.
-              (substitute* "bin/scilab"
-                (("\\/bin\\/ls")
-                 (search-input-file inputs "bin/ls")))
-              ;; Fix core.start.
-              (substitute* "modules/core/etc/core.start"
-                (("'SCI/modules")
-                 "SCI+'/modules"))
-              ;; Set SCIHOME to /tmp before macros compilation.
-              (setenv "SCIHOME" "/tmp")))
-          ;; Prevent race condition
-          (add-after 'pre-build 'build-parsers
-            (lambda* (#:key (make-flags #~'()) #:allow-other-keys)
-              (with-directory-excursion "modules/ast"
-                (apply invoke "make"
-                       "src/cpp/parse/parsescilab.cpp"
-                       "src/cpp/parse/scanscilab.cpp"
-                       make-flags)))))))
+     (let* ((tcl (this-package-input "tcl"))
+            (tk (this-package-input "tk")))
+       (list
+        #:configure-flags
+        #~(list
+           "--enable-relocatable"
+           "--disable-static-system-lib"
+           "--enable-build-parser"
+           ;; Disable all java code.
+           "--without-gui"
+           "--without-javasci"
+           "--disable-build-help"
+           "--with-external-scirenderer"
+           ;; Tcl and Tk library locations.
+           (string-append "--with-tcl-include=" #$tcl "/include")
+           (string-append "--with-tcl-library=" #$tcl "/lib")
+           (string-append "--with-tk-include=" #$tk "/include")
+           (string-append "--with-tk-library=" #$tk "/lib")
+           (string-append "--with-eigen-include="
+                          (search-input-directory %build-inputs "include/eigen3"))
+           ;; Find and link to the OCaml Num package
+           "OCAMLC=ocamlfind ocamlc -package num"
+           "OCAMLOPT=ocamlfind ocamlopt -package num -linkpkg")
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; The Num library is specified with the OCAMLC and
+            ;; OCAMLOPT variables above.
+            (add-after 'unpack 'fix-ocaml-num
+              (lambda _
+                (substitute*
+                    '("modules/scicos/Makefile.modelica.am"
+                      "modules/scicos/src/translator/makefile.mak"
+                      "modules/scicos/src/modelica_compiler/makefile.mak")
+                  (("nums\\.cmx?a") ""))))
+            (add-after 'unpack 'fix-linking
+              (lambda _
+                (substitute* "modules/Makefile.am"
+                  (("libscilab_cli_la_LDFLAGS = .*\\)" all)
+                   (string-append all " -lcurl")))))
+            (add-after 'unpack 'set-version
+              (lambda _
+                (substitute* "modules/core/includes/version.h.in"
+                  (("scilab-branch-main")  ; version
+                   (string-append
+                    "scilab-"
+                    #$(version-major+minor (package-version this-package)))))))
+            (add-after 'unpack 'restrain-to-scilab-cli
+              (lambda _
+                ;; Install only scilab-cli.desktop
+                (substitute* "desktop/Makefile.am"
+                  (("desktop_DATA =")
+                   "desktop_DATA = scilab-cli.desktop\nDUMMY ="))
+                ;; Replace scilab with scilab-cli for tests.
+                (substitute* "Makefile.incl.am"
+                  (("scilab-bin") "scilab-cli-bin")
+                  (("scilab -nwni") "scilab-cli")
+                  ;; Do not install tests, demos and examples.
+                  ;; This saves up to 140 Mo in the final output.
+                  (("(TESTS|DEMOS|EXAMPLES)_DIR=.*" all kind)
+                   (string-append kind "_DIR=")))))
+            (add-before 'check 'disable-failing-tests
+              (lambda _
+                (substitute* "Makefile"
+                  (("TESTS = .*")
+                   "TESTS =\n"))
+                (substitute* "modules/functions_manager/Makefile"
+                  (("check:.*")
+                   "check:\n"))
+                (substitute* "modules/types/Makefile"
+                  (("\\$\\(MAKE\\) \\$\\(AM_MAKEFLAGS\\) check-am")
+                   ""))))
+            ;; These generated files are assumed to be present during
+            ;; the build.
+            (add-after 'bootstrap 'bootstrap-dynamic_link-scripts
+              (lambda _
+                (with-directory-excursion "modules/dynamic_link/src/scripts"
+                  ((assoc-ref %standard-phases 'bootstrap)))))
+            (add-before 'build 'pre-build
+              (lambda* (#:key inputs #:allow-other-keys)
+                ;; Fix scilab script.
+                (substitute* "bin/scilab"
+                  (("/bin/ls")
+                   (search-input-file inputs "bin/ls")))
+                ;; Fix core.start.
+                (substitute* "modules/core/etc/core.start"
+                  (("'SCI/modules")
+                   "SCI+'/modules"))))
+            ;; Prevent race condition
+            (add-after 'pre-build 'build-parsers
+              (lambda* (#:key (make-flags #~'()) #:allow-other-keys)
+                (with-directory-excursion "modules/ast"
+                  (apply invoke "make"
+                         "src/cpp/parse/parsescilab.cpp"
+                         "src/cpp/parse/scanscilab.cpp"
+                         make-flags))))
+            ;; The startup script is mostly there to define the following env
+            ;; variables properly. We can do this with guix directly.
+            (add-after 'install 'rewrap-scilab-cli
+              (lambda _
+                (define (bin path) (string-append #$output "/bin/" path))
+                (delete-file (bin "scilab-cli"))
+                (wrap-program (bin "scilab-cli-bin")
+                  `("SCI" = (,(string-append #$output "/share/scilab")))
+                  `("LD_LIBRARY_PATH" ":" prefix
+                    (,(string-append #$output "/lib/scilab")))
+                  `("TCL_LIBRARY" = (,(string-append #$tcl "/lib")))
+                  `("TK_LIBRARY" = (,(string-append #$tk "/lib"))))
+                (copy-file (bin "scilab-cli-bin") (bin "scilab-cli"))
+                (copy-file (bin ".scilab-cli-bin-real") (bin "scilab-cli-bin"))
+                (delete-file (bin ".scilab-cli-bin-real"))
+                (substitute* (bin "scilab-cli")
+                  ;; Also set SCIHOME to sensible XDG base dirs value.
+                  (("\\.scilab-cli-bin-real\"")
+                   (string-append
+                    "scilab-cli-bin\" -scihome "
+                    "\"${XDG_STATE_HOME:-$HOME/.local/state}/scilab/"
+                    #$(package-version this-package) "\""))
+                  (("export SCI=")
+                   "unset LANGUAGE\nexport SCI="))))))))
     (home-page "https://www.scilab.org/")
     (synopsis "Software for engineers and scientists")
     (description "This package provides the non-graphical version of the Scilab

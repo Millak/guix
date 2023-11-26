@@ -15,7 +15,7 @@
 ;;; Copyright © 2020, 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
-;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2022, 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2021 Stefan <stefan-guix@vodafonemail.de>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
@@ -294,6 +294,71 @@ menu to select one of the installed operating systems.")
                (system* "gunzip" "unifont.bdf.gz")
 
                #t))))))))
+
+(define-public grub-coreboot
+  (package
+    (inherit grub)
+    (name "grub-coreboot")
+    (synopsis "GRand Unified Boot loader (Coreboot payload version)")
+    (arguments
+     `(,@(substitute-keyword-arguments (package-arguments grub)
+           ((#:phases phases '%standard-phases)
+            `(modify-phases ,phases
+               (add-before 'check 'disable-broken-tests
+                 (lambda _
+                   (setenv "DISABLE_HARD_ERRORS" "1")
+                   (setenv
+                    "XFAIL_TESTS"
+                    (string-join
+                     ;; TODO: All the tests below use grub shell
+                     ;; (tests/util/grub-shell.in), and here grub-shell uses
+                     ;; QEMU and a Coreboot image to run the tests. Since we
+                     ;; don't have a Coreboot package in Guix yet these tests
+                     ;; are disabled. See the Guix bug #64667 for more details
+                     ;; (https://debbugs.gnu.org/cgi/bugreport.cgi?bug=64667).
+                     (list
+                      "pata_test"
+                      "ahci_test"
+                      "uhci_test"
+                      "ehci_test"
+                      "example_grub_script_test"
+                      "ohci_test"
+                      "grub_script_eval"
+                      "grub_script_echo1"
+                      "grub_script_test"
+                      "grub_script_leading_whitespace"
+                      "grub_script_echo_keywords"
+                      "grub_script_vars1"
+                      "grub_script_for1"
+                      "grub_script_while1"
+                      "grub_script_if"
+                      "grub_script_comments"
+                      "grub_script_functions"
+                      "grub_script_continue"
+                      "grub_script_break"
+                      "grub_script_shift"
+                      "grub_script_blockarg"
+                      "grub_script_return"
+                      "grub_script_setparams"
+                      "grub_cmd_date"
+                      "grub_cmd_sleep"
+                      "grub_cmd_regexp"
+                      "grub_script_not"
+                      "grub_cmd_echo"
+                      "grub_script_expansion"
+                      "grub_script_gettext"
+                      "grub_script_escape_comma"
+                      "help_test"
+                      "grub_script_strcmp"
+                      "test_sha512sum"
+                      "grub_cmd_tr"
+                      "test_unset"
+                      "file_filter_test")
+                     " "))))))
+           ((#:configure-flags flags
+             ''())
+            `(cons* "--with-platform=coreboot"
+                    ,flags)))))))
 
 (define-public grub-efi
   (package

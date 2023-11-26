@@ -177,6 +177,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/chromium.scm			\
   %D%/packages/ci.scm				\
   %D%/packages/cinnamon.scm			\
+  %D%/packages/clifm.scm			\
   %D%/packages/clojure.scm			\
   %D%/packages/cluster.scm			\
   %D%/packages/cmake.scm			\
@@ -919,6 +920,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/aoflagger-use-system-provided-pybind11.patch \
   %D%/packages/patches/apr-fix-atomics.patch			\
   %D%/packages/patches/apr-skip-getservbyname-test.patch	\
+  %D%/packages/patches/aria2-unbundle-wslay.patch		\
   %D%/packages/patches/ark-skip-xar-test.patch			\
   %D%/packages/patches/arpack-ng-propagate-rng-state.patch	\
   %D%/packages/patches/asli-use-system-libs.patch		\
@@ -1342,6 +1344,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/gobject-introspection-cc-1.72.patch	\
   %D%/packages/patches/gobject-introspection-girepository.patch	\
   %D%/packages/patches/go-fix-script-tests.patch			\
+  %D%/packages/patches/go-gopkg-in-yaml-v3-32bit.patch		\
   %D%/packages/patches/go-github-com-golang-snappy-32bit-test.patch \
   %D%/packages/patches/go-github-com-urfave-cli-fix-tests.patch \
   %D%/packages/patches/go-github-com-urfave-cli-v2-fix-tests.patch \

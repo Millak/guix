@@ -14,6 +14,8 @@
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022, 2023 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
 ;;; Copyright © 2023 Charles Jackson <charles.b.jackson@protonmail.com>
+;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
+;;; Copyright © 2023 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38,6 +40,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
@@ -48,7 +51,9 @@
   #:use-module (gnu packages attr)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages code)
+  #:use-module (gnu packages coq)
   #:use-module (gnu packages enlightenment)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gawk)
@@ -447,6 +452,65 @@ trouble using them, because you do not have to remember each snippet name.")
        "@code{vim-context-filetype} is context filetype library for Vim script.")
       (home-page "https://github.com/Shougo/context_filetype.vim")
       (license license:expat)))) ; ??? check again
+
+(define-public vim-coqtail
+  (let ((commit "dfe3939c9caff69d9af76bfd74f1a40fb7dc5609")
+        (revision "0"))
+    (package
+      (name "vim-coqtail")
+      (version (git-version "1.7.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/whonore/Coqtail")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0av2m075n6z05ah9ndrgnp9s16yrz6n2lj0igd9fh3c5k41x5xks"))))
+      (build-system vim-build-system)
+      (arguments
+       '(#:plugin-name "coqtail"
+         #:phases
+         (modify-phases %standard-phases
+           (add-before 'install 'check
+             (lambda* (#:key inputs native-inputs tests? #:allow-other-keys)
+               (when tests?
+                 (display "Running Python unit tests.\n")
+                 (setenv "PYTHONPATH" (string-append (getcwd) "/python"))
+                 (invoke "pytest" "-q" "tests/unit")
+
+                 (display "Running Python Coq tests.\n")
+                 (invoke "pytest" "-q" "tests/coq")
+
+                 (display "Running Vim unit tests.\n")
+                 (let* ((vim-vader (assoc-ref (or native-inputs inputs)
+                                              "vim-vader"))
+                        (vader-path (string-append
+                                      vim-vader
+                                      "/share/vim/vimfiles/pack/guix/start/vader")))
+                   (with-directory-excursion "tests/vim"
+                     (setenv "VADER_PATH" vader-path)
+                     (invoke (string-append
+                               (assoc-ref (or native-inputs inputs) "vim-full")
+                               "/bin/vim")
+                             "-E" "-Nu" "vimrc"
+                             "-c" "Vader! *.vader")))
+
+                 ;; Remove __pycache__ files generated during testing so that
+                 ;; they don't get installed.
+                 (delete-file-recursively "python/__pycache__")))))))
+      (native-inputs
+       `(("coq-for-coqtail" ,coq-for-coqtail)
+         ("python-pytest" ,python-pytest)
+         ("vim-full" ,vim-full)         ; Plugin needs Python 3.
+         ("vim-vader" ,vim-vader)))
+      (propagated-inputs (list coq coq-ide-server))
+      (synopsis "Interactive Coq proofs in Vim")
+      (description "Coqtail enables interactive Coq proof development in Vim
+similar to CoqIDE or ProofGeneral.")
+      (home-page "https://github.com/whonore/Coqtail")
+      (license license:expat))))
 
 (define-public vim-fugitive
   (package
@@ -1423,3 +1487,92 @@ files for reading or editing, and perform basic file system operations.")
 operations and styles which are invoked via key mappings and a menu.  These
 operations are available for most filetypes.")
     (license license:cc0)))
+
+(define-public vim-vader
+  (let ((revision "0")
+        (commit "6fff477431ac3191c69a3a5e5f187925466e275a"))
+    (package
+      (name "vim-vader")
+      (version (git-version "0.4.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/junegunn/vader.vim")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "179dbbqdyl6qf6jdb6kdazn3idz17m1h2n88rlggb1wnly74vjin"))))
+      (build-system vim-build-system)
+      (arguments
+       '(#:plugin-name "vader"
+         #:phases
+         (modify-phases %standard-phases
+           (add-before 'install 'check
+             (lambda* (#:key tests? #:allow-other-keys)
+               (when tests?
+                 ;; FIXME: suite1.vader fails with an unknown reason,
+                 ;; lang-if.vader requires Python and Ruby.
+                 (substitute* "test/vader.vader"
+                   (("Include.*feature/suite1.vader.*$") "")
+                   (("Include.*feature/lang-if.vader.*$") ""))
+
+                 (display "Running Vim tests\n")
+                 (with-directory-excursion "test"
+                   (setenv "VADER_TEST_VIM" "vim -E")
+                   (invoke "bash" "./run-tests.sh"))))))))
+      (native-inputs (list vim))
+      (home-page "https://github.com/junegunn/vader.vim")
+      (synopsis "Test framework for Vimscript")
+      (description "Vader is a test framework for Vimscript designed to
+simplify the process of writing and running unit tests.  Vader.vim provides an
+intuitive test syntax for defining test cases and expectations, it also can
+be integrated with @acronym{CI, Continuous Integration} pipelines to
+automate testing and is compatible with Vim and Neovim.")
+      (license license:expat)))) ;; Specified in README.md.
+
+(define-public vim-jedi-vim
+  (package
+    (name "vim-jedi-vim")
+    (version "0.11.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/davidhalter/jedi-vim")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03fj7f5cpchrdmz9szal6fdg05wdwb0j6260nnyp37nmpcpn13yc"))))
+    (build-system vim-build-system)
+    (arguments (list #:plugin-name "jedi-vim"))
+    (propagated-inputs (list python-jedi))
+    (home-page "https://github.com/davidhalter/jedi-vim")
+    (synopsis "Jedi autocompletion library for Vim")
+    (description
+     "@code{jedi-vim} is a VIM binding to the autocompletion library Jedi.")
+    (license license:expat)))
+
+(define-public vim-srcery-vim
+  (package
+    (name "vim-srcery-vim")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/srcery-colors/srcery-vim")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nwk81y9j5ljjm3k19kf1zmscdxiis4mwan026wv7cqp7f9qhxlr"))))
+    (build-system vim-build-system)
+    (arguments
+     (list #:plugin-name "srcery"
+           #:mode "opt"))
+    (home-page "https://srcery.sh")
+    (synopsis "Dark colorscheme for gvim and vim")
+    (description
+     "Srcery is a color scheme with clearly defined contrasting colors
+and a slightly earthy tone.")
+    (license license:expat)))

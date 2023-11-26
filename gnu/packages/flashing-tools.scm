@@ -580,7 +580,7 @@ formats, and can perform many different manipulations.")
 (define-public uuu
   (package
     (name "uuu")
-    (version "1.4.165")
+    (version "1.5.125")
     (source
      (origin
        (method git-fetch)
@@ -590,7 +590,7 @@ formats, and can perform many different manipulations.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0k309lp27d4k6x4qq0badbk8i47xsc6f3fffz73650iyfs4hcniw"))))
+         "02nyax1z2qkcxs764lj5cpazv8n957hv9ipd9b5rqpgi9pgnvlvz"))))
     (arguments
      `(#:tests? #f                      ; no tests
        #:modules ((guix build utils)
@@ -618,7 +618,8 @@ formats, and can perform many different manipulations.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list libusb bzip2 zlib libzip openssl))
+     (list libusb bzip2 zlib libzip openssl
+           `(,zstd "lib")))
     (home-page "https://github.com/NXPmicro/mfgtools")
     (synopsis "Freescale/NXP I.MX chip image deploy tools")
     (description "@code{uuu} is a command line tool, evolved out of MFGTools.

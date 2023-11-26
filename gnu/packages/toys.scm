@@ -5,6 +5,7 @@
 ;;; Copyright © 2019, 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -70,6 +71,7 @@
                       (search-input-file inputs
                                          (string-append "bin/" cmd)))))))))
     (inputs (list bash-minimal coreutils sed
+                  diffutils
                   fmt gmp))
     (native-inputs (list pkg-config))
     (home-page "https://gitlab.com/lilyp/daikichi")

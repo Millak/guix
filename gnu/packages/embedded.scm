@@ -1592,7 +1592,7 @@ handling communication with eBUS devices connected to a 2-wire bus system
 (define-public ucsim
   (package
     (name "ucsim")
-    (version "0.8.0")
+    (version "0.8.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1601,7 +1601,7 @@ handling communication with eBUS devices connected to a 2-wire bus system
                     "ucsim_" version "_orig.tar.gz"))
               (sha256
                (base32
-                "0qyrrna2ssvwla15al183r9zqnqdxxlqawyhx9c86a10m8q8qqlz"))))
+                "1zdvzfhdsbydyyjy5rf2934bn06skdlnky6l9ngbp2k645g0ynlh"))))
     (build-system gnu-build-system)
     (arguments
      (list
