@@ -125,9 +125,11 @@ command-line arguments, multiple languages, and so on.")
             (patches (search-patches "grep-timing-sensitive-test.patch"))))
    (build-system gnu-build-system)
    (native-inputs (list perl))                   ;some of the tests require it
-   (inputs (list pcre))
+   (inputs (list pcre2))
    (arguments
-    `(#:phases
+    `(#:configure-flags
+      (list "--enable-perl-regexp")
+      #:phases
       (modify-phases %standard-phases
         (add-after 'install 'fix-egrep-and-fgrep
           ;; Patch 'egrep' and 'fgrep' to execute 'grep' via its
