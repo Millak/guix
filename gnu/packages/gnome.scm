@@ -7380,26 +7380,26 @@ freedesktop.org help system specification.")
 (define-public yelp-tools
   (package
     (name "yelp-tools")
-    (version "3.32.2")
+    (version "42.1")
     (source
      (origin
        (method url-fetch)
        (uri
         (string-append "mirror://gnome/sources/" name "/"
-                       (version-major+minor version) "/"
+                       (version-major version) "/"
                        name "-" version ".tar.xz"))
        (sha256
-        (base32 "1yg8f5g5wadhmy4yfd9yjhvd8vll4gq4l86ibp0b42qbxnsmcf0q"))))
-    (build-system gnu-build-system)
+        (base32 "01gr255nlb77462040499qx50sik17x2b2jhzncmn56l4106lj9y"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:configure-flags #~'("-Dhelp=true")))
     (native-inputs
-     (list pkg-config))
+     (list gettext-minimal pkg-config python python-lxml))
     (inputs
      (list yelp-xsl))
     (propagated-inputs
      ;; Needed by `yelp-build', `yelp-check' or 'yelp.m4'.
-     `(("itstool" ,itstool)
-       ("xmllint" ,libxml2)
-       ("xsltproc" ,libxslt)))
+     (list itstool libxml2 libxslt))
     (synopsis "Yelp documentation tools")
     (description
      "Yelp-tools is a collection of scripts and build utilities to help create,
