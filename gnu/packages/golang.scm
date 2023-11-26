@@ -8324,7 +8324,15 @@ colorized or SGR defined output to the standard output.")
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/google/go-cmp/cmp"
-       #:unpack-path "github.com/google/go-cmp"))
+       #:unpack-path "github.com/google/go-cmp"
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key inputs #:allow-other-keys #:rest args)
+             (unless
+               ;; The tests fail when run with gccgo.
+               (false-if-exception (search-input-file inputs "/bin/gccgo"))
+               (apply (assoc-ref %standard-phases 'check) args)))))))
     (synopsis "Determine equality of values in Go")
     (description
      "This package is intended to be a more powerful and safer
