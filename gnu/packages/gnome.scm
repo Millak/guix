@@ -1683,7 +1683,7 @@ to preview files on the GNOME desktop.")
 (define-public rygel
   (package
     (name "rygel")
-    (version "0.41.2")
+    (version "0.42.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -1691,12 +1691,12 @@ to preview files on the GNOME desktop.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0wivd60hn115ar3hsrsa595kpxzp8gwq30ksh32qlq8j9dhlq65i"))))
+                "1xq36f0n42yall67ibqzqsdpvljbdanhy0lvkc8ncark5nmdy433"))))
     (build-system meson-build-system)
     (arguments
      ;; Disable the tracker plugin.
-     '(#:configure-flags
-       (list "-Dplugins=external,gst-launch,lms,media-export,
+     (list #:configure-flags
+           #~'("-Dplugins=external,gst-launch,lms,media-export,
 mpris,playbin,ruih,tracker3")))
     (native-inputs
      (list gettext-minimal
@@ -1726,6 +1726,9 @@ mpris,playbin,ruih,tracker3")))
            libxslt
            libunistring
            tracker))
+    (propagated-inputs
+     ;; The .pc files require.private gmodule-2.0
+     (list glib))
     (synopsis "Share audio, video, and pictures with other devices")
     (description
      "Rygel is a home media solution (@dfn{UPnP AV MediaServer and
