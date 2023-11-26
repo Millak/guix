@@ -291,6 +291,7 @@ please use 'modules' instead~%")))
                                        (make-socket-address AF_INET6 IN6ADDR_ANY
                                                             #$port-number)))
                                      '()))
+                           #:service-name-stem "rsync"
                            #:user #$user
                            #:group #$group)
                           (make-forkexec-constructor #$rsync-command
