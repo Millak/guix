@@ -492,8 +492,9 @@ trouble using them, because you do not have to remember each snippet name.")
                  (display "Running Vim unit tests.\n")
                  (let* ((vim-vader (assoc-ref (or native-inputs inputs)
                                               "vim-vader"))
-                        (vader-path (string-append vim-vader
-                                                   "/share/vim/vimfiles")))
+                        (vader-path (string-append
+                                      vim-vader
+                                      "/share/vim/vimfiles/pack/guix/start/vader")))
                    (with-directory-excursion "tests/vim"
                      (setenv "VADER_PATH" vader-path)
                      (invoke "vim" "-E" "-Nu" "vimrc"
@@ -1505,15 +1506,9 @@ operations are available for most filetypes.")
                 (sha256
                  (base32
                   "179dbbqdyl6qf6jdb6kdazn3idz17m1h2n88rlggb1wnly74vjin"))))
-      (build-system copy-build-system)
+      (build-system vim-build-system)
       (arguments
-       '(#:install-plan
-             '(("autoload" "share/vim/vimfiles/")
-               ("doc" "share/vim/vimfiles/")
-               ("ftdetect" "share/vim/vimfiles/")
-               ("ftplugin" "share/vim/vimfiles/")
-               ("plugin" "share/vim/vimfiles/")
-               ("syntax" "share/vim/vimfiles/"))
+       '(#:plugin-name "vader"
          #:phases
          (modify-phases %standard-phases
            (add-before 'install 'check
