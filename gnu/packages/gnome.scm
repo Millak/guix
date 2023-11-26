@@ -7280,7 +7280,7 @@ environments.")
 (define-public yelp-xsl
   (package
     (name "yelp-xsl")
-    (version "41.0")
+    (version "42.1")
     (source
      (origin
        (method url-fetch)
@@ -7289,7 +7289,7 @@ environments.")
                        (version-major version) "/"
                        name "-" version ".tar.xz"))
        (sha256
-        (base32 "19d46rkajvr0f04560vlrzwvac88x5j8ilvzwkawbn5vjg069kf8"))))
+        (base32 "1kav039g62q35h508shdbrcjcfkdsc7k6wcr2g780c35n58f32r3"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--enable-doc")))
@@ -7304,7 +7304,7 @@ environments.")
 you build, maintain, and distribute documentation.  It provides XSLT stylesheets
 that can be built upon for help viewers and publishing systems.  These
 stylesheets output JavaScript and CSS content, and reference images
-provided by yelp-xsl. It also redistributes copies of the jQuery and
+provided by yelp-xsl.  It also redistributes copies of the jQuery and
 jQuery.Syntax JavaScript libraries.")
     (home-page "https://wiki.gnome.org/Apps/Yelp")
     (license
