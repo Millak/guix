@@ -467,16 +467,9 @@ trouble using them, because you do not have to remember each snippet name.")
                 (sha256
                  (base32
                   "0av2m075n6z05ah9ndrgnp9s16yrz6n2lj0igd9fh3c5k41x5xks"))))
-      (build-system copy-build-system)
+      (build-system vim-build-system)
       (arguments
-       '(#:install-plan
-         '(("autoload" "share/vim/vimfiles/")
-           ("doc" "share/vim/vimfiles/")
-           ("ftdetect" "share/vim/vimfiles/")
-           ("ftplugin" "share/vim/vimfiles/")
-           ("indent" "share/vim/vimfiles/")
-           ("python" "share/vim/vimfiles/")
-           ("syntax" "share/vim/vimfiles/"))
+       '(#:plugin-name "coqtail"
          #:phases
          (modify-phases %standard-phases
            (add-before 'install 'check
@@ -497,17 +490,20 @@ trouble using them, because you do not have to remember each snippet name.")
                                       "/share/vim/vimfiles/pack/guix/start/vader")))
                    (with-directory-excursion "tests/vim"
                      (setenv "VADER_PATH" vader-path)
-                     (invoke "vim" "-E" "-Nu" "vimrc"
+                     (invoke (string-append
+                               (assoc-ref (or native-inputs inputs) "vim-full")
+                               "/bin/vim")
+                             "-E" "-Nu" "vimrc"
                              "-c" "Vader! *.vader")))
 
                  ;; Remove __pycache__ files generated during testing so that
                  ;; they don't get installed.
                  (delete-file-recursively "python/__pycache__")))))))
       (native-inputs
-       (list coq-for-coqtail
-             python-pytest
-             vim-full ;; Plugin needs Python 3.
-             vim-vader))
+       `(("coq-for-coqtail" ,coq-for-coqtail)
+         ("python-pytest" ,python-pytest)
+         ("vim-full" ,vim-full)         ; Plugin needs Python 3.
+         ("vim-vader" ,vim-vader)))
       (propagated-inputs (list coq coq-ide-server))
       (synopsis "Interactive Coq proofs in Vim")
       (description "Coqtail enables interactive Coq proof development in Vim
