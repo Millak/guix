@@ -1628,7 +1628,7 @@ sharing to the masses.")
 (define-public sushi
   (package
     (name "sushi")
-    (version "42.0")
+    (version "44.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -1636,21 +1636,22 @@ sharing to the masses.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0848gidl0ab8i5pa70mv8jzchmd9kqa8sn1lg977hyasyixdpn25"))))
+                "1sa3x8w8fhjj641yx5praabkqxfdsnafqnlb8jx2g451mvh2y03c"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'glib-or-gtk-wrap 'wrap-typelib
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((prog (string-append (assoc-ref outputs "out")
-                                        "/bin/sushi")))
-               ;; Put existing typelibs before sushi's deps, so as to
-               ;; correctly infer gdk-pixbuf.
-               (wrap-program prog
-                 `("GI_TYPELIB_PATH" suffix
-                   (,(getenv "GI_TYPELIB_PATH"))))))))))
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'glib-or-gtk-wrap 'wrap-typelib
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((prog (string-append (assoc-ref outputs "out")
+                                         "/bin/sushi")))
+                ;; Put existing typelibs before sushi's deps, so as to
+                ;; correctly infer gdk-pixbuf.
+                (wrap-program prog
+                  `("GI_TYPELIB_PATH" suffix
+                    (,(getenv "GI_TYPELIB_PATH"))))))))))
     (native-inputs
      (list `(,glib "bin")
            gettext-minimal
