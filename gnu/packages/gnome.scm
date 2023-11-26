@@ -7327,7 +7327,7 @@ jQuery.Syntax JavaScript libraries.")
 (define-public yelp
   (package
     (name "yelp")
-    (version "42.1")
+    (version "42.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -7335,7 +7335,7 @@ jQuery.Syntax JavaScript libraries.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0h9vf4fx056imjf8ibmn03wg1c3hniipy1nsm2jqi62lp1m19c95"))))
+                "0jxckvzmp3lzg62wrdp7f3c8hw6zbkwd0sy65ir9q259hw3zvid2"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list #:phases
@@ -7367,13 +7367,15 @@ jQuery.Syntax JavaScript libraries.")
     (propagated-inputs
      (list dconf))
     (inputs
-     (list gsettings-desktop-schemas
+     (list bash-minimal
+           gsettings-desktop-schemas
            libhandy
            libxslt
            man-db                                 ;for URIs like "man:ls"
            groff-minimal                          ;ditto
+           gtk+
            sqlite
-           webkitgtk
+           webkitgtk-for-gtk3
            yelp-xsl))
     (home-page "https://wiki.gnome.org/Apps/Yelp")
     (synopsis "GNOME help browser")
