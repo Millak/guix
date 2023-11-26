@@ -11069,7 +11069,7 @@ kill/reinice processes.")
 (define-public python-pyatspi
   (package
     (name "python-pyatspi")
-    (version "2.45.90")
+    (version "2.46.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -11078,16 +11078,17 @@ kill/reinice processes.")
                     "/pyatspi-" version ".tar.xz"))
               (sha256
                (base32
-                "1fggihg4xmwia0xgjkcraiqk76jvyrj1pcsw99rjh4yn3kygisrh"))))
+                "0bn6f1cn5z3fdg98irbm4265y0ri7fdr9s1m385ibaj77p7qjm6l"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'fix-atk-load
-           (lambda _
-             (substitute* "pyatspi/__init__.py"
-               (("from gi.repository import Atspi")
-                "gi.require_version('Gtk', '3.0')
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'fix-atk-load
+            (lambda _
+              (substitute* "pyatspi/__init__.py"
+                (("from gi.repository import Atspi")
+                 "gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 from gi.repository import Atspi")))))))
     (native-inputs
