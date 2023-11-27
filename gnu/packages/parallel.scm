@@ -131,7 +131,7 @@ and they are executed on lists of files, hosts, users or other items.")
 (define-public xe
   (package
     (name "xe")
-    (version "0.11")
+    (version "1.0")
     (source
      (origin
        (method git-fetch)
@@ -140,7 +140,7 @@ and they are executed on lists of files, hosts, users or other items.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04jr8f6jcijr0bsmn8ajm0aj35qh9my3xjsaq64h8lwg5bpyn29x"))))
+        (base32 "1ijvf7q5pxk4rlj7p9q6fmpdqiwmc28gffkk6yg390k1a1z3msf9"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f
