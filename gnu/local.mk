@@ -1750,7 +1750,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/pango-skip-libthai-test.patch		\
   %D%/packages/patches/password-store-tree-compat.patch		\
   %D%/packages/patches/petri-foo-0.1.87-fix-recent-file-not-exist.patch			\
-  %D%/packages/patches/php-fix-streams-copy-length.patch	\
   %D%/packages/patches/plasma-framework-fix-KF5PlasmaMacros.cmake.patch \
   %D%/packages/patches/pocketfft-cpp-prefer-preprocessor-if.patch			\
   %D%/packages/patches/pokerth-boost.patch			\
