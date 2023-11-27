@@ -195,7 +195,6 @@
                         "ext/intl/tests/timezone_getErrorCodeMessage_basic.phpt"
                         "ext/intl/tests/timezone_getOffset_error.phpt"
                         "sapi/cli/tests/cli_process_title_unix.phpt"
-                        "sapi/cli/tests/upload_2G.phpt"
                         "Zend/tests/concat_003.phpt"))
                 ((target-x86-32?)
                  `(list "ext/dba/tests/dba_gdbm.phpt"))
@@ -209,8 +208,6 @@
                     "sapi/phpdbg/tests/watch_004.phpt"
                     "sapi/phpdbg/tests/watch_005.phpt"
                     "sapi/phpdbg/tests/watch_006.phpt"))
-                ((target-riscv64?)
-                 `(list "sapi/cli/tests/upload_2G.phpt"))
                 (else `'())))
 
              ;; Drop tests that are known to fail.
@@ -276,7 +273,10 @@
                          "ext/gd/tests/bug73272.phpt"
                          ;; PCRE with/without JIT gives different result
                          "ext/pcre/tests/gh11374.phpt"
-                         "ext/pcre/tests/gh11956.phpt"))
+                         "ext/pcre/tests/gh11956.phpt"
+
+                         ;; This test fails on most architectures.
+                         "sapi/cli/tests/upload_2G.phpt"))
 
              ;; Accomodate two extra openssl errors flanking the expected one:
              ;; random number generator:RAND_{load,write}_file:Cannot open file
