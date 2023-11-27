@@ -175,56 +175,43 @@
              (substitute* "ext/standard/tests/streams/bug60602.phpt"
                (("'ls'") (string-append "'" (which "ls") "'")))
 
-             ,@(if (target-arm32?)
-                   ;; Drop tests known to fail on armhf.
-                   '((for-each delete-file
-                               (list
-                                "ext/calendar/tests/unixtojd_error1.phpt"
-                                "ext/opcache/tests/preload_006.phpt"
-                                "ext/opcache/tests/preload_011.phpt"
-                                ;; arm can be a lot slower, so a time-related test fails
-                                "ext/fileinfo/tests/cve-2014-3538-nojit.phpt"
-                                "ext/pcntl/tests/pcntl_unshare_01.phpt"
-                                "ext/pcre/tests/bug76514.phpt"
-                                "ext/pcre/tests/preg_match_error3.phpt"
-                                "ext/pcre/tests/cache_limit.phpt"
-                                "ext/sockets/tests/socket_getopt.phpt"
-                                "ext/sockets/tests/socket_sendrecvmsg_error.phpt"
-                                "ext/standard/tests/general_functions/var_export-locale.phpt"
-                                "ext/standard/tests/general_functions/var_export_basic1.phpt"
-                                "ext/intl/tests/timezone_getErrorCodeMessage_basic.phpt"
-                                "ext/intl/tests/timezone_getOffset_error.phpt"
-                                "sapi/cli/tests/cli_process_title_unix.phpt"
-                                "sapi/cli/tests/upload_2G.phpt"
-                                "Zend/tests/concat_003.phpt")))
-                   '())
-
-             ,@(if (target-x86-32?)
-                   ;; Drop tests known to fail on i686.
-                   '((for-each delete-file
-                               (list
-                                "ext/dba/tests/dba_gdbm.phpt")))
-                   '())
-
-             ,@(if (target-ppc64le?)
-                   ;; Drop tests known to fail on powerpc64le.
-                   '((for-each delete-file
-                               (list
-                                ;; phpdbg watchpoints don't work.
-                                ;; Bug tracked upstream at:
-                                ;; https://bugs.php.net/bug.php?id=81408
-                                "sapi/phpdbg/tests/watch_001.phpt"
-                                "sapi/phpdbg/tests/watch_003.phpt"
-                                "sapi/phpdbg/tests/watch_004.phpt"
-                                "sapi/phpdbg/tests/watch_005.phpt"
-                                "sapi/phpdbg/tests/watch_006.phpt")))
-                   '())
-
-             ,@(if (target-riscv64?)
-                   ;; Drop tests known to fail on riscv64.
-                   '((for-each delete-file
-                               (list "sapi/cli/tests/upload_2G.phpt")))
-                   '())
+             ;; Drop tests known to fail on different architectures:
+             (for-each delete-file
+             ,(cond
+                ((target-arm32?)
+                 `(list "ext/calendar/tests/unixtojd_error1.phpt"
+                        "ext/opcache/tests/preload_006.phpt"
+                        "ext/opcache/tests/preload_011.phpt"
+                        ;; arm can be a lot slower, so a time-related test fails
+                        "ext/fileinfo/tests/cve-2014-3538-nojit.phpt"
+                        "ext/pcntl/tests/pcntl_unshare_01.phpt"
+                        "ext/pcre/tests/bug76514.phpt"
+                        "ext/pcre/tests/preg_match_error3.phpt"
+                        "ext/pcre/tests/cache_limit.phpt"
+                        "ext/sockets/tests/socket_getopt.phpt"
+                        "ext/sockets/tests/socket_sendrecvmsg_error.phpt"
+                        "ext/standard/tests/general_functions/var_export-locale.phpt"
+                        "ext/standard/tests/general_functions/var_export_basic1.phpt"
+                        "ext/intl/tests/timezone_getErrorCodeMessage_basic.phpt"
+                        "ext/intl/tests/timezone_getOffset_error.phpt"
+                        "sapi/cli/tests/cli_process_title_unix.phpt"
+                        "sapi/cli/tests/upload_2G.phpt"
+                        "Zend/tests/concat_003.phpt"))
+                ((target-x86-32?)
+                 `(list "ext/dba/tests/dba_gdbm.phpt"))
+                ((target-ppc64le?)
+                 `(list
+                    ;; phpdbg watchpoints don't work.
+                    ;; Bug tracked upstream at:
+                    ;; https://bugs.php.net/bug.php?id=81408
+                    "sapi/phpdbg/tests/watch_001.phpt"
+                    "sapi/phpdbg/tests/watch_003.phpt"
+                    "sapi/phpdbg/tests/watch_004.phpt"
+                    "sapi/phpdbg/tests/watch_005.phpt"
+                    "sapi/phpdbg/tests/watch_006.phpt"))
+                ((target-riscv64?)
+                 `(list "sapi/cli/tests/upload_2G.phpt"))
+                (else `'())))
 
              ;; Drop tests that are known to fail.
              (for-each delete-file
