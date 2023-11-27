@@ -7975,6 +7975,10 @@ The exact set of supported keywords depends on the build system
 @code{#:phases}.  The @code{#:phases} keyword in particular lets you
 modify the set of build phases for your package (@pxref{Build Phases}).
 
+The REPL has dedicated commands to interactively inspect values of some
+of these arguments, as a convenient debugging aid (@pxref{Using Guix
+Interactively}).
+
 @quotation Compatibility Note
 Until version 1.3.0, the @code{arguments} field would typically use
 @code{quote} (@code{'}) or @code{quasiquote} (@code{`}) and no
@@ -8773,6 +8777,23 @@ depended on and returns the resulting package.  The procedure stops recursion
 when @var{cut?} returns true for a given package.  When @var{deep?} is true, @var{proc} is
 applied to implicit inputs as well.
 @end deffn
+
+@quotation Tips
+Understanding what a variant really looks like can be difficult as one
+starts combining the tools shown above.  There are several ways to
+inspect a package before attempting to build it that can prove handy:
+
+@itemize
+@item
+You can inspect the package interactively at the REPL, for instance to
+view its inputs, the code of its build phases, or its configure flags
+(@pxref{Using Guix Interactively}).
+
+@item
+When rewriting dependencies, @command{guix graph} can often help
+visualize the changes that are made (@pxref{Invoking guix graph}).
+@end itemize
+@end quotation
 
 @node Writing Manifests
 @section Writing Manifests
@@ -10584,6 +10605,11 @@ executable under a @file{/bin} directory among the package's inputs
 we have seen before.  @xref{Build Utilities}, for more about
 the helpers used by this phase, and for more examples of
 @code{modify-phases}.
+
+@quotation Tip
+You can inspect the code associated with a package's @code{#:phases}
+argument interactively, at the REPL (@pxref{Using Guix Interactively}).
+@end quotation
 
 @cindex code staging
 @cindex staging, of code
@@ -12763,6 +12789,30 @@ scheme@@(guix-user)> (scandir (string-append $3 "/bin"))
 $5 = ("." ".." "egrep" "fgrep" "grep")
 @end example
 
+As a packager, you may be willing to inspect the build phases or flags
+of a given package; this is particularly useful when relying a lot on
+inheritance to define package variants (@pxref{Defining Package
+Variants}) or when package arguments are a result of some computation,
+both of which can make it harder to foresee what ends up in the package
+arguments.  Additional commands let you inspect those package arguments:
+
+@example
+scheme@@(guix-user)> ,phases grep
+$1 = (modify-phases %standard-phases
+       (add-after 'install 'fix-egrep-and-fgrep
+         (lambda* (#:key outputs #:allow-other-keys)
+           (let* ((out (assoc-ref outputs "out"))
+                  (bin (string-append out "/bin")))
+             (substitute* (list (string-append bin "/egrep")
+                                (string-append bin "/fgrep"))
+               (("^exec grep")
+                (string-append "exec " bin "/grep")))))))
+scheme@@(guix-user)> ,configure-flags findutils
+$2 = (list "--localstatedir=/var")
+scheme@@(guix-user)> ,make-flags binutils
+$3 = '("MAKEINFO=true")
+@end example
+
 At a lower-level, a useful command is @code{lower}: it takes a file-like
 object and ``lowers'' it into a derivation (@pxref{Derivations}) or a
 store file:
@@ -12792,6 +12842,17 @@ Change build verbosity to @var{level}.
 This is similar to the @option{--verbosity} command-line option
 (@pxref{Common Build Options}): level 0 means total silence, level 1
 shows build events only, and higher levels print build logs.
+@end deffn
+
+@deffn {REPL command} phases @var{package}
+@deffnx {REPL command} configure-flags @var{package}
+@deffnx {REPL command} make-flags @var{package}
+These REPL commands return the value of one element of the
+@code{arguments} field of @var{package} (@pxref{package Reference}): the
+first one show the staged code associated with @code{#:phases}
+(@pxref{Build Phases}), the second shows the code for
+@code{#:configure-flags}, and @code{,make-flags} returns the code for
+@code{#:make-flags}.
 @end deffn
 
 @deffn {REPL command} run-in-store @var{exp}
