@@ -5617,7 +5617,8 @@ values.")
        (patches (search-patches "go-gopkg-in-yaml-v3-32bit.patch"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "gopkg.in/yaml.v3"))
+     `(#:tests? ,(not (target-ppc32?))  ; Test killed with quit: ran too long (11m0s).
+       #:import-path "gopkg.in/yaml.v3"))
     (native-inputs
      (list go-gopkg-in-check-v1))
     (home-page "https://gopkg.in/yaml.v3")
