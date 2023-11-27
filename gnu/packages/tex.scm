@@ -742,7 +742,8 @@ and should be preferred to it whenever a package would otherwise depend on
                          (("srcdir/tests/pprecA-0.ind pprecA-0.ind1 \\|\\| exit 1")
                           "srcdir/tests/pprecA-0.ind pprecA-0.ind1 || exit 77")))))
                  '())
-          #$@(if (target-arm32?)
+          #$@(if (or (target-arm32?)
+                     (target-ppc32?))
                  `((add-after 'unpack 'skip-faulty-test
                      (lambda _
                        ;; Skip this faulty test on armhf-linux:
