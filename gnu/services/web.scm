@@ -2103,7 +2103,7 @@ root=/srv/gemini
 
 (define gmnisrv-service-type
   (service-type
-   (name 'guix)
+   (name 'gmnisrv)
    (extensions
     (list (service-extension activation-service-type
                              (const %gmnisrv-activation))
