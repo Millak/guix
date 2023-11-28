@@ -2702,6 +2702,37 @@ library.")
     (description "This package provides FFI bindings of GTK 4.")
     (license license:expat)))
 
+(define-public rust-libadwaita-sys-0.5
+  (package
+    (name "rust-libadwaita-sys")
+    (version "0.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libadwaita-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "16n6xsy6jhbj0jbpz8yvql6c9b89a99v9vhdz5s37mg1inisl42y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; ‘AdwBannerClass’ undeclared
+       #:cargo-inputs (("rust-gdk4-sys" ,rust-gdk4-sys-0.7)
+                       ("rust-gio-sys" ,rust-gio-sys-0.18)
+                       ("rust-glib-sys" ,rust-glib-sys-0.18)
+                       ("rust-gobject-sys" ,rust-gobject-sys-0.18)
+                       ("rust-gtk4-sys" ,rust-gtk4-sys-0.7)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-pango-sys" ,rust-pango-sys-0.18)
+                       ("rust-system-deps" ,rust-system-deps-6))
+       #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs (list pkg-config))
+    (inputs (list gtk libadwaita))
+    (home-page "https://world.pages.gitlab.gnome.org/Rust/libadwaita-rs/")
+    (synopsis "FFI bindings for libadwaita")
+    (description "FFI bindings for libadwaita.")
+    (license license:expat)))
+
 (define-public rust-pango-0.18
   (package
     (name "rust-pango")
