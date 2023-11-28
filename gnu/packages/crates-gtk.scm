@@ -1225,8 +1225,52 @@
     (description "File format checker in Rust.")
     (license license:expat)))
 
+(define-public rust-glib-0.18
+  (package
+    (name "rust-glib")
+    (version "0.18.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "glib" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06dxrhispzz20n33b5k2gg723p27rprc87xbxb2ng06f07xnlc8w"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ; `Errors` doesn't implement `std::fmt::Display`
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-2)
+        ("rust-futures-channel" ,rust-futures-channel-0.3)
+        ("rust-futures-core" ,rust-futures-core-0.3)
+        ("rust-futures-executor" ,rust-futures-executor-0.3)
+        ("rust-futures-task" ,rust-futures-task-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-gio-sys" ,rust-gio-sys-0.18)
+        ("rust-glib-macros" ,rust-glib-macros-0.18)
+        ("rust-glib-sys" ,rust-glib-sys-0.18)
+        ("rust-gobject-sys" ,rust-gobject-sys-0.18)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-memchr" ,rust-memchr-2)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4)
+        ("rust-gir-format-check" ,rust-gir-format-check-0.1)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-trybuild2" ,rust-trybuild2-1))))
+    (native-inputs (list pkg-config))
+    (inputs (list glib))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "Rust bindings for the GLib library")
+    (description "Rust bindings for the GLib library.")
+    (license license:expat)))
+
 (define-public rust-glib-0.17
   (package
+    (inherit rust-glib-0.18)
     (name "rust-glib")
     (version "0.17.10")
     (source (origin
@@ -1236,7 +1280,6 @@
               (sha256
                (base32
                 "0jqlipn9zixj8fpqlg45v0f06j2ghdz72cml2akcxlnlm1dx9ynk"))))
-    (build-system cargo-build-system)
     (arguments
      `(;; XXX: Tests are sensitive to the version of glib, even though
        ;; the library supports a wide range.  Skip for now.
@@ -1262,15 +1305,7 @@
        (("rust-criterion" ,rust-criterion-0.4)
         ("rust-gir-format-check" ,rust-gir-format-check-0.1)
         ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-trybuild2" ,rust-trybuild2-1))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list glib))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "Rust bindings for the GLib library")
-    (description "Rust bindings for the GLib library")
-    (license license:expat)))
+        ("rust-trybuild2" ,rust-trybuild2-1))))))
 
 (define-public rust-glib-0.15
   (package
