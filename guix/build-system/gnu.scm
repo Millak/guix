@@ -460,10 +460,13 @@ is one of `host' or `target'."
            `(("cross-gcc" ,(gcc target
                                 #:xbinutils (binutils target)
                                 #:libc libc))
-             ("cross-libc" ,libc)
+             ;; Some targets don't have a libc. (e.g. *-elf targets).
+             ,@(if libc
+                   `(("cross-libc" ,libc))
+                   '())
 
              ;; MinGW's libc doesn't have a "static" output.
-             ,@(if (member "static" (package-outputs libc))
+             ,@(if (and libc (member "static" (package-outputs libc)))
                    `(("cross-libc:static" ,libc "static"))
                    '()))))))))
 
