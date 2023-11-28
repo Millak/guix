@@ -125,6 +125,7 @@ multipart HEX files.")
      ;; only built).
      (list
       #:tests? #f
+      #:target "avr"
       #:modules '((guix build gnu-build-system)
                   (guix build utils)
                   (ice-9 match)
@@ -175,7 +176,7 @@ multipart HEX files.")
                               (mkdir-p dest)
                               (copy-recursively html dest)))
                           html-dirs)))))))
-    (native-inputs (list doxygen (make-avr-toolchain)))
+    (native-inputs (list doxygen))
     (home-page "https://www.lufa-lib.org/")
     (synopsis "Lightweight USB Framework for AVRs")
     (description "UFA is a simple to use, lightweight framework which sits
