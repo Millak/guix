@@ -17,6 +17,7 @@
 ;;; Copyright © 2021, 2022, 2023, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2023 Mehmet Tekman <mtekman89@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -46,6 +47,7 @@
   #:use-module (gnu packages apr)
   #:use-module (gnu packages astronomy)
   #:use-module (gnu packages audio)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
@@ -63,6 +65,7 @@
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages fribidi)
   #:use-module (gnu packages geo)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
@@ -72,6 +75,7 @@
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages gps)
   #:use-module (gnu packages graphics)
+  #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages kde-frameworks)
@@ -92,10 +96,12 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages samba)
+  #:use-module (gnu packages sdl)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages tls)
-  #:use-module (gnu packages qt)
+  #:use-module (gnu packages unicode)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
   #:use-module (gnu packages xdisorg)
@@ -702,7 +708,7 @@ painting, image manipulating and icon editing.")
 (define-public krita
   (package
     (name "krita")
-    (version "5.1.5")
+    (version "5.2.1")
     (source
      (origin
        (method url-fetch)
@@ -710,11 +716,28 @@ painting, image manipulating and icon editing.")
              "mirror://kde/stable/krita/" version "/krita-" version
              ".tar.gz"))
        (sha256
-        (base32 "1lx4x4affkbh47b7w5qvahkkr4db0vcw6h24nykak6gpy2z5wxqw"))))
+        (base32 "1kzmn89b1vrasba7z8hp8izyrrskgc7ggnz82zqyyy1v5d8mnri7"))))
     (build-system qt-build-system)
     (arguments
      `(#:tests? #f
-       #:configure-flags (list "-DBUILD_TESTING=OFF")))
+       #:configure-flags (list "-DBUILD_TESTING=OFF -DCMAKE_CXX_FLAGS=-fPIC")
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'patch-raqm
+                    (lambda _
+                      ;; Uncomment the substitute block underneath this once the
+                      ;; libraqm variable is patched upstream. This will force it to
+                      ;; use the Guix provided library.
+                      ;; (substitute* "CMakeLists.txt"
+                      ;; (("add_subdirectory\\(3rdparty_vendor\\)")
+                      ;; "find_package(Raqm 0.10.1 REQUIRED)"))
+                      ;; (delete-file-recursively "3rdparty_vendor"))
+                      ;;
+                      ;; Patch the supplied vendor Raqm library (v0.10.1) to use fPIC
+                      (substitute* "3rdparty_vendor/raqm/CMakeLists.txt"
+                        (("set\\(CMAKE_AUTOMOC OFF\\)")
+                         "set(CMAKE_AUTOMOC OFF)
+set(CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} -fPIC\" )
+set(CMAKE_C_FLAGS \"${CMAKE_C_FLAGS} -fPIC\" ) ")))))))
     (native-inputs
      (list curl
            eigen
@@ -727,10 +750,19 @@ painting, image manipulating and icon editing.")
     (inputs
      (list boost
            exiv2
-           fftw
+           fontconfig
+           fftw-cmake
+           ;; fftw
+           ;; We use fftw-cmake since fftwm doesn't provide the required
+           ;; CMake files when build with gnu.
+           ;; See: https://bugzilla.redhat.com/show_bug.cgi?id=1729652#c5
+           freetype
+           fribidi
            giflib
            gsl
+           harfbuzz
            imath
+           immer
            karchive
            kcompletion
            kconfig
@@ -745,29 +777,43 @@ painting, image manipulating and icon editing.")
            kwidgetsaddons
            kwindowsystem
            kxmlgui
+           lager
            lcms
-           libjpeg-turbo
            libheif
+           libjpeg-turbo
+           libjxl
+           libkdcraw
            libmypaint
            libpng
+           ;; libraqm
+           ;; We use the provided 3rd_party_vendor library instead of
+           ;; libraqm 0.10.1 with patches until libraqm is patched.
+           ;; See: https://github.com/HOST-Oman/libraqm/issues/191
            libraw
            libtiff
+           libunibreak
            libwebp
            libx11
            libxcb
            libxi
+           mlt
            opencolorio
            openexr
            openjpeg
            perl
            poppler-qt5
+           python-pyqt
+           python-pyqt5-sip
            qtbase-5
            qtdeclarative-5
            qtmultimedia-5
            qtsvg-5
            qtx11extras
            quazip-0
-           zlib))
+           sdl2
+           xsimd
+           zlib
+           zug))
     (home-page "https://krita.org")
     (synopsis "Digital painting application")
     (description
