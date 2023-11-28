@@ -34,6 +34,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages hurd)
   #:use-module (gnu packages mingw)
+  #:use-module (guix memoization)
   #:use-module (guix platform)
   #:use-module (guix packages)
   #:use-module (guix diagnostics)
@@ -41,6 +42,7 @@
   #:use-module (guix i18n)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system trivial)
   #:use-module (guix gexp)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
@@ -50,7 +52,8 @@
             cross-libc
             cross-gcc
             cross-mig
-            cross-kernel-headers))
+            cross-kernel-headers
+            cross-gcc-toolchain))
 
 (define-syntax %xgcc
   ;; GCC package used as the basis for cross-compilation.  It doesn't have to
@@ -726,6 +729,52 @@ returned."
     (make-avr-libc #:xbinutils xbinutils
                    #:xgcc xgcc))
    (else #f)))
+
+(define* (cross-gcc-toolchain/implementation target
+                                             #:key
+                                             (base-gcc %xgcc)
+                                             (xbinutils (cross-binutils target))
+                                             (libc (cross-libc
+                                                     target
+                                                     #:xgcc (cross-gcc target #:xgcc base-gcc)
+                                                     #:xbinutils xbinutils))
+                                             (xgcc (cross-gcc target
+                                                              #:xgcc base-gcc
+                                                              #:libc libc
+                                                              #:xbinutils xbinutils)))
+  "Returns PACKAGE that contains a cross-compilation tool chain for TARGET
+with XBINUTILS, XGCC and LIBC (if exists for TARGET)."
+  (package
+    (name (string-append (package-name xgcc) "-toolchain"))
+    (version (package-version xgcc))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments
+     (list #:modules '((guix build union))
+           #:builder
+           #~(begin
+               (use-modules (ice-9 match)
+                            (guix build union))
+
+               (match %build-inputs
+                 (((names . directory) ...)
+                  (union-build #$output directory))))))
+    (inputs `(,xbinutils ,xgcc ,@(if libc (list libc) '())))
+    (home-page (package-home-page xgcc))
+    (synopsis
+     (format #f "Complete GCC tool chain for C/C++ development (~a)" target))
+    (description "This package provides a complete GCC cross toolchain for
+C/C++ development to be installed in user profiles.  This includes GCC, as
+well as libc (headers and binariesl), and Binutils.  GCC is the GNU Compiler
+Collection.")
+    (license (delete-duplicates `(,(package-license xgcc)
+                                  ,(package-license xbinutils)
+                                  ,@(if libc
+                                        (list (package-license libc))
+                                        '()))))))
+
+(define cross-gcc-toolchain
+  (memoize cross-gcc-toolchain/implementation))
 
 
 ;;; Concrete cross tool chains are instantiated like this:
