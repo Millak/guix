@@ -2599,6 +2599,42 @@
 library.")
     (license license:expat)))
 
+(define-public rust-gtk4-0.7
+  (package
+    (name "rust-gtk4")
+    (version "0.7.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gtk4" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hh8nzglmz94v1m1h6vy8z12m6fr7ia467ry0md5fa4p7sm53sss"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ; `Errors` doesn't implement `std::fmt::Display`
+       #:cargo-inputs (("rust-cairo-rs" ,rust-cairo-rs-0.18)
+                       ("rust-field-offset" ,rust-field-offset-0.3)
+                       ("rust-futures-channel" ,rust-futures-channel-0.3)
+                       ("rust-gdk-pixbuf" ,rust-gdk-pixbuf-0.18)
+                       ("rust-gdk4" ,rust-gdk4-0.7)
+                       ("rust-gio" ,rust-gio-0.18)
+                       ("rust-glib" ,rust-glib-0.18)
+                       ("rust-graphene-rs" ,rust-graphene-rs-0.18)
+                       ("rust-gsk4" ,rust-gsk4-0.7)
+                       ("rust-gtk4-macros" ,rust-gtk4-macros-0.7)
+                       ("rust-gtk4-sys" ,rust-gtk4-sys-0.7)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-pango" ,rust-pango-0.18))
+       #:cargo-development-inputs
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
+    (native-inputs (list pkg-config))
+    (inputs (list cairo glib gtk))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "Rust bindings of the GTK 4 library")
+    (description "Rust bindings of the GTK 4 library.")
+    (license license:expat)))
+
 (define-public rust-gtk4-macros-0.7
   (package
     (name "rust-gtk4-macros")
