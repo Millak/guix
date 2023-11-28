@@ -4,6 +4,7 @@
 ;;; Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -328,6 +329,17 @@ skip these tests."
          ;; Note that (expt 2 109) in decimal notation starts with 64.
          ;; However, it isn't 32-bit.
          ,(format #f "x86_~a-linux-gnu" (expt 2 109)))))
+
+(test-equal "target-avr?"
+  '(#t #t #t #f #f)
+  (map target-avr?
+       '("avr" "avr-unknown-none"
+         ;; In addition LLVM also uses this form.
+         "avr-unknown-unknown"
+         ;; The AVR32 architecture also was made by Atmel/Microchip but it
+         ;; does not resemble the AVR family, they aren't compatible in any
+         ;; way.
+         "avr32" "avr32-unknown-none")))
 
 (test-end)
 
