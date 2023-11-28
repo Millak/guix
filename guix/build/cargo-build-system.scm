@@ -181,7 +181,8 @@ libraries or executables."
   ;; Configure cargo to actually use this new directory with all the crates.
   (setenv "CARGO_HOME" (string-append (getcwd) "/.cargo"))
   (mkdir-p ".cargo")
-  (let ((port (open-file ".cargo/config.toml" "w" #:encoding "utf-8")))
+  ;; Not .cargo/config.toml, rustc/cargo will generate .cargo/config otherwise.
+  (let ((port (open-file ".cargo/config" "w" #:encoding "utf-8")))
     ;; Placed here so it doesn't cause random rebuilds.  Neither of these work.
     ;; sysroot = '" (assoc-ref inputs "rust-sysroot") "'
     ;; rustflags = ['--sysroot', '" (assoc-ref inputs "rust-sysroot") "']
