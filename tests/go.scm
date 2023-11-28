@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021 François Joulaud <francois.joulaud@radiofrance.com>
-;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright Â© 2021 FranÃ§ois Joulaud <francois.joulaud@radiofrance.com>
+;;; Copyright Â© 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -387,7 +387,7 @@ require github.com/kr/pretty v0.2.1
           "0sjjj9z1dhilhpc8pq4154czrb79z9cm044jvn75kxcjv6v5l2m5"))))
      (build-system go-build-system)
      (arguments
-      '(#:import-path "github.com/go-check/check"))
+      (list #:import-path "github.com/go-check/check"))
      (propagated-inputs
       `(("go-github-com-kr-pretty" ,go-github-com-kr-pretty)))
      (home-page "https://github.com/go-check/check")

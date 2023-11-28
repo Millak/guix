@@ -29,6 +29,7 @@
   #:use-module (guix git)
   #:use-module (guix hash)
   #:use-module (guix i18n)
+  #:use-module ((guix utils) #:select (version>?))
   #:use-module (guix diagnostics)
   #:use-module (guix import utils)
   #:use-module (guix import json)
@@ -92,6 +93,11 @@
 ;;; - get correct hash in vcs->origin for Mercurial and Subversion
 
 ;;; Code:
+
+(define (go-package)
+  "Return the 'go' package.  This is a lazy reference so that we don't
+depend on (gnu packages golang)."
+  (module-ref (resolve-interface '(gnu packages golang)) 'go))
 
 (define http-fetch*
   ;; Like http-fetch, but memoized and returning the body as a string.
@@ -314,7 +320,7 @@ comment, or unknown) and is followed by the indicated data."
   (define-peg-pattern with all (or (and module-path version) file-path))
   (define-peg-pattern replace all (and original => with EOL))
   (define-peg-pattern replace-top body
-    (and (ignore "replace") 
+    (and (ignore "replace")
          (or (and block-start (* (or replace block-line)) block-end) replace)))
 
   ;; RetractSpec = ( Version | "[" Version "," Version "]" ) newline .
@@ -377,6 +383,17 @@ DIRECTIVE."
 
 ;; Prevent inlining of this procedure, which is accessed by unit tests.
 (set! go.mod-requirements go.mod-requirements)
+
+(define (go.mod-go-version go.mod)
+  "Return the minimum version of go required to specified by GO.MOD."
+  (let ((go-version (go.mod-directives go.mod 'go)))
+    (if (null? go-version)
+      ;; If the go directive is missing, go 1.16 is assumed.
+      '(version "1.16")
+      (flatten go-version))))
+
+;; Prevent inlining of this procedure, which is accessed by unit tests.
+(set! go.mod-go-version go.mod-go-version)
 
 (define-record-type <vcs>
   (%make-vcs url-prefix root-regex type)
@@ -610,6 +627,7 @@ When VERSION is unspecified, the latest version available is used."
                     available-versions
                     module-path))
          (content (fetch-go.mod goproxy module-path version*))
+         (min-go-version (second (go.mod-go-version (parse-go.mod content))))
          (dependencies+versions (go.mod-requirements (parse-go.mod content)))
          (dependencies (if pin-versions?
                            dependencies+versions
@@ -634,10 +652,13 @@ When VERSION is unspecified, the latest version available is used."
          ,(vcs->origin vcs-type vcs-repo-url version*))
         (build-system go-build-system)
         (arguments
-         '(#:import-path ,module-path
-           ,@(if (string=? module-path-sans-suffix root-module-path)
-                 '()
-                 `(#:unpack-path ,root-module-path))))
+         (list ,@(if (version>? min-go-version (package-version (go-package)))
+                     `(#:go ,(string->number min-go-version))
+                     '())
+               #:import-path ,module-path
+               ,@(if (string=? module-path-sans-suffix root-module-path)
+                     '()
+                     `(#:unpack-path ,root-module-path))))
         ,@(maybe-propagated-inputs
            (map (match-lambda
                   ((name version)
