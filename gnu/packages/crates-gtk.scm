@@ -1028,8 +1028,51 @@
         ("rust-serial-test" ,rust-serial-test-0.1)
         ("rust-serial-test-derive" ,rust-serial-test-derive-0.1))))))
 
+(define-public rust-gio-sys-0.18
+  (package
+    (name "rust-gio-sys")
+    (version "0.18.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gio-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lip8z35iy9d184x2qwjxlbxi64q9cpayy7v1p5y9xdsa3w6smip"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(;; XXX: Tests are sensitive to the version of glib, even though
+       ;; the library supports a wide range.  Skip for now.
+       #:tests? #f
+       #:cargo-inputs
+       (("rust-glib-sys" ,rust-glib-sys-0.18)
+        ("rust-gobject-sys" ,rust-gobject-sys-0.18)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-system-deps" ,rust-system-deps-6)
+        ("rust-shell-words" ,rust-shell-words-1)
+        ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs
+       (("rust-shell-words" ,rust-shell-words-1)
+        ("rust-tempfile" ,rust-tempfile-3))
+       #:phases (modify-phases %standard-phases
+                  (add-before 'check 'extend-include-path
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (let ((gio-headers (search-input-directory
+                                          inputs "include/gio-unix-2.0")))
+                        ;; Tests rely on these headers.
+                        (setenv "C_INCLUDE_PATH"
+                                (string-append gio-headers ":"
+                                               (getenv "C_INCLUDE_PATH")))))))))
+    (native-inputs (list pkg-config))
+    (inputs (list glib))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "FFI bindings to libgio-2.0")
+    (description "This package provides FFI bindings to libgio-2.0.")
+    (license license:expat)))
+
 (define-public rust-gio-sys-0.17
   (package
+    (inherit rust-gio-sys-0.18)
     (name "rust-gio-sys")
     (version "0.17.10")
     (source (origin
@@ -1039,7 +1082,6 @@
               (sha256
                (base32
                 "1hr84vgpz1hbs9q7wgvpnwhbxwh9kim0z5aqv6v6ki0j1b1qgkqc"))))
-    (build-system cargo-build-system)
     (arguments
      `(;; XXX: Tests are sensitive to the version of glib, even though
        ;; the library supports a wide range.  Skip for now.
@@ -1061,15 +1103,7 @@
                         ;; Tests rely on these headers.
                         (setenv "C_INCLUDE_PATH"
                                 (string-append gio-headers ":"
-                                               (getenv "C_INCLUDE_PATH")))))))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list glib))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "FFI bindings to libgio-2.0")
-    (description "This package provides FFI bindings to libgio-2.0.")
-    (license license:expat)))
+                                               (getenv "C_INCLUDE_PATH")))))))))))
 
 (define-public rust-gio-sys-0.15
   (package
