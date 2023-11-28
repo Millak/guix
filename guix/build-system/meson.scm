@@ -92,6 +92,13 @@ TRIPLET."
     (ld . ,(string-append triplet "-ld"))
     (strip . ,(string-append triplet "-strip"))))
 
+(define (make-built-in-options-alist triplet)
+  (if (target-avr? triplet)
+      `((b_pie . #f)
+        (b_staticpic . #f)
+        (default_library . "static"))
+       '()))
+
 (define (make-cross-file triplet)
   (computed-file "cross-file"
     (with-imported-modules '((guix build meson-configuration))
@@ -102,7 +109,9 @@ TRIPLET."
               (write-section-header port "host_machine")
               (write-assignments port '#$(make-machine-alist triplet))
               (write-section-header port "binaries")
-              (write-assignments port '#$(make-binaries-alist triplet))))))))
+              (write-assignments port '#$(make-binaries-alist triplet))
+              (write-section-header port "built-in options")
+              (write-assignments port '#$(make-built-in-options-alist triplet))))))))
 
 (define %meson-build-system-modules
   ;; Build-side modules imported by default.
