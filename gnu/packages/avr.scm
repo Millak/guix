@@ -33,7 +33,8 @@
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages flashing-tools)
   #:use-module (gnu packages gcc)
-  #:export (make-avr-toolchain))
+  #:export (make-avr-libc
+            make-avr-toolchain))
 
 ;;; Commentary:
 ;;;
@@ -101,7 +102,10 @@ changed to ~a~%"
 (define make-avr-gcc
   (memoize make-avr-gcc/implementation))
 
-(define* (make-avr-libc/implementation #:key (xgcc gcc))
+(define* (make-avr-libc/implementation #:key
+                                       (xbinutils (cross-binutils "avr"))
+                                       (xgcc (cross-gcc "avr"
+                                                        #:xbinutils xbinutils)))
   (package
     (name "avr-libc")
     (version "2.0.0")
@@ -114,10 +118,13 @@ changed to ~a~%"
                 "15svr2fx8j6prql2il2fc0ppwlv50rpmyckaxx38d3gxxv97zpdj"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:out-of-source? #t
-       #:configure-flags '("--host=avr")))
-    (native-inputs `(("avr-binutils" ,(make-avr-binutils))
-                     ("avr-gcc" ,(make-avr-gcc #:xgcc xgcc))))
+     '(#:target "avr"
+       #:out-of-source? #t
+       ;; Avoid including itself as this package is a target input and cannot
+       ;; use the normal cross compilation inputs.
+       #:implicit-cross-inputs? #f))
+    (native-inputs `(("cross-binutils" ,xbinutils)
+                     ("cross-gcc" ,xgcc)))
     (home-page "https://www.nongnu.org/avr-libc/")
     (synopsis "AVR C Library")
     (description
@@ -131,7 +138,7 @@ for use with GCC on Atmel AVR microcontrollers.")
 
 (define* (make-avr-toolchain/implementation #:key (xgcc gcc))
   (let ((avr-binutils (make-avr-binutils))
-        (avr-libc (make-avr-libc #:xgcc xgcc))
+        (avr-libc (make-avr-libc #:xgcc (cross-gcc "avr" #:xgcc xgcc)))
         (avr-gcc (make-avr-gcc #:xgcc xgcc)))
     ;; avr-libc checks the compiler version and passes "--enable-device-lib"
     ;; for avr-gcc > 5.1.0.  It wouldn't install the library for atmega32u4

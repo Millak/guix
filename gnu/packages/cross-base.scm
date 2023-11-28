@@ -28,6 +28,7 @@
 
 (define-module (gnu packages cross-base)
   #:use-module (gnu packages)
+  #:use-module (gnu packages avr)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages base)
   #:use-module (gnu packages linux)
@@ -699,6 +700,9 @@ returned."
                              '())
                        ,@(package-inputs libc) ;FIXME: static-bash
                        ,@(package-native-inputs libc)))))
+   ((? target-avr?)
+    (make-avr-libc #:xbinutils xbinutils
+                   #:xgcc xgcc))
    (else #f)))
 
 
