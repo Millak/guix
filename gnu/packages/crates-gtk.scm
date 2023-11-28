@@ -2702,6 +2702,34 @@ library.")
     (description "This package provides FFI bindings of GTK 4.")
     (license license:expat)))
 
+(define-public rust-libadwaita-0.5
+  (package
+    (name "rust-libadwaita")
+    (version "0.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libadwaita" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "174pzn9dwsk8ikvrhx13vkh0zrpvb3rhg9yd2q5d2zjh0q6fgrrg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-gdk-pixbuf" ,rust-gdk-pixbuf-0.18)
+                       ("rust-gdk4" ,rust-gdk4-0.7)
+                       ("rust-gio" ,rust-gio-0.18)
+                       ("rust-glib" ,rust-glib-0.18)
+                       ("rust-gtk4" ,rust-gtk4-0.7)
+                       ("rust-libadwaita-sys" ,rust-libadwaita-sys-0.5)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-pango" ,rust-pango-0.18))))
+    (native-inputs (list pkg-config))
+    (inputs (list libadwaita))
+    (home-page "https://world.pages.gitlab.gnome.org/Rust/libadwaita-rs")
+    (synopsis "Rust bindings for libadwaita")
+    (description "Rust bindings for libadwaita.")
+    (license license:expat)))
+
 (define-public rust-libadwaita-sys-0.5
   (package
     (name "rust-libadwaita-sys")
