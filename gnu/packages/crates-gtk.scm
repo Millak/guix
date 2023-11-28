@@ -2062,6 +2062,36 @@
     (description "FFI bindings to libgraphene-1.0.")
     (license license:expat)))
 
+(define-public rust-gsk4-0.7
+  (package
+    (name "rust-gsk4")
+    (version "0.7.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gsk4" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0zhzs2dkgiinhgc11akpn2harq3x5n1iq21dnc4h689g3lsqx58d"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; `Errors` doesn't implement `std::fmt::Display`
+       #:cargo-inputs (("rust-cairo-rs" ,rust-cairo-rs-0.18)
+                       ("rust-gdk4" ,rust-gdk4-0.7)
+                       ("rust-glib" ,rust-glib-0.18)
+                       ("rust-graphene-rs" ,rust-graphene-rs-0.18)
+                       ("rust-gsk4-sys" ,rust-gsk4-sys-0.7)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-pango" ,rust-pango-0.18))
+       #:cargo-development-inputs
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
+    (native-inputs (list pkg-config))
+    (inputs (list gtk))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "Rust bindings of the GSK 4 library")
+    (description "Rust bindings of the GSK 4 library.")
+    (license license:expat)))
+
 (define-public rust-gsk4-sys-0.7
   (package
     (name "rust-gsk4-sys")
