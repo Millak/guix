@@ -1069,6 +1069,28 @@ EUI-64, also known as MAC-48 media access control addresses.")
        (base32
         "1gdchvay0k0g931b2ki33mkfixcw4radk5b8sqsm29rahxg3v8ir"))))))
 
+(define-public rust-gl-loader-0.1
+  (package
+    (name "rust-gl-loader")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gl_loader" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lwr1gd7hrb2nk67zw4pc04vl4h868r5a7846zjr0548bzfrcbg3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ; missing `gl` crate
+       #:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-libc" ,rust-libc-0.2))))
+    (home-page "https://github.com/maeln/gl_loader")
+    (synopsis "Simple OpenGL function pointer loader based on Glad")
+    (description
+     "Simple @code{OpenGL} function pointer loader based on Glad.")
+    (license license:cecill)))
+
 (define-public rust-gleam-0.6
   (package
     (name "rust-gleam")
