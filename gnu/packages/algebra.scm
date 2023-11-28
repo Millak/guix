@@ -15,6 +15,7 @@
 ;;; Copyright © 2020, 2021, 2023, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Lars-Dominik Braun <ldb@leibniz-psychology.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Mehmet Tekman <mtekman89@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -744,6 +745,20 @@ transform (DFT) in one or more dimensions, of arbitrary input size, and of
 both real and complex data (as well as of even/odd data---i.e. the discrete
 cosine/ sine transforms or DCT/DST).")
     (license license:gpl2+)))
+
+(define-public fftw-cmake
+  (package/inherit fftw
+    ;; Cmake compiling is experimental since 2017, and it is not clear if this
+    ;; build has the same target-specific optimizations as the fftw gnu build.
+    ;; See: https://fftw.org/release-notes.html
+    (name "fftw-cmake")
+    (build-system cmake-build-system)
+    (arguments (default-keyword-arguments '()
+                                          '()))
+    (description (string-append (package-description fftw)
+                  "  This CMake build offers the file
+FFTW3LibraryDepends.cmake required by some dependent packages, absent in the
+gnu build version."))))
 
 (define-public fftwf
   (package/inherit fftw
