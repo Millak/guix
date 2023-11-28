@@ -49,11 +49,13 @@ for TRIPLET."
   `((system . ,(cond ((target-hurd? triplet) "gnu")
                      ((target-linux? triplet) "linux")
                      ((target-mingw? triplet) "windows")
+                     ((target-avr? triplet) "none")
                      (#t (error "meson: unknown operating system"))))
     (cpu_family . ,(cond ((target-x86-32? triplet) "x86")
                          ((target-x86-64? triplet) "x86_64")
                          ((target-arm32? triplet) "arm")
                          ((target-aarch64? triplet) "aarch64")
+                         ((target-avr? triplet) "avr")
                          ((target-mips64el? triplet) "mips64")
                          ((target-powerpc? triplet)
                           (if (target-64bit? triplet)
@@ -66,6 +68,7 @@ for TRIPLET."
                   ((target-x86-64? triplet) "x86_64")
                   ((target-aarch64? triplet) "armv8-a")
                   ((target-arm32? triplet) "armv7")
+                  ((target-avr? triplet) "avr")
                   ;; According to #mesonbuild on OFTC, there does not appear
                   ;; to be an official-ish list of CPU types recognised by
                   ;; Meson, the "cpu" field is not used by Meson itself and
