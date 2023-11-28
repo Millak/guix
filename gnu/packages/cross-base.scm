@@ -202,21 +202,35 @@ base compiler and using LIBC (which may be either a libc package or #f.)"
 
                          #$@(if (target-avr? target)
                                 #~("--enable-multilib")
+                                #~())
+
+
+                         #$@(if (and libc (target-avr? target))
+                                #~((string-append "--with-native-system-header-dir="
+                                                  #$libc "/" #$target "/include"))
                                 #~()))
 
                    (remove
                      (lambda (flag)
                        (or (and #$libc
                                 (string-prefix? "--enable-languages" flag))
+                           (and #$libc
+                                #$(target-avr? target)
+                                (string-prefix? "--with-native-system-header-dir"
+                                                flag))
                            (and #$(target-avr? target)
                                 (string=? flag "--disable-multilib"))))
                      #$flags)))
         ((#:make-flags flags)
          (if libc
-             #~(let ((libc (assoc-ref %build-inputs "libc")))
+             #~(let ((libc (assoc-ref %build-inputs "libc"))
+                     (lib-prefix (if #$(target-avr? target)
+                                     (string-append "/" #$target)
+                                     "")))
                 ;; FLAGS_FOR_TARGET are needed for the target libraries to receive
                 ;; the -Bxxx for the startfiles.
-                 (cons (string-append "FLAGS_FOR_TARGET=-B" libc "/lib")
+                 (cons (string-append "FLAGS_FOR_TARGET=-B"
+                                      libc lib-prefix "/lib")
                        #$flags))
              flags))
         ((#:phases phases)
