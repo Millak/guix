@@ -60638,18 +60638,17 @@ to write.")
          (base32
           "1q6za3v78hsspisc197bg3g7rpc989qycy8ypr8ap8igv10ikl51"))))))
 
-(define-public rust-quick-xml-0.28
+(define-public rust-quick-xml-0.30
   (package
     (name "rust-quick-xml")
-    (version "0.28.2")
+    (version "0.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "quick-xml" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1lfr3512x0s0i9kbyglyzn0rq0i1bvd2mqqfi8gs685808rfgr8c"))))
+        (base32 "0mp9cqy06blsaka3r1n2p40ddmzhsf7bx37x22r5faw6hq753xpg"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -60672,6 +60671,20 @@ to write.")
     (description
      "This package provides a high performance XML reader and writer.")
     (license license:expat)))
+
+(define-public rust-quick-xml-0.28
+  (package
+    (inherit rust-quick-xml-0.30)
+    (name "rust-quick-xml")
+    (version "0.28.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "quick-xml" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1lfr3512x0s0i9kbyglyzn0rq0i1bvd2mqqfi8gs685808rfgr8c"))))))
 
 (define-public rust-quick-xml-0.27
   (package
