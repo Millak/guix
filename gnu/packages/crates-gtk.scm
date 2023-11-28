@@ -2438,8 +2438,37 @@
 library.")
     (license license:expat)))
 
+(define-public rust-pango-0.18
+  (package
+    (name "rust-pango")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pango" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1l82j97pg7hyq2qnflg3lzyza307y8jvi5h02q3340qxhd5yba86"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ; `Errors` doesn't implement `std::fmt::Display`
+       #:cargo-inputs (("rust-gio" ,rust-gio-0.18)
+                       ("rust-glib" ,rust-glib-0.18)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-pango-sys" ,rust-pango-sys-0.18))
+       #:cargo-development-inputs
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
+    (native-inputs (list pkg-config))
+    (inputs (list pango))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "Rust bindings for the Pango library")
+    (description "This package provides Rust bindings for the Pango library.")
+    (license license:expat)))
+
 (define-public rust-pango-0.17
   (package
+    (inherit rust-pango-0.18)
     (name "rust-pango")
     (version "0.17.10")
     (source
@@ -2449,7 +2478,6 @@ library.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0j0xj9yw81qivqb0y34j9c5azjsdspxp1zzpvxi1zri0qrplbgim"))))
-    (build-system cargo-build-system)
     (arguments
      `(;; FIXME: error[E0277]: `Errors` doesn't implement `std::fmt::Display`
        #:tests? #f
@@ -2461,15 +2489,7 @@ library.")
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-pango-sys" ,rust-pango-sys-0.17))
        #:cargo-development-inputs
-       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list pango))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "Rust bindings for the Pango library")
-    (description "This package provides Rust bindings for the Pango library.")
-    (license license:expat)))
+       (("rust-gir-format-check" ,rust-gir-format-check-0.1))))))
 
 (define-public rust-pango-0.15
   (package
