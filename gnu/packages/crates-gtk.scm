@@ -4,6 +4,7 @@
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
+;;; Copyright © 2023 Sergio Pastor Pérez <sergio.pastorperez@outlook.es>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1466,17 +1467,17 @@
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
-(define-public rust-glib-sys-0.17
+(define-public rust-glib-sys-0.18
   (package
     (name "rust-glib-sys")
-    (version "0.17.10")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "glib-sys" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1w64ppa12s9ky6gfdaqhq9w30ad6hskll812jb3sl2xsggmac2nq"))))
+    (version "0.18.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "glib-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "164qhsfmlzd5mhyxs8123jzbdfldwxbikfpq5cysj3lddbmy4g06"))))
     (build-system cargo-build-system)
     (arguments
      `(;; XXX: Tests are sensitive to the version of glib, even though
@@ -1488,14 +1489,25 @@
        #:cargo-development-inputs
        (("rust-shell-words" ,rust-shell-words-1)
         ("rust-tempfile" ,rust-tempfile-3))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list glib))
+    (native-inputs (list pkg-config))
+    (inputs (list glib))
     (home-page "https://gtk-rs.org/")
     (synopsis "FFI bindings to libglib-2.0")
     (description "This package provides FFI bindings to libglib-2.0.")
     (license license:expat)))
+
+(define-public rust-glib-sys-0.17
+  (package
+    (inherit rust-glib-sys-0.18)
+    (name "rust-glib-sys")
+    (version "0.17.10")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "glib-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1w64ppa12s9ky6gfdaqhq9w30ad6hskll812jb3sl2xsggmac2nq"))))))
 
 (define-public rust-glib-sys-0.15
   (package
