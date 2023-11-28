@@ -2599,6 +2599,39 @@
 library.")
     (license license:expat)))
 
+(define-public rust-gtk4-macros-0.7
+  (package
+    (name "rust-gtk4-macros")
+    (version "0.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gtk4-macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bw3cchiycf7dw1bw4p8946gv38azxy05a5w0ndgcmxnz6fc8znm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; Failed to initialize GTK
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-proc-macro-crate" ,rust-proc-macro-crate-1)
+                       ("rust-proc-macro-error" ,rust-proc-macro-error-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quick-xml" ,rust-quick-xml-0.30)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-gtk4" ,rust-gtk4-0.7)
+                       ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs (("rust-futures-channel" ,rust-futures-channel-0.3)
+                                   ("rust-futures-util" ,rust-futures-util-0.3)
+                                   ("rust-gtk4" ,rust-gtk4-0.7)
+                                   ("rust-trybuild2" ,rust-trybuild2-1))))
+    (native-inputs (list pkg-config))
+    (inputs (list gdk-pixbuf gtk))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "Macros helpers for GTK 4 bindings")
+    (description "Macros helpers for GTK 4 bindings.")
+    (license license:expat)))
+
 (define-public rust-gtk4-sys-0.7
   (package
     (name "rust-gtk4-sys")
