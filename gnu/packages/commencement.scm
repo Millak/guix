@@ -3443,7 +3443,11 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
   ;; built before gzip.
   (let ((grep (with-boot5 (package-with-bootstrap-guile grep))))
     (package/inherit grep
-                     (inputs (alist-delete "pcre" (package-inputs grep)))
+                     (arguments (substitute-keyword-arguments
+                                  (strip-keyword-arguments
+                                    '(#:configure-flags)
+                                    (package-arguments grep))))
+                     (inputs (alist-delete "pcre2" (package-inputs grep)))
                      (native-inputs `(("perl" ,perl-boot0))))))
 
 (define xz-final
