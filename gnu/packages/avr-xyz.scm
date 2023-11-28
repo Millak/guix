@@ -1,4 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2015, 2017 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
@@ -29,13 +32,17 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages check)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages avr)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages version-control)
+  #:use-module (gnu packages vim)
   #:use-module (gnu packages ruby))
 
 (define-public simavr
@@ -178,3 +185,40 @@ package contains the user-submitted projects and bootloaders for use with
 compatible microcontroller models, as well as the demos and the
 documentation.")
     (license license:expat)))           ;see LUFA/License.txt
+
+(define-public microscheme
+  (package
+    (name "microscheme")
+    (version "0.9.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ryansuchocki/microscheme")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "1bflwirpcd58bngbs6hgjfwxl894ni2gpdd4pj10pm2mjhyj5dgw"))
+       (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:parallel-build? #f             ; fails to build otherwise
+       #:tests? #f                      ; no tests
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure))
+       #:make-flags
+       (list (string-append "PREFIX=" (assoc-ref %outputs "out")))))
+    (native-inputs
+     (list clang cppcheck unzip xxd))
+    (home-page "https://github.com/ryansuchocki/microscheme/")
+    (synopsis "Scheme subset for Atmel microcontrollers")
+    (description
+     "Microscheme, or @code{(ms)} for short, is a functional programming
+language for the Arduino, and for Atmel 8-bit AVR microcontrollers in general.
+Microscheme is a subset of Scheme, in the sense that every valid @code{(ms)}
+program is also a valid Scheme program (with the exception of Arduino
+hardware-specific primitives).  The @code{(ms)} compiler performs function
+inlining, and features an aggressive tree-shaker, eliminating unused top-level
+definitions.  Microscheme has a robust @dfn{Foreign Function Interface} (FFI)
+meaning that C code may be invoked directly from (ms) programs.")
+    (license license:expat)))

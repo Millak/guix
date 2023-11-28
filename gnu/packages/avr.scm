@@ -1,9 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2016 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
-;;; Copyright © 2015, 2017, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 David Thompson <davet@gnu.org>
-;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -29,17 +27,12 @@
   #:use-module (guix memoization)
   #:use-module (guix utils)
   #:use-module (guix download)
-  #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
-  #:use-module (gnu packages check)
-  #:use-module (gnu packages compression)
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages flashing-tools)
   #:use-module (gnu packages gcc)
-  #:use-module (gnu packages llvm)
-  #:use-module (gnu packages vim)
   #:export (make-avr-toolchain))
 
 ;;; Commentary:
@@ -175,40 +168,3 @@ C++.")
 
 (define make-avr-toolchain
   (memoize make-avr-toolchain/implementation))
-
-(define-public microscheme
-  (package
-    (name "microscheme")
-    (version "0.9.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ryansuchocki/microscheme")
-             (commit (string-append "v" version))))
-       (sha256
-        (base32 "1bflwirpcd58bngbs6hgjfwxl894ni2gpdd4pj10pm2mjhyj5dgw"))
-       (file-name (git-file-name name version))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:parallel-build? #f             ; fails to build otherwise
-       #:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))
-       #:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out")))))
-    (native-inputs
-     (list clang cppcheck unzip xxd))
-    (home-page "https://github.com/ryansuchocki/microscheme/")
-    (synopsis "Scheme subset for Atmel microcontrollers")
-    (description
-     "Microscheme, or @code{(ms)} for short, is a functional programming
-language for the Arduino, and for Atmel 8-bit AVR microcontrollers in general.
-Microscheme is a subset of Scheme, in the sense that every valid @code{(ms)}
-program is also a valid Scheme program (with the exception of Arduino
-hardware-specific primitives).  The @code{(ms)} compiler performs function
-inlining, and features an aggressive tree-shaker, eliminating unused top-level
-definitions.  Microscheme has a robust @dfn{Foreign Function Interface} (FFI)
-meaning that C code may be invoked directly from (ms) programs.")
-    (license license:expat)))
