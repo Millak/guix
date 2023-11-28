@@ -201,6 +201,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/crates-graphics.scm		\
   %D%/packages/crates-gtk.scm			\
   %D%/packages/cross-base.scm			\
+  %D%/packages/cross-toolchain.scm		\
   %D%/packages/crypto.scm			\
   %D%/packages/cryptsetup.scm			\
   %D%/packages/cups.scm				\
