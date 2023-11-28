@@ -34,3 +34,6 @@
 
 (define-public gcc-cross-avr-toolchain
   (cross-gcc-toolchain "avr"))
+
+(define-public gcc-cross-i686-w64-mingw32-toolchain
+  (cross-gcc-toolchain "i686-w64-mingw32"))
