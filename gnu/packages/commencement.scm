@@ -1926,6 +1926,11 @@ exec " gcc "/bin/" program
   (let ((pkg (mesboot-package "grep-mesboot" grep)))
     (package
       (inherit pkg)
+      (arguments
+       (substitute-keyword-arguments
+         (strip-keyword-arguments
+           '(#:configure-flags)
+           (package-arguments pkg))))
       (native-inputs
        `(("sed" ,sed-mesboot)
          ,@(package-native-inputs pkg))))))
