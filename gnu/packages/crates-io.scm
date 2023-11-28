@@ -35,6 +35,7 @@
 ;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
+;;; Copyright © 2023 Sergio Pastor Pérez <sergio.pastorperez@outlook.es>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -65861,8 +65862,36 @@ and table-based tests.")
                (base32
                 "1wdd0ci0bn6fd5v5c19lhlqrpadk18fl4jzvh75b26616anlxdil"))))))
 
+(define-public rust-rstest-macros-0.17
+  (package
+    (name "rust-rstest-macros")
+    (version "0.17.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rstest_macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1a7w30h0g88v40p938skcbngsm6x6pf49gc369ydnznar2hs2319"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ; requires rust-artix-rt@2.7.0
+       #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-rustc-version" ,rust-rustc-version-0.4)
+                       ("rust-syn" ,rust-syn-1)
+                       ("rust-unicode-ident" ,rust-unicode-ident-1))))
+    (home-page "https://github.com/la10736/rstest")
+    (synopsis "Procedural macros for @code{rstest}.")
+    (description
+     "This package provides the procedural macro crate for
+@code{rstest}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rstest-macros-0.14
   (package
+    (inherit rust-rstest-macros-0.17)
     (name "rust-rstest-macros")
     (version "0.14.0")
     (source (origin
@@ -65872,7 +65901,6 @@ and table-based tests.")
               (sha256
                (base32
                 "0rlwp3r1dg3fl4f100wjd3ya7dhs23vpyqgf7vg5mac50s5fc5ah"))))
-    (build-system cargo-build-system)
     (arguments
      (list #:skip-build? #t
            #:cargo-inputs
@@ -65880,13 +65908,7 @@ and table-based tests.")
              ("rust-proc-macro2" ,rust-proc-macro2-1)
              ("rust-quote" ,rust-quote-1)
              ("rust-rustc-version" ,rust-rustc-version-0.4)
-             ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/la10736/rstest")
-    (synopsis "Procedural macros for @code{rstest}.")
-    (description
-     "This package provides the procedural macro crate for
-@code{rstest}.")
-    (license (list license:expat license:asl2.0))))
+             ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-rstest-macros-0.13
   (package
