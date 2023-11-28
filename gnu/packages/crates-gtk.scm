@@ -861,8 +861,47 @@
        (("rust-shell-words" ,rust-shell-words-0.1)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-gio-0.18
+  (package
+    (name "rust-gio")
+    (version "0.18.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gio" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1caryyr1sciqd25np4v4701nkb7h59gqzpwaiqjrp6g5x222y1ap"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ; `Errors` doesn't implement `std::fmt::Display`
+       #:cargo-inputs
+       (("rust-futures-channel" ,rust-futures-channel-0.3)
+        ("rust-futures-core" ,rust-futures-core-0.3)
+        ("rust-futures-io" ,rust-futures-io-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-gio-sys" ,rust-gio-sys-0.18)
+        ("rust-glib" ,rust-glib-0.18)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs
+       (("rust-futures" ,rust-futures-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-gir-format-check" ,rust-gir-format-check-0.1)
+        ("rust-serial-test" ,rust-serial-test-1))))
+    (native-inputs (list pkg-config))
+    (inputs (list glib))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "Rust bindings for the Gio library")
+    (description "Rust bindings for the Gio library.")
+    (license license:expat)))
+
 (define-public rust-gio-0.17
   (package
+    (inherit rust-gio-0.18)
     (name "rust-gio")
     (version "0.17.10")
     (source
@@ -872,7 +911,6 @@
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "02nkqpq1a6ikzhv5x4nyfvzx8zk5dkjsjm50ns4qdybwjf93x5x6"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; `Errors` doesn't implement `std::fmt::Display`
        #:cargo-inputs
@@ -892,15 +930,7 @@
        (("rust-futures" ,rust-futures-0.3)
         ("rust-futures-util" ,rust-futures-util-0.3)
         ("rust-gir-format-check" ,rust-gir-format-check-0.1)
-        ("rust-serial-test" ,rust-serial-test-1))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list glib))
-    (home-page "https://gtk-rs.org/")
-    (synopsis "Rust bindings for the Gio library")
-    (description "Rust bindings for the Gio library")
-    (license license:expat)))
+        ("rust-serial-test" ,rust-serial-test-1))))))
 
 (define-public rust-gio-0.15
   (package
