@@ -200,13 +200,18 @@ base compiler and using LIBC (which may be either a libc package or #f.)"
                                                   "/" #$target "/lib"))
                                 #~())
 
+
                          #$@(if (target-avr? target)
                                 #~("--enable-multilib")
                                 #~())
 
 
                          #$@(if (and libc (target-avr? target))
-                                #~((string-append "--with-native-system-header-dir="
+                                #~(;; By default GCC will attemp to compile
+                                   ;; some libraries for other languages (objc,
+                                   ;; fortran) but compilation fails for AVR.
+                                   "--enable-languages=c,c++"
+                                   (string-append "--with-native-system-header-dir="
                                                   #$libc "/" #$target "/include"))
                                 #~()))
 
