@@ -991,7 +991,7 @@ number generator")
     (name "mbedtls-apache")
     ;; XXX Check whether ‘-Wformat-signedness’ still breaks mbedtls-for-hiawatha
     ;; when updating.
-    (version "2.28.0")
+    (version "2.28.5")
     (source
      (origin
        (method git-fetch)
@@ -1000,7 +1000,7 @@ number generator")
              (commit (string-append "mbedtls-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0s37dsi29v7146fi9k4frvx5rz2snxdm6c3rwq2fvnca2r80hfjl"))))
+        (base32 "1jlkvvyigpjvv404b8vmx68f1v6g1h2zr6rd78dhc0xgqi018phs"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags

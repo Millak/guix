@@ -510,14 +510,14 @@ avoiding password prompts when X11 forwarding has already been setup.")
 (define-public libxkbcommon
   (package
     (name "libxkbcommon")
-    (version "1.4.1")
+    (version "1.6.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://xkbcommon.org/download/libxkbcommon-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0fbb2dyjvf71p42y2jmwdcylsvj03w52f5rb23c2d00rwahhfg4l"))))
+                "0awwz5pg9x5bj0d7dpg4a7bd4gl6k55mlpxwb12534fkrpn19p0f"))))
     (build-system meson-build-system)
     (inputs
      (list libx11
@@ -553,6 +553,19 @@ X11 (yet).")
     (license (license:x11-style "file://COPYING"
                                 "See 'COPYING' in the distribution."))
     (properties '((cpe-name . "xkbcommon")))))
+
+(define-public libxkbcommon-1.5
+  (package
+    (inherit libxkbcommon)
+    (version "1.5.0")
+    (source (origin
+              (inherit (package-source libxkbcommon))
+              (method url-fetch)
+              (uri (string-append "https://xkbcommon.org/download/libxkbcommon-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "05z08rpa464x8myjxddhix7jp9jcmakd7xrybx4hz8dwpg2123sn"))))))
 
 (define-public libfakekey
   (package
@@ -688,7 +701,7 @@ following the mouse.")
 (define-public pixman
   (package
     (name "pixman")
-    (version "0.40.0")
+    (version "0.42.2")
     (source
      (origin
        (method url-fetch)
@@ -697,7 +710,7 @@ following the mouse.")
          "https://www.cairographics.org/releases/pixman-"
          version ".tar.gz"))
        (sha256
-        (base32 "1z13n96m7x91j25qq9wlkxsbq04wfwjhw66ir17frna06zn0s83d"))
+        (base32 "0pk298iqxqr64vk3z6nhjwr6vjg1971zfrjkqy5r9zd2mppq057a"))
        (patches
         (search-patches
          "pixman-CVE-2016-5296.patch"))))
@@ -722,7 +735,7 @@ rasterisation.")
 (define-public libdrm
   (package
     (name "libdrm")
-    (version "2.4.114")
+    (version "2.4.117")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -730,7 +743,7 @@ rasterisation.")
                     version ".tar.xz"))
               (sha256
                (base32
-                "09nhk3jx3qzggl5vyii3yh4zm0npjqsbxhzvxrg2xla77a2cyj9h"))))
+                "0ar4c4ikcbm1s4sg09ld406izq5s1yk7b2n0mmvql77bwdlqv252"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags
@@ -744,6 +757,16 @@ rasterisation.")
              (_ ''()))
            #:phases
            #~(modify-phases %standard-phases
+               ;; A typo in a previous upstream commit disabled building
+               ;; libdrm_intel by default on supported platforms.  This was
+               ;; fixed by the following change in upstream commit
+               ;; 8a933c778a0eb36526bf3fc8a289e25add9ff8b0.
+               ;; TODO: Remove on next update of libdrm.
+               (add-after 'unpack 'build-intel-by-default
+                 (lambda _
+                   (substitute* "meson.build"
+                     (("system\\(\\)\\.startswith")
+                      "cpu_family().startswith"))))
                (replace 'check
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests?

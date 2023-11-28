@@ -267,7 +267,7 @@ also known as DXTn or DXTC) for Mesa.")
 (define-public mesa
   (package
     (name "mesa")
-    (version "23.1.4")
+    (version "23.2.1")
     (source
       (origin
         (method url-fetch)
@@ -277,7 +277,7 @@ also known as DXTn or DXTC) for Mesa.")
                                   "mesa-" version ".tar.xz")))
         (sha256
          (base32
-          "0n89l7lvawh85hq2a7g5pp5v017s03qs3n4hbbff6rs8p5zs2qbj"))))
+          "1k61pgw0vcjrlb4299q98cy7iqmk2r7jmb5ika91z01dzhb0dpk4"))))
     (build-system meson-build-system)
     (propagated-inputs
      ;; The following are in the Requires.private field of gl.pc.
@@ -754,10 +754,14 @@ OpenGL graphics API.")
       #~(modify-phases %standard-phases
           (add-before 'configure 'patch-paths
             (lambda* (#:key inputs #:allow-other-keys)
-              (let ((mesa (dirname (search-input-file inputs "lib/libGL.so"))))
+              (let ((mesa-lib
+                     (lambda (file)
+                       (search-input-file inputs (string-append "lib/" file)))))
                 (substitute* (find-files "." "\\.[ch]$")
-                  (("libGL.so.1") (string-append mesa "/libGL.so.1"))
-                  (("libEGL.so.1") (string-append mesa "/libEGL.so.1")))))))))
+                  (("libGL.so.1") (mesa-lib "libGL.so.1"))
+                  (("libEGL.so.1") (mesa-lib "libEGL.so.1"))
+                  (("libGLESv1_CM.so.1") (mesa-lib "libGLESv1_CM.so.1"))
+                  (("libGLESv2.so.2") (mesa-lib "libGLESv2.so.2")))))))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config python))

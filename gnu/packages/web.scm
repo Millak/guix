@@ -8022,8 +8022,7 @@ derivation by David Revoy from the original MonsterID by Andreas Gohr.")
 (define-public nghttp2
   (package
     (name "nghttp2")
-    (version "1.49.0")
-    (replacement nghttp2-1.57)
+    (version "1.58.0")
     (source
      (origin
        (method url-fetch)
@@ -8032,7 +8031,7 @@ derivation by David Revoy from the original MonsterID by Andreas Gohr.")
                            "nghttp2-" version ".tar.xz"))
        (sha256
         (base32
-         "0vm692c7q2wc4xxz8c41nr8jps2fkwf51xp8fb233cghpf9d9kxh"))))
+         "1q4ps8acr7nyia7mf2z11m0yh3fn1imhyv855j3xjbx91l2a6s2a"))))
     (build-system gnu-build-system)
     (outputs (list "out"
                    "lib"))              ; only libnghttp2
@@ -8133,19 +8132,6 @@ compressed JSON header blocks.
                    ;; Convert to tuples for a more reliable check.
                    (("print \\(ver >= '3\\.8'\\)")
                     "print (tuple(map(int, ver.split('.'))) >= (3,8))")))))))))))
-
-(define-public nghttp2-1.57
-  (package
-    (inherit nghttp2)
-    (version "1.57.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/nghttp2/nghttp2/"
-                                  "releases/download/v" version "/"
-                                  "nghttp2-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0n598w7w8rqdqiay2fad3a11253hibakan5c4vjkpx09648v044j"))))))
 
 (define-public hpcguix-web
   (package
