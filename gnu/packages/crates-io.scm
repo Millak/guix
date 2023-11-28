@@ -65740,8 +65740,34 @@ contains the API endpoint response objects.")
                                    ("rust-rand-hc" ,rust-rand-hc-0.2)
                                    ("rust-serde-json" ,rust-serde-json-1))))))
 
+(define-public rust-rstest-0.17
+  (package
+    (name "rust-rstest")
+    (version "0.17.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rstest" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0qnrx40c05ziz2sxhrj0i4pamvlip8cx7w62439qr1wils3b86yy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ; requires rust-artix-rt@2.7.0
+       #:cargo-inputs (("rust-futures" ,rust-futures-0.3)
+                       ("rust-futures-timer" ,rust-futures-timer-3)
+                       ("rust-rstest-macros" ,rust-rstest-macros-0.17)
+                       ("rust-rustc-version" ,rust-rustc-version-0.4))))
+    (home-page "https://github.com/la10736/rstest")
+    (synopsis "Rust fixture based test framework")
+    (description
+     "@code{rstest} uses procedural macros to help you write fixtures
+and table-based tests.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rstest-0.15
   (package
+    (inherit rust-rstest-0.17)
     (name "rust-rstest")
     (version "0.15.0")
     (source
@@ -65751,20 +65777,13 @@ contains the API endpoint response objects.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32 "0c5r8wimr2fv3x25dbb99rk165lzcsz6jlpv7xk2ny99rikdrjg9"))))
-    (build-system cargo-build-system)
     (arguments
      (list #:skip-build? #t
            #:cargo-inputs
            `(("rust-futures" ,rust-futures-0.3)
              ("rust-futures-timer" ,rust-futures-timer-3)
              ("rust-rstest-macros" ,rust-rstest-macros-0.14)
-             ("rust-rustc-version" ,rust-rustc-version-0.3))))
-    (home-page "https://github.com/la10736/rstest")
-    (synopsis "Rust fixture based test framework")
-    (description
-     "@code{rstest} uses procedural macros to help you write fixtures
-and table-based tests.")
-    (license (list license:expat license:asl2.0))))
+             ("rust-rustc-version" ,rust-rustc-version-0.3))))))
 
 (define-public rust-rstest-0.13
   (package
