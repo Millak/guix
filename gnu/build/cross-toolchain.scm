@@ -48,6 +48,12 @@
   ;; Search path for target headers when cross-compiling.
   (map (cut string-append "CROSS_" <>) %gcc-include-paths))
 
+(define* (patch-genmultilib-shebang #:key inputs native-inputs #:allow-other-keys)
+  "Patch-shebang in the gcc/genmultilib file doesn't work as it contains several
+scripts inside, each with a #!/bin/sh that needs patching."
+  (substitute* "gcc/genmultilib"
+    (("#!/bin/sh") (string-append "#!" (which "sh")))))
+
 (define* (make-cross-binutils-visible #:key outputs inputs target
                                       #:allow-other-keys)
   "Create symlinks for 'as', 'nm', and 'ld' in the \"out\" output, under
@@ -173,6 +179,8 @@ C_*INCLUDE_PATH."
   "Modify PHASES to include everything needed to build a cross-GCC for TARGET,
 a target triplet."
   (modify-phases phases
+    (add-after 'unpack 'patch-genmultilib-shebang
+      patch-genmultilib-shebang)
     (add-before 'configure 'set-cross-path
       ;; This mingw32 target checking logic should match that of target-mingw?
       ;; in (guix utils), but (guix utils) is too large too copy over to the

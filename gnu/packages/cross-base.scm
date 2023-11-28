@@ -197,12 +197,19 @@ base compiler and using LIBC (which may be either a libc package or #f.)"
                                 #~((string-append "--with-toolexeclibdir="
                                                   (assoc-ref %outputs "lib")
                                                   "/" #$target "/lib"))
+                                #~())
+
+                         #$@(if (target-avr? target)
+                                #~("--enable-multilib")
                                 #~()))
 
-                   #$(if libc
-                         flags
-                         #~(remove (cut string-match "--enable-languages.*" <>)
-                                   #$flags))))
+                   (remove
+                     (lambda (flag)
+                       (or (and #$libc
+                                (string-prefix? "--enable-languages" flag))
+                           (and #$(target-avr? target)
+                                (string=? flag "--disable-multilib"))))
+                     #$flags)))
         ((#:make-flags flags)
          (if libc
              #~(let ((libc (assoc-ref %build-inputs "libc")))

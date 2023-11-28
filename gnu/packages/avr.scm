@@ -77,18 +77,7 @@
                     (format #t
                             "environment variable `CPLUS_INCLUDE_PATH' \
 changed to ~a~%"
-                            (getenv "CPLUS_INCLUDE_PATH")))))
-              ;; Without a working multilib build, the resulting GCC lacks
-              ;; support for nearly every AVR chip.
-              (add-after 'unpack 'fix-genmultilib
-                (lambda _
-                  ;; patch-shebang doesn't work here because there are
-                  ;; actually several scripts inside this script, each with
-                  ;; a #!/bin/sh that needs patching.
-                  (substitute* "gcc/genmultilib"
-                    (("#!/bin/sh") (string-append "#!" (which "sh"))))))))
-         ((#:configure-flags flags)
-          #~(delete "--disable-multilib" #$flags))))
+                            (getenv "CPLUS_INCLUDE_PATH")))))))))
       (native-search-paths
        (list (search-path-specification
               (variable "CROSS_C_INCLUDE_PATH")
