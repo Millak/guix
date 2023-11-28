@@ -3942,7 +3942,7 @@ buffers.")
 (define-public igt-gpu-tools
   (package
     (name "igt-gpu-tools")
-    (version "1.27.1")
+    (version "1.28")
     (source
      (origin
        (method git-fetch)
@@ -3951,9 +3951,7 @@ buffers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0d6jsj77qddccv0vfmqmbw3k2prvxzvmgc8zdi83gdi3wpp5i7zd"))
-       (patches
-        (search-patches "igt-gpu-tools-Use-libproc2.patch"))))
+        (base32 "15mnsgzlpd4jkr2zy3jzx0b021g89fa61b8sdm8rjp27gxqkl8mm"))))
     (build-system meson-build-system)
     (arguments
      `(#:tests? #f              ; many of the tests try to load kernel modules
@@ -3971,7 +3969,8 @@ buffers.")
            libdrm
            libpciaccess
            libunwind
-           procps))
+           procps
+           python))
     (native-inputs
      (list bison flex pkg-config python-docutils))
     (home-page "https://gitlab.freedesktop.org/drm/igt-gpu-tools")
