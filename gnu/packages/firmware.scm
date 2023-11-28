@@ -1256,6 +1256,7 @@ OVERRIDE.H, to also override the corresponding layout include file."
       (arguments
        (list
         #:tests? #f                   ;no test suite
+        #:target "avr"
         #:make-flags
         #~(list (string-append "LAYOUT=" #$layout)
                 ;; Simplify the output directory name.
@@ -1281,7 +1282,7 @@ OVERRIDE.H, to also override the corresponding layout include file."
                   (install-file "firmware.hex" #$output)
                   (install-file "firmware.eep" #$output)
                   (install-file "firmware--layout.html" #$output)))))))
-      (native-inputs (list (make-avr-toolchain) python))
+      (native-inputs (list python))
       (home-page "https://www.ergodox.io")
       (synopsis "Firmware for the ErgoDox keyboard")
       (description (format #f "This package contains the original firmware for
