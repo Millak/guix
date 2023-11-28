@@ -9,6 +9,7 @@
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
+;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -610,74 +611,78 @@ the base compiler.  Use XBINUTILS as the associated cross-Binutils."
                       (xbinutils (cross-binutils target))
                       (xheaders (cross-kernel-headers target)))
   "Return LIBC cross-built for TARGET, a GNU triplet. Use XGCC and XBINUTILS
-and the cross tool chain."
-  (if (target-mingw? target)
-      (let ((machine (substring target 0 (string-index target #\-))))
-        (make-mingw-w64 machine
-                        #:xgcc xgcc
-                        #:xbinutils xbinutils))
-      (package
-        (inherit libc)
-        (name (string-append "glibc-cross-" target))
-        (arguments
-         (substitute-keyword-arguments
-             `( ;; Disable stripping (see above.)
-               #:strip-binaries? #f
+and the cross tool chain.  If TARGET doesn't have a standard C library #f is
+returned."
+  (match target
+   ((? target-mingw?)
+    (let ((machine (substring target 0 (string-index target #\-))))
+      (make-mingw-w64 machine
+                      #:xgcc xgcc
+                      #:xbinutils xbinutils)))
+   ((or (? target-linux?) (? target-hurd?))
+    (package
+      (inherit libc)
+      (name (string-append "glibc-cross-" target))
+      (arguments
+       (substitute-keyword-arguments
+         `(;; Disable stripping (see above.)
+           #:strip-binaries? #f
 
-               ;; This package is used as a target input, but it should not have
-               ;; the usual cross-compilation inputs since that would include
-               ;; itself.
-               #:implicit-cross-inputs? #f
+           ;; This package is used as a target input, but it should not have
+           ;; the usual cross-compilation inputs since that would include
+           ;; itself.
+           #:implicit-cross-inputs? #f
 
-               ;; We need SRFI 26.
-               #:modules ((guix build gnu-build-system)
-                          (guix build utils)
-                          (srfi srfi-26))
+           ;; We need SRFI 26.
+           #:modules ((guix build gnu-build-system)
+                      (guix build utils)
+                      (srfi srfi-26))
 
-               ,@(package-arguments libc))
-           ((#:configure-flags flags)
-            `(cons ,(string-append "--host=" target)
-                   ,(if (target-hurd? target)
-                        `(append (list "--disable-werror"
-                                       ,@%glibc/hurd-configure-flags)
-                                 ,flags)
-                        flags)))
-           ((#:phases phases)
-            `(modify-phases ,phases
-               (add-before 'configure 'set-cross-kernel-headers-path
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (let* ((kernel (assoc-ref inputs "kernel-headers"))
-                          (cpath (string-append kernel "/include")))
-                     (for-each (cut setenv <> cpath)
-                               ',%gcc-cross-include-paths)
-                     (setenv "CROSS_LIBRARY_PATH"
-                             (string-append kernel "/lib")) ; for Hurd's libihash
-                     #t)))
-               ,@(if (target-hurd? target)
-                     '((add-after 'install 'augment-libc.so
-                         (lambda* (#:key outputs #:allow-other-keys)
-                           (let* ((out (assoc-ref outputs "out")))
-                             (substitute* (string-append out "/lib/libc.so")
-                               (("/[^ ]+/lib/libc.so.0.3")
-                                (string-append out "/lib/libc.so.0.3"
-                                               " libmachuser.so libhurduser.so"))))
-                           #t)))
-                     '())))))
+           ,@(package-arguments libc))
+         ((#:configure-flags flags)
+          `(cons ,(string-append "--host=" target)
+                 ,(if (target-hurd? target)
+                      `(append (list "--disable-werror"
+                                     ,@%glibc/hurd-configure-flags)
+                               ,flags)
+                      flags)))
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (add-before 'configure 'set-cross-kernel-headers-path
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (let* ((kernel (assoc-ref inputs "kernel-headers"))
+                        (cpath (string-append kernel "/include")))
+                   (for-each (cut setenv <> cpath)
+                             ',%gcc-cross-include-paths)
+                   (setenv "CROSS_LIBRARY_PATH"
+                              (string-append kernel "/lib")) ; for Hurd's libihash
+                      #t)))
+             ,@(if (target-hurd? target)
+                   '((add-after 'install 'augment-libc.so
+                       (lambda* (#:key outputs #:allow-other-keys)
+                         (let* ((out (assoc-ref outputs "out")))
+                           (substitute* (string-append out "/lib/libc.so")
+                             (("/[^ ]+/lib/libc.so.0.3")
+                              (string-append out "/lib/libc.so.0.3"
+                                             " libmachuser.so libhurduser.so"))))
+                         #t)))
+                   '())))))
 
-        ;; Shadow the native "kernel-headers" because glibc's recipe expects the
-        ;; "kernel-headers" input to point to the right thing.
-        (propagated-inputs `(("kernel-headers" ,xheaders)))
+      ;; Shadow the native "kernel-headers" because glibc's recipe expects the
+      ;; "kernel-headers" input to point to the right thing.
+      (propagated-inputs `(("kernel-headers" ,xheaders)))
 
-        (native-inputs `(("cross-gcc" ,xgcc)
-                         ("cross-binutils" ,xbinutils)
-                         ,@(if (target-hurd? target)
-                               `(("cross-mig"
-                                  ,(cross-mig target
-                                              #:xgcc xgcc
-                                              #:xbinutils xbinutils)))
-                               '())
-                         ,@(package-inputs libc) ;FIXME: static-bash
-                         ,@(package-native-inputs libc))))))
+      (native-inputs `(("cross-gcc" ,xgcc)
+                       ("cross-binutils" ,xbinutils)
+                       ,@(if (target-hurd? target)
+                             `(("cross-mig"
+                                ,(cross-mig target
+                                            #:xgcc xgcc
+                                            #:xbinutils xbinutils)))
+                             '())
+                       ,@(package-inputs libc) ;FIXME: static-bash
+                       ,@(package-native-inputs libc)))))
+   (else #f)))
 
 
 ;;; Concrete cross tool chains are instantiated like this:
