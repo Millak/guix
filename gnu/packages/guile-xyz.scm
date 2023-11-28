@@ -3326,7 +3326,7 @@ from @code{tree-il}.")
 (define-public guile-hoot
   (package
     (name "guile-hoot")
-    (version "0.1.0")
+    (version "0.2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://spritely.institute/files/releases"
@@ -3334,7 +3334,7 @@ from @code{tree-il}.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1087rcj22hk6fcbqajm268f1q2c3kbizah8wy1z0aqkfliwc309g"))))
+                "1byshh7092q2yzqwpi59j4xjsppvp1xqnqsv94yv541qfm0plnc2"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags '("GUILE_AUTO_COMPILE=0"
