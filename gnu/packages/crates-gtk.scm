@@ -2599,6 +2599,40 @@
 library.")
     (license license:expat)))
 
+(define-public rust-gtk4-sys-0.7
+  (package
+    (name "rust-gtk4-sys")
+    (version "0.7.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gtk4-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1f2ylskyqkjdik9fij2m46pra4jagnif5xyalbxfk3334fmc9n2l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ; Can't find gtk/gtk-a11y.h from gtk+
+       #:cargo-inputs (("rust-cairo-sys-rs" ,rust-cairo-sys-rs-0.18)
+                       ("rust-gdk-pixbuf-sys" ,rust-gdk-pixbuf-sys-0.18)
+                       ("rust-gdk4-sys" ,rust-gdk4-sys-0.7)
+                       ("rust-gio-sys" ,rust-gio-sys-0.18)
+                       ("rust-glib-sys" ,rust-glib-sys-0.18)
+                       ("rust-gobject-sys" ,rust-gobject-sys-0.18)
+                       ("rust-graphene-sys" ,rust-graphene-sys-0.18)
+                       ("rust-gsk4-sys" ,rust-gsk4-sys-0.7)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-pango-sys" ,rust-pango-sys-0.18)
+                       ("rust-system-deps" ,rust-system-deps-6))
+       #:cargo-development-inputs (("rust-shell-words" ,rust-shell-words-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs (list pkg-config))
+    (inputs (list cairo gdk-pixbuf graphene gtk pango))
+    (home-page "https://gtk-rs.org/")
+    (synopsis "FFI bindings of GTK 4")
+    (description "This package provides FFI bindings of GTK 4.")
+    (license license:expat)))
+
 (define-public rust-pango-0.18
   (package
     (name "rust-pango")
