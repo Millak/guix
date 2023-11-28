@@ -4,7 +4,7 @@
 ;;; Copyright © 2019 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
-;;; Copyright © 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -227,9 +227,10 @@ unpacking."
 
   (when (string-null? import-path)
     (display "WARNING: The Go import path is unset.\n"))
-  (when (string-null? unpack-path)
-    (set! unpack-path import-path))
-  (let ((dest (string-append (getenv "GOPATH") "/src/" unpack-path)))
+  (let ((dest (string-append (getenv "GOPATH") "/src/"
+                             (if (string-null? unpack-path)
+                                 import-path
+                                 unpack-path))))
     (mkdir-p dest)
     (if (file-is-directory? source)
         (copy-recursively source dest #:keep-mtime? #t)
