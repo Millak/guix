@@ -168,6 +168,31 @@ C_*INCLUDE_PATH."
               (cons "LIBRARY_PATH" %gcc-include-paths))
     #t))
 
+(define* (set-cross-path/avr #:key inputs #:allow-other-keys)
+  (match (assoc-ref inputs "libc")
+    ((? string? libc)
+     (define (cross? x)
+       ;; Return #t if X is a cross-libc.
+       (string-prefix? libc x))
+
+     (let ((cpath (string-append libc "/avr/include")))
+       (for-each (cut setenv <> cpath)
+                 %gcc-cross-include-paths))
+
+     (setenv "CROSS_LIBRARY_PATH"
+             (string-append libc "/avr/lib"))
+
+     (for-each (lambda (var)
+                   (and=> (getenv var)
+                          (lambda (value)
+                            (let* ((path (search-path-as-string->list value))
+                                   (native-path (list->search-path-as-string
+                                                 (remove cross? path) ":")))
+                              (setenv var native-path)))))
+                 (cons "LIBRARY_PATH" %gcc-include-paths)))
+    ;; AVR sans-libc cross-compiler.
+    (else #t)))
+
 (define (install-strip . _)
   "Install a stripped GCC."
   ;; Unlike our 'strip' phase, this will do the right thing for
@@ -186,9 +211,11 @@ a target triplet."
       ;; in (guix utils), but (guix utils) is too large too copy over to the
       ;; build side entirely and for now we have no way to select variables to
       ;; copy over. See (gnu packages cross-base) for more details.
-      (if (string-suffix? "-mingw32" target)
-          (cut set-cross-path/mingw #:target target <...>)
-          set-cross-path))
+      (cond
+        ((string-suffix? "-mingw32" target)
+         (cut set-cross-path/mingw #:target target <...>))
+        ((string-prefix? "avr" target) set-cross-path/avr)
+        (#t set-cross-path)))
     (add-after 'install 'make-cross-binutils-visible
       (cut make-cross-binutils-visible #:target target <...>))
     (replace 'install install-strip)))
