@@ -8990,7 +8990,8 @@ management tools in userspace.")
                 "0hpzghf1a4cwawzhkiwdzin80h6hd09fskl77d5ppgc084yvj8x0"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/vishvananda/netlink"))
+     `(#:tests? #f      ; Tests depend on specific kernel modules.
+       #:import-path "github.com/vishvananda/netlink"))
     (native-inputs
      (list go-golang-org-x-sys go-netns))
     (home-page "https://github.com/vishvananda/netlink")
