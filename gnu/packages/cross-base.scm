@@ -249,6 +249,31 @@ base compiler and using LIBC (which may be either a libc package or #f.)"
         "-DTOOLDIR_BASE_PREFIX=\\\"../../../../\\\""))
      #t))
 
+(define (cross-gcc-search-paths target)
+  "Return list of GCC search path specifications needed for TARGET."
+  (cons (search-path-specification
+          (variable "CROSS_LIBRARY_PATH")
+          (files `("lib" "lib64"
+                   ,@(list (string-append target "/lib")
+                           (string-append target "/lib64")))))
+
+        (map (lambda (variable)
+               (search-path-specification
+                 (variable variable)
+
+                 ;; Add 'include/c++' here so that <cstdlib>'s
+                 ;; "#include_next <stdlib.h>" finds GCC's
+                 ;; <stdlib.h>, not libc's.
+                 (files (match variable
+                          ("CROSS_CPLUS_INCLUDE_PATH"
+                           `("include/c++" "include"
+                             ,@(list (string-append target "/include/c++")
+                                     (string-append target "/include"))))
+                          (_
+                           `("include"
+                             ,(string-append target "/include")))))))
+             %gcc-cross-include-paths)))
+
 (define* (cross-gcc target
                     #:key
                     (xgcc %xgcc)
@@ -341,22 +366,7 @@ target that libc."
     (inputs '())
 
     ;; Only search target inputs, not host inputs.
-    (search-paths (cons (search-path-specification
-                         (variable "CROSS_LIBRARY_PATH")
-                         (files '("lib" "lib64")))
-                        (map (lambda (variable)
-                               (search-path-specification
-                                (variable variable)
-
-                                ;; Add 'include/c++' here so that <cstdlib>'s
-                                ;; "#include_next <stdlib.h>" finds GCC's
-                                ;; <stdlib.h>, not libc's.
-                                (files (match variable
-                                         ("CROSS_CPLUS_INCLUDE_PATH"
-                                          '("include/c++" "include"))
-                                         (_
-                                          '("include"))))))
-                             %gcc-cross-include-paths)))
+    (search-paths (cross-gcc-search-paths target))
     (native-search-paths '())))
 
 (define* (cross-kernel-headers . args)
