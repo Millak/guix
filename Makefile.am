@@ -138,6 +138,7 @@ MODULES =					\
   guix/ipfs.scm					\
   guix/platform.scm                             \
   guix/platforms/arm.scm                        \
+  guix/platforms/avr.scm                        \
   guix/platforms/mips.scm                       \
   guix/platforms/powerpc.scm                    \
   guix/platforms/riscv.scm                      \
