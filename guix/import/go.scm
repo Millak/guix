@@ -7,6 +7,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -293,7 +294,10 @@ comment, or unknown) and is followed by the indicated data."
 
   ;; The following directives may all be used solo or in a block
   ;; RequireSpec = ModulePath Version newline .
-  (define-peg-pattern require all (and module-path version EOL))
+  (define-peg-pattern require all
+    (and module-path version
+         ;; We don't want the transitive dependencies.
+         (not-followed-by (and (* WS) "//" (* WS) "indirect")) EOL))
   (define-peg-pattern require-top body
     (and (ignore "require")
          (or (and block-start (* (or require block-line)) block-end) require)))
