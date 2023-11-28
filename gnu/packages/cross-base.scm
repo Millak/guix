@@ -355,6 +355,9 @@ target that libc."
                    ("libc" ,libc))
                  `(,@inputs
                    ("mingw-source" ,(package-source mingw-w64)))))
+            ((and libc (target-avr? target))
+             `(,@inputs
+               ("libc" ,libc)))
             (libc
              `(,@inputs
                ("libc" ,libc)
