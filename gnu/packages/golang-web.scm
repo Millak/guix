@@ -123,7 +123,8 @@ the parse trees produced by the html package.")
     (propagated-inputs
      (list go-github-com-jmespath-go-jmespath go-github-com-google-go-cmp-cmp))
     (home-page "https://github.com/aws/smithy-go")
-    (synopsis "Smithy code generators for Go")
+    (synopsis "@url{https://smithy.io/2.0/index.html,Smithy} code generators
+for Go")
     (description
      "Package smithy provides the core components for a Smithy SDK.")
     (license license:asl2.0)))
