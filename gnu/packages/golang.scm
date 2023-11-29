@@ -4437,33 +4437,6 @@ absolute \"path\" to it.")
       (description "Semver is a library for Semantic versioning written in Go.")
       (license license:expat))))
 
-(define-public go-cloud-google-com-go-compute-metadata
-  (package
-    (name "go-cloud-google-com-go-compute-metadata")
-    (version "0.81.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/googleapis/google-cloud-go")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "15jgynqb5pbxqbj3a7ii970yn4srsw1dbxzxnhpkfkmplalpgyh3"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:unpack-path "cloud.google.com/go"
-       #:import-path "cloud.google.com/go/compute/metadata"))
-    (home-page
-     "https://pkg.go.dev/cloud.google.com/go/compute/metadata")
-    (synopsis
-     "Go wrapper for Google Compute Engine metadata service")
-    (description
-     "This package provides access to Google Compute Engine (GCE) metadata and
-API service accounts for Go.")
-    (license license:asl2.0)))
-
 (define-public go-github-com-google-cadvisor
   (let ((commit "2ed7198f77395ee9a172878a0a7ab92ab59a2cfd")
         (revision "0"))

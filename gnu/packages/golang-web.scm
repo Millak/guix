@@ -9,6 +9,7 @@
 ;;; Copyright © 2020 raingloom <raingloom@riseup.net>
 ;;; Copyright © 2020-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Collin J. Doering <collin@rekahsoft.ca>
+;;; Copyright © 2021 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Adam Kandur <kefironpremise@gmail.com>
@@ -55,6 +56,32 @@
 ;;;
 ;;; Code:
 
+(define-public go-cloud-google-com-go-compute-metadata
+  (package
+    (name "go-cloud-google-com-go-compute-metadata")
+    (version "0.81.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/googleapis/google-cloud-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15jgynqb5pbxqbj3a7ii970yn4srsw1dbxzxnhpkfkmplalpgyh3"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:unpack-path "cloud.google.com/go"
+       #:import-path "cloud.google.com/go/compute/metadata"))
+    (home-page
+     "https://pkg.go.dev/cloud.google.com/go/compute/metadata")
+    (synopsis
+     "Go wrapper for Google Compute Engine metadata service")
+    (description
+     "This package provides access to Google Compute Engine (GCE) metadata and
+API service accounts for Go.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-andybalholm-cascadia
   (package
     (name "go-github-com-andybalholm-cascadia")
