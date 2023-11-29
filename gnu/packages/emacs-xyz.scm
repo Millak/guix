@@ -3329,7 +3329,7 @@ incrementally confined in Isearch manner.")
          (file-name (git-file-name name version))
          (sha256
           (base32 "1bls9j1ibw0npjapslbrh6nmlbn3d4ajhjygsqlf6h9qg12sxm3r"))))
-      (inputs (list emacs-s))
+      (propagated-inputs (list emacs-s))
       (build-system emacs-build-system)
       (home-page "https://codeberg.org/emacs-weirdware/dnt")
       (synopsis "Strip trackers from URLs")
