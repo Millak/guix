@@ -144,6 +144,32 @@ metrics (i.e. response time, bytes written, and http status code) from your
 application's http.Handlers.")
     (license license:expat)))
 
+(define-public go-github-com-gorilla-csrf
+  (package
+    (name "go-github-com-gorilla-csrf")
+    (version "1.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gorilla/csrf")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0iryq0z48yi7crfbd8jxyn7lh1gsglpiglvjgnf23bz6xfisssav"))))
+    (build-system go-build-system)
+    (propagated-inputs
+     `(("github.com/gorilla/securecookie" ,go-github-com-gorilla-securecookie)
+       ("github.com/pkg/errors" ,go-github-com-pkg-errors)))
+    (arguments
+     '(#:import-path "github.com/gorilla/csrf"))
+    (home-page "https://github.com/gorilla/csrf")
+    (synopsis "Cross Site Request Forgery (CSRF) prevention middleware")
+    (description
+     "Gorilla/csrf provides Cross Site Request Forgery (CSRF) prevention
+middleware for Go web applications and services.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-gorilla-css
   (package
     (name "go-github-com-gorilla-css")
