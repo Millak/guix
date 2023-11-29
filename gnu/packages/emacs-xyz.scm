@@ -34967,7 +34967,7 @@ services inside Emacs.")
          (sha256
           (base32 "01p4bfiasqxfmp9x1bxdc7763bh712d3vlp2014y8pzrwb1jqdaq"))))
       (build-system emacs-build-system)
-      (inputs (list emacs-debase))
+      (propagated-inputs (list emacs-debase))
       (home-page "https://codeberg.org/emacs-weirdware/discomfort")
       (synopsis "User interface to mount & unmount disks in Emacs.")
       (description "Discomfort is an interface to mount and unmount disks in Emacs, using UDisks2.")
