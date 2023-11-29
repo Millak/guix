@@ -4174,33 +4174,6 @@ loading algorithms.")
 is similar to Go's standard library @code{json} and @code{xml} package.")
     (license license:expat)))
 
-(define-public go-github-com-getsentry-raven-go
-  (let ((commit "5c24d5110e0e198d9ae16f1f3465366085001d92")
-        (revision "0"))
-    (package
-      (name "go-github-com-getsentry-raven-go")
-      (version (git-version "0.2.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/getsentry/raven-go")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0lvc376sq8r8jhy2v1m6rf1wyld61pvbk0x6j9xpg56ivqy69xs7"))))
-      (build-system go-build-system)
-      (arguments
-       '(#:import-path "github.com/getsentry/raven-go"))
-      (propagated-inputs
-       (list go-github-com-certifi-gocertifi go-github-com-pkg-errors))
-      (home-page "https://github.com/getsentry/raven-go")
-      (synopsis "Sentry client in Go")
-      (description "This package is a Go client API for the Sentry event/error
-logging system.")
-      (license license:bsd-3))))
-
 (define-public go-github-com-hashicorp-go-uuid
   (package
     (name "go-github-com-hashicorp-go-uuid")
