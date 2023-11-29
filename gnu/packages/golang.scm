@@ -3573,43 +3573,6 @@ per-goroutine.")
 @code{string} to @code{uint32} mapper.")
     (license license:bsd-3)))
 
-(define-public go-github-com-tdewolff-parse-v2
-  (package
-    (name "go-github-com-tdewolff-parse-v2")
-    (version "2.6.6")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/tdewolff/parse")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1dqki9ima079k9a3l72igmx5dml8qsl9z8rzw8a433f4gjhlv320"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/tdewolff/parse/v2"
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'regenerate-hash
-                 (lambda* (#:key import-path #:allow-other-keys)
-                   (for-each
-                    (lambda (dir)
-                      (with-directory-excursion
-                          (format #f "src/~a/~a" import-path dir)
-                        (make-file-writable "hash.go")
-                        (format #t "Generating `hash.go' for ~a...~%" dir)
-                        (invoke "go" "generate")))
-                    '("css" "html")))))))
-    (native-inputs
-     (list go-github-com-tdewolff-hasher
-           go-github-com-tdewolff-test))
-    (home-page "https://github.com/tdewolff/parse")
-    (synopsis "Go parsers for web formats")
-    (description
-     "This package contains several lexers and parsers written in Go.")
-    (license license:expat)))
-
 (define-public go-github-com-tj-docopt
   (package
     (name "go-github-com-tj-docopt")
