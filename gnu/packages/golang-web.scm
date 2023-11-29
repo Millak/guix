@@ -5,6 +5,7 @@
 ;;; Copyright © 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -160,6 +161,28 @@ the parse trees produced by the html package.")
      "Gorilla/Mux implements a request router and dispatcher for matching
 incoming requests with their respective handler.")
     (license license:bsd-3)))
+
+(define-public go-github-com-gorilla-websocket
+  (package
+    (name "go-github-com-gorilla-websocket")
+    (version "1.5.0")
+    (home-page "https://github.com/gorilla/websocket")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xrr6snvs9g1nzxxg05w4i4pq6k1xjljl5mvavd838qc468n118i"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/gorilla/websocket"))
+    (synopsis "Fast WebSocket implementation for Go")
+    (description "Gorilla WebSocket is a Go implementation of the WebSocket
+protocol.")
+    (license license:bsd-2)))
 
 (define-public go-github-com-puerkitobio-goquery
   (package
