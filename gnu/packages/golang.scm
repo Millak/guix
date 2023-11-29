@@ -9466,30 +9466,6 @@ synchronizing plain text:
 converts it into syntax highlighted HTML, ANSI-coloured text, etc.")
     (license license:expat)))
 
-(define-public go-github-com-puerkitobio-goquery
-  (package
-    (name "go-github-com-puerkitobio-goquery")
-    (version "1.7.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/PuerkitoBio/goquery")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0gh1d99l5xc9hvwa4j40pfq3y9vfyq52mnrz6bf1kw2r2zr2gbcc"))))
-    (build-system go-build-system)
-    (arguments
-     `(#:import-path "github.com/PuerkitoBio/goquery"))
-    (propagated-inputs
-     (list go-github-com-andybalholm-cascadia go-golang-org-x-net))
-    (home-page "https://github.com/PuerkitoBio/goquery")
-    (synopsis "Features similar to jQuery to the Go language")
-    (description "@code{goquery} brings a syntax and a set of features similar
-to jQuery to the Go language.")
-    (license license:bsd-3)))
-
 (define-public go-github-com-jmespath-go-jmespath
   (package
     (name "go-github-com-jmespath-go-jmespath")
