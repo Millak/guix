@@ -1232,10 +1232,11 @@ replacement for native @code{net/http} module.")
                     (string-append "// " all))
                    (("\\{\"phase\": \"invalid definition" all)
                     (string-append "// " all)))))))))
+      (native-inputs
+       (list go-github-com-stretchr-testify))
       (propagated-inputs
        (list go-github-com-xeipuuv-gojsonreference
-             go-github-com-xeipuuv-gojsonpointer
-             go-github-com-stretchr-testify))
+             go-github-com-xeipuuv-gojsonpointer))
       (home-page "https://github.com/xeipuuv/gojsonschema")
       (synopsis "Implementation of JSON Schema for Go")
       (description
