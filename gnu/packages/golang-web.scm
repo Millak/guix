@@ -6,9 +6,9 @@
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Giacomo Leidi <goodoldpaul@autistici.org>
-;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2022 jgart via Guix-patches via <guix-patches@gnu.org>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
+;;; Copyright © 2022, 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
@@ -630,6 +630,29 @@ On the server side, the library provides a HTTP handler wrapper implements
 SPNEGO Kerberos authentication, as well as a HTTP handler wrapper decodes
 Microsoft AD PAC authorization data.")
     (license license:asl2.0)))
+
+(define-public go-github-com-julienschmidt-httprouter
+  (package
+    (name "go-github-com-julienschmidt-httprouter")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/julienschmidt/httprouter")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a6sy0ysqknsjssjh7qg1dqn21xmj9a36c57nrk7srfmab4ffmk1"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/julienschmidt/httprouter"))
+    (home-page "https://github.com/julienschmidt/httprouter")
+    (synopsis "High performance HTTP request router")
+    (description
+     "Package @code{httprouter} is a trie based high performance HTTP request
+router.")
+    (license license:bsd-3)))
 
 (define-public go-github-com-microcosm-cc-bluemonday
   (package
