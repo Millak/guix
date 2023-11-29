@@ -4867,32 +4867,6 @@ the @code{c2go} tool at
 @url{https://github.com/andybalholm/c2go,https://github.com/andybalholm/c2go}.")
     (license license:expat)))
 
-(define-public go-github-com-gorilla-handlers
-  (package
-    (name "go-github-com-gorilla-handlers")
-    (version "1.5.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/gorilla/handlers")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "15gycdz9lkjnsvvichsbdf25vf6pi1sfn41khhz53iqf300l0w0s"))))
-    (build-system go-build-system)
-    (propagated-inputs
-     `(("github.com/felixge/httpsnoop" ,go-github-com-felixge-httpsnoop)))
-    (arguments
-     '(#:tests? #f                      ; Tries to download from the internet
-       #:import-path "github.com/gorilla/handlers"))
-    (home-page "https://github.com/gorilla/handlers")
-    (synopsis "Middleware for Go HTTP services and web applications")
-    (description "A collection of useful middleware for Go HTTP services
-and web applications.")
-    (license license:bsd-3)))
-
 (define-public go-github-com-gorilla-securecookie
   (package
     (name "go-github-com-gorilla-securecookie")
