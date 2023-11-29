@@ -5,6 +5,7 @@
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
+;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Giacomo Leidi <goodoldpaul@autistici.org>
@@ -702,6 +703,30 @@ router.")
     (synopsis "HTML sanitizer")
     (description "@code{bluemonday} is a HTML sanitizer implemented in Go.")
     (license license:bsd-3)))
+
+(define-public go-github-com-opentracing-opentracing-go
+  (package
+    (name "go-github-com-opentracing-opentracing-go")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/opentracing/opentracing-go")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04rgdwl29kimp2wnm4dycnzp7941hvpj6wym85x23c6fclacm94h"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/opentracing/opentracing-go"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/opentracing/opentracing-go")
+    (synopsis "OpenTracing API for Go")
+    (description "OpenTracing-Go is a Go implementation of the OpenTracing API.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-puerkitobio-goquery
   (package
