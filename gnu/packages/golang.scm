@@ -11436,16 +11436,6 @@ encrypting JSON Web Tokens (JWT).  It relies only on the standard library.")
     (home-page "https://github.com/dvsekhvalnov/jose2go")
     (license license:expat)))
 
-(define-public go-github-com-aws-aws-sdk-go-v2-service-ssooidc
-  (package
-    (inherit go-github-com-aws-aws-sdk-go-v2)
-    (name "go-github-com-aws-aws-sdk-go-v2-service-ssooidc")
-    (version "1.13.10")
-    (arguments
-     '(#:import-path "github.com/aws/aws-sdk-go-v2/service/ssooidc"
-       #:unpack-path "github.com/aws/aws-sdk-go-v2"))
-    (propagated-inputs (list go-github-com-aws-smithy-go))))
-
 (define-public go-github-com-aws-aws-sdk-go-v2-service-sts
   (package
     (inherit go-github-com-aws-aws-sdk-go-v2)
