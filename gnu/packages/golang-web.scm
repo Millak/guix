@@ -303,6 +303,8 @@ protocol.")
     (arguments
      '(#:import-path "github.com/jcmturner/gokrb5/v8"
        #:unpack-path "github.com/jcmturner/gokrb5"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-github-com-gorilla-sessions
            go-github-com-hashicorp-go-uuid
@@ -312,7 +314,6 @@ protocol.")
            go-github-com-jcmturner-goidentity-v6
            go-github-com-jcmturner-rpc-v2-mstypes
            go-github-com-jcmturner-rpc-v2-ndr
-           go-github-com-stretchr-testify
            go-golang-org-x-crypto
            go-golang-org-x-net))
     (home-page "https://github.com/jcmturner/gokrb5")
