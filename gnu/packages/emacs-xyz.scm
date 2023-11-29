@@ -34944,7 +34944,6 @@ on removable volumes in Linux.")
          (sha256
           (base32 "112vk1svnc6516vhs47sx5jw6bg8lwrc15l99dxj0sc313lxjy3k"))))
       (build-system emacs-build-system)
-      (inputs (list))
       (home-page "https://codeberg.org/emacs-weirdware/debase")
       (synopsis "D-Bus convenience layer for Emacs")
       (description
