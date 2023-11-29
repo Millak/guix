@@ -11,6 +11,7 @@
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -758,6 +759,46 @@ an interface to implement any other minifier.")
     (synopsis "Go parsers for web formats")
     (description
      "This package contains several lexers and parsers written in Go.")
+    (license license:expat)))
+
+(define-public go-github-com-valyala-fasthttp
+  (package
+    (name "go-github-com-valyala-fasthttp")
+    (version "1.39.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/valyala/fasthttp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12qwx0yk7wjj25v4fswgmj28r69gk94kqdmzavca8k9f0yznniz1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/valyala/fasthttp"
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key inputs #:allow-other-keys #:rest args)
+              (unless
+                  ;; Tests hang forever with gccgo.
+                  (false-if-exception (search-input-file inputs "/bin/gccgo"))
+                (apply (assoc-ref %standard-phases 'check) args)))))))
+    (propagated-inputs
+     (list go-github-com-andybalholm-brotli
+           go-github-com-klauspost-compress
+           go-github-com-valyala-bytebufferpool
+           go-github-com-valyala-tcplisten
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-sys))
+    (home-page "https://github.com/valyala/fasthttp")
+    (synopsis "Provides fast HTTP server and client API")
+    (description
+     "This package provides a Go module @code{fasthttp} which may be used as
+replacement for native @code{net/http} module.")
     (license license:expat)))
 
 (define-public go-gopkg-in-square-go-jose-v2
