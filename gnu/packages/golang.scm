@@ -10228,30 +10228,6 @@ additions.")
     (description "This package is a very simple wrapper around log/syslog")
     (license license:expat)))
 
-(define-public go-github-com-hjson-hjson-go
-  (package
-    (name "go-github-com-hjson-hjson-go")
-    (version "4.3.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/hjson/hjson-go")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "138vmbnrwzxf64cia27k407clrydvs2jx927dlv6ziydiqyvy7m3"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/hjson/hjson-go"))
-    (home-page "https://hjson.org/")
-    (synopsis "Human JSON implementation for Go")
-    (description "Hjson is a syntax extension to JSON.  It is intended to be
-used like a user interface for humans, to read and edit before passing the
-JSON data to the machine.")
-    (license license:expat)))
-
 (define-public go-golang-zx2c4-com-wireguard
   (package
     (name "go-golang-zx2c4-com-wireguard")
