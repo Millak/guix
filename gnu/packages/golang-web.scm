@@ -35,6 +35,32 @@
 ;;;
 ;;; Code:
 
+(define-public go-github-com-aymerick-douceur
+  (package
+    (name "go-github-com-aymerick-douceur")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aymerick/douceur/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hfysznib0fqbp8vqxpk0xiggpp0ayk2bsddi36vbg6f8zq5f81n"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/aymerick/douceur"))
+    (native-inputs
+     (list go-github-com-andybalholm-cascadia
+           go-github-com-gorilla-css
+           go-github-com-puerkitobio-goquery
+           go-golang-org-x-net))
+    (home-page "https://github.com/aymerick/douceur/")
+    (synopsis "CSS parser and inliner")
+    (description "This package provides a CSS parser and inliner.")
+    (license license:expat)))
+
 (define-public go-github-com-gorilla-css
   (package
     (name "go-github-com-gorilla-css")
