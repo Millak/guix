@@ -154,11 +154,11 @@ the parse trees produced by the html package.")
        (sha256
         (base32 "15gycdz9lkjnsvvichsbdf25vf6pi1sfn41khhz53iqf300l0w0s"))))
     (build-system go-build-system)
-    (propagated-inputs
-     `(("github.com/felixge/httpsnoop" ,go-github-com-felixge-httpsnoop)))
     (arguments
      '(#:tests? #f                      ; Tries to download from the internet
        #:import-path "github.com/gorilla/handlers"))
+    (propagated-inputs
+     (list go-github-com-felixge-httpsnoop))
     (home-page "https://github.com/gorilla/handlers")
     (synopsis "Middleware for Go HTTP services and web applications")
     (description "A collection of useful middleware for Go HTTP services and
