@@ -8962,33 +8962,6 @@ synchronizing plain text:
 converts it into syntax highlighted HTML, ANSI-coloured text, etc.")
     (license license:expat)))
 
-(define-public go-github-com-jmespath-go-jmespath
-  (package
-    (name "go-github-com-jmespath-go-jmespath")
-    (version "0.4.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/jmespath/go-jmespath")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "18zyr9nlywmwp3wpzcjxrgq9s9d2mmc6zg6xhsna00m663nkyc3n"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/jmespath/go-jmespath"))
-    (native-inputs
-     (list go-github-com-davecgh-go-spew go-github-com-pmezard-go-difflib
-           go-gopkg-in-yaml-v2))
-    (home-page "https://github.com/jmespath/go-jmespath")
-    (synopsis "Golang implementation of JMESPath")
-    (description
-     "This package implements JMESPath, a query language for JSON.  It
-transforms one JSON document into another through a JMESPath expression.")
-    (license license:asl2.0)))
-
 (define-public go-github-com-muesli-reflow-wordwrap
   (package
     (name "go-github-com-muesli-reflow-wordwrap")
