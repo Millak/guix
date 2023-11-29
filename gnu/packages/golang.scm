@@ -11686,31 +11686,6 @@ pcredential store, Pass, Secret Service, KDE Wallet, Encrypted File.")
 (define-public go-github-com-androiddnsfix
   (deprecated-package "go-github-com-androiddnsfix" go-github-com-mtibben-androiddnsfix))
 
-(define-public go-github-com-aws-aws-sdk-go
-  (package
-    (name "go-github-com-aws-aws-sdk-go")
-    (version "1.36.18")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/aws/aws-sdk-go")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "169mkkw1cff1px6326krwvfpfj07sb4y5rbn003gi4bk176h6ry9"))))
-    (build-system go-build-system)
-    (propagated-inputs
-     (list go-github-com-jmespath-go-jmespath))
-    (arguments
-     '(#:import-path "github.com/aws/aws-sdk-go"
-       #:phases %standard-phases))
-    (synopsis "The official AWS SDK for the Go programming language")
-    (description
-     "The official AWS SDK for the Go programming language.")
-    (home-page "https://github.com/aws/aws-sdk-go")
-    (license license:asl2.0)))
-
 (define-public go-gopkg-in-ini
   (package
     (name "go-gopkg-in-ini")

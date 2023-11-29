@@ -6,6 +6,7 @@
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020-2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021 Collin J. Doering <collin@rekahsoft.ca>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Adam Kandur <kefironpremise@gmail.com>
@@ -102,6 +103,33 @@ the parse trees produced by the html package.")
     (synopsis "Library to access Amazon Web Services (AWS)")
     (description
      "This is the official AWS SDK for the Go programming language.")
+    (license license:asl2.0)))
+
+;; XXX: This package might be a duplicate of go-github-com-aws-sdk, it's not
+;; in use anywhere. Keep it here for the farther review.
+(define-public go-github-com-aws-aws-sdk-go
+  (package
+    (name "go-github-com-aws-aws-sdk-go")
+    (version "1.36.18")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aws/aws-sdk-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "169mkkw1cff1px6326krwvfpfj07sb4y5rbn003gi4bk176h6ry9"))))
+    (build-system go-build-system)
+    (propagated-inputs
+     (list go-github-com-jmespath-go-jmespath))
+    (arguments
+     '(#:import-path "github.com/aws/aws-sdk-go"
+       #:phases %standard-phases))
+    (synopsis "The official AWS SDK for the Go programming language")
+    (description
+     "The official AWS SDK for the Go programming language.")
+    (home-page "https://github.com/aws/aws-sdk-go")
     (license license:asl2.0)))
 
 (define-public go-github-com-aws-aws-sdk-go-v2
