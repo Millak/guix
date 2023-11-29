@@ -1499,33 +1499,6 @@ not included in the Go standard library.")
 encryption and decryption methods.")
     (license license:asl2.0)))
 
-(define-public go-github-com-jcmturner-dnsutils-v2
-  (package
-    (name "go-github-com-jcmturner-dnsutils-v2")
-    (version "2.0.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/jcmturner/dnsutils")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "116zbgvfj88vv93fnapmmgyd5g8kzy774cdyzsnnzyzng92j61c9"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/jcmturner/dnsutils/v2"))
-    (propagated-inputs (list go-github-com-stretchr-testify))
-    (home-page "https://github.com/jcmturner/dnsutils")
-    (synopsis "Go library with DNS utils")
-    (description
-     "The dnsutils package provides a Go function to return a map of Service
-Records (SRV) in the order they should be used for a given service, protocol
-and name.  The order is determined by the records' priority and randomized
-selection based on their relative weighting.  This package is useful for
-network applications that require accessing services using SRV records.")
-    (license license:asl2.0)))
-
 (define-public go-github-com-jcmturner-goidentity-v6
   (package
     (name "go-github-com-jcmturner-goidentity-v6")
