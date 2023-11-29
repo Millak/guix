@@ -302,7 +302,7 @@ protocol.")
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/jcmturner/dnsutils/v2"))
-    (propagated-inputs
+    (native-inputs
      (list go-github-com-stretchr-testify))
     (home-page "https://github.com/jcmturner/dnsutils")
     (synopsis "Go library with DNS utils")
