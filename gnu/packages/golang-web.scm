@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
+;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
@@ -933,6 +934,32 @@ router.")
     (synopsis "HTML sanitizer")
     (description "@code{bluemonday} is a HTML sanitizer implemented in Go.")
     (license license:bsd-3)))
+
+(define-public go-github-com-nwidger-jsoncolor
+  (package
+    (name "go-github-com-nwidger-jsoncolor")
+    (version "0.3.0")
+    (home-page "https://github.com/nwidger/jsoncolor")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13rd146pnj7qm70r1333gyd1f61x40nafxlpvdxlci9h7mx8c5p8"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/nwidger/jsoncolor"))
+    (native-inputs
+     (list go-github-com-fatih-color))
+    (synopsis "Colorized JSON marshalling and encoding")
+    (description
+     "@code{jsoncolor} is a drop-in replacement for @code{encoding/json}'s
+@code{Marshal} and @code{MarshalIndent} functions and @code{Encoder} type
+which produce colorized output using github.com/fatih/color.")
+    (license license:expat)))
 
 (define-public go-github-com-opentracing-opentracing-go
   (package
