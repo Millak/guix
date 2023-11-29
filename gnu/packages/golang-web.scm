@@ -2,6 +2,7 @@
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
+;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
@@ -830,6 +831,30 @@ an interface to implement any other minifier.")
     (description
      "This package contains several lexers and parsers written in Go.")
     (license license:expat)))
+
+(define-public go-github-com-tv42-httpunix
+  (let ((commit "2ba4b9c3382c77e7b9ea89d00746e6111d142a22")
+        (revision "0"))
+    (package
+      (name "go-github-com-tv42-httpunix")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/tv42/httpunix")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0xbwpip2hsfhd2kd878jn5ndl8y1i9658lggha4x3xb5m1rsds9w"))))
+      (build-system go-build-system)
+      (arguments
+       '(#:import-path "github.com/tv42/httpunix"))
+      (home-page "https://github.com/tv42/httpunix")
+      (synopsis "Go library to talk HTTP over Unix domain sockets")
+      (description "This package is a Go library to talk HTTP over Unix domain
+sockets.")
+      (license license:expat))))
 
 (define-public go-github-com-valyala-fasthttp
   (package
