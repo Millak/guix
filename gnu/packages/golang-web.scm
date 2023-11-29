@@ -8,6 +8,7 @@
 ;;; Copyright © 2022 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
+;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -145,6 +146,31 @@ the parse trees produced by the html package.")
 metrics (i.e. response time, bytes written, and http status code) from your
 application's http.Handlers.")
     (license license:expat)))
+
+(define-public go-github-com-google-safehtml
+  (package
+    (name "go-github-com-google-safehtml")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/safehtml")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0j2xjy8xrk9y9k6bqpvimj84i6hg1wwsyvwsb0axhmp49cmnrp86"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/google/safehtml"))
+    (propagated-inputs `(("go-golang-org-x-text" ,go-golang-org-x-text)))
+    (home-page "https://github.com/google/safehtml")
+    (synopsis "Safe HTML for Go")
+    (description
+     "Package safehtml provides immutable string-like types which represent
+values that are guaranteed to be safe, by construction or by escaping or
+sanitization, to use in various HTML contexts and with various DOM APIs.")
+    (license license:bsd-3)))
 
 (define-public go-github-com-gorilla-context
   (let ((commit "08b5f424b9271eedf6f9f0ce86cb9396ed337a42")
