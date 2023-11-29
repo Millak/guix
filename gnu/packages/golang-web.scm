@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
+;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34,6 +35,28 @@
 ;;;
 ;;; Code:
 
+(define-public go-github-com-gorilla-css
+  (package
+    (name "go-github-com-gorilla-css")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gorilla/css")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "116fhy3n7bsq3psyn4pa0i4x9zy916kh1zxslmbbp0p9l4i7ysrj"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/gorilla/css/scanner"
+       #:unpack-path "github.com/gorilla/css"))
+    (home-page "https://github.com/gorilla/css/")
+    (synopsis "CSS3 tokenizer")
+    (description "This package provides a CSS3 tokenizer.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-gorilla-mux
   (package
     (name "go-github-com-gorilla-mux")
