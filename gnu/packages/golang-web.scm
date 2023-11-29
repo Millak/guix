@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
+;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
@@ -259,6 +260,29 @@ the parse trees produced by the html package.")
     (propagated-inputs
      (list go-github-com-go-jose-go-jose-v3
            go-golang-org-x-oauth2))))
+
+(define-public go-github-com-emicklei-go-restful
+  (package
+    (name "go-github-com-emicklei-go-restful")
+    (version "3.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/emicklei/go-restful")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0m1y5a6xr6hmdj77afrvyh2llkbhn1166lcrgis654shl8zs9qhz"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/emicklei/go-restful"))
+    (home-page "https://github.com/emicklei/go-restful")
+    (synopsis "Build REST-style web services using Go")
+    (description "This package provides @code{go-restful}, which helps
+developers to use @code{http} methods explicitly and in a way that's
+consistent with the HTTP protocol definition.")
+    (license license:expat)))
 
 (define-public go-github-com-felixge-httpsnoop
   (package

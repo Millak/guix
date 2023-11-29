@@ -4507,30 +4507,6 @@ sockets.")
       (description "Semver is a library for Semantic versioning written in Go.")
       (license license:expat))))
 
-(define-public go-github-com-emicklei-go-restful
-  (package
-    (name "go-github-com-emicklei-go-restful")
-    (version "3.4.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/emicklei/go-restful")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0m1y5a6xr6hmdj77afrvyh2llkbhn1166lcrgis654shl8zs9qhz"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/emicklei/go-restful"))
-    (home-page "https://github.com/emicklei/go-restful")
-    (synopsis "Build REST-style web services using Go")
-    (description "This package provides @code{go-restful}, which helps
-developers to use @code{http} methods explicitly and in a way that's consistent
-with the HTTP protocol definition.")
-    (license license:expat)))
-
 (define-public go-cloud-google-com-go-compute-metadata
   (package
     (name "go-cloud-google-com-go-compute-metadata")
