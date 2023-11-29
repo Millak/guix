@@ -306,6 +306,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/gobby.scm			\
   %D%/packages/golang.scm			\
   %D%/packages/golang-check.scm		\
+  %D%/packages/golang-web.scm	        	\
   %D%/packages/gperf.scm			\
   %D%/packages/gpodder.scm			\
   %D%/packages/gps.scm				\
