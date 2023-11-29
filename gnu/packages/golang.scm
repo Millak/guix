@@ -4867,31 +4867,6 @@ the @code{c2go} tool at
 @url{https://github.com/andybalholm/c2go,https://github.com/andybalholm/c2go}.")
     (license license:expat)))
 
-(define-public go-github-com-gorilla-securecookie
-  (package
-    (name "go-github-com-gorilla-securecookie")
-    (version "1.1.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/gorilla/securecookie")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "16bqimpxs9vj5n59vm04y04v665l7jh0sddxn787pfafyxcmh410"))))
-    (build-system go-build-system)
-    (arguments
-     '(#:import-path "github.com/gorilla/securecookie"))
-    (home-page "https://github.com/gorilla/securecookie")
-    (synopsis "Encodes and decodes authenticated and optionally encrypted
-cookie values")
-    (description
-     "Gorilla/securecookie encodes and decodes authenticated and optionally
-encrypted cookie values for Go web applications.")
-    (license license:bsd-3)))
-
 (define-public go-github-com-gorilla-sessions
   (package
     (name "go-github-com-gorilla-sessions")
