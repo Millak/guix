@@ -326,7 +326,7 @@ application's http.Handlers.")
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/francoispqt/gojay"))
-    (propagated-inputs
+    (native-inputs
      (list go-github-com-stretchr-testify))
     (synopsis "JSON encoder/decoder with powerful stream API for Golang")
     (description "GoJay is a performant JSON encoder/decoder for Golang.  It has
