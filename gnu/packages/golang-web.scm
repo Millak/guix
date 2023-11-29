@@ -2,6 +2,7 @@
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2022 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,6 +36,30 @@
 ;;;
 ;;; Code:
 
+(define-public go-github-com-andybalholm-cascadia
+  (package
+    (name "go-github-com-andybalholm-cascadia")
+    (version "1.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/andybalholm/cascadia")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zgc9fjkn7d66cnmgnmalr9lrq4ii1spap95pf2x1hln4pflib5s"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/andybalholm/cascadia"))
+    (native-inputs
+     (list go-golang-org-x-net))
+    (home-page "https://github.com/andybalholm/cascadia/")
+    (synopsis "CSS selectors for HTML")
+    (description "The Cascadia package implements CSS selectors for use with
+the parse trees produced by the html package.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-aymerick-douceur
   (package
     (name "go-github-com-aymerick-douceur")
