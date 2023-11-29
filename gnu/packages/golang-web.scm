@@ -444,6 +444,30 @@ SPNEGO Kerberos authentication, as well as a HTTP handler wrapper decodes
 Microsoft AD PAC authorization data.")
     (license license:asl2.0)))
 
+(define-public go-github-com-microcosm-cc-bluemonday
+  (package
+    (name "go-github-com-microcosm-cc-bluemonday")
+    (version "1.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/microcosm-cc/bluemonday")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "071ph097c1iwbcc33x6kblj9rxb1r4mp3qfkrj4qw5mg7qcqxydk"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/microcosm-cc/bluemonday"))
+    (propagated-inputs
+     (list go-github-com-chris-ramon-douceur
+           go-golang-org-x-net))
+    (home-page "https://github.com/microcosm-cc/bluemonday/")
+    (synopsis "HTML sanitizer")
+    (description "@code{bluemonday} is a HTML sanitizer implemented in Go.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-puerkitobio-goquery
   (package
     (name "go-github-com-puerkitobio-goquery")
