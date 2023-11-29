@@ -36542,7 +36542,7 @@ project root.")
          (sha256
           (base32 "19h3d12a99i7a92k3iw4zmjmw3dazsgnkc6j4965h033r1s40amx"))))
       (build-system emacs-build-system)
-      (inputs (list emacs-s))
+      (propagated-inputs (list emacs-s))
       (home-page "https://codeberg.org/emacs-weirdware/hyperspace")
       (synopsis "Get there from here")
       (description
