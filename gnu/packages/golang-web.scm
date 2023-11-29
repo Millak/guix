@@ -163,7 +163,8 @@ application's http.Handlers.")
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/google/safehtml"))
-    (propagated-inputs `(("go-golang-org-x-text" ,go-golang-org-x-text)))
+    (propagated-inputs
+     (list go-golang-org-x-text))
     (home-page "https://github.com/google/safehtml")
     (synopsis "Safe HTML for Go")
     (description
