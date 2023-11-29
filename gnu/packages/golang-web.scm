@@ -1,17 +1,17 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
-;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2022 jgart via Guix-patches via <guix-patches@gnu.org>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
-;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -282,6 +282,29 @@ the parse trees produced by the html package.")
      "Httpsnoop provides an easy way to capture http related
 metrics (i.e. response time, bytes written, and http status code) from your
 application's http.Handlers.")
+    (license license:expat)))
+
+(define-public go-github-com-go-chi-chi-v5
+  (package
+    (name "go-github-com-go-chi-chi-v5")
+    (version "5.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-chi/chi")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rzrsxz4xj0973c6nxklvq2vmg2m795snhk25836i0gnd1jnx79k"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/go-chi/chi/v5"))
+    (home-page "https://github.com/go-chi/chi")
+    (synopsis "Composable router for HTTP services written in Go")
+    (description
+     "@code{go-github-com-go-chi-chi-v5} is an HTTP router that lets the user
+decompose request handling into many smaller layers.")
     (license license:expat)))
 
 (define-public go-github-com-google-safehtml
