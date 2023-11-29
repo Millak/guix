@@ -26955,7 +26955,7 @@ JSON handling.  Load the parser backend you prefer!
 (define-public sbcl-nsymbols
   (package
    (name "sbcl-nsymbols")
-   (version "0.3.1")
+   (version "0.3.2")
    (source
     (origin
      (method git-fetch)
@@ -26964,7 +26964,7 @@ JSON handling.  Load the parser backend you prefer!
            (commit version)))
      (file-name (git-file-name "cl-nsymbols" version))
      (sha256
-      (base32 "14zdwsk2nrismj3xb54kfpgcdcsdzw3fyd7zwxlsir66lv9w9ji9"))))
+      (base32 "1awh793s4fwhddllfcjz4sbkxwinh5w54s3glxh7rv00c7skdjd6"))))
    (build-system asdf-build-system/sbcl)
    (native-inputs (list sbcl-lisp-unit2))
    (inputs (list cl-closer-mop))
