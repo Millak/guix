@@ -208,6 +208,32 @@ protocol.")
 to jQuery to the Go language.")
     (license license:bsd-3)))
 
+(define-public go-github-com-sourcegraph-jsonrpc2
+  (package
+    (name "go-github-com-sourcegraph-jsonrpc2")
+    (version "0.1.0")
+    (home-page "https://github.com/sourcegraph/jsonrpc2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dk0w32k96vxrwnmm24wqx337dn8ylch65qwrbc3wh7whw2xx71q"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/sourcegraph/jsonrpc2"))
+    (propagated-inputs
+     (list go-github-com-daviddengcn-go-colortext
+           go-github-com-gorilla-websocket
+           go-github-com-motemen-go-colorine))
+    (synopsis "Provides a client and server implementation of JSON-RPC 2.0")
+    (description
+     "Package jsonrpc2 provides a Go implementation of JSON-RPC 2.0.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
