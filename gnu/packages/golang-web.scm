@@ -104,6 +104,30 @@ the parse trees produced by the html package.")
      "This is the official AWS SDK for the Go programming language.")
     (license license:asl2.0)))
 
+(define-public go-github-com-aws-smithy-go
+  (package
+    (name "go-github-com-aws-smithy-go")
+    (version "1.13.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aws/smithy-go")
+             (commit "v1.13.5")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rgyk0m2d3agknnlzjqvac1a61wwdq1pbck7vyl587m38n5zi2cz"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/aws/smithy-go"))
+    (propagated-inputs
+     (list go-github-com-jmespath-go-jmespath go-github-com-google-go-cmp-cmp))
+    (home-page "https://github.com/aws/smithy-go")
+    (synopsis "Smithy code generators for Go")
+    (description
+     "Package smithy provides the core components for a Smithy SDK.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-aymerick-douceur
   (package
     (name "go-github-com-aymerick-douceur")
