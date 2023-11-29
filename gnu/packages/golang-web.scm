@@ -2,7 +2,7 @@
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
@@ -84,6 +84,34 @@ the parse trees produced by the html package.")
            go-github-com-puerkitobio-goquery
            go-golang-org-x-net))
     (home-page "https://github.com/aymerick/douceur/")
+    (synopsis "CSS parser and inliner")
+    (description "This package provides a CSS parser and inliner.")
+    (license license:expat)))
+
+(define-public go-github-com-chris-ramon-douceur
+  (package
+    (name "go-github-com-chris-ramon-douceur")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/chris-ramon/douceur")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hfysznib0fqbp8vqxpk0xiggpp0ayk2bsddi36vbg6f8zq5f81n"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/chris-ramon/douceur"))
+    (propagated-inputs
+     (list go-github-com-aymerick-douceur
+           go-github-com-gorilla-css))
+    (native-inputs
+     (list go-github-com-puerkitobio-goquery
+           go-github-com-andybalholm-cascadia
+           go-golang-org-x-net))
+    (home-page "https://github.com/chris-ramon/douceur/")
     (synopsis "CSS parser and inliner")
     (description "This package provides a CSS parser and inliner.")
     (license license:expat)))
