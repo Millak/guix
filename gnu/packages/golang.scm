@@ -8568,6 +8568,17 @@ with gotest-tools.")))
 
 (define-public go-gotest-tools-internal-source
   (package (inherit (go-gotest-tools-package "internal/source"))
+    (arguments
+     (substitute-keyword-arguments
+       (package-arguments (go-gotest-tools-package "internal/source"))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'check
+              (lambda* (#:key inputs #:allow-other-keys #:rest args)
+                (unless
+                  ;; failed to parse source file: : open : no such file or directory
+                  (false-if-exception (search-input-file inputs "/bin/gccgo"))
+                  (apply (assoc-ref %standard-phases 'check) args))))))))
     (native-inputs
      (list go-github-com-pkg-errors go-github-com-google-go-cmp-cmp))
     (synopsis "Source code AST formatters for gotest-tools")
