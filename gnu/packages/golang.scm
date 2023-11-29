@@ -3573,46 +3573,6 @@ per-goroutine.")
 @code{string} to @code{uint32} mapper.")
     (license license:bsd-3)))
 
-(define-public go-github-com-tdewolff-minify-v2
-  (package
-    (name "go-github-com-tdewolff-minify-v2")
-    (version "2.12.7")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/tdewolff/minify")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0qhslaq885zbqs83nvbi29yh09b89kkb6ycami8lz28wkwrlayap"))))
-    (build-system go-build-system)
-    (arguments
-     (list #:import-path "github.com/tdewolff/minify/v2"
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'regenerate-hash
-                 (lambda* (#:key import-path #:allow-other-keys)
-                   (for-each
-                    (lambda (dir)
-                      (with-directory-excursion
-                          (format #f "src/~a/~a" import-path dir)
-                        (make-file-writable "hash.go")
-                        (format #t "Generating `hash.go' for ~a...~%" dir)
-                        (invoke "go" "generate")))
-                    '("css" "html" "svg")))))))
-    (propagated-inputs
-     (list go-github-com-tdewolff-parse-v2))
-    (native-inputs
-     (list go-github-com-tdewolff-hasher
-           go-github-com-tdewolff-test))
-    (home-page "https://go.tacodewolff.nl/minify")
-    (synopsis "Go minifiers for web formats")
-    (description
-     "This package provides HTML5, CSS3, JS, JSON, SVG and XML minifiers and
-an interface to implement any other minifier.")
-    (license license:expat)))
-
 (define-public go-github-com-tdewolff-parse-v2
   (package
     (name "go-github-com-tdewolff-parse-v2")

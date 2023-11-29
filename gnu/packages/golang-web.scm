@@ -7,6 +7,7 @@
 ;;; Copyright © 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
+;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -28,6 +29,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix build-system go)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (gnu packages)
   #:use-module (gnu packages golang)
@@ -464,6 +466,47 @@ to jQuery to the Go language.")
     (synopsis "Provides a client and server implementation of JSON-RPC 2.0")
     (description
      "Package jsonrpc2 provides a Go implementation of JSON-RPC 2.0.")
+    (license license:expat)))
+
+(define-public go-github-com-tdewolff-minify-v2
+  (package
+    (name "go-github-com-tdewolff-minify-v2")
+    (version "2.12.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tdewolff/minify")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qhslaq885zbqs83nvbi29yh09b89kkb6ycami8lz28wkwrlayap"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tdewolff/minify/v2"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'regenerate-hash
+            (lambda* (#:key import-path #:allow-other-keys)
+              (for-each
+               (lambda (dir)
+                 (with-directory-excursion
+                     (format #f "src/~a/~a" import-path dir)
+                   (make-file-writable "hash.go")
+                   (format #t "Generating `hash.go' for ~a...~%" dir)
+                   (invoke "go" "generate")))
+               '("css" "html" "svg")))))))
+    (propagated-inputs
+     (list go-github-com-tdewolff-parse-v2))
+    (native-inputs
+     (list go-github-com-tdewolff-hasher
+           go-github-com-tdewolff-test))
+    (home-page "https://go.tacodewolff.nl/minify")
+    (synopsis "Go minifiers for web formats")
+    (description
+     "This package provides HTML5, CSS3, JS, JSON, SVG and XML minifiers and
+an interface to implement any other minifier.")
     (license license:expat)))
 
 ;;;
