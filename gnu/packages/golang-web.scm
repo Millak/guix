@@ -181,6 +181,17 @@ the parse trees produced by the html package.")
     (propagated-inputs
      (list go-github-com-aws-smithy-go))))
 
+(define-public go-github-com-aws-aws-sdk-go-v2-service-s3
+  (package
+    (inherit go-github-com-aws-aws-sdk-go-v2)
+    (name "go-github-com-aws-aws-sdk-go-v2-service-s3")
+    (version "1.30.0")
+    (arguments
+     '(#:import-path "github.com/aws/aws-sdk-go-v2/service/s3"
+       #:unpack-path "github.com/aws/aws-sdk-go-v2"))
+    (propagated-inputs
+     (list go-github-com-aws-smithy-go))))
+
 (define-public go-github-com-aws-aws-sdk-go-v2-service-sso
   (package
     (inherit go-github-com-aws-aws-sdk-go-v2)
