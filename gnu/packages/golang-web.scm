@@ -330,8 +330,10 @@ network applications that require accessing services using SRV records.")
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/jcmturner/goidentity/v6"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
     (propagated-inputs
-     (list go-github-com-stretchr-testify go-github-com-hashicorp-go-uuid))
+     (list go-github-com-hashicorp-go-uuid))
     (home-page "https://github.com/jcmturner/goidentity")
     (synopsis "Hold authenticated identities and their attributes")
     (description "This package provides a standard interface for holding
