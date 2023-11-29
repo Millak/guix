@@ -39,7 +39,7 @@
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022, 2023 David Elsing <david.elsing@posteo.net>
-;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2022, 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
@@ -1069,7 +1069,7 @@ but it works for any C/C++ project.")
 (define-public actionlint
   (package
     (name "actionlint")
-    (version "1.6.23")
+    (version "1.6.26")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1078,7 +1078,7 @@ but it works for any C/C++ project.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "07is4920a40zrl7mfldg0az2pisi7f6dv4vh3ijn3nzb4i7fqbni"))))
+                "0j4ni2cryvqn3qim1r6q6sargh0wig6l4vjjwc40cgqvvkrdla04"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/rhysd/actionlint/cmd/actionlint"
@@ -1087,7 +1087,7 @@ but it works for any C/C++ project.")
     (inputs (list go-github-com-fatih-color
                   go-github-com-mattn-go-colorable
                   go-github-com-mattn-go-runewidth
-                  go-github-com-robfig-cron-1.2
+                  go-github-com-robfig-cron
                   go-golang.org-x-sync-errgroup
                   go-golang.org-x-sync-semaphore
                   go-gopkg-in-yaml-v3))
