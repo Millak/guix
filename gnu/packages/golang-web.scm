@@ -118,6 +118,30 @@ the parse trees produced by the html package.")
     (description "This package provides a CSS parser and inliner.")
     (license license:expat)))
 
+(define-public go-github-com-felixge-httpsnoop
+  (package
+    (name "go-github-com-felixge-httpsnoop")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/felixge/httpsnoop")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ncd8lar5zxiwjhsp315s4hsl4bhnm271h49jhyxc66r5yffgmac"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/felixge/httpsnoop"))
+    (home-page "https://github.com/felixge/httpsnoop/")
+    (synopsis "Capture http related metrics")
+    (description
+     "Httpsnoop provides an easy way to capture http related
+metrics (i.e. response time, bytes written, and http status code) from your
+application's http.Handlers.")
+    (license license:expat)))
+
 (define-public go-github-com-gorilla-css
   (package
     (name "go-github-com-gorilla-css")
