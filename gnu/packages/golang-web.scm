@@ -5,9 +5,9 @@
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
+;;; Copyright © 2020-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
-;;; Copyright © 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2022 jgart via Guix-patches via <guix-patches@gnu.org>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
@@ -308,6 +308,31 @@ consistent with the HTTP protocol definition.")
      "Httpsnoop provides an easy way to capture http related
 metrics (i.e. response time, bytes written, and http status code) from your
 application's http.Handlers.")
+    (license license:expat)))
+
+(define-public go-github-com-francoispqt-gojay
+  (package
+    (name "go-github-com-francoispqt-gojay")
+    (version "1.2.13")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/francoispqt/gojay")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ix95qdyajfmxhf9y52vjrih63f181pjs4v5as8905s4d5vmkd06"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/francoispqt/gojay"))
+    (propagated-inputs
+     (list go-github-com-stretchr-testify))
+    (synopsis "JSON encoder/decoder with powerful stream API for Golang")
+    (description "GoJay is a performant JSON encoder/decoder for Golang.  It has
+a simple API and doesn't use reflection.  It relies on small interfaces to
+decode/encode structures and slices.")
+    (home-page "https://github.com/francoispqt/gojay")
     (license license:expat)))
 
 (define-public go-github-com-go-chi-chi-v5
