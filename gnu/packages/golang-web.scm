@@ -8,6 +8,7 @@
 ;;; Copyright © 2020-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2022 Adam Kandur <kefironpremise@gmail.com>
 ;;; Copyright © 2022 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2022 jgart via Guix-patches via <guix-patches@gnu.org>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
@@ -356,6 +357,27 @@ decode/encode structures and slices.")
     (description
      "@code{go-github-com-go-chi-chi-v5} is an HTTP router that lets the user
 decompose request handling into many smaller layers.")
+    (license license:expat)))
+
+(define-public go-github-com-goccy-go-json
+  (package
+    (name "go-github-com-goccy-go-json")
+    (version "0.9.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/goccy/go-json")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bg8p4c6r8r0kixdxv2m8xmdsmb1zl5sd8czswpccldjk3c358wp"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/goccy/go-json"))
+    (home-page "https://github.com/goccy/go-json")
+    (synopsis "JSON encoder/decoder in Go")
+    (description "Fast JSON encoder/decoder compatible with encoding/json for Go.")
     (license license:expat)))
 
 (define-public go-github-com-google-safehtml
