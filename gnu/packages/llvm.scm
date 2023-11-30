@@ -73,6 +73,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages swig)
+  #:use-module (gnu packages vulkan)
   #:use-module (gnu packages xml)
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match)
@@ -1946,37 +1947,37 @@ standard C++ library.")
 (define-public libclc
   (package
     (name "libclc")
-    (version "9.0.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/llvm/llvm-project")
-             (commit (string-append "llvmorg-" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1d1qayvrvvc1di7s7jfxnjvxq2az4lwq1sw1b2gq2ic0nksvajz0"))))
+    (version (package-version llvm-15))
+    (source (llvm-monorepo version))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "-DLLVM_CLANG="
-                            (assoc-ref %build-inputs "clang")
-                            "/bin/clang")
-             (string-append "-DPYTHON="
-                            (assoc-ref %build-inputs "python")
-                            "/bin/python3"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'chdir
-           (lambda _ (chdir "libclc") #t)))))
+     (list
+      #:configure-flags
+      #~(list (string-append "-DLLVM_CLANG="
+                             (assoc-ref %build-inputs "clang")
+                             "/bin/clang")
+              (string-append "-DLLVM_SPIRV="
+                             (assoc-ref %build-inputs "spirv-llvm-translator")
+                             "/bin/llvm-spirv"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'enter-subdirectory
+            (lambda _
+              (chdir "libclc")))
+          (add-after 'enter-subdirectory 'skip-clspv-tests
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("ptx\\.\\*") "[ptx|clspv].*")))))))
+    (propagated-inputs
+     (list spirv-llvm-translator spirv-tools))
     (native-inputs
-     (list clang-9 llvm-9 python))
+     (list clang-15 llvm-15 python))
     (home-page "https://libclc.llvm.org")
     (synopsis "Libraries for the OpenCL programming language")
     (description
      "This package provides an implementation of the OpenCL library
 requirements according to version 1.1 of the OpenCL specification.")
+    (properties `((release-monitoring-url . ,%llvm-release-monitoring-url)))
     ;; Apache license 2.0 with LLVM exception
     (license license:asl2.0)))
 
