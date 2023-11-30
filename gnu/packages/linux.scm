@@ -9357,7 +9357,7 @@ types and interfaces and translates so that the X server can use them.")
 (define-public pipewire
   (package
     (name "pipewire")
-    (version "0.3.77")
+    (version "1.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9366,7 +9366,7 @@ types and interfaces and translates so that the X server can use them.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11jdd9ljm6967cdp97qqf5fa02ad69kdgk3212ap5gfndky2h43m"))))
+                "0a8wvsnbgqanp2vjdpkaxpny0k17hz720rd20zdi00s9xjbcrycr"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -9380,6 +9380,8 @@ types and interfaces and translates so that the X server can use them.")
     (native-inputs
      (list `(,glib "bin")
            pkg-config
+           doxygen
+           python
            python-docutils))
     (inputs (list alsa-lib
                   avahi
