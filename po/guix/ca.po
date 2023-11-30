@@ -1,39 +1,28 @@
-# guix in zh_CN
-# Copyright (C) 2015-2020 the authors of Guix (msgids) and the following authors (msgstr)
-# This file is distributed under the same license as the guix package.
-# Mingye Wang <arthur200126@gmail.com>, 2016.
-# Boyuan Yang <073plan@gmail.com>, 2018.
-# 郑俊杰 <873216071@qq.com>, 2021, 2023.
-# Liu Tao <lyuutau@outlook.com>, 2021.
-# Whired Planck <fungdaat31@outlook.com>, 2021.
-# Went He <1437061699@qq.com>, 2021.
-# Edward Zhang <edwardzcn98@gmail.com>, 2022.
-# Julien Lepiller <fedora-account@lepiller.eu>, 2022.
-# Wen Wu Song <iyzsong@envs.net>, 2023.
-# Hilton Chain <yareli@ultrarare.space>, 2023.
-# a x <meruarasu@email1.io>, 2023.
-# Sapphire RainSlide <RainSlide@outlook.com>, 2023.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR the authors of Guix (msgids) and the following authors (msgstr)
+# This file is distributed under the same license as the GNU guix package.
+# Santiago Payà Miralta <santiagopim@gmail.com>, 2023.
+# Julen Sansó <julensanso@gmail.com>, 2023.
 #: guix/diagnostics.scm:159
 msgid ""
 msgstr ""
-"Project-Id-Version: guix 0.14.0\n"
+"Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2023-06-19 03:18+0000\n"
-"PO-Revision-Date: 2023-11-16 19:01+0000\n"
-"Last-Translator: Sapphire RainSlide <RainSlide@outlook.com>\n"
-"Language-Team: Chinese (Simplified) <https://translate.fedoraproject.org/projects/guix/guix/zh_CN/>\n"
-"Language: zh_CN\n"
+"PO-Revision-Date: 2023-11-22 16:01+0000\n"
+"Last-Translator: Julen Sansó <julensanso@gmail.com>\n"
+"Language-Team: Catalan <https://translate.fedoraproject.org/projects/guix/guix/ca/>\n"
+"Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.2\n"
-"X-Bugs: Report translation errors to the Language-Team address.\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.2.1\n"
 
 #: gnu.scm:81
 #, scheme-format
 msgid "module ~a not found"
-msgstr "未找到模块 ~a"
+msgstr "mòdul ~a no trobat"
 
 #: gnu.scm:99
 msgid ""
@@ -42,13 +31,15 @@ msgid ""
 "If you get the line @code{location: gnu/packages/bar.scm:174:2},\n"
 "add @code{bar} to the @code{use-package-modules} form."
 msgstr ""
-"你可以使用@command{guix package --show=foo | grep location} 来定位软件包 @code{foo}的位置。\n"
-"如果你得到了结果 @code{location: gnu/packages/bar.scm:174:2}，将@code{bar}添加到 @{use-package-modules} 中。"
+"Pot usar @command{guix package --show=foo | grep location} per cercar\n"
+"l'ubicació del paquet @code{foo}.\n"
+"Si s'obté la línia @code{location: gnu/packages/bar.scm:174:2},\n"
+"afegeix @code{bar} a la forma @code{use-package-modules}."
 
 #: gnu.scm:107
 #, scheme-format
 msgid "Try adding @code{(use-package-modules ~a)}."
-msgstr "尝试添加 @code{(use-package-modules ~a)}。"
+msgstr "Intenta afegir @code{(use-package-modules ~a)}."
 
 #: gnu.scm:122
 #, scheme-format
@@ -58,75 +49,77 @@ msgid ""
 "If you get the line @code{location: gnu/services/foo.scm:188:2},\n"
 "add @code{foo} to the @code{use-service-modules} form."
 msgstr ""
-"你可以使用 @command{guix system search ~a} 来搜寻匹配 @code{~a} 的服务。\n"
-"如果你得到了结果 @code{location: gnu/services/fo.scm:188:2}，将 @code{foo} 添加到 @{use-service-modules} 中。"
+"Pot utilitzar @command{guix system search ~a} per cercar un servei que\n"
+"correspongui amb @code{~a}.\n"
+"Si obté la línia @code{location: gnu/services/foo.scm:188:2}, afegeix\n"
+"@code{foo} a la forma @code{use-service-modules}."
 
 #: gnu.scm:131
 #, scheme-format
 msgid "Try adding @code{(use-service-modules ~a)}."
-msgstr "尝试添加 @code{(use-service-modules ~a)}。"
+msgstr "Intenti afegir @code{(use-package-modules ~a)}."
 
 #: gnu/packages.scm:102
 #, scheme-format
 msgid "~a: patch not found"
-msgstr "~a: 未找到补丁"
+msgstr "~a: pedaç no trobat"
 
 #: gnu/packages.scm:488 gnu/packages.scm:529
-#, scheme-format
+#, fuzzy, scheme-format
 msgid "ambiguous package specification `~a'~%"
-msgstr "含糊的软件包规范 `~a'~%"
+msgstr "especificació de paquet ambigua `~a'~%"
 
 #: gnu/packages.scm:489 gnu/packages.scm:530
 #, scheme-format
 msgid "choosing ~a@~a from ~a~%"
-msgstr "选择 ~a@~a，来自 ~a~%"
+msgstr "seleccionat ~a@~a de ~a~%"
 
 #: gnu/packages.scm:494 guix/scripts/package.scm:224
 #, scheme-format
 msgid "package '~a' has been superseded by '~a'~%"
-msgstr "包 '~a' 已被 '~a' 代替~%"
+msgstr "el paquet '~a' ha estat reemplaçada per '~a'~%"
 
 #: gnu/packages.scm:501 gnu/packages.scm:518
 #, scheme-format
 msgid "~A: package not found for version ~a~%"
-msgstr "~A: 无法找到供版本 ~a~% 的软件包"
+msgstr "~A: paquet no trobat per la versió ~a~%"
 
 #: gnu/packages.scm:502 gnu/packages.scm:519
 #, scheme-format
 msgid "~A: unknown package~%"
-msgstr "~A: 未知包~%"
+msgstr "~A: paquet desconegut~%"
 
 #: gnu/packages.scm:558
 #, scheme-format
 msgid "package `~a' lacks output `~a'~%"
-msgstr "包 `~a' 缺乏输出 `~a'~%"
+msgstr "el paquet '~a' manca de sortida '~a'~%"
 
 #: gnu/services.scm:268
 #, scheme-format
 msgid "~a: no value specified for service of type '~a'"
-msgstr "~a: '~a' 类型的服务未指定其值"
+msgstr "~a: no s'ha especificat un valor pel servei de tipus '~a'"
 
 #: gnu/services.scm:298
 msgid "This is a simple service."
-msgstr "这是一个简单的服务。"
+msgstr ""
 
 #: gnu/services.scm:341
 #, scheme-format
 msgid "modify-services: service '~a' not found in service list"
-msgstr "modify-services: 服务列表中找不到服务 '~a'"
+msgstr ""
 
 #: gnu/services.scm:422
 msgid ""
 "Build the operating system top-level directory, which in\n"
 "turn refers to everything the operating system needs: its kernel, initrd,\n"
 "system profile, boot script, and so on."
-msgstr "构建操作系统顶级目录，该顶级目录引用了操作系统所需的一切事物：它的内核，初始化内存磁盘镜像，系统 profile ，启动脚本，等等。"
+msgstr ""
 
 #: gnu/services.scm:453
 msgid ""
 "Produce the operating system's boot script, which is spawned\n"
 "by the initrd once the root file system is mounted."
-msgstr "产生操作系统的启动脚本，该脚本将由初始化内存磁盘镜像在挂在 root 文件系统后执行。"
+msgstr ""
 
 #: gnu/services.scm:566
 msgid ""
@@ -134,62 +127,59 @@ msgid ""
 "itself: the channels used when building the system, and its configuration\n"
 "file, when available."
 msgstr ""
-"在系统中存储其来源信息，包含：构建本系统时所使用\n"
-"的 channels ，以及系统的配置文件，若可得到时。"
 
 #: gnu/services.scm:649
 msgid ""
 "Delete files from @file{/tmp}, @file{/var/run}, and other\n"
 "temporary locations at boot time."
-msgstr "在启动时删除 @file{/tmp}, @file{/var/run}, 以及其他临时目录下的文件。"
+msgstr ""
 
 #: gnu/services.scm:712
 msgid ""
 "Run @dfn{activation} code at boot time and upon\n"
 "@command{guix system reconfigure} completion."
-msgstr "在启动和 @command{guix system reconfigure} 完成时执行 @dfn{activation} 代码。"
+msgstr ""
 
 #: gnu/services.scm:784
 msgid ""
 "This service creates an @file{rc} script in the\n"
 "system; that script is responsible for booting the Hurd."
-msgstr "这个服务在系统中创建一个 @file{rc} 脚本文件；该脚本负责启动 Hurd 。"
+msgstr ""
 
 #: gnu/services.scm:802
 msgid ""
 "Add special files to the root file system---e.g.,\n"
 "@file{/usr/bin/env}."
-msgstr "向 root 文件系统中添加一些特殊文件，例如： @file{/usr/bin/env} 。"
+msgstr ""
 
 #: gnu/services.scm:825
 #, scheme-format
 msgid "duplicate '~a' entry for /etc"
-msgstr "为 /etc 指定的条目 '~a' 重复"
+msgstr ""
 
 #: gnu/services.scm:854
 msgid "Populate the @file{/etc} directory."
-msgstr "填充 @file{/etc} 目录。"
+msgstr ""
 
 #: gnu/services.scm:895
 msgid ""
 "Populate @file{/run/setuid-programs} with the specified\n"
 "executables, making them setuid and/or setgid."
-msgstr "用指定的可执行文件填充 @file{/run/setuid-programs} 目录，并赋予这些文件对应的 setuid 和 setgid 权限。"
+msgstr ""
 
 #: gnu/services.scm:922
 msgid ""
 "This is the @dfn{system profile}, available as\n"
 "@file{/run/current-system/profile}.  It contains packages that the sysadmin\n"
 "wants to be globally available to all the system users."
-msgstr "这是 @dfn{system profile} ，位于 @file{/run/current-system/profile} 。它包含了系统管理员想要的对所有系统用户全局可用的软件包。"
+msgstr ""
 
 #: gnu/services.scm:942
-#, fuzzy
 msgid ""
 "Make ``firmware'' files loadable by the operating system\n"
 "kernel.  Firmware may then be uploaded to some of the machine's devices, such\n"
 "as Wifi cards."
-msgstr "让固件文件可以被系统加载。这样固件可以被载入到这台机器的设备中，比如说无线网卡。"
+msgstr ""
 
 #: gnu/services.scm:973
 msgid ""
@@ -198,46 +188,44 @@ msgid ""
 msgstr ""
 
 #: gnu/services.scm:1031
-#, fuzzy
 msgid ""
 "Builds the linux-libre kernel profile, containing\n"
 "the kernel itself and any linux-loadable kernel modules.  This can be extended\n"
 "with a function that accepts the current configuration and returns a new\n"
 "configuration."
-msgstr "建构linux-libre内核profile，包括内核和linux可装载的内核模块。这可以用一个输入当前配置返回新配置的函数来拓展。"
+msgstr ""
 
 #: gnu/services.scm:1053
-#, fuzzy
 msgid ""
 "Adds packages and package outputs as modules\n"
 "included in the booted linux-libre profile.  Other services can extend this\n"
 "service type to add particular modules to the set of linux-loadable modules."
-msgstr "添加包和包输出作为启动的linux-libre profile的模块。其他服务可已拓展此类服务以向linux可载的模块中添加特定模块。"
+msgstr ""
 
 #: gnu/services.scm:1080
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "no target of type '~a' for service '~a'"
-msgstr "没有为服务'~a'找到类为'~a'的目标"
+msgstr ""
 
 #: gnu/services.scm:1106 gnu/services.scm:1225
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "more than one target service of type '~a'"
-msgstr "多余一个类为'~a'的目标服务"
+msgstr ""
 
 #: gnu/services.scm:1215
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "service of type '~a' not found"
-msgstr "未找到类为'~a'的服务"
+msgstr ""
 
 #: gnu/system.scm:217
 #, scheme-format
 msgid "the 'hosts-file' field is deprecated, please use 'hosts-service-type' instead~%"
-msgstr "'hosts-file'字段已弃用，请使用'hosts-service-type'代替~%"
+msgstr ""
 
 #: gnu/system.scm:397
 #, scheme-format
 msgid "unrecognized uuid ~a at '~a'~%"
-msgstr "有无法识别的 UUID ~a 在 '~a' 中~%"
+msgstr ""
 
 #: gnu/system.scm:485
 #, scheme-format
@@ -245,12 +233,12 @@ msgid "unrecognized crypto-devices ~S at '~a'~%"
 msgstr ""
 
 #: gnu/system.scm:505
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "unrecognized boot parameters at '~a'~%"
-msgstr "无法识别的启动选项: ~a~%"
+msgstr ""
 
 #: gnu/system.scm:508
-#, fuzzy, scheme-format
+#, scheme-format
 msgid ""
 "This probably means that this version\n"
 "of Guix is older than the one that created @file{~a}.  To address this, you\n"
@@ -260,11 +248,6 @@ msgid ""
 "guix pull\n"
 "@end example"
 msgstr ""
-"这大概意味着此版本的Guix比使用@file{~a}创建的版本更老。为了解决此问题，需要更新Guix：\n"
-"\n"
-"@example\n"
-"guix pull\n"
-"@end example"
 
 #: gnu/system.scm:645
 #, scheme-format
@@ -293,12 +276,12 @@ msgstr ""
 
 #: gnu/system.scm:1319
 msgid "missing root file system"
-msgstr "缺失root文件系统"
+msgstr ""
 
 #: gnu/system.scm:1395
 #, scheme-format
 msgid "~a: invalid locale name"
-msgstr "~a:无效的区域名称"
+msgstr ""
 
 #: gnu/services/base.scm:314
 msgid ""
@@ -337,10 +320,8 @@ msgid "host name '~a' contains invalid characters"
 msgstr ""
 
 #: gnu/services/base.scm:763
-#, fuzzy
-#| msgid "Populate the @file{/etc} directory."
 msgid "Populate the @file{/etc/hosts} file."
-msgstr "填充 @file{/etc} 目录。"
+msgstr ""
 
 #: gnu/services/base.scm:780
 msgid "Initialize the machine's host name."
@@ -479,9 +460,9 @@ msgid "network links are currently ignored on GNU/Hurd~%"
 msgstr ""
 
 #: gnu/services/base.scm:2749
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "ignoring network route for '~a'~%"
-msgstr "'~a'~% 签名无效"
+msgstr ""
 
 #: gnu/services/base.scm:2938
 msgid ""
@@ -512,16 +493,14 @@ msgid ""
 msgstr ""
 
 #: gnu/services/configuration.scm:101
-#, fuzzy, scheme-format
-#| msgid "invalid value for home page"
+#, scheme-format
 msgid "invalid value ~s for field '~a'"
-msgstr "无效的主页值"
+msgstr ""
 
 #: gnu/services/configuration.scm:216
-#, fuzzy, scheme-format
-#| msgid "'vm-image' is deprecated: use 'image' instead~%"
+#, scheme-format
 msgid "specifying serializers after documentation is deprecated, use (serializer ~a) instead~%"
-msgstr "'vm-image' 已被弃用：用 'image' 代替 ~%"
+msgstr ""
 
 #: gnu/services/configuration.scm:466
 #, scheme-format
@@ -987,10 +966,9 @@ msgid ""
 msgstr ""
 
 #: gnu/home/services/ssh.scm:110
-#, fuzzy, scheme-format
-#| msgid "~a: invalid locale name"
+#, scheme-format
 msgid "~s: invalid address family value"
-msgstr "~a:无效的区域名称"
+msgstr ""
 
 #: gnu/home/services/ssh.scm:288
 msgid "define either 'name' or 'match-criteria', not both"
@@ -1001,9 +979,9 @@ msgid "define either 'name' or 'match-criteria' once"
 msgstr ""
 
 #: gnu/home/services/ssh.scm:336
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~s: invalid 'add-keys-to-agent' value"
-msgstr "~a: 无效的数字~%"
+msgstr ""
 
 #: gnu/home/services/ssh.scm:407
 #, scheme-format
@@ -1034,9 +1012,9 @@ msgid "Cleaning up symlinks from previous home at ~a.~%"
 msgstr ""
 
 #: gnu/home/services/symlink-manager.scm:136
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "Removing ~a..."
-msgstr "正删除 ~a~%"
+msgstr ""
 
 #: gnu/home/services/symlink-manager.scm:141
 #, scheme-format
@@ -1044,9 +1022,9 @@ msgid "Skipping ~a (not a symlink to store)... done\n"
 msgstr ""
 
 #: gnu/home/services/symlink-manager.scm:151
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "Removed ~a.\n"
-msgstr "正删除 ~a~%"
+msgstr ""
 
 #: gnu/home/services/symlink-manager.scm:158
 #, scheme-format
@@ -1065,9 +1043,9 @@ msgid "Symlinking ~a -> ~a..."
 msgstr ""
 
 #: gnu/home/services/symlink-manager.scm:209
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to create directory ~a: ~s~%"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: gnu/home/services/symlink-manager.scm:232
 msgid ""
@@ -1113,11 +1091,11 @@ msgid "Configure XDG MIME applications, and XDG desktop entries."
 msgstr ""
 
 #: gnu/system/file-systems.scm:137
-#, fuzzy, scheme-format
-#| msgid "invalid syntax: ~a~%"
+#, scheme-format
 msgid "invalid file system mount flag:~{ ~s~}~%"
 msgid_plural "invalid file system mount flags:~{ ~s~}~%"
-msgstr[0] "无效语法: ~a~%"
+msgstr[0] ""
+msgstr[1] ""
 
 #: gnu/system/file-systems.scm:658
 msgid "The store is on a Btrfs subvolume, but the subvolume name is unknown."
@@ -1142,9 +1120,9 @@ msgid "unsupported partition type: ~a"
 msgstr ""
 
 #: gnu/system/image.scm:979
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: unsupported image format"
-msgstr "~A: 未知包~%"
+msgstr ""
 
 #: gnu/system/image.scm:1009
 #, scheme-format
@@ -1207,14 +1185,12 @@ msgid ""
 "\n"
 "  -h, --help             display this help and exit"
 msgstr ""
-"\n"
-"  -h, --help                 显示这份说明然后离开"
 
 #: gnu/system/linux-container.scm:250 guix/scripts.scm:164
 #: guix/scripts/import/minetest.scm:92
 #, scheme-format
 msgid "~A: unrecognized option~%"
-msgstr "~A: 无法识别的选项~%"
+msgstr ""
 
 #: gnu/system/linux-container.scm:261
 #, scheme-format
@@ -1309,20 +1285,19 @@ msgid "Updater for CPAN packages"
 msgstr ""
 
 #: guix/import/cran.scm:202
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to retrieve list of packages from ~a: ~a (~a)~%"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/import/cran.scm:237
-#, fuzzy, scheme-format
-#| msgid "~a: download failed~%"
+#, scheme-format
 msgid "~A: hg download failed~%"
-msgstr "~a：下载失败~%"
+msgstr ""
 
 #: guix/import/cran.scm:281
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to retrieve package information from ~a: ~a (~a)~%"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/import/cran.scm:813 guix/import/cran.scm:836
 #, scheme-format
@@ -1343,10 +1318,9 @@ msgid "~A: currently not supported~%"
 msgstr ""
 
 #: guix/import/elpa.scm:116
-#, fuzzy, scheme-format
-#| msgid "~a: download failed~%"
+#, scheme-format
 msgid "~A: download failed~%"
-msgstr "~a：下载失败~%"
+msgstr ""
 
 #: guix/import/elpa.scm:271
 #, scheme-format
@@ -1395,24 +1369,23 @@ msgid "no tags were found"
 msgstr ""
 
 #: guix/import/git.scm:191
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a for ~a~%"
-msgstr "'~a'~% 签名无效"
+msgstr ""
 
 #: guix/import/git.scm:198
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to fetch Git repository for ~a~%"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/import/git.scm:239
 msgid "Updater for packages hosted on Git repositories"
 msgstr ""
 
 #: guix/import/gnu.scm:116
-#, fuzzy, scheme-format
-#| msgid "~A: package not found for version ~a~%"
+#, scheme-format
 msgid "no GNU package found for ~a"
-msgstr "~A: 无法找到供版本 ~a~% 的软件包"
+msgstr ""
 
 #: guix/import/gnu.scm:124
 #, scheme-format
@@ -1425,10 +1398,9 @@ msgid "unsupported vcs type '~a' for package '~a'"
 msgstr ""
 
 #: guix/import/go.scm:586
-#, fuzzy, scheme-format
-#| msgid "~a: note: using ~a but ~a is available upstream~%"
+#, scheme-format
 msgid "version ~a of ~a is not available~%"
-msgstr "~a: 注意: 使用 ~a 但 ~a 在上游可用~%"
+msgstr ""
 
 #: guix/import/go.scm:589
 #, scheme-format
@@ -1474,10 +1446,9 @@ msgid "~a is ambiguous, presuming ~a (other options include: ~a)~%"
 msgstr ""
 
 #: guix/import/minetest.scm:214
-#, fuzzy, scheme-format
-#| msgid "file system with label '~a' not found~%"
+#, scheme-format
 msgid "No mods with name ~a were found.~%"
-msgstr "未找到标签为 '~a' 的文件系统 ~%"
+msgstr ""
 
 #: guix/import/minetest.scm:276
 #, scheme-format
@@ -1524,14 +1495,14 @@ msgid "Updater for Minetest packages on ContentDB"
 msgstr ""
 
 #: guix/import/opam.scm:146
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "'~a' is not a valid URI~%"
-msgstr "~a: 无效的数字~%"
+msgstr ""
 
 #: guix/import/opam.scm:323
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "opam: package '~a' not found~%"
-msgstr "包 `~a' 缺乏输出 `~a'~%"
+msgstr ""
 
 #: guix/import/opam.scm:438
 msgid "Updater for OPAM packages"
@@ -1547,9 +1518,9 @@ msgid "parse-requires.txt reached an unexpected condition on line ~a~%"
 msgstr ""
 
 #: guix/import/pypi.scm:377
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "Failed to extract file: ~a from wheel.~%"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/import/pypi.scm:406
 #, scheme-format
@@ -1594,11 +1565,11 @@ msgstr ""
 
 #: gnu/installer.scm:222
 msgid "Locale"
-msgstr "区域设置"
+msgstr ""
 
 #: gnu/installer.scm:240 gnu/installer/newt/timezone.scm:58
 msgid "Timezone"
-msgstr "时区"
+msgstr ""
 
 #: gnu/installer.scm:257
 msgid "Keyboard mapping selection"
@@ -1606,11 +1577,11 @@ msgstr ""
 
 #: gnu/installer.scm:266 gnu/installer/newt/hostname.scm:26
 msgid "Hostname"
-msgstr "主机名"
+msgstr ""
 
 #: gnu/installer.scm:275
 msgid "Network selection"
-msgstr "选择网络"
+msgstr ""
 
 #: gnu/installer.scm:282 gnu/installer/newt/substitutes.scm:31
 msgid "Substitute server discovery"
@@ -1619,19 +1590,19 @@ msgstr ""
 #: gnu/installer.scm:289 gnu/installer/newt/user.scm:70
 #: gnu/installer/newt/user.scm:217
 msgid "User creation"
-msgstr "创建用户"
+msgstr ""
 
 #: gnu/installer.scm:297
 msgid "Services"
-msgstr "服务"
+msgstr ""
 
 #: gnu/installer.scm:308
 msgid "Partitioning"
-msgstr "分区"
+msgstr ""
 
 #: gnu/installer.scm:315 gnu/installer/newt/final.scm:53
 msgid "Configuration file"
-msgstr "配置文件"
+msgstr ""
 
 #: gnu/installer.scm:329
 #, scheme-format
@@ -1649,10 +1620,9 @@ msgstr ""
 #. TRANSLATORS: The two placeholders are the manufacturer
 #. and name of a PCI device.
 #: gnu/installer/hardware.scm:88
-#, fuzzy, scheme-format
-#| msgid "Network service"
+#, scheme-format
 msgid "~a ~a (networking device)"
-msgstr "网络服务"
+msgstr ""
 
 #: gnu/installer/newt.scm:58
 msgid "Press <F1> for installation parameters."
@@ -1683,7 +1653,7 @@ msgstr ""
 #: gnu/installer/newt/timezone.scm:63 gnu/installer/newt/user.scm:216
 #: gnu/installer/newt/wifi.scm:206
 msgid "Exit"
-msgstr "退出"
+msgstr ""
 
 #: gnu/installer/newt.scm:85
 #, scheme-format
@@ -1700,10 +1670,8 @@ msgid "The dump was uploaded as ~a.  Please report it by email to ~a."
 msgstr ""
 
 #: gnu/installer/newt.scm:93
-#, fuzzy
-#| msgid "some services could not be upgraded~%"
 msgid "The dump could not be uploaded."
-msgstr "有些服务无法升级~%"
+msgstr ""
 
 #: gnu/installer/newt.scm:96
 msgid "Dump upload result"
@@ -1751,12 +1719,12 @@ msgstr ""
 
 #: gnu/installer/newt/final.scm:68
 msgid "Installation complete"
-msgstr "安装完成"
+msgstr ""
 
 #: gnu/installer/newt/final.scm:69 gnu/installer/newt/parameters.scm:45
 #: gnu/installer/newt/welcome.scm:197
 msgid "Reboot"
-msgstr "重启"
+msgstr ""
 
 #: gnu/installer/newt/final.scm:70
 msgid "Congratulations!  Installation is now complete.  You may remove the device containing the installation image and press the button to reboot."
@@ -1764,11 +1732,11 @@ msgstr ""
 
 #: gnu/installer/newt/final.scm:84
 msgid "Installation failed"
-msgstr "安装失败"
+msgstr ""
 
 #: gnu/installer/newt/final.scm:85
 msgid "Resume"
-msgstr "继续"
+msgstr ""
 
 #: gnu/installer/newt/final.scm:86
 msgid "Restart the installer"
@@ -1811,7 +1779,7 @@ msgstr ""
 #: gnu/installer/newt/locale.scm:88 gnu/installer/newt/partition.scm:608
 #: gnu/installer/newt/timezone.scm:64
 msgid "Back"
-msgstr "返回"
+msgstr ""
 
 #: gnu/installer/newt/hostname.scm:25
 msgid "Please enter the system hostname."
@@ -1819,7 +1787,7 @@ msgstr ""
 
 #: gnu/installer/newt/keymap.scm:38
 msgid "Layout"
-msgstr "布局"
+msgstr ""
 
 #: gnu/installer/newt/keymap.scm:43
 msgid "Please choose your keyboard layout. It will only be used during the installation process. Non-Latin layouts can be toggled with Alt+Shift."
@@ -1832,7 +1800,7 @@ msgstr ""
 #: gnu/installer/newt/keymap.scm:55 gnu/installer/newt/network.scm:64
 #: gnu/installer/newt/page.scm:314 gnu/installer/newt/welcome.scm:164
 msgid "Continue"
-msgstr "连续"
+msgstr ""
 
 #: gnu/installer/newt/keymap.scm:65
 msgid "Variant"
@@ -1840,24 +1808,23 @@ msgstr ""
 
 #: gnu/installer/newt/keymap.scm:68
 msgid "Please choose a variant for your keyboard layout."
-msgstr "请选择一个键盘布局的变体。"
+msgstr ""
 
 #: gnu/installer/newt/locale.scm:36
 msgid "Locale language"
-msgstr "本地语言"
+msgstr ""
 
 #: gnu/installer/newt/locale.scm:37
 msgid "Choose the language to use for the installation process and for the installed system."
 msgstr ""
 
 #: gnu/installer/newt/locale.scm:55
-#, fuzzy
 msgid "Locale location"
-msgstr "<未知位置>"
+msgstr ""
 
 #: gnu/installer/newt/locale.scm:58
 msgid "Choose a territory for this language."
-msgstr "为这种语言选择一个地域。"
+msgstr ""
 
 #: gnu/installer/newt/locale.scm:67
 msgid "Locale codeset"
@@ -1876,9 +1843,8 @@ msgid "Choose your locale's modifier. The most frequent modifier is euro. It ind
 msgstr ""
 
 #: gnu/installer/newt/locale.scm:181
-#, fuzzy
 msgid "No location"
-msgstr "<未知位置>"
+msgstr ""
 
 #: gnu/installer/newt/locale.scm:208
 msgid "No modifier"
@@ -1931,7 +1897,7 @@ msgstr ""
 
 #: gnu/installer/newt/network.scm:155 gnu/installer/newt/wifi.scm:108
 msgid "Connection error"
-msgstr "连接错误"
+msgstr ""
 
 #: gnu/installer/newt/page.scm:204
 #, scheme-format
@@ -1944,7 +1910,7 @@ msgstr ""
 
 #: gnu/installer/newt/page.scm:224 gnu/installer/newt/user.scm:62
 msgid "Show"
-msgstr "显示"
+msgstr ""
 
 #: gnu/installer/newt/page.scm:231 gnu/installer/newt/page.scm:678
 #: gnu/installer/newt/page.scm:762 gnu/installer/newt/partition.scm:471
@@ -1952,7 +1918,7 @@ msgstr "显示"
 #: gnu/installer/newt/partition.scm:712 gnu/installer/newt/user.scm:68
 #: gnu/installer/newt/user.scm:215
 msgid "OK"
-msgstr "确定"
+msgstr ""
 
 #: gnu/installer/newt/page.scm:257
 msgid "Please enter a non empty input."
@@ -1964,7 +1930,7 @@ msgstr ""
 
 #: gnu/installer/newt/page.scm:765
 msgid "Edit"
-msgstr "编辑"
+msgstr ""
 
 #: gnu/installer/newt/page.scm:825
 msgid "Ok"
@@ -2011,7 +1977,7 @@ msgstr ""
 
 #: gnu/installer/newt/partition.scm:86
 msgid "Disk"
-msgstr "磁盘"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:100
 #, scheme-format
@@ -2024,15 +1990,15 @@ msgstr ""
 
 #: gnu/installer/newt/partition.scm:115
 msgid "Partition table"
-msgstr "分区表"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:134
 msgid "Please select a partition type."
-msgstr "请选择分区类型。"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:135
 msgid "Partition type"
-msgstr "分区类型"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:145
 msgid "Please select the file-system type for this partition."
@@ -2040,7 +2006,7 @@ msgstr ""
 
 #: gnu/installer/newt/partition.scm:146
 msgid "File-system type"
-msgstr "文件系统类型"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:163
 msgid "Primary partitions count exceeded."
@@ -2048,9 +2014,8 @@ msgstr ""
 
 #: gnu/installer/newt/partition.scm:164 gnu/installer/newt/partition.scm:169
 #: gnu/installer/newt/partition.scm:174
-#, fuzzy
 msgid "Creation error"
-msgstr "创建错误"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:168
 msgid "Extended partition creation error."
@@ -2066,9 +2031,8 @@ msgid "Please enter the password for the encryption of partition ~a (label: ~a).
 msgstr ""
 
 #: gnu/installer/newt/partition.scm:189 gnu/installer/newt/wifi.scm:92
-#, fuzzy
 msgid "Password required"
-msgstr "需要密码"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:194
 #, scheme-format
@@ -2101,20 +2065,20 @@ msgstr ""
 
 #: gnu/installer/newt/partition.scm:327
 msgid "Encryption label"
-msgstr "加密标签"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:344
 #, scheme-format
 msgid "Please enter the size of the partition. The maximum size is ~a."
-msgstr "请输入分区大小。最大为~a。"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:346
 msgid "Partition size"
-msgstr "分区容量"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:364
 msgid "The percentage can not be superior to 100."
-msgstr "百分比不得超过100。"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:365 gnu/installer/newt/partition.scm:370
 #: gnu/installer/newt/partition.scm:375
@@ -2149,20 +2113,20 @@ msgstr ""
 
 #: gnu/installer/newt/partition.scm:465
 msgid "Partition creation"
-msgstr "分区创建"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:466
 msgid "Partition edit"
-msgstr "分区编辑"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:647
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "Are you sure you want to delete everything on disk ~a?"
-msgstr "您确定要删除盘~a上的所有内容吗？"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:649
 msgid "Delete disk"
-msgstr "删除盘幅"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:664
 msgid "You cannot delete a free space area."
@@ -2170,7 +2134,7 @@ msgstr ""
 
 #: gnu/installer/newt/partition.scm:665 gnu/installer/newt/partition.scm:672
 msgid "Delete partition"
-msgstr "删除分区"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:670
 #, scheme-format
@@ -2195,11 +2159,11 @@ msgstr ""
 
 #: gnu/installer/newt/partition.scm:704
 msgid "Manual partitioning"
-msgstr "手动分区"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:729
 msgid "No root mount point found."
-msgstr "没有找到根挂载点。"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:730
 msgid "Missing mount point"
@@ -2211,9 +2175,8 @@ msgid "Cannot read the ~a partition UUID. You may need to format it."
 msgstr ""
 
 #: gnu/installer/newt/partition.scm:737
-#, fuzzy
 msgid "Wrong partition format"
-msgstr "错误分区格式"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:768
 msgid "Guided - using the entire disk"
@@ -2225,23 +2188,23 @@ msgstr ""
 
 #: gnu/installer/newt/partition.scm:770
 msgid "Manual"
-msgstr "手动"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:772
 msgid "Please select a partitioning method."
-msgstr "请选择分区方法。"
+msgstr ""
 
 #: gnu/installer/newt/partition.scm:773
 msgid "Partitioning method"
-msgstr "分区方法"
+msgstr ""
 
 #: gnu/installer/newt/services.scm:39
 msgid "Please select the desktop environment(s) you wish to install.  If you select multiple desktop environments here, you will be able to choose from them later when you log in."
-msgstr "请选择需要安装的桌面环境。如果此处选中了多个桌面环境，可在登录之后选择性使用。"
+msgstr ""
 
 #: gnu/installer/newt/services.scm:42
 msgid "Desktop environment"
-msgstr "桌面环境"
+msgstr ""
 
 #: gnu/installer/newt/services.scm:57
 msgid "You can now select networking services to run on your system."
@@ -2249,33 +2212,27 @@ msgstr ""
 
 #: gnu/installer/newt/services.scm:59
 msgid "Network service"
-msgstr "网络服务"
+msgstr ""
 
 #: gnu/installer/newt/services.scm:75
-#, fuzzy
-#| msgid "Run 'herd status' to view the list of services on your system.\n"
 msgid "You can now select the CUPS printing service to run on your system."
-msgstr "运行 'herd status' 以查看你系统上的服务的列表。\n"
+msgstr ""
 
 #: gnu/installer/newt/services.scm:77
 msgid "Printing and document services"
 msgstr ""
 
 #: gnu/installer/newt/services.scm:94
-#, fuzzy
-#| msgid "Network service"
 msgid "Console services"
-msgstr "网络服务"
+msgstr ""
 
 #: gnu/installer/newt/services.scm:95
-#, fuzzy
-#| msgid "Run 'herd status' to view the list of services on your system.\n"
 msgid "Select miscellaneous services to run on your non-graphical system."
-msgstr "运行 'herd status' 以查看你系统上的服务的列表。\n"
+msgstr ""
 
 #: gnu/installer/newt/services.scm:107
 msgid "Network management"
-msgstr "网络管理"
+msgstr ""
 
 #: gnu/installer/newt/services.scm:110
 msgid ""
@@ -2286,11 +2243,11 @@ msgstr ""
 
 #: gnu/installer/newt/substitutes.scm:32
 msgid "Enable"
-msgstr "启用"
+msgstr ""
 
 #: gnu/installer/newt/substitutes.scm:32
 msgid "Disable"
-msgstr "禁用"
+msgstr ""
 
 #: gnu/installer/newt/substitutes.scm:33
 msgid ""
@@ -2301,23 +2258,23 @@ msgstr ""
 
 #: gnu/installer/newt/timezone.scm:59
 msgid "Please select a timezone."
-msgstr "请选择时区。"
+msgstr ""
 
 #: gnu/installer/newt/user.scm:47
 msgid "Name"
-msgstr "名称"
+msgstr ""
 
 #: gnu/installer/newt/user.scm:49
 msgid "Real name"
-msgstr "真名"
+msgstr ""
 
 #: gnu/installer/newt/user.scm:51
 msgid "Home directory"
-msgstr "主目录"
+msgstr ""
 
 #: gnu/installer/newt/user.scm:53
 msgid "Password"
-msgstr "密码"
+msgstr ""
 
 #: gnu/installer/newt/user.scm:124
 msgid "Empty inputs are not allowed."
@@ -2343,7 +2300,7 @@ msgstr ""
 
 #: gnu/installer/newt/user.scm:190
 msgid "System administrator password"
-msgstr "系统管理员密码"
+msgstr ""
 
 #: gnu/installer/newt/user.scm:203
 msgid "Please add at least one user to system using the 'Add' button."
@@ -2351,11 +2308,11 @@ msgstr ""
 
 #: gnu/installer/newt/user.scm:206
 msgid "Add"
-msgstr "添加"
+msgstr ""
 
 #: gnu/installer/newt/user.scm:207
 msgid "Delete"
-msgstr "删除"
+msgstr ""
 
 #: gnu/installer/newt/user.scm:267
 msgid "Please create at least one user."
@@ -2393,10 +2350,8 @@ msgid "Hardware support warning"
 msgstr ""
 
 #: gnu/installer/newt/welcome.scm:163
-#, fuzzy
-#| msgid "Installation failed"
 msgid "Previous installation failed"
-msgstr "安装失败"
+msgstr ""
 
 #: gnu/installer/newt/welcome.scm:166
 msgid "It seems that the previous installation exited unexpectedly and generated a core dump.  Do you want to continue or to report the failure first?"
@@ -2476,7 +2431,7 @@ msgstr ""
 
 #: gnu/installer/parted.scm:507 gnu/installer/parted.scm:544
 msgid "Free space"
-msgstr "空闲空间"
+msgstr ""
 
 #: gnu/installer/parted.scm:633
 #, scheme-format
@@ -2485,7 +2440,7 @@ msgstr ""
 
 #: gnu/installer/parted.scm:634 gnu/installer/parted.scm:680
 msgid "None"
-msgstr "无"
+msgstr ""
 
 #: gnu/installer/parted.scm:639
 #, scheme-format
@@ -2664,10 +2619,9 @@ msgid "~a: invalid system type; must be a string"
 msgstr ""
 
 #: gnu/machine/ssh.scm:129
-#, fuzzy, scheme-format
-#| msgid "~a: unknown node type~%"
+#, scheme-format
 msgid "~a: unknown system type"
-msgstr "~a: 未知节点类型~%"
+msgstr ""
 
 #: gnu/machine/ssh.scm:135 guix/ui.scm:2260
 #, scheme-format
@@ -2680,9 +2634,9 @@ msgid "<machine-ssh-configuration> without a 'host-key' is deprecated~%"
 msgstr ""
 
 #: gnu/machine/ssh.scm:236
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "device '~a' not found: ~a"
-msgstr "guix：~a：未找到命令~%"
+msgstr ""
 
 #: gnu/machine/ssh.scm:251
 #, scheme-format
@@ -2720,10 +2674,9 @@ msgid "an error occurred while upgrading services on '~a':~%~{~s ~}~%"
 msgstr ""
 
 #: gnu/machine/ssh.scm:548
-#, fuzzy, scheme-format
-#| msgid "failed to connect to `~a': ~a~%"
+#, scheme-format
 msgid "failed to install bootloader on '~a':~%~{~s ~}~%"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: gnu/machine/ssh.scm:581
 msgid "could not roll-back machine"
@@ -2746,7 +2699,7 @@ msgstr ""
 #: gnu/packages/bootstrap.scm:186
 #, scheme-format
 msgid "could not find bootstrap binary '~a' for system '~a'"
-msgstr "无法找到引导二进制 '~a'，用于系统 '~a'"
+msgstr ""
 
 #: gnu/packages/bootstrap.scm:570
 msgid "Raw build system with direct store access"
@@ -2775,15 +2728,15 @@ msgstr ""
 
 #: guix/scripts.scm:85
 msgid "main commands"
-msgstr "主要命令"
+msgstr ""
 
 #: guix/scripts.scm:86
 msgid "software development commands"
-msgstr "软件开发命令"
+msgstr ""
 
 #: guix/scripts.scm:87
 msgid "packaging commands"
-msgstr "打包命令"
+msgstr ""
 
 #: guix/scripts.scm:88
 msgid "plumbing commands"
@@ -2791,7 +2744,7 @@ msgstr ""
 
 #: guix/scripts.scm:89
 msgid "internal commands"
-msgstr "内部命令"
+msgstr ""
 
 #: guix/scripts.scm:90
 msgid "extension commands"
@@ -2800,7 +2753,7 @@ msgstr ""
 #: guix/scripts.scm:135
 #, scheme-format
 msgid "invalid argument: ~a~%"
-msgstr "无效参数: ~a~%"
+msgstr ""
 
 #: guix/scripts.scm:167 guix/scripts/import.scm:107
 #: guix/scripts/system.scm:1413 guix/scripts/system/edit.scm:42
@@ -2814,6 +2767,7 @@ msgstr ""
 msgid "Your Guix installation is ~a day old.\n"
 msgid_plural "Your Guix installation is ~a days old.\n"
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/scripts.scm:257
 #, scheme-format
@@ -2838,9 +2792,9 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/build.scm:87
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "cannot access build log at '~a':~%"
-msgstr "无法访问 `~a': ~a~%"
+msgstr ""
 
 #: guix/scripts/build.scm:141
 #, scheme-format
@@ -2856,49 +2810,36 @@ msgid ""
 "\n"
 "  -L, --load-path=DIR    prepend DIR to the package module search path"
 msgstr ""
-"\n"
-"  -L, --load-path=目录   将 <目录> 加入到软件包模块搜索目录之前"
 
 #: guix/scripts/build.scm:158
 msgid ""
 "\n"
 "  -K, --keep-failed      keep build tree of failed builds"
 msgstr ""
-"\n"
-"  -K, --keep-failed      保留失败构建的构建树"
 
 #: guix/scripts/build.scm:160
-#, fuzzy
 msgid ""
 "\n"
 "  -k, --keep-going       keep going when some of the derivations fail"
 msgstr ""
-"\n"
-"  -n, --dry-run          不要构建派生包"
 
 #: guix/scripts/build.scm:162
 msgid ""
 "\n"
 "  -n, --dry-run          do not build the derivations"
 msgstr ""
-"\n"
-"  -n, --dry-run          不要构建派生包"
 
 #: guix/scripts/build.scm:164
 msgid ""
 "\n"
 "      --fallback         fall back to building when the substituter fails"
 msgstr ""
-"\n"
-"      --fallback         如果替换器失败，回落到构建"
 
 #: guix/scripts/build.scm:166
 msgid ""
 "\n"
 "      --no-substitutes   build instead of resorting to pre-built substitutes"
 msgstr ""
-"\n"
-"      --no-substitutes   构建而不使用预先构建的替代品"
 
 #: guix/scripts/build.scm:168 guix/scripts/size.scm:234
 msgid ""
@@ -2906,9 +2847,6 @@ msgid ""
 "      --substitute-urls=URLS\n"
 "                         fetch substitute from URLS if they are authorized"
 msgstr ""
-"\n"
-"      --substitute-urls=URLS\n"
-"                         从 URLS 获取替代品，如果这些链接被授权的话"
 
 #: guix/scripts/build.scm:171
 msgid ""
@@ -2954,13 +2892,10 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/build.scm:186
-#, fuzzy
 msgid ""
 "\n"
 "      --debug=LEVEL      produce debugging output at LEVEL"
 msgstr ""
-"\n"
-"      --verbose          生成详细的输出"
 
 #: guix/scripts/build.scm:190
 msgid ""
@@ -2985,8 +2920,6 @@ msgid ""
 "\n"
 "  -s, --system=SYSTEM    attempt to build for SYSTEM--e.g., \"i686-linux\""
 msgstr ""
-"\n"
-"  -s, --system=系统      尝试为 <系统> 构建包——比如，\"i686-linux\""
 
 #: guix/scripts/build.scm:215
 msgid "'--keep-failed' ignored since you are talking to a remote daemon\n"
@@ -3011,9 +2944,9 @@ msgid "The available targets are:\n"
 msgstr ""
 
 #: guix/scripts/build.scm:373
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "'~a' is not a supported cross-compilation target~%"
-msgstr "~a: 无效的数字~%"
+msgstr ""
 
 #: guix/scripts/build.scm:377
 #, scheme-format
@@ -3028,9 +2961,9 @@ msgid "Try @option{--list-targets} to view available targets.~%"
 msgstr ""
 
 #: guix/scripts/build.scm:400
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "'~a' is not a supported system~%"
-msgstr "~a: 无效的数字~%"
+msgstr ""
 
 #: guix/scripts/build.scm:404
 #, scheme-format
@@ -3122,13 +3055,10 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/build.scm:456
-#, fuzzy
 msgid ""
 "\n"
 "  -q, --quiet            do not show the build log"
 msgstr ""
-"\n"
-"  -n, --dry-run          不要构建派生包"
 
 #: guix/scripts/build.scm:458
 msgid ""
@@ -3164,8 +3094,6 @@ msgid ""
 "\n"
 "  -V, --version          display version information and exit"
 msgstr ""
-"\n"
-"  -V, --version              显示程序版本然后离开"
 
 #: guix/scripts/build.scm:498
 #, scheme-format
@@ -3204,14 +3132,14 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/build.scm:658
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "package ~a does not support ~a~%"
-msgstr "包 `~a' 缺乏输出 `~a'~%"
+msgstr ""
 
 #: guix/scripts/build.scm:677
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "package '~a' has no source~%"
-msgstr "包 `~a' 缺乏输出 `~a'~%"
+msgstr ""
 
 #: guix/scripts/build.scm:725
 #, scheme-format
@@ -3234,15 +3162,12 @@ msgid "warning: "
 msgstr ""
 
 #: guix/diagnostics.scm:160
-#, fuzzy
-#| msgid "error: %s\n"
 msgid "error: "
-msgstr "错误：%s\n"
+msgstr ""
 
 #: guix/diagnostics.scm:263
-#, fuzzy
 msgid "<unknown location>"
-msgstr "<未知位置>"
+msgstr ""
 
 #: guix/diagnostics.scm:325
 #, scheme-format
@@ -3250,25 +3175,23 @@ msgid "format string got ~a arguments, expected ~a~%"
 msgstr ""
 
 #: guix/diagnostics.scm:355
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "file '~a' not found on load path"
-msgstr "guix：~a：未找到命令~%"
+msgstr ""
 
 #: guix/discovery.scm:95
 #, scheme-format
 msgid "cannot access `~a': ~a~%"
-msgstr "无法访问 `~a': ~a~%"
+msgstr ""
 
 #: guix/ci.scm:341
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "could not find available substitutes at ~a~%"
-msgstr "'~a'~% 签名无效"
+msgstr ""
 
 #: guix/cve.scm:200
-#, fuzzy
-#| msgid "invalid license field"
 msgid "invalid CVE feed"
-msgstr "无效的许可证字段"
+msgstr ""
 
 #: guix/cve.scm:202
 #, scheme-format
@@ -3326,10 +3249,9 @@ msgid "Would you like to add this key to keyring '~a'?~%"
 msgstr ""
 
 #: guix/graph.scm:347
-#, fuzzy, scheme-format
-#| msgid "~a: unknown backend~%"
+#, scheme-format
 msgid "~a: unknown graph backend"
-msgstr "~a：未知后端~%"
+msgstr ""
 
 #. TRANSLATORS: 'modify-phases' is a Scheme syntax
 #. and should not be translated.
@@ -3339,10 +3261,8 @@ msgstr ""
 
 #. TRANSLATORS: See ‘modify-phases’ in the manual.
 #: guix/lint.scm:228
-#, fuzzy
-#| msgid "invalid hash"
 msgid "invalid phase clause"
-msgstr "无效哈希"
+msgstr ""
 
 #: guix/lint.scm:275
 msgid "name should be longer than a single character"
@@ -3360,7 +3280,7 @@ msgstr ""
 
 #: guix/lint.scm:331
 msgid "description should not be empty"
-msgstr "描述不应为空"
+msgstr ""
 
 #: guix/lint.scm:342
 msgid "Texinfo markup in description is invalid"
@@ -3401,7 +3321,7 @@ msgstr ""
 #: guix/lint.scm:455
 #, scheme-format
 msgid "invalid description: ~s"
-msgstr "无效的描述：~s"
+msgstr ""
 
 #: guix/lint.scm:526
 #, scheme-format
@@ -3456,9 +3376,9 @@ msgid "synopsis should not be empty"
 msgstr ""
 
 #: guix/lint.scm:721
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "invalid synopsis: ~s"
-msgstr "无效语法: ~a~%"
+msgstr ""
 
 #: guix/lint.scm:827
 #, scheme-format
@@ -3473,13 +3393,12 @@ msgstr ""
 #: guix/lint.scm:842
 #, scheme-format
 msgid "~a: TLS certificate error: ~a"
-msgstr "~a：TLS 证书错误：~a"
+msgstr ""
 
 #: guix/lint.scm:847
-#, fuzzy, scheme-format
-#| msgid "~a: TLS certificate error: ~a"
+#, scheme-format
 msgid "~a: TLS error in '~a': ~a~%"
-msgstr "~a：TLS 证书错误：~a"
+msgstr ""
 
 #: guix/lint.scm:858 guix/ui.scm:851 guix/scripts/offload.scm:194
 #, scheme-format
@@ -3497,9 +3416,9 @@ msgid "permanent redirect from ~a to ~a"
 msgstr ""
 
 #: guix/lint.scm:905
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "invalid permanent redirect from ~a"
-msgstr "含糊的软件包规范 `~a'~%"
+msgstr ""
 
 #: guix/lint.scm:911 guix/lint.scm:921
 #, scheme-format
@@ -3519,16 +3438,16 @@ msgstr ""
 #: guix/lint.scm:941
 #, scheme-format
 msgid "TLS certificate error: ~a"
-msgstr "TLS 证书错误：~a"
+msgstr ""
 
 #: guix/lint.scm:968
 msgid "invalid value for home page"
-msgstr "无效的主页值"
+msgstr ""
 
 #: guix/lint.scm:973
 #, scheme-format
 msgid "invalid home page URL: ~s"
-msgstr "无效的主页 URL：~s"
+msgstr ""
 
 #: guix/lint.scm:1010
 msgid "file names of patches should start with the package name"
@@ -3550,9 +3469,9 @@ msgid "~a: patch lacks comment and upstream status"
 msgstr ""
 
 #: guix/lint.scm:1121
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "proposed synopsis: ~s~%"
-msgstr "无效语法: ~a~%"
+msgstr ""
 
 #: guix/lint.scm:1135
 #, scheme-format
@@ -3577,9 +3496,9 @@ msgid "URL should be '~a'"
 msgstr ""
 
 #: guix/lint.scm:1323
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "while accessing '~a'"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #. TRANSLATORS: check and #:tests? are a
 #. Scheme symbol and keyword respectively
@@ -3589,9 +3508,9 @@ msgid "the 'check' phase should respect #:tests?"
 msgstr ""
 
 #: guix/lint.scm:1376 guix/lint.scm:1387 guix/lint.scm:1395 guix/lint.scm:1399
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to create ~a derivation: ~a"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/lint.scm:1381
 #, scheme-format
@@ -3605,7 +3524,7 @@ msgstr ""
 
 #: guix/lint.scm:1461
 msgid "invalid license field"
-msgstr "无效的许可证字段"
+msgstr ""
 
 #: guix/lint.scm:1468
 msgid "while retrieving CVE vulnerabilities"
@@ -3617,9 +3536,9 @@ msgid "probably vulnerable to ~a"
 msgstr ""
 
 #: guix/lint.scm:1522
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "no updater for ~a"
-msgstr "'~a'~% 签名无效"
+msgstr ""
 
 #: guix/lint.scm:1527 guix/lint.scm:1705
 #, scheme-format
@@ -3629,7 +3548,7 @@ msgstr ""
 #: guix/lint.scm:1536
 #, scheme-format
 msgid "can be upgraded to ~a"
-msgstr "可升级至 ~a"
+msgstr ""
 
 #: guix/lint.scm:1542
 #, scheme-format
@@ -3637,9 +3556,9 @@ msgid "updater '~a' failed to find upstream releases"
 msgstr ""
 
 #: guix/lint.scm:1569
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to access Disarchive database at ~a"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/lint.scm:1596
 msgid "Software Heritage rate limit reached; try again later"
@@ -3703,9 +3622,8 @@ msgid "parentheses feel lonely, move to the previous or next line"
 msgstr ""
 
 #: guix/lint.scm:1848
-#, fuzzy
 msgid "source file not found"
-msgstr "未找到模块 ~a"
+msgstr ""
 
 #: guix/lint.scm:1860
 msgid "Validate package names"
@@ -3857,9 +3775,9 @@ msgid "unsupported hash format: ~a~%"
 msgstr ""
 
 #: guix/scripts/download.scm:131 guix/scripts/hash.scm:110
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: unknown hash algorithm~%"
-msgstr "~a：未知操作~%"
+msgstr ""
 
 #: guix/scripts/download.scm:159
 msgid "download a file to the store and print its hash"
@@ -3885,7 +3803,7 @@ msgstr ""
 #: guix/scripts/download.scm:189
 #, scheme-format
 msgid "~a: download failed~%"
-msgstr "~a：下载失败~%"
+msgstr ""
 
 #: guix/scripts/package.scm:130
 #, scheme-format
@@ -3905,7 +3823,7 @@ msgstr ""
 #: guix/scripts/package.scm:268
 #, scheme-format
 msgid "package '~a' no longer exists~%"
-msgstr "软件包“~a”已不再存在~%"
+msgstr ""
 
 #: guix/scripts/package.scm:323
 #, scheme-format
@@ -4119,9 +4037,9 @@ msgid "cannot install non-package object: ~s~%"
 msgstr ""
 
 #: guix/scripts/package.scm:917
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a~@[@~a~]: package not found~%"
-msgstr "~a: 未找到补丁"
+msgstr ""
 
 #: guix/scripts/package.scm:964 guix/scripts/pull.scm:724
 #, scheme-format
@@ -4138,28 +4056,22 @@ msgid "manage packages and profiles"
 msgstr ""
 
 #: guix/scripts/install.scm:31
-#, fuzzy
 msgid ""
 "Usage: guix install [OPTION] PACKAGES...\n"
 "Install the given PACKAGES.\n"
 "This is an alias for 'guix package -i'.\n"
 msgstr ""
-"用法：guix size [选项]... 软件包\n"
-"报告 <软件包> 及其依赖的大小。\n"
 
 #: guix/scripts/install.scm:71
 msgid "install packages"
 msgstr ""
 
 #: guix/scripts/remove.scm:30
-#, fuzzy
 msgid ""
 "Usage: guix remove [OPTION] PACKAGES...\n"
 "Remove the given PACKAGES.\n"
 "This is an alias for 'guix package -r'.\n"
 msgstr ""
-"用法：guix size [选项]... 软件包\n"
-"报告 <软件包> 及其依赖的大小。\n"
 
 #: guix/scripts/remove.scm:67
 msgid "remove installed packages"
@@ -4198,13 +4110,10 @@ msgid "missing arguments: no regular expressions to search for~%"
 msgstr ""
 
 #: guix/scripts/show.scm:30
-#, fuzzy
 msgid ""
 "Usage: guix show [OPTION] PACKAGE...\n"
 "Show details about PACKAGE."
 msgstr ""
-"用法：guix size [选项]... 软件包\n"
-"报告 <软件包> 及其依赖的大小。\n"
 
 #: guix/scripts/show.scm:32
 msgid ""
@@ -4302,13 +4211,10 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/gc.scm:80
-#, fuzzy
 msgid ""
 "\n"
 "      --derivers         list the derivers of PATHS"
 msgstr ""
-"\n"
-"      --verbose          生成详细的输出"
 
 #: guix/scripts/gc.scm:83
 msgid ""
@@ -4338,9 +4244,9 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/gc.scm:107
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: invalid '--verify' option~%"
-msgstr "~a: 无效的数字~%"
+msgstr ""
 
 #: guix/scripts/gc.scm:155
 #, scheme-format
@@ -4366,19 +4272,17 @@ msgid "already ~,2h MiBs available on ~a, nothing to do~%"
 msgstr ""
 
 #: guix/scripts/gc.scm:267
-#, fuzzy
 msgid "freeing ~,2h MiBs~%"
-msgstr "正删除 ~a~%"
+msgstr ""
 
 #: guix/scripts/gc.scm:307
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "extraneous arguments: ~{~a ~}~%"
-msgstr "无效参数: ~a~%"
+msgstr ""
 
 #: guix/scripts/gc.scm:331 guix/scripts/gc.scm:334
-#, fuzzy
 msgid "freed ~,2h MiBs~%"
-msgstr "正删除 ~a~%"
+msgstr ""
 
 #: guix/scripts/git.scm:26
 msgid ""
@@ -4421,15 +4325,11 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/git/authenticate.scm:96
-#, fuzzy
 msgid ""
 "\n"
 "  -r, --repository=DIRECTORY\n"
 "                         open the Git repository at DIRECTORY"
 msgstr ""
-"\n"
-"      --substitute-urls=URLS\n"
-"                         与 URLS 的构建结果对比"
 
 #: guix/scripts/git/authenticate.scm:99
 msgid ""
@@ -4451,15 +4351,11 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/git/authenticate.scm:106
-#, fuzzy
 msgid ""
 "\n"
 "      --historical-authorizations=FILE\n"
 "                         read historical authorizations from FILE"
 msgstr ""
-"\n"
-"      --substitute-urls=URLS\n"
-"                         与 URLS 的构建结果对比"
 
 #: guix/scripts/git/authenticate.scm:138
 msgid "Authenticating commits ~a to ~a (~h new commits)...~%"
@@ -4489,10 +4385,9 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/hash.scm:134
-#, fuzzy, scheme-format
-#| msgid "'vm-image' is deprecated: use 'image' instead~%"
+#, scheme-format
 msgid "'--recursive' is deprecated, use '--serializer=nar' instead~%"
-msgstr "'vm-image' 已被弃用：用 'image' 代替 ~%"
+msgstr ""
 
 #: guix/scripts/hash.scm:149
 #, scheme-format
@@ -4504,14 +4399,14 @@ msgid "compute the cryptographic hash of a file"
 msgstr ""
 
 #: guix/scripts/hash.scm:198
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a ~a~%"
-msgstr "正删除 ~a~%"
+msgstr ""
 
 #: guix/scripts/hash.scm:207
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "no arguments specified~%"
-msgstr "未指定配置文件~%"
+msgstr ""
 
 #: guix/scripts/import.scm:59
 msgid ""
@@ -4538,9 +4433,9 @@ msgid "'~a' import failed~%"
 msgstr ""
 
 #: guix/scripts/import.scm:105
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: invalid importer~%"
-msgstr "~a: 无效的数字~%"
+msgstr ""
 
 #: guix/scripts/import/minetest.scm:44
 msgid ""
@@ -4565,9 +4460,9 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/import/minetest.scm:62
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: not a valid key to sort by~%"
-msgstr "~a: 无效的数字~%"
+msgstr ""
 
 #: guix/scripts/import/minetest.scm:115 guix/scripts/import/cran.scm:135
 #: guix/scripts/import/elpa.scm:116 guix/scripts/import/cpan.scm:87
@@ -4578,7 +4473,7 @@ msgstr "~a: 无效的数字~%"
 #: guix/scripts/import/stackage.scm:130 guix/scripts/import/texlive.scm:101
 #, scheme-format
 msgid "too few arguments~%"
-msgstr "太少参数~%"
+msgstr ""
 
 #: guix/scripts/import/minetest.scm:117 guix/scripts/import/cran.scm:137
 #: guix/scripts/import/elpa.scm:118 guix/scripts/import/cpan.scm:89
@@ -4590,7 +4485,7 @@ msgstr "太少参数~%"
 #: guix/scripts/import/texlive.scm:103
 #, scheme-format
 msgid "too many arguments~%"
-msgstr "太多参数~%"
+msgstr ""
 
 #: guix/scripts/import/cran.scm:45
 msgid ""
@@ -4611,15 +4506,11 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/import/cran.scm:55
-#, fuzzy
 msgid ""
 "\n"
 "  -p, --license-prefix=PREFIX\n"
 "                         add custom prefix to licenses"
 msgstr ""
-"\n"
-"      --substitute-urls=URLS\n"
-"                         与 URLS 的构建结果对比"
 
 #: guix/scripts/import/cran.scm:131 guix/scripts/import/texlive.scm:97
 #, scheme-format
@@ -4643,8 +4534,6 @@ msgid ""
 "\n"
 "  -h, --help                     display this help and exit"
 msgstr ""
-"\n"
-"  -h, --help                     显示这份说明然后离开"
 
 #: guix/scripts/import/elpa.scm:52
 msgid ""
@@ -4657,8 +4546,6 @@ msgid ""
 "\n"
 "  -V, --version                  display version information and exit"
 msgstr ""
-"\n"
-"  -V, --version                  显示程序版本然后离开"
 
 #: guix/scripts/import/elpa.scm:99
 #, scheme-format
@@ -4686,14 +4573,10 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/pull.scm:87
-#, fuzzy
 msgid ""
 "\n"
 "      --url=URL          download \"guix\" channel from the Git repository at URL"
 msgstr ""
-"\n"
-"      --substitute-urls=URLS\n"
-"                         与 URLS 的构建结果对比"
 
 #: guix/scripts/pull.scm:89
 msgid ""
@@ -4721,13 +4604,10 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/pull.scm:98
-#, fuzzy
 msgid ""
 "\n"
 "  -N, --news             display news compared to the previous generation"
 msgstr ""
-"\n"
-"  -h, --help                 显示这份说明然后离开"
 
 #: guix/scripts/pull.scm:103
 msgid ""
@@ -4785,18 +4665,19 @@ msgstr ""
 msgid "  ~a new channel:~%"
 msgid_plural "  ~a new channels:~%"
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/scripts/pull.scm:369
 #, scheme-format
 msgid "  ~a channel removed:~%"
 msgid_plural "  ~a channels removed:~%"
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/scripts/pull.scm:433
-#, fuzzy, scheme-format
-#| msgid "cannot switch to system generation '~a'~%"
+#, scheme-format
 msgid "no channel news since generation ~a~%"
-msgstr "不能切换到系统生成 '~a'~%"
+msgstr ""
 
 #: guix/scripts/pull.scm:434
 msgid ""
@@ -4826,20 +4707,21 @@ msgid "Migrating profile generations to '~a'...~%"
 msgstr ""
 
 #: guix/scripts/pull.scm:549
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "while creating symlink '~a': ~a~%"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/scripts/pull.scm:638
 msgid "  ~h new package: ~a~%"
 msgid_plural "  ~h new packages: ~a~%"
-msgstr[0] "  ~h 新软件包： ~a~%"
+msgstr[0] ""
+msgstr[1] ""
 
 #: guix/scripts/pull.scm:646
-#, fuzzy
 msgid "  ~h package upgraded: ~a~%"
 msgid_plural "  ~h packages upgraded: ~a~%"
-msgstr[0] "可升级至 ~a"
+msgstr[0] ""
+msgstr[1] ""
 
 #: guix/scripts/pull.scm:748
 #, scheme-format
@@ -4854,9 +4736,9 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/pull.scm:809
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "directory '~a' is not owned by user ~a"
-msgstr "guix：~a：未找到命令~%"
+msgstr ""
 
 #: guix/scripts/pull.scm:814
 #, scheme-format
@@ -4872,6 +4754,7 @@ msgstr ""
 msgid "Building from this channel:~%"
 msgid_plural "Building from these channels:~%"
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/scripts/substitute.scm:83
 #, scheme-format
@@ -4910,9 +4793,9 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/substitute.scm:326
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "updating substitutes from '~a'... ~5,1f%"
-msgstr "'~a'~% 签名无效"
+msgstr ""
 
 #: guix/scripts/substitute.scm:482
 #, scheme-format
@@ -4940,9 +4823,9 @@ msgid "Downloading ~a...~%"
 msgstr ""
 
 #: guix/scripts/substitute.scm:507
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "no valid nar URLs for ~a at ~a~%"
-msgstr "'~a'~% 签名无效"
+msgstr ""
 
 #: guix/scripts/substitute.scm:618
 #, scheme-format
@@ -4950,14 +4833,14 @@ msgid "download from '~a' failed: ~a, ~s~%"
 msgstr ""
 
 #: guix/scripts/substitute.scm:638
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to find alternative substitute for '~a'~%"
-msgstr "'~a'~% 签名无效"
+msgstr ""
 
 #: guix/scripts/substitute.scm:673
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "no valid substitute for '~a'~%"
-msgstr "'~a'~% 签名无效"
+msgstr ""
 
 #: guix/scripts/substitute.scm:678
 #, scheme-format
@@ -4969,9 +4852,9 @@ msgid "ACL for archive imports seems to be uninitialized, substitutes may be una
 msgstr ""
 
 #: guix/scripts/substitute.scm:801
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: invalid URI~%"
-msgstr "~a: 无效的数字~%"
+msgstr ""
 
 #: guix/scripts/substitute.scm:810
 msgid "implement the build daemon's substituter protocol"
@@ -4980,27 +4863,27 @@ msgstr ""
 #: guix/scripts/substitute.scm:892
 #, scheme-format
 msgid "~a: unrecognized options~%"
-msgstr "~a: 无法识别的选项~%"
+msgstr ""
 
 #: guix/scripts/authenticate.scm:64
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to load key pair at '~a': ~a~%"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/scripts/authenticate.scm:86
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "invalid signature: ~a"
-msgstr "无效签名"
+msgstr ""
 
 #: guix/scripts/authenticate.scm:89
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "unauthorized public key: ~a"
-msgstr "公钥未被授权"
+msgstr ""
 
 #: guix/scripts/authenticate.scm:92
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "corrupt signature data: ~a"
-msgstr "签名数据损坏"
+msgstr ""
 
 #: guix/scripts/authenticate.scm:151
 msgid "sign or verify signatures on normalized archives (nars)"
@@ -5014,14 +4897,14 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/authenticate.scm:218
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~s: invalid command; ignoring~%"
-msgstr "~a: 无效的数字~%"
+msgstr ""
 
 #: guix/scripts/authenticate.scm:223
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "wrong arguments~%"
-msgstr "参数有误"
+msgstr ""
 
 #: guix/scripts/system.scm:178
 #, scheme-format
@@ -5049,9 +4932,9 @@ msgid "while talking to shepherd: ~a~%"
 msgstr ""
 
 #: guix/scripts/system.scm:289
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "service '~a' could not be found~%"
-msgstr "guix：~a：未找到命令~%"
+msgstr ""
 
 #: guix/scripts/system.scm:292
 #, scheme-format
@@ -5066,7 +4949,7 @@ msgstr ""
 #: guix/scripts/system.scm:304
 #, scheme-format
 msgid "something went wrong: ~s~%"
-msgstr "出了点问题：~s~%"
+msgstr ""
 
 #: guix/scripts/system.scm:307
 #, scheme-format
@@ -5076,20 +4959,18 @@ msgstr ""
 #: guix/scripts/system.scm:311
 #, scheme-format
 msgid "some services could not be upgraded~%"
-msgstr "有些服务无法升级~%"
+msgstr ""
 
 #: guix/scripts/system.scm:312
 msgid ""
 "To allow changes to all the system services to take\n"
 "effect, you will need to reboot."
 msgstr ""
-"要让所有对系统服务的更改生\n"
-"效，你需要重新启动。"
 
 #: guix/scripts/system.scm:378
 #, scheme-format
 msgid "cannot switch to system generation '~a'~%"
-msgstr "不能切换到系统生成 '~a'~%"
+msgstr ""
 
 #: guix/scripts/system.scm:454
 msgid "the DAG of services"
@@ -5107,7 +4988,7 @@ msgstr ""
 #: guix/scripts/system.scm:486 guix/scripts/home.scm:771
 #, scheme-format
 msgid "      branch: ~a~%"
-msgstr "      分支：~a~%"
+msgstr ""
 
 #: guix/scripts/system.scm:487 guix/scripts/home.scm:772
 #, scheme-format
@@ -5117,7 +4998,7 @@ msgstr ""
 #: guix/scripts/system.scm:507 guix/scripts/home.scm:785
 #, scheme-format
 msgid "  file name: ~a~%"
-msgstr "  文件名：~a~%"
+msgstr ""
 
 #: guix/scripts/system.scm:508 guix/scripts/home.scm:786
 #, scheme-format
@@ -5133,7 +5014,7 @@ msgstr ""
 #: guix/scripts/system.scm:511
 #, scheme-format
 msgid "  bootloader: ~a~%"
-msgstr "  引导加载程序：~a~%"
+msgstr ""
 
 #. TRANSLATORS: The '~[', '~;', and '~]' sequences in this string must
 #. be preserved.  They denote conditionals, such that the result will
@@ -5151,12 +5032,12 @@ msgstr ""
 #: guix/scripts/system.scm:527
 #, scheme-format
 msgid "  kernel: ~a~%"
-msgstr "  内核：~a~%"
+msgstr ""
 
 #: guix/scripts/system.scm:532
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "  multiboot: ~a~%"
-msgstr "  文件名：~a~%"
+msgstr ""
 
 #. TRANSLATORS: Here "channel" is the same terminology as used in
 #. "guix describe" and "guix pull --channels".
@@ -5168,16 +5049,16 @@ msgstr ""
 #: guix/scripts/system.scm:541 guix/scripts/home.scm:795
 #, scheme-format
 msgid "  configuration file: ~a~%"
-msgstr "  配置文件：~a~%"
+msgstr ""
 
 #: guix/scripts/system.scm:546 guix/scripts/home.scm:800
 msgid "  packages:\n"
 msgstr ""
 
 #: guix/scripts/system.scm:626
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "device '~a' not found: ~a~%"
-msgstr "guix：~a：未找到命令~%"
+msgstr ""
 
 #: guix/scripts/system.scm:629
 #, scheme-format
@@ -5189,38 +5070,37 @@ msgstr ""
 #: guix/scripts/system.scm:638
 #, scheme-format
 msgid "file system with label '~a' not found~%"
-msgstr "未找到标签为 '~a' 的文件系统 ~%"
+msgstr ""
 
 #: guix/scripts/system.scm:644
 #, scheme-format
 msgid "file system with UUID '~a' not found~%"
-msgstr "未找到 UUID 为 '~a' 的文件系统 ~%"
+msgstr ""
 
 #: guix/scripts/system.scm:732
 #, scheme-format
 msgid "'disk-image' is deprecated: use 'image' instead~%"
-msgstr "'disk-image' 已被弃用：用 'image' 代替 ~%"
+msgstr ""
 
 #: guix/scripts/system.scm:734
 #, scheme-format
 msgid "'vm-image' is deprecated: use 'image' instead~%"
-msgstr "'vm-image' 已被弃用：用 'image' 代替 ~%"
+msgstr ""
 
 #: guix/scripts/system.scm:736
-#, fuzzy, scheme-format
-#| msgid "'disk-image' is deprecated: use 'image' instead~%"
+#, scheme-format
 msgid "'docker-image' is deprecated: use 'image' instead~%"
-msgstr "'disk-image' 已被弃用：用 'image' 代替 ~%"
+msgstr ""
 
 #: guix/scripts/system.scm:746
 #, scheme-format
 msgid "Consider running 'guix pull' before 'reconfigure'.~%"
-msgstr "考虑在 'reconfigure' 之前运行 'guix pull'。~%"
+msgstr ""
 
 #: guix/scripts/system.scm:747
 #, scheme-format
 msgid "Failing to do that may downgrade your system!~%"
-msgstr "如果不这样做，可能会使你的系统降级！~%"
+msgstr ""
 
 #: guix/scripts/system.scm:768 guix/scripts/system.scm:880
 #, scheme-format
@@ -5240,7 +5120,7 @@ msgstr ""
 
 #: guix/scripts/system.scm:887
 msgid "Run 'herd status' to view the list of services on your system.\n"
-msgstr "运行 'herd status' 以查看你系统上的服务的列表。\n"
+msgstr ""
 
 #: guix/scripts/system.scm:891
 #, scheme-format
@@ -5476,9 +5356,9 @@ msgid "both file and expression cannot be specified~%"
 msgstr ""
 
 #: guix/scripts/system.scm:1236 guix/scripts/home.scm:505
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "no configuration specified~%"
-msgstr "未指定配置文件~%"
+msgstr ""
 
 #: guix/scripts/system.scm:1265
 msgid "image lacks an operating-system"
@@ -5506,7 +5386,7 @@ msgstr ""
 #: guix/scripts/system.scm:1411 guix/scripts/home.scm:633
 #, scheme-format
 msgid "~a: unknown action~%"
-msgstr "~a：未知操作~%"
+msgstr ""
 
 #: guix/scripts/system.scm:1430 guix/scripts/home.scm:649
 #, scheme-format
@@ -5521,13 +5401,12 @@ msgstr ""
 #: guix/scripts/system.scm:1437
 #, scheme-format
 msgid "Try 'guix system --help' for more information.~%"
-msgstr "尝试 'guix --help' 以获取更多信息。~%"
+msgstr ""
 
 #: guix/scripts/system/edit.scm:32 guix/scripts/home/edit.scm:33
-#, fuzzy, scheme-format
-#| msgid "~a: unknown node type~%"
+#, scheme-format
 msgid "~a: no such service type~%"
-msgstr "~a: 未知节点类型~%"
+msgstr ""
 
 #: guix/scripts/system/edit.scm:50 guix/scripts/home/edit.scm:51
 #, scheme-format
@@ -5539,15 +5418,16 @@ msgstr ""
 msgid "~a: ~a matching service type~%"
 msgid_plural "~a: ~a matching service types~%"
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/scripts/system/search.scm:107 guix/ui.scm:1607 guix/ui.scm:1625
 msgid "unknown"
-msgstr "未知"
+msgstr ""
 
 #: guix/scripts/lint.scm:58
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a@~a: ~a~%"
-msgstr "~a：错误：~a~%"
+msgstr ""
 
 #: guix/scripts/lint.scm:82
 #, scheme-format
@@ -5601,9 +5481,8 @@ msgid "~a: invalid checker~%"
 msgstr ""
 
 #: guix/scripts/lint.scm:182
-#, fuzzy
 msgid "validate package definitions"
-msgstr "含糊的软件包规范 `~a'~%"
+msgstr ""
 
 #: guix/scripts/locate.scm:238
 #, scheme-format
@@ -5644,34 +5523,22 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/locate.scm:520
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -h, --help             display this help and exit"
 msgid ""
 "\n"
 "      --stats         display database statistics"
 msgstr ""
-"\n"
-"  -h, --help                 显示这份说明然后离开"
 
 #: guix/scripts/locate.scm:522
-#, fuzzy
 msgid ""
 "\n"
 "  -u, --update        force a database update"
 msgstr ""
-"\n"
-"  -n, --dry-run          不要构建派生包"
 
 #: guix/scripts/locate.scm:524
-#, fuzzy
 msgid ""
 "\n"
 "      --clear         clear the database"
 msgstr ""
-"\n"
-"      --verbose          生成详细的输出"
 
 #: guix/scripts/locate.scm:526
 msgid ""
@@ -5687,33 +5554,21 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/locate.scm:533
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -h, --help             display this help and exit"
 msgid ""
 "\n"
 "  -h, --help          display this help and exit"
 msgstr ""
-"\n"
-"  -h, --help                 显示这份说明然后离开"
 
 #: guix/scripts/locate.scm:535
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -V, --version          display version information and exit"
 msgid ""
 "\n"
 "  -V, --version       display version information and exit"
 msgstr ""
-"\n"
-"  -V, --version              显示程序版本然后离开"
 
 #: guix/scripts/locate.scm:568 guix/scripts/locate.scm:626
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: unknown indexing method~%"
-msgstr "~a：未知操作~%"
+msgstr ""
 
 #: guix/scripts/locate.scm:581
 msgid "search for packages providing a given file"
@@ -5725,9 +5580,9 @@ msgid "clearing database...~%"
 msgstr ""
 
 #: guix/scripts/locate.scm:638
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "indexing files from ~a...~%"
-msgstr "寻找最新版的 GNU~a..."
+msgstr ""
 
 #: guix/scripts/locate.scm:652
 #, scheme-format
@@ -5735,10 +5590,11 @@ msgid "no files to search for~%"
 msgstr ""
 
 #: guix/scripts/locate.scm:653
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "file~{ '~a'~} not found in database '~a'~%"
 msgid_plural "files~{ '~a'~} not found in database '~a'~%"
-msgstr[0] "guix：~a：未找到命令~%"
+msgstr[0] ""
+msgstr[1] ""
 
 #: guix/scripts/publish.scm:81
 #, scheme-format
@@ -5766,24 +5622,17 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/publish.scm:89
-#, fuzzy
 msgid ""
 "\n"
 "  -a, --advertise        advertise on the local network"
 msgstr ""
-"\n"
-"  -n, --dry-run          不要构建派生包"
 
 #: guix/scripts/publish.scm:91
-#, fuzzy
 msgid ""
 "\n"
 "  -C, --compression[=METHOD:LEVEL]\n"
 "                         compress archives with METHOD at LEVEL"
 msgstr ""
-"\n"
-"      --substitute-urls=URLS\n"
-"                         与 URLS 的构建结果对比"
 
 #: guix/scripts/publish.scm:94
 msgid ""
@@ -5856,14 +5705,14 @@ msgid "~a: unsupported compression type~%"
 msgstr ""
 
 #: guix/scripts/publish.scm:225 guix/scripts/publish.scm:232
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: invalid duration~%"
-msgstr "~a: 无效的数字~%"
+msgstr ""
 
 #: guix/scripts/publish.scm:1170
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "Advertising ~a~%."
-msgstr "正删除 ~a~%"
+msgstr ""
 
 #: guix/scripts/publish.scm:1205
 #, scheme-format
@@ -5911,9 +5760,9 @@ msgid "file '~a' not found in search path ~s~%"
 msgstr ""
 
 #: guix/scripts/edit.scm:94
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to launch '~a': ~a~%"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/scripts/edit.scm:100
 msgid "view and edit package definitions"
@@ -5935,7 +5784,7 @@ msgstr ""
 
 #: guix/scripts/size.scm:92
 msgid "total"
-msgstr "总用量"
+msgstr ""
 
 #: guix/scripts/size.scm:92
 msgid "self"
@@ -5954,13 +5803,10 @@ msgid "store profile"
 msgstr ""
 
 #: guix/scripts/size.scm:232
-#, fuzzy
 msgid ""
 "Usage: guix size [OPTION]... PACKAGE|STORE-ITEM\n"
 "Report the size of the PACKAGE or STORE-ITEM, with its dependencies.\n"
 msgstr ""
-"用法：guix size [选项]... 软件包\n"
-"报告 <软件包> 及其依赖的大小。\n"
 
 #. TRANSLATORS: "closure" and "self" must not be translated.
 #: guix/scripts/size.scm:238
@@ -5976,9 +5822,9 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/size.scm:272
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: invalid sorting key~%"
-msgstr "~a: 无效的数字~%"
+msgstr ""
 
 #: guix/scripts/size.scm:299
 msgid "profile the on-disk size of packages"
@@ -6049,7 +5895,7 @@ msgstr ""
 #: guix/scripts/graph.scm:431
 #, scheme-format
 msgid "~a: unknown node type~%"
-msgstr "~a: 未知节点类型~%"
+msgstr ""
 
 #: guix/scripts/graph.scm:435
 msgid "The available node types are:\n"
@@ -6103,13 +5949,10 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/graph.scm:537
-#, fuzzy
 msgid ""
 "\n"
 "      --path             display the shortest path between the given nodes"
 msgstr ""
-"\n"
-"  -h, --help                 显示这份说明然后离开"
 
 #: guix/scripts/graph.scm:569
 msgid "view and query package dependency graphs"
@@ -6130,11 +5973,12 @@ msgstr ""
 msgid "  differing file:~%"
 msgid_plural "  differing files:~%"
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/scripts/challenge.scm:325
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to delete '~a': ~a~%"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/scripts/challenge.scm:406
 #, scheme-format
@@ -6199,9 +6043,6 @@ msgid ""
 "      --substitute-urls=URLS\n"
 "                         compare build results with those at URLS"
 msgstr ""
-"\n"
-"      --substitute-urls=URLS\n"
-"                         与 URLS 的构建结果对比"
 
 #: guix/scripts/challenge.scm:455
 msgid ""
@@ -6216,23 +6057,23 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/challenge.scm:486
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: unknown diff mode~%"
-msgstr "~a：未知操作~%"
+msgstr ""
 
 #: guix/scripts/challenge.scm:517
 msgid "challenge substitute servers, comparing their binaries"
 msgstr ""
 
 #: guix/scripts/copy.scm:61
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: invalid TCP port number~%"
-msgstr "~a: 无效的数字~%"
+msgstr ""
 
 #: guix/scripts/copy.scm:63
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: invalid SSH specification~%"
-msgstr "含糊的软件包规范 `~a'~%"
+msgstr ""
 
 #: guix/scripts/copy.scm:67
 #, scheme-format
@@ -6284,9 +6125,9 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/pack.scm:193
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: invalid symlink specification~%"
-msgstr "含糊的软件包规范 `~a'~%"
+msgstr ""
 
 #: guix/scripts/pack.scm:365 guix/scripts/pack.scm:719
 #: guix/scripts/pack.scm:882
@@ -6347,37 +6188,25 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/pack.scm:1393
-#, fuzzy
 msgid ""
 "\n"
 "      --control-file=FILE\n"
 "                         Embed the provided control FILE"
 msgstr ""
-"\n"
-"      --substitute-urls=URLS\n"
-"                         与 URLS 的构建结果对比"
 
 #: guix/scripts/pack.scm:1396
-#, fuzzy
 msgid ""
 "\n"
 "      --postinst-file=FILE\n"
 "                         Embed the provided postinst script"
 msgstr ""
-"\n"
-"      --substitute-urls=URLS\n"
-"                         与 URLS 的构建结果对比"
 
 #: guix/scripts/pack.scm:1399
-#, fuzzy
 msgid ""
 "\n"
 "      --triggers-file=FILE\n"
 "                         Embed the provided triggers FILE"
 msgstr ""
-"\n"
-"      --substitute-urls=URLS\n"
-"                         与 URLS 的构建结果对比"
 
 #: guix/scripts/pack.scm:1412
 msgid ""
@@ -6386,48 +6215,32 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/pack.scm:1416
-#, fuzzy
 msgid ""
 "\n"
 "      --prein-file=FILE\n"
 "                         Embed the provided prein script"
 msgstr ""
-"\n"
-"      --substitute-urls=URLS\n"
-"                         与 URLS 的构建结果对比"
 
 #: guix/scripts/pack.scm:1419
-#, fuzzy
 msgid ""
 "\n"
 "      --postin-file=FILE\n"
 "                         Embed the provided postin script"
 msgstr ""
-"\n"
-"      --substitute-urls=URLS\n"
-"                         与 URLS 的构建结果对比"
 
 #: guix/scripts/pack.scm:1422
-#, fuzzy
 msgid ""
 "\n"
 "      --preun-file=FILE\n"
 "                         Embed the provided preun script"
 msgstr ""
-"\n"
-"      --substitute-urls=URLS\n"
-"                         与 URLS 的构建结果对比"
 
 #: guix/scripts/pack.scm:1425
-#, fuzzy
 msgid ""
 "\n"
 "      --postun-file=FILE\n"
 "                         Embed the provided postun script"
 msgstr ""
-"\n"
-"      --substitute-urls=URLS\n"
-"                         与 URLS 的构建结果对比"
 
 #: guix/scripts/pack.scm:1489
 #, scheme-format
@@ -6435,13 +6248,10 @@ msgid "~a: unsupported profile name~%"
 msgstr ""
 
 #: guix/scripts/pack.scm:1519
-#, fuzzy
 msgid ""
 "Usage: guix pack [OPTION]... PACKAGE...\n"
 "Create a bundle of PACKAGE.\n"
 msgstr ""
-"用法：guix size [选项]... 软件包\n"
-"报告 <软件包> 及其依赖的大小。\n"
 
 #: guix/scripts/pack.scm:1532
 msgid ""
@@ -6500,13 +6310,10 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/pack.scm:1559
-#, fuzzy
 msgid ""
 "\n"
 "  -d, --derivation       return the derivation of the pack"
 msgstr ""
-"\n"
-"  -n, --dry-run          不要构建派生包"
 
 #: guix/scripts/pack.scm:1563
 msgid ""
@@ -6534,9 +6341,9 @@ msgid "file provided with option ~a does not exist: ~a~%"
 msgstr ""
 
 #: guix/scripts/pack.scm:1714
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: unknown pack format~%"
-msgstr "~A: 未知包~%"
+msgstr ""
 
 #: guix/scripts/pack.scm:1741
 #, scheme-format
@@ -6559,9 +6366,8 @@ msgstr ""
 #. TRANSLATORS: it is quite possible zero store items are
 #. looked for.
 #: guix/scripts/weather.scm:198
-#, fuzzy
 msgid "looking for ~h store items on ~a...~%"
-msgstr "寻找最新版的 GNU~a..."
+msgstr ""
 
 #: guix/scripts/weather.scm:235
 msgid "  ~,1f% substitutes available (~h out of ~h)~%"
@@ -6635,29 +6441,21 @@ msgid "Substitutes are missing for the following items:~%"
 msgstr ""
 
 #: guix/scripts/weather.scm:321
-#, fuzzy
 msgid "unknown system"
-msgstr "未知"
+msgstr ""
 
 #: guix/scripts/weather.scm:336
-#, fuzzy
 msgid ""
 "Usage: guix weather [OPTIONS] [PACKAGES ...]\n"
 "Report the availability of substitutes.\n"
 msgstr ""
-"用法：guix size [选项]... 软件包\n"
-"报告 <软件包> 及其依赖的大小。\n"
 
 #: guix/scripts/weather.scm:338
-#, fuzzy
 msgid ""
 "\n"
 "      --substitute-urls=URLS\n"
 "                         check for available substitutes at URLS"
 msgstr ""
-"\n"
-"      --substitute-urls=URLS\n"
-"                         与 URLS 的构建结果对比"
 
 #: guix/scripts/weather.scm:341
 msgid ""
@@ -6681,21 +6479,23 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/weather.scm:374
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: invalid URL~%"
-msgstr "~a: 无效的数字~%"
+msgstr ""
 
 #: guix/scripts/weather.scm:505
 #, scheme-format
 msgid "The following ~a package is missing from '~a' for '~a':~%"
 msgid_plural "The following ~a packages are missing from '~a' for '~a':~%"
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/scripts/weather.scm:511
 #, scheme-format
 msgid "~a package is missing from '~a' for '~a':~%"
 msgid_plural "~a packages are missing from '~a' for '~a', among which:~%"
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/scripts/weather.scm:557
 msgid "report on the availability of pre-built package binaries"
@@ -6758,24 +6558,24 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/describe.scm:165
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "Git checkout:~%"
-msgstr "Git 错误：~a~%"
+msgstr ""
 
 #: guix/scripts/describe.scm:166
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "  repository: ~a~%"
-msgstr "  文件名：~a~%"
+msgstr ""
 
 #: guix/scripts/describe.scm:167
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "  branch: ~a~%"
-msgstr "  内核：~a~%"
+msgstr ""
 
 #: guix/scripts/describe.scm:168
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "  commit: ~a~%"
-msgstr "正删除 ~a~%"
+msgstr ""
 
 #: guix/scripts/describe.scm:228
 #, scheme-format
@@ -6783,14 +6583,14 @@ msgid "    repository URL: ~a~%"
 msgstr ""
 
 #: guix/scripts/describe.scm:231
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "    branch: ~a~%"
-msgstr "  内核：~a~%"
+msgstr ""
 
 #: guix/scripts/describe.scm:233
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "    commit: ~a~%"
-msgstr "正删除 ~a~%"
+msgstr ""
 
 #: guix/scripts/describe.scm:281
 msgid "describe the channel revisions currently used"
@@ -6829,22 +6629,24 @@ msgstr ""
 msgid "The following ~d machine would be deployed:~%"
 msgid_plural "The following ~d machines would be deployed:~%"
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/scripts/deploy.scm:124
 #, scheme-format
 msgid "The following ~d machine will be deployed:~%"
 msgid_plural "The following ~d machines will be deployed:~%"
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/scripts/deploy.scm:138
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "deploying to ~a...~%"
-msgstr "正删除 ~a~%"
+msgstr ""
 
 #: guix/scripts/deploy.scm:150 guix/scripts/deploy.scm:154
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to deploy ~a: ~a~%"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/scripts/deploy.scm:162
 #, scheme-format
@@ -6854,25 +6656,22 @@ msgstr ""
 #: guix/scripts/deploy.scm:168
 #, scheme-format
 msgid "successfully deployed ~a~%"
-msgstr "成功部署 ~a~%"
+msgstr ""
 
 #: guix/scripts/deploy.scm:219
-#, fuzzy, scheme-format
-#| msgid "guix: ~a: command not found~%"
+#, scheme-format
 msgid "~a: command succeeded~%"
-msgstr "guix：~a：未找到命令~%"
+msgstr ""
 
 #: guix/scripts/deploy.scm:222
-#, fuzzy, scheme-format
-#| msgid "guix: ~a: command not found~%"
+#, scheme-format
 msgid "~a: command exited with code ~a~%"
-msgstr "guix：~a：未找到命令~%"
+msgstr ""
 
 #: guix/scripts/deploy.scm:225
-#, fuzzy, scheme-format
-#| msgid "guix: ~a: command not found~%"
+#, scheme-format
 msgid "~a: command stopped with signal ~a~%"
-msgstr "guix：~a：未找到命令~%"
+msgstr ""
 
 #: guix/scripts/deploy.scm:228
 #, scheme-format
@@ -6880,10 +6679,9 @@ msgid "~a: command terminated with signal ~a~%"
 msgstr ""
 
 #: guix/scripts/deploy.scm:232
-#, fuzzy, scheme-format
-#| msgid "guix: ~a: command not found~%"
+#, scheme-format
 msgid "command output on ~a:~%"
-msgstr "guix：~a：未找到命令~%"
+msgstr ""
 
 #: guix/scripts/deploy.scm:241
 msgid "deploy operating systems on a set of machines"
@@ -6914,6 +6712,7 @@ msgstr ""
 msgid "importing module~{ ~a~} from the host~%"
 msgid_plural "importing modules~{ ~a~} from the host~%"
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/gnu-maintenance.scm:757
 #, scheme-format
@@ -6979,9 +6778,9 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/container/exec.scm:69
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: extraneous argument~%"
-msgstr "~A: 未预期的参数~%"
+msgstr ""
 
 #: guix/scripts/container/exec.scm:87
 #, scheme-format
@@ -6999,32 +6798,29 @@ msgid "no such process ~d~%"
 msgstr ""
 
 #: guix/scripts/container/exec.scm:108 guix/scripts/home.scm:463
-#, fuzzy, scheme-format
-#| msgid "guix: ~a: command not found~%"
+#, scheme-format
 msgid "process terminated with signal ~a~%"
-msgstr "guix：~a：未找到命令~%"
+msgstr ""
 
 #: guix/scripts/container/exec.scm:110 guix/scripts/home.scm:465
-#, fuzzy, scheme-format
-#| msgid "guix: ~a: command not found~%"
+#, scheme-format
 msgid "process stopped with signal ~a~%"
-msgstr "guix：~a：未找到命令~%"
+msgstr ""
 
 #: guix/scripts/container/exec.scm:113
-#, fuzzy, scheme-format
-#| msgid "guix: ~a: command not found~%"
+#, scheme-format
 msgid "process exited with status ~d~%"
-msgstr "guix：~a：未找到命令~%"
+msgstr ""
 
 #: guix/transformations.scm:158
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "invalid source replacement specification: ~s"
-msgstr "含糊的软件包规范 `~a'~%"
+msgstr ""
 
 #: guix/transformations.scm:190 guix/transformations.scm:258
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "invalid replacement specification: ~s"
-msgstr "含糊的软件包规范 `~a'~%"
+msgstr ""
 
 #: guix/transformations.scm:239
 #, scheme-format
@@ -7032,24 +6828,23 @@ msgid "the source of ~a is not a Git reference"
 msgstr ""
 
 #: guix/transformations.scm:342
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: invalid Git URL replacement specification"
-msgstr "含糊的软件包规范 `~a'~%"
+msgstr ""
 
 #: guix/transformations.scm:420
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: invalid toolchain replacement specification"
-msgstr "含糊的软件包规范 `~a'~%"
+msgstr ""
 
 #: guix/transformations.scm:522
-#, fuzzy
 msgid "failed to determine which compiler is used"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/transformations.scm:528
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to determine whether ~a supports ~a"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/transformations.scm:536
 #, scheme-format
@@ -7075,25 +6870,24 @@ msgid ""
 msgstr ""
 
 #: guix/transformations.scm:605
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "tuning ~a for CPU ~a~%"
-msgstr "'~a'~% 签名无效"
+msgstr ""
 
 #: guix/transformations.scm:704
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: invalid package configure flag specification"
-msgstr "含糊的软件包规范 `~a'~%"
+msgstr ""
 
 #: guix/transformations.scm:785
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: invalid package patch specification"
-msgstr "含糊的软件包规范 `~a'~%"
+msgstr ""
 
 #: guix/transformations.scm:808
-#, fuzzy, scheme-format
-#| msgid "could not find bootstrap binary '~a' for system '~a'"
+#, scheme-format
 msgid "could not find version ~a of '~a' upstream~%"
-msgstr "无法找到引导二进制 '~a'，用于系统 '~a'"
+msgstr ""
 
 #: guix/transformations.scm:811
 #, scheme-format
@@ -7116,9 +6910,9 @@ msgid "cannot authenticate source of '~a', version ~a~%"
 msgstr ""
 
 #: guix/transformations.scm:865
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: invalid upstream version specification"
-msgstr "含糊的软件包规范 `~a'~%"
+msgstr ""
 
 #: guix/transformations.scm:942
 #, scheme-format
@@ -7166,26 +6960,18 @@ msgid ""
 msgstr ""
 
 #: guix/transformations.scm:993
-#, fuzzy
 msgid ""
 "\n"
 "      --with-git-url=PACKAGE=URL\n"
 "                         build PACKAGE from the repository at URL"
 msgstr ""
-"\n"
-"      --substitute-urls=URLS\n"
-"                         与 URLS 的构建结果对比"
 
 #: guix/transformations.scm:996
-#, fuzzy
 msgid ""
 "\n"
 "      --with-patch=PACKAGE=FILE\n"
 "                         add FILE to the list of patches of PACKAGE"
 msgstr ""
-"\n"
-"      --substitute-urls=URLS\n"
-"                         与 URLS 的构建结果对比"
 
 #: guix/transformations.scm:999
 msgid ""
@@ -7194,37 +6980,25 @@ msgid ""
 msgstr ""
 
 #: guix/transformations.scm:1001
-#, fuzzy
 msgid ""
 "\n"
 "      --with-configure-flag=PACKAGE=FLAG\n"
 "                         append FLAG to the configure flags of PACKAGE"
 msgstr ""
-"\n"
-"      --substitute-urls=URLS\n"
-"                         与 URLS 的构建结果对比"
 
 #: guix/transformations.scm:1004
-#, fuzzy
 msgid ""
 "\n"
 "      --with-latest=PACKAGE\n"
 "                         use the latest upstream release of PACKAGE"
 msgstr ""
-"\n"
-"      --substitute-urls=URLS\n"
-"                         与 URLS 的构建结果对比"
 
 #: guix/transformations.scm:1007
-#, fuzzy
 msgid ""
 "\n"
 "      --with-version=PACKAGE=VERSION\n"
 "                         use the given upstream VERSION of PACKAGE"
 msgstr ""
-"\n"
-"      --substitute-urls=URLS\n"
-"                         与 URLS 的构建结果对比"
 
 #: guix/transformations.scm:1010
 msgid ""
@@ -7241,15 +7015,11 @@ msgid ""
 msgstr ""
 
 #: guix/transformations.scm:1016
-#, fuzzy
 msgid ""
 "\n"
 "      --without-tests=PACKAGE\n"
 "                         build PACKAGE without running its tests"
 msgstr ""
-"\n"
-"      --substitute-urls=URLS\n"
-"                         与 URLS 的构建结果对比"
 
 #: guix/transformations.scm:1022
 msgid ""
@@ -7278,14 +7048,14 @@ msgid "missing public key ~a for '~a'~%"
 msgstr ""
 
 #: guix/upstream.scm:359
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to fetch source from '~a'"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/upstream.scm:490
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "downgrading '~a' from ~a to ~a~%"
-msgstr "可升级至 ~a"
+msgstr ""
 
 #: guix/upstream.scm:503
 #, scheme-format
@@ -7293,14 +7063,14 @@ msgid "cannot download for this method: ~s"
 msgstr ""
 
 #: guix/upstream.scm:517
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "updater failed to find release ~a@~a~%"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/upstream.scm:519
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "updater failed to determine available releases for ~a~%"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/upstream.scm:554
 #, scheme-format
@@ -7308,10 +7078,9 @@ msgid "~a: '~a' field not found; leaving it unchanged~%"
 msgstr ""
 
 #: guix/upstream.scm:557
-#, fuzzy, scheme-format
-#| msgid "~A: unexpected argument~%"
+#, scheme-format
 msgid "~a: expected '~a' value: ~s~%"
-msgstr "~A: 未预期的参数~%"
+msgstr ""
 
 #: guix/upstream.scm:672
 #, scheme-format
@@ -7333,9 +7102,8 @@ msgid "entering debugger; type ',bt' for a backtrace\n"
 msgstr ""
 
 #: guix/ui.scm:321
-#, fuzzy
 msgid "hint: "
-msgstr "正删除 ~a~%"
+msgstr ""
 
 #: guix/ui.scm:347
 msgid "Did you forget a @code{use-modules} form?"
@@ -7362,9 +7130,9 @@ msgid "module name ~a does not match file name '~a'~%"
 msgstr ""
 
 #: guix/ui.scm:377
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: file is empty~%"
-msgstr "~a: 无效的数字~%"
+msgstr ""
 
 #: guix/ui.scm:388 guix/ui.scm:439 guix/ui.scm:447 guix/ui.scm:451
 #, scheme-format
@@ -7377,15 +7145,14 @@ msgid "~amissing closing parenthesis~%"
 msgstr ""
 
 #: guix/ui.scm:399
-#, fuzzy, scheme-format
-#| msgid "~a: TLS certificate error: ~a"
+#, scheme-format
 msgid "read error while loading '~a': ~a~%"
-msgstr "~a：TLS 证书错误：~a"
+msgstr ""
 
 #: guix/ui.scm:403
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~s: ~a~%"
-msgstr "正删除 ~a~%"
+msgstr ""
 
 #: guix/ui.scm:411 guix/ui.scm:442 guix/ui.scm:808 guix/ui.scm:858
 #: guix/ui.scm:909
@@ -7430,19 +7197,14 @@ msgstr ""
 
 #: guix/ui.scm:548
 msgid "the Guix authors\n"
-msgstr "Guix 作者\n"
+msgstr ""
 
 #: guix/ui.scm:549
-#, fuzzy
 msgid ""
 "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n"
 "This is free software: you are free to change and redistribute it.\n"
 "There is NO WARRANTY, to the extent permitted by law.\n"
 msgstr ""
-"Copyright (C) 2016 Guix 作者\n"
-"许可证：GPLv3+：GNU 通用公共许可证第 3 版或更新版本 <http://gnu.org/licenses/gpl.html>。\n"
-"本软件是自由软件：您可以自由修改和重新发布它。\n"
-"在法律允许的范围内没有其他保证。\n"
 
 #. TRANSLATORS: The placeholder indicates the bug-reporting address for this
 #. package.  Please add another line saying "Report translation bugs to
@@ -7454,9 +7216,6 @@ msgid ""
 "\n"
 "Report bugs to: ~a."
 msgstr ""
-"\n"
-"报告程序缺陷到：~a。\n"
-"报告简体中文翻译错误到：https://translationproject.org/team/zh_CN.html ."
 
 #: guix/ui.scm:563
 #, scheme-format
@@ -7464,17 +7223,13 @@ msgid ""
 "\n"
 "~a home page: <~a>"
 msgstr ""
-"\n"
-"~a 项目首页:<~a>"
 
 #: guix/ui.scm:565
-#, fuzzy, scheme-format
+#, scheme-format
 msgid ""
 "\n"
 "General help using Guix and GNU software: <~a>"
 msgstr ""
-"\n"
-"使用 GNU 软件的一般性帮助：<http://www.gnu.org/gethelp/>"
 
 #. TRANSLATORS: Change the "/en" bit of this URL appropriately if
 #. the web site is translated in your language.
@@ -7490,12 +7245,12 @@ msgstr ""
 #: guix/ui.scm:632
 #, scheme-format
 msgid "~a: invalid number~%"
-msgstr "~a: 无效的数字~%"
+msgstr ""
 
 #: guix/ui.scm:650
 #, scheme-format
 msgid "invalid number: ~a~%"
-msgstr "无效的数字：~a~%"
+msgstr ""
 
 #: guix/ui.scm:673
 #, scheme-format
@@ -7534,9 +7289,9 @@ msgid "~a: ~a: build system `~a' does not support cross builds~%"
 msgstr ""
 
 #: guix/ui.scm:744
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~s: invalid G-expression input~%"
-msgstr "签名不是有效的 S-表达式"
+msgstr ""
 
 #: guix/ui.scm:747
 #, scheme-format
@@ -7586,7 +7341,7 @@ msgstr ""
 #: guix/ui.scm:803
 #, scheme-format
 msgid "failed to connect to `~a': ~a~%"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/ui.scm:811
 #, scheme-format
@@ -7616,7 +7371,7 @@ msgstr ""
 #: guix/ui.scm:906
 #, scheme-format
 msgid "syntax error: ~a~%"
-msgstr "语法错误：~a~%"
+msgstr ""
 
 #: guix/ui.scm:930
 #, scheme-format
@@ -7632,6 +7387,7 @@ msgstr ""
 msgid "The following derivation would be built:~%"
 msgid_plural "The following derivations would be built:~%"
 msgstr[0] ""
+msgstr[1] ""
 
 #. TRANSLATORS: "MB" is for "megabyte"; it
 #. should be translated to the corresponding
@@ -7645,18 +7401,21 @@ msgstr ""
 msgid "~:[The following file would be downloaded:~%~;~]"
 msgid_plural "~:[The following files would be downloaded:~%~;~]"
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/ui.scm:1097
 #, scheme-format
 msgid "~:[The following graft would be made:~%~{   ~a~%~}~;~]"
 msgid_plural "~:[The following grafts would be made:~%~{   ~a~%~}~;~]"
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/ui.scm:1102
 #, scheme-format
 msgid "~:[The following profile hook would be built:~%~{   ~a~%~}~;~]"
 msgid_plural "~:[The following profile hooks would be built:~%~{   ~a~%~}~;~]"
 msgstr[0] ""
+msgstr[1] ""
 
 #. TRANSLATORS: "MB" is for "megabyte"; it should be
 #. translated to the corresponding abbreviation.
@@ -7668,12 +7427,14 @@ msgstr ""
 msgid "~:[~h item would be downloaded~%~;~]"
 msgid_plural "~:[~h items would be downloaded~%~;~]"
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/ui.scm:1127
 #, scheme-format
 msgid "The following derivation will be built:~%"
 msgid_plural "The following derivations will be built:~%"
 msgstr[0] ""
+msgstr[1] ""
 
 #. TRANSLATORS: "MB" is for "megabyte"; it
 #. should be translated to the corresponding
@@ -7687,18 +7448,21 @@ msgstr ""
 msgid "~:[The following file will be downloaded:~%~;~]"
 msgid_plural "~:[The following files will be downloaded:~%~;~]"
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/ui.scm:1157
 #, scheme-format
 msgid "~:[The following graft will be made:~%~{   ~a~%~}~;~]"
 msgid_plural "~:[The following grafts will be made:~%~{   ~a~%~}~;~]"
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/ui.scm:1162
 #, scheme-format
 msgid "~:[The following profile hook will be built:~%~{   ~a~%~}~;~]"
 msgid_plural "~:[The following profile hooks will be built:~%~{   ~a~%~}~;~]"
 msgstr[0] ""
+msgstr[1] ""
 
 #. TRANSLATORS: "MB" is for "megabyte"; it should be
 #. translated to the corresponding abbreviation.
@@ -7710,6 +7474,7 @@ msgstr ""
 msgid "~:[~h item will be downloaded~%~;~]"
 msgid_plural "~:[~h items will be downloaded~%~;~]"
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/ui.scm:1297
 msgid "(dependencies or package changed)"
@@ -7720,54 +7485,61 @@ msgstr ""
 msgid "The following package would be removed:~%~{~a~%~}~%"
 msgid_plural "The following packages would be removed:~%~{~a~%~}~%"
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/ui.scm:1321
 #, scheme-format
 msgid "The following package will be removed:~%~{~a~%~}~%"
 msgid_plural "The following packages will be removed:~%~{~a~%~}~%"
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/ui.scm:1334
 #, scheme-format
 msgid "The following package would be downgraded:~%~{~a~%~}~%"
 msgid_plural "The following packages would be downgraded:~%~{~a~%~}~%"
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/ui.scm:1339
 #, scheme-format
 msgid "The following package will be downgraded:~%~{~a~%~}~%"
 msgid_plural "The following packages will be downgraded:~%~{~a~%~}~%"
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/ui.scm:1352
 #, scheme-format
 msgid "The following package would be upgraded:~%~{~a~%~}~%"
 msgid_plural "The following packages would be upgraded:~%~{~a~%~}~%"
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/ui.scm:1357
 #, scheme-format
 msgid "The following package will be upgraded:~%~{~a~%~}~%"
 msgid_plural "The following packages will be upgraded:~%~{~a~%~}~%"
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/ui.scm:1368
 #, scheme-format
 msgid "The following package would be installed:~%~{~a~%~}~%"
 msgid_plural "The following packages would be installed:~%~{~a~%~}~%"
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/ui.scm:1373
 #, scheme-format
 msgid "The following package will be installed:~%~{~a~%~}~%"
 msgid_plural "The following packages will be installed:~%~{~a~%~}~%"
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/ui.scm:1491
-#, fuzzy, scheme-format
-#| msgid "~a: invalid number~%"
+#, scheme-format
 msgid "~a: invalid Texinfo markup~%"
-msgstr "~a: 无效的数字~%"
+msgstr ""
 
 #: guix/ui.scm:1550
 msgid "executable programs and scripts"
@@ -7804,7 +7576,7 @@ msgstr ""
 #: guix/ui.scm:1975
 #, scheme-format
 msgid "invalid syntax: ~a~%"
-msgstr "无效语法: ~a~%"
+msgstr ""
 
 #: guix/ui.scm:1984
 #, scheme-format
@@ -7827,12 +7599,12 @@ msgstr ""
 #: guix/ui.scm:2002
 #, scheme-format
 msgid "~a\t(current)~%"
-msgstr "~a\t(当前)~%"
+msgstr ""
 
 #: guix/ui.scm:2036
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "cannot lock profile ~a: ~a~%"
-msgstr "无法访问 `~a': ~a~%"
+msgstr ""
 
 #: guix/ui.scm:2038
 #, scheme-format
@@ -7847,12 +7619,12 @@ msgstr ""
 #: guix/ui.scm:2083
 #, scheme-format
 msgid "deleting ~a~%"
-msgstr "正删除 ~a~%"
+msgstr ""
 
 #: guix/ui.scm:2114
 #, scheme-format
 msgid "Try `guix --help' for more information.~%"
-msgstr "请尝试 “guix --help”，以获取更多信息。~%"
+msgstr ""
 
 #: guix/ui.scm:2206
 msgid ""
@@ -7861,28 +7633,16 @@ msgid ""
 msgstr ""
 
 #: guix/ui.scm:2209
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -h, --help             display this help and exit"
 msgid ""
 "\n"
 "  -h, --help             display this helpful text again and exit"
 msgstr ""
-"\n"
-"  -h, --help                 显示这份说明然后离开"
 
 #: guix/ui.scm:2211
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -V, --version          display version information and exit"
 msgid ""
 "\n"
 "  -V, --version          display version and copyright information and exit"
 msgstr ""
-"\n"
-"  -V, --version              显示程序版本然后离开"
 
 #: guix/ui.scm:2216
 msgid "COMMAND must be one of the sub-commands listed below:\n"
@@ -7891,7 +7651,7 @@ msgstr ""
 #: guix/ui.scm:2258
 #, scheme-format
 msgid "guix: ~a: command not found~%"
-msgstr "guix：~a：未找到命令~%"
+msgstr ""
 
 #: guix/ui.scm:2293
 #, scheme-format
@@ -7901,7 +7661,7 @@ msgstr ""
 #: guix/ui.scm:2301
 #, scheme-format
 msgid "guix: unrecognized option '~a'~%"
-msgstr "guix: 无法识别的选项“~a”~%"
+msgstr ""
 
 #. TRANSLATORS: The word "phase" here denotes a "build phase";
 #. "~a" is a placeholder for the untranslated name of the current
@@ -7972,12 +7732,14 @@ msgstr ""
 msgid "applying ~a graft for ~a ..."
 msgid_plural "applying ~a grafts for ~a ..."
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/status.scm:507
 #, scheme-format
 msgid "building profile with ~a package..."
 msgid_plural "building profile with ~a packages..."
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/status.scm:516
 #, scheme-format
@@ -7999,6 +7761,7 @@ msgstr ""
 msgid "The following build is still in progress:~%~{  ~a~%~}~%"
 msgid_plural "The following builds are still in progress:~%~{  ~a~%~}~%"
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/status.scm:536
 #, scheme-format
@@ -8016,9 +7779,9 @@ msgid ""
 msgstr ""
 
 #: guix/status.scm:555
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "Could not find build log for '~a'."
-msgstr "无法找到引导二进制 '~a'，用于系统 '~a'"
+msgstr ""
 
 #: guix/status.scm:558
 #, scheme-format
@@ -8070,34 +7833,33 @@ msgid "following redirection to `~a'...~%"
 msgstr ""
 
 #: guix/http-client.scm:162
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: HTTP download failed: ~a (~s)"
-msgstr "下载失败"
+msgstr ""
 
 #: guix/nar.scm:173
 msgid "signature is not a valid s-expression"
-msgstr "签名不是有效的 S-表达式"
+msgstr ""
 
 #: guix/nar.scm:182
 msgid "invalid signature"
-msgstr "无效签名"
+msgstr ""
 
 #: guix/nar.scm:186
 msgid "invalid hash"
-msgstr "无效哈希"
+msgstr ""
 
 #: guix/nar.scm:194
 msgid "unauthorized public key"
-msgstr "公钥未被授权"
+msgstr ""
 
 #: guix/nar.scm:199
 msgid "corrupt signature data"
-msgstr "签名数据损坏"
+msgstr ""
 
 #: guix/nar.scm:220
-#, fuzzy
 msgid "corrupt file set archive"
-msgstr "现用文件损坏 - %s"
+msgstr ""
 
 #: guix/nar.scm:230
 #, scheme-format
@@ -8118,9 +7880,9 @@ msgid "invalid inter-file archive mark"
 msgstr ""
 
 #: guix/narinfo.scm:103
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "invalid narinfo hash: ~s"
-msgstr "无效语法: ~a~%"
+msgstr ""
 
 #: guix/narinfo.scm:117
 #, scheme-format
@@ -8151,9 +7913,8 @@ msgid "unsupported '.guix-channel' version"
 msgstr ""
 
 #: guix/channels.scm:306
-#, fuzzy
 msgid "invalid '.guix-channel' file"
-msgstr "无效的许可证字段"
+msgstr ""
 
 #: guix/channels.scm:365
 msgid "Authenticating channel '~a', commits ~a to ~a (~h new commits)...~%"
@@ -8230,14 +7991,13 @@ msgid "syntactically invalid channel news file"
 msgstr ""
 
 #: guix/channels.scm:1137
-#, fuzzy
 msgid "invalid channel news file"
-msgstr "无效的许可证字段"
+msgstr ""
 
 #: guix/packages.scm:564
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~s: invalid package license~%"
-msgstr "~a: 无效的数字~%"
+msgstr ""
 
 #: guix/profiles.scm:519
 #, scheme-format
@@ -8245,23 +8005,23 @@ msgid "cannot emit manifests formatted as version ~a"
 msgstr ""
 
 #: guix/profiles.scm:587
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "invalid repeated entry in profile: ~s"
-msgstr "含糊的软件包规范 `~a'~%"
+msgstr ""
 
 #: guix/profiles.scm:655
 msgid "unsupported manifest format"
 msgstr ""
 
 #: guix/profiles.scm:1933
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "package ~a does not support ~a"
-msgstr "包 `~a' 缺乏输出 `~a'~%"
+msgstr ""
 
 #: guix/profiles.scm:2313
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "while creating directory `~a': ~a"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/profiles.scm:2318
 #, scheme-format
@@ -8279,9 +8039,8 @@ msgid "Please change the owner of @file{~a} to user ~s."
 msgstr ""
 
 #: guix/read-print.scm:123
-#, fuzzy
 msgid "invalid comment string"
-msgstr "~a: 无效的数字~%"
+msgstr ""
 
 #: guix/read-print.scm:164
 msgid "unexpected end of file"
@@ -8302,9 +8061,9 @@ msgid "server at '~a' returned host key '~a' of type '~a' instead of '~a' of typ
 msgstr ""
 
 #: guix/ssh.scm:155
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to authenticate server at '~a': ~a"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/ssh.scm:166
 #, scheme-format
@@ -8317,41 +8076,41 @@ msgid "SSH authentication failed for '~a': ~a~%"
 msgstr ""
 
 #: guix/ssh.scm:182
-#, fuzzy, scheme-format
-#| msgid "~a: download failed~%"
+#, scheme-format
 msgid "SSH connection to '~a' failed: ~a~%"
-msgstr "~a：下载失败~%"
+msgstr ""
 
 #: guix/ssh.scm:231
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to start 'guix repl' on '~a'"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/ssh.scm:327
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to connect over SSH to daemon at '~a', socket ~a"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/ssh.scm:474
-#, fuzzy
 msgid "sending ~a store item (~h MiB) to '~a'...~%"
 msgid_plural "sending ~a store items (~h MiB) to '~a'...~%"
-msgstr[0] "寻找最新版的 GNU~a..."
+msgstr[0] ""
+msgstr[1] ""
 
 #: guix/ssh.scm:570
 msgid "unknown error while sending files over SSH"
 msgstr ""
 
 #: guix/ssh.scm:615
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to connect to '~A' on remote host '~A': ~a"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/ssh.scm:618
 #, scheme-format
 msgid "no such item on remote host '~A':~{ ~a~}"
 msgid_plural "no such items on remote host '~A':~{ ~a~}"
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/ssh.scm:623
 #, scheme-format
@@ -8359,20 +8118,21 @@ msgid "protocol error on remote host '~A': ~a"
 msgstr ""
 
 #: guix/ssh.scm:626
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to retrieve store items from '~a'"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/ssh.scm:639
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "retrieving ~a store item from '~a'...~%"
 msgid_plural "retrieving ~a store items from '~a'...~%"
-msgstr[0] "寻找最新版的 GNU~a..."
+msgstr[0] ""
+msgstr[1] ""
 
 #: guix/ssh.scm:669
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to start Guile on remote host '~A'"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/ssh.scm:670
 #, scheme-format
@@ -8398,12 +8158,12 @@ msgstr ""
 #: guix/git.scm:318
 #, scheme-format
 msgid "Git error ~a~%"
-msgstr "Git 错误 ~a~%"
+msgstr ""
 
 #: guix/git.scm:320 guix/git.scm:580
 #, scheme-format
 msgid "Git error: ~a~%"
-msgstr "Git 错误：~a~%"
+msgstr ""
 
 #: guix/git.scm:335
 #, scheme-format
@@ -8426,9 +8186,9 @@ msgid "cannot fetch branch '~a' from ~a: ~a"
 msgstr ""
 
 #: guix/git.scm:746
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "Git failure while fetching ~a: ~a"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/substitutes.scm:102
 #, scheme-format
@@ -8436,22 +8196,19 @@ msgid "'~a' does not name a store item~%"
 msgstr ""
 
 #: guix/substitutes.scm:146
-#, fuzzy, scheme-format
-#| msgid "~a: package not found~%"
+#, scheme-format
 msgid "~a: host not found: ~a~%"
-msgstr "~a: 包未找到~%"
+msgstr ""
 
 #: guix/substitutes.scm:152
-#, fuzzy, scheme-format
-#| msgid "~a: download failed~%"
+#, scheme-format
 msgid "~a: connection failed: ~a~%"
-msgstr "~a：下载失败~%"
+msgstr ""
 
 #: guix/substitutes.scm:159
-#, fuzzy, scheme-format
-#| msgid "~a: download failed~%"
+#, scheme-format
 msgid "~a: TLS connection failed: in ~a: ~a~%"
-msgstr "~a：下载失败~%"
+msgstr ""
 
 #: guix/substitutes.scm:278
 #, scheme-format
@@ -8520,13 +8277,10 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/archive.scm:80
-#, fuzzy
 msgid ""
 "\n"
 "  -t, --list             list the files in the archive on stdin"
 msgstr ""
-"\n"
-"  -h, --help                 显示这份说明然后离开"
 
 #: guix/scripts/archive.scm:83
 msgid ""
@@ -8547,9 +8301,9 @@ msgid "invalid key generation parameters: ~a: ~a~%"
 msgstr ""
 
 #: guix/scripts/archive.scm:195
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "package `~a' has no source~%"
-msgstr "包 `~a' 缺乏输出 `~a'~%"
+msgstr ""
 
 #: guix/scripts/archive.scm:256
 #, scheme-format
@@ -8579,9 +8333,9 @@ msgid "key generation failed: ~a: ~a~%"
 msgstr ""
 
 #: guix/scripts/archive.scm:306
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to read public key: ~a: ~a~%"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/scripts/archive.scm:313
 #, scheme-format
@@ -8621,22 +8375,16 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/discover.scm:40
-#, fuzzy
 msgid ""
 "\n"
 "  -h, --help                display this help and exit"
 msgstr ""
-"\n"
-"  -h, --help                     显示这份说明然后离开"
 
 #: guix/scripts/discover.scm:42
-#, fuzzy
 msgid ""
 "\n"
 "  -V, --version             display version information and exit"
 msgstr ""
-"\n"
-"  -v, --version                  显示程序版本然后离开"
 
 #: guix/scripts/discover.scm:128
 msgid "discover Guix related services using Avahi"
@@ -8648,10 +8396,9 @@ msgid "Avahi daemon is not running, cannot auto-discover substitutes servers.~%"
 msgstr ""
 
 #: guix/scripts/discover.scm:151
-#, fuzzy, scheme-format
-#| msgid "~a: TLS certificate error: ~a"
+#, scheme-format
 msgid "an Avahi error was raised by `~a': ~a~%"
-msgstr "~a：TLS 证书错误：~a"
+msgstr ""
 
 #: guix/scripts/environment.scm:89
 msgid ""
@@ -8717,13 +8464,10 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/environment.scm:114
-#, fuzzy
 msgid ""
 "\n"
 "  -W, --nesting          make Guix available within the container"
 msgstr ""
-"\n"
-"  -h, --help                 显示这份说明然后离开"
 
 #: guix/scripts/environment.scm:116
 msgid ""
@@ -8803,10 +8547,9 @@ msgid "could not add current Guix to the profile~%"
 msgstr ""
 
 #: guix/scripts/environment.scm:524
-#, fuzzy, scheme-format
-#| msgid "guix: ~a: command not found~%"
+#, scheme-format
 msgid "~a: command not found~%"
-msgstr "guix：~a：未找到命令~%"
+msgstr ""
 
 #: guix/scripts/environment.scm:602
 #, scheme-format
@@ -8814,9 +8557,9 @@ msgid "checking the environment variables visible from shell '~a'...~%"
 msgstr ""
 
 #: guix/scripts/environment.scm:606
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to determine environment of shell '~a'~%"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/scripts/environment.scm:613
 #, scheme-format
@@ -8824,14 +8567,14 @@ msgid "variable '~a' is missing from shell environment~%"
 msgstr ""
 
 #: guix/scripts/environment.scm:620
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "variable '~a' has unexpected suffix '~a'~%"
-msgstr "包 `~a' 缺乏输出 `~a'~%"
+msgstr ""
 
 #: guix/scripts/environment.scm:626
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "variable '~a' is clobbered: '~a'~%"
-msgstr "包 `~a' 缺乏输出 `~a'~%"
+msgstr ""
 
 #: guix/scripts/environment.scm:633
 #, scheme-format
@@ -9103,21 +8846,19 @@ msgid "guix home: missing command name~%"
 msgstr ""
 
 #: guix/scripts/home.scm:656
-#, fuzzy, scheme-format
-#| msgid "Try `guix --help' for more information.~%"
+#, scheme-format
 msgid "Try 'guix home --help' for more information.~%"
-msgstr "请尝试 “guix --help”，以获取更多信息。~%"
+msgstr ""
 
 #: guix/scripts/home.scm:686
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: extraneous command~%"
-msgstr "~A: 未预期的参数~%"
+msgstr ""
 
 #: guix/scripts/home.scm:856
-#, fuzzy, scheme-format
-#| msgid "cannot switch to system generation '~a'~%"
+#, scheme-format
 msgid "cannot switch to home environment generation '~a'~%"
-msgstr "不能切换到系统生成 '~a'~%"
+msgstr ""
 
 #: guix/scripts/time-machine.scm:50
 msgid ""
@@ -9179,13 +8920,10 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/import/gnu.scm:41
-#, fuzzy
 msgid ""
 "Usage: guix import gnu [OPTION...] PACKAGE\n"
 "Return a package declaration template for PACKAGE, a GNU package.\n"
 msgstr ""
-"用法：guix size [选项]... 软件包\n"
-"报告 <软件包> 及其依赖的大小。\n"
 
 #: guix/scripts/import/gnu.scm:44 guix/scripts/refresh.scm:186
 msgid ""
@@ -9228,9 +8966,9 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/import/go.scm:118
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to download meta-data for module '~a'.~%"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/scripts/import/hackage.scm:49
 msgid ""
@@ -9251,31 +8989,22 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/import/hackage.scm:59 guix/scripts/import/stackage.scm:50
-#, fuzzy
 msgid ""
 "\n"
 "  -h, --help                   display this help and exit"
 msgstr ""
-"\n"
-"  -h, --help                     显示这份说明然后离开"
 
 #: guix/scripts/import/hackage.scm:61 guix/scripts/import/stackage.scm:52
-#, fuzzy
 msgid ""
 "\n"
 "  -r, --recursive              import packages recursively"
 msgstr ""
-"\n"
-"  -n, --dry-run          不要构建派生包"
 
 #: guix/scripts/import/hackage.scm:63
-#, fuzzy
 msgid ""
 "\n"
 "  -s, --stdin                  read from standard input"
 msgstr ""
-"\n"
-"  -v, --version                  显示程序版本然后离开"
 
 #: guix/scripts/import/hackage.scm:65 guix/scripts/import/stackage.scm:54
 msgid ""
@@ -9284,13 +9013,10 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/import/hackage.scm:67 guix/scripts/import/stackage.scm:56
-#, fuzzy
 msgid ""
 "\n"
 "  -V, --version                display version information and exit"
 msgstr ""
-"\n"
-"  -v, --version                  显示程序版本然后离开"
 
 #: guix/scripts/import/hackage.scm:146
 #, scheme-format
@@ -9309,14 +9035,14 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/import/json.scm:92
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "invalid JSON in file '~a'~%"
-msgstr "'~a'~% 签名无效"
+msgstr ""
 
 #: guix/scripts/import/json.scm:94
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to access '~a': ~a~%"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/scripts/import/opam.scm:43
 msgid ""
@@ -9325,14 +9051,11 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/import/opam.scm:49
-#, fuzzy
 msgid ""
 "\n"
 "      --repo=REPOSITORY  import packages from REPOSITORY (name, URL, or\n"
 "                         file name); can be used more than once"
 msgstr ""
-"\n"
-"  -n, --dry-run          不要构建派生包"
 
 #: guix/scripts/import/pypi.scm:44
 msgid ""
@@ -9376,14 +9099,14 @@ msgid "'~a' did not return a list of build machines; ignoring it~%"
 msgstr ""
 
 #: guix/scripts/offload.scm:190
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to open machine file '~a': ~a~%"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/scripts/offload.scm:197
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to load machine file '~a': ~s~%"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/scripts/offload.scm:207
 #, scheme-format
@@ -9396,9 +9119,9 @@ msgid "SSH public key authentication failed for '~a': ~a~%"
 msgstr ""
 
 #: guix/scripts/offload.scm:267
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to connect to '~a': ~a~%"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/scripts/offload.scm:376
 #, scheme-format
@@ -9411,9 +9134,9 @@ msgid "build failure may have been caused by lack of free disk space on '~a'~%"
 msgstr ""
 
 #: guix/scripts/offload.scm:486
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to run 'guix repl' on machine '~a'~%"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/scripts/offload.scm:570
 #, scheme-format
@@ -9434,9 +9157,9 @@ msgid "'~a' is running GNU Guile ~a~%"
 msgstr ""
 
 #: guix/scripts/offload.scm:661
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to run 'guix repl' on '~a'~%"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/scripts/offload.scm:668
 #, scheme-format
@@ -9469,9 +9192,9 @@ msgid "successfully imported '~a' from '~a'~%"
 msgstr ""
 
 #: guix/scripts/offload.scm:715
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "failed to import '~a' from '~a'~%"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/scripts/offload.scm:735
 #, scheme-format
@@ -9493,9 +9216,9 @@ msgid "set up and operate build offloading"
 msgstr ""
 
 #: guix/scripts/offload.scm:842
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "invalid request line: ~s~%"
-msgstr "无效参数: ~a~%"
+msgstr ""
 
 #: guix/scripts/offload.scm:871
 #, scheme-format
@@ -9512,19 +9235,19 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/offload.scm:880
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "invalid arguments: ~{~s ~}~%"
-msgstr "无效参数: ~a~%"
+msgstr ""
 
 #: guix/scripts/perform-download.scm:60
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: missing URL~%"
-msgstr "~a: 无效的数字~%"
+msgstr ""
 
 #: guix/scripts/perform-download.scm:68
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a is not a fixed-output derivation~%"
-msgstr "~a: 无效的数字~%"
+msgstr ""
 
 #: guix/scripts/perform-download.scm:97
 #, scheme-format
@@ -9532,9 +9255,8 @@ msgid "refusing to run with elevated privileges (UID ~a)~%"
 msgstr ""
 
 #: guix/scripts/perform-download.scm:102
-#, fuzzy
 msgid "perform download described by fixed-output derivations"
-msgstr "~a: 无效的数字~%"
+msgstr ""
 
 #: guix/scripts/perform-download.scm:134
 #, scheme-format
@@ -9542,10 +9264,9 @@ msgid "fixed-output derivation and output file name expected~%"
 msgstr ""
 
 #: guix/scripts/refresh.scm:89
-#, fuzzy, scheme-format
-#| msgid "invalid number: ~a~%"
+#, scheme-format
 msgid "invalid module: ~a~%"
-msgstr "无效的数字：~a~%"
+msgstr ""
 
 #: guix/scripts/refresh.scm:92
 #, scheme-format
@@ -9563,13 +9284,10 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/refresh.scm:158
-#, fuzzy
 msgid ""
 "\n"
 "  -u, --update           update source files in place"
 msgstr ""
-"\n"
-"  -n, --dry-run          不要构建派生包"
 
 #: guix/scripts/refresh.scm:160
 msgid ""
@@ -9660,14 +9378,14 @@ msgid "~2,1f% of the packages are covered by these updaters.~%"
 msgstr ""
 
 #: guix/scripts/refresh.scm:347
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "no updater for ~a~%"
-msgstr "'~a'~% 签名无效"
+msgstr ""
 
 #: guix/scripts/refresh.scm:369
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: updating from version ~a to version ~a...~%"
-msgstr "~A: 无法找到供版本 ~a~% 的软件包"
+msgstr ""
 
 #: guix/scripts/refresh.scm:374
 #, scheme-format
@@ -9675,9 +9393,9 @@ msgid "~a: version ~a could not be downloaded and authenticated; not updating~%"
 msgstr ""
 
 #: guix/scripts/refresh.scm:396
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a would be upgraded from ~a to ~a~%"
-msgstr "可升级至 ~a"
+msgstr ""
 
 #: guix/scripts/refresh.scm:402
 #, scheme-format
@@ -9685,9 +9403,9 @@ msgid "~a is already the latest version of ~a~%"
 msgstr ""
 
 #: guix/scripts/refresh.scm:408
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a would be downgraded from ~a to ~a~%"
-msgstr "可升级至 ~a"
+msgstr ""
 
 #: guix/scripts/refresh.scm:414
 #, scheme-format
@@ -9695,9 +9413,9 @@ msgid "~a is greater than the latest known version of ~a (~a)~%"
 msgstr ""
 
 #: guix/scripts/refresh.scm:425
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "'~a' updater failed to find version ~a of '~a'~%"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/scripts/refresh.scm:430
 #, scheme-format
@@ -9709,6 +9427,7 @@ msgstr ""
 msgid "No dependents other than itself: ~{~a~}~%"
 msgid_plural "No dependents other than themselves: ~{~a~^ ~}~%"
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/scripts/refresh.scm:476
 #, scheme-format
@@ -9720,6 +9439,7 @@ msgstr ""
 msgid "Building the following ~d package would ensure ~d dependent packages are rebuilt: ~{~a~^ ~}~%"
 msgid_plural "Building the following ~d packages would ensure ~d dependent packages are rebuilt: ~{~a~^ ~}~%"
 msgstr[0] ""
+msgstr[1] ""
 
 #: guix/scripts/refresh.scm:504
 #, scheme-format
@@ -9743,16 +9463,10 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/repl.scm:78
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -h, --help             display this help and exit"
 msgid ""
 "\n"
 "      --list-types       display REPL types and exit"
 msgstr ""
-"\n"
-"  -h, --help                 显示这份说明然后离开"
 
 #: guix/scripts/repl.scm:80
 msgid ""
@@ -9767,13 +9481,11 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/repl.scm:84
-#, fuzzy, scheme-format
+#, scheme-format
 msgid ""
 "\n"
 "  -q                     inhibit loading of ~/.guile"
 msgstr ""
-"\n"
-"  -h, --help                     显示这份说明然后离开"
 
 #: guix/scripts/repl.scm:87
 msgid ""
@@ -9782,9 +9494,9 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/repl.scm:116
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~A: invalid listen specification~%"
-msgstr "含糊的软件包规范 `~a'~%"
+msgstr ""
 
 #: guix/scripts/repl.scm:127
 #, scheme-format
@@ -9797,9 +9509,9 @@ msgid "accepted connection~%"
 msgstr ""
 
 #: guix/scripts/repl.scm:136
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "accepted connection from ~a~%"
-msgstr "连接到 `~a' 失败：~a~%"
+msgstr ""
 
 #: guix/scripts/repl.scm:147
 #, scheme-format
@@ -9811,9 +9523,9 @@ msgid "read-eval-print loop (REPL) for interactive programming"
 msgstr ""
 
 #: guix/scripts/repl.scm:221
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: unknown type of REPL~%"
-msgstr "~a: 未知节点类型~%"
+msgstr ""
 
 #: guix/scripts/shell.scm:55
 msgid ""
@@ -9823,13 +9535,10 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/shell.scm:61
-#, fuzzy
 msgid ""
 "\n"
 "  -D, --development      include the development inputs of the next package"
 msgstr ""
-"\n"
-"  -n, --dry-run          不要构建派生包"
 
 #: guix/scripts/shell.scm:63
 msgid ""
@@ -9838,13 +9547,10 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/shell.scm:66
-#, fuzzy
 msgid ""
 "\n"
 "  -q                     inhibit loading of 'guix.scm' and 'manifest.scm'"
 msgstr ""
-"\n"
-"  -h, --help                     显示这份说明然后离开"
 
 #: guix/scripts/shell.scm:68
 msgid ""
@@ -9866,15 +9572,14 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/shell.scm:234
-#, fuzzy, scheme-format
-#| msgid "  file name: ~a~%"
+#, scheme-format
 msgid "ignoring invalid file name: '~a'~%"
-msgstr "  文件名：~a~%"
+msgstr ""
 
 #: guix/scripts/shell.scm:300
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "loading environment from '~a'...~%"
-msgstr "寻找最新版的 GNU~a..."
+msgstr ""
 
 #: guix/scripts/shell.scm:306
 #, scheme-format
@@ -9911,9 +9616,9 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/style.scm:75
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: complex expression, bailing out~%"
-msgstr "签名不是有效的 S-表达式"
+msgstr ""
 
 #: guix/scripts/style.scm:93
 #, scheme-format
@@ -9926,9 +9631,9 @@ msgid "~a: non-trivial input, bailing out~%"
 msgstr ""
 
 #: guix/scripts/style.scm:122
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: input expression is too short~%"
-msgstr "签名不是有效的 S-表达式"
+msgstr ""
 
 #: guix/scripts/style.scm:214
 #, scheme-format
@@ -9956,15 +9661,14 @@ msgid "no definition location for package ~a~%"
 msgstr ""
 
 #: guix/scripts/style.scm:536
-#, fuzzy, scheme-format
-#| msgid "~a: unknown action~%"
+#, scheme-format
 msgid "~a: unknown styling~%"
-msgstr "~a：未知操作~%"
+msgstr ""
 
 #: guix/scripts/style.scm:543
-#, fuzzy, scheme-format
+#, scheme-format
 msgid "~a: invalid input simplification policy~%"
-msgstr "含糊的软件包规范 `~a'~%"
+msgstr ""
 
 #: guix/scripts/style.scm:561
 msgid "Available styling rules:\n"
@@ -9983,13 +9687,10 @@ msgid "- arguments: Rewrite package arguments to G-expressions\n"
 msgstr ""
 
 #: guix/scripts/style.scm:567
-#, fuzzy
 msgid ""
 "Usage: guix style [OPTION]... [PACKAGE]...\n"
 "Update package definitions to the latest style.\n"
 msgstr ""
-"用法：guix size [选项]... 软件包\n"
-"报告 <软件包> 及其依赖的大小。\n"
 
 #: guix/scripts/style.scm:569
 msgid ""
@@ -10004,16 +9705,10 @@ msgid ""
 msgstr ""
 
 #: guix/scripts/style.scm:574
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "  -n, --dry-run          do not build the derivations"
 msgid ""
 "\n"
 "  -n, --dry-run          display files that would be edited but do nothing"
 msgstr ""
-"\n"
-"  -n, --dry-run          不要构建派生包"
 
 #: guix/scripts/style.scm:580
 msgid ""
@@ -10063,15 +9758,15 @@ msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:96
 msgid "SYSTEM"
-msgstr "系统"
+msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:97
 msgid "assume SYSTEM as the current system type"
-msgstr "假设 <系统> 为当前系统类型"
+msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:98 nix/nix-daemon/guix-daemon.cc:101
 msgid "N"
-msgstr "N"
+msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:99
 msgid "use N CPU cores to build each derivation; 0 means as many as available"
@@ -10099,7 +9794,7 @@ msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:109
 msgid "DIR"
-msgstr "目录"
+msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:110
 msgid "add DIR to the build chroot"
@@ -10107,7 +9802,7 @@ msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:111
 msgid "GROUP"
-msgstr "组"
+msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:112
 msgid "perform builds as a user of GROUP"
@@ -10115,11 +9810,11 @@ msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:114
 msgid "do not use substitutes"
-msgstr "不使用替代品"
+msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:115
 msgid "URLS"
-msgstr "网址"
+msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:116
 msgid "use URLS as the default list of substitute providers"
@@ -10131,7 +9826,7 @@ msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:123
 msgid "cache build failures"
-msgstr "对构建失败进行缓存"
+msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:125
 msgid "build each derivation N times in a row"
@@ -10139,16 +9834,15 @@ msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:127
 msgid "do not keep build logs"
-msgstr "不要保留构建日志"
+msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:130
 msgid "disable compression of the build logs"
-msgstr "禁用构建日志压缩"
+msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:132
-#, fuzzy
 msgid "use the specified compression type for build logs"
-msgstr "禁用构建日志压缩"
+msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:134
 msgid "use substitute servers discovered on the local network"
@@ -10160,7 +9854,7 @@ msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:149
 msgid "impersonate Linux 2.6"
-msgstr "模拟 Linux 2.6"
+msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:153
 msgid "tell whether the GC must keep outputs of live derivations"
@@ -10172,84 +9866,18 @@ msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:159
 msgid "SOCKET"
-msgstr "套接字"
+msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:160
 msgid "listen for connections on SOCKET"
-msgstr "侦听 <套接字> 上的链接"
+msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:162
 msgid "produce debugging output"
-msgstr "生成调试输出"
+msgstr ""
 
 #: nix/nix-daemon/guix-daemon.cc:529
 msgid "socket-activated with %1% socket"
 msgid_plural "socket-activated with %1% sockets"
 msgstr[0] ""
-
-#, fuzzy
-#~ msgid "~a: compressor not found~%"
-#~ msgstr "~a: 包未找到~%"
-
-#, fuzzy
-#~ msgid "failed to import package '~a'~%"
-#~ msgstr "连接到 `~a' 失败：~a~%"
-
-#, fuzzy
-#~ msgid ""
-#~ "\n"
-#~ "      --load-path=DIR    prepend DIR to the package module search path"
-#~ msgstr ""
-#~ "\n"
-#~ "  -L, --load-path=目录   将 <目录> 加入到软件包模块搜索目录之前"
-
-#~ msgid ""
-#~ "\n"
-#~ "  -s, --system=SYSTEM    consider packages for SYSTEM--e.g., \"i686-linux\""
-#~ msgstr ""
-#~ "\n"
-#~ "  -s, --system=系统      为 <系统> 考虑包——比如，\"i686-linux\""
-
-#, fuzzy
-#~ msgid ""
-#~ "\n"
-#~ "  -s, --system=SYSTEM    consider the graph for SYSTEM--e.g., \"i686-linux\""
-#~ msgstr ""
-#~ "\n"
-#~ "  -s, --system=系统      为 <系统> 考虑包——比如，\"i686-linux\""
-
-#, fuzzy
-#~ msgid ""
-#~ "\n"
-#~ "  -s, --system=SYSTEM    consider substitutes for SYSTEM--e.g., \"i686-linux\""
-#~ msgstr ""
-#~ "\n"
-#~ "  -s, --system=系统      为 <系统> 考虑包——比如，\"i686-linux\""
-
-#, fuzzy
-#~ msgid "Creating   ~a..."
-#~ msgstr "正删除 ~a~%"
-
-#~ msgid "Please select a disk."
-#~ msgstr "请选择一个磁盘。"
-
-#, fuzzy
-#~ msgid ""
-#~ "Failed to import package ~s.\n"
-#~ "reason: ~s.~%"
-#~ msgstr "连接到 `~a' 失败：~a~%"
-
-#, fuzzy
-#~ msgid "Package not found in opam repository: ~a~%"
-#~ msgstr "~A: 无法找到供版本 ~a~% 的软件包"
-
-#~ msgid "please upgrade Guile-Git~%"
-#~ msgstr "请升级 Guile-Git~%"
-
-#, fuzzy
-#~| msgid "failed to connect to `~a': ~a~%"
-#~ msgid "failed to lookup NIST host: ~a~%"
-#~ msgstr "连接到 `~a' 失败：~a~%"
-
-#~ msgid "error: libgcrypt version mismatch\n"
-#~ msgstr "错误：libgcrypt 版本不匹配\n"
+msgstr[1] ""
