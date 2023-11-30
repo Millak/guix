@@ -9592,6 +9592,34 @@ package contains functions for combining the results of multiple runs of gene
 set analyses.")
     (license license:gpl2+)))
 
+(define-public r-polyester
+  (package
+    (name "r-polyester")
+    (version "1.38.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "polyester" version))
+       (sha256
+        (base32 "1iycdxj0jhh2faclfzflp2cjc2zmxmhy03avv75h0qg3j5kf35l4"))))
+    (properties `((upstream-name . "polyester")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biostrings
+           r-iranges
+           r-limma
+           r-logspline
+           r-s4vectors
+           r-zlibbioc))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/polyester")
+    (synopsis "Simulate RNA-seq reads")
+    (description
+     "The polyester package simulates RNA-seq reads from differential expression
+experiments with replicates.  The reads can then be aligned and used to perform
+comparisons of methods for differential expression.")
+    (license license:artistic2.0)))
+
 (define-public r-powertcr
   (package
     (name "r-powertcr")
