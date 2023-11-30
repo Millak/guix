@@ -26169,6 +26169,9 @@ prompters.")
 (define-public cl-prompter
   (sbcl-package->cl-source-package sbcl-prompter))
 
+(define-public ecl-prompter
+  (sbcl-package->ecl-package sbcl-prompter))
+
 (define-public sbcl-cl-template
   (let ((commit "46193a9a389bb950530e579eae7e6e5a18184832")
         (revision "0"))
