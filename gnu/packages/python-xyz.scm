@@ -275,6 +275,7 @@
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix download)
@@ -12623,6 +12624,24 @@ file (e.g. @file{PKG-INFO}).")
 ;; pep621 was renamed to pyproject-metadata.
 (define-public python-pep621
   (deprecated-package "python-pep621" python-pyproject-metadata))
+
+(define-public python-meson-python
+  (package
+    (name "python-meson-python")
+    (version "0.15.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "meson_python" version))
+       (sha256
+        (base32 "0vyjhjabvm41hqijifk33idbdl62i76kfyf884f9rs29rpp77nzx"))))
+    (build-system meson-build-system)
+    (propagated-inputs (list python-pyproject-metadata python-tomli))
+    (home-page "https://github.com/mesonbuild/meson-python")
+    (synopsis "Meson Python build backend (PEP 517)")
+    (description "This package provides a PEP 517 build backend that makes
+use of the Meson build system.")
+    (license license:expat)))
 
 (define-public python-pyflakes
   (package
