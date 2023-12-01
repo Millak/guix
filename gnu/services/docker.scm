@@ -374,7 +374,7 @@ documentation for semantics."))
           (network
            (oci-container-configuration-network config))
           (user
-           (oci-container-configuration-user config))
+           (oci-container-configuration-container-user config))
           (workdir
            (oci-container-configuration-workdir config)))
       (apply append
