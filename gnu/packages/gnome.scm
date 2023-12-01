@@ -13046,7 +13046,8 @@ GObject introspection bindings.")
                 (("update_desktop_database: true")
                  "update_desktop_database: false")))))))
     (propagated-inputs
-     (list glib json-glib polkit))
+     ;; Listed in sysprof-4.pc or sysprof-ui-5.pc
+     (list glib json-glib libadwaita polkit))
     (inputs
      (list glib
            gtk
