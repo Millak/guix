@@ -174,6 +174,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bdw-gc)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
@@ -187,6 +188,7 @@
   #:use-module (gnu packages djvu)
   #:use-module (gnu packages docker)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages elf)
   #:use-module (gnu packages enchant)
   #:use-module (gnu packages file)
   #:use-module (gnu packages fonts)
@@ -27335,6 +27337,39 @@ structure.")
      "This package provides a parser, schema validator, and data binding tool
 for YAML and JSON.")
     (license license:expat)))
+
+(define-public python-dbus-python
+  (package
+  (name "python-dbus-python")
+  (version "1.3.2")
+  (source
+   (origin
+     (method url-fetch)
+     (uri (pypi-uri "dbus-python" version))
+     (sha256
+      (base32 "1y28h90v2ib8zqhs3r2yr7ycg8ccwvw3gqkvadlm12v1129q2rxd"))))
+  (build-system pyproject-build-system)
+  (arguments
+   (list #:phases #~(modify-phases %standard-phases
+                      (add-after 'unpack 'patch-requirements
+                        (lambda _
+                          (substitute* (list "pyproject.toml" "setup.py")
+                            (("'(ninja|patchelf)',?") ""))
+                          (substitute* "setup.cfg"
+                            (("(ninja|patchelf)") "")))))))
+  (inputs (list dbus glib))
+  (propagated-inputs (list python-pygobject))
+  (native-inputs (list pkg-config
+                       python-meson-python
+                       meson ninja patchelf
+                       python-sphinx python-sphinx-rtd-theme
+                       python-tappy
+                       python-wheel))
+  (home-page "https://dbus.freedesktop.org/doc/dbus-python/")
+  (synopsis "Python bindings for libdbus")
+  (description "This package provides Python bindings to libdbus, the
+reference implementation of the D-Bus protocol.")
+  (license license:expat)))
 
 (define-public python-dbusmock
   (package
