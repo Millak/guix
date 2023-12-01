@@ -5810,7 +5810,7 @@ faster results and to avoid unnecessary server load.")
            python
            ;; For tests.
            python-dbus
-           python-dbusmock
+           python-dbusmock-minimal
            python-packaging
            python-pygobject
            umockdev

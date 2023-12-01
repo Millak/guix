@@ -849,7 +849,7 @@ ever use this library.")
             gobject-introspection
             gsettings-desktop-schemas
             pkg-config
-            python-dbusmock
+            python-dbusmock-minimal
             python-pytest
             python-wrapper))
      (synopsis "Assistive Technology Service Provider Interface, core components")
@@ -880,7 +880,8 @@ is part of the GNOME accessibility project.")
                                   "/share/doc'\n")))))))))
     (native-inputs
      (modify-inputs (package-native-inputs at-spi2-core)
-       (append gi-docgen python python-sphinx)))
+       (append gi-docgen python python-sphinx)
+       (replace "python-dbusmock" python-dbusmock)))
     (properties (alist-delete 'hidden?
                               (package-properties at-spi2-core)))))
 

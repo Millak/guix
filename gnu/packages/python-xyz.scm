@@ -27374,14 +27374,14 @@ reference implementation of the D-Bus protocol.")
 (define-public python-dbusmock
   (package
     (name "python-dbusmock")
-    (version "0.25.0")
+    (version "0.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python-dbusmock" version))
        (sha256
         (base32
-         "1nwl0gzzds2g1w1gfxfzlgrkb5hr1rrdyn619ml25c6b1rjyfk3g"))))
+         "1hanz6x76jq66ypdirga5h15zjs67kwysl6rmsf0i22dbdqrxdfv"))))
     (build-system python-build-system)
     (arguments
      (list #:modules `((guix build python-build-system)
@@ -27392,6 +27392,9 @@ reference implementation of the D-Bus protocol.")
            #~(modify-phases %standard-phases
                (add-after 'unpack 'patch-paths
                  (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "tests/test_api.py"
+                     (("/usr/bin/python3")
+                      (which "python3")))
                    (substitute* "tests/test_code.py"
                      (("/bin/bash")
                       (which "bash")))
@@ -27418,11 +27421,11 @@ reference implementation of the D-Bus protocol.")
                                           status))
                                  (loop)))))))))))))
     (native-inputs
-     (list dbus python-pytest which))
+     (list dbus python-pytest upower which))
     (inputs
      (list dbus))
     (propagated-inputs
-     (list python-dbus python-pygobject))
+     (list python-dbus-python python-pygobject))
     (home-page "https://github.com/martinpitt/python-dbusmock")
     (synopsis "Python library for mock D-Bus objects")
     (description "python-dbusmock allows for the easy creation of mock objects on
@@ -27431,6 +27434,16 @@ services such as upower, systemd, logind, gnome-session or others, and it is
 hard (or impossible without root privileges) to set the state of the real
 services to what you expect in your tests.")
     (license license:lgpl3+)))
+
+(define-public python-dbusmock-minimal
+  (package
+    (inherit python-dbusmock)
+    (name "python-dbusmock-minimal")
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-dbusmock)
+       ((#:tests? _ #t) #f)))
+    (native-inputs (list which))
+    (properties '((hidden? . #t)))))
 
 (define-public python-jsonplus
   (package
