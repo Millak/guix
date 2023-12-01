@@ -162,6 +162,7 @@ interfacing MPD in the C, C++ & Objective C languages.")
                    boost
                    chromaprint
                    curl
+                   dbus
                    elogind
                    expat
                    ffmpeg
