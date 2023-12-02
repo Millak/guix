@@ -838,7 +838,7 @@ this process.  It is compatible with Fortinet VPNs.")
 (define-public openvpn
   (package
     (name "openvpn")
-    (version "2.5.8")
+    (version "2.6.7")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -846,14 +846,13 @@ this process.  It is compatible with Fortinet VPNs.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "1cixqm4gn2d1v8qkbww75j30fzvxz13gc7whcmz54i0x4fvibwx6"))))
+                "04wr0g97nmv81javym8r99mglmb86v1i49xmnmzf938x1cs7g67f"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--enable-iproute2=yes")))
-    (native-inputs
-     (list iproute))
-    (inputs
-     (list lz4 lzo openssl linux-pam))
+    (native-inputs (list iproute pkg-config))
+    (inputs (append (list lz4 lzo openssl linux-pam)
+                    (if (target-linux?) (list libcap-ng) '())))
     (home-page "https://openvpn.net/")
     (synopsis "Virtual private network daemon")
     (description
