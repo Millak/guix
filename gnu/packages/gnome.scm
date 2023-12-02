@@ -5032,25 +5032,26 @@ as OpenStreetMap, OpenCycleMap, OpenAerialMap and Maps.")
                 "1an5n2sa70f40my4g20lk38s5ib99c32bzzg8gm91v9nbxr6f719"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags '("-Ddocs=disabled")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'adjust-tests
-           (lambda _
-             ;; This test fails due to missing /etc/nsswitch.conf
-             ;; in the build environment.
-             (substitute* "tests/unix-socket-test.c"
-               ((".*/sockets/unconnected.*") ""))
+     (list
+      #:configure-flags #~(list "-Ddocs=disabled")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'adjust-tests
+            (lambda _
+              ;; This test fails due to missing /etc/nsswitch.conf
+              ;; in the build environment.
+              (substitute* "tests/unix-socket-test.c"
+                ((".*/sockets/unconnected.*") ""))
 
-             ;; These fail because "subdomain.localhost" does not resolve in
-             ;; the build environment.  Moreover, the hsts-test suite fails on
-             ;; i686-linux because of errors from `session_get_uri' like
-             ;; "Unexpected status 200 OK (expected 301 Moved Permanently)"
-             ;; (see: https://gitlab.gnome.org/GNOME/libsoup/-/issues/239).
-             (substitute* "tests/meson.build"
-               ((".*'name': 'hsts'.*") ""))
-             (substitute* "tests/hsts-db-test.c"
-               ((".*/hsts-db/subdomains.*") "")))))))
+              ;; These fail because "subdomain.localhost" does not resolve in
+              ;; the build environment.  Moreover, the hsts-test suite fails on
+              ;; i686-linux because of errors from `session_get_uri' like
+              ;; "Unexpected status 200 OK (expected 301 Moved Permanently)"
+              ;; (see: https://gitlab.gnome.org/GNOME/libsoup/-/issues/239).
+              (substitute* "tests/meson.build"
+                ((".*'name': 'hsts'.*") ""))
+              (substitute* "tests/hsts-db-test.c"
+                ((".*/hsts-db/subdomains.*") "")))))))
     (native-inputs
      (list `(,glib "bin") ;for glib-mkenums
            gobject-introspection
@@ -5100,13 +5101,13 @@ and the GLib main loop, to integrate well with GNOME applications.")
         #~(cons "-Dgtk_doc=false"
                 (delete "-Ddocs=disabled" #$configure-flags)))
        ((#:phases phases)
-        `(modify-phases ,phases
-           (replace 'adjust-tests
-             (lambda _
-               ;; Disable the SSL test, failing since 2.68 and resolved in
-               ;; libsoup 3.
-               (substitute* "tests/meson.build"
-                 (("[ \t]*\\['ssl', true, \\[\\]\\],") ""))))))))
+        #~(modify-phases #$phases
+            (replace 'adjust-tests
+              (lambda _
+                ;; Disable the SSL test, failing since 2.68 and resolved in
+                ;; libsoup 3.
+                (substitute* "tests/meson.build"
+                  (("[ \t]*\\['ssl', true, \\[\\]\\],") ""))))))))
     (native-inputs
      (modify-inputs (package-native-inputs libsoup-minimal)
        (replace "vala" vala-0.52)))))
