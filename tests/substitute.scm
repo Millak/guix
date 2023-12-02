@@ -662,28 +662,31 @@ System: mips64el-linux\n")))
         (lambda ()
           (false-if-exception (delete-file "substitute-retrieved")))))))
 
-(test-quit "substitute, narinfo is available but nar is missing"
-    "failed to find alternative substitute"
-  (with-narinfo*
-      (string-append %narinfo "Signature: "
-                     (signature-field
-                      %narinfo
-                      #:public-key %wrong-public-key))
-      %main-substitute-directory
+(test-equal "substitute, narinfo is available but nar is missing"
+  "not-found\n"
+  (let ((port (open-output-string)))
+    (parameterize ((current-output-port port))
+      (with-narinfo*
+          (string-append %narinfo "Signature: "
+                         (signature-field
+                          %narinfo
+                          #:public-key %wrong-public-key))
+          %main-substitute-directory
 
-    (with-http-server `((200 ,(string-append %narinfo "Signature: "
-                                             (signature-field %narinfo)))
-                        (404 "Sorry, nar is missing!"))
-      (parameterize ((substitute-urls
-                      (list (%local-url)
-                            (string-append "file://"
-                                           %main-substitute-directory))))
-        (delete-file (string-append %main-substitute-directory
-                                    "/example.nar"))
-        (request-substitution (string-append (%store-prefix)
-                                             "/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-foo")
-                              "substitute-retrieved")
-        (not (file-exists? "substitute-retrieved"))))))
+        (with-http-server `((200 ,(string-append %narinfo "Signature: "
+                                                 (signature-field %narinfo)))
+                            (404 "Sorry, nar is missing!"))
+          (parameterize ((substitute-urls
+                          (list (%local-url)
+                                (string-append "file://"
+                                               %main-substitute-directory))))
+            (delete-file (string-append %main-substitute-directory
+                                        "/example.nar"))
+            (request-substitution (string-append (%store-prefix)
+                                                 "/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-foo")
+                                  "substitute-retrieved")
+            (and (not (file-exists? "substitute-retrieved"))
+                 (get-output-string port))))))))
 
 (test-equal "substitute, first narinfo is unsigned and has wrong hash"
   "Substitutable data."

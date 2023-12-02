@@ -635,8 +635,9 @@ way to download the nar."
   (let loop ((cache-urls cache-urls))
     (match cache-urls
       (()
-       (leave (G_ "failed to find alternative substitute for '~a'~%")
-              (narinfo-path narinfo)))
+       (report-error (G_ "failed to find alternative substitute for '~a'~%")
+                     (narinfo-path narinfo))
+       (display "not-found\n" port))
       ((cache-url rest ...)
        (match (lookup-narinfos cache-url
                                (list (narinfo-path narinfo))
