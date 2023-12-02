@@ -849,14 +849,15 @@ identifiers.  The result is inferred from the file names of patches."
                                  '()))))
     (append-map patch-vulnerabilities patches)))
 
-(define (%standard-patch-inputs)
+(define (%standard-patch-inputs system)
   (let* ((canonical (module-ref (resolve-interface '(gnu packages base))
                                 'canonical-package))
          (ref       (lambda (module var)
                       ;; Make sure 'canonical-package' is not influenced by
                       ;; '%current-target-system' since we're going to use the
                       ;; native package anyway.
-                      (parameterize ((%current-target-system #f))
+                      (parameterize ((%current-target-system #f)
+                                     (%current-system system))
                         (canonical
                          (module-ref (resolve-interface module) var))))))
     `(("tar"   ,(ref '(gnu packages base) 'tar))
@@ -867,7 +868,8 @@ identifiers.  The result is inferred from the file names of patches."
       ("unzip" ,(ref '(gnu packages compression) 'unzip))
       ("patch" ,(ref '(gnu packages base) 'patch))
       ("locales"
-       ,(parameterize ((%current-target-system #f))
+       ,(parameterize ((%current-target-system #f)
+                       (%current-system system))
           (canonical
            ((module-ref (resolve-interface '(gnu packages base))
                         'libc-utf8-locales-for-target))))))))
@@ -913,7 +915,7 @@ specifies modules in scope when evaluating SNIPPET."
   (define lookup-input
     ;; The default value of the 'patch-inputs' field, and thus INPUTS is #f,
     ;; so deal with that.
-    (let ((inputs (or inputs (%standard-patch-inputs))))
+    (let ((inputs (or inputs (%standard-patch-inputs system))))
       (lambda (name)
         (match (assoc-ref inputs name)
           ((package) package)
