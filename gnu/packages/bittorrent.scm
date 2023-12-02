@@ -80,6 +80,7 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml))
 
@@ -416,10 +417,16 @@ and will take advantage of multiple processor cores where possible.")
     (license (list l:public-domain      ; sha1.*, used to build without OpenSSL
                    l:gpl2+))))          ; with permission to link with OpenSSL
 
+(define %v2_empty_file.torrent
+  (origin (method url-fetch)
+          (uri "https://github.com/arvidn/libtorrent/raw/v2.0.9/test/test_torrents/v2_empty_file.torrent")
+          (sha256
+           (base32 "1hydgf0m9193hy9010wl0wrbz4k4cgrqg70jakx68pgi79jcqnrn"))))
+
 (define-public libtorrent-rasterbar
   (package
     (name "libtorrent-rasterbar")
-    (version "1.2.19")
+    (version "2.0.9")
     (source
      (origin
        (method url-fetch)
@@ -428,7 +435,14 @@ and will take advantage of multiple processor cores where possible.")
                        "releases/download/v" version "/"
                        "libtorrent-rasterbar-" version ".tar.gz"))
        (sha256
-        (base32 "03p4nvsll568zlyqifid0cn135sg5whbk7g48gkbapnw92ayks7f"))))
+        (base32 "13kry578ifzz4m2f291bbd7v5v9zsi8y3mf38146cnqw0sv95kch"))
+       ;; https://github.com/arvidn/libtorrent/issues/7566
+       ;; Remove when resolved.  I would hope this to be fixed in 2.0.10.
+       (modules '((guix build utils)))
+       (snippet
+        #~(substitute* "test/test_copy_file.cpp"
+            (("EXT4_SUPER_MAGIC, EXT3_SUPER_MAGIC, XFS_SUPER_MAGIC" all)
+             (string-append all ", TMPFS_MAGIC\n"))))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-Dpython-bindings=ON"
@@ -437,6 +451,14 @@ and will take advantage of multiple processor cores where possible.")
        #:parallel-tests? #f
        #:phases
        (modify-phases %standard-phases
+         ;; https://github.com/arvidn/libtorrent/issues/7567
+         ;; Remove when resolved.  I would hope this to be fixed in 2.0.10.
+         ;; Do not forget to remove the %v2_empty_file.torrent variable.
+         (add-before 'configure 'copy-v2_empty_file.torrent
+           (lambda* (#:key native-inputs inputs #:allow-other-keys)
+             (copy-file (assoc-ref (or native-inputs inputs)
+                                   "%v2_empty_file.torrent")
+                        "test/test_torrents/v2_empty_file.torrent")))
          (replace 'check
            (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
              (let* ((disabled-tests
@@ -473,10 +495,10 @@ and will take advantage of multiple processor cores where possible.")
                          "--timeout" timeout
                          "--output-on-failure"))))))))
     (inputs (list boost openssl))
-    (native-inputs
-     (list libfaketime
-           python-wrapper
-           pkg-config))
+    (native-inputs `(("libfaketime" ,libfaketime)
+                     ("python-wrapper" ,python-wrapper)
+                     ("pkg-config" ,pkg-config)
+                     ("%v2_empty_file.torrent" ,%v2_empty_file.torrent)))
     (home-page "https://www.libtorrent.org/")
     (synopsis "Feature-complete BitTorrent implementation")
     (description
@@ -484,6 +506,20 @@ and will take advantage of multiple processor cores where possible.")
 focusing on efficiency and scalability.  It runs on embedded devices as well as
 desktops.")
     (license l:bsd-2)))
+
+(define-public libtorrent-rasterbar-1.2
+  (package
+    (inherit libtorrent-rasterbar)
+    (version "1.2.19")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append "https://github.com/arvidn/libtorrent/"
+                       "releases/download/v" version "/"
+                       "libtorrent-rasterbar-" version ".tar.gz"))
+       (sha256
+        (base32 "03p4nvsll568zlyqifid0cn135sg5whbk7g48gkbapnw92ayks7f"))))))
 
 (define-public qbittorrent
   (package
@@ -506,7 +542,7 @@ desktops.")
      (list qttools-5))
     (inputs
      (list boost
-           libtorrent-rasterbar
+           libtorrent-rasterbar-1.2
            openssl
            python-wrapper
            qtsvg-5
