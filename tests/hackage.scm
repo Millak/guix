@@ -306,8 +306,6 @@ executable cabal
   ghc-options: -Wall
 ")
 
-;; Fails: https://debbugs.gnu.org/cgi/bugreport.cgi?bug=35743
-(test-expect-fail 1)
 (test-assert "hackage->guix-package test mixed layout"
   (eval-test-with-cabal test-cabal-mixed-layout match-ghc-foo))
 
