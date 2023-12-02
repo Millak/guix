@@ -5021,7 +5021,7 @@ as OpenStreetMap, OpenCycleMap, OpenAerialMap and Maps.")
 (define-public libsoup-minimal
   (package
     (name "libsoup-minimal")
-    (version "3.0.7")
+    (version "3.4.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/libsoup/"
@@ -5029,17 +5029,17 @@ as OpenStreetMap, OpenCycleMap, OpenAerialMap and Maps.")
                                   "libsoup-" version ".tar.xz"))
               (sha256
                (base32
-                "1j7p3cz6hwi9js9rp0pbas7cdln97yg9v2l1nv5imhcr6p7r1pzb"))))
+                "1an5n2sa70f40my4g20lk38s5ib99c32bzzg8gm91v9nbxr6f719"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags '("-Dgtk_doc=false")
+     `(#:configure-flags '("-Ddocs=disabled")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'adjust-tests
            (lambda _
              ;; This test fails due to missing /etc/nsswitch.conf
              ;; in the build environment.
-             (substitute* "tests/socket-test.c"
+             (substitute* "tests/unix-socket-test.c"
                ((".*/sockets/unconnected.*") ""))
 
              ;; These fail because "subdomain.localhost" does not resolve in
@@ -5095,9 +5095,13 @@ and the GLib main loop, to integrate well with GNOME applications.")
                 "04rgv6hkyhgi7lak9865yxgbgky6gc635p7w6nhcbj64rx0prdz4"))))
     (arguments
      (substitute-keyword-arguments (package-arguments libsoup-minimal)
+       ((#:configure-flags configure-flags)
+        ;; The option name changed between libsoup 2 and libsoup 3.
+        #~(cons "-Dgtk_doc=false"
+                (delete "-Ddocs=disabled" #$configure-flags)))
        ((#:phases phases)
         `(modify-phases ,phases
-           (add-after 'unpack 'disable-failing-tests
+           (replace 'adjust-tests
              (lambda _
                ;; Disable the SSL test, failing since 2.68 and resolved in
                ;; libsoup 3.
@@ -5110,20 +5114,13 @@ and the GLib main loop, to integrate well with GNOME applications.")
 (define-public libsoup
   (package/inherit libsoup-minimal
     (name "libsoup")
-    (version "3.4.4")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/libsoup/"
-                                  (version-major+minor version) "/"
-                                  "libsoup-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1an5n2sa70f40my4g20lk38s5ib99c32bzzg8gm91v9nbxr6f719"))))
     (outputs (cons "doc" (package-outputs libsoup-minimal)))
     (arguments
      (substitute-keyword-arguments (package-arguments libsoup-minimal)
        ((#:configure-flags configure-flags)
-        #~(delete "-Dgtk_doc=false" #$configure-flags))
+        #~(cons "-Ddocs=enabled"
+                ;; The default value is 'auto', meaning it could be skipped.
+                (delete "-Ddocs=disabled" #$configure-flags)))
        ((#:phases phases)
         #~(modify-phases #$phases
             (replace 'adjust-tests
