@@ -1746,7 +1746,7 @@ message bus.")
 (define-public accountsservice
   (package
     (name "accountsservice")
-    (version "22.08.8")
+    (version "23.13.9")
     (source
      (origin
        (method url-fetch)
@@ -1754,7 +1754,7 @@ message bus.")
                            "accountsservice/accountsservice-"
                            version ".tar.xz"))
        (sha256
-        (base32 "14d3lwik048h62qrzg1djdd2sqmxf3m1r859730pvzhrd6krg6ch"))
+        (base32 "0kwjkff5m7gnzpns6cy27az90w7sxzwzygyzwy90kyi4mvg4rnmd"))
        (patches (search-patches "accountsservice-extensions.patch"))))
     (build-system meson-build-system)
     (arguments
@@ -1795,6 +1795,7 @@ message bus.")
            docbook-xsl
            gettext-minimal
            `(,glib "bin")               ; for gdbus-codegen, etc.
+           glibc-locales                    ;for tests
            gobject-introspection
            gtk-doc
            libxml2                      ;for XML_CATALOG_FILES
