@@ -3074,8 +3074,8 @@ void SubstitutionGoal::finished()
 	auto statusList = tokenizeString<vector<string> >(status);
 
 	if (statusList.empty()) {
-            throw SubstError(format("fetching path `%1%' (empty status: '%2%')")
-			     % storePath % status);
+            throw SubstError(format("fetching path `%1%' (empty status)")
+			     % storePath);
 	} else if (statusList[0] == "hash-mismatch") {
 	    if (settings.printBuildTrace) {
 		auto hashType = statusList[1];
