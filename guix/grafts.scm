@@ -22,7 +22,7 @@
   #:use-module (guix records)
   #:use-module (guix combinators)
   #:use-module (guix derivations)
-  #:use-module ((guix utils) #:select (%current-system))
+  #:use-module ((guix utils) #:select (%current-system target-hurd?))
   #:use-module (guix sets)
   #:use-module (guix gexp)
   #:use-module (srfi srfi-1)
@@ -98,7 +98,9 @@ OUTPUTS of DRV.  This procedure performs \"shallow\" grafting in that GRAFTS
 are not recursively applied to dependencies of DRV."
   (define glibc-locales
     (module-ref (resolve-interface '(gnu packages commencement))
-                'glibc-utf8-locales-final))
+                (if (target-hurd? system)
+                    'glibc-utf8-locales-final/hurd
+                    'glibc-utf8-locales-final)))
 
   (define mapping
     ;; List of store item pairs.
