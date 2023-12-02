@@ -2567,13 +2567,13 @@ conventions and aliases in the same expression.")
 (define-public python-wand
   (package
     (name "python-wand")
-    (version "0.6.11")
+    (version "0.6.13")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Wand" version))
        (sha256
-        (base32 "15d9kxyc7qvknx0kv27m2jamnmisckyf89i7wlqykwgqm46p0qdn"))))
+        (base32 "1jpwm956vm35hmgjndr2jwrcql0bwvpsl88q5nr0x8ppxa2380gm"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
