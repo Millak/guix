@@ -5437,49 +5437,41 @@ high-level API for network management that uses rtnetlink.")
              (commit (string-append "v" version))))
        (file-name (string-append name "-" version))
        (sha256
-        (base32
-         "0srkmchd4kmfa7q65r6fdzwklhgdlck1ll0s7smzs8ddjdgz2lwm"))))
+        (base32 "0srkmchd4kmfa7q65r6fdzwklhgdlck1ll0s7smzs8ddjdgz2lwm"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags '("GUILE_AUTO_COMPILE=0")     ;to prevent guild warnings
+     `(#:make-flags '("GUILE_AUTO_COMPILE=0") ;to prevent guild warnings
        #:modules (((guix build guile-build-system)
                    #:select (target-guile-effective-version))
                   ,@%gnu-build-system-modules)
        #:imported-modules ((guix build guile-build-system)
                            ,@%gnu-build-system-modules)
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out       (assoc-ref outputs "out"))
-                    (bin       (string-append out "/bin"))
-                    (guile-lib (assoc-ref inputs "guile-lib"))
-                    (json      (assoc-ref inputs "guile-json"))
-                    (tls       (assoc-ref inputs "guile-gnutls"))
-                    (version   (target-guile-effective-version))
-                    (scm       (string-append "/share/guile/site/"
-                                              version))
-                    (go        (string-append  "/lib/guile/"
-                                               version "/site-ccache")))
-               (wrap-program (string-append bin "/gitlab-cli")
-                 `("GUILE_LOAD_PATH" prefix
-                   (,(string-append out scm)
-                    ,(string-append guile-lib scm)
-                    ,(string-append json scm)
-                    ,(string-append tls scm)))
-                 `("GUILE_LOAD_COMPILED_PATH" prefix
-                   (,(string-append out go)
-                    ,(string-append guile-lib go)
-                    ,(string-append json go)
-                    ,(string-append tls go))))))))))
-    (native-inputs
-     (list autoconf automake pkg-config texinfo))
-    (inputs
-     `(("bash" ,bash-minimal)
-       ("guile" ,guile-2.2)
-       ("guile-json" ,guile2.2-json)
-       ("guile-lib" ,guile2.2-lib)
-       ("guile-gnutls" ,guile2.2-gnutls)))
+       #:phases (modify-phases %standard-phases
+                  (add-after 'install 'wrap-program
+                    (lambda* (#:key inputs outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (bin (string-append out "/bin"))
+                             (guile-lib (assoc-ref inputs "guile2.2-lib"))
+                             (json (assoc-ref inputs "guile2.2-json"))
+                             (tls (assoc-ref inputs "guile2.2-gnutls"))
+                             (version (target-guile-effective-version))
+                             (scm (string-append "/share/guile/site/" version))
+                             (go (string-append "/lib/guile/" version
+                                                "/site-ccache")))
+                        (wrap-program (string-append bin "/gitlab-cli")
+                          `("GUILE_LOAD_PATH" prefix
+                            (,(string-append out scm) ,(string-append
+                                                        guile-lib scm)
+                             ,(string-append json scm)
+                             ,(string-append tls scm)))
+                          `("GUILE_LOAD_COMPILED_PATH" prefix
+                            (,(string-append out go) ,(string-append guile-lib
+                                                       go)
+                             ,(string-append json go)
+                             ,(string-append tls go))))))))))
+    (native-inputs (list autoconf automake pkg-config texinfo))
+    (inputs (list bash-minimal guile-2.2 guile2.2-json guile2.2-lib
+                  guile2.2-gnutls))
     (home-page "https://github.com/artyom-poptsov/guile-gitlab")
     (synopsis "Guile interface to GitLab")
     (description
