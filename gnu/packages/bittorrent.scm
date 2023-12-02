@@ -46,11 +46,13 @@
   #:use-module ((guix licenses) #:prefix l:)
   #:use-module (guix gexp)
   #:use-module (guix utils)
+  #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR $SSL_CERT_FILE))
   #:use-module (gnu packages)
   #:use-module (gnu packages adns)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages certs)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
@@ -574,7 +576,7 @@ the following features:
 (define-public deluge
   (package
     (name "deluge")
-    (version "2.0.5")
+    (version "2.1.1")
     (source
      (origin
        (method url-fetch)
@@ -583,12 +585,13 @@ the following features:
              (version-major+minor version) "/deluge-" version ".tar.xz"))
        (sha256
         (base32
-         "1n15dzfnz1gvb4cf046yhi404i3gs933qgz0ichna6r1znmh9gf4"))))
+         "1xyz8bscwqmd7d8b43svxl42w54pnisvwkkrndx46hifh0cx73bn"))))
     (build-system python-build-system)
     (inputs (list bash-minimal))
     (propagated-inputs
      (list gtk+
            libtorrent-rasterbar
+           nss-certs
            python-pycairo
            python-chardet
            python-dbus
@@ -606,6 +609,9 @@ the following features:
     (native-inputs
      (list intltool python-wheel
            (librsvg-for-system)))
+    (native-search-paths
+     (list $SSL_CERT_DIR
+           $SSL_CERT_FILE))
     ;; TODO: Enable tests.
     ;; After "pytest-twisted" is packaged, HOME is set, and an X server is
     ;; started, some of the tests still fail.  There are likely some tests
