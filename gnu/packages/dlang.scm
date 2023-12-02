@@ -149,21 +149,23 @@ to a minimal test case.")
 (define ldc-bootstrap
   (package
     (name "ldc")
-    (version "1.32.2")
+    (version "1.35.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/ldc-developers/ldc/releases"
                            "/download/v" version "/ldc-" version "-src.tar.gz"))
        (sha256
-        (base32 "15fdl7fy1ssjxpyb9g54ac4xzcirycly521whil142ijfkpam95z"))))
+        (base32 "186z4r1d8y4dfpv5cdqgz9al6w7qnfh9l4q9ws9w0xkcf29njabf"))))
     (build-system cmake-build-system)
     (arguments
      `(#:disallowed-references (,tzdata-for-tests)
        #:tests? #f                  ;skip in the bootstrap
        #:build-type "Release"
        #:configure-flags
-        (list "-GNinja")
+        (list "-GNinja"
+              ;; see .github/actions/2-build-bootstrap/action.yml
+              "-DBUILD_SHARED_LIBS=OFF")
        #:make-flags                 ;used as build targets
         (list "all")
        #:phases
@@ -224,10 +226,9 @@ bootstrapping more recent compilers written in D.")
         '(list "all"
                ;; Also build the test runner binaries.
                "ldc2-unittest" "all-test-runners"))
-       ((#:configure-flags flags)
-        `(,@flags "-DBUILD_SHARED_LIBS=ON"
-                  "-DLDC_LINK_MANUALLY=OFF"
-                  "-DLDC_DYNAMIC_COMPILE=OFF"))
+       ((#:configure-flags _ #~'())
+        `(list "-GNinja"
+               "-DBUILD_SHARED_LIBS=ON"))
        ((#:phases phases)
         `(modify-phases ,phases
            (add-after 'unpack 'fix-compiler-rt-library-discovery
@@ -257,7 +258,8 @@ bootstrapping more recent compilers written in D.")
                                    "/lib/linux\",\n"))))))
            (add-after 'unpack 'patch-paths-in-tests
              (lambda _
-               (substitute* "tests/dmd/Makefile"
+               (substitute* '("tests/dmd/Makefile"
+                              "runtime/druntime/test/profile/Makefile")
                  (("/bin/bash") (which "bash")))
                (substitute* "tests/linking/linker_switches.d"
                  (("echo") (which "echo")))
@@ -292,6 +294,8 @@ bootstrapping more recent compilers written in D.")
                (substitute* "runtime/druntime/test/exceptions/Makefile"
                  ((".*TESTS\\+=rt_trap_exceptions_drt_gdb.*")
                   ""))
+               ;; Unsupported with glibc-2.35.
+               (delete-file "tests/dmd/compilable/stdcheaders.c")
                ;; Drop gdb_dflags from the test suite.
                (substitute* "tests/dmd/CMakeLists.txt"
                  (("\\$\\{gdb_dflags\\}") ""))
