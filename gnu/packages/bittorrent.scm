@@ -417,7 +417,7 @@ and will take advantage of multiple processor cores where possible.")
 (define-public libtorrent-rasterbar
   (package
     (name "libtorrent-rasterbar")
-    (version "1.2.18")
+    (version "1.2.19")
     (source
      (origin
        (method url-fetch)
@@ -426,35 +426,49 @@ and will take advantage of multiple processor cores where possible.")
                        "releases/download/v" version "/"
                        "libtorrent-rasterbar-" version ".tar.gz"))
        (sha256
-        (base32 "0wpsaqadcicxl4lf1nc1i93c4yzjv8hpzhhrw1hdkrp4gn0vdwpy"))))
+        (base32 "03p4nvsll568zlyqifid0cn135sg5whbk7g48gkbapnw92ayks7f"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-Dpython-bindings=ON"
                            "-Dbuild_tests=ON")
+       ;; Tests do not reliably work when executed in parallel.
+       #:parallel-tests? #f
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'extend-test-timeout
-           (lambda _
-             (substitute* "test/test_remove_torrent.cpp"
-               ;; Extend the test timeout from 3 seconds to 10.
-               (("i > 30") "i > 100"))))
          (replace 'check
            (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
-             (let ((disabled-tests
-                    ;; test_upnp requires a non-localhost IPv4 interface.
-                    '("test_upnp")))
+             (let* ((disabled-tests
+                     '(
+                       ;; Requires a non-localhost IPv4 interface.
+                       "test_upnp"
+                       ;; test_ssl needs to be run separately.
+                       "test_ssl"))
+                    (exclude-regex (string-append "^("
+                                                  (string-join disabled-tests "|")
+                                                  ")$"))
+                    (timeout "600")
+                    (jobs (if parallel-tests?
+                              (number->string (parallel-job-count))
+                              "1")))
                (when tests?
+                 (invoke "ctest"
+                         "-E" exclude-regex
+                         "-j" jobs
+                         "--timeout" timeout
+                         "--output-on-failure")
                  ;; test_ssl relies on bundled TLS certificates with a fixed
                  ;; expiry date.  To ensure succesful builds in the future,
                  ;; fake the time to be roughly that of the release.
-                 (setenv "FAKETIME_ONLY_CMDS" "test_ssl")
+                 ;;
+                 ;; At the same time, faketime happens to cause
+                 ;; test_fast_extension, test_privacy and test_resolve_links
+                 ;; to hang, even with FAKETIME_ONLY_CMDS.  Not sure why.  So
+                 ;; execute only test_ssl under faketime.
                  (invoke "faketime" "2022-10-24"
                          "ctest"
-                         "--exclude-regex" (string-join disabled-tests "|")
-                         "-j" (if parallel-tests?
-                                  (number->string (parallel-job-count))
-                                  "1")
-                         "--rerun-failed"
+                         "-R" "^test_ssl$"
+                         "-j" jobs
+                         "--timeout" timeout
                          "--output-on-failure"))))))))
     (inputs (list boost openssl))
     (native-inputs
