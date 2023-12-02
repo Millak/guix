@@ -3,7 +3,7 @@
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2018 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
-;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2021, 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -181,9 +181,6 @@ use '--serializer=nar' instead~%")))
                             (_ #f))
                            (reverse opts)))
          (fmt  (assq-ref opts 'format))
-         (select? (if (assq-ref opts 'exclude-vcs?)
-                      (negate vcs-file?)
-                      (const #t)))
          (algorithm (assoc-ref opts 'hash-algorithm))
          (serializer (assoc-ref opts 'serializer)))
 
@@ -193,7 +190,10 @@ use '--serializer=nar' instead~%")))
       (catch 'system-error
         (lambda _
           (with-error-handling
-            (serializer file algorithm select?)))
+            (let ((select? (if (assq-ref opts 'exclude-vcs?)
+                               (negate (vcs-file-predicate file))
+                               (const #t))))
+              (serializer file algorithm select?))))
         (lambda args
           (leave (G_ "~a ~a~%")
                  file
