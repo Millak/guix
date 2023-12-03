@@ -94,7 +94,8 @@ ncurses installed.")
                (when tests?
                  (invoke "zig" "test" "build.zig")))))))
     (native-inputs
-     (list perl zig-0.10))))
+     (list perl zig-0.10))
+    (properties `((tunable? . #t)))))
 
 (define-public ncdu-2
   (deprecated-package "ncdu2" ncdu))
