@@ -78,8 +78,7 @@ ncurses installed.")
        #:make-flags
        #~(list (string-append "PREFIX=" #$output)
                (string-append "CC=" #$(cc-for-target))
-               ;; XXX By default, zig builds with -march=native!
-               (string-append "ZIG_FLAGS=-Drelease-fast -Dcpu=baseline"))
+               (string-append "ZIG_FLAGS=-Drelease-fast"))
        #:phases
        #~(modify-phases %standard-phases
            (delete 'configure)      ; No configure script.
