@@ -114,14 +114,24 @@ alter table Packages
 add column output text;
 ")))
 
+;; XXX: missing in guile-sqlite3@0.1.3
+(define SQLITE_BUSY 5)
+
 (define (call-with-database file proc)
-  (let ((db (sqlite-open file)))
-    (dynamic-wind
-      (lambda () #t)
-      (lambda ()
-        (ensure-latest-database-schema db)
-        (proc db))
-      (lambda () (sqlite-close db)))))
+  (catch 'sqlite-error
+    (lambda ()
+      (let ((db (sqlite-open file)))
+        (dynamic-wind
+          (lambda () #t)
+          (lambda ()
+            (ensure-latest-database-schema db)
+            (proc db))
+          (lambda () (sqlite-close db)))))
+    (lambda (key who code errmsg)
+      (if (= code SQLITE_BUSY)
+          (leave (G_ "~a: database is locked by another process~%")
+                 file)
+          (throw key who code errmsg)))))
 
 (define (ensure-latest-database-schema db)
   "Ensure DB follows the latest known version of the schema."

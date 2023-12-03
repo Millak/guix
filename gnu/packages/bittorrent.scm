@@ -78,6 +78,7 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages web)
   #:use-module (gnu packages xml))
 
 (define-public transmission
@@ -285,7 +286,7 @@ Transmission BitTorrent daemon.")
 (define-public aria2
   (package
     (name "aria2")
-    (version "1.36.0")
+    (version "1.37.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/aria2/aria2/releases/"
@@ -293,7 +294,12 @@ Transmission BitTorrent daemon.")
                                   "/aria2-" version ".tar.xz"))
               (sha256
                (base32
-                "1987x4ywnnrhhfs9hi2h820c200d7nas9nd35414yh0jiihfglaq"))))
+                "0sxng4pynhj2qinranpv6wyzys3d42kz1gg2nrn63sw5f2nj1930"))
+              (patches (search-patches "aria2-unbundle-wslay.patch"))
+              (snippet
+               #~(begin (use-modules (guix build utils))
+                        (delete-file-recursively "deps")
+                        (delete-file "configure")))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -312,7 +318,11 @@ Transmission BitTorrent daemon.")
                  (("CPPUNIT_TEST_SUITE_REGISTRATION\\(LpdMessageReceiverTest\\);" text)
                   (string-append "// " text))))))))
     (native-inputs
-     (list cppunit ; for the tests
+     (list autoconf ; since we adjusted configure.ac
+           automake
+           gettext-minimal
+           libtool
+           cppunit ; for the tests
            pkg-config))
     (inputs
      (list c-ares
@@ -322,6 +332,7 @@ Transmission BitTorrent daemon.")
            libxml2
            nettle
            sqlite
+           wslay
            zlib))
     (home-page "https://aria2.github.io/")
     (synopsis "Utility for parallel downloading files")

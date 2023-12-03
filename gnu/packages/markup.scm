@@ -11,6 +11,7 @@
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -428,13 +429,13 @@ additions.")))
         (base32 "1jm7lhnzjx4q7gcwlkvsbffcy0zppywyh50d71ami6dnq182vvcc"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags (list "CC=gcc"
-                          (string-append "PREFIX="
-                                         (assoc-ref %outputs "out")))
-       #:tests? #f                      ; no tests included
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))
+           #:tests? #f                      ; no tests included
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))
     (home-page "https://github.com/Gottox/smu")
     (synopsis "Simple markup")
     (description

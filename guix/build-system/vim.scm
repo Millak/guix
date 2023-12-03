@@ -106,6 +106,13 @@
                     (install-plan ''())
                     (phases '(@ (guix build vim-build-system) %standard-phases))
                     (outputs '("out"))
+                    (out-of-source? #t)
+                    (tests? #t)
+                    (validate-runpath? #t)
+                    (patch-shebangs? #t)
+                    (strip-binaries? #t)
+                    (strip-flags %strip-flags)
+                    (strip-directories %strip-directories)
                     (search-paths '())
                     (system (%current-system))
                     (substitutable? #t)
@@ -135,8 +142,14 @@
                            #:search-paths '#$(sexp->gexp
                                                (map search-path-specification->sexp
                                                     search-paths))
-                           #:inputs
-                           %build-inputs)))))
+                           #:inputs %build-inputs
+                           #:out-of-source? #$out-of-source?
+                           #:tests? #$tests?
+                           #:validate-runpath? #$validate-runpath?
+                           #:patch-shebangs? #$patch-shebangs?
+                           #:strip-binaries? #$strip-binaries?
+                           #:strip-flags #$strip-flags
+                           #:strip-directories #$strip-directories)))))
 
   (mlet %store-monad
         ((guile (package->derivation (or guile (default-guile))

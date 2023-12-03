@@ -41,6 +41,7 @@
 ;;; Copyright © 2022 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
+;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3988,6 +3989,23 @@ the official package.")
       (home-page "https://go.googlesource.com/net")
       (license license:bsd-3))))
 
+(define-public go-golang-org-x-net-0.17
+  (let ((commit "b225e7ca6dde1ef5a5ae5ce922861bda011cfabd")
+        (revision "0"))
+    (package
+      (inherit go-golang-org-x-net)
+      (name "go-golang-org-x-net")
+      (version (git-version "0.17.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://go.googlesource.com/net")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "17zhim2m0r8nyy18g2lsawxm4rawix2qbjyn80x9vc6jc8fv05m9")))))))
+
 (define-public go-golang-org-x-net-html
   (package
     (inherit go-golang-org-x-net)
@@ -4090,6 +4108,24 @@ packages.")
 support for low-level interaction with the operating system.")
       (home-page "https://go.googlesource.com/sys")
       (license license:bsd-3))))
+
+;; XXX: This version is required for "go-github-com-quic-go-qtls-go1-20".
+(define-public go-golang-org-x-sys-0.8
+  (let ((commit "ca59edaa5a761e1d0ea91d6c07b063f85ef24f78")
+        (revision "0"))
+    (package
+      (inherit go-golang-org-x-sys)
+      (name "go-golang-org-x-sys")
+      (version (git-version "0.8.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://go.googlesource.com/sys")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1p81niiin8dwyrjl2xsc95136w3vdw4kmj0w3mlh0vh5v134s4xq")))))))
 
 (define-public go-golang-org-x-text
   (package
@@ -5577,10 +5613,12 @@ values.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01b0wjb7yzv8wzzz2iim8mjpkwjnykcanrwiq06pkl89lr6gv8hn"))))
+        (base32 "01b0wjb7yzv8wzzz2iim8mjpkwjnykcanrwiq06pkl89lr6gv8hn"))
+       (patches (search-patches "go-gopkg-in-yaml-v3-32bit.patch"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "gopkg.in/yaml.v3"))
+     `(#:tests? ,(not (target-ppc32?))  ; Test killed with quit: ran too long (11m0s).
+       #:import-path "gopkg.in/yaml.v3"))
     (native-inputs
      (list go-gopkg-in-check-v1))
     (home-page "https://gopkg.in/yaml.v3")
@@ -7691,34 +7729,109 @@ implementation of generics.")
     (home-page "https://github.com/cheekybits/genny/")
     (license license:expat)))
 
-(define-public go-github-com-lucas-clemente-quic-go
+(define-public go-github-com-quic-go-qtls-go1-20
   (package
-    (name "go-github-com-lucas-clemente-quic-go")
-    (version "0.14.4")
+    (name "go-github-com-quic-go-qtls-go1-20")
+    (version "0.3.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/quic-go/qtls-go1-20")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fl3yv1w8cygag3lav45vvzb4k9i72p92x13wcq0xn13wxirzirn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/quic-go/qtls-go1-20"
+      #:go go-1.20))
+    (propagated-inputs (list go-golang-org-x-crypto
+                             go-golang-org-x-sys-0.8))
+    (synopsis "TLS 1.3 for QUIC")
+    (description
+     "Go standard library TLS 1.3 implementation, modified for QUIC.  For
+Go 1.20.")
+    (home-page "https://github.com/quic-go/qtls-go1-20")
+    (license license:expat)))
+
+(define-public go-github-com-quic-go-qpack
+  (package
+    (name "go-github-com-quic-go-qpack")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/quic-go/qpack")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00mjz445hhx4yar5l8p21bpp4d06jyg2ajw0ax7bh64d37l4kx39"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/quic-go/qpack"
+      ;; Tests require ginkgo v2.
+      #:tests? #f
+      #:go go-1.20))
+    (propagated-inputs (list go-github-com-onsi-gomega
+                             go-github-com-onsi-ginkgo
+                             go-golang-org-x-net))
+    (synopsis "Minimal QPACK (RFC 9204) implementation for Go")
+    (description
+     "A minimal QPACK (RFC 9204) implementation in Go.  It is minimal in the sense
+that it doesn't use the dynamic table at all, but just the static table and (Huffman
+encoded) string literals.  Wherever possible, it reuses code from the
+@url{https://github.com/golang/net/tree/master/http2/hpack, HPACK implementation in
+the Go standard library}.")
+    (home-page "https://github.com/quic-go/qpack")
+    (license license:expat)))
+
+(define-public go-github-com-quic-go-quic-go
+  (package
+    (name "go-github-com-quic-go-quic-go")
+    (version "0.39.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/lucas-clemente/quic-go")
+                     (url "https://github.com/quic-go/quic-go")
                      (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04l3gqbc3gh079n8vgnrsf8ypgv8sl63xjf28jqfrb45v2l73vyz"))))
+                "0acabl3cz48nxpggc5s7fwxpmr5amyi09jygn5m5xxkkbhqs2cxq"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/lucas-clemente/quic-go"
-       ;; XXX More packages required...
-       #:tests? #f))
+     (list #:import-path "github.com/quic-go/quic-go"
+           ;; XXX More packages required...
+           #:tests? #f
+           #:go go-1.20))
     (propagated-inputs
-     (list go-golang-org-x-crypto go-github-com-cheekybits-genny
-           go-github-com-marten-seemann-chacha20
-           go-github-com-marten-seemann-qtls
-           go-github-com-golang-protobuf-proto))
+     (let ((p (package-input-rewriting
+               `((,go-golang-org-x-sys . ,go-golang-org-x-sys-0.8))
+               #:deep? #true)))
+       (cons go-golang-org-x-sys-0.8
+             (map p
+                  (list go-github-com-quic-go-qtls-go1-20
+                        go-github-com-quic-go-qpack
+                        go-golang-org-x-crypto
+                        go-github-com-cheekybits-genny
+                        go-github-com-marten-seemann-chacha20
+                        go-github-com-golang-protobuf-proto
+                        go-golang-org-x-crypto
+                        go-golang-org-x-exp
+                        go-golang-org-x-net
+                        go-golang-org-x-sync)))))
     (synopsis "QUIC in Go")
     (description "This package provides a Go language implementation of the QUIC
 network protocol.")
-    (home-page "https://github.com/lucas-clemente/quic-go")
+    (home-page "https://github.com/quic-go/quic-go")
     (license license:expat)))
+
+(define-public go-github-com-lucas-clemente-quic-go
+  (deprecated-package "go-github-com-lucas-clemente-quic-go" go-github-com-quic-go-quic-go))
 
 (define-public go-github-com-lunixbochs-vtclean
   (package
@@ -8212,7 +8325,15 @@ colorized or SGR defined output to the standard output.")
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/google/go-cmp/cmp"
-       #:unpack-path "github.com/google/go-cmp"))
+       #:unpack-path "github.com/google/go-cmp"
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key inputs #:allow-other-keys #:rest args)
+             (unless
+               ;; The tests fail when run with gccgo.
+               (false-if-exception (search-input-file inputs "/bin/gccgo"))
+               (apply (assoc-ref %standard-phases 'check) args)))))))
     (synopsis "Determine equality of values in Go")
     (description
      "This package is intended to be a more powerful and safer
@@ -8447,6 +8568,17 @@ with gotest-tools.")))
 
 (define-public go-gotest-tools-internal-source
   (package (inherit (go-gotest-tools-package "internal/source"))
+    (arguments
+     (substitute-keyword-arguments
+       (package-arguments (go-gotest-tools-package "internal/source"))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'check
+              (lambda* (#:key inputs #:allow-other-keys #:rest args)
+                (unless
+                  ;; failed to parse source file: : open : no such file or directory
+                  (false-if-exception (search-input-file inputs "/bin/gccgo"))
+                  (apply (assoc-ref %standard-phases 'check) args))))))))
     (native-inputs
      (list go-github-com-pkg-errors go-github-com-google-go-cmp-cmp))
     (synopsis "Source code AST formatters for gotest-tools")
@@ -8635,45 +8767,48 @@ directories.  It is optimized for filewalking.")
 @code{database/sql}.")
     (license license:expat)))
 
-(define-public go-github-com-willf-bitset
+(define-public go-github-com-bits-and-blooms-bitset
   (package
-    (name "go-github-com-willf-bitset")
-    (version "1.1.10")
+    (name "go-github-com-bits-and-blooms-bitset")
+    (version "1.11.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/willf/bitset")
-                     (commit (string-append "v" version))))
+                    (url "https://github.com/bits-and-blooms/bitset")
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0wpaxg6va3qwd0hq0b8rpb1hswvzzbfm2h8sjmcsdpbkydjjx9zg"))))
+                "1ialciixmr98p10rh61rnnkxpqi1j9hycbkv9rnjl0vnmsnpy0cy"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/willf/bitset"))
+     '(#:import-path "github.com/bits-and-blooms/bitset"))
     (synopsis "Bitsets in Go")
     (description "This package provides a Go implementation of bitsets, which
 are a mapping between non-negative integers and boolean values focused on
 efficient space usage.")
-    (home-page "https://github.com/willf/bitset")
+    (home-page "https://github.com/bits-and-blooms/bitset")
     (license license:bsd-3)))
 
-(define-public go-github-com-willf-bloom
+(define-public go-github-com-willf-bitset
+  (deprecated-package "go-github-com-willf-bitset" go-github-com-bits-and-blooms-bitset))
+
+(define-public go-github-com-bits-and-blooms-bloom
   (package
-    (name "go-github-com-willf-bloom")
-    (version "2.0.3")
+    (name "go-github-com-bits-and-blooms-bloom")
+    (version "3.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/willf/bloom")
-                     (commit (string-append "v" version))))
+                    (url "https://github.com/bits-and-blooms/bloom")
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ygan8pgcay7wx3cs3ja8rdqj7nly7v3and97ddcc66020jxchzg"))))
+                "02rpjlgl7k3755qnlsk519xazgqlk73b8wvkpqlvccywms5w77bq"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/willf/bloom"
+     '(#:import-path "github.com/bits-and-blooms/bloom"
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-import-path
@@ -8681,16 +8816,19 @@ efficient space usage.")
              ;; See 'go.mod' in the source distribution of Syncthing 1.5.0 for
              ;; more information.
              ;; <https://github.com/spaolacci/murmur3/issues/29>
-             (substitute* "src/github.com/willf/bloom/bloom.go"
+             (substitute* "src/github.com/bits-and-blooms/bloom/bloom.go"
                (("spaolacci") "twmb"))
              #t)))))
     (propagated-inputs
-     (list go-github-com-twmb-murmur3 go-github-com-willf-bitset))
+     (list go-github-com-twmb-murmur3 go-github-com-bits-and-blooms-bitset))
     (synopsis "Bloom filters in Go")
     (description "This package provides a Go implementation of bloom filters,
 based on murmurhash.")
-    (home-page "https://github.com/willf/bloom")
+    (home-page "https://github.com/bits-and-blooms/bitset")
     (license license:bsd-2)))
+
+(define-public go-github-com-willf-bloom
+  (deprecated-package "go-github-com-willf-bloom" go-github-com-bits-and-blooms-bloom))
 
 (define-public go-golang-org-rainycape-unidecode
   (let ((commit "cb7f23ec59bec0d61b19c56cd88cee3d0cc1870c")
@@ -11959,7 +12097,7 @@ dependencies and a simple API.")
 (define-public go-github-com-arceliar-ironwood
   (package
     (name "go-github-com-arceliar-ironwood")
-    (version "0.0.0-20221115123222-ec61cea2f439")
+    (version "v0.0.0-20231028101932-ceac99571f43")
     (source
      (origin
        (method git-fetch)
@@ -11969,7 +12107,7 @@ dependencies and a simple API.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0jdfhsr1yci0a4fpf2pmh9n4d7iryjx12y3549gv9nfjf91rs225"))))
+         "1shxpmi847jf7rfa5mb0m4nflwmlg65hjgjm9v7ynjvcp0licsi4"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/Arceliar/ironwood"
@@ -12698,7 +12836,7 @@ is undetermined, a customizable spinner is shown.")
 (define-public go-git-sr-ht-emersion-gqlclient
   (package
     (name "go-git-sr-ht-emersion-gqlclient")
-    (version "0.0.0-20220202181617-4e6e9c763dd2")
+    (version "0.0.0-20230820050442-8873fe0204b9")
     (source
      (origin
        (method git-fetch)
@@ -12707,7 +12845,7 @@ is undetermined, a customizable spinner is shown.")
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1d9hmaz7yy02bk455gmaav818xi49sw69jyx6dxzymv6ln7r1cv1"))))
+        (base32 "0x64kcryawdr0daq1w6fada60zqrddw75yi397835b9ij7wb5gmh"))))
     (build-system go-build-system)
     (arguments (list #:import-path "git.sr.ht/~emersion/gqlclient"))
     (home-page "https://git.sr.ht/~emersion/gqlclient")

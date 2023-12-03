@@ -21,8 +21,7 @@
 
 (define-module (guix progress)
   #:use-module (guix records)
-  #:use-module ((guix build syscalls)
-                #:select (terminal-string-width))
+  #:autoload   (guix build syscalls) (terminal-string-width)
   #:use-module (srfi srfi-19)
   #:use-module (rnrs io ports)
   #:use-module (rnrs bytevectors)

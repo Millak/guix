@@ -178,6 +178,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/chromium.scm			\
   %D%/packages/ci.scm				\
   %D%/packages/cinnamon.scm			\
+  %D%/packages/clifm.scm			\
   %D%/packages/clojure.scm			\
   %D%/packages/cluster.scm			\
   %D%/packages/cmake.scm			\
@@ -921,6 +922,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/appstream-force-reload-stemmer.patch	\
   %D%/packages/patches/apr-fix-atomics.patch			\
   %D%/packages/patches/apr-skip-getservbyname-test.patch	\
+  %D%/packages/patches/aria2-unbundle-wslay.patch		\
   %D%/packages/patches/ark-skip-xar-test.patch			\
   %D%/packages/patches/arpack-ng-propagate-rng-state.patch	\
   %D%/packages/patches/asli-use-system-libs.patch		\
@@ -1276,9 +1278,11 @@ dist_patch_DATA =						\
   %D%/packages/patches/ghc-9.2-grep-warnings.patch \
   %D%/packages/patches/ghc-testsuite-dlopen-pie.patch		\
   %D%/packages/patches/ghc-testsuite-grep-compat.patch		\
-  %D%/packages/patches/ghc-bloomfilter-ghc9.2.patch	\
+  %D%/packages/patches/ghc-basement-fix-32bit.patch		\
   %D%/packages/patches/ghc-bytestring-handle-ghc9.patch	\
   %D%/packages/patches/ghc-language-haskell-extract-ghc-8.10.patch	\
+  %D%/packages/patches/ghc-memory-fix-32bit.patch		\
+  %D%/packages/patches/ghc-persistent-fix-32bit.patch		\
   %D%/packages/patches/ghostscript-CVE-2023-36664.patch		\
   %D%/packages/patches/ghostscript-CVE-2023-36664-fixup.patch	\
   %D%/packages/patches/ghostscript-leptonica-hurd.patch		\
@@ -1348,6 +1352,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/gobject-introspection-cc-1.72.patch	\
   %D%/packages/patches/gobject-introspection-girepository.patch	\
   %D%/packages/patches/go-fix-script-tests.patch			\
+  %D%/packages/patches/go-gopkg-in-yaml-v3-32bit.patch		\
   %D%/packages/patches/go-github-com-golang-snappy-32bit-test.patch \
   %D%/packages/patches/go-github-com-urfave-cli-fix-tests.patch \
   %D%/packages/patches/go-github-com-urfave-cli-v2-fix-tests.patch \
@@ -1439,6 +1444,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/id3lib-CVE-2007-4460.patch			\
   %D%/packages/patches/id3lib-UTF16-writing-bug.patch			\
   %D%/packages/patches/idris-test-ffi008.patch			\
+  %D%/packages/patches/igraph-fix-varargs-integer-size.patch	\
   %D%/packages/patches/igt-gpu-tools-Use-libproc2.patch		\
   %D%/packages/patches/ilmbase-fix-tests.patch			\
   %D%/packages/patches/imagemagick-CVE-2020-27829.patch		\
@@ -1755,8 +1761,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/pango-skip-libthai-test.patch		\
   %D%/packages/patches/password-store-tree-compat.patch		\
   %D%/packages/patches/petri-foo-0.1.87-fix-recent-file-not-exist.patch			\
-  %D%/packages/patches/php-fix-streams-copy-length.patch	\
   %D%/packages/patches/plasma-framework-fix-KF5PlasmaMacros.cmake.patch \
+  %D%/packages/patches/plasp-fix-normalization.patch \
+  %D%/packages/patches/plasp-include-iostream.patch \
   %D%/packages/patches/pocketfft-cpp-prefer-preprocessor-if.patch			\
   %D%/packages/patches/pokerth-boost.patch			\
   %D%/packages/patches/ppsspp-disable-upgrade-and-gold.patch		\
@@ -1774,6 +1781,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-pypdf-annotate-tests-appropriately.patch	\
   %D%/packages/patches/python-sip-include-dirs.patch	\
   %D%/packages/patches/python-sgmllib3k-assertions.patch	\
+  %D%/packages/patches/python-sphinx-prompt-docutils-0.19.patch	\
   %D%/packages/patches/python-telingo-fix-comparison.patch	\
   %D%/packages/patches/python-typeguard-python3.10.patch	\
   %D%/packages/patches/python-wxwidgets-type-errors.patch	\

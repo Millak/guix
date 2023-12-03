@@ -174,6 +174,11 @@ expressions."
   (else #f))")
 
 (test-pretty-print "\
+(parameterize ((a 1)
+               (b 2))
+  (call f g h))")
+
+(test-pretty-print "\
 #~(string-append #$coreutils \"/bin/uname\")")
 
 (test-pretty-print "\

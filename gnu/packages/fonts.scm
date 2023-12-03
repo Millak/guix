@@ -1952,7 +1952,7 @@ weights and five widths in both Roman and Italic, plus variable fonts.")
 (define-public font-sarasa-gothic
   (package
     (name "font-sarasa-gothic")
-    (version "0.42.1")
+    (version "0.42.6")
     (source
      (origin
        (method url-fetch)
@@ -1960,7 +1960,7 @@ weights and five widths in both Roman and Italic, plus variable fonts.")
                            "/releases/download/v" version
                            "/sarasa-gothic-ttc-" version ".7z"))
        (sha256
-        (base32 "0lrhipis21cafpsf8wsrdavlblfgzz424r23rj78ik8npbws1a3v"))))
+        (base32 "0czx10yph2lxg2k4w6qjnil73zb2pgg3g400apm9gay41m04990v"))))
     (build-system font-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -3159,7 +3159,7 @@ and readability.  This package bundles those icons into a font.")
 (define-public font-lxgw-wenkai
   (package
     (name "font-lxgw-wenkai")
-    (version "1.310")
+    (version "1.311")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3167,7 +3167,7 @@ and readability.  This package bundles those icons into a font.")
                     version "/lxgw-wenkai-v" version ".tar.gz"))
               (sha256
                (base32
-                "10z8ilcpfxmll6j6ck4yj90x48vh3c7ck0lm61qjangpw9fcgfb1"))))
+                "0f5fnqcwp8kicrbkncn5j1w06cil771jfdcjf2w48vl62m4gmf27"))))
     (build-system font-build-system)
     (home-page "https://lxgw.github.io/2021/01/28/Klee-Simpchin/")
     (synopsis "Simplified Chinese Imitation Song typeface")
@@ -3181,7 +3181,7 @@ within GB 2312, standard glyphs for Mainland China is used.")
   (package
     (inherit font-lxgw-wenkai)
     (name "font-lxgw-wenkai-tc")
-    (version "1.010")
+    (version "1.011")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3189,7 +3189,7 @@ within GB 2312, standard glyphs for Mainland China is used.")
                     version "/lxgw-wenkai-tc-v" version ".tar.gz"))
               (sha256
                (base32
-                "1yppqrfmynai1canlq0hksl3yaj8kflbnj41ljl4lxwaz6q9i1ly"))))
+                "0x83a7zg1w82bpilk84ajlisccf90kl01gz89fipgqji9nii71bv"))))
     (home-page "https://github.com/lxgw/LxgwWenKaitc")
     (synopsis "Traditional Chinese Imitation Song typeface")
     (description

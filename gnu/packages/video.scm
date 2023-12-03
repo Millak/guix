@@ -66,6 +66,7 @@
 ;;; Copyright © 2023 Ott Joon <oj@vern.cc>
 ;;; Copyright © 2023 Dominik Delgado Steuter <dds@disroot.org>
 ;;; Copyright © 2023 Saku Laesvuori <saku@laesvuori.fi>
+;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -116,6 +117,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages bittorrent)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages check)
@@ -195,6 +197,7 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages swig)
+  #:use-module (gnu packages terminals)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
@@ -209,6 +212,78 @@
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
+
+(define-public ani-cli
+  (package
+    (name "ani-cli")
+    (version "4.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pystardust/ani-cli")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ni9pzjb5qh87iz7c8252bx79qadr1qx6jnkqvvjcqrchh7q473a"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)           ;nothing to configure
+          (delete 'build)               ;nothing to build
+          (replace 'install
+            (lambda _
+              (install-file "ani-cli" (string-append #$output "/bin"))
+              (install-file "ani-cli.1"
+                            (string-append #$output "/share/man/man1"))))
+          (add-after 'install 'wrap
+            (lambda* (#:key inputs #:allow-other-keys)
+              (define (bin command)
+                (dirname (search-input-file
+                          inputs (string-append "bin/" command))))
+              (wrap-program (string-append #$output "/bin/ani-cli")
+                `("PATH" ":" prefix
+                  ,(map bin (list "aria2c"
+                                  "curl"
+                                  "ffmpeg"
+                                  "fzf"
+                                  "grep"
+                                  "mpv"
+                                  "sed"
+                                  "tput"
+                                  "uname"
+                                  "yt-dlp")))))))))
+    (inputs (list aria2
+                  bash-minimal
+                  coreutils
+                  curl
+                  ffmpeg
+                  fzf
+                  grep
+                  mpv
+                  ncurses
+                  sed
+                  yt-dlp))
+    (native-search-paths
+     ;; This was copied from the curl package.
+     (list (search-path-specification
+            (variable "CURL_CA_BUNDLE")
+            (file-type 'regular)
+            (separator #f)              ;single entry
+            (files '("etc/ssl/certs/ca-certificates.crt")))))
+    (home-page "https://github.com/pystardust/ani-cli")
+    (synopsis "Browse and watch anime from the command line")
+    (description
+     "ani-cli is a @acronym{CLI, command-line interface} to browse and watch
+anime by streaming videos from @uref{https://allanime.to,All Anime}.
+
+There are different features such as episode browsing, history tracking,
+streaming at multiple resolutions, and much more, depending on what programs the
+user has installed.")
+    (license license:gpl3+)))
 
 (define-public transcode
   (package
@@ -2683,7 +2758,7 @@ YouTube.com and many more sites.")
 (define-public yt-dlp
   (package/inherit youtube-dl
     (name "yt-dlp")
-    (version "2023.09.24")
+    (version "2023.10.13")
     (source
      (origin
        (method git-fetch)
@@ -2692,7 +2767,7 @@ YouTube.com and many more sites.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15ngsg3cadf2bv700fa1k5az5xpsm0wqr0cixbz8fcbhwdflfq6f"))))
+        (base32 "1cy8cpqwq6yfsbrnln3qqp9lsjckn20m6w7b890ha7jahyir5m1n"))))
     (arguments
      (substitute-keyword-arguments (package-arguments youtube-dl)
        ((#:tests? _) (not (%current-target-system)))
@@ -3618,18 +3693,15 @@ and JACK.")
 (define-public obs-looking-glass
   (package
     (name "obs-looking-glass")
-    (version "B5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/gnif/LookingGlass")
-             (commit version)
-             (recursive? #t)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "09mn544x5hg1z31l92ksk7fi7yj9r8xdk0dcl9fk56ivcr452ylm"))))
+    (version "B6")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://looking-glass.io/artifact/" version
+                                  "/source"))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "15d7wwbzfw28yqbz451b6n33ixy50vv8acyzi8gig1mq5a8gzdib"))))
     (build-system cmake-build-system)
     (arguments
      (list

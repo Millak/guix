@@ -2311,7 +2311,9 @@ distribution.")))
                                         (string-append target new-name))))
                          (find-files "netbeans" "\\.so$"))))))))
     (propagated-inputs
-     (list java-openjfx-base java-swt))
+     (list java-openjfx-base))
+    (inputs
+     (list java-swt))
     ;; XXX: for unknown reasons
     ;; modules/graphics/src/main/native-prism-sw/JNativeSurface.c is missing
     ;; in this revision.
@@ -2465,8 +2467,7 @@ debugging, etc.")
        (modules '((guix build utils)))
        ;; Delete bundled jars.
        (snippet '(begin (for-each delete-file-recursively
-                                  '("bootstrap" "lib"))
-                        #t))))
+                                  '("bootstrap" "lib"))))))
     (arguments
      `(#:make-flags                     ; bootstrap from javacc-4
        ,#~(list (string-append "-Dbootstrap-jar="
@@ -2487,17 +2488,16 @@ debugging, etc.")
                  (lambda _
                    (display
                      (string-append "#!/bin/sh\n"
-                                    (assoc-ref inputs "jdk") "/bin/java"
+                                    (assoc-ref inputs "icedtea") "/bin/java"
                                     " -cp " dir "/javacc.jar" " `basename $0`" " $*"))))
                (chmod javacc #o755)
                ;; symlink to different names to affect the first argument and
                ;; change the behavior of the jar file.
                (symlink javacc (string-append bin "/jjdoc"))
-               (symlink javacc (string-append bin "/jjtree"))
-               #t))))))
-
+               (symlink javacc (string-append bin "/jjtree"))))))))
     (native-inputs
-     (list javacc-4))))
+     (list javacc-4))
+    (inputs (list icedtea-8))))
 
 (define-public java-ecj
   (package

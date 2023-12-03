@@ -1432,18 +1432,17 @@ treat it as part of their software base when porting.")
 (define-public libxpm
   (package
     (name "libxpm")
-    (version "3.5.13")
-    (replacement libxpm/fixed)
+    (version "3.5.17")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/lib/libXpm-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "09dc6nwlb2122h02vl64k9x56mxnyqz2gwpga0abfv4bb1bxmlcw"))))
+           "0hvf49qy55gwldpwpw7ihcmn5i2iinpjh2rbha63hzcy060izcv4"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
@@ -1456,21 +1455,6 @@ treat it as part of their software base when porting.")
     (synopsis "Xorg XPM library")
     (description "XPM (X Pixmap) image file format library.")
     (license license:x11)))
-
-(define-public libxpm/fixed
-  (package
-    (inherit libxpm)
-    (version "3.5.17")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append
-               "mirror://xorg/individual/lib/libXpm-"
-               version
-               ".tar.xz"))
-        (sha256
-          (base32
-            "0hvf49qy55gwldpwpw7ihcmn5i2iinpjh2rbha63hzcy060izcv4"))))))
 
 (define-public libxres
   (package
@@ -5029,7 +5013,7 @@ by the Xorg server.")
 (define-public xorg-server
   (package
     (name "xorg-server")
-    (version "21.1.4")
+    (version "21.1.9")
     (source
      (origin
        (method url-fetch)
@@ -5037,7 +5021,7 @@ by the Xorg server.")
                            "/xserver/xorg-server-" version ".tar.xz"))
        (sha256
         (base32
-         "11y5w6z3rz3i4jyv0wc3scd2jh3bsmcklq0fm7a5invywj7bxi2w"))
+         "0fjk9ggcrn96blq0bm80739yj23s3gjjjsc0nxk4jk0v07i7nsgz"))
        (patches
         (list
          ;; See:
@@ -5332,16 +5316,15 @@ Wayland.")
 (define-public libx11
   (package
     (name "libx11")
-    (version "1.8.1")
-    (replacement libx11-fixed)          ;security fixes
+    (version "1.8.7")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://xorg.freedesktop.org/archive/"
-                           "/individual/lib/libX11-" version ".tar.xz"))
+       (uri (string-append "mirror://xorg/individual/lib/libX11-"
+                           version ".tar.xz"))
        (sha256
         (base32
-         "1xyry8i7zqmlkvpbyyqwi18rrdw6ycczlvfp63rh2570pfhimi0v"))))
+         "1vlrgrdibp4lr84wgmsdy1ihzaai8bvvqc68npi1m19wir36gwh5"))))
     (build-system gnu-build-system)
     (outputs '("out"
                "doc"))                  ;8 MiB of man pages + XML
@@ -5362,19 +5345,6 @@ Wayland.")
     (synopsis "Xorg Core X11 protocol client library")
     (description "Xorg Core X11 protocol client library.")
     (license license:x11)))
-
-(define-public libx11-fixed
-  (package
-    (inherit libx11)
-    (version "1.8.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://xorg/individual/lib/libX11-"
-                           version ".tar.xz"))
-       (sha256
-        (base32
-         "1vlrgrdibp4lr84wgmsdy1ihzaai8bvvqc68npi1m19wir36gwh5"))))))
 
 ;; packages of height 5 in the propagated-inputs tree
 
@@ -6120,7 +6090,7 @@ Conventions Manual) and some of the @dfn{EWMH}
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config autoconf automake))
+     (list util-macros pkg-config autoconf automake))
     (inputs
      (list libx11
            libxext

@@ -30,7 +30,7 @@
 ;;; Copyright © 2017, 2020, 2021 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2017, 2018 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018 Jovany Leandro G.C <bit4bit@riseup.net>
-;;; Copyright © 2018 Vasile Dumitrascu <va511e@yahoo.com>
+;;; Copyright © 2018, 2023 Vasile Dumitrascu <va511e@yahoo.com>
 ;;; Copyright © 2018 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2018, 2019 Timothy Sample <samplet@ngyro.com>
 ;;; Copyright © 2019 Danny Milosavljevic <dannym@scratchpost.org>
@@ -5928,7 +5928,7 @@ services for numerous locations.")
            gi-docgen
            `(,glib "bin")               ;for glib-mkenums
            gobject-introspection
-           glibc-utf8-locales
+           (libc-utf8-locales-for-target)
            gsettings-desktop-schemas
            pkg-config
            python
@@ -8635,7 +8635,10 @@ Cisco's AnyConnect SSL VPN.")
                   libsecret
                   network-manager
                   openfortivpn
-                  ppp))
+
+                  ;; ppp < 2.5.0 is currently required:
+                  ;; https://gitlab.gnome.org/GNOME/NetworkManager-fortisslvpn/-/commit/084ef529c5fb816927ca54866f66b340265aa9f6
+                  ppp-2.4.9))
     (home-page "https://wiki.gnome.org/Projects/NetworkManager/VPN")
     (synopsis "Fortinet SSLVPN plug-in for NetworkManager")
     (description
@@ -8669,7 +8672,7 @@ to virtual private networks (VPNs) via Fortinet SSLVPN.")
 (define-public network-manager-applet
   (package
     (name "network-manager-applet")
-    (version "1.32.0")
+    (version "1.34.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/network-manager-applet/"
@@ -8677,7 +8680,7 @@ to virtual private networks (VPNs) via Fortinet SSLVPN.")
                                   "network-manager-applet-" version ".tar.xz"))
               (sha256
                (base32
-                "0f5sxxi9rywg8mhglcyk3sqmgv5wwl4vxzar56847b852pxazdd2"))))
+                "1a55mf4ww06lqacs6zndp29ayyby5f8rgg1lp341y5kb1x3qwdmb"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -9515,7 +9518,7 @@ easy, safe, and automatic.")
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")
-           glibc-utf8-locales
+           (libc-utf8-locales-for-target)
            gobject-introspection
            docbook-xsl
            docbook-xml

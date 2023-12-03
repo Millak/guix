@@ -1498,7 +1498,8 @@ files.")
                '#$(optional anonip-configuration-regex "--regex"))
               ;; Run in a UTF-8 locale
               #:environment-variables
-              (list (string-append "GUIX_LOCPATH=" #$glibc-utf8-locales
+              (list (string-append "GUIX_LOCPATH="
+                                   #$(libc-utf8-locales-for-target)
                                    "/lib/locale")
                     "LC_ALL=en_US.utf8")))
 
@@ -1976,7 +1977,8 @@ WSGIPassAuthorization On
 (define (mumi-shepherd-services config)
   (define environment
     #~(list "LC_ALL=en_US.utf8"
-            (string-append "GUIX_LOCPATH=" #$glibc-utf8-locales
+            (string-append "GUIX_LOCPATH="
+                           #$(libc-utf8-locales-for-target)
                            "/lib/locale")))
 
   (match config

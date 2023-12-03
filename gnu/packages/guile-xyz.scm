@@ -1373,6 +1373,31 @@ non-mutating insert, delete, and search operations, with support for
 convenient nested tree operations.")
     (license license:gpl3+)))
 
+(define-public guile-algorithms
+  (package
+    (name "guile-algorithms")
+    (version "0.1")
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                 (url "https://git@git.sr.ht/~filiplajszczak/guile-algorithms")
+                 (commit (string-append "v" version))))
+          (file-name (git-file-name name version))
+          (sha256
+            (base32
+             "1a4ffnnhw92gqphjji5ajy3xfaqzww7xv3h8p82gkawx0rqvj5ni"))))
+    (build-system gnu-build-system)
+    (native-inputs (list autoconf automake pkg-config texinfo))
+    (inputs (list guile-3.0))
+    (synopsis "Guile port of racket-algorithms")
+    (description
+     "Guile port of @url{https://docs.racket-lang.org/algorithms/index.html,
+racket-algorithms}, a package containing useful algorithms borrowed from other
+programming languages).")
+    (home-page "https://guile-algorithms.lajszczak.dev/")
+    (license license:gpl3+)))
+
 (define-public guile-aws
   (let ((commit "f32bea12333e1054b97ab50e58a72636edabb5b7")
         (revision "1"))
@@ -3301,7 +3326,7 @@ from @code{tree-il}.")
 (define-public guile-hoot
   (package
     (name "guile-hoot")
-    (version "0.1.0")
+    (version "0.2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://spritely.institute/files/releases"
@@ -3309,7 +3334,7 @@ from @code{tree-il}.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1087rcj22hk6fcbqajm268f1q2c3kbizah8wy1z0aqkfliwc309g"))))
+                "1byshh7092q2yzqwpi59j4xjsppvp1xqnqsv94yv541qfm0plnc2"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags '("GUILE_AUTO_COMPILE=0"
@@ -4593,7 +4618,7 @@ according to Bitorrent BEP003.")
 (define-public guile-ts
   (package
     (name "guile-ts")
-    (version "0.1.0")
+    (version "0.2.0")
     (source (origin (method git-fetch)
                     (uri (git-reference
                           (url
@@ -4602,7 +4627,7 @@ according to Bitorrent BEP003.")
                     (file-name (git-file-name name version))
                     (sha256
                      (base32
-                      "0xmq2d3mv921m0g1hqw6bjzh4m622g2c7pal11ks7vjn0m8d4bxj"))))
+                      "1iqbr9rcpmq2f1zxxvl36ajwm81rkp38rrp42ixr4q59154r5513"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags #~(list "GUILE_AUTO_COMPILE=0")

@@ -85,9 +85,10 @@ version of this file."
   (define set-utf8-locale
     #~(begin
         (setenv "LOCPATH"
-                #$(file-append glibc-utf8-locales "/lib/locale/"
-                               (version-major+minor
-                                (package-version glibc-utf8-locales))))
+                #$(file-append
+                   (libc-utf8-locales-for-target) "/lib/locale/"
+                   (version-major+minor
+                    (package-version (libc-utf8-locales-for-target)))))
         (setlocale LC_ALL "en_US.utf8")))
 
   (define builder

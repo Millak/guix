@@ -42,7 +42,7 @@
 (define-public book-sparc
   (package
     (name "book-sparc")
-    (version "1.0.1")
+    (version "1.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -50,12 +50,11 @@
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "0dswwwkb3h88cl3mhiy79s8i7sa9lmw6fxaj782vxgif795lcpxs"))
+                "0k1miyrnh5362qy50jzp5j3ww0c8hr7wk3y5kg6xlqgk9f8msvag"))
               (file-name (git-file-name name version))
               (modules '((guix build utils)))
               (snippet
                #~(begin
-                   (delete-file "sparc.pdf")
                    (substitute* "version.tex.in"
                      (("@COMMIT@") ""))
                    (substitute* "Makefile"
@@ -86,6 +85,7 @@
            texlive-collection-langcyrillic
            texlive-fontspec
            texlive-glossaries
+           texlive-glossaries-english
            texlive-glossaries-extra
            texlive-koma-script
            texlive-lilyglyphs

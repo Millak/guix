@@ -736,14 +736,14 @@ a C program.")
 (define-public fftw
   (package
     (name "fftw")
-    (version "3.3.8")
+    (version "3.3.10")
     (source (origin
              (method url-fetch)
              (uri (string-append "ftp://ftp.fftw.org/pub/fftw/fftw-"
                                  version".tar.gz"))
              (sha256
               (base32
-               "00z3k8fq561wq2khssqg0kallk0504dzlx989x3vvicjdqpjc4v1"))))
+               "0rv4w90b65b2kvjpj8g9bdkl4xqc42q20f5bzpxdrkajk1a35jan"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags

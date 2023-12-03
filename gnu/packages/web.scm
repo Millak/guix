@@ -186,6 +186,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages re2c)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages sdl)
   #:use-module (gnu packages search)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages skribilo)
@@ -4956,8 +4957,8 @@ Cloud.")
     (license license:expat)))
 
 (define-public guix-data-service
-  (let ((commit "37a07c2d6e8285877ad0440a7e4ae286b7b65177")
-        (revision "43"))
+  (let ((commit "e13febc81706fbfb7f073bc4e9ce73fbc80d5180")
+        (revision "44"))
     (package
       (name "guix-data-service")
       (version (string-append "0.0.1-" revision "." (string-take commit 7)))
@@ -4969,7 +4970,7 @@ Cloud.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0h83j10bq7dyda2idbqh5y6dcvmbl3xgc147yq4pk6bkh10y29y6"))))
+                  "0pk86b44zg2yn73sxlcd9pqbz8xwprwzaib2npnq80y3yzc6qc22"))))
       (build-system gnu-build-system)
       (arguments
        (list
@@ -5713,6 +5714,39 @@ project.")
     (description
      "Libnsbmp is a decoding library for BMP and ICO image file formats,
 written in C.  It is developed as part of the NetSurf project.")
+    (license license:expat)))
+
+(define-public libnsfb
+  (package
+    (name "libnsfb")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://download.netsurf-browser.org/libs/releases/"
+                           name "-" version "-src.tar.gz"))
+       (sha256
+        (base32 "16m3kv8x8mlic4z73h2s3z8lqmyp0z8i30x95lzr1pslxfinqi5y"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list netsurf-buildsystem pkg-config))
+    (inputs
+     ;; SDL is needed to accept any (keyboard, mouse) input.  Don't propagate it
+     ;; to satisfy libnsfb.pc: netsurf is the only user and not worth the pain.
+     (list sdl))
+    (arguments netsurf-buildsystem-arguments)
+    (home-page "https://www.netsurf-browser.org/projects/libnsfb/")
+    (synopsis "Framebuffer display abstraction library")
+    (description
+     "LibNSFB is a framebuffer abstraction library, written in C.  It is
+developed as part of the NetSurf project and is intended to be suitable for use
+in other projects too.
+
+The overall idea of the library is to provide a generic abstraction to a linear
+section of memory which corresponds to a visible array of pixel elements on a
+display device.  Different colour depths are supported and the library provides
+routines for tasks such as drawing onto the framebuffer and rectangle copy
+operations.")
     (license license:expat)))
 
 (define-public libnsgif
@@ -7988,8 +8022,7 @@ derivation by David Revoy from the original MonsterID by Andreas Gohr.")
 (define-public nghttp2
   (package
     (name "nghttp2")
-    (version "1.49.0")
-    (replacement nghttp2-1.57)
+    (version "1.58.0")
     (source
      (origin
        (method url-fetch)
@@ -7998,7 +8031,7 @@ derivation by David Revoy from the original MonsterID by Andreas Gohr.")
                            "nghttp2-" version ".tar.xz"))
        (sha256
         (base32
-         "0vm692c7q2wc4xxz8c41nr8jps2fkwf51xp8fb233cghpf9d9kxh"))))
+         "1q4ps8acr7nyia7mf2z11m0yh3fn1imhyv855j3xjbx91l2a6s2a"))))
     (build-system gnu-build-system)
     (outputs (list "out"
                    "lib"))              ; only libnghttp2
@@ -8099,19 +8132,6 @@ compressed JSON header blocks.
                    ;; Convert to tuples for a more reliable check.
                    (("print \\(ver >= '3\\.8'\\)")
                     "print (tuple(map(int, ver.split('.'))) >= (3,8))")))))))))))
-
-(define-public nghttp2-1.57
-  (package
-    (inherit nghttp2)
-    (version "1.57.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/nghttp2/nghttp2/"
-                                  "releases/download/v" version "/"
-                                  "nghttp2-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0n598w7w8rqdqiay2fad3a11253hibakan5c4vjkpx09648v044j"))))))
 
 (define-public hpcguix-web
   (package

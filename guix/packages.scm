@@ -866,7 +866,11 @@ identifiers.  The result is inferred from the file names of patches."
       ("lzip"  ,(ref '(gnu packages compression) 'lzip))
       ("unzip" ,(ref '(gnu packages compression) 'unzip))
       ("patch" ,(ref '(gnu packages base) 'patch))
-      ("locales" ,(ref '(gnu packages base) 'glibc-utf8-locales)))))
+      ("locales"
+       ,(parameterize ((%current-target-system #f))
+          (canonical
+           ((module-ref (resolve-interface '(gnu packages base))
+                        'libc-utf8-locales-for-target))))))))
 
 (define (default-guile)
   "Return the default Guile package used to run the build code of

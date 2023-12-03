@@ -1,0 +1,54 @@
+This patch causes aria2 to depend on an external wslay.
+The wslay version was copied from the configure.ac in deps/wslay
+configure still needs to be deleted to update the script
+deps/wslay is no longer necessary and can also be removed
+
+diff --git a/Makefile.am b/Makefile.am
+index afe70a2..8c4d058 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -1,4 +1,4 @@
+-SUBDIRS =  po lib deps src doc test
++SUBDIRS =  po lib src doc test
+ 
+ ACLOCAL_AMFLAGS = -I m4 --install
+ RST2HTML = @RST2HTML@
+diff --git a/configure.ac b/configure.ac
+index 14b340f..74d5937 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1001,15 +1001,18 @@ if test "x$have_option_const_name" = "xyes"; then
+ fi
+ 
+ if test "x$enable_websocket" = "xyes"; then
+-  AC_CONFIG_SUBDIRS([deps/wslay])
++  PKG_CHECK_MODULES([WSLAY], [libwslay >= 1.1.1], [have_wslay=yes], [have_wslay=no])
+   enable_websocket=yes
+   AC_DEFINE([ENABLE_WEBSOCKET], [1],
+             [Define 1 if WebSocket support is enabled.])
+-  # $(top_srcdir) for `make distcheck`
+-  WSLAY_CFLAGS="-I\$(top_builddir)/deps/wslay/lib/includes -I\$(top_srcdir)/deps/wslay/lib/includes"
+-  WSLAY_LIBS="\$(top_builddir)/deps/wslay/lib/libwslay.la"
+-  AC_SUBST([WSLAY_CFLAGS])
+-  AC_SUBST([WSLAY_LIBS])
++  if test "x$have_wslay" = "xyes"; then
++    WSLAY_CFLAGS="$WSLAY_CFLAGS"
++    WSLAY_LIBS="$WSLAY_LIBS"
++    AC_SUBST([WSLAY_CFLAGS])
++    AC_SUBST([WSLAY_LIBS])
++  else
++    ARIA2_DEP_NOT_MET([wslay])
++  fi
+ fi
+ AM_CONDITIONAL([ENABLE_WEBSOCKET], [test "x$enable_websocket" = "xyes"])
+ 
+@@ -1071,8 +1074,7 @@ AC_CONFIG_FILES([Makefile
+                 doc/manual-src/ru/Makefile
+                 doc/manual-src/ru/conf.py
+                 doc/manual-src/pt/Makefile
+-                doc/manual-src/pt/conf.py
+-                deps/Makefile])
++                doc/manual-src/pt/conf.py])
+ AC_OUTPUT
+ 
+ AC_MSG_NOTICE([summary of build options:

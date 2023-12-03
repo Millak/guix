@@ -1,108 +1,62 @@
-From 779f980451d20079b34812f7006f2d7230738ad0 Mon Sep 17 00:00:00 2001
-From: csepp <raingloom@riseup.net>
-Date: Wed, 3 Nov 2021 21:14:54 +0100
+From 5aeabc1a8a8c5ecea3f5d0b7bcfa0aa0767ac92d Mon Sep 17 00:00:00 2001
+Message-ID: <5aeabc1a8a8c5ecea3f5d0b7bcfa0aa0767ac92d.1699726745.git.avityazev@posteo.org>
+From: Aleksandr Vityazev <avityazev@posteo.org>
+Date: Sat, 11 Nov 2023 19:50:46 +0300
 Subject: [PATCH] add extra config file option to yggdrasil command
 
 This is useful in Guix and Nix, because one config file can come
 from the world-readable store and another can be placed directly
 into /etc with much stricter permissions.
 ---
- cmd/yggdrasil/main.go | 29 ++++++++++++++++++++++-------
- 1 file changed, 22 insertions(+), 7 deletions(-)
+ cmd/yggdrasil/main.go | 12 ++++++++++++
+ src/config/config.go  |  2 +-
+ 2 files changed, 13 insertions(+), 1 deletion(-)
 
 diff --git a/cmd/yggdrasil/main.go b/cmd/yggdrasil/main.go
-index 58b8230..b9df98a 100644
+index a225755..3f53dda 100644
 --- a/cmd/yggdrasil/main.go
 +++ b/cmd/yggdrasil/main.go
-@@ -43,11 +43,12 @@ type node struct {
- 	admin     *admin.AdminSocket
- }
- 
--func readConfig(log *log.Logger, useconf bool, useconffile string, normaliseconf bool) *config.NodeConfig {
-+func readConfig(log *log.Logger, useconf bool, useconffile string, extraconffile string, normaliseconf bool) *config.NodeConfig {
- 	// Use a configuration file. If -useconf, the configuration will be read
- 	// from stdin. If -useconffile, the configuration will be read from the
- 	// filesystem.
- 	var conf []byte
-+	var extraconf []byte
- 	var err error
- 	if useconffile != "" {
- 		// Read the file from the filesystem
-@@ -59,6 +60,21 @@ func readConfig(log *log.Logger, useconf bool, useconffile string, normaliseconf
- 	if err != nil {
- 		panic(err)
- 	}
-+	if extraconffile != "" {
-+		extraconf, err = os.ReadFile(extraconffile);
-+	}
-+	if err != nil {
-+		panic(err)
-+	}
-+	// Generate a new configuration - this gives us a set of sane defaults -
-+	// then parse the configuration we loaded above on top of it. The effect
-+	// of this is that any configuration item that is missing from the provided
-+	// configuration will use a sane default.
-+	cfg := defaults.GenerateConfig()
-+	var confs [2][]byte
-+	confs[0]=conf
-+	confs[1]=extraconf
-+	for _, conf := range confs { if len(conf)>0 {
- 	// If there's a byte order mark - which Windows 10 is now incredibly fond of
- 	// throwing everywhere when it's converting things into UTF-16 for the hell
- 	// of it - remove it and decode back down into UTF-8. This is necessary
-@@ -72,11 +88,6 @@ func readConfig(log *log.Logger, useconf bool, useconffile string, normaliseconf
- 			panic(err)
- 		}
- 	}
--	// Generate a new configuration - this gives us a set of sane defaults -
--	// then parse the configuration we loaded above on top of it. The effect
--	// of this is that any configuration item that is missing from the provided
--	// configuration will use a sane default.
--	cfg := defaults.GenerateConfig()
- 	var dat map[string]interface{}
- 	if err := hjson.Unmarshal(conf, &dat); err != nil {
- 		panic(err)
-@@ -136,6 +147,7 @@ func readConfig(log *log.Logger, useconf bool, useconffile string, normaliseconf
- 	if err = mapstructure.Decode(dat, &cfg); err != nil {
- 		panic(err)
- 	}
-+	}}
- 	return cfg
- }
- 
-@@ -192,6 +204,7 @@ type yggArgs struct {
- 	getaddr       bool
- 	getsnet       bool
- 	useconffile   string
-+        extraconffile string
- 	logto         string
- 	loglevel      string
- }
-@@ -200,6 +213,7 @@ func getArgs() yggArgs {
+@@ -42,6 +42,7 @@ func main() {
  	genconf := flag.Bool("genconf", false, "print a new config to stdout")
  	useconf := flag.Bool("useconf", false, "read HJSON/JSON config from stdin")
  	useconffile := flag.String("useconffile", "", "read HJSON/JSON config from specified file path")
 +	extraconffile := flag.String("extraconffile", "", "extra (usually private) HJSON/JSON config from specified file path")
  	normaliseconf := flag.Bool("normaliseconf", false, "use in combination with either -useconf or -useconffile, outputs your configuration normalised")
+ 	exportkey := flag.Bool("exportkey", false, "use in combination with either -useconf or -useconffile, outputs your private key in PEM format")
  	confjson := flag.Bool("json", false, "print configuration from -genconf or -normaliseconf as JSON instead of HJSON")
- 	autoconf := flag.Bool("autoconf", false, "automatic mode (dynamic IP, peer with IPv6 neighbors)")
-@@ -213,6 +227,7 @@ func getArgs() yggArgs {
- 		genconf:       *genconf,
- 		useconf:       *useconf,
- 		useconffile:   *useconffile,
-+                extraconffile: *extraconffile,
- 		normaliseconf: *normaliseconf,
- 		confjson:      *confjson,
- 		autoconf:      *autoconf,
-@@ -265,7 +280,7 @@ func run(args yggArgs, ctx context.Context, done chan struct{}) {
- 		cfg = defaults.GenerateConfig()
- 	case args.useconffile != "" || args.useconf:
- 		// Read the configuration from either stdin or from the filesystem
--		cfg = readConfig(logger, args.useconf, args.useconffile, args.normaliseconf)
-+		cfg = readConfig(logger, args.useconf, args.useconffile, args.extraconffile, args.normaliseconf)
- 		// If the -normaliseconf option was specified then remarshal the above
- 		// configuration and print it back to stdout. This lets the user update
- 		// their configuration file with newly mapped names (like above) or to
+@@ -137,6 +138,17 @@ func main() {
+ 		return
+ 	}
+ 
++	if *extraconffile !="" {
++		f, err := os.Open(*extraconffile)
++		if err != nil {
++			panic(err)
++		}
++		if _, err := cfg.ReadFrom(f); err != nil {
++			panic(err)
++		}
++		_ = f.Close()
++	}
++
+ 	privateKey := ed25519.PrivateKey(cfg.PrivateKey)
+ 	publicKey := privateKey.Public().(ed25519.PublicKey)
+ 
+diff --git a/src/config/config.go b/src/config/config.go
+index e899a35..76b9ec8 100644
+--- a/src/config/config.go
++++ b/src/config/config.go
+@@ -112,7 +112,7 @@ func (cfg *NodeConfig) ReadFrom(r io.Reader) (int64, error) {
+ 	// then parse the configuration we loaded above on top of it. The effect
+ 	// of this is that any configuration item that is missing from the provided
+ 	// configuration will use a sane default.
+-	*cfg = *GenerateConfig()
++	// *cfg = *GenerateConfig()
+ 	if err := cfg.UnmarshalHJSON(conf); err != nil {
+ 		return n, err
+ 	}
+
+base-commit: b759683b76985665b5218346abab35f08d9f4d38
 -- 
-2.33.1
+2.41.0
 

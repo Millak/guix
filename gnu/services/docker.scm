@@ -5,6 +5,7 @@
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Jesse Dowell <jessedowell@gmail.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2023 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,15 +30,36 @@
   #:use-module (gnu services shepherd)
   #:use-module (gnu system setuid)
   #:use-module (gnu system shadow)
+  #:use-module (gnu packages admin)               ;shadow
   #:use-module (gnu packages docker)
   #:use-module (gnu packages linux)               ;singularity
   #:use-module (guix records)
+  #:use-module (guix diagnostics)
   #:use-module (guix gexp)
+  #:use-module (guix i18n)
   #:use-module (guix packages)
+  #:use-module (srfi srfi-1)
+  #:use-module (ice-9 format)
+  #:use-module (ice-9 match)
 
   #:export (docker-configuration
             docker-service-type
-            singularity-service-type))
+            singularity-service-type
+            oci-container-configuration
+            oci-container-configuration?
+            oci-container-configuration-fields
+            oci-container-configuration-user
+            oci-container-configuration-group
+            oci-container-configuration-command
+            oci-container-configuration-entrypoint
+            oci-container-configuration-environment
+            oci-container-configuration-image
+            oci-container-configuration-provision
+            oci-container-configuration-network
+            oci-container-configuration-ports
+            oci-container-configuration-volumes
+            oci-container-service-type
+            oci-container-shepherd-service))
 
 (define-configuration docker-configuration
   (docker
@@ -216,3 +238,239 @@ bundles in Docker containers.")
                        (service-extension activation-service-type
                                           (const %singularity-activation))))
                 (default-value singularity)))
+
+
+;;;
+;;; OCI container.
+;;;
+
+(define (oci-sanitize-pair pair delimiter)
+  (define (valid? member)
+    (or (string? member)
+        (gexp? member)
+        (file-like? member)))
+  (match pair
+    (((? valid? key) . (? valid? value))
+     #~(string-append #$key #$delimiter #$value))
+    (_
+     (raise
+      (formatted-message
+       (G_ "pair members must contain only strings, gexps or file-like objects
+but ~a was found")
+       pair)))))
+
+(define (oci-sanitize-mixed-list name value delimiter)
+  (map
+   (lambda (el)
+     (cond ((string? el) el)
+           ((pair? el) (oci-sanitize-pair el delimiter))
+           (else
+            (raise
+             (formatted-message
+              (G_ "~a members must be either a string or a pair but ~a was
+found!")
+              name el)))))
+   value))
+
+(define (oci-sanitize-environment value)
+  ;; Expected spec format:
+  ;; '(("HOME" . "/home/nobody") "JAVA_HOME=/java")
+  (oci-sanitize-mixed-list "environment" value "="))
+
+(define (oci-sanitize-ports value)
+  ;; Expected spec format:
+  ;; '(("8088" . "80") "2022:22")
+  (oci-sanitize-mixed-list "ports" value ":"))
+
+(define (oci-sanitize-volumes value)
+  ;; Expected spec format:
+  ;; '(("/mnt/dir" . "/dir") "/run/current-system/profile:/java")
+  (oci-sanitize-mixed-list "volumes" value ":"))
+
+(define-maybe/no-serialization string)
+
+(define-configuration/no-serialization oci-container-configuration
+  (user
+   (string "oci-container")
+   "The user under whose authority docker commands will be run.")
+  (group
+   (string "docker")
+   "The group under whose authority docker commands will be run.")
+  (command
+   (list-of-strings '())
+   "Overwrite the default command (@code{CMD}) of the image.")
+  (entrypoint
+   (maybe-string)
+   "Overwrite the default entrypoint (@code{ENTRYPOINT}) of the image.")
+  (environment
+   (list '())
+   "Set environment variables.  This can be a list of pairs or strings, even
+mixed:
+
+@lisp
+(list '(\"LANGUAGE\" . \"eo:ca:eu\")
+      \"JAVA_HOME=/opt/java\")
+@end lisp
+
+String are passed directly to the Docker CLI.  You can refer to the
+@url{https://docs.docker.com/engine/reference/commandline/run/#env,upstream}
+documentation for semantics."
+   (sanitizer oci-sanitize-environment))
+  (image
+   (string)
+   "The image used to build the container.  Images are resolved by the Docker
+Engine, and follow the usual format
+@code{myregistry.local:5000/testing/test-image:tag}.")
+  (provision
+   (maybe-string)
+   "Set the name of the provisioned Shepherd service.")
+  (network
+   (maybe-string)
+   "Set a Docker network for the spawned container.")
+  (ports
+   (list '())
+   "Set the port or port ranges to expose from the spawned container.  This can
+be a list of pairs or strings, even mixed:
+
+@lisp
+(list '(\"8080\" . \"80\")
+      \"10443:443\")
+@end lisp
+
+String are passed directly to the Docker CLI.  You can refer to the
+@url{https://docs.docker.com/engine/reference/commandline/run/#publish,upstream}
+documentation for semantics."
+   (sanitizer oci-sanitize-ports))
+  (volumes
+   (list '())
+   "Set volume mappings for the spawned container.  This can be a
+list of pairs or strings, even mixed:
+
+@lisp
+(list '(\"/root/data/grafana\" . \"/var/lib/grafana\")
+      \"/gnu/store:/gnu/store\")
+@end lisp
+
+String are passed directly to the Docker CLI.  You can refer to the
+@url{https://docs.docker.com/engine/reference/commandline/run/#volume,upstream}
+documentation for semantics."
+   (sanitizer oci-sanitize-volumes))
+  (container-user
+   (maybe-string)
+   "Set the current user inside the spawned container.  You can refer to the
+@url{https://docs.docker.com/engine/reference/run/#user,upstream}
+documentation for semantics.")
+  (workdir
+   (maybe-string)
+   "Set the current working for the spawned Shepherd service.
+You can refer to the
+@url{https://docs.docker.com/engine/reference/run/#workdir,upstream}
+documentation for semantics."))
+
+(define oci-container-configuration->options
+  (lambda (config)
+    (let ((entrypoint
+           (oci-container-configuration-entrypoint config))
+          (network
+           (oci-container-configuration-network config))
+          (user
+           (oci-container-configuration-user config))
+          (workdir
+           (oci-container-configuration-workdir config)))
+      (apply append
+             (filter (compose not unspecified?)
+                     `(,(if (maybe-value-set? entrypoint)
+                            `("--entrypoint" ,entrypoint)
+                            '())
+                       ,(append-map
+                         (lambda (spec)
+                           (list "--env" spec))
+                         (oci-container-configuration-environment config))
+                       ,(if (maybe-value-set? network)
+                            `("--network" ,network)
+                            '())
+                       ,(if (maybe-value-set? user)
+                            `("--user" ,user)
+                            '())
+                       ,(if (maybe-value-set? workdir)
+                            `("--workdir" ,workdir)
+                            '())
+                       ,(append-map
+                         (lambda (spec)
+                           (list "-p" spec))
+                         (oci-container-configuration-ports config))
+                       ,(append-map
+                         (lambda (spec)
+                           (list "-v" spec))
+                         (oci-container-configuration-volumes config))))))))
+
+(define (oci-container-shepherd-service config)
+  (define (guess-name name image)
+    (if (maybe-value-set? name)
+        name
+        (string-append "docker-"
+                       (basename (car (string-split image #\:))))))
+
+  (let* ((docker-command (file-append docker-cli "/bin/docker"))
+         (user (oci-container-configuration-user config))
+         (group (oci-container-configuration-group config))
+         (command (oci-container-configuration-command config))
+         (provision (oci-container-configuration-provision config))
+         (image (oci-container-configuration-image config))
+         (options (oci-container-configuration->options config))
+         (name (guess-name provision image)))
+
+    (shepherd-service (provision `(,(string->symbol name)))
+                      (requirement '(dockerd user-processes))
+                      (respawn? #f)
+                      (documentation
+                       (string-append
+                        "Docker backed Shepherd service for image: " image))
+                      (start
+                       #~(make-forkexec-constructor
+                          ;; docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
+                          (list #$docker-command "run" "--rm"
+                                "--name" #$name
+                                #$@options #$image #$@command)
+                          #:user #$user
+                          #:group #$group))
+                      (stop
+                       #~(lambda _
+                           (invoke #$docker-command "rm" "-f" #$name)))
+                      (actions
+                       (list
+                        (shepherd-action
+                         (name 'pull)
+                         (documentation
+                          (format #f "Pull ~a's image (~a)."
+                                  name image))
+                         (procedure
+                          #~(lambda _
+                              (invoke #$docker-command "pull" #$image)))))))))
+
+(define %oci-container-accounts
+  (list (user-account
+         (name "oci-container")
+         (comment "OCI services account")
+         (group "docker")
+         (system? #t)
+         (home-directory "/var/empty")
+         (shell (file-append shadow "/sbin/nologin")))))
+
+(define (configs->shepherd-services configs)
+  (map oci-container-shepherd-service configs))
+
+(define oci-container-service-type
+  (service-type (name 'oci-container)
+                (extensions (list (service-extension profile-service-type
+                                                     (lambda _ (list docker-cli)))
+                                  (service-extension account-service-type
+                                                     (const %oci-container-accounts))
+                                  (service-extension shepherd-root-service-type
+                                                     configs->shepherd-services)))
+                (default-value '())
+                (extend append)
+                (compose concatenate)
+                (description
+                 "This service allows the management of Docker and OCI
+containers as Shepherd services.")))

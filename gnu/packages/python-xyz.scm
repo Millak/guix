@@ -145,6 +145,7 @@
 ;;; Copyright © c4droid <c4droid@foxmail.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023 Attila Lendvai <attila@lendvai.name>
+;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2955,6 +2956,40 @@ abstractions to different hardware devices, and a suite of utilities for
 sending and receiving messages on a CAN bus.")
     (license license:lgpl3+)))
 
+(define-public python-canmatrix
+  (package
+    (name "python-canmatrix")
+    (version "1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "canmatrix" version))
+       (sha256
+        (base32 "046dzmggfm6h0fvfvwrblvih0blhc70ma0pqxzry3cphc08jvsrg"))
+       ;; The test suite uder ./test is a legacy test suite. The new test
+       ;; suite is defined under src/canmatrix/tests.
+       (modules '((guix build utils)))
+       (snippet '(delete-file-recursively "test"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "pytest")))))))
+    (propagated-inputs (list python-attrs python-click python-future
+                             python-six))
+    (native-inputs (list python-lxml python-pytest python-xlrd python-xlwt))
+    (home-page "https://github.com/ebroecker/canmatrix")
+    (synopsis "@acronym{CAN, Controller Area Network} matrices in Python")
+    (description
+     "This package implements a @acronym{CAN, Controller Area Network} matrix
+object in Python which describes the CAN-communication and its needed objects
+such as board units, frames, signals, and values.  It also includes two
+command-line tools (@command{canconvert} and @command{cancompare}) for
+converting and comparing CAN databases.")
+    (license license:bsd-2)))
+
 (define-public python-canopen
   (package
     (name "python-canopen")
@@ -5045,13 +5080,13 @@ to Roman Numerals.")
 (define-public python-rollbar
   (package
     (name "python-rollbar")
-    (version "0.16.3")
+    (version "1.0.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "rollbar" version))
               (sha256
                (base32
-                "1qpd0j50wqli3867xmhwk65pm1cxjs60yg83mcvcf3kic3y3sc82"))))
+                "1bzkgp4r79d789q15vnjji2gcb34bnksx9l7q9pjkw12kzjbfiv3"))))
     (build-system python-build-system)
     (native-inputs (list python-pytest-runner python-unittest2))
     (inputs (list python-requests python-six python-httpx python-blinker
@@ -15891,7 +15926,7 @@ programmatically with command-line parsers like @code{getopt} and
 (define-public python-pythonanywhere
   (package
     (name "python-pythonanywhere")
-    (version "0.9.10")
+    (version "0.12.1")
     (source
       (origin
         (method git-fetch)
@@ -15901,7 +15936,7 @@ programmatically with command-line parsers like @code{getopt} and
         (file-name (git-file-name name version))
         (sha256
           (base32
-           "0vzzc1g8pl7cb9yvm3n1j5zlzxf0jd423rzspc2kvpb8yhvydklx"))))
+           "12898jrq8bi90s5v3wirj7zprk08smwzwdx09y07x770frqd80vl"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -15932,8 +15967,9 @@ programmatically with command-line parsers like @code{getopt} and
     (home-page "https://github.com/pythonanywhere/helper_scripts/")
     (synopsis "PythonAnywhere helper tools for users")
     (description "PythonAnywhere provides a command-line interface and an
-application programming interface that allows managing Web apps and scheduled
-tasks.  It includes single-command deployment for the Django Girls tutorial.")
+application programming interface that allows managing files Web apps, scheduled
+tasks and students.  It includes single-command deployment for the Django Girls
+tutorial.")
     (license license:expat)))
 
 (define-public python-pythondialog
@@ -32496,13 +32532,13 @@ Psycopg 2 is both Unicode and Python 3 friendly.")
 (define-public python-pyfuse3
   (package
     (name "python-pyfuse3")
-    (version "3.2.1")
+    (version "3.3.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "pyfuse3" version))
         (sha256
-          (base32 "0cvybynv9igssfa4l13q09gb6m7afmwk34wsbq8jk14sqpd4dl92"))))
+          (base32 "1gbkwmk7gpyy70cqj9226qvwrx13xlwxfz86l86n5ybr4i0zwc9b"))))
     (build-system python-build-system)
     (native-inputs (list pkg-config))
     (inputs (list fuse))

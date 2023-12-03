@@ -15,6 +15,7 @@
 ;;; Copyright © 2021 Jean-Baptiste Volatier <jbv@pm.me>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -64,15 +65,14 @@
 (define-public curl
   (package
     (name "curl")
-    (version "7.85.0")
-    (replacement curl/fixed)
+    (version "8.4.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://curl.se/download/curl-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1rjbn0h5rddclhvxb8p5gddxszcrpbf5cw1whx6wnj4s9dnlmdc8"))
+                "0bd8y8v66biyqvg70ka1sdd0aixs6yzpnvfsig907xzh9af2mihn"))
               (patches (search-patches "curl-use-ssl-cert-env.patch"))))
     (build-system gnu-build-system)
     (outputs '("out"
@@ -118,15 +118,28 @@
               (rename-file (string-append #$output "/share/man/man3")
                            (string-append #$output:doc "/share/man/man3"))))
           (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
+            (lambda* (#:key tests? parallel-tests? make-flags #:allow-other-keys)
               (substitute* "tests/runtests.pl"
                 (("/bin/sh") (which "sh")))
-
               (when tests?
-                ;; The top-level "make check" does "make -C tests quiet-test", which
-                ;; is too quiet.  Use the "test" target instead, which is more
-                ;; verbose.
-                (invoke "make" "-C" "tests" "test"))))
+                (let* ((job-count (string-append
+                                   "-j"
+                                   (if parallel-tests?
+                                       (number->string (parallel-job-count))
+                                       "1")))
+                       (arguments `("-C" "tests" "test"
+                                    ,@make-flags
+                                    ,(if #$(or (system-hurd?)
+                                               (target-arm32?)
+                                               (target-aarch64?))
+                                         ;; protocol FAIL
+                                         (string-append "TFLAGS=\"~1474 "
+                                                        job-count "\"")
+                                         (string-append "TFLAGS=" job-count)))))
+                  ;; The top-level "make check" does "make -C tests quiet-test", which
+                  ;; is too quiet.  Use the "test" target instead, which is more
+                  ;; verbose.
+                  (apply invoke "make" arguments)))))
           #$@(if (system-hurd?)
                  #~((add-after 'unpack 'skip-tests
                       (lambda _
@@ -137,6 +150,7 @@
                           (display "533\n" port)
                           (display "537\n" port)
                           (display "546\n" port)
+                          (display "564\n" port)
                           (display "575\n" port)
                           (display "1021\n" port)
                           (display "1501\n" port)
@@ -154,39 +168,6 @@ tunneling, and so on.")
     (license (license:non-copyleft "file://COPYING"
                                    "See COPYING in the distribution."))
     (home-page "https://curl.haxx.se/")))
-
-(define curl/fixed
-  (let ((%version "8.4.0"))
-    (package
-      (inherit curl)
-      (version "8.4.0a")               ; add lowercase 'a' for grafting
-      (source (origin
-                (method url-fetch)
-                (uri (string-append "https://curl.se/download/curl-"
-                                    %version ".tar.xz"))
-                (sha256
-                 (base32
-                  "0bd8y8v66biyqvg70ka1sdd0aixs6yzpnvfsig907xzh9af2mihn"))
-                (patches (search-patches "curl-use-ssl-cert-env.patch"))))
-      (arguments
-       (if (system-hurd?)
-           (substitute-keyword-arguments (package-arguments curl)
-             ((#:phases phases '%standard-phases)
-              #~(modify-phases #$phases
-                  ;; We cannot simply set #:make-flags because they are
-                  ;; ignored by curl's custom check phase.
-                  (replace 'check
-                    (lambda* (#:key tests? make-flags #:allow-other-keys)
-                      (substitute* "tests/runtests.pl"
-                        (("/bin/sh") (which "sh")))
-                      ;; See comment in curl about check/test.
-                      (let ((arguments `("-C" "tests" "test"
-                                         ,@make-flags
-                                         ;; protocol FAIL
-                                         "TFLAGS=~1474")))
-                        (when tests?
-                          (apply invoke "make" arguments))))))))
-           (package-arguments curl))))))
 
 (define-public curl-ssh
   (package/inherit curl

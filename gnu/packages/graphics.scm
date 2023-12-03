@@ -2204,6 +2204,10 @@ Cflags: -I${includedir}~%" #$output #$version)))))
                           "_" "_" "_" "Codec_partialAnim"
                           "_" "_" "_" "Codec_InvalidImages"
                           "_" "_" "_" "Codec_GifInterlacedTruncated"
+                          ;; This test started failing possibly after mesa
+                          ;; being updated to 23.2.1 and possibly only on some
+                          ;; hardware.
+                          "_" "_" "_" "SkRuntimeBlender_GPU"
                           "_" "_" "_" "SkText_UnicodeText_Flags"
                           "_" "_" "_" "SkParagraph_FontStyle"
                           "_" "_" "_" "flight_animated_image"

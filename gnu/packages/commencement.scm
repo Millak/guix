@@ -2922,7 +2922,7 @@ memoized as a function of '%current-system'."
   ;; store path has no dependencies.  Actually, the really-final libc is
   ;; built just below; the only difference is that this one uses the
   ;; bootstrap Bash.
-  (let ((libc (libc-for-target)))
+  (let ((libc (libc-for-target (%current-system))))
     (package
       (inherit libc)
       (name "glibc-intermediate")
@@ -3096,7 +3096,7 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
 (define/system-dependent glibc-final
   ;; The final glibc, which embeds the statically-linked Bash built above.
   ;; Use 'package/inherit' so we get the 'replacement' of 'glibc', if any.
-  (let ((libc (libc-for-target)))
+  (let ((libc (libc-for-target (%current-system))))
     (package/inherit libc
       (name "glibc")
       (source (bootstrap-origin (package-source libc)))
@@ -3365,6 +3365,16 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
      `(("glibc" ,glibc-final)
        ("gzip" ,(with-boot4 gzip))))))
 
+(define-public glibc-utf8-locales-final/hurd
+  ;; Locales for the libc version used on GNU/Hurd.
+  (package
+    (inherit glibc-utf8-locales/hurd)
+    (properties `((hidden? . #t)
+                  ,@(package-properties glibc-utf8-locales/hurd)))
+    (native-inputs
+     `(("glibc" ,glibc-final)
+       ("gzip" ,(with-boot4 gzip))))))
+
 (define-public ld-wrapper
   ;; The final 'ld' wrapper, which uses the final Guile and Binutils.
   (make-ld-wrapper "ld-wrapper"
@@ -3383,7 +3393,9 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
   ;; Now with UTF-8 locales.  Remember that the bootstrap binaries were built
   ;; with an older libc, which cannot load the new locale format.  See
   ;; <https://lists.gnu.org/archive/html/guix-devel/2015-08/msg00737.html>.
-  `(("locales" ,glibc-utf8-locales-final)
+  `(("locales" ,(if (target-hurd?)
+                    glibc-utf8-locales-final/hurd
+                    glibc-utf8-locales-final))
     ,@(%boot4-inputs)))
 
 (define with-boot5
@@ -3484,7 +3496,9 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
           ("gcc" ,gcc-final)
           ("libc" ,glibc-final)
           ("libc:static" ,glibc-final "static")
-          ("locales" ,glibc-utf8-locales-final))))))
+          ("locales" ,(if (target-hurd? (%current-system))
+                          glibc-utf8-locales-final/hurd
+                          glibc-utf8-locales-final)))))))
 
 (define-public canonical-package
   (let ((name->package (mlambda (system)

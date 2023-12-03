@@ -1532,6 +1532,54 @@ computing environments.")
 data analysis.")
     (license license:bsd-3)))
 
+(define-public python-scikit-learn-extra
+  (package
+    (name "python-scikit-learn-extra")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/scikit-learn-contrib/scikit-learn-extra")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yy6ka94ss88f3r7b6mpjf1l8lnv7aabhsg844pigfj8lfiv0wvl"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'build 'build-ext
+                 (lambda _
+                   (invoke "python" "setup.py" "build_ext"
+                           "--inplace")))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     ;; Restrict OpenBLAS threads to prevent segfaults while testing!
+                     (setenv "OPENBLAS_NUM_THREADS" "1")
+
+                     ;; Some tests require write access to $HOME.
+                     (setenv "HOME" "/tmp")
+
+                     ;; Step out of the source directory to avoid interference;
+                     ;; we want to run the installed code with extensions etc.
+                     (with-directory-excursion "/tmp"
+                       (invoke "pytest" "-vv" "--pyargs"
+                               "sklearn_extra"
+                               ;; ignore tests that require network
+                               "-k" "not test_build"))))))))
+    (propagated-inputs (list python-numpy python-scikit-learn python-scipy))
+    (native-inputs (list python-pytest python-pytest-cov python-cython))
+    (home-page "https://github.com/scikit-learn-contrib/scikit-learn-extra")
+    (synopsis "Set of tools for scikit-learn")
+    (description
+     "This package provides a Python module for machine learning that extends
+scikit-learn.  It includes algorithms that are useful but do not satisfy the
+scikit-learn inclusion criteria, for instance due to their novelty or lower
+citation number.")
+    (license license:bsd-3)))
+
 (define-public python-thinc
   (package
     (name "python-thinc")
@@ -1663,45 +1711,42 @@ and forecasting.")
 (define-public python-imbalanced-learn
   (package
     (name "python-imbalanced-learn")
-    (version "0.9.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "imbalanced-learn" version))
-              (sha256
-               (base32
-                "0qnrmysnqpc8ii1w5n8mci20gcjhmjr7khvk7f2apdbqc2pgf52f"))))
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "imbalanced-learn" version))
+       (sha256
+        (base32 "1p4gdgc8nsq0vjmw4y4d2bp9g0m1c23d0zgrzs90pnz6b24ax0km"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'unbreak-tests
-           (lambda _
-             ;; The doctests require tensorflow
-             (substitute* "setup.cfg"
-               (("--doctest-modules") ""))
-             ;; Some tests require a home directory
-             (setenv "HOME" (getcwd))
-             ;; We don't have keras
-             (delete-file "imblearn/keras/tests/test_generator.py")
-             ;; We don't have tensorflow
-             (delete-file "imblearn/tensorflow/tests/test_generator.py"))))))
-    (propagated-inputs
-     (list python-joblib
-           python-numpy
-           python-scikit-learn
-           python-scipy
-           python-threadpoolctl))
-    (native-inputs
-     (list python-black
-           python-flake8
-           python-mypy
-           python-pandas
-           python-pytest
-           python-pytest-cov))
+      #:test-flags '(list "-k"
+                     ;; Although we cannot satify the Tensorflow and Keras requirements
+                     ;; (python-keras >= 2.4.3 and tensorflow >= 2.4.3), all tests
+                     ;; besides these pass.
+                     "not balanced_batch_generator and not BalancedBatchGenerator")
+      #:phases '(modify-phases %standard-phases
+                  (add-after 'unpack 'unbreak-tests
+                    (lambda _
+                      ;; Some tests require a home directory
+                      (setenv "HOME"
+                              (getcwd)))))))
+    (propagated-inputs (list python-joblib python-numpy python-scikit-learn
+                             python-scipy python-threadpoolctl))
+    (native-inputs (list python-black
+                         python-flake8
+                         python-keras
+                         python-mypy
+                         python-numpydoc
+                         python-pandas
+                         python-pytest
+                         python-pytest-cov
+                         tensorflow))
     (home-page "https://github.com/scikit-learn-contrib/imbalanced-learn")
     (synopsis "Toolbox for imbalanced dataset in machine learning")
-    (description "This is a Python package offering a number of re-sampling
+    (description
+     "This is a Python package offering a number of re-sampling
 techniques commonly used in datasets showing strong between-class imbalance.
 It is compatible with @code{scikit-learn}.")
     (license license:expat)))
