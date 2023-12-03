@@ -78,7 +78,8 @@
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match)
   #:export (make-lld-wrapper
-            system->llvm-target))
+            system->llvm-target
+            clang-properties))
 
 (define* (system->llvm-target #:optional
                               (system (or (and=> (%current-target-system)
