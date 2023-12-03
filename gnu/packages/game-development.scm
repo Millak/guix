@@ -109,8 +109,10 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages sdl)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages speech)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages stb)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
@@ -1841,38 +1843,37 @@ of use.")
 (define-public openmw
   (package
     (name "openmw")
-    (version "0.47.0")
+    (version "0.48.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/OpenMW/openmw")
-              (commit (string-append "openmw-" version))))
+             (url "https://github.com/OpenMW/openmw")
+             (commit (string-append "openmw-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "19mcbnjl4279qalb97msf965bjax48mx1r1qczyvwhn28h6n3bsy"))
-       (patches (search-patches "openmw-assume-nonconst-SIGSTKSZ.patch"))))
+        (base32 "0amkxfylk1l67d2igihnhhql62xr89wvg1sxbq2rnhczf6vxaj6f"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ; No test target
-       #:configure-flags
-       (list "-DDESIRED_QT_VERSION=5"
-             "-DOPENMW_USE_SYSTEM_RECASTNAVIGATION=ON")))
-    (native-inputs
-     (list boost doxygen pkg-config))
-    (inputs
-     (list bullet
-           ffmpeg-4                     ; https://gitlab.com/OpenMW/openmw/-/issues/6631
-           libxt
-           lz4
-           mygui-gl              ; OpenMW does not need Ogre.
-           openal
-           openmw-openscenegraph
-           qtbase-5
-           recastnavigation
-           sdl2
-           unshield))
+     `(#:tests? #f ;No test target
+       #:configure-flags (list "-DDESIRED_QT_VERSION=5"
+                               "-DOPENMW_USE_SYSTEM_RECASTNAVIGATION=ON")))
+    (native-inputs (list boost doxygen pkg-config))
+    (inputs (list bullet
+                  ffmpeg
+                  libxt
+                  lz4
+                  mygui-gl ;OpenMW does not need Ogre.
+                  openal
+                  openmw-openscenegraph
+                  qtbase-5
+                  recastnavigation
+                  sdl2
+                  unshield
+                  icu4c
+                  yaml-cpp
+                  luajit
+                  sqlite))
     (synopsis "Re-implementation of the RPG Morrowind engine")
     (description
      "OpenMW is a game engine which reimplements and extends the one that runs
