@@ -12863,6 +12863,44 @@ provided there is a DBus service present:
   (simple-service 'ratbagd dbus-root-service-type (list libratbag))")
     (license license:gpl2)))
 
+(define-public xdg-desktop-portal-gnome
+  (package
+    (name "xdg-desktop-portal-gnome")
+    (version "44.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/" name "/"
+                                  (version-major version) "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "08gznmr718na5p2j8fm7nim5862r2v0sjh68ql5yl0q356n1mvah"))
+              (snippet
+               #~(begin
+                   (use-modules (guix build utils))
+                   (delete-file-recursively "subprojects")))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:configure-flags #~'("-Dsystemduserunitdir=no")))
+    (inputs
+     (list gnome-desktop
+           gsettings-desktop-schemas
+           libadwaita
+           libxml2
+           xdg-desktop-portal
+           xdg-desktop-portal-gtk))
+    (native-inputs
+     (list gettext-minimal
+           `(,glib "bin")
+           pkg-config))
+    (home-page "https://gitlab.gnome.org/GNOME/xdg-desktop-portal-gnome")
+    (synopsis "GNOME backend for xdg-desktop-portal")
+    (description "xdg-desktop-portal-gnome implements a back-end for
+@command{xdg-desktop-portal} that uses gtk and some more GNOME APIs.")
+    (license license:lgpl2.1+)))
+
 (define-public parlatype
   (package
     (name "parlatype")
