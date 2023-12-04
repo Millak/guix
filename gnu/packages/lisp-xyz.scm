@@ -18581,8 +18581,8 @@ building Jupyter kernels, based on Maxima-Jupyter which was based on
   (sbcl-package->cl-source-package sbcl-common-lisp-jupyter))
 
 (define-public sbcl-radiance
-  (let ((commit "a7237831970edfd330dddd5b347d3d1277853bf0")
-        (revision "2"))
+  (let ((commit "8d826c7fe1935338565580931db43f46181e0e85")
+        (revision "3"))
     (package
       (name "sbcl-radiance")
       (version (git-version "2.1.2" revision commit))
@@ -18594,7 +18594,7 @@ building Jupyter kernels, based on Maxima-Jupyter which was based on
                (commit commit)))
          (file-name (git-file-name "radiance" version))
          (sha256
-          (base32 "1q4x9mswiizwgr7acl5zi6lkssfg2zajqbdq7xhw1kq6xfnq37j2"))))
+          (base32 "1j823dgp87www0sjbcbv9j025bfxlkwhjd7kz6635mrqwmmlki4l"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        `(#:tests? #f  ; TODO: The tests require some configuration.
