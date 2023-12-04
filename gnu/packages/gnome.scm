@@ -13818,6 +13818,6 @@ Protocol} for @acronym{VoIP, Voice over @acronym{IP, Internet Protocol}}.")
     (home-page "https://apps.gnome.org/Connections")
     (synopsis "View and use other desktops")
     (description "Connections allows the user to connect to different
-real or virtual machines, using @acronym{VNC,Virtual Network Computing}
-or @acronym{RDP,Remote Desktop Protocol}.")
+real or virtual machines, using @acronym{VNC, Virtual Network Computing}
+or @acronym{RDP, Remote Desktop Protocol}.")
     (license license:gpl3+)))
