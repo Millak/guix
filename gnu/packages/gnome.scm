@@ -13770,7 +13770,7 @@ Protocol} for @acronym{VoIP, Voice over @acronym{IP, Internet Protocol}}.")
     (home-page "https://gitlab.gnome.org/GNOME/gtk-frdp")
     (synopsis "RDP viewer widget for Gtk")
     (description "This library provides a widget to view
-@acronym{RDP,Remote Desktop Protocol} sessions.")
+@acronym{RDP, Remote Desktop Protocol} sessions.")
     (license license:gpl3+)))
 
 (define-public gnome-connections
