@@ -1697,7 +1697,7 @@ to preview files on the GNOME desktop.")
     (arguments
      ;; Disable the tracker plugin.
      (list #:configure-flags
-           #~'("-Dplugins=external,gst-launch,lms,media-export,
+           #~(list "-Dplugins=external,gst-launch,lms,media-export,
 mpris,playbin,ruih,tracker3")))
     (native-inputs
      (list gettext-minimal
