@@ -7497,15 +7497,16 @@ running boot option, and more.")
 (define-public sysstat
   (package
     (name "sysstat")
-    (version "12.4.4")
+    (version "12.7.5")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://pagesperso-orange.fr/sebastien.godard/"
+       (uri (string-append "https://sysstat.github.io/sysstat-packages/"
                            "sysstat-" version ".tar.xz"))
        (sha256
-        (base32 "091xjip7l52dxal8dsfh5chksr4g9gclnssw3hjjxy84kr3yf4lm"))))
+        (base32 "0ssdrm3k0fclq5b5i0aznfwdkbac9l9cf88idaq3pls9lm040rjp"))))
     (build-system gnu-build-system)
+    (native-inputs (list gettext-minimal))
     (arguments
      `(#:tests? #f                      ; no test suite.
        ;; Without this flag, it tries to install the man pages with group 'root'
@@ -7522,7 +7523,7 @@ running boot option, and more.")
              (substitute* "Makefile"
                (("mkdir -p \\$\\(DESTDIR\\)\\$\\(SA_DIR\\)")
                 "")))))))
-    (home-page "http://sebastien.godard.pagesperso-orange.fr/")
+    (home-page "https://sysstat.github.io")
     (synopsis "Performance monitoring tools for Linux")
     (description "The sysstat utilities are a collection of performance
 monitoring tools for Linux.  These include @code{mpstat}, @code{iostat},
