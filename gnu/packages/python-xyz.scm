@@ -17898,13 +17898,13 @@ ISO 8859, etc.).")
 (define-public python-pyqtgraph
   (package
     (name "python-pyqtgraph")
-    (version "0.13.1")
+    (version "0.13.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyqtgraph" version))
        (sha256
-        (base32 "026wq2p7h1dmg2ldwhxiv28i5qld0llhnak06dxp4rdrkpsqg3v9"))))
+        (base32 "1kiazyc8mqyx0479qdcvdclzq0g1hpp93dyq8444w1f72628s42q"))))
     (build-system pyproject-build-system)
     (arguments
      ;; This test fails.  It suggests to disable assert rewriting in Pytest,
