@@ -34374,6 +34374,29 @@ The database contains over 6.5 million entries, over 3.1 million unique word
 forms, and about 300,000 distinct lemmas.")
     (license license:expat)))
 
+(define-public python-icegrams
+  (package
+    (name "python-icegrams")
+    (version "1.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "icegrams" version))
+       (sha256
+        (base32 "1ajcjngvr4rlgb0q6p6vjz2sncwhvq3msjy6qaiz5g37vgvw2ij8"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-cffi))
+    (home-page "https://github.com/mideind/Icegrams")
+    (synopsis "Trigram statistics for Icelandic")
+    (description
+     "Icegrams is a Python package that encapsulates a large trigram
+library for Icelandic.  You can use Icegrams to obtain probabilities (relative
+frequencies) of over a million different unigrams (single words or tokens), or of
+bigrams (pairs of two words or tokens), or of trigrams.  Icegrams is useful for
+instance in spelling correction, predictive typing, to help disabled people
+write text fast, and for various text generation, statistics, and modeling tasks.")
+    (license license:expat)))
+
 (define-public python-zeroc-ice-3.6
   (package
     (inherit python-zeroc-ice)
