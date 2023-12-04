@@ -2820,7 +2820,7 @@ comments.")))
 (define-public freecad
   (package
     (name "freecad")
-    (version "0.21.1")
+    (version "0.21.2")
     (source
      (origin
        (method git-fetch)
@@ -2829,7 +2829,7 @@ comments.")))
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qwh6b1s432j5piwgfkphvz0slmxf0m8m8pdr3ny9zna9mghz42k"))))
+        (base32 "0s720q6vxlh78jzahqp69nl8wagb42l05dym5aqhfnr31dx666hc"))))
     (build-system qt-build-system)
     (native-inputs
      (list doxygen
