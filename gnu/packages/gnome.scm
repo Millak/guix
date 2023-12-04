@@ -10134,6 +10134,7 @@ world.")
           simple-scan
           totem
           tracker-miners
+          xdg-desktop-portal-gnome
           yelp
           ;; Others.
           gnome-online-accounts
