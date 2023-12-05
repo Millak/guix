@@ -3675,7 +3675,12 @@ in the current session, Python, and the OS.")
       (uri (pypi-uri "schedule" version))
       (sha256
        (base32
-        "0vplyjcbfrq50sphlwya749z8p2pcyi2nycw3518i0qpd9a6189i"))))
+        "0vplyjcbfrq50sphlwya749z8p2pcyi2nycw3518i0qpd9a6189i"))
+      (snippet
+       #~(begin (use-modules (guix build utils))
+                (substitute* "schedule/__init__.py"
+                  (("collections\\.Hashable")
+                   "collections.abc.Hashable"))))))
     (build-system python-build-system)
     (native-inputs
      (list python-pytest python-mock))
