@@ -1872,7 +1872,11 @@ for parameterized model creation and handling.  Its features include:
               (uri (pypi-uri "GPy" version))
               (sha256
                (base32
-                "1yx65ajrmqp02ykclhlb0n8s3bx5r0xj075swwwigiqaippr7dx2"))))
+                "1yx65ajrmqp02ykclhlb0n8s3bx5r0xj075swwwigiqaippr7dx2"))
+             (snippet
+              #~(begin (use-modules (guix build utils))
+                       (substitute* "GPy/models/state_space_main.py"
+                         (("collections\\.Iterable") "collections.abc.Iterable"))))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
