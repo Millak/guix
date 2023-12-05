@@ -2954,7 +2954,12 @@ linux/libcurl_wrapper.h")
               (lambda _
                 ;; Valid QT_BUILD_PARTS variables are:
                 ;; libs tools tests examples demos docs translations
-                (invoke "qmake" "QT_BUILD_PARTS = libs tools" "--"
+                (invoke "qmake"
+                        #$@(if (target-x86-32?)
+                               ;; Don't exhaust memory while linking.
+                               #~("QMAKE_LFLAGS+=-Wl,--no-keep-memory -Wl,-z,now")
+                               #~())
+                        "QT_BUILD_PARTS = libs tools" "--"
                         "--webengine-printing-and-pdf=no"
                         "--webengine-ffmpeg=system"
                        ;; FIXME: Building qtwebengine-5 5.12.2 with
