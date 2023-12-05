@@ -9795,11 +9795,18 @@ Python language binding specification.")
     (source
      (origin
        (method url-fetch)
-       (uri
-        (pypi-uri "grako" version ".zip"))
+       (uri (pypi-uri "grako" version ".zip"))
        (sha256
-        (base32
-         "0r63i68wcnv63rfjkasq1ah81frz61a6mzbcnaxhrkdpx84p7hzw"))))
+        (base32 "0r63i68wcnv63rfjkasq1ah81frz61a6mzbcnaxhrkdpx84p7hzw"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "grako/grammars.py"
+                   (("from collections import defaultdict, Mapping")
+                    (string-append "from collections import defaultdict\n"
+                                   "from collections.abc import Mapping")))
+                 (substitute* '("grako/util.py"
+                                "grako/walkers.py")
+                   (("collections\\.Mapping") "collections.abc.Mapping"))))))
     (build-system python-build-system)
     (arguments '(#:tests? #f)) ; Test file 'grako.ebnf' is missing from archive.
     (native-inputs
