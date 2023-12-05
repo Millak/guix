@@ -680,20 +680,7 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                  "-DFEATURE_system_sqlite=ON"
                  "-DFEATURE_system_xcb_xinput=ON"
                  ;; Don't use the precompiled headers.
-                 "-DBUILD_WITH_PCH=OFF"
-                 ;; Drop special machine instructions that do not have runtime
-                 ;; detection.
-                 ,@(if (string-prefix? "x86_64"
-                                       (or (%current-target-system)
-                                           (%current-system)))
-                       '()              ;implicitly enabled
-                       '("-DFEATURE_sse2=OFF"
-                         "-DFEATURE_sse3=OFF"
-                         "-DFEATURE_ssse3=OFF"
-                         "-DFEATURE_sse4_1=OFF"
-                         "-DFEATURE_sse4_2=OFF"))
-                 "-DFEATURE_mips_dsp=OFF"
-                 "-DFEATURE_mips_dspr2=OFF")))
+                 "-DBUILD_WITH_PCH=OFF")))
        ((#:phases phases)
         #~(modify-phases #$phases
             (add-after 'unpack 'honor-CMAKE_PREFIX_PATH
