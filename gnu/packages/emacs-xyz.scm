@@ -411,6 +411,27 @@ reading the extensive documentation about BookmarkPlus on the Emacs Wiki.")
 input via a small child-frame spawned at the position of the cursor.")
     (license license:gpl3+)))
 
+(define-public emacs-arei
+  (package
+    (name "emacs-arei")
+    (version "0.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~abcdw/emacs-arei")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "12vfv7l8krsfv7m03p41jakh4xrfm21w85kvghz0q5hq63w9l3f7"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-eros emacs-sesman emacs-queue))
+    (home-page "https://git.sr.ht/~abcdw/emacs-arei")
+    (synopsis "Asyncronous Reliable Extensible IDE")
+    (description "Sleek Guile IDE for Emacs.")
+    (license license:gpl3+)))
+
 (define-public emacs-geiser
   (package
     (name "emacs-geiser")
