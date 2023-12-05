@@ -678,14 +678,14 @@ options are given, the action applies to the focused window.")
 (define-public xeyes
   (package
     (name "xeyes")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.x.org/releases/individual/app/"
-                           name "-" version ".tar.bz2"))
+                           name "-" version ".tar.xz"))
        (sha256
-        (base32 "1nxn443pfhddmwl59wplpjkslhlyfk307qx18nrimvvb2hipx8gq"))))
+        (base32 "08rhfp5xlmdbyxkvxhgjxdn6vwzrbrjyd7jkk8b7wi1kpw0ccl09"))))
     (build-system gnu-build-system)
     (inputs
       (list libxext libxi libxmu libxrender libxt))
