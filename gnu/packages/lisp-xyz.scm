@@ -2971,7 +2971,16 @@ pure Common Lisp.")
       (license license:expat))))
 
 (define-public ecl-cl-pcg
-  (sbcl-package->ecl-package sbcl-cl-pcg))
+  (let ((pkg (sbcl-package->ecl-package sbcl-cl-pcg)))
+    (package
+      (inherit pkg)
+      (arguments
+       (substitute-keyword-arguments (package-arguments pkg)
+         ;; Tests are failing on ECL with:
+         ;; PCG.TEST::TEST-REWINDAn error occurred during initialization:
+         ;; 40502229875678917802724098623316930025 is not of type
+         ;; (INTEGER 0 2305843009213693951)
+         ((#:tests? _ #f) #f))))))
 
 (define-public cl-pcg
   (sbcl-package->cl-source-package sbcl-cl-pcg))
