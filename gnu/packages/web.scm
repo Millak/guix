@@ -6697,7 +6697,10 @@ command-line arguments or read from stdin.")
                          (("^import re\n" line)
                           (string-append line "re._pattern_type = re.Pattern\n"))))
                      (find-files "." "\\.py$"))
-           #t))))
+           ;; Mapping got moved to collections.abc
+           (substitute* "internetarchive/utils.py"
+             (("from collections import Mapping")
+              "from collections.abc import Mapping"))))))
     (build-system python-build-system)
     (arguments
      `(#:phases
