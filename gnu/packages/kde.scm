@@ -14,7 +14,7 @@
 ;;; Copyright © 2020, 2021, 2022, 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2021 la snesne <lasnesne@lagunposprasihopre.org>
-;;; Copyright © 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021, 2022, 2023, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
@@ -1226,15 +1226,14 @@ communicate with each other.  Here's a few things KDE Connect can do:
 (define-public labplot
   (package
     (name "labplot")
-    (version "2.9.0")
+    (version "2.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/labplot"
-                           "/" version "/labplot-"
-                           version ".tar.xz"))
+                           "/labplot-" version ".tar.xz"))
        (sha256
-        (base32 "1wi19gj18yhrim1cb2dwgpnc2yvydm87h41fcg670ampy24i98z5"))))
+        (base32 "1vyslapcjmq7bra3hbbkwrcy6z0cn8z5z2bvzzgy1dng2waihvib"))))
     (build-system qt-build-system)
     (arguments
      `(#:configure-flags
