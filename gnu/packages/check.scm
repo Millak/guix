@@ -2721,7 +2721,7 @@ possible to write plugins to add your own checks.")
                (base32
                 "16a1ac5n7k7sx15cnk03gw3fmslab3a7m74dc45rgpldgiff3577"))))
     (build-system python-build-system)
-    (propagated-inputs (list python-pylint))
+    (propagated-inputs (list python-tomli python-pylint))
     (home-page "https://github.com/johnnoone/setuptools-pylint")
     (synopsis "Run pylint with @command{python setup.py lint}")
     (description "This package expose pylint as a lint command into
