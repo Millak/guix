@@ -29239,8 +29239,12 @@ workspace...")
         (method url-fetch)
         (uri (pypi-uri "python-osc" version))
         (sha256
-          (base32
-            "0cnh0z5lnng7fh48nmfaqqn8j25k13gkd4rhxd3m6sjqiix9s3vn"))))
+         (base32 "0cnh0z5lnng7fh48nmfaqqn8j25k13gkd4rhxd3m6sjqiix9s3vn"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "pythonosc/udp_client.py"
+                   (("from collections import Iterable")
+                    "from collections.abc import Iterable"))))))
     (build-system python-build-system)
     (home-page "https://github.com/attwad/python-osc")
     (synopsis "Open Sound Control server and client implementations")
