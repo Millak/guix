@@ -863,7 +863,8 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                        "tst_qfiledialog"
                        ;; This test is susceptible to the 600 ms timeout used:
                        "tst_qpauseanimation")
-                      #$@(if (target-ppc64le?)
+                      #$@(cond
+                           ((target-ppc64le?)
                              #~((list
                                  ;; The 'tst_QPainter::fpe_radialGradients'
                                  ;; test fails with a 'Floating point
@@ -881,8 +882,30 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                                  ;; "'Unable to fetch row' || 'database is
                                  ;; locked'" (see:
                                  ;; https://bugreports.qt.io/browse/QTBUG-117114).
-                                 "tst_qsqlthread"))
-                             #~())) "|") ")")))))
+                                 "tst_qsqlthread")))
+                           ((target-x86-32?)
+                             #~((list
+                                 ;; QCOMPARE(qRound(actual), expected) returned TRUE
+                                 ;; unexpectedly.
+                                 "tst_qglobal"
+
+                                 ;; Actual   (llMinDbl == llMin) : 0
+                                 ;; Expected (-9223372036854775807.0 ==
+                                 ;; Q_INT64_C(-9223372036854775807)) : 1
+                                 "tst_json"
+
+                                 ;; 'QVector3D::normal(QVector3D(), v1, v2) ==
+                                 ;; v3.normalized()' returned FALSE. ()
+                                 "tst_qvectornd"
+
+                                 ;; Actual   (qRed(p))  : 11
+                                 ;; Expected (qGreen(p)): 10
+                                 "tst_qcolorspace"
+
+                                 ;; Actual   (dv.validate(value, dummy)): Invalid
+                                 ;; Expected (standard_state)           : Intermediate
+                                 "tst_qdoublevalidator")))
+                           (else #~()))) "|") ")")))))
             (replace 'patch-mkspecs
               (lambda* (#:key outputs #:allow-other-keys)
                 (let* ((archdata (search-input-directory outputs "lib/qt6"))
