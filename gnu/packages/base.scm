@@ -847,27 +847,25 @@ the store.")
   ;; version 2.28, GNU/Hurd used a different glibc branch.
   (package
    (name "glibc")
-   (version "2.35")
-   (replacement glibc/fixed)
+   (version "2.38")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/glibc/glibc-" version ".tar.xz"))
             (sha256
              (base32
-              "0bpm1kfi09dxl4c6aanc5c9951fmf6ckkzay60cx7k37dcpp68si"))
+              "1lizxxqbfma5zgmcj0gk5iyk171f2nfvdhbv8rjrkcmjk24rk0pv"))
             (patches (search-patches "glibc-ldd-powerpc.patch"
-                                     "glibc-ldd-x86_64.patch"
+                                     "glibc-2.38-ldd-x86_64.patch"
                                      "glibc-dl-cache.patch"
-                                     "glibc-versioned-locpath.patch"
-                                     "glibc-allow-kernel-2.6.32.patch"
+                                     "glibc-2.37-versioned-locpath.patch"
+                                     ;; "glibc-allow-kernel-2.6.32.patch"
                                      "glibc-reinstate-prlimit64-fallback.patch"
                                      "glibc-supported-locales.patch"
-                                     "glibc-cross-objdump.patch"
-                                     "glibc-cross-objcopy.patch" ;must come 2nd
-                                     "glibc-hurd-clock_t_centiseconds.patch"
-                                     "glibc-hurd-clock_gettime_monotonic.patch"
+                                     "glibc-2.37-hurd-clock_t_centiseconds.patch"
+                                     "glibc-2.37-hurd-local-clock_gettime_MONOTONIC.patch"
                                      "glibc-hurd-mach-print.patch"
-                                     "glibc-hurd-gettyent.patch"))))
+                                     "glibc-hurd-gettyent.patch"
+                                     "glibc-hurd-getauxval.patch"))))
    (build-system gnu-build-system)
 
    ;; Glibc's <limits.h> refers to <linux/limit.h>, for instance, so glibc
@@ -928,6 +926,10 @@ the store.")
                                            '%build-inputs)
                                       "kernel-headers")
                            "/include")
+
+            ;; Libcrypt and <crypt.h> are deprecated in glibc 2.38 and not
+            ;; built by default.  Build it to reduce application breakage.
+            "--enable-crypt"
 
             ;; This is the default for most architectures as of GNU libc 2.26,
             ;; but we specify it explicitly for clarity and consistency.  See
@@ -1144,6 +1146,30 @@ with the Linux kernel.")
 
 ;; Below are old libc versions, which we use mostly to build locale data in
 ;; the old format (which the new libc cannot cope with.)
+
+(define-public glibc-2.35
+  (package
+    (inherit glibc)
+    (version "2.35")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/glibc/glibc-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0bpm1kfi09dxl4c6aanc5c9951fmf6ckkzay60cx7k37dcpp68si"))
+              (patches (search-patches "glibc-ldd-powerpc.patch"
+                                       "glibc-ldd-x86_64.patch"
+                                       "glibc-dl-cache.patch"
+                                       "glibc-versioned-locpath.patch"
+                                       "glibc-allow-kernel-2.6.32.patch"
+                                       "glibc-reinstate-prlimit64-fallback.patch"
+                                       "glibc-supported-locales.patch"
+                                       "glibc-cross-objdump.patch"
+                                       "glibc-cross-objcopy.patch" ;must come 2nd
+                                       "glibc-hurd-clock_t_centiseconds.patch"
+                                       "glibc-hurd-clock_gettime_monotonic.patch"
+                                       "glibc-hurd-mach-print.patch"
+                                       "glibc-hurd-gettyent.patch"))))))
 
 (define-public glibc-2.33
   (package
