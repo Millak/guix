@@ -496,6 +496,48 @@ written in Javascript.")
 resolve all imports.")
     (license license:expat)))
 
+(define-public node-safe-stable-stringify
+  (package
+    (name "node-safe-stable-stringify")
+    (version "2.4.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/BridgeAR/safe-stable-stringify")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "008adig8j13rn2a21ngnp770y4zz6yq176ix5rkskjbb8g2qwapg"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (add-after 'patch-dependencies 'delete-dependencies
+                    (lambda _
+                      (delete-dependencies '("benchmark" "clone"
+                                             "fast-json-stable-stringify"
+                                             "fast-safe-stringify"
+                                             "fast-stable-stringify"
+                                             "faster-stable-stringify"
+                                             "fastest-stable-stringify"
+                                             "json-stable-stringify"
+                                             "json-stringify-deterministic"
+                                             "json-stringify-safe"
+                                             "standard"
+                                             "tap"
+                                             "typescript"
+                                             "@types/node"
+                                             "@types/json-stable-stringify")))))))
+    (home-page "https://github.com/BridgeAR/safe-stable-stringify")
+    (synopsis "Serialization of javascript objects")
+    (description
+     "Safe, deterministic and fast serialization alternative to JSON.stringify.
+Gracefully handles circular structures and bigint instead of throwing.
+Optional custom circular values, deterministic behavior or strict JSON
+compatibility check.")
+    (license license:expat)))
+
 (define-public node-stack-trace
   ;; There have been improvements since the last release.
   (let ((commit "4fd379ee78965ce7ce8820b436f1b1b590d5dbcf")
