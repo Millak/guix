@@ -490,6 +490,14 @@ RGB animations.")
        (sha256
         (base32 "17zrqdz5mzwyccvc5m166yjlbbg9k2m9cwyg0y30h3184p1b2wlq"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'install 'install-missing-pkgconfig-file
+             (lambda _
+               (install-file "ddcutil.pc"
+                             (string-append #$output "/lib/pkgconfig")))))))
     (native-inputs
      (list pkg-config))
     (inputs
