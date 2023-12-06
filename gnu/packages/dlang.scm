@@ -362,7 +362,7 @@ integration tests...\n")
 (define-public dub
   (package
     (name "dub")
-    (version "1.23.0")
+    (version "1.33.0")
     (source
      (origin
        (method git-fetch)
@@ -371,7 +371,7 @@ integration tests...\n")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06a4whsl1m600k096nwif83n7za3vr7pj1xwapncy5fcad1gmady"))))
+        (base32 "09p3rvsv11f8lgqgxgz2zj0szsw5lzrsc7y7471hswksc7nmmj70"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ; tests try to install packages
