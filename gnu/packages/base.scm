@@ -1075,6 +1075,26 @@ the store.")
                                          (map (cut string-append slib "/" <>)
                                               files))))))
 
+                 (add-after 'install 'install-utf8-c-locale
+                   (lambda* (#:key outputs #:allow-other-keys)
+                     ;; Install the C.UTF-8 locale so there's always a UTF-8
+                     ;; locale around.
+                     (let* ((out (assoc-ref outputs "out"))
+                            (bin (string-append out "/bin"))
+                            (locale (string-append out "/lib/locale/"
+                                                   ,(package-version
+                                                     this-package))))
+                       (mkdir-p locale)
+
+                       ;; FIXME: When cross-compiling, attempt to use
+                       ;; 'localedef' from the same libc version.
+                       (invoke ,(if (%current-target-system)
+                                    "true"
+                                    '(string-append bin "/localedef"))
+                               "--no-archive" "--prefix" locale
+                               "-i" "C" "-f" "UTF-8"
+                               (string-append locale "/C.UTF-8")))))
+
                  ,@(if (target-hurd?)
                        '((add-after 'install 'augment-libc.so
                            (lambda* (#:key outputs #:allow-other-keys)
@@ -1169,11 +1189,19 @@ with the Linux kernel.")
                                        "glibc-hurd-clock_t_centiseconds.patch"
                                        "glibc-hurd-clock_gettime_monotonic.patch"
                                        "glibc-hurd-mach-print.patch"
-                                       "glibc-hurd-gettyent.patch"))))))
+                                       "glibc-hurd-gettyent.patch"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments glibc)
+       ((#:phases phases)
+        ;; The C.UTF-8 fails to build in glibc 2.35:
+        ;; <https://sourceware.org/bugzilla/show_bug.cgi?id=28861>.
+        ;; It is missing altogether in versions earlier than 2.35.
+        `(modify-phases ,phases
+           (delete 'install-utf8-c-locale)))))))
 
 (define-public glibc-2.33
   (package
-    (inherit glibc)
+    (inherit glibc-2.35)
     (name "glibc")
     (version "2.33")
     (source (origin
@@ -1200,7 +1228,7 @@ with the Linux kernel.")
 
 (define-public glibc-2.32
   (package
-    (inherit glibc)
+    (inherit glibc-2.35)
     (version "2.32")
     (source (origin
               (inherit (package-source glibc))
@@ -1255,7 +1283,7 @@ with the Linux kernel.")
 
 (define-public glibc-2.31
   (package
-    (inherit glibc)
+    (inherit glibc-2.35)
     (version "2.31")
     (source (origin
               (inherit (package-source glibc))
