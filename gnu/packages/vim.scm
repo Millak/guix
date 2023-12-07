@@ -1735,3 +1735,27 @@ Guile's special forms.")
 programming language")
       (home-page "https://github.com/vmchale/dhall-vim")
       (license license:bsd-3))))
+
+(define-public vim-mundo
+  (let ((commit "b53d35fb5ca9923302b9ef29e618ab2db4cc675e")
+        (revision "1"))
+    (package
+      (name "vim-mundo")
+      (version (git-version "3.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/simnalamburt/vim-mundo")
+               (commit commit)))
+         (file-name (string-append name "-" version "-checkout"))
+         (sha256
+          (base32 "1dwrarcxrh8in78igm036lpvyww60c93vmmlk8h054i3v2p8vv59"))))
+      (build-system vim-build-system)
+      (arguments
+       (list
+        #:plugin-name "Mundo"))
+      (synopsis "Vim undo tree visualizer")
+      (description "A Vim plugin to visualize the Vim undo tree")
+      (home-page "https://simnalamburt.github.io/vim-mundo/")
+      (license license:gpl2))))
