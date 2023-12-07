@@ -1,0 +1,15 @@
+Disable runtime check for Darwin so we don't have to substitute uname.
+--- a/bin/socksify.in
++++ b/bin/socksify.in
+@@ -65,11 +65,6 @@
+     unset FULLPATH
+ fi
+ 
+-#use "FLAT_NAMESPACE" on Darwin in attempt to match LD_PRELOAD behavior
+-if test x`uname` = xDarwin; then
+-    export DYLD_FORCE_FLAT_NAMESPACE=t
+-fi
+-
+ #dlib/Makefile.am libtool flags should produce a predictable library name
+ #(ending in SOLIB_POSTFIX).
+ LIBRARY="${SOCKS_LIBRARY:-${FULLPATH}libdsocks.@SOLIB_POSTFIX@}"
