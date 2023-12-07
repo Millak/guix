@@ -1681,3 +1681,31 @@ a range like :7,17Commentary, or as part of a :global invocation like with
 :g/TODO/Commentary.")
       (home-page "https://www.vim.org/scripts/script.php?script_id=3695")
       (license license:vim))))
+
+(define-public vim-guile
+  (let ((commit "f76959a9dbdc69cde018901de82ac5a3d443843c")
+        (revision "1"))
+    (package
+      (name "vim-guile")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/HiPhish/guile.vim")
+               (commit commit)))
+         (file-name (string-append name "-" version "-checkout"))
+         (sha256
+          (base32 "1pqlhssdnpd8ngjc5bssma7ddjhffvh8hj67gchmyyxr5jfxwdq9"))))
+      (build-system vim-build-system)
+      (arguments
+       (list
+        #:plugin-name "guile.vim"))
+      (synopsis "Syntax highlighting for GNU Guile")
+      (description
+       "This plugin extends Vim's Scheme support to include the additions to
+the language provided by the GNU Guile implementation.  The plugin automatically
+detects whether a Scheme file is a Guile file and adds syntax highlighting for
+Guile's special forms.")
+      (home-page "https://github.com/HiPhish/guile.vim")
+      (license license:expat))))
