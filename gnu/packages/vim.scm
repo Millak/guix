@@ -1709,3 +1709,29 @@ detects whether a Scheme file is a Guile file and adds syntax highlighting for
 Guile's special forms.")
       (home-page "https://github.com/HiPhish/guile.vim")
       (license license:expat))))
+
+(define-public vim-dhall-vim
+  (let ((commit "68500ef46ff3706f46c99db3be7a0c8abcf6a3ae")
+        (revision "1"))
+    (package
+      (name "vim-dhall-vim")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/vmchale/dhall-vim")
+               (commit commit)))
+         (file-name (string-append name "-" version "-checkout"))
+         (sha256
+          (base32 "0lwna4kcq7davfvh3535n8wl9jxkjm7cg6jgpisd17kvagihh8qw"))))
+      (build-system vim-build-system)
+      (arguments
+       (list
+        #:plugin-name "dhall-vim"))
+      (synopsis "Vim configuration for Dhall")
+      (description
+       "A vim plugin to provide support and syntax hightlighting for the Dhall
+programming language")
+      (home-page "https://github.com/vmchale/dhall-vim")
+      (license license:bsd-3))))
