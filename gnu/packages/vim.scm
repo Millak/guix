@@ -1759,3 +1759,29 @@ programming language")
       (description "A Vim plugin to visualize the Vim undo tree")
       (home-page "https://simnalamburt.github.io/vim-mundo/")
       (license license:gpl2))))
+
+(define-public vim-zig
+  (let ((commit "54c216e5306a5c3878a60596aacb94dca8652ab9")
+        (revision "1"))
+    (package
+      (name "vim-zig")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ziglang/zig.vim")
+               (commit commit)))
+         (file-name (string-append name "-" version "-checkout"))
+         (sha256
+          (base32 "1nxwjyn3ps3c2abffai5cql3czl4kah4cin0g30damy1k99ypncb"))))
+      (build-system vim-build-system)
+      (arguments
+       (list
+        #:plugin-name "zig.vim"))
+      (synopsis "Vim configuration for Zig")
+      (description
+       "File detection and syntax highlighting for the zig programming
+language.")
+      (home-page "https://github.com/ziglang/zig.vim")
+      (license license:expat))))
