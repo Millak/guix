@@ -1556,27 +1556,7 @@ variety of options.  It is an alternative to the shell \"type\" built-in
 command.")
     (license gpl3+))) ; some files are under GPLv2+
 
-(define-public glibc/hurd
-  (package/inherit glibc
-    (name "glibc-hurd")
-    (version "2.37")
-    (source (origin
-            (method url-fetch)
-            (uri (string-append "mirror://gnu/glibc/glibc-" version ".tar.xz"))
-            (sha256
-             (base32
-              "0hqsp4dzrjx0iga6jv0magjw26dh82pxlmk8yis5v0d127qyymr2"))
-            (patches (search-patches "glibc-ldd-powerpc.patch"
-                                     "glibc-dl-cache.patch"
-                                     "glibc-2.37-versioned-locpath.patch"
-                                     "glibc-reinstate-prlimit64-fallback.patch"
-                                     "glibc-supported-locales.patch"
-                                     "glibc-2.37-hurd-clock_t_centiseconds.patch"
-                                     "glibc-2.37-hurd-local-clock_gettime_MONOTONIC.patch"
-                                     "glibc-hurd-mach-print.patch"
-                                     "glibc-hurd-gettyent.patch"
-                                     "glibc-hurd-getauxval.patch"))))
-    (supported-systems %hurd-systems)))
+(define-public glibc/hurd glibc)
 
 (define-public glibc/hurd-headers
   (package/inherit glibc/hurd
