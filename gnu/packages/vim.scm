@@ -1785,3 +1785,31 @@ programming language")
 language.")
       (home-page "https://github.com/ziglang/zig.vim")
       (license license:expat))))
+
+(define-public vim-plantuml-syntax
+  (let ((commit "845abb56dcd3f12afa6eb47684ef5ba3055802b8")
+        (revision "1"))
+    (package
+      (name "vim-plantuml-syntax")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/aklt/plantuml-syntax")
+               (commit commit)))
+         (file-name (string-append name "-" version "-checkout"))
+         (sha256
+          (base32 "0d2frv6knkj4bjavq2c2kx8qdnmcq0d8l04a5z7bpqwkmrrhd31f"))))
+      (build-system vim-build-system)
+      (arguments
+       (list
+        #:plugin-name "plantuml-syntax"))
+      (synopsis "Syntax highlighting for PlantUML")
+      (description
+       "This is a vim syntax file for PlantUML.  The filetype will be set to
+plantuml for *.pu, *.uml, *.puml, *.iuml or *.plantuml files or if the first
+line of a file contains @@startuml.  Additionally the makeprg is set to plantuml
+assuming you have this executable in your path.")
+      (home-page "https://github.com/aklt/plantuml-syntax")
+      (license license:vim))))
