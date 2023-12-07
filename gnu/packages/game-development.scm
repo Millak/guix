@@ -1392,7 +1392,7 @@ developed mainly for Ren'py.")
 (define-public python-renpy
   (package
     (name "python-renpy")
-    (version "8.1.0")
+    (version "8.1.3")
     (source
      (origin
        (method url-fetch)
@@ -1400,7 +1400,7 @@ developed mainly for Ren'py.")
                            "/renpy-" version "-source.tar.bz2"))
        (sha256
         (base32
-         "08l7z2vwqxkskj3rs2a0w9ahah28ixq8hy48h30k2dm9g19h450h"))
+         "1g6fz5dxp7yxhgv6q4brzf5hpfqq3l1g3dfv3fsiwwn6mj0b01z2"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
