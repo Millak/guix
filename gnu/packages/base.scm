@@ -1020,19 +1020,13 @@ the store.")
                      ;; and as such, it is useful to have these ".a" files in
                      ;; OUT in addition to STATIC.
 
-                     ;; XXX: It might be better to determine whether a static
-                     ;; library is empty by some criterion (such as their file
-                     ;; size equaling eight bytes) rather than hardcoding them
-                     ;; by name.
-
-                     ;; XXX: We forgot librt.a for the current version!  In
-                     ;; the meantime, gcc-toolchain provides it, but remove
-                     ;; that fix once librt.a is added here.
-                     (define empty-static-libraries
-                       '("libpthread.a" "libdl.a" "libutil.a" "libanl.a"))
                      (define (empty-static-library? file)
-                       (any (lambda (s)
-                              (string=? file s)) empty-static-libraries))
+                       ;; Return true if FILE is an 'ar' archive with nothing
+                       ;; beyond the header.
+                       (let ((file (string-append (assoc-ref outputs "out")
+                                                  "/lib/" file)))
+                         (and (ar-file? file)
+                              (= (stat:size (stat file)) 8))))
 
                      (define (static-library? file)
                        ;; Return true if FILE is a static library.  The
