@@ -1651,3 +1651,33 @@ automate testing and is compatible with Vim and Neovim.")
      "Srcery is a color scheme with clearly defined contrasting colors
 and a slightly earthy tone.")
     (license license:expat)))
+
+(define-public vim-commentary
+  (let ((commit "e87cd90dc09c2a203e13af9704bd0ef79303d755")
+        (revision "1"))
+    (package
+      (name "vim-commentary")
+      (version (git-version "1.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/tpope/vim-commentary")
+               (commit commit)))
+         (file-name (string-append name "-" version "-checkout"))
+         (sha256
+          (base32 "09kzc89iwkgsi4wvjxk56fis462kkz5chcl9sl4hdbmpa1f41wy0"))))
+      (build-system vim-build-system)
+      (arguments
+       (list
+        #:plugin-name "commentary.vim"))
+      (synopsis "Vim plugin for commenting out code")
+      (description
+       "Comment stuff out.  Use gcc to comment out a line (takes a count), gc to
+comment out the target of a motion (for example, gcap to comment out a
+paragraph), gc in visual mode to comment out the selection, and gc in operator
+pending mode to target a comment.  You can also use it as a command, either with
+a range like :7,17Commentary, or as part of a :global invocation like with
+:g/TODO/Commentary.")
+      (home-page "https://www.vim.org/scripts/script.php?script_id=3695")
+      (license license:vim))))
