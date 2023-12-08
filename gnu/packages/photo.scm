@@ -8,7 +8,7 @@
 ;;; Copyright © 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Sebastian Schott <sschott@mailbox.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2020. 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020. 2021, 2022, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
@@ -54,6 +54,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages file)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages geo)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
@@ -553,17 +554,6 @@ photographic equipment.")
                  (string-append "\""
                                 (search-input-file inputs "/lib/libOpenCL.so")
                                 "\"")))))
-          (add-before 'configure 'prepare-build-environment
-            (lambda _
-              ;; Rawspeed fails to build with GCC due to OpenMP error:
-              ;; "undefined reference to `GOMP_loop_nonmonotonic_dynamic_next'"
-              (setenv "CC" "clang")
-              (setenv "CXX" "clang++")
-              ;; Darktable looks for opencl-c.h in the LLVM dir. Guix installs
-              ;; it to the Clang dir. We fix this by patching CMakeLists.txt.
-              (substitute* "CMakeLists.txt"
-                (("\\$\\{LLVM_INSTALL_PREFIX\\}")
-                 #$(this-package-native-input "clang")))))
           (add-before 'configure 'set-LDFLAGS
             (lambda _
               (setenv "LDFLAGS"
@@ -576,13 +566,13 @@ photographic equipment.")
                   (,(string-append #$(this-package-input "gtk+")
                                    "/share/glib-2.0/schemas")))))))))
     (native-inputs
-     (list clang
-           cmocka
+     (list cmocka
            desktop-file-utils
+           gcc-13             ; gcc-11 too old for darktable, 12+ required
            `(,glib "bin")
            gobject-introspection
            intltool
-           llvm                         ;should match the Clang version
+           llvm
            opencl-headers
            perl
            pkg-config
