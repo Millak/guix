@@ -76,6 +76,7 @@
   #:use-module (gnu packages m4)
   #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages music)
   #:use-module (gnu packages ocaml)
   #:use-module (gnu packages opencl)
   #:use-module (gnu packages perl)
@@ -600,6 +601,7 @@ photographic equipment.")
            libgphoto2                ;optional, for camera tethering
            libavif                   ;optional, for AVIF support
            libjpeg-turbo
+           libjxl                    ;optional, for JPEG-XL support
            libomp
            libpng
            (librsvg-for-system)
@@ -615,6 +617,7 @@ photographic equipment.")
            openexr                      ;optional, for EXR import/export
            openjpeg                     ;optional, for JPEG2000 export
            osm-gps-map                  ;optional, for geotagging view
+           portmidi                 ;optional, for hardware MIDI input devices
            pugixml
            python-jsonschema
            sdl2
