@@ -732,7 +732,13 @@ returned."
 
                    (format #t "adding '~a' to the front of 'PATH'~%"
                            cross-binutils)
-                   (setenv "PATH" (string-append cross-binutils ":" (getenv "PATH")))))
+                   (setenv "PATH" (string-append cross-binutils ":"
+                                                 (getenv "PATH")))))
+
+               ;; This phase would require running 'localedef' built for
+               ;; TARGET, which is impossible by definition.
+               (delete 'install-utf8-c-locale)
+
                ,@(if (target-hurd? target)
                      '((add-after 'install 'augment-libc.so
                          (lambda* (#:key outputs #:allow-other-keys)
