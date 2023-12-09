@@ -304,7 +304,7 @@ integrate Windows applications into your desktop.")
 (define-public wine-staging-patchset-data
   (package
     (name "wine-staging-patchset-data")
-    (version "8.0")
+    (version "8.18")
     (source
      (origin
        (method git-fetch)
@@ -313,10 +313,10 @@ integrate Windows applications into your desktop.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11q9fa1jdrv1pd9piaicgqvidq1c08imkwpqhyzcj5r711rl7581"))))
+        (base32 "0qabyw5139xdfsvzbwbrn1nnqssgwk8mn88mxnq2cdkk9gbjvq56"))))
     (build-system trivial-build-system)
     (native-inputs
-     (list bash coreutils))
+     (list coreutils))
     (arguments
      `(#:modules ((guix build utils))
        #:builder
@@ -324,16 +324,12 @@ integrate Windows applications into your desktop.")
          (use-modules (guix build utils))
          (let* ((build-directory ,(string-append name "-" version))
                 (source (assoc-ref %build-inputs "source"))
-                (bash (assoc-ref %build-inputs "bash"))
                 (coreutils (assoc-ref %build-inputs "coreutils"))
                 (out (assoc-ref %outputs "out"))
                 (wine-staging (string-append out "/share/wine-staging")))
            (copy-recursively source build-directory)
            (with-directory-excursion build-directory
-             (substitute* "patches/patchinstall.sh"
-               (("/bin/sh")
-                (string-append bash "/bin/sh")))
-             (substitute* "patches/gitapply.sh"
+             (substitute* '("patches/gitapply.sh" "staging/patchinstall.py")
                (("/usr/bin/env")
                 (string-append coreutils "/bin/env"))))
            (copy-recursively build-directory wine-staging)
@@ -363,7 +359,7 @@ integrate Windows applications into your desktop.")
                              "wine-" wine-version ".tar.xz"))
          (file-name (string-append name "-" wine-version ".tar.xz"))
          (sha256
-          (base32 "0bkr3klvjy8h4djddr31fvapsi9pc2rsiyhaa7j1lwpq704w4wh2")))))
+          (base32 "1nv06awb3hv26v64nqnks9yiz7w368scxznj77vxa3zpmhafzyih")))))
     (inputs (modify-inputs (package-inputs wine)
               (prepend autoconf ; for autoreconf
                        ffmpeg
@@ -373,6 +369,9 @@ integrate Windows applications into your desktop.")
                        python
                        util-linux ; for hexdump
                        wine-staging-patchset-data)))
+    (native-inputs
+     (modify-inputs (package-native-inputs wine)
+       (prepend python-3)))
     (arguments
      (substitute-keyword-arguments (package-arguments wine)
        ((#:phases phases)
@@ -382,7 +381,7 @@ integrate Windows applications into your desktop.")
               (lambda* (#:key inputs #:allow-other-keys)
                 (invoke (search-input-file
                          inputs
-                         "/share/wine-staging/patches/patchinstall.sh")
+                         "/share/wine-staging/staging/patchinstall.py")
                         "DESTDIR=."
                         "--all")))
             (add-after 'apply-wine-staging-patches 'patch-SHELL
@@ -417,7 +416,7 @@ integrated into the main branch.")
               (lambda* (#:key inputs #:allow-other-keys)
                 (invoke (search-input-file
                          inputs
-                         "/share/wine-staging/patches/patchinstall.sh")
+                         "/share/wine-staging/staging/patchinstall.py")
                         "DESTDIR=."
                         "--all")))
             (add-after 'apply-wine-staging-patches 'patch-SHELL
