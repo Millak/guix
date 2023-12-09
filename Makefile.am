@@ -421,10 +421,6 @@ AUX_FILES =						\
   gnu/packages/aux-files/linux-libre/6.6-arm64.conf	\
   gnu/packages/aux-files/linux-libre/6.6-i686.conf	\
   gnu/packages/aux-files/linux-libre/6.6-x86_64.conf	\
-  gnu/packages/aux-files/linux-libre/6.5-arm.conf	\
-  gnu/packages/aux-files/linux-libre/6.5-arm64.conf	\
-  gnu/packages/aux-files/linux-libre/6.5-i686.conf	\
-  gnu/packages/aux-files/linux-libre/6.5-x86_64.conf	\
   gnu/packages/aux-files/linux-libre/6.1-arm.conf	\
   gnu/packages/aux-files/linux-libre/6.1-arm64.conf	\
   gnu/packages/aux-files/linux-libre/6.1-i686.conf	\
