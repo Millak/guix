@@ -13744,7 +13744,7 @@ reading and writing MessagePack data.")
     (license license:asl2.0)))
 
 ;; This msgpack library's name changed from "python-msgpack" to "msgpack" with
-;; release 0.5. Some packages like borg still call it by the old name for now.
+;; release 0.5. Some packages like poetry still call it by the old name for now.
 ;; <https://bugs.gnu.org/30662>
 (define-public python-msgpack-transitional
   (package
