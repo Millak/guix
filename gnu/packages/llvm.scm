@@ -706,6 +706,10 @@ of programming tools as well as libraries with equivalent functionality.")
                    #$(string-append "-DLLVM_TARGETS_TO_BUILD="
                                     (system->llvm-target)))
                 '())
+         ;; undefined reference to `__atomic_fetch_add_8' in lib/libLLVMOrcJIT.so.14
+         #$@(if (target-ppc32?)
+                (list "-DCMAKE_SHARED_LINKER_FLAGS=-latomic")
+                `())
          "-DCMAKE_SKIP_BUILD_RPATH=FALSE"
          "-DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE"
          "-DBUILD_SHARED_LIBS:BOOL=TRUE"
