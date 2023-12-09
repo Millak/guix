@@ -644,13 +644,13 @@ detection, and lossless compression.")
 (define-public borg
   (package
     (name "borg")
-    (version "1.2.6")
+    (version "1.2.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "borgbackup" version))
        (sha256
-        (base32 "178klb3pglhhz553frf928v7zvaiqvri9fbhj33yx7h3hvqgi9mp"))
+        (base32 "06j1v4bw9jkjh6m29ns5sigmp0cslcf0cyy8rrqij11w72ijhgzn"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -759,7 +759,7 @@ detection, and lossless compression.")
            lz4
            openssl
            ;; This is the latest version of msgpack accepted by 'setup.py'.
-           python-msgpack-1.0.2
+           python-msgpack
            ;; FUSE 3 isn't working well, so we stick with FUSE 2 for now:
            ;; <https://issues.guix.gnu.org/53407>
            python-llfuse
