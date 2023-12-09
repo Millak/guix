@@ -19,6 +19,7 @@
 (define-module (guix build-system gnu)
   #:use-module (guix store)
   #:use-module (guix utils)
+  #:use-module (guix deprecation)
   #:use-module (guix memoization)
   #:use-module (guix gexp)
   #:use-module (guix monads)
@@ -55,6 +56,9 @@
     (guix build utils)
     (guix build gremlin)
     (guix elf)))
+
+(define-deprecated/alias %gnu-build-system-modules
+  %default-gnu-imported-modules)
 
 (define %default-gnu-modules
   ;; Modules in scope in the build-side environment.
