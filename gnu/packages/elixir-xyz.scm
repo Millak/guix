@@ -248,6 +248,25 @@ things like Dialyzer errors and Observer.")
     (home-page "https://hexdocs.pm/erlex/")
     (license license:asl2.0)))
 
+(define-public elixir-dialyxir
+  (package
+    (name "elixir-dialyxir")
+    (version "1.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri name version))
+       (sha256
+        (base32 "00cqwhd1wabwds44jz94rvvr8z8cp12884d3lp69fqkrszb9bdw4"))))
+    (build-system mix-build-system)
+    (arguments (list #:tests? #f)) ; no tests
+    (propagated-inputs (list elixir-erlex))
+    (synopsis "Mix tasks to simplify use of Dialyzer")
+    (description
+     "Mix Tasks are usable from the directory of the mix project you want to analyze.")
+    (home-page "https://hexdocs.pm/dialyxir/")
+    (license license:asl2.0)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
