@@ -68398,7 +68398,7 @@ fragment of code.")
 (define-public rust-serde-1
   (package
     (name "rust-serde")
-    (version "1.0.188")
+    (version "1.0.193")
     (source
      (origin
        (method url-fetch)
@@ -68406,7 +68406,7 @@ fragment of code.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "17jlqzfhimsk8w37ifjwnm86nwjzawlbgwmwc7nhwdwslv5hz7ng"))))
+         "129b0j67594f8qg5cbyi3nyk31y97wrqihi026mba34dwrsrkp95"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -68815,7 +68815,7 @@ TOML/JSON/MessagePack strings and serializable values.")
 (define-public rust-serde-derive-1
   (package
     (name "rust-serde-derive")
-    (version "1.0.188")
+    (version "1.0.193")
     (source
      (origin
        (method url-fetch)
@@ -68823,7 +68823,7 @@ TOML/JSON/MessagePack strings and serializable values.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1wjaclvsfxgqnnnykllvb5gffsxynk66x6h4c1ds6anq8b37mjjf"))))
+         "1lwlx2k7wxr1v160kpyqjfabs37gm1yxqg65383rnyrm06jnqms3"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
