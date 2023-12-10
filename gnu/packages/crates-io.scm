@@ -44615,8 +44615,32 @@ file IO.")
        #:cargo-development-inputs
        (("rust-tempdir" ,rust-tempdir-0.3))))))
 
+(define-public rust-memmap2-0.9
+  (package
+    (name "rust-memmap2")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "memmap2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xckkh1i45g6y2g2lkb6b292pfj2wlrfk2fc4754q7dzga6s7ayy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))
+       #:cargo-development-inputs (("rust-owning-ref" ,rust-owning-ref-0.4)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/RazrFalcon/memmap2-rs")
+    (synopsis "Cross-platform Rust API for memory-mapped file IO")
+    (description
+     "This package provides a Rust API for memory-mapped file IO.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-memmap2-0.7
   (package
+    (inherit rust-memmap2-0.9)
     (name "rust-memmap2")
     (version "0.7.1")
     (source
@@ -44626,19 +44650,13 @@ file IO.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1il82b0mw304jlwvl0m89aa8bj5dgmm3vbb0jg8lqlrk0p98i4zl"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
         ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))
        #:cargo-development-inputs
        (("rust-owning-ref" ,rust-owning-ref-0.4)
-        ("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/RazrFalcon/memmap2-rs")
-    (synopsis "Cross-platform Rust API for memory-mapped file IO")
-    (description
-     "This package provides a Rust API for memory-mapped file IO.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-memmap2-0.5
   (package
