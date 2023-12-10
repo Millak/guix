@@ -164,6 +164,24 @@ inline docs.")
     (home-page "https://hex.pm/packages/inch_ex")
     (license license:expat)))
 
+(define-public elixir-castore
+  (package
+    (name "elixir-castore")
+    (version "1.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri name version))
+       (sha256
+        (base32 "1y44amb8falsmrfzpkmf7qp6215g9kdl76g91dpna4af2jwc264l"))))
+    (build-system mix-build-system)
+    (arguments (list #:tests? #f)) ; no tests
+    (synopsis "Up-to-date CA certificate store")
+    (description "The Elixir castore package is a micro-library that provides
+an up-to-date CA certificate store file for Elixir applications.")
+    (home-page "https://hexdocs.pm/castore/")
+    (license license:asl2.0)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
