@@ -54037,29 +54037,25 @@ library.")
 (define-public rust-pcre2-sys-0.2
   (package
     (name "rust-pcre2-sys")
-    (version "0.2.5")
+    (version "0.2.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pcre2-sys" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "08mp6yxrvadplwd0drdydzskvzapr6dri9fyy7xvhzn3krg0xhyy"))
-       (modules '((guix build utils)))
+        (base32 "1wpdvb5kaj8ggd3z63mhviyv5nbwkb0xz7wlh6sc1wiwy9b5b3wg"))
        (snippet
-        '(begin (delete-file-recursively "pcre2") #t))))
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "upstream")))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-pkg-config" ,rust-pkg-config-0.3)
-        ("rust-cc" ,rust-cc-1))))
-    (native-inputs
-     (list pcre2 pkg-config))
-    (home-page
-     "https://github.com/BurntSushi/rust-pcre2")
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3)
+                       ("rust-cc" ,rust-cc-1))))
+    (native-inputs (list pkg-config))
+    (inputs (list pcre2))
+    (home-page "https://github.com/BurntSushi/rust-pcre2")
     (synopsis "Low level bindings to PCRE2")
     (description "Low level bindings to PCRE2.")
     (license (list license:expat license:unlicense))))
