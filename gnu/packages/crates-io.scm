@@ -33768,8 +33768,38 @@ the regex engine it uses pluggable.")
     (description "Use PCRE2 with the grep crate.")
     (license (list license:expat license:unlicense))))
 
+(define-public rust-grep-printer-0.2
+  (package
+    (name "rust-grep-printer")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "grep-printer" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cnf70gjnybfql0lmpr32dslb4xhxgc6h0dxwnv3ivla7jh14g3l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-grep-matcher" ,rust-grep-matcher-0.1)
+                       ("rust-grep-searcher" ,rust-grep-searcher-0.1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-termcolor" ,rust-termcolor-1))
+       #:cargo-development-inputs
+       (("rust-grep-regex" ,rust-grep-regex-0.1))))
+    (home-page "https://github.com/BurntSushi/ripgrep/tree/master/crates/printer")
+    (synopsis "Standard printing of search results")
+    (description
+     "This package is an implementation of the grep crate's Sink trait that
+provides standard printing of search results, similar to grep itself.")
+    (license (list license:unlicense license:expat))))
+
 (define-public rust-grep-printer-0.1
   (package
+    (inherit rust-grep-printer-0.2)
     (name "rust-grep-printer")
     (version "0.1.6")
     (source
@@ -33781,7 +33811,6 @@ the regex engine it uses pluggable.")
        (sha256
         (base32
          "0wnw8khcvris8canv1dp58qh6vph18fml9qsnrsmdpxf9ni73hh5"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-base64" ,rust-base64-0.13)
@@ -33793,13 +33822,7 @@ the regex engine it uses pluggable.")
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-termcolor" ,rust-termcolor-1))
        #:cargo-development-inputs
-       (("rust-grep-regex" ,rust-grep-regex-0.1))))
-    (home-page "https://github.com/BurntSushi/ripgrep")
-    (synopsis "Standard printing of search results")
-    (description
-     "This package is an implementation of the grep crate's Sink trait that
-provides standard printing of search results, similar to grep itself.")
-    (license (list license:unlicense license:expat))))
+       (("rust-grep-regex" ,rust-grep-regex-0.1))))))
 
 (define-public rust-grep-regex-0.1
   (package
