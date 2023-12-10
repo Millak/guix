@@ -33720,16 +33720,14 @@ applications.")
 (define-public rust-grep-matcher-0.1
   (package
     (name "rust-grep-matcher")
-    (version "0.1.5")
+    (version "0.1.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "grep-matcher" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1k618qni7bgx9mvdp1kaznqjvn2gpgiasrmi0cqd6b066cy5c9vd"))))
+        (base32 "00mcjar5b6y1pwf0gjdywzgh1fnp6jl612n9qznwyfm420d198s7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
