@@ -33689,28 +33689,24 @@ and loading crate.")
 (define-public rust-grep-cli-0.1
   (package
     (name "rust-grep-cli")
-    (version "0.1.6")
+    (version "0.1.10")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "grep-cli" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "12lyww4hl4cham9zqqssm3wcp1g3ffvi6906wl6hsiml9g1i1l9d"))))
+        (base32 "09fpb96qly8ipkm5ipg228lvvcxza0kp6x6hqhibdf4s0n67hh7a"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-atty" ,rust-atty-0.2)
-        ("rust-bstr" ,rust-bstr-0.2)
-        ("rust-globset" ,rust-globset-0.4)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-same-file" ,rust-same-file-1)
-        ("rust-termcolor" ,rust-termcolor-1)
-        ("rust-winapi-util" ,rust-winapi-util-0.1))))
-    (home-page "https://github.com/BurntSushi/ripgrep")
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-globset" ,rust-globset-0.4)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-termcolor" ,rust-termcolor-1)
+                       ("rust-winapi-util" ,rust-winapi-util-0.1))))
+    (home-page
+     "https://github.com/BurntSushi/ripgrep/tree/master/crates/cli")
     (synopsis "Utilities for search oriented command line applications")
     (description
      "This crate provides utilities for search oriented command line
