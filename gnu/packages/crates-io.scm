@@ -16844,6 +16844,9 @@ to the @code{is_x86_feature_detected!} macro.")
        (sha256
         (base32 "1fpzag3g655p1lr08jgf5n89snjc2ycqx30mm0w3irc9fc3mvcnw"))))
     (build-system cargo-build-system)
+    (arguments
+     ;; error: This crate works only on x86 and x86-64 targets.
+     (list #:skip-build? (not (target-x86?))))
     (home-page "https://github.com/RustCrypto/utils/tree/master/cpufeatures")
     (synopsis "replaced by the `cpufeatures` crate")
     (description "This package has been replaced by the `cpufeatures` crate.")
