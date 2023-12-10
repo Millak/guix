@@ -117,11 +117,9 @@
        "http://internode.dl.sourceforge.net/project/"
        "http://jaist.dl.sourceforge.net/project/"
        "http://liquidtelecom.dl.sourceforge.net/project/"
-       ;; "http://nbtelecom.dl.sourceforge.net/project/"  ;never returns 404s
        "http://nchc.dl.sourceforge.net/project/"
        "http://netcologne.dl.sourceforge.net/project/"
        "http://netix.dl.sourceforge.net/project/"
-       "http://pilotfiber.dl.sourceforge.net/project/"
        "http://tenet.dl.sourceforge.net/project/")
       (netfilter.org ; https://www.netfilter.org/mirrors.html
        "http://ftp.netfilter.org/pub/"
