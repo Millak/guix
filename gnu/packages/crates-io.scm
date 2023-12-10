@@ -33654,20 +33654,46 @@ and loading crate.")
              ("rust-thiserror" ,rust-thiserror-1)
              ("rust-tokio" ,rust-tokio-1))))))
 
+(define-public rust-grep-0.3
+  (package
+    (name "rust-grep")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "grep" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0fa9x7q3l5z0bg91wzw1jfpk5rmh60h8bswbsxjcp1p6q5704avf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-grep-cli" ,rust-grep-cli-0.1)
+                       ("rust-grep-matcher" ,rust-grep-matcher-0.1)
+                       ("rust-grep-pcre2" ,rust-grep-pcre2-0.1)
+                       ("rust-grep-printer" ,rust-grep-printer-0.2)
+                       ("rust-grep-regex" ,rust-grep-regex-0.1)
+                       ("rust-grep-searcher" ,rust-grep-searcher-0.1))
+       #:cargo-development-inputs (("rust-termcolor" ,rust-termcolor-1)
+                                   ("rust-walkdir" ,rust-walkdir-2))))
+    (home-page
+     "https://github.com/BurntSushi/ripgrep/tree/master/crates/grep")
+    (synopsis "Line oriented regex searching as a library")
+    (description
+     "Fast line oriented regex searching as a library.")
+    (license (list license:unlicense license:expat))))
+
 (define-public rust-grep-0.2
   (package
+    (inherit rust-grep-0.3)
     (name "rust-grep")
     (version "0.2.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "grep" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0mw61v132ng0nbz5ygb6jvsx729772803w5bv3zs4i8baq689jsi"))))
-    (build-system cargo-build-system)
+        (base32 "0mw61v132ng0nbz5ygb6jvsx729772803w5bv3zs4i8baq689jsi"))))
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -33679,12 +33705,7 @@ and loading crate.")
         ("rust-grep-searcher" ,rust-grep-searcher-0.1))
        #:cargo-development-inputs
        (("rust-termcolor" ,rust-termcolor-1)
-        ("rust-walkdir" ,rust-walkdir-2))))
-    (home-page "https://github.com/BurntSushi/ripgrep")
-    (synopsis "Line oriented regex searching as a library")
-    (description
-     "Fast line oriented regex searching as a library.")
-    (license (list license:unlicense license:expat))))
+        ("rust-walkdir" ,rust-walkdir-2))))))
 
 (define-public rust-grep-cli-0.1
   (package
