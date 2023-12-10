@@ -27,6 +27,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system gnu)
   #:use-module (guix gexp)
+  #:use-module (guix utils)
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (gnu packages)
@@ -96,9 +97,20 @@
             (lambda* (#:key inputs #:allow-other-keys)
               ;; Some tests require access to a home directory.
               (setenv "HOME" "/tmp")))
-          (delete 'configure))))
-    (inputs
-     (list erlang git))
+          (delete 'configure)
+          (add-after 'install 'wrap-programs
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (programs '("elixir" "elixirc" "iex" "mix")))
+                (for-each (lambda (program)
+                            (wrap-program (string-append out "/bin/" program)
+                              '("ERL_LIBS" prefix ("${GUIX_ELIXIR_LIBS}"))))
+                          programs)))))))
+    (inputs (list erlang git))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "GUIX_ELIXIR_LIBS")
+            (files (list (string-append "lib/elixir/" (version-major+minor version)))))))
     (home-page "https://elixir-lang.org/")
     (synopsis "Elixir programming language")
     (description "Elixir is a dynamic, functional language used to build
