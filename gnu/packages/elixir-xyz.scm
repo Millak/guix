@@ -20,6 +20,8 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages elixir)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages compression)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system mix)
@@ -90,6 +92,37 @@ Poison). The performance is comparable to jiffy, which is implemented in C as
 a NIF.")
     (home-page "https://hexdocs.pm/jason/")
     (license license:asl2.0)))
+
+(define-public elixir-file-system
+  (package
+    (name "elixir-file-system")
+    (version "0.2.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri name version))
+       (sha256
+        (base32 "1p0myxmnjjds8bbg69dd6fvhk8q3n7lb78zd4qvmjajnzgdmw6a1"))
+       (snippet #~(begin
+                    (use-modules (guix build utils) (ice-9 ftw))
+                    (mkdir "source")
+                    (for-each (lambda (file)
+                                (when (not (member file '("." ".." "source")))
+                                  (rename-file file (string-append "source/" file))))
+                              (scandir "."))
+                    (with-directory-excursion "source"
+                      (invoke (string-append #+gzip "/bin/gunzip") "-v" "contents.tar.gz")
+                      (invoke (string-append #+tar "/bin/tar") "-xvf" "contents.tar")
+                      (delete-file "contents.tar")
+                      (delete-file "priv/inotifywait.exe"))))))
+    (build-system mix-build-system)
+    (propagated-inputs (list inotify-tools))
+    (arguments (list #:tests? #f)) ; no tests
+    (synopsis "File system change watcher")
+    (description "Provides a file system change watcher wrapper based on
+https://github.com/synrc/fs.")
+    (home-page "https://hexdocs.pm/file_system/")
+    (license license:wtfpl2)))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
