@@ -57,7 +57,7 @@
 (define-public d-tools
   (package
     (name "d-tools")
-    (version "2.100.0")
+    (version "2.105.3")
     (source
      (origin
        (method git-fetch)
@@ -66,7 +66,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jbn0hyskv4ykcckw0iganpyrm0bq2lggswspw21r4hgnxkmjbyw"))))
+        (base32 "0hvz786k0pi8697x1vk9x5bx52jiy7pvi13wmfkx15ddvv0x5j33"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
@@ -149,21 +149,23 @@ to a minimal test case.")
 (define ldc-bootstrap
   (package
     (name "ldc")
-    (version "1.32.2")
+    (version "1.35.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/ldc-developers/ldc/releases"
                            "/download/v" version "/ldc-" version "-src.tar.gz"))
        (sha256
-        (base32 "15fdl7fy1ssjxpyb9g54ac4xzcirycly521whil142ijfkpam95z"))))
+        (base32 "186z4r1d8y4dfpv5cdqgz9al6w7qnfh9l4q9ws9w0xkcf29njabf"))))
     (build-system cmake-build-system)
     (arguments
      `(#:disallowed-references (,tzdata-for-tests)
        #:tests? #f                  ;skip in the bootstrap
        #:build-type "Release"
        #:configure-flags
-        (list "-GNinja")
+        (list "-GNinja"
+              ;; see .github/actions/2-build-bootstrap/action.yml
+              "-DBUILD_SHARED_LIBS=OFF")
        #:make-flags                 ;used as build targets
         (list "all")
        #:phases
@@ -224,10 +226,9 @@ bootstrapping more recent compilers written in D.")
         '(list "all"
                ;; Also build the test runner binaries.
                "ldc2-unittest" "all-test-runners"))
-       ((#:configure-flags flags)
-        `(,@flags "-DBUILD_SHARED_LIBS=ON"
-                  "-DLDC_LINK_MANUALLY=OFF"
-                  "-DLDC_DYNAMIC_COMPILE=OFF"))
+       ((#:configure-flags _ #~'())
+        `(list "-GNinja"
+               "-DBUILD_SHARED_LIBS=ON"))
        ((#:phases phases)
         `(modify-phases ,phases
            (add-after 'unpack 'fix-compiler-rt-library-discovery
@@ -236,19 +237,12 @@ bootstrapping more recent compilers written in D.")
                      (system ,(or (%current-target-system)
                                   (%current-system))))
                  (define (gnu-triplet->clang-arch system)
-                   (letrec-syntax
-                       ((matches (syntax-rules (=>)
-                                   ((_ (system-prefix => target) rest ...)
-                                    (if (string-prefix? system-prefix system)
-                                        target
-                                        (matches rest ...)))
-                                   ((_)
-                                    (error "Clang target for system is unknown"
-                                           system)))))
-                     (matches ("x86_64"      => "x86_64")
-                              ("i686"        => "i386")
-                              ("armhf"       => "armhf")
-                              ("aarch64"     => "aarch64"))))
+                   (let ((system-prefix
+                           (car (string-tokenize
+                                  system (char-set-complement (char-set #\-))))))
+                     (cond
+                       ((equal? system-prefix "i686") "i386")
+                       (#t system-prefix))))
                  ;; Coax LLVM into agreeing with Clang about system target
                  ;; naming.
                  (substitute* "driver/linker-gcc.cpp"
@@ -264,7 +258,8 @@ bootstrapping more recent compilers written in D.")
                                    "/lib/linux\",\n"))))))
            (add-after 'unpack 'patch-paths-in-tests
              (lambda _
-               (substitute* "tests/dmd/Makefile"
+               (substitute* '("tests/dmd/Makefile"
+                              "runtime/druntime/test/profile/Makefile")
                  (("/bin/bash") (which "bash")))
                (substitute* "tests/linking/linker_switches.d"
                  (("echo") (which "echo")))
@@ -299,6 +294,8 @@ bootstrapping more recent compilers written in D.")
                (substitute* "runtime/druntime/test/exceptions/Makefile"
                  ((".*TESTS\\+=rt_trap_exceptions_drt_gdb.*")
                   ""))
+               ;; Unsupported with glibc-2.35.
+               (delete-file "tests/dmd/compilable/stdcheaders.c")
                ;; Drop gdb_dflags from the test suite.
                (substitute* "tests/dmd/CMakeLists.txt"
                  (("\\$\\{gdb_dflags\\}") ""))
@@ -365,7 +362,7 @@ integration tests...\n")
 (define-public dub
   (package
     (name "dub")
-    (version "1.23.0")
+    (version "1.33.0")
     (source
      (origin
        (method git-fetch)
@@ -374,7 +371,7 @@ integration tests...\n")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06a4whsl1m600k096nwif83n7za3vr7pj1xwapncy5fcad1gmady"))))
+        (base32 "09p3rvsv11f8lgqgxgz2zj0szsw5lzrsc7y7471hswksc7nmmj70"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ; tests try to install packages

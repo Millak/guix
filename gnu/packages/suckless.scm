@@ -1247,7 +1247,7 @@ a nice format.")
                (delete 'configure)))) ;no configure script
     (native-inputs (list pkg-config))
     (inputs (list freetype libx11 libxft libxtst libxinerama))
-    (propagated-inputs (list glibc-utf8-locales))
+    (propagated-inputs (list (libc-utf8-locales-for-target)))
     (home-page "https://tools.suckless.org/x/svkbd/")
     (synopsis "Virtual on-screen keyboard")
     (description "svkbd is a simple virtual keyboard, intended to be used in

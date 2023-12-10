@@ -3856,7 +3856,7 @@ commit messages for style.")
 (define-public hut
   (package
     (name "hut")
-    (version "0.2.0")
+    (version "0.4.0")
     (source
      (origin
        (method git-fetch)
@@ -3865,7 +3865,7 @@ commit messages for style.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ybngrwwmkm00dlkdhvkfcvcjhp5xzs8fh90zqr0h12ssqx9pll3"))))
+        (base32 "0klp7qlii07j8ka9g91m5xg3ybg6cq0p5lp1ibfihq2p4kwqj57m"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -3888,6 +3888,7 @@ commit messages for style.")
     (inputs
      (list go-git-sr-ht-emersion-go-scfg
            go-git-sr-ht-emersion-gqlclient
+           go-github-com-dustin-go-humanize
            go-github-com-juju-ansiterm
            go-github-com-spf13-cobra
            go-golang-org-x-oauth2

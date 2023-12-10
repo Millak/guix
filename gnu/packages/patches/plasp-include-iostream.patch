@@ -1,0 +1,26 @@
+From 95c6a506e14cf248e2a3cae2ed3f41ed1eedf278 Mon Sep 17 00:00:00 2001
+From: Liliana Marie Prikler <liliana.prikler@ist.tugraz.at>
+Date: Thu, 23 Nov 2023 09:53:38 +0100
+Subject: [PATCH 2/2] app: Add missing #include <iostream>.
+To: Patrick Lühne <patrick-github@luehne.de>
+Cc: Martin Gebser <martin.gebser@aau.at>
+
+---
+ app/include/plasp-app/Command.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/app/include/plasp-app/Command.h b/app/include/plasp-app/Command.h
+index 5755ee3..671804b 100644
+--- a/app/include/plasp-app/Command.h
++++ b/app/include/plasp-app/Command.h
+@@ -1,6 +1,7 @@
+ #ifndef __PLASP_APP__COMMAND_H
+ #define __PLASP_APP__COMMAND_H
+ 
++#include <iostream> // std::cout, std::endl
+ #include <tuple>
+ 
+ #include <cxxopts.hpp>
+-- 
+2.41.0
+

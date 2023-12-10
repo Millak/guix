@@ -1,0 +1,51 @@
+From cddbfa3ade23695dd9996f6e208615702a3a42e1 Mon Sep 17 00:00:00 2001
+From: Liliana Marie Prikler <liliana.prikler@ist.tugraz.at>
+Date: Thu, 23 Nov 2023 09:53:38 +0100
+Subject: [PATCH 1/2] normalization: No longer work around compiler bugs in
+ Precondition.
+To: Patrick Lühne <patrick-github@luehne.de>
+Cc: Martin Gebser <martin.gebser@aau.at>
+
+Newer versions of GCC (such as GCC 11) point out that std::move is meaningless
+in this position, so remove it.
+---
+ lib/pddl/src/pddl/detail/normalization/Precondition.cpp | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
+
+diff --git a/lib/pddl/src/pddl/detail/normalization/Precondition.cpp b/lib/pddl/src/pddl/detail/normalization/Precondition.cpp
+index 4eebfee..4297e52 100644
+--- a/lib/pddl/src/pddl/detail/normalization/Precondition.cpp
++++ b/lib/pddl/src/pddl/detail/normalization/Precondition.cpp
+@@ -83,8 +83,7 @@ normalizedAST::Literal normalizeNested(ast::AndPointer<ast::Precondition> &and_,
+ 
+ 	derivedPredicate->declaration->precondition = std::make_unique<normalizedAST::And<normalizedAST::Literal>>(std::move(normalizedArguments));
+ 
+-	// TODO: investigate, could be a compiler bug
+-	return std::move(derivedPredicate);
++	return derivedPredicate;
+ }
+ 
+ ////////////////////////////////////////////////////////////////////////////////////////////////////
+@@ -112,8 +111,7 @@ normalizedAST::Literal normalizeNested(ast::ExistsPointer<ast::Precondition> &ex
+ 			return normalizeTopLevel(x, normalizationContext);
+ 		});
+ 
+-	// TODO: investigate, could be a compiler bug
+-	return std::move(derivedPredicate);
++	return derivedPredicate;
+ }
+ 
+ ////////////////////////////////////////////////////////////////////////////////////////////////////
+@@ -174,8 +172,7 @@ normalizedAST::Literal normalizeNested(ast::OrPointer<ast::Precondition> &or_, d
+ 
+ 	derivedPredicate->declaration->precondition = std::make_unique<normalizedAST::Or<normalizedAST::Literal>>(std::move(normalizedArguments));
+ 
+-	// TODO: investigate, could be a compiler bug
+-	return std::move(derivedPredicate);
++	return derivedPredicate;
+ }
+ 
+ ////////////////////////////////////////////////////////////////////////////////////////////////////
+-- 
+2.41.0
+

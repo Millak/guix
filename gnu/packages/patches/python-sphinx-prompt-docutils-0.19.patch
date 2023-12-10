@@ -1,0 +1,35 @@
+From a885c54d54e71a089b916502f1c222ef14a07a93 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?St=C3=A9phane=20Brunner?= <stephane.brunner@camptocamp.com>
+Date: Mon, 15 Aug 2022 10:41:40 +0200
+Subject: [PATCH] Fix the tests
+
+---
+ tests/test_sphinx_prompt.py | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/tests/test_sphinx_prompt.py b/tests/test_sphinx_prompt.py
+index 47d16c5..6a31798 100644
+--- a/tests/test_sphinx_prompt.py
++++ b/tests/test_sphinx_prompt.py
+@@ -1,3 +1,7 @@
++from io import StringIO
++
++import docutils.statemachine
++import docutils.utils
+ import pytest
+ 
+ sphinx_prompt = __import__("sphinx_prompt")
+@@ -150,6 +154,12 @@
+ def test(arguments, options, content, expected):
+     sphinx_prompt._cache.next_index = 1
+     sphinx_prompt._cache.prompts.clear()
+-    directive = sphinx_prompt.PromptDirective("prompt", arguments, options, content, 0, 0, "", None, None)
++    stream = StringIO()
++    reporter = docutils.utils.Reporter("test data", 2, 4, stream, 1)
++    statemachine = docutils.statemachine.StateMachine([], None)
++    setattr(statemachine, "reporter", reporter)
++    directive = sphinx_prompt.PromptDirective(
++        "prompt", arguments, options, content, 0, 0, "", None, statemachine
++    )
+     result = directive.run()
+     assert result[0].astext() == expected

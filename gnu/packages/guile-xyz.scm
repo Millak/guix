@@ -1103,6 +1103,35 @@ for calling methods on remote servers by exchanging JSON objects.")
     (home-page "https://codeberg.org/rgherdt/scheme-json-rpc/")
     (license license:expat)))
 
+(define-public guile-ares-rs
+  (package
+    (name "guile-ares-rs")
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~abcdw/guile-ares-rs")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0jl4k54ydi1qxdvif4di0ri5jznlfc2gg1qhs94bhk4y22k0gp8c"))))
+    (build-system guile-build-system)
+    (arguments
+     (list
+      #:source-directory "src"))
+    ;; Remove guile-next dependency, when guile package get custom text port
+    (inputs `(("guile" ,guile-next)))
+    (propagated-inputs (list guile-fibers))
+    (home-page "https://git.sr.ht/~abcdw/guile-ares-rs")
+    (synopsis "Asyncronous Reliable Extensible Sleek RPC Server for Guile")
+    (description "Asynchronous Reliable Extensible Sleek RPC Server for
+ Guile.  It's based on nREPL protocol and can be used for programmable
+ interactions with a running guile processes, for implementing REPLs, IDEs,
+ test runners or other tools.")
+    (license license:gpl3+)))
+
 (define-public guile-squee
   (let ((commit "9f2609563fc53466e46d37c8d8d2fbcfce67b2ba")
         (revision "5"))
@@ -3326,7 +3355,7 @@ from @code{tree-il}.")
 (define-public guile-hoot
   (package
     (name "guile-hoot")
-    (version "0.1.0")
+    (version "0.2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://spritely.institute/files/releases"
@@ -3334,7 +3363,7 @@ from @code{tree-il}.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1087rcj22hk6fcbqajm268f1q2c3kbizah8wy1z0aqkfliwc309g"))))
+                "1byshh7092q2yzqwpi59j4xjsppvp1xqnqsv94yv541qfm0plnc2"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags '("GUILE_AUTO_COMPILE=0"

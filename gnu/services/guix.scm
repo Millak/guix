@@ -23,7 +23,7 @@
   #:use-module (guix records)
   #:use-module (guix packages)
   #:use-module ((gnu packages base)
-                #:select (glibc-utf8-locales))
+                #:select (libc-utf8-locales-for-target))
   #:use-module (gnu packages admin)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages web)
@@ -381,7 +381,8 @@
                      #:pid-file-timeout 60
                      #:environment-variables
                      `(,(string-append
-                         "GUIX_LOCPATH=" #$glibc-utf8-locales "/lib/locale")
+                         "GUIX_LOCPATH="
+                         #$(libc-utf8-locales-for-target) "/lib/locale")
                        "LC_ALL=en_US.utf8"
                        "PATH=/run/current-system/profile/bin" ; for hooks
                        #$@extra-environment-variables)
@@ -508,7 +509,8 @@
               #:user #$user
               #:environment-variables
               `(,(string-append
-                  "GUIX_LOCPATH=" #$glibc-utf8-locales "/lib/locale")
+                  "GUIX_LOCPATH="
+                  #$(libc-utf8-locales-for-target) "/lib/locale")
                 ;; XDG_CACHE_HOME is used by Guix when caching narinfo files
                 "XDG_CACHE_HOME=/var/cache/guix-build-coordinator-agent"
                 "LC_ALL=en_US.utf8")
@@ -600,7 +602,8 @@
               #:user #$user
               #:environment-variables
               `(,(string-append
-                  "GUIX_LOCPATH=" #$glibc-utf8-locales "/lib/locale")
+                  "GUIX_LOCPATH="
+                  #$(libc-utf8-locales-for-target) "/lib/locale")
                 "LC_ALL=en_US.utf8")
               #:log-file "/var/log/guix-build-coordinator/queue-builds.log"))))
       (stop #~(make-kill-destructor))
@@ -712,7 +715,8 @@ ca-certificates.crt file in the system profile."
                 #:pid-file "/var/run/guix-data-service/pid"
                 #:environment-variables
                 `(,(string-append
-                    "GUIX_LOCPATH=" #$glibc-utf8-locales "/lib/locale")
+                    "GUIX_LOCPATH="
+                    #$(libc-utf8-locales-for-target) "/lib/locale")
                   "LC_ALL=en_US.UTF-8")
                 #:log-file "/var/log/guix-data-service/web.log"))
       (stop #~(make-kill-destructor)))
@@ -733,7 +737,8 @@ ca-certificates.crt file in the system profile."
                 `("HOME=/var/lib/guix-data-service"
                   "GIT_SSL_CAINFO=/etc/ssl/certs/ca-certificates.crt"
                   ,(string-append
-                    "GUIX_LOCPATH=" #$glibc-utf8-locales "/lib/locale")
+                    "GUIX_LOCPATH="
+                    #$(libc-utf8-locales-for-target) "/lib/locale")
                   "LC_ALL=en_US.UTF-8")
                 #:log-file "/var/log/guix-data-service/process-jobs.log"))
       (stop #~(make-kill-destructor))))))
@@ -989,7 +994,8 @@ ca-certificates.crt file in the system profile."
                 #:pid-file "/var/run/nar-herder/pid"
                 #:environment-variables
                 `(,(string-append
-                    "GUIX_LOCPATH=" #$glibc-utf8-locales "/lib/locale")
+                    "GUIX_LOCPATH="
+                    #$(libc-utf8-locales-for-target) "/lib/locale")
                   "LC_ALL=en_US.utf8"
                   #$@extra-environment-variables)
                 #:log-file "/var/log/nar-herder/server.log"))
@@ -1108,7 +1114,8 @@ ca-certificates.crt file in the system profile."
                 #:directory "/var/lib/bffe"
                 #:environment-variables
                 `(,(string-append
-                    "GUIX_LOCPATH=" #$glibc-utf8-locales "/lib/locale")
+                    "GUIX_LOCPATH="
+                    #$(libc-utf8-locales-for-target) "/lib/locale")
                   "LC_ALL=en_US.utf8"
                   #$@extra-environment-variables)
                 #:log-file "/var/log/bffe/server.log"))

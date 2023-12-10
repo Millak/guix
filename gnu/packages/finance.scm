@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015, 2016, 2023 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2016, 2017, 2018 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2018, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2016, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2017 Carlo Zancanaro <carlo@zancanaro.id.au>
@@ -952,7 +952,9 @@ Bech32 and segwit addresses.")
              (when tests?
                (invoke "pytest" "-v")))))))
     (propagated-inputs
-     (list python-configargparse
+     (list python-bech32
+           python-configargparse
+           python-cryptography
            python-daemon
            python-docutils
            python-ecdsa
@@ -965,8 +967,6 @@ Bech32 and segwit addresses.")
            python-wheel))
     (native-inputs ; Only needed for running the tests
      (list gnupg
-           python-bech32
-           python-cryptography
            python-mock
            python-pytest))
     (home-page "https://github.com/romanz/trezor-agent")

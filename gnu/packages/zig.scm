@@ -129,7 +129,8 @@ toolchain.  Among other features it provides
     ;; https://github.com/ziglang/zig/issues/6485
     (supported-systems %64bit-supported-systems)
     ;; Stage3 can take a lot of time and isn't verbose.
-    (properties `((max-silent-time . 9600)))
+    (properties `((max-silent-time . 9600)
+                  ,@(clang-properties "13")))
     (license license:expat)))
 
 (define-public zig-0.10
@@ -146,7 +147,8 @@ toolchain.  Among other features it provides
        (file-name (git-file-name name version))
        (sha256
         (base32 "1sh5xjsksl52i4cfv1qj36sz5h0ln7cq4pdhgs3960mk8a90im7b"))
-       (patches (search-patches "zig-do-not-link-against-librt.patch"))))
+       (patches (search-patches "zig-do-not-link-against-librt.patch"
+                                "zig-use-baseline-cpu-by-default.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments zig-0.9)
        ((#:configure-flags flags ''())
@@ -191,6 +193,8 @@ toolchain.  Among other features it provides
        (replace "lld" lld-15)))
     (native-inputs
      (modify-inputs (package-native-inputs zig-0.9)
-       (replace "llvm" llvm-15)))))
+       (replace "llvm" llvm-15)))
+    (properties `((max-silent-time . 9600)
+                  ,@(clang-properties "15")))))
 
 (define-public zig zig-0.10)

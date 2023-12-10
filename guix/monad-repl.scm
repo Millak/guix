@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2016, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2016, 2022-2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,13 +21,15 @@
   #:use-module (guix monads)
   #:use-module (guix utils)
   #:use-module (guix packages)
+  #:autoload   (guix build-system) (bag)
   #:use-module (guix status)
-  #:autoload   (guix gexp) (lower-object)
+  #:autoload   (guix gexp) (gexp gexp? lower-gexp lowered-gexp-sexp lower-object)
   #:use-module ((guix derivations)
                 #:select (derivation?
                           derivation->output-paths built-derivations))
+  #:autoload   (guix read-print) (pretty-print-with-comments)
   #:use-module (ice-9 match)
-  #:use-module (ice-9 pretty-print)
+  #:autoload   (ice-9 pretty-print) (pretty-print)
   #:use-module (system repl repl)
   #:use-module (system repl common)
   #:use-module (system repl command)
@@ -138,4 +140,68 @@ Enter a REPL for values in the store monad."
       (repl-option-set! new 'interp #t)
       (run-repl new))))
 
-;;; monad-repl.scm ends here
+
+;;;
+;;; Viewing package arguments.
+;;;
+
+(define (keyword-argument-value args keyword default)
+  "Return the value associated with KEYWORD in ARGS, a keyword/value sequence,
+or DEFAULT if KEYWORD is missing from ARGS."
+  (let loop ((args args))
+    (match args
+      (()
+       default)
+      ((kw value rest ...)
+       (if (eq? kw keyword)
+           value
+           (loop rest))))))
+
+(define (package-argument-command repl form keyword default)
+  "Implement a command that display KEYWORD, a keyword such as #:phases, in
+the arguments of the package FORM evaluates to.  Return DEFAULT is KEYWORD is
+missing from those arguments."
+  (match (repl-eval repl form)
+    ((? package? package)
+     (let* ((bag* (bag
+                    (inherit (package->bag package))
+                    (build (lambda* (name inputs #:rest args)
+                             (with-monad %store-monad
+                               (return (keyword-argument-value args keyword
+                                                               default))))))))
+       (define phases
+         (parameterize ((%graft? #f))
+           (with-store store
+             (set-build-options store
+                                #:print-build-trace #t
+                                #:print-extended-build-trace? #t
+                                #:multiplexed-build-output? #t)
+             (run-with-store store
+               (mlet %store-monad ((exp (bag->derivation bag*)))
+                 (if (gexp? exp)
+                     (mlet %store-monad ((gexp (lower-gexp exp)))
+                       (return (lowered-gexp-sexp gexp)))
+                     (return exp)))))))
+
+       (run-hook before-print-hook phases)
+       (let ((column (port-column (current-output-port))))
+         (pretty-print-with-comments (current-output-port) phases
+                                     #:indent column)
+         (newline (current-output-port)))))
+    (_
+     (format #t ";; ERROR: This command only accepts package records.~%"))))
+
+(define-meta-command ((phases guix) repl (form))
+  "phases
+Return the build phases of the package defined by FORM."
+  (package-argument-command repl form #:phases #~%standard-phases))
+
+(define-meta-command ((configure-flags guix) repl (form))
+  "configure-flags
+Return the configure flags of the package defined by FORM."
+  (package-argument-command repl form #:configure-flags #~'()))
+
+(define-meta-command ((make-flags guix) repl (form))
+  "make-flags
+Return the make flags of the package defined by FORM."
+  (package-argument-command repl form #:make-flags #~'()))

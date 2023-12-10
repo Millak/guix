@@ -1970,7 +1970,8 @@ to the OSM opening hours specification.")
            java-openjfx-media
            java-parsson ; runtime dependency
            java-signpost-core
-           java-svg-salamander))
+           java-svg-salamander
+           openjdk11))
     (arguments
      `(#:tests? #f
        #:jar-name "josm.jar"
@@ -2070,9 +2071,16 @@ to the OSM opening hours specification.")
                  (lambda _
                    (display
                      (string-append "#!/bin/sh\n"
-                                    (assoc-ref inputs "jdk") "/bin/java"
+                                    (assoc-ref inputs "openjdk") "/bin/java"
                                     " -cp " out "/share/java/josm.jar:"
-                                    (getenv "CLASSPATH")
+                                    ;; CLASSPATH, but remove native inputs
+                                    (string-join
+                                      (filter
+                                        (lambda (jar)
+                                          (and (not (string-contains jar "-jdk/"))
+                                               (not (string-contains jar "-javacc-"))))
+                                        (string-split (getenv "CLASSPATH") #\:))
+                                      ":")
                                     " org.openstreetmap.josm.gui.MainApplication"))))
                (chmod (string-append bin "/josm") #o755))
              #t)))))

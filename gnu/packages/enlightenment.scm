@@ -585,7 +585,7 @@ directories.
     (native-inputs
      (list intltool python-distutils-extra))
     (inputs
-     (list libtorrent-rasterbar python-dbus python-efl python-pyxdg))
+     (list libtorrent-rasterbar-1.2 python-dbus python-efl python-pyxdg))
     (home-page "https://www.enlightenment.org")
     (synopsis "EFL Bittorrent client")
     (description "Epour is a BitTorrent client based on the @dfn{Enlightenment

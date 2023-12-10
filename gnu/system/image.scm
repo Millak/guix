@@ -466,7 +466,9 @@ used in the image."
                  ;; Allow non-ASCII file names--e.g., 'nss-certs'--to be
                  ;; decoded.
                  (setenv "GUIX_LOCPATH"
-                         #+(file-append glibc-utf8-locales "/lib/locale"))
+                         #+(file-append (libc-utf8-locales-for-target
+                                         (%current-system))
+                                        "/lib/locale"))
                  (setlocale LC_ALL "en_US.utf8")
 
                  (initializer image-root
@@ -633,7 +635,8 @@ used in the image. "
 
              ;; Allow non-ASCII file names--e.g., 'nss-certs'--to be decoded.
              (setenv "GUIX_LOCPATH"
-                     #+(file-append glibc-utf8-locales "/lib/locale"))
+                     #+(file-append (libc-utf8-locales-for-target (%current-system))
+                                    "/lib/locale"))
 
              (setlocale LC_ALL "en_US.utf8")
 
@@ -737,7 +740,8 @@ output file."
 
               ;; Allow non-ASCII file names--e.g., 'nss-certs'--to be decoded.
               (setenv "GUIX_LOCPATH"
-                      #+(file-append glibc-utf8-locales "/lib/locale"))
+                      #+(file-append (libc-utf8-locales-for-target (%current-system))
+                                     "/lib/locale"))
               (setlocale LC_ALL "en_US.utf8")
 
               (set-path-environment-variable "PATH" '("bin" "sbin") '(#+tar))
@@ -816,7 +820,8 @@ output file."
 
               ;; Allow non-ASCII file names--e.g., 'nss-certs'--to be decoded.
               (setenv "GUIX_LOCPATH"
-                      #+(file-append glibc-utf8-locales "/lib/locale"))
+                      #+(file-append (libc-utf8-locales-for-target (%current-system))
+                                     "/lib/locale"))
               (setlocale LC_ALL "en_US.utf8")
 
               (let ((image-root (string-append (getcwd) "/tmp-root"))

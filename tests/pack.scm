@@ -30,7 +30,7 @@
   #:use-module (guix modules)
   #:use-module (guix utils)
   #:use-module (gnu packages)
-  #:use-module ((gnu packages base) #:select (glibc-utf8-locales))
+  #:use-module ((gnu packages base) #:select (libc-utf8-locales-for-target))
   #:use-module (gnu packages bootstrap)
   #:use-module ((gnu packages package-management) #:select (rpm))
   #:use-module ((gnu packages compression) #:select (squashfs-tools))
@@ -197,8 +197,9 @@
                              ;; Make sure non-ASCII file names are properly
                              ;; handled.
                              (setenv "GUIX_LOCPATH"
-                                     #+(file-append glibc-utf8-locales
-                                                    "/lib/locale"))
+                                     #+(file-append
+                                        (libc-utf8-locales-for-target)
+                                        "/lib/locale"))
                              (setlocale LC_ALL "en_US.utf8")
 
                              (mkdir #$output)

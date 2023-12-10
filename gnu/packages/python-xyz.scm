@@ -108,7 +108,7 @@
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021, 2022, 2023 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
 ;;; Copyright © 2021, 2022 Pradana Aumars <paumars@courrier.dev>
-;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2021, 2022, 2023 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Sébastien Lerique <sl@eauchat.org>
 ;;; Copyright © 2021 Raphaël Mélotte <raphael.melotte@mind.be>
 ;;; Copyright © 2021 ZmnSCPxj <ZmnSCPxj@protonmail.com>
@@ -2567,13 +2567,13 @@ conventions and aliases in the same expression.")
 (define-public python-wand
   (package
     (name "python-wand")
-    (version "0.6.11")
+    (version "0.6.13")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Wand" version))
        (sha256
-        (base32 "15d9kxyc7qvknx0kv27m2jamnmisckyf89i7wlqykwgqm46p0qdn"))))
+        (base32 "1jpwm956vm35hmgjndr2jwrcql0bwvpsl88q5nr0x8ppxa2380gm"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -3675,7 +3675,12 @@ in the current session, Python, and the OS.")
       (uri (pypi-uri "schedule" version))
       (sha256
        (base32
-        "0vplyjcbfrq50sphlwya749z8p2pcyi2nycw3518i0qpd9a6189i"))))
+        "0vplyjcbfrq50sphlwya749z8p2pcyi2nycw3518i0qpd9a6189i"))
+      (snippet
+       #~(begin (use-modules (guix build utils))
+                (substitute* "schedule/__init__.py"
+                  (("collections\\.Hashable")
+                   "collections.abc.Hashable"))))))
     (build-system python-build-system)
     (native-inputs
      (list python-pytest python-mock))
@@ -7466,6 +7471,28 @@ capabilities.")
     (description "This package provides the complete NumPy documentation in
 the Texinfo, HTML, and PDF formats.")))
 
+(define-public python-npx
+  (package
+    (name "python-npx")
+    (version "0.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "npx" version))
+              (sha256
+               (base32
+                "1m0v2p5mh3aqrypl4ipgzvr5nhx7bk5vv9ah2xr9l1xgj6nnmqnc"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list python-flit-core python-networkx python-pytest))
+    (home-page "https://github.com/nschloe/npx")
+    (synopsis "Extensions for NumPy")
+    (description "NumPy is a large library used everywhere in scientific
+computing.  That's why breaking backwards-compatibility comes at a
+significant cost and is almost always avoided, even if the API of some
+methods is arguably lacking.  This package provides drop-in wrappers
+\"fixing\" those.")
+    (license license:bsd-3)))
+
 (define-public python-munch
   (package
     (name "python-munch")
@@ -8296,6 +8323,92 @@ Jupyter.")
      "This package provides tools for plotting area-proportional two- and
 three-way Venn diagrams in @code{matplotlib}.")
     (license license:expat)))
+
+(define-public python-matplotx
+  (package
+    (name "python-matplotx")
+    (version "0.3.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nschloe/matplotx")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1j301mr7ai2jmbm5mkva0jd99fzxhyq585pqzqfmrf5pil8j4q8i"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+      (list python-matplotlib
+            python-numpy
+            ;; optional dependencies
+            python-networkx
+            python-pypng
+            python-scipy))
+    (native-inputs (list python-imageio
+                         python-meshzoo
+                         python-pytest
+                         python-scikit-fem))
+    (arguments
+     (list
+      #:test-flags
+      ;; This test fails with ValueError: not enough values to unpack.
+      #~(list "--deselect" "tests/test_spy.py::test_cli")))
+    (home-page "https://github.com/nschloe/matplotx")
+    (synopsis "Minimal matplotlib styles")
+    (description
+      "This package includes some extensions for Matplotlib to create
+clean plots with a minimalistic style.")
+    (license license:expat)))
+
+(define-public python-cplot
+  (package
+    (name "python-cplot")
+    (version "0.9.3")
+    (source
+     (origin
+       (method git-fetch)   ;for tests
+       (uri (git-reference
+             (url "https://github.com/nschloe/cplot")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zk7hpq358sbympmkms7w2wjs7nw8mdfvkvdasblg2nhqayv42qz"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-matplotlib
+                             python-matplotx
+                             python-npx
+                             python-numpy))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/nschloe/cplot")
+    (synopsis "Plot complex-valued functions")
+    (description "@code{cplot} is a Python library for plotting
+complex-valued functions.")
+    (license license:gpl3+)))
+
+(define-public python-perfplot
+  (package
+    (name "python-perfplot")
+    (version "0.10.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "perfplot" version))
+              (sha256
+               (base32
+                "0hbyv17f9ra6l6albcrqx4rylmfv2m6z4qsnhb4bar256dralvfp"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-matplotlib
+                             python-matplotx
+                             python-numpy
+                             python-rich))
+    (native-inputs (list python-flit-core
+                         python-pytest))
+    (home-page "https://github.com/nschloe/perfplot")
+    (synopsis "Performance plots for Python code snippets")
+    (description "@code{perfplot} extends Python's timeit by testing
+snippets with input parameters (e.g., the size of an array) and plotting
+the results.")
+    (license license:gpl3+)))
 
 (define-public python-pysnptools
   (package
@@ -9687,11 +9800,18 @@ Python language binding specification.")
     (source
      (origin
        (method url-fetch)
-       (uri
-        (pypi-uri "grako" version ".zip"))
+       (uri (pypi-uri "grako" version ".zip"))
        (sha256
-        (base32
-         "0r63i68wcnv63rfjkasq1ah81frz61a6mzbcnaxhrkdpx84p7hzw"))))
+        (base32 "0r63i68wcnv63rfjkasq1ah81frz61a6mzbcnaxhrkdpx84p7hzw"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "grako/grammars.py"
+                   (("from collections import defaultdict, Mapping")
+                    (string-append "from collections import defaultdict\n"
+                                   "from collections.abc import Mapping")))
+                 (substitute* '("grako/util.py"
+                                "grako/walkers.py")
+                   (("collections\\.Mapping") "collections.abc.Mapping"))))))
     (build-system python-build-system)
     (arguments '(#:tests? #f)) ; Test file 'grako.ebnf' is missing from archive.
     (native-inputs
@@ -15926,7 +16046,7 @@ programmatically with command-line parsers like @code{getopt} and
 (define-public python-pythonanywhere
   (package
     (name "python-pythonanywhere")
-    (version "0.9.10")
+    (version "0.12.1")
     (source
       (origin
         (method git-fetch)
@@ -15936,7 +16056,7 @@ programmatically with command-line parsers like @code{getopt} and
         (file-name (git-file-name name version))
         (sha256
           (base32
-           "0vzzc1g8pl7cb9yvm3n1j5zlzxf0jd423rzspc2kvpb8yhvydklx"))))
+           "12898jrq8bi90s5v3wirj7zprk08smwzwdx09y07x770frqd80vl"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -15967,8 +16087,9 @@ programmatically with command-line parsers like @code{getopt} and
     (home-page "https://github.com/pythonanywhere/helper_scripts/")
     (synopsis "PythonAnywhere helper tools for users")
     (description "PythonAnywhere provides a command-line interface and an
-application programming interface that allows managing Web apps and scheduled
-tasks.  It includes single-command deployment for the Django Girls tutorial.")
+application programming interface that allows managing files Web apps, scheduled
+tasks and students.  It includes single-command deployment for the Django Girls
+tutorial.")
     (license license:expat)))
 
 (define-public python-pythondialog
@@ -17777,13 +17898,13 @@ ISO 8859, etc.).")
 (define-public python-pyqtgraph
   (package
     (name "python-pyqtgraph")
-    (version "0.13.1")
+    (version "0.13.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyqtgraph" version))
        (sha256
-        (base32 "026wq2p7h1dmg2ldwhxiv28i5qld0llhnak06dxp4rdrkpsqg3v9"))))
+        (base32 "1kiazyc8mqyx0479qdcvdclzq0g1hpp93dyq8444w1f72628s42q"))))
     (build-system pyproject-build-system)
     (arguments
      ;; This test fails.  It suggests to disable assert rewriting in Pytest,
@@ -29123,8 +29244,12 @@ workspace...")
         (method url-fetch)
         (uri (pypi-uri "python-osc" version))
         (sha256
-          (base32
-            "0cnh0z5lnng7fh48nmfaqqn8j25k13gkd4rhxd3m6sjqiix9s3vn"))))
+         (base32 "0cnh0z5lnng7fh48nmfaqqn8j25k13gkd4rhxd3m6sjqiix9s3vn"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "pythonosc/udp_client.py"
+                   (("from collections import Iterable")
+                    "from collections.abc import Iterable"))))))
     (build-system python-build-system)
     (home-page "https://github.com/attwad/python-osc")
     (synopsis "Open Sound Control server and client implementations")
@@ -34218,6 +34343,28 @@ read all zbar supported codes.")
 software by taking care of all interactions with low-level network programming
 interfaces.")
     (license license:gpl2)))
+
+(define-public python-islenska
+  (package
+    (name "python-islenska")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "islenska" version))
+       (sha256
+        (base32 "0fdp90mzy0sd4kyw8kd8kybd1ni765fvqn8hz2wx5sqbjjkm4d5k"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-cffi python-typing-extensions))
+    (home-page "https://github.com/mideind/BinPackage")
+    (synopsis
+     "Vocabulary of the modern Icelandic language, in a Python package")
+    (description
+     "Islenska is a Python package that embeds the vocabulary of the Database
+of Icelandic Morphology and offers various lookups and queries of the data.
+The database contains over 6.5 million entries, over 3.1 million unique word
+forms, and about 300,000 distinct lemmas.")
+    (license license:expat)))
 
 (define-public python-zeroc-ice-3.6
   (package

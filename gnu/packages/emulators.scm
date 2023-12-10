@@ -2447,16 +2447,16 @@ system.")
 (define-public exomizer
   (package
     (name "exomizer")
-    (version "3.1.1")
+    (version "3.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                      (url "https://bitbucket.org/magli143/exomizer.git")
-                     (commit "6a152b5605648f7a41eadd4b011a93ec92f74dd8")))
+                     (commit version)))
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "1ynhkb5p2dypkikipc3krzif264l9rmx1wnjzzgw8n88i4zkymzg"))))
+                "04795l75nlbz0g5gp1xx8kiwbrm5pv5pj24ja02cnan6mglj7j0w"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f  ; No target exists

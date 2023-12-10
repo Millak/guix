@@ -1330,7 +1330,12 @@ Encryption} (JOSE) Web Standards.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0701hziiiw67blafgpmjhzspmrss8mfvif7fw0rs8fikddwwc9g6"))))
+        (base32 "0701hziiiw67blafgpmjhzspmrss8mfvif7fw0rs8fikddwwc9g6"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "scss/types.py"
+                   (("from collections import Iterable")
+                    "from collections.abc import Iterable"))))))
     (build-system python-build-system)
     (arguments
      ;; XXX: error in test collection, possible incompatibility with Pytest 6.

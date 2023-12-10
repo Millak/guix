@@ -51,7 +51,7 @@
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Naga Malleswari <nagamalli@riseup.net>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
-;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
@@ -1894,7 +1894,7 @@ either on a local, or remote machine via a number of methods.")
 (define-public gnome-commander
   (package
     (name "gnome-commander")
-    (version "1.14.3")
+    (version "1.16.1")
     (source
      (origin
        (method url-fetch)
@@ -1902,8 +1902,10 @@ either on a local, or remote machine via a number of methods.")
                            (version-major+minor version)  "/"
                            "gnome-commander-" version ".tar.xz"))
        (sha256
-        (base32 "0yzx9slg632iflw9p96nlh9i50dhacq7hrzpkj8b48mr1zkxrn3q"))))
-    (build-system glib-or-gtk-build-system)
+        (base32 "1cyh20nz2f81rb6di99idvw4xjn969mjhj3n2q17kzjhlv20079z"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:glib-or-gtk? #t))
     (native-inputs
      (list desktop-file-utils
            flex
@@ -1911,6 +1913,7 @@ either on a local, or remote machine via a number of methods.")
            `(,glib "bin")
            gobject-introspection
            googletest
+           `(,gtk+-2 "bin")
            intltool
            itstool
            libtool
@@ -5935,7 +5938,7 @@ services for numerous locations.")
            gi-docgen
            `(,glib "bin")               ;for glib-mkenums
            gobject-introspection
-           glibc-utf8-locales
+           (libc-utf8-locales-for-target)
            gsettings-desktop-schemas
            pkg-config
            python
@@ -9489,7 +9492,7 @@ easy, safe, and automatic.")
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")
-           glibc-utf8-locales
+           (libc-utf8-locales-for-target)
            gobject-introspection
            docbook-xsl
            docbook-xml

@@ -5,12 +5,13 @@
 # Francois Polito <francois@polito.se>, 2021.
 # tisse vert <tissevert+fedora@marvid.fr>, 2021.
 # Florian Pelz <pelzflorian@pelzflorian.de>, 2023.
+# Adriel Dumas--Jondeau <leirda@disroot.org>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2023-10-25 03:18+0000\n"
-"PO-Revision-Date: 2023-10-31 21:52+0000\n"
+"POT-Creation-Date: 2023-10-26 03:18+0000\n"
+"PO-Revision-Date: 2023-11-30 21:58+0000\n"
 "Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: French <https://translate.fedoraproject.org/projects/guix/documentation-cookbook/fr/>\n"
 "Language: fr\n"
@@ -18,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.1.1\n"
+"X-Generator: Weblate 5.2.1\n"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:7
@@ -7375,23 +7376,23 @@ msgstr "Vous pouvez supprimer le profil des canaux Guix que vous venez d'install
 #: guix-git/doc/guix-cookbook.texi:4103
 #, no-wrap
 msgid "development, with Guix"
-msgstr ""
+msgstr "développement, avec Guix"
 
 #. type: cindex
 #: guix-git/doc/guix-cookbook.texi:4104
 #, no-wrap
 msgid "software development, with Guix"
-msgstr ""
+msgstr "développement logiciel, avec Guix"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:4114
 msgid "Guix is a handy tool for developers; @command{guix shell}, in particular, gives a standalone development environment for your package, no matter what language(s) it's written in (@pxref{Invoking guix shell,,, guix, GNU Guix Reference Manual}).  To benefit from it, you have to initially write a package definition and have it either in Guix proper, or in a channel, or directly in your project's source tree as a @file{guix.scm} file.  This last option is appealing: all developers have to do to get set up is clone the project's repository and run @command{guix shell}, with no arguments."
-msgstr ""
+msgstr "Guix est un outil pratique pour les développeurs ; @command{guix shell}, notamment, fournit un environnement de développement autonome et complet pour votre paquet peu importe le langage dans lequel il est écrit (@pxref{Invoquer guix shell,,, guix.fr, Manuel de référence GNU Guix}).  Pour en bénéficier, vous devez écrire une définition de paquet accessible depuis Guix officiel, un canal, ou bien depuis les sources de votre projet dans le fichier @file{guix.scm}.  Cette dernière option est particulièrement alléchante : la seule chose à faire pour initialiser son environnement de travail est d’exécuter @command{guix shell} sans argument dans le dépôt du projet."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:4124
 msgid "Development needs go beyond development environments though.  How can developers perform continuous integration of their code in Guix build environments? How can they deliver their code straight to adventurous users? This chapter describes a set of files developers can add to their repository to set up Guix-based development environments, continuous integration, and continuous delivery---all at once@footnote{This chapter is adapted from a @uref{https://guix.gnu.org/en/blog/2023/from-development-environments-to-continuous-integrationthe-ultimate-guide-to-software-development-with-guix/, blog post} published in June 2023 on the Guix web site.}."
-msgstr ""
+msgstr "Les besoins des projets logiciels ne se limitent cependant pas à l’environnement d’exécution.  Comment effectuer l’intégration continue du code dans des environnements de compilation Guix ? Comment livrer le code directement aux utilisatrices aventureuses ? Ce chapitre décrit l’ensemble des fichiers qu’une développeuse peut ajouter à son dépôt pour créer un environnement de développement, d’intégration continue et de livraison continue basé sur Guix uniquement@footnote{Ce chapitre est une adaptation de @uref{https://guix.gnu.org/fr/blog/2023/from-development-environments-to-continuous-integrationthe-ultimate-guide-to-software-development-with-guix/, cet article de blog} (en anglais) publié en juin 2023 sur le site de Guix.}."
 
 #. type: section
 #: guix-git/doc/guix-cookbook.texi:4133 guix-git/doc/guix-cookbook.texi:4135
@@ -7403,29 +7404,29 @@ msgstr "Guide de démarrage"
 #. type: menuentry
 #: guix-git/doc/guix-cookbook.texi:4133
 msgid "Step 0: using `guix shell'."
-msgstr ""
+msgstr "Étape 0 : Utiliser `guix shell'."
 
 #. type: node
 #: guix-git/doc/guix-cookbook.texi:4133 guix-git/doc/guix-cookbook.texi:4255
 #, no-wrap
 msgid "Building with Guix"
-msgstr ""
+msgstr "Compilation avec Guix"
 
 #. type: menuentry
 #: guix-git/doc/guix-cookbook.texi:4133
 msgid "Step 1: building your code."
-msgstr ""
+msgstr "Étape 1 : compiler votre code."
 
 #. type: node
 #: guix-git/doc/guix-cookbook.texi:4133 guix-git/doc/guix-cookbook.texi:4345
 #, no-wrap
 msgid "The Repository as a Channel"
-msgstr ""
+msgstr "Le dépôt comme canal"
 
 #. type: menuentry
 #: guix-git/doc/guix-cookbook.texi:4133
 msgid "Step 2: turning the repo in a channel."
-msgstr ""
+msgstr "Étape 2 : Transformer le dépôt en canal."
 
 #. type: node
 #: guix-git/doc/guix-cookbook.texi:4133 guix-git/doc/guix-cookbook.texi:4481
@@ -7436,18 +7437,18 @@ msgstr "Variantes de paquets"
 #. type: menuentry
 #: guix-git/doc/guix-cookbook.texi:4133
 msgid "Bonus: Defining variants."
-msgstr ""
+msgstr "Bonus : Définir des variants."
 
 #. type: node
 #: guix-git/doc/guix-cookbook.texi:4133 guix-git/doc/guix-cookbook.texi:4533
 #, no-wrap
 msgid "Setting Up Continuous Integration"
-msgstr ""
+msgstr "Mettre en place une intégration continue"
 
 #. type: menuentry
 #: guix-git/doc/guix-cookbook.texi:4133
 msgid "Step 3: continuous integration."
-msgstr ""
+msgstr "Étape 3 : intégration continue."
 
 #. type: node
 #: guix-git/doc/guix-cookbook.texi:4133 guix-git/doc/guix-cookbook.texi:4608
@@ -7459,14 +7460,14 @@ msgstr "un manifeste,"
 #. type: menuentry
 #: guix-git/doc/guix-cookbook.texi:4133
 msgid "Bonus: Manifest."
-msgstr ""
+msgstr "Bonus : Manifeste."
 
 #. type: section
 #: guix-git/doc/guix-cookbook.texi:4133 guix-git/doc/guix-cookbook.texi:4701
 #: guix-git/doc/guix-cookbook.texi:4702
 #, no-wrap
 msgid "Wrapping Up"
-msgstr ""
+msgstr "Récapitulatif"
 
 #. type: menuentry
 #: guix-git/doc/guix-cookbook.texi:4133
@@ -7476,7 +7477,7 @@ msgstr "Récapitulatif"
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:4147
 msgid "How do we go about ``Guixifying'' a repository? The first step, as we've seen, will be to add a @file{guix.scm} at the root of the repository in question. We'll take @uref{https://www.gnu.org/software/guile,Guile} as an example in this chapter: it's written in Scheme (mostly) and C, and has a number of dependencies---a C compilation tool chain, C libraries, Autoconf and its friends, LaTeX, and so on. The resulting @file{guix.scm} looks like the usual package definition (@pxref{Defining Packages,,, guix, GNU Guix Reference Manual}), just without the @code{define-public} bit:"
-msgstr ""
+msgstr "Comment entreprendre la ``Guixification'' d’un dépôt ? La première étape, comme vu précédemment, consiste à ajouter un fichier @file{guix.scm} à la racine du dépôt. Nous prendrons comme exemple @uref{,Guile} au long de chapitre. Guile est (principalement) écrit en Scheme et en C, possède plusieurs dépendances---Une suite d’outils de compilation C, des bibliothèques C, Autoconf et sa clique, LaTeX, et ainsi de suite… Le fichier @file{guix.scm} ressemblera à une définition de paquet traditionnelle (@pxref{Définition des paquets,,, guix.fr, Manuel de référence de GNU Guix}) sans le @code{define-public} :"
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:4150
@@ -7579,7 +7580,7 @@ msgstr ""
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:4221
 msgid "Quite a bit of boilerplate, but now someone who'd like to hack on Guile now only needs to run:"
-msgstr ""
+msgstr "Même si ça peut paraître fastidieux, une personne souhaitant bidouiller Guile n’aura désormais qu’à exécuter :"
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:4224
@@ -7590,18 +7591,18 @@ msgstr "guix shell\n"
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:4230
 msgid "That gives them a shell containing all the dependencies of Guile: those listed above, but also @emph{implicit dependencies} such as the GCC tool chain, GNU@ Make, sed, grep, and so on.  @xref{Invoking guix shell,,, guix, GNU Guix Reference Manual}, for more info on @command{guix shell}."
-msgstr ""
+msgstr "pour obtenir un environnement d’exécution avec toutes les dépendances de Guile : celle listées ci-dessus, mais également les @emph{dépendances implicites} : la suite d’outils GCC, GNU Make, sed, grep, etc.  @xref{Invoquer guix shell,,, guix.fr, Manuel de référence de GNU Guix} pour plus d’informations sur @command{guix shell}."
 
 #. type: quotation
 #: guix-git/doc/guix-cookbook.texi:4231
 #, no-wrap
 msgid "The chef's recommendation"
-msgstr ""
+msgstr "La recommandation du chef"
 
 #. type: quotation
 #: guix-git/doc/guix-cookbook.texi:4233
 msgid "Our suggestion is to create development environments like this:"
-msgstr ""
+msgstr "Nous suggérons la création d’environnements de développement comme suit :"
 
 #. type: example
 #: guix-git/doc/guix-cookbook.texi:4236
@@ -7613,7 +7614,7 @@ msgstr "guix shell --container\n"
 #. type: quotation
 #: guix-git/doc/guix-cookbook.texi:4240
 msgid "... or, for short:"
-msgstr ""
+msgstr "… ou plus brièvement :"
 
 #. type: example
 #: guix-git/doc/guix-cookbook.texi:4243
@@ -7625,23 +7626,23 @@ msgstr "guix shell --container\n"
 #. type: quotation
 #: guix-git/doc/guix-cookbook.texi:4253
 msgid "That gives a shell in an isolated container, and all the dependencies show up in @code{$HOME/.guix-profile}, which plays well with caches such as @file{config.cache} (@pxref{Cache Files,,, autoconf, Autoconf}) and absolute file names recorded in generated @code{Makefile}s and the likes. The fact that the shell runs in a container brings peace of mind: nothing but the current directory and Guile's dependencies is visible inside the container; nothing from the system can possibly interfere with your development."
-msgstr ""
+msgstr "Nous obtenons un conteneur avec toutes les dépendances qui apparaissent dans @code{$HOME/.guix-profile} qui permet de profiter des caches comme le @file{config.cache} (@pxref{Cache Files,,, autoconf, Autoconf}) ainsi que des noms de fichier absolus stockés dans les éventuels @code{Makefile} autogénérés ou autres. L’exécution de l’environnement logiciel dans un conteneur apporte la garantie que seuls les dépendances de Guix et le dossier courant sont accessibles ; aucun élément du système ne peut interférer avec l’environnement de développement ainsi créé."
 
 #. type: section
 #: guix-git/doc/guix-cookbook.texi:4256
 #, no-wrap
 msgid "Level 1: Building with Guix"
-msgstr ""
+msgstr "Niveau 1 : Compiler avec Guix"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:4263
 msgid "Now that we have a package definition (@pxref{Getting Started}), why not also take advantage of it so we can build Guile with Guix? We had left the @code{source} field empty, because @command{guix shell} above only cares about the @emph{inputs} of our package---so it can set up the development environment---not about the package itself."
-msgstr ""
+msgstr "Maintenant que nous avons notre définition de paquet (@pxref{Getting Started}), pour ne pas en profiter pour compiler Guile avec Guix ? Nous avions omis le champ @code{source} car @command{guix shell} ne se préoccupe que des @emph{dépendances} du paquet---afin de mettre en place l’environnement de développement."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:4266
 msgid "To build the package with Guix, we'll need to fill out the @code{source} field, along these lines:"
-msgstr ""
+msgstr "Pour compiler le paquet il nous faut remplir le champ @code{source} avec quelque chose du style :"
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:4271
@@ -7691,27 +7692,27 @@ msgstr ""
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:4287
 msgid "Here's what we changed compared to the previous section:"
-msgstr ""
+msgstr "Voici la différence entre la version actuelle et la section précédente :"
 
 #. type: enumerate
 #: guix-git/doc/guix-cookbook.texi:4292
 msgid "We added @code{(guix git-download)} to our set of imported modules, so we can use its @code{git-predicate} procedure."
-msgstr ""
+msgstr "Nous avons ajouté @code{(guix git-download)} à la liste des modules importés pour la procédure @code{git-predicate}."
 
 #. type: enumerate
 #: guix-git/doc/guix-cookbook.texi:4296
 msgid "We defined @code{vcs-file?} as a procedure that returns true when passed a file that is under version control. For good measure, we add a fallback case for when we're not in a Git checkout: always return true."
-msgstr ""
+msgstr "Nous avons défini la procédure @code{vcs-file?} qui nous permet de savoir si un fichier est versionné. Pour faire bonne mesure nous répondons toujours oui lorsque nous ne sommes pas dans un dépôt Git."
 
 #. type: enumerate
 #: guix-git/doc/guix-cookbook.texi:4301
 msgid "We set @code{source} to a @uref{https://guix.gnu.org/manual/devel/en/html_node/G_002dExpressions.html#index-local_002dfile,@code{local-file}}---a recursive copy of the current directory (@code{\".\"}), limited to files under version control (the @code{#:select?} bit)."
-msgstr ""
+msgstr "Nous remplissons la @code{source} avec un @uref{https://guix.gnu.org/manual/devel/fr/html_node/G_002dExpressions.html#index-local_002dfile,@code{local-file}}---une copie récursive des fichiers versionnés (avec le @code{#:select?}) du dossier courant (@code{\".\"})"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:4308
 msgid "From there on, our @file{guix.scm} file serves a second purpose: it lets us build the software with Guix. The whole point of building with Guix is that it's a ``clean'' build---you can be sure nothing from your working tree or system interferes with the build result---and it lets you test a variety of things. First, you can do a plain native build:"
-msgstr ""
+msgstr "À partir de là, notre @file{guix.scm} prend un second rôle : il nous permet de compiler le logiciel avec Guix. L’intérêt réside en ce que cette compilation est ``pure''---nous sommes certains qu’aucun élément de notre copie de travail ou du système n’interfère avec la compilation--et de tester plein de choses. Premièrement, nous pouvons réaliser une compilation native standard :"
 
 #. type: example
 #: guix-git/doc/guix-cookbook.texi:4311
@@ -7722,7 +7723,7 @@ msgstr ""
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:4318
 msgid "But you can also build for another system (possibly after setting up @pxref{Daemon Offload Setup, offloading,, guix, GNU Guix Reference Manual} or @pxref{Virtualization Services, transparent emulation,, guix, GNU Guix Reference Manual}):"
-msgstr ""
+msgstr "Mais nous pouvons également compiler pour un autre système (après avoir mis en place @pxref{Réglages du déchargement du démon,,, guix.fr, Manuel de référence de GNU Guix} ou @pxref{Services de virtualisation, Émulation transparente avec QEMU,, guix, Manuel de référence de GNU Guix}) :"
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:4321
@@ -7733,7 +7734,7 @@ msgstr ""
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:4325
 msgid "@dots{} or cross-compile:"
-msgstr ""
+msgstr "… ou en compilation croisée :"
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:4328
@@ -7743,8 +7744,8 @@ msgstr ""
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:4332
-msgid "You can also use @dfn{package transformations} to test package variants (@pxref{Package Transformations,,, guix, GNU Guix Reference Manual}):"
-msgstr ""
+msgid "You can also use @dfn{package transformations} to test package variants (@pxref{Package Transformation Options,,, guix, GNU Guix Reference Manual}):"
+msgstr "Nous pouvons également utiliser les @dfn{transformations de paquets} pour tester des variantes (@pxref{Options de transformation de paquets,,, guix.fr, Manuel de référence de GNU Guix}) :"
 
 #. type: example
 #: guix-git/doc/guix-cookbook.texi:4337
@@ -7768,23 +7769,23 @@ msgstr ""
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:4344
 msgid "Handy!"
-msgstr ""
+msgstr "Pratique !"
 
 #. type: section
 #: guix-git/doc/guix-cookbook.texi:4346
 #, no-wrap
 msgid "Level 2: The Repository as a Channel"
-msgstr ""
+msgstr "Niveau 2 : Le dépôt comme canal"
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:4353
 msgid "We now have a Git repository containing (among other things) a package definition (@pxref{Building with Guix}).  Can't we turn it into a @dfn{channel} (@pxref{Channels,,, guix, GNU Guix Reference Manual})? After all, channels are designed to ship package definitions to users, and that's exactly what we're doing with our @file{guix.scm}."
-msgstr ""
+msgstr "Nous avons maintenant un dépôt Git contenant (entre autres) une définition de paquet (@pxref{Building with Guix}).  Ne pourrions-nous pas l’utiliser comme @dfn{canal} (@pxref{Canaux,,, guix.fr, Manuel de référence de GNU Guix}) ? Après tout, les canaux sont conçues pour livrer des définitions de paquets aux utilisateurs, et c’est ce que nous faisons avec notre @file{guix.scm}."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:4360
 msgid "Turns out we can indeed turn it into a channel, but with one caveat: we must create a separate directory for the @code{.scm} file(s) of our channel so that @command{guix pull} doesn't load unrelated @code{.scm} files when someone pulls the channel---and in Guile, there are lots of them! So we'll start like this, keeping a top-level @file{guix.scm} symlink for the sake of @command{guix shell}:"
-msgstr ""
+msgstr "Il s’avère que nous pouvons effectivement faire de notre dépôt un canal, mais à une condition : nous devons créer un dossier à part pour le(s) fichier(s) @code{.scm} du canal, afin que @command{guix pull} ne télécharge pas des @code{.scm} liées au dépôt lors d’une mise à jour --- il y en a beaucoup dans Guile ! Voici donc notre disposition initiale, en conservant un lien symbolique à la racine vers @file{guix.scm} pour la commande @command{guix shell} :"
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:4365
@@ -7798,7 +7799,7 @@ msgstr ""
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:4376
 msgid "To make it usable as part of a channel, we need to turn our @file{guix.scm} file into a @dfn{package module} (@pxref{Package Modules,,, guix, GNU Guix Reference Manual}): we do that by changing the @code{use-modules} form at the top to a @code{define-module} form. We also need to actually @emph{export} a package variable, with @code{define-public}, while still returning the package value at the end of the file so we can still use @command{guix shell} and @command{guix build -f guix.scm}. The end result looks like this (not repeating things that haven't changed):"
-msgstr ""
+msgstr "Pour rendre notre fichier @file{guix.scm} utilisable dans le canal, nous devons l’adapter en @dfn{module de paquets} (@pxref{Modules de paquets,,, guix.fr, Manuel de référence de GNU Guix}) en utilisant @code{define-module} à la place de @code{use-modules} au début. Nous devons également @emph{exporter} une variable de paquet avec @code{define-public} tout en retournant le paquet à la fin du fichier pour qu’il reste utilisable avec @command{guix shell} et @command{guix build -f guix.scm}. Le résultat final ressemble à ça (en omettant les parties identiques) :"
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:4382
@@ -7848,7 +7849,7 @@ msgstr ""
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:4404
 msgid "We need one last thing: a @uref{https://guix.gnu.org/manual/devel/en/html_node/Package-Modules-in-a-Sub_002ddirectory.html,@code{.guix-channel} file} so Guix knows where to look for package modules in our repository:"
-msgstr ""
+msgstr "Il nous manque plus que le dernier élément : le @uref{https://guix.gnu.org/manual/devel/fr/html_node/Modules-de-paquets-dans-un-sous_002drepertoire.html, fichier @code{.guix-channel}} qui permet à Guix de trouver les modules de paquets de notre dépôt :"
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:4407
@@ -7870,7 +7871,7 @@ msgstr ""
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:4414
 msgid "To recap, we now have these files:"
-msgstr ""
+msgstr "Pour récapituler, nous avons :"
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:4422
@@ -7887,7 +7888,7 @@ msgstr ""
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:4431
 msgid "And that's it: we have a channel! (We could do better and support @uref{https://guix.gnu.org/manual/devel/en/html_node/Specifying-Channel-Authorizations.html,@emph{channel authentication}} so users know they're pulling genuine code. We'll spare you the details here but it's worth considering!) Users can pull from this channel by @uref{https://guix.gnu.org/manual/devel/en/html_node/Specifying-Additional-Channels.html,adding it to @code{~/.config/guix/channels.scm}}, along these lines:"
-msgstr ""
+msgstr "Et voilà, nous avons un canal ! (Nous pourrions faire mieux en ajoutant le support de @uref{https://guix.gnu.org/manual/devel/fr/html_node/Specifier-les-autorisations-des-canaux.html,@emph{l’authentification de canal}} pour garantir l’authenticité du code. Nous n’entrerons pas dans les détails mais il peut être important de le considérer!) Les utilisateurs peuvent récupérer notre canal avec le fichier @uref{https://guix.gnu.org/manual/devel/fr/html_node/Specifier-des-canaux-supplementaires.html,@file{~/.config/guix/channels.scm}} en y ajoutant quelque chose du genre :"
 
 #. type: lisp
 #: guix-git/doc/guix-cookbook.texi:4438
@@ -7914,7 +7915,7 @@ msgstr ""
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:4441
 msgid "After running @command{guix pull}, we can see the new package:"
-msgstr ""
+msgstr "Après un @command{guix pull}, nous pouvons voir les nouveaux paquets :"
 
 #. type: example
 #: guix-git/doc/guix-cookbook.texi:4463
@@ -7945,12 +7946,12 @@ msgstr ""
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:4468
 msgid "That's how, as a developer, you get your software delivered directly into the hands of users! No intermediaries, yet no loss of transparency and provenance tracking."
-msgstr ""
+msgstr "Voici comment, en tant que développeuse, vous pouvez livrer votre logiciel directement aux utilisateurs ! Sans aucun intermédiaire, sans perte de transparence et un suivi de la provenance."
 
 #. type: Plain text
 #: guix-git/doc/guix-cookbook.texi:4472
 msgid "With that in place, it also becomes trivial for anyone to create Docker images, Deb/RPM packages, or a plain tarball with @command{guix pack} (@pxref{Invoking guix pack,,, guix, GNU Guix Reference Manual}):"
-msgstr ""
+msgstr "De plus, il devient également trivial de créer des images Docker, des paquets Deb/RPM ou une archive avec @command{guix pack} (@pxref{Invoquer guix pack,,, guix.fr Manuel de référence de GNU Guix}) :"
 
 #. type: example
 #: guix-git/doc/guix-cookbook.texi:4476

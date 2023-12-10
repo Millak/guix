@@ -335,7 +335,7 @@ the hash of the Cabal file."
         (synopsis ,(cabal-package-synopsis cabal))
         (description ,(beautify-description (cabal-package-description cabal)))
         (license ,(string->license (cabal-package-license cabal))))
-     inputs)))
+     (map upstream-input-name inputs))))
 
 (define* (hackage->guix-package package-name #:key
                                 (include-test-dependencies? #t)

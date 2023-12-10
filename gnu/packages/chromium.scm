@@ -967,7 +967,7 @@ testing.")
     (name "ungoogled-chromium-wayland")
     (native-inputs '())
     (inputs
-     (list bash-minimal glibc-utf8-locales ungoogled-chromium))
+     (list bash-minimal (libc-utf8-locales-for-target) ungoogled-chromium))
     (build-system trivial-build-system)
     (arguments
      (list

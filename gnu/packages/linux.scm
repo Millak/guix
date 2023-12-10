@@ -493,7 +493,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-6.6-version "6.6.2")
+(define-public linux-libre-6.6-version "6.6.3")
 (define-public linux-libre-6.6-gnu-revision "gnu")
 (define deblob-scripts-6.6
   (linux-libre-deblob-scripts
@@ -503,12 +503,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1hg3ck1j8288fhlhcvhgs1zzwh3i62nfvphw7x3vsaqr75kiwbjp")))
 (define-public linux-libre-6.6-pristine-source
   (let ((version linux-libre-6.6-version)
-        (hash (base32 "0zmpk5ls6282j88xpnymkr8z5hxpk2495hjjxm0jmb6ninnzdm3k")))
+        (hash (base32 "19wmjkyyv5glv1w647qisrv829hhhpba5x905a7p7kch9wyzrv98")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.6)))
 
-(define-public linux-libre-6.5-version "6.5.12")
+(define-public linux-libre-6.5-version "6.5.13")
 (define-public linux-libre-6.5-gnu-revision "gnu")
 (define deblob-scripts-6.5
   (linux-libre-deblob-scripts
@@ -518,7 +518,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "066z5lw5vrfayhv23hpfcm6fh6b7zmn2v13kfv1g3z3jl1wblhfh")))
 (define-public linux-libre-6.5-pristine-source
   (let ((version linux-libre-6.5-version)
-        (hash (base32 "17rmkzxszp2jg1zx2mmdcy30ffrsd0qms513sxd14klp5k9w2saa")))
+        (hash (base32 "1dfbbydmayfj9npx3z0g38p574pmcx3qgs49dv0npigl48wd9yvq")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.5)))
@@ -526,7 +526,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-6.1-version "6.1.63")
+(define-public linux-libre-6.1-version "6.1.64")
 (define-public linux-libre-6.1-gnu-revision "gnu")
 (define deblob-scripts-6.1
   (linux-libre-deblob-scripts
@@ -536,12 +536,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1hdibv43xbn1lv83i6qjgfmf1bvqxvq17fryfsq4r4sjgs9212js")))
 (define-public linux-libre-6.1-pristine-source
   (let ((version linux-libre-6.1-version)
-        (hash (base32 "13bmy22mi4ybl21kr3hdy6qiaawiqz2jgl2gl9hwqkyx04xh97f2")))
+        (hash (base32 "1ry7dp39010hfja1wial6r6q6ilgygwm7gdz22bg4rzaycwam7b2")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.1)))
 
-(define-public linux-libre-5.15-version "5.15.139")
+(define-public linux-libre-5.15-version "5.15.140")
 (define-public linux-libre-5.15-gnu-revision "gnu")
 (define deblob-scripts-5.15
   (linux-libre-deblob-scripts
@@ -551,12 +551,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1idjrn2w8jrixj8ifkk1awxyyq5042nc4p2mld4rda96azlnp948")))
 (define-public linux-libre-5.15-pristine-source
   (let ((version linux-libre-5.15-version)
-        (hash (base32 "0kh4v1224a7p7ib64pnmc1qid3d1lvg3c14l5s4rpr8qzq6w2s4w")))
+        (hash (base32 "0isa9si9wjn10lw41431wdqsbp9y685ch5lzhwswng3g6j5ywaxy")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
 
-(define-public linux-libre-5.10-version "5.10.201")
+(define-public linux-libre-5.10-version "5.10.202")
 (define-public linux-libre-5.10-gnu-revision "gnu1")
 (define deblob-scripts-5.10
   (linux-libre-deblob-scripts
@@ -566,12 +566,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0xrrnmb5kcc5r21bdm24aq0fnkk1imn367c1cxlj78b6l6gigx4b")))
 (define-public linux-libre-5.10-pristine-source
   (let ((version linux-libre-5.10-version)
-        (hash (base32 "0642y6qj2d4aww6jcki81ba53pvjyfazjxgzgj8brqx8ixchdz3a")))
+        (hash (base32 "12zs2bz2plps6xp80sdg36zkyr00rf5l5c85jl4dd7b9klly04ij")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.10)))
 
-(define-public linux-libre-5.4-version "5.4.261")
+(define-public linux-libre-5.4-version "5.4.262")
 (define-public linux-libre-5.4-gnu-revision "gnu1")
 (define deblob-scripts-5.4
   (linux-libre-deblob-scripts
@@ -581,12 +581,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0sw67b2pk3lng4y67diqqnhxaggnp3nbkx8dxc5fs27rinfxr4m1")))
 (define-public linux-libre-5.4-pristine-source
   (let ((version linux-libre-5.4-version)
-        (hash (base32 "1hsgnv2vcziflhzrrxiny2yp88ybdqda48fm60xhpaphhs0cgfii")))
+        (hash (base32 "1p34x33gkvpv26zcrpx1i6dr7dknyxj8gnp6caqb8sj58h3slgkx")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.4)))
 
-(define-public linux-libre-4.19-version "4.19.299")
+(define-public linux-libre-4.19-version "4.19.300")
 (define-public linux-libre-4.19-gnu-revision "gnu1")
 (define deblob-scripts-4.19
   (linux-libre-deblob-scripts
@@ -596,12 +596,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1425mhkfxn18vxn05bb4h3li7x1jl7l1hf1zi8xhnqv3wa31h9wl")))
 (define-public linux-libre-4.19-pristine-source
   (let ((version linux-libre-4.19-version)
-        (hash (base32 "12p431p2jqjfsf0all3fgn47z9fr2cdqyxipfrf4s4mlw4hpbyy6")))
+        (hash (base32 "0ilksl94gjpc4pzc90swfawsl8lvibpq14nkaxzl0831i219ahd8")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.19)))
 
-(define-public linux-libre-4.14-version "4.14.330")
+(define-public linux-libre-4.14-version "4.14.331")
 (define-public linux-libre-4.14-gnu-revision "gnu1")
 (define deblob-scripts-4.14
   (linux-libre-deblob-scripts
@@ -611,7 +611,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1faagsj4i31z2bp83hflx3q9vrddjnn37a3ah2b47iaplva7z1nd")))
 (define-public linux-libre-4.14-pristine-source
   (let ((version linux-libre-4.14-version)
-        (hash (base32 "0rwgzyfmrns6zir0dpxkwz2hm3z8c0af3wy11lmxamaa5i2wq3k7")))
+        (hash (base32 "03sk82dgvccv70i3hy8gf2hw0n4m305f7rxjw93p7jnjrbpdrp1r")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.14)))
@@ -6618,17 +6618,17 @@ by hand is no trivial task: @command{tmon} aims to make it understandable.")
     (source (package-source linux-libre))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no test suite
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'enter-subdirectory
-           (lambda _
-             (chdir "tools/power/x86/turbostat")
-             #t))
-         (delete 'configure))))         ; no configure script
+     (list
+      #:tests? #f                       ;no test suite
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'enter-subdirectory
+            (lambda _
+              (chdir "tools/power/x86/turbostat")))
+          (delete 'configure))))         ;no configure script
     (inputs
      (list libcap))
     (supported-systems '("i686-linux" "x86_64-linux"))
@@ -8990,7 +8990,8 @@ management tools in userspace.")
                 "0hpzghf1a4cwawzhkiwdzin80h6hd09fskl77d5ppgc084yvj8x0"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/vishvananda/netlink"))
+     `(#:tests? #f      ; Tests depend on specific kernel modules.
+       #:import-path "github.com/vishvananda/netlink"))
     (native-inputs
      (list go-golang-org-x-sys go-netns))
     (home-page "https://github.com/vishvananda/netlink")
@@ -9356,7 +9357,7 @@ types and interfaces and translates so that the X server can use them.")
 (define-public pipewire
   (package
     (name "pipewire")
-    (version "0.3.77")
+    (version "1.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9365,7 +9366,7 @@ types and interfaces and translates so that the X server can use them.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11jdd9ljm6967cdp97qqf5fa02ad69kdgk3212ap5gfndky2h43m"))))
+                "0a8wvsnbgqanp2vjdpkaxpny0k17hz720rd20zdi00s9xjbcrycr"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -9379,6 +9380,8 @@ types and interfaces and translates so that the X server can use them.")
     (native-inputs
      (list `(,glib "bin")
            pkg-config
+           doxygen
+           python
            python-docutils))
     (inputs (list alsa-lib
                   avahi

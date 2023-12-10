@@ -1690,7 +1690,13 @@ purposes.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bm0wdv5p26i8nl4kx3145cz553v401sgbpgc96sddzjfmfiydcw"))))
+        (base32 "1bm0wdv5p26i8nl4kx3145cz553v401sgbpgc96sddzjfmfiydcw"))
+      (snippet
+       #~(begin (use-modules (guix build utils))
+                (substitute* "imgviz/draw.py"
+                  (("collections\\.Iterable") "collections.abc.Iterable"))
+                (substitute* "imgviz/tile.py"
+                  (("collections\\.Sequence") "collections.abc.Sequence"))))))
     (build-system python-build-system)
     (arguments
      `(#:phases

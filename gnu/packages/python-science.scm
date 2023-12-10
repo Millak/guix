@@ -14,7 +14,7 @@
 ;;; Copyright © 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2021, 2023 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
 ;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
@@ -419,6 +419,31 @@ a full featured and well tested Trimesh object which allows for easy
 manipulation and analysis, in the style of the Polygon object in the Shapely
 library.")
     (license license:expat)))
+
+(define-public python-meshzoo
+  (package
+    (name "python-meshzoo")
+    (version "0.9.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/diego-hayashi/meshzoo")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "107byfppbq16fqyp2hw7ydcvvahspzq0hzvlvzqg2zxi1aigbr68"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+      (list python-numpy))
+    (native-inputs (list python-flit-core python-matplotlib python-pytest))
+    (home-page "https://github.com/diego-hayashi/meshzoo")
+    (synopsis "Mesh generator for simple geometries")
+    (description
+      "@code{meshzoo} is a mesh generator for finite element or finite
+volume computations for simple domains like regular polygons, disks,
+spheres, cubes, etc.")
+    (license license:gpl3+)))
 
 (define-public python-tspex
   (package
@@ -843,7 +868,7 @@ functions and around einops with an API and features adapted to xarray.")
 (define-public python-pytensor
   (package
     (name "python-pytensor")
-    (version "2.17.3")
+    (version "2.18.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -852,7 +877,7 @@ functions and around einops with an API and features adapted to xarray.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1694apl8gjdrl6hrfly9yixmfimmmh51vacxmxx63nn4k5qnsgbg"))))
+                "0qa0y13xfm6w7ry7gp0lv84c8blyg34a9ns7ynwqyhf9majq08s5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1847,7 +1872,11 @@ for parameterized model creation and handling.  Its features include:
               (uri (pypi-uri "GPy" version))
               (sha256
                (base32
-                "1yx65ajrmqp02ykclhlb0n8s3bx5r0xj075swwwigiqaippr7dx2"))))
+                "1yx65ajrmqp02ykclhlb0n8s3bx5r0xj075swwwigiqaippr7dx2"))
+             (snippet
+              #~(begin (use-modules (guix build utils))
+                       (substitute* "GPy/models/state_space_main.py"
+                         (("collections\\.Iterable") "collections.abc.Iterable"))))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -1865,6 +1894,31 @@ for parameterized model creation and handling.  Its features include:
 Python, from the Sheffield machine learning group.  GPy implements a range of
 machine learning algorithms based on GPs.")
     (license license:bsd-3)))
+
+(define-public python-pyfma
+  (package
+    (name "python-pyfma")
+    (version "0.1.6")
+    (source (origin
+              (method git-fetch)   ;for tests
+              (uri (git-reference
+                    (url "https://github.com/nschloe/pyfma")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "12i68jj9n1qj9phjnj6f0kmfhlsd3fqjlk9p6d4gs008azw5m8yn"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list pybind11 python-pytest))
+    (home-page "https://github.com/nschloe/pyfma")
+    (synopsis "Fused multiply-add for Python")
+    (description "@code{pyfma} provides an implementation of fused
+multiply-add which computes @code{(x*y) + z} with a single rounding.
+This is useful for dot products, matrix multiplications, polynomial
+evaluations (e.g., with Horner's rule), Newton's method for evaluating
+functions, convolutions, artificial neural networks etc.")
+    (license license:expat)))
 
 (define-public python-pydicom
   (package

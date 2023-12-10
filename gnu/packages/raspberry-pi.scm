@@ -199,7 +199,7 @@ Raspberry Pi.  Note: It does not work on Raspberry Pi 1.")
        ("ld-wrapper" ,ld-wrapper)
        ("make" ,gnu-make)
        ("gcc" ,gcc-6)
-       ("locales" ,glibc-utf8-locales)))
+       ("locales" ,(libc-utf8-locales-for-target))))
     (inputs
      `())
     (arguments

@@ -198,6 +198,10 @@
                         "Zend/tests/concat_003.phpt"))
                 ((target-x86-32?)
                  `(list "ext/dba/tests/dba_gdbm.phpt"))
+                ((target-ppc32?)
+                 `(list "sapi/phpdbg/tests/watch_001.phpt"
+                        "sapi/phpdbg/tests/watch_003.phpt"
+                        "sapi/phpdbg/tests/watch_004.phpt"))
                 ((target-ppc64le?)
                  `(list
                     ;; phpdbg watchpoints don't work.

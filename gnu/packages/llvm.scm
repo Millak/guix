@@ -73,11 +73,13 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages swig)
+  #:use-module (gnu packages vulkan)
   #:use-module (gnu packages xml)
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match)
   #:export (make-lld-wrapper
-            system->llvm-target))
+            system->llvm-target
+            clang-properties))
 
 (define* (system->llvm-target #:optional
                               (system (or (and=> (%current-target-system)
@@ -601,13 +603,13 @@ output), and Binutils.")
   '(("14.0.6" . "14f8nlvnmdkp9a9a79wv67jbmafvabczhah8rwnqrgd5g3hfxxxx")
     ("15.0.7" . "12sggw15sxq1krh1mfk3c1f07h895jlxbcifpwk3pznh4m1rjfy2")
     ("16.0.6" . "0jxmapg7shwkl88m4mqgfjv4ziqdmnppxhjz6vz51ycp2x4nmjky")
-    ("17.0.5" . "149flpr96vcn7a1ckya6mm93m9yp85l47w156fjd0r99ydxrw5kv")))
+    ("17.0.6" . "1a7rq3rgw5vxm8y39fyzr4kv7w97lli4a0c1qrkchwk8p0n07hgh")))
 
 (define %llvm-patches
   '(("14.0.6" . ("clang-14.0-libc-search-path.patch"))
     ("15.0.7" . ("clang-15.0-libc-search-path.patch"))
     ("16.0.6" . ("clang-16.0-libc-search-path.patch"))
-    ("17.0.5" . ("clang-17.0-libc-search-path.patch"))))
+    ("17.0.6" . ("clang-17.0-libc-search-path.patch"))))
 
 (define (llvm-monorepo version)
   (origin
@@ -704,6 +706,10 @@ of programming tools as well as libraries with equivalent functionality.")
                    #$(string-append "-DLLVM_TARGETS_TO_BUILD="
                                     (system->llvm-target)))
                 '())
+         ;; undefined reference to `__atomic_fetch_add_8' in lib/libLLVMOrcJIT.so.14
+         #$@(if (target-ppc32?)
+                (list "-DCMAKE_SHARED_LINKER_FLAGS=-latomic")
+                `())
          "-DCMAKE_SKIP_BUILD_RPATH=FALSE"
          "-DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE"
          "-DBUILD_SHARED_LIBS:BOOL=TRUE"
@@ -1500,7 +1506,7 @@ Library.")
 (define-public llvm-17
   (package
     (inherit llvm-15)
-    (version "17.0.5")
+    (version "17.0.6")
     (source (llvm-monorepo version))))
 
 (define-public clang-runtime-17
@@ -1516,7 +1522,7 @@ Library.")
                     (package-version llvm-17)))
      (sha256
       (base32
-       "12dbp10bhq25a44qnvz978mf9y6pdycwpp7sgq8a93by0fpgb72r")))))
+       "1f8szx762c325916gjxb5lw7zxyidynwnvx6fxxqscsx8514cxxa")))))
 
 (define-public libomp-17
   (package
@@ -1946,37 +1952,37 @@ standard C++ library.")
 (define-public libclc
   (package
     (name "libclc")
-    (version "9.0.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/llvm/llvm-project")
-             (commit (string-append "llvmorg-" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1d1qayvrvvc1di7s7jfxnjvxq2az4lwq1sw1b2gq2ic0nksvajz0"))))
+    (version (package-version llvm-15))
+    (source (llvm-monorepo version))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "-DLLVM_CLANG="
-                            (assoc-ref %build-inputs "clang")
-                            "/bin/clang")
-             (string-append "-DPYTHON="
-                            (assoc-ref %build-inputs "python")
-                            "/bin/python3"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'chdir
-           (lambda _ (chdir "libclc") #t)))))
+     (list
+      #:configure-flags
+      #~(list (string-append "-DLLVM_CLANG="
+                             (assoc-ref %build-inputs "clang")
+                             "/bin/clang")
+              (string-append "-DLLVM_SPIRV="
+                             (assoc-ref %build-inputs "spirv-llvm-translator")
+                             "/bin/llvm-spirv"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'enter-subdirectory
+            (lambda _
+              (chdir "libclc")))
+          (add-after 'enter-subdirectory 'skip-clspv-tests
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("ptx\\.\\*") "[ptx|clspv].*")))))))
+    (propagated-inputs
+     (list spirv-llvm-translator spirv-tools))
     (native-inputs
-     (list clang-9 llvm-9 python))
+     (list clang-15 llvm-15 python))
     (home-page "https://libclc.llvm.org")
     (synopsis "Libraries for the OpenCL programming language")
     (description
      "This package provides an implementation of the OpenCL library
 requirements according to version 1.1 of the OpenCL specification.")
+    (properties `((release-monitoring-url . ,%llvm-release-monitoring-url)))
     ;; Apache license 2.0 with LLVM exception
     (license license:asl2.0)))
 

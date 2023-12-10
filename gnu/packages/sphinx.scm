@@ -634,7 +634,9 @@ introspection of @code{zope.interface} instances in code.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0x9wmgf04rzivbzp7jv1b7fkhkpi02lpk5w1qf4i7bcgih00ym8a"))))
+        (base32 "0x9wmgf04rzivbzp7jv1b7fkhkpi02lpk5w1qf4i7bcgih00ym8a"))
+       (patches
+         (search-patches "python-sphinx-prompt-docutils-0.19.patch"))))
     (build-system python-build-system)
     (arguments
      `(#:phases

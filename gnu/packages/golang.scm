@@ -8568,6 +8568,17 @@ with gotest-tools.")))
 
 (define-public go-gotest-tools-internal-source
   (package (inherit (go-gotest-tools-package "internal/source"))
+    (arguments
+     (substitute-keyword-arguments
+       (package-arguments (go-gotest-tools-package "internal/source"))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'check
+              (lambda* (#:key inputs #:allow-other-keys #:rest args)
+                (unless
+                  ;; failed to parse source file: : open : no such file or directory
+                  (false-if-exception (search-input-file inputs "/bin/gccgo"))
+                  (apply (assoc-ref %standard-phases 'check) args))))))))
     (native-inputs
      (list go-github-com-pkg-errors go-github-com-google-go-cmp-cmp))
     (synopsis "Source code AST formatters for gotest-tools")
@@ -12825,7 +12836,7 @@ is undetermined, a customizable spinner is shown.")
 (define-public go-git-sr-ht-emersion-gqlclient
   (package
     (name "go-git-sr-ht-emersion-gqlclient")
-    (version "0.0.0-20220202181617-4e6e9c763dd2")
+    (version "0.0.0-20230820050442-8873fe0204b9")
     (source
      (origin
        (method git-fetch)
@@ -12834,7 +12845,7 @@ is undetermined, a customizable spinner is shown.")
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1d9hmaz7yy02bk455gmaav818xi49sw69jyx6dxzymv6ln7r1cv1"))))
+        (base32 "0x64kcryawdr0daq1w6fada60zqrddw75yi397835b9ij7wb5gmh"))))
     (build-system go-build-system)
     (arguments (list #:import-path "git.sr.ht/~emersion/gqlclient"))
     (home-page "https://git.sr.ht/~emersion/gqlclient")

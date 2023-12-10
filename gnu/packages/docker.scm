@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 David Thompson <davet@gnu.org>
-;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020, 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
@@ -299,7 +299,10 @@ the required network abstractions for applications.")
     (inherit docker-libnetwork)
     (name "docker-libnetwork-cmd-proxy")
     (arguments
-     `(#:import-path "github.com/docker/libnetwork/cmd/proxy"
+     ;; The tests are unsupported on all architectures except x86_64-linux.
+     `(#:tests? ,(and (not (%current-target-system))
+                      (target-x86-64?))
+       #:import-path "github.com/docker/libnetwork/cmd/proxy"
        #:unpack-path "github.com/docker/libnetwork"
        #:install-source? #f))
     (native-inputs

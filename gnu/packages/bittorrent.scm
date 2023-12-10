@@ -46,11 +46,13 @@
   #:use-module ((guix licenses) #:prefix l:)
   #:use-module (guix gexp)
   #:use-module (guix utils)
+  #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR $SSL_CERT_FILE))
   #:use-module (gnu packages)
   #:use-module (gnu packages adns)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages certs)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
@@ -78,6 +80,7 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml))
 
@@ -414,10 +417,16 @@ and will take advantage of multiple processor cores where possible.")
     (license (list l:public-domain      ; sha1.*, used to build without OpenSSL
                    l:gpl2+))))          ; with permission to link with OpenSSL
 
+(define %v2_empty_file.torrent
+  (origin (method url-fetch)
+          (uri "https://github.com/arvidn/libtorrent/raw/v2.0.9/test/test_torrents/v2_empty_file.torrent")
+          (sha256
+           (base32 "1hydgf0m9193hy9010wl0wrbz4k4cgrqg70jakx68pgi79jcqnrn"))))
+
 (define-public libtorrent-rasterbar
   (package
     (name "libtorrent-rasterbar")
-    (version "1.2.18")
+    (version "2.0.9")
     (source
      (origin
        (method url-fetch)
@@ -426,41 +435,70 @@ and will take advantage of multiple processor cores where possible.")
                        "releases/download/v" version "/"
                        "libtorrent-rasterbar-" version ".tar.gz"))
        (sha256
-        (base32 "0wpsaqadcicxl4lf1nc1i93c4yzjv8hpzhhrw1hdkrp4gn0vdwpy"))))
+        (base32 "13kry578ifzz4m2f291bbd7v5v9zsi8y3mf38146cnqw0sv95kch"))
+       ;; https://github.com/arvidn/libtorrent/issues/7566
+       ;; Remove when resolved.  I would hope this to be fixed in 2.0.10.
+       (modules '((guix build utils)))
+       (snippet
+        #~(substitute* "test/test_copy_file.cpp"
+            (("EXT4_SUPER_MAGIC, EXT3_SUPER_MAGIC, XFS_SUPER_MAGIC" all)
+             (string-append all ", TMPFS_MAGIC\n"))))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-Dpython-bindings=ON"
                            "-Dbuild_tests=ON")
+       ;; Tests do not reliably work when executed in parallel.
+       #:parallel-tests? #f
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'extend-test-timeout
-           (lambda _
-             (substitute* "test/test_remove_torrent.cpp"
-               ;; Extend the test timeout from 3 seconds to 10.
-               (("i > 30") "i > 100"))))
+         ;; https://github.com/arvidn/libtorrent/issues/7567
+         ;; Remove when resolved.  I would hope this to be fixed in 2.0.10.
+         ;; Do not forget to remove the %v2_empty_file.torrent variable.
+         (add-before 'configure 'copy-v2_empty_file.torrent
+           (lambda* (#:key native-inputs inputs #:allow-other-keys)
+             (copy-file (assoc-ref (or native-inputs inputs)
+                                   "%v2_empty_file.torrent")
+                        "test/test_torrents/v2_empty_file.torrent")))
          (replace 'check
            (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
-             (let ((disabled-tests
-                    ;; test_upnp requires a non-localhost IPv4 interface.
-                    '("test_upnp")))
+             (let* ((disabled-tests
+                     '(
+                       ;; Requires a non-localhost IPv4 interface.
+                       "test_upnp"
+                       ;; test_ssl needs to be run separately.
+                       "test_ssl"))
+                    (exclude-regex (string-append "^("
+                                                  (string-join disabled-tests "|")
+                                                  ")$"))
+                    (timeout "600")
+                    (jobs (if parallel-tests?
+                              (number->string (parallel-job-count))
+                              "1")))
                (when tests?
+                 (invoke "ctest"
+                         "-E" exclude-regex
+                         "-j" jobs
+                         "--timeout" timeout
+                         "--output-on-failure")
                  ;; test_ssl relies on bundled TLS certificates with a fixed
                  ;; expiry date.  To ensure succesful builds in the future,
                  ;; fake the time to be roughly that of the release.
-                 (setenv "FAKETIME_ONLY_CMDS" "test_ssl")
+                 ;;
+                 ;; At the same time, faketime happens to cause
+                 ;; test_fast_extension, test_privacy and test_resolve_links
+                 ;; to hang, even with FAKETIME_ONLY_CMDS.  Not sure why.  So
+                 ;; execute only test_ssl under faketime.
                  (invoke "faketime" "2022-10-24"
                          "ctest"
-                         "--exclude-regex" (string-join disabled-tests "|")
-                         "-j" (if parallel-tests?
-                                  (number->string (parallel-job-count))
-                                  "1")
-                         "--rerun-failed"
+                         "-R" "^test_ssl$"
+                         "-j" jobs
+                         "--timeout" timeout
                          "--output-on-failure"))))))))
     (inputs (list boost openssl))
-    (native-inputs
-     (list libfaketime
-           python-wrapper
-           pkg-config))
+    (native-inputs `(("libfaketime" ,libfaketime)
+                     ("python-wrapper" ,python-wrapper)
+                     ("pkg-config" ,pkg-config)
+                     ("%v2_empty_file.torrent" ,%v2_empty_file.torrent)))
     (home-page "https://www.libtorrent.org/")
     (synopsis "Feature-complete BitTorrent implementation")
     (description
@@ -469,10 +507,24 @@ focusing on efficiency and scalability.  It runs on embedded devices as well as
 desktops.")
     (license l:bsd-2)))
 
+(define-public libtorrent-rasterbar-1.2
+  (package
+    (inherit libtorrent-rasterbar)
+    (version "1.2.19")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append "https://github.com/arvidn/libtorrent/"
+                       "releases/download/v" version "/"
+                       "libtorrent-rasterbar-" version ".tar.gz"))
+       (sha256
+        (base32 "03p4nvsll568zlyqifid0cn135sg5whbk7g48gkbapnw92ayks7f"))))))
+
 (define-public qbittorrent
   (package
     (name "qbittorrent")
-    (version "4.5.5")
+    (version "4.6.2")
     (source
      (origin
        (method git-fetch)
@@ -481,7 +533,7 @@ desktops.")
              (commit (string-append "release-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ngvvwhafi9mi05r2l9dk9x05za8x35y12p230wpzprydhlgwsxd"))))
+        (base32 "1wps17iv4gj7y751fibvcxk51v09wyniv6xm2yx429dj7z8rfmzs"))))
     (build-system qt-build-system)
     (arguments
      (list #:configure-flags #~(list "-DTESTING=ON")
@@ -490,7 +542,7 @@ desktops.")
      (list qttools-5))
     (inputs
      (list boost
-           libtorrent-rasterbar
+           libtorrent-rasterbar-1.2
            openssl
            python-wrapper
            qtsvg-5
@@ -526,7 +578,7 @@ features.")
   (package
     (inherit qbittorrent)
     (name "qbittorrent-enhanced")
-    (version "4.5.5.10")
+    (version "4.6.1.10")
     (source
      (origin
        (method git-fetch)
@@ -536,7 +588,7 @@ features.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "029crx8yd8apssg2k4alnc0py5i2sp3bhjkwki5fvvnpgkrhfqf0"))))
+         "101a9n2vk9d6b4vc3schkmpc56l0i0i60fcjh8hwadc6amc2ymvy"))))
     (home-page "https://github.com/c0re100/qBittorrent-Enhanced-Edition")
     (description
      "qBittorrent Enhanced is a bittorrent client based on qBittorrent with
@@ -560,7 +612,7 @@ the following features:
 (define-public deluge
   (package
     (name "deluge")
-    (version "2.0.5")
+    (version "2.1.1")
     (source
      (origin
        (method url-fetch)
@@ -569,12 +621,13 @@ the following features:
              (version-major+minor version) "/deluge-" version ".tar.xz"))
        (sha256
         (base32
-         "1n15dzfnz1gvb4cf046yhi404i3gs933qgz0ichna6r1znmh9gf4"))))
+         "1xyz8bscwqmd7d8b43svxl42w54pnisvwkkrndx46hifh0cx73bn"))))
     (build-system python-build-system)
     (inputs (list bash-minimal))
     (propagated-inputs
      (list gtk+
            libtorrent-rasterbar
+           nss-certs
            python-pycairo
            python-chardet
            python-dbus
@@ -592,6 +645,9 @@ the following features:
     (native-inputs
      (list intltool python-wheel
            (librsvg-for-system)))
+    (native-search-paths
+     (list $SSL_CERT_DIR
+           $SSL_CERT_FILE))
     ;; TODO: Enable tests.
     ;; After "pytest-twisted" is packaged, HOME is set, and an X server is
     ;; started, some of the tests still fail.  There are likely some tests

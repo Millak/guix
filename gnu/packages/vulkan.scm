@@ -39,6 +39,7 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages wine)
@@ -150,6 +151,38 @@ parser,disassembler, validator, and optimizer for SPIR-V.")
     (description
      "SPIRV-Cross tries hard to emit readable and clean output from the
 SPIR-V, aiming to emit GLSL or MSL that looks like human-written code.")
+    (license license:asl2.0)))
+
+(define-public spirv-llvm-translator
+  (package
+    (name "spirv-llvm-translator")
+    (version "15.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/KhronosGroup/SPIRV-LLVM-Translator")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0lix3bpli7i9csz26bq0d9g1v7c0gim498m5bm2gp8kifj2yih1s"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags
+       (list (string-append "-DLLVM_EXTERNAL_SPIRV_HEADERS_SOURCE_DIR="
+                            (assoc-ref %build-inputs "spirv-headers")
+                            "/include/spirv")
+             (string-append "-DLLVM_EXTERNAL_LIT="
+                            (assoc-ref %build-inputs "python-lit")
+                            "/bin/lit")
+             "-DLLVM_SPIRV_INCLUDE_TESTS=ON")))
+    (inputs (list llvm-15))
+    (native-inputs (list clang-15 llvm-15 python-lit spirv-headers))
+    (home-page "https://github.com/KhronosGroup/SPIRV-LLVM-Translator")
+    (synopsis "Bi-directional translation between SPIR-V and LLVM IR")
+    (description
+     "The LLVM/SPIR-V Bi-Directional Translator is a library and tool for
+translation between LLVM IR and SPIR-V.")
     (license license:asl2.0)))
 
 (define-public glslang

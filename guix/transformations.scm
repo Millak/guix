@@ -3,6 +3,7 @@
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2023 Sarthak Shah <shahsarthakw@gmail.com>
 ;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2023 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -439,7 +440,8 @@ the equal sign."
 actual compiler."
     (define wrapper
       #~(begin
-          (use-modules (ice-9 match))
+          (use-modules (ice-9 match)
+                       (ice-9 string-fun))
 
           (define psabi #$(gcc-architecture->micro-architecture-level
                             micro-architecture))
@@ -486,11 +488,20 @@ actual compiler."
                 (apply
                   execl next
                        (append (cons next arguments)
-                         (if (and (search-next "go")
-                                  (string=? next (search-next "go")))
-                           '()
-                           (list (string-append "-march="
-                                                #$micro-architecture)))))))))))
+                         (cond
+                           ((and (search-next "go")
+                                 (string=? next (search-next "go")))
+                            '())
+                           ((and (search-next "zig")
+                                 (string=? next (search-next "zig")))
+                            `(,(string-append
+                                 ;; https://issues.guix.gnu.org/67075#3
+                                 "-Dcpu="
+                                 (string-replace-substring
+                                   #$micro-architecture "-" "_"))))
+                           (else
+                             (list (string-append "-march="
+                                                  #$micro-architecture))))))))))))
 
     (define program
       (program-file (string-append "tuning-compiler-wrapper-" micro-architecture)
@@ -508,7 +519,7 @@ actual compiler."
                                      (symlink #$program
                                               (string-append bin "/" program)))
                                    '("cc" "gcc" "clang" "g++" "c++" "clang++"
-                                     "go")))))))
+                                     "go" "zig")))))))
 
 (define (build-system-with-tuning-compiler bs micro-architecture)
   "Return a variant of BS, a build system, that ensures that the compiler that

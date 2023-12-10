@@ -184,7 +184,7 @@ context menu in TypeScript.")
            #t))))
     (native-inputs
      `(("font-mathjax" ,font-mathjax)
-       ("glibc-utf8-locales" ,glibc-utf8-locales)
+       ("glibc-utf8-locales" ,(libc-utf8-locales-for-target))
        ("uglifyjs" ,node-uglify-js)
        ,@(package-native-inputs font-mathjax)))
     (synopsis "JavaScript display engine for LaTeX, MathML, and AsciiMath")

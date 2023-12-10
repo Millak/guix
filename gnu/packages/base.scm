@@ -76,6 +76,8 @@
   #:use-module (srfi srfi-26)
   #:export (glibc
             libc-for-target
+            libc-locales-for-target
+            libc-utf8-locales-for-target
             make-ld-wrapper
             libiconv-if-needed
             %final-inputs))
@@ -1525,6 +1527,26 @@ command.")
      glibc/hurd)
     (_
      glibc)))
+
+(define-public glibc-locales/hurd
+  ;; Locales again; hide them because their 'supported-systems' field suggests
+  ;; they're Hurd-only, making them non-installable on GNU/Linux.
+  (hidden-package
+   (make-glibc-locales glibc/hurd)))
+
+(define* (libc-locales-for-target #:optional
+                                  (target (or (%current-target-system)
+                                              (%current-system))))
+  (if (target-hurd? target)
+      glibc-locales/hurd
+      glibc-locales))
+
+(define* (libc-utf8-locales-for-target #:optional
+                                       (target (or (%current-target-system)
+                                                   (%current-system))))
+  (if (target-hurd? target)
+      glibc-utf8-locales/hurd
+      glibc-utf8-locales))
 
 (define-public tzdata
   (package

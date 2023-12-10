@@ -1000,8 +1000,9 @@ MANIFEST."
     (module-ref (resolve-interface '(gnu packages texinfo)) 'texinfo))
   (define gzip                                    ;lazy reference
     (module-ref (resolve-interface '(gnu packages compression)) 'gzip))
-  (define glibc-utf8-locales                      ;lazy reference
-    (module-ref (resolve-interface '(gnu packages base)) 'glibc-utf8-locales))
+  (define libc-utf8-locales-for-target            ;lazy reference
+    (module-ref (resolve-interface '(gnu packages base))
+                'libc-utf8-locales-for-target))
 
   (define build
     (with-imported-modules '((guix build utils))
@@ -1043,7 +1044,8 @@ MANIFEST."
 
           (setenv "PATH" (string-append #+gzip "/bin")) ;for info.gz files
           (setenv "GUIX_LOCPATH"
-                  #+(file-append glibc-utf8-locales "/lib/locale"))
+                  #+(file-append (libc-utf8-locales-for-target system)
+                                 "/lib/locale"))
 
           (mkdir-p (string-append #$output "/share/info"))
           (exit (every install-info
@@ -1124,8 +1126,9 @@ MANIFEST.  Single-file bundles are required by programs such as Git and Lynx."
   ;; See <http://lists.gnu.org/archive/html/guix-devel/2015-02/msg00429.html>
   ;; for a discussion.
 
-  (define glibc-utf8-locales                      ;lazy reference
-    (module-ref (resolve-interface '(gnu packages base)) 'glibc-utf8-locales))
+  (define libc-utf8-locales-for-target  ;lazy reference
+    (module-ref (resolve-interface '(gnu packages base))
+                'libc-utf8-locales-for-target))
 
   (define build
     (with-imported-modules '((guix build utils))
@@ -1159,9 +1162,11 @@ MANIFEST.  Single-file bundles are required by programs such as Git and Lynx."
           ;; Some file names in the NSS certificates are UTF-8 encoded so
           ;; install a UTF-8 locale.
           (setenv "LOCPATH"
-                  (string-append #+glibc-utf8-locales "/lib/locale/"
+                  (string-append #+(libc-utf8-locales-for-target system)
+                                 "/lib/locale/"
                                  #+(version-major+minor
-                                    (package-version glibc-utf8-locales))))
+                                    (package-version
+                                     (libc-utf8-locales-for-target system)))))
           (setlocale LC_ALL "en_US.utf8")
 
           (match (append-map ca-files '#$(manifest-inputs manifest))
@@ -1999,19 +2004,21 @@ are cross-built for TARGET."
                     (and (derivation? drv) (gexp-input drv)))
                   extras))
 
-    (define glibc-utf8-locales                    ;lazy reference
+    (define libc-utf8-locales-for-target ;lazy reference
       (module-ref (resolve-interface '(gnu packages base))
-                  'glibc-utf8-locales))
+                  'libc-utf8-locales-for-target))
 
     (define set-utf8-locale
       ;; Some file names (e.g., in 'nss-certs') are UTF-8 encoded so
       ;; install a UTF-8 locale.
-      #~(begin
-          (setenv "LOCPATH"
-                  #$(file-append glibc-utf8-locales "/lib/locale/"
-                                 (version-major+minor
-                                  (package-version glibc-utf8-locales))))
-          (setlocale LC_ALL "en_US.utf8")))
+      (let ((locales (libc-utf8-locales-for-target
+                      (or system (%current-system)))))
+        #~(begin
+            (setenv "LOCPATH"
+                    #$(file-append locales "/lib/locale/"
+                                   (version-major+minor
+                                    (package-version locales))))
+            (setlocale LC_ALL "en_US.utf8"))))
 
     (define builder
       (with-imported-modules '((guix build profiles)

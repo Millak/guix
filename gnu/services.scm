@@ -651,7 +651,9 @@ information is missing, return the empty list (for channels) and possibly
            ;; Force file names to be decoded as UTF-8.  See
            ;; <https://bugs.gnu.org/26353>.
            (setenv "GUIX_LOCPATH"
-                   #+(file-append glibc-utf8-locales "/lib/locale"))
+                   #+(file-append
+                      (libc-utf8-locales-for-target (%current-system))
+                      "/lib/locale"))
            (setlocale LC_CTYPE "en_US.utf8")
            (delete-file-recursively "/tmp")
            (delete-file-recursively "/var/run")

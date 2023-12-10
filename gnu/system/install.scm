@@ -454,7 +454,7 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
            (service gc-root-service-type
                     (append
                      (list bare-bones-os
-                           glibc-utf8-locales
+                           (libc-utf8-locales-for-target system)
                            texinfo
                            guile-3.0)
                      %default-locale-libcs)))

@@ -3596,7 +3596,11 @@ You might also want to install the following optional dependencies:
               (uri (pypi-uri "alchemy-mock" version))
               (sha256
                (base32
-                "0ylxygl3bcdapzz529n8wgk7vx9gjwb3ism564ypkpd7dbsw653r"))))
+                "0ylxygl3bcdapzz529n8wgk7vx9gjwb3ism564ypkpd7dbsw653r"))
+             (snippet
+              #~(begin (use-modules (guix build utils))
+                       (substitute* "alchemy_mock/comparison.py"
+                         (("collections\\.Mapping") "collections.abc.Mapping"))))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
