@@ -37090,29 +37090,29 @@ let} expressions.")
 (define-public rust-ignore-0.4
   (package
     (name "rust-ignore")
-    (version "0.4.20")
+    (version "0.4.21")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ignore" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "14kl9fv83klbnjxdv0y8lpwlj3gkypxf3vbrmm29m2jkmcyqgryv"))))
+        (base32 "0q3hs8ak1dsng3a0adxn2ysjdspazgdkmmm0mgl7h6l4mssd2ykl"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-globset" ,rust-globset-0.4)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-memchr" ,rust-memchr-2)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-same-file" ,rust-same-file-1)
-        ("rust-thread-local" ,rust-thread-local-1)
-        ("rust-walkdir" ,rust-walkdir-2)
-        ("rust-winapi-util" ,rust-winapi-util-0.1))
+     `(#:cargo-inputs (("rust-crossbeam-deque" ,rust-crossbeam-deque-0.8)
+                       ("rust-globset" ,rust-globset-0.4)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-regex-automata" ,rust-regex-automata-0.4)
+                       ("rust-same-file" ,rust-same-file-1)
+                       ("rust-walkdir" ,rust-walkdir-2)
+                       ("rust-winapi-util" ,rust-winapi-util-0.1))
        #:cargo-development-inputs
-       (("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5))))
-    (home-page "https://github.com/BurntSushi/ripgrep/tree/master/crates/ignore")
+       (("rust-bstr" ,rust-bstr-1)
+        ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5))))
+    (home-page
+     "https://github.com/BurntSushi/ripgrep/tree/master/crates/ignore")
     (synopsis "Efficiently match ignore files such as @file{.gitignore}")
     (description
      "This package provides a fast library for efficiently matching
