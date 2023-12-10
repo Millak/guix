@@ -866,6 +866,7 @@ and others.")
               (uri (git-reference
                     (url "https://github.com/gerbv/gerbv")
                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "06bcm5zw7whsnnmfld3gl2j907lxc68gnsbzr2pc4w6qc923rgmj"))))
