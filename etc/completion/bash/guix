@@ -139,7 +139,8 @@ _guix_is_dash_f ()
 {
     _guix_is_short_option f ||
     _guix_is_long_option file ||
-    _guix_is_long_option install-from-file
+    _guix_is_long_option install-from-file ||
+    _guix_is_long_option whole-file
 }
 
 _guix_is_dash_l ()
@@ -333,6 +334,14 @@ _guix_complete ()
 		else
 		    _guix_complete_available_package "$word_at_point"
                 fi
+            elif [[ "$command" = "style" ]]
+            then
+		if _guix_is_dash_f
+		then
+		    _guix_complete_file
+		else
+		    _guix_complete_available_package "$word_at_point"
+		fi
 	    else
 		_guix_complete_available_package "$word_at_point"
 	    fi
