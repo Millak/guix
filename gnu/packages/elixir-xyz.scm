@@ -228,6 +228,26 @@ desired coding style.")
     (home-page "https://hexdocs.pm/credo/")
     (license license:expat)))
 
+(define-public elixir-erlex
+  (package
+    (name "elixir-erlex")
+    (version "0.2.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri name version))
+       (sha256
+        (base32 "0x8c1j62y748ldvlh46sxzv5514rpzm809vxn594vd7y25by5lif"))))
+    (build-system mix-build-system)
+    (arguments (list #:tests? #f)) ; no tests
+    (synopsis
+     "Convert Erlang style structs and error messages to equivalent Elixir")
+    (description
+     "Converted structs and error messages are useful for pretty printing
+things like Dialyzer errors and Observer.")
+    (home-page "https://hexdocs.pm/erlex/")
+    (license license:asl2.0)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
