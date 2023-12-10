@@ -78046,14 +78046,14 @@ library.")
 (define-public rust-termcolor-1
   (package
     (name "rust-termcolor")
-    (version "1.3.0")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "termcolor" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0r1byqaq6f97qd0wc7k09lza190apvj9301s2afsp6m6gp9vm4v0"))))
+        (base32 "0jfllflbxxffghlq6gx4csv0bv0qv77943dcx01h9zssy39w66zz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
