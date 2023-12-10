@@ -9910,19 +9910,19 @@ alphabet.")
 (define-public rust-bstr-1
   (package
     (name "rust-bstr")
-    (version "1.6.0")
+    (version "1.8.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "bstr" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "01bvsr3x9n75klbwxym0zf939vzim0plsmy786p0zzzvrj6i9637"))))
+                "0313sqdf0a40vhpnrlkf54zhr76rmlyxzhx00sq8822shfl36bsl"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-memchr" ,rust-memchr-2)
-        ("rust-regex-automata" ,rust-regex-automata-0.3)
+        ("rust-regex-automata" ,rust-regex-automata-0.4)
         ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
        (("rust-quickcheck" ,rust-quickcheck-1)
