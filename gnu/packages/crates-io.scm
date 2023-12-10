@@ -33745,25 +33745,23 @@ the regex engine it uses pluggable.")
 (define-public rust-grep-pcre2-0.1
   (package
     (name "rust-grep-pcre2")
-    (version "0.1.5")
+    (version "0.1.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "grep-pcre2" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0hfyxsavqzf4rb5vc2a4hhi8dqw75vw1h95hinp4km9b6yxyvv66"))))
+        (base32 "1zwb5acalq7rvy70z4gsarqmrfaqmf9016yvxz5f573434idai02"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-grep-matcher" ,rust-grep-matcher-0.1)
-        ("rust-pcre2" ,rust-pcre2-0.2))))
-    (native-inputs
-     (list pcre2 pkg-config))
+     `(#:cargo-inputs (("rust-grep-matcher" ,rust-grep-matcher-0.1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-pcre2" ,rust-pcre2-0.2))))
+    (native-inputs (list pkg-config))
+    (inputs (list pcre2))
     (home-page
-     "https://github.com/BurntSushi/ripgrep")
+     "https://github.com/BurntSushi/ripgrep/tree/master/crates/pcre2")
     (synopsis "Use PCRE2 with the grep crate")
     (description "Use PCRE2 with the grep crate.")
     (license (list license:expat license:unlicense))))
