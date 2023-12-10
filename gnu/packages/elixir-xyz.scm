@@ -50,6 +50,26 @@ for higher-level combinators through composition.")
     (home-page "https://hexdocs.pm/nimble_parsec/")
     (license license:asl2.0)))
 
+(define-public elixir-makeup
+  (package
+    (name "elixir-makeup")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri name version))
+       (sha256
+        (base32 "19jpprryixi452jwhws3bbks6ki3wni9kgzah3srg22a3x8fsi8a"))))
+    (build-system mix-build-system)
+    (propagated-inputs (list elixir-nimble-parsec))
+    (arguments (list #:tests? #f)) ; no tests
+    (synopsis "Syntax highlighter for source code")
+    (description
+     "Makeup is a generic syntax highlighter in the style of Pygments suitable for use in code hosting,
+forums, wikis or other applications that need to prettify source code.")
+    (home-page "https://hexdocs.pm/makeup/")
+    (license license:bsd-2)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
