@@ -33828,30 +33828,27 @@ provides standard printing of search results, similar to grep itself.")
 (define-public rust-grep-searcher-0.1
   (package
     (name "rust-grep-searcher")
-    (version "0.1.8")
+    (version "0.1.13")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "grep-searcher" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0gf2qkkfsywvzrqvfx6h88qzb68zmnvggvid1ljdqam51glvvgbz"))))
+        (base32 "0m1w35d9wnpv157g0adj3grqw0nkacqxv14mhgc65v4vyvj6llxs"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-bstr" ,rust-bstr-0.2)
-        ("rust-bytecount" ,rust-bytecount-0.6)
-        ("rust-encoding-rs" ,rust-encoding-rs-0.8)
-        ("rust-encoding-rs-io" ,rust-encoding-rs-io-0.1)
-        ("rust-grep-matcher" ,rust-grep-matcher-0.1)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-memmap" ,rust-memmap2-0.3))
-       #:cargo-development-inputs
-       (("rust-grep-regex" ,rust-grep-regex-0.1)
-        ("rust-regex" ,rust-regex-1))))
-    (home-page "https://github.com/BurntSushi/ripgrep")
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-encoding-rs" ,rust-encoding-rs-0.8)
+                       ("rust-encoding-rs-io" ,rust-encoding-rs-io-0.1)
+                       ("rust-grep-matcher" ,rust-grep-matcher-0.1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-memmap2" ,rust-memmap2-0.9))
+       #:cargo-development-inputs (("rust-grep-regex" ,rust-grep-regex-0.1)
+                                   ("rust-regex" ,rust-regex-1))))
+    (home-page
+     "https://github.com/BurntSushi/ripgrep/tree/master/crates/searcher")
     (synopsis "Line oriented regex searching as a library")
     (description
      "Fast line oriented regex searching as a library.")
