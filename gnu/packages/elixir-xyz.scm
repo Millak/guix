@@ -143,6 +143,27 @@ application-specific names1.")
     (home-page "https://hexdocs.pm/bunt/")
     (license license:expat)))
 
+(define-public elixir-inch-ex
+  (package
+    (name "elixir-inch-ex")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri name version))
+       (sha256
+        (base32 "1a4rjcy3hn5pc40si1d1y7qg0b0mnxx6pw825la67ky8r9gfrl4n"))))
+    (build-system mix-build-system)
+    (arguments (list #:tests? #f)) ; no tests
+    (propagated-inputs (list elixir-bunt elixir-jason))
+    (synopsis
+     "Suggest enhancements for inline documentation")
+    (description
+     "This package provides a Mix task that gives you hints where to improve your
+inline docs.")
+    (home-page "https://hex.pm/packages/inch_ex")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
