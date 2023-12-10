@@ -124,6 +124,25 @@ https://github.com/synrc/fs.")
     (home-page "https://hexdocs.pm/file_system/")
     (license license:wtfpl2)))
 
+(define-public elixir-bunt
+  (package
+    (name "elixir-bunt")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri name version))
+       (sha256
+        (base32 "19bp6xh052ql3ha0v3r8999cvja5d2p6cph02mxphfaj4jsbyc53"))))
+    (build-system mix-build-system)
+    (arguments (list #:tests? #f)) ; no tests
+    (synopsis "256 color ANSI coloring in the terminal")
+    (description "Bunt is an Elixir package that enables 256 color ANSI
+coloring in the terminal and allows users to alias colors to more semantic and
+application-specific names1.")
+    (home-page "https://hexdocs.pm/bunt/")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
