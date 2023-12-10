@@ -267,6 +267,26 @@ things like Dialyzer errors and Observer.")
     (home-page "https://hexdocs.pm/dialyxir/")
     (license license:asl2.0)))
 
+(define-public elixir-machete
+  (package
+    (name "elixir-machete")
+    (version "0.2.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri name version))
+       (sha256
+        (base32 "0952603bmqsf6v3ja99zpbnbx5d52i4xksjkfj3irl45ccq5pgq9"))))
+    (build-system mix-build-system)
+    (native-inputs (list elixir-credo elixir-dialyxir))
+    (synopsis "Literate test matchers for ExUnit")
+    (description
+     "Machete provides ergonomic match operators that act as building blocks to let
+you define test expectations that can match data against any combination of
+literals, variables, or parametrically defined matchers.")
+    (home-page "https://hexdocs.pm/machete/")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
