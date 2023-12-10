@@ -269,7 +269,6 @@
        "https://mirror.kumi.systems/kde/ftp/"
        "https://mirrors.ircam.fr/pub/KDE/"
        "https://ftp.gwdg.de/pub/linux/kde/"
-       "https://mirrors.gethosted.online/kde/pub/kde/"
        "https://fr2.rpmfind.net/linux/KDE/"
        "https://mirror.faigner.de/kde/ftp/"
        "https://www.mirrorservice.org/sites/download.kde.org/"
@@ -286,7 +285,6 @@
        "https://mirrors.nav.ro/kde/"
        "https://mirrors.xtom.ee/kde/"
        "https://ftp.funet.fi/pub/mirrors/ftp.kde.org/pub/kde/"
-       "https://kde.ip-connect.vn.ua/"
        "https://mirrors.netix.net/kde/"
        "https://ftp.cc.uoc.gr/mirrors/kde/"
        ;; North America
@@ -305,7 +303,7 @@
        "https://mirrors.xtom.jp/kde/"
        "https://mirrors.xtom.hk/kde/"
        ;; Africa
-       "http://mirror.retentionrange.co.bw/kde/"
+       "https://mirror.dimensiondata.com/mirror/ftp.kde.org/"
        ;; Oceania
        "https://mirrors.xtom.au/kde/")
       (openbsd
