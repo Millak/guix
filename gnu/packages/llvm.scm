@@ -50,6 +50,7 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix memoization)
+  #:use-module (guix search-paths)
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system emacs)
@@ -464,19 +465,7 @@ ttest third-party/unittest)\n" line))))))
                       #t)))))
 
     ;; Clang supports the same environment variables as GCC.
-    (native-search-paths
-     (list (search-path-specification
-            (variable "C_INCLUDE_PATH")
-            (files '("include")))
-           (search-path-specification
-            (variable "CPLUS_INCLUDE_PATH")
-            (files '("include/c++" "include")))
-           (search-path-specification
-            (variable "OBJC_INCLUDE_PATH")
-            (files '("include")))
-           (search-path-specification
-            (variable "LIBRARY_PATH")
-            (files '("lib" "lib64")))))
+    (native-search-paths %gcc-search-paths)
 
     (home-page "https://clang.llvm.org")
     (synopsis "C language family frontend for LLVM")
