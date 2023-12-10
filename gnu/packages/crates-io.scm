@@ -17643,20 +17643,21 @@ criterion.")
 (define-public rust-crossbeam-channel-0.5
   (package
     (name "rust-crossbeam-channel")
-    (version "0.5.6")
+    (version "0.5.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "crossbeam-channel" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "08f5f043rljl82a06d1inda6nl2b030s7yfqp31ps8w8mzfh9pf2"))))
+        (base32 "1m822cimkki4861c3pg4lbxbym28ml4739y39bn4mwzd4qlj9hql"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8))))
+     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8))
+       #:cargo-development-inputs (("rust-num-cpus" ,rust-num-cpus-1)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-signal-hook" ,rust-signal-hook-0.3))))
     (home-page
      "https://github.com/crossbeam-rs/crossbeam/tree/master/crossbeam-channel")
     (synopsis "Multi-producer multi-consumer channels for message passing")
