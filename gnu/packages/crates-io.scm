@@ -33804,26 +33804,21 @@ provides standard printing of search results, similar to grep itself.")
 (define-public rust-grep-regex-0.1
   (package
     (name "rust-grep-regex")
-    (version "0.1.9")
+    (version "0.1.12")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "grep-regex" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "01mx4xsrfp5hf8dpnvld1svs6i5dpg6xghigp4wkhdlcfv4m658j"))))
+        (base32 "0393d2ydvq8qdgss8k7pbnfdns7ramlhxjk7pifdldd8bh9vnj7p"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-aho-corasick" ,rust-aho-corasick-0.7)
-        ("rust-bstr" ,rust-bstr-0.2)
-        ("rust-grep-matcher" ,rust-grep-matcher-0.1)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-regex-syntax" ,rust-regex-syntax-0.6)
-        ("rust-thread-local" ,rust-thread-local-1))))
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-grep-matcher" ,rust-grep-matcher-0.1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-regex-automata" ,rust-regex-automata-0.4)
+                       ("rust-regex-syntax" ,rust-regex-syntax-0.8))))
     (home-page "https://github.com/BurntSushi/ripgrep")
     (synopsis "Use Rust's regex library with the grep crate")
     (description
