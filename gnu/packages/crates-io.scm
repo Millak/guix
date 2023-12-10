@@ -33417,15 +33417,14 @@ shell style patterns.")
 (define-public rust-globset-0.4
   (package
     (name "rust-globset")
-    (version "0.4.12")
+    (version "0.4.14")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "globset" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "01phmxrkr9d7lhh84b6nylgjb3r21ssfddxvm23ihz3hw3cbpa5c"))))
+        (base32 "1qab0c1drpybgm4nc92lf8b46x0ap44c9y4k23rndgc5bfdkpnjp"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -33433,11 +33432,11 @@ shell style patterns.")
         ("rust-bstr" ,rust-bstr-1)
         ("rust-fnv" ,rust-fnv-1)
         ("rust-log" ,rust-log-0.4)
-        ("rust-regex" ,rust-regex-1)
+        ("rust-regex-automata" ,rust-regex-automata-0.4)
+        ("rust-regex-syntax" ,rust-regex-syntax-0.8)
         ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
        (("rust-glob" ,rust-glob-0.3)
-        ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-serde-json" ,rust-serde-json-1))))
     (home-page "https://github.com/BurntSushi/ripgrep/tree/master/globset")
     (synopsis "Single glob and glob set matching")
