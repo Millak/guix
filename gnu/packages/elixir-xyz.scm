@@ -70,6 +70,27 @@ forums, wikis or other applications that need to prettify source code.")
     (home-page "https://hexdocs.pm/makeup/")
     (license license:bsd-2)))
 
+(define-public elixir-jason
+  (package
+    (name "elixir-jason")
+    (version "1.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri name version))
+       (sha256
+        (base32 "18d70i31bz11nr6vgsjn5prvhkvwqbyf3xq22ck5cnsnzp6ixc7v"))))
+    (build-system mix-build-system)
+    (arguments (list #:tests? #f)) ; no tests
+    (synopsis "JSON parser and generator")
+    (description
+     "Parser and generator are written in pure Elixir and optimized for speed. They
+are at least twice as fast as other Elixir/Erlang libraries (e.g.
+Poison). The performance is comparable to jiffy, which is implemented in C as
+a NIF.")
+    (home-page "https://hexdocs.pm/jason/")
+    (license license:asl2.0)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
