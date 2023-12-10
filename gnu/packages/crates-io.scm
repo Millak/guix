@@ -86041,7 +86041,12 @@ a part of rav1e.")
                 "135inp4x7cc32k0hzrymlz1baf0rj0ah5h82nrpa9w0hqpxmg0jf"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-buf-min" ,rust-buf-min-0.7))))
+     ;; The tests assume x86_64 or i686 architecture.
+     ;; https://github.com/zzau13/v_escape/issues/55
+     ;; https://github.com/zzau13/v_escape/pull/123
+     `(#:tests? ,(and (not (%current-target-system))
+                      (target-x86?))
+       #:cargo-inputs (("rust-buf-min" ,rust-buf-min-0.7))))
     (home-page "https://github.com/botika/v_escape")
     (synopsis "Simd optimized HTML escaping code")
     (description "This package provides simd optimized HTML escaping code.")
