@@ -17407,7 +17407,9 @@ http://reveng.sourceforge.net/crc-catalogue) expressed as simple Rust structs.")
          "15iw8zvyilx6k3a7z79vpzmpm6kkyds4c1ng3jlwfc43axd4hd4d"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     ;; error: criterion-cycles-per-byte currently relies on x86 or x86_64
+     `(#:skip-build? ,(not (target-x86?))
+       #:cargo-inputs
        (("rust-criterion" ,rust-criterion-0.3))))
     (home-page "https://crates.io/crates/criterion-cycles-per-byte")
     (synopsis "Measure time with CPU cycles for criterion")
