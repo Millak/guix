@@ -149,15 +149,15 @@ contains the archive keys used for that.")
 (define-public ubuntu-keyring
   (package
     (name "ubuntu-keyring")
-    (version "2021.03.26")
+    (version "2023.11.28.1")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://launchpad.net/ubuntu/+archive/primary/"
-                            "+files/" name "_" version ".tar.gz"))
+                            "+files/" name "_" version ".tar.xz"))
         (sha256
          (base32
-          "1ccvwh4s51viyhcg8gh189jmvbrhc5wv1bbp4minz3200rffsbj9"))))
+          "0bmafky67hrb79baaydmw7al21lz0wgi4ks5dqfkfqamw5d4bkdf"))))
     (build-system trivial-build-system)
     (arguments
      `(#:modules ((guix build utils))
@@ -167,7 +167,7 @@ contains the archive keys used for that.")
                           (apt (string-append out "/etc/apt/trusted.gpg.d/"))
                           (key (string-append out "/share/keyrings/")))
                      (setenv "PATH" (string-append
-                                      (assoc-ref %build-inputs "gzip") "/bin:"
+                                      (assoc-ref %build-inputs "xz") "/bin:"
                                       (assoc-ref %build-inputs "tar") "/bin"))
                      (invoke "tar" "xvf" (assoc-ref %build-inputs "source"))
                      (for-each (lambda (file)
@@ -175,10 +175,9 @@ contains the archive keys used for that.")
                                (find-files "." "ubuntu-[^am].*\\.gpg$"))
                      (for-each (lambda (file)
                                  (install-file file key))
-                               (find-files "." "ubuntu-[am].*\\.gpg$")))
-                   #t)))
+                               (find-files "." "ubuntu-[am].*\\.gpg$"))))))
     (native-inputs
-     (list tar gzip))
+     (list tar xz))
     (home-page "https://launchpad.net/ubuntu/+source/ubuntu-keyring")
     (synopsis "GnuPG keys of the Ubuntu archive")
     (description
