@@ -168,6 +168,25 @@ human.")
               #~(list "-DWITH_XC_DOCS=NO")))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'record-clipboard-programs
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Record the file names of clipboard programs invoked by
+              ;; 'keepassxc-cli clip' and similar.
+              ;;
+              ;; Note: Use 'QString::fromUtf8' rather than 'QStringLiteral' so
+              ;; that the store reference is stored as ASCII instead of
+              ;; UTF-16, which would be invisible to the GC's scanner.
+              (substitute* "src/cli/Utils.cpp"
+                (("QStringLiteral\\(\"xclip\"\\)")
+                 (string-append
+                  "QString::fromUtf8(\""
+                  (search-input-file inputs "bin/xclip")
+                  "\")"))
+                (("QStringLiteral\\(\"wl-copy\"\\)")
+                 (string-append
+                  "QString::fromUtf8(\""
+                  (search-input-file inputs "bin/wl-copy")
+                  "\")")))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
@@ -199,6 +218,8 @@ human.")
            qtx11extras
            quazip-0                     ; XC_KEESHARE
            readline
+           wl-clipboard                 ;for 'wl-copy'
+           xclip                        ;for 'xclip'
            yubikey-personalization      ; XC_YUBIKEY
            zlib))
     (home-page "https://keepassxc.org")
