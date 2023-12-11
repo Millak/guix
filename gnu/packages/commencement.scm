@@ -3394,17 +3394,11 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
                    #:guile guile-final
                    #:bash bash-final))
 
-(define (%boot5-inputs)
-  ;; Now with UTF-8 locales.  Remember that the bootstrap binaries were built
-  ;; with an older libc, which cannot load the new locale format.  See
-  ;; <https://lists.gnu.org/archive/html/guix-devel/2015-08/msg00737.html>.
-  `(("locales" ,(if (target-hurd?)
-                    glibc-utf8-locales-final/hurd
-                    glibc-utf8-locales-final))
-    ,@(%boot4-inputs)))
-
-(define with-boot5
-  (package-with-explicit-inputs %boot5-inputs))
+;; There used to be a "stage 5" including a variant of the
+;; 'glibc-utf8-locales' package.  This is no longer necessary since 'glibc'
+;; embeds the "C.UTF-8" locale, but these aliases are kept for convenience.
+(define %boot5-inputs %boot4-inputs)
+(define with-boot5 with-boot4)
 
 (define gnu-make-final
   ;; The final GNU Make, which uses the final Guile.
@@ -3493,7 +3487,11 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
                    ("diffutils" ,diffutils)
                    ("patch" ,patch/pinned)
                    ("findutils" ,findutils)
-                   ("gawk" ,gawk)))
+                   ("gawk" ,(package/inherit gawk
+                              (native-inputs
+                               (list (if (target-hurd?)
+                                         glibc-utf8-locales-final/hurd
+                                         glibc-utf8-locales-final)))))))
           ("sed" ,sed-final)
           ("grep" ,grep-final)
           ("xz" ,xz-final)
@@ -3504,10 +3502,7 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
           ("binutils" ,binutils-final)
           ("gcc" ,gcc-final)
           ("libc" ,glibc-final)
-          ("libc:static" ,glibc-final "static")
-          ("locales" ,(if (target-hurd? (%current-system))
-                          glibc-utf8-locales-final/hurd
-                          glibc-utf8-locales-final)))))))
+          ("libc:static" ,glibc-final "static"))))))
 
 (define-public canonical-package
   (let ((name->package (mlambda (system)
@@ -3518,6 +3513,10 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
                                                 package result))))
                                vlist-null
                                `(("guile" ,guile-final)
+                                 ("glibc-utf8-locales"
+                                  ,(if (target-hurd? system)
+                                       glibc-utf8-locales-final/hurd
+                                       glibc-utf8-locales-final))
                                  ,@(%final-inputs system))))))
     (lambda (package)
       "Return the 'canonical' variant of PACKAGE---i.e., if PACKAGE is one of

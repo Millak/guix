@@ -38,6 +38,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ncurses)
@@ -79,10 +80,12 @@
        #:tests? ,(and (not (target-hurd?))
                       (not (%current-target-system)))))
     (inputs (list ncurses perl))
+
     ;; When cross-compiling, texinfo will build some of its own binaries with
     ;; the native compiler. This means ncurses is needed both in both inputs
-    ;; and native-inputs.
-    (native-inputs (list perl ncurses))
+    ;; and native-inputs.  Some of its tests require extra locales such as
+    ;; fr_FR.UTF-8.
+    (native-inputs (list perl ncurses (libc-utf8-locales-for-target)))
 
     (native-search-paths
      ;; This is the variable used by the standalone Info reader.

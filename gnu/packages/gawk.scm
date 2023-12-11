@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2016, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2018, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021, 2022 Marius Bakke <marius@gnu.org>
@@ -78,6 +78,10 @@
                   (substitute* "test/watchpoint1.ok"
                     (("#! /usr/bin/gawk")
                      (string-append "#!" (which "gawk")))))))))
+
+   ;; Tests explicitly require en_US.UTF-8, fr_FR.UTF-8, ru_RU.UTF-8 and
+   ;; ja_JP.UTF-8.
+   (native-inputs (list (libc-utf8-locales-for-target)))
 
    (inputs (list libsigsegv
                  ;; Use the full-fledged Bash package, otherwise the test suite
