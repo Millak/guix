@@ -45042,23 +45042,22 @@ non-interactive protocols can be implemented as if they were interactive.")
 (define-public rust-twox-hash-1
   (package
     (name "rust-twox-hash")
-    (version "1.6.0")
+    (version "1.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "twox-hash" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0ndb4pil758kn0av83jjgq8kkfkwc5lhi5ii7fk5yw96h1wapy04"))))
+        (base32 "0xgn72j36a270l5ls1jk88n7bmq2dhlfkbhdh5554hbagjsydzlp"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-0.1)
         ("rust-digest" ,rust-digest-0.8)
         ("rust-digest" ,rust-digest-0.9)
-        ("rust-rand" ,rust-rand-0.7)
+        ("rust-digest" ,rust-digest-0.10)
+        ("rust-rand" ,rust-rand-0.8)
         ("rust-serde" ,rust-serde-1)
         ("rust-static-assertions" ,rust-static-assertions-1))
        #:cargo-development-inputs
