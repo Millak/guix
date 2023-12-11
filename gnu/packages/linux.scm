@@ -2281,11 +2281,7 @@ deviation, and minimum and maximum values.  It can show a nice histogram too.")
                      ;; Change the test to refer to the right file.
                      (substitute* "tests/ts/misc/mcookie"
                        (("/etc/services")
-                        services))
-
-                     ;; The C.UTF-8 locale does not exist in our libc.
-                     (substitute* "tests/ts/column/invalid-multibyte"
-                       (("C\\.UTF-8") "en_US.utf8")))))
+                        services)))))
                (add-before 'check 'disable-setarch-test
                  (lambda _
                    ;; The setarch tests are unreliable in QEMU's user-mode

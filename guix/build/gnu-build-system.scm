@@ -123,7 +123,7 @@ there are none."
               native-search-paths)))
 
 (define* (install-locale #:key
-                         (locale "en_US.utf8")
+                         (locale "C.UTF-8")
                          (locale-category LC_ALL)
                          #:allow-other-keys)
   "Try to install LOCALE; emit a warning if that fails.  The main goal is to
