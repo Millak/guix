@@ -91879,8 +91879,32 @@ crate.")
     (description "Windows metadata reader.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-windows-sys-0.52
+  (package
+    (name "rust-windows-sys")
+    (version "0.52.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "windows-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0gd3v4ji88490zgb6b5mq5zgbvwv7zx1ibn8v3x83rwcdbryaar8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-windows-targets" ,rust-windows-targets-0.52))))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Rust for Windows")
+    (description "The windows crate lets you call any Windows API past,
+present, and future using code generated on the fly directly from the metadata
+describing the API and right into your Rust package where you can call them as
+if they were just another Rust module.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-sys-0.48
   (package
+    (inherit rust-windows-sys-0.52)
     (name "rust-windows-sys")
     (version "0.48.0")
     (source (origin
@@ -91890,17 +91914,9 @@ crate.")
               (sha256
                (base32
                 "1aan23v5gs7gya1lc46hqn9mdh8yph3fhxmhxlw36pn6pqc28zb7"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
-       #:cargo-inputs (("rust-windows-targets" ,rust-windows-targets-0.48))))
-    (home-page "https://github.com/microsoft/windows-rs")
-    (synopsis "Rust for Windows")
-    (description "The windows crate lets you call any Windows API past,
-present, and future using code generated on the fly directly from the metadata
-describing the API and right into your Rust package where you can call them as
-if they were just another Rust module.")
-    (license (list license:expat license:asl2.0))))
+       #:cargo-inputs (("rust-windows-targets" ,rust-windows-targets-0.48))))))
 
 (define-public rust-windows-sys-0.45
   (package
