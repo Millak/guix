@@ -587,7 +587,7 @@ driven and does not detract you from your daily work.")
 (define-public nyxt
   (package
     (name "nyxt")
-    (version "3.9.2")
+    (version "3.10.0")
     (source
      (origin
        (method git-fetch)
@@ -596,13 +596,8 @@ driven and does not detract you from your daily work.")
              (commit version)))
        (sha256
         (base32
-         "1v85jn46d9vacjig6n9z797fch88fw6vzwbfdzlqdkm86vvm8dwn"))
-       (file-name (git-file-name "nyxt" version))
-       (modules '((guix build utils)))
-       (snippet
-        `(begin
-           (delete-file-recursively "libraries/nasdf")
-           #t))))
+         "1rz2082kk3fdvszqmi3fgndrq205vbxl3i0x4qyli0jy3lpvjin8"))
+       (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags (list "nyxt" "NYXT_SUBMODULES=false"
@@ -679,7 +674,6 @@ driven and does not detract you from your daily work.")
                   sbcl-montezuma
                   sbcl-moptilities
                   sbcl-named-readtables
-                  sbcl-nasdf
                   sbcl-nclasses
                   sbcl-ndebug
                   sbcl-nfiles
