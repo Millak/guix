@@ -92328,19 +92328,19 @@ windows crate.")
                '(delete-file "lib/libwindows.a"))))
     (arguments (list #:skip-build? #t))))
 
-(define-public rust-windows-x86-64-msvc-0.48
+(define-public rust-windows-x86-64-msvc-0.52
   (package
     (name "rust-windows-x86-64-msvc")
-    (version "0.48.0")
+    (version "0.52.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "windows_x86_64_msvc" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "12ipr1knzj2rwjygyllfi5mkd0ihnbi3r61gag5n2jgyk5bmyl8s"))
+                "012wfq37f18c09ij5m6rniw7xxn5fcvrxbqd0wd8vgnl3hfn9yfz"))
               (snippet
-               #~(delete-file "lib/windows.0.48.0.lib"))))
+               '(delete-file "lib/windows.0.52.0.lib"))))
     (build-system cargo-build-system)
     (arguments (list #:skip-build? #t))
     (home-page "https://github.com/microsoft/windows-rs")
@@ -92348,6 +92348,21 @@ windows crate.")
     (description
      "This package provides code gen support for the windows crate.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-windows-x86-64-msvc-0.48
+  (package
+    (inherit rust-windows-x86-64-msvc-0.52)
+    (name "rust-windows-x86-64-msvc")
+    (version "0.48.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "windows_x86_64_msvc" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "12ipr1knzj2rwjygyllfi5mkd0ihnbi3r61gag5n2jgyk5bmyl8s"))
+              (snippet
+               #~(delete-file "lib/windows.0.48.0.lib"))))
+    (arguments (list #:skip-build? #t))))
 
 (define-public rust-windows-x86-64-msvc-0.42
   (package
