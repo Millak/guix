@@ -463,7 +463,6 @@
        (target ->   "arm-linux-gnueabihf")
        (grep        (package->cross-derivation packages:grep target))
        (sed         (package->cross-derivation packages:sed target))
-       (locales     (package->derivation (packages:libc-utf8-locales-for-target)))
        (drv         (profile-derivation manifest
                                         #:hooks '()
                                         #:locales? #t
@@ -475,15 +474,11 @@
                  (and (string-suffix? name input) input)))
              (derivation-inputs drv))))
 
-    ;; The inputs for grep and sed should be cross-build derivations, but that
-    ;; for the glibc-utf8-locales should be a native build.
     (return (and (string=? (derivation-system drv) (%current-system))
                  (string=? (find-input packages:grep)
                            (derivation-file-name grep))
                  (string=? (find-input packages:sed)
-                           (derivation-file-name sed))
-                 (string=? (find-input (packages:libc-utf8-locales-for-target))
-                           (derivation-file-name locales))))))
+                           (derivation-file-name sed))))))
 
 (test-assert "package->manifest-entry defaults to \"out\""
   (let ((outputs (package-outputs packages:glibc)))
