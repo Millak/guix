@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2015, 2018 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2014, 2015, 2016, 2020 Mark H Weaver <mhw@netris.org>
@@ -130,11 +130,10 @@
                   (symlink (string-append "lock-obj-pub." triplet ".h")
                            (string-append "src/syscfg/lock-obj-pub."
                                           source ".h")))
-                #$(let* ((target (%current-target-system))
-                         (architecture
-                          (string-take target (string-index target #\-))))
+                #$(let ((target (%current-target-system)))
                     (cond ((target-linux? target)
-                           (match architecture
+                           (match (string-take target
+                                               (string-index target #\-))
                              ("armhf"
                               `(link "arm-unknown-linux-gnueabi" "linux-gnu"))
                              ("mips64el"
