@@ -916,13 +916,7 @@ identifiers.  The result is inferred from the file names of patches."
       ("gzip"  ,(ref '(gnu packages compression) 'gzip))
       ("lzip"  ,(ref '(gnu packages compression) 'lzip))
       ("unzip" ,(ref '(gnu packages compression) 'unzip))
-      ("patch" ,(ref '(gnu packages base) 'patch/pinned))
-      ("locales"
-       ,(parameterize ((%current-target-system #f)
-                       (%current-system system))
-          (canonical
-           ((module-ref (resolve-interface '(gnu packages base))
-                        'libc-utf8-locales-for-target))))))))
+      ("patch" ,(ref '(gnu packages base) 'patch/pinned)))))
 
 (define (default-guile)
   "Return the default Guile package used to run the build code of
@@ -1003,7 +997,6 @@ specifies modules in scope when evaluating SNIPPET."
         (lzip    (lookup-input "lzip"))
         (xz      (lookup-input "xz"))
         (patch   (lookup-input "patch"))
-        (locales (lookup-input "locales"))
         (comp    (and=> (compressor source-file-name) lookup-input))
         (patches (map instantiate-patch patches)))
     (define build
@@ -1065,15 +1058,17 @@ specifies modules in scope when evaluating SNIPPET."
             ;; Encoding/decoding errors shouldn't be silent.
             (fluid-set! %default-port-conversion-strategy 'error)
 
-            (when #+locales
-              ;; First of all, install a UTF-8 locale so that UTF-8 file names
-              ;; are correctly interpreted.  During bootstrap, LOCALES is #f.
-              (setenv "LOCPATH"
-                      (string-append #+locales "/lib/locale/"
-                                     #+(and locales
-                                            (version-major+minor
-                                             (package-version locales)))))
-              (setlocale LC_ALL "en_US.utf8"))
+            ;; First of all, install a UTF-8 locale so that UTF-8 file names
+            ;; are correctly interpreted.  During bootstrap, locales are
+            ;; missing.
+            (let ((locale "C.UTF-8"))
+              (catch 'system-error
+                (lambda ()
+                  (setlocale LC_ALL locale))
+                (lambda args
+                  (format (current-error-port)
+                          "failed to install '~a' locale: ~a~%"
+                          locale (system-error-errno args)))))
 
             (setenv "PATH"
                     (string-append #+xz "/bin"
