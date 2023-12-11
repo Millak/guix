@@ -13662,14 +13662,15 @@ how to behave across the three main input sources")
 (define-public rust-clap-4
   (package
     (name "rust-clap")
-    (version "4.4.7")
+    (version "4.4.11")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "clap" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0yzilqlyf5xid5i7qvk8sqpnbggsqk2ndbfmclsci67cvh05wjdc"))))
+        (base32
+         "1wj5gb2fnqls00zfahg3490bdfc36d9cwpl80qjacb5jyrqzdbxz"))))
     (build-system cargo-build-system)
     (arguments
      (list #:cargo-inputs
