@@ -1055,6 +1055,11 @@ specifies modules in scope when evaluating SNIPPET."
                          '("--no-recursion"
                            "--files-from=.file_list"))))
 
+            (let ((line (cond-expand (guile-2.0 _IOLBF)
+                                     (else 'line))))
+              (setvbuf (current-output-port) line)
+              (setvbuf (current-error-port) line))
+
             ;; Encoding/decoding errors shouldn't be silent.
             (fluid-set! %default-port-conversion-strategy 'error)
 
