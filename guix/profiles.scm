@@ -1127,11 +1127,6 @@ certificates in the /etc/ssl/certs sub-directories of the packages in
 MANIFEST.  Single-file bundles are required by programs such as Git and Lynx."
   ;; See <http://lists.gnu.org/archive/html/guix-devel/2015-02/msg00429.html>
   ;; for a discussion.
-
-  (define libc-utf8-locales-for-target  ;lazy reference
-    (module-ref (resolve-interface '(gnu packages base))
-                'libc-utf8-locales-for-target))
-
   (define build
     (with-imported-modules '((guix build utils))
       #~(begin
@@ -1163,13 +1158,7 @@ MANIFEST.  Single-file bundles are required by programs such as Git and Lynx."
 
           ;; Some file names in the NSS certificates are UTF-8 encoded so
           ;; install a UTF-8 locale.
-          (setenv "LOCPATH"
-                  (string-append #+(libc-utf8-locales-for-target system)
-                                 "/lib/locale/"
-                                 #+(version-major+minor
-                                    (package-version
-                                     (libc-utf8-locales-for-target system)))))
-          (setlocale LC_ALL "en_US.utf8")
+          (setlocale LC_ALL "C.UTF-8")
 
           (match (append-map ca-files '#$(manifest-inputs manifest))
             (()
@@ -1965,8 +1954,7 @@ with a different version number.)  Unless ALLOW-UNSUPPORTED-PACKAGES? is true
 or TARGET is set, raise an error if MANIFEST contains a package that does not
 support SYSTEM.
 
-When LOCALES? is true, the build is performed under a UTF-8 locale; this adds
-a dependency on the 'glibc-utf8-locales' package.
+When LOCALES? is true, the build is performed under a UTF-8 locale.
 
 When RELATIVE-SYMLINKS? is true, use relative file names for symlink targets.
 This is one of the things to do for the result to be relocatable.
@@ -2009,21 +1997,10 @@ are cross-built for TARGET."
                     (and (derivation? drv) (gexp-input drv)))
                   extras))
 
-    (define libc-utf8-locales-for-target ;lazy reference
-      (module-ref (resolve-interface '(gnu packages base))
-                  'libc-utf8-locales-for-target))
-
     (define set-utf8-locale
-      ;; Some file names (e.g., in 'nss-certs') are UTF-8 encoded so
-      ;; install a UTF-8 locale.
-      (let ((locales (libc-utf8-locales-for-target
-                      (or system (%current-system)))))
-        #~(begin
-            (setenv "LOCPATH"
-                    #$(file-append locales "/lib/locale/"
-                                   (version-major+minor
-                                    (package-version locales))))
-            (setlocale LC_ALL "en_US.utf8"))))
+      ;; Some file names (e.g., in 'nss-certs') are UTF-8 encoded so install a
+      ;; UTF-8 locale.  Assume libc comes with a copy of C.UTF-8.
+      #~(setlocale LC_ALL "C.UTF-8"))
 
     (define builder
       (with-imported-modules '((guix build profiles)
