@@ -1651,9 +1651,14 @@ command.")
 (define* (libc-utf8-locales-for-target #:optional
                                        (target (or (%current-target-system)
                                                    (%current-system))))
-  (if (target-hurd? target)
-      glibc-utf8-locales/hurd
-      glibc-utf8-locales))
+  "Return the glibc UTF-8 locale package for TARGET."
+  ;; Note: To avoid circular dependencies (such as: texinfo ->
+  ;; glibc-utf8-locales -> glibc -> texinfo), refer to
+  ;; 'glibc-utf8-locales-final' via 'canonical-package'.
+  (canonical-package
+   (if (target-hurd? target)
+       glibc-utf8-locales/hurd
+       glibc-utf8-locales)))
 
 (define-public tzdata
   (package
