@@ -3840,6 +3840,56 @@ Either represents the concept of values which are either correct (Right)
 or errors (Left).")
       (license license:expat))))
 
+(define-public guile-srfi-232
+  (package
+    (name "guile-srfi-232")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/scheme-requests-for-implementation/srfi-232")
+             (commit "c3f580d220778cd71492aba4fdd0c7040968e705")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0lp4zcqjjj6hwfh3ix71wak1nffgg4npzsg7cdxfn9hf6iwf9xby"))))
+    (build-system guile-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'move-and-delete-things
+            (lambda _
+              (let* ((srfi-directory (string-append #$output "/srfi")))
+                (mkdir-p "srfi")
+                (with-output-to-file "srfi/srfi-232.scm"
+                  (lambda ()
+                    (display "(define-library (srfi srfi-232)
+ (export curried define-curried)
+ (import (only (guile) import)
+         (scheme base))
+ (include \"../srfi-232.scm\"))")))
+                (for-each (lambda (filename)
+                            (delete-file filename))
+                          '("test-body.scm"
+                            "test-chibi.scm"
+                            "test-srfi-64.scm"))))))))
+    (native-inputs
+     (list guile-3.0))
+    (home-page "https://github.com/scheme-requests-for-implementation/srfi-232")
+    (synopsis "Flexible curried procedures")
+    (description
+     " This package provides an implementation of
+@uref{https://srfi.schemers.org/srfi-232/srfi-232.html, SRFI-232}, which
+describes @code{curried}, a variant of @code{lambda} that creates true curried
+procedures which also behave just like ordinary Scheme procedures.  They can
+be applied to their arguments one by one, all at once, or anywhere in between,
+without any novel syntax.  @code{curried} also supports nullary and variadic
+procedures, and procedures created with it have predictable behavior when
+applied to surplus arguments.")
+    (license license:expat)))
+
 (define-public emacsy
   (package
     (name "emacsy")
