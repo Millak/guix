@@ -361,7 +361,7 @@ standard packages used as implicit inputs of the GNU build system."
                     (make-dynamic-linker-cache? #t)
                     (license-file-regexp %license-file-regexp)
                     (phases '%standard-phases)
-                    (locale "en_US.utf8")
+                    (locale "C.UTF-8")
                     (system (%current-system))
                     (build (nix-system->gnu-triplet system))
                     (imported-modules %default-gnu-imported-modules)
@@ -504,7 +504,7 @@ is one of `host' or `target'."
 
                           (license-file-regexp %license-file-regexp)
                           (phases '%standard-phases)
-                          (locale "en_US.utf8")
+                          (locale "C.UTF-8")
                           (system (%current-system))
                           (build (nix-system->gnu-triplet system))
                           (imported-modules %default-gnu-imported-modules)
