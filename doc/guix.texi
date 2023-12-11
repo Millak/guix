@@ -19399,7 +19399,8 @@ and DNS-SD.
 @anchor{guix-configuration-build-machines}
 @item @code{build-machines} (default: @code{#f})
 This field must be either @code{#f} or a list of gexps evaluating to a
-@code{build-machine} record (@pxref{Daemon Offload Setup}).
+@code{build-machine} record or to a list of @code{build-machine} records
+(@pxref{Daemon Offload Setup}).
 
 When it is @code{#f}, the @file{/etc/guix/machines.scm} file is left
 untouched.  Otherwise, the list of of gexps is written to
@@ -19468,7 +19469,8 @@ A list of file-like objects where each element contains a public key.
 A list of strings where each element is a substitute URL.
 
 @item @code{build-machines} (default: @code{'()})
-A list of gexps that evaluate to @code{build-machine} records
+A list of gexps that evaluate to @code{build-machine} records or to a list of
+@code{build-machine} records.
 (@pxref{Daemon Offload Setup}).
 
 Using this field, a service may add new build machines to receive builds

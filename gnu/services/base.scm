@@ -1767,7 +1767,13 @@ archive' public keys, with GUIX."
             (mkdir-p (dirname machines-file)))
 
         ;; Installed the declared machines file.
-        (symlink #+(scheme-file "machines.scm" machines)
+        (symlink #+(scheme-file "machines.scm"
+                                #~((@ (srfi srfi-1) append-map)
+                                   (lambda (entry)
+                                     (if (build-machine? entry)
+                                         (list entry)
+                                         entry))
+                                   #$machines))
                  machines-file))))
 
 (define-record-type* <guix-configuration>
