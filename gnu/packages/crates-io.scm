@@ -91629,8 +91629,30 @@ crate.")
                (base32
                 "12hx7qpsjg9p7jggfcplqa3mf1mzr7k7s5ybzqwg1zmg4fn2aizm"))))))
 
+(define-public rust-windows-i686-msvc-0.52
+  (package
+    (name "rust-windows-i686-msvc")
+    (version "0.52.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "windows_i686_msvc" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "16kvmbvx0vr0zbgnaz6nsks9ycvfh5xp05bjrhq65kj623iyirgz"))
+              (snippet
+               '(delete-file "lib/windows.0.52.0.lib"))))
+    (build-system cargo-build-system)
+    (arguments (list #:skip-build? #t))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Code gen support for the windows crate")
+    (description
+     "This package provides code gen support for the windows crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-i686-msvc-0.48
   (package
+    (inherit rust-windows-i686-msvc-0.52)
     (name "rust-windows-i686-msvc")
     (version "0.48.0")
     (source (origin
@@ -91638,18 +91660,10 @@ crate.")
               (uri (crate-uri "windows_i686_msvc" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32
-                "004fkyqv3if178xx9ksqc4qqv8sz8n72mpczsr2vy8ffckiwchj5"))
+               (base32 "004fkyqv3if178xx9ksqc4qqv8sz8n72mpczsr2vy8ffckiwchj5"))
               (snippet
                #~(delete-file "lib/windows.0.48.0.lib"))))
-    (build-system cargo-build-system)
-    (arguments
-     (list #:skip-build? #t))
-    (home-page "https://github.com/microsoft/windows-rs")
-    (synopsis "Code gen support for the windows crate")
-    (description
-     "This package provides code gen support for the windows crate.")
-    (license (list license:expat license:asl2.0))))
+    (arguments (list #:skip-build? #t))))
 
 (define-public rust-windows-i686-msvc-0.42
   (package
