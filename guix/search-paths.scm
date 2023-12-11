@@ -100,7 +100,9 @@
 (define $OBJCPLUS_INCLUDE_PATH
   (search-path-specification
    (variable "OBJCPLUS_INCLUDE_PATH")
-   (files '("include"))))
+   ;; Add 'include/c++' here so that <cstdlib>'s "#include_next
+   ;; <stdlib.h>" finds GCC's <stdlib.h>, not libc's.
+   (files '("include/c++" "include"))))
 
 (define $LIBRARY_PATH
   (search-path-specification
