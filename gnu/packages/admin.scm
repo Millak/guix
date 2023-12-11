@@ -61,6 +61,7 @@
 ;;; Copyright © 2023 Alexey Abramov <levenson@mmer.org>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Tobias Kortkamp <tobias.kortkamp@gmail.com>
+;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4019,7 +4020,7 @@ you are running, what theme or icon set you are using, etc.")
 (define-public hyfetch
   (package
     (name "hyfetch")
-    (version "1.4.10")
+    (version "1.4.11")
     (source
      (origin
        (method git-fetch)
@@ -4029,7 +4030,7 @@ you are running, what theme or icon set you are using, etc.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1lf1vrasinda9j6yazznpx54gg5j24xvkjb68dxhby9dg8ql1h87"))))
+         "1ymj72virh8y8gwgg3j3skf6j0zn7p0plcza57lln1drnjspycy7"))))
     (build-system python-build-system)
     (arguments (list #:tests? #f))      ;no tests
     (inputs (list python-typing-extensions))
