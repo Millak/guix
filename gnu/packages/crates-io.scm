@@ -92082,8 +92082,36 @@ if they were just another Rust module.")
     (description "Macros for the windows crate")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-windows-targets-0.52
+  (package
+    (name "rust-windows-targets")
+    (version "0.52.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "windows-targets" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1kg7a27ynzw8zz3krdgy6w5gbqcji27j1sz4p7xk2j5j8082064a"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-windows-aarch64-gnullvm" ,rust-windows-aarch64-gnullvm-0.52)
+        ("rust-windows-aarch64-msvc" ,rust-windows-aarch64-msvc-0.52)
+        ("rust-windows-i686-gnu" ,rust-windows-i686-gnu-0.52)
+        ("rust-windows-i686-msvc" ,rust-windows-i686-msvc-0.52)
+        ("rust-windows-x86-64-gnu" ,rust-windows-x86-64-gnu-0.52)
+        ("rust-windows-x86-64-gnullvm" ,rust-windows-x86-64-gnullvm-0.52)
+        ("rust-windows-x86-64-msvc" ,rust-windows-x86-64-msvc-0.52))))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Code gen support for the windows crate")
+    (description
+     "This package provides code gen support for the windows crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-targets-0.48
   (package
+    (inherit rust-windows-targets-0.52)
     (name "rust-windows-targets")
     (version "0.48.0")
     (source (origin
@@ -92093,7 +92121,6 @@ if they were just another Rust module.")
               (sha256
                (base32
                 "1mfzg94w0c8h4ya9sva7rra77f3iy1712af9b6bwg03wrpqbc7kv"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-windows-aarch64-gnullvm" ,rust-windows-aarch64-gnullvm-0.48)
@@ -92102,12 +92129,7 @@ if they were just another Rust module.")
         ("rust-windows-i686-msvc" ,rust-windows-i686-msvc-0.48)
         ("rust-windows-x86-64-gnu" ,rust-windows-x86-64-gnu-0.48)
         ("rust-windows-x86-64-gnullvm" ,rust-windows-x86-64-gnullvm-0.48)
-        ("rust-windows-x86-64-msvc" ,rust-windows-x86-64-msvc-0.48))))
-    (home-page "https://github.com/microsoft/windows-rs")
-    (synopsis "Code gen support for the windows crate")
-    (description
-     "This package provides code gen support for the windows crate.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-windows-x86-64-msvc" ,rust-windows-x86-64-msvc-0.48))))))
 
 (define-public rust-windows-targets-0.42
   (package
