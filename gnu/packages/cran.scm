@@ -31364,14 +31364,14 @@ Complete access to optimized C functions is made available with
 (define-public r-openmx
   (package
     (name "r-openmx")
-    (version "2.21.10")
+    (version "2.21.11")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "OpenMx" version))
        (sha256
         (base32
-         "1kll5iim5l71dxkjd8y9ma1494818j369gp92qdsy3x6lxy244ym"))))
+         "1k3i82higil43w4pryg1ghpswa8vxmc28dcv60gvkmmjrnwp098m"))))
     (properties `((upstream-name . "OpenMx")))
     (build-system r-build-system)
     (propagated-inputs
@@ -31385,7 +31385,7 @@ Complete access to optimized C functions is made available with
            r-rcppparallel
            r-rpf
            r-stanheaders))
-    (native-inputs (list r-knitr gfortran))
+    (native-inputs (list gfortran r-knitr))
     (home-page "http://openmx.ssri.psu.edu")
     (synopsis "Extended structural equation modelling")
     (description
