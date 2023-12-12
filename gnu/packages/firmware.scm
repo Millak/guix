@@ -1158,6 +1158,8 @@ such as:
       #:make-flags
       (let ((triplet-without-vendor
              (and (%current-target-system)
+                  ;; TODO: Is there a use case for allowing this?
+                  (not (target-avr?))
                   (match (string-split (nix-system->gnu-triplet
                                         (%current-target-system)) #\-)
                     ((arch vendor os ..1)
