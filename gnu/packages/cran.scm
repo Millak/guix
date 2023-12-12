@@ -40694,16 +40694,16 @@ API.")
 (define-public r-spacetime
   (package
     (name "r-spacetime")
-    (version "1.3-0")
+    (version "1.3-1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "spacetime" version))
               (sha256
                (base32
-                "06slxywh94g4k7dxnfs9g5yjvwjk2lxwydrjwawg0mgkqsjh569f"))))
+                "1kr12pbi6hqns30kqy4jv5pcm3lgfcfyc2gwaak1jbg894csahhr"))))
     (properties `((upstream-name . "spacetime")))
     (build-system r-build-system)
-    (propagated-inputs (list r-lattice r-sp r-zoo r-xts r-intervals))
+    (propagated-inputs (list r-intervals r-lattice r-sp r-xts r-zoo))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/edzer/spacetime/")
     (synopsis "Classes and methods for spatio-temporal data")
