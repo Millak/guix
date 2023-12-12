@@ -7186,7 +7186,7 @@ almost all of them.")
            libxslt
            nettle                       ; for hogweed
            sqlite
-           webkitgtk))
+           webkitgtk-for-gtk3))
     (home-page "https://wiki.gnome.org/Apps/Web")
     (synopsis "GNOME web browser")
     (description
