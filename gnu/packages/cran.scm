@@ -2636,22 +2636,24 @@ available as companion packages.")
 (define-public r-scales
   (package
     (name "r-scales")
-    (version "1.2.1")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "scales" version))
        (sha256
-        (base32 "027daznawr9dy0z9s99lh64i4am691hdir01n7gr7vmgpmnkwiar"))))
+        (base32 "122qyd88qr8cc8h3k46xpygm00inqpm55zdy0b7535958imhygmk"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-farver
+     (list r-cli
+           r-farver
+           r-glue
            r-labeling
            r-lifecycle
            r-munsell
+           r-r6
            r-rcolorbrewer
            r-rlang
-           r-r6
            r-viridislite))
     (home-page "https://github.com/hadley/scales")
     (synopsis "Scale functions for visualization")
