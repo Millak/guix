@@ -30912,18 +30912,20 @@ analysis and natural language processing.")
 (define-public r-spacyr
   (package
     (name "r-spacyr")
-    (version "1.2.1")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "spacyr" version))
        (sha256
         (base32
-         "1b2ccgwsiqkvp7w37x8k7699c676q16vfrybkrfvyczyhki4s6nw"))))
+         "1z4nx8phrc0l73xic2lkff03a54kjw343425h5mm2afz6zidcmf4"))))
     (properties `((upstream-name . "spacyr")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-data-table r-reticulate))
+    (native-inputs
+     (list r-r-rsp))
     (home-page "https://spacyr.quanteda.io")
     (synopsis "R wrapper for the spaCy NLP library")
     (description
