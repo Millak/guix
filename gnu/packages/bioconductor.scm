@@ -20557,14 +20557,14 @@ S4Vectors package itself.")
 (define-public r-wgcna
   (package
     (name "r-wgcna")
-    (version "1.72-1")
+    (version "1.72-5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "WGCNA" version))
        (sha256
         (base32
-         "1p3zsl5r6l5r6ylnrxmbxjpim5qgmncgdjcgn5j69rzk3rv85gqx"))))
+         "17g7lan1rpy6y4nmqksrf9ddp3gs58vdczfavgq1fp13zx1r2hq3"))))
     (properties `((upstream-name . "WGCNA")))
     (build-system r-build-system)
     (propagated-inputs
@@ -20576,10 +20576,10 @@ S4Vectors package itself.")
            r-go-db
            r-hmisc
            r-impute
-           r-rcpp
-           r-survival
            r-matrixstats
-           r-preprocesscore))
+           r-preprocesscore
+           r-rcpp
+           r-survival))
     (home-page
      "http://www.genetics.ucla.edu/labs/horvath/CoexpressionNetwork/Rpackages/WGCNA/")
     (synopsis "Weighted correlation network analysis")
