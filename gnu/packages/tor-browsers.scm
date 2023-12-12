@@ -148,7 +148,7 @@
 
 ;; We copy the official build id, which can be found there:
 ;; https://aus1.torproject.org/torbrowser/update_3/release/.
-(define %moz-build-date "20240115174022")
+(define %torbrowser-build-date "20240115174022")
 
 ;; To find the last version, look at https://www.torproject.org/download/.
 (define %torbrowser-version "13.0.9")
@@ -160,6 +160,8 @@
 (define %torbrowser-firefox-version "115.7.0esr-13.0-1-build1")
 
 ;; See tor-browser-build/projects/translation/config.
+;; If Tor Browser and Mullvad Browser updates are not synchronized, maybe this
+;; will have to be duplicated.
 (define translation-base-browser
   (origin
     (method git-fetch)
@@ -218,6 +220,7 @@ Browser.")
                           branding-directory
                           assets
                           locales
+                          build-date
                           base-browser-version)
   (package
     (name "torbrowser")
@@ -538,7 +541,7 @@ Browser.")
               (setenv "MOZ_CHROME_MULTILOCALE"
                       (string-join (map car #$locales)))
               ;; Make build reproducible.
-              (setenv "MOZ_BUILD_DATE" #$%moz-build-date)))
+              (setenv "MOZ_BUILD_DATE" #$build-date)))
           (add-before 'configure 'mozconfig
             (lambda* (#:key configure-flags #:allow-other-keys)
               (with-output-to-file "mozconfig"
@@ -837,4 +840,171 @@ attacks on the privacy of Tor users.")
                    #:branding-directory "browser/branding/tb-release"
                    #:assets torbrowser-assets
                    #:locales %torbrowser-locales
+                   #:build-date %torbrowser-build-date
                    #:base-browser-version %torbrowser-version))
+
+
+;; See tor-browser-build/rbm.conf for the list.
+;; See browser/locales/l10n-changesets.json for the changeset.
+;; See update-mozilla-locales in gnuzilla.scm to automate updating changeset.
+(define %mullvadbrowser-locales
+  (mozilla-locales
+   ;;                      sha256                            changeset    locale
+   ;;---------------------------------------------------------------------------
+   ("14wnjv13alaj04pd8i8ysillbr3ic2jqa867rbj5ncz8h4hxxfxc" "4c7e24ef78bd" "ar")
+   ("0is7qbykv2pj0z9ll9r35vwjp0x29vmfr10yjl3s0amfaqzjqpqc" "0a0b774407cc" "da")
+   ("0yq7m4v7d7ayg90m66j73mflrnp709qw9n7skhpsl9h1wbhrd7q7" "633986260777" "de")
+   ("018qi9zn24kzfcidsj9lbqfg5n97r295yr8fs953nyfdbim9jsfv" "accf5e4506c0" "es-ES")
+   ("11prhmh2cp95dpv6z0k479mb11zbfm541bvigs3gnkh3nazjvc8q" "37aa71d77cb6" "fa")
+   ("1lv9l98q88ixb0ph970yzphahgzbl97x0w069bkxa54kblkv1ch1" "dc40a4fd5d0e" "fi")
+   ("0wx4k7mwhvpv5w0wa4y5pca2q3jac62jv804nxqnfwh1bvi90wv0" "415c1f0e84bd" "fr")
+   ("1n7l5idw9399n8ih1r1d6m8vzpzhwmnxmr9i7jvygkdc8d6adp1k" "07d5e1ff5f9b" "it")
+   ("1w6nw9cd92p1ndy82wwlq9xizyq3i8rq0nj7118gbxbx368mk2kj" "e6f9db9ce3e6" "ja")
+   ("116a8s0k2yvijy7qf0xpqm5w66gdzs32jhc06364sdar5v34lyhh" "805b85981696" "ko")
+   ("0kk3cjlpghbi7j3ndb2s0c7g838fzd2mpzg01bp0cra8lzd0n2ac" "4ab6f0d05aa6" "my")
+   ("1i3r2ici95mazw07m2mrf192fc6bfa3x6j3c2pcc1zg7z9srihgh" "561b0cd86ec1" "nb-NO")
+   ("1c0m8jhn52h1dif5bswrdwrlzppgga01y61wlii4aaaw15imd6yd" "2a55df0cc389" "nl")
+   ("1gssvg306b80drp7kvc35kvcxwldb5sga0bapaxhv362irq1nya8" "a64a7dab01c4" "pl")
+   ("1dzh13x85a7src8szbrq5pjmrbak4isln9xdwjk7a1yq4g9h7jgs" "33bf2a9f4c49" "pt-BR")
+   ("09x2jirf04kgc118a70z0xrb3msbm7vr4f41ig4xrwf2s5b816r3" "528b76d6aaca" "ru")
+   ("1cyimbd42aaq2amyhdbbx26jwsns77lsfl8g9a70bsjlpwzwzryg" "cc8e8962e59c" "sv-SE")
+   ("03mqrvcal7i172gf9239q9fnynfp5kg9b3r1w8gr9iz7rkr22gw5" "d361502c559e" "th")
+   ("12srgqkqwaidcwbz0y7zr59165f7aq5k5s3b81ql7ixdbwia91pm" "f6173aca4762" "tr")
+   ("1dl2dpif4wwrlpx7zkz5qf8kk4vhxyf63016xcfpbhxizqqwc1ki" "df2d025ed631" "zh-CN")
+   ("1c63ngff9lsc1x3pi6lnkyxw19gdc65yc67p7alzvrka3cv292ia" "11f8d68148a4" "zh-TW")))
+
+;; We copy the official build id, which can be found there:
+;; https://cdn.mullvad.net/browser/update_responses/update_1/release.
+(define %mullvadbrowser-build-date "20240115174108")
+
+;; To find the last version, look at
+;; https://mullvad.net/en/download/browser/linux.
+(define %mullvadbrowser-version "13.0.9")
+
+;; To find the last Firefox version, browse
+;; https://archive.torproject.org/tor-package-archive/mullvadbrowser/<%mullvadbrowser-version>
+;; There should be only one archive that starts with
+;; "src-firefox-mullvad-browser-".
+(define %mullvadbrowser-firefox-version "115.7.0esr-13.0-1-build1")
+
+;; See tor-browser-build/projects/translation/config.
+(define translation-mullvad-browser
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://gitlab.torproject.org/tpo/translation.git")
+          (commit "57de1569da0e2c48fd999a13e555f6b522041993")))
+    (file-name "translation-mullvad-browser")
+    (sha256
+     (base32
+      "1q3979ac92c5mib573hx9w06x3hrfw7r52wzmj9r75sz2hhsmrq3"))))
+
+(define mullvadbrowser-assets
+  ;; This is a prebuilt Mullvad Browser from which we take the assets we need.
+  (package
+    (name "mullvadbrowser-assets")
+    (version %mullvadbrowser-version)
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append
+         "https://archive.torproject.org/tor-package-archive/mullvadbrowser/"
+         version "/mullvad-browser-linux-x86_64-" version ".tar.xz"))
+       (sha256
+        (base32
+         "1f930j3c1xq88cqlqmnj0m00k0hd63cmgnxd788sp9hz56al22sc"))))
+    (arguments
+     (list
+      #:install-plan
+      ''(("Browser" "." #:include-regexp
+          ("^\\./fonts/"
+           "^\\./fontconfig/fonts.conf"
+           ;; Mullvad Browser Extension
+           "^\\./distribution/extensions/\\{d19a89b9-76c1-4a61-bcd4-49e8de916403\\}.xpi"
+           )))))
+    (build-system copy-build-system)
+    (home-page "https://www.torproject.org")
+    (synopsis "Mullvad Browser assets")
+    (description "This package contains fonts and configuration files for
+Mullvad Browser.")
+    (license license:silofl1.1)))
+
+(define mullvadbrowser-base
+  (make-torbrowser #:moz-app-name "mullvadbrowser"
+                   #:moz-app-remotingname "Mullvad Browser"
+                   #:branding-directory "browser/branding/mb-release"
+                   #:assets mullvadbrowser-assets
+                   #:locales %mullvadbrowser-locales
+                   #:build-date %mullvadbrowser-build-date
+                   #:base-browser-version %mullvadbrowser-version))
+
+(define-public mullvadbrowser
+  (package
+    (inherit mullvadbrowser-base)
+    (name "mullvadbrowser")
+    (version %mullvadbrowser-version)
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (string-append
+         "https://archive.torproject.org/tor-package-archive/mullvadbrowser/"
+         version "/src-firefox-mullvad-browser-"
+         %mullvadbrowser-firefox-version ".tar.xz"))
+       (sha256
+        (base32
+         "16chkc07pqr4ypmmgy4z2grvlpvbyr161gpzy72w35dgzzff46f9"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments mullvadbrowser-base)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'ublock-private-allowed
+              (lambda _
+                (substitute* "toolkit/components/extensions/Extension.sys.mjs"
+                  ;; The code that gives the correct permission only applies
+                  ;; to distribution add-ons (see installDistributionAddon()
+                  ;; in XPIProvider.jsm).
+                  (("this.isNoScript")
+                   (format #f "this.isNoScript || this.id === ~s"
+                           "uBlock0@raymondhill.net")))))
+            ;; See tor-browser-build/projects/firefox/build.
+            (replace 'copy-torbrowser-locales
+              (lambda _
+                (for-each
+                 (lambda (lang)
+                   (system
+                    (format #f "cp -Lr ~a/~a .mozbuild/l10n-central/"
+                            #$translation-mullvad-browser lang)))
+                 (map car #$%mullvadbrowser-locales))))
+            (add-before 'build 'fix-profiles
+              ;; Otherwise the profile would change every time the install
+              ;; location changes, that is: at every package update.  These
+              ;; values are already the default values for Icecat and Tor
+              ;; Browser.
+              (lambda _
+                (substitute* "browser/moz.configure"
+                  (("\"MOZ_DEDICATED_PROFILES\", True")
+                   "\"MOZ_DEDICATED_PROFILES\", False")
+                  (("\"MOZ_BLOCK_PROFILE_DOWNGRADE\", True")
+                   "\"MOZ_BLOCK_PROFILE_DOWNGRADE\", False"))))
+            (add-after 'deploy-fonts 'deploy-extension
+              (lambda _
+                (let ((lib (in-vicinity #$output "lib/mullvadbrowser")))
+                  ;; Mullvad Browser Extension (FIXME: package it)
+                  (copy-recursively
+                   (in-vicinity #$mullvadbrowser-assets "distribution")
+                   (in-vicinity lib "distribution")))))
+            (delete 'deploy-tor-assets)
+            (delete 'autoconfig-tor)))))
+    (inputs
+     (modify-inputs (package-inputs torbrowser)
+       (delete go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird)))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs torbrowser)
+       (append ublock-origin/icecat)))
+    (home-page "https://mullvad.net/en/browser")
+    (synopsis "Privacy-focused web browser")
+    (description "Mullvad Browser is a privacy-focused web browser developed
+in collaboration between Mullvad VPN and the Tor Project.  It’s produced to
+minimize tracking and fingerprinting.")))
