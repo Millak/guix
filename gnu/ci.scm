@@ -190,15 +190,16 @@ SYSTEM."
 
   (define (pointless? target)
     ;; Return #t if it makes no sense to cross-build to TARGET from SYSTEM.
-    (match system
-      ((or "x86_64-linux" "i686-linux")
-       (if (string-contains target "mingw")
-           (not (string=? "x86_64-linux" system))
-           #f))
-      (_
-       ;; Don't try to cross-compile from non-Intel platforms: this isn't
-       ;; very useful and these are often brittle configurations.
-       #t)))
+    (or (string=? target "avr") ; Nothing for AVR at this time.
+        (match system
+          ((or "x86_64-linux" "i686-linux")
+           (if (string-contains target "mingw")
+               (not (string=? "x86_64-linux" system))
+               #f))
+          (_
+           ;; Don't try to cross-compile from non-Intel platforms: this isn't
+           ;; very useful and these are often brittle configurations.
+           #t))))
 
   (define (either proc1 proc2 proc3)
     (lambda (x)
