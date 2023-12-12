@@ -24,6 +24,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2023 Felix Gruber <felgru@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -107,6 +108,7 @@
   #:use-module (gnu packages time)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages video)
   #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xdisorg)
@@ -975,6 +977,34 @@ files.  It uses the Qt toolkit and features persistent per-file settings,
 configurable toolbars and shortcuts, continuous and multi‐page layouts,
 SyncTeX support, and rudimentary support for annotations and forms.")
     (license license:gpl2+)))
+
+(define-public unpaper
+  (package
+    (name "unpaper")
+    (version "7.0.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "https://www.flameeyes.com/files/unpaper-"
+                            version ".tar.xz"))
+        (sha256
+         (base32 "103awjdl2qrzi0qc32hi8zvwf04r5ih5jaw8rg8ij9y24szznx95"))))
+    (native-inputs
+     (list pkg-config python-sphinx))
+    (inputs
+     (list discount ffmpeg))
+    (build-system meson-build-system)
+    (home-page "https://www.flameeyes.com/projects/unpaper")
+    (synopsis "post-processing tool for scanned pages")
+    (description "@command{unpaper} is a post-processing tool for
+scanned sheets of paper, especially for book pages that have been
+scanned from previously created photocopies.
+
+Its main purpose is to make scanned book pages better readable on screen
+after conversion to PDF.  Additionally, unpaper might be useful to
+enhance the quality of scanned pages before performing
+@acronym{OCR, optical character recognition}.")
+    (license license:gpl2)))
 
 (define-public xournal
   (package
