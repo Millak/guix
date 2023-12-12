@@ -409,16 +409,12 @@ OpenSSL for TARGET."
   ;; Keep this code outside the build code,
   ;; such that new targets can be added
   ;; without causing rebuilds for other targets.
-  (cond
-    ((target-mingw? target)
-     (string-append
+  (if (target-mingw? target)
+      (string-append
        "mingw"
        (if (target-x86-64? target)
            "64"
-           "")))
-    ;; AVR doesn't seem to be supported.
-    ((target-avr? target) #f)
-    (else
+           ""))
       (let ((kernel
              (cond ((target-hurd? target)
                     "hurd")
@@ -454,7 +450,7 @@ OpenSSL for TARGET."
                "generic64")
               (else
                (error "unsupported openssl target architecture")))))
-        (string-append kernel "-" arch)))))
+        (string-append kernel "-" arch))))
 
 (define-public openssl-1.1
   (package
