@@ -1570,6 +1570,9 @@ environments.")
                             ,@(or (and=> (assoc-ref inputs "sqitch")
                                          list)
                                   '())))
+                         `("GUIX_LOCPATH" ":" prefix
+                           (,(string-append (assoc-ref inputs "glibc-utf8-locales")
+                                            "/lib/locale")))
                          `("GUILE_LOAD_PATH" ":" prefix
                            (,scm ,(string-join
                                    (map (lambda (input)
@@ -1608,6 +1611,7 @@ environments.")
        (list (first (assoc-ref (package-native-inputs guix) "guile"))
              sqlite
              bash-minimal
+             (libc-utf8-locales-for-target)
              sqitch))
       (propagated-inputs
        (list guile-prometheus
@@ -1647,7 +1651,8 @@ outputs of those builds.")
            (first (assoc-ref (package-native-inputs guix) "guile"))))
     (inputs
      (list (first (assoc-ref (package-native-inputs guix) "guile"))
-           bash-minimal))
+           bash-minimal
+           (libc-utf8-locales-for-target)))
     (propagated-inputs
      (list guile-prometheus
            guile-gcrypt

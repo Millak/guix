@@ -342,10 +342,7 @@
                      ;; Allow time for migrations to run
                      #:pid-file-timeout 60
                      #:environment-variables
-                     `(,(string-append
-                         "GUIX_LOCPATH="
-                         #$(libc-utf8-locales-for-target) "/lib/locale")
-                       "LC_ALL=en_US.utf8"
+                     `("LC_ALL=en_US.utf8"
                        "PATH=/run/current-system/profile/bin" ; for hooks
                        #$@extra-environment-variables)
                      #:log-file "/var/log/guix-build-coordinator/coordinator.log")
@@ -470,10 +467,7 @@
                             (or systems '())))
               #:user #$user
               #:environment-variables
-              `(,(string-append
-                  "GUIX_LOCPATH="
-                  #$(libc-utf8-locales-for-target) "/lib/locale")
-                ;; XDG_CACHE_HOME is used by Guix when caching narinfo files
+              `(;; XDG_CACHE_HOME is used by Guix when caching narinfo files
                 "XDG_CACHE_HOME=/var/cache/guix-build-coordinator-agent"
                 "LC_ALL=en_US.utf8")
               #:log-file "/var/log/guix-build-coordinator/agent.log"))))
