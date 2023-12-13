@@ -664,7 +664,7 @@ safety and thread safety guarantees.")
   (rust-bootstrapped-package
    rust-1.62 "1.63.0" "1l4rrbzhxv88pnfq94nbyb9m6lfnjwixma3mwjkmvvs2aqlq158z"))
 
-(define-public rust-1.64
+(define rust-1.64
   (let ((base-rust
          (rust-bootstrapped-package
           rust-1.63 "1.64.0" "018j720b2n12slp4xk64jc6shkncd46d621qdyzh2a8s3r49zkdk")))
