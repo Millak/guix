@@ -1278,6 +1278,20 @@ and functions, detailed info on failing assert statements, modular fixtures,
 and many external plugins.")
     (license license:expat)))
 
+(define-public python-pytest-next
+  (package/inherit python-pytest
+    (name "python-pytest")
+    (version "7.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest" version))
+       (sha256
+        (base32 "02q32y67nflrmk9snmibq5kmqcbgfm29k9wm0yw0ia2vqly0m6gf"))))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs python-pytest)
+       (append python-exceptiongroup)))))
+
 (define-deprecated python-pytest-6 python-pytest)
 (export python-pytest-6)
 
