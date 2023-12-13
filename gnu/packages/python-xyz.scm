@@ -14022,7 +14022,7 @@ plugin for flake8 to check PEP-8 naming conventions.")
 (define-public python-pyproject-metadata
   (package
     (name "python-pyproject-metadata")
-    (version "0.6.1")
+    (version "0.7.1")
     (source
      (origin
        (method git-fetch)
@@ -14032,7 +14032,7 @@ plugin for flake8 to check PEP-8 naming conventions.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "00zahgw9zjfqwf0218bj5k732aibnn68cq1p8f0wmbirb7fy5k31"))))
+         "0yvs59ymz5gdix34a95wxlxvk9bnvjgrzsnmnc3ws7whpfv3yasm"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-packaging))
     (native-inputs (list python-pypa-build python-pytest python-tomli))
