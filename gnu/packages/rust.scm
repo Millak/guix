@@ -40,29 +40,34 @@
   #:use-module (gnu packages bootstrap)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cross-base)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gdb)
   #:use-module (gnu packages jemalloc)
+  #:use-module (gnu packages libunwind)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
+  #:use-module (gnu packages mingw)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages)
   #:use-module (guix build-system cargo)
-  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system trivial)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module ((guix build utils) #:select (alist-replace))
   #:use-module (guix utils)
+  #:use-module (guix gexp)
   #:use-module (ice-9 match)
+  #:use-module (ice-9 optargs)
   #:use-module (srfi srfi-26))
 
 ;; This is the hash for the empty file, and the reason it's relevant is not
@@ -103,6 +108,10 @@
     ("aarch64-linux"  "aarch64-unknown-linux-gnu")
     ("mips64el-linux" "mips64el-unknown-linux-gnuabi64")
     ("riscv64-linux"  "riscv64gc-unknown-linux-gnu")
+    ("i586-gnu" "i686-unknown-hurd-gnu")
+    ("i686-gnu" "i686-unknown-hurd-gnu")
+    ("i686-mingw" "i686-pc-windows-gnu")
+    ("x86_64-mingw" "x86_64-pc-windows-gnu")
     (_                (nix-system->gnu-triplet system))))
 
 (define* (rust-uri version #:key (dist "static"))
@@ -825,7 +834,7 @@ safety and thread safety guarantees.")
 ;;; Here we take the latest included Rust, make it public, and re-enable tests
 ;;; and extra components such as rustfmt.
 (define-public rust
-  (let ((base-rust rust-1.70))
+  (let ((base-rust rust-1.73))
     (package
       (inherit base-rust)
       (outputs (cons* "rust-src" "tools" (package-outputs base-rust)))
@@ -856,11 +865,42 @@ safety and thread safety guarantees.")
                       '("fn fetch_downloads_with_git2_first_")))))
              (add-after 'unpack 'disable-tests-requiring-mercurial
                (lambda _
-                 (with-directory-excursion "src/tools/cargo/tests/testsuite/init"
+                 (with-directory-excursion "src/tools/cargo/tests/testsuite/cargo_init"
                    (substitute* '("mercurial_autodetect/mod.rs"
                                   "simple_hg_ignore_exists/mod.rs")
                      ,@(make-ignore-test-list
                         '("fn case"))))))
+             (add-after 'unpack 'disable-tests-using-cargo-publish
+               (lambda _
+                 (with-directory-excursion "src/tools/cargo/tests/testsuite"
+                   (substitute* "alt_registry.rs"
+                     ,@(make-ignore-test-list
+                        '("fn warn_for_unused_fields")))
+                   (substitute* '("cargo_add/locked_unchanged/mod.rs"
+                                  "cargo_add/lockfile_updated/mod.rs"
+                                  "cargo_remove/update_lock_file/mod.rs")
+                     ,@(make-ignore-test-list
+                        '("fn case")))
+                   (substitute* "git_shallow.rs"
+                     ,@(make-ignore-test-list
+                        '("fn gitoxide_clones_git_dependency_with_shallow_protocol_and_git2_is_used_for_followup_fetches"
+                          "fn gitoxide_clones_registry_with_shallow_protocol_and_aborts_and_updates_again"
+                          "fn gitoxide_clones_registry_with_shallow_protocol_and_follow_up_fetch_maintains_shallowness"
+                          "fn gitoxide_clones_registry_with_shallow_protocol_and_follow_up_with_git2_fetch"
+                          "fn gitoxide_clones_registry_without_shallow_protocol_and_follow_up_fetch_uses_shallowness"
+                          "fn gitoxide_shallow_clone_followed_by_non_shallow_update"
+                          "fn gitoxide_clones_shallow_two_revs_same_deps"
+                          "fn gitoxide_git_dependencies_switch_from_branch_to_rev"
+                          "fn shallow_deps_work_with_revisions_and_branches_mixed_on_same_dependency")))
+                   (substitute* "install.rs"
+                     ,@(make-ignore-test-list
+                        '("fn failed_install_retains_temp_directory")))
+                   (substitute* "offline.rs"
+                     ,@(make-ignore-test-list
+                        '("fn gitoxide_cargo_compile_offline_with_cached_git_dep_shallow_dep")))
+                   (substitute* "patch.rs"
+                     ,@(make-ignore-test-list
+                        '("fn gitoxide_clones_shallow_old_git_patch"))))))
              (add-after 'unpack 'disable-tests-broken-on-aarch64
                (lambda _
                  (with-directory-excursion "src/tools/cargo/tests/testsuite/"
@@ -998,30 +1038,216 @@ safety and thread safety guarantees.")
                    (copy-recursively "src" (string-append out dest "/src")))))
              (add-after 'install-rust-src 'wrap-rust-analyzer
                (lambda* (#:key outputs #:allow-other-keys)
-                 (wrap-program (string-append (assoc-ref outputs "tools")
-                                              "/bin/rust-analyzer")
-                   `("RUST_SRC_PATH" ":" =
-                     (,(string-append (assoc-ref outputs "rust-src")
-                                      "/lib/rustlib/src/rust/library"))))))))))
+                 (let ((bin (string-append (assoc-ref outputs "tools") "/bin")))
+                   (rename-file (string-append bin "/rust-analyzer")
+                                (string-append bin "/.rust-analyzer-real"))
+                   (call-with-output-file (string-append bin "/rust-analyzer")
+                     (lambda (port)
+                       (format port "#!~a
+if test -z \"${RUST_SRC_PATH}\";then export RUST_SRC_PATH=~S;fi;
+exec -a \"$0\" \"~a\" \"$@\""
+                               (which "bash")
+                               (string-append (assoc-ref outputs "rust-src")
+                                              "/lib/rustlib/src/rust/library")
+                               (string-append bin "/.rust-analyzer-real"))))
+                   (chmod (string-append bin "/rust-analyzer") #o755))))))))
       ;; Add test inputs.
       (native-inputs (cons* `("gdb" ,gdb/pinned)
                             `("procps" ,procps)
                             (package-native-inputs base-rust))))))
 
-(define-public rust-src-1.64
-  (hidden-package
-   (package
-     (inherit rust-1.64)
-     (name "rust-src")
-     (build-system copy-build-system)
-     (native-inputs '())
-     (inputs '())
-     (native-search-paths '())
-     (outputs '("out"))
-     (arguments
-      `(#:install-plan
-        '(("library" "lib/rustlib/src/rust/library")
-          ("src" "lib/rustlib/src/rust/src"))))
-     (synopsis "Source code for the Rust standard library")
-     (description "This package provide source code for the Rust standard
-library, only use by rust-analyzer, make rust-analyzer out of the box."))))
+(define*-public (make-rust-sysroot target)
+  (let ((base-rust rust))
+    (package
+      (inherit base-rust)
+      (name (string-append "rust-sysroot-for-" target))
+      (outputs '("out"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base-rust)
+         ((#:tests? _ #f) #f)   ; This package for cross-building.
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (add-after 'unpack 'unbundle-xz
+               (lambda _
+                 (delete-file-recursively "vendor/lzma-sys/xz-5.2")
+                 ;; Remove the option of using the static library.
+                 ;; This is necessary for building the sysroot.
+                 (substitute* "vendor/lzma-sys/build.rs"
+                   (("!want_static && ") ""))))
+             ,@(if (target-mingw? target)
+                 `((add-after 'set-env 'patch-for-mingw
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (setenv "LIBRARY_PATH"
+                         (string-join
+                           (delete
+                             (string-append
+                               (or (assoc-ref inputs "mingw-w64-i686-winpthreads")
+                                   (assoc-ref inputs "mingw-w64-x86_64-winpthreads"))
+                               "/lib")
+                             (string-split (getenv "LIBRARY_PATH") #\:))
+                           ":"))
+                       (setenv "CPLUS_INCLUDE_PATH"
+                         (string-join
+                           (delete
+                             (string-append
+                               (or (assoc-ref inputs "mingw-w64-i686-winpthreads")
+                                   (assoc-ref inputs "mingw-w64-x86_64-winpthreads"))
+                               "/include")
+                             (string-split (getenv "CPLUS_INCLUDE_PATH") #\:))
+                           ":"))
+                       ;; When building a rust-sysroot this crate is only used for
+                       ;; the rust-installer.
+                       (substitute* "vendor/num_cpus/src/linux.rs"
+                         (("\\.ceil\\(\\)") ""))
+                       ;; gcc doesn't recognize this flag.
+                       (substitute*
+                         "compiler/rustc_target/src/spec/windows_gnullvm_base.rs"
+                         ((", \"--unwindlib=none\"") "")))))
+                 `())
+             (replace 'set-env
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (setenv "SHELL" (which "sh"))
+                 (setenv "CONFIG_SHELL" (which "sh"))
+                 (setenv "CC" (which "gcc"))
+                 ;; The Guix LLVM package installs only shared libraries.
+                 (setenv "LLVM_LINK_SHARED" "1")
+
+                 (setenv "CROSS_LIBRARY_PATH" (getenv "LIBRARY_PATH"))
+                 (setenv "CROSS_CPLUS_INCLUDE_PATH" (getenv "CPLUS_INCLUDE_PATH"))
+                 (when (assoc-ref inputs (string-append "glibc-cross-" ,target))
+                   (setenv "LIBRARY_PATH"
+                           (string-join
+                             (delete
+                               (string-append
+                                 (assoc-ref inputs
+                                            (string-append "glibc-cross-" ,target))
+                                 "/lib")
+                               (string-split (getenv "LIBRARY_PATH") #\:))
+                             ":"))
+                   (setenv "CPLUS_INCLUDE_PATH"
+                           (string-join
+                             (delete
+                               (string-append
+                                 (assoc-ref inputs
+                                            (string-append "glibc-cross-" ,target))
+                                 "/include")
+                               (string-split (getenv "CPLUS_INCLUDE_PATH") #\:))
+                             ":")))))
+             (replace 'configure
+               (lambda* (#:key inputs outputs #:allow-other-keys)
+                 (let* ((out (assoc-ref outputs "out"))
+                        (target-cc
+                         (search-input-file
+                           inputs (string-append "/bin/" ,(cc-for-target target)))))
+                   (call-with-output-file "config.toml"
+                     (lambda (port)
+                       (display (string-append "
+[llvm]
+[build]
+cargo = \"" (search-input-file inputs "/bin/cargo") "\"
+rustc = \"" (search-input-file inputs "/bin/rustc") "\"
+docs = false
+python = \"" (which "python") "\"
+vendor = true
+submodules = false
+target = [\"" ,(nix-system->gnu-triplet-for-rust (gnu-triplet->nix-system target)) "\"]
+[install]
+prefix = \"" out "\"
+sysconfdir = \"etc\"
+[rust]
+debug = false
+jemalloc = false
+default-linker = \"" target-cc "\"
+channel = \"stable\"
+[target." ,(nix-system->gnu-triplet-for-rust) "]
+# These are all native tools
+llvm-config = \"" (search-input-file inputs "/bin/llvm-config") "\"
+linker = \"" (which "gcc") "\"
+cc = \"" (which "gcc") "\"
+cxx = \"" (which "g++") "\"
+ar = \"" (which "ar") "\"
+[target." ,(nix-system->gnu-triplet-for-rust (gnu-triplet->nix-system target)) "]
+llvm-config = \"" (search-input-file inputs "/bin/llvm-config") "\"
+linker = \"" target-cc "\"
+cc = \"" target-cc "\"
+cxx = \"" (search-input-file inputs (string-append "/bin/" ,(cxx-for-target target))) "\"
+ar = \"" (search-input-file inputs (string-append "/bin/" ,(ar-for-target target))) "\"
+[dist]
+") port))))))
+             (replace 'build
+               ;; Phase overridden to build the necessary directories.
+               (lambda* (#:key parallel-build? #:allow-other-keys)
+                 (let ((job-spec (string-append
+                                  "-j" (if parallel-build?
+                                           (number->string (parallel-job-count))
+                                           "1"))))
+                   ;; This works for us with the --sysroot flag
+                   ;; and then we can build ONLY library/std
+                   (invoke "./x.py" job-spec "build" "library/std"))))
+             (replace 'install
+               (lambda _
+                 (invoke "./x.py" "install" "library/std")))
+             (add-after 'install 'remove-uninstall-script
+               (lambda* (#:key outputs #:allow-other-keys)
+                 ;; This script has no use on Guix
+                 ;; and it retains a reference to the host's bash.
+                 (delete-file (string-append (assoc-ref outputs "out")
+                                             "/lib/rustlib/uninstall.sh"))))
+             (delete 'install-rust-src)
+             (delete 'wrap-rust-analyzer)
+             (delete 'wrap-rustc)))))
+      (inputs
+       (modify-inputs (package-inputs base-rust)
+                      (prepend xz)))    ; for lzma-sys
+      (propagated-inputs
+       (if (target-mingw? target)
+         (modify-inputs (package-propagated-inputs base-rust)
+                        (prepend
+                          (if (string=? "i686-w64-mingw32" target)
+                              mingw-w64-i686-winpthreads
+                              mingw-w64-x86_64-winpthreads)))
+         (package-propagated-inputs base-rust)))
+      (native-inputs
+       (if (target-mingw? target)
+         (modify-inputs (package-native-inputs base-rust)
+                        (prepend (cross-gcc target
+                                            #:libc (cross-libc target))
+                                 (cross-binutils target)
+                                 (if (string=? "i686-w64-mingw32" target)
+                                     mingw-w64-i686-winpthreads
+                                     mingw-w64-x86_64-winpthreads)
+                                 libunwind))
+         (modify-inputs (package-native-inputs base-rust)
+                        (prepend (cross-gcc target
+                                            #:libc (cross-libc target))
+                                 (cross-libc target)
+                                 (cross-binutils target)))))
+      (properties
+       `((hidden? . #t)
+         ,(package-properties base-rust))))))
+
+(define-public rust-analyzer
+  (package
+    (name "rust-analyzer")
+    (version (package-version rust))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments
+     (list
+       #:modules '((guix build utils))
+       #:builder
+       #~(begin
+           (use-modules (guix build utils))
+           (let ((rust (assoc-ref %build-inputs "rust")))
+             (install-file (string-append rust "/bin/rust-analyzer")
+                           (string-append #$output "/bin"))
+             (copy-recursively (string-append rust "/share")
+                               (string-append #$output "/share"))))))
+    (inputs
+     (list (list rust "tools")))
+    (home-page "https://rust-analyzer.github.io/")
+    (synopsis "Experimental Rust compiler front-end for IDEs")
+    (description "Rust-analyzer is a modular compiler frontend for the Rust
+language.  It is a part of a larger rls-2.0 effort to create excellent IDE
+support for Rust.")
+    (license (list license:expat license:asl2.0))))

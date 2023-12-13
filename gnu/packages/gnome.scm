@@ -3586,11 +3586,19 @@ for dealing with different structured file formats.")
               ;; https://gitlab.gnome.org/GNOME/librsvg/-/issues/955).
               (substitute* "gdk-pixbuf-loader/librsvg.thumbnailer.in"
                 (("@bindir@/gdk-pixbuf-thumbnailer")
-                 (search-input-file inputs "bin/gdk-pixbuf-thumbnailer")))))
+                 (string-append #$(this-package-input "gdk-pixbuf")
+                                "/bin/gdk-pixbuf-thumbnailer")))))
           (add-after 'unpack 'prepare-for-build
             (lambda _
               ;; In lieu of #:make-flags
               (setenv "CC" #$(cc-for-target))
+              (setenv "PKG_CONFIG" #$(pkg-config-for-target))
+              (when #$(%current-target-system)
+                (setenv "RUST_TARGET"
+                        (string-replace
+                          #$(%current-target-system)
+                          "-unknown-linux-gnu"
+                          (string-index #$(%current-target-system) #\-))))
               ;; Something about the build environment resists building
               ;; successfully with the '--locked' flag.
               (substitute* '("Makefile.am" "Makefile.in")
@@ -3623,9 +3631,18 @@ for dealing with different structured file formats.")
               (apply (assoc-ref gnu:%standard-phases 'configure)
                      #:configure-flags
                      (list "--disable-static"
-                           "--enable-vala"
-                           (string-append "--with-html-dir=" #$output
-                                          "/share/gtk-doc/html"))
+                           #$@(if (%current-target-system)
+                                #~(;; g-ir-scanner can't import its modules
+                                   ;; and vala currently can't be cross-compiled.
+                                   "--enable-introspection=no"
+                                   "--enable-vala=no"
+                                   ;; These two are necessary for cross-compiling.
+                                   (string-append
+                                     "--build=" #$(nix-system->gnu-triplet
+                                                    (%current-system)))
+                                   (string-append
+                                     "--host=" #$(%current-target-system)))
+                                #~("--enable-vala")))
                      args)))
           (add-after 'configure 'dont-vendor-self
             (lambda* (#:key vendor-dir #:allow-other-keys)
@@ -3635,13 +3652,14 @@ for dealing with different structured file formats.")
           (replace 'build
             (assoc-ref gnu:%standard-phases 'build))
           (replace 'check
-            (lambda* args
-              ((assoc-ref gnu:%standard-phases 'check)
-               #:test-target "check")))
+            (lambda* (#:key tests? #:allow-other-keys #:rest args)
+              (when tests?
+                ((assoc-ref gnu:%standard-phases 'check)
+                 #:test-target "check"))))
           (replace 'install
             (assoc-ref gnu:%standard-phases 'install)))))
-    (native-inputs (list `(,glib "bin") gobject-introspection pkg-config vala))
-    (inputs (list freetype harfbuzz libxml2 pango))
+    (native-inputs (list gdk-pixbuf `(,glib "bin") gobject-introspection pkg-config vala))
+    (inputs (list freetype gobject-introspection harfbuzz libxml2 pango))
     (propagated-inputs (list cairo gdk-pixbuf glib))
     (synopsis "SVG rendering library")
     (description "Librsvg is a library to render SVG images to Cairo surfaces.

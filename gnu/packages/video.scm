@@ -5588,12 +5588,9 @@ result in several formats:
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
                (invoke "cargo" "cinstall" "--release"
-                       (string-append "--prefix=" out)))))
-         (add-after 'install 'delete-static-library
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Delete 93 MiB (!) static library.
-             (delete-file (string-append (assoc-ref outputs "out")
-                                         "/lib/librav1e.a")))))))
+                       ;; Only build the dynamic library.
+                       "--library-type" "cdylib"
+                       (string-append "--prefix=" out))))))))
     (native-inputs
      (list nasm pkg-config rust-cargo-c))
     (inputs

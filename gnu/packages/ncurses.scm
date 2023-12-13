@@ -330,8 +330,9 @@ of your system.")
           "1460d5lc780p3q38l3wc9jfr2a7zlyrcra0li65aynj738cam9yl"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f ; no test target
-       #:make-flags (list (string-append "prefix=" (assoc-ref %outputs "out")))
+     `(#:tests? #f ; no test target
+       #:make-flags (list (string-append "prefix=" (assoc-ref %outputs "out"))
+                          (string-append "CC=" ,(cc-for-target)))
        #:phases
        (modify-phases %standard-phases
          (delete 'configure) ; there is no configure script
@@ -339,8 +340,7 @@ of your system.")
          (add-before 'build 'patch-ncursesw
            (lambda _
              (substitute* "stfl_internals.h"
-               (("ncursesw/") ""))
-             #t))
+               (("ncursesw/") ""))))
          (add-after 'install 'install-missing-symlink
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
