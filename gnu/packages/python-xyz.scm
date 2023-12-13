@@ -6095,26 +6095,17 @@ possible.")
 for Python.")
     (license license:bsd-3)))
 
-
 (define-public python-jinja2
   (package
     (name "python-jinja2")
-    (version "3.1.1")
+    (version "3.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Jinja2" version))
        (sha256
-        (base32
-         "1saawzys14l1p4kafs7hkihmnvqjq8fwxjmkjiqx3jq1nm5ys2v4"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (if tests?
-                          (invoke "pytest" "-vv")
-                          (format #t "test suite not run~%")))))))
+        (base32 "0lp86yadzf8dph67f6g3yxmvnhrzzi863z58jmsrx2j059q1ld9i"))))
+    (build-system pyproject-build-system)
     (native-inputs (list python-pytest))
     (propagated-inputs (list python-markupsafe))
     (home-page "https://jinja.palletsprojects.com/")
@@ -6123,7 +6114,6 @@ for Python.")
      "Jinja2 is a small but fast and easy to use stand-alone template engine
 written in pure Python.")
     (license license:bsd-3)))
-
 
 (define-public python-jinja2-time
   (package
