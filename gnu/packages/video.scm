@@ -67,6 +67,7 @@
 ;;; Copyright © 2023 Dominik Delgado Steuter <dds@disroot.org>
 ;;; Copyright © 2023 Saku Laesvuori <saku@laesvuori.fi>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1533,7 +1534,7 @@ libebml is a C++ library to read and write EBML files.")
 (define-public libplacebo
   (package
     (name "libplacebo")
-    (version "4.208.0")
+    (version "6.338.1")
     (source
      (origin
        (method git-fetch)
@@ -1542,7 +1543,7 @@ libebml is a C++ library to read and write EBML files.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "161dp5781s74ca3gglaxlmchx7glyshf0wg43w98pl22n1jcm5qk"))))
+        (base32 "1miqk3gfwah01xkf4a6grwq29im0lfh94gp92y7js855gx3v169m"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags
@@ -1551,7 +1552,7 @@ libebml is a C++ library to read and write EBML files.")
                          (assoc-ref %build-inputs "vulkan-headers")
                          "/share/vulkan/registry/vk.xml"))))
     (native-inputs
-     (list python python-mako pkg-config))
+     (list glad python python-mako pkg-config))
     (inputs
      (list lcms
            libepoxy
