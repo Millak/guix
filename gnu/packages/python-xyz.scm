@@ -1126,35 +1126,28 @@ into dataclasses.")
 (define-public python-contourpy
   (package
     (name "python-contourpy")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "contourpy" version))
        (sha256
-        (base32 "088bhyh6m6q0h637wiq2paqhwn76hqvvbhqwacfx4a1qhv1lcc75"))))
+        (base32 "1az80zv067rcybm5x93j7rfiakbwiv1h8l58gnki4wjbwb13gfln"))))
     (build-system pyproject-build-system)
     (arguments
-     (list
-      #:test-flags
-      ;; All these tests require matplotlib, but matplotlib requires contourpy
-      ;; now.
-      '(list "-k" "not test_mypy"
-             "--ignore=tests/test_config.py"
-             "--ignore=tests/test_filled.py"
-             "--ignore=tests/test_lines.py"
-             "--ignore=tests/test_renderer.py")))
-    (propagated-inputs (list python-mypy
-                             python-numpy
-                             python-pillow
-                             python-pytest
-                             python-pytest-cov
-                             python-pytest-xdist
-                             python-selenium
-                             python-sphinx
-                             python-sphinx-copybutton
-                             python-wurlitzer))
-    (native-inputs (list meson-python pybind11-2.10 pkg-config))
+     ;; Image tests require matplotlib and create a circular dependency.
+     (list #:test-flags
+           #~(list "-m" "not image")))
+    (propagated-inputs
+     (list python-numpy))
+    (native-inputs
+     (list cmake
+           meson-python/newer
+           pkg-config
+           pybind11
+           python-pytest
+           python-pytest-cov
+           python-wurlitzer))
     (home-page "https://contourpy.readthedocs.io/")
     (synopsis
      "Python library for calculating contours of 2D quadrilateral grids")
