@@ -1741,15 +1741,7 @@ same arguments.")
        (sha256
         (base32
          "1psf5dqxvc38qzxvc305mkg5xpdmdkbkkfiyqlmdnkgh7z5dx025"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv"
-                       "-n" (number->string (parallel-job-count)))))))))
+    (build-system pyproject-build-system)
     (native-inputs (list python-setuptools-scm python-filelock python-pytest))
     (propagated-inputs (list python-execnet python-pytest-forked))
     (home-page "https://github.com/pytest-dev/pytest-xdist")
