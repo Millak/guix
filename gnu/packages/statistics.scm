@@ -2437,7 +2437,8 @@ sampler for Markov chain Monte Carlo (MCMC).")
            python-pytest-randomly
            python-pytest-xdist
            python-setuptools-scm))
-    (home-page "https://statsmodels.sourceforge.net/")
+    (home-page
+     (string-append "https://www.statsmodels.org/v" version "/"))
     (synopsis "Statistical modeling and econometrics in Python")
     (description
      "Statsmodels is a Python package that provides a complement to scipy for
