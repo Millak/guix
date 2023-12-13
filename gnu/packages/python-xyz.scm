@@ -4018,7 +4018,7 @@ server.")
 (define-public python-openpyxl
   (package
     (name "python-openpyxl")
-    (version "3.0.9")
+    (version "3.0.10")
     (source
      (origin
        ;; We use the upstream repository, as the tests are not included in the
@@ -4029,13 +4029,8 @@ server.")
              (changeset version)))
        (file-name (string-append name "-" version "-checkout"))
        (sha256
-        (base32 "1p8xvc2gjw6zyzbd7qdvc3x178sm00ymrbyh9539l4fpzgxh0j9c"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (invoke "pytest"))))))
+        (base32 "0f8ym32vdn8wyziiy5bz8iiwvgj7dlccy86wkfcn5syqgivgqnv9"))))
+    (build-system pyproject-build-system)
     (native-inputs (list python-lxml python-pillow python-pytest))
     (propagated-inputs (list python-et-xmlfile python-jdcal))
     (home-page "https://openpyxl.readthedocs.io")
