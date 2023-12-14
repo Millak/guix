@@ -981,6 +981,11 @@ argument.")))
                 (lambda (pw)
                   (string-append (passwd:dir pw) "/.guix-profile"))))
 
+       (define home-profile
+         (and=> (getpw (getuid))
+                (lambda (pw)
+                  (string-append (passwd:dir pw) "/.guix-home/profile"))))
+
        ;; If we are able to find the user's profile, we can add it to
        ;; the search paths set below.  We need to do this so that D-Bus
        ;; can start services installed by the user.  This allows
@@ -988,9 +993,13 @@ argument.")))
        ;; 'evolution') to work even if those services are only available
        ;; in the user's profile.  See <https://bugs.gnu.org/35267>.
        (define profiles
-         (if user-profile
-             (list user-profile system-profile)
-             (list system-profile)))
+         (append (if home-profile
+                     (list home-profile)
+                     '())
+                 (if user-profile
+                     (list user-profile)
+                     '())
+                 (list system-profile)))
 
        (setenv "XDG_CONFIG_DIRS"
                (string-join (map (cut string-append <> "/etc/xdg") profiles)
