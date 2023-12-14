@@ -1454,7 +1454,8 @@ to the @code{share/locale} sub-directory of this package.")
 (define %default-utf8-locales
   ;; These are the locales commonly used for tests---e.g., in Guile's i18n
   ;; tests.
-  '("de_DE" "el_GR" "en_US" "fr_FR" "tr_TR"))
+  '("C" "de_DE" "el_GR" "en_US" "fr_FR" "tr_TR"))
+
 (define*-public (make-glibc-utf8-locales glibc #:key
                                          (locales %default-utf8-locales)
                                          (name "glibc-utf8-locales"))
@@ -1502,7 +1503,14 @@ to the @code{share/locale} sub-directory of this package.")
                              (symlink (string-append locale ".utf8")
                                       (string-append localedir "/"
                                                      locale ".UTF-8")))
-                           '#$locales)))))
+
+                           ;; The C.UTF-8 locale was introduced in 2.35 but it
+                           ;; fails to build there:
+                           ;; <https://sourceware.org/bugzilla/show_bug.cgi?id=28861>.
+                           '#$(if (version>? (package-version this-package)
+                                             "2.35")
+                                  locales
+                                  (delete "C" locales)))))))
     (native-inputs (list glibc gzip))
     (synopsis (if default-locales?
                   (P_ "Small sample of UTF-8 locales")
