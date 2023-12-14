@@ -2524,7 +2524,7 @@ a different style of marking.")
      "JetBrains Mono is a font family dedicated to developers.  JetBrains
 Mono’s typeface forms are simple and free from unnecessary details.  Rendered
 in small sizes, the text looks crisper.")
-    (license license:asl2.0)))
+    (license license:silofl1.1)))
 
 (define-public font-juliamono
   (package
