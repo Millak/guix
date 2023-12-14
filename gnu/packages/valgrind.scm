@@ -2,7 +2,7 @@
 ;;; Copyright © 2013, 2014, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2020, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Denis Carikli <GNUtoo@cyberdimension.org>
@@ -96,5 +96,5 @@ also use Valgrind to build new tools.")
    valgrind
    (inputs
     ;; GDB is needed to provide a sane default for `--db-command'.
-    (list gdb `(,(canonical-package glibc) "debug")))
+    (list gdb `(,(canonical-package (libc-for-target)) "debug")))
    (properties '())))
