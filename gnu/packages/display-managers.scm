@@ -486,59 +486,46 @@ GTK+, lets you select a desktop session and log in to it.")
 (define-public slim
   (package
     (name "slim")
-    (version "1.3.6")
-    (source (origin
-	     (method url-fetch)
-             ;; Used to be available from download.berlios.de.
-	     (uri (string-append
-                   "mirror://sourceforge/slim.berlios/slim-"
-                   version ".tar.gz"))
-	     (sha256
-	      (base32 "1pqhk22jb4aja4hkrm7rjgbgzjyh7i4zswdgf5nw862l2znzxpi1"))
-             (patches (search-patches "slim-config.patch"
-                                      "slim-reset.patch"
-                                      "slim-login.patch"
-                                      "slim-session.patch"
-                                      "slim-sigusr1.patch"
-                                      "slim-display.patch"))))
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/slim-fork/slim-" version
+                           ".tar.gz"))
+       (sha256
+        (base32 "011jfmksy0kgw4z0y70mc80bm5kmz5i1sgm6krrfj0h00zak22rm"))
+       (patches (search-patches "slim-config.patch"
+                                "slim-login.patch"
+                                "slim-display.patch"))))
     (build-system cmake-build-system)
-    (inputs `(("linux-pam" ,linux-pam)
-	      ("libpng" ,libpng)
-	      ("libjpeg" ,libjpeg-turbo)
-	      ("freeglut" ,freeglut)
-	      ("libxrandr" ,libxrandr)
-	      ("libxrender" ,libxrender)
-	      ("freetype" ,freetype)
-	      ("fontconfig" ,fontconfig)
-              ("libx11" ,libx11)
-	      ("libxft" ,libxft)
-	      ("libxmu" ,libxmu)
-	      ("xauth" ,xauth)))
-    (native-inputs
-     (list pkg-config))
+    (inputs (list fontconfig
+                  freeglut
+                  freetype
+                  libjpeg-turbo
+                  libpng
+                  libx11
+                  libxft
+                  libxmu
+                  libxrandr
+                  libxrender
+                  linux-pam
+                  xauth))
+    (native-inputs (list pkg-config))
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'set-new-etc-location
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("/etc")
-                (string-append (assoc-ref %outputs "out") "/etc"))
-               (("install.*systemd.*")
-               ;; The build system's logic here is: if "Linux", then
-                ;; "systemd".  Strip that.
-                ""))
-             #t))
-         (add-before 'configure 'fix-0-pointer-comparison
-           (lambda _
-             (substitute* "panel.cpp"
-               (("WinGC < 0") "WinGC == NULL")))))
-       #:configure-flags '("-DUSE_PAM=yes"
-                           "-DUSE_CONSOLEKIT=no")
-       #:tests? #f))
-
-    ;; This used to be at <http://slim.berlios.de/>.
-    (home-page "https://github.com/iwamatsu/slim")
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'set-new-etc-location
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("/etc")
+                 (string-append #$output "/etc"))))))
+      #:configure-flags
+      #~(list "-DUSE_PAM=yes" "-DUSE_CONSOLEKIT=no")
+      #:tests? #f))
+    ;; The original project (https://github.com/iwamatsu/slim) has not been
+    ;; maintained since 2013, so we use slim-fork instead.
+    (home-page "https://slim-fork.sourceforge.io/")
     (synopsis "Desktop-independent graphical login manager for X11")
     (description
      "SLiM is a Desktop-independent graphical login manager for X11, derived

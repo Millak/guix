@@ -2004,10 +2004,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/serf-python3.patch			\
   %D%/packages/patches/shakespeare-spl-fix-grammar.patch		\
   %D%/packages/patches/sharutils-CVE-2018-1000097.patch		\
-  %D%/packages/patches/slim-session.patch			\
   %D%/packages/patches/slim-config.patch			\
-  %D%/packages/patches/slim-sigusr1.patch			\
-  %D%/packages/patches/slim-reset.patch				\
   %D%/packages/patches/slim-login.patch				\
   %D%/packages/patches/slim-display.patch			\
   %D%/packages/patches/stex-copy-from-immutable-store.patch	\
