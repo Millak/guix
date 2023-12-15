@@ -6197,14 +6197,14 @@ problems in CEL-level data to help evaluate performance of quality metrics.")
 (define-public r-affycoretools
   (package
     (name "r-affycoretools")
-    (version "1.72.0")
+    (version "1.74.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "affycoretools" version))
        (sha256
         (base32
-         "1h065fhw0n2ga74csyhqbj4qfhkg058pqa684ixcski4rhsd7hcf"))))
+         "0bgv8a7hf8ns472zfryf255zqdikjv08np6k6hkpvyivad25vpwy"))))
     (properties `((upstream-name . "affycoretools")))
     (build-system r-build-system)
     (propagated-inputs
@@ -6215,8 +6215,8 @@ problems in CEL-level data to help evaluate performance of quality metrics.")
            r-dbi
            r-edger
            r-gcrma
-           r-glimma
            r-ggplot2
+           r-glimma
            r-gostats
            r-gplots
            r-hwriter
