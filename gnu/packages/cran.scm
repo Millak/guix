@@ -18556,14 +18556,14 @@ redundant complex conjugate when the input is real data.")
 (define-public r-tiff
   (package
     (name "r-tiff")
-    (version "0.1-11")
+    (version "0.1-12")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tiff" version))
        (sha256
         (base32
-         "0xgc7vyndxxahfhc2qqzmwi56bnfyl0pn72l820jz5sd24aymhxq"))))
+         "0p41irri0nxg9mm06g8jp5zqssv80g5zg0iifrr7ancjkxqww46z"))))
     (build-system r-build-system)
     (inputs
      (list libtiff libjpeg-turbo zlib))
