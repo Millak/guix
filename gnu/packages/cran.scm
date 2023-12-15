@@ -22455,14 +22455,14 @@ for reproducibility.  See the vignette and reference manual for examples.")
 (define-public r-sets
   (package
     (name "r-sets")
-    (version "1.0-24")
+    (version "1.0-25")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sets" version))
        (sha256
         (base32
-         "1jfaxdyr3w5p086yh7n6661dipc4rx6ak92hp6gv13j1r7sk6mz7"))))
+         "1x14q29jjmrs5ldbjc7pxp5pr52j3dw6zr9k5qvz4ycniwhnk92w"))))
     (properties `((upstream-name . "sets")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/sets")
