@@ -6300,14 +6300,14 @@ genome-wide association studies can be analyzed efficiently.")
 (define-public r-cairo
   (package
     (name "r-cairo")
-    (version "1.6-1")
+    (version "1.6-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Cairo" version))
        (sha256
         (base32
-         "051pqbhfsr3dki2wiycbwvka850y4h4gyhvnjjf907q8sz2cykg6"))))
+         "0qjdsj6mpbwvnp8cimc4yrqfq3z68pfcd78ahsai52hpjdplqvvb"))))
     (properties `((upstream-name . "Cairo")))
     (build-system r-build-system)
     (inputs
