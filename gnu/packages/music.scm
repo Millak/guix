@@ -1895,7 +1895,7 @@ complete studio.")
 
 (define-public tascam-gtk
   ;; This commit represents the latest version at the time of this writing.
-  (let ((commit "17b8575ff88dfd2ede0f7ef9c5c5597ab8a00702")
+  (let ((commit "69fb86f31efcdb27c7854d2a190457aab42b337a")
         (revision "0"))
     (package
       (name "tascam-gtk")
@@ -1908,10 +1908,10 @@ complete studio.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "07k7rccqqg7lnygkh97a200l1i6s1rl92n01v0q6n4257sinir6f"))))
+                  "05fbs5s24nwr6b10jgjhsfi7aj6y65kcickmygl7g84xvsnykdb0"))))
       (build-system gnu-build-system)
       (inputs
-       (list liblo gtkmm-3 alsa-lib libxml++-2))
+       (list liblo gtkmm-3 alsa-lib libxml++-3))
       (native-inputs
        (list `(,glib "bin") pkg-config))
       (home-page "https://github.com/onkelDead/tascam-gtk")
