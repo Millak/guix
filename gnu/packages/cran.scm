@@ -31053,14 +31053,14 @@ machine learning, visually representing text and text analyses, and more.")
 (define-public r-topicmodels
   (package
     (name "r-topicmodels")
-    (version "0.2-14")
+    (version "0.2-15")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "topicmodels" version))
        (sha256
         (base32
-         "1jaw9fjcl5ac0l57lack9gswqx2wzid1gkwsksyr4dlpxbw0zm5c"))))
+         "1l3pmz6n0sd57bf3d16m9766285d2pmndmv36rf5pffpwiw0zdbi"))))
     (properties `((upstream-name . "topicmodels")))
     (build-system r-build-system)
     (inputs
