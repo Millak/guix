@@ -451,7 +451,7 @@ with namespaces, exception handling, and member template functions.")
 (define-public cfitsio
   (package
     (name "cfitsio")
-    (version "4.2.0")
+    (version "4.3.1")
     (source
      (origin
        (method url-fetch)
@@ -459,7 +459,7 @@ with namespaces, exception handling, and member template functions.")
              "https://heasarc.gsfc.nasa.gov/FTP/software/fitsio/c/"
              "cfitsio-" version ".tar.gz"))
        (sha256
-        (base32 "128qsv2q0f0g714ahlsixiikvvbwxi9bg9q9pcr5cd3f7wdkv9gb"))))
+        (base32 "1gk2a07ypmc8rcngakcarprznq7hi3xr9szfv3hy2yv80ppci9s7"))))
     (build-system gnu-build-system)
     (arguments
      (list
