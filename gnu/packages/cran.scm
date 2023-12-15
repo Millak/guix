@@ -4607,14 +4607,14 @@ conditionals and comparisons, and more.")
 (define-public r-sass
   (package
     (name "r-sass")
-    (version "0.4.7")
+    (version "0.4.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sass" version))
        (sha256
         (base32
-         "1vp9qnhkvz4shhvwrwbwcy1xnrgry0rmqxsg96ggv90m6sv0hyki"))))
+         "0364ndnmlqrga3k4c1hfy1894k5wpm9srf9201g9zb92rlq2kfj2"))))
     (properties `((upstream-name . "sass")))
     (build-system r-build-system)
     (propagated-inputs
