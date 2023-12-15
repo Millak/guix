@@ -56,6 +56,15 @@
      (base32
       "0n4r85dsr86zlk7r4hbd4nj14sda6rwgdgzxg4gj4q981fn80agn"))))
 
+(define fpc-bootstrap-powerpc
+  (origin
+    (method url-fetch)
+    (uri (string-append "mirror://sourceforge/freepascal/Linux/"
+                        %fpc-version "/fpc-" %fpc-version ".powerpc-linux.tar"))
+    (sha256
+     (base32
+      "1zhdypm99bzs5706g4nxwajiadv82jwd87cr300lrivy1rzj5h4a"))))
+
 (define fpc-bootstrap-x86_64
   (origin
     (method url-fetch)
@@ -92,7 +101,7 @@
                   (rename-file "install-man" "install/man")
                   (delete-file "fpcsrc/tests/utils/dosbox/exitcode.exe")))))
     (build-system gnu-build-system)
-    (supported-systems '("i686-linux" "x86_64-linux"))
+    (supported-systems '("i686-linux" "x86_64-linux" "powerpc-linux"))
     (inputs
      (list expat glibc ncurses zlib))
     (native-inputs
@@ -101,7 +110,7 @@
                                  (%current-system))
                        ("i686-linux" fpc-bootstrap-i386)
                        ;;("powerpc64le-linux" fpc-bootstrap-ppc64le)
-                       ;;("powerpc-linux" fpc-bootstrap-ppc)
+                       ("powerpc-linux" fpc-bootstrap-powerpc)
                        ("x86_64-linux" fpc-bootstrap-x86_64)
                        ;; XXX: Wrong, but innocuous so long
                        ;; `supported-systems' is kept in sync.
@@ -111,11 +120,11 @@
        #:phases
        (let ((fpc-bootstrap-path
               (string-append (getcwd) "/" ,name "-" ,version "/fpc-bin"))
-             (arch ,(match (or (%current-target-system)
-                               (%current-system))
-                     ("i686-linux" "i386")
-                     ("x86_64-linux" "x86_64")
-                     (_ "unknown"))))
+             (arch ,(cond
+                      ((target-x86-32?) "i386")
+                      ((target-ppc32?) "powerpc")
+                      ((target-x86-64?) "x86_64")
+                      (else "unknown"))))
          (modify-phases %standard-phases
            (add-after 'unpack 'unpack-bin
              (lambda* (#:key inputs #:allow-other-keys)
@@ -199,9 +208,11 @@
              (lambda* (#:key outputs #:allow-other-keys)
                (let* ((out (assoc-ref outputs "out"))
                      ;; This is the suffix of the ppc[arch] binary.
-                     (suffix (if (string= arch "x86_64")
-                                 "x64"
-                                 "386"))
+                     (suffix ,(cond
+                                ((target-x86-32?) "386")
+                                ((target-ppc32?) "ppc")
+                                ((target-x86-64?) "x64")
+                                (else "")))
                      (ppc (string-append "ppc" suffix)))
                  (invoke "make" "install" "NOGDB=1"
                          (string-append "INSTALL_PREFIX=" out))
