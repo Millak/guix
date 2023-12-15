@@ -1346,13 +1346,13 @@ and to generate base64 encoded string from raster matrix.")
 (define-public r-svglite
   (package
     (name "r-svglite")
-    (version "2.1.2")
+    (version "2.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "svglite" version))
        (sha256
-        (base32 "0c00djvlnf4qr30srh3xjnx1valqq8grm5ib0q4485z8gphn7hf2"))))
+        (base32 "0m0axxrkiih4wmrp9qh803p4l92fdgrsbxaww38z89widx75da7h"))))
     (properties `((upstream-name . "svglite")))
     (build-system r-build-system)
     (inputs (list libpng zlib))
