@@ -9837,18 +9837,16 @@ region sets and other genomic features.")
 (define-public r-reportingtools
   (package
     (name "r-reportingtools")
-    (version "2.39.0")
+    (version "2.42.3")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ReportingTools" version))
        (sha256
         (base32
-         "15h7vqdxfv7y0f82ff7a8brqnscs324x22izlkgjk2wqahnmr2l1"))
+         "109vmrdsjdjnfrlcdyadzbwz9a50hqaahf7dawwxkbbh4mmdih78"))
        (snippet
-        '(for-each delete-file
-                   (list "inst/doc/jslib/jquery-1.8.0.min.js"
-                         "inst/extdata/jslib/jquery-1.8.0.min.js")))))
+        '(delete-file "inst/extdata/jslib/jquery-1.8.0.min.js"))))
     (properties
      `((upstream-name . "ReportingTools")))
     (build-system r-build-system)
@@ -9856,25 +9854,20 @@ region sets and other genomic features.")
      (list
       #:modules '((guix build utils)
                   (guix build r-build-system)
-                  (srfi srfi-1))
+                  (guix build minify-build-system)
+                  (ice-9 match))
+      #:imported-modules
+      `(,@%r-build-system-modules
+        (guix build minify-build-system))
       #:phases
-      '(modify-phases %standard-phases
+      '(modify-phases (@ (guix build r-build-system) %standard-phases)
          (add-after 'unpack 'process-javascript
            (lambda* (#:key inputs #:allow-other-keys)
-             (call-with-values
-                 (lambda ()
-                   (unzip2
-                    `((,(assoc-ref inputs "_")
-                       "inst/doc/jslib/jquery-1.8.0.min.js"))))
-               (lambda (sources targets)
-                 (for-each (lambda (source target)
-                             (format #true "Processing ~a --> ~a~%"
-                                     source target)
-                             (invoke "esbuild" source "--minify"
-                                     (string-append "--outfile=" target)))
-                           sources targets)))
-             (copy-file "inst/doc/jslib/jquery-1.8.0.min.js"
-                        "inst/extdata/jslib/jquery-1.8.0.min.js"))))))
+             (for-each (match-lambda
+                         ((source . target)
+                          (minify source #:target target)))
+                       `((,(assoc-ref inputs "_")
+                          . "inst/extdata/jslib/jquery-1.8.0.min.js"))))))))
     (propagated-inputs
      (list r-annotate
            r-annotationdbi
@@ -9896,7 +9889,7 @@ region sets and other genomic features.")
            r-r-utils
            r-xml))
     (native-inputs
-     (list esbuild r-knitr
+     (list esbuild r-rmarkdown
            (origin
              (method url-fetch)
              (uri "https://code.jquery.com/jquery-1.8.0.js")
