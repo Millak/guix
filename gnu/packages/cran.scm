@@ -7586,14 +7586,14 @@ matrices, a special case of sparse matrices.")
 (define-public r-bbmle
   (package
     (name "r-bbmle")
-    (version "1.0.25")
+    (version "1.0.25.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bbmle" version))
        (sha256
         (base32
-         "0mdj21q7k0fp4cj7la14vmcjmp49zqm57g7r6zrwmxpv0acwda46"))))
+         "02xnfmjr5ax5pc69jkxmygkwvb68flrf1x8pxfw0hk7y37w0qanr"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bdsmatrix
