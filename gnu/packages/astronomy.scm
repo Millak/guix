@@ -4036,13 +4036,13 @@ install an implementation package such as asdf-astropy.")
 (define-public python-asdf-astropy
   (package
     (name "python-asdf-astropy")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asdf-astropy" version))
        (sha256
-        (base32 "1difb2y1hlalbhrw8znwmmc0vzgg44zfsay98lpllb7y0536fas6"))))
+        (base32 "061y7r1d2fqlr8a6gyaffqa3z5m0ymljahhvxzcb71355xkqig7v"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
