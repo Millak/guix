@@ -212,6 +212,38 @@ functions always read and write UTF-8 (8-bit Unicode Transformation Format)
 files and provide more explicit control over line endings.")
     (license license:expat)))
 
+(define-public r-broom-helpers
+  (package
+    (name "r-broom-helpers")
+    (version "1.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "broom.helpers" version))
+       (sha256
+        (base32 "14vaqxv12yrvqllp8552nx68wk2qfjcy1iy7bajkspgdpwsjzhfd"))))
+    (properties `((upstream-name . "broom.helpers")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-broom
+                             r-cli
+                             r-dplyr
+                             r-labelled
+                             r-lifecycle
+                             r-purrr
+                             r-rlang
+                             r-stringr
+                             r-tibble
+                             r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://larmarange.github.io/broom.helpers/")
+    (synopsis "Helpers for Model Coefficients Tibbles")
+    (description
+     "This package provides suite of functions to work with regression model
+@code{broom::tidy()} tibbles.  The suite includes functions to group
+regression model terms by variable, insert reference and header rows for
+categorical variables, add variable labels, and more.")
+    (license license:gpl3+)))
+
 (define-public r-ca
   (package
     (name "r-ca")
