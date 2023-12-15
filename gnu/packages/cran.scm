@@ -25619,14 +25619,14 @@ dimensional low-discrepancy sequence.")
 (define-public r-dqrng
   (package
     (name "r-dqrng")
-    (version "0.3.1")
+    (version "0.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dqrng" version))
        (sha256
         (base32
-         "0vmrbnix05a9h1bc4b7d999qkzkk63i1arzyblyhmvydv4m8cc72"))))
+         "171y7487flla0vqxmzvf9nls7vn046vplcgzvyiva3d418hwl0nd"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bh r-rcpp r-sitmo))
