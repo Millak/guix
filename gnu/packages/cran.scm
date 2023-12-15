@@ -10458,14 +10458,14 @@ detect possible inconsistencies.")
 (define-public r-sna
   (package
     (name "r-sna")
-    (version "2.7-1")
+    (version "2.7-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sna" version))
        (sha256
         (base32
-         "1qqaazcc8x925bwa9yllwyv98ddpdqgdq026h0ss6vsvq4bz5nk0"))))
+         "1kd7qxdc8wy8d385yddj6rs0xc6lkn8hpra3wy4r7svzjqk4c8bv"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-network r-statnet-common))
