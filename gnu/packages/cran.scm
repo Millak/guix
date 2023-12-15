@@ -17434,13 +17434,13 @@ exact and interval-censored observations.")
 (define-public r-clustercrit
   (package
     (name "r-clustercrit")
-    (version "1.2.8")
+    (version "1.3.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "clusterCrit" version))
               (sha256
                (base32
-                "10pz1bikdbkm2ky3xnagp0qv60whalavp6j39b4p7d75jj5xcxgk"))))
+                "0raxlyvr3kr8c8bzjgs7hb9n76m314vzvfiz7c74v6cqpkmh6dkx"))))
     (properties `((upstream-name . "clusterCrit")))
     (build-system r-build-system)
     (native-inputs (list gfortran))
