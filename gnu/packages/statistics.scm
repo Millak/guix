@@ -5269,16 +5269,21 @@ data at that region, and avoids over-plotting.")
 (define-public r-ggthemes
   (package
     (name "r-ggthemes")
-    (version "4.2.4")
+    (version "5.0.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggthemes" version))
               (sha256
                (base32
-                "0rw5f6axyz1pqn6qx9jwm38hjzn8bqs1nfjkvm96z3xnyn61cdbv"))))
+                "1iddxlcxbj5pq0llbhjh5gvxq8j4kzby0cahy0sgzzca074i7aan"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-ggplot2 r-purrr r-scales r-stringr r-tibble))
+     (list r-ggplot2
+           r-lifecycle
+           r-purrr
+           r-scales
+           r-stringr
+           r-tibble))
     (home-page "https://cran.rstudio.com/web/packages/ggthemes")
     (synopsis "Extra themes, scales and geoms for @code{ggplot2}")
     (description "This package provides extra themes and scales for
