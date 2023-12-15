@@ -702,6 +702,32 @@ Subsequent calls will either return the cached previous value or throw an error
 if desired.")
     (license license:isc)))
 
+(define-public node-path-key
+  (package
+    (name "node-path-key")
+    (version "4.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sindresorhus/path-key")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09f4rf70qhq234fcc3pw9nrqic8cb75pk2b6wfnpr96v0r1h8d8g"))))
+    (build-system node-build-system)
+    (arguments
+     '(#:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (add-after 'patch-dependencies 'delete-dependencies
+                    (lambda _
+                      (delete-dependencies '("@types/node" "ava" "tsd" "xo")))))))
+    (home-page "https://github.com/sindresorhus/path-key")
+    (synopsis "Cross-platform utility to compute the PATH environment variable key")
+    (description "@code{path-key} provides an implementation to compute the
+particular cross-platform spellings of the PATH environment variable key.")
+    (license license:expat)))
+
 (define-public node-ieee754
   (package
     (name "node-ieee754")
