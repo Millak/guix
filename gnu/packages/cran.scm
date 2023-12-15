@@ -4666,21 +4666,18 @@ expression estimates for all genes.")
 (define-public r-bslib
   (package
     (name "r-bslib")
-    (version "0.5.1")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bslib" version))
        (sha256
         (base32
-         "03phbr6zax3898yvdfqmrs0sjiik4pfn34ksysf95fp348in2xdi"))
+         "1nrix6i5ailhhlnnv9b2rymvy0c0w3szg9f5r0d5z2fksypka9v4"))
        (snippet
         '(for-each delete-file
-                   '("inst/components/dist/accordion/accordion.min.js"
-                     "inst/components/dist/bslibShiny/bslibShiny.min.js"
-                     "inst/components/dist/card/card.min.js"
-                     "inst/components/dist/sidebar/sidebar.min.js"
-                     "inst/components/dist/webComponents/webComponents.min.js"
+                   '("inst/components/dist/components.min.js"
+                     "inst/components/dist/web-components.min.js"
                      "inst/lib/bs-a11y-p/plugins/js/bootstrap-accessibility.min.js"
                      "inst/lib/bs3/assets/javascripts/bootstrap.min.js"
                      "inst/lib/bs4/dist/js/bootstrap.bundle.min.js"
@@ -4689,66 +4686,39 @@ expression estimates for all genes.")
     (build-system r-build-system)
     (arguments
      (list
-      #:modules '((guix build utils)
-                  (guix build r-build-system)
-                  (srfi srfi-1))
+      #:modules '((guix build r-build-system)
+                  (guix build minify-build-system)
+                  (guix build utils)
+                  (ice-9 match))
+      #:imported-modules `(,@%r-build-system-modules
+                           (guix build minify-build-system))
       #:phases
-      #~(modify-phases %standard-phases
+      #~(modify-phases (@ (guix build r-build-system) %standard-phases)
           (add-after 'unpack 'process-javascript
             (lambda* (#:key inputs #:allow-other-keys)
-              ;; See srcts/build/index.ts
-              (for-each (lambda (component)
-                          (invoke "esbuild"
-                                  "--bundle" "--minify" "--sourcemap"
-                                  "--target=es6" ;"--external=:bootstrap"
-                                  (string-append
-                                   #$(this-package-native-input "typescript-components")
-                                   "/srcts/src/components/" component ".ts")
-                                  (string-append "--outfile=inst/components/dist/"
-                                                 component "/" component ".min.js")))
-                        '("accordion" "bslibShiny" "card" "sidebar"))
-              ;; XXX: webComponents requires "lit" for type annotations, which
-              ;; we cannot easily build.
               (with-directory-excursion "inst/"
-                (call-with-values
-                    (lambda ()
-                      (unzip2
-                       `(("components/dist/webComponents/webComponents.js"
-                          "components/dist/webComponents/webComponents.min.js"))))
-                  (lambda (sources targets)
-                    (for-each (lambda (source target)
-                                (format #t "Processing ~a --> ~a~%"
-                                        source target)
-                                (invoke "esbuild" source "--minify"
-                                        (string-append "--outfile=" target)))
-                              sources targets))))
-              (with-directory-excursion "inst/lib/"
-                (call-with-values
-                    (lambda ()
-                      (unzip2
-                       `(("bs-a11y-p/plugins/js/bootstrap-accessibility.js"
-                          "bs-a11y-p/plugins/js/bootstrap-accessibility.min.js")
-                         ("bs-colorpicker/js/bootstrap-colorpicker.js"
-                          "bs-colorpicker/js/bootstrap-colorpicker.min.js")
-                         ("bs3/assets/javascripts/bootstrap.js"
-                          "bs3/assets/javascripts/bootstrap.min.js")
-                         (,(assoc-ref inputs "js-bootstrap4-bundle")
-                          "bs4/dist/js/bootstrap.bundle.min.js")
-                         (,(assoc-ref inputs "js-bootstrap5-bundle")
-                          "bs5/dist/js/bootstrap.bundle.min.js"))))
-                  (lambda (sources targets)
-                    (for-each (lambda (source target)
-                                (format #t "Processing ~a --> ~a~%"
-                                        source target)
-                                (invoke "esbuild" source "--minify"
-                                        (string-append "--outfile=" target)))
-                              sources targets)))))))))
+                (for-each (match-lambda
+                            ((source . target)
+                             (minify source #:target target)))
+                          `(("components/dist/components.js"
+                             . "components/dist/components.min.js")
+                            ("components/dist/web-components.js"
+                             . "components/dist/web-components.min.js")
+                            ("lib/bs-a11y-p/plugins/js/bootstrap-accessibility.js"
+                             . "lib/bs-a11y-p/plugins/js/bootstrap-accessibility.min.js")
+                            ("lib/bs3/assets/javascripts/bootstrap.js"
+                             . "lib/bs3/assets/javascripts/bootstrap.min.js")
+                            (,(assoc-ref inputs "js-bootstrap4-bundle")
+                             . "lib/bs4/dist/js/bootstrap.bundle.min.js")
+                            (,(assoc-ref inputs "js-bootstrap5-bundle")
+                             . "lib/bs5/dist/js/bootstrap.bundle.min.js")))))))))
     (propagated-inputs
      (list r-base64enc
            r-cachem
            r-htmltools
            r-jquerylib
            r-jsonlite
+           r-lifecycle
            r-memoise
            r-mime
            r-rlang
@@ -4765,20 +4735,10 @@ expression estimates for all genes.")
        ("js-bootstrap5-bundle"
         ,(origin
            (method url-fetch)
-           (uri "https://raw.githubusercontent.com/twbs/bootstrap/v5.2.2/dist/js/bootstrap.bundle.js")
+           (uri "https://raw.githubusercontent.com/twbs/bootstrap/v5.3.1/dist/js/bootstrap.bundle.js")
            (sha256
             (base32
-             "1ibfb1lwwm50did0b4fvxaqc7xyljmp20f3qb1ybdlvcy22mk8bg"))))
-       ("typescript-components"
-        ,(origin
-           (method git-fetch)
-           (uri (git-reference
-                 (url "https://github.com/rstudio/bslib")
-                 (commit (string-append "v" version))))
-           (file-name (git-file-name name version))
-           (sha256
-            (base32
-             "0rvwdn1xg7vwphq0bpa7s81f2d2xyhmy5kb516b0lxvc7qfdypa4"))))))
+             "1bp0a2fin80hwxvd260r1jk57snsgz74vahid64yb2sgj0rlmj8a"))))))
     (home-page "https://rstudio.github.io/bslib/")
     (synopsis "Custom Bootstrap Sass themes for shiny and rmarkdown")
     (description
