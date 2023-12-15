@@ -19335,14 +19335,14 @@ and compatibility with @code{ape} objects.")
 (define-public r-rnifti
   (package
     (name "r-rnifti")
-    (version "1.5.0")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RNifti" version))
        (sha256
         (base32
-         "01g9ylmjirmblgcl1f8kzwfzbpyf4vy2rci1407jx4s3av9xzr1j"))))
+         "0rbym1svldahd4rlbcfb5s62rigws2w1fa1f1chp504gn340b555"))))
     (properties `((upstream-name . "RNifti")))
     (build-system r-build-system)
     (inputs (list zlib))
