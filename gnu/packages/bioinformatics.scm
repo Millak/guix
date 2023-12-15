@@ -17990,7 +17990,7 @@ updated much more frequently.")
 (define-public python-ctxcore
   (package
     (name "python-ctxcore")
-    (version "0.1.1")
+    (version "0.2.0")
     (source
      (origin
        (method git-fetch)
@@ -18000,8 +18000,8 @@ updated much more frequently.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "16nlj7z8pirgjad7vlgm7226b3hpw4a7n967vyfg26dsf5n8k70d"))))
-    (build-system python-build-system)
+         "0nv4lc46cnzpg5gcdxrsv7b4srmkq55zl3rcadw5pn3yyz5fzd2k"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
@@ -18013,12 +18013,12 @@ updated much more frequently.")
               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (propagated-inputs
      (list python-cytoolz
-           python-numba
            python-frozendict
+           python-numba
            python-numpy
            python-pandas
+           python-pyarrow
            python-pyyaml
-           python-pyarrow-0.16
            python-tqdm))
     (native-inputs
      (list python-pytest
