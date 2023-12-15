@@ -4051,13 +4051,13 @@ Zucchini.")
 (define-public r-httpuv
   (package
     (name "r-httpuv")
-    (version "1.6.12")
+    (version "1.6.13")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "httpuv" version))
               (sha256
                (base32
-                "0x2y5yjj1ha99dv5c8j6pxm8fqhdcx010jl4rcw2qw20qaqp5ndi"))
+                "0prvd2mv4rliqm0ldaldd6yjxy04qvxnqyhfxlk2c1lanmxzjvnb"))
               (modules '((guix build utils)))
               ;; Cannot unbundle http-parser, because it contains local
               ;; modifications.
