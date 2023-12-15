@@ -20412,14 +20412,14 @@ plot them, and perform logrank or Wilcoxon type tests.")
 (define-public r-fhtest
   (package
     (name "r-fhtest")
-    (version "1.5")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "FHtest" version))
        (sha256
         (base32
-         "00mql2r4f5hxhdqf27q3x9s5rz2zzakx2myym97b1w1s7c5znl4q"))))
+         "0x7lr88w0b09ng7nps490kgj8aqdjzmp9skv9iwqgn871pnpydms"))))
     (properties `((upstream-name . "FHtest")))
     (build-system r-build-system)
     (propagated-inputs
