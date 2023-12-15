@@ -1928,13 +1928,13 @@ Cesium.")
 (define-public python-drms
   (package
     (name "python-drms")
-    (version "0.6.4")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "drms" version))
        (sha256
-        (base32 "0mkrmr55fgca441z7hvsyri6x9cjsh0sfas3hrj0k1k10k8vszbw"))))
+        (base32 "0smc39nndxqbznjcpnylsag1sc2ksfjhxh4dwiqbki8q6v5ahx84"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-astropy
