@@ -564,13 +564,13 @@ wrangling backend for the packages in the @code{easystats} ecosystem.")
 (define-public r-dbscan
   (package
     (name "r-dbscan")
-    (version "1.1-11")
+    (version "1.1-12")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dbscan" version))
        (sha256
-        (base32 "0bz66lvvg7290c5260ph92k4r7adgisbx3vml9096qhjwrkqwjgh"))))
+        (base32 "1snfcf5jy3chh5nmvn7ashhlyv35nkajlfrlk9kzpy4jnfyv3y2n"))))
     (properties `((upstream-name . "dbscan")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
