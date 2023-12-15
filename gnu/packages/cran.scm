@@ -3471,13 +3471,13 @@ data types as well.")
 (define-public r-tgp
   (package
     (name "r-tgp")
-    (version "2.4-21")
+    (version "2.4-22")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "tgp" version))
               (sha256
                (base32
-                "12ifd7rm3wskhbpnhfvz92z3graxzryq0iy1jiqmdk6bvhxkiww8"))))
+                "0gpndjq2xiic6fb5187f4hgrqj3477pd83caajnw3yy9wan4vly6"))))
     (properties `((upstream-name . "tgp")))
     (build-system r-build-system)
     (propagated-inputs (list r-maptree))
