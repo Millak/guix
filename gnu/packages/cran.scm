@@ -17881,14 +17881,14 @@ other values.")
 (define-public r-ncdf4
   (package
     (name "r-ncdf4")
-    (version "1.21")
+    (version "1.22")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ncdf4" version))
        (sha256
         (base32
-         "03dk47xz6qlpky9kkpkkxc472czq542yml3fdg39bic2yggffnig"))))
+         "040jpcgsb98s6knch0z3f3f5fpmlwks1grpvb9k8s02c9w0a5adr"))))
     (build-system r-build-system)
     (inputs
      (list netcdf zlib))
