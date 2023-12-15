@@ -10797,13 +10797,13 @@ identifier translation via the GDC API.")
 (define-public r-trackviewer
   (package
     (name "r-trackviewer")
-    (version "1.38.0")
+    (version "1.38.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "trackViewer" version))
               (sha256
                (base32
-                "15agkyqx6gl5zzdxra5nl0czd4j7mw456r587w039l9hzwznwbr8"))
+                "008d1wg8882iq7jfmwijpchxrfva5ysl45ama62iy8s9dm0fpwsj"))
               (snippet
                '(delete-file "inst/htmlwidgets/lib/d3/d3.v4.min.js"))))
     (properties `((upstream-name . "trackViewer")))
