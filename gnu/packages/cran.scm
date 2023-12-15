@@ -33504,18 +33504,20 @@ input.")
 (define-public r-lightgbm
   (package
     (name "r-lightgbm")
-    (version "3.3.5")
+    (version "4.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lightgbm" version))
        (sha256
         (base32
-         "1bnzggia48jkd1ffdzhznmbk76dw3mab65i7rmg967zcflapv7rh"))))
+         "0c0q597agzdaimy0q1mssdpm0pw4yvqq9w6n8syvgz1g5q0mcwqi"))))
     (properties `((upstream-name . "lightgbm")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-data-table r-jsonlite r-matrix r-r6))
+    (native-inputs
+     (list r-knitr))
     (home-page "https://github.com/Microsoft/LightGBM")
     (synopsis "Light gradient boosting machine")
     (description
