@@ -967,6 +967,40 @@ samples) are easily visualized.")
      "Ggfittext is a ggplot2 extension for fitting text into boxes.")
     (license license:gpl2)))
 
+(define-public r-ggstats
+  (package
+    (name "r-ggstats")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "ggstats" version))
+       (sha256
+        (base32 "1jcydapwarl1cxinm80rjmmli8vmlid8alnh6w484bh7nwzmcsic"))))
+    (properties `((upstream-name . "ggstats")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-broom-helpers
+                             r-cli
+                             r-dplyr
+                             r-forcats
+                             r-ggplot2
+                             r-lifecycle
+                             r-magrittr
+                             r-patchwork
+                             r-purrr
+                             r-rlang
+                             r-scales
+                             r-stringr
+                             r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://larmarange.github.io/ggstats/")
+    (synopsis "Extension to ggplot2 for plotting stats")
+    (description
+     "This package provides new statistics, new geometries and new positions
+for ggplot2 and a suite of functions to facilitate the creation of statistical
+plots.")
+    (license license:gpl3+)))
+
 (define-public r-ggstatsplot
   (package
     (name "r-ggstatsplot")
