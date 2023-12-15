@@ -13438,14 +13438,14 @@ statistic, and one based on variance estimators.")
 (define-public r-fansi
   (package
     (name "r-fansi")
-    (version "1.0.5")
+    (version "1.0.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fansi" version))
        (sha256
         (base32
-         "1xi35schbz42kjwjzhjqj12nd053962mgnk6qd9k5m5zgwsww5n6"))))
+         "0qqq8gz6sfr5yib4qmvk458qa0ypaz0n7f2ygjnpy2p5vy8cd7ga"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr)) ; for vignettes
