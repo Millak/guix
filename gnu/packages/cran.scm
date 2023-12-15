@@ -880,13 +880,13 @@ axis breaks of a ggplot.")
 (define-public r-ggdist
   (package
     (name "r-ggdist")
-    (version "3.3.0")
+    (version "3.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggdist" version))
        (sha256
-        (base32 "0b15b972wrllsvqqn0nc2c81fd9jl618fvqsfi50hjxwwpdach8l"))))
+        (base32 "0agr1l65s7vimdb88a7n3ahr6pp9ng5zf9mypdic26vhaaifh1b7"))))
     (properties `((upstream-name . "ggdist")))
     (build-system r-build-system)
     (propagated-inputs (list r-cli
@@ -896,6 +896,7 @@ axis breaks of a ggplot.")
                              r-glue
                              r-numderiv
                              r-quadprog
+                             r-rcpp
                              r-rlang
                              r-scales
                              r-tibble
