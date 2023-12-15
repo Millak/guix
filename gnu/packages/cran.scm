@@ -10201,14 +10201,14 @@ their own grammars and easily expose them in R packages.")
 (define-public r-tinytex
   (package
     (name "r-tinytex")
-    (version "0.48")
+    (version "0.49")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tinytex" version))
        (sha256
         (base32
-         "15bnb4fxdzapgj9ws3rfbcxwdzwbq8h5yy4d1db0m9c1lygrh2qx"))))
+         "0i9icscy5n6p6w3f4v2z3cznywrrv2l6xyyhb0k1fpa4cpn6j4cl"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-xfun))
