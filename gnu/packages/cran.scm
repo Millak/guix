@@ -19378,13 +19378,13 @@ creating color scales and calculating color distances.")
 (define-public r-ore
   (package
     (name "r-ore")
-    (version "1.7.3.1")
+    (version "1.7.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ore" version))
        (sha256
-        (base32 "0hlmr4p0ldizdv46myyhlki10qkjdgs44jxp9y61zqcdw360dz95"))))
+        (base32 "01ayvjyjbarmi7l2jwp7bp4m0k42zy8bvf9rbwynfwmm8mv6vx0j"))))
     (build-system r-build-system)
     (home-page "https://github.com/jonclayden/ore")
     (synopsis "R interface to the Onigmo regular expression library")
