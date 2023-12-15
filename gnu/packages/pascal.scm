@@ -65,6 +65,15 @@
      (base32
       "1zhdypm99bzs5706g4nxwajiadv82jwd87cr300lrivy1rzj5h4a"))))
 
+(define fpc-bootstrap-powerpc64le
+  (origin
+    (method url-fetch)
+    (uri (string-append "mirror://sourceforge/freepascal/Linux/"
+                        %fpc-version "/fpc-" %fpc-version ".powerpc64le-linux.tar"))
+    (sha256
+     (base32
+      "12p3lmi1vn7agpw4pipp6ra8r85319sjcvbzh7z6kangmry7vic3"))))
+
 (define fpc-bootstrap-x86_64
   (origin
     (method url-fetch)
@@ -101,7 +110,8 @@
                   (rename-file "install-man" "install/man")
                   (delete-file "fpcsrc/tests/utils/dosbox/exitcode.exe")))))
     (build-system gnu-build-system)
-    (supported-systems '("i686-linux" "x86_64-linux" "powerpc-linux"))
+    (supported-systems '("i686-linux" "x86_64-linux"
+                         "powerpc-linux" "powerpc64le-linux"))
     (inputs
      (list expat glibc ncurses zlib))
     (native-inputs
@@ -109,8 +119,8 @@
      `(("fpc-binary" ,(match (or (%current-target-system)
                                  (%current-system))
                        ("i686-linux" fpc-bootstrap-i386)
-                       ;;("powerpc64le-linux" fpc-bootstrap-ppc64le)
                        ("powerpc-linux" fpc-bootstrap-powerpc)
+                       ("powerpc64le-linux" fpc-bootstrap-powerpc64le)
                        ("x86_64-linux" fpc-bootstrap-x86_64)
                        ;; XXX: Wrong, but innocuous so long
                        ;; `supported-systems' is kept in sync.
@@ -123,6 +133,7 @@
              (arch ,(cond
                       ((target-x86-32?) "i386")
                       ((target-ppc32?) "powerpc")
+                      ((target-ppc64le?) "powerpc64")
                       ((target-x86-64?) "x86_64")
                       (else "unknown"))))
          (modify-phases %standard-phases
@@ -211,6 +222,7 @@
                      (suffix ,(cond
                                 ((target-x86-32?) "386")
                                 ((target-ppc32?) "ppc")
+                                ((target-ppc64le?) "ppc64")
                                 ((target-x86-64?) "x64")
                                 (else "")))
                      (ppc (string-append "ppc" suffix)))
