@@ -12582,12 +12582,12 @@ clustering, and classification.")
 (define-public r-snowfall
   (package
    (name "r-snowfall")
-   (version "1.84-6.2")
+   (version "1.84-6.3")
    (source (origin
             (method url-fetch)
             (uri (cran-uri "snowfall" version))
             (sha256
-             (base32 "0frmasv04wd47h04zbwaryhiyxllarf3ggpa39p5qicjp6r7lilv"))))
+             (base32 "0hxip3rzv7slxvif1000avbcid2mjxj1y9mimyvk87h404mr6h96"))))
    (build-system r-build-system)
    (propagated-inputs
     (list r-snow))
