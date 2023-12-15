@@ -7639,14 +7639,14 @@ topics for ecologists (ISBN 978-0-691-12522-0).")
 (define-public r-lpsolve
   (package
     (name "r-lpsolve")
-    (version "5.6.19")
+    (version "5.6.20")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lpSolve" version))
        (sha256
         (base32
-         "06sqjj69gp2ja2hgzfxii00js6pjbmhyp07a9jya5sy6cjgb9ma9"))))
+         "1nr1vjz6ma42kxbcay4g9j30r9srkbw79f06sdnc68sid2h0dziz"))))
     (properties `((upstream-name . "lpSolve")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/lpSolve")
