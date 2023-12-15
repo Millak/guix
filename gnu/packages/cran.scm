@@ -194,14 +194,14 @@ models} (GLMM).")
 (define-public r-brio
   (package
     (name "r-brio")
-    (version "1.1.3")
+    (version "1.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "brio" version))
        (sha256
         (base32
-         "1inwzvlf6zj6gi47gd0byzqv02qajb3l475z8pjvx2b1hm0r1a7a"))))
+         "1s0q1qk3w3fwf7gn4xfwhf8i8yqqb6z096x6xqsj8av8924z7fqc"))))
     (properties `((upstream-name . "brio")))
     (build-system r-build-system)
     (home-page "https://github.com/r-lib/brio")
