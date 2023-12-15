@@ -2092,6 +2092,7 @@ documentation for more information.")
     (propagated-inputs
      (list python-aplus
            python-blake3
+           python-click ;XXX for dask
            python-cloudpickle
            python-dask
            python-filelock
