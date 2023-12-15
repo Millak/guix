@@ -2526,17 +2526,19 @@ and environmental data in the framework of Euclidean exploratory methods.")
 (define-public r-xml2
   (package
     (name "r-xml2")
-    (version "1.3.5")
+    (version "1.3.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "xml2" version))
        (sha256
         (base32
-         "10p214gzzcy2zzcq2xkh1vz2wrjsys5gplvk9c1crq3nmfki0six"))))
+         "13rhvmrjdqwc5psn501vz9jfmqwlf4rc30w6vrnn3wxzk7zr26g8"))))
     (build-system r-build-system)
     (inputs
      (list libxml2 zlib))
+    (propagated-inputs
+     (list r-cli r-rlang))
     (native-inputs
      (list pkg-config r-knitr))
     (home-page "https://github.com/hadley/xml2")
