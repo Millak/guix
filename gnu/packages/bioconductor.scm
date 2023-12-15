@@ -8343,6 +8343,7 @@ microarray data, using nearest neighbor averaging.")
     (propagated-inputs
      (list r-annotationdbi
            r-biocgenerics
+           r-biocmanager ;this is not listed in DESCRIPTION
            r-category
            r-ggplot2
            r-gridsvg
