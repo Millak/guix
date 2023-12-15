@@ -12510,13 +12510,13 @@ methods.")
 (define-public r-fstcore
   (package
     (name "r-fstcore")
-    (version "0.9.14")
+    (version "0.9.18")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fstcore" version))
        (sha256
-        (base32 "0mhk4l86iypg86l0jjs7szxllcy10h4rh5qy2gsmpmiv003gm3nh"))))
+        (base32 "00wzpr2i7s9pc3alvn4b8f1wgmfqplpwdif9rh9x8qqnylbixiqq"))))
     (properties `((upstream-name . "fstcore")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
