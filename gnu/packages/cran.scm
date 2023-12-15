@@ -6532,13 +6532,13 @@ graphics packages that comes with the base installation.")
 (define-public r-ctrdata
   (package
     (name "r-ctrdata")
-    (version "1.15.2")
+    (version "1.16.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ctrdata" version))
               (sha256
                (base32
-                "0rqsz9wq4w0w2q0vha3dh7rwr3mnhp2gc1xb8hi30qk85zghjzml"))))
+                "13n5c7znlxkwqlv04vd5ynbkbq8f28dzbr3y66966971xnf7yhsm"))))
     (properties `((upstream-name . "ctrdata")))
     (build-system r-build-system)
     (propagated-inputs
@@ -6550,9 +6550,12 @@ graphics packages that comes with the base installation.")
            r-jsonlite
            r-lubridate
            r-nodbi
+           r-readr
            r-stringi
            r-tibble
-           r-xml2))
+           r-v8
+           r-xml2
+           r-zip))
     (native-inputs (list r-r-rsp))
     (home-page "https://cran.r-project.org/package=ctrdata")
     (synopsis "Retrieve and analyze clinical trials in public registers")
