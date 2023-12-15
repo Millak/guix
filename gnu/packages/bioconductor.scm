@@ -11393,13 +11393,13 @@ R, enabling interactive analysis and visualization of genome-scale data.")
 (define-public r-variantannotation
   (package
     (name "r-variantannotation")
-    (version "1.48.0")
+    (version "1.48.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "VariantAnnotation" version))
               (sha256
                (base32
-                "1r1cyimr5l5jzgxvmrm3vq8mvz3f1klfdwy9mz31xvnvgjacr58p"))))
+                "0l9xkrvsrc3m65kdjcyir6jkpa718g7idziwr0pp5yaj84bd3xia"))))
     (properties
      `((upstream-name . "VariantAnnotation")))
     (build-system r-build-system)
