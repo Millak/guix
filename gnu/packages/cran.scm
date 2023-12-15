@@ -20350,14 +20350,14 @@ to throw errors if they aren't in the right form.")
 (define-public r-dotcall64
   (package
     (name "r-dotcall64")
-    (version "1.1-0")
+    (version "1.1-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dotCall64" version))
        (sha256
         (base32
-         "1ibh2f2vcv30k1c919diw6qdmhxmvkl83k3396vy3xigbcny711l"))))
+         "06y9y9m5prjvqlprqpanbamgr6jkw27wj7nnha5ayyn08zbxgf11"))))
     (properties `((upstream-name . "dotCall64")))
     (build-system r-build-system)
     (native-inputs (list gfortran))
