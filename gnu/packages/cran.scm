@@ -4163,13 +4163,13 @@ Notation (JSON) using the rapidjsonr library.")
 (define-public r-jsonlite
   (package
     (name "r-jsonlite")
-    (version "1.8.7")
+    (version "1.8.8")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "jsonlite" version))
               (sha256
                (base32
-                "07301wdpf014m8pfr7x3zwaj07pmin0rfax0irljimvj9dwbfhkx"))))
+                "196an37f118qw43vyfaygh01dirh3hyz84ix8bbs6fsck0b17qkx"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr r-r-rsp))
