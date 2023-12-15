@@ -10141,13 +10141,13 @@ terminals.")
 (define-public r-pinfsc50
   (package
    (name "r-pinfsc50")
-   (version "1.2.0")
+   (version "1.3.0")
    (source (origin
             (method url-fetch)
             (uri (cran-uri "pinfsc50" version))
             (sha256
              (base32
-              "1547xyxmfb7zi8h9bsm6k67dcw4hpp129xzvmgwfw7r6p4af47zd"))))
+              "1gs9x328qqvqwx3k4z9jgzq5zb6g8kdz4430n96v7zb78p7jf5lp"))))
    (build-system r-build-system)
    (home-page "https://cran.r-project.org/web/packages/pinfsc50/")
    (synopsis "Genomic data for the plant pathogen Phytophthora infestans")
