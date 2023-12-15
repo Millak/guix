@@ -6951,14 +6951,14 @@ parallel - each request in a separate fork.")
 (define-public r-progress
   (package
     (name "r-progress")
-    (version "1.2.2")
+    (version "1.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "progress" version))
        (sha256
         (base32
-         "0dgzb362641aqm8xd88iqa8jmpdm43xs0aba0d5kk6fvapnxi95l"))))
+         "0xljky4ad2jbbcfrcyh48li461pc5b2wk210n4x5rs2di6dhfaza"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-crayon r-hms r-prettyunits r-r6))
