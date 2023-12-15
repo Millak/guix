@@ -1954,7 +1954,7 @@ used with local NetDRMS sites.")
 (define-public python-drizzle
   (package
     (name "python-drizzle")
-    (version "1.14.3")
+    (version "1.14.4")
     (source
      (origin
        (method git-fetch) ;PyPi doesn't have the test data sets
@@ -1963,7 +1963,7 @@ used with local NetDRMS sites.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04gncwg76yivcaq7rwgsw5k8w4h3c4wcrjcamb53h0d5s820z7dl"))))
+        (base32 "01zsq1r3p9lig0aik01szncd7nbmyi561mhi1n44yjhh7d86fp8y"))))
     (build-system pyproject-build-system)
     (arguments
      (list
