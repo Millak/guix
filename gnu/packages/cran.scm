@@ -7040,28 +7040,28 @@ package also provides a C++ API, that works with or without Rcpp.")
 (define-public r-ggally
   (package
     (name "r-ggally")
-    (version "2.1.2")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "GGally" version))
        (sha256
         (base32
-         "1r98zgh2grn8330cf26r1c20gl131zm778szvn5wj6q6pwv2yd9h"))))
+         "1pc0mcxhj3mz8ac6r1sqfxw1wkamikjal54z7pb1mairsr3hpqnw"))))
     (properties `((upstream-name . "GGally")))
     (build-system r-build-system)
     (inputs
      (list openssl))
     (propagated-inputs
      (list r-dplyr
-           r-forcats
            r-ggplot2
+           r-ggstats
            r-gtable
            r-lifecycle
+           r-magrittr
            r-plyr
            r-progress
            r-rcolorbrewer
-           r-reshape
            r-rlang
            r-scales
            r-tidyr))
