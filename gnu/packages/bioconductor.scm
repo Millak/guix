@@ -4408,13 +4408,13 @@ usage.")
 (define-public r-bandits
   (package
     (name "r-bandits")
-    (version "1.18.0")
+    (version "1.18.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BANDITS" version))
               (sha256
                (base32
-                "1xdyi61scfay5l5v7c40wjjl83kcvagvypxnfvsws4avh08x3ni3"))))
+                "0y81m37c5irpaw9pfm5b672wk804n4x1g9g5pfh1dp7pggfwbf1z"))))
     (properties `((upstream-name . "BANDITS")))
     (build-system r-build-system)
     (propagated-inputs
