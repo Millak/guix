@@ -204,6 +204,46 @@
   #:use-module (gnu packages xorg)
   #:use-module ((srfi srfi-1) #:select (last)))
 
+(define-public alsa-scarlett-gui
+  (package
+    (name "alsa-scarlett-gui")
+    (version "0.3.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/geoffreybennett/alsa-scarlett-gui")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1nd764vd7qfy2x8dqapiyh5yrxjimm8b4himhm1qkgpf5hvh734l"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #false ;there is no check target
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (substitute* "src/Makefile"
+                (("	cc -o")
+                 (string-append "	"
+                                #$(cc-for-target) " -o")))
+              (chdir "src")))
+          (delete 'configure))))
+    (inputs
+     (list alsa-lib glib gtk))
+    (native-inputs
+     (list `(,glib "bin") pkg-config))
+    (home-page "https://github.com/geoffreybennett/alsa-scarlett-gui")
+    (synopsis "ALSA Scarlett2 control panel")
+    (description "This package provides a Gtk4 GUI for the ALSA controls
+presented by the Linux kernel Focusrite Scarlett2 USB Protocol Mixer Driver.")
+    (license license:gpl3+)))
+
 (define-public audacious
   (package
     (name "audacious")
