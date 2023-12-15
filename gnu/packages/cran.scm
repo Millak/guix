@@ -5723,14 +5723,14 @@ including functions for geolocation and routing.")
 (define-public r-haven
   (package
     (name "r-haven")
-    (version "2.5.3")
+    (version "2.5.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "haven" version))
        (sha256
         (base32
-         "1qxp0hp7clmd70383lsbiijq1i5037zv4haja60czw09mnprjncs"))
+         "0dd83v3bfs7and9ydx35m8zw0md3wgchwpnvj6yllixa6yxk25cy"))
        (modules '((guix build utils)))
        (snippet
         ;; unvendor readstat
