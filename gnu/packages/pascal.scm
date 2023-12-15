@@ -47,6 +47,15 @@
 (define %fpc-release-date "2021/05/19")
 
 ;;; FIXME: Bootstrap properly; these are prebuilt binaries.
+(define fpc-bootstrap-aarch64
+  (origin
+    (method url-fetch)
+    (uri (string-append "mirror://sourceforge/freepascal/Linux/"
+                        %fpc-version "/fpc-" %fpc-version ".aarch64-linux.tar"))
+    (sha256
+     (base32
+      "0lalar6qk04acb2j8p6654hlz0yj6zdab046zi82zf5mnvwp155k"))))
+
 (define fpc-bootstrap-i386
   (origin
     (method url-fetch)
@@ -111,13 +120,15 @@
                   (delete-file "fpcsrc/tests/utils/dosbox/exitcode.exe")))))
     (build-system gnu-build-system)
     (supported-systems '("i686-linux" "x86_64-linux"
-                         "powerpc-linux" "powerpc64le-linux"))
+                         "powerpc-linux" "powerpc64le-linux"
+                         "aarch64-linux"))
     (inputs
      (list expat glibc ncurses zlib))
     (native-inputs
      ;; FPC is built with FPC, so we need bootstrap binaries.
      `(("fpc-binary" ,(match (or (%current-target-system)
                                  (%current-system))
+                       ("aarch64-linux" fpc-bootstrap-aarch64)
                        ("i686-linux" fpc-bootstrap-i386)
                        ("powerpc-linux" fpc-bootstrap-powerpc)
                        ("powerpc64le-linux" fpc-bootstrap-powerpc64le)
@@ -131,6 +142,7 @@
        (let ((fpc-bootstrap-path
               (string-append (getcwd) "/" ,name "-" ,version "/fpc-bin"))
              (arch ,(cond
+                      ((target-aarch64?) "aarch64")
                       ((target-x86-32?) "i386")
                       ((target-ppc32?) "powerpc")
                       ((target-ppc64le?) "powerpc64")
@@ -220,6 +232,7 @@
                (let* ((out (assoc-ref outputs "out"))
                      ;; This is the suffix of the ppc[arch] binary.
                      (suffix ,(cond
+                                ((target-aarch64?) "a64")
                                 ((target-x86-32?) "386")
                                 ((target-ppc32?) "ppc")
                                 ((target-ppc64le?) "ppc64")
