@@ -15349,7 +15349,9 @@ activity prediction from transcriptomics data, and its R implementation
            (add-after 'unpack 'set-HOME
              (lambda _ (setenv "HOME" "/tmp"))))))
       (propagated-inputs
-       (list r-complexheatmap
+       (list r-basilisk
+             r-basilisk-utils
+             r-complexheatmap
              r-dplyr
              r-ggplot2
              r-magrittr
