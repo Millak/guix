@@ -18066,67 +18066,77 @@ tree-based ensemble regressors.")
     (license license:bsd-3)))
 
 (define-public pyscenic
-  (package
-    (name "pyscenic")
-    (version "0.11.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/aertslab/pySCENIC")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0pbmmr1zdb1vbbs6wx357s59d13pna6x03wq8blj6ckjws8bbq73"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; Numba needs a writable dir to cache functions.
-         (add-before 'check 'set-numba-cache-dir
-           (lambda _
-             (setenv "NUMBA_CACHE_DIR" "/tmp")))
-         (replace 'check
-           (lambda _
-             (invoke "pytest" "-v"))))))
-    (propagated-inputs
-     (list python-ctxcore
-           python-cytoolz
-           python-multiprocessing-on-dill
-           python-llvmlite
-           python-numba
-           python-attrs
-           python-frozendict
-           python-numpy
-           python-pandas
-           python-cloudpickle
-           python-dask
-           python-distributed
-           python-arboreto
-           python-boltons
-           python-setuptools
-           python-pyyaml
-           python-tqdm
-           python-interlap
-           python-umap-learn
-           python-loompy
-           python-networkx
-           python-scipy
-           python-fsspec
-           python-requests
-           python-aiohttp
-           python-scikit-learn))
-    (native-inputs
-     (list python-pytest))
-    (home-page "https://scenic.aertslab.org/")
-    (synopsis "Single-Cell regulatory network inference and clustering")
-    (description
-     "pySCENIC is a Python implementation of the SCENIC pipeline (Single-Cell
+  ;; Latest commit from the update-pyarrow branch
+  (let ((commit "5f170fdf474548c37ab381d1849c662820d658ee")
+        (revision "1"))
+    (package
+      (name "pyscenic")
+      (version (git-version "0.11.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/aertslab/pySCENIC")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "03qkvy400rjndg2ds6bhcaprir71mqr2v3yv9vd77lcnzxgw3s0z"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        '(modify-phases %standard-phases
+           ;; The cli modules referenced here have been removed, so this
+           ;; breaks the sanity check.
+           (add-after 'unpack 'do-not-reference-deleted-modules
+             (lambda _
+               (substitute* "setup.py"
+                 (("'db2feather = .*',") "")
+                 (("'invertdb = .*',") "")
+                 (("'gmt2regions = pyscenic.cli.gmt2regions:main'") ""))))
+           ;; Numba needs a writable dir to cache functions.
+           (add-before 'check 'set-numba-cache-dir
+             (lambda _
+               (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+      (propagated-inputs
+       (list python-ctxcore
+             python-cytoolz
+             python-multiprocessing-on-dill
+             python-llvmlite
+             python-numba
+             python-attrs
+             python-frozendict
+             python-numpy
+             python-pandas
+             python-cloudpickle
+             python-dask
+             python-pyarrow               ;XXX for dask
+             python-distributed
+             python-arboreto
+             python-boltons
+             python-setuptools
+             python-pyyaml
+             python-tqdm
+             python-interlap
+             python-umap-learn
+             python-loompy
+             python-networkx
+             python-scipy
+             python-fsspec
+             python-requests
+             python-aiohttp
+             python-scikit-learn))
+      (native-inputs
+       (list python-pytest))
+      (home-page "https://scenic.aertslab.org/")
+      (synopsis "Single-Cell regulatory network inference and clustering")
+      (description
+       "pySCENIC is a Python implementation of the SCENIC pipeline (Single-Cell
 rEgulatory Network Inference and Clustering) which enables biologists to infer
 transcription factors, gene regulatory networks and cell types from
 single-cell RNA-seq data.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public python-ikarus
   (package
