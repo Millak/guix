@@ -11199,14 +11199,14 @@ simple and familiar tools.")
 (define-public r-phontools
   (package
     (name "r-phontools")
-    (version "0.2-2.1")
+    (version "0.2-2.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "phonTools" version))
        (sha256
         (base32
-         "01i481mhswsys3gpasw9gn6nxkfmi7bz46g5c84m13pg0cv8hxc7"))))
+         "0r5ylbxvzpa23yys4rxdlglfc5jq997ziw6yf8v9jyavy4p1ppkx"))))
     (properties `((upstream-name . "phonTools")))
     (build-system r-build-system)
     (home-page "http://www.santiagobarreda.com/rscripts.html")
