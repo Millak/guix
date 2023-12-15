@@ -3952,13 +3952,13 @@ into a pipeline of data manipulation and visualisation.")
 (define-public r-morpho
   (package
     (name "r-morpho")
-    (version "2.11")
+    (version "2.12")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "Morpho" version))
               (sha256
                (base32
-                "1c69n9284chygd375gkir4nk5bjglamhfyk2lz4z3kzy3z25qw50"))))
+                "1hg1jr0y11v93mqg2kn8n841nbsiffhyyr2kswj7kk664vlpril0"))))
     (properties `((upstream-name . "Morpho")))
     (build-system r-build-system)
     (propagated-inputs (list r-bezier
