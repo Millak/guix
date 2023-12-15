@@ -32285,13 +32285,13 @@ climate data.")
 (define-public r-rlecuyer
   (package
     (name "r-rlecuyer")
-    (version "0.3-7")
+    (version "0.3-8")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "rlecuyer" version))
               (sha256
                (base32
-                "0g5z26wsbv3wzrc3gl1z97qxdk5m2pvfg3f5zqkz98wzh1z49b35"))))
+                "1jbm5h8zbsx1yw148piw9p0rj9a7cm0ywgidrzi5ylrp6dad7gk6"))))
     (properties `((upstream-name . "rlecuyer")))
     (build-system r-build-system)
     (home-page
