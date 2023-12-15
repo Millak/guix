@@ -9677,14 +9677,14 @@ multivariate function estimation using smoothing splines.")
 (define-public r-cli
   (package
     (name "r-cli")
-    (version "3.6.1")
+    (version "3.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "cli" version))
        (sha256
         (base32
-         "0djyl08k7nhlbzgnfx7gq8w00s7c9f66bd11bvi9lzz6qz70cc5y"))))
+         "0lg131q9l8wpnggc3jlrjl1ri3dw0d1pi4nr1zlnlaqvf7ilj1sc"))))
     (build-system r-build-system)
     (home-page "https://github.com/r-lib/cli#readme")
     (synopsis "Helpers for developing command line interfaces")
