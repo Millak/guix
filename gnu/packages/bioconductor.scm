@@ -4628,13 +4628,13 @@ stochastic dropout events as well as systematic allelic imbalance is used.")
 (define-public r-cellid
   (package
     (name "r-cellid")
-    (version "1.10.0")
+    (version "1.10.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "CelliD" version))
               (sha256
                (base32
-                "1x4kp8i204rqas2bgg4qanwdncafilymlpvxvfyv39zpdji91yv5"))))
+                "13hwxhdp268h3n8d8wgr75i60apa9mama9bg049yz7c6mj5ixd1v"))))
     (properties `((upstream-name . "CelliD")))
     (build-system r-build-system)
     (propagated-inputs
