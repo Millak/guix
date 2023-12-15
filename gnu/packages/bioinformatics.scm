@@ -1095,11 +1095,11 @@ plotnames, filenames and paths.")
       (license license:gpl3))))
 
 (define-public r-readwriter
-  (let ((commit "12d32cb6533ef4b9eab4d707d1502525c2034aee")
+  (let ((commit "91373c44641014a1ce8e1c3e928747608aae8f54")
         (revision "1"))
     (package
       (name "r-readwriter")
-      (version (git-version "0.3.2" revision commit))
+      (version (git-version "1.5.3" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -1108,11 +1108,11 @@ plotnames, filenames and paths.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1hy47g8d7zppr2i9zlkwl2yb0ii8x710hqk07h089ldx9171qxab"))))
+                  "156kvmplrip0w1zhs9yl5r0ayjipa0blhy614l65hbsjn1lwbskr"))))
       (properties `((upstream-name . "ReadWriter")))
       (build-system r-build-system)
       (propagated-inputs
-       (list r-gdata r-gtools r-openxlsx r-readr r-stringendo))
+       (list r-gtools r-openxlsx r-readr r-stringendo))
       (home-page "https://github.com/vertesy/ReadWriter")
       (synopsis "Functions to read and write files conveniently")
       (description
