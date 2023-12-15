@@ -28297,14 +28297,14 @@ the align-and-count method.")
 (define-public r-filelock
   (package
     (name "r-filelock")
-    (version "1.0.2")
+    (version "1.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "filelock" version))
        (sha256
         (base32
-         "00ql5fw1hidpfnm0szaavf43ahmsnvdbi8i5lr1nrcc90yaiaadc"))))
+         "0dqi0w92zq1f9542ma2nk5gkqzfmd4jlf34vysb4vv7mag20xk9d"))))
     (properties `((upstream-name . "filelock")))
     (build-system r-build-system)
     (home-page "https://github.com/r-lib/filelock")
