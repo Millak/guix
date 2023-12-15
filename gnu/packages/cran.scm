@@ -10324,14 +10324,14 @@ of prediction methods available in @code{caret}.")
 (define-public r-network
   (package
     (name "r-network")
-    (version "1.18.1")
+    (version "1.18.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "network" version))
        (sha256
         (base32
-         "0hyj7h0z6mvf0jq0fb5z9nny4c71pwqjl7w0z864in3754sp03f8"))))
+         "0yx20v3izm7037cx5swc19966z97w7q9xw4p2p6skfyap4nqjcxz"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-magrittr r-statnet-common r-tibble))
