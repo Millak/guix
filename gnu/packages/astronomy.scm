@@ -2983,7 +2983,7 @@ low quality ones")
 (define-public libpasastro
   (package
     (name "libpasastro")
-    (version "1.4.1")
+    (version "1.4.2")
     (source
      (origin
        (method git-fetch)
@@ -2992,7 +2992,7 @@ low quality ones")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1h92p9ph3zi4w8krny1azd9wgwna2nf07ims983jcky1chkfm0is"))))
+        (base32 "1na3gyb3nzb5gdgccs1653j2gnz6w3v1mqzhyhkx3yqw8bs3q5x0"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f
