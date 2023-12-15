@@ -1070,11 +1070,11 @@ similar.")
       (license license:gpl2+))))
 
 (define-public r-stringendo
-  (let ((commit "83b8f2d82a09b33b9e895438bb523a021138be01")
+  (let ((commit "15594b1bba11048a812874bafec0eea1dcc8618a")
         (revision "1"))
     (package
       (name "r-stringendo")
-      (version (git-version "0.3.4" revision commit))
+      (version (git-version "0.6.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -1083,10 +1083,10 @@ similar.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1ap0nhbyd6xx0yl2vgmwk38p22yrkv4k9hw13r35z4wf343rry6v"))))
+                  "15ij4zf2j9c8m9n4bqhmxkchjh2bhddwjfxngfpwv7c5wjqyi6ir"))))
       (properties `((upstream-name . "Stringendo")))
       (build-system r-build-system)
-      (propagated-inputs (list r-devtools r-usethis))
+      (propagated-inputs (list r-clipr))
       (home-page "https://github.com/vertesy/Stringendo")
       (synopsis "Stringendo is a string parsing library")
       (description
