@@ -4,6 +4,7 @@
 ;;; Copyright © 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -161,9 +162,14 @@
                   (search-input-file inputs ,(glibc-dynamic-linker)))
                  (("/lib64/ld-linux-x86-64.so.2")
                   (search-input-file inputs ,(glibc-dynamic-linker)))
-                 ; TODO: /lib/ld-linux-armhf.so.3
-                 ; TODO: /lib/ld-linux-aarch64.so.1
-                 ; TODO: /lib64/ld64.so.2
+                 (("/lib/ld.so.1")
+                  (search-input-file inputs ,(glibc-dynamic-linker)))
+                 (("/lib64/ld64.so.[12]")
+                  (search-input-file inputs ,(glibc-dynamic-linker)))
+                 (("/lib/ld-linux(-armhf)?.so.3")
+                  (search-input-file inputs ,(glibc-dynamic-linker)))
+                 (("/lib/ld-linux-aarch64.so.1")
+                  (search-input-file inputs ,(glibc-dynamic-linker)))
                  ;; Add glibc to ld's search path.
                  (("if \\(isdll\\) then")
                   (string-append
