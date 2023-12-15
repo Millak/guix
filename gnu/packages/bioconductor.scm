@@ -8288,7 +8288,6 @@ methylation data at the genome scale.")
 microarray data, using nearest neighbor averaging.")
     (license license:gpl2+)))
 
-;; TODO: check javascript
 (define-public r-interactivedisplay
   (package
     (name "r-interactivedisplay")
@@ -8301,37 +8300,46 @@ microarray data, using nearest neighbor averaging.")
                 "0w81c5kc48gjavln50ysgr3vaf8s4fb6632ckzb1q225j9ik2gia"))
               (snippet
                '(for-each delete-file
-                          '("inst/www/js/jquery.js"
+                          '("inst/www/js/d3.v2.js"
+                            "inst/www/js/jquery.js"
                             "inst/www/js/jquery.min.js"
-                            "inst/www/js/jquery.dataTables.min.js")))))
+                            "inst/www/js/jquery.dataTables.min.js"
+                            "inst/www/js/jquery.dataTables.nightly.js")))))
     (properties `((upstream-name . "interactiveDisplay")))
     (build-system r-build-system)
     (arguments
      (list
-      #:modules '((guix build utils)
-                  (guix build r-build-system)
-                  (srfi srfi-1))
+      #:modules
+      '((guix build r-build-system)
+        (guix build minify-build-system)
+        (guix build utils)
+        (ice-9 match))
+      #:imported-modules
+      `(,@%r-build-system-modules
+        (guix build minify-build-system))
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'process-javascript
-           (lambda* (#:key inputs #:allow-other-keys)
-             (call-with-values
-                 (lambda ()
-                   (unzip2
-                    `((,(assoc-ref inputs "js-jquery-1.8.2")
-                       "inst/www/js/jquery.js")
-                      (,(assoc-ref inputs "js-jquery-1.9.1")
-                       "inst/www/js/jquery.min.js")
-                      (,(search-input-file inputs
-                                           "/share/javascript/jquery.dataTables.min.js")
-                       "inst/www/js/jquery.dataTables.min.js"))))
-               (lambda (sources targets)
-                 (for-each (lambda (source target)
-                             (format #true "Processing ~a --> ~a~%"
-                                     source target)
-                             (invoke "esbuild" source "--minify"
-                                     (string-append "--outfile=" target)))
-                           sources targets))))))))
+      #~(modify-phases (@ (guix build r-build-system) %standard-phases)
+          (add-after 'unpack 'process-javascript
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion "inst/"
+                (for-each (match-lambda
+                            ((source . target)
+                             (minify source #:target target)))
+                          `((,(assoc-ref inputs "js-jquery-1.8.2")
+                             . "www/js/jquery.js")
+                            (,(assoc-ref inputs "js-jquery-1.9.1")
+                             . "www/js/jquery.min.js")
+                            (,(search-input-file inputs
+                                                 "/share/javascript/jquery.dataTables.min.js")
+                             . "www/js/jquery.dataTables.min.js")
+                            (,(string-append (assoc-ref inputs "js-datatables-1.9")
+                                             "/share/javascript/jquery.dataTables.min.js")
+                             . "www/js/jquery.dataTables.min.js")
+                            (,(string-append (assoc-ref inputs "js-datatables-1.10")
+                                             "/share/javascript/jquery.dataTables.min.js")
+                             . "www/js/jquery.dataTables.nightly.js")
+                            (,(assoc-ref inputs "js-d3-v2")
+                             . "www/js/d3.v2.js")))))))))
     (propagated-inputs
      (list r-annotationdbi
            r-biocgenerics
@@ -8347,7 +8355,15 @@ microarray data, using nearest neighbor averaging.")
     (native-inputs
      `(("esbuild" ,esbuild)
        ("r-knitr" ,r-knitr)
-       ("js-datatables" ,js-datatables)
+       ("js-d3-v2"
+        ,(origin
+           (method url-fetch)
+           (uri "https://web.archive.org/web/20230428092426id_/https://d3js.org/d3.v2.js")
+           (sha256
+            (base32
+             "1m57mxhcynfaz6gz3v0aph5i6hx5jf455jdygyl8yzs9r2dpp5vr"))))
+       ("js-datatables-1.9" ,js-datatables-1.9)
+       ("js-datatables-1.10" ,js-datatables)
        ("js-jquery-1.8.2"
         ,(origin
            (method url-fetch)
