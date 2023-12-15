@@ -10508,14 +10508,14 @@ of these tests are also included.")
 (define-public r-ttr
   (package
     (name "r-ttr")
-    (version "0.24.3")
+    (version "0.24.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "TTR" version))
        (sha256
         (base32
-         "11xsmbvmxq2j119j2z58bx1fkkb2xlhmzc35z5fbwr3nchrfz6jd"))))
+         "1102f4i776asqb281mq20ymhzhcp12gn9nr3rm0jzblv6nf2nww9"))))
     (properties `((upstream-name . "TTR")))
     (build-system r-build-system)
     (propagated-inputs
