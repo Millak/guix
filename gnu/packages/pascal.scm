@@ -76,7 +76,8 @@
               (sha256
                (base32
                 "07qna2pvlpa7j0i2wdixjxpizdvffv51nbr1waczk0xv8cq9kvw5"))
-              (patches (search-patches "fpc-reproducibility.patch"))
+              (patches (search-patches "fpc-reproducibility.patch"
+                                       "fpc-glibc-2.34-compat.patch"))
               (modules '((guix build utils)))
               (snippet
                '(begin
