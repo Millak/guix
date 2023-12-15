@@ -34246,14 +34246,14 @@ formal inference.")
 (define-public r-gaston
   (package
     (name "r-gaston")
-    (version "1.5.9")
+    (version "1.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gaston" version))
        (sha256
         (base32
-         "1f4pr5s4p4rw1smvsh2gwjxp7hh43j1fpadl286ma9i62kirpyq7"))))
+         "1knjyw2dsarljj2zsqp3hi6hk6m90sfqp2l535h3arj70l3rq9x4"))))
     (properties `((upstream-name . "gaston")))
     (build-system r-build-system)
     (inputs (list zlib))
