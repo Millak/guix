@@ -1721,13 +1721,13 @@ R packages that praise their users.")
 (define-public r-testthat
   (package
     (name "r-testthat")
-    (version "3.2.0")
+    (version "3.2.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "testthat" version))
               (sha256
                (base32
-                "03k58p8kd7vddx7rlcyi28sy48bh3w4xy4c7wi190l7yjlrfa2sv"))))
+                "1ba80zk9jzs91xl82bykhrvvgamfvp1h189rfq099h813dhhx60x"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-brio
@@ -1735,7 +1735,6 @@ R packages that praise their users.")
            r-cli
            r-desc
            r-digest
-           r-ellipsis
            r-evaluate
            r-jsonlite
            r-lifecycle
