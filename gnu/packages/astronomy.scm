@@ -278,7 +278,7 @@ rendering of the atmosphere model and examine its properties.
 (define-public aoflagger
   (package
     (name "aoflagger")
-    (version "3.2.0")
+    (version "3.4.0")
     (source
      (origin
        (method git-fetch)
@@ -286,16 +286,15 @@ rendering of the atmosphere model and examine its properties.
              (url "https://gitlab.com/aroffringa/aoflagger")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1dcbfrbiybhpbypna2xhddx1wk7yifh38ha2r6p5rzsikzwlsin1"))
+        (base32 "0dxmcy04cayhs4s2z41wls1dnmg9hkffvlqcmc660idqziffvv1g"))
        (patches
         (search-patches "aoflagger-use-system-provided-pybind11.patch"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
      (list
-      ;; XXX: Tests require external files download from
+      ;; Tests require external files download from
       ;; https://www.astron.nl/citt/ci_data/aoflagger/
-      ;; FIXME: runtest is not found
       #:tests? #f
       #:configure-flags
       #~(list (string-append "-DCASACORE_ROOT_DIR="
