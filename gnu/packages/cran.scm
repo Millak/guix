@@ -32228,14 +32228,14 @@ trend test.")
 (define-public r-keyring
   (package
     (name "r-keyring")
-    (version "1.3.1")
+    (version "1.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "keyring" version))
        (sha256
         (base32
-         "113rjhihqfhxdihnf6nwqbsknlnm8pqyhvnyxx624gyajl9mn3a7"))))
+         "0mps6q7yayx5l78vlq567pndlsjk71izd65znz3lj4dfbh0qq046"))))
     (properties `((upstream-name . "keyring")))
     (build-system r-build-system)
     (propagated-inputs
