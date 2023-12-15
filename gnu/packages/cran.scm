@@ -5418,17 +5418,50 @@ punctuation.")
 (define-public r-crosstalk
   (package
     (name "r-crosstalk")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "crosstalk" version))
        (sha256
         (base32
-         "180y7mhpj17axpadwhh7s0qvrpdnag7g977vk256l96d6nmvlds2"))))
+         "1w8lc3hcd1nlw541880vs3agk2i6bilyapnq9lcs3mfn2s2g0338"))
+       (snippet
+        '(for-each delete-file
+                   (list "inst/lib/jquery/jquery.min.js"
+                         "inst/lib/ionrangeslider/js/ion.rangeSlider.min.js"
+                         "inst/lib/selectize/js/selectize.min.js"
+                         "inst/www/js/crosstalk.min.js")))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:modules '((guix build r-build-system)
+                  (guix build minify-build-system)
+                  (guix build utils)
+                  (ice-9 match))
+      #:imported-modules `(,@%r-build-system-modules
+                           (guix build minify-build-system))
+      #:phases
+      #~(modify-phases (@ (guix build r-build-system) %standard-phases)
+          (add-after 'unpack 'replace-bundled-minified-JavaScript
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion "inst/"
+                (copy-file (search-input-file inputs
+                                              "/share/javascript/selectize.min.js")
+                           "lib/selectize/js/selectize.min.js")
+                (for-each (match-lambda
+                            ((source . target)
+                             (minify source #:target target)))
+                          `(("lib/jquery/jquery.js"
+                             . "lib/jquery/jquery.min.js")
+                            ("lib/ionrangeslider/js/ion.rangeSlider.js"
+                             . "lib/ionrangeslider/js/ion.rangeSlider.min.js")
+                            ("www/js/crosstalk.js"
+                             . "www/js/crosstalk.min.js")))))))))
     (propagated-inputs
      (list r-htmltools r-jsonlite r-lazyeval r-r6))
+    (native-inputs
+     (list esbuild js-selectize))
     (home-page "https://rstudio.github.io/crosstalk/")
     (synopsis "Inter-widget interactivity for HTML widgets")
     (description
