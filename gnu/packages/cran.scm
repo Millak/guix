@@ -25982,14 +25982,14 @@ the current document.")
 (define-public r-xgboost
   (package
     (name "r-xgboost")
-    (version "1.7.5.1")
+    (version "1.7.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "xgboost" version))
        (sha256
         (base32
-         "1g35r6qh4ivgbbvsdysiyy4c9gh396k3wdwz7scfb13g40zq7h2f"))))
+         "0q1x7ldvjankaf0gqcqiyiy514c5jascggfq6qrfyn3sravdcggj"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-data-table r-jsonlite r-matrix))
