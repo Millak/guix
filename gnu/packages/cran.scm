@@ -23308,13 +23308,13 @@ SELECT or UPDATE queries to an end-point.")
 (define-public r-bookdown
   (package
     (name "r-bookdown")
-    (version "0.36")
+    (version "0.37")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "bookdown" version))
               (sha256
                (base32
-                "0c4pj5sg4cnz2b2kpxgr0wk1n1pf7wkn1npm76aghy4yxj29cj4y"))
+                "18j8ylaq5wnw1c0lif9a002kbymv04pd0i43ahmqkskkv1b13hdk"))
               ;; TODO: there is one more file to replace:
               ;; inst/resources/gitbook/js/app.min.js
               (snippet
@@ -23330,32 +23330,28 @@ SELECT or UPDATE queries to an end-point.")
     (build-system r-build-system)
     (arguments
      (list
-      #:modules '((guix build utils)
-                  (guix build r-build-system)
-                  (srfi srfi-1))
+      #:modules '((guix build r-build-system)
+                  (guix build minify-build-system)
+                  (guix build utils)
+                  (ice-9 match))
+      #:imported-modules `(,@%r-build-system-modules
+                           (guix build minify-build-system))
       #:phases
-      #~(modify-phases %standard-phases
+      #~(modify-phases (@ (guix build r-build-system) %standard-phases)
           (add-after 'unpack 'process-javascript
             (lambda* (#:key inputs #:allow-other-keys)
               (with-directory-excursion "inst/resources"
                 (invoke "tar" "-xf" (assoc-ref inputs "js-mathquill")
                         "-C" "/tmp" "--strip-components=2")
-                (call-with-values
-                    (lambda ()
-                      (unzip2
-                       `((,(search-input-file inputs "/dist/clipboard.js")
-                          "gitbook/js/clipboard.min.js")
-                         (,(search-input-file inputs "/lunr.js")
-                          "gitbook/js/lunr.js")
-                         ("/tmp/mathquill.js"
-                          "mathquill/mathquill.min.js"))))
-                  (lambda (sources targets)
-                    (for-each (lambda (source target)
-                                (format #true "Processing ~a --> ~a~%"
-                                        source target)
-                                (invoke "esbuild" source "--minify"
-                                        (string-append "--outfile=" target)))
-                              sources targets)))))))))
+                (for-each (match-lambda
+                            ((source . target)
+                             (minify source #:target target)))
+                          `((,(search-input-file inputs "/dist/clipboard.js")
+                             . "gitbook/js/clipboard.min.js")
+                            (,(search-input-file inputs "/lunr.js")
+                             . "gitbook/js/lunr.js")
+                            ("/tmp/mathquill.js"
+                             . "mathquill/mathquill.min.js")))))))))
     (propagated-inputs
      (list r-htmltools
            r-jquerylib
