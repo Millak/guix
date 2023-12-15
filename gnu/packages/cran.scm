@@ -11568,13 +11568,13 @@ systems.")
 (define-public r-baseline
   (package
     (name "r-baseline")
-    (version "1.3-4")
+    (version "1.3-5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "baseline" version))
               (sha256
                (base32
-                "1kl68zvyi2zd73jy3axrvrymwn4y6l4pd62nz0fciwbgkjhz3yyx"))))
+                "0l0llb3pi89ixkpvfg5vbvwwv3gzldf0g98rrd3vkm7q26rqmmd2"))))
     (properties `((upstream-name . "baseline")))
     (build-system r-build-system)
     (propagated-inputs
