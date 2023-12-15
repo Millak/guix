@@ -27843,14 +27843,14 @@ with style and various functions to supplement the tcltk package")
 (define-public r-accrual
   (package
     (name "r-accrual")
-    (version "1.3")
+    (version "1.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "accrual" version))
        (sha256
         (base32
-         "11clm9s5c5518nmp6hd6pjnp0s28y92b2i2x0xgj4j5g816p4j3z"))))
+         "0dygp8xar6dqx822ghjqvi8c597xjb7bqn57475fs4nw5zz709lk"))))
     (properties `((upstream-name . "accrual")))
     (build-system r-build-system)
     (propagated-inputs
