@@ -5269,13 +5269,13 @@ bases such as COSMIC.")
 (define-public r-degreport
   (package
     (name "r-degreport")
-    (version "1.38.0")
+    (version "1.38.5")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "DEGreport" version))
               (sha256
                (base32
-                "1ska9fh1bzdqd9pi67vqgx0vz4wz2r5kzmh73fb9zh9m0gnjjr23"))
+                "0s0d40ac1da73w7j96lb20wchgs4c2svfrafsgi9mx5hiswfz25z"))
               (snippet
                '(delete-file "docs/jquery.sticky-kit.min.js"))))
     (properties `((upstream-name . "DEGreport")))
@@ -5298,6 +5298,7 @@ bases such as COSMIC.")
                              r-complexheatmap
                              r-consensusclusterplus
                              r-cowplot
+                             r-dendextend
                              r-deseq2
                              r-dplyr
                              r-edger
@@ -5313,6 +5314,7 @@ bases such as COSMIC.")
                              r-rlang
                              r-s4vectors
                              r-scales
+                             r-stringi
                              r-stringr
                              r-summarizedexperiment
                              r-tibble
