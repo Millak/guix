@@ -16550,14 +16550,14 @@ based on @dfn{Continuous Wavelet Transform} (CWT).")
 (define-public r-xcms
   (package
     (name "r-xcms")
-    (version "4.0.0")
+    (version "4.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "xcms" version))
        (sha256
         (base32
-         "10bvxww489mb4bl5v9ma6klyg359zb9ady5rl95q1mkp54hahdw8"))))
+         "061ihzj8pn2g393q1gdq2jssanxm9gh5qm37fz4gna2hbd6bf79p"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase
