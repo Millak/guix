@@ -12414,14 +12414,14 @@ and classification and regression trees.")
 (define-public r-later
   (package
     (name "r-later")
-    (version "1.3.1")
+    (version "1.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "later" version))
        (sha256
         (base32
-         "1b342khxyvm3qnag36p6yr5nlrqbxqabm9f6qfxwxsmry20xdvi3"))))
+         "07jn5gp4237va5pcq8lvqzyblgij7k2wj9k5wl93q3fd6cyhgxaj"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp r-rlang))
