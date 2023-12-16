@@ -253,8 +253,8 @@ XML-RPC over SCGI.")
     (license l:gpl2+)))
 
 (define-public tremc
-  (let ((commit "6c15e3f5637c8f3641473328bd8c5b0cc122d930")
-        (revision "0"))
+  (let ((commit "d8deaa5ac25bb45a2ca3a930309d6ecc74836a54")
+        (revision "1"))
   (package
     (name "tremc")
     (version (git-version "0.9.3" revision commit))
@@ -267,7 +267,7 @@ XML-RPC over SCGI.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1anlqzbwgmhrxlh20pfzf4iyw5l2w227h95rq6xf29ai7vddr82k"))))
+         "08kpqmgisja98918f2hlmdrld5662dqlkssp0pqlki38l6fvbj7r"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no test suite
