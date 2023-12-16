@@ -87,15 +87,16 @@
 (define-public transmission
   (package
     (name "transmission")
-    (version "4.0.4")
+    (version "4.0.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/transmission/transmission"
                                   "/releases/download/" version "/transmission-"
                                   version ".tar.xz"))
+              (patches (search-patches "transmission-4.0.5-fix-build.patch"))
               (sha256
                (base32
-                "19nm7f4x3zq610da5fl63vpycj4kv07np6ldm8czpgyziwqv9xqm"))))
+                "0mv3ds3bbp1fbmdlrjinmzvk46acpafydirh7h2014j7988zys7x"))))
     (build-system cmake-build-system)
     (outputs '("out"                      ; library and command-line interface
                "gui"))                    ; graphical user interface
