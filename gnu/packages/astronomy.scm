@@ -3548,7 +3548,7 @@ functions, so that they can be called with scalar or array inputs.")
 (define-public python-pynbody
   (package
     (name "python-pynbody")
-    (version "1.4.2")
+    (version "1.5.2")
     (source
      (origin
        (method git-fetch) ;PyPi doesn't have not prebuit version.
@@ -3557,7 +3557,7 @@ functions, so that they can be called with scalar or array inputs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lwjs8vf3pc4a64c93fa5k6r276g1c60722swns2r10ig1s4wk0a"))
+        (base32 "175i99zwnnwglndr71paiadrx3xq3icxjgdqfv3xxpyn7fx4dzab"))
        (modules '((guix build utils)))
        (snippet
         ;; Symlink goes to not existing directory.
@@ -3572,6 +3572,7 @@ functions, so that they can be called with scalar or array inputs.")
                            ;;    https://github.com/pynbody/pynbody/blob/ \
                            ;;    f4bd482dc47532831b3ec115c7cb07149d61bfc5/ \
                            ;;    .github/workflows/build-test.yaml#L41
+                           "--ignore=tests/copy_on_access_test.py"
                            "--ignore=tests/gravity_test.py"
                            "--ignore=tests/adaptahop_test.py"
                            "--ignore=tests/ahf_halos_test.py"
