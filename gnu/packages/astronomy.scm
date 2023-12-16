@@ -2602,9 +2602,7 @@ of axis order, spatial projections, and spectral units that exist in the wild.
 (define-public python-spherical-geometry
   (package
     (name "python-spherical-geometry")
-    ;; XXX: Can't be updated to the latest see:
-    ;; https://github.com/spacetelescope/spherical_geometry/issues/227
-    (version "1.2.22")
+    (version "1.3.1")
     (source
      (origin
        (method git-fetch)
@@ -2613,7 +2611,7 @@ of axis order, spatial projections, and spectral units that exist in the wild.
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kzcncqir4v7nhk9lxj9gxr32p3krkaqa58y2i4kksgxxy24qw4z"))))
+        (base32 "172f81h42jq6mv3gpx497z2nkhkx11w4pzmcqljcicri2zqj1m6g"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2627,18 +2625,23 @@ of axis order, spatial projections, and spectral units that exist in the wild.
               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
               ;; Use our own libraries in place of bundles.
               (setenv "USE_SYSTEM_QD" "1")))
-          (add-before 'check 'build-extensions
+          (add-before 'check 'prepare-test-environment
             (lambda _
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+              (invoke "python" "setup.py" "build_ext" "--inplace")
+              (call-with-output-file "pytest.ini"
+                (lambda (port)
+                  (format port "[pytest]
+python_files = test_*.py"))))))))
     (native-inputs
      (list python-pytest
+           python-pytest-astropy-header
            python-setuptools-scm))
     (inputs
      (list qd))
     (propagated-inputs
      (list python-astropy
            python-numpy))
-    (home-page "https://github.com/spacetelescope/tweakwcs")
+    (home-page "https://github.com/spacetelescope/spherical_geometry")
     (synopsis "Python astronimical package for handling spherical polygons")
     (description
      "The @code{spherical_geometry} library is a Python package for handling
