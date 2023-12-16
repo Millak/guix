@@ -863,6 +863,7 @@ the store.")
                                      "glibc-supported-locales.patch"
                                      "glibc-2.37-hurd-clock_t_centiseconds.patch"
                                      "glibc-2.37-hurd-local-clock_gettime_MONOTONIC.patch"
+                                     "glibc-2.38-hurd-ucontext.patch"
                                      "glibc-hurd-mach-print.patch"
                                      "glibc-hurd-gettyent.patch"
                                      "glibc-hurd-getauxval.patch"))))

@@ -1,0 +1,87 @@
+commit 29d4591b07a4da53320e949557c6946c62c26bde
+Author: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Date:   Thu Sep 28 00:07:18 2023 +0200
+
+    hurd: Drop REG_GSFS and REG_ESDS from x86_64's ucontext
+    
+    These are useless on x86_64, and __NGREG was actually wrong with them.
+
+diff --git a/sysdeps/mach/hurd/x86/trampoline.c b/sysdeps/mach/hurd/x86/trampoline.c
+index 6318c9528a..bc3f15e1e0 100644
+--- a/sysdeps/mach/hurd/x86/trampoline.c
++++ b/sysdeps/mach/hurd/x86/trampoline.c
+@@ -79,8 +79,8 @@ static void fill_ucontext (ucontext_t *uc, const struct sigcontext *sc)
+ 
+   /* Registers.  */
+ #ifdef __x86_64__
+-  memcpy (&uc->uc_mcontext.gregs[REG_GSFS], &sc->sc_gs,
+-          (REG_ERR - REG_GSFS) * sizeof (long));
++  memcpy (&uc->uc_mcontext.gregs[REG_R8], &sc->sc_r8,
++          (REG_ERR - REG_R8) * sizeof (long));
+ #else
+   memcpy (&uc->uc_mcontext.gregs[REG_GS], &sc->sc_gs,
+           (REG_TRAPNO - REG_GS) * sizeof (int));
+diff --git a/sysdeps/mach/hurd/x86_64/bits/sigcontext.h b/sysdeps/mach/hurd/x86_64/bits/sigcontext.h
+index 6396054463..7facc587b8 100644
+--- a/sysdeps/mach/hurd/x86_64/bits/sigcontext.h
++++ b/sysdeps/mach/hurd/x86_64/bits/sigcontext.h
+@@ -59,13 +59,7 @@ struct sigcontext
+        }
+        trampoline.c knows this, so it must be changed if this changes.  */
+ 
+-#define sc_i386_thread_state sc_gs /* Beginning of correspondence.  */
+-    /* Segment registers.  */
+-    int sc_gs;
+-    int sc_fs;
+-    int sc_es;
+-    int sc_ds;
+-
++#define sc_i386_thread_state sc_r8 /* Beginning of correspondence.  */
+     long sc_r8;
+     long sc_r9;
+     long sc_r10;
+diff --git a/sysdeps/mach/x86/thread_state.h b/sysdeps/mach/x86/thread_state.h
+index 8c419515f9..e237e46cb2 100644
+--- a/sysdeps/mach/x86/thread_state.h
++++ b/sysdeps/mach/x86/thread_state.h
+@@ -34,12 +34,13 @@
+ #define PC rip
+ #define SP ursp
+ #define SYSRETURN rax
++#define MACHINE_THREAD_STATE_FIX_NEW(ts) do { \
++	asm ("mov %%cs, %w0" : "=q" ((ts)->cs)); \
++} while(0)
+ #else
+ #define PC eip
+ #define SP uesp
+ #define SYSRETURN eax
+-#endif
+-
+ #define MACHINE_THREAD_STATE_FIX_NEW(ts) do { \
+ 	asm ("mov %%cs, %w0" : "=q" ((ts)->cs)); \
+ 	asm ("mov %%ds, %w0" : "=q" ((ts)->ds)); \
+@@ -47,6 +48,7 @@
+ 	asm ("mov %%fs, %w0" : "=q" ((ts)->fs)); \
+ 	asm ("mov %%gs, %w0" : "=q" ((ts)->gs)); \
+ } while(0)
++#endif
+ 
+ struct machine_thread_all_state
+   {
+diff --git a/sysdeps/x86_64/sys/ucontext.h b/sysdeps/x86_64/sys/ucontext.h
+index d73a893795..f1b6be77a7 100644
+--- a/sysdeps/x86_64/sys/ucontext.h
++++ b/sysdeps/x86_64/sys/ucontext.h
+@@ -47,11 +47,7 @@ typedef greg_t gregset_t[__NGREG];
+ /* Number of each register in the `gregset_t' array.  */
+ enum
+ {
+-  REG_GSFS = 0,		/* Actually int gs, fs.  */
+-# define REG_GSFS	REG_GSFS
+-  REG_ESDS,		/* Actually int es, ds.  */
+-# define REG_ESDS	REG_ESDS
+-  REG_R8,
++  REG_R8 = 0,
+ # define REG_R8		REG_R8
+   REG_R9,
+ # define REG_R9		REG_R9
