@@ -2066,13 +2066,13 @@ the easy construction of interactive matplotlib widget based animations.")
 (define-public python-photutils
   (package
     (name "python-photutils")
-    (version "1.9.0")
+    (version "1.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "photutils" version))
        (sha256
-        (base32 "0gjvrmcb10lyqx3h9521zqskqngd5xcp3l9h2b02mk1p7q54mzdy"))))
+        (base32 "148zhdxhlcgj6dxyzaz78bzxw1q44qa9q9sfdqbfbla0s0w2jaay"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2091,11 +2091,22 @@ the easy construction of interactive matplotlib widget based animations.")
               (make-file-writable "photutils/_compiler.c")
               (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (propagated-inputs
-     (list python-astropy python-numpy))
+     (list python-astropy
+           python-bottleneck
+           python-gwcs
+           python-matplotlib
+           python-numpy
+           python-rasterio
+           python-scikit-image
+           python-scikit-learn
+           python-scipy
+           python-shapely
+           python-tqdm))
     (native-inputs
      (list python-cython
            python-extension-helpers
            python-pytest-astropy
+           python-semantic-version
            python-setuptools-scm))
     (home-page "https://github.com/astropy/photutils")
     (synopsis "Source detection and photometry")
