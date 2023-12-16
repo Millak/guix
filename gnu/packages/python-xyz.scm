@@ -17483,28 +17483,47 @@ designed to work across multiple versions of Python.")
 (define-public python-cookiecutter
   (package
     (name "python-cookiecutter")
-    (version "1.7.3")
+    (version "2.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cookiecutter" version))
        (sha256
-        (base32 "0mx49whhwcxmvcak27zr7p7ndzkn3w7psfd7fzh3n91fi1r4v6kb"))))
+        (base32 "1v1iafk8j2f5cciw9mf4263v91070c6z049cpnw42gwffhs907p6"))))
     (build-system python-build-system)
-    (native-inputs
-     (list python-freezegun python-pytest python-pytest-catchlog
-           python-pytest-cov python-pytest-mock))
-    (propagated-inputs
-     (list python-binaryornot
-           python-click
-           python-future
-           python-jinja2
-           python-jinja2-time
-           python-poyo
-           python-requests
-           python-slugify
-           python-text-unidecode
-           python-whichcraft))
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'check 'pre-check
+                     (lambda _
+                       ;; test_get_user_config.py requires a writable home
+                       ;; directory.
+                       (setenv "HOME"
+                               (getcwd))
+                       ;; test_hooks.py dynamically creates shell scripts
+                       ;; with a /bin/bash shebang. We have to patch these.
+                       (substitute* "tests/test_hooks.py"
+                         (("/bin/bash")
+                          (string-append #$(this-package-native-input
+                                            "bash-minimal") "/bin/bash")))))
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         (invoke "pytest")))))))
+    (native-inputs (list bash-minimal
+                         git
+                         python-freezegun
+                         python-pytest
+                         python-pytest-cov
+                         python-pytest-mock))
+    (propagated-inputs (list python-arrow
+                             python-binaryornot
+                             python-click
+                             python-jinja2
+                             python-pyyaml
+                             python-requests
+                             python-rich
+                             python-slugify))
     (home-page "https://github.com/cookiecutter/cookiecutter")
     (synopsis
      "Command-line utility that creates projects from project templates")
