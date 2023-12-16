@@ -119,7 +119,7 @@
 ;;; Copyright © 2022 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;; Copyright © 2022 drozdov <drozdov@portalenergy.tech>
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
-;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
+;;; Copyright © 2022, 2023 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
@@ -10191,6 +10191,43 @@ your favourite programs.")
      "pywinrm is a Python client for the Windows Remote Management (WinRM)
 service.  It allows you to invoke commands on target Windows machines from
 any machine that can run Python.")
+    (license license:expat)))
+
+(define-public python-manimpango
+  (package
+    (name "python-manimpango")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch) ; no tests data in PyPi package
+       (uri (git-reference
+             (url "https://github.com/ManimCommunity/ManimPango")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00mrvswk8yly0m13jq0f432pr19sy3j6w37lrv78ah1j6jz9n50h"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'build-extensions
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (native-inputs
+      (list pkg-config
+            python-cython
+            python-pytest
+            python-pytest-cov))
+    (inputs
+     (list pango))
+    (home-page "https://manimpango.manim.community/")
+    (synopsis "Bindings for Pango for using with Manim")
+    (description
+     "Python bindings for ManimPango which is a C binding for Pango,
+using Cython.
+
+ManimPango is internally used in Manim to render (non-LaTeX) text.")
     (license license:expat)))
 
 (define-public python-xcffib
