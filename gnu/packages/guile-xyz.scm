@@ -3565,6 +3565,80 @@ structures.  This package re-uses the SRFI sample implementation.")
            ;; contains ISC code from the SRFI sample implementation
            license:isc))))
 
+(define-public guile-srfi-133
+  (package
+    (name "guile-srfi-133")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/scheme-requests-for-implementation/srfi-133")
+             (commit "db81a114cd3e23375f024baec15482614ec90453")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0a7srl72291yah0aj6rwddhj041v2spximhknjj7hczlparsrm7f"))))
+    (build-system guile-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'move-create-and-delete-files
+            (lambda _
+              (rename-file "vectors" "srfi")
+              (rename-file "srfi/vectors-test.scm" "srfi/srfi-test.scm")
+              (rename-file "srfi/vectors-impl.scm" "srfi/srfi-impl.scm")
+              (with-output-to-file "srfi/srfi-133.scm"
+                (lambda ()
+                  (display "(define-module (srfi srfi-133)
+  #:replace (;; Constructors
+             vector-copy
+
+             ;; Mutators
+             vector-fill! vector-copy!
+
+             ;; Conversion
+             vector->list list->vector)
+  #:export (;; Constructors
+            vector-unfold vector-unfold-right vector-reverse-copy
+            vector-append vector-concatenate vector-append-subvectors
+
+            ;; Predicates
+            vector-empty? vector=
+
+            ;; Iteration
+            vector-fold vector-fold-right vector-map vector-map!
+            vector-for-each vector-count vector-cumulate
+
+            ;; Searching
+            vector-index vector-index-right vector-skip vector-skip-right
+            vector-binary-search vector-any vector-every vector-partition
+
+            ;; Mutators
+            vector-swap! vector-reverse!
+            vector-reverse-copy! vector-unfold! vector-unfold-right!
+
+            ;; Conversion
+            reverse-vector->list reverse-list->vector
+            vector->string string->vector))
+
+(include \"srfi-impl.scm\")")))
+              (for-each (lambda (filename)
+                          (delete-file filename))
+                        '("tests/run.scm"
+                          "srfi/vectors.sld"
+                          "srfi/vectors.scm")))))))
+    (native-inputs
+     (list guile-3.0))
+    (home-page "https://github.com/scheme-requests-for-implementation/srfi-133")
+    (synopsis "R7RS-compatible vector library for Guile")
+    (description
+     "This package provides a Guile implementation of
+@uref{https://srfi.schemers.org/srfi-133/srfi-133.html, SRFI-133}, a
+comprehensive library of vector operations.")
+    (license license:expat)))
+
 (define-public guile-srfi-145
   (package
     (name "guile-srfi-145")
