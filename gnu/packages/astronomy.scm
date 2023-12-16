@@ -2040,13 +2040,13 @@ of dates.")
 (define-public python-mpl-animators
   (package
     (name "python-mpl-animators")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "mpl_animators" version))
        (sha256
-        (base32 "12kjmj7rn3pk9ly82h5s5hn0kl3kxkr7bgkz9zr9k59pir8z1r8b"))))
+        (base32 "078dshs383ny182dac0spg7z0iilcwa0fnwv1vizsr6p1d3ar98b"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
