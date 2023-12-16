@@ -2276,13 +2276,13 @@ Virtual observatory (VO) using Python.")
 (define-public python-regions
   (package
     (name "python-regions")
-    (version "0.7")
+    (version "0.8")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "regions" version))
        (sha256
-        (base32 "08wsg9kxnki5pz8gdp81bq06jdmsip382fl02rvnr96cvzr7wf3m"))))
+        (base32 "09401pz7926zlci7cznd78hmv9947f6jxyy2afqdqc1xaccpzcq2"))))
     (build-system python-build-system)
     (arguments
      `(#:test-target "pytest"
@@ -2299,7 +2299,12 @@ Virtual observatory (VO) using Python.")
          (add-before 'check 'writable-home
            (lambda _  (setenv "HOME" (getcwd)))))))
     (propagated-inputs
-     (list python-astropy python-numpy))
+     (list python-astropy
+           python-h5py
+           python-matplotlib
+           python-numpy
+           python-scipy
+           python-shapely))
     (native-inputs
      (list python-cython
            python-extension-helpers
