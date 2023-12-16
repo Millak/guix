@@ -7376,7 +7376,7 @@ jQuery.Syntax JavaScript libraries.")
            man-db                                 ;for URIs like "man:ls"
            groff-minimal                          ;ditto
            sqlite
-           webkitgtk
+           webkitgtk-for-gtk3
            yelp-xsl))
     (home-page "https://wiki.gnome.org/Apps/Yelp")
     (synopsis "GNOME help browser")
