@@ -1106,7 +1106,7 @@ for calling methods on remote servers by exchanging JSON objects.")
 (define-public guile-ares-rs
   (package
     (name "guile-ares-rs")
-    (version "0.9.0")
+    (version "0.9.1")
     (source
      (origin
        (method git-fetch)
@@ -1116,7 +1116,7 @@ for calling methods on remote servers by exchanging JSON objects.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0jl4k54ydi1qxdvif4di0ri5jznlfc2gg1qhs94bhk4y22k0gp8c"))))
+         "173jg8z0cwq5r67lzxsmyir5f6cxd9i5gzb3qryq71cqq4h1c77n"))))
     (build-system guile-build-system)
     (arguments
      (list
