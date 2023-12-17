@@ -65,14 +65,14 @@
 (define-public curl
   (package
     (name "curl")
-    (version "8.4.0")
+    (version "8.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://curl.se/download/curl-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0bd8y8v66biyqvg70ka1sdd0aixs6yzpnvfsig907xzh9af2mihn"))
+                "1sqfflilf7mcz1g03lazyr6v6pf1rsrzprrknsir10hdwawqvas2"))
               (patches (search-patches "curl-use-ssl-cert-env.patch"))))
     (build-system gnu-build-system)
     (outputs '("out"
@@ -127,6 +127,9 @@
                                    (if parallel-tests?
                                        (number->string (parallel-job-count))
                                        "1")))
+                       ;; Ignore test 1477 due to a missing file in the 8.5.0
+                       ;; release.  See
+                       ;; <https://github.com/curl/curl/issues/12462>.
                        (arguments `("-C" "tests" "test"
                                     ,@make-flags
                                     ,(if #$(or (system-hurd?)
@@ -134,8 +137,10 @@
                                                (target-aarch64?))
                                          ;; protocol FAIL
                                          (string-append "TFLAGS=\"~1474 "
+                                                        "~1477 "
                                                         job-count "\"")
-                                         (string-append "TFLAGS=" job-count)))))
+                                         (string-append "TFLAGS=\"~1477 "
+                                                        job-count "\"")))))
                   ;; The top-level "make check" does "make -C tests quiet-test", which
                   ;; is too quiet.  Use the "test" target instead, which is more
                   ;; verbose.
