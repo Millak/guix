@@ -64,6 +64,7 @@
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix platform)
   #:use-module ((guix build utils) #:select (alist-replace))
   #:use-module (guix utils)
   #:use-module (guix gexp)
@@ -100,21 +101,6 @@
 ;; to substitute the hash.
 (define %cargo-reference-hash
   "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")
-
-(define* (nix-system->gnu-triplet-for-rust
-          #:optional (system (%current-system)))
-  (match system
-    ("x86_64-linux"   "x86_64-unknown-linux-gnu")
-    ("i686-linux"     "i686-unknown-linux-gnu")
-    ("armhf-linux"    "armv7-unknown-linux-gnueabihf")
-    ("aarch64-linux"  "aarch64-unknown-linux-gnu")
-    ("mips64el-linux" "mips64el-unknown-linux-gnuabi64")
-    ("riscv64-linux"  "riscv64gc-unknown-linux-gnu")
-    ("i586-gnu" "i686-unknown-hurd-gnu")
-    ("i686-gnu" "i686-unknown-hurd-gnu")
-    ("i686-mingw" "i686-pc-windows-gnu")
-    ("x86_64-mingw" "x86_64-pc-windows-gnu")
-    (_                (nix-system->gnu-triplet system))))
 
 (define* (rust-uri version #:key (dist "static"))
   (string-append "https://" dist ".rust-lang.org/dist/"
@@ -216,8 +202,10 @@
        #:parallel-build? ,(target-x86-64?)
        #:make-flags
        (list ,(string-append "RUSTC_TARGET="
-                             (or (%current-target-system)
-                                 (nix-system->gnu-triplet-for-rust)))
+                             (platform-rust-target
+                               (lookup-platform-by-target-or-system
+                                 (or (%current-target-system)
+                                     (%current-system)))))
              ,(string-append "RUSTC_VERSION=" version)
              ,(string-append "MRUSTC_TARGET_VER="
                              (version-major+minor version))
@@ -354,10 +342,12 @@
                     (rustc (string-append bin "/rustc"))
                     (cargo-bin (string-append cargo "/bin"))
                     (lib (string-append out "/lib"))
-                    (gnu-triplet ,(or (%current-target-system)
-                                      (nix-system->gnu-triplet-for-rust)))
-                    (system-lib-prefix (string-append lib "/rustlib/"
-                                                      gnu-triplet "/lib")))
+                    (system-lib-prefix
+                      (string-append lib "/rustlib/"
+                                     ,(platform-rust-target
+                                        (lookup-platform-by-target-or-system
+                                          (or (%current-target-system)
+                                              (%current-system)))) "/lib")))
                (mkdir-p (dirname rustc))
                (copy-file "run_rustc/output/prefix/bin/rustc_binary" rustc)
                (wrap-program rustc
@@ -481,7 +471,7 @@ jemalloc=true
 default-linker = \"" gcc "/bin/gcc" "\"
 channel = \"stable\"
 rpath = true
-[target." ,(nix-system->gnu-triplet-for-rust) "]
+[target." ,(platform-rust-target (lookup-platform-by-system (%current-system))) "]
 llvm-config = \"" llvm "/bin/llvm-config" "\"
 cc = \"" gcc "/bin/gcc" "\"
 cxx = \"" gcc "/bin/g++" "\"
@@ -502,9 +492,11 @@ ar = \"" binutils "/bin/ar" "\"
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (cargo-out (assoc-ref outputs "cargo"))
-                    (gnu-triplet ,(or (%current-target-system)
-                                      (nix-system->gnu-triplet-for-rust)))
-                    (build (string-append "build/" gnu-triplet)))
+                    (build (string-append "build/"
+                                          ,(platform-rust-target
+                                             (lookup-platform-by-target-or-system
+                                               (or (%current-target-system)
+                                                   (%current-system)))))))
                ;; Manually do the installation instead of calling './x.py
                ;; install', as that is slow and needlessly rebuilds some
                ;; things.
@@ -1187,7 +1179,7 @@ docs = false
 python = \"" (which "python") "\"
 vendor = true
 submodules = false
-target = [\"" ,(nix-system->gnu-triplet-for-rust (gnu-triplet->nix-system target)) "\"]
+target = [\"" ,(platform-rust-target (lookup-platform-by-target target)) "\"]
 [install]
 prefix = \"" out "\"
 sysconfdir = \"etc\"
@@ -1196,14 +1188,14 @@ debug = false
 jemalloc = false
 default-linker = \"" target-cc "\"
 channel = \"stable\"
-[target." ,(nix-system->gnu-triplet-for-rust) "]
+[target." ,(platform-rust-target (lookup-platform-by-system (%current-system))) "]
 # These are all native tools
 llvm-config = \"" (search-input-file inputs "/bin/llvm-config") "\"
 linker = \"" (which "gcc") "\"
 cc = \"" (which "gcc") "\"
 cxx = \"" (which "g++") "\"
 ar = \"" (which "ar") "\"
-[target." ,(nix-system->gnu-triplet-for-rust (gnu-triplet->nix-system target)) "]
+[target." ,(platform-rust-target (lookup-platform-by-target target)) "]
 llvm-config = \"" (search-input-file inputs "/bin/llvm-config") "\"
 linker = \"" target-cc "\"
 cc = \"" target-cc "\"
