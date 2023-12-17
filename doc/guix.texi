@@ -45875,6 +45875,11 @@ This optional string field is only relevant if the kernel is Linux.  In
 that case, it corresponds to the ARCH variable used when building Linux,
 @code{"mips"} for instance.
 
+@item @code{rust-target} (default: @code{#false})
+This optional string field is used to determine which rust target is best
+supported by this platform.  For example, the base level system targeted by
+@code{armhf-linux} system is closest to @code{armv7-unknown-linux-gnueabihf}.
+
 @item @code{glibc-dynamic-linker}
 This field is the name of the GNU C Library dynamic linker for the
 corresponding system, as a string.  It can be
