@@ -131,19 +131,21 @@
        "http://ftp.be.debian.org/pub/"
        "https://mirrors.edge.kernel.org/pub/"
        "ftp://ftp.funet.fi/pub/mirrors/ftp.kernel.org/pub/")
-      (apache             ; from http://www.apache.org/mirrors/dist.html
-       "http://www.eu.apache.org/dist/"
-       "http://www.us.apache.org/dist/"
-       "https://ftp.nluug.nl/internet/apache/"
+      (apache
+       "https://dlcdn.apache.org/"
+       "https://downloads.apache.org/"
+       "https://mirrors.sonic.net/apache/"
+       "https://apache.osuosl.org/"
+       "https://mirrors.ircam.fr/pub/apache/"
+       "https://apache-mirror.rbc.ru/pub/apache/"
+       "https://mirrors.ibiblio.org/apache/"
+
+       ;; No HTTPS.
        "http://apache.mirror.iweb.ca/"
-       "http://mirrors.ircam.fr/pub/apache/"
        "http://apache.mirrors.ovh.net/ftp.apache.org/dist/"
-       "http://apache-mirror.rbc.ru/pub/apache/"
-       "ftp://ftp.osuosl.org/pub/apache/"
-       "http://mirrors.ibiblio.org/apache/"
 
        ;; As a last resort, try the archive.
-       "http://archive.apache.org/dist/")
+       "https://archive.apache.org/dist/")
       (xorg               ; from http://www.x.org/wiki/Releases/Download
        "http://www.x.org/releases/" ; main mirrors
        "http://mirror.csclub.uwaterloo.ca/x.org/" ; North America
