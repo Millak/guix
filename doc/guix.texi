@@ -1799,7 +1799,7 @@ Setup}), or simply fail.
 When the build or substitution process remains silent for more than
 @var{seconds}, terminate it and report a build failure.
 
-The default value is @code{0}, which disables the timeout.
+The default value is @code{3600} (one hour).
 
 The value specified here can be overridden by clients (@pxref{Common
 Build Options, @option{--max-silent-time}}).
@@ -1808,7 +1808,7 @@ Build Options, @option{--max-silent-time}}).
 Likewise, when the build or substitution process lasts for more than
 @var{seconds}, terminate it and report a build failure.
 
-The default value is @code{0}, which disables the timeout.
+The default value is 24 hours.
 
 The value specified here can be overridden by clients (@pxref{Common
 Build Options, @option{--timeout}}).
@@ -19455,8 +19455,8 @@ few seconds when enough entropy is available and is only done once; you
 might want to turn it off for instance in a virtual machine that does
 not need it and where the extra boot time is a problem.
 
-@item @code{max-silent-time} (default: @code{0})
-@itemx @code{timeout} (default: @code{0})
+@item @code{max-silent-time} (default: @code{3600})
+@itemx @code{timeout} (default: @code{(* 3600 24)})
 The number of seconds of silence and the number of seconds of activity,
 respectively, after which a build process times out.  A value of zero
 disables the timeout.

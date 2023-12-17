@@ -32,8 +32,8 @@ Settings::Settings()
     buildCores = 1;
     readOnlyMode = false;
     thisSystem = SYSTEM;
-    maxSilentTime = 0;
-    buildTimeout = 0;
+    maxSilentTime = 3600;
+    buildTimeout = 3600 * 24;
     useBuildHook = true;
     printBuildTrace = false;
     multiplexedBuildOutput = false;
