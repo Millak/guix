@@ -1041,6 +1041,12 @@ safety and thread safety guarantees.")
                    (mkdir-p (string-append out dest))
                    (copy-recursively "library" (string-append out dest "/library"))
                    (copy-recursively "src" (string-append out dest "/src")))))
+             (add-after 'install 'remove-uninstall-script
+               (lambda* (#:key outputs #:allow-other-keys)
+                 ;; This script has no use on Guix
+                 ;; and it retains a reference to the host's bash.
+                 (delete-file (string-append (assoc-ref outputs "out")
+                                             "/lib/rustlib/uninstall.sh"))))
              (add-after 'install-rust-src 'wrap-rust-analyzer
                (lambda* (#:key outputs #:allow-other-keys)
                  (let ((bin (string-append (assoc-ref outputs "tools") "/bin")))
@@ -1195,12 +1201,6 @@ ar = \"" (search-input-file inputs (string-append "/bin/" ,(ar-for-target target
              (replace 'install
                (lambda _
                  (invoke "./x.py" "install" "library/std")))
-             (add-after 'install 'remove-uninstall-script
-               (lambda* (#:key outputs #:allow-other-keys)
-                 ;; This script has no use on Guix
-                 ;; and it retains a reference to the host's bash.
-                 (delete-file (string-append (assoc-ref outputs "out")
-                                             "/lib/rustlib/uninstall.sh"))))
              (delete 'install-rust-src)
              (delete 'wrap-rust-analyzer)
              (delete 'wrap-rustc)))))
