@@ -362,6 +362,7 @@ standard packages used as implicit inputs of the GNU build system."
                     (license-file-regexp %license-file-regexp)
                     (phases '%standard-phases)
                     (locale "C.UTF-8")
+                    (separate-from-pid1? #t)
                     (system (%current-system))
                     (build (nix-system->gnu-triplet system))
                     (imported-modules %default-gnu-imported-modules)
@@ -404,6 +405,7 @@ are allowed to refer to."
                                           (sexp->gexp phases)
                                           phases)
                            #:locale #$locale
+                           #:separate-from-pid1? #$separate-from-pid1?
                            #:bootstrap-scripts #$bootstrap-scripts
                            #:configure-flags #$(if (pair? configure-flags)
                                                    (sexp->gexp configure-flags)
@@ -505,6 +507,7 @@ is one of `host' or `target'."
                           (license-file-regexp %license-file-regexp)
                           (phases '%standard-phases)
                           (locale "C.UTF-8")
+                          (separate-from-pid1? #t)
                           (system (%current-system))
                           (build (nix-system->gnu-triplet system))
                           (imported-modules %default-gnu-imported-modules)
@@ -550,6 +553,7 @@ platform."
                                   (sexp->gexp phases)
                                   phases)
                    #:locale #$locale
+                   #:separate-from-pid1? #$separate-from-pid1?
                    #:bootstrap-scripts #$bootstrap-scripts
                    #:configure-flags #$configure-flags
                    #:make-flags #$make-flags
