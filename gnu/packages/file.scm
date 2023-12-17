@@ -38,7 +38,8 @@
                                   version ".tar.gz"))
               (sha256
                (base32
-                "10jdg2fd19h2q3jrsaw7xqwy1w3qyvdfzzrv9sgjq3mv548gb5zw"))))
+                "10jdg2fd19h2q3jrsaw7xqwy1w3qyvdfzzrv9sgjq3mv548gb5zw"))
+              (patches (search-patches "file-32bit-time.patch"))))
    (build-system gnu-build-system)
 
    ;; When cross-compiling, this package depends upon a native install of
