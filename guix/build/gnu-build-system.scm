@@ -72,6 +72,42 @@ there are none."
     ((first . _) first)
     (_ #f)))
 
+(define* (separate-from-pid1 #:key (separate-from-pid1? #t)
+                             #:allow-other-keys)
+  "When running as PID 1 and SEPARATE-FROM-PID1? is true, run build phases as
+a child process; PID 1 then becomes responsible for reaping child processes."
+  (if separate-from-pid1?
+      (if (= 1 (getpid))
+          (dynamic-wind
+            (const #t)
+            (lambda ()
+              (match (primitive-fork)
+                (0 #t)
+                (builder-pid
+                 (format (current-error-port)
+                         "build process now running as PID ~a~%"
+                         builder-pid)
+                 (let loop ()
+                   ;; Running as PID 1 so take responsibility for reaping
+                   ;; child processes.
+                   (match (waitpid WAIT_ANY)
+                     ((pid . status)
+                      (if (= pid builder-pid)
+                          (if (zero? status)
+                              (primitive-exit 0)
+                              (begin
+                                (format (current-error-port)
+                                        "build process ~a exited with status ~a~%"
+                                        pid status)
+                                (primitive-exit 1)))
+                          (loop))))))))
+            (const #t))
+          (format (current-error-port) "not running as PID 1 (PID: ~a)~%"
+                  (getpid)))
+      (format (current-error-port)
+              "build process running as PID ~a; not forking~%"
+              (getpid))))
+
 (define* (set-paths #:key target inputs native-inputs
                     (search-paths '()) (native-search-paths '())
                     #:allow-other-keys)
@@ -872,7 +908,8 @@ that traversing all the RUNPATH entries entails."
   ;; Standard build phases, as a list of symbol/procedure pairs.
   (let-syntax ((phases (syntax-rules ()
                          ((_ p ...) `((p . ,p) ...)))))
-    (phases set-SOURCE-DATE-EPOCH set-paths install-locale unpack
+    (phases separate-from-pid1
+            set-SOURCE-DATE-EPOCH set-paths install-locale unpack
             bootstrap
             patch-usr-bin-file
             patch-source-shebangs configure patch-generated-file-shebangs
