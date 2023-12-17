@@ -137,6 +137,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages image-processing)
   #:use-module (gnu packages java)
   #:use-module (gnu packages less)
   #:use-module (gnu packages lisp)
@@ -164,6 +165,8 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -173,6 +176,7 @@
   #:use-module (gnu packages scheme)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages shells)
+  #:use-module (gnu packages simulation)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages swig)
@@ -2917,7 +2921,7 @@ can solve two kinds of problems:
 (define-public octave-cli
   (package
     (name "octave-cli")
-    (version "8.3.0")
+    (version "8.4.0")
     (source
      (origin
        (method url-fetch)
@@ -2925,7 +2929,7 @@ can solve two kinds of problems:
                            version ".tar.xz"))
        (sha256
         (base32
-         "1aav8i88y2yl11g5d44wpjngkpldvzk90ja7wghkb91cy2a9974i"))))
+         "1a58zyrl1lx6b6wr2jbf6w806vjxr3jzbh6n85iinag47qxdg6kg"))))
     (build-system gnu-build-system)
     (inputs
      (list alsa-lib
@@ -3649,6 +3653,146 @@ lightweight and fast.  Kiwi ranges from 10x to 500x faster than the original
 Cassowary solver with typical use cases gaining a 40x improvement.  Memory
 savings are consistently > 5x.")
     (license license:bsd-3)))
+
+(define-public python-accupy
+  (package
+    (name "python-accupy")
+    (version "0.3.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/diego-hayashi/accupy")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sxkwpp2xy2jgakhdxr4nh1cspqv8l89kz6s832h05pbpyc0n767"))
+       (patches (search-patches "python-accupy-use-matplotx.patch"
+                                "python-accupy-fix-use-of-perfplot.patch"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-eigen-include-dir
+            (lambda _
+              (substitute* "setup.py"
+                (("include_dirs=\\[\"\\/usr\\/include\\/eigen3\\/\"\\]," _)
+                 (string-append "include_dirs=[\""
+                                #$(file-append (this-package-input "eigen")
+                                             "/include/eigen3/")
+                                "\"],"))))))))
+    (propagated-inputs (list eigen python-mpmath python-pyfma))
+    (native-inputs (list pybind11
+                         python-matplotx
+                         python-perfplot
+                         python-pytest))
+    (home-page "https://github.com/diego-hayashi/accupy")
+    (synopsis "Accurate calculation of sums and dot products")
+    (description
+      "@code{accupy} is a Python library for accurately computing sums
+and (dot) products.  It implements Kahan summation, Shewchuck's
+algorithm and summation in K-fold precision.")
+    (license license:gpl3+)))
+
+(define-public python-ndim
+  (package
+    (name "python-ndim")
+    (version "0.1.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/diego-hayashi/ndim")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hri82k7pcpw9dns8l1f2asa3dm7hjv71wnxi3752258ia2qa44v"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-sympy))
+    (native-inputs (list python-flit-core python-pytest))
+    (home-page "https://github.com/diego-hayashi/ndim")
+    (synopsis "Multidimensional volumes and monomial integrals")
+    (description
+      "@code{ndim} computes all kinds of volumes and integrals of
+monomials over such volumes in a fast, numerically stable way, using
+recurrence relations.")
+    (license license:gpl3+)))
+
+(define-public python-orthopy
+  (package
+    (name "python-orthopy")
+    (version "0.9.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/diego-hayashi/orthopy")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00s2rwjdlq38zkf7wl1gvm2aw057r30266lkzfxkrfzr4i705xnq"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+      (list python-importlib-metadata
+            python-ndim
+            python-numpy
+            python-sympy))
+    (native-inputs (list ;python-cplot  ;only used in deselected tests
+                         python-matplotx
+                         python-meshio
+                         python-meshzoo
+                         python-pytest
+                         python-scipy))
+    (arguments
+     (list
+      #:test-flags
+      ;; These tests fails with unexpected keyword arguments
+      ;; in calls to cplot.
+      #~(list "--deselect" "tests/test_u3.py::test_write_single"
+              "--deselect" "tests/test_u3.py::test_write_tree")))
+    (home-page "https://github.com/diego-hayashi/orthopy")
+    (synopsis "Tools for orthogonal polynomials, Gaussian quadrature")
+    (description "@code{orthopy} provides various orthogonal polynomial
+classes for lines, triangles, quadrilaterals, disks, spheres, hexahedra,
+and n-cubes.  All computations are done using numerically stable
+recurrence schemes.  Furthermore, all functions are fully vectorized and
+can return results in exact arithmetic.")
+    (license license:gpl3+)))
+
+(define-public python-quadpy
+  (package
+    (name "python-quadpy")
+    (version "0.16.10")
+    (source
+      (origin
+        (method url-fetch)
+        ; Download zipfile from zenodo, because git checkout is missing
+        ; some data files that are stored via git-lfs.
+        (uri (string-append
+               "https://zenodo.org/records/5541216/files/nschloe/quadpy-v"
+               version
+               ".zip"))
+        (sha256
+          (base32
+            "1f989dipv7lqxvalfrvvlmhlxyl67a87lavyyqrr1mh88glhl592"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+      (list python-importlib-metadata
+            python-numpy
+            python-orthopy
+            python-scipy
+            python-sympy))
+    (native-inputs (list python-accupy python-pytest unzip vtk))
+    (home-page "https://github.com/diego-hayashi/quadpy")
+    (synopsis "Numerical integration, quadrature for various domains")
+    (description
+      "More than 1500 numerical integration schemes for line segments, circles,
+disks, triangles, quadrilaterals, spheres, balls, tetrahedra, hexahedra,
+wedges, pyramids, n-spheres, n-balls, n-cubes, n-simplices, and the
+1D/2D/3D/nD spaces with weight functions exp(-r) and exp(-r2) for fast
+integration of real-, complex-, and vector-valued functions.")
+    (license license:gpl3+)))
 
 (define-public slepc
   (package
@@ -4746,7 +4890,7 @@ point numbers.")
 (define-public wxmaxima
   (package
     (name "wxmaxima")
-    (version "22.12.0")
+    (version "23.11.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4755,7 +4899,7 @@ point numbers.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "12bjadmy2mf7d8v4iszmzckahfcwjzaba8wpbigksh4brvhb4gj5"))))
+                "0xj91wfkm19avwmpcfwgzdkcqjwfpkl3glhkpn4advsqc6sx3ra0"))))
     (build-system cmake-build-system)
     (native-inputs (list gettext-minimal))
     (inputs (list bash-minimal

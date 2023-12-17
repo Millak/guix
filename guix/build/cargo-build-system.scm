@@ -119,6 +119,7 @@ libraries or executables."
       (error "Possible pre-generated files found:" pregenerated-files))))
 
 (define* (configure #:key inputs
+                    target
                     (vendor-dir "guix-vendor")
                     #:allow-other-keys)
   "Vendor Cargo.toml dependencies as guix inputs."
@@ -146,27 +147,75 @@ libraries or executables."
               (invoke "tar" "xf" path "-C" crate-dir "--strip-components" "1")))))
     inputs)
 
-  ;; Configure cargo to actually use this new directory.
+  ;; For cross-building
+  (when target
+    (setenv "CARGO_BUILD_TARGET"
+            ;; Can this be replaced with platform-rust-architecture?
+            ;; Keep this synchronized with (guix platforms *)
+            (match target
+                   ("aarch64-linux-gnu" "aarch64-unknown-linux-gnu")
+                   ("arm-linux-gnueabihf" "armv7-unknown-linux-gnueabihf")
+                   ("i686-linux-gnu" "i686-unknown-linux-gnu")
+                   ("mips64el-linux-gnu" "mips64el-unknown-linux-gnuabi64")
+                   ("powerpc-linux-gnu" "powerpc-unknown-linux-gnu")
+                   ("powerpc64-linux-gnu" "powerpc64-unknown-linux-gnu")
+                   ("powerpc64le-linux-gnu" "powerpc64le-unknown-linux-gnu")
+                   ("riscv64-linux-gnu" "riscv64gc-unknown-linux-gnu")
+                   ("x86_64-linux-gnu" "x86_64-unknown-linux-gnu")
+                   ("i586-pc-gnu" "i686-unknown-hurd-gnu")
+                   ("i686-w64-mingw32" "i686-pc-windows-gnu")
+                   ("x86_64-w64-mingw32" "x86_64-pc-windows-gnu")
+                   (else #f)))
+    (setenv "RUSTFLAGS" (string-append
+                          (or (getenv "RUSTFLAGS") "")
+                          " --sysroot " (assoc-ref inputs "rust-sysroot")))
+
+    (setenv "PKG_CONFIG" (string-append target "-pkg-config"))
+
+    ;; We've removed all the bundled libraries, don't look for them.
+    (setenv "WINAPI_NO_BUNDLED_LIBRARIES" "1")
+
+    ;; Prevent targeting the build machine.
+    (setenv "CRATE_CC_NO_DEFAULTS" "1"))
+
+  ;; Configure cargo to actually use this new directory with all the crates.
   (setenv "CARGO_HOME" (string-append (getcwd) "/.cargo"))
   (mkdir-p ".cargo")
+  ;; Not .cargo/config.toml, rustc/cargo will generate .cargo/config otherwise.
   (let ((port (open-file ".cargo/config" "w" #:encoding "utf-8")))
-    (display "
+    ;; Placed here so it doesn't cause random rebuilds.  Neither of these work.
+    ;; sysroot = '" (assoc-ref inputs "rust-sysroot") "'
+    ;; rustflags = ['--sysroot', '" (assoc-ref inputs "rust-sysroot") "']
+    (when target
+      (display (string-append "
+[target." (getenv "CARGO_BUILD_TARGET") "]
+linker = '" target "-gcc'
+
+[build]
+target = ['" (getenv "CARGO_BUILD_TARGET") "']") port))
+    (display (string-append "
 [source.crates-io]
 replace-with = 'vendored-sources'
 
 [source.vendored-sources]
-directory = '" port)
-    (display (string-append (getcwd) "/" vendor-dir) port)
-    (display "'
-" port)
+directory = '" vendor-dir "'") port)
     (close-port port))
 
   ;; Lift restriction on any lints: a crate author may have decided to opt
   ;; into stricter lints (e.g. #![deny(warnings)]) during their own builds
   ;; but we don't want any build failures that could be caused later by
   ;; upgrading the compiler for example.
-  (setenv "RUSTFLAGS" "--cap-lints allow")
-  (setenv "CC" (string-append (assoc-ref inputs "gcc") "/bin/gcc"))
+  (setenv "RUSTFLAGS" (string-append (or (getenv "RUSTFLAGS") "")
+                                     " --cap-lints allow"))
+
+  (if (assoc-ref inputs "cross-gcc")
+    (begin
+      (setenv "HOST_CC" "gcc")
+      (setenv "TARGET_CC" (string-append target "-gcc"))
+      (setenv "TARGET_AR" (string-append target "-ar"))
+      (setenv "TARGET_PKG_CONFIG" (string-append target "-pkg-config")))
+    (setenv "CC" (string-append (assoc-ref inputs "gcc") "/bin/gcc")))
+
   (setenv "LIBGIT2_SYS_USE_PKG_CONFIG" "1")
   (setenv "LIBSSH2_SYS_USE_PKG_CONFIG" "1")
   (when (assoc-ref inputs "openssl")
@@ -264,7 +313,11 @@ directory = '" port)
                               (unless (eq? (stat:type s) 'symlink)
                                 (utime file 0 0 0 0))))
                           (find-files dir #:directories? #t))
+
                 (apply invoke "tar" "czf" (string-append dir ".crate")
+                       ;; avoid non-determinism in the archive
+                       "--sort=name" "--mtime=@0"
+                       "--owner=root:0" "--group=root:0"
                        (find-files dir #:directories? #t))
                 (delete-file-recursively dir)))
             (find-files "." "\\.crate$")))))

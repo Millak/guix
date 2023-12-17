@@ -999,7 +999,7 @@ the HTML documentation of TXR.")
 (define-public txr
   (package
     (name "txr")
-    (version "291")
+    (version "292")
     (source
      (origin
        (method git-fetch)
@@ -1008,7 +1008,7 @@ the HTML documentation of TXR.")
              (commit (string-append "txr-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nsb302arpd2mw2z2l12j6yg9pp94lfb79h3sym72ih7rmklnfx7"))))
+        (base32 "0lly446pinfrr5d4rgsas8c7kqal2g03bbsbmn0yvhvazb39c15g"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
@@ -1024,15 +1024,6 @@ the HTML documentation of TXR.")
                       (string-append "INSTALL" match #$output
                                      "/share/doc/" #$name "-" #$version)))))
                (delete 'install-license-files)
-               (add-after 'unpack 'inhibit-doc-syms-generation
-                 (lambda _
-                   (substitute* "genman.txr"
-                     ;; Exit from genman.txr before it tries to write to
-                     ;; stdlib/doc-syms.tl, which is anyway kept up to date
-                     ;; with each release (and is already compiled to
-                     ;; stdlib/doc-syms.tlo when genman.txr is run).
-                     (("^@\\(output \"stdlib/doc-syms\\.tl\"\\).*" line)
-                      (string-append "@(do (exit))\n" line)))))
                (add-after 'unpack 'fix-paths
                  (lambda* (#:key inputs #:allow-other-keys)
                    (substitute* "stream.c"

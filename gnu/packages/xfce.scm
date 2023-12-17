@@ -1035,7 +1035,7 @@ local and remote file systems and manage bookmarks of such.")
 (define-public parole
   (package
     (name "parole")
-    (version "4.18.0")
+    (version "4.18.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1043,7 +1043,7 @@ local and remote file systems and manage bookmarks of such.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "0w9p9zf87pnpl44bay8srrsczscxpmbsriwzqzv31gis9ny2zrdv"))))
+                "0rjsqm582c8i3lyi1n2ghp638cr0chw358i05g7njbw1hjj68wqc"))))
     (build-system gnu-build-system)
     (arguments
      (list

@@ -6,6 +6,7 @@
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2019 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2023 Thomas Ieong <th.ieong@free.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,7 +41,8 @@
   #:export (%test-opensmtpd
             %test-exim
             %test-dovecot
-            %test-getmail))
+            %test-getmail
+            %test-rspamd))
 
 (define %opensmtpd-os
   (simple-operating-system
@@ -579,3 +581,66 @@ Subject: Hello Nice to meet you!")
    (name "getmail")
    (description "Connect to a running Getmail server.")
    (value (run-getmail-test))))
+
+(define %rspamd-os
+  (simple-operating-system
+   (service rspamd-service-type)))
+
+(define (run-rspamd-test)
+  "Return a test of an OS running Rspamd service."
+
+  (define vm
+    (virtual-machine
+      (marionette-operating-system
+        %rspamd-os
+        #:imported-modules '((gnu services herd)))))
+
+  (define test
+    (with-imported-modules '((gnu build marionette))
+      #~(begin
+          (use-modules (srfi srfi-64)
+                       (gnu build marionette))
+
+          (define marionette
+            (make-marionette '(#$vm)))
+
+          (test-runner-current (system-test-runner #$output))
+          (test-begin "rspamd")
+
+          (test-assert "service is running"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (start-service 'rspamd))
+             marionette))
+
+          (test-assert "rspamd socket ready"
+            (wait-for-unix-socket
+             "/var/lib/rspamd/rspamd.sock"
+             marionette))
+
+          (test-assert "rspamd log file"
+            (wait-for-file "/var/log/rspamd/rspamd.log" marionette))
+
+          ;; Check that we can access the web ui
+
+          (test-equal "http-get"
+            200
+            (marionette-eval
+              '(begin
+                 (use-modules (web client)
+                              (web response))
+                 ;; HEAD returns 500 internal server error, so use GET even though
+                 ;; only the headers are relevant
+                 (response-code (http-get "http://localhost:11334")))
+              marionette))
+
+          (test-end))))
+
+  (gexp->derivation "rspamd-test" test))
+
+(define %test-rspamd
+  (system-test
+   (name "rspamd")
+   (description "Basic rspamd service test.")
+   (value (run-rspamd-test))))

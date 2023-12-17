@@ -411,6 +411,27 @@ reading the extensive documentation about BookmarkPlus on the Emacs Wiki.")
 input via a small child-frame spawned at the position of the cursor.")
     (license license:gpl3+)))
 
+(define-public emacs-arei
+  (package
+    (name "emacs-arei")
+    (version "0.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~abcdw/emacs-arei")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "12vfv7l8krsfv7m03p41jakh4xrfm21w85kvghz0q5hq63w9l3f7"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-eros emacs-sesman emacs-queue))
+    (home-page "https://git.sr.ht/~abcdw/emacs-arei")
+    (synopsis "Asyncronous Reliable Extensible IDE")
+    (description "Sleek Guile IDE for Emacs.")
+    (license license:gpl3+)))
+
 (define-public emacs-geiser
   (package
     (name "emacs-geiser")
@@ -1512,8 +1533,8 @@ libgit2 bindings for Emacs, intended to boost the performance of Magit.")
 (define-public emacs-magit
     ;; Use this unreleased commit to benefit from a recent improvements with
     ;; regard to adding git trailers such as "Reviewed-by".
-  (let ((commit "7a1d50347086678217cf90a32dda277b76ea3081")
-        (revision "6"))
+  (let ((commit "dda332b2a41569f5fd8c0c2c3c2dab902d48ceb4")
+        (revision "7"))
     (package
       (name "emacs-magit")
       (version (git-version "3.3.0" revision commit))
@@ -1525,7 +1546,7 @@ libgit2 bindings for Emacs, intended to boost the performance of Magit.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1yn3v24w0sx6r8jqw8blfvyjdjfz5xa7c3x8p6xw1lj7b81l8i0l"))))
+          (base32 "14vqfykfzddpfka7s3pmlh3yvbfd1rpjhab4g9dinz9hn48dwb06"))))
       (build-system emacs-build-system)
       (arguments
        (list
@@ -5590,8 +5611,8 @@ type, for example: packages, buffers, files, etc.")
     (license license:gpl3+)))
 
 (define-public emacs-guix
-  (let ((commit "cf5b7a402ea503c3dcda85a86b9a6c6dd01896e0")
-        (revision "6"))
+  (let ((commit "455272c5cc72ed4ba5bad13c669f024f51479a58")
+        (revision "7"))
     (package
       (name "emacs-guix")
       (version (git-version "0.5.2" revision commit))
@@ -5603,7 +5624,7 @@ type, for example: packages, buffers, files, etc.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0wxiipgv91rlk9bhspx370rykywi52rxg5m1f7680vzs3ckc7nyd"))))
+                  "1ihrd7f92p9xidh1mbjk1piykzg46xypnzf1rlxxsymmddlq4jpn"))))
       (build-system gnu-build-system)
       (arguments
        (list

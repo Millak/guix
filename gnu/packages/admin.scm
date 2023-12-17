@@ -3942,7 +3942,7 @@ buffers.")
 (define-public igt-gpu-tools
   (package
     (name "igt-gpu-tools")
-    (version "1.27.1")
+    (version "1.28")
     (source
      (origin
        (method git-fetch)
@@ -3951,9 +3951,7 @@ buffers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0d6jsj77qddccv0vfmqmbw3k2prvxzvmgc8zdi83gdi3wpp5i7zd"))
-       (patches
-        (search-patches "igt-gpu-tools-Use-libproc2.patch"))))
+        (base32 "15mnsgzlpd4jkr2zy3jzx0b021g89fa61b8sdm8rjp27gxqkl8mm"))))
     (build-system meson-build-system)
     (arguments
      `(#:tests? #f              ; many of the tests try to load kernel modules
@@ -3971,7 +3969,8 @@ buffers.")
            libdrm
            libpciaccess
            libunwind
-           procps))
+           procps
+           python))
     (native-inputs
      (list bison flex pkg-config python-docutils))
     (home-page "https://gitlab.freedesktop.org/drm/igt-gpu-tools")
@@ -4487,7 +4486,7 @@ Python loading in HPC environments.")
   (let ((real-name "inxi"))
     (package
       (name "inxi-minimal")
-      (version "3.3.30-1")
+      (version "3.3.31-2")
       (source
        (origin
          (method git-fetch)
@@ -4496,7 +4495,7 @@ Python loading in HPC environments.")
                (commit version)))
          (file-name (git-file-name real-name version))
          (sha256
-          (base32 "0k27m4a19p32c00w4jpmqy17v0ca4g5zixyw97yy12932c73d0dy"))))
+          (base32 "1fca5minalpmizbxh5kmjiv8xrl7k6g91zn8d84fxmbhsk8vn3kk"))))
       (build-system trivial-build-system)
       (inputs
        (list bash-minimal
@@ -6006,7 +6005,7 @@ Discover other RouterOS devices or @command{mactelnetd} hosts.
 (define-public bfs
   (package
     (name "bfs")
-    (version "3.0.2")
+    (version "3.0.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6015,7 +6014,7 @@ Discover other RouterOS devices or @command{mactelnetd} hosts.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "055qn2bhnyk9k96w8aviz7v4wip9hwsv7ak1m3yygm1x3fhdyhyz"))))
+                "0n2y9m81278j85m8vk242m9nsxdcw62rxsar4hzwszs6p5cjz5ny"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags #~(list (string-append "CC="
@@ -6035,6 +6034,6 @@ Discover other RouterOS devices or @command{mactelnetd} hosts.
     (description
      "Bfs is a variant of the UNIX @command{find} command that operates
 breadth-first rather than depth-first.  It is otherwise compatible with many
-versions of command{find}, including POSIX, GNU, and *BSD find.")
+versions of @command{find}, including POSIX, GNU, and *BSD find.")
     (home-page "https://tavianator.com/projects/bfs.html")
     (license license:bsd-0)))

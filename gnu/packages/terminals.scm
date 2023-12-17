@@ -603,7 +603,18 @@ to all types of devices that provide serial consoles.")
                      ;; The build environment lacks /dev/{console,tty*}.
                      ;; In fact, even nckx's regular Guix System lacks ttyS1…
                      ((": Permission denied")
-                      ": No such file or directory")))))))
+                      ": No such file or directory"))))
+               (add-before 'install 'install-rules
+                 (lambda _
+                   (mkdir-p (string-append #$output "/etc/udev/rules.d"))
+                   (with-output-to-file
+                       (string-append #$output
+                                      "/etc/udev/rules.d/70-pcspkr-beep.rules")
+                     (lambda _
+                       (display (string-append "\
+ACTION==\"add\", SUBSYSTEM==\"input\", ATTRS{name}==\"PC Speaker\", "
+                                               "ENV{DEVNAME}!=\"\", "
+                                               "TAG+=\"uaccess\"")))))))))
     (synopsis "Linux command-line utility to control the PC speaker")
     (description "beep allows the user to control the PC speaker with precision,
 allowing different sounds to indicate different events.  While it can be run
@@ -1599,14 +1610,14 @@ basic input/output.")
                 (search-input-file inputs "lib/libxkbcommon.so")))))
          (replace 'install
            ;; Upstream install script only takes care of executable.
-           (lambda* (#:key inputs outputs #:allow-other-keys)
+           (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
              (let* ((out   (assoc-ref outputs "out"))
                     (bin   (string-append out "/bin"))
                     (share (string-append out "/share"))
                     (icons (string-append share "/icons/hicolor/scalable/apps"))
-                    (tic   (search-input-file inputs "/bin/tic"))
+                    (tic   (search-input-file (or native-inputs inputs) "/bin/tic"))
                     (man   (string-append share "/man/man1"))
-                    (alacritty-bin "target/release/alacritty"))
+                    (alacritty-bin (car (find-files "target" "^alacritty$"))))
                ;; Install the executable.
                (install-file alacritty-bin bin)
                ;; Install man pages.

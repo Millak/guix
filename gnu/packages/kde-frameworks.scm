@@ -2028,6 +2028,9 @@ covers feedback and persistent events.")
            qtbase-5))
     (arguments
      (list
+      ;; The `plasma-querytest' test is known to fail when tests are run in parallel:
+      ;; <https://sources.debian.org/src/kpackage/5.107.0-1/debian/changelog/#L92>
+      #:parallel-tests? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch

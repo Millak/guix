@@ -25,6 +25,7 @@
   #:use-module (guix deprecation)
   #:use-module (guix diagnostics)
   #:use-module (guix i18n)
+  #:use-module ((guix utils) #:select (%current-system))
   #:use-module (gnu services)
   #:use-module (gnu services configuration)
   #:use-module (guix modules)
@@ -32,7 +33,7 @@
   #:use-module (gnu home services shepherd)
   #:use-module ((gnu home services utils)
                 #:select (object->camel-case-string))
-  #:autoload   (gnu packages base) (glibc-utf8-locales)
+  #:autoload   (gnu packages base) (libc-utf8-locales-for-target)
   #:use-module (gnu packages ssh)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
@@ -357,8 +358,9 @@ inserted after each of them."
 
                        ;; Support non-ASCII file names.
                        (setenv "GUIX_LOCPATH"
-                               #+(file-append glibc-utf8-locales
-                                              "/lib/locale"))
+                               #+(file-append
+                                  (libc-utf8-locales-for-target (%current-system))
+                                  "/lib/locale"))
                        (setlocale LC_ALL "en_US.utf8")
 
                        (call-with-output-file #$output

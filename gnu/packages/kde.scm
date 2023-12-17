@@ -283,7 +283,7 @@ annotating features.")
 (define-public kdenlive
   (package
     (name "kdenlive")
-    (version "23.04.2")
+    (version "23.08.3")
     (source
      (origin
        (method git-fetch)
@@ -292,7 +292,7 @@ annotating features.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dgrgnnq38nphfzbapr7dkb21lv4idqynxqmzv9x3maijmp1jjfr"))))
+        (base32 "0qwnz99wdlfkc08imf18wdvms9lzsph4nyjh2845145sl322yans"))))
     (build-system qt-build-system)
     (arguments
      ;; XXX: there is a single test that spawns other tests and

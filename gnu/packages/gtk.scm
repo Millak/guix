@@ -806,7 +806,8 @@ ever use this library.")
            ;; The CI test suite fails completely on powerpc-linux.
            ;; The name org.gnome.SessionManager was not provided by any .service
            ;; TODO: Wrap 'check phase with 'tests?'.
-           #$@(if (not (target-ppc32?))
+           #$@(if (not (or (target-ppc32?)
+                           (%current-target-system)))
                 #~((add-after 'install 'check
                      (lambda _
                        ;; xfconfd requires a writable HOME

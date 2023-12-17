@@ -265,6 +265,28 @@ appropriate BLAS or optimised Julia linear algebra routines.  This supports a
 much wider class of matrix types than Julia's in-built @code{StridedArray}.")
     (license license:expat)))
 
+(define-public julia-astrolib
+  (package
+    (name "julia-astrolib")
+    (version "0.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaAstro/AstroLib.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zbivs79cw7qazrl9c8rz2n2kifxw3adwjf22nn24dp5i34fkw5d"))))
+    (build-system julia-build-system)
+    (native-inputs (list julia-staticarrays))
+    (home-page "https://github.com/JuliaAstro/AstroLib.jl")
+    (synopsis "Bundle of small astronomical and astrophysical routines")
+    (description "The aim of this package is to provide users with a set of small
+generic routines useful above all in astronomical and astrophysical context,
+written in Julia.")
+    (license license:expat)))
+
 (define-public julia-astrotime
   (package
     (name "julia-astrotime")

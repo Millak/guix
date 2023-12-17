@@ -1158,6 +1158,8 @@ such as:
       #:make-flags
       (let ((triplet-without-vendor
              (and (%current-target-system)
+                  ;; TODO: Is there a use case for allowing this?
+                  (not (target-avr?))
                   (match (string-split (nix-system->gnu-triplet
                                         (%current-target-system)) #\-)
                     ((arch vendor os ..1)
@@ -1256,6 +1258,7 @@ OVERRIDE.H, to also override the corresponding layout include file."
       (arguments
        (list
         #:tests? #f                   ;no test suite
+        #:target "avr"
         #:make-flags
         #~(list (string-append "LAYOUT=" #$layout)
                 ;; Simplify the output directory name.
@@ -1281,7 +1284,7 @@ OVERRIDE.H, to also override the corresponding layout include file."
                   (install-file "firmware.hex" #$output)
                   (install-file "firmware.eep" #$output)
                   (install-file "firmware--layout.html" #$output)))))))
-      (native-inputs (list (make-avr-toolchain) python))
+      (native-inputs (list python))
       (home-page "https://www.ergodox.io")
       (synopsis "Firmware for the ErgoDox keyboard")
       (description (format #f "This package contains the original firmware for
@@ -1343,9 +1346,7 @@ corresponding layout." layout))
                 `("PATH" prefix
                   ,(map (compose dirname
                                  (cut search-input-file inputs <>))
-                        '("bin/avr-ar"
-                          "bin/avr-gcc"
-                          "bin/avrdude"
+                        '("bin/avrdude"
                           "bin/awk"
                           "bin/cmp"
                           "bin/dfu-programmer"
@@ -1358,16 +1359,13 @@ corresponding layout." layout))
                           ;; TODO: Remove after git is wrapped with these.
                           "bin/basename"
                           "bin/sed"
-                          "bin/uname")))
-                `("CROSS_C_INCLUDE_PATH" = (,(getenv "CROSS_C_INCLUDE_PATH")))
-                `("CROSS_LIBRARY_PATH" = (,(getenv "CROSS_LIBRARY_PATH")))))))))
+                          "bin/uname")))))))))
     ;; The inputs are not propagated since qmk is to be used strictly as a
     ;; command.
     (inputs
      ;; The 'qmk setup' command advises to use GCC at version 8, and there are
      ;; compilation errors in some firmware otherwise.
-     (list (make-avr-toolchain #:xgcc gcc-8)
-           avrdude
+     (list avrdude
            bash-minimal
            dfu-programmer
            dfu-util
@@ -1440,6 +1438,7 @@ provided."
                   (ice-9 ftw)
                   (ice-9 match)
                   (srfi srfi-26))
+      #:target "avr"
       ;; XXX: Running a test target like "test:$keyboard" doesn't seem to run
       ;; anything and causes the .hex file to be regenerated; leave the tests
       ;; out for now.

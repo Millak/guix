@@ -92,7 +92,7 @@
   "Return the version of the package with upstream NAME included in PACKAGES."
   (let ((pkg (find (lambda (pkg) (string=? (stackage-package-name pkg) name))
                    packages)))
-    (stackage-package-version pkg)))
+    (and=> pkg stackage-package-version)))
 
 
 ;;;

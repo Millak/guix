@@ -243,6 +243,38 @@ satisfiability checking (SAT).")
 over difference logic.")
     (license license:expat)))
 
+(define-public plasp
+  (package
+    (name "plasp")
+    (version "3.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/potassco/plasp")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "123v1bjzh7yjwgcc5k55rkfz0lfl8ish5p3z8x3pn8k1svd50xal"))
+              (patches (search-patches
+                        "plasp-fix-normalization.patch"
+                        "plasp-include-iostream.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f        ; No ‘test’ target
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (copy-recursively "bin"
+                                     (string-append (assoc-ref outputs "out")
+                                                    "/bin")))))))
+    (inputs (list cxxopts mapbox-variant))
+    (home-page "https://potassco.org/")
+    (synopsis "ASP planning tools for PDDL")
+    (description "@command{plasp} is a tool collection for planning in
+answer set programming.  It supports a subset of PDDL 3.1 and SAS 3.")
+    (license license:expat)))
+
 (define-public emacs-pasp-mode
   (let ((commit "59385eb0e8ebcfc8c11dd811fb145d4b0fa3cc92")
         (revision "1"))

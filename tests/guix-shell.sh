@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2021-2022 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2021-2023 Ludovic Courtès <ludo@gnu.org>
 #
 # This file is part of GNU Guix.
 #
@@ -102,6 +102,37 @@ EOF
 guix shell --bootstrap --pure -D -f "$tmpdir/empty-package.scm" \
      guile-bootstrap -- guile --version
 rm "$tmpdir/empty-package.scm"
+
+# Make sure '--development' honors '--system'.
+this_system="$(guile -c '(use-modules (guix utils))
+  (display (%current-system))')"
+other_system="$(guile -c '(use-modules (guix utils))
+  (display (if (string=? "riscv64-linux" (%current-system))
+	       "x86_64-linux"
+	       "riscv64-linux"))')"
+cat > "$tmpdir/some-package.scm" <<EOF
+(use-modules (guix utils)
+             (guix packages)
+             (gnu packages base))
+
+(define unsupported-dependency
+  (package
+    (inherit grep)
+    (name "unsupported-dependency")
+    (supported-systems '())))
+
+(package
+  (inherit hello)
+  (name "phony-package")
+  (inputs
+    (if (string=? (%current-system) "$this_system")
+        (list unsupported-dependency)
+        '())))
+EOF
+
+guix shell -D -f "$tmpdir/some-package.scm" -n && false
+guix shell -D -f "$tmpdir/some-package.scm" -n -s "$other_system"
+
 
 if guile -c '(getaddrinfo "www.gnu.org" "80" AI_NUMERICSERV)' 2> /dev/null
 then

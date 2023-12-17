@@ -2971,7 +2971,16 @@ pure Common Lisp.")
       (license license:expat))))
 
 (define-public ecl-cl-pcg
-  (sbcl-package->ecl-package sbcl-cl-pcg))
+  (let ((pkg (sbcl-package->ecl-package sbcl-cl-pcg)))
+    (package
+      (inherit pkg)
+      (arguments
+       (substitute-keyword-arguments (package-arguments pkg)
+         ;; Tests are failing on ECL with:
+         ;; PCG.TEST::TEST-REWINDAn error occurred during initialization:
+         ;; 40502229875678917802724098623316930025 is not of type
+         ;; (INTEGER 0 2305843009213693951)
+         ((#:tests? _ #f) #f))))))
 
 (define-public cl-pcg
   (sbcl-package->cl-source-package sbcl-cl-pcg))
@@ -9986,8 +9995,8 @@ implementation specific equivalent.")
   (sbcl-package->ecl-package sbcl-trivial-macroexpand-all))
 
 (define-public sbcl-serapeum
-  (let ((commit "47217ab69f76673db7e1fa65665ab804fb46d974")
-        (revision "11"))
+  (let ((commit "c08442a9757b7fa30ac345cb040e1642f97f6b78")
+        (revision "12"))
     (package
       (name "sbcl-serapeum")
       (version (git-version "0.0.0" revision commit))
@@ -10000,7 +10009,7 @@ implementation specific equivalent.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1mr868z1za6vfhb7gq3j7c1rb606gqfzschxdy7wcqx5xv3ndgpa"))))
+          (base32 "1sabd048agvgv7bhbw126rci9hf45fk08zhghcv6an2h6xwmc3qv"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria
@@ -12626,7 +12635,7 @@ them as PNG files.")
 (define-public sbcl-history-tree
   (package
     (name "sbcl-history-tree")
-    (version "0.1.1")
+    (version "0.1.2")
     (source
      (origin
        (method git-fetch)
@@ -12635,12 +12644,7 @@ them as PNG files.")
              (commit version)))
        (file-name (git-file-name "cl-history-tree" version))
        (sha256
-        (base32 "16fynij438zs4g29m7c0vmkfb0sbaz8gj7zjnxpbgjckbim93qwl"))
-       (modules '((guix build utils)))
-       (snippet
-        `(begin
-           (delete-file-recursively "nasdf")
-           #t))))
+        (base32 "1n3q6aqh0wm24pksj8371j5iinxpzy2kcnz97kmpndm1yhv4x5f2"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      (list
@@ -12649,7 +12653,7 @@ them as PNG files.")
       sbcl-local-time
       sbcl-nclasses
       sbcl-trivial-package-local-nicknames))
-    (native-inputs (list sbcl-nasdf sbcl-lisp-unit2))
+    (native-inputs (list sbcl-lisp-unit2))
     (home-page "https://github.com/atlas-engineer/history-tree")
     (synopsis "Store the history of a browser's visited paths")
     (description
@@ -18577,8 +18581,8 @@ building Jupyter kernels, based on Maxima-Jupyter which was based on
   (sbcl-package->cl-source-package sbcl-common-lisp-jupyter))
 
 (define-public sbcl-radiance
-  (let ((commit "a7237831970edfd330dddd5b347d3d1277853bf0")
-        (revision "2"))
+  (let ((commit "8d826c7fe1935338565580931db43f46181e0e85")
+        (revision "3"))
     (package
       (name "sbcl-radiance")
       (version (git-version "2.1.2" revision commit))
@@ -18590,7 +18594,7 @@ building Jupyter kernels, based on Maxima-Jupyter which was based on
                (commit commit)))
          (file-name (git-file-name "radiance" version))
          (sha256
-          (base32 "1q4x9mswiizwgr7acl5zi6lkssfg2zajqbdq7xhw1kq6xfnq37j2"))))
+          (base32 "1j823dgp87www0sjbcbv9j025bfxlkwhjd7kz6635mrqwmmlki4l"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        `(#:tests? #f  ; TODO: The tests require some configuration.
@@ -19185,6 +19189,43 @@ Lisp.")
 
 (define-public cl-percent-encoding
   (sbcl-package->cl-source-package sbcl-percent-encoding))
+
+(define-public sbcl-machine-state
+  (let ((commit "afa7392bc5dcb689cd170bcca765fb6ce6e4efc5")
+        (revision "1"))
+    (package
+      (name "sbcl-machine-state")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/machine-state")
+               (commit commit)))
+         (file-name (git-file-name "machine-state" version))
+         (sha256
+          (base32 "1b897wj06cnalzf5nl6rif1skpa79rzc9a562x1bdhvanhsp7hwa"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-bordeaux-threads
+             sbcl-cffi
+             sbcl-cl-opengl
+             sbcl-documentation-utils))
+      (arguments
+       '(#:tests? #f                    ; No tests.
+         #:asd-systems '("machine-state" "machine-state/opengl")))
+      (home-page "https://notabug.org/cage/cl-mount-info.git")
+      (synopsis "Retrieve machine state information about CPU time, memory usage and more")
+      (description
+       "This library implements various functions to access status information
+about the machine, process, etc.")
+      (license license:zlib))))
+
+(define-public ecl-machine-state
+  (sbcl-package->ecl-package sbcl-machine-state))
+
+(define-public cl-machine-state
+  (sbcl-package->cl-source-package sbcl-machine-state))
 
 (define-public sbcl-cl-mount-info
   (let ((commit "2024f5037a7f63db3e3587dc9972cd7b9318f06b")
@@ -25895,7 +25936,7 @@ JavaScript code.")
 (define-public sbcl-nhooks
   (package
     (name "sbcl-nhooks")
-    (version "1.2.1")
+    (version "1.2.2")
     (source
      (origin
        (method git-fetch)
@@ -25905,7 +25946,7 @@ JavaScript code.")
        (file-name (git-file-name "cl-nhooks" version))
        (sha256
         (base32
-         "10ym4ybda2l426flicqz0f4yg7fbw7yjk1k0wqpf4wfk24gm1b8g"))))
+         "1m9dfp7wjm8k16x45qnw258ca8gnic3k2ik79sdn5gxcx6qxy3g8"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      (list sbcl-serapeum))
@@ -25981,7 +26022,7 @@ access lexicographic data from WordNet.")
 (define-public sbcl-nfiles
   (package
    (name "sbcl-nfiles")
-   (version "1.1.3")
+   (version "1.1.4")
    (source
     (origin
      (method git-fetch)
@@ -25991,12 +26032,7 @@ access lexicographic data from WordNet.")
      (file-name (git-file-name "cl-nfiles" version))
      (sha256
       (base32
-       "1rndrxqb16wfbi5zkg8gbqm163xhs31ka0algsxvrhb9kf2j8c4q"))
-     (modules '((guix build utils)))
-     (snippet
-      `(begin
-         (delete-file-recursively "nasdf")
-         #t))))
+       "1a8zsphbbl9r4sdm95kgm4ljd9b148c9fnwlq7f930fh9826kf72"))))
    (build-system asdf-build-system/sbcl)
    (inputs
     (list gnupg
@@ -26008,8 +26044,7 @@ access lexicographic data from WordNet.")
           sbcl-trivial-package-local-nicknames
           sbcl-trivial-types))
    (native-inputs
-    (list sbcl-lisp-unit2
-          sbcl-nasdf))
+    (list sbcl-lisp-unit2))
    (arguments
     `(#:phases
       (modify-phases %standard-phases
@@ -26106,7 +26141,7 @@ desktop files to the right directories.
 (define-public sbcl-nclasses
   (package
     (name "sbcl-nclasses")
-    (version "0.6.0")
+    (version "0.6.1")
     (source
      (origin
        (method git-fetch)
@@ -26116,18 +26151,12 @@ desktop files to the right directories.
        (file-name (git-file-name "cl-nclasses" version))
        (sha256
         (base32
-         "0kp5wim5frr4l52rgchaz1cj74daqngagrz3r0lgasii6bwlzsi6"))
-       (modules '((guix build utils)))
-       (snippet
-        `(begin
-           (delete-file-recursively "nasdf")
-           #t))))
+         "00is7fg1jsj9r3jawphbk5gh8kmiixl7g60xg1ic2q2cpilfd1by"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      (list sbcl-moptilities))
     (native-inputs
-     (list sbcl-lisp-unit2
-           sbcl-nasdf))
+     (list sbcl-lisp-unit2))
     (home-page "https://github.com/atlas-engineer/nclasses")
     (synopsis "Simplify class, condition, and generic function definitions.")
     (description
@@ -26145,54 +26174,49 @@ extra features like type inference.")
   (sbcl-package->cl-source-package sbcl-nclasses))
 
 (define-public sbcl-prompter
-  (let ((commit "b40a13af6ba4bd5c73c17e94dd2cbc2901bbd02f")
-        (revision "0"))
-    (package
-      (name "sbcl-prompter")
-      (version (git-version "0.1.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/atlas-engineer/prompter")
-               (commit commit)))
-         (file-name (git-file-name "cl-prompter" version))
-         (sha256
-          (base32
-           "1gg69rq2v9wcr7kj9fvd2i38r28fsgqqw6zs71m46krmr1gmfh4q"))
-         (modules '((guix build utils)))
-         (snippet
-          `(begin
-             (delete-file-recursively "nasdf")
-             #t))))
-      (build-system asdf-build-system/sbcl)
-      (inputs
-       (list
-        sbcl-alexandria
-        sbcl-calispel
-        sbcl-cl-containers
-        sbcl-cl-str
-        sbcl-closer-mop
-        sbcl-lparallel
-        sbcl-moptilities
-        sbcl-nclasses
-        sbcl-serapeum
-        sbcl-trivial-package-local-nicknames))
-      (native-inputs
-       (list sbcl-lisp-unit2
-             sbcl-nasdf))
-      (home-page "https://github.com/atlas-engineer/prompter")
-      (synopsis "Live-narrowing, fuzzy-matching, extensible prompt framework")
-      (description
-       "This prompter library is heavily inspired by Emacs' minibuffer and
+  (package
+    (name "sbcl-prompter")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/atlas-engineer/prompter")
+             (commit version)))
+       (file-name (git-file-name "cl-prompter" version))
+       (sha256
+        (base32
+         "008bq36siza9qwmz6b1pvpm53lxmzryahnhy372l18gl3180in03"))))
+    (build-system asdf-build-system/sbcl)
+    (inputs
+     (list
+      sbcl-alexandria
+      sbcl-calispel
+      sbcl-cl-containers
+      sbcl-cl-str
+      sbcl-closer-mop
+      sbcl-lparallel
+      sbcl-moptilities
+      sbcl-nclasses
+      sbcl-serapeum
+      sbcl-trivial-package-local-nicknames))
+    (native-inputs
+     (list sbcl-lisp-unit2))
+    (home-page "https://github.com/atlas-engineer/prompter")
+    (synopsis "Live-narrowing, fuzzy-matching, extensible prompt framework")
+    (description
+     "This prompter library is heavily inspired by Emacs' minibuffer and
 Helm (@url{https://emacs-helm.github.io/helm/}).  It only deals with the
 backend side of things, it does not handle any display.  Features include
 asynchronous suggestion computation, multiple sources, actions and resumable
 prompters.")
-      (license license:bsd-3))))
+    (license license:bsd-3)))
 
 (define-public cl-prompter
   (sbcl-package->cl-source-package sbcl-prompter))
+
+(define-public ecl-prompter
+  (sbcl-package->ecl-package sbcl-prompter))
 
 (define-public sbcl-cl-template
   (let ((commit "46193a9a389bb950530e579eae7e6e5a18184832")
@@ -26748,7 +26772,7 @@ in a native template application).")
 (define-public sbcl-nkeymaps
   (package
     (name "sbcl-nkeymaps")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method git-fetch)
@@ -26757,7 +26781,7 @@ in a native template application).")
              (commit version)))
        (file-name (git-file-name "cl-nkeymaps" version))
        (sha256
-        (base32 "08q3bmb3i7mjpm83msp1qgpifpzf019ggikbxwc2dk04i3c2w0vv"))))
+        (base32 "179hrnkn3pkwkp4ap6ax0zgp7xcr9cq7icff42r79gh43ri3kpzy"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      (list sbcl-alexandria
@@ -26865,7 +26889,7 @@ instead of #'FOO.
 (define-public sbcl-njson
   (package
     (name "sbcl-njson")
-    (version "1.2.1")
+    (version "1.2.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -26874,7 +26898,7 @@ instead of #'FOO.
               (file-name (git-file-name "cl-njson" version))
               (sha256
                (base32
-                "0p3zvn3jfzcdzpvikdaw3g14wfsklq0msw0rjaxin3aa7vmqpyqk"))))
+                "05v5bk3l47mds4ihxs8jlqm19gqq7hb4q0161bgg99w9847l63lk"))))
     (build-system asdf-build-system/sbcl)
     (inputs (list sbcl-cl-json sbcl-jzon))
     (native-inputs (list sbcl-lisp-unit2))
@@ -26972,7 +26996,7 @@ JSON handling.  Load the parser backend you prefer!
 (define-public sbcl-nsymbols
   (package
    (name "sbcl-nsymbols")
-   (version "0.3.1")
+   (version "0.3.2")
    (source
     (origin
      (method git-fetch)
@@ -26981,7 +27005,7 @@ JSON handling.  Load the parser backend you prefer!
            (commit version)))
      (file-name (git-file-name "cl-nsymbols" version))
      (sha256
-      (base32 "14zdwsk2nrismj3xb54kfpgcdcsdzw3fyd7zwxlsir66lv9w9ji9"))))
+      (base32 "1awh793s4fwhddllfcjz4sbkxwinh5w54s3glxh7rv00c7skdjd6"))))
    (build-system asdf-build-system/sbcl)
    (native-inputs (list sbcl-lisp-unit2))
    (inputs (list cl-closer-mop))

@@ -174,8 +174,8 @@
   ;; Note: the 'update-guix-package.scm' script expects this definition to
   ;; start precisely like this.
   (let ((version "1.4.0")
-        (commit "a60ff4611a8814d1f33d64af07401762afbcc597")
-        (revision 14))
+        (commit "aeb494322ca9dec4a4d66a7d063239c8536bd538")
+        (revision 16))
     (package
       (name "guix")
 
@@ -191,7 +191,7 @@
                       (commit commit)))
                 (sha256
                  (base32
-                  "08czk2789y21cydg1xwwrmah8hjaprdnzvb993n7d7d70ccxk5kz"))
+                  "1xl769lkpvkjpvq4vwkxm4dp77sr9finvr6izvf4kvyi6s3hbsys"))
                 (file-name (string-append "guix-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -524,7 +524,7 @@ $(prefix)/etc/openrc\n")))
 
          ("git-minimal" ,git-minimal)             ;for 'guix perform-download'
 
-         ("glibc-utf8-locales" ,glibc-utf8-locales)))
+         ("glibc-utf8-locales" ,(libc-utf8-locales-for-target))))
       (propagated-inputs
        `(("guile-gnutls" ,guile-gnutls)
          ;; Avahi requires "glib" which doesn't cross-compile yet.
@@ -2052,7 +2052,7 @@ cp -r /tmp/locale/*/en_US.*")))
            dbus ; for dbus-daemon
            gettext-minimal
            `(,glib "bin") ; for glib-mkenums + gdbus-codegen
-           glibc-utf8-locales
+           (libc-utf8-locales-for-target)
            gobject-introspection
            libcap
            pkg-config

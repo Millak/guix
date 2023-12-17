@@ -306,8 +306,6 @@ executable cabal
   ghc-options: -Wall
 ")
 
-;; Fails: https://debbugs.gnu.org/cgi/bugreport.cgi?bug=35743
-(test-expect-fail 1)
 (test-assert "hackage->guix-package test mixed layout"
   (eval-test-with-cabal test-cabal-mixed-layout match-ghc-foo))
 
@@ -623,5 +621,50 @@ executable cabal
 
 (test-assert "hackage->guix-package test cabal import"
   (eval-test-with-cabal test-cabal-import match-ghc-foo-import))
+
+(define test-cabal-multiple-imports
+  "name: foo
+version: 1.0.0
+homepage: http://test.org
+synopsis: synopsis
+description: description
+license: BSD3
+common commons
+  build-depends:
+    HTTP       >= 4000.2.5 && < 4000.3,
+    mtl        >= 2.0      && < 3
+
+common others
+  build-depends:
+    base == 4.16.*,
+    stm-chans == 3.0.*
+
+executable cabal
+  import:
+      commons
+    , others
+")
+
+(define-package-matcher match-ghc-foo-multiple-imports
+  ('package
+    ('name "ghc-foo")
+    ('version "1.0.0")
+    ('source
+     ('origin
+       ('method 'url-fetch)
+       ('uri ('hackage-uri "foo" 'version))
+       ('sha256
+        ('base32
+         (? string? hash)))))
+    ('build-system 'haskell-build-system)
+    ('properties '(quote ((upstream-name . "foo"))))
+    ('inputs ('list 'ghc-http 'ghc-stm-chans))
+    ('home-page "http://test.org")
+    ('synopsis (? string?))
+    ('description (? string?))
+    ('license 'license:bsd-3)))
+
+(test-assert "hackage->guix-package test cabal multiple imports"
+  (eval-test-with-cabal test-cabal-multiple-imports match-ghc-foo-multiple-imports))
 
 (test-end "hackage")

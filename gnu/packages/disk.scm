@@ -1651,7 +1651,7 @@ gone and to help you to clean it up.")
 (define-public nwipe
   (package
     (name "nwipe")
-    (version "0.34")
+    (version "0.35")
     (source
      (origin
        (method git-fetch)
@@ -1660,7 +1660,7 @@ gone and to help you to clean it up.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1frwjgz4mpzwr9sigr693crmxsjl08wcikh6ik7dm0x40l1kqqpd"))))
+        (base32 "1bj20y52qzz2ja56yf1pxqjg3lsda35c2k5hcj3lqm69jpsla2wq"))))
     (build-system gnu-build-system)
     (arguments
      (list #:phases
@@ -1674,7 +1674,13 @@ gone and to help you to clean it up.")
                                   "sbin/hdparm"
                                   "sbin/smartctl")))))))))
     (inputs
-     (list bash-minimal dmidecode hdparm ncurses parted smartmontools))
+     (list bash-minimal
+           dmidecode
+           hdparm
+           libconfig
+           ncurses
+           parted
+           smartmontools))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (home-page "https://github.com/martijnvanbrummelen/nwipe")

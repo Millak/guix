@@ -2922,7 +2922,7 @@ memoized as a function of '%current-system'."
   ;; store path has no dependencies.  Actually, the really-final libc is
   ;; built just below; the only difference is that this one uses the
   ;; bootstrap Bash.
-  (let ((libc (libc-for-target)))
+  (let ((libc (libc-for-target (%current-system))))
     (package
       (inherit libc)
       (name "glibc-intermediate")
@@ -3096,7 +3096,7 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
 (define/system-dependent glibc-final
   ;; The final glibc, which embeds the statically-linked Bash built above.
   ;; Use 'package/inherit' so we get the 'replacement' of 'glibc', if any.
-  (let ((libc (libc-for-target)))
+  (let ((libc (libc-for-target (%current-system))))
     (package/inherit libc
       (name "glibc")
       (source (bootstrap-origin (package-source libc)))

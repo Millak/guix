@@ -130,8 +130,17 @@ to the stack."
 
 (define (context-stack-clear!) ((context-stack) 'clear!))
 
-;; Indentation of the line being parsed.
-(define current-indentation (make-parameter 0))
+;; Indentation of the line being parsed and that of the previous line.
+(define current-indentation* (make-parameter 0))
+
+(define previous-indentation (make-parameter 0))
+
+(define* (current-indentation #:optional value)
+  (if value
+    (begin
+      (previous-indentation (current-indentation*))
+      (current-indentation* value))
+    (current-indentation*)))
 
 ;; Signal to reprocess the beginning of line, in case we need to close more
 ;; than one indentation level.
@@ -196,27 +205,13 @@ to the stack."
                 (exprs elif-else)          : (append $1 (list ($2 '(()))))
                 (elif-else)                : (list ($1 '(()))))
    ;; LALR(1) parsers prefer to be left-recursive, which make if-statements slightly involved.
-   ;; XXX: This technically allows multiple else statements.
-   (elif-else   (elif-else ELIF tests OCURLY exprs CCURLY) : (lambda (y) ($1 (list (append (list 'if $3 $5) y))))
-                (elif-else ELIF tests open exprs close) : (lambda (y) ($1 (list (append (list 'if $3 $5) y))))
-                (elif-else ELSE OCURLY exprs CCURLY) : (lambda (y) ($1 (list $4)))
-                ;; The 'open' token after 'tests' is shifted after an 'exprs'
-                ;; is found.  This is because, instead of 'exprs' a 'OCURLY'
-                ;; token is a valid alternative.  For this reason, 'open'
-                ;; pushes a <parse-context> with a line indentation equal to
-                ;; the indentation of 'exprs'.
-                ;;
-                ;; Differently from this, without the rule above this
-                ;; comment, when an 'ELSE' token is found, the 'open' token
-                ;; following the 'ELSE' would be shifted immediately, before
-                ;; the 'exprs' is found (because there are no other valid
-                ;; tokens).  The 'open' would therefore create a
-                ;; <parse-context> with the indentation of 'ELSE' and not
-                ;; 'exprs', creating an inconsistency.  We therefore allow
-                ;; mixed style conditionals.
-                (elif-else ELSE open exprs close) : (lambda (y) ($1 (list $4)))
+   (elif        (elif ELIF tests OCURLY exprs CCURLY) : (lambda (y) ($1 (list (append (list 'if $3 $5) y))))
+                (elif ELIF tests open exprs close) : (lambda (y) ($1 (list (append (list 'if $3 $5) y))))
                 ;; Terminating rule.
                 (if-then) : (lambda (y) (append $1 y)))
+   (elif-else   (elif ELSE OCURLY exprs CCURLY) : (lambda (y) ($1 (list $4)))
+                (elif ELSE open exprs close)    : (lambda (y) ($1 (list $4)))
+                (elif)                          : $1)
    (if-then     (IF tests OCURLY exprs CCURLY) : (list 'if $2 $4)
                 (IF tests open exprs close)    : (list 'if $2 $4))
    (tests       (TEST OPAREN ID CPAREN)        : `(,$1 ,$3)
@@ -237,7 +232,7 @@ to the stack."
                (OPAREN tests CPAREN)           : $2)
    (open       () : (context-stack-push!
                                    (make-parse-context (context layout)
-                                                       (current-indentation))))
+                                                       (+ 1 (previous-indentation)))))
    (close      (VCCURLY))))
 
 (define (peek-next-line-indent port)
@@ -655,7 +650,8 @@ If #f use the function 'port-filename' to obtain it."
   (let ((cabal-parser (make-cabal-parser)))
     (parameterize ((cabal-file-name
                     (or file-name (port-filename port) "standard input"))
-                   (current-indentation 0)
+                   (current-indentation* 0)
+                   (previous-indentation 0)
                    (check-bol? #f)
                    (context-stack (make-stack)))
       (cabal-parser (make-lexer port) (errorp)))))
@@ -869,7 +865,16 @@ the ordering operation and the version."
       (((? string? name) values)
        (list name values))
       ((("import" imports) rest ...)
-       (eval (append (append-map (cut assoc-ref common-stanzas <>) imports)
+       (eval (append (append-map
+                     ;; The imports are (at least sometimes) a list with one string
+                     ;; containing all the names separeted by commas. This splits
+                     ;; those strings to a list of strings in the same format that is
+                     ;; used in common-stanzas.
+                     (cut assoc-ref common-stanzas <>)
+                      (append-map (lambda (imports-string)
+                                    (map (compose string-downcase string-trim-both)
+                                         (string-split imports-string #\,)))
+                                  imports))
                      rest)))
       ((element rest ...)
        (cons (eval element) (eval rest)))

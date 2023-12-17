@@ -49,11 +49,13 @@ for TRIPLET."
   `((system . ,(cond ((target-hurd? triplet) "gnu")
                      ((target-linux? triplet) "linux")
                      ((target-mingw? triplet) "windows")
+                     ((target-avr? triplet) "none")
                      (#t (error "meson: unknown operating system"))))
     (cpu_family . ,(cond ((target-x86-32? triplet) "x86")
                          ((target-x86-64? triplet) "x86_64")
                          ((target-arm32? triplet) "arm")
                          ((target-aarch64? triplet) "aarch64")
+                         ((target-avr? triplet) "avr")
                          ((target-mips64el? triplet) "mips64")
                          ((target-powerpc? triplet)
                           (if (target-64bit? triplet)
@@ -66,6 +68,7 @@ for TRIPLET."
                   ((target-x86-64? triplet) "x86_64")
                   ((target-aarch64? triplet) "armv8-a")
                   ((target-arm32? triplet) "armv7")
+                  ((target-avr? triplet) "avr")
                   ;; According to #mesonbuild on OFTC, there does not appear
                   ;; to be an official-ish list of CPU types recognised by
                   ;; Meson, the "cpu" field is not used by Meson itself and
@@ -89,6 +92,13 @@ TRIPLET."
     (ld . ,(string-append triplet "-ld"))
     (strip . ,(string-append triplet "-strip"))))
 
+(define (make-built-in-options-alist triplet)
+  (if (target-avr? triplet)
+      `((b_pie . #f)
+        (b_staticpic . #f)
+        (default_library . "static"))
+       '()))
+
 (define (make-cross-file triplet)
   (computed-file "cross-file"
     (with-imported-modules '((guix build meson-configuration))
@@ -99,7 +109,9 @@ TRIPLET."
               (write-section-header port "host_machine")
               (write-assignments port '#$(make-machine-alist triplet))
               (write-section-header port "binaries")
-              (write-assignments port '#$(make-binaries-alist triplet))))))))
+              (write-assignments port '#$(make-binaries-alist triplet))
+              (write-section-header port "built-in options")
+              (write-assignments port '#$(make-built-in-options-alist triplet))))))))
 
 (define %meson-build-system-modules
   ;; Build-side modules imported by default.

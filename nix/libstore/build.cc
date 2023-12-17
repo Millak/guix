@@ -2154,6 +2154,12 @@ void DerivationGoal::runChild()
            determinism. */
         int cur = personality(0xffffffff);
         if (cur != -1) personality(cur | ADDR_NO_RANDOMIZE);
+
+	/* Ask the kernel to eagerly kill us & our children if it runs out of
+	   memory, regardless of blame, to preserve ‘real’ user data & state. */
+	try {
+	    writeFile("/proc/self/oom_score_adj", "1000"); // 100%
+	} catch (...) { ignoreException(); }
 #endif
 
         /* Fill in the environment. */
@@ -3074,8 +3080,8 @@ void SubstitutionGoal::finished()
 	auto statusList = tokenizeString<vector<string> >(status);
 
 	if (statusList.empty()) {
-            throw SubstError(format("fetching path `%1%' (empty status: '%2%')")
-			     % storePath % status);
+            throw SubstError(format("fetching path `%1%' (empty status)")
+			     % storePath);
 	} else if (statusList[0] == "hash-mismatch") {
 	    if (settings.printBuildTrace) {
 		auto hashType = statusList[1];

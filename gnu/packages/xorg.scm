@@ -1498,7 +1498,11 @@ treat it as part of their software base when porting.")
             "1zi0r6mqa1g0hhsp02cdsjcxmsbipiv0v65c1h4pl84fydcjikbm"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--disable-static")))
+     `(#:configure-flags '("--disable-static"
+                           ;; This fixes cross compiling.
+                           ,@(if (%current-target-system)
+                               '("--enable-malloc0returnsnull=yes")
+                               '()))))
     (propagated-inputs
       (list libx11 libxext xorgproto))
     (native-inputs
@@ -5013,7 +5017,7 @@ by the Xorg server.")
 (define-public xorg-server
   (package
     (name "xorg-server")
-    (version "21.1.4")
+    (version "21.1.10")
     (source
      (origin
        (method url-fetch)
@@ -5021,7 +5025,7 @@ by the Xorg server.")
                            "/xserver/xorg-server-" version ".tar.xz"))
        (sha256
         (base32
-         "11y5w6z3rz3i4jyv0wc3scd2jh3bsmcklq0fm7a5invywj7bxi2w"))
+         "1l0iaq83vbl9jr34sa7v7630c5bnp64drlw8yg6c6yn5xyib7c6f"))
        (patches
         (list
          ;; See:
@@ -6109,14 +6113,14 @@ basic eye-candy effects.")
 (define-public xpra
   (package
     (name "xpra")
-    (version "5.0.3")
+    (version "5.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.xpra.org/src/xpra-"
                            version ".tar.xz"))
        (sha256
-        (base32 "03vpihkinidyv6257683av8288vm0hmg767yf188jkkdxl4cv4gs"))
+        (base32 "0zb49adrjrdsmf0k9xdc6j2idqy5lgzsjjrb4awjh5i4r3wc58m0"))
        (patches (search-patches "xpra-5.0-systemd-run.patch"
                                 "xpra-5.0-install_libs.patch"))))
     (build-system python-build-system)
