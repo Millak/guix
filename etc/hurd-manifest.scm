@@ -31,8 +31,9 @@
              (srfi srfi-1))
 
 (use-package-modules
- base bootloaders commencement compression file gawk gdb gettext gtk guile
- hurd less m4 package-management python ssh version-control)
+ autotools base bootloaders commencement compression file gawk gdb gettext gtk
+ guile guile-xyz hurd less m4 package-management python ssh
+ texinfo tls version-control)
 
 (define (input->package input)
   "Return the INPUT as package, or #f."
@@ -63,8 +64,12 @@
   diffutils file findutils gawk grep gzip less m4 openssh-sans-x tar xz
 
   ;; development packages
+  autoconf automake libtool texinfo
   gcc-toolchain gdb-minimal git-minimal gnu-make
   gettext-minimal python-minimal
+  guile-3.0 guile-2.2 guile-2.0
+  guile-readline guile-colorized
+  guile-gnutls guile-fibers guile-json-4
 
   ;; ourselves!
   (package-without-tests guix)
