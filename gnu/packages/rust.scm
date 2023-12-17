@@ -46,7 +46,6 @@
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gdb)
-  #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
@@ -441,16 +440,7 @@ safety and thread safety guarantees.")
                     (binutils (assoc-ref inputs "binutils"))
                     (rustc (assoc-ref inputs "rustc-bootstrap"))
                     (cargo (assoc-ref inputs "cargo-bootstrap"))
-                    (llvm (assoc-ref inputs "llvm"))
-                    (jemalloc (assoc-ref inputs "jemalloc")))
-               ;; The compiler is no longer directly built against jemalloc, but
-               ;; rather via the jemalloc-sys crate (which vendors the jemalloc
-               ;; source). To use jemalloc we must enable linking to it (otherwise
-               ;; it would use the system allocator), and set an environment
-               ;; variable pointing to the compiled jemalloc.
-               (setenv "JEMALLOC_OVERRIDE"
-                       (search-input-file inputs
-                                          "/lib/libjemalloc_pic.a"))
+                    (llvm (assoc-ref inputs "llvm")))
                (call-with-output-file "config.toml"
                  (lambda (port)
                    (display (string-append "
@@ -467,7 +457,7 @@ prefix = \"" out "\"
 sysconfdir = \"etc\"
 [rust]
 debug=false
-jemalloc=true
+jemalloc=false
 default-linker = \"" gcc "/bin/gcc" "\"
 channel = \"stable\"
 rpath = true
@@ -533,8 +523,7 @@ ar = \"" binutils "/bin/ar" "\"
        ("cargo-bootstrap" ,rust-bootstrap "cargo")
        ("which" ,which)))
     (inputs
-     `(("jemalloc" ,jemalloc)
-       ("llvm" ,llvm-13)
+     `(("llvm" ,llvm-13)
        ("openssl" ,openssl)
        ("libssh2" ,libssh2)             ; For "cargo"
        ("libcurl" ,curl)))              ; For "cargo"
