@@ -494,7 +494,7 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
 (define-public opencv
   (package
     (name "opencv")
-    (version "4.8.0")
+    (version "4.8.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -534,7 +534,7 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
                   (for-each delete-file (find-files "." "\\.jar$"))))
               (sha256
                (base32
-                "14bjpb0ahhaqnim8g6vs0gyd6jgnmly1amx25a0rk1a6ii2aiywn"))))
+                "1alvfqacbmrn7s6rbx0r150fg0lmsg13s887gn289vdawgrd7k04"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
