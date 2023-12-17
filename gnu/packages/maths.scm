@@ -725,10 +725,11 @@ precision floating point numbers.")
               (sha256
                (base32
                 "0jxkxrnpys2j3rh8bzx0bmnh4w6xm28jd57rgxsjp0s863agpc6w"))))
+    (outputs '("out" "static"))
     (build-system gnu-build-system)
     (arguments
      (let ((system (%current-system)))
-       `(#:configure-flags (list "--disable-static") ;halves package size
+       `(#:make-flags (list "CFLAGS=-fPIC")
          #:phases
          (modify-phases %standard-phases
            ,@(cond
@@ -774,7 +775,16 @@ precision floating point numbers.")
                        (("gsl_ieee_env_setup.*" all)
                         (string-append "exit (77);\n" all)))))))
 
-              (else '()))))))
+              (else '()))
+           (add-after 'install 'move-static-library
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((static (string-append (assoc-ref outputs "static") "/lib/"))
+                     (out    (string-append (assoc-ref outputs "out") "/lib/")))
+                 (mkdir-p static)
+                 (rename-file (string-append out "libgsl.a")
+                              (string-append static "libgsl.a"))
+                 (rename-file (string-append out "libgslcblas.a")
+                              (string-append static "libgslcblas.a")))))))))
     (native-inputs
      (if (and (target-riscv64?)
               (%current-target-system))
