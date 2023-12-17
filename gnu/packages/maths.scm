@@ -804,15 +804,6 @@ numbers.")
 
     (license license:gpl3+)))
 
-;; TODO: Merge back into the gsl package as a separate output.
-(define-public gsl-static
-  (package/inherit gsl
-    (name "gsl-static")
-    (arguments
-     `(,@(package-arguments gsl)
-        #:configure-flags (list "--disable-shared")
-        #:make-flags (list "CFLAGS=-fPIC")))))
-
 (define-public sleef
   (package
     (name "sleef")
