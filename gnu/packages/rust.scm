@@ -824,6 +824,29 @@ safety and thread safety guarantees.")
                (("features = \\[\"fs\"" all)
                 (string-append all ", \"use-libc\""))))))))))
 
+(define rust-1.74
+  (let ((base-rust (rust-bootstrapped-package rust-1.73 "1.74.1"
+                    "07930r17dkj3dnsrmilywb6p9i2g2jx56ndfpa2wh8crzhi3xnv7")))
+    (package
+      (inherit base-rust)
+      (source
+       (origin
+         (inherit (package-source base-rust))
+         (snippet
+          '(begin
+             (for-each delete-file-recursively
+                       '("src/llvm-project"
+                         "vendor/tikv-jemalloc-sys/jemalloc"))
+             ;; Remove vendored dynamically linked libraries.
+             ;; find . -not -type d -executable -exec file {} \+ | grep ELF
+             ;; Also remove the bundled (mostly Windows) libraries.
+             (for-each delete-file
+                       (find-files "vendor" "\\.(a|dll|exe|lib)$"))
+             ;; Adjust vendored dependency to explicitly use rustix with libc backend.
+             (substitute* "vendor/tempfile/Cargo.toml"
+               (("features = \\[\"fs\"" all)
+                (string-append all ", \"use-libc\""))))))))))
+
 (define (make-ignore-test-list strs)
   "Function to make creating a list to ignore tests a bit easier."
   (map (lambda (str)
@@ -838,15 +861,15 @@ safety and thread safety guarantees.")
 ;;; Here we take the latest included Rust, make it public, and re-enable tests
 ;;; and extra components such as rustfmt.
 (define-public rust
-  (let ((base-rust rust-1.73))
+  (let ((base-rust rust-1.74))
     (package
       (inherit base-rust)
       (properties (alist-delete 'hidden? (package-properties base-rust)))
       (outputs (cons* "rust-src" "tools" (package-outputs base-rust)))
       (arguments
-       (substitute-keyword-arguments (package-arguments base-rust)
-         ((#:tests? _ #f)
-          (not (%current-target-system)))
+       (substitute-keyword-arguments
+         (strip-keyword-arguments '(#:tests?)
+           (package-arguments base-rust))
          ((#:phases phases)
           `(modify-phases ,phases
              (add-after 'unpack 'relax-gdb-auto-load-safe-path
