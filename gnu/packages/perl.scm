@@ -11447,6 +11447,25 @@ determining their type and clock speed.")
 of a system.")
     (license (package-license perl))))
 
+(define-public perl-sys-sigaction
+  (package
+    (name "perl-sys-sigaction")
+    (version "0.23")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/L/LB/LBAXTER/Sys-SigAction-" version
+             ".tar.gz"))
+       (sha256
+        (base32 "0lykjlq5dsf7z927lpllzixd953izi3w7bg2pgy32h2k8n9nrvy4"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/Sys-SigAction")
+    (synopsis "Perl extension for Consistent Signal Handling")
+    (description "@code{Sys::SigAction} is a Perl extension for Consistent
+Signal Handling.")
+    (license license:perl-license)))
+
 (define-public perl-sys-syscall
   (package
     (name "perl-sys-syscall")
