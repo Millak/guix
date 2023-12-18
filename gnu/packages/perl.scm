@@ -2012,6 +2012,26 @@ copy nested hash, array, scalar and reference types, including tied variables
 and objects.")
     (license (package-license perl))))
 
+(define-public perl-clipboard
+  (package
+    (name "perl-clipboard")
+    (version "0.28")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/S/SH/SHLOMIF/Clipboard-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "09kdjsq5xvdhqcg61y7rvcxz9zq0904ms3ssq9bk69lla40pk3cy"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build))
+    (propagated-inputs (list perl-cgi perl-uri))
+    (home-page "https://metacpan.org/release/Clipboard")
+    (synopsis "Copy and paste with any OS")
+    (description "@{Clipboard} provides functionality to copy and
+paste with any OS.")
+    (license license:perl-license)))
+
 (define-public perl-common-sense
   (package
     (name "perl-common-sense")
