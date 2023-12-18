@@ -995,6 +995,26 @@ compiling the surrounding scope.")
     (description "This module allows you to wrap OP check callbacks.")
     (license (package-license perl))))
 
+(define-public perl-b-utils
+  (package
+    (name "perl-b-utils")
+    (version "0.27")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/E/ET/ETHER/B-Utils-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "1spzhmk3z6c4blmra3kn84nq20fira2b3vjg86m0j085lgv56zzr"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-extutils-depends))
+    (propagated-inputs (list perl-task-weaken))
+    (home-page "https://metacpan.org/release/B-Utils")
+    (synopsis "Helper functions for op tree manipulation")
+    (description "@code{B::Utils} provide helper functions for op
+tree manupulation.")
+    (license license:perl-license)))
+
 (define-public perl-b-keywords
   (package
     (name "perl-b-keywords")
