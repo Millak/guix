@@ -6723,6 +6723,26 @@ which produces a descriptive fatal error if the JSON is invalid, and so on.")
 versa.")
     (license (package-license perl))))
 
+(define-public perl-lexical-persistence
+  (package
+    (name "perl-lexical-persistence")
+    (version "1.023")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/R/RC/RCAPUTO/Lexical-Persistence-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "0i39wf55wzvz1iisl66csxdrz9m3wzcl4w4zxafcm19qfi5gmlll"))))
+    (build-system perl-build-system)
+    (propagated-inputs (list perl-devel-lexalias perl-padwalker))
+    (home-page "https://metacpan.org/release/Lexical-Persistence")
+    (synopsis "Persistent lexical variable values for arbitrary calls.")
+    (description "@code{Lexical::Persistence} introduces persistent lexical
+variable values for arbitrary calls.")
+    (license license:perl-license)))
+
 (define-public perl-lexical-sealrequirehints
   (package
     (name "perl-lexical-sealrequirehints")
