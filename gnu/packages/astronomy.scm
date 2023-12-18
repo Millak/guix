@@ -2858,13 +2858,13 @@ implementing calibration pipeline software.")
 (define-public python-stsynphot
   (package
     (name "python-stsynphot")
-    (version "1.2.0")
+    (version "1.3.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "stsynphot" version))
               (sha256
                (base32
-                "0qkdh47j84v7fzri7bmi1jcmggdqq0a8byamfm73d8mbz86v8sn4"))))
+                "15m3vy39mc7rh1mrxs8d2bs0bx5vv632m6wg8n15fqjzhadqy7j5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
