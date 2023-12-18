@@ -80,14 +80,14 @@
   (file-pattern search-path-specification-file-pattern ;#f | string
                 (default #f)))
 
-(define $C_INCLUDE_PATH
+(define $CPLUS_INCLUDE_PATH
   (search-path-specification
    (variable "CPLUS_INCLUDE_PATH")
    ;; Add 'include/c++' here so that <cstdlib>'s "#include_next
    ;; <stdlib.h>" finds GCC's <stdlib.h>, not libc's.
    (files '("include/c++" "include"))))
 
-(define $CPLUS_INCLUDE_PATH
+(define $C_INCLUDE_PATH
   (search-path-specification
    (variable "C_INCLUDE_PATH")
    (files '("include"))))
