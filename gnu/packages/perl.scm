@@ -9949,6 +9949,24 @@ applications.")
 code.")
     (license license:perl-license)))
 
+(define-public perl-ppi-xs
+  (package
+    (name "perl-ppi-xs")
+    (version "0.910")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/E/ET/ETHER/PPI-XS-" version
+                           ".tar.gz"))
+       (sha256
+        (base32 "0q7wdzsf15qx1bh2ckgldz533cswbp9nzs6v9d6v9hvzixyy7x6d"))))
+    (build-system perl-build-system)
+    (propagated-inputs (list perl-ppi))
+    (home-page "https://metacpan.org/release/PPI-XS")
+    (synopsis "(Minor) XS acceleration for PPI")
+    (description "@code{PPI::XS} provides (minor) XS acceleration for PPI.")
+    (license license:perl-license)))
+
 (define-public perl-ppix-regexp
   (package
     (name "perl-ppix-regexp")
