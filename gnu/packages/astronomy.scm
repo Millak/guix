@@ -2681,13 +2681,13 @@ Science Institute} image array manipulation functions.")
 (define-public python-stsci-imagestats
   (package
     (name "python-stsci-imagestats")
-    (version "1.6.3")
+    (version "1.8.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "stsci.imagestats" version))
               (sha256
                (base32
-                "14457izlbnks84dyza75ib3nvx2w8nhlqm9vc1zb7hbhknb5gjvw"))))
+                "01jqqrhcna0ghin48bbcza57d12371ny4l4pqws89irwdhd8xr0r"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f)) ;No tests
