@@ -19,6 +19,7 @@
 ;;; Copyright © 2023 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -99,6 +100,7 @@
             target-arm32?
             target-aarch64?
             target-arm?
+            target-avr?
             target-ppc32?
             target-ppc64le?
             target-powerpc?
@@ -723,6 +725,10 @@ architecture (x86_64)?"
 (define* (target-arm? #:optional (target (or (%current-target-system)
                                              (%current-system))))
   (or (target-arm32? target) (target-aarch64? target)))
+
+(define* (target-avr? #:optional (target (%current-target-system)))
+  "Is the architecture of TARGET a variant of Microchip's AVR architecture?"
+  (or (string=? target "avr") (string-prefix? "avr-" target)))
 
 (define* (target-ppc32? #:optional (target (or (%current-target-system)
                                                (%current-system))))

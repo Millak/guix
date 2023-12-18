@@ -8139,7 +8139,7 @@ compressed JSON header blocks.
 (define-public hpcguix-web
   (package
     (name "hpcguix-web")
-    (version "0.3.0")
+    (version "0.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8148,7 +8148,7 @@ compressed JSON header blocks.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1g1sd5d6fhrblqk3rc8hzkk1sxyiilbb45kdgbrfg7ccd1sbic30"))))
+                "19l9gvp2ngn7lc3jynrc16f3il2bgkhq1m8zfaqwxk9vwxiivwrn"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((guix build gnu-build-system)

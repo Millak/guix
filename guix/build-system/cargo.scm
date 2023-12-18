@@ -55,11 +55,17 @@
 to NAME and VERSION."
   (string-append crate-url name "/" version "/download"))
 
-(define (default-rust)
+(define (default-rust target)
   "Return the default Rust package."
   ;; Lazily resolve the binding to avoid a circular dependency.
   (let ((rust (resolve-interface '(gnu packages rust))))
     (module-ref rust 'rust)))
+
+(define (default-rust-sysroot target)
+  "Return the default Rust sysroot for <target>."
+  ;; Lazily resolve the binding to avoid a circular dependency.
+  (let ((module (resolve-interface '(gnu packages rust))))
+    (module-ref module 'make-rust-sysroot)))
 
 (define %cargo-utils-modules
   ;; Build-side modules imported by default.
@@ -123,6 +129,69 @@ to NAME and VERSION."
   (gexp->derivation name builder
                     #:system system
                     #:target #f
+                    #:graft? #f
+                    #:guile-for-build guile))
+
+(define* (cargo-cross-build name
+                            #:key
+                            source target
+                            build-inputs target-inputs host-inputs
+                            (tests? #f)
+                            (test-target #f)
+                            (vendor-dir "guix-vendor")
+                            (cargo-build-flags ''("--release"))
+                            (cargo-test-flags ''("--release"))
+                            (cargo-package-flags ''("--no-metadata" "--no-verify"))
+                            (features ''())
+                            (skip-build? #f)
+                            (install-source? (not (target-mingw? target)))
+                            (phases '%standard-phases)
+                            (outputs '("out"))
+                            (search-paths '())
+                            (native-search-paths '())
+                            (system (%current-system))
+                            (guile #f)
+                            (imported-modules %cargo-build-system-modules)
+                            (modules '((guix build cargo-build-system)
+                                       (guix build utils))))
+  "Cross-build SOURCE using CARGO, and with INPUTS."
+
+  (define builder
+    (with-imported-modules imported-modules
+      #~(begin
+          (use-modules #$@(sexp->gexp modules))
+
+          (cargo-build #:name #$name
+                       #:source #+source
+                       #:target #+target
+                       #:system #$system
+                       #:test-target #$test-target
+                       #:vendor-dir #$vendor-dir
+                       #:cargo-build-flags #$(sexp->gexp cargo-build-flags)
+                       #:cargo-test-flags #$(sexp->gexp cargo-test-flags)
+                       #:cargo-package-flags #$(sexp->gexp cargo-package-flags)
+                       #:features #$(sexp->gexp features)
+                       #:skip-build? #$skip-build?
+                       #:install-source? #$install-source?
+                       #:tests? #$(and tests? (not skip-build?))
+                       #:phases #$(if (pair? phases)
+                                      (sexp->gexp phases)
+                                      phases)
+                       #:outputs #$(outputs->gexp outputs)
+                       #:inputs (append #$(input-tuples->gexp host-inputs)
+                                        #+(input-tuples->gexp target-inputs))
+                       #:native-inputs #+(input-tuples->gexp build-inputs)
+                       #:make-dynamic-linker-cache? #f ;cross-compiling
+                       #:search-paths '#$(sexp->gexp
+                                          (map search-path-specification->sexp
+                                               search-paths))
+                       #:native-search-paths '#$(sexp->gexp
+                                          (map search-path-specification->sexp
+                                               native-search-paths))))))
+
+  (gexp->derivation name builder
+                    #:system system
+                    #:target target
                     #:graft? #f
                     #:guile-for-build guile))
 
@@ -235,7 +304,8 @@ any dependent crates. This can be a benefits:
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system target
-                (rust (default-rust))
+                (rust (default-rust target))
+                (rust-sysroot (default-rust-sysroot target))
                 (cargo-inputs '())
                 (cargo-development-inputs '())
                 #:allow-other-keys
@@ -243,28 +313,49 @@ any dependent crates. This can be a benefits:
   "Return a bag for NAME."
 
   (define private-keywords
-    '(#:target #:rust #:inputs #:native-inputs #:outputs
-      #:cargo-inputs #:cargo-development-inputs))
+    `(#:rust #:inputs #:native-inputs #:outputs
+      #:cargo-inputs #:cargo-development-inputs
+      #:rust-sysroot
+      ,@(if target '() '(#:target))))
 
-  (and (not target) ;; TODO: support cross-compilation
-       (bag
-         (name name)
-         (system system)
-         (target target)
-         (host-inputs `(,@(if source
-                              `(("source" ,source))
-                              '())
-                        ,@inputs
+  (bag
+    (name name)
+    (system system)
+    (target target)
+    (host-inputs `(,@(if source
+                       `(("source" ,source))
+                       '())
 
-                        ;; Keep the standard inputs of 'gnu-build-system'
-                        ,@(standard-packages)))
-         (build-inputs `(("cargo" ,rust "cargo")
-                         ("rustc" ,rust)
-                         ,@(expand-crate-sources cargo-inputs cargo-development-inputs)
-                         ,@native-inputs))
-         (outputs outputs)
-         (build cargo-build)
-         (arguments (strip-keyword-arguments private-keywords arguments)))))
+                    ;,@(if target '() inputs)
+                    ,@(if target inputs '())
+
+                    ,@(expand-crate-sources cargo-inputs cargo-development-inputs)))
+    (build-inputs `(("cargo" ,rust "cargo")
+                    ("rustc" ,rust)
+
+                    ,@native-inputs
+                    ;,@(if target inputs '())
+                    ,@(if target '() inputs)
+                    ;,@inputs
+
+                    ,@(if target
+                        ;; Use the standard cross inputs of
+                        ;; 'gnu-build-system'.
+                        (standard-cross-packages target 'host)
+                        '())
+                    ;; Keep the standard inputs of 'gnu-build-system'
+                    ,@(standard-packages)))
+    (target-inputs `(,@(if target
+                         (standard-cross-packages target 'target)
+                         '())
+
+                     ;; This provides a separate sysroot for the regular rustc
+                     ,@(if target
+                         `(("rust-sysroot" ,(rust-sysroot target)))
+                         '())))
+    (outputs outputs)
+    (build (if target cargo-cross-build cargo-build))
+    (arguments (strip-keyword-arguments private-keywords arguments))))
 
 (define cargo-build-system
   (build-system

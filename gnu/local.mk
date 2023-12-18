@@ -201,6 +201,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/crates-graphics.scm		\
   %D%/packages/crates-gtk.scm			\
   %D%/packages/cross-base.scm			\
+  %D%/packages/cross-toolchain.scm		\
   %D%/packages/crypto.scm			\
   %D%/packages/cryptsetup.scm			\
   %D%/packages/cups.scm				\
@@ -1182,6 +1183,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/fp16-implicit-double.patch		\
   %D%/packages/patches/fp16-system-libraries.patch		\
   %D%/packages/patches/fpc-reproducibility.patch		\
+  %D%/packages/patches/fpc-glibc-2.34-compat.patch		\
   %D%/packages/patches/fpm-newer-clamp-fix.patch		\
   %D%/packages/patches/freedink-engine-fix-sdl-hints.patch	\
   %D%/packages/patches/freeimage-libtiff-compat.patch		\
@@ -1728,7 +1730,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/openjdk-15-xcursor-no-dynamic.patch	\
   %D%/packages/patches/openjdk-21-fix-rpath.patch		\
   %D%/packages/patches/openmpi-mtl-priorities.patch		\
-  %D%/packages/patches/openmw-assume-nonconst-SIGSTKSZ.patch    \
   %D%/packages/patches/openssh-trust-guix-store-directory.patch	\
   %D%/packages/patches/openresolv-restartcmd-guix.patch	\
   %D%/packages/patches/openrgb-unbundle-hueplusplus.patch	\
@@ -1942,7 +1943,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/rpcbind-CVE-2017-8779.patch		\
   %D%/packages/patches/rtags-separate-rct.patch			\
   %D%/packages/patches/racket-chez-scheme-bin-sh.patch		\
-  %D%/packages/patches/racket-backport-8.10-rktboot.patch	\
+  %D%/packages/patches/racket-backport-8.11-layered-docs.patch	\
   %D%/packages/patches/racket-rktio-bin-sh.patch		\
   %D%/packages/patches/racket-zuo-bin-sh.patch			\
   %D%/packages/patches/remake-impure-dirs.patch			\

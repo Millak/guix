@@ -1610,14 +1610,14 @@ basic input/output.")
                 (search-input-file inputs "lib/libxkbcommon.so")))))
          (replace 'install
            ;; Upstream install script only takes care of executable.
-           (lambda* (#:key inputs outputs #:allow-other-keys)
+           (lambda* (#:key native-inputs inputs outputs #:allow-other-keys)
              (let* ((out   (assoc-ref outputs "out"))
                     (bin   (string-append out "/bin"))
                     (share (string-append out "/share"))
                     (icons (string-append share "/icons/hicolor/scalable/apps"))
-                    (tic   (search-input-file inputs "/bin/tic"))
+                    (tic   (search-input-file (or native-inputs inputs) "/bin/tic"))
                     (man   (string-append share "/man/man1"))
-                    (alacritty-bin "target/release/alacritty"))
+                    (alacritty-bin (car (find-files "target" "^alacritty$"))))
                ;; Install the executable.
                (install-file alacritty-bin bin)
                ;; Install man pages.

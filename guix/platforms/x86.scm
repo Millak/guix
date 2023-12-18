@@ -30,6 +30,7 @@
    (target "i686-linux-gnu")
    (system "i686-linux")
    (linux-architecture "i386")
+   (rust-target "i686-unknown-linux-gnu")
    (glibc-dynamic-linker "/lib/ld-linux.so.2")))
 
 (define x86_64-linux
@@ -37,22 +38,26 @@
    (target "x86_64-linux-gnu")
    (system "x86_64-linux")
    (linux-architecture "x86_64")
+   (rust-target "x86_64-unknown-linux-gnu")
    (glibc-dynamic-linker "/lib/ld-linux-x86-64.so.2")))
 
 (define i686-mingw
   (platform
    (target "i686-w64-mingw32")
    (system #f)
+   (rust-target "i686-pc-windows-gnu")
    (glibc-dynamic-linker #f)))
 
 (define x86_64-mingw
   (platform
    (target "x86_64-w64-mingw32")
    (system #f)
+   (rust-target "x86_64-pc-windows-gnu")
    (glibc-dynamic-linker #f)))
 
 (define i586-gnu
   (platform
    (target "i586-pc-gnu")
    (system "i586-gnu")
+   (rust-target "i686-unknown-hurd-gnu")
    (glibc-dynamic-linker "/lib/ld.so.1")))

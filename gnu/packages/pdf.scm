@@ -824,14 +824,14 @@ and based on PDF specification 1.7.")
 (define-public mupdf
   (package
     (name "mupdf")
-    (version "1.23.4")
+    (version "1.23.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://mupdf.com/downloads/archive/"
                            "mupdf-" version "-source.tar.lz"))
        (sha256
-        (base32 "0068swdrlq9q7pkg3dxn4rschxm5j37pd4vz0cb2pcry75rdmxpc"))
+        (base32 "0d0ig1amxyy50jvfbn6rz49zd0980p6syqzcx5v7wg0c3pl2iwwm"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-1)))
@@ -1388,7 +1388,7 @@ manage or manipulate PDFs.")
 (define-public pdfarranger
   (package
     (name "pdfarranger")
-    (version "1.9.2")
+    (version "1.10.1")
     (source
      (origin
        (method git-fetch)
@@ -1397,7 +1397,7 @@ manage or manipulate PDFs.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zj1fdaqih9d878yxy96ivgqyg4j31slvh2gqsyz2l2vj3s8z54x"))))
+        (base32 "0bi3yyns05yamml5jcnqvdaf7i19jg636wb1fj2mwlial9ww7zwp"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -1409,7 +1409,10 @@ manage or manipulate PDFs.")
               (let ((program (string-append #$output "/bin/pdfarranger")))
                 (wrap-program program
                   `("GI_TYPELIB_PATH" ":" prefix
-                    (,(getenv "GI_TYPELIB_PATH"))))))))))
+                    (,(getenv "GI_TYPELIB_PATH")))))))
+          (add-before 'sanity-check 'set-home
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list intltool python-distutils-extra))
     (inputs

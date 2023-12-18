@@ -1024,15 +1024,6 @@ the HTML documentation of TXR.")
                       (string-append "INSTALL" match #$output
                                      "/share/doc/" #$name "-" #$version)))))
                (delete 'install-license-files)
-               (add-after 'unpack 'inhibit-doc-syms-generation
-                 (lambda _
-                   (substitute* "genman.txr"
-                     ;; Exit from genman.txr before it tries to write to
-                     ;; stdlib/doc-syms.tl, which is anyway kept up to date
-                     ;; with each release (and is already compiled to
-                     ;; stdlib/doc-syms.tlo when genman.txr is run).
-                     (("^@\\(output \"stdlib/doc-syms\\.tl\"\\).*" line)
-                      (string-append "@(do (exit))\n" line)))))
                (add-after 'unpack 'fix-paths
                  (lambda* (#:key inputs #:allow-other-keys)
                    (substitute* "stream.c"

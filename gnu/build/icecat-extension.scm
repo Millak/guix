@@ -29,6 +29,7 @@ when installed, will make the extension contained in PKG available as an
 Icecat browser extension.  PKG-OUTPUT specifies which output of PKG to use."
   (package
     (inherit pkg)
+    (location (package-location pkg))
     (name (string-append (package-name pkg) "-icecat"))
     (native-inputs '())
     (inputs '())

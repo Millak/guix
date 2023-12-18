@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
+;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -16,15 +16,13 @@
 ;;; You should have received a copy of the GNU General Public License
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
-(define-module (guix platforms mips)
+(define-module (guix platforms avr)
   #:use-module (guix platform)
   #:use-module (guix records)
-  #:export (mips64-linux))
+  #:export (avr))
 
-(define mips64-linux
+(define avr
   (platform
-   (target "mips64el-linux-gnu")
-   (system "mips64el-linux")
-   (linux-architecture "mips")
-   (rust-target "mips64el-unknown-linux-gnuabi64")
-   (glibc-dynamic-linker "/lib/ld.so.1")))
+   (target "avr")
+   (system #f)
+   (glibc-dynamic-linker #f)))

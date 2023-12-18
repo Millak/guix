@@ -1106,7 +1106,7 @@ for calling methods on remote servers by exchanging JSON objects.")
 (define-public guile-ares-rs
   (package
     (name "guile-ares-rs")
-    (version "0.9.0")
+    (version "0.9.1")
     (source
      (origin
        (method git-fetch)
@@ -1116,7 +1116,7 @@ for calling methods on remote servers by exchanging JSON objects.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0jl4k54ydi1qxdvif4di0ri5jznlfc2gg1qhs94bhk4y22k0gp8c"))))
+         "173jg8z0cwq5r67lzxsmyir5f6cxd9i5gzb3qryq71cqq4h1c77n"))))
     (build-system guile-build-system)
     (arguments
      (list
@@ -5437,49 +5437,41 @@ high-level API for network management that uses rtnetlink.")
              (commit (string-append "v" version))))
        (file-name (string-append name "-" version))
        (sha256
-        (base32
-         "0srkmchd4kmfa7q65r6fdzwklhgdlck1ll0s7smzs8ddjdgz2lwm"))))
+        (base32 "0srkmchd4kmfa7q65r6fdzwklhgdlck1ll0s7smzs8ddjdgz2lwm"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags '("GUILE_AUTO_COMPILE=0")     ;to prevent guild warnings
+     `(#:make-flags '("GUILE_AUTO_COMPILE=0") ;to prevent guild warnings
        #:modules (((guix build guile-build-system)
                    #:select (target-guile-effective-version))
                   ,@%gnu-build-system-modules)
        #:imported-modules ((guix build guile-build-system)
                            ,@%gnu-build-system-modules)
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out       (assoc-ref outputs "out"))
-                    (bin       (string-append out "/bin"))
-                    (guile-lib (assoc-ref inputs "guile-lib"))
-                    (json      (assoc-ref inputs "guile-json"))
-                    (tls       (assoc-ref inputs "guile-gnutls"))
-                    (version   (target-guile-effective-version))
-                    (scm       (string-append "/share/guile/site/"
-                                              version))
-                    (go        (string-append  "/lib/guile/"
-                                               version "/site-ccache")))
-               (wrap-program (string-append bin "/gitlab-cli")
-                 `("GUILE_LOAD_PATH" prefix
-                   (,(string-append out scm)
-                    ,(string-append guile-lib scm)
-                    ,(string-append json scm)
-                    ,(string-append tls scm)))
-                 `("GUILE_LOAD_COMPILED_PATH" prefix
-                   (,(string-append out go)
-                    ,(string-append guile-lib go)
-                    ,(string-append json go)
-                    ,(string-append tls go))))))))))
-    (native-inputs
-     (list autoconf automake pkg-config texinfo))
-    (inputs
-     `(("bash" ,bash-minimal)
-       ("guile" ,guile-2.2)
-       ("guile-json" ,guile2.2-json)
-       ("guile-lib" ,guile2.2-lib)
-       ("guile-gnutls" ,guile2.2-gnutls)))
+       #:phases (modify-phases %standard-phases
+                  (add-after 'install 'wrap-program
+                    (lambda* (#:key inputs outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (bin (string-append out "/bin"))
+                             (guile-lib (assoc-ref inputs "guile2.2-lib"))
+                             (json (assoc-ref inputs "guile2.2-json"))
+                             (tls (assoc-ref inputs "guile2.2-gnutls"))
+                             (version (target-guile-effective-version))
+                             (scm (string-append "/share/guile/site/" version))
+                             (go (string-append "/lib/guile/" version
+                                                "/site-ccache")))
+                        (wrap-program (string-append bin "/gitlab-cli")
+                          `("GUILE_LOAD_PATH" prefix
+                            (,(string-append out scm) ,(string-append
+                                                        guile-lib scm)
+                             ,(string-append json scm)
+                             ,(string-append tls scm)))
+                          `("GUILE_LOAD_COMPILED_PATH" prefix
+                            (,(string-append out go) ,(string-append guile-lib
+                                                       go)
+                             ,(string-append json go)
+                             ,(string-append tls go))))))))))
+    (native-inputs (list autoconf automake pkg-config texinfo))
+    (inputs (list bash-minimal guile-2.2 guile2.2-json guile2.2-lib
+                  guile2.2-gnutls))
     (home-page "https://github.com/artyom-poptsov/guile-gitlab")
     (synopsis "Guile interface to GitLab")
     (description
@@ -5491,7 +5483,7 @@ GitLab instance.")
 (define-public guile-smc
   (package
     (name "guile-smc")
-    (version "0.6.2")
+    (version "0.6.3")
     (source
      (origin
        (method git-fetch)
@@ -5501,7 +5493,7 @@ GitLab instance.")
        (file-name (string-append name "-" version))
        (sha256
         (base32
-         "11083lj048ab5zsdgwpkshxi8v5nfdr7kvmmslszbi7lq2pwfqig"))))
+         "1gjwz1l2ls4xkkgg4d2vw3a1klc4var03ab4k6lq1jifdvc8n51f"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("GUILE_AUTO_COMPILE=0")     ;to prevent guild warnings

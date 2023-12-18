@@ -298,10 +298,10 @@
                        (ice-9 match))
 
           (define marionette
-            ;; Emulate the host CPU so that KVM is available inside as well
-            ;; ("nested KVM"), provided
+            ;; Emulate as much as the host CPU supports so that, possibly, KVM
+            ;; is available inside as well ("nested KVM"), provided
             ;; /sys/module/kvm_intel/parameters/nested (or similar) allows it.
-            (make-marionette (list #$vm "-cpu" "host")))
+            (make-marionette (list #$vm "-cpu" "max")))
 
           (test-runner-current (system-test-runner #$output))
           (test-begin "childhurd")

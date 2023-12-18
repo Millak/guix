@@ -109,8 +109,10 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages sdl)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages speech)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages stb)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
@@ -1339,17 +1341,17 @@ and multimedia programs in the Python language.")
 
 (define-public python-pygame-sdl2
   (let ((real-version "2.1.0")
-        (renpy-version "8.1.0"))
+        (renpy-version "8.1.3"))
     (package
       (inherit python-pygame)
       (name "python-pygame-sdl2")
-      (version (string-append real-version "-for-renpy-" renpy-version))
+      (version (string-append real-version "+renpy" renpy-version))
       (source
        (origin
          (method url-fetch)
          (uri (string-append "https://www.renpy.org/dl/" renpy-version
                              "/pygame_sdl2-" version ".tar.gz"))
-         (sha256 (base32 "1qj39jqnv334p4wnxc2v5qxyahp7nkqf9hpdd2sgqcmgaqwnqqmj"))
+         (sha256 (base32 "0qlprs9n3w254ilizqzvr6s01zx72gh7an0bgwxsq4hm22qypdws"))
          (modules '((guix build utils)))
          (snippet
           '(begin
@@ -1390,7 +1392,7 @@ developed mainly for Ren'py.")
 (define-public python-renpy
   (package
     (name "python-renpy")
-    (version "8.1.0")
+    (version "8.1.3")
     (source
      (origin
        (method url-fetch)
@@ -1398,7 +1400,7 @@ developed mainly for Ren'py.")
                            "/renpy-" version "-source.tar.bz2"))
        (sha256
         (base32
-         "08l7z2vwqxkskj3rs2a0w9ahah28ixq8hy48h30k2dm9g19h450h"))
+         "1g6fz5dxp7yxhgv6q4brzf5hpfqq3l1g3dfv3fsiwwn6mj0b01z2"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -1841,38 +1843,37 @@ of use.")
 (define-public openmw
   (package
     (name "openmw")
-    (version "0.47.0")
+    (version "0.48.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/OpenMW/openmw")
-              (commit (string-append "openmw-" version))))
+             (url "https://github.com/OpenMW/openmw")
+             (commit (string-append "openmw-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "19mcbnjl4279qalb97msf965bjax48mx1r1qczyvwhn28h6n3bsy"))
-       (patches (search-patches "openmw-assume-nonconst-SIGSTKSZ.patch"))))
+        (base32 "0amkxfylk1l67d2igihnhhql62xr89wvg1sxbq2rnhczf6vxaj6f"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ; No test target
-       #:configure-flags
-       (list "-DDESIRED_QT_VERSION=5"
-             "-DOPENMW_USE_SYSTEM_RECASTNAVIGATION=ON")))
-    (native-inputs
-     (list boost doxygen pkg-config))
-    (inputs
-     (list bullet
-           ffmpeg-4                     ; https://gitlab.com/OpenMW/openmw/-/issues/6631
-           libxt
-           lz4
-           mygui-gl              ; OpenMW does not need Ogre.
-           openal
-           openmw-openscenegraph
-           qtbase-5
-           recastnavigation
-           sdl2
-           unshield))
+     `(#:tests? #f ;No test target
+       #:configure-flags (list "-DDESIRED_QT_VERSION=5"
+                               "-DOPENMW_USE_SYSTEM_RECASTNAVIGATION=ON")))
+    (native-inputs (list boost doxygen pkg-config))
+    (inputs (list bullet
+                  ffmpeg
+                  libxt
+                  lz4
+                  mygui-gl ;OpenMW does not need Ogre.
+                  openal
+                  openmw-openscenegraph
+                  qtbase-5
+                  recastnavigation
+                  sdl2
+                  unshield
+                  icu4c
+                  yaml-cpp
+                  luajit
+                  sqlite))
     (synopsis "Re-implementation of the RPG Morrowind engine")
     (description
      "OpenMW is a game engine which reimplements and extends the one that runs

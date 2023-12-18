@@ -5,6 +5,8 @@
 ;;; Copyright © 2017, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Kristofer Buffington <kristoferbuffington@gmail.com>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
+;;; Copyright © 2023 Thomas Ieong <th.ieong@free.fr>
+;;; Copyright © 2023 Saku Laesvuori <saku@laesvuori.fi>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -80,7 +82,13 @@
             radicale-configuration
             radicale-configuration?
             radicale-service-type
-            %default-radicale-config-file))
+            %default-radicale-config-file
+
+            rspamd-configuration
+            rspamd-service-type
+            %default-rspamd-account
+            %default-rspamd-config-file
+            %default-rspamd-group))
 
 ;;; Commentary:
 ;;;
@@ -1987,3 +1995,193 @@ hosts = localhost:5232"))
           (service-extension account-service-type (const %radicale-accounts))
           (service-extension activation-service-type radicale-activation)))
    (default-value (radicale-configuration))))
+
+;;;
+;;; Rspamd.
+;;;
+
+(define (directory-tree? xs)
+  (match xs
+    ((((? string?) (? file-like?)) ...) #t)
+    (_ #f)))
+
+(define-configuration/no-serialization rspamd-configuration
+  (package
+   (file-like rspamd)
+   "The package that provides rspamd.")
+  (config-file
+   (file-like %default-rspamd-config-file)
+   "File-like object of the configuration file to use.  By default
+all workers are enabled except fuzzy and they are binded
+to their usual ports, e.g localhost:11334, localhost:11333 and so on")
+  (local.d-files
+   (directory-tree '())
+   "Configuration files in local.d, provided as a list of two element lists where
+the first element is the filename and the second one is a file-like object.  Settings
+in these files will be merged with the defaults.")
+  (override.d-files
+   (directory-tree '())
+   "Configuration files in override.d, provided as a list of two element lists where
+the first element is the filename and the second one is a file-like object.  Settings
+in these files will override the defaults.")
+  (user
+   (user-account %default-rspamd-account)
+   "The user to run rspamd as.")
+  (group
+   (user-group %default-rspamd-group)
+   "The group to run rspamd as.")
+  (debug?
+   (boolean #f)
+   "Force debug output.")
+  (insecure?
+   (boolean #f)
+   "Ignore running workers as privileged users.")
+  (skip-template?
+   (boolean #f)
+   "Do not apply Jinja templates.")
+  (shepherd-requirements
+   (list-of-symbols '(loopback))
+   "This is a list of symbols naming Shepherd services that this service
+will depend on."))
+
+(define %default-rspamd-account
+  (user-account
+      (name "rspamd")
+      (group "rspamd")
+      (system? #t)
+      (comment "Rspamd daemon")
+      (home-directory "/var/empty")
+      (shell (file-append shadow "/sbin/nologin"))))
+
+(define %default-rspamd-group
+  (user-group
+    (name "rspamd")
+    (system? #t)))
+
+(define %default-rspamd-config-file
+  (plain-file "rspamd.conf" "
+.include \"$CONFDIR/common.conf\"
+
+options {
+    pidfile = \"$RUNDIR/rspamd.pid\";
+    .include \"$CONFDIR/options.inc\"
+    .include(try=true; priority=1,duplicate=merge) \"$LOCAL_CONFDIR/local.d/options.inc\"
+    .include(try=true; priority=10) \"$LOCAL_CONFDIR/override.d/options.inc\"
+}
+
+logging {
+    type = \"file\";
+    filename = \"$LOGDIR/rspamd.log\";
+    .include \"$CONFDIR/logging.inc\"
+    .include(try=true; priority=1,duplicate=merge) \"$LOCAL_CONFDIR/local.d/logging.inc\"
+    .include(try=true; priority=10) \"$LOCAL_CONFDIR/override.d/logging.inc\"
+}
+
+worker \"normal\" {
+    bind_socket = \"localhost:11333\";
+    .include \"$CONFDIR/worker-normal.inc\"
+    .include(try=true; priority=1,duplicate=merge) \"$LOCAL_CONFDIR/local.d/worker-normal.inc\"
+    .include(try=true; priority=10) \"$LOCAL_CONFDIR/override.d/worker-normal.inc\"
+}
+
+worker \"controller\" {
+    bind_socket = \"localhost:11334\";
+    .include \"$CONFDIR/worker-controller.inc\"
+    .include(try=true; priority=1,duplicate=merge) \"$LOCAL_CONFDIR/local.d/worker-controller.inc\"
+    .include(try=true; priority=10) \"$LOCAL_CONFDIR/override.d/worker-controller.inc\"
+}
+
+worker \"rspamd_proxy\" {
+    bind_socket = \"localhost:11332\";
+    .include \"$CONFDIR/worker-proxy.inc\"
+    .include(try=true; priority=1,duplicate=merge) \"$LOCAL_CONFDIR/local.d/worker-proxy.inc\"
+    .include(try=true; priority=10) \"$LOCAL_CONFDIR/override.d/worker-proxy.inc\"
+}
+
+# Local fuzzy storage is disabled by default
+
+worker \"fuzzy\" {
+    bind_socket = \"localhost:11335\";
+    count = -1; # Disable by default
+    .include \"$CONFDIR/worker-fuzzy.inc\"
+    .include(try=true; priority=1,duplicate=merge) \"$LOCAL_CONFDIR/local.d/worker-fuzzy.inc\"
+    .include(try=true; priority=10) \"$LOCAL_CONFDIR/override.d/worker-fuzzy.inc\"
+}
+"))
+
+(define (rspamd-accounts config)
+  (match-record config <rspamd-configuration>
+    (user group)
+    (list group user)))
+
+(define (rspamd-shepherd-service config)
+  (match-record config <rspamd-configuration>
+    (package config-file user group debug? insecure? skip-template?
+     local.d-files override.d-files shepherd-requirements)
+    (list
+     (shepherd-service
+      (provision '(rspamd))
+      (documentation "Run the rspamd daemon.")
+      (requirement shepherd-requirements)
+      (start (let ((rspamd (file-append package "/bin/rspamd"))
+                   (local-confdir
+                     (file-union
+                      "rspamd-local-confdir"
+                      `(("local.d" ,(file-union "local.d" local.d-files))
+                        ("override.d" ,(file-union "override.d" override.d-files))))))
+               (with-imported-modules (source-module-closure '((gnu build activation)))
+                 #~(begin
+                     (use-modules (gnu build activation)) ; for mkdir-p/perms
+                     (let ((user (getpwnam #$(user-account-name user))))
+                       (mkdir-p/perms "/var/run/rspamd" user #o755)
+                       (mkdir-p/perms "/var/log/rspamd" user #o755)
+                       (mkdir-p/perms "/var/lib/rspamd" user #o755))
+                     (make-forkexec-constructor
+                      (list #$rspamd "--config" #$config-file
+                            "--var" (string-append "LOCAL_CONFDIR=" #$local-confdir)
+                            "--no-fork"
+                            #$@(if debug?
+                                 '("--debug")
+                                 '())
+                            #$@(if insecure?
+                                 '("--insecure")
+                                 '())
+                            #$@(if skip-template?
+                                 '("--skip-template")
+                                 '()))
+                      #:user #$(user-account-name user)
+                      #:group #$(user-group-name group))))))
+      (stop #~(make-kill-destructor))
+      (actions
+       (list
+        (shepherd-configuration-action config-file)
+        (shepherd-action
+         (name 'reload)
+         (documentation "Reload rspamd.")
+         (procedure
+          #~(lambda (pid)
+              (if pid
+                (begin
+                  (kill pid SIGHUP)
+                  (display "Service rspamd has been reloaded"))
+                (format #t "Service rspamd is not running.")))))
+        (shepherd-action
+         (name 'reopen)
+         (documentation "Reopen log files.")
+         (procedure
+          #~(lambda (pid)
+              (if pid
+                (begin
+                  (kill pid SIGUSR1)
+                  (display "Reopening the logs for rspamd"))
+                (format #t "Service rspamd is not running.")))))))))))
+
+(define rspamd-service-type
+  (service-type
+   (name 'rspamd)
+   (description "Run the rapid spam filtering system.")
+   (extensions
+    (list
+     (service-extension shepherd-root-service-type rspamd-shepherd-service)
+     (service-extension account-service-type rspamd-accounts)))
+   (default-value (rspamd-configuration))))

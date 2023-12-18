@@ -221,3 +221,33 @@ fill and submit login forms if a matching password entry is found.")
 
 (define-public passff/icecat
   (make-icecat-extension passff))
+
+(define keepassxc-browser
+  (package
+    (name "keepassxc-browser")
+    (version "1.8.10")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url
+                     "https://github.com/keepassxreboot/keepassxc-browser")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1059kcb95ig18izbchwlb7pz41l4l3vjwzlmhz3w8zw2qxm6hrvx"))))
+    (build-system copy-build-system)
+    (properties
+     '((addon-id . "keepassxc-browser@keepassxc.org")))
+    (arguments
+     `(#:install-plan
+       '(("keepassxc-browser" ,(assq-ref properties 'addon-id)))))
+    (synopsis "Browser extension for the KeePassXC password manager")
+    (description
+     "This package provides an extension allow the browser to work together
+with the @uref{https://keepassxc.org, KeePassXC} password manager.")
+    (home-page "https://keepassxc.org")
+    (license license:gpl3+)))
+
+(define-public keepassxc-browser/icecat
+  (make-icecat-extension keepassxc-browser))
