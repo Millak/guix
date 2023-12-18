@@ -13553,6 +13553,25 @@ through subclassing in a much more straightforward way than with
 system---most of the @code{Module::Build} code is pure-Perl.")
     (license (package-license perl))))
 
+(define-public perl-module-refresh
+  (package
+    (name "perl-module-refresh")
+    (version "0.18")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/B/BP/BPS/Module-Refresh-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "0ngg1ndi11jl0xhn11y8bk5w38l5yqrjgcz2m64n9pxg16lxm570"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-path-class perl-module-install))
+    (home-page "https://metacpan.org/release/Module-Refresh")
+    (synopsis "Refresh %INC files when updated on disk")
+    (description "@{Module::Refresh} provides ways to refresh %INC files
+when updated on disk.")
+    (license license:perl-license)))
+
 (define-public perl-parse-cpan-meta
   (package
     (name "perl-parse-cpan-meta")
