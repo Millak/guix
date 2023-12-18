@@ -171,6 +171,7 @@ MODULES =					\
   guix/build-system/julia.scm			\
   guix/build-system/linux-module.scm		\
   guix/build-system/maven.scm			\
+  guix/build-system/mix.scm			\
   guix/build-system/node.scm			\
   guix/build-system/perl.scm			\
   guix/build-system/pyproject.scm		\
@@ -232,6 +233,7 @@ MODULES =					\
   guix/build/guile-build-system.scm		\
   guix/build/maven-build-system.scm		\
   guix/build/minetest-build-system.scm		\
+  guix/build/mix-build-system.scm		\
   guix/build/node-build-system.scm		\
   guix/build/perl-build-system.scm		\
   guix/build/pyproject-build-system.scm		\
