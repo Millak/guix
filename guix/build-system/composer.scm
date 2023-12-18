@@ -62,10 +62,6 @@
   ;; Build-side modules imported by default.
   `((guix build composer-build-system)
     (guix build union)
-    (json)
-    (json builder)
-    (json parser)
-    (json record)
     ,@%gnu-build-system-modules))
 
 (define* (lower name
@@ -124,31 +120,36 @@
                                     (guix build utils))))
   "Build SOURCE using PHP, and with INPUTS. This assumes that SOURCE provides
 a 'composer.json' file as its build system."
-  (define builder
-    (with-imported-modules imported-modules
-      #~(begin
-          (use-modules #$@(sexp->gexp modules))
+  (define guile-json
+    (module-ref (resolve-interface '(gnu packages guile))
+                'guile-json-4))
 
-          #$(with-build-variables inputs outputs
-              #~(composer-build
-                 #:source #$source
-                 #:system #$system
-                 #:outputs %outputs
-                 #:inputs %build-inputs
-                 #:search-paths '#$(map search-path-specification->sexp
-                                        search-paths)
-                 #:phases #$phases
-                 #:out-of-source? #$out-of-source?
-                 #:composer-file #$composer-file
-                 #:tests? #$tests?
-                 #:test-target #$test-target
-                 #:test-flags #$test-flags
-                 #:install-target #$install-target
-                 #:validate-runpath? #$validate-runpath?
-                 #:patch-shebangs? #$patch-shebangs?
-                 #:strip-binaries? #$strip-binaries?
-                 #:strip-flags #$strip-flags
-                 #:strip-directories #$strip-directories)))))
+  (define builder
+    (with-extensions (list guile-json)
+      (with-imported-modules imported-modules
+        #~(begin
+            (use-modules #$@(sexp->gexp modules))
+
+            #$(with-build-variables inputs outputs
+                #~(composer-build
+                   #:source #$source
+                   #:system #$system
+                   #:outputs %outputs
+                   #:inputs %build-inputs
+                   #:search-paths '#$(map search-path-specification->sexp
+                                          search-paths)
+                   #:phases #$phases
+                   #:out-of-source? #$out-of-source?
+                   #:composer-file #$composer-file
+                   #:tests? #$tests?
+                   #:test-target #$test-target
+                   #:test-flags #$test-flags
+                   #:install-target #$install-target
+                   #:validate-runpath? #$validate-runpath?
+                   #:patch-shebangs? #$patch-shebangs?
+                   #:strip-binaries? #$strip-binaries?
+                   #:strip-flags #$strip-flags
+                   #:strip-directories #$strip-directories))))))
 
   (gexp->derivation name builder
                     #:system system
