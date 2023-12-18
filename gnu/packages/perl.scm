@@ -556,6 +556,38 @@ users can force the decision of which backend to use by setting the environment
 variable ANY_MOOSE to be Moose or Mouse.")
     (license (package-license perl))))
 
+(define-public perl-app-nopaste
+  (package
+    (name "perl-app-nopaste")
+    (version "1.013")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/E/ET/ETHER/App-Nopaste-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "1c1bjpnzxfw22hqkysr7d2y07zfqhwgzc2s2b3ywm449d1qikm1w"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-libwww perl-test-deep perl-test-fatal))
+    (propagated-inputs (list perl-browser-open
+                             perl-class-load
+                             perl-clipboard
+                             perl-getopt-long-descriptive
+                             perl-json-maybexs
+                             perl-libwww
+                             perl-module-pluggable
+                             perl-module-runtime
+                             perl-namespace-clean
+                             perl-path-tiny
+                             perl-uri
+                             perl-www-mechanize
+                             perl-www-pastebin-pastebincom-create))
+    (home-page "https://metacpan.org/release/App-Nopaste")
+    (synopsis "Easy access to any pastebin")
+    (description "@code{App::Nopaste} provides easy access to any
+pastebin.")
+    (license license:perl-license)))
+
 (define-public perl-app-cpanminus
   (package
     (name "perl-app-cpanminus")
