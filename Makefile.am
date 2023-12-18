@@ -144,51 +144,51 @@ MODULES =					\
   guix/platforms/riscv.scm                      \
   guix/platforms/x86.scm                        \
   guix/build-system.scm				\
-  guix/build-system/agda.scm                    \
+  guix/build-system/agda.scm			\
   guix/build-system/android-ndk.scm		\
   guix/build-system/ant.scm			\
+  guix/build-system/asdf.scm			\
   guix/build-system/cargo.scm			\
-  guix/build-system/channel.scm			\
-  guix/build-system/chicken.scm			\
-  guix/build-system/clojure.scm			\
+  guix/build-system/channel.scm		\
+  guix/build-system/chicken.scm		\
+  guix/build-system/clojure.scm		\
   guix/build-system/cmake.scm			\
+  guix/build-system/copy.scm			\
   guix/build-system/dub.scm			\
   guix/build-system/dune.scm			\
   guix/build-system/elm.scm			\
   guix/build-system/emacs.scm			\
   guix/build-system/font.scm			\
-  guix/build-system/go.scm			\
-  guix/build-system/meson.scm			\
-  guix/build-system/mozilla.scm			\
-  guix/build-system/minify.scm			\
-  guix/build-system/minetest.scm		\
-  guix/build-system/asdf.scm			\
-  guix/build-system/copy.scm			\
   guix/build-system/glib-or-gtk.scm		\
   guix/build-system/gnu.scm			\
+  guix/build-system/go.scm			\
   guix/build-system/guile.scm			\
-  guix/build-system/haskell.scm			\
+  guix/build-system/haskell.scm		\
   guix/build-system/julia.scm			\
   guix/build-system/linux-module.scm		\
   guix/build-system/maven.scm			\
+  guix/build-system/meson.scm			\
+  guix/build-system/minetest.scm		\
+  guix/build-system/minify.scm			\
   guix/build-system/mix.scm			\
+  guix/build-system/mozilla.scm		\
   guix/build-system/node.scm			\
+  guix/build-system/ocaml.scm			\
   guix/build-system/perl.scm			\
   guix/build-system/pyproject.scm		\
   guix/build-system/python.scm			\
-  guix/build-system/renpy.scm			\
-  guix/build-system/ocaml.scm			\
   guix/build-system/qt.scm			\
-  guix/build-system/waf.scm			\
   guix/build-system/r.scm			\
   guix/build-system/rakudo.scm			\
   guix/build-system/rebar.scm			\
+  guix/build-system/renpy.scm			\
   guix/build-system/ruby.scm			\
   guix/build-system/scons.scm			\
-  guix/build-system/texlive.scm			\
+  guix/build-system/texlive.scm		\
   guix/build-system/tree-sitter.scm		\
-  guix/build-system/trivial.scm			\
+  guix/build-system/trivial.scm		\
   guix/build-system/vim.scm			\
+  guix/build-system/waf.scm			\
   guix/build-system/zig.scm			\
   guix/ftp-client.scm				\
   guix/http-client.scm				\
