@@ -118,6 +118,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
@@ -2930,6 +2931,62 @@ The cutbuffer and clipboard selection are always synchronized.")
 can optionally use some appearance settings from XSettings, tint2 and GTK.")
     (home-page "https://jgmenu.github.io/")
     (license license:gpl2)))
+
+(define-public x-resize
+  (package
+    (name "x-resize")
+    (version "0.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/Apteryks/x-resize")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "10y2p55m5hbrma01kixsppq1a3ld0q1jk8hwx1d1jfgw9vd243j8"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no test suite
+      #:modules `(((guix build guile-build-system)
+                   #:select (target-guile-effective-version))
+                  ,@%gnu-build-system-modules
+                  (srfi srfi-26))
+      #:phases
+      (with-imported-modules `((guix build guile-build-system)
+                               ,@%gnu-build-system-modules)
+        #~(modify-phases %standard-phases
+            (add-after 'install 'wrap
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let* ((version (target-guile-effective-version))
+                       (site-ccache (string-append "/lib/guile/" version
+                                                   "/site-ccache"))
+                       (site (string-append "/share/guile/site/" version))
+                       (dep-path
+                        (lambda (env path)
+                          (list env '=
+                                (map (cut string-append <> path)
+                                     (list #$output
+                                           #$(this-package-input
+                                              "guile-lib")
+                                           #$(this-package-input
+                                              "guile-udev"))))))
+                       (bin (string-append #$output "/bin/")))
+                  (wrap-program (string-append bin "x-resize")
+                    (dep-path "GUILE_LOAD_PATH" site)
+                    (dep-path "GUILE_LOAD_COMPILED_PATH" site-ccache)
+                    (dep-path "GUILE_EXTENSIONS_PATH" "/lib")))))))))
+    (native-inputs (list autoconf automake guile-3.0 pkg-config))
+    (inputs (list guile-lib guile-udev xrandr))
+    (home-page "https://gitlab.com/Apteryks/x-resize/")
+    (synopsis "Dynamic display resizing leveraging udev events")
+    (description "The @command{x-resize} command detects physical display
+resolution changes via udev and invokes the @command{xrandr} command to
+reconfigure the active display resolution accordingly.  It can be used to
+implement dynamic resize support for desktop environments that lack native
+support such as Xfce.")
+    (license license:gpl3+)))
 
 (define-public xwallpaper
   (package
