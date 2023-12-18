@@ -2690,9 +2690,15 @@ Science Institute} image array manipulation functions.")
                 "01jqqrhcna0ghin48bbcza57d12371ny4l4pqws89irwdhd8xr0r"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:tests? #f)) ;No tests
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'build-extensions
+            (lambda _
+              ;; Cython extensions have to be built before running the tests.
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (propagated-inputs (list python-numpy))
-    (native-inputs (list python-setuptools-scm))
+    (native-inputs (list python-pytest python-setuptools-scm))
     (home-page "https://stsciimagestats.readthedocs.io/en/latest/")
     (synopsis "Compute sigma-clipped statistics on data arrays")
     (description
