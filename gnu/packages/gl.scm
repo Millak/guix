@@ -324,16 +324,16 @@ also known as DXTn or DXTC) for Mesa.")
              ((target-aarch64?)
               ;; TODO: Fix svga driver for non-Intel architectures.
               '("-Dgallium-drivers=etnaviv,freedreno,kmsro,lima,nouveau,\
-panfrost,r300,r600,swrast,tegra,v3d,vc4,virgl"))
+panfrost,r300,r600,swrast,tegra,v3d,vc4,virgl,zink"))
              ((target-arm32?)
               ;; Freedreno FTBFS when built on a 64-bit machine.
               '("-Dgallium-drivers=etnaviv,kmsro,lima,nouveau,panfrost,\
-r300,r600,swrast,tegra,v3d,vc4,virgl"))
+r300,r600,swrast,tegra,v3d,vc4,virgl,zink"))
              ((or (target-ppc64le?) (target-ppc32?) (target-riscv64?))
-              '("-Dgallium-drivers=nouveau,r300,r600,radeonsi,swrast,virgl"))
+              '("-Dgallium-drivers=nouveau,r300,r600,radeonsi,swrast,virgl,zink"))
              (else
               '("-Dgallium-drivers=crocus,iris,nouveau,r300,r600,radeonsi,\
-svga,swrast,virgl")))
+svga,swrast,virgl,zink")))
          ;; Enable various optional features.  TODO: opencl requires libclc,
          ;; omx requires libomxil-bellagio
          "-Dplatforms=x11,wayland"
