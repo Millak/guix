@@ -706,7 +706,7 @@ driven and does not detract you from your daily work.")
                   gsettings-desktop-schemas
                   cl-gobject-introspection
                   gtk+                  ; For the main loop
-                  webkitgtk             ; Required when we use its typelib
+                  webkitgtk-for-gtk3    ; Required when we use its typelib
                   gobject-introspection
                   pkg-config))
     (synopsis "Extensible web-browser in Common Lisp")

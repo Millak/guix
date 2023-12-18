@@ -531,7 +531,7 @@ Telegram project, for its use in telegram desktop client.")
            rnnoise
            wayland
            wayland-protocols
-           webkitgtk
+           webkitgtk-for-gtk3
            webrtc-for-telegram-desktop
            xcb-util-keysyms
            xxhash
