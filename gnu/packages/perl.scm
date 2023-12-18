@@ -3045,6 +3045,28 @@ their argument and produces a string as its result.  The string contains Perl
 code that, when \"eval\"ed, produces a deep copy of the original arguments.")
     (license (package-license perl))))
 
+(define-public perl-data-dump-streamer
+  (package
+    (name "perl-data-dump-streamer")
+    (version "2.42")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/Y/YV/YVES/Data-Dump-Streamer-" version
+             ".tar.gz"))
+       (sha256
+        (base32 "1b8w9l3d6g4jyc9f5fglbpc0q71f1kfilj013rbbxrswnhgybxj7"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-extutils-depends perl-module-build))
+    (propagated-inputs (list perl-algorithm-diff perl-b-utils
+                             perl-cpanel-json-xs perl-padwalker))
+    (home-page "https://metacpan.org/release/Data-Dump-Streamer")
+    (synopsis "Accurately serialize a data structure as Perl code.")
+    (description "@code{Data::Dump::Streamer} provides ways to accurately
+serialize a data structure as Perl code.")
+    (license license:perl-license)))
+
 (define-public perl-data-dumper
   (package
     (name "perl-data-dumper")
