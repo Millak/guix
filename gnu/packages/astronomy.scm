@@ -3743,12 +3743,12 @@ datetime object.")
   (package
     (name "python-synphot")
     (version "1.3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "synphot" version))
-              (sha256
-               (base32
-                "0a54bfrx9aar66040324sw9qdjz5lg67y28sjsxhyv9h3gppc7c0"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "synphot" version))
+       (sha256
+        (base32 "0a54bfrx9aar66040324sw9qdjz5lg67y28sjsxhyv9h3gppc7c0"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3767,9 +3767,16 @@ datetime object.")
                 (lambda (port)
                   (format port "[pytest]
 python_files = test_*.py"))))))))
-    (propagated-inputs (list python-astropy python-numpy python-scipy))
-    (native-inputs (list python-pytest python-pytest-astropy
-                         python-setuptools-scm))
+    (propagated-inputs
+     (list ;; python-dust-extinction ; XXX: Not packed yet, optional.
+           ;; python-specutils       ; XXX: Not packed yet, optional.
+           python-astropy
+           python-numpy
+           python-scipy))
+    (native-inputs
+     (list python-pytest
+           python-pytest-astropy
+           python-setuptools-scm))
     (home-page "https://github.com/spacetelescope/synphot_refactor")
     (synopsis "Synthetic photometry using Astropy")
     (description
