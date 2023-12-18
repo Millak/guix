@@ -8188,6 +8188,27 @@ A class definition with Moose reads like a list of very concise English
 sentences.")
     (license (package-license perl))))
 
+(define-public perl-moosex-object-pluggable
+  (package
+    (name "perl-moosex-object-pluggable")
+    (version "0.0014")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/E/ET/ETHER/MooseX-Object-Pluggable-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "1q347v68dy6k6rpz60w97bxm7yk9ivfcgq332h8w4n9zx2xprgzk"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build-tiny perl-moose perl-test-fatal))
+    (propagated-inputs (list perl-module-pluggable perl-module-runtime
+                             perl-moose perl-namespace-autoclean perl-try-tiny))
+    (home-page "https://metacpan.org/release/MooseX-Object-Pluggable")
+    (synopsis "Make your classes pluggable")
+    (description "@code{MooseX::Object::Pluggable} makes your classes pluggable.")
+    (license license:perl-license)))
+
 (define-public perl-moosex-emulate-class-accessor-fast
   (package
     (name "perl-moosex-emulate-class-accessor-fast")
