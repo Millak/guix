@@ -2283,21 +2283,20 @@ Virtual observatory (VO) using Python.")
        (uri (pypi-uri "regions" version))
        (sha256
         (base32 "09401pz7926zlci7cznd78hmv9947f6jxyy2afqdqc1xaccpzcq2"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:test-target "pytest"
-       #:phases
-       (modify-phases %standard-phases
-         ;; This doctest requires online data.
-         (add-after 'unpack 'delete-doctest
-           (lambda _ (delete-file "docs/masks.rst")))
-         ;; This file is opened in both install and check phases.
-         (add-before 'install 'writable-compiler
-           (lambda _ (make-file-writable "regions/_compiler.c")))
-         (add-before 'check 'writable-compiler
-           (lambda _ (make-file-writable "regions/_compiler.c")))
-         (add-before 'check 'writable-home
-           (lambda _  (setenv "HOME" (getcwd)))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; This file is opened in both install and check phases.
+          ;; XXX: Check if it is still required.
+          (add-before 'install 'writable-compiler
+            (lambda _ (make-file-writable "regions/_compiler.c")))
+          (add-before 'check 'prepare-test-environment
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (make-file-writable "regions/_compiler.c")
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (propagated-inputs
      (list python-astropy
            python-h5py
