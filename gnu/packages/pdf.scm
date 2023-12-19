@@ -26,6 +26,7 @@
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2024 dan <i@dan.games>
+;;; Copyright © 2023 Benjamin Slade <slade@lambda-y.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -56,6 +57,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (gnu packages)
+  #:use-module (gnu packages aidc)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
@@ -1527,7 +1529,7 @@ multiple files.")
 (define-public pdfpc
   (package
     (name "pdfpc")
-    (version "4.5.0")
+    (version "4.6.0")
     (source
      (origin
        (method git-fetch)
@@ -1536,22 +1538,13 @@ multiple files.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bmy51w6ypz927hxwp5g7wapqvzqmsi3w32rch6i3f94kg1152ck"))))
+        (base32 "0kj84sf5hgr2v2ra6dxmxqcr173h17cpnhg9lcq36shdbdnncwg4"))))
     (build-system cmake-build-system)
-    (arguments
-     '(#:tests? #f          ; no test target
-       #:phases
-       (modify-phases %standard-phases
-         ;; This is really a bug in Vala.
-         ;; https://github.com/pdfpc/pdfpc/issues/594
-         (add-after 'unpack 'fix-vala-API-conflict
-           (lambda _
-             (substitute* "src/classes/action/movie.vala"
-               (("info.from_caps\\(caps\\)")
-                "Gst.Video.info_from_caps(out info, caps)")))))))
+    (arguments '(#:tests? #f))           ; no test target
     (inputs
      `(("cairo" ,cairo)
        ("discount" ,discount) ; libmarkdown
+       ("qrencode" ,qrencode)
        ("gtk+" ,gtk+)
        ("gstreamer" ,gstreamer)
        ("gst-plugins-base" ,gst-plugins-base)
