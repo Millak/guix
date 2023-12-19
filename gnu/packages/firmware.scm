@@ -893,17 +893,6 @@ Executables included are:
         #:tests? #f                     ; No check target.
         #:phases
         #~(modify-phases %standard-phases
-            ;; Hide the default GCC from CPLUS_INCLUDE_PATH to prevent it from
-            ;; shadowing the version of GCC provided in native-inputs.
-            (add-after 'set-paths 'hide-implicit-gcc
-              (lambda* (#:key inputs #:allow-other-keys)
-                (let ((gcc (assoc-ref inputs "gcc")))
-                  (setenv "CPLUS_INCLUDE_PATH"
-                          (string-join
-                           (delete (string-append gcc "/include/c++")
-                                   (string-split (getenv "CPLUS_INCLUDE_PATH")
-                                                 #\:))
-                           ":")))))
             (add-after 'unpack 'patch-source
               (lambda _
                 (substitute* "edksetup.sh"
@@ -969,7 +958,6 @@ Executables included are:
                           "OVMF_VARS"))))))))
       (native-inputs
        `(("acpica" ,acpica)
-         ("gcc@5" ,gcc-5)
          ("nasm" ,nasm)
          ("perl" ,perl)
          ("python-3" ,python-3)
