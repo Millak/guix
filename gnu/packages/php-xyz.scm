@@ -20,10 +20,8 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages php)
   #:use-module (guix packages)
-  #:use-module (guix download)
   #:use-module (guix git-download)
-  #:use-module (guix build-system composer)
-  #:use-module (guix build-system gnu)
+  #:use-module (guix build-system copy)
   #:use-module (guix utils)
   #:use-module ((guix licenses) #:prefix license:))
 
@@ -40,18 +38,10 @@
        (file-name (git-file-name name version))
        (sha256
         (base32 "0127zmmg3yx84ljngfs86q7kjhyypybkf4d1ihfrfnzgynzxfxdf"))))
-    (build-system gnu-build-system)
+    (build-system copy-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (delete 'build)
-         (delete 'check)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out")))
-               (install-file "src/Composer/Autoload/ClassLoader.php"
-                             (string-append out "/share/web/composer/"))))))))
+     `(#:install-plan
+       '(("src/Composer/Autoload/ClassLoader.php" "/share/web/composer/"))))
     (home-page "https://getcomposer.org")
     (synopsis "PHP class loader extracted from the composer package")
     (description "This package contains the class loader class used by Composer to
