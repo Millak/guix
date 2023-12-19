@@ -29,6 +29,7 @@
             platform-target
             platform-system
             platform-linux-architecture
+            platform-rust-target
             platform-glibc-dynamic-linker
 
             &platform-not-found-error
@@ -73,6 +74,8 @@
   (target               platform-target)
   (system               platform-system)
   (linux-architecture   platform-linux-architecture
+                        (default #false))
+  (rust-target          platform-rust-target
                         (default #false))
   (glibc-dynamic-linker platform-glibc-dynamic-linker))
 

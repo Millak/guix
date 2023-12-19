@@ -2677,7 +2677,7 @@ that block port 22.")
 (define-public iperf
   (package
     (name "iperf")
-    (version "3.15")
+    (version "3.16")
     (source
      (origin
        (method git-fetch)
@@ -2686,7 +2686,7 @@ that block port 22.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10fzz3j2kx36yhqd0mvwlawvhdbcm0qc41i3f6jf6a5whm70177q"))))
+        (base32 "0m8zhr050qgmkkaf0jgn2isrr7yyk8majx9c18pf1xsqpr00sxs6"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -4195,7 +4195,7 @@ network.  This must be enabled on the target host, usually in the BIOS.")
 (define-public traceroute
   (package
     (name "traceroute")
-    (version "2.1.2")
+    (version "2.1.5")
     (source
      (origin
        (method url-fetch)
@@ -4203,7 +4203,7 @@ network.  This must be enabled on the target host, usually in the BIOS.")
                            "traceroute-" version "/traceroute-"
                            version ".tar.gz"))
        (sha256
-        (base32 "07svkglyizxirgcmv6d4ih59f3ds8pnyprvkrqcf5d3p567jcz2h"))))
+        (base32 "17l5barragw0mfgsbjfndny3w4l7zs20l6s6rvim3azajq6jcv4w"))))
     (build-system gnu-build-system)
     (arguments
      (list

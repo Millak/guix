@@ -1098,6 +1098,7 @@ Turning finalization off shuts down the finalization thread as a side effect."
                        ("armv7l" 120)
                        ("aarch64" 220)
                        ("ppc64le" 120)
+                       ("riscv64" 220)
                        (_ #f))))
     (lambda (flags)
       "Create a new child process by duplicating the current parent process.

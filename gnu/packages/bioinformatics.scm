@@ -1070,11 +1070,11 @@ similar.")
       (license license:gpl2+))))
 
 (define-public r-stringendo
-  (let ((commit "83b8f2d82a09b33b9e895438bb523a021138be01")
+  (let ((commit "15594b1bba11048a812874bafec0eea1dcc8618a")
         (revision "1"))
     (package
       (name "r-stringendo")
-      (version (git-version "0.3.4" revision commit))
+      (version (git-version "0.6.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -1083,10 +1083,10 @@ similar.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1ap0nhbyd6xx0yl2vgmwk38p22yrkv4k9hw13r35z4wf343rry6v"))))
+                  "15ij4zf2j9c8m9n4bqhmxkchjh2bhddwjfxngfpwv7c5wjqyi6ir"))))
       (properties `((upstream-name . "Stringendo")))
       (build-system r-build-system)
-      (propagated-inputs (list r-devtools r-usethis))
+      (propagated-inputs (list r-clipr))
       (home-page "https://github.com/vertesy/Stringendo")
       (synopsis "Stringendo is a string parsing library")
       (description
@@ -1095,11 +1095,11 @@ plotnames, filenames and paths.")
       (license license:gpl3))))
 
 (define-public r-readwriter
-  (let ((commit "12d32cb6533ef4b9eab4d707d1502525c2034aee")
+  (let ((commit "91373c44641014a1ce8e1c3e928747608aae8f54")
         (revision "1"))
     (package
       (name "r-readwriter")
-      (version (git-version "0.3.2" revision commit))
+      (version (git-version "1.5.3" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -1108,11 +1108,11 @@ plotnames, filenames and paths.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1hy47g8d7zppr2i9zlkwl2yb0ii8x710hqk07h089ldx9171qxab"))))
+                  "156kvmplrip0w1zhs9yl5r0ayjipa0blhy614l65hbsjn1lwbskr"))))
       (properties `((upstream-name . "ReadWriter")))
       (build-system r-build-system)
       (propagated-inputs
-       (list r-gdata r-gtools r-openxlsx r-readr r-stringendo))
+       (list r-gtools r-openxlsx r-readr r-stringendo))
       (home-page "https://github.com/vertesy/ReadWriter")
       (synopsis "Functions to read and write files conveniently")
       (description
@@ -10245,55 +10245,54 @@ auROC analysis.")
       (license license:gpl3))))
 
 (define-public r-sccustomize
-  (let ((commit "8414d1f5fb32277855b0619191a568932b7baeb0")
+  (let ((commit "397374590dae2ccc0c560897dcd1ce4382c18798")
         (revision "1"))
     (package
       (name "r-sccustomize")
-      (version (git-version "0.7.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/samuel-marsh/scCustomize")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1wcgfq7lx83a2kf8pjbw524gdvxf351n08cwd5wzmmy57kf4knbj"))))
+      (version (git-version "2.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/samuel-marsh/scCustomize")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "11bafm0mlck27fqd8brz80pxb8dc5q0aqbp8zv0s9sx97njp7wsl"))))
       (properties `((upstream-name . "scCustomize")))
       (build-system r-build-system)
-      (propagated-inputs
-       (list r-circlize
-             r-colorway
-             r-cowplot
-             r-data-table
-             r-dittoseq
-             r-dplyr
-             r-forcats
-             r-ggbeeswarm
-             r-ggplot2
-             r-ggprism
-             r-ggpubr
-             r-ggrastr
-             r-ggrepel
-             r-glue
-             r-janitor
-             r-magrittr
-             r-matrix
-             r-paletteer
-             r-patchwork
-             r-pbapply
-             r-purrr
-             r-remotes
-             r-scales
-             r-scattermore
-             r-seurat
-             r-seuratobject
-             r-stringi
-             r-stringr
-             r-tibble
-             r-tidyr
-             r-tidyselect
-             r-viridis))
+      (propagated-inputs (list r-circlize
+                               r-colorway
+                               r-cowplot
+                               r-data-table
+                               r-dittoseq
+                               r-dplyr
+                               r-forcats
+                               r-ggbeeswarm
+                               r-ggplot2
+                               r-ggprism
+                               r-ggpubr
+                               r-ggrastr
+                               r-ggrepel
+                               r-glue
+                               r-janitor
+                               r-magrittr
+                               r-matrix
+                               r-paletteer
+                               r-patchwork
+                               r-pbapply
+                               r-purrr
+                               r-remotes
+                               r-scales
+                               r-scattermore
+                               r-seurat
+                               r-seuratobject
+                               r-stringi
+                               r-stringr
+                               r-tibble
+                               r-tidyr
+                               r-tidyselect
+                               r-viridis))
       (native-inputs (list r-knitr))
       (home-page "https://github.com/samuel-marsh/scCustomize")
       (synopsis "Custom visualization and analyses of single-cell sequencing")
@@ -15349,7 +15348,9 @@ activity prediction from transcriptomics data, and its R implementation
            (add-after 'unpack 'set-HOME
              (lambda _ (setenv "HOME" "/tmp"))))))
       (propagated-inputs
-       (list r-complexheatmap
+       (list r-basilisk
+             r-basilisk-utils
+             r-complexheatmap
              r-dplyr
              r-ggplot2
              r-magrittr
@@ -17988,7 +17989,7 @@ updated much more frequently.")
 (define-public python-ctxcore
   (package
     (name "python-ctxcore")
-    (version "0.1.1")
+    (version "0.2.0")
     (source
      (origin
        (method git-fetch)
@@ -17998,8 +17999,8 @@ updated much more frequently.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "16nlj7z8pirgjad7vlgm7226b3hpw4a7n967vyfg26dsf5n8k70d"))))
-    (build-system python-build-system)
+         "0nv4lc46cnzpg5gcdxrsv7b4srmkq55zl3rcadw5pn3yyz5fzd2k"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
@@ -18011,12 +18012,12 @@ updated much more frequently.")
               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (propagated-inputs
      (list python-cytoolz
-           python-numba
            python-frozendict
+           python-numba
            python-numpy
            python-pandas
+           python-pyarrow
            python-pyyaml
-           python-pyarrow-0.16
            python-tqdm))
     (native-inputs
      (list python-pytest
@@ -18064,67 +18065,77 @@ tree-based ensemble regressors.")
     (license license:bsd-3)))
 
 (define-public pyscenic
-  (package
-    (name "pyscenic")
-    (version "0.11.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/aertslab/pySCENIC")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0pbmmr1zdb1vbbs6wx357s59d13pna6x03wq8blj6ckjws8bbq73"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; Numba needs a writable dir to cache functions.
-         (add-before 'check 'set-numba-cache-dir
-           (lambda _
-             (setenv "NUMBA_CACHE_DIR" "/tmp")))
-         (replace 'check
-           (lambda _
-             (invoke "pytest" "-v"))))))
-    (propagated-inputs
-     (list python-ctxcore
-           python-cytoolz
-           python-multiprocessing-on-dill
-           python-llvmlite
-           python-numba
-           python-attrs
-           python-frozendict
-           python-numpy
-           python-pandas
-           python-cloudpickle
-           python-dask
-           python-distributed
-           python-arboreto
-           python-boltons
-           python-setuptools
-           python-pyyaml
-           python-tqdm
-           python-interlap
-           python-umap-learn
-           python-loompy
-           python-networkx
-           python-scipy
-           python-fsspec
-           python-requests
-           python-aiohttp
-           python-scikit-learn))
-    (native-inputs
-     (list python-pytest))
-    (home-page "https://scenic.aertslab.org/")
-    (synopsis "Single-Cell regulatory network inference and clustering")
-    (description
-     "pySCENIC is a Python implementation of the SCENIC pipeline (Single-Cell
+  ;; Latest commit from the update-pyarrow branch
+  (let ((commit "5f170fdf474548c37ab381d1849c662820d658ee")
+        (revision "1"))
+    (package
+      (name "pyscenic")
+      (version (git-version "0.11.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/aertslab/pySCENIC")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "03qkvy400rjndg2ds6bhcaprir71mqr2v3yv9vd77lcnzxgw3s0z"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        '(modify-phases %standard-phases
+           ;; The cli modules referenced here have been removed, so this
+           ;; breaks the sanity check.
+           (add-after 'unpack 'do-not-reference-deleted-modules
+             (lambda _
+               (substitute* "setup.py"
+                 (("'db2feather = .*',") "")
+                 (("'invertdb = .*',") "")
+                 (("'gmt2regions = pyscenic.cli.gmt2regions:main'") ""))))
+           ;; Numba needs a writable dir to cache functions.
+           (add-before 'check 'set-numba-cache-dir
+             (lambda _
+               (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+      (propagated-inputs
+       (list python-ctxcore
+             python-cytoolz
+             python-multiprocessing-on-dill
+             python-llvmlite
+             python-numba
+             python-attrs
+             python-frozendict
+             python-numpy
+             python-pandas
+             python-cloudpickle
+             python-dask
+             python-pyarrow               ;XXX for dask
+             python-distributed
+             python-arboreto
+             python-boltons
+             python-setuptools
+             python-pyyaml
+             python-tqdm
+             python-interlap
+             python-umap-learn
+             python-loompy
+             python-networkx
+             python-scipy
+             python-fsspec
+             python-requests
+             python-aiohttp
+             python-scikit-learn))
+      (native-inputs
+       (list python-pytest))
+      (home-page "https://scenic.aertslab.org/")
+      (synopsis "Single-Cell regulatory network inference and clustering")
+      (description
+       "pySCENIC is a Python implementation of the SCENIC pipeline (Single-Cell
 rEgulatory Network Inference and Clustering) which enables biologists to infer
 transcription factors, gene regulatory networks and cell types from
 single-cell RNA-seq data.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public python-ikarus
   (package

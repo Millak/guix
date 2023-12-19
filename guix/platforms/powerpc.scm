@@ -28,6 +28,7 @@
    (target "powerpc-linux-gnu")
    (system "powerpc-linux")
    (linux-architecture "powerpc")
+   (rust-target "powerpc-unknown-linux-gnu")
    (glibc-dynamic-linker "/lib/ld.so.1")))
 
 (define powerpc64-linux
@@ -35,6 +36,7 @@
    (target "powerpc64-linux-gnu")
    (system #f)                                    ;not supported
    (linux-architecture "powerpc")
+   (rust-target "powerpc64-unknown-linux-gnu")
    (glibc-dynamic-linker "/lib/ld64.so.1")))
 
 (define powerpc64le-linux
@@ -42,4 +44,5 @@
    (target "powerpc64le-linux-gnu")
    (system "powerpc64le-linux")
    (linux-architecture "powerpc")
+   (rust-target "powerpc64le-unknown-linux-gnu")
    (glibc-dynamic-linker "/lib/ld64.so.2")))

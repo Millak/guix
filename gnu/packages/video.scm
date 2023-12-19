@@ -3440,7 +3440,7 @@ from sites like Twitch.tv and pipes them into a video player of choice.")
 (define-public mlt
   (package
     (name "mlt")
-    (version "7.20.0")
+    (version "7.22.0")
     (source
      (origin
        (method git-fetch)
@@ -3449,7 +3449,7 @@ from sites like Twitch.tv and pipes them into a video player of choice.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dc09j8yvis6ilba5a13qicf6wbgxnzwllab6h48kzfl1lc0n8g7"))))
+        (base32 "1aa23kni64751x0kd54lr87ns9kdc8pblhqp8m8608ah8xwak4mw"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -4387,7 +4387,7 @@ practically any type of media.")
 (define-public libmediainfo
   (package
     (name "libmediainfo")
-    (version "23.03")
+    (version "23.11")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://mediaarea.net/download/source/"
@@ -4395,7 +4395,7 @@ practically any type of media.")
                                   name "_" version ".tar.xz"))
               (sha256
                (base32
-                "1660lsilm02324c65sxxi41fn225hg78yxqyxff5dyf6fvyzyypm"))))
+                "0gc5brnwagdgaknkpyhkbpwc52q19vf5i3sayifhsg4yqzy58zhr"))))
     ;; TODO add a Big Buck Bunny webm for tests.
     (native-inputs
      (list autoconf automake libtool pkg-config))
@@ -4450,7 +4450,7 @@ MPEG-2, MPEG-4, DVD (VOB)...
 (define-public mediainfo
   (package
     (name "mediainfo")
-    (version "23.03")
+    (version "23.11")
     (source (origin
               (method url-fetch)
               ;; Warning: This source has proved unreliable 1 time at least.
@@ -4461,7 +4461,7 @@ MPEG-2, MPEG-4, DVD (VOB)...
                                   name "_" version ".tar.xz"))
               (sha256
                (base32
-                "1654pal4x753pcha8h939a70q5z3jzaddgb39cinlrv5fljs8qgh"))))
+                "1hy9m2l94ymhpcrhlqqjpgl24lz33qm239pcdlic3z5zs6qb2740"))))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (inputs
@@ -5588,12 +5588,9 @@ result in several formats:
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
                (invoke "cargo" "cinstall" "--release"
-                       (string-append "--prefix=" out)))))
-         (add-after 'install 'delete-static-library
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Delete 93 MiB (!) static library.
-             (delete-file (string-append (assoc-ref outputs "out")
-                                         "/lib/librav1e.a")))))))
+                       ;; Only build the dynamic library.
+                       "--library-type" "cdylib"
+                       (string-append "--prefix=" out))))))))
     (native-inputs
      (list nasm pkg-config rust-cargo-c))
     (inputs

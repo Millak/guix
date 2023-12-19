@@ -1968,9 +1968,9 @@ Covariance Matrix Adaptation Evolution Strategy (CMA-ES) for Python.")
     (license license:expat)))
 
 (define-public python-autograd
-  (let* ((commit "442205dfefe407beffb33550846434baa90c4de7")
+  (let* ((commit "c6d81ce7eede6db801d4e9a92b27ec5d409d0eab")
          (revision "0")
-         (version (git-version "0.0.0" revision commit)))
+         (version (git-version "1.5" revision commit)))
     (package
       (name "python-autograd")
       (home-page "https://github.com/HIPS/autograd")
@@ -1981,19 +1981,14 @@ Covariance Matrix Adaptation Evolution Strategy (CMA-ES) for Python.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "189sv2xb0mwnjawa9z7mrgdglc1miaq93pnck26r28fi1jdwg0z4"))
+                  "04kljgydng42xlg044h6nbzxpban1ivd6jzb8ydkngfq88ppipfk"))
                 (file-name (git-file-name name version))))
       (version version)
-      (build-system python-build-system)
+      (build-system pyproject-build-system)
       (native-inputs
        (list python-nose python-pytest))
       (propagated-inputs
        (list python-future python-numpy))
-      (arguments
-       `(#:phases (modify-phases %standard-phases
-                    (replace 'check
-                      (lambda _
-                        (invoke "py.test" "-v"))))))
       (synopsis "Efficiently computes derivatives of NumPy code")
       (description "Autograd can automatically differentiate native Python and
 NumPy code.  It can handle a large subset of Python's features, including loops,

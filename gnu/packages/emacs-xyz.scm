@@ -411,6 +411,27 @@ reading the extensive documentation about BookmarkPlus on the Emacs Wiki.")
 input via a small child-frame spawned at the position of the cursor.")
     (license license:gpl3+)))
 
+(define-public emacs-arei
+  (package
+    (name "emacs-arei")
+    (version "0.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~abcdw/emacs-arei")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "12vfv7l8krsfv7m03p41jakh4xrfm21w85kvghz0q5hq63w9l3f7"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-eros emacs-sesman emacs-queue))
+    (home-page "https://git.sr.ht/~abcdw/emacs-arei")
+    (synopsis "Asyncronous Reliable Extensible IDE")
+    (description "Sleek Guile IDE for Emacs.")
+    (license license:gpl3+)))
+
 (define-public emacs-geiser
   (package
     (name "emacs-geiser")
@@ -5590,8 +5611,8 @@ type, for example: packages, buffers, files, etc.")
     (license license:gpl3+)))
 
 (define-public emacs-guix
-  (let ((commit "cf5b7a402ea503c3dcda85a86b9a6c6dd01896e0")
-        (revision "6"))
+  (let ((commit "455272c5cc72ed4ba5bad13c669f024f51479a58")
+        (revision "7"))
     (package
       (name "emacs-guix")
       (version (git-version "0.5.2" revision commit))
@@ -5603,7 +5624,7 @@ type, for example: packages, buffers, files, etc.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0wxiipgv91rlk9bhspx370rykywi52rxg5m1f7680vzs3ckc7nyd"))))
+                  "1ihrd7f92p9xidh1mbjk1piykzg46xypnzf1rlxxsymmddlq4jpn"))))
       (build-system gnu-build-system)
       (arguments
        (list
@@ -11670,7 +11691,7 @@ them easier to distinguish from other, less important buffers.")
 (define-public emacs-embark
   (package
     (name "emacs-embark")
-    (version "0.23")
+    (version "1.0")
     (source
      (origin
        (method git-fetch)
@@ -11678,7 +11699,7 @@ them easier to distinguish from other, less important buffers.")
              (url "https://github.com/oantolin/embark")
              (commit version)))
        (sha256
-        (base32 "1dmsaw1m819kzmai45c4cqh5lyyha451f7dxzwwfz9crmzg2w5sf"))
+        (base32 "14alpanynww6z7yxxyiiy24c0p4pq1argsb0pmqavq25mdxgn4v2"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (arguments
@@ -24412,8 +24433,8 @@ key again.")
     (license license:gpl3+)))
 
 (define-public emacs-mbsync
-  (let ((commit "b62491c0e0d89eb9c66261a16d7ac81231c9c453")
-        (revision "4"))
+  (let ((commit "d3c81da81ce5b154c0d048047a47277338721a70")
+        (revision "5"))
     (package
       (name "emacs-mbsync")
       (version (git-version "0.1.2" revision commit))
@@ -24426,7 +24447,7 @@ key again.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1zlih37mkqjn2czl12zn7lgxxljvrwhqqpbksj9c91zn0f0rm3mz"))))
+           "10xxgvzjb7bl3lzgjkdsnnkd9wphkc2pm621agyjlayzcjnldz5p"))))
       (build-system emacs-build-system)
       (home-page "https://github.com/dimitri/mbsync-el")
       (synopsis "Interface to mbsync for Emacs")

@@ -1529,7 +1529,10 @@ command.")
      glibc)))
 
 (define-public glibc-locales/hurd
-  (make-glibc-locales glibc/hurd))
+  ;; Locales again; hide them because their 'supported-systems' field suggests
+  ;; they're Hurd-only, making them non-installable on GNU/Linux.
+  (hidden-package
+   (make-glibc-locales glibc/hurd)))
 
 (define* (libc-locales-for-target #:optional
                                   (target (or (%current-target-system)

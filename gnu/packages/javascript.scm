@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2017, 2019, 2020, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2019, 2020, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017-2020, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Nicolas Goaziou <mail@nicolasgoaziou.fr>
@@ -617,6 +617,21 @@ detection.")
 Javascript library, adding sorting, paging and filtering abilities to plain
 HTML tables with minimal effort.")
     (license license:expat)))
+
+(define-public js-datatables-1.9
+  (package
+    (inherit js-datatables)
+    (name "js-datatables")
+    (version "1.9.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://datatables.net/releases/DataTables-"
+                                  version ".zip"))
+              (sha256
+               (base32
+                "0yd6548cbpb4hlpwybjp93b9m084n5rba6v1x5n83y0dvlxcd06g"))))
+    (arguments
+     (list #:javascript-files '(list "media/js/jquery.dataTables.js")))))
 
 (define-public js-requirejs
   (package

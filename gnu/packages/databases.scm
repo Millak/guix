@@ -3596,7 +3596,11 @@ You might also want to install the following optional dependencies:
               (uri (pypi-uri "alchemy-mock" version))
               (sha256
                (base32
-                "0ylxygl3bcdapzz529n8wgk7vx9gjwb3ism564ypkpd7dbsw653r"))))
+                "0ylxygl3bcdapzz529n8wgk7vx9gjwb3ism564ypkpd7dbsw653r"))
+             (snippet
+              #~(begin (use-modules (guix build utils))
+                       (substitute* "alchemy_mock/comparison.py"
+                         (("collections\\.Mapping") "collections.abc.Mapping"))))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -4389,7 +4393,7 @@ the SQL language using a syntax that reflects the resulting query.")
 (define-public apache-arrow
   (package
     (name "apache-arrow")
-    (version "13.0.0")
+    (version "14.0.0")
     (source
      (origin
        (method git-fetch)
@@ -4399,7 +4403,7 @@ the SQL language using a syntax that reflects the resulting query.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "03ykynzz01ar2y4blhcxjh6xsi0gqv380h5m669dddfz2isplsf8"))))
+         "08x01jcibmx03g9p0sjikp3dyynw6is6gyn0m3cy1gwkpkwk2ad2"))))
     (build-system cmake-build-system)
     (arguments
      (list

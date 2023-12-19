@@ -1,9 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2016 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
-;;; Copyright © 2015, 2017, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 David Thompson <davet@gnu.org>
-;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -29,18 +27,14 @@
   #:use-module (guix memoization)
   #:use-module (guix utils)
   #:use-module (guix download)
-  #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
-  #:use-module (gnu packages check)
-  #:use-module (gnu packages compression)
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages flashing-tools)
   #:use-module (gnu packages gcc)
-  #:use-module (gnu packages llvm)
-  #:use-module (gnu packages vim)
-  #:export (make-avr-toolchain))
+  #:export (make-avr-libc
+            make-avr-toolchain))
 
 ;;; Commentary:
 ;;;
@@ -84,18 +78,7 @@
                     (format #t
                             "environment variable `CPLUS_INCLUDE_PATH' \
 changed to ~a~%"
-                            (getenv "CPLUS_INCLUDE_PATH")))))
-              ;; Without a working multilib build, the resulting GCC lacks
-              ;; support for nearly every AVR chip.
-              (add-after 'unpack 'fix-genmultilib
-                (lambda _
-                  ;; patch-shebang doesn't work here because there are
-                  ;; actually several scripts inside this script, each with
-                  ;; a #!/bin/sh that needs patching.
-                  (substitute* "gcc/genmultilib"
-                    (("#!/bin/sh") (string-append "#!" (which "sh"))))))))
-         ((#:configure-flags flags)
-          #~(delete "--disable-multilib" #$flags))))
+                            (getenv "CPLUS_INCLUDE_PATH")))))))))
       (native-search-paths
        (list (search-path-specification
               (variable "CROSS_C_INCLUDE_PATH")
@@ -119,7 +102,10 @@ changed to ~a~%"
 (define make-avr-gcc
   (memoize make-avr-gcc/implementation))
 
-(define* (make-avr-libc/implementation #:key (xgcc gcc))
+(define* (make-avr-libc/implementation #:key
+                                       (xbinutils (cross-binutils "avr"))
+                                       (xgcc (cross-gcc "avr"
+                                                        #:xbinutils xbinutils)))
   (package
     (name "avr-libc")
     (version "2.0.0")
@@ -132,12 +118,15 @@ changed to ~a~%"
                 "15svr2fx8j6prql2il2fc0ppwlv50rpmyckaxx38d3gxxv97zpdj"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:out-of-source? #t
-       #:configure-flags '("--host=avr")))
-    (native-inputs `(("avr-binutils" ,(make-avr-binutils))
-                     ("avr-gcc" ,(make-avr-gcc #:xgcc xgcc))))
+     '(#:target "avr"
+       #:out-of-source? #t
+       ;; Avoid including itself as this package is a target input and cannot
+       ;; use the normal cross compilation inputs.
+       #:implicit-cross-inputs? #f))
+    (native-inputs `(("cross-binutils" ,xbinutils)
+                     ("cross-gcc" ,xgcc)))
     (home-page "https://www.nongnu.org/avr-libc/")
-    (synopsis "The AVR C Library")
+    (synopsis "AVR C Library")
     (description
      "AVR Libc is a project whose goal is to provide a high quality C library
 for use with GCC on Atmel AVR microcontrollers.")
@@ -149,7 +138,7 @@ for use with GCC on Atmel AVR microcontrollers.")
 
 (define* (make-avr-toolchain/implementation #:key (xgcc gcc))
   (let ((avr-binutils (make-avr-binutils))
-        (avr-libc (make-avr-libc #:xgcc xgcc))
+        (avr-libc (make-avr-libc #:xgcc (cross-gcc "avr" #:xgcc xgcc)))
         (avr-gcc (make-avr-gcc #:xgcc xgcc)))
     ;; avr-libc checks the compiler version and passes "--enable-device-lib"
     ;; for avr-gcc > 5.1.0.  It wouldn't install the library for atmega32u4
@@ -175,40 +164,3 @@ C++.")
 
 (define make-avr-toolchain
   (memoize make-avr-toolchain/implementation))
-
-(define-public microscheme
-  (package
-    (name "microscheme")
-    (version "0.9.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ryansuchocki/microscheme")
-             (commit (string-append "v" version))))
-       (sha256
-        (base32 "1bflwirpcd58bngbs6hgjfwxl894ni2gpdd4pj10pm2mjhyj5dgw"))
-       (file-name (git-file-name name version))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:parallel-build? #f             ; fails to build otherwise
-       #:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))
-       #:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out")))))
-    (native-inputs
-     (list clang cppcheck unzip xxd))
-    (home-page "https://github.com/ryansuchocki/microscheme/")
-    (synopsis "Scheme subset for Atmel microcontrollers")
-    (description
-     "Microscheme, or @code{(ms)} for short, is a functional programming
-language for the Arduino, and for Atmel 8-bit AVR microcontrollers in general.
-Microscheme is a subset of Scheme, in the sense that every valid @code{(ms)}
-program is also a valid Scheme program (with the exception of Arduino
-hardware-specific primitives).  The @code{(ms)} compiler performs function
-inlining, and features an aggressive tree-shaker, eliminating unused top-level
-definitions.  Microscheme has a robust @dfn{Foreign Function Interface} (FFI)
-meaning that C code may be invoked directly from (ms) programs.")
-    (license license:expat)))

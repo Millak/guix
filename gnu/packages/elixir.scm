@@ -27,6 +27,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system gnu)
   #:use-module (guix gexp)
+  #:use-module (guix utils)
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (gnu packages)
@@ -96,9 +97,20 @@
             (lambda* (#:key inputs #:allow-other-keys)
               ;; Some tests require access to a home directory.
               (setenv "HOME" "/tmp")))
-          (delete 'configure))))
-    (inputs
-     (list erlang git))
+          (delete 'configure)
+          (add-after 'install 'wrap-programs
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (programs '("elixir" "elixirc" "iex" "mix")))
+                (for-each (lambda (program)
+                            (wrap-program (string-append out "/bin/" program)
+                              '("ERL_LIBS" prefix ("${GUIX_ELIXIR_LIBS}"))))
+                          programs)))))))
+    (inputs (list erlang git))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "GUIX_ELIXIR_LIBS")
+            (files (list (string-append "lib/elixir/" (version-major+minor version)))))))
     (home-page "https://elixir-lang.org/")
     (synopsis "Elixir programming language")
     (description "Elixir is a dynamic, functional language used to build
@@ -106,3 +118,48 @@ scalable and maintainable applications.  Elixir leverages the Erlang VM, known
 for running low-latency, distributed and fault-tolerant systems, while also
 being successfully used in web development and the embedded software domain.")
     (license license:asl2.0)))
+
+(define-public elixir-hex
+  (package
+    (name "elixir-hex")
+    (version "2.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hexpm/hex.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1kvczwvij58kgkhak68004ap81pl26600bczg21mymy2sypkgxmj"))))
+    ;; The mix-build-system assumes that Hex exists.
+    ;; We build Hex using the gnu-build-system.
+    ;; Other Elixir packages use the mix-build-system.
+    (build-system gnu-build-system)
+    (inputs (list elixir))
+    (arguments
+     (list
+      ;; Hex is needed to build packages used to test Hex.
+      ;; To avoid this circularity, we disable tests.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'bootstrap)
+          (delete 'configure)
+          (replace 'build
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "MIX_ENV" "prod")
+              (invoke "mix" "compile")))
+          (replace 'install
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (define X.Y #$(version-major+minor (package-version elixir)))
+              (define out (string-append (assoc-ref outputs "out") "/lib/elixir/" X.Y "/hex"))
+              (mkdir-p out)
+              (copy-recursively "_build/prod/lib/hex" out))))))
+    (synopsis "Package manager for the Erlang VM")
+    (description
+     "This project provides tasks that integrate with Mix, Elixir's build
+tool.")
+    (home-page "https://hexdocs.pm/makeup_elixir/")
+    (license license:bsd-2)))

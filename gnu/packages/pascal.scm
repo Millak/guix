@@ -4,6 +4,7 @@
 ;;; Copyright © 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -46,6 +47,15 @@
 (define %fpc-release-date "2021/05/19")
 
 ;;; FIXME: Bootstrap properly; these are prebuilt binaries.
+(define fpc-bootstrap-aarch64
+  (origin
+    (method url-fetch)
+    (uri (string-append "mirror://sourceforge/freepascal/Linux/"
+                        %fpc-version "/fpc-" %fpc-version ".aarch64-linux.tar"))
+    (sha256
+     (base32
+      "0lalar6qk04acb2j8p6654hlz0yj6zdab046zi82zf5mnvwp155k"))))
+
 (define fpc-bootstrap-i386
   (origin
     (method url-fetch)
@@ -54,6 +64,24 @@
     (sha256
      (base32
       "0n4r85dsr86zlk7r4hbd4nj14sda6rwgdgzxg4gj4q981fn80agn"))))
+
+(define fpc-bootstrap-powerpc
+  (origin
+    (method url-fetch)
+    (uri (string-append "mirror://sourceforge/freepascal/Linux/"
+                        %fpc-version "/fpc-" %fpc-version ".powerpc-linux.tar"))
+    (sha256
+     (base32
+      "1zhdypm99bzs5706g4nxwajiadv82jwd87cr300lrivy1rzj5h4a"))))
+
+(define fpc-bootstrap-powerpc64le
+  (origin
+    (method url-fetch)
+    (uri (string-append "mirror://sourceforge/freepascal/Linux/"
+                        %fpc-version "/fpc-" %fpc-version ".powerpc64le-linux.tar"))
+    (sha256
+     (base32
+      "12p3lmi1vn7agpw4pipp6ra8r85319sjcvbzh7z6kangmry7vic3"))))
 
 (define fpc-bootstrap-x86_64
   (origin
@@ -76,7 +104,8 @@
               (sha256
                (base32
                 "07qna2pvlpa7j0i2wdixjxpizdvffv51nbr1waczk0xv8cq9kvw5"))
-              (patches (search-patches "fpc-reproducibility.patch"))
+              (patches (search-patches "fpc-reproducibility.patch"
+                                       "fpc-glibc-2.34-compat.patch"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -90,16 +119,19 @@
                   (rename-file "install-man" "install/man")
                   (delete-file "fpcsrc/tests/utils/dosbox/exitcode.exe")))))
     (build-system gnu-build-system)
-    (supported-systems '("i686-linux" "x86_64-linux"))
+    (supported-systems '("i686-linux" "x86_64-linux"
+                         "powerpc-linux" "powerpc64le-linux"
+                         "aarch64-linux"))
     (inputs
      (list expat glibc ncurses zlib))
     (native-inputs
      ;; FPC is built with FPC, so we need bootstrap binaries.
      `(("fpc-binary" ,(match (or (%current-target-system)
                                  (%current-system))
+                       ("aarch64-linux" fpc-bootstrap-aarch64)
                        ("i686-linux" fpc-bootstrap-i386)
-                       ;;("powerpc64le-linux" fpc-bootstrap-ppc64le)
-                       ;;("powerpc-linux" fpc-bootstrap-ppc)
+                       ("powerpc-linux" fpc-bootstrap-powerpc)
+                       ("powerpc64le-linux" fpc-bootstrap-powerpc64le)
                        ("x86_64-linux" fpc-bootstrap-x86_64)
                        ;; XXX: Wrong, but innocuous so long
                        ;; `supported-systems' is kept in sync.
@@ -109,11 +141,13 @@
        #:phases
        (let ((fpc-bootstrap-path
               (string-append (getcwd) "/" ,name "-" ,version "/fpc-bin"))
-             (arch ,(match (or (%current-target-system)
-                               (%current-system))
-                     ("i686-linux" "i386")
-                     ("x86_64-linux" "x86_64")
-                     (_ "unknown"))))
+             (arch ,(cond
+                      ((target-aarch64?) "aarch64")
+                      ((target-x86-32?) "i386")
+                      ((target-ppc32?) "powerpc")
+                      ((target-ppc64le?) "powerpc64")
+                      ((target-x86-64?) "x86_64")
+                      (else "unknown"))))
          (modify-phases %standard-phases
            (add-after 'unpack 'unpack-bin
              (lambda* (#:key inputs #:allow-other-keys)
@@ -160,9 +194,14 @@
                   (search-input-file inputs ,(glibc-dynamic-linker)))
                  (("/lib64/ld-linux-x86-64.so.2")
                   (search-input-file inputs ,(glibc-dynamic-linker)))
-                 ; TODO: /lib/ld-linux-armhf.so.3
-                 ; TODO: /lib/ld-linux-aarch64.so.1
-                 ; TODO: /lib64/ld64.so.2
+                 (("/lib/ld.so.1")
+                  (search-input-file inputs ,(glibc-dynamic-linker)))
+                 (("/lib64/ld64.so.[12]")
+                  (search-input-file inputs ,(glibc-dynamic-linker)))
+                 (("/lib/ld-linux(-armhf)?.so.3")
+                  (search-input-file inputs ,(glibc-dynamic-linker)))
+                 (("/lib/ld-linux-aarch64.so.1")
+                  (search-input-file inputs ,(glibc-dynamic-linker)))
                  ;; Add glibc to ld's search path.
                  (("if \\(isdll\\) then")
                   (string-append
@@ -192,9 +231,13 @@
              (lambda* (#:key outputs #:allow-other-keys)
                (let* ((out (assoc-ref outputs "out"))
                      ;; This is the suffix of the ppc[arch] binary.
-                     (suffix (if (string= arch "x86_64")
-                                 "x64"
-                                 "386"))
+                     (suffix ,(cond
+                                ((target-aarch64?) "a64")
+                                ((target-x86-32?) "386")
+                                ((target-ppc32?) "ppc")
+                                ((target-ppc64le?) "ppc64")
+                                ((target-x86-64?) "x64")
+                                (else "")))
                      (ppc (string-append "ppc" suffix)))
                  (invoke "make" "install" "NOGDB=1"
                          (string-append "INSTALL_PREFIX=" out))

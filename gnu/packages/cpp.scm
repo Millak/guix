@@ -1263,7 +1263,7 @@ Google's C++ code base.")
          ((#:configure-flags flags)
           #~(cons* "-DCMAKE_CXX_STANDARD=11" #$flags)))))))
 
-(define-public abseil-cpp
+(define-public abseil-cpp-20220623.1
   (let ((base abseil-cpp-20200923.3))
     (package
       (inherit base)
@@ -1284,16 +1284,40 @@ Google's C++ code base.")
           `(cons* "-DABSL_BUILD_TESTING=ON"
                   (delete "-DABSL_RUN_TESTS=ON" ,flags))))))))
 
-(define (abseil-cpp-for-c++-standard version)
-  (let ((base abseil-cpp))
-    (hidden-package
-     (package/inherit base
-       (arguments
-        (substitute-keyword-arguments (package-arguments base)
-          ((#:configure-flags flags)
-           #~(cons* #$(string-append "-DCMAKE_CXX_STANDARD="
-                                     (number->string version))
-                    #$flags))))))))
+(define-public abseil-cpp
+  (let ((base abseil-cpp-20220623.1))
+    (package
+      (inherit base)
+      (name "abseil-cpp")
+      (version "20230802.1")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/abseil/abseil-cpp")
+                      (commit version)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1ydkkbanrpkp5i814arzsk973kyzhhjhagnp392rq6rrv16apldq"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-before 'check 'set-env-vars
+                (lambda* (#:key inputs #:allow-other-keys)
+                 ;; absl_time_test requires this environment variable.
+                 (setenv "TZDIR" (string-append #$(package-source base)
+                                                "/absl/time/internal/cctz/testdata/zoneinfo")))))))))))
+
+(define (abseil-cpp-for-c++-standard base version)
+  (hidden-package
+   (package/inherit base
+     (arguments
+      (substitute-keyword-arguments (package-arguments base)
+        ((#:configure-flags flags)
+         #~(cons* #$(string-append "-DCMAKE_CXX_STANDARD="
+                                   (number->string version))
+                  #$flags)))))))
 
 (define (make-static-abseil-cpp version)
   (let ((base abseil-cpp))
@@ -1306,10 +1330,10 @@ Google's C++ code base.")
                     (delete "-DBUILD_SHARED_LIBS=ON" #$flags)))))))))
 
 (define-public abseil-cpp-cxxstd17
-  (abseil-cpp-for-c++-standard 17))             ;XXX: the default with GCC 11?
+  (abseil-cpp-for-c++-standard abseil-cpp 17))  ;XXX: the default with GCC 11?
 
 (define-public abseil-cpp-cxxstd11
-  (abseil-cpp-for-c++-standard 11))
+  (abseil-cpp-for-c++-standard abseil-cpp-20220623.1 11)) ;last version on C++11
 
 (define-public static-abseil-cpp
   (make-static-abseil-cpp abseil-cpp))

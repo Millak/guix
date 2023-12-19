@@ -31,7 +31,7 @@
 # Copyright © 2020 R Veera Kumar <vkor@vkten.in>
 # Copyright © 2020 Nicolò Balzarotti <nicolo@nixo.xyz>
 # Copyright © 2020 Michael Rohleder <mike@rohleder.de>
-# Copyright © 2020, 2021, 2022 Felix Gruber <felgru@posteo.net>
+# Copyright © 2020, 2021, 2022, 2023 Felix Gruber <felgru@posteo.net>
 # Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 # Copyright © 2020 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 # Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
@@ -202,6 +202,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/crates-graphics.scm		\
   %D%/packages/crates-gtk.scm			\
   %D%/packages/cross-base.scm			\
+  %D%/packages/cross-toolchain.scm		\
   %D%/packages/crypto.scm			\
   %D%/packages/cryptsetup.scm			\
   %D%/packages/cups.scm				\
@@ -245,6 +246,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/electronics.scm			\
   %D%/packages/elf.scm				\
   %D%/packages/elixir.scm			\
+  %D%/packages/elixir-xyz.scm			\
   %D%/packages/elm.scm				\
   %D%/packages/embedded.scm			\
   %D%/packages/emacs.scm			\
@@ -507,6 +509,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/photo.scm			\
   %D%/packages/phabricator.scm 			\
   %D%/packages/php.scm				\
+  %D%/packages/php-xyz.scm			\
   %D%/packages/piet.scm			\
   %D%/packages/pikchr.scm			\
   %D%/packages/pkg-config.scm			\
@@ -1188,10 +1191,13 @@ dist_patch_DATA =						\
   %D%/packages/patches/fp16-implicit-double.patch		\
   %D%/packages/patches/fp16-system-libraries.patch		\
   %D%/packages/patches/fpc-reproducibility.patch		\
+  %D%/packages/patches/fpc-glibc-2.34-compat.patch		\
   %D%/packages/patches/fpm-newer-clamp-fix.patch		\
   %D%/packages/patches/freedink-engine-fix-sdl-hints.patch	\
   %D%/packages/patches/freeimage-libtiff-compat.patch		\
   %D%/packages/patches/freeimage-unbundle.patch		\
+  %D%/packages/patches/freeimage-CVE-2020-21428.patch		\
+  %D%/packages/patches/freeimage-CVE-2020-22524.patch		\
   %D%/packages/patches/fulcrum-1.9.1-unbundled-libraries.patch	\
   %D%/packages/patches/fuse-glibc-2.34.patch			\
   %D%/packages/patches/fuse-overlapping-headers.patch		\
@@ -1444,7 +1450,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/id3lib-UTF16-writing-bug.patch			\
   %D%/packages/patches/idris-test-ffi008.patch			\
   %D%/packages/patches/igraph-fix-varargs-integer-size.patch	\
-  %D%/packages/patches/igt-gpu-tools-Use-libproc2.patch		\
   %D%/packages/patches/ilmbase-fix-tests.patch			\
   %D%/packages/patches/imagemagick-CVE-2020-27829.patch		\
   %D%/packages/patches/imagemagick-ReadDCMImage-fix.patch	\
@@ -1736,7 +1741,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/openjdk-15-xcursor-no-dynamic.patch	\
   %D%/packages/patches/openjdk-21-fix-rpath.patch		\
   %D%/packages/patches/openmpi-mtl-priorities.patch		\
-  %D%/packages/patches/openmw-assume-nonconst-SIGSTKSZ.patch    \
   %D%/packages/patches/openssh-trust-guix-store-directory.patch	\
   %D%/packages/patches/openresolv-restartcmd-guix.patch	\
   %D%/packages/patches/openrgb-unbundle-hueplusplus.patch	\
@@ -1769,6 +1773,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/prusa-slicer-fix-tests.patch		\
   %D%/packages/patches/prusa-slicer-with-cereal-1.3.1.patch	\
   %D%/packages/patches/pthreadpool-system-libraries.patch	\
+  %D%/packages/patches/python-accupy-use-matplotx.patch		\
+  %D%/packages/patches/python-accupy-fix-use-of-perfplot.patch	\
   %D%/packages/patches/python-chai-drop-python2.patch		\
   %D%/packages/patches/python-docrepr-fix-tests.patch		\
   %D%/packages/patches/python-feedparser-missing-import.patch	\
@@ -1948,7 +1954,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/rpcbind-CVE-2017-8779.patch		\
   %D%/packages/patches/rtags-separate-rct.patch			\
   %D%/packages/patches/racket-chez-scheme-bin-sh.patch		\
-  %D%/packages/patches/racket-backport-8.10-rktboot.patch	\
+  %D%/packages/patches/racket-backport-8.11-layered-docs.patch	\
   %D%/packages/patches/racket-rktio-bin-sh.patch		\
   %D%/packages/patches/racket-zuo-bin-sh.patch			\
   %D%/packages/patches/remake-impure-dirs.patch			\
@@ -2185,6 +2191,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/yggdrasil-extra-config.patch	\
   %D%/packages/patches/zig-0.9-riscv-support.patch		\
   %D%/packages/patches/zig-do-not-link-against-librt.patch	\
+  %D%/packages/patches/zig-use-baseline-cpu-by-default.patch	\
   %D%/packages/patches/zig-use-system-paths.patch		\
   %D%/packages/patches/zsh-egrep-failing-test.patch
 

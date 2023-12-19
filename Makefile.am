@@ -138,55 +138,58 @@ MODULES =					\
   guix/ipfs.scm					\
   guix/platform.scm                             \
   guix/platforms/arm.scm                        \
+  guix/platforms/avr.scm                        \
   guix/platforms/mips.scm                       \
   guix/platforms/powerpc.scm                    \
   guix/platforms/riscv.scm                      \
   guix/platforms/x86.scm                        \
   guix/build-system.scm				\
-  guix/build-system/agda.scm                    \
+  guix/build-system/agda.scm			\
   guix/build-system/android-ndk.scm		\
   guix/build-system/ant.scm			\
+  guix/build-system/asdf.scm			\
   guix/build-system/cargo.scm			\
-  guix/build-system/channel.scm			\
-  guix/build-system/chicken.scm			\
-  guix/build-system/clojure.scm			\
+  guix/build-system/channel.scm		\
+  guix/build-system/chicken.scm		\
+  guix/build-system/clojure.scm		\
   guix/build-system/cmake.scm			\
+  guix/build-system/copy.scm			\
+  guix/build-system/composer.scm		\
   guix/build-system/dub.scm			\
   guix/build-system/dune.scm			\
   guix/build-system/elm.scm			\
   guix/build-system/emacs.scm			\
   guix/build-system/font.scm			\
-  guix/build-system/go.scm			\
-  guix/build-system/meson.scm			\
-  guix/build-system/mozilla.scm			\
-  guix/build-system/minify.scm			\
-  guix/build-system/minetest.scm		\
-  guix/build-system/asdf.scm			\
-  guix/build-system/copy.scm			\
   guix/build-system/glib-or-gtk.scm		\
   guix/build-system/gnu.scm			\
+  guix/build-system/go.scm			\
   guix/build-system/guile.scm			\
-  guix/build-system/haskell.scm			\
+  guix/build-system/haskell.scm		\
   guix/build-system/julia.scm			\
   guix/build-system/linux-module.scm		\
   guix/build-system/maven.scm			\
+  guix/build-system/meson.scm			\
+  guix/build-system/minetest.scm		\
+  guix/build-system/minify.scm			\
+  guix/build-system/mix.scm			\
+  guix/build-system/mozilla.scm		\
   guix/build-system/node.scm			\
+  guix/build-system/ocaml.scm			\
   guix/build-system/perl.scm			\
   guix/build-system/pyproject.scm		\
   guix/build-system/python.scm			\
-  guix/build-system/renpy.scm			\
-  guix/build-system/ocaml.scm			\
   guix/build-system/qt.scm			\
-  guix/build-system/waf.scm			\
   guix/build-system/r.scm			\
   guix/build-system/rakudo.scm			\
   guix/build-system/rebar.scm			\
+  guix/build-system/renpy.scm			\
   guix/build-system/ruby.scm			\
   guix/build-system/scons.scm			\
-  guix/build-system/texlive.scm			\
+  guix/build-system/texlive.scm		\
   guix/build-system/tree-sitter.scm		\
-  guix/build-system/trivial.scm			\
+  guix/build-system/trivial.scm		\
   guix/build-system/vim.scm			\
+  guix/build-system/waf.scm			\
   guix/build-system/zig.scm			\
   guix/ftp-client.scm				\
   guix/http-client.scm				\
@@ -210,6 +213,7 @@ MODULES =					\
   guix/build/cargo-utils.scm			\
   guix/build/chicken-build-system.scm		\
   guix/build/cmake-build-system.scm		\
+  guix/build/composer-build-system.scm		\
   guix/build/dub-build-system.scm		\
   guix/build/dune-build-system.scm		\
   guix/build/elm-build-system.scm		\
@@ -231,6 +235,7 @@ MODULES =					\
   guix/build/guile-build-system.scm		\
   guix/build/maven-build-system.scm		\
   guix/build/minetest-build-system.scm		\
+  guix/build/mix-build-system.scm		\
   guix/build/node-build-system.scm		\
   guix/build/perl-build-system.scm		\
   guix/build/pyproject-build-system.scm		\
@@ -280,6 +285,7 @@ MODULES =					\
   guix/search-paths.scm				\
   guix/packages.scm				\
   guix/import/cabal.scm				\
+  guix/import/composer.scm			\
   guix/import/cpan.scm				\
   guix/import/cran.scm				\
   guix/import/crate.scm				\
@@ -338,6 +344,7 @@ MODULES =					\
   guix/scripts/home/import.scm			\
   guix/scripts/lint.scm				\
   guix/scripts/challenge.scm			\
+  guix/scripts/import/composer.scm		\
   guix/scripts/import/crate.scm			\
   guix/scripts/import/cpan.scm			\
   guix/scripts/import/cran.scm			\
@@ -415,15 +422,12 @@ dist_noinst_DATA =				\
 AUX_FILES =						\
   gnu/packages/aux-files/chromium/master-preferences.json		\
   gnu/packages/aux-files/emacs/guix-emacs.el		\
+  gnu/packages/aux-files/findclass.php			\
   gnu/packages/aux-files/guix.vim			\
   gnu/packages/aux-files/linux-libre/6.6-arm.conf	\
   gnu/packages/aux-files/linux-libre/6.6-arm64.conf	\
   gnu/packages/aux-files/linux-libre/6.6-i686.conf	\
   gnu/packages/aux-files/linux-libre/6.6-x86_64.conf	\
-  gnu/packages/aux-files/linux-libre/6.5-arm.conf	\
-  gnu/packages/aux-files/linux-libre/6.5-arm64.conf	\
-  gnu/packages/aux-files/linux-libre/6.5-i686.conf	\
-  gnu/packages/aux-files/linux-libre/6.5-x86_64.conf	\
   gnu/packages/aux-files/linux-libre/6.1-arm.conf	\
   gnu/packages/aux-files/linux-libre/6.1-arm64.conf	\
   gnu/packages/aux-files/linux-libre/6.1-i686.conf	\
@@ -510,6 +514,7 @@ SCM_TESTS =					\
   tests/challenge.scm				\
   tests/channels.scm				\
   tests/combinators.scm			\
+  tests/composer.scm				\
   tests/containers.scm				\
   tests/cpan.scm				\
   tests/cpio.scm				\

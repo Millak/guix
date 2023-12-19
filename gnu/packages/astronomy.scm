@@ -1807,7 +1807,10 @@ bad pixel tracking throughout the reduction process.")
         (base32 "0vpgcbc9pmx0qqfia1frnwq3jkgfp8y3ikqdnzs5bs1sr13p9p3w"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:phases
+     ;; Disable shaky test.
+     ;; See https://github.com/MAVENSDC/cdflib/issues/234
+     (list #:test-flags #~(list "-k" "not test_compute_cdfepoch16")
+           #:phases
            #~(modify-phases %standard-phases
                (add-before 'build 'set-env-version
                  (lambda _

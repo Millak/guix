@@ -3,6 +3,7 @@
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Pradana Aumars <paumars@courrier.dev>
+;;; Copyright © 2023 Zhu Zihao <all_but_last@163.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,6 +26,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system python)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix git-download)
   #:use-module (guix download)
@@ -38,43 +40,34 @@
 (define-public lean
   (package
     (name "lean")
-    (version "3.41.0")
-    (home-page "https://github.com/leanprover-community/lean")
+    (version "3.51.1")
+    (home-page "https://lean-lang.org" )
     (source (origin
               (method git-fetch)
-              (uri (git-reference (url home-page)
-                                  (commit (string-append "v" version))))
+              (uri (git-reference
+                    (url "https://github.com/leanprover-community/lean")
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0mpxlfjq460x1vi3v6qzgjv74asg0qlhykd51pj347795x5b1hf1"))))
+                "17g4d3lqnbl1yfy2pjannf73v8qhc5003d2jkmrqiy05zkqs8d9n"))))
     (build-system cmake-build-system)
     (inputs
-     (list bash-minimal gmp))
+     (list gmp))
     (arguments
-     `(#:build-type "Release"           ; default upstream build type
-       ;; XXX: Test phases currently fail on 32-bit sytems.
-       ;; Tests for those architectures have been temporarily
-       ;; disabled, pending further investigation.
-       #:tests? ,(and (not (%current-target-system))
-                      (let ((arch (%current-system)))
-                        (not (or (string-prefix? "i686" arch)
-                                 (string-prefix? "armhf" arch)))))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'patch-source-shebangs 'patch-tests-shebangs
-           (lambda _
-             (let ((sh (which "sh"))
-                   (bash (which "bash")))
-               (substitute* (find-files "tests/lean" "\\.sh$")
-                 (("#![[:blank:]]?/bin/sh")
-                  (string-append "#!" sh))
-                 (("#![[:blank:]]?/bin/bash")
-                  (string-append "#!" bash))
-                 (("#![[:blank:]]?usr/bin/env bash")
-                  (string-append "#!" bash))))))
-         (add-before 'configure 'chdir-to-src
-           (lambda _ (chdir "src"))))))
+     (list
+      #:build-type "Release"            ; default upstream build type
+      ;; XXX: Test phases currently fail on 32-bit sytems.
+      ;; Tests for those architectures have been temporarily
+      ;; disabled, pending further investigation.
+      #:tests? (and (not (%current-target-system))
+                    (let ((arch (%current-system)))
+                      (not (or (string-prefix? "i686" arch)
+                               (string-prefix? "armhf" arch)))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'chdir-to-src
+            (lambda _ (chdir "src"))))))
     (synopsis "Theorem prover and programming language")
     (description
      "Lean is a theorem prover and programming language with a small trusted

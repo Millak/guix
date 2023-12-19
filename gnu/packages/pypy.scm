@@ -42,18 +42,23 @@
 (define-public pypy
   (package
     (name "pypy")
-    (version "7.3.5")
+    (version "7.3.13")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://downloads.python.org/pypy/"
-                                  "pypy3.7-v" version "-src.tar.bz2"))
+                                  "pypy3.10-v" version "-src.tar.bz2"))
               (sha256
                (base32
-                "18lrdmpcczlbk3cfarkgwqdmilrybz56i1dafk8dkjlyk90gw86r"))))
+                "0v9s6pwrnaxqi5h1pvmaphj6kgyczx07ykl07hcx656h34y77haa"))))
     (build-system gnu-build-system)
     (arguments
      (list
       #:tests? #f                      ;FIXME: 43 out of 364 tests are failing
+
+      ;; XXX: ELF file 'pypy.debug' makes 'validate-needed-in-runpath' throw:
+      ;; <https://issues.guix.gnu.org/57653>.
+      #:validate-runpath? #f
+
       #:modules '((ice-9 ftw) (ice-9 match)
                   (guix build utils) (guix build gnu-build-system))
       #:disallowed-references (list nss-certs)
@@ -151,7 +156,7 @@
                   (for-each
                    (lambda (x)
                      (delete-file-recursively (string-append
-                                               "lib-python/3/" x)))
+                                               "lib/pypy3.10/" x)))
                    '("tkinter/test"
                      "test"
                      "sqlite3/test"
@@ -161,12 +166,12 @@
                      "ctypes/test"
                      "unittest/test"))
                   ;; Patch shebang referencing python.
-                  (substitute* '("lib-python/3/cgi.py"
-                                 "lib-python/3/encodings/rot_13.py")
+                  (substitute* '("lib/pypy3.10/cgi.py"
+                                 "lib/pypy3.10/encodings/rot_13.py")
                     ((shebang-match-python) shebang-pypy3))
                   (with-fluids ((%default-port-encoding "ISO-8859-1"))
-                    (substitute* '("lib_pypy/_md5.py"
-                                   "lib_pypy/_sha1.py")
+                    (substitute* '("lib/pypy3.10/_md5.py"
+                                   "lib/pypy3.10/_sha1.py")
                       ((shebang-match-python) shebang-pypy3))))
                 (copy-recursively dist-dir #$output)))))))
     (native-inputs

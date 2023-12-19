@@ -21,14 +21,14 @@
 (define-module (gnu packages ncdu)
   #:use-module (gnu packages)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages perl)
   #:use-module (guix licenses)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix utils)
   #:use-module (guix gexp)
   #:use-module (guix build-system gnu)
-  #:use-module (gnu packages perl)
-  #:use-module (gnu packages zig))
+  #:use-module (guix build-system zig))
 
 (define-public ncdu-1
   ;; This old version is ‘LTS’.  Version 2 works fine and has more features,
@@ -73,29 +73,17 @@ ncurses installed.")
                #~(begin
                    ;; Delete a pregenerated man page.  We'll build it ourselves.
                    (delete-file "ncdu.1")))))
+    (build-system zig-build-system)
     (arguments
      (list
-       #:make-flags
-       #~(list (string-append "PREFIX=" #$output)
-               (string-append "CC=" #$(cc-for-target))
-               ;; XXX By default, zig builds with -march=native!
-               (string-append "ZIG_FLAGS=-Drelease-fast -Dcpu=baseline"))
        #:phases
        #~(modify-phases %standard-phases
-           (delete 'configure)      ; No configure script.
-           (add-before 'build 'pre-build
-             (lambda _
-               (setenv "ZIG_GLOBAL_CACHE_DIR"
-                       (mkdtemp "/tmp/zig-cache-XXXXXX"))))
+           (delete 'validate-runpath)
            (add-after 'build 'build-manpage
              (lambda _
-               (invoke "make" "doc")))
-           (replace 'check
-             (lambda* (#:key tests? #:allow-other-keys)
-               (when tests?
-                 (invoke "zig" "test" "build.zig")))))))
-    (native-inputs
-     (list perl zig-0.10))))
+               (invoke "make" "doc"))))))
+    (native-inputs (list perl))
+    (properties `((tunable? . #t)))))
 
 (define-public ncdu-2
   (deprecated-package "ncdu2" ncdu))

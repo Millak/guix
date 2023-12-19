@@ -2971,7 +2971,16 @@ pure Common Lisp.")
       (license license:expat))))
 
 (define-public ecl-cl-pcg
-  (sbcl-package->ecl-package sbcl-cl-pcg))
+  (let ((pkg (sbcl-package->ecl-package sbcl-cl-pcg)))
+    (package
+      (inherit pkg)
+      (arguments
+       (substitute-keyword-arguments (package-arguments pkg)
+         ;; Tests are failing on ECL with:
+         ;; PCG.TEST::TEST-REWINDAn error occurred during initialization:
+         ;; 40502229875678917802724098623316930025 is not of type
+         ;; (INTEGER 0 2305843009213693951)
+         ((#:tests? _ #f) #f))))))
 
 (define-public cl-pcg
   (sbcl-package->cl-source-package sbcl-cl-pcg))
@@ -9986,8 +9995,8 @@ implementation specific equivalent.")
   (sbcl-package->ecl-package sbcl-trivial-macroexpand-all))
 
 (define-public sbcl-serapeum
-  (let ((commit "47217ab69f76673db7e1fa65665ab804fb46d974")
-        (revision "11"))
+  (let ((commit "c08442a9757b7fa30ac345cb040e1642f97f6b78")
+        (revision "12"))
     (package
       (name "sbcl-serapeum")
       (version (git-version "0.0.0" revision commit))
@@ -10000,7 +10009,7 @@ implementation specific equivalent.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1mr868z1za6vfhb7gq3j7c1rb606gqfzschxdy7wcqx5xv3ndgpa"))))
+          (base32 "1sabd048agvgv7bhbw126rci9hf45fk08zhghcv6an2h6xwmc3qv"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria
@@ -18572,8 +18581,8 @@ building Jupyter kernels, based on Maxima-Jupyter which was based on
   (sbcl-package->cl-source-package sbcl-common-lisp-jupyter))
 
 (define-public sbcl-radiance
-  (let ((commit "a7237831970edfd330dddd5b347d3d1277853bf0")
-        (revision "2"))
+  (let ((commit "8d826c7fe1935338565580931db43f46181e0e85")
+        (revision "3"))
     (package
       (name "sbcl-radiance")
       (version (git-version "2.1.2" revision commit))
@@ -18585,7 +18594,7 @@ building Jupyter kernels, based on Maxima-Jupyter which was based on
                (commit commit)))
          (file-name (git-file-name "radiance" version))
          (sha256
-          (base32 "1q4x9mswiizwgr7acl5zi6lkssfg2zajqbdq7xhw1kq6xfnq37j2"))))
+          (base32 "1j823dgp87www0sjbcbv9j025bfxlkwhjd7kz6635mrqwmmlki4l"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        `(#:tests? #f  ; TODO: The tests require some configuration.
@@ -19180,6 +19189,43 @@ Lisp.")
 
 (define-public cl-percent-encoding
   (sbcl-package->cl-source-package sbcl-percent-encoding))
+
+(define-public sbcl-machine-state
+  (let ((commit "afa7392bc5dcb689cd170bcca765fb6ce6e4efc5")
+        (revision "1"))
+    (package
+      (name "sbcl-machine-state")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/machine-state")
+               (commit commit)))
+         (file-name (git-file-name "machine-state" version))
+         (sha256
+          (base32 "1b897wj06cnalzf5nl6rif1skpa79rzc9a562x1bdhvanhsp7hwa"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-bordeaux-threads
+             sbcl-cffi
+             sbcl-cl-opengl
+             sbcl-documentation-utils))
+      (arguments
+       '(#:tests? #f                    ; No tests.
+         #:asd-systems '("machine-state" "machine-state/opengl")))
+      (home-page "https://notabug.org/cage/cl-mount-info.git")
+      (synopsis "Retrieve machine state information about CPU time, memory usage and more")
+      (description
+       "This library implements various functions to access status information
+about the machine, process, etc.")
+      (license license:zlib))))
+
+(define-public ecl-machine-state
+  (sbcl-package->ecl-package sbcl-machine-state))
+
+(define-public cl-machine-state
+  (sbcl-package->cl-source-package sbcl-machine-state))
 
 (define-public sbcl-cl-mount-info
   (let ((commit "2024f5037a7f63db3e3587dc9972cd7b9318f06b")

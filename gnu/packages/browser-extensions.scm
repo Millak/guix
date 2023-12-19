@@ -57,7 +57,7 @@ supported content to the Kodi media center.")
   ;; Arbitrary commit of branch master,
   ;; Update when updating uBlockOrigin.
   (let* ((name "ublock-main-assets")
-         (commit "d93605b8584df8cd47bcc91b3d932feecd9e3a2a")
+         (commit "76bd7cb53036a36f7e7df5ee9173f588ba8aa966")
          (revision "1")
          (version (git-version "0" revision commit)))
     (origin
@@ -67,13 +67,13 @@ supported content to the Kodi media center.")
             (commit commit)))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "1bbwxmb5rb1afh6i5a7m1ysaw0022wi5g091vpahi4h805p1s7a2")))))
+       (base32 "1kdzvflr1yxykyva5vsjqr0p2ik1200xbhxwpl3cx2jsiv8l95sk")))))
 
 (define ublock-prod-assets
   ;; Arbitrary commit of branch gh-pages,
   ;; Update when updating uBlockOrigin.
   (let* ((name "ublock-prod-assets")
-         (commit "1d3df32ef6672763f44b27a95fd5cb3b5770d5e2")
+         (commit "a379a168fc149ffbd6d10cd0700d4ab4801e57f2")
          (revision "1")
          (version (git-version "0" revision commit)))
     (origin
@@ -83,12 +83,12 @@ supported content to the Kodi media center.")
             (commit commit)))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "1cbx7w1nzdcjq0z4z7j9nr8922i27nslprrw5dy03xcdqwc3x4l6")))))
+       (base32 "0syf3kbhvsbn5xka5knpclxby2kp92my1w7ixvf5fs9n08ylcip1")))))
 
 (define ublock-origin
   (package
     (name "ublock-origin")
-    (version "1.53.2")
+    (version "1.54.0")
     (home-page "https://github.com/gorhill/uBlock")
     (source (origin
               (method git-fetch)
@@ -98,7 +98,7 @@ supported content to the Kodi media center.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0mz1k5ghyc25v51md02qx7chrbg4cxagvqi18bcbs4agq8ix6sp7"))))
+                "1yacqpf9z8lprwsj194bhlp2ba9ywzbagd6lwxj3h6g405s7zp2k"))))
     (build-system gnu-build-system)
     (outputs '("xpi" "firefox" "chromium"))
     (properties '((addon-id . "uBlock0@raymondhill.net")))
@@ -221,3 +221,33 @@ fill and submit login forms if a matching password entry is found.")
 
 (define-public passff/icecat
   (make-icecat-extension passff))
+
+(define keepassxc-browser
+  (package
+    (name "keepassxc-browser")
+    (version "1.8.10")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url
+                     "https://github.com/keepassxreboot/keepassxc-browser")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1059kcb95ig18izbchwlb7pz41l4l3vjwzlmhz3w8zw2qxm6hrvx"))))
+    (build-system copy-build-system)
+    (properties
+     '((addon-id . "keepassxc-browser@keepassxc.org")))
+    (arguments
+     `(#:install-plan
+       '(("keepassxc-browser" ,(assq-ref properties 'addon-id)))))
+    (synopsis "Browser extension for the KeePassXC password manager")
+    (description
+     "This package provides an extension allow the browser to work together
+with the @uref{https://keepassxc.org, KeePassXC} password manager.")
+    (home-page "https://keepassxc.org")
+    (license license:gpl3+)))
+
+(define-public keepassxc-browser/icecat
+  (make-icecat-extension keepassxc-browser))

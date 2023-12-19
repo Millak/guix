@@ -78,7 +78,8 @@
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match)
   #:export (make-lld-wrapper
-            system->llvm-target))
+            system->llvm-target
+            clang-properties))
 
 (define* (system->llvm-target #:optional
                               (system (or (and=> (%current-target-system)
@@ -114,7 +115,8 @@ as \"x86_64-linux\"."
              ("riscv64"     => "RISCV64")
              ("x86_64"      => "X86_64")
              ("i686"        => "X86")
-             ("i586"        => "X86"))))
+             ("i586"        => "X86")
+             ("avr"         => "AVR"))))
 
 (define (llvm-uri component version)
   ;; LLVM release candidate file names are formatted 'tool-A.B.C-rcN/tool-A.B.CrcN.src.tar.xz'
@@ -602,13 +604,13 @@ output), and Binutils.")
   '(("14.0.6" . "14f8nlvnmdkp9a9a79wv67jbmafvabczhah8rwnqrgd5g3hfxxxx")
     ("15.0.7" . "12sggw15sxq1krh1mfk3c1f07h895jlxbcifpwk3pznh4m1rjfy2")
     ("16.0.6" . "0jxmapg7shwkl88m4mqgfjv4ziqdmnppxhjz6vz51ycp2x4nmjky")
-    ("17.0.5" . "149flpr96vcn7a1ckya6mm93m9yp85l47w156fjd0r99ydxrw5kv")))
+    ("17.0.6" . "1a7rq3rgw5vxm8y39fyzr4kv7w97lli4a0c1qrkchwk8p0n07hgh")))
 
 (define %llvm-patches
   '(("14.0.6" . ("clang-14.0-libc-search-path.patch"))
     ("15.0.7" . ("clang-15.0-libc-search-path.patch"))
     ("16.0.6" . ("clang-16.0-libc-search-path.patch"))
-    ("17.0.5" . ("clang-17.0-libc-search-path.patch"))))
+    ("17.0.6" . ("clang-17.0-libc-search-path.patch"))))
 
 (define (llvm-monorepo version)
   (origin
@@ -705,6 +707,10 @@ of programming tools as well as libraries with equivalent functionality.")
                    #$(string-append "-DLLVM_TARGETS_TO_BUILD="
                                     (system->llvm-target)))
                 '())
+         ;; undefined reference to `__atomic_fetch_add_8' in lib/libLLVMOrcJIT.so.14
+         #$@(if (target-ppc32?)
+                (list "-DCMAKE_SHARED_LINKER_FLAGS=-latomic")
+                `())
          "-DCMAKE_SKIP_BUILD_RPATH=FALSE"
          "-DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE"
          "-DBUILD_SHARED_LIBS:BOOL=TRUE"
@@ -1501,7 +1507,7 @@ Library.")
 (define-public llvm-17
   (package
     (inherit llvm-15)
-    (version "17.0.5")
+    (version "17.0.6")
     (source (llvm-monorepo version))))
 
 (define-public clang-runtime-17
@@ -1517,7 +1523,7 @@ Library.")
                     (package-version llvm-17)))
      (sha256
       (base32
-       "12dbp10bhq25a44qnvz978mf9y6pdycwpp7sgq8a93by0fpgb72r")))))
+       "1f8szx762c325916gjxb5lw7zxyidynwnvx6fxxqscsx8514cxxa")))))
 
 (define-public libomp-17
   (package

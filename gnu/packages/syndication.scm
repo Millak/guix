@@ -43,7 +43,6 @@
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages curl)
-  #:use-module (gnu packages documentation)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
@@ -287,6 +286,14 @@ cards.")
                      (("^doc:.*") "doc:\n")
                      (("install-podboat install-docs") "install-podboat")))))
              '())
+         (add-after 'unpack 'pre-build
+           (lambda* (#:key inputs #:allow-other-keys)
+             (setenv "CXX" ,(cxx-for-target))
+             (setenv "CXX_FOR_BUILD" (which "g++"))
+             (substitute* "config.sh"
+               (("if curl-config")
+                (string-append
+                  "if " (search-input-file inputs "/bin/curl-config"))))))
          (add-after 'configure 'dont-vendor-self
            (lambda* (#:key vendor-dir #:allow-other-keys)
              ;; Don't keep the whole tarball in the vendor directory
@@ -301,9 +308,10 @@ cards.")
          (replace 'build
            (assoc-ref gnu:%standard-phases 'build))
          (replace 'check
-           (lambda args
-             ((assoc-ref gnu:%standard-phases 'check)
-              #:test-target "test")))
+           (lambda* (#:key tests? #:allow-other-keys #:rest args)
+             (when tests?
+               ((assoc-ref gnu:%standard-phases 'check)
+                #:test-target "test"))))
          (replace 'install
            (assoc-ref gnu:%standard-phases 'install)))))
     (native-search-paths
@@ -326,38 +334,6 @@ file system, and many more features.")
     (properties '((release-monitoring-url . "https://newsboat.org/news.atom")))
     (license (list license:gpl2+        ; filter/*
                    license:expat))))    ; everything else
-
-(define-public newsboat-2.13
-  (package
-    (inherit newsboat)
-    (version "2.13")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://newsboat.org/releases/" version
-                           "/newsboat-" version ".tar.xz"))
-       (sha256
-        (base32
-         "0pik1d98ydzqi6055vdbkjg5krwifbk2hy2f5jp5p1wcy2s16dn7"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     `(,@(fold alist-delete (package-native-inputs newsboat)
-               '("asciidoctor" "openssl"))
-       ;; For building documentation.
-       ("asciidoc" ,asciidoc)))
-    (inputs
-     (modify-inputs (package-inputs newsboat)
-       (replace "json-c" json-c-0.13)))
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (add-after 'build 'build-documentation
-           (lambda _
-             (invoke "make" "doc"))))
-       #:make-flags
-       (list (string-append "prefix=" (assoc-ref %outputs "out")))
-       #:test-target "test"))))
 
 (define-public liferea
   (package

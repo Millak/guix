@@ -311,6 +311,9 @@ use '--preserve' instead~%"))
 (define (options/resolve-packages store opts)
   "Return OPTS with package specification strings replaced by manifest entries
 for the corresponding packages."
+  (define system
+    (assoc-ref opts 'system))
+
   (define (manifest-entry=? e1 e2)
     (and (eq? (manifest-entry-item e1) (manifest-entry-item e2))
          (string=? (manifest-entry-output e1)
@@ -327,11 +330,11 @@ for the corresponding packages."
       ((? package? package)
        (if (eq? mode 'ad-hoc-package)
            (list (package->manifest-entry* package))
-           (manifest-entries (package->development-manifest package))))
+           (manifest-entries (package->development-manifest package system))))
       (((? package? package) (? string? output))
        (if (eq? mode 'ad-hoc-package)
            (list (package->manifest-entry* package output))
-           (manifest-entries (package->development-manifest package))))
+           (manifest-entries (package->development-manifest package system))))
       ((lst ...)
        (append-map (cut packages->outputs <> mode) lst))))
 
@@ -345,7 +348,8 @@ for the corresponding packages."
                   (('package 'package (? string? spec))
                    (manifest-entries
                     (package->development-manifest
-                     (transform (specification->package+output spec)))))
+                     (transform (specification->package+output spec))
+                     system)))
                   (('expression mode str)
                    ;; Add all the outputs of the package STR evaluates to.
                    (packages->outputs (read/eval str) mode))
