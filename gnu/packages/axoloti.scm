@@ -333,8 +333,7 @@ runtime.")
                                        " -Daxoloti_release=" runtime
                                        " -Daxoloti_runtime=" runtime
                                        " -jar " dir "/Axoloti.jar")))))
-                 (chmod target #o555))
-               #t)))
+                 (chmod target #o555)))))
          (add-after 'install 'strip-jar-timestamps
            (assoc-ref ant:%standard-phases 'strip-jar-timestamps)))))
     (inputs
