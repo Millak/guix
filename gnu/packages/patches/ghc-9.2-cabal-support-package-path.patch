@@ -1,0 +1,67 @@
+Without this patch, Cabal terminates if GHC_PACKAGE_PATH is set. This is
+an annoyance with Guix as it makes heavy use of GHC_PACKAGE_PATH to have
+GHC pickup Haskell package installed via Guix. Therefore, Cabal does
+presently not work by default in environments created by Guix. This is
+a workaround which makes Cabal respect GHC_PACKAGE_PATH.
+
+Taken from https://github.com/haskell/cabal/issues/3728
+
+diff -upr a/libraries/Cabal/Cabal/src/Distribution/Simple/GHC.hs b/libraries/Cabal/Cabal/src/Distribution/Simple/GHC.hs
+--- a/libraries/Cabal/Cabal/src/Distribution/Simple/GHC.hs	2022-11-06 20:41:17.000000000 +0100
++++ b/libraries/Cabal/Cabal/src/Distribution/Simple/GHC.hs	2023-12-18 14:34:15.148911717 +0100
+@@ -71,6 +71,7 @@ module Distribution.Simple.GHC (
+  ) where
+ 
+ import Prelude ()
++import Distribution.Compat.Environment (lookupEnv)
+ import Distribution.Compat.Prelude
+ 
+ import qualified Distribution.Simple.GHC.Internal as Internal
+@@ -117,7 +118,7 @@ import System.Directory
+          , canonicalizePath, removeFile, renameFile, getDirectoryContents )
+ import System.FilePath          ( (</>), (<.>), takeExtension
+                                 , takeDirectory, replaceExtension
+-                                ,isRelative )
++                                , isRelative, searchPathSeparator )
+ import qualified System.Info
+ #ifndef mingw32_HOST_OS
+ import System.Posix (createSymbolicLink)
+@@ -333,9 +334,11 @@ getInstalledPackages :: Verbosity -> Com
+                      -> ProgramDb
+                      -> IO InstalledPackageIndex
+ getInstalledPackages verbosity comp packagedbs progdb = do
+-  checkPackageDbEnvVar verbosity
+   checkPackageDbStack verbosity comp packagedbs
+-  pkgss <- getInstalledPackages' verbosity packagedbs progdb
++  envPackageDBs <-
++    maybe [] (map SpecificPackageDB . unintersperse searchPathSeparator)
++      <$> lookupEnv "GHC_PACKAGE_PATH"
++  pkgss <- getInstalledPackages' verbosity (envPackageDBs ++ packagedbs) progdb
+   index <- toPackageIndex verbosity pkgss progdb
+   return $! hackRtsPackage index
+ 
+@@ -405,10 +408,6 @@ getUserPackageDB _verbosity ghcProg plat
+     packageConfFileName = "package.conf.d"
+     ghcVersion = fromMaybe (error "GHC.getUserPackageDB: no ghc version") $ programVersion ghcProg
+ 
+-checkPackageDbEnvVar :: Verbosity -> IO ()
+-checkPackageDbEnvVar verbosity =
+-    Internal.checkPackageDbEnvVar verbosity "GHC" "GHC_PACKAGE_PATH"
+-
+ checkPackageDbStack :: Verbosity -> Compiler -> PackageDBStack -> IO ()
+ checkPackageDbStack verbosity comp =
+     if flagPackageConf implInfo
+@@ -461,8 +460,11 @@ getInstalledPackagesMonitorFiles :: Verb
+                                  -> ProgramDb
+                                  -> [PackageDB]
+                                  -> IO [FilePath]
+-getInstalledPackagesMonitorFiles verbosity platform progdb =
+-    traverse getPackageDBPath
++getInstalledPackagesMonitorFiles verbosity platform progdb packageDBs = do
++    envPackageDBs <-
++      maybe [] (map SpecificPackageDB . unintersperse searchPathSeparator)
++        <$> lookupEnv "GHC_PACKAGE_PATH"
++    traverse getPackageDBPath (envPackageDBs ++ packageDBs)
+   where
+     getPackageDBPath :: PackageDB -> IO FilePath
+     getPackageDBPath GlobalPackageDB =
