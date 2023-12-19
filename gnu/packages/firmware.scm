@@ -891,6 +891,7 @@ Executables included are:
       (arguments
        (list
         #:tests? #f                     ; No check target.
+        #:target #f                     ; Package produces firmware.
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'patch-source
