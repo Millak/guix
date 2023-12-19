@@ -191,13 +191,11 @@ $loader->register();
                (cons* (string-join (string-split key #\\) "\\\\")
                       (append-map (lambda (v) (list vendor v)) vals)))))
            (_ (format #t "")))
-         (delete-duplicates
-          (append
-           (composer-autoload-psr-4 autoload)
-           (if (and dev-dependencies? (not (null? autoload-dev)))
-               (composer-autoload-psr-4 autoload-dev)
-               '()))
-          '()))
+         (append
+          (composer-autoload-psr-4 autoload)
+          (if (and dev-dependencies? (not (null? autoload-dev)))
+              (composer-autoload-psr-4 autoload-dev)
+              '())))
         (for-each
          (lambda (psr0)
            (match psr0
