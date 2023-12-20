@@ -201,8 +201,7 @@ living in the same process.")
 (define-public gnutls
   (package
     (name "gnutls")
-    (version "3.7.7")
-    (replacement gnutls/fixed)
+    (version "3.8.3")
     (source (origin
               (method url-fetch)
               ;; Note: Releases are no longer on ftp.gnu.org since the
@@ -210,11 +209,10 @@ living in the same process.")
               (uri (string-append "mirror://gnupg/gnutls/v"
                                   (version-major+minor version)
                                   "/gnutls-" version ".tar.xz"))
-              (patches (search-patches "gnutls-skip-trust-store-test.patch"
-                                       "gnutls-cross.patch"))
+              (patches (search-patches "gnutls-skip-trust-store-test.patch"))
               (sha256
                (base32
-                "01i1gl15k6qwvxmxx0by1mn9nlmcmym18wdpm7dn9awfsp8474dy"))))
+                "0ghpyhhfa3nsraph6dws50jb3dc8g2cfl7dizdnyrm179fawakzp"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? (not (or (%current-target-system)
@@ -293,7 +291,7 @@ living in the same process.")
                (if (string-prefix? "mips64el" system)
                    '()
                    (list p11-kit)))))
-    (home-page "https://www.gnu.org/software/gnutls/")
+    (home-page "https://gnutls.org")
     (synopsis "Transport layer security library")
     (description
      "GnuTLS is a secure communications library implementing the SSL, TLS
@@ -301,27 +299,10 @@ and DTLS protocols.  It is provided in the form of a C library to support the
 protocols, as well as to parse and write X.509, PKCS #12, OpenPGP and other
 required structures.")
     (license license:lgpl2.1+)
-    (properties '((ftp-server . "ftp.gnutls.org")
-                  (ftp-directory . "/gcrypt/gnutls")))))
+    (properties
+     '((release-monitoring-url . "https://gnutls.org/download.html")))))
 
 (define-deprecated/public-alias gnutls-latest gnutls)
-
-;; Replacement for gnutls@3.7.7 to address GNUTLS-SA-2020-07-14 /
-;; CVE-2023-0361, GNUTLS-SA-2023-10-23 / CVE-2023-5981, GNUTLS-SA-2024-01-14 /
-;; CVE-2024-0553, and GNUTLS-SA-2024-01-09 / CVE-2024-0567
-(define gnutls/fixed
-  (package
-    (inherit gnutls)
-    (version "3.8.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnupg/gnutls/v"
-                                  (version-major+minor version)
-                                  "/gnutls-" version ".tar.xz"))
-              (patches (search-patches "gnutls-skip-trust-store-test.patch"))
-              (sha256
-               (base32
-                "0ghpyhhfa3nsraph6dws50jb3dc8g2cfl7dizdnyrm179fawakzp"))))))
 
 (define-public gnutls/dane
   ;; GnuTLS with build libgnutls-dane, implementing DNS-based
