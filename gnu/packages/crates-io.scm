@@ -65871,14 +65871,14 @@ and table-based tests.")
   (package
     (inherit rust-rstest-0.10)
     (name "rust-rstest")
-    (version "0.6.5")
+    (version "0.6.4")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "rstest" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1wdd0ci0bn6fd5v5c19lhlqrpadk18fl4jzvh75b26616anlxdil"))))))
+                "0f3wdwfhf4dh7yf49cmi0r40qnwi4gwrqdki1bffyxvr2ny4ii6y"))))))
 
 (define-public rust-rstest-macros-0.17
   (package
