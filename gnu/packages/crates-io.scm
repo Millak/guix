@@ -17882,22 +17882,21 @@ message passing.")
 (define-public rust-crossbeam-utils-0.8
   (package
     (name "rust-crossbeam-utils")
-    (version "0.8.14")
+    (version "0.8.17")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "crossbeam-utils" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "17wjbnlj4whbdvc1syk2gfy8maqx01sg2hmqpdnjh9l7g7x6ddsg"))))
+        (base32 "13y7wh993i7q71kg6wcfj65w3rlmizzrz7cqgz1l9whlgw9rcvf0"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-loom" ,rust-loom-0.5))
+        ("rust-loom" ,rust-loom-0.7))
        #:cargo-development-inputs
-       (("rust-rand" ,rust-rand-0.8)
-        ("rust-rustversion" ,rust-rustversion-1))))
+       (("rust-rand" ,rust-rand-0.8))))
     (home-page
      "https://github.com/crossbeam-rs/crossbeam/tree/master/crossbeam-utils")
     (synopsis "Utilities for concurrent programming")
