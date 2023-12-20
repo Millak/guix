@@ -81745,14 +81745,14 @@ should not be relied upon directly.")
 (define-public rust-time-macros-0.2
   (package
     (name "rust-time-macros")
-    (version "0.2.14")
+    (version "0.2.16")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "time-macros" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0wn52hwaq1hy4r5yijzkdi4j40zvqapbpcjsjdkyyy4l6d22z50s"))))
+        (base32 "0gx4ngf5g7ydqa8lf7kh9sy72rd4dhvpi31y1jvswi0288rpw696"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-time-core" ,rust-time-core-0.1))))
