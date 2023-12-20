@@ -474,14 +474,14 @@ also knows about symlinks, extended attributes, and Git.")
 (define-public eza
   (package
     (name "eza")
-    (version "0.15.2")
+    (version "0.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "eza" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "14qapnxc1rwqsq6c13b35wgaiypn23niajk39c44i1w3if91rd85"))))
+        (base32 "026xagh42nrdy2yg9197mmb2bhm5mdvbf9vd9fk9iysrj1iay63r"))))
     (build-system cargo-build-system)
     (arguments
      (list
@@ -497,8 +497,10 @@ also knows about symlinks, extended attributes, and Git.")
                        ("rust-num-cpus" ,rust-num-cpus-1)
                        ("rust-number-prefix" ,rust-number-prefix-0.4)
                        ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-palette" ,rust-palette-0.7)
                        ("rust-percent-encoding" ,rust-percent-encoding-2)
                        ("rust-phf" ,rust-phf-0.11)
+                       ("rust-plist" ,rust-plist-1)
                        ("rust-proc-mounts" ,rust-proc-mounts-0.3)
                        ("rust-scoped-threadpool" ,rust-scoped-threadpool-0.1)
                        ("rust-terminal-size" ,rust-terminal-size-0.3)
@@ -506,7 +508,7 @@ also knows about symlinks, extended attributes, and Git.")
                        ("rust-unicode-width" ,rust-unicode-width-0.1)
                        ("rust-uutils-term-grid" ,rust-uutils-term-grid-0.3)
                        ("rust-uzers" ,rust-uzers-0.11)
-                       ("rust-windows-sys" ,rust-windows-sys-0.48)
+                       ("rust-windows-sys" ,rust-windows-sys-0.52)
                        ("rust-zoneinfo-compiled" ,rust-zoneinfo-compiled-0.5))
       #:cargo-development-inputs `(("rust-criterion" ,rust-criterion-0.5)
                                    ("rust-trycmd" ,rust-trycmd-0.14))
