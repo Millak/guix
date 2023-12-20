@@ -84696,6 +84696,27 @@ parser.")
 performance, interoperability, and flexibility.")
     (license license:expat)))
 
+(define-public rust-topology-traits-0.1
+  (package
+    (name "rust-topology-traits")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "topology-traits" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0cj03w5h0yp3mfrpry5llyj5clmmj8q6xz9vbl8k07jk52sdmj60"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-num-traits" ,rust-num-traits-0.2))))
+    (home-page "https://github.com/NicolasKlenert/topology-traits")
+    (synopsis "Topological traits for generic mathematics in Rust")
+    (description
+     "This package provides topological traits for generic mathematics in
+Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-totp-lite-2
   (package
     (name "rust-totp-lite")
