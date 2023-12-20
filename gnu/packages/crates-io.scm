@@ -86769,30 +86769,21 @@ first byte.")
 (define-public rust-uuid-1
   (package
     (name "rust-uuid")
-    (version "1.3.3")
+    (version "1.6.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "uuid" version))
-              (file-name
-               (string-append name "-" version ".tar.gz"))
+              (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1lpcqp1z0zy3l00yd418dpjlpih9la2swm62gwk1nia24kil8m1l"))))
+                "0q45jxahvysldn3iy04m8xmr8hgig80855y9gq9di8x72v7myfay"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-development-inputs
-       (("rust-bincode" ,rust-bincode-1)
-        ("rust-rustversion" ,rust-rustversion-1)
-        ("rust-serde-derive" ,rust-serde-derive-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-serde-test" ,rust-serde-test-1)
-        ("rust-trybuild" ,rust-trybuild-1)
-        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
-        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3)
-        ("rust-windows-sys" ,rust-windows-sys-0.48))
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-arbitrary" ,rust-arbitrary-1)
         ("rust-atomic" ,rust-atomic-0.5)
+        ("rust-borsh" ,rust-borsh-0.10)
+        ("rust-bytemuck" ,rust-bytemuck-1)
         ("rust-getrandom" ,rust-getrandom-0.2)
         ("rust-md-5" ,rust-md-5-0.10)
         ("rust-rand" ,rust-rand-0.8)
@@ -86801,7 +86792,17 @@ first byte.")
         ("rust-slog" ,rust-slog-2)
         ("rust-uuid-macro-internal" ,rust-uuid-macro-internal-1)
         ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
-        ("rust-zerocopy" ,rust-zerocopy-0.6))))
+        ("rust-zerocopy" ,rust-zerocopy-0.6))
+       #:cargo-development-inputs
+       (("rust-bincode" ,rust-bincode-1)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-serde-test" ,rust-serde-test-1)
+        ("rust-trybuild" ,rust-trybuild-1)
+        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3)
+        ("rust-windows-sys" ,rust-windows-sys-0.48))))
     (home-page "https://github.com/uuid-rs/uuid")
     (synopsis "Library to generate and parse UUIDs")
     (description
