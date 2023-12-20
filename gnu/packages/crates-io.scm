@@ -42900,14 +42900,14 @@ by inspecting the system for user preference.")
 (define-public rust-loom-0.7
   (package
     (name "rust-loom")
-    (version "0.7.0")
+    (version "0.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "loom" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1gqrw1d0kqdkjvb11ziniwhngd66awk40dr67s6wyfh7wmipk8c6"))))
+        (base32 "0xcibbxcxm8fxq543xinpxn8ykjk378dwr59rzm89jgvvmq5s13y"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
