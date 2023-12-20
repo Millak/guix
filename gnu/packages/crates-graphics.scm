@@ -1892,6 +1892,29 @@ graphics and video games.")
     (description "This package provides OSMesa library bindings for Rust.")
     (license license:cc0)))
 
+(define-public rust-palette-derive-0.7
+  (package
+    (name "rust-palette-derive")
+    (version "0.7.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "palette_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02ps239sxcr5v294qf89d87sv7fdm9pr2cziwj2l6ggzql703nxp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-find-crate" ,rust-find-crate-0.6)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/Ogeon/palette")
+    (synopsis "Automatically implement traits from the @code{palette} crate")
+    (description "This package allows automatically implements traits from the
+@code{palette} crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-piston-float-1
   (package
     (name "rust-piston-float")
