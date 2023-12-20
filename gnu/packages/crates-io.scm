@@ -73342,7 +73342,17 @@ OIDs)")
        (uri (crate-uri "sqlite3-src" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "14ancc9jafw5ql9carg27icjxcfrdz5izxk4bj7fp5n909x5m0fi"))))
+        (base32 "14ancc9jafw5ql9carg27icjxcfrdz5izxk4bj7fp5n909x5m0fi"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 ;; Only allow for linking to system sqlite3.
+                 (delete-file-recursively "source")
+                 (delete-file "build.rs")
+                 (with-output-to-file "build.rs"
+                   (lambda _
+                     (format #t "fn main (){~@
+                             println!(\"cargo:rustc-link-lib=sqlite3\");~@
+                             }~%")))))))
     (arguments
      `(#:cargo-inputs
        (("rust-cc" ,rust-cc-1)
