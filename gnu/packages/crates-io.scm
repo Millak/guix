@@ -63856,7 +63856,7 @@ can handle huge texts and memory-incoherent edits with ease.")
         ("rust-rand" ,rust-rand-0.8)
         ("rust-serde" ,rust-serde-1)
         ("rust-subtle" ,rust-subtle-2)
-        ("rust-zeroize" ,rust-zeroize-1.4))
+        ("rust-zeroize" ,rust-zeroize-1))
        #:cargo-development-inputs
         (("rust-base64" ,rust-base64-0.13)
          ("rust-hex" ,rust-hex-0.4)
