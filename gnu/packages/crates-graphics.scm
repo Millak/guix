@@ -893,6 +893,25 @@ EUI-64, also known as MAC-48 media access control addresses.")
     (description "Read and write OpenEXR files without any unsafe code")
     (license license:bsd-3)))
 
+(define-public rust-fast-srgb8-1
+  (package
+    (name "rust-fast-srgb8")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fast-srgb8" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18g6xwwh4gnkyx1352hnvwagpv0n4y98yp2llm8vyvwxh487abnx"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/thomcc/fast-srgb8")
+    (synopsis "Conversions between linear float and 8-bit @code{sRGB}")
+    (description
+     "This package provides very fast conversions between linear float and
+8-bit @code{sRGB} (with @code{no_std} support).")
+    (license (list license:expat license:asl2.0 license:cc0))))
+
 (define-public rust-gfx-0.18
   (package
     (name "rust-gfx")
