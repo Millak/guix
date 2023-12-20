@@ -84154,18 +84154,21 @@ or dashboards.")
        (sha256
         (base32 "0w9azg9zj1nnwcwbra9pxrwy47ab0m2bhanbkchydv8lscx8y7c6"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1)
-        ("rust-cassowary" ,rust-cassowary-0.3)
-        ("rust-crossterm" ,rust-crossterm-0.19)
-        ("rust-easycurses" ,rust-easycurses-0.12)
-        ("rust-pancurses" ,rust-pancurses-0.16)
-        ("rust-rustbox" ,rust-rustbox-0.11)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-termion" ,rust-termion-1)
-        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
-        ("rust-unicode-width" ,rust-unicode-width-0.1))))))
+     `(#:cargo-test-flags `("--"
+                            "--skip=buffer::tests::index_of_panics_on_out_of_bounds"
+                            "--skip=buffer::tests::pos_of_panics_on_out_of_bounds")
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-cassowary" ,rust-cassowary-0.3)
+                       ("rust-crossterm" ,rust-crossterm-0.19)
+                       ("rust-easycurses" ,rust-easycurses-0.12)
+                       ("rust-pancurses" ,rust-pancurses-0.16)
+                       ("rust-rustbox" ,rust-rustbox-0.11)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-termion" ,rust-termion-1)
+                       ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1))
+       #:cargo-development-inputs (("rust-argh" ,rust-argh-0.1)
+                                   ("rust-rand" ,rust-rand-0.8))))))
 
 (define-public rust-tui-react-0.20
   (package
