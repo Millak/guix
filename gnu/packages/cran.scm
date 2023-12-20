@@ -17904,6 +17904,28 @@ variables, and files, in either version 3 or 4 format, and manipulate existing
 netCDF files.")
     (license license:gpl3+)))
 
+(define-public r-ncmisc
+  (package
+    (name "r-ncmisc")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "NCmisc" version))
+       (sha256
+        (base32 "10wzznqa26fxyj6bl979qmq29p3dkr8yap4s70l3mwhhk33zpz16"))))
+    (properties `((upstream-name . "NCmisc")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=NCmisc")
+    (synopsis "Functions for creating adaptive functions and scripts")
+    (description
+     "This package provides a set of handy functions.  It includes a versatile
+one line progress bar, one line function timer with detailed output, time delay
+function, text histogram, object preview, CRAN package search, simpler package
+installer, Linux command install check, a flexible Mode function, top function,
+simulation of correlated data, and more.")
+    (license license:gpl2+)))
+
 (define-public r-biocmanager
   (package
     (name "r-biocmanager")
