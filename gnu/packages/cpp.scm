@@ -496,7 +496,8 @@ operating on batches.")
         (base32 "01ig4iqicm57nycl9q8mx1b22gvl4wj5j1vfp1jczhmrga4bca8v"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags (list "-DHWY_SYSTEM_GTEST=on")))
+     `(#:configure-flags (list "-DHWY_SYSTEM_GTEST=on"
+                               "-DBUILD_SHARED_LIBS=ON")))
     (native-inputs
      (list googletest))
     (home-page "https://github.com/google/highway")
