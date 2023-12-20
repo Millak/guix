@@ -62137,6 +62137,30 @@ generator based on timing jitter.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-rand-mt-4
+  (package
+    (name "rust-rand-mt")
+    (version "4.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rand_mt" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1pz2l6kwhx9rvfkr8n4c4klr49fancpc31wqc19543nnvv31iq29"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-rand-core" ,rust-rand-core-0.6))
+       #:cargo-development-inputs
+       (("rust-getrandom" ,rust-getrandom-0.2)
+        ("rust-version-sync" ,rust-version-sync-0.9))))
+    (home-page "https://github.com/artichoke/rand_mt")
+    (synopsis "Reference Mersenne Twister random number generators")
+    (description "This package provides Reference Mersenne Twister random number
+generators.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rand-os-0.2
   (package
     (name "rust-rand-os")
