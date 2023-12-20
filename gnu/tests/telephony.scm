@@ -38,7 +38,10 @@
 ;;; Jami daemon.
 ;;;
 
-(include "data/jami-dummy-account.dat") ;defines %jami-account-content-sexp
+(define %jami-account-content-sexp
+  (call-with-input-file
+      (search-path %load-path "gnu/tests/data/jami-dummy-account.dat")
+    read))
 
 (define %dummy-jami-account-archive
   ;; A Jami account archive is a gzipped JSON file.
