@@ -86895,14 +86895,14 @@ first byte.")
 (define-public rust-uuid-macro-internal-1
   (package
     (name "rust-uuid-macro-internal")
-    (version "1.3.3")
+    (version "1.6.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "uuid-macro-internal" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1nj53qzhk4xqw6rkz33q40rjs0mx9pdbjg11xvhydwiayicv8rrz"))))
+                "0pl474ljbn40f08a8asy26bhdlwz4cr1k88h0w80l15q7lzpz7pl"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
