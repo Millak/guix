@@ -437,8 +437,7 @@ OpenSSL for TARGET."
 (define-public openssl-1.1
   (package
     (name "openssl")
-    (version "1.1.1q")
-    (replacement openssl/fixed)
+    (version "1.1.1u")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://www.openssl.org/source/openssl-"
@@ -451,7 +450,7 @@ OpenSSL for TARGET."
               (patches (search-patches "openssl-1.1-c-rehash-in.patch"))
               (sha256
                (base32
-                "1jhhzp4gh6ymidxm1ckjk948l583awp0w3y2nvqdz7022kk9r4yp"))))
+                "1ipbcdlqyxbj5lagasrq2p6gn0036wq6hqp7gdnd1v1ya95xiy72"))))
     (build-system gnu-build-system)
     (outputs '("out"
                "doc"        ;6.8 MiB of man3 pages and full HTML documentation
@@ -561,25 +560,6 @@ OpenSSL for TARGET."
     (description "OpenSSL is an implementation of SSL/TLS.")
     (license license:openssl)
     (home-page "https://www.openssl.org/")))
-
-(define openssl/fixed
-  (package
-    (inherit openssl-1.1)
-    (name "openssl")
-    (version "1.1.1u")
-    (source (origin
-              (method url-fetch)
-              (uri (list (string-append "https://www.openssl.org/source/openssl-"
-                                        version ".tar.gz")
-                         (string-append "ftp://ftp.openssl.org/source/"
-                                        "openssl-" version ".tar.gz")
-                         (string-append "ftp://ftp.openssl.org/source/old/"
-                                        (string-trim-right version char-set:letter)
-                                        "/openssl-" version ".tar.gz")))
-              (patches (search-patches "openssl-1.1-c-rehash-in.patch"))
-              (sha256
-               (base32
-                "1ipbcdlqyxbj5lagasrq2p6gn0036wq6hqp7gdnd1v1ya95xiy72"))))))
 
 (define-public openssl-3.0
   (package
