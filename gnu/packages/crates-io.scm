@@ -94438,11 +94438,14 @@ crate.")
                (base32
                 "18qr7dqlj89v1xl1g58l2xd6jidv0sbccscgl131gpppba0yc1b5"))))
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f  ; unresolved import `zerocopy`
        #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-syn" ,rust-syn-1)
-        ("rust-synstructure" ,rust-synstructure-0.12))))))
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-rustversion" ,rust-rustversion-1)
+        ("rust-trybuild" ,rust-trybuild-1))))))
 
 (define-public rust-zerocopy-derive-0.2
   (package
