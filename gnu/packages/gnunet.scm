@@ -443,14 +443,14 @@ The following services are supported:
 (define-public gnunet-gtk
   (package (inherit gnunet)
     (name "gnunet-gtk")
-    (version "0.19.0")
+    (version "0.20.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gnunet/gnunet-gtk-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0z2731l69vnfsa0cdsw8wh8g1d08wz15y5n0a58qjpf7baric01k"))))
+                "0bandj2f24v4wfq1v5j73zn5jp25dn8r7y0wd7znlkmbh86fb4g9"))))
     (arguments
      (list #:configure-flags
            #~(list "--with-libunique"
