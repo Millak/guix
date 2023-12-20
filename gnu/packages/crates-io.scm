@@ -94451,21 +94451,22 @@ crate.")
   (package
     (inherit rust-zerocopy-derive-0.3)
     (name "rust-zerocopy-derive")
-    (version "0.2.1")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "zerocopy-derive" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1594sf9wwgpbavl1hb1avyz6n7km9apm8afc03x9y8h3spk3k76w"))))
+        (base32 "1yzd3057gr3csn3x4wrl8y4ji52hr8rirbh9cz487svvzp8xp66l"))))
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f  ; can't find crate for `rustc`
        #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-syn" ,rust-syn-1)
-        ("rust-synstructure" ,rust-synstructure-0.12))))
-    (license license:bsd-3)))
+        ("rust-synstructure" ,rust-synstructure-0.12))
+       #:cargo-development-inputs
+       (("rust-compiletest-rs" ,rust-compiletest-rs-0.3))))))
 
 (define-public rust-zeroize-1
   (package
