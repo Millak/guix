@@ -81727,13 +81727,13 @@ durations into strings.  For example, \"1 hour ago\" or \"01hou\".")
 (define-public rust-time-core-0.1
   (package
     (name "rust-time-core")
-    (version "0.1.1")
+    (version "0.1.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "time-core" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "1yz6d246zbmx9v6wpfg1jyfjlsgagirz7km96pr1mp6snkpzn03k"))))
+               (base32 "1wx3qizcihw6z151hywfzzyd1y5dl804ydyxci6qm07vbakpr4pg"))))
     (build-system cargo-build-system)
     (arguments '(#:tests? #f))      ; use of undeclared crate or module `time`
     (home-page "https://github.com/time-rs/time")
