@@ -344,7 +344,11 @@ required structures.")
               (string-append "--with-guile-site-ccache-dir="
                              "$(libdir)/guile/$(GUILE_EFFECTIVE_VERSION)/site-ccache")
               (string-append "--with-guile-extension-dir="
-                             "$(libdir)/guile/$(GUILE_EFFECTIVE_VERSION)/extensions"))))
+                             "$(libdir)/guile/$(GUILE_EFFECTIVE_VERSION)/extensions"))
+
+      ;; The 'gnutls' package currently lacks support for SRP, making this
+      ;; test fail.
+      #:make-flags #~'("XFAIL_TESTS=tests/srp-base64.scm")))
     (native-inputs
      (list libtool
            pkg-config
