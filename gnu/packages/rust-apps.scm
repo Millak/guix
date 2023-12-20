@@ -528,31 +528,33 @@ also knows about symlinks, extended attributes, and Git.")
                      (lambda* (#:key outputs #:allow-other-keys)
                        (let* ((out (assoc-ref outputs "out"))
                               (share (string-append out "/share"))
+                              (bash-completions-dir (string-append share
+                                                     "/bash-completion/completions"))
+                              (zsh-completions-dir (string-append share
+                                                    "/zsh/site-functions"))
+                              (fish-completions-dir (string-append share
+                                                     "/fish/vendor_completions.d"))
                               (man1 (string-append share "/man/man1"))
                               (man5 (string-append share "/man/man5")))
                          (when (file-exists? "eza.1")
                            (install-file "eza.1" man1))
                          (when (file-exists? "eza_colors.5")
                            (install-file "eza_colors.5" man5))
-                         (mkdir-p (string-append out "/etc/bash_completion.d"))
-                         (mkdir-p (string-append
-                                    share "/fish/vendor_completions.d"))
-                         (mkdir-p (string-append share "/zsh/site-functions"))
+                         (mkdir-p bash-completions-dir)
+                         (mkdir-p zsh-completions-dir)
+                         (mkdir-p fish-completions-dir)
                          (copy-file "completions/bash/eza"
-                                    (string-append
-                                      out "/etc/bash_completion.d/eza"))
-                         (copy-file "completions/fish/eza.fish"
-                                    (string-append
-                                      share "/fish/vendor_completions.d/eza.fish"))
+                                    (string-append bash-completions-dir "/eza"))
                          (copy-file "completions/zsh/_eza"
-                                    (string-append
-                                      share "/zsh/site-functions/_eza"))))))))
+                                    (string-append zsh-completions-dir "/_eza"))
+                         (copy-file "completions/fish/eza.fish"
+                                    (string-append fish-completions-dir
+                                                   "/eza.fish"))))))))
     (native-inputs
-     (append
-       (list pkg-config)
-       (if (supported-package? pandoc)
-         (list pandoc)
-         '())))
+     (append (list pkg-config)
+             (if (supported-package? pandoc)
+                 (list pandoc)
+                 '())))
     (inputs (list libgit2-1.7 zlib))
     (home-page "https://github.com/eza-community/eza")
     (synopsis "Modern replacement for ls")
