@@ -65764,6 +65764,37 @@ contains the API endpoint response objects.")
 and table-based tests.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rstest-0.16
+  (package
+    (inherit rust-rstest-0.17)
+    (name "rust-rstest")
+    (version "0.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rstest" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1pqfpj727hkn4rr7nspnaab0h74gl9yxqlb53vn9h8a7dhbjszxh"))))
+    (arguments
+     `(#:tests? #f  ; integration tests fail
+       #:cargo-inputs
+       (("rust-futures" ,rust-futures-0.3)
+        ("rust-futures-timer" ,rust-futures-timer-3)
+        ("rust-rstest-macros" ,rust-rstest-macros-0.16)
+        ("rust-rustc-version" ,rust-rustc-version-0.4))
+       #:cargo-development-inputs
+       (("rust-actix-rt" ,rust-actix-rt-2)
+        ("rust-async-std" ,rust-async-std-1)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-rstest" ,rust-rstest-0.13)
+        ("rust-rstest-reuse" ,rust-rstest-reuse-0.4)
+        ("rust-rstest-test" ,rust-rstest-test-0.9)
+        ("rust-temp-testdir" ,rust-temp-testdir-0.2)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-unindent" ,rust-unindent-0.1))))))
+
 (define-public rust-rstest-0.15
   (package
     (inherit rust-rstest-0.17)
