@@ -2412,6 +2412,39 @@ implements standard Rust traits to make `RGB`/`RGBA` pixels and slices
 first-class Rust objects.")
     (license license:expat)))
 
+(define-public rust-scad-1
+  (package
+    (name "rust-scad")
+    (version "1.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "scad" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1yvy7ckfd7r261iywm75na1ykd9cl8h0q8ajb1iwg1jmnbs6vry6"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (delete-file-recursively "docs")
+           ;; The very next commit in the repository updates nalgebra
+           (substitute* "Cargo.toml"
+             (("0\\.16\\.8") "0.27.1"))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=common_objects::tests::cube_center_x"
+         "--skip=common_objects::tests::cube_center_yz")
+       #:cargo-inputs
+       (("rust-nalgebra" ,rust-nalgebra-0.27))))
+    (home-page "https://github.com/thezoq2/Rust-Scad")
+    (synopsis "Crate for generating OpenSCAD models using Rust")
+    (description
+     "This package provides a crate for generating @code{OpenSCAD} models
+using Rust.")
+    (license license:lgpl2.0+)))
+
 (define-public rust-sdl2-0.35
   (package
     (name "rust-sdl2")
