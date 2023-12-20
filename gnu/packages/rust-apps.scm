@@ -385,92 +385,6 @@ Features include:
 @end enumerate\n")
     (license license:gpl3)))
 
-(define-public exa
-  (package
-    (name "exa")
-    (version "0.10.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "exa" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1dd7waq2bnxc1xwygqphi8k1g2qzykr6fk0q4rgrhhxp2jd09f04"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:install-source? #f
-       #:cargo-inputs
-       (("rust-ansi-term" ,rust-ansi-term-0.12)
-        ("rust-datetime" ,rust-datetime-0.5)
-        ("rust-env-logger" ,rust-env-logger-0.6)
-        ("rust-git2" ,rust-git2-0.13)
-        ("rust-glob" ,rust-glob-0.3)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-locale" ,rust-locale-0.2)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-natord" ,rust-natord-1)
-        ("rust-num-cpus" ,rust-num-cpus-1)
-        ("rust-number-prefix" ,rust-number-prefix-0.4)
-        ("rust-scoped-threadpool" ,rust-scoped-threadpool-0.1)
-        ("rust-term-grid" ,rust-term-grid-0.1)
-        ("rust-term-size" ,rust-term-size-0.3)
-        ("rust-unicode-width" ,rust-unicode-width-0.1)
-        ("rust-users" ,rust-users-0.11)
-        ("rust-zoneinfo-compiled" ,rust-zoneinfo-compiled-0.5))
-       #:cargo-development-inputs
-       (("rust-datetime" ,rust-datetime-0.5))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'build 'build-manual
-           (lambda* (#:key inputs #:allow-other-keys)
-             (when (assoc-ref inputs "pandoc")
-               (map (lambda (page)
-                      (with-output-to-file page
-                        (lambda _
-                          (invoke "pandoc" "--standalone"
-                                  "-f" "markdown"
-                                  "-t" "man"
-                                  (string-append "man/" page ".md")))))
-                    (list "exa.1" "exa_colors.5")))))
-         (add-after 'install 'install-extras
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out   (assoc-ref outputs "out"))
-                    (share (string-append out "/share"))
-                    (man1  (string-append share "/man/man1"))
-                    (man5  (string-append share "/man/man5")))
-               (when (file-exists? "exa.1")
-                 (install-file "exa.1" man1))
-               (when (file-exists? "exa_colors.5")
-                 (install-file "exa_colors.5" man5))
-               (mkdir-p (string-append out "/etc/bash_completion.d"))
-               (mkdir-p (string-append share "/fish/vendor_completions.d"))
-               (mkdir-p (string-append share "/zsh/site-functions"))
-               (copy-file "completions/completions.bash"
-                          (string-append out "/etc/bash_completion.d/exa"))
-               (copy-file "completions/completions.fish"
-                          (string-append
-                            share "/fish/vendor_completions.d/exa.fish"))
-               (copy-file "completions/completions.zsh"
-                          (string-append
-                            share "/zsh/site-functions/_exa"))))))))
-    (inputs (list libgit2 zlib))
-    (native-inputs
-     (append
-       (list pkg-config)
-       (if (member (%current-system)
-                   (package-transitive-supported-systems pandoc))
-         (list pandoc)
-         '())))
-    (home-page "https://the.exa.website/")
-    (synopsis "Modern replacement for ls")
-    (description "@code{exa} is a modern replacement for the command-line
-program @code{ls}.  It uses colours to distinguish file types and metadata.  It
-also knows about symlinks, extended attributes, and Git.")
-    (license license:expat)))
-
 (define-public eza
   (package
     (name "eza")
@@ -564,6 +478,9 @@ program @code{ls}.  It uses colours to distinguish file types and
 metadata.  It also knows about symlinks, extended attributes, and Git.
 This package is the community maintained fork of @code{exa}.")
     (license license:expat)))
+
+(define-public exa
+  (deprecated-package "exa" eza))
 
 (define-public fd
   (package
