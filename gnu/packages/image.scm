@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2017, 2019, 2021-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013, 2017, 2019, 2021-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2015, 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015, 2016, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015 Alex Kost <alezost@gmail.com>
@@ -1447,8 +1447,7 @@ language bindings to VIGRA.")
 (define-public libwebp
   (package
     (name "libwebp")
-    (version "1.2.4")
-    (replacement libwebp/fixed)
+    (version "1.3.2")
     (source
      (origin
        ;; No tarballs are provided for >0.6.1.
@@ -1459,7 +1458,7 @@ language bindings to VIGRA.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1jndbc99dd19a6d7h4ds51xyak7gfddkbi41nxdm8n23w7ks35r8"))))
+         "1x37795gpc63g1ma9kqw4q3dikwhrjklixqzjjsj6viqksa19z41"))))
     (build-system gnu-build-system)
     (inputs
      (list freeglut
@@ -1486,22 +1485,6 @@ with lossy compression and typically provides 3x smaller file sizes compared
 to PNG when lossy compression is acceptable for the red/green/blue color
 channels.")
     (license license:bsd-3)))
-
-(define libwebp/fixed
-  (package
-    (inherit libwebp)
-    (name "libwebp")
-    (version "1.3.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://chromium.googlesource.com/webm/libwebp")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1x37795gpc63g1ma9kqw4q3dikwhrjklixqzjjsj6viqksa19z41"))))))
 
 (define-public libmng
   (package
