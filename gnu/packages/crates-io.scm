@@ -66055,8 +66055,37 @@ scenario you want to test.")
              ("rust-rustc-version" ,rust-rustc-version-0.4)
              ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-rstest-test-0.11
+  (package
+    (name "rust-rstest-test")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rstest_test" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "16z1525ww9n1x94mvvgd6zcpxc2pzlf1r031kryk383lgd3wgi9p"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Tests expect rustup
+       #:cargo-inputs
+       (("rust-regex" ,rust-regex-1)
+        ("rust-toml-edit" ,rust-toml-edit-0.19))
+       #:cargo-development-inputs
+       (("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-rstest" ,rust-rstest-0.16)
+        ("rust-temp-testdir" ,rust-temp-testdir-0.2))))
+    (home-page "https://github.com/la10736/rstest")
+    (synopsis "Provides some utilities used to write rstest crate's tests")
+    (description
+     "This package provides some utilities used to write the rstest crate's
+tests.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rstest-test-0.9
   (package
+    (inherit rust-rstest-test-0.11)
     (name "rust-rstest-test")
     (version "0.9.0")
     (source
@@ -66066,20 +66095,15 @@ scenario you want to test.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0bdy2pni88vh6m2w2mk0wj5hsgka4yslwv472wyfk6794ilgl203"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Tests expect rustup
-       #:cargo-inputs (("rust-regex" ,rust-regex-1)
-                       ("rust-toml-edit" ,rust-toml-edit-0.15))
-       #:cargo-development-inputs (("rust-lazy-static" ,rust-lazy-static-1)
-                                   ("rust-rstest" ,rust-rstest-0.15)
-                                   ("rust-temp-testdir" ,rust-temp-testdir-0.2))))
-    (home-page "https://github.com/la10736/rstest")
-    (synopsis "Provides some utilities used to write rstest crate's tests")
-    (description
-     "This package provides some utilities used to write the rstest crate's
-tests.")
-    (license (list license:expat license:asl2.0))))
+       #:cargo-inputs
+       (("rust-regex" ,rust-regex-1)
+        ("rust-toml-edit" ,rust-toml-edit-0.15))
+       #:cargo-development-inputs
+       (("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-rstest" ,rust-rstest-0.15)
+        ("rust-temp-testdir" ,rust-temp-testdir-0.2))))))
 
 (define-public rust-rug-1
   (package
