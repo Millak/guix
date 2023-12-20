@@ -87828,14 +87828,14 @@ whitespace from a string.")
   (package
     (inherit rust-unindent-0.2)
     (name "rust-unindent")
-    (version "0.1.7")
+    (version "0.1.11")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "unindent" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "1is1gmx1l89z426rn3xsi0mii4vhy2imhqmhx8x2pd8mji6y0kpi"))))))
+         (base32 "171may3v15wzc10z64i8sahdz49d031v7424mjsifa205ml6sxp1"))))))
 
 (define-public rust-uniquote-3
   (package
