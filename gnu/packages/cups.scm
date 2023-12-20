@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2015, 2016, 2017, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015, 2016, 2017, 2019, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015-2018, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
@@ -255,8 +255,7 @@ filters for the PDF-centric printing workflow introduced by OpenPrinting.")
 (define-public cups-minimal
   (package
     (name "cups-minimal")
-    (version "2.4.2")
-    (replacement cups-minimal/fixed)
+    (version "2.4.7")
     (source
      (origin
        (method git-fetch)
@@ -266,7 +265,7 @@ filters for the PDF-centric printing workflow introduced by OpenPrinting.")
        ;; Avoid NAME confusion: these are the complete CUPS sources.
        (file-name (git-file-name "cups" version))
        (sha256
-        (base32 "01nn6ij7kpf2vzikinn7mk4crjx4ab8m4pplvsccc8gg30a2q9y9"))))
+        (base32 "0cj3gs7ki9v0drj19l326s8f1kxrpq7jkzrdfdk7ykrlk7sj645f"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
@@ -345,20 +344,6 @@ supported through legacy PPD-based printer drivers called ``printer
 applications''.  These must be installed separately.")
     ;; CUPS is Apache 2.0 with exceptions, see the NOTICE file.
     (license license:asl2.0)))
-
-(define cups-minimal/fixed
-  (package
-    (inherit cups-minimal)
-    (version "2.4.7")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/OpenPrinting/cups")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name "cups" version))
-       (sha256
-        (base32 "0cj3gs7ki9v0drj19l326s8f1kxrpq7jkzrdfdk7ykrlk7sj645f"))))))
 
 (define-public cups
   (package/inherit cups-minimal
