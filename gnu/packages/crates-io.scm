@@ -65907,6 +65907,37 @@ and table-based tests.")
 @code{rstest}.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rstest-macros-0.16
+  (package
+    (inherit rust-rstest-macros-0.17)
+    (name "rust-rstest-macros")
+    (version "0.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rstest_macros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xzrgwjih87myghqzm9ncqm0449y2sf4migz6x7yc1h7mq2vaabj"))))
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=rstest (line 740)"
+                            "--skip=rstest (line 764)")
+       #:cargo-inputs
+       (("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-rustc-version" ,rust-rustc-version-0.4)
+        ("rust-syn" ,rust-syn-1)
+        ("rust-unicode-ident" ,rust-unicode-ident-1))
+       #:cargo-development-inputs
+       (("rust-actix-rt" ,rust-actix-rt-2)
+        ("rust-async-std" ,rust-async-std-1)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-rstest" ,rust-rstest-0.15)
+        ("rust-rstest-reuse" ,rust-rstest-reuse-0.4)
+        ("rust-rstest-test" ,rust-rstest-test-0.9))))))
+
 (define-public rust-rstest-macros-0.14
   (package
     (inherit rust-rstest-macros-0.17)
