@@ -5315,6 +5315,23 @@ assertions on the result of your program's run.")
        #:cargo-development-inputs
        (("rust-docmatic" ,rust-docmatic-0.1))))))
 
+(define-public rust-assert-float-eq-1
+  (package
+    (name "rust-assert-float-eq")
+    (version "1.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "assert_float_eq" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xryhlk2p012y109048c5jj5f448cv0b86ylkjgg5v7dzcpnbsjc"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/AlexHuszagh/assert_float_eq")
+    (synopsis "Assertions for floating-point equality")
+    (description "This package provides assertions for floating-point equality.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-assert-fs-1
   (package
     (name "rust-assert-fs")
