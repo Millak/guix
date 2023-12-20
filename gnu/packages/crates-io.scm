@@ -27379,6 +27379,30 @@ representation.")
 implementation.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-find-crate-0.6
+  (package
+    (name "rust-find-crate")
+    (version "0.6.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "find-crate" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ljpkh11gj7940xwz47xjhsvfbl93c2q0ql7l2v0w77amjx8paar"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-toml" ,rust-toml-0.5))
+       #:cargo-development-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                                   ("rust-quote" ,rust-quote-1)
+                                   ("rust-semver" ,rust-semver-0.11))))
+    (home-page "https://github.com/taiki-e/find-crate")
+    (synopsis "Find the crate name from the current @code{Cargo.toml}")
+    (description
+     "This package provides finding the crate name from the current
+@code{Cargo.toml}.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-findshlibs-0.10
   (package
     (name "rust-findshlibs")
