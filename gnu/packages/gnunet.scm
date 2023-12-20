@@ -262,7 +262,7 @@ supports HTTP, HTTPS and GnuTLS.")
 (define-public gnunet
   (package
     (name "gnunet")
-    (version "0.19.4")
+    (version "0.20.0")
     (source
      (origin
        (method url-fetch)
@@ -270,14 +270,7 @@ supports HTTP, HTTPS and GnuTLS.")
                            ".tar.gz"))
        (sha256
         (base32
-         "16q0mkkr9b33wlm307ignfgvv0kilzr42155m5dpz66m13s3v9h0"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            ;; This is fixed in the upstream repository but the fix
-            ;; has not been released.
-            (substitute* "src/gns/test_proxy.sh"
-              (("test_gnunet_proxy.conf") "test_gns_proxy.conf"))))))
+         "064mmhksznbsymanikwqkgmdhk2f0zjll2aq2cmxa14wm5w9w0jn"))))
     (build-system gnu-build-system)
     (inputs
      (list bluez
