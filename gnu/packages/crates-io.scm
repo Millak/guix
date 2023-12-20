@@ -33695,8 +33695,7 @@ and loading crate.")
        (sha256
         (base32 "0mw61v132ng0nbz5ygb6jvsx729772803w5bv3zs4i8baq689jsi"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-grep-cli" ,rust-grep-cli-0.1)
         ("rust-grep-matcher" ,rust-grep-matcher-0.1)
         ("rust-grep-pcre2" ,rust-grep-pcre2-0.1)
