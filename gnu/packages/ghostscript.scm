@@ -2,7 +2,7 @@
 ;;; Copyright © 2013 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015, 2016, 2017 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2013, 2015, 2016, 2017, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013, 2015-2017, 2019, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2017, 2018, 2019, 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
@@ -161,7 +161,6 @@ printing, and psresize, for adjusting page sizes.")
   (package
     (name "ghostscript")
     (version "9.56.1")
-    (replacement ghostscript/fixed)
     (source
      (origin
        (method url-fetch)
@@ -174,7 +173,9 @@ printing, and psresize, for adjusting page sizes.")
          "1r5qash65m6ignki6z72q4rlai9ka99xrxnmqd19n02has00cd6l"))
        (patches (search-patches "ghostscript-no-header-creationdate.patch"
                                 "ghostscript-no-header-id.patch"
-                                "ghostscript-no-header-uuid.patch"))
+                                "ghostscript-no-header-uuid.patch"
+                                "ghostscript-CVE-2023-36664.patch"
+                                "ghostscript-CVE-2023-36664-fixup.patch"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled libraries. The bundled OpenJPEG is a patched fork so
@@ -292,12 +293,6 @@ capabilities of the PostScript language.  It supports a wide variety of
 output file formats and printers.")
     (home-page "https://www.ghostscript.com/")
     (license license:agpl3+)))
-
-(define ghostscript/fixed
-  (package-with-patches
-   ghostscript
-   (search-patches "ghostscript-CVE-2023-36664.patch"
-                   "ghostscript-CVE-2023-36664-fixup.patch")))
 
 (define-public ghostscript/x
   (package/inherit ghostscript
