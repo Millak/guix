@@ -1091,18 +1091,22 @@ variable defined below.  It requires guile-json to be installed."
               (let* ((lib (string-append #$output "/lib"))
                      (gtk #$(this-package-input "gtk+"))
                      (gtk-share (string-append gtk "/share"))
-                     (ld-libs '#$(map (lambda (label)
-                                        (file-append (this-package-input label) "/lib"))
-                                      '("libpng-apng"
-                                        "libxscrnsaver"
-                                        "mesa"
-                                        "pciutils"
-                                        "mit-krb5"
-                                        "eudev"
-                                        "pulseaudio"
-                                        ;; For the integration of native notifications
-                                        ;; (same reason as icedove)
-                                        "libnotify"))))
+                     (ld-libs '#$(cons
+                                  (file-append
+                                   (this-package-input "libcanberra")
+                                   "/lib/gtk-3.0/modules")
+                                  (map (lambda (label)
+                                         (file-append (this-package-input label) "/lib"))
+                                       '("libpng-apng"
+                                         "libxscrnsaver"
+                                         "mesa"
+                                         "pciutils"
+                                         "mit-krb5"
+                                         "eudev"
+                                         "pulseaudio"
+                                         ;; For the integration of native notifications
+                                         ;; (same reason as icedove)
+                                         "libnotify")))))
                 (wrap-program (car (find-files lib "^icecat$"))
                   `("XDG_DATA_DIRS" prefix (,gtk-share))
                   ;; The following line is commented out because the icecat
