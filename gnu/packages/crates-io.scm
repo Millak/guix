@@ -63841,7 +63841,11 @@ can handle huge texts and memory-incoherent edits with ease.")
        (uri (crate-uri "rsa" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "039676a4mj0875phdi7vc0bd37hv84dh0dql6fmk8dl2w81jcp70"))))
+        (base32 "039676a4mj0875phdi7vc0bd37hv84dh0dql6fmk8dl2w81jcp70"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "Cargo.toml"
+                   (("version = \">=1, <1.5\"") "version = \"^1\""))))))
     (arguments
      `(#:cargo-inputs
        (("rust-byteorder" ,rust-byteorder-1)
@@ -63865,14 +63869,7 @@ can handle huge texts and memory-incoherent edits with ease.")
          ("rust-serde-test" ,rust-serde-test-1)
          ("rust-sha-1" ,rust-sha-1-0.9)
          ("rust-sha2" ,rust-sha2-0.9)
-         ("rust-sha3" ,rust-sha3-0.9))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'configure 'relax-requirements
-           (lambda _
-             (substitute*
-                 "Cargo.toml"
-               (("version = \">=1, <1.5\"") "version = \"^1\"")))))))))
+         ("rust-sha3" ,rust-sha3-0.9))))))
 
 (define-public rust-rspec-1
   (package

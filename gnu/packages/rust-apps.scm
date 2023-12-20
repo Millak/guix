@@ -2016,9 +2016,6 @@ runs a command whenever it detects modifications.")
                  "guix-vendor/rust-password-hash-0.3.2.tar.gz/Cargo.toml"
                (("version = \">=1, <1.1.0\"") "version = \">=1\""))
              (substitute*
-                 "guix-vendor/rust-rsa-0.5.0.tar.gz/Cargo.toml"
-               (("version = \">=1, <1.5\"") "version = \"^1\""))
-             (substitute*
                  "Cargo.toml"
                (("version = \"1.4\"") "version = \"^1\"")))))
        #:cargo-inputs
