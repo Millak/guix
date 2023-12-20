@@ -57081,23 +57081,26 @@ a system.")
 (define-public rust-plist-1
   (package
     (name "rust-plist")
-    (version "1.0.0")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "plist" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1zb7k48x1zf1dhqavs37qm24fxi98qb978xv2nzjkkp4x2a6scvv"))))
+        (base32 "1vscdjj7xy1pz80n3lwcg1jhsydcf2nvj4lfxsqs46ixlv49qsg5"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-base64" ,rust-base64-0.12)
-        ("rust-chrono" ,rust-chrono-0.4)
-        ("rust-indexmap" ,rust-indexmap-1)
+       (("rust-base64" ,rust-base64-0.21)
+        ("rust-indexmap" ,rust-indexmap-2)
         ("rust-line-wrap" ,rust-line-wrap-0.1)
+        ("rust-quick-xml" ,rust-quick-xml-0.31)
         ("rust-serde" ,rust-serde-1)
-        ("rust-xml-rs" ,rust-xml-rs-0.8))))
+        ("rust-time" ,rust-time-0.3))
+       #:cargo-development-inputs
+       (("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-yaml" ,rust-serde-yaml-0.8))))
     (home-page "https://github.com/ebarnard/rust-plist/")
     (synopsis "Rusty plist parser")
     (description
