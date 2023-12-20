@@ -787,6 +787,35 @@ and iOS.")
      "This package provides a library to perform image color model conversion.")
     (license license:expat-0)))
 
+(define-public rust-enterpolation-0.2
+  (package
+    (name "rust-enterpolation")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "enterpolation" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ah41msghasm0i97awa67rv3mg6p3j0xijswy1gpdipprg4gbb8z"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs
+       (("rust-assert-float-eq" ,rust-assert-float-eq-1)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-topology-traits" ,rust-topology-traits-0.1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-image" ,rust-image-0.24)
+                                   ("rust-palette" ,rust-palette-0.7))))
+    (home-page "https://github.com/NicolasKlenert/enterpolation")
+    (synopsis "Library for create and compute interpolations and extrapolations")
+    (description
+     "This package provides a library for creating and computing interpolations,
+extrapolations and smoothing of generic data points.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-euclid-0.22
   (package
     (name "rust-euclid")
