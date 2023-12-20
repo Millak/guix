@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2020-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2020-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -93,13 +93,28 @@ Return #t in the former case and #f in the latter case."
            ('readable #t)
            ('timeout  #f)))))))
 
-(define* (secret-service-send-secrets port secret-root
+(define (socket-address->string address)
+  "Return a human-readable representation of ADDRESS, an object as returned by
+'make-socket-address'."
+  (let ((family (sockaddr:fam address)))
+    (cond ((= AF_INET family)
+           (string-append (inet-ntop AF_INET (sockaddr:addr address))
+                          ":" (number->string (sockaddr:port address))))
+          ((= AF_INET6 family)
+           (string-append "[" (inet-ntop AF_INET6 (sockaddr:addr address)) "]"
+                          ":" (number->string (sockaddr:port address))))
+          ((= AF_UNIX family)
+           (sockaddr:path address))
+          (else
+           (object->string address)))))
+
+(define* (secret-service-send-secrets address secret-root
                                       #:key (retry 60)
                                       (handshake-timeout 180))
-  "Copy all files under SECRET-ROOT using TCP to secret-service listening at
-local PORT.  If connect fails, sleep 1s and retry RETRY times; once connected,
-wait for at most HANDSHAKE-TIMEOUT seconds for handshake to complete.  Return
-#f on failure."
+  "Copy all files under SECRET-ROOT by connecting to secret-service listening
+at ADDRESS, an address as returned by 'make-socket-address'.  If connection
+fails, sleep 1s and retry RETRY times; once connected, wait for at most
+HANDSHAKE-TIMEOUT seconds for handshake to complete.  Return #f on failure."
   (define (file->file+size+mode file-name)
     (let ((stat (stat file-name))
           (target (substring file-name (string-length secret-root))))
@@ -118,9 +133,9 @@ wait for at most HANDSHAKE-TIMEOUT seconds for handshake to complete.  Return
                       (dump-port input sock))))
                 files)))
 
-  (log "sending secrets to ~a~%" port)
+  (log "sending secrets to ~a~%" (socket-address->string address))
+
   (let ((sock (socket AF_INET (logior SOCK_CLOEXEC SOCK_STREAM) 0))
-        (addr (make-socket-address AF_INET INADDR_LOOPBACK port))
         (sleep (if (resolve-module '(fibers) #f)
                    (module-ref (resolve-interface '(fibers)) 'sleep)
                    sleep)))
@@ -129,7 +144,7 @@ wait for at most HANDSHAKE-TIMEOUT seconds for handshake to complete.  Return
     ;; forward port inside the guest.
     (let loop ((retry retry))
       (catch 'system-error
-        (cute connect sock addr)
+        (cute connect sock address)
         (lambda (key . args)
           (when (zero? retry)
             (apply throw key args))
@@ -147,7 +162,8 @@ wait for at most HANDSHAKE-TIMEOUT seconds for handshake to complete.  Return
           (('secret-service-server ('version version ...))
            (log "sending files from ~s...~%" secret-root)
            (send-files sock)
-           (log "done sending files to port ~a~%" port)
+           (log "done sending files to ~a~%"
+                (socket-address->string address))
            (close-port sock)
            secret-root)
           (x
@@ -155,7 +171,8 @@ wait for at most HANDSHAKE-TIMEOUT seconds for handshake to complete.  Return
            (close-port sock)
            #f))
         (begin                                    ;timeout
-         (log "timeout while sending files to ~a~%" port)
+         (log "timeout while sending files to ~a~%"
+              (socket-address->string address))
          (close-port sock)
          #f))))
 
@@ -168,19 +185,20 @@ wait for at most HANDSHAKE-TIMEOUT seconds for handshake to complete.  Return
       (unless (= ENOENT (system-error-errno args))
         (apply throw args)))))
 
-(define (secret-service-receive-secrets port)
-  "Listen to local PORT and wait for a secret service client to send secrets.
-Write them to the file system.  Return the list of files installed on success,
-and #f otherwise."
+(define (secret-service-receive-secrets address)
+  "Listen to ADDRESS, an address returned by 'make-socket-address', and wait
+for a secret service client to send secrets.  Write them to the file system.
+Return the list of files installed on success, and #f otherwise."
 
-  (define (wait-for-client port)
-    ;; Wait for a TCP connection on PORT.  Note: We cannot use the
-    ;; virtio-serial ports, which would be safer, because they are
-    ;; (presumably) unsupported on GNU/Hurd.
+  (define (wait-for-client address)
+    ;; Wait for a connection on ADDRESS.  Note: virtio-serial ports are safer
+    ;; than TCP connections but they are (presumably) unsupported on GNU/Hurd.
     (let ((sock (socket AF_INET (logior SOCK_CLOEXEC SOCK_STREAM) 0)))
-      (bind sock AF_INET INADDR_ANY port)
+      (bind sock address)
       (listen sock 1)
-      (log "waiting for secrets on port ~a...~%" port)
+      (log "waiting for secrets on ~a...~%"
+           (socket-address->string address))
+
       (match (select (list sock) '() '() 60)
         (((_) () ())
          (match (accept sock)
@@ -244,7 +262,7 @@ and #f otherwise."
        (log "invalid secrets received~%")
        #f)))
 
-  (let* ((port   (wait-for-client port))
+  (let* ((port   (wait-for-client address))
          (result (and=> port read-secrets)))
     (when port
       (close-port port))

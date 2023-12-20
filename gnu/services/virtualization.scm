@@ -996,7 +996,7 @@ specified, the QEMU default path is used."))
 ;;; Secrets for guest VMs.
 ;;;
 
-(define (secret-service-shepherd-services port)
+(define (secret-service-shepherd-services address)
   "Return a Shepherd service that fetches sensitive material at local PORT,
 over TCP.  Reboot upon failure."
   ;; This is a Shepherd service, rather than an activation snippet, to make
@@ -1018,7 +1018,7 @@ over TCP.  Reboot upon failure."
                          "receiving secrets from the host...~%")
                  (force-output (current-error-port))
 
-                 (let ((sent (secret-service-receive-secrets #$port)))
+                 (let ((sent (secret-service-receive-secrets #$address)))
                    (unless sent
                      (sleep 3)
                      (reboot))))))
@@ -1039,9 +1039,13 @@ over TCP.  Reboot upon failure."
 boot time.  This service is meant to be used by virtual machines (VMs) that
 can only be accessed by their host.")))
 
-(define (secret-service-operating-system os)
+(define* (secret-service-operating-system os
+                                          #:optional
+                                          (address
+                                           #~(make-socket-address
+                                              AF_INET INADDR_ANY 1004)))
   "Return an operating system based on OS that includes the secret-service,
-that will be listening to receive secret keys on port 1004, TCP."
+that will be listening to receive secret keys on ADDRESS."
   (operating-system
     (inherit os)
     (services
@@ -1049,7 +1053,7 @@ that will be listening to receive secret keys on port 1004, TCP."
      ;; activation: that requires entropy and thus takes time during boot, and
      ;; those keys are going to be overwritten by secrets received from the
      ;; host anyway.
-     (cons (service secret-service-type 1004)
+     (cons (service secret-service-type address)
            (modify-services (operating-system-user-services os)
              (openssh-service-type
               config => (openssh-configuration
@@ -1243,24 +1247,26 @@ is added to the OS specified in CONFIG."
            (source-module-closure '((gnu build secret-service)
                                     (guix build utils)))
          #~(lambda ()
-             (let ((pid  (fork+exec-command #$vm-command
-                                            #:user "childhurd"
-                                            ;; XXX TODO: use "childhurd" after
-                                            ;; updating Shepherd
-                                            #:group "kvm"
-                                            #:environment-variables
-                                            ;; QEMU tries to write to /var/tmp
-                                            ;; by default.
-                                            '("TMPDIR=/tmp")))
-                   (port #$(hurd-vm-port config %hurd-vm-secrets-port))
-                   (root #$(hurd-vm-configuration-secret-root config)))
+             (let* ((pid  (fork+exec-command #$vm-command
+                                             #:user "childhurd"
+                                             ;; XXX TODO: use "childhurd" after
+                                             ;; updating Shepherd
+                                             #:group "kvm"
+                                             #:environment-variables
+                                             ;; QEMU tries to write to /var/tmp
+                                             ;; by default.
+                                             '("TMPDIR=/tmp")))
+                    (port #$(hurd-vm-port config %hurd-vm-secrets-port))
+                    (root #$(hurd-vm-configuration-secret-root config))
+                    (address (make-socket-address AF_INET INADDR_LOOPBACK
+                                                  port)))
                (catch #t
                  (lambda _
                    ;; XXX: 'secret-service-send-secrets' won't complete until
                    ;; the guest has booted and its secret service server is
                    ;; running, which could take 20+ seconds during which PID 1
                    ;; is stuck waiting.
-                   (if (secret-service-send-secrets port root)
+                   (if (secret-service-send-secrets address root)
                        pid
                        (begin
                          (kill (- pid) SIGTERM)
