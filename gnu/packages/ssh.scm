@@ -132,7 +132,7 @@ file names.
 (define-public libssh
   (package
     (name "libssh")
-    (version "0.10.5")
+    (version "0.10.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.libssh.org/files/"
@@ -140,7 +140,7 @@ file names.
                                   "/libssh-" version ".tar.xz"))
               (sha256
                (base32
-                "0d22gq77ga24ijlgr3d1wvhfvprx61iklkb3npifxfb7ygvjy3mn"))
+                "1hcxvsb4brznxqq6cjwxkk7yv4c48w4fcwxwd8dp9wdnyncd8q8q"))
               (modules '((guix build utils)))
               (snippet
                ;; 'PATH_MAX' is undefined on GNU/Hurd; work around it.
