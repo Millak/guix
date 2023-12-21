@@ -77331,6 +77331,27 @@ processors, disks, components and networks.")
         ("rust-log" ,rust-log-0.3)
         ("rust-unix-socket" ,rust-unix-socket-0.5))))))
 
+(define-public rust-system-configuration-sys-0.5
+  (package
+    (name "rust-system-configuration-sys")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "system-configuration-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jckxvdr37bay3i9v52izgy52dg690x5xfg3hd394sv2xf4b2px7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-core-foundation-sys" ,rust-core-foundation-sys-0.8)
+                       ("rust-libc" ,rust-libc-0.2))))
+    (home-page "https://github.com/mullvad/system-configuration-rs")
+    (synopsis "Low level bindings to SystemConfiguration framework for macOS")
+    (description
+     "Low level bindings to @code{SystemConfiguration} framework for @code{macOS}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-system-deps-6
   (package
     (name "rust-system-deps")
