@@ -84232,8 +84232,56 @@ DNS protocol library for all Trust-DNS projects.")
        (("rust-env-logger" ,rust-env-logger-0.6)
         ("rust-tokio" ,rust-tokio-0.1))))))
 
+(define-public rust-trust-dns-resolver-0.23
+  (package
+    (name "rust-trust-dns-resolver")
+    (version "0.23.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "trust-dns-resolver" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1rhbwg7v93yvl3p64skwhkx2zfh2abrx35g3fcy8nwgimz1yd8qh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Tests require network access
+       #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-ipconfig" ,rust-ipconfig-0.3)
+                       ("rust-lru-cache" ,rust-lru-cache-0.1)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-resolv-conf" ,rust-resolv-conf-0.7)
+                       ("rust-rustls" ,rust-rustls-0.21)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-native-tls" ,rust-tokio-native-tls-0.3)
+                       ("rust-tokio-openssl" ,rust-tokio-openssl-0.6)
+                       ("rust-tokio-rustls" ,rust-tokio-rustls-0.24)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-trust-dns-proto" ,rust-trust-dns-proto-0.23)
+                       ("rust-webpki-roots" ,rust-webpki-roots-0.25))
+       #:cargo-development-inputs
+       (("rust-futures-executor" ,rust-futures-executor-0.3)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (home-page "https://trust-dns.org/")
+    (synopsis "Safe and secure DNS library")
+    (description
+     "Trust-DNS is a safe and secure DNS library.  This Resolver library uses
+the Client library to perform all DNS queries.  The Resolver is intended to be
+a high-level library for any DNS record resolution see Resolver and
+AsyncResolver for supported resolution types.  The Client can be used for
+other queries.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-trust-dns-resolver-0.22
   (package
+    (inherit rust-trust-dns-resolver-0.23)
     (name "rust-trust-dns-resolver")
     (version "0.22.0")
     (source
@@ -84243,7 +84291,6 @@ DNS protocol library for all Trust-DNS projects.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1zkw5fx7dwiy4ymn7ywmsb3qhf69mnqdw9mcpyps3c7gvjj1mwmg"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f              ; Not all files included.
        #:cargo-inputs
@@ -84267,16 +84314,7 @@ DNS protocol library for all Trust-DNS projects.")
         ("rust-webpki-roots" ,rust-webpki-roots-0.22))
        #:cargo-development-inputs
        (("rust-futures-executor" ,rust-futures-executor-0.3)
-        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
-    (home-page "http://www.trust-dns.org/index.html")
-    (synopsis "Safe and secure DNS library")
-    (description
-     "Trust-DNS is a safe and secure DNS library.  This Resolver library uses
-the Client library to perform all DNS queries.  The Resolver is intended to be
-a high-level library for any DNS record resolution see Resolver and
-AsyncResolver for supported resolution types.  The Client can be used for
-other queries.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))))
 
 (define-public rust-trust-dns-resolver-0.20
   (package
