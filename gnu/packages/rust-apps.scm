@@ -763,13 +763,13 @@ bar.  It is also compatible with sway.")
 (define-public just
   (package
     (name "just")
-    (version "1.14.0")
+    (version "1.17.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "just" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "0kafd87zmjf7wswyiqakqd2r5b8q3a761ipsihmrg9wr57k5zlis"))))
+               (base32 "1nlwrbawgg6sysfydi2334y4pbsinq50axnqm0cz0m29r8n0ljxd"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
@@ -791,13 +791,15 @@ bar.  It is also compatible with sway.")
         ("rust-lexiclean" ,rust-lexiclean-0.0.1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-log" ,rust-log-0.4)
+        ("rust-num-cpus" ,rust-num-cpus-1)
         ("rust-regex" ,rust-regex-1)
+        ("rust-semver" ,rust-semver-1)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-sha2" ,rust-sha2-0.10)
         ("rust-similar" ,rust-similar-2)
         ("rust-snafu" ,rust-snafu-0.7)
-        ("rust-strum" ,rust-strum-0.24)
+        ("rust-strum" ,rust-strum-0.25)
         ("rust-target" ,rust-target-2)
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-typed-arena" ,rust-typed-arena-2)
@@ -808,7 +810,7 @@ bar.  It is also compatible with sway.")
         ("rust-executable-path" ,rust-executable-path-1)
         ("rust-pretty-assertions" ,rust-pretty-assertions-1)
         ("rust-temptree" ,rust-temptree-0.2)
-        ("rust-which" ,rust-which-4)
+        ("rust-which" ,rust-which-5)
         ("rust-yaml-rust" ,rust-yaml-rust-0.4))
        #:phases
        (modify-phases %standard-phases
@@ -824,32 +826,42 @@ bar.  It is also compatible with sway.")
                 (search-input-file inputs "/bin/env"))
                (("/bin/echo")
                 (search-input-file inputs "/bin/echo")))))
-         (add-after 'install 'install-manpage
-           (lambda* (#:key outputs #:allow-other-keys)
-             (install-file "man/just.1"
-                           (string-append (assoc-ref outputs "out")
-                                          "/share/man/man1"))))
-         (add-after 'install 'install-completions
-           (lambda* (#:key outputs #:allow-other-keys)
+         (add-after 'install 'install-extras
+           (lambda* (#:key native-inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (share (string-append out "/share"))
-                    (just (string-append out "/bin/just")))
-               (mkdir-p (string-append share "/bash-completion/completions"))
+                    (man1 (string-append share "/man/man1"))
+                    (bash-completions-dir
+                     (string-append share "/bash-completion/completions"))
+                    (zsh-completions-dir
+                     (string-append share "/zsh/site-functions"))
+                    (fish-completions-dir
+                     (string-append share "/fish/vendor_completions.d"))
+                    (elvish-completions-dir
+                     (string-append share "/elvish/lib"))
+                    (just (if ,(%current-target-system)
+                          (search-input-file native-inputs "/bin/just")
+                          (string-append out "/bin/just"))))
+               (install-file "man/just.1" man1)
+               (mkdir-p bash-completions-dir)
                (with-output-to-file
-                 (string-append share "/bash-completion/completions/just")
+                 (string-append bash-completions-dir "/just")
                  (lambda _ (invoke just "--completions" "bash")))
-               (mkdir-p (string-append share "/fish/vendor_completions.d"))
+               (mkdir-p zsh-completions-dir)
                (with-output-to-file
-                 (string-append share "/fish/vendor_completions.d/just.fish")
-                 (lambda _ (invoke just "--completions" "fish")))
-               (mkdir-p (string-append share "/zsh/site-functions"))
-               (with-output-to-file
-                 (string-append share "/zsh/site-functions/_just")
+                 (string-append zsh-completions-dir "/_just")
                  (lambda _ (invoke just "--completions" "zsh")))
-               (mkdir-p (string-append share "/elvish/lib"))
+               (mkdir-p fish-completions-dir)
                (with-output-to-file
-                 (string-append share "/elvish/lib/just")
+                 (string-append fish-completions-dir "/just.fish")
+                 (lambda _ (invoke just "--completions" "fish")))
+               (mkdir-p elvish-completions-dir)
+               (with-output-to-file
+                 (string-append elvish-completions-dir "/just")
                  (lambda _ (invoke just "--completions" "elvish")))))))))
+    (native-inputs (if (%current-target-system)
+                       (list this-package)
+                       '()))
     (inputs (list bash-minimal coreutils-minimal))
     (home-page "https://github.com/casey/just")
     (synopsis "Just a command runner")
