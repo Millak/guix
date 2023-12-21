@@ -21205,6 +21205,27 @@ targets")
        (("rust-hex-literal" ,rust-hex-literal-0.3)
         ("rust-proptest" ,rust-proptest-1))))))
 
+(define-public rust-der-0.5
+  (package
+    (inherit rust-der-0.7)
+    (name "rust-der")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "der" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0p3h7nszn7jhjacpmkjrcyx5g8p3ma1qhxfy3397m7l3fdfq26b9"))))
+    (arguments
+     `(#:cargo-inputs (("rust-const-oid" ,rust-const-oid-0.7)
+                       ("rust-crypto-bigint" ,rust-crypto-bigint-0.3)
+                       ("rust-der-derive" ,rust-der-derive-0.5)
+                       ("rust-pem-rfc7468" ,rust-pem-rfc7468-0.3)
+                       ("rust-time" ,rust-time-0.3))
+       #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.3)
+                                   ("rust-proptest" ,rust-proptest-1))))))
+
 (define-public rust-der-0.4
   (package
     (inherit rust-der-0.7)
