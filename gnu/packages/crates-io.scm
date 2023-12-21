@@ -15806,6 +15806,21 @@ encoding/decoding as well as heapless no_std (i.e., embedded) support.")
     ;; The user can choose either license.
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-const-oid-0.7
+  (package
+    (inherit rust-const-oid-0.9)
+    (name "rust-const-oid")
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "const-oid" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wwl3cncd8p2fa54vzmghflh4nh9ml02xfbv38nf5ziifh28riz4"))))
+    (arguments
+     `(#:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.3))))))
+
 (define-public rust-const-oid-0.6
   (package
     (inherit rust-const-oid-0.9)
