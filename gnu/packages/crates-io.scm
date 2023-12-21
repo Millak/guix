@@ -34338,6 +34338,32 @@ of gzip files based on the gzip header implementation in the @code{flate2} crate
         ("rust-webpki" ,rust-webpki-0.21)
         ("rust-webpki-roots" ,rust-webpki-roots-0.17))))))
 
+(define-public rust-h3-quinn-0.0.4
+  (package
+    (name "rust-h3-quinn")
+    (version "0.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "h3-quinn" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1r0sm0j51crlfpy2j1wfhgpg2lrfq2xmf5qjd98ksg3h9l0pb5mc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+                       ("rust-futures" ,rust-futures-0.3)
+                       ("rust-h3" ,rust-h3-0.0.3)
+                       ("rust-quinn" ,rust-quinn-0.10)
+                       ("rust-quinn-proto" ,rust-quinn-proto-0.10)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-util" ,rust-tokio-util-0.7))))
+    (home-page "https://github.com/hyperium/h3")
+    (synopsis "QUIC transport implementation based on Quinn")
+    (description
+     "This package provides QUIC transport implementation based on Quinn.")
+    (license license:expat)))
+
 (define-public rust-half-2
   (package
     (name "rust-half")
