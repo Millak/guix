@@ -31889,17 +31889,19 @@ current tree.")
 
 (define-deprecated emacs-org-dynamic-agenda emacs-org-agenda-files-track)
 
-(define-public emacs-org-dynamic-agenda-ql
+(define-public emacs-org-agenda-files-track-ql
   (package
-    (inherit emacs-org-dynamic-agenda)
-    (name "emacs-org-dynamic-agenda-ql")
+    (inherit emacs-org-agenda-files-track)
+    (name "emacs-org-agenda-files-track-ql")
     (arguments
      (list #:include
-           #~(list "org-dynamic-agenda-ql\\.el" "README\\.org")))
+           #~(list "org-agenda-files-track-ql\\.el" "README\\.org")))
     (propagated-inputs (list emacs-org-ql))
     (description
-     "This package dynamically generates org-agenda-files, and take advantage
-of the org-ql cache.")))
+     "This package tracks org-agenda-files precisely to speed-up org-agenda,
+and takes advantage of the org-ql cache.")))
+
+(define-deprecated emacs-org-dynamic-agenda-ql emacs-org-agenda-files-track-ql)
 
 (define-public emacs-dash-docs
   (let ((commit "dafc8fc9f1ddb2e4e39e0b8d066c42d5d7ce8d06")
