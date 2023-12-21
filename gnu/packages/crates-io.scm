@@ -56188,6 +56188,31 @@ Standards (PKCS) #5: Password-Based Cryptography Specification Version
        #:cargo-development-inputs
        (("rust-hex-literal" ,rust-hex-literal-0.3))))))
 
+(define-public rust-pkcs5-0.4
+  (package
+    (inherit rust-pkcs5-0.7)
+    (name "rust-pkcs5")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pkcs5" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xhyi3k5p6lxb28ivcd1f3skdbmhzk0gamfry7q56pifx9xi8g6n"))))
+    (arguments
+     `(#:cargo-inputs (("rust-aes" ,rust-aes-0.7)
+                       ("rust-block-modes" ,rust-block-modes-0.8)
+                       ("rust-der" ,rust-der-0.5)
+                       ("rust-des" ,rust-des-0.7)
+                       ("rust-hmac" ,rust-hmac-0.11)
+                       ("rust-pbkdf2" ,rust-pbkdf2-0.9)
+                       ("rust-scrypt" ,rust-scrypt-0.8)
+                       ("rust-sha-1" ,rust-sha-1-0.9)
+                       ("rust-sha2" ,rust-sha2-0.9)
+                       ("rust-spki" ,rust-spki-0.5))
+       #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.3))))))
+
 (define-public rust-pkcs5-0.3
   (package
     (inherit rust-pkcs5-0.7)
