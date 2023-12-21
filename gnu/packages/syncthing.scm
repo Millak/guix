@@ -7,6 +7,7 @@
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2023 Benjamin Slade <slade@lambda-y.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -44,7 +45,7 @@
 (define-public syncthing
   (package
     (name "syncthing")
-    (version "1.25.0")
+    (version "1.27.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/syncthing/syncthing"
@@ -52,7 +53,7 @@
                                   "/syncthing-source-v" version ".tar.gz"))
               (sha256
                (base32
-                "18cyg0wnf34xi964fxvzxgcq6z0pbirk0k4z82w1cqi3f3l9jlg2"))))
+                "0d1qlzh07a9h2wx2fxm2fdask2sm750pqwk7jx62x2hcwmb08ysw"))))
     (build-system go-build-system)
     ;; The primary Syncthing executable goes to "out", while the auxiliary
     ;; server programs and utility tools go to "utils".  This reduces the size

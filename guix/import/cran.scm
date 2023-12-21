@@ -55,6 +55,10 @@
   #:use-module (guix sets)
   #:export (%input-style
 
+            %bioconductor-version
+            download
+            fetch-description
+
             cran->guix-package
             bioconductor->guix-package
             cran-recursive-import

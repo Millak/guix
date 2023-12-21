@@ -77,6 +77,7 @@
 ;;; Copyright © 2023 dan <i@dan.games>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
+;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3100,6 +3101,40 @@ Both commands are targeted at system administrators.")
     (properties
      '((release-monitoring-url . "https://www.netfilter.org/pub/iptables/")))
     (license license:gpl2+)))
+
+(define-public iptables-nft
+  (package
+    (inherit iptables)
+    (name "iptables-nft")
+    (source #f)
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'unpack)
+          (replace 'install
+            (lambda* (#:key inputs #:allow-other-keys)
+              (for-each
+               (lambda (command-path)
+                 (let ((link-path (string-append #$output command-path)))
+                   (mkdir-p (dirname link-path))
+                   (symlink (search-input-file inputs "sbin/xtables-nft-multi")
+                            link-path)))
+               (apply append
+                      '("/bin/iptables-xml")
+                      (map (lambda (xtables)
+                             (list (string-append "/sbin/" xtables)
+                                   (string-append "/sbin/" xtables "-restore")
+                                   (string-append "/sbin/" xtables "-save")))
+                           '("arptables"
+                             "ebtables"
+                             "iptables"
+                             "ip6tables")))))))))
+    (inputs (list iptables))
+    (native-inputs '())
+    (synopsis
+     "Programs to configure Linux IP packet filtering rules (nftables API)")))
 
 (define-public bolt
   (package
@@ -9389,7 +9424,7 @@ of Linux application development.")
 (define-public wireplumber
   (package
     (name "wireplumber")
-    (version "0.4.14")
+    (version "0.4.17")
     (source
      (origin
        (method git-fetch)
@@ -9399,7 +9434,7 @@ of Linux application development.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jmnd6000j4wx68lxgz5b4g4hxkf243ivi9swaaf8rnx99cbx91w"))))
+        (base32 "00jzn0pxy2ws819yg4p8xxhngqai3labd1alaxb8zwzymr7m06my"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Dsystemd=disabled"

@@ -373,7 +373,7 @@ valid.  Append SUFFIX to the job name."
 
 (define %x86-64-micro-architectures
   ;; Micro-architectures for which we build tuned variants.
-  '("westmere" "ivybridge" "haswell" "skylake" "skylake-avx512"))
+  '("haswell" "skylake" "x86-64-v2" "x86-64-v3" "x86-64-v4"))
 
 (define (tuned-package-jobs store package system)
   "Return a list of jobs for PACKAGE tuned for SYSTEM's micro-architectures."

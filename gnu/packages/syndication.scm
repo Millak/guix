@@ -43,7 +43,6 @@
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages curl)
-  #:use-module (gnu packages documentation)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
@@ -336,38 +335,6 @@ file system, and many more features.")
     (license (list license:gpl2+        ; filter/*
                    license:expat))))    ; everything else
 
-(define-public newsboat-2.13
-  (package
-    (inherit newsboat)
-    (version "2.13")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://newsboat.org/releases/" version
-                           "/newsboat-" version ".tar.xz"))
-       (sha256
-        (base32
-         "0pik1d98ydzqi6055vdbkjg5krwifbk2hy2f5jp5p1wcy2s16dn7"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     `(,@(fold alist-delete (package-native-inputs newsboat)
-               '("asciidoctor" "openssl"))
-       ;; For building documentation.
-       ("asciidoc" ,asciidoc)))
-    (inputs
-     (modify-inputs (package-inputs newsboat)
-       (replace "json-c" json-c-0.13)))
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (add-after 'build 'build-documentation
-           (lambda _
-             (invoke "make" "doc"))))
-       #:make-flags
-       (list (string-append "prefix=" (assoc-ref %outputs "out")))
-       #:test-target "test"))))
-
 (define-public liferea
   (package
     (name "liferea")
@@ -630,7 +597,7 @@ parser.  It is \"not fit for use at this point\", but gfeeds uses it anyway.")
            python-readability-lxml
            python-requests
            syndication-domination
-           webkitgtk-next))
+           webkitgtk))
     (home-page "https://gfeeds.gabmus.org/")
     (synopsis "Easy-to-use GTK+ RSS/Atom feed reader")
     (description "Feeds is an RSS/Atom feed reader made with GTK+

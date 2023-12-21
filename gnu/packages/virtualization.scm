@@ -25,7 +25,7 @@
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2022 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2022 Ekaitz Zarraga <ekaitz@elenq.tech>
+;;; Copyright © 2022, 2023 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2023 Juliana Sims <juli@incana.org>
@@ -166,14 +166,14 @@
 (define-public qemu
   (package
     (name "qemu")
-    (version "8.1.1")
+    (version "8.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.qemu.org/qemu-"
                            version ".tar.xz"))
        (sha256
-        (base32 "1vvxmd7xbkl083anpqm797m070qi8n5wc5qid0ppbyq0wpsjxkip"))
+        (base32 "1fv5wbxpjxqzv10bdlq0ykgqfmzqx4s8yfch9zvqcm8h0il1gk23"))
        (patches (search-patches "qemu-disable-some-qtests-tests.patch"
                                 "qemu-fix-agent-paths.patch"))
        (modules '((guix build utils)))

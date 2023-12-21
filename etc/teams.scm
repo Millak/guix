@@ -676,6 +676,10 @@ GLib/GIO, GTK, GStreamer and Webkit."
                        "ekaitz@elenq.tech")
   bootstrap zig)
 
+(define-member (person "Clément Lassieur"
+                       "clement@lassieur.org")
+  mozilla)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))

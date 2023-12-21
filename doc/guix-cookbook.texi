@@ -78,7 +78,7 @@ manual}).
 * System Configuration::        Customizing the GNU System
 * Containers::                  Isolated environments and nested systems
 * Advanced package management::  Power to the users!
-* Software Development::         Environments, continuous integration, etc.
+* Software Development::        Environments, continuous integration, etc.
 * Environment management::      Control environment
 * Installing Guix on a Cluster::  High-performance computing.
 
@@ -166,6 +166,16 @@ Guix Profiles in Practice
 * Default profile::
 * The benefits of manifests::
 * Reproducible profiles::
+
+Software Development
+
+* Getting Started::             Step 0: using `guix shell'.
+* Building with Guix::          Step 1: building your code.
+* The Repository as a Channel::  Step 2: turning the repo in a channel.
+* Package Variants::            Bonus: Defining variants.
+* Setting Up Continuous Integration::  Step 3: continuous integration.
+* Build Manifest::              Bonus: Manifest.
+* Wrapping Up::                 Recap.
 
 Environment management
 

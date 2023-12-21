@@ -10245,55 +10245,54 @@ auROC analysis.")
       (license license:gpl3))))
 
 (define-public r-sccustomize
-  (let ((commit "8414d1f5fb32277855b0619191a568932b7baeb0")
+  (let ((commit "397374590dae2ccc0c560897dcd1ce4382c18798")
         (revision "1"))
     (package
       (name "r-sccustomize")
-      (version (git-version "0.7.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/samuel-marsh/scCustomize")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1wcgfq7lx83a2kf8pjbw524gdvxf351n08cwd5wzmmy57kf4knbj"))))
+      (version (git-version "2.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/samuel-marsh/scCustomize")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "11bafm0mlck27fqd8brz80pxb8dc5q0aqbp8zv0s9sx97njp7wsl"))))
       (properties `((upstream-name . "scCustomize")))
       (build-system r-build-system)
-      (propagated-inputs
-       (list r-circlize
-             r-colorway
-             r-cowplot
-             r-data-table
-             r-dittoseq
-             r-dplyr
-             r-forcats
-             r-ggbeeswarm
-             r-ggplot2
-             r-ggprism
-             r-ggpubr
-             r-ggrastr
-             r-ggrepel
-             r-glue
-             r-janitor
-             r-magrittr
-             r-matrix
-             r-paletteer
-             r-patchwork
-             r-pbapply
-             r-purrr
-             r-remotes
-             r-scales
-             r-scattermore
-             r-seurat
-             r-seuratobject
-             r-stringi
-             r-stringr
-             r-tibble
-             r-tidyr
-             r-tidyselect
-             r-viridis))
+      (propagated-inputs (list r-circlize
+                               r-colorway
+                               r-cowplot
+                               r-data-table
+                               r-dittoseq
+                               r-dplyr
+                               r-forcats
+                               r-ggbeeswarm
+                               r-ggplot2
+                               r-ggprism
+                               r-ggpubr
+                               r-ggrastr
+                               r-ggrepel
+                               r-glue
+                               r-janitor
+                               r-magrittr
+                               r-matrix
+                               r-paletteer
+                               r-patchwork
+                               r-pbapply
+                               r-purrr
+                               r-remotes
+                               r-scales
+                               r-scattermore
+                               r-seurat
+                               r-seuratobject
+                               r-stringi
+                               r-stringr
+                               r-tibble
+                               r-tidyr
+                               r-tidyselect
+                               r-viridis))
       (native-inputs (list r-knitr))
       (home-page "https://github.com/samuel-marsh/scCustomize")
       (synopsis "Custom visualization and analyses of single-cell sequencing")

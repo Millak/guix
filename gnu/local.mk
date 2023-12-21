@@ -245,6 +245,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/electronics.scm			\
   %D%/packages/elf.scm				\
   %D%/packages/elixir.scm			\
+  %D%/packages/elixir-xyz.scm			\
   %D%/packages/elm.scm				\
   %D%/packages/embedded.scm			\
   %D%/packages/emacs.scm			\
@@ -507,6 +508,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/photo.scm			\
   %D%/packages/phabricator.scm 			\
   %D%/packages/php.scm				\
+  %D%/packages/php-xyz.scm			\
   %D%/packages/piet.scm			\
   %D%/packages/pikchr.scm			\
   %D%/packages/pkg-config.scm			\
@@ -1188,6 +1190,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/freedink-engine-fix-sdl-hints.patch	\
   %D%/packages/patches/freeimage-libtiff-compat.patch		\
   %D%/packages/patches/freeimage-unbundle.patch		\
+  %D%/packages/patches/freeimage-CVE-2020-21428.patch		\
+  %D%/packages/patches/freeimage-CVE-2020-22524.patch		\
   %D%/packages/patches/fulcrum-1.9.1-unbundled-libraries.patch	\
   %D%/packages/patches/fuse-glibc-2.34.patch			\
   %D%/packages/patches/fuse-overlapping-headers.patch		\

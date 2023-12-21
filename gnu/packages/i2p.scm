@@ -21,9 +21,12 @@
 
 (define-module (gnu packages i2p)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages upnp)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
@@ -32,7 +35,7 @@
 (define-public i2pd
   (package
     (name "i2pd")
-    (version "2.44.0")
+    (version "2.50.0")
     (source
      (origin
        (method git-fetch)
@@ -41,41 +44,18 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fwaalfxqdahgvx5rfkvdmf6gl10w328a18ddhyn5kvpmp9x7fgl"))))
+        (base32 "1vr251mgffawi3rj51dzlnv3fs1ssz6gl17qbsyhfr5fcd7s0hc5"))))
     (build-system cmake-build-system)
+    (native-inputs (list check pkg-config))
     (inputs
      (list boost miniupnpc openssl zlib))
     (arguments
-     '(#:configure-flags
-       (let ((source (assoc-ref %build-inputs "source")))
-         (list (string-append "-S" source "/build")
-               "-DWITH_PCH=OFF"
-               "-DWITH_STATIC=OFF"
-               "-DWITH_UPNP=ON"
-               "-DWITH_LIBRARY=ON"
-               "-DBUILD_SHARED_LIBS=ON"
-               "-DWITH_BINARY=ON"))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key
-                     tests?
-                     (make-flags '())
-                     (parallel-tests? #t)
-                     #:allow-other-keys)
-             (let ((source (assoc-ref %build-inputs "source")))
-               (when tests?
-                 (copy-recursively (string-append source "/tests")
-                                   "./tests")
-                 (with-directory-excursion "tests"
-                   (substitute* "Makefile"
-                     (("../libi2pd") (string-append source "/libi2pd")))
-                   (apply invoke "make" "all"
-                          `(,@(if parallel-tests?
-                                `("-j" ,(number->string
-                                          (parallel-job-count)))
-                                '())
-                             ,@make-flags))))))))))
+     (list
+      #:configure-flags
+      #~(list (string-append "-S" #$source "/build")
+              "-DWITH_UPNP=ON"
+              "-DBUILD_SHARED_LIBS=ON"
+              "-DBUILD_TESTING=ON")))
     (home-page "https://i2pd.website/")
     (synopsis "Router for an end-to-end encrypted and anonymous internet")
     (description "i2pd is a client for the anonymous I2P network, upon which

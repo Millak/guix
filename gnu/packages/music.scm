@@ -578,7 +578,7 @@ list(APPEND ctrlrLibs \"iberty\")")))))
              freetype
              libiberty
              libx11
-             webkitgtk))
+             webkitgtk-for-gtk3))
       (native-inputs
        (list pkg-config))
       (home-page "https://ctrlr.org/")
