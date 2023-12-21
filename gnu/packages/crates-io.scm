@@ -35662,19 +35662,17 @@ total runtime size of an object on the heap")
 (define-public rust-heck-0.4
   (package
     (name "rust-heck")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "heck" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ygphsnfwl2xpa211vbqkz1db6ri1kvkg8p8sqybi37wclg7fh15"))))
+        (base32 "1a7mqsnycv5z4z5vnv1k34548jzmc0ajic7c1j8jsaspnhw5ql4m"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build?
-       #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-unicode-segmentation" ,rust-unicode-segmentation-1))))
     (home-page "https://github.com/withoutboats/heck")
     (synopsis "Case conversion library")
