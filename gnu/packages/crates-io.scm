@@ -82182,28 +82182,37 @@ stream-based WebSocket implementation.")
 (define-public rust-tokio-util-0.7
   (package
     (name "rust-tokio-util")
-    (version "0.7.4")
+    (version "0.7.10")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tokio-util" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0h67jb56bsxy4pi1a41pda8d52569ci5clvqv3c6cg9vy1sy1chb"))))
+        (base32 "058y6x4mf0fsqji9rfyb77qbfyc50y4pk2spqgj6xsyr693z66al"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f      ; unresolved import `tokio_util::codec`
        #:cargo-inputs
        (("rust-bytes" ,rust-bytes-1)
         ("rust-futures-core" ,rust-futures-core-0.3)
         ("rust-futures-io" ,rust-futures-io-0.3)
         ("rust-futures-sink" ,rust-futures-sink-0.3)
         ("rust-futures-util" ,rust-futures-util-0.3)
-        ("rust-hashbrown" ,rust-hashbrown-0.12)
+        ("rust-hashbrown" ,rust-hashbrown-0.14)
         ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
         ("rust-slab" ,rust-slab-0.4)
         ("rust-tokio" ,rust-tokio-1)
-        ("rust-tracing" ,rust-tracing-0.1))))
+        ("rust-tracing" ,rust-tracing-0.1))
+       #:cargo-development-inputs
+       (("rust-async-stream" ,rust-async-stream-0.3)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-futures-test" ,rust-futures-test-0.3)
+        ("rust-parking-lot" ,rust-parking-lot-0.12)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-stream" ,rust-tokio-stream-0.1)
+        ("rust-tokio-test" ,rust-tokio-test-0.4))))
     (home-page "https://tokio.rs")
     (synopsis "Additional utilities for working with Tokio")
     (description
