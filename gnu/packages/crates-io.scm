@@ -60369,8 +60369,54 @@ numbers.")
 and Petrick's method, an algorithm to automatically minimize boolean expressions.")
     (license license:expat)))
 
+(define-public rust-quinn-0.10
+  (package
+    (name "rust-quinn")
+    (version "0.10.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "quinn" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0x9xjkz2vw7p10llsrm9q0299q618sy1g8yfbncxahsbgq0wbhlc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-async-io" ,rust-async-io-1)
+        ("rust-async-std" ,rust-async-std-1)
+        ("rust-bytes" ,rust-bytes-1)
+        ("rust-futures-io" ,rust-futures-io-0.3)
+        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+        ("rust-quinn-proto" ,rust-quinn-proto-0.10)
+        ("rust-quinn-udp" ,rust-quinn-udp-0.4)
+        ("rust-rustc-hash" ,rust-rustc-hash-1)
+        ("rust-rustls" ,rust-rustls-0.21)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tracing" ,rust-tracing-0.1))
+       #:cargo-development-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-bencher" ,rust-bencher-0.1)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-crc" ,rust-crc-3)
+        ("rust-directories-next" ,rust-directories-next-2)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rcgen" ,rust-rcgen-0.10)
+        ("rust-rustls-pemfile" ,rust-rustls-pemfile-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tracing-futures" ,rust-tracing-futures-0.2)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3)
+        ("rust-url" ,rust-url-2))))
+    (native-inputs (list perl))
+    (home-page "https://github.com/quinn-rs/quinn")
+    (synopsis "Versatile QUIC transport protocol implementation")
+    (description "Versatile QUIC transport protocol implementation.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-quinn-0.8
   (package
+    (inherit rust-quinn-0.10)
     (name "rust-quinn")
     (version "0.8.5")
     (source (origin
@@ -60379,7 +60425,6 @@ and Petrick's method, an algorithm to automatically minimize boolean expressions
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32 "13zgwm0pm73w26mzrgv3z9c9rf0zqmq1j8r7k64di85zv5qmwhsv"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bytes" ,rust-bytes-1)
@@ -60406,12 +60451,7 @@ and Petrick's method, an algorithm to automatically minimize boolean expressions
         ("rust-tokio" ,rust-tokio-1)
         ("rust-tracing-futures" ,rust-tracing-futures-0.2)
         ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3)
-        ("rust-url" ,rust-url-2))))
-    (native-inputs (list perl))
-    (home-page "https://github.com/quinn-rs/quinn")
-    (synopsis "Versatile QUIC transport protocol implementation")
-    (description "Versatile QUIC transport protocol implementation")
-    (license (list license:expat license:asl2.0))))
+        ("rust-url" ,rust-url-2))))))
 
 (define-public rust-quinn-proto-0.10
   (package
