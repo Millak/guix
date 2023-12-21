@@ -83131,7 +83131,7 @@ automatically instrumenting functions.")
 (define-public rust-tracing-core-0.1
   (package
     (name "rust-tracing-core")
-    (version "0.1.31")
+    (version "0.1.32")
     (source
      (origin
        (method url-fetch)
@@ -83139,7 +83139,7 @@ automatically instrumenting functions.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "16pp28izw9c41m7c55qsghlz07r9ark8lzd3x6ig3xhxg89vhm89"))))
+         "0m5aglin3cdwxpvbg6kz0r9r0k31j48n0kcfwsp6l49z26k3svf0"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
