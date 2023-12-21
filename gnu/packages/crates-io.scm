@@ -92463,29 +92463,43 @@ implementation that works everywhere, even WASM!")
         ("rust-partial-io" ,rust-partial-io-0.5)
         ("rust-walkdir" ,rust-walkdir-2))))))
 
-(define-public rust-zstd-safe-5
+(define-public rust-zstd-safe-7
   (package
     (name "rust-zstd-safe")
-    (version "5.0.2+zstd.1.5.2")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "zstd-safe" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1nzl4q3xl68pq58g9xlym299bvjdii8cl7ix595ym7jgw22maahx"))))
+        (base32 "0gpav2lcibrpmyslmjkcn3w0w64qif3jjljd2h8lr4p249s7qx23"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-zstd-sys" ,rust-zstd-sys-2))))
+     `(#:cargo-inputs (("rust-zstd-sys" ,rust-zstd-sys-2))))
     (home-page "https://github.com/gyscos/zstd-rs")
     (synopsis "Safe low-level bindings to the zstd compression library")
     (description
      "This package provides safe low-level bindings to the zstd compression
 library.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-zstd-safe-5
+  (package
+    (inherit rust-zstd-safe-7)
+    (name "rust-zstd-safe")
+    (version "5.0.2+zstd.1.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zstd-safe" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1nzl4q3xl68pq58g9xlym299bvjdii8cl7ix595ym7jgw22maahx"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-zstd-sys" ,rust-zstd-sys-2))))))
 
 (define-public rust-zstd-safe-4
   (package
