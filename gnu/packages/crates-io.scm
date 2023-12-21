@@ -18614,6 +18614,31 @@ Provides constant-time, no_std-friendly implementations of modern formulas
 using const generics.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-crypto-bigint-0.3
+  (package
+    (inherit rust-crypto-bigint-0.5)
+    (name "rust-crypto-bigint")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "crypto-bigint" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "08gx92sj93hk2smqy4nvk8lmpjjjqm7a9ps22q3pxqqxzbas3ih3"))))
+    (arguments
+     `(#:cargo-inputs (("rust-generic-array" ,rust-generic-array-0.14)
+                       ("rust-rand-core" ,rust-rand-core-0.6)
+                       ("rust-rlp" ,rust-rlp-0.5)
+                       ("rust-subtle" ,rust-subtle-2)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.3)
+                                   ("rust-num-bigint" ,rust-num-bigint-0.4)
+                                   ("rust-num-traits" ,rust-num-traits-0.2)
+                                   ("rust-proptest" ,rust-proptest-1)
+                                   ("rust-rand-chacha" ,rust-rand-chacha-0.3)
+                                   ("rust-rand-core" ,rust-rand-core-0.6))))))
+
 (define-public rust-crypto-bigint-0.2
   (package
     (inherit rust-crypto-bigint-0.5)
