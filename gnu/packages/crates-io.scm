@@ -70861,21 +70861,19 @@ function family including SHA-224, SHA-256, SHA-384, and SHA-512.")
   (package
     (inherit rust-sha2-0.10)
     (name "rust-sha2")
-    (version "0.9.5")
+    (version "0.9.9")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "sha2" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "04lzf4swq6cijvxnc6facr3g72h5v7a5z8lz3xrkf8gxa9bswqmk"))))
+         (base32 "006q2f0ar26xcjxqz8zsncfgz86zqa5dkwlwv03rhx1rpzhs2n2d"))))
     (arguments
      `(#:cargo-inputs
        (("rust-block-buffer" ,rust-block-buffer-0.9)
         ("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-cpufeatures" ,rust-cpufeatures-0.1)
+        ("rust-cpufeatures" ,rust-cpufeatures-0.2)
         ("rust-digest" ,rust-digest-0.9)
         ("rust-opaque-debug" ,rust-opaque-debug-0.3)
         ("rust-sha2-asm" ,rust-sha2-asm-0.6))
