@@ -1999,6 +1999,7 @@ runs a command whenever it detects modifications.")
   (package
     (name "rbw")
     (version "1.8.3")
+    (outputs '("out" "scripts"))
     (source
      (origin
        (method url-fetch)
@@ -2083,11 +2084,32 @@ runs a command whenever it detects modifications.")
                (mkdir-p (string-append share "/elvish/lib"))
                (with-output-to-file
                  (string-append share "/elvish/lib/rbw")
-                 (lambda _ (invoke rbw "gen-completions" "elvish")))))))))
+                 (lambda _ (invoke rbw "gen-completions" "elvish"))))))
+         (add-after 'install 'install-scripts
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out"))
+                   (scripts (assoc-ref outputs "scripts")))
+               (for-each (lambda (file)
+                           (install-file file (string-append scripts "/bin")))
+                         (find-files "bin"))
+               (for-each (lambda (file)
+                           (wrap-script file
+                             ;; TODO: Do we want to wrap these with more programs?
+                             ;; pass git fzf libsecret xclip rofi
+                             `("PATH" prefix
+                                (,(string-append out "/bin")
+                                 ,(dirname (search-input-file inputs "/bin/grep"))
+                                 ,(dirname (search-input-file inputs "/bin/sed"))
+                                 ,(dirname (search-input-file inputs "/bin/perl"))
+                                 ,(dirname (search-input-file inputs "/bin/xargs"))
+                                 ,(dirname (search-input-file inputs "/bin/sort"))))))
+                         (find-files (string-append scripts "/bin")))))))))
     (native-inputs
      (cons* perl (if (%current-target-system)
                    (list this-package)
                    '())))
+    (inputs
+     (list coreutils-minimal findutils grep perl sed))
     (home-page "https://git.tozt.net/rbw")
     (synopsis "Unofficial Bitwarden CLI")
     (description "This package is an unofficial command line client for
