@@ -20999,6 +20999,27 @@ written in rust.")
         ("rust-gzip-header" ,rust-gzip-header-0.3)
         ("rust-flate2" ,rust-flate2-1))))))
 
+(define-public rust-deflate64-0.1
+  (package
+    (name "rust-deflate64")
+    (version "0.1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "deflate64" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1aagh5mmyr8p08if33hizqwiq2as90v9smla89nydq6pivsfy766"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-bytemuck" ,rust-bytemuck-1)
+                                   ("rust-proptest" ,rust-proptest-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/anatawa12/deflate64-rs#readme")
+    (synopsis "Deflate64 implementation based on .NET's implementation")
+    (description "Deflate64 implementation based on .NET's implementation.")
+    (license license:expat)))
+
 (define-public rust-defmac-0.2
   (package
     (name "rust-defmac")
