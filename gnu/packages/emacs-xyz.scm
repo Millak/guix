@@ -31867,7 +31867,7 @@ current tree.")
 (define-public emacs-org-agenda-files-track
   (package
     (name "emacs-org-agenda-files-track")
-    (version "0.3.1")
+    (version "0.4.0")
     (source
      (origin
        (method git-fetch)
@@ -31876,7 +31876,7 @@ current tree.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g59ckcrc9qd0h78qwq4qm3kn97nvnc2a0yj4g3fh74wr1mg80ad"))))
+        (base32 "0d7fhsinm2cj8vd7s54x5r6jhq3l36b7x6s8cy5r6y005h8kac50"))))
     (build-system emacs-build-system)
     (arguments
      (list #:include
