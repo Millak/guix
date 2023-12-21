@@ -56267,6 +56267,27 @@ with additional support for PKCS#8v2 asymmetric key packages (RFC 5958).")
        (("rust-hex-literal" ,rust-hex-literal-0.3)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-pkcs8-0.8
+  (package
+    (inherit rust-pkcs8-0.10)
+    (name "rust-pkcs8")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pkcs8" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1l29h4mrgi2kpsl98jzky3ni5by3xa1sc6db9yd8l1i1p0zxmavw"))))
+    (arguments
+     `(#:cargo-inputs (("rust-der" ,rust-der-0.5)
+                       ("rust-pkcs5" ,rust-pkcs5-0.4)
+                       ("rust-rand-core" ,rust-rand-core-0.6)
+                       ("rust-spki" ,rust-spki-0.5)
+                       ("rust-subtle" ,rust-subtle-2)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.3))))))
+
 (define-public rust-pkcs8-0.7
   (package
     (inherit rust-pkcs8-0.10)
