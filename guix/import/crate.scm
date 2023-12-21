@@ -6,6 +6,7 @@
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2023 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -328,15 +329,17 @@ look up the development dependencs for the given crate."
       (values #f '())))
 
 (define* (crate-recursive-import crate-name #:key version)
-  (recursive-import crate-name
-                    #:repo->guix-package (lambda* params
-                      ;; download development dependencies only for the top level package
-                      (let ((include-dev-deps? (equal? (car params) crate-name))
-                            (crate->guix-package* (memoize crate->guix-package)))
-                        (apply crate->guix-package*
-                               (append params `(#:include-dev-deps? ,include-dev-deps?)))))
-                    #:version version
-                    #:guix-name crate-name->package-name))
+  (recursive-import
+   crate-name
+   #:repo->guix-package
+   (let ((crate->guix-package* (memoize crate->guix-package)))
+     (lambda* params
+       ;; download development dependencies only for the top level package
+       (let ((include-dev-deps? (equal? (car params) crate-name)))
+         (apply crate->guix-package*
+                (append params `(#:include-dev-deps? ,include-dev-deps?))))))
+   #:version version
+   #:guix-name crate-name->package-name))
 
 (define (guix-package->crate-name package)
   "Return the crate name of PACKAGE."
