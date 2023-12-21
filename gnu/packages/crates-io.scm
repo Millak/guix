@@ -56109,6 +56109,24 @@ Cryptography Standards (PKCS) #1: RSA Cryptography Specifications Version 2.2
 (RFC 8017).")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-pkcs1-0.3
+  (package
+    (inherit rust-pkcs1-0.7)
+    (name "rust-pkcs1")
+    (version "0.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pkcs1" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0813szfx13n4xl6l19m3lwj7pqgljqwc6ipxhr2dv0yc9k06d3x7"))))
+    (arguments
+     `(#:cargo-inputs (("rust-der" ,rust-der-0.5)
+                       ("rust-pkcs8" ,rust-pkcs8-0.8)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.3))))))
+
 (define-public rust-pkcs1-0.2
   (package
     (inherit rust-pkcs1-0.7)
