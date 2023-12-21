@@ -54823,6 +54823,21 @@ implementation suitable for use with cryptographic private keys.")
     (arguments
      `(#:cargo-inputs (("rust-base64ct" ,rust-base64ct-1))))))
 
+(define-public rust-pem-rfc7468-0.3
+  (package
+    (inherit rust-pem-rfc7468-0.7)
+    (name "rust-pem-rfc7468")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pem-rfc7468" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0c7vrrksg8fqzxb7q4clzl14f0qnqky7jqspjqi4pailiybmvph1"))))
+    (arguments
+     `(#:cargo-inputs (("rust-base64ct" ,rust-base64ct-1))))))
+
 (define-public rust-pem-rfc7468-0.2
   (package
     (inherit rust-pem-rfc7468-0.7)
