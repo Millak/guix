@@ -63486,14 +63486,14 @@ uses finite automata and guarantees linear time matching on all inputs.")
   (package
     (inherit rust-regex-syntax-0.8)
     (name "rust-regex-syntax")
-    (version "0.7.4")
+    (version "0.7.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "regex-syntax" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1qjczlc2w92kamn9ipjdr5pjql0jnccahpi9l3r6wp0rnsjr5sp5"))))
+                "1nhjmqdlakfi4yb8lh7vbbh71dsy90jjvrjvvnrih6larldgpdfv"))))
     (arguments
      `(#:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1))))))
 
