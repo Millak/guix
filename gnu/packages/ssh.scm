@@ -198,7 +198,7 @@ a server that supports the SSH-2 protocol.")
 (define-public openssh
   (package
    (name "openssh")
-   (version "9.5p1")
+   (version "9.6p1")
    (source
     (origin
       (method url-fetch)
@@ -206,11 +206,14 @@ a server that supports the SSH-2 protocol.")
                           "openssh-" version ".tar.gz"))
       (patches (search-patches "openssh-trust-guix-store-directory.patch"))
       (sha256
-       (base32 "0sq8hqk6f0x6djgvqawjbwwxpwd8r1nzjahqfl7m9yx7kfvyf9ph"))))
+       (base32 "0z3pgam8b4z05lvdb78iv06p204qwl7b94a3cnnwba2mfb0120li"))))
    (build-system gnu-build-system)
    (arguments
     (list
      #:test-target "tests"
+     ;; Not all of the tests can be run in parallel, see
+     ;; <https://marc.info/?l=openssh-unix-dev&m=170313565518842>.
+     #:parallel-tests? #f
      ;; Otherwise, the test scripts try to use a nonexistent directory and fail.
      #:make-flags
      #~(list "REGRESSTMP=\"$${BUILDDIR}/regress\"")
