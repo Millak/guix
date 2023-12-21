@@ -92406,8 +92406,34 @@ implementation that works everywhere, even WASM!")
      "This package provides a library for parsing compiled zoneinfo files.")
     (license license:expat)))
 
+(define-public rust-zstd-0.13
+  (package
+    (name "rust-zstd")
+    (version "0.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zstd" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0401q54s9r35x2i7m1kwppgkj79g0pb6xz3xpby7qlkdb44k7yxz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs (("rust-zstd-safe" ,rust-zstd-safe-7))
+       #:cargo-development-inputs (("rust-clap" ,rust-clap-4)
+                                   ("rust-humansize" ,rust-humansize-2)
+                                   ("rust-partial-io" ,rust-partial-io-0.5)
+                                   ("rust-walkdir" ,rust-walkdir-2))))
+    (home-page "https://github.com/gyscos/zstd-rs")
+    (synopsis "Binding to the zstd compression library")
+    (description
+     "This package provides a binding to the Zstd compression library.")
+    (license license:expat)))
+
 (define-public rust-zstd-0.11
   (package
+    (inherit rust-zstd-0.13)
     (name "rust-zstd")
     (version "0.11.2+zstd.1.5.2")
     (source
@@ -92418,7 +92444,6 @@ implementation that works everywhere, even WASM!")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1r7xlmgnifhxbfyid8vkcnd5ip16gx9hf89d1l0lzrpc4q1rdk10"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Not all files included.
        #:cargo-inputs
@@ -92427,12 +92452,7 @@ implementation that works everywhere, even WASM!")
        (("rust-clap" ,rust-clap-3)
         ("rust-humansize" ,rust-humansize-1)
         ("rust-partial-io" ,rust-partial-io-0.5)
-        ("rust-walkdir" ,rust-walkdir-2))))
-    (home-page "https://github.com/gyscos/zstd-rs")
-    (synopsis "Binding to the zstd compression library")
-    (description
-     "This package provides a binding to the Zstd compression library.")
-    (license license:expat)))
+        ("rust-walkdir" ,rust-walkdir-2))))))
 
 (define-public rust-zstd-0.9
   (package
