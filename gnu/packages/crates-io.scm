@@ -17377,16 +17377,17 @@ final xor value.  It has many built-in CRC functions.")
 Rust.")
     (license license:bsd-3)))
 
-(define-public rust-crc-catalog-1
+(define-public rust-crc-catalog-2
   (package
     (name "rust-crc-catalog")
-    (version "1.1.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "crc-catalog" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32 "00qlxgzg15fnyx6nwviibz94rjw803l2avi2k3shjfx0dnsyvbnc"))))
+    (version "2.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "crc-catalog" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xg7sz82w3nxp1jfn425fvn1clvbzb3zgblmxsyqpys0dckp9lqr"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/akhilles/crc-catalog.git")
     (synopsis "Catalog of CRC algorithms expressed as simple Rust structs")
@@ -17394,6 +17395,18 @@ Rust.")
      "This package contains a catalog of CRC algorithms (generated from
 http://reveng.sourceforge.net/crc-catalogue) expressed as simple Rust structs.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-crc-catalog-1
+  (package
+    (inherit rust-crc-catalog-2)
+    (name "rust-crc-catalog")
+    (version "1.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "crc-catalog" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "00qlxgzg15fnyx6nwviibz94rjw803l2avi2k3shjfx0dnsyvbnc"))))))
 
 (define-public rust-criterion-0.5
   (package
