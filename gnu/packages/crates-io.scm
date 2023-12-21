@@ -54717,8 +54717,34 @@ procedural macros for rust-peg.  To use rust-peg, see the peg package.")
 runtime support for rust-peg grammars.  To use rust-peg, see the peg crate.")
     (license license:expat)))
 
+(define-public rust-pem-3
+  (package
+    (name "rust-pem")
+    (version "3.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pem" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0463ya67xrxaqn4qs9iz7rsx4parcasd78pd9fv7yd1m81wwr3qv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-base64" ,rust-base64-0.21)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-proptest" ,rust-proptest-1)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/jcreekmore/pem-rs.git")
+    (synopsis "Parse and encode PEM-encoded data")
+    (description
+     "This package provides a Rust library for parsing and encoding
+PEM-encoded data.")
+    (license license:expat)))
+
 (define-public rust-pem-2
   (package
+    (inherit rust-pem-3)
     (name "rust-pem")
     (version "2.0.1")
     (source (origin
@@ -54728,7 +54754,6 @@ runtime support for rust-peg grammars.  To use rust-peg, see the peg crate.")
               (sha256
                (base32
                 "06j4vmzkfg5jh9ykc5bdvydishqkbb4sf64fa528wg6zbi0zw4vb"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-base64" ,rust-base64-0.21)
@@ -54736,13 +54761,7 @@ runtime support for rust-peg grammars.  To use rust-peg, see the peg crate.")
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.3)
         ("rust-proptest" ,rust-proptest-1)
-        ("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://github.com/jcreekmore/pem-rs.git")
-    (synopsis "Parse and encode PEM-encoded data")
-    (description
-     "This package provides a Rust library for parsing and encoding
-PEM-encoded data.")
-    (license license:expat)))
+        ("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-pem-1
   (package
