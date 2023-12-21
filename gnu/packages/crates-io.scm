@@ -64058,6 +64058,43 @@ can handle huge texts and memory-incoherent edits with ease.")
     (description "This package provides a pure Rust RSA implementation.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rsa-0.6
+  (package
+    (inherit rust-rsa-0.9)
+    (name "rust-rsa")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rsa" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02viiiylxpk2hx5h5qrpm4lcd8ildvafbw0rn6rx44wnqia2gwjc"))))
+    (arguments
+     `(#:cargo-inputs (("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-digest" ,rust-digest-0.10)
+                       ("rust-num-bigint-dig" ,rust-num-bigint-dig-0.8)
+                       ("rust-num-integer" ,rust-num-integer-0.1)
+                       ("rust-num-iter" ,rust-num-iter-0.1)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-pkcs1" ,rust-pkcs1-0.3)
+                       ("rust-pkcs8" ,rust-pkcs8-0.8)
+                       ("rust-rand-core" ,rust-rand-core-0.6)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-subtle" ,rust-subtle-2)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-base64ct" ,rust-base64ct-1)
+                                   ("rust-hex-literal" ,rust-hex-literal-0.3)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-rand-chacha" ,rust-rand-chacha-0.3)
+                                   ("rust-rand-core" ,rust-rand-core-0.6)
+                                   ("rust-rand-xorshift" ,rust-rand-xorshift-0.3)
+                                   ("rust-serde-test" ,rust-serde-test-1)
+                                   ("rust-sha1" ,rust-sha1-0.10)
+                                   ("rust-sha2" ,rust-sha2-0.10)
+                                   ("rust-sha3" ,rust-sha3-0.10))))))
+
 (define-public rust-rsa-0.5
   (package
     (inherit rust-rsa-0.9)
