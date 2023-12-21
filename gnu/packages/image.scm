@@ -617,7 +617,7 @@ official designation is ISO/IEC 29199-2). This library is an implementation of t
 (define-public jpegoptim
   (package
    (name "jpegoptim")
-   (version "1.4.7")
+   (version "1.5.5")
    (source
     (origin
       (method git-fetch)
@@ -626,35 +626,17 @@ official designation is ISO/IEC 29199-2). This library is an implementation of t
             (commit (string-append "v" version))))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "06f6d08xvmsiki4mc1qs985gsjqmsxx793a93b72y25q84wbg9x9"))))
+       (base32 "18zq7ada7n17vgkkcixpisxsbs7i8xp5qjp78hyyvmmb9dqy97fy"))))
    (build-system gnu-build-system)
    (arguments
-    `(#:tests? #f                       ; no tests
-      ,@(if (and (target-riscv64?)
-                 (%current-target-system))
-          (list #:phases
-                #~(modify-phases %standard-phases
-                    (add-after 'unpack 'update-config-scripts
-                      (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                        (for-each (lambda (file)
-                                    (install-file
-                                      (search-input-file
-                                        (or native-inputs inputs)
-                                        (string-append "/bin/" file)) "./tools"))
-                                  '("config.guess" "config.sub"))))))
-          '())))
+    (list #:tests? #f))
    (inputs (list libjpeg-turbo))
-   (native-inputs
-    (if (and (target-riscv64?)
-             (%current-target-system))
-      (list config)
-      '()))
    (synopsis "Optimize JPEG images")
    (description
     "jpegoptim provides lossless optimization (based on optimizing
 the Huffman tables) and \"lossy\" optimization based on setting
 maximum quality factor.")
-   (license license:gpl2+)
+   (license license:gpl3+)
    (home-page "https://www.kokkonen.net/tjko/projects.html#jpegoptim")))
 
 (define-public libicns
