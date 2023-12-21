@@ -34338,6 +34338,46 @@ of gzip files based on the gzip header implementation in the @code{flate2} crate
         ("rust-webpki" ,rust-webpki-0.21)
         ("rust-webpki-roots" ,rust-webpki-roots-0.17))))))
 
+(define-public rust-h3-0.0.3
+  (package
+    (name "rust-h3")
+    (version "0.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "h3" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "101vg73galsyk5gnjb49cjb6q40c9z2npcdxpfsj99ky2waijgmq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included
+       #:cargo-inputs
+       (("rust-bytes" ,rust-bytes-1)
+        ("rust-fastrand" ,rust-fastrand-2)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-http" ,rust-http-0.2)
+        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tracing" ,rust-tracing-0.1))
+       #:cargo-development-inputs
+       (("rust-assert-matches" ,rust-assert-matches-1)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-quinn" ,rust-quinn-0.10)
+        ("rust-quinn-proto" ,rust-quinn-proto-0.10)
+        ("rust-rcgen" ,rust-rcgen-0.11)
+        ("rust-rustls" ,rust-rustls-0.21)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-util" ,rust-tokio-util-0.7)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (native-inputs (list perl))
+    (home-page "https://github.com/hyperium/h3")
+    (synopsis "Async HTTP/3 implementation")
+    (description "This package provides an async HTTP/3 implementation.")
+    (license license:expat)))
+
 (define-public rust-h3-quinn-0.0.4
   (package
     (name "rust-h3-quinn")
