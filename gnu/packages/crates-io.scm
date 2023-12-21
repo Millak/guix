@@ -17268,8 +17268,29 @@ mile, ...).")
 @url{crates.io}.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-crc-3
+  (package
+    (name "rust-crc")
+    (version "3.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "crc" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zkx87a5x06xfd6xm5956w4vmdfs0wcxpsn7iwj5jbp2rcapmv46"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-crc-catalog" ,rust-crc-catalog-2))))
+    (home-page "https://github.com/mrhooray/crc-rs.git")
+    (synopsis "Rust implementation of CRC(16, 32, 64)")
+    (description "This package provides a Rust implementation of CRC(16, 32,
+64) with support for various standards.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-crc-2
   (package
+    (inherit rust-crc-3)
     (name "rust-crc")
     (version "2.1.0")
     (source (origin
@@ -17278,14 +17299,8 @@ mile, ...).")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32 "08qfahmly0n5j27g1vkqx9s6mxhm8k4dsp61ykskazyabdlrmz29"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-crc-catalog" ,rust-crc-catalog-1))))
-    (home-page "https://github.com/mrhooray/crc-rs.git")
-    (synopsis "Rust implementation of CRC(16, 32, 64)")
-    (description "This package provides a Rust implementation of CRC(16, 32,
-64) with support for various standards.")
-    (license (list license:expat license:asl2.0))))
+     `(#:cargo-inputs (("rust-crc-catalog" ,rust-crc-catalog-1))))))
 
 (define-public rust-crc-1
   (package
