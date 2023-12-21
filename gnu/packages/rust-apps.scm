@@ -2058,9 +2058,36 @@ runs a command whenever it detects modifications.")
         ("rust-totp-lite" ,rust-totp-lite-2)
         ("rust-url" ,rust-url-2)
         ("rust-uuid" ,rust-uuid-1)
-        ("rust-zeroize" ,rust-zeroize-1))))
+        ("rust-zeroize" ,rust-zeroize-1))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-completions
+           (lambda* (#:key native-inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (share (string-append out "/share"))
+                    (rbw (if ,(%current-target-system)
+                          (search-input-file native-inputs "/bin/rbw")
+                          (string-append out "/bin/rbw"))))
+               (mkdir-p (string-append share "/bash-completion/completions"))
+               (with-output-to-file
+                 (string-append share "/bash-completion/completions/rbw")
+                 (lambda _ (invoke rbw "gen-completions" "bash")))
+               (mkdir-p (string-append share "/fish/vendor_completions.d"))
+               (with-output-to-file
+                 (string-append share "/fish/vendor_completions.d/rbw.fish")
+                 (lambda _ (invoke rbw "gen-completions" "fish")))
+               (mkdir-p (string-append share "/zsh/site-functions"))
+               (with-output-to-file
+                 (string-append share "/zsh/site-functions/_rbw")
+                 (lambda _ (invoke rbw "gen-completions" "zsh")))
+               (mkdir-p (string-append share "/elvish/lib"))
+               (with-output-to-file
+                 (string-append share "/elvish/lib/rbw")
+                 (lambda _ (invoke rbw "gen-completions" "elvish")))))))))
     (native-inputs
-     (list perl))
+     (cons* perl (if (%current-target-system)
+                   (list this-package)
+                   '())))
     (home-page "https://git.tozt.net/rbw")
     (synopsis "Unofficial Bitwarden CLI")
     (description "This package is an unofficial command line client for
