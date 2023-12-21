@@ -31864,15 +31864,15 @@ current subtree.  The cards are inserted under a new ``Cards'' heading in the
 current tree.")
       (license license:gpl3+))))
 
-(define-public emacs-org-dynamic-agenda
+(define-public emacs-org-agenda-files-track
   (package
-    (name "emacs-org-dynamic-agenda")
+    (name "emacs-org-agenda-files-track")
     (version "0.3.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://git.sr.ht/~ngraves/org-dynamic-agenda")
+             (url "https://git.sr.ht/~ngraves/org-agenda-files-track")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
@@ -31880,12 +31880,14 @@ current tree.")
     (build-system emacs-build-system)
     (arguments
      (list #:include
-           #~(list "org-dynamic-agenda\\.el" "README\\.org")))
-    (home-page "https://git.sr.ht/~ngraves/org-dynamic-agenda")
-    (synopsis "Dynamically generate org-agenda-files")
+           #~(list "org-agenda-files-track\\.el" "README\\.org")))
+    (home-page "https://git.sr.ht/~ngraves/org-agenda-files-track")
+    (synopsis "Fine-track org-agenda-files")
     (description
-     "This package dynamically generates org-agenda-files.")
+     "This package tracks org-agenda-files precisely to speed-up org-agenda.")
     (license license:gpl3+)))
+
+(define-deprecated emacs-org-dynamic-agenda emacs-org-agenda-files-track)
 
 (define-public emacs-org-dynamic-agenda-ql
   (package
