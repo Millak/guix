@@ -60413,8 +60413,49 @@ and Petrick's method, an algorithm to automatically minimize boolean expressions
     (description "Versatile QUIC transport protocol implementation")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-quinn-proto-0.10
+  (package
+    (name "rust-quinn-proto")
+    (version "0.10.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "quinn-proto" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06ibzy0i7gf7hs65slxgv7xv095aalj2zq9zzmmj9g1gvvgzf6ql"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=connection::mtud::tests::mtu_discovery_with_peer_max_udp_payload_size_after_search_panics")
+       #:cargo-inputs
+       (("rust-arbitrary" ,rust-arbitrary-1)
+        ("rust-bytes" ,rust-bytes-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-ring" ,rust-ring-0.16)
+        ("rust-rustc-hash" ,rust-rustc-hash-1)
+        ("rust-rustls" ,rust-rustls-0.21)
+        ("rust-rustls-native-certs" ,rust-rustls-native-certs-0.6)
+        ("rust-slab" ,rust-slab-0.4)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-tinyvec" ,rust-tinyvec-1)
+        ("rust-tracing" ,rust-tracing-0.1))
+       #:cargo-development-inputs
+       (("rust-assert-matches" ,rust-assert-matches-1)
+        ("rust-hex-literal" ,rust-hex-literal-0.4)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-rcgen" ,rust-rcgen-0.10)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (native-inputs (list perl))
+    (home-page "https://github.com/quinn-rs/quinn")
+    (synopsis "State machine for the QUIC transport protocol")
+    (description "State machine for the QUIC transport protocol.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-quinn-proto-0.8
   (package
+    (inherit rust-quinn-proto-0.10)
     (name "rust-quinn-proto")
     (version "0.8.4")
     (source (origin
@@ -60423,7 +60464,6 @@ and Petrick's method, an algorithm to automatically minimize boolean expressions
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32 "0m9ak5nsplf3a6s7i9243y5rlh8d8a428r9hfnjngxw8jrmm9kiz"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-arbitrary" ,rust-arbitrary-1)
@@ -60444,13 +60484,7 @@ and Petrick's method, an algorithm to automatically minimize boolean expressions
         ("rust-hex-literal" ,rust-hex-literal-0.3)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-rcgen" ,rust-rcgen-0.8)
-        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
-    (native-inputs
-     (list perl))
-    (home-page "https://github.com/quinn-rs/quinn")
-    (synopsis "State machine for the QUIC transport protocol")
-    (description "State machine for the QUIC transport protocol")
-    (license (list license:expat license:asl2.0))))
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))))
 
 (define-public rust-quinn-udp-0.4
   (package
