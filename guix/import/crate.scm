@@ -328,14 +328,17 @@ look up the development dependencs for the given crate."
          (append cargo-inputs cargo-development-inputs)))
       (values #f '())))
 
-(define* (crate-recursive-import crate-name #:key version)
+(define* (crate-recursive-import
+          crate-name #:key version recursive-dev-dependencies?)
   (recursive-import
    crate-name
    #:repo->guix-package
    (let ((crate->guix-package* (memoize crate->guix-package)))
      (lambda* params
        ;; download development dependencies only for the top level package
-       (let ((include-dev-deps? (equal? (car params) crate-name)))
+       (let ((include-dev-deps?
+              (or (equal? (car params) crate-name)
+                  recursive-dev-dependencies?)))
          (apply crate->guix-package*
                 (append params `(#:include-dev-deps? ,include-dev-deps?))))))
    #:version version

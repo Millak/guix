@@ -5,6 +5,7 @@
 ;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2023 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -47,6 +48,9 @@
 Import and convert the crates.io package for PACKAGE-NAME.\n"))
   (display (G_ "
   -r, --recursive        import packages recursively"))
+  (display (G_ "
+      --recursive-dev-dependencies
+                         include dev-dependencies recursively"))
   (newline)
   (display (G_ "
   -h, --help             display this help and exit"))
@@ -67,6 +71,9 @@ Import and convert the crates.io package for PACKAGE-NAME.\n"))
          (option '(#\r "recursive") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'recursive #t result)))
+         (option '("recursive-dev-dependencies") #f #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'recursive-dev-dependencies #t result)))
          %standard-import-options))
 
 
@@ -92,7 +99,10 @@ Import and convert the crates.io package for PACKAGE-NAME.\n"))
          (package-name->name+version spec))
 
        (match (if (assoc-ref opts 'recursive)
-                  (crate-recursive-import name #:version version)
+                  (crate-recursive-import
+                   name #:version version
+                   #:recursive-dev-dependencies?
+                   (assoc-ref opts 'recursive-dev-dependencies))
                   (crate->guix-package name #:version version #:include-dev-deps? #t))
          ((or #f '())
           (leave (G_ "failed to download meta-data for package '~a'~%")

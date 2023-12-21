@@ -14585,6 +14585,10 @@ Additional options include:
 Traverse the dependency graph of the given upstream package recursively
 and generate package expressions for all those packages that are not yet
 in Guix.
+@item --recursive-dev-dependencies
+If @option{--recursive-dev-dependencies} is specified, also the recursively
+imported packages contain their development dependencies, which are recursively
+imported as well.
 @end table
 
 @item elm
