@@ -5513,8 +5513,42 @@ Rust.")
      "Async multi-producer multi-consumer channel")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-async-compression-0.4
+  (package
+    (name "rust-async-compression")
+    (version "0.4.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "async-compression" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19f2mdiz7jrmpbhjxmpfmixfv5640iknhxhfb57x723k5bxhqbdw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; could not find `proptest` in the list of imported crates
+       #:cargo-inputs (("rust-brotli" ,rust-brotli-3)
+                       ("rust-bzip2" ,rust-bzip2-0.4)
+                       ("rust-deflate64" ,rust-deflate64-0.1)
+                       ("rust-flate2" ,rust-flate2-1)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-futures-io" ,rust-futures-io-0.3)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-xz2" ,rust-xz2-0.1)
+                       ("rust-zstd" ,rust-zstd-0.13)
+                       ("rust-zstd-safe" ,rust-zstd-safe-7))))
+    (home-page "https://github.com/Nullus157/async-compression")
+    (synopsis
+     "Adaptors between compression crates and Rust's modern asynchronous IO types")
+    (description "This package provides adaptors between compression crates
+and Rust's modern asynchronous IO types.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-async-compression-0.3
   (package
+    (inherit rust-async-compression-0.4)
     (name "rust-async-compression")
     (version "0.3.15")
     (source
@@ -5525,7 +5559,6 @@ Rust.")
        (sha256
         (base32
          "0fnnpbsljngmrj8amhw6yg164bl6x4r43mr093g1ps9rmvbpqb4l"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-brotli" ,rust-brotli-3)
@@ -5558,12 +5591,7 @@ Rust.")
         ("rust-tokio-util" ,rust-tokio-util-0.6)
         ("rust-tokio-util" ,rust-tokio-util-0.5)
         ("rust-tokio-util" ,rust-tokio-util-0.4)
-        ("rust-tokio-util" ,rust-tokio-util-0.3))))
-    (home-page "https://github.com/Nemo157/async-compression")
-    (synopsis "Adaptors between compression crates and Rust's modern asynchronous IO types")
-    (description "This package provides adaptors between compression crates
-and Rust's modern asynchronous IO types.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-tokio-util" ,rust-tokio-util-0.3))))))
 
 (define-public rust-async-datagram-3
   (package
