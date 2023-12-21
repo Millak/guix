@@ -21270,6 +21270,24 @@ targets")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-der-derive-0.5
+  (package
+    (inherit rust-der-derive-0.7)
+    (name "rust-der-derive")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "der_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zw4p6yqklv4i76ms2a0gcmna648337r379d5ljgpbir5cyqylrs"))))
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro-error" ,rust-proc-macro-error-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))))
+
 (define-public rust-der-derive-0.4
   (package
     (inherit rust-der-derive-0.7)
