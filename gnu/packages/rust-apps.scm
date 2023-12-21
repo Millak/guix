@@ -2008,7 +2008,8 @@ runs a command whenever it detects modifications.")
         (base32 "1p8bzpqgdc20l2vbb80gsb2ri5j16af958bixpnnp73mfvwzxvg1"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:install-source? #f
+       #:cargo-inputs
        (("rust-aes" ,rust-aes-0.8)
         ("rust-anyhow" ,rust-anyhow-1)
         ("rust-argon2" ,rust-argon2-0.5)
