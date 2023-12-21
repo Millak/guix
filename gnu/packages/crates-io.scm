@@ -24644,8 +24644,32 @@ unescapes strings.")
 from HTML entities.")
     (license license:expat)))
 
+(define-public rust-enum-as-inner-0.6
+  (package
+    (name "rust-enum-as-inner")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "enum-as-inner" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0sjl5z0ycicpxg88qnn57m6sxi3ny9fl7b7vz0pb61bcjsvcpz2z"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-heck" ,rust-heck-0.4)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/bluejekyll/enum-as-inner")
+    (synopsis "Proc-macro for deriving inner field accessor functions on enums")
+    (description "This package provides a proc-macro for deriving inner field
+accessor functions on enums.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-enum-as-inner-0.5
   (package
+    (inherit rust-enum-as-inner-0.6)
     (name "rust-enum-as-inner")
     (version "0.5.1")
     (source
@@ -24655,18 +24679,12 @@ from HTML entities.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "05m1frlkgrikja714zxb97i00rhj36zlifiwiby7ymkx0jx0nwn9"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-heck" ,rust-heck-0.4)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/bluejekyll/enum-as-inner")
-    (synopsis "Proc-macro for deriving inner field accessor functions on enums")
-    (description "This package provides a proc-macro for deriving inner field
-accessor functions on enums.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-enum-as-inner-0.3
   (package
