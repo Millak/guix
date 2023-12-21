@@ -77331,6 +77331,30 @@ processors, disks, components and networks.")
         ("rust-log" ,rust-log-0.3)
         ("rust-unix-socket" ,rust-unix-socket-0.5))))))
 
+(define-public rust-system-configuration-0.5
+  (package
+    (name "rust-system-configuration")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "system-configuration" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1rz0r30xn7fiyqay2dvzfy56cvaa3km74hnbz2d72p97bkf3lfms"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ; struct `sockaddr_in` has no field named `sin_len`
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-core-foundation" ,rust-core-foundation-0.9)
+        ("rust-system-configuration-sys" ,rust-system-configuration-sys-0.5))))
+    (home-page "https://github.com/mullvad/system-configuration-rs")
+    (synopsis "Bindings to SystemConfiguration framework for macOS")
+    (description
+     "Bindings to @code{SystemConfiguration} framework for @code{macOS}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-system-configuration-sys-0.5
   (package
     (name "rust-system-configuration-sys")
