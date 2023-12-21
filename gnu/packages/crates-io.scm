@@ -60452,8 +60452,34 @@ and Petrick's method, an algorithm to automatically minimize boolean expressions
     (description "State machine for the QUIC transport protocol")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-quinn-udp-0.4
+  (package
+    (name "rust-quinn-udp")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "quinn-udp" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1mxiy36w9a3rw6cvfcmlc0rz2vhmq8fzffg4qj9rzswgirvlwnq5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-socket2" ,rust-socket2-0.5)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-windows-sys" ,rust-windows-sys-0.48))))
+    (home-page "https://github.com/quinn-rs/quinn")
+    (synopsis "UDP sockets with ECN information for the QUIC transport protocol")
+    (description
+     "This package provodes UDP sockets with ECN information for the QUIC
+transport protocol in Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-quinn-udp-0.1
   (package
+    (inherit rust-quinn-udp-0.4)
     (name "rust-quinn-udp")
     (version "0.1.4")
     (source (origin
@@ -60462,7 +60488,6 @@ and Petrick's method, an algorithm to automatically minimize boolean expressions
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32 "0m4fafg9d87d8hr0988bg1dcichnxm4xkvwv4vm1lls1f4klcydh"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-futures-util" ,rust-futures-util-0.3)
@@ -60470,13 +60495,7 @@ and Petrick's method, an algorithm to automatically minimize boolean expressions
         ("rust-quinn-proto" ,rust-quinn-proto-0.8)
         ("rust-socket2" ,rust-socket2-0.4)
         ("rust-tokio" ,rust-tokio-1)
-        ("rust-tracing" ,rust-tracing-0.1))))
-    (home-page "https://github.com/quinn-rs/quinn")
-    (synopsis "UDP sockets with ECN information for the QUIC transport protocol")
-    (description
-     "This package provodes UDP sockets with ECN information for the QUIC
-transport protocol in Rust.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-tracing" ,rust-tracing-0.1))))))
 
 (define-public rust-quote-1
   (package
