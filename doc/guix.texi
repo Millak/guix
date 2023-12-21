@@ -14589,6 +14589,9 @@ in Guix.
 If @option{--recursive-dev-dependencies} is specified, also the recursively
 imported packages contain their development dependencies, which are recursively
 imported as well.
+@item --allow-yanked
+If no non-yanked version of a crate is available, use the latest yanked
+version instead instead of aborting.
 @end table
 
 @item elm

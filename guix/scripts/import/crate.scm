@@ -51,6 +51,10 @@ Import and convert the crates.io package for PACKAGE-NAME.\n"))
   (display (G_ "
       --recursive-dev-dependencies
                          include dev-dependencies recursively"))
+  (display (G_ "
+      --allow-yanked
+                         allow importing yanked crates if no alternative
+                         satisfying the version requirement exists"))
   (newline)
   (display (G_ "
   -h, --help             display this help and exit"))
@@ -74,6 +78,9 @@ Import and convert the crates.io package for PACKAGE-NAME.\n"))
          (option '("recursive-dev-dependencies") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'recursive-dev-dependencies #t result)))
+         (option '("allow-yanked") #f #f
+                 (lambda (opt name arg result)
+                   (alist-cons 'allow-yanked #t result)))
          %standard-import-options))
 
 
@@ -102,8 +109,11 @@ Import and convert the crates.io package for PACKAGE-NAME.\n"))
                   (crate-recursive-import
                    name #:version version
                    #:recursive-dev-dependencies?
-                   (assoc-ref opts 'recursive-dev-dependencies))
-                  (crate->guix-package name #:version version #:include-dev-deps? #t))
+                   (assoc-ref opts 'recursive-dev-dependencies)
+                   #:allow-yanked? (assoc-ref opts 'allow-yanked))
+                  (crate->guix-package
+                   name #:version version #:include-dev-deps? #t
+                   #:allow-yanked? (assoc-ref opts 'allow-yanked)))
          ((or #f '())
           (leave (G_ "failed to download meta-data for package '~a'~%")
                  (if version
