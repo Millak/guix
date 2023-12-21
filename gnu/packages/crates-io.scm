@@ -73614,6 +73614,24 @@ OIDs)")
        (("rust-hex-literal" ,rust-hex-literal-0.3)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-spki-0.5
+  (package
+    (inherit rust-spki-0.7)
+    (name "rust-spki")
+    (version "0.5.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "spki" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09qaddm4kw01xm9638910bm4yqnshzh2p38lvc3kxkvc5b01ml24"))))
+    (arguments
+     `(#:cargo-inputs (("rust-base64ct" ,rust-base64ct-1)
+                       ("rust-der" ,rust-der-0.5)
+                       ("rust-sha2" ,rust-sha2-0.9))
+       #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.3))))))
+
 (define-public rust-spki-0.4
   (package
     (inherit rust-spki-0.7)
