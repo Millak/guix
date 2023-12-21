@@ -61870,14 +61870,14 @@ Rust.")
 (define-public rust-rcgen-0.11
   (package
     (name "rust-rcgen")
-    (version "0.11.1")
+    (version "0.11.3")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "rcgen" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0xl91nlp4ld00gl01pfv00a3agaip980wwc7r6184kfd1p0gnm29"))
+                "1iivv3xycr9mjfmp522xjqj47nsl5amlzzsfpbxpvg53984g7i2j"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -61887,7 +61887,7 @@ Rust.")
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-pem" ,rust-pem-2)
+       (("rust-pem" ,rust-pem-3)
         ("rust-ring" ,rust-ring-0.16)
         ("rust-time" ,rust-time-0.3)
         ("rust-x509-parser" ,rust-x509-parser-0.15)
@@ -61898,15 +61898,15 @@ Rust.")
         ("rust-openssl" ,rust-openssl-0.10)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-rsa" ,rust-rsa-0.9)
-        ("rust-webpki" ,rust-webpki-0.22)
+        ("rust-rustls-webpki" ,rust-rustls-webpki-0.101)
         ("rust-x509-parser" ,rust-x509-parser-0.15))))
     (native-inputs
      (list pkg-config))
     (inputs
      (list botan openssl perl))
-    (home-page "https://github.com/est31/rcgen")
+    (home-page "https://github.com/rustls/rcgen")
     (synopsis "Rust X.509 certificate generator")
-    (description "Rust X.509 certificate generator")
+    (description "Rust X.509 certificate generator.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-rcgen-0.10
