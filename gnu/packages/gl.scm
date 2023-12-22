@@ -189,7 +189,7 @@ rendering modes are: Bitmaps, Anti-aliased pixmaps, Texture maps, Outlines,
 Polygon meshes, and Extruded polygon meshes.")
     (license license:x11)))
 
-(define-public glad
+(define-public glad-0.1
   (package
     (name "glad")
     (version "0.1.36")

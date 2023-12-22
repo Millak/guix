@@ -310,7 +310,7 @@ supported devices, as well as input/output file format support.")
     (native-inputs
      (list pkg-config
            python
-           glad
+           glad-0.1
            stb-image
            utf8-h))
     (inputs
