@@ -208,13 +208,13 @@ Polygon meshes, and Extruded polygon meshes.")
          "0m55ya1zrmg6n2cljkajy80ilmi5sblln8742fm0k1sw9k7hzn8n"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-cmakelists.txt
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (share (string-append out "/share/" ,name)))
-               (install-file "CMakeLists.txt" share)))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-cmakelists.txt
+                 (lambda _
+                   (let ((share (string-append #$output "/share/"
+                                               #$(package-name this-package))))
+                     (install-file "CMakeLists.txt" share)))))))
     (home-page "https://github.com/Dav1dde/glad")
     (synopsis "Multi-language GL/GLES/EGL/GLX/WGL loader generator")
     (description "Glad uses the official Khronos XML specifications to
