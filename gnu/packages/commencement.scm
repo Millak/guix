@@ -13,7 +13,7 @@
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2022 Ekaitz Zarraga <ekaitz@elenq.tech>
+;;; Copyright © 2022, 2023 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -302,97 +302,24 @@ pure Scheme to Tar and decompression in one easy step.")
     ("bootar" ,bootar)
     ("guile" ,%bootstrap-guile)))
 
-(define bootstrap-seeds
-  (package
-    (name "bootstrap-seeds")
-    (version "1.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (list
-                    (string-append "mirror://gnu/guix/mirror/"
-                                   "bootstrap-seeds-" version ".tar.gz")
-                    (string-append
-                     "https://lilypond.org/janneke/guix/20220501/"
-                     "bootstrap-seeds-" version ".tar.gz")))
-       (sha256
-        (base32
-         "0scz2bx8fd8c821h6y1j3x6ywgxxns7iinyn9z32dnkiacfdcpfn"))))
-    (native-inputs (list bootar))
-    (build-system trivial-build-system)
-    (arguments
-     (list #:guile %bootstrap-guile
-           #:modules '((guix build utils))
-           #:builder
-           #~(begin
-               (use-modules (guix build utils))
-               (let ((source #$(package-source this-package))
-                     (tar #$(this-package-native-input "bootar"))
-                     (out #$output))
-                 (setenv "PATH" (string-append tar "/bin:"))
-                 (invoke "tar" "xvf" source)
-                 (mkdir-p out)
-                 (copy-recursively "bootstrap-seeds" out)))))
-    (home-page "https://github.com/oriansj/bootstrap-seeds")
-    (synopsis "The initial bootstrap seeds: 357-byte hex0 and kaem shell")
-    (description
-     "This package provides pre-built binaries of the bootstrap seeds.  It
-contains a hex0-seed and an optional kaem-minimal shell.  The size of the hex0
-seeds are for knight: 250 bytes, x86-linux: 357 bytes, x86_64-linux: 431
-bytes, and aarch64-linux 526 bytes.  These can be used to build stage0: hex0,
-hex1, hex2, M1, and M2-Planet.")
-    (license license:gpl3+)))
-
 (define stage0-posix
   ;; The initial bootstrap package: no binary inputs except those from
   ;; `bootstrap-seeds, for x86 a 357 byte binary seed: `x86/hex0-seed'.
-  (let* ((mescc-tools-version "1.4.0")
-         (m2-planet-version "1.9.0")
-         (mescc-tools
-          (origin
-            (method url-fetch)
-            (uri (list
-                  (string-append
-                   "mirror://gnu/guix/mirror/"
-                   "mescc-tools-" mescc-tools-version ".tar.gz")
-                  (string-append
-                   "https://lilypond.org/janneke/guix/20220502/"
-                   "mescc-tools-" mescc-tools-version ".tar.gz")))
-            (sha256
-             (base32
-              "1xi6f48pf5bhajhfis189gpizxij7nbp1vzvsb1aafhz4skkiqvg"))))
-         (m2-planet
-          (origin
-            (method url-fetch)
-            (uri (list
-                  (string-append
-                   "mirror://gnu/guix/mirror/"
-                   "M2-Planet-" m2-planet-version ".tar.gz")
-                  (string-append
-                   "https://lilypond.org/janneke/guix/20220502/"
-                   "M2-Planet-" m2-planet-version ".tar.gz")))
-            (sha256
-             (base32
-              "1xrn69sc5nz4hwaishqyrcidp1ncxwib9zswl45x378ddz3mmk7g")))))
     (package
       (name "stage0-posix")
-      (version "1.4")
+      (version "1.6.0")
       (source (origin
                 (method url-fetch)
-                (uri (list
-                      (string-append "mirror://gnu/guix/mirror/"
-                                     "stage0-posix-" version ".tar.gz")
-                      (string-append
-                       "https://lilypond.org/janneke/guix/20220502/"
-                       "stage0-posix-" version ".tar.gz")))
+                (uri (string-append
+                       "https://github.com/oriansj/" name "/releases/download/"
+                       "Release_" version "/" name "-" version ".tar.gz"))
                 (sha256
                  (base32
-                  "1ammifkj33205qrpfm84yb1c99lwgbn4jsl1hd08aab8c9ffz6p4"))))
+                  "0p06wn95y6xbp2kcd81h2fm3wxvldd1qqyxgav0farl34xlzyq4j"))))
       (supported-systems '("i686-linux" "x86_64-linux"
                            "aarch64-linux"
                            "riscv64-linux"))
-      (native-inputs
-       `(("bootstrap-seeds" ,bootstrap-seeds)
-         ,@(%boot-gash-inputs)))
+      (native-inputs (%boot-gash-inputs))
       (build-system trivial-build-system)
       (arguments
        (list
@@ -401,9 +328,7 @@ hex1, hex2, M1, and M2-Planet.")
         #:builder
         #~(begin
             (use-modules (guix build utils))
-            (let* ((bootstrap-seeds #$(this-package-native-input
-                                       "bootstrap-seeds"))
-                   (source #$(package-source this-package))
+            (let* ((source #$(package-source this-package))
                    (tar #$(this-package-native-input "bootar"))
                    (bash #$(this-package-native-input "bash"))
                    (coreutils #$(this-package-native-input "coreutils"))
@@ -422,32 +347,18 @@ hex1, hex2, M1, and M2-Planet.")
                       "riscv64")
                      (else
                       (error "stage0-posix: system not supported" target))))
-                   (kaem (string-append "../bootstrap-seeds/POSIX/"
+                   (kaem (string-append "bootstrap-seeds/POSIX/"
                                         stage0-cpu "/kaem-optional-seed")))
               (setenv "PATH" (string-append tar "/bin:"
                                             coreutils "/bin:"
                                             bash "/bin"))
               (invoke "tar" "xvf" source)
               (chdir (string-append "stage0-posix-" #$version))
-              (copy-recursively bootstrap-seeds "bootstrap-seeds")
-              (invoke "tar" "xvf" #$mescc-tools)
-              (rmdir "mescc-tools")
-              (symlink (string-append "mescc-tools-" #$mescc-tools-version)
-                       "mescc-tools")
-              (invoke "tar" "xvf" #$m2-planet)
-              (rmdir "M2-Planet")
-              (symlink (string-append "M2-Planet-" #$m2-planet-version)
-                       "M2-Planet")
-              (rmdir "M2libc")
-              (symlink "M2-Planet/M2libc" "M2libc")
               (mkdir-p bindir)
-              (with-directory-excursion stage0-cpu
-                (with-output-to-file "mes-m2.kaem"
-                  (lambda _ (display "")))
-                (with-output-to-file "mescc-tools-extra.kaem"
-                  (lambda _ (display "")))
-                (invoke kaem "kaem.run"))
-              (with-directory-excursion "bin"
+              ;; Keep the same capitalization between the file name and the folder.
+              (rename-file "kaem.aarch64" "kaem.AArch64")
+              (invoke kaem (string-append "kaem." stage0-cpu))
+              (with-directory-excursion (string-append stage0-cpu "/bin")
                 (install-file "hex2" bindir)
                 (install-file "M1" bindir)
                 (install-file "blood-elf" bindir)
@@ -460,7 +371,7 @@ hex1, hex2, M1, and M2-Planet.")
 the bootstrap-seeds, the stage0-posix package first builds hex0 and then all
 the way up: hex1, catm, hex2, M0, cc_x86, M1, M2, get_machine (that's all of
 MesCC-Tools), and finally M2-Planet.")
-      (license license:gpl3+))))
+      (license license:gpl3+)))
 
 (define mes-boot
   (package
