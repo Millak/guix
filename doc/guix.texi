@@ -45069,6 +45069,7 @@ sound support.
 
 @cindex PulseAudio, home service
 @cindex RTP, for PulseAudio
+@subsubheading PulseAudio RTP Streaming Services
 
 The following services dynamically reconfigure the
 @uref{https://pulseaudio.org,PulseAudio sound server}: they let you
@@ -45155,6 +45156,77 @@ Stopping the Shepherd service turns off broadcasting.
 @defvar %pulseaudio-rtp-multicast-address
 This is the multicast address used by default by the two services above.
 @end defvar
+
+@cindex PipeWire, home service
+@subsubheading PipeWire Home Service
+
+@uref{https://pipewire.org, PipeWire} provides a low-latency,
+graph-based audio and video processing service.  In addition to its
+native protocol, it can also be used as a replacement for both JACK and
+PulseAudio.
+
+While PipeWire provides the media processing and API, it does not,
+directly, know about devices such as sound cards, nor how you might want
+to connect applications, hardware, and media processing filters.
+Instead, PipeWire relies on a @dfn{session manager} to specify all these
+relationships.  While you may use any session manager you wish, for most
+people the @url{https://pipewire.pages.freedesktop.org/wireplumber/,
+WirePlumber} session manager, a reference implementation provided by the
+PipeWire project itself, suffices, and that is the one
+@code{home-pipewire-service-type} uses.
+
+PipeWire can be used as a replacement for PulseAudio by setting
+@code{enable-pulseaudio?} to @code{#t} in
+@code{home-pipewire-configuration}, so that existing PulseAudio clients
+may use it without any further configuration.
+
+In addition, JACK clients may connect to PipeWire by using the
+@command{pw-jack} program, which comes with PipeWire.  Simply prefix the
+command with @command{pw-jack} when you run it, and audio data should go
+through PipeWire:
+
+@example
+pw-jack mpv -ao=jack sound-file.wav
+@end example
+
+For more information on PulseAudio emulation, see
+@uref{https://gitlab.freedesktop.org/pipewire/pipewire/-/wikis/Config-PulseAudio},
+for JACK, see
+@uref{https://gitlab.freedesktop.org/pipewire/pipewire/-/wikis/Config-JACK}.
+
+As PipeWire does not use @code{dbus} to start its services on demand
+(as PulseAudio does), @code{home-pipewire-service-type} uses Shepherd
+to start services when logged in, provisioning the @code{pipewire},
+@code{wireplumber}, and, if configured, @code{pipewire-pulseaudio}
+services.  @xref{Shepherd Home Service}.
+
+@defvar home-pipewire-service-type
+This provides the service definition for @command{pipewire}, which will
+run on login.  Its value is a @code{home-pipewire-configuration} object.
+
+To start the service, add it to the @code{service} field of your
+@code{home-environment}, such as:
+
+@lisp
+(service home-pipewire-service-type)
+@end lisp
+@end defvar
+
+@deftp {Data Type} home-pipewire-configuration
+Available @code{home-pipewire-configuration} fields are:
+
+@table @asis
+@item @code{pipewire} (default: @code{pipewire}) (type: file-like)
+The PipeWire package to use.
+
+@item @code{wireplumber} (default: @code{wireplumber}) (type: file-like)
+The WirePlumber package to use.
+
+@item @code{enable-pulseaudio?} (default: @code{#t}) (type: boolean)
+When true, enable PipeWire's PulseAudio emulation support, allowing
+PulseAudio clients to use PipeWire transparently.
+@end table
+@end deftp
 
 @node Mail Home Services
 @subsection Mail Home Services
