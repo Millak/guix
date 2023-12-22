@@ -7562,7 +7562,7 @@ metadata in photo and video files of various formats.")
            libwebp
            libxml2
            sqlite
-           webkitgtk))
+           webkitgtk-for-gtk3))
     (home-page "https://wiki.gnome.org/Apps/Shotwell")
     (synopsis "Photo manager for GNOME 3")
     (description
