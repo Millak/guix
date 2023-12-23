@@ -17636,8 +17636,8 @@ the Emacs Tempo library.  You may also write your templates in Lisp.")
     (license license:gpl3+)))
 
 (define-public emacs-tempel-collection
-  (let ((commit "cd9529b2a2fdfd49010117d2a1fc49adf9725051")
-        (revision "0"))
+  (let ((commit "4a1d717eb30a78680c8f4df2d71e395c846c5371")
+        (revision "1"))
     (package
       (name "emacs-tempel-collection")
       (version (git-version "0.1" revision commit))
@@ -17649,7 +17649,7 @@ the Emacs Tempo library.  You may also write your templates in Lisp.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "02x6jq5k7fa46ni64qf8wrmkay6zfbmkildb727zs6wchmyg2znn"))))
+                  "0ifmzn5d9mpsjwvg2ir0sy3r4czxa7d6j97l8rrp8ai7jqvydadm"))))
       (build-system emacs-build-system)
       (propagated-inputs (list emacs-tempel))
       (home-page "https://github.com/Crandel/tempel-collection")
