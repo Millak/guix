@@ -1,9 +1,10 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2013, 2014 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 José Miguel Sánchez García <jmi2k@openmailbox.org>
 ;;; Copyright © 2016 Carlo Zancanaro <carlo@zancanaro.id.au>
-;;; Copyright © 2016, 2019, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016 Rene Saavedra <rennes@openmailbox.org>
 ;;; Copyright © 2017, 2018, 2020, 2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2017 Feng Shu <tumashu@163.com>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
@@ -23,6 +24,7 @@
 ;;; Copyright © 2022 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
 ;;; Copyright © 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 zamfofex <zamfofex@twdb.moe>
+;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 Andy Tai <atai@atai.org>
 ;;; Copyright © 2023 Eidvilas Markevičius <markeviciuseidvilas@gmail.com>
@@ -597,6 +599,28 @@ Wordstar-, EMACS-, Pico, Nedit or vi-like key bindings.  e3 can be used on
 \"broadly\" compatible.  This is a portable version of the mg maintained by the
 OpenBSD team.")
     (license license:public-domain)))
+
+(define-public nano
+  (package
+    (name "nano")
+    (version "7.2")
+    (source
+     (origin
+      (method url-fetch)
+      (uri (string-append "mirror://gnu/nano/nano-" version ".tar.xz"))
+      (sha256
+       (base32 "09j5gb44yiv18fvn0iy17jnl9d5lh3gkry4kqv776a5xd0kl9ww6"))))
+    (build-system gnu-build-system)
+    (inputs
+     (list gettext-minimal ncurses))
+    (home-page "https://www.nano-editor.org/")
+    (synopsis "Small, user-friendly console text editor")
+    (description
+     "GNU nano is a small and simple text editor for use in a terminal.  Besides
+basic editing, it supports: undo/redo, syntax highlighting, spell checking,
+justifying, auto-indentation, bracket matching, interactive search-and-replace
+(with regular expressions), and the editing of multiple files.")
+    (license license:gpl3+))) ; some files are under GPLv2+
 
 (define-public qemacs
   (package

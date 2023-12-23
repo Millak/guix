@@ -455,7 +455,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/musl.scm				\
   %D%/packages/mtools.scm			\
   %D%/packages/myrddin.scm			\
-  %D%/packages/nano.scm				\
   %D%/packages/ncdu.scm				\
   %D%/packages/ncurses.scm			\
   %D%/packages/netpbm.scm			\
