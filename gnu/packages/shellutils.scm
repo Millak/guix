@@ -17,6 +17,7 @@
 ;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;; Copyright © 2023 Camilo Q.S. (Distopico) <distopico@riseup.net>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -552,11 +553,12 @@ environment variables of the current shell.")
          "1gkzdvj73f71388jvym47075l9zw61v6l8wdv2lnc0mns6dxig0k"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:make-flags (list "CC=gcc"
-                          (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+     (list #:make-flags
+           #~(list "CC=gcc"
+                   (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))
     (home-page "https://github.com/jhawthorn/fzy")
     (synopsis "Fast fuzzy text selector for the terminal with an advanced
 scoring algorithm")
