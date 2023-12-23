@@ -554,7 +554,7 @@ environment variables of the current shell.")
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
-           #~(list "CC=gcc"
+           #~(list (string-append "CC=" #$(cc-for-target))
                    (string-append "PREFIX=" #$output))
            #:phases
            #~(modify-phases %standard-phases
