@@ -240,7 +240,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/dvtm.scm				\
   %D%/packages/easyrpg.scm			\
   %D%/packages/ebook.scm			\
-  %D%/packages/ed.scm				\
   %D%/packages/education.scm			\
   %D%/packages/efi.scm				\
   %D%/packages/electronics.scm			\
