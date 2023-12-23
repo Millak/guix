@@ -1940,7 +1940,7 @@ to the OSM opening hours specification.")
 (define-public josm
   (package
     (name "josm")
-    (version "18822")
+    (version "18907")
     (source (origin
               (method svn-fetch)
               (uri (svn-reference
@@ -1949,7 +1949,7 @@ to the OSM opening hours specification.")
                      (recursive? #f)))
               (sha256
                (base32
-                "0b4q6n3jbqrh7dsfmcf2g0xdd1wjj62sjq8lwvggvrpqlk1fyn1b"))
+                "0vkczijw537f4y1b7hfxa45k3ww6nf2cf485b19dnbgh9ab6mnjl"))
               (file-name (string-append name "-" version "-checkout"))
               (modules '((guix build utils)))
             (snippet
@@ -1963,6 +1963,7 @@ to the OSM opening hours specification.")
      (list java-commons-jcs
            java-commons-compress
            java-jmapviewer
+           java-jakarta-annotations-api
            java-jakarta-json
            java-jsr305
            java-metadata-extractor
