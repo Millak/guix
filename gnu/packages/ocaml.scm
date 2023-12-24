@@ -7907,50 +7907,12 @@ nodes for lazily rendering log messages.")
             ocaml-ppx-typerep-conv
             ocaml-ppx-variants-conv
             ocaml-ppxlib))
-    (properties `((upstream-name . "ppx_jane")
-                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-jane))))
+    (properties `((upstream-name . "ppx_jane")))
     (home-page "https://github.com/janestreet/ppx_jane")
     (synopsis "Standard Jane Street ppx rewriters")
     (description "This package installs a ppx-jane executable, which is a ppx
 driver including all standard Jane Street ppx rewriters.")
     (license license:expat)))
-
-(define-public ocaml4.07-ppx-jane
-  (package-with-ocaml4.07
-    (package
-      (inherit ocaml-ppx-jane)
-      (version "0.11.0")
-      (source (origin
-                (method url-fetch)
-                (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
-                                    (version-major+minor version)
-                                    "/files/ppx_jane-v" version ".tar.gz"))
-                (sha256
-                 (base32
-                  "0lgppkw3aixrfnixihrsz2ipafv8fpvkdpy3pw8n0r615gg8x8la"))))
-      (propagated-inputs
-        (list ocaml-ppx-assert
-              ocaml-ppx-base
-              ocaml-ppx-bench
-              ocaml-ppx-bin-prot
-              ocaml-ppx-custom-printf
-              ocaml-ppx-expect
-              ocaml-ppx-fail
-              ocaml-ppx-fields-conv
-              ocaml-ppx-here
-              ocaml-ppx-inline-test
-              ocaml-ppx-let
-              ocaml-ppx-optcomp
-              ocaml-ppx-optional
-              ocaml-ppx-pipebang
-              ocaml-ppx-sexp-message
-              ocaml-ppx-sexp-value
-              ocaml-ppx-typerep-conv
-              ocaml-ppx-variants-conv
-              ocaml-migrate-parsetree
-              ocaml-ppxlib))
-      (properties '())
-      (license license:asl2.0))))
 
 (define-public ocaml-base-bigstring
   (package
