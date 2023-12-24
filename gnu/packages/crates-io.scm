@@ -28092,14 +28092,14 @@ the controling terminal (daemon) using the fork and setsid syscalls.")
 (define-public rust-form-urlencoded-1
   (package
     (name "rust-form-urlencoded")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "form_urlencoded" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ljn0kz23nr9yf3432k656k178nh4jqryfji9b0jw343dz7w2ax6"))))
+        (base32 "0milh8x7nl4f450s3ddhg57a3flcv6yq8hlkyk6fyr3mcb128dp1"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
