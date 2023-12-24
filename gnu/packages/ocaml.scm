@@ -2247,7 +2247,6 @@ library.")
         (base32
          "1ksm0a490315sf0yy8lmva5f3bgr0jnllffanyq89431grpj6x15"))))
     (build-system dune-build-system)
-    (properties `((ocaml4.07-variant . ,(delay ocaml4.07-sqlite3))))
     (propagated-inputs
      (list dune-configurator ocaml-odoc))
     (native-inputs
@@ -2262,32 +2261,6 @@ cases.  These bindings are written in a way that enables a friendly
 coexistence with the old (version 2) SQLite and its OCaml wrapper
 @code{ocaml-sqlite}.")
     (license license:expat)))
-
-(define-public ocaml4.07-sqlite3
-  (package-with-ocaml4.07
-   (package
-     (inherit ocaml-sqlite3)
-     (version "5.0.2")
-     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/mmottl/sqlite3-ocaml")
-               (commit version)))
-        (file-name (git-file-name "ocaml-sqlite3" version))
-        (sha256
-         (base32
-          "15mmq7ak5facpfawfrc6hjz211gli7jab52iqdsihfvh790xm55f"))))
-     (arguments
-      `(#:phases
-        (modify-phases %standard-phases
-         (add-before 'build 'chmod
-           (lambda _
-             (for-each (lambda (file) (chmod file #o644)) (find-files "." ".*"))
-             #t)))))
-     (propagated-inputs
-      `(("ocaml-odoc" ,ocaml-odoc)))
-     (properties '()))))
 
 (define-public ocaml-csv
   (package
