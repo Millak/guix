@@ -34869,14 +34869,14 @@ already-hashed or hash-like data.")
 (define-public rust-hashbrown-0.14
   (package
     (name "rust-hashbrown")
-    (version "0.14.0")
+    (version "0.14.3")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "hashbrown" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0yj3nf0w30pf30w503kgaw4sbjnh62l5cbmc7dd0mnczzywh2qic"))
+                "012nywlg0lj9kwanh69my5x67vjlfmzfi9a0rq4qvis2j8fil3r9"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -34889,6 +34889,7 @@ already-hashed or hash-like data.")
        (("rust-ahash" ,rust-ahash-0.8)
         ("rust-allocator-api2" ,rust-allocator-api2-0.2)
         ("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+        ("rust-equivalent" ,rust-equivalent-1)
         ("rust-rayon" ,rust-rayon-1)
         ("rust-rkyv" ,rust-rkyv-0.7)
         ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
