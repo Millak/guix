@@ -5566,7 +5566,6 @@ recommend using this package directly.")
       "1r27r0bxxa0iaah5rm84lwhrmh784vfpmb6056hpv0p34rxs7r1l"))
     (build-system dune-build-system)
     (arguments '(#:tests? #f))           ; no tests
-    (properties `((ocaml4.07-variant . ,(delay ocaml4.07-jane-street-headers))))
     (home-page "https://github.com/janestreet/jane-street-headers")
     (synopsis "Jane Street C header files")
     (description "C header files shared between the various Jane Street
@@ -8039,29 +8038,6 @@ cryptographic-quality randomness in favor of performance.")
 Haskell's Quickcheck library, with support for built-in types as well as
 types provided by Base.")
     (license license:expat)))
-
-(define-public ocaml4.07-jane-street-headers
-  (package
-    (name "ocaml4.07-jane-street-headers")
-    (version "0.11.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
-                                  (version-major+minor version)
-                                  "/files/jane-street-headers-v" version ".tar.gz"))
-              (sha256
-               (base32
-                "0afhzm08l9v883fhpqqh2lmy7az609pxif40bp7x1sk8c0yszqsh"))))
-    (build-system dune-build-system)
-    (arguments
-     `(#:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
-    (home-page "https://github.com/janestreet/jane-street-headers")
-    (synopsis "Jane Street C header files")
-    (description "This package provides C header files shared between the
-various Jane Street packages.")
-    (license license:asl2.0)))
 
 (define-public ocaml4.07-configurator
   (package
