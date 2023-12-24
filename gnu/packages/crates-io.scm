@@ -67088,20 +67088,20 @@ rustc compiler.")
 (define-public rust-rustls-0.21
   (package
     (name "rust-rustls")
-    (version "0.21.6")
+    (version "0.21.10")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "rustls" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1fvc3n5h6354yi2yxrvq7yfdak0y6jga5sbcbhzv7h7wzkgys7qx"))))
+                "1fmpzk3axnhkd99saqkvraifdfms4pkyi56lkihf8n877j0sdmgr"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f          ; Not all files included.
        #:cargo-inputs
        (("rust-log" ,rust-log-0.4)
-        ("rust-ring" ,rust-ring-0.16)
+        ("rust-ring" ,rust-ring-0.17)
         ("rust-rustls-webpki" ,rust-rustls-webpki-0.101)
         ("rust-rustversion" ,rust-rustversion-1)
         ("rust-sct" ,rust-sct-0.7))
@@ -67144,7 +67144,8 @@ rustc compiler.")
         ("rust-env-logger" ,rust-env-logger-0.9)
         ("rust-log" ,rust-log-0.4)
         ("rust-rustls-pemfile" ,rust-rustls-pemfile-1)
-        ("rust-webpki-roots" ,rust-webpki-roots-0.22))))))
+        ("rust-webpki-roots" ,rust-webpki-roots-0.22))))
+    (native-inputs (list perl))))
 
 (define-public rust-rustls-0.19
   (package
