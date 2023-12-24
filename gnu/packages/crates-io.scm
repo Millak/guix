@@ -38680,19 +38680,18 @@ over in-place and buffer-to-buffer modes of operation.")
 (define-public rust-insta-1
   (package
     (name "rust-insta")
-    (version "1.28.0")
+    (version "1.34.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "insta" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "16d0r0pbl9f86zb0rbvlc25964ayq47n7203rx5nnipy9a4v79gy"))))
+        (base32 "1z7v6mzm1djv9sn1k9j796xl2i3llwzj82klcz1cybsbwc5n0r2x"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
-       '("--release"
-         "--"
+       '("--release" "--"
          "--skip=utils::test_format_rust_expression")
        #:cargo-inputs
        (("rust-console" ,rust-console-0.15)
