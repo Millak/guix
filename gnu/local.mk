@@ -1122,7 +1122,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/debops-debops-defaults-fall-back-to-less.patch \
   %D%/packages/patches/dee-vapi.patch			\
   %D%/packages/patches/dfu-programmer-fix-libusb.patch		\
-  %D%/packages/patches/diffutils-fix-signal-processing.patch	\
   %D%/packages/patches/directfb-davinci-glibc-228-compat.patch	\
   %D%/packages/patches/dkimproxy-add-ipv6-support.patch		\
   %D%/packages/patches/docbook-utils-documentation-edits.patch	\
