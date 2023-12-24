@@ -1820,8 +1820,6 @@ deadlock, like the standard Barrier).")
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-sha2" ,rust-sha2-0.9)
         ("rust-tokio" ,rust-tokio-1))))
-    (native-inputs
-     (list perl))
     (home-page "https://github.com/brave/adblock-rust/")
     (synopsis "Adblock Plus syntax filter parsing and matching")
     (description "This package provides native Rust module for Adblock Plus
@@ -9802,8 +9800,6 @@ comes with a strict specification.")
         ("rust-env-logger" ,rust-env-logger-0.9)
         ("rust-rustls" ,rust-rustls-0.16)
         ("rust-sha2" ,rust-sha2-0.9))))
-    (native-inputs
-     (list perl))
     (home-page "https://github.com/kpcyrd/boxxy-rs")
     (synopsis "Linkable sandbox explorer")
     (description
@@ -19364,10 +19360,8 @@ reimplemented in Rust")
         (base32 "1j5as2h789c2gazq3drl5i58xk8zzx6sxd1wdr19x3d6dwc1da61"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-sct" ,rust-sct-0.6))))
-    (native-inputs (list perl))
     (home-page "https://github.com/ctz/ct-logs")
     (synopsis "Google's list of Certificate Transparency logs")
     (description
@@ -27015,8 +27009,6 @@ Atom, RSS 2.0, RSS 1.0, RSS 0.x and JSON Feed")
            #:cargo-inputs `(("rust-libflate" ,rust-libflate-1)
                             ("rust-tar" ,rust-tar-0.4)
                             ("rust-ureq" ,rust-ureq-2))))
-    ; perl required for building rust-ring
-    (inputs (list perl))
     (home-page "https://github.com/katyo/fetch_unroll")
     (synopsis "Simple utilities for fetching and unrolling .tar.gz archives")
     (description
@@ -34533,7 +34525,6 @@ of gzip files based on the gzip header implementation in the @code{flate2} crate
         ("rust-tokio-rustls" ,rust-tokio-rustls-0.23)
         ("rust-walkdir" ,rust-walkdir-2)
         ("rust-webpki-roots" ,rust-webpki-roots-0.22))))
-    (native-inputs (list perl))
     (home-page "https://github.com/hyperium/h2")
     (synopsis "HTTP/2.0 client and server")
     (description "This package provides an HTTP/2.0 client and server.")
@@ -34579,8 +34570,7 @@ of gzip files based on the gzip header implementation in the @code{flate2} crate
         ("rust-tokio-rustls" ,rust-tokio-rustls-0.12)
         ("rust-walkdir" ,rust-walkdir-1)
         ("rust-webpki" ,rust-webpki-0.21)
-        ("rust-webpki-roots" ,rust-webpki-roots-0.17))))
-    (native-inputs (list perl))))
+        ("rust-webpki-roots" ,rust-webpki-roots-0.17))))))
 
 (define-public rust-h2-0.1
   (package
@@ -34655,7 +34645,6 @@ of gzip files based on the gzip header implementation in the @code{flate2} crate
         ("rust-tokio" ,rust-tokio-1)
         ("rust-tokio-util" ,rust-tokio-util-0.7)
         ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
-    (native-inputs (list perl))
     (home-page "https://github.com/hyperium/h3")
     (synopsis "Async HTTP/3 implementation")
     (description "This package provides an async HTTP/3 implementation.")
@@ -37112,7 +37101,6 @@ SystemTime}}.")
                                    ("rust-rustls" ,rust-rustls-0.21)
                                    ("rust-rustls-pemfile" ,rust-rustls-pemfile-1)
                                    ("rust-tokio" ,rust-tokio-1))))
-    (native-inputs (list perl))
     (home-page "https://github.com/rustls/hyper-rustls")
     (synopsis "Rustls+Hyper integration for pure Rust HTTPS")
     (description
@@ -61018,7 +61006,6 @@ and Petrick's method, an algorithm to automatically minimize boolean expressions
         ("rust-tracing-futures" ,rust-tracing-futures-0.2)
         ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3)
         ("rust-url" ,rust-url-2))))
-    (native-inputs (list perl))
     (home-page "https://github.com/quinn-rs/quinn")
     (synopsis "Versatile QUIC transport protocol implementation")
     (description "Versatile QUIC transport protocol implementation.")
@@ -61097,7 +61084,6 @@ and Petrick's method, an algorithm to automatically minimize boolean expressions
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-rcgen" ,rust-rcgen-0.10)
         ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
-    (native-inputs (list perl))
     (home-page "https://github.com/quinn-rs/quinn")
     (synopsis "State machine for the QUIC transport protocol")
     (description "State machine for the QUIC transport protocol.")
@@ -62606,7 +62592,7 @@ Rust.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list botan openssl perl))
+     (list botan openssl))
     (home-page "https://github.com/rustls/rcgen")
     (synopsis "Rust X.509 certificate generator")
     (description "Rust X.509 certificate generator.")
@@ -64389,53 +64375,211 @@ Digital Signature Algorithm} (ECDSA).")
     (supported-systems (list "aarch64-linux" "armhf-linux"
                              "i686-linux" "x86_64-linux"))))
 
+(define rust-ring-0.14-sources
+  (let* ((version "0.14.6")
+         (upstream-source
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                    (url "https://github.com/briansmith/ring")
+                    (commit "ef85df478152aa3fe06c811309379efa08f8a529")))
+             (file-name (git-file-name "rust-ring" version))
+             (sha256
+              (base32 "12dgw2spvmkdypgzymw3bxpv4bbpnlq8s10sdggral31x597n6xx")))))
+    (origin
+      (method computed-origin-method)
+      (file-name (string-append "rust-ring-" version ".tar.gz"))
+      (sha256 #f)
+      (uri
+        (delay
+          (with-imported-modules '((guix build utils))
+            #~(begin
+                (use-modules (guix build utils))
+                (set-path-environment-variable
+                  "PATH" '("bin")
+                  (list #+(canonical-package gzip)
+                        #+(canonical-package tar)
+                        #+perl
+                        #+yasm
+                        #+go
+                        #+clang             ; clang-format
+                        #+python2-minimal))
+                (setenv "HOME" (getcwd))
+                (copy-recursively #+upstream-source
+                                  (string-append "ring-" #$version))
+                (with-directory-excursion (string-append "ring-" #$version)
+                  (begin
+                    ;; It turns out Guix's yasm works just fine here.
+                    (substitute* "build.rs"
+                      (("yasm.exe") "yasm"))
+                    ;; Files which would be deleted in a snippet:
+                    (delete-file "third_party/fiat/curve25519_tables.h")
+                    (delete-file "crypto/fipsmodule/ec/ecp_nistz256_table.inl")
+                    (delete-file "util/ar/testdata/linux/libsample.a")
+                    (delete-file "util/ar/testdata/mac/libsample.a")
+                    (delete-file "util/ar/testdata/windows/sample.lib")
+                    ;; Fix the doc tests.
+                    (substitute* "src/ec/curve25519/ed25519/verification.rs"
+                      ((";;") ";"))
+                    ;; Files to be generated in the sources:
+                    (format #t "Generating the missing files ...~%")
+                    (force-output)
+                    (with-directory-excursion "third_party/fiat"
+                      (with-output-to-file "curve25519_tables.h"
+                        (lambda _ (invoke "python" "make_curve25519_tables.py"))))
+                    (with-directory-excursion "crypto/fipsmodule/ec"
+                      ;; This one seems to have been changed elsewhere in the
+                      ;; sources but not in the script generating the definition.
+                      (substitute* "make_p256-x86_64-table.go"
+                        (("ecp_nistz256_precomputed") "GFp_nistz256_precomputed"))
+                      (with-output-to-file "ecp_nistz256_table.inl"
+                        (lambda _ (invoke "go" "run" "make_p256-x86_64-table.go"))))
+                    (format #t "Generating the pregenerated files ...~%")
+                    (force-output)
+                    (mkdir-p "pregenerated/tmp")
+
+                    ;; We generate all the files which upstream would normally be
+                    ;; generate by using '(cd pregenerate_asm && cargo clean &&
+                    ;; cargo build) ./pregenerate_asm/target/debug/pregenerate_asm'
+                    ;; in order to not include a dependency on cargo when
+                    ;; generating the sources.
+                    (define (prefix script)
+                      (string-append
+                        "pregenerated/"
+                        (string-drop-right
+                          (string-drop script
+                                       (string-index-right script #\/)) 3)))
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "perl" script "elf"
+                                (string-append (prefix script) "-elf.S"))
+                        (invoke "perl" script "macosx"
+                                (string-append (prefix script) "-macosx.S"))
+                        (invoke "perl" script "nasm"
+                                (string-append
+                                  "pregenerated/tmp/"
+                                  (string-drop (prefix script) 13) "-nasm.asm")))
+                      '("crypto/fipsmodule/aes/asm/aes-x86_64.pl"
+                        "crypto/fipsmodule/aes/asm/aesni-x86_64.pl"
+                        "crypto/fipsmodule/aes/asm/vpaes-x86_64.pl"
+                        "crypto/fipsmodule/bn/asm/x86_64-mont.pl"
+                        "crypto/fipsmodule/bn/asm/x86_64-mont5.pl"
+                        "crypto/chacha/asm/chacha-x86_64.pl"
+                        "crypto/fipsmodule/ec/asm/p256-x86_64-asm.pl"
+                        "crypto/fipsmodule/modes/asm/aesni-gcm-x86_64.pl"
+                        "crypto/fipsmodule/modes/asm/ghash-x86_64.pl"
+                        "crypto/poly1305/asm/poly1305-x86_64.pl"
+                        "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"))
+
+                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                            "elf" "pregenerated/sha256-x86_64-elf.S")
+
+                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                            "macosx" "pregenerated/sha256-x86_64-macosx.S")
+
+                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                            "nasm" "pregenerated/tmp/sha256-x86_64-nasm.asm")
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "yasm" "-X" "vc" "--dformat=cv8"
+                                "--oformat=win64" "--machine=amd64" "-o"
+                                (string-append (prefix script) "obj") script))
+                      (find-files "pregenerated/tmp" "\\.asm"))
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "perl" script "ios64"
+                                (string-append (prefix script) "-ios64.S"))
+                        (invoke "perl" script "linux64"
+                                (string-append (prefix script) "-linux64.S")))
+                      '("crypto/fipsmodule/aes/asm/aesv8-armx.pl"
+                        "crypto/fipsmodule/modes/asm/ghashv8-armx.pl"
+                        "crypto/fipsmodule/bn/asm/armv8-mont.pl"
+                        "crypto/chacha/asm/chacha-armv8.pl"
+                        "crypto/fipsmodule/ec/asm/ecp_nistz256-armv8.pl"
+                        "crypto/poly1305/asm/poly1305-armv8.pl"
+                        "crypto/fipsmodule/sha/asm/sha512-armv8.pl"))
+
+                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-armv8.pl"
+                            "ios64" "pregenerated/sha256-armv8-ios64.S")
+
+                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-armv8.pl"
+                            "linux64" "pregenerated/sha256-armv8-linux64.S")
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "perl" script "elf"
+                                "-fPIC" "-DOPENSSL_IA32_SSE2"
+                                (string-append (prefix script) "-elf.S"))
+                        (invoke "perl" script "macosx"
+                                "-fPIC" "-DOPENSSL_IA32_SSE2"
+                                (string-append (prefix script) "-macosx.S"))
+                        (invoke "perl" script "win32n"
+                                "-fPIC" "-DOPENSSL_IA32_SSE2"
+                                (string-append
+                                  "pregenerated/tmp/"
+                                  (string-drop (prefix script) 13) "-win32n.asm")))
+                      '("crypto/fipsmodule/aes/asm/aes-586.pl"
+                        "crypto/fipsmodule/aes/asm/aesni-x86.pl"
+                        "crypto/fipsmodule/aes/asm/vpaes-x86.pl"
+                        "crypto/fipsmodule/bn/asm/x86-mont.pl"
+                        "crypto/chacha/asm/chacha-x86.pl"
+                        "crypto/fipsmodule/ec/asm/ecp_nistz256-x86.pl"
+                        "crypto/fipsmodule/modes/asm/ghash-x86.pl"
+                        "crypto/poly1305/asm/poly1305-x86.pl"
+                        "crypto/fipsmodule/sha/asm/sha256-586.pl"
+                        "crypto/fipsmodule/sha/asm/sha512-586.pl"))
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "yasm" "-X" "vc" "--dformat=cv8"
+                                "--oformat=win32" "--machine=x86" "-o"
+                                (string-append (prefix script) "obj") script))
+                      (find-files "pregenerated/tmp" "-win32n\\.asm"))
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "perl" script "ios32"
+                                (string-append (prefix script) "-ios32.S"))
+                        (invoke "perl" script "linux32"
+                                (string-append (prefix script) "-linux32.S")))
+                      '("crypto/fipsmodule/aes/asm/aesv8-armx.pl"
+                        "crypto/fipsmodule/modes/asm/ghashv8-armx.pl"
+                        "crypto/fipsmodule/aes/asm/aes-armv4.pl"
+                        "crypto/fipsmodule/aes/asm/bsaes-armv7.pl"
+                        "crypto/fipsmodule/bn/asm/armv4-mont.pl"
+                        "crypto/chacha/asm/chacha-armv4.pl"
+                        "crypto/fipsmodule/ec/asm/ecp_nistz256-armv4.pl"
+                        "crypto/fipsmodule/modes/asm/ghash-armv4.pl"
+                        "crypto/poly1305/asm/poly1305-armv4.pl"
+                        "crypto/fipsmodule/sha/asm/sha256-armv4.pl"
+                        "crypto/fipsmodule/sha/asm/sha512-armv4.pl"))
+
+                    (format #t "Creating the tarball ...~%")
+                    (force-output)
+                    ;; The other option is to use cargo package --allow-dirty
+                    (with-directory-excursion "../"
+                      (invoke "tar" "czf" #$output
+                              ;; avoid non-determinism in the archive
+                              "--sort=name" "--mtime=@0"
+                              "--owner=root:0" "--group=root:0"
+                              (string-append "ring-" #$version))))))))))))
 (define-public rust-ring-0.14
   (package
     (inherit rust-ring-0.16)
     (name "rust-ring")
     (version "0.14.6")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "ring" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0g091akf4dpg9qj05z3gc4nlrs57mjj2bqab98gaqp79wf3c2ss2"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Fix the doc tests.
-           (substitute* "src/ec/curve25519/ed25519/verification.rs"
-             ((";;") ";"))
-           ;; Remove some generated files.
-           ;; Regenerating the curve25519_tables requires python2 and clang-format.
-           (delete-file "third_party/fiat/curve25519_tables.h")
-           (delete-file-recursively "pregenerated")
-           ;; Pretend this isn't a relase tarball.
-           (with-output-to-file ".git"
-             (lambda _
-                (format #t "")))))))
+    (source rust-ring-0.14-sources)
     (arguments
-     `(#:skip-build? #t     ; TODO: Fix build
-       #:cargo-inputs
-       (("rust-lazy-static" ,rust-lazy-static-1)
+     `(#:cargo-inputs
+       (("rust-cc" ,rust-cc-1)
+        ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-spin" ,rust-spin-0.5)
         ("rust-untrusted" ,rust-untrusted-0.6)
-        ("rust-winapi" ,rust-winapi-0.3)
-        ("rust-cc" ,rust-cc-1))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'generate-curve25519-tables
-           (lambda _
-             (with-directory-excursion "third_party/fiat"
-               (with-output-to-file "curve25519_tables.h"
-                 (lambda _
-                   (invoke "python" "make_curve25519_tables.py")))))))))
-    (native-inputs
-     (list clang perl python-2))))
+        ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-ring-0.13
   (package
@@ -64478,7 +64622,9 @@ Digital Signature Algorithm} (ECDSA).")
              (with-directory-excursion "third_party/fiat"
                (with-output-to-file "curve25519_tables.h"
                  (lambda _
-                   (invoke "python" "make_curve25519_tables.py")))))))))))
+                   (invoke "python" "make_curve25519_tables.py")))))))))
+    (native-inputs
+     (list clang perl python-2))))
 
 (define-public rust-ringbuf-0.2
   (package
@@ -67256,7 +67402,6 @@ rustc compiler.")
         ("rust-log" ,rust-log-0.4)
         ("rust-rustls-pemfile" ,rust-rustls-pemfile-1)
         ("rust-webpki-roots" ,rust-webpki-roots-0.25))))
-    (native-inputs (list perl))
     (home-page "https://github.com/rustls/rustls")
     (synopsis "Modern TLS library written in Rust")
     (description
@@ -67411,8 +67556,10 @@ rustc compiler.")
          (base32
           "0vh93fhqfbn4ysw4xzkpkpqdz36xixz4mhs1qllgldfq5iay6wgj"))))
     (arguments
-     `(#:skip-build? #t     ; TODO: Fix building rust-ring-0.14
-       #:tests? #f ;; 1/111 tests fail (test file not found)
+     `(#:tests? #f      ; API tests panic
+       #:cargo-test-flags
+       '("--release" "--"
+         "--skip=msgs::message_test::test_read_fuzz_corpus")
        #:cargo-inputs
        (("rust-base64" ,rust-base64-0.10)
         ("rust-log" ,rust-log-0.4)
@@ -67478,8 +67625,6 @@ rustc compiler.")
             (lambda _
               (substitute* "Cargo.toml"
                 (("0\\.19\\.0") "*")))))))
-    (native-inputs
-     (list perl))
     (home-page "https://github.com/rustls/rustls-ffi")
     (synopsis "Rustls bindings for non-Rust languages")
     (description "Rustls bindings for non-Rust languages")
@@ -67512,7 +67657,6 @@ rustc compiler.")
         ("rust-untrusted" ,rust-untrusted-0.7)
         ("rust-webpki-roots" ,rust-webpki-roots-0.23)
         ("rust-x509-parser" ,rust-x509-parser-0.15))))
-    (native-inputs (list perl))
     (home-page "https://github.com/ctz/rustls-native-certs")
     (synopsis "Use the platform native certificate store with rustls")
     (description "@code{rustls-native-certs} allows rustls to use the platform
@@ -67565,8 +67709,7 @@ native certificate store.")
        (("rust-ring" ,rust-ring-0.16)
         ("rust-untrusted" ,rust-untrusted-0.7)
         ("rust-webpki" ,rust-webpki-0.21)
-        ("rust-webpki-roots" ,rust-webpki-roots-0.20))))
-    (native-inputs (list perl))))
+        ("rust-webpki-roots" ,rust-webpki-roots-0.20))))))
 
 (define-public rust-rustls-pemfile-2
   (package
@@ -67667,8 +67810,6 @@ PEM-encodings commonly used to store keys and certificates at rest.")
         ("rust-rcgen" ,rust-rcgen-0.11)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1))))
-    (native-inputs
-     (list perl))
     (home-page "https://github.com/rustls/webpki")
     (synopsis "Web PKI X.509 Certificate Verification")
     (description "Web PKI X.509 Certificate Verification.")
@@ -69163,7 +69304,6 @@ Pwrite traits from the scroll crate.")
      `(#:cargo-inputs
        (("rust-ring" ,rust-ring-0.16)
         ("rust-untrusted" ,rust-untrusted-0.7))))
-    (native-inputs (list perl))
     (home-page "https://github.com/ctz/sct.rs")
     (synopsis "Certificate transparency SCT verification library")
     (description "Certificate transparency SCT verification library.")
@@ -69203,21 +69343,9 @@ Pwrite traits from the scroll crate.")
          (base32
           "1fb9ym5bwswx01yyggn7v2vfryih4vnqpp4r4ssv3qaqpn7xynig"))))
     (arguments
-     `(#:skip-build? #t     ; TODO: Fix building rust-ring-0.14
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-ring" ,rust-ring-0.14)
-        ("rust-untrusted" ,rust-untrusted-0.6))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'build-curve25519-tables
-           (lambda* (#:key vendor-dir #:allow-other-keys)
-             (with-directory-excursion
-               (dirname (car (find-files vendor-dir "make_curve25519_tables.py")))
-               (with-output-to-file "curve25519_tables.h"
-                 (lambda _
-                   (invoke "python" "make_curve25519_tables.py")))))))))
-    (native-inputs
-     (list clang perl python-2))))
+        ("rust-untrusted" ,rust-untrusted-0.6))))))
 
 (define-public rust-sct-0.4
   (package
@@ -82651,8 +82779,6 @@ futures.")
         ("rust-rustls-webpki" ,rust-rustls-webpki-0.100)
         ("rust-tokio" ,rust-tokio-1)
         ("rust-webpki-roots" ,rust-webpki-roots-0.23))))
-    (native-inputs
-     (list perl))
     (home-page "https://github.com/tokio-rs/tls")
     (synopsis "Asynchronous TLS/SSL streams for Tokio")
     (description
@@ -82807,7 +82933,7 @@ Rustls.")
           "1jd63sl177sxacnksaxhazzmamwds98xk3niprh2qib75a1rk8cm"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t     ; TODO: Fix building rust-ring-0.14
+     `(#:tests? #f      ; Bundled test certificates expired
        #:cargo-inputs
        (("rust-bytes" ,rust-bytes-0.4)
         ("rust-futures" ,rust-futures-0.1)
@@ -85003,8 +85129,7 @@ the Trust-DNS client to use DNS over HTTPS.")
         ("rust-webpki-roots" ,rust-webpki-roots-0.19))
        #:cargo-development-inputs
        (("rust-env-logger" ,rust-env-logger-0.7)
-        ("rust-futures" ,rust-futures-0.3))))
-    (native-inputs (list perl))))
+        ("rust-futures" ,rust-futures-0.3))))))
 
 (define-public rust-trust-dns-https-0.18
   (package
@@ -85054,8 +85179,7 @@ the Trust-DNS client to use DNS over HTTPS.")
         (base32 "14ps1fxngm8d3ynp9jf86zrqbyzjzh62v5grwrqb1q0xhbz98vv1"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t     ; TODO: Fix building rust-ring-0.14
-       #:tests? #false                  ;network unreachable
+     `(#:tests? #false                  ;network unreachable
        #:cargo-inputs
        (("rust-bytes" ,rust-bytes-0.4)
         ("rust-data-encoding" ,rust-data-encoding-2)
@@ -85840,7 +85964,7 @@ the Trust-DNS client to use rustls for TLS.")
        #:cargo-development-inputs
        (("rust-openssl" ,rust-openssl-0.10))))
     (native-inputs
-     (list perl pkg-config))
+     (list pkg-config))
     (inputs
      (list openssl))))
 
@@ -85889,8 +86013,7 @@ the Trust-DNS client to use rustls for TLS.")
     (inputs
      (list openssl))
     (arguments
-     `(#:skip-build? #t     ; TODO: Fix building rust-ring-0.14
-       #:cargo-test-flags
+     `(#:cargo-test-flags
        '("--release" "--" "--skip=tests::test_tls_client_stream_ipv4")
        #:cargo-inputs
        (("rust-futures" ,rust-futures-0.1)
@@ -87868,7 +87991,6 @@ comparable to calling @code{unwrap_err()}.")
         ("rust-rustls" ,rust-rustls-0.21)
         ("rust-rustls-pemfile" ,rust-rustls-pemfile-1)
         ("rust-serde" ,rust-serde-1))))
-    (native-inputs (list perl))
     (home-page "https://github.com/algesten/ureq")
     (synopsis "Simple, safe HTTP client")
     (description "This package provides minimal request library in Rust.")
@@ -90007,8 +90129,6 @@ available on a platform.")
         ("rust-untrusted" ,rust-untrusted-0.7))
        #:cargo-development-inputs
        (("rust-base64" ,rust-base64-0.9))))
-    (native-inputs
-     (list perl))
     (home-page "https://github.com/briansmith/webpki")
     (synopsis "Web PKI X.509 Certificate Verification")
     (description "This package provides Web PKI X.509 Certificate
@@ -90050,24 +90170,12 @@ Verification.")
          (base32
           "10nhyxlqsa4caxlxrijm5h79rdg6ld8hqy78ldjnnfhaj3biqzjg"))))
     (arguments
-     `(#:skip-build? #t     ; TODO: Fix building rust-ring-0.14
-       #:tests? #f  ; tests fail to build "missing file tests/ed25519/ee.der"
+     `(#:tests? #f  ; tests fail to build "missing file tests/ed25519/ee.der"
        #:cargo-inputs
        (("rust-ring" ,rust-ring-0.14)
         ("rust-untrusted" ,rust-untrusted-0.6))
        #:cargo-development-inputs
-       (("rust-base64" ,rust-base64-0.9))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'build-curve25519-tables
-           (lambda* (#:key vendor-dir #:allow-other-keys)
-             (with-directory-excursion
-               (dirname (car (find-files vendor-dir "make_curve25519_tables.py")))
-               (with-output-to-file "curve25519_tables.h"
-                 (lambda _
-                   (invoke "python" "make_curve25519_tables.py")))))))))
-    (native-inputs
-     (list clang perl python-2))))
+       (("rust-base64" ,rust-base64-0.9))))))
 
 (define-public rust-webpki-0.18
   (package
@@ -90124,7 +90232,7 @@ Verification.")
         ("rust-rustls-webpki" ,rust-rustls-webpki-0.101)
         ("rust-tokio" ,rust-tokio-1))))
     (native-inputs
-     (list perl pkg-config))
+     (list pkg-config))
     (inputs
      (list openssl))
     (home-page "https://github.com/rustls/webpki-roots")
@@ -90254,8 +90362,7 @@ with webpki.")
          (base32
           "03ny02mwqdgd2ff23k03kbwr2rrcaymxhp7jcjjikfh340hs83y1"))))
     (arguments
-     `(#:skip-build? #t     ; TODO: Fix building rust-ring-0.14
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-untrusted" ,rust-untrusted-0.6)
         ("rust-webpki" ,rust-webpki-0.19))))))
 
