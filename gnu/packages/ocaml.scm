@@ -5523,35 +5523,12 @@ instead of bindings to a C library.")
            ocaml-lwt-react
            ocaml-react
            ocaml-zed))
-    (properties `((ocaml4.07-variant . ,(delay ocaml4.07-utop))))
     (home-page "https://github.com/ocaml-community/utop")
     (synopsis "Improved interface to the OCaml toplevel")
     (description "UTop is an improved toplevel for OCaml.  It can run in a
 terminal or in Emacs.  It supports line editing, history, real-time and context
 sensitive completion, colors, and more.")
     (license license:bsd-3)))
-
-(define-public ocaml4.07-utop
-  (package-with-ocaml4.07
-   (package
-     (inherit ocaml-utop)
-     (version "2.4.3")
-     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-              (url "https://github.com/ocaml-community/utop")
-              (commit version)))
-        (file-name (git-file-name "ocaml4.07-utop" version))
-        (sha256
-         (base32 "1bl4943qpi3qy152dbdm5glhx19zsiylmn4rcxi8l66g58hikyjp"))))
-     (propagated-inputs
-      `(("ocaml-lambda-term" ,ocaml-lambda-term)
-        ("ocaml-lwt" ,ocaml-lwt)
-        ("ocaml-react" ,ocaml-react)
-        ("ocaml-camomile" ,ocaml-camomile)
-        ("ocaml-zed" ,ocaml-zed)))
-     (properties '()))))
 
 (define-public ocaml-ansiterminal
   (package
