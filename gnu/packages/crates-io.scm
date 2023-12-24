@@ -67483,6 +67483,23 @@ PEM-encodings commonly used to store keys and certificates at rest.")
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.3))))))
 
+(define-public rust-rustls-pki-types-1
+  (package
+    (name "rust-rustls-pki-types")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustls-pki-types" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "16rkx6gn5l2zximxy8fx9h2vzks1hfxi5z5cd9y97r0fl853wrz7"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/rustls/pki-types")
+    (synopsis "Shared types for the rustls PKI ecosystem")
+    (description "Shared types for the rustls PKI ecosystem.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rustls-webpki-0.101
   (package
     (name "rust-rustls-webpki")
