@@ -89743,8 +89743,46 @@ GUIs as desktop applications.")
 using @code{bindgen}.")
     (license license:mpl2.0)))
 
+(define-public rust-which-5
+  (package
+    (name "rust-which")
+    (version "5.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "which" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "053fpbczryyn8lcbpkvwl8v2rzld0pr30r5lh1cxv87kjs2ymwwv"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"= *([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; Not all files included.
+         "--skip=it_works")
+       #:cargo-inputs (("rust-either" ,rust-either-1)
+                       ("rust-home" ,rust-home-0.5)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-windows-sys" ,rust-windows-sys-0.48))
+       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/harryfei/which-rs.git")
+    (synopsis "Rust equivalent of @command{which}")
+    (description
+     "This package provides a cross-platform Rust equivalent of the
+Unix @command{which} command.  It returns the full path of an installed
+executable.")
+    (license license:expat)))
+
 (define-public rust-which-4
   (package
+    (inherit rust-which-5)
     (name "rust-which")
     (version "4.3.0")
     (source
@@ -89754,21 +89792,13 @@ using @code{bindgen}.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0yybp94wikf21vkcl8b6w6l5pnd95nl4fxryz669l4lyxsxiz0qw"))))
-    (build-system cargo-build-system)
     (arguments
      (list #:skip-build? #t
            #:cargo-inputs
            `(("rust-either" ,rust-either-1)
              ("rust-libc" ,rust-libc-0.2)
              ("rust-once-cell" ,rust-once-cell-1)
-             ("rust-regex" ,rust-regex-1))))
-    (home-page "https://github.com/harryfei/which-rs.git")
-    (synopsis "Rust equivalent of @command{which}")
-    (description
-     "This package provides a cross-platform Rust equivalent of the
-Unix @command{which} command.  It returns the full path of an installed
-executable.")
-    (license license:expat)))
+             ("rust-regex" ,rust-regex-1))))))
 
 (define-public rust-which-3
   (package
