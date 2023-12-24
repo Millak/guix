@@ -24174,6 +24174,23 @@ signing, and verification in pure Rust.")
 @code{Right} is a general purpose sum type with two cases.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-elain-0.3
+  (package
+    (name "rust-elain")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "elain" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wgpyy0m48vdnrip0f4x1h8w4bp2lxgy8pqk78qwhrbxmr7hj8im"))))
+    (build-system cargo-build-system)
+    (home-page "https://docs.rs/elain/latest/elain/")
+    (synopsis "Set a type's minimum alignment with const generics")
+    (description "Set a type's minimum alignment with const generics.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-elf-0.0.10
   (package
     (name "rust-elf")
