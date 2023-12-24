@@ -8271,35 +8271,6 @@ standard library that was developed by Jane Street.")
     ;; by OCaml's license for consortium members (see THIRD-PARTY.txt).
     (license license:expat)))
 
-(define-public ocaml4.07-core
-  (package-with-ocaml4.07
-    (package
-      (inherit ocaml-core)
-      (version "0.11.3")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/janestreet/core")
-                       (commit (string-append "v" version))))
-                (file-name (git-file-name "ocaml4.07-core" version))
-                (sha256
-                 (base32
-                  "0pzl8n09z4f3i7z2wq4cjxfqrr8mj6xcdp7rbg0nxap2zdhjgvrq"))))
-      (propagated-inputs
-        (list ocaml-base
-              ocaml4.07-configurator
-              ocaml-core-kernel
-              ocaml-ppx-assert
-              ocaml-ppx-jane
-              ocaml-sexplib
-              ocaml-spawn
-              ocaml-stdio
-              ocaml-migrate-parsetree
-              ocaml-ppxlib))
-      ;; Also contains parts of OCaml, relicensed to asl2.0, as permitted
-      ;; by OCaml's license for consortium members (see THIRD-PARTY.txt).
-      (license license:asl2.0))))
-
 (define-public ocaml-int-repr
   (package
     (name "ocaml-int-repr")
