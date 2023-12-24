@@ -67503,20 +67503,20 @@ PEM-encodings commonly used to store keys and certificates at rest.")
 (define-public rust-rustls-webpki-0.101
   (package
     (name "rust-rustls-webpki")
-    (version "0.101.2")
+    (version "0.101.7")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "rustls-webpki" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0ngs6y42k47jr14kka9w92hwyjsq3gm0j45nf8gsg05dfgyj4dsi"))))
+                "0rapfhpkqp75552i8r0y7f4vq7csb4k7gjjans0df73sxv8paqlb"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Not all files included.
        #:cargo-inputs
-       (("rust-ring" ,rust-ring-0.16)
-        ("rust-untrusted" ,rust-untrusted-0.7))
+       (("rust-ring" ,rust-ring-0.17)
+        ("rust-untrusted" ,rust-untrusted-0.9))
        #:cargo-development-inputs
        (("rust-base64" ,rust-base64-0.21)
         ("rust-bencher" ,rust-bencher-0.1)
