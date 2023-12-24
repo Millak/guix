@@ -87210,21 +87210,20 @@ comparable to calling @code{unwrap_err()}.")
 (define-public rust-url-2
   (package
     (name "rust-url")
-    (version "2.4.1")
+    (version "2.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "url" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1rbsx1nvz5ardf0x815639z1bxbbgjjjhj0mmnfaqzr5327m6fql"))))
+         "0cs65961miawncdg2z20171w0vqrmraswv2ihdpd8lxp7cp31rii"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-form-urlencoded" ,rust-form-urlencoded-1)
-        ("rust-idna" ,rust-idna-0.4)
+        ("rust-idna" ,rust-idna-0.5)
         ("rust-percent-encoding" ,rust-percent-encoding-2)
         ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
