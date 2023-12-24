@@ -8313,8 +8313,7 @@ standard library that was developed by Jane Street.")
      `(#:tests? #f))
     (propagated-inputs
       (list ocaml-base ocaml-core ocaml-int-repr ocaml-ppx-jane))
-    (properties `((upstream-name . "core_kernel")
-                  (ocaml4.07-variant . ,(delay ocaml4.07-core-kernel))))
+    (properties `((upstream-name . "core_kernel")))
     (home-page "https://github.com/janestreet/core_kernel")
     (synopsis "Portable standard library for OCaml")
     (description "Core is an alternative to the OCaml standard library.
@@ -8322,46 +8321,6 @@ standard library that was developed by Jane Street.")
 Core_kernel is the system-independent part of Core.  It is aimed for cases when
 the full Core is not available, such as in Javascript.")
     (license license:expat)))
-
-(define-public ocaml4.07-core-kernel
-  (package-with-ocaml4.07
-    (package
-      (inherit ocaml-core-kernel)
-      (version "0.11.1")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/janestreet/core_kernel")
-                       (commit (string-append "v" version))))
-                (file-name (git-file-name "ocaml4.07-core-kernel" version))
-                (sha256
-                 (base32
-                  "1dg7ygy7i64c5gaakb1cp1b26p9ks81vbxmb8fd7jff2q60j2z2g"))))
-      (propagated-inputs
-        (list ocaml-base
-              ocaml-bin-prot
-              ocaml4.07-configurator
-              ocaml-fieldslib
-              ocaml-jane-street-headers
-              ocaml-ppx-assert
-              ocaml-ppx-base
-              ocaml-ppx-hash
-              ocaml-ppx-inline-test
-              ocaml-ppx-jane
-              ocaml-ppx-sexp-conv
-              ocaml-ppx-sexp-message
-              ocaml-sexplib
-              ocaml-splittable-random
-              ocaml-stdio
-              ocaml-typerep
-              ocaml-variantslib
-              ocaml-migrate-parsetree))
-      (properties '())
-      (license (list
-                 ;; this package and parts of OCaml, relicensed by janestreet
-                 license:asl2.0
-                 ;; MLton and sjs
-                 license:expat)))))
 
 (define-public ocaml-core-unix
   (package
