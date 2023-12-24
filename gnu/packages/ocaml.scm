@@ -5365,7 +5365,6 @@ capabilities, Zed provides macro recording and cursor management facilities.")
            ocaml-odoc
            ocaml-react
            ocaml-zed))
-    (properties `((ocaml4.07-variant . ,(delay ocaml4.07-lambda-term))))
     (synopsis "Terminal manipulation library for OCaml")
     (description "Lambda-Term is a cross-platform library for manipulating the
 terminal.  It provides an abstraction for keys, mouse events, colors, as well as
@@ -5374,27 +5373,6 @@ Lambda-Term is to provide a higher level functional interface to terminal
 manipulation than, for example, ncurses, by providing a native OCaml interface
 instead of bindings to a C library.")
     (license license:bsd-3)))
-
-(define-public ocaml4.07-lambda-term
-  (package-with-ocaml4.07
-   (package
-     (inherit ocaml-lambda-term)
-     (version "2.0.2")
-     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-              (url "https://github.com/ocaml-community/lambda-term")
-              (commit version)))
-        (file-name (git-file-name "ocaml4.07-lambda-term" version))
-        (sha256
-         (base32 "0zcjy6fvf0d3i2ssz96asl889n3r6bplyzk7xvb2s3dkxbgcisyy"))))
-     (propagated-inputs
-      `(("ocaml-lwt" ,ocaml-lwt)
-        ("ocaml-lwt-log" ,ocaml-lwt-log)
-        ("ocaml-lwt-react" ,ocaml-lwt-react)
-        ("ocaml-zed" ,ocaml-zed)))
-     (properties '()))))
 
 (define-public ocaml-utop
   (package
