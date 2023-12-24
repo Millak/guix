@@ -36419,8 +36419,38 @@ and traversing, manipulating, and querying the document tree.")
     (description "Kuznyechik (GOST R 34.12-2015) block cipher")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-http-1
+  (package
+    (name "rust-http")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "http" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1sllw565jn8r5w7h928nsfqq33x586pyasdfr7vid01scwwgsamk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bytes" ,rust-bytes-1)
+                       ("rust-fnv" ,rust-fnv-1)
+                       ("rust-itoa" ,rust-itoa-1))
+       #:cargo-development-inputs (("rust-doc-comment" ,rust-doc-comment-0.3)
+                                   ("rust-indexmap" ,rust-indexmap-1.8)
+                                   ("rust-quickcheck" ,rust-quickcheck-0.9)
+                                   ("rust-rand" ,rust-rand-0.7)
+                                   ("rust-seahash" ,rust-seahash-3)
+                                   ("rust-serde" ,rust-serde-1)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/hyperium/http")
+    (synopsis "Set of types for representing HTTP requests and responses")
+    (description "This package provides a set of types for representing HTTP
+requests and responses.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-http-0.2
   (package
+    (inherit rust-http-1)
     (name "rust-http")
     (version "0.2.9")
     (source
@@ -36430,7 +36460,6 @@ and traversing, manipulating, and querying the document tree.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "10j4jjpngaymxjvi92hllr2y6acr09pq61cvzxd44qzvkb4zyvmx"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bytes" ,rust-bytes-1)
@@ -36443,12 +36472,7 @@ and traversing, manipulating, and querying the document tree.")
         ("rust-rand" ,rust-rand-0.7)
         ("rust-seahash" ,rust-seahash-3)
         ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://github.com/hyperium/http")
-    (synopsis "Set of types for representing HTTP requests and responses")
-    (description "This package provides a set of types for representing HTTP
-requests and responses.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-http-0.1
   (package
