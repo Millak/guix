@@ -12079,8 +12079,30 @@ optional dependency graph analysis.")
         ("rust-toml" ,rust-toml-0.5)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-cargo-options-0.7
+  (package
+    (name "rust-cargo-options")
+    (version "0.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo-options" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1sknbp83h15da5zmkk9q9vgpw9qzwiz2sizkiv9bkrf8jvwipmya"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anstyle" ,rust-anstyle-1)
+                       ("rust-clap" ,rust-clap-4))
+       #:cargo-development-inputs (("rust-trycmd" ,rust-trycmd-0.14))))
+    (home-page "https://github.com/messense/cargo-options")
+    (synopsis "Reusable common Cargo command line options")
+    (description "Reusable common Cargo command line options.")
+    (license license:expat)))
+
 (define-public rust-cargo-options-0.6
   (package
+    (inherit rust-cargo-options-0.7)
     (name "rust-cargo-options")
     (version "0.6.0")
     (source (origin
@@ -12090,14 +12112,9 @@ optional dependency graph analysis.")
               (sha256
                (base32
                 "0m99dz9vpsplf4s955dvfnfrcvdkm7cifwymriyam11bdfm8v3lv"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-clap" ,rust-clap-4))
-       #:cargo-development-inputs (("rust-trycmd" ,rust-trycmd-0.14))))
-    (home-page "https://github.com/messense/cargo-options")
-    (synopsis "Reusable common Cargo command line options")
-    (description "Reusable common Cargo command line options.")
-    (license license:expat)))
+       #:cargo-development-inputs (("rust-trycmd" ,rust-trycmd-0.14))))))
 
 (define-public rust-cargo-platform-0.1
   (package
