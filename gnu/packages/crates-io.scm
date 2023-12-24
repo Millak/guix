@@ -87611,8 +87611,28 @@ with changes and updated applied to it.")
      "This package provides a stable alternative to @code{CoerceUnsize}.")
     (license (list license:expat license:asl2.0 license:zlib))))
 
+(define-public rust-untrusted-0.9
+  (package
+    (name "rust-untrusted")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "untrusted" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ha7ib98vkc538x0z60gfn0fc5whqdd85mb87dvisdcaifi6vjwf"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/briansmith/untrusted")
+    (synopsis "Zero-allocation parsing of untrusted inputs in Rust")
+    (description
+     "Safe, fast, zero-panic, zero-crashing, zero-allocation parsing of
+untrusted inputs in Rust.")
+    (license license:isc)))
+
 (define-public rust-untrusted-0.7
   (package
+    (inherit rust-untrusted-0.9)
     (name "rust-untrusted")
     (version "0.7.1")
     (source
@@ -87622,14 +87642,7 @@ with changes and updated applied to it.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0jkbqaj9d3v5a91pp3wp9mffvng1nhycx6sh4qkdd9qyr62ccmm1"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/briansmith/untrusted")
-    (synopsis "Zero-allocation parsing of untrusted inputs in Rust")
-    (description
-     "Safe, fast, zero-panic, zero-crashing, zero-allocation parsing of
-untrusted inputs in Rust.")
-    (license license:isc)))
+          "0jkbqaj9d3v5a91pp3wp9mffvng1nhycx6sh4qkdd9qyr62ccmm1"))))))
 
 (define-public rust-untrusted-0.6
   (package
