@@ -60334,8 +60334,32 @@ Python code from a Rust binary is also supported.")
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-trybuild" ,rust-trybuild-1))))))
 
+(define-public rust-pyproject-toml-0.8
+  (package
+    (name "rust-pyproject-toml")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pyproject-toml" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "010fl8m9cx1a5iapcpy53dabl16ij5saa3maz0lkmwl7j7kabm26"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-indexmap" ,rust-indexmap-2)
+                       ("rust-pep440-rs" ,rust-pep440-rs-0.3)
+                       ("rust-pep508-rs" ,rust-pep508-rs-0.2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-toml" ,rust-toml-0.8))))
+    (home-page "https://github.com/PyO3/pyproject-toml-rs.git")
+    (synopsis "pyproject.toml parser in Rust")
+    (description "This package provides a pyproject.toml parser in Rust.")
+    (license license:expat)))
+
 (define-public rust-pyproject-toml-0.6
   (package
+    (inherit rust-pyproject-toml-0.8)
     (name "rust-pyproject-toml")
     (version "0.6.1")
     (source (origin
@@ -60345,18 +60369,13 @@ Python code from a Rust binary is also supported.")
               (sha256
                (base32
                 "0pywp6ml15jlv9yxfjcvrs3fgd3xnq8fc6a2wcbw9q9iknmgwygf"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-indexmap" ,rust-indexmap-1)
         ("rust-pep440-rs" ,rust-pep440-rs-0.3)
         ("rust-pep508-rs" ,rust-pep508-rs-0.2)
         ("rust-serde" ,rust-serde-1)
-        ("rust-toml" ,rust-toml-0.7))))
-    (home-page "https://github.com/PyO3/pyproject-toml-rs.git")
-    (synopsis "pyproject.toml parser in Rust")
-    (description "This package provides a pyproject.toml parser in Rust.")
-    (license license:expat)))
+        ("rust-toml" ,rust-toml-0.7))))))
 
 (define-public rust-python-pkginfo-0.6
   (package
