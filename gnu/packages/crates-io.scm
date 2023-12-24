@@ -55412,15 +55412,14 @@ known as PEP 508.")
 (define-public rust-percent-encoding-2
   (package
     (name "rust-percent-encoding")
-    (version "2.3.0")
+    (version "2.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "percent-encoding" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "152slflmparkh27hprw62sph8rv77wckzhwl2dhqk6bf563lfalv"))))
+        (base32 "0gi8wgx0dcy8rnv1kywdv98lwcx67hz0a0zwpib5v2i08r88y573"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/servo/rust-url/")
     (synopsis "Percent encoding and decoding")
