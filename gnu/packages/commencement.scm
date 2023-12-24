@@ -479,7 +479,7 @@ MesCC-Tools), and finally M2-Planet.")
   (package
     (inherit tcc)
     (name "tcc-boot0")
-    (version "0.9.26-1136-g5bba73cc")
+    (version "0.9.26-1149-g46a75d0c")
     (source (origin
               (method url-fetch)
               (uri (list
@@ -489,9 +489,9 @@ MesCC-Tools), and finally M2-Planet.")
                                    "tcc-" version ".tar.gz")))
               (sha256
                (base32
-                "1y2f04qwdqg7dgxiscbf0ibybx2gclniwbbcsxpayazzii2cvji3"))))
+                "068x3r55fnz7pdxb6q01s8s26pb4kpxm61q8mwsa4cf6389cxxpl"))))
     (build-system gnu-build-system)
-    (supported-systems '("i686-linux" "x86_64-linux"))
+    (supported-systems '("i686-linux" "x86_64-linux" "riscv64-linux"))
     (inputs '())
     (propagated-inputs '())
     (native-inputs
@@ -526,6 +526,7 @@ MesCC-Tools), and finally M2-Planet.")
                 (setenv "prefix" out)
                 (setenv "GUILE_LOAD_PATH"
                         (string-append dir "/nyacc-1.00.2/module"))
+                (setenv "ONE_SOURCE" "true")
                 (invoke "sh" "configure"
                         "--cc=mescc"
                         (string-append "--prefix=" out)
