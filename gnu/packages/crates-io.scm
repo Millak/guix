@@ -82710,6 +82710,31 @@ traversing a filetype tree.")
      "This package provides a library for visualizing tree structured data.")
     (license license:expat)))
 
+(define-public rust-triomphe-0.1
+  (package
+    (name "rust-triomphe")
+    (version "0.1.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "triomphe" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1crf71hndy3fc68x8v4aikkdjynp4n5sdhq28sck8x7frx8bd7l5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arc-swap" ,rust-arc-swap-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-stable-deref-trait" ,rust-stable-deref-trait-1)
+                       ("rust-unsize" ,rust-unsize-1))))
+    (home-page "https://github.com/Manishearth/triomphe")
+    (synopsis
+     "Fork of std::sync::Arc with some extra functionality")
+    (description
+     "This package provides a fork of @code{std::sync::Arc} with some extra
+functionality and without weak references (originally servo_arc).")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-triple-accel-0.4
   (package
     (name "rust-triple-accel")
