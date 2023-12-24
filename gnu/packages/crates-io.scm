@@ -11854,20 +11854,51 @@ GNOME libsecret.")
 Windows Credential Manager.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-cargo-metadata-0.18
+  (package
+    (name "rust-cargo-metadata")
+    (version "0.18.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo_metadata" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0drh0zndl4qgndy6kg6783cydbvhxgv0hcg7d9hhqx0zwi3nb21d"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=advanced_feature_configuration"
+         "--skip=all_the_fields"
+         "--skip=basic_workspace_root_package_exists"
+         "--skip=current_dir")
+       #:cargo-inputs (("rust-camino" ,rust-camino-1)
+                       ("rust-cargo-platform" ,rust-cargo-platform-0.1)
+                       ("rust-derive-builder" ,rust-derive-builder-0.12)
+                       ("rust-semver" ,rust-semver-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/oli-obk/cargo_metadata")
+    (synopsis "Structured access to the output of `cargo metadata`")
+    (description
+     "This package provides structured access to the output of @code{cargo
+metadata}.")
+    (license license:expat)))
+
 (define-public rust-cargo-metadata-0.15
   (package
+    (inherit rust-cargo-metadata-0.18)
     (name "rust-cargo-metadata")
     (version "0.15.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cargo_metadata" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1lsmvfznc6vlizxvjm5rvi8m6iyj0ldjhbh80h6bymdp08vl969g"))))
-    (build-system cargo-build-system)
+        (base32 "1lsmvfznc6vlizxvjm5rvi8m6iyj0ldjhbh80h6bymdp08vl969g"))))
     (arguments
      `(#:tests? #f              ; Not all tests included.
        #:cargo-inputs
@@ -11877,13 +11908,7 @@ Windows Credential Manager.")
         ("rust-semver" ,rust-semver-1)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/oli-obk/cargo_metadata")
-    (synopsis "Structured access to the output of `cargo metadata`")
-    (description
-     "This package provides structured access to the output of @code{cargo
-metadata}.")
-    (license license:expat)))
+        ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-cargo-metadata-0.14
   (package
