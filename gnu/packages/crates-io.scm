@@ -12371,7 +12371,7 @@ types that works on stable Rust.")
 (define-public rust-cc-1
   (package
     (name "rust-cc")
-    (version "1.0.79")
+    (version "1.0.83")
     (source
      (origin
        (method url-fetch)
@@ -12379,12 +12379,13 @@ types that works on stable Rust.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "07x93b8zbf3xc2dggdd460xlk1wg8lxm6yflwddxj8b15030klsh"))))
+         "1l643zidlb5iy1dskc5ggqs4wqa29a02f44piczqc8zcnsq4y5zi"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f
        #:cargo-inputs
-       (("rust-jobserver" ,rust-jobserver-0.1))
+       (("rust-jobserver" ,rust-jobserver-0.1)
+        ("rust-libc" ,rust-libc-0.2))
        #:cargo-development-inputs
        (("rust-tempfile" ,rust-tempfile-3))))
     (home-page "https://github.com/alexcrichton/cc-rs")
