@@ -85437,6 +85437,26 @@ with changes and updated applied to it.")
      "This crate enables unchecked unwrapping on Option and Result types.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-unsize-1
+  (package
+    (name "rust-unsize")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "unsize" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0fd9lzdhkahygxy9b348m0fs4wlldh5ymp1dcr56d9f16jksg9sg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-autocfg" ,rust-autocfg-1))))
+    (home-page "https://github.com/HeroicKatora/static-alloc")
+    (synopsis "Stable alternative to CoerceUnsize")
+    (description
+     "This package provides a stable alternative to @code{CoerceUnsize}.")
+    (license (list license:expat license:asl2.0 license:zlib))))
+
 (define-public rust-untrusted-0.7
   (package
     (name "rust-untrusted")
