@@ -8674,7 +8674,6 @@ then run the Bisect_ppx report tool on the generated visitation files.")
           ocaml-version
           ocaml-yojson
           jq))
-    (properties `((ocaml4.07-variant . ,(delay ocaml4.07-odoc))))
     (home-page "https://github.com/ocaml/odoc")
     (synopsis "OCaml documentation generator")
     (description "Odoc is a documentation generator for OCaml.  It reads
@@ -8712,41 +8711,6 @@ complexity of the OCaml module system.")
 documentation comments, formatted using Odoc syntax, an extension of the
 language understood by ocamldoc.")
     (license license:isc)))
-
-;; version 1.5.2 requires ocaml-markdown 1.0.0 which does not compile
-;; with old version of dune used in package-with-ocaml4.07
-(define-public ocaml4.07-odoc
-  (package-with-ocaml4.07
-   (package
-     (inherit ocaml-odoc)
-     (name "ocaml-odoc")
-     (version "1.5.1")
-     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-              (url "https://github.com/ocaml/odoc")
-              (commit version)))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "0z2nisg1vb5xlk41hqw8drvj90v52wli7zvnih6a844cg6xsvvj2"))))
-     (arguments '())
-     (inputs
-      `(("ocaml-alcotest" ,ocaml-alcotest)
-        ("ocaml-markup" ,ocaml-markup)
-        ("ocaml-sexplib" ,ocaml-sexplib)
-        ("ocaml-re" ,ocaml-re)
-        ("ocaml-uutf" ,ocaml-uutf)))
-     (native-inputs
-      `(("ocaml-astring" ,ocaml-astring)
-        ("ocaml-cmdliner" ,ocaml-cmdliner)
-        ("ocaml-cppo" ,ocaml-cppo)
-        ("ocaml-fpath" ,ocaml-fpath)
-        ("ocaml-result" ,ocaml-result)
-        ("ocaml-tyxml" ,ocaml-tyxml)
-        ("ocaml-bisect-ppx" ,ocaml-bisect-ppx)
-        ("tidy-html" ,tidy-html)))
-     (properties '()))))
 
 (define-public ocaml-fftw3
   (package
