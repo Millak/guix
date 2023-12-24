@@ -4453,61 +4453,12 @@ samples.")
                (("Sys.readdir dirname")
                 "let a = Sys.readdir dirname in Array.sort String.compare a; a"))
              #t)))))
-    (properties `((ocaml4.07-variant . ,(delay ocaml4.07-batteries))))
     (home-page "http://batteries.forge.ocamlcore.org/")
     (synopsis "Development platform for the OCaml programming language")
     (description "Define a standard set of libraries which may be expected on
 every compliant installation of OCaml and organize these libraries into a
 hierarchy of modules.")
     (license license:lgpl2.1+)))
-
-(define-public ocaml4.07-batteries
-  (package-with-ocaml4.07
-    (package
-      (inherit ocaml-batteries)
-      (version "2.10.0")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/ocaml-batteries-team/batteries-included")
-                       (commit (string-append "v" version))))
-                (file-name (git-file-name "ocaml-batteries" version))
-                (sha256
-                 (base32
-                  "02fxa1nkp7rpiwfp04n0sagdp9lad4dh9bvljp95xfshm1cx7y4q"))))
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (delete 'check) ; tests are run by the build phase
-           (add-before 'build 'fix-nondeterminism
-             (lambda _
-               (substitute* "setup.ml"
-                 (("Sys.readdir dirname")
-                  "let a = Sys.readdir dirname in Array.sort String.compare a; a"))
-               #t))
-           (replace 'build
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let ((files
-                       (map (lambda (str)
-                              (substring str 0 (- (string-length str) 1)))
-                            (append
-                              (find-files "src" ".*.mliv")
-                              (find-files "src" ".*.mlv")
-                              (find-files "src" ".*.mlp")))))
-                 (apply invoke "ocamlbuild" "-no-links" "-use-ocamlfind" "-I" "num"
-                        "-lflag" "-dllpath-all" files)
-                 (for-each (lambda (file)
-                             (copy-file (string-append "_build/" file) file))
-                           files))
-               (invoke "ocamlbuild" "-no-links" "-use-ocamlfind" "-I" "num"
-                       "-lflag" "-dllpath-all" "build/mkconf.byte")
-               (copy-file "_build/build/mkconf.byte" "build/mkconf.byte")
-               (invoke "make" "all")
-               #t)))))
-      (native-inputs
-       `(("ocamlbuild" ,ocamlbuild)
-         ("qtest" ,ocaml-qtest)))
-      (properties '()))))
 
 (define-public ocaml-pcre
   (package
