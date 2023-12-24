@@ -34054,6 +34054,46 @@ package.  It can be used by type-checking tools like mypy, PyCharm, pytype
 etc. to check code that uses @code{orjson}.")
     (license license:asl2.0)))
 
+(define-public python-rpds-py
+  (package
+    (name "python-rpds-py")
+    (version "0.10.6")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "rpds_py" version))
+              (sha256
+               (base32
+                "0l5slkvhq2vf64mapimmj6ginsv01mc4niyj90vvz3assq4agrac"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build pyproject-build-system) #:prefix py:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'prepare-python-module 'build-python-module
+            (assoc-ref py:%standard-phases 'build))
+          (add-after 'build-python-module 'install-python-module
+            (assoc-ref py:%standard-phases 'install)))
+      #:cargo-inputs
+      `(("rust-archery" ,rust-archery-1)
+        ("rust-pyo3" ,rust-pyo3-0.19)
+        ("rust-rpds" ,rust-rpds-1))
+      #:install-source? #false))
+    (inputs
+     (list maturin))
+    (native-inputs
+     (list python-wrapper))
+    (home-page "https://github.com/crate-py/rpds")
+    (synopsis "Bindings to Rust rpds for persistent data structures")
+    (description "This package provides Python bindings to the Rust rpds crate
+for persistent data structures.  It was written initially to support replacing
+@code{python-pyrsistent}.")
+    (license license:expat)))
+
 (define-public python-nanoid
   ;; There are no tests on PyPi.
   (let ((commit "061f9a598f310b0e2e91b9ed6ce725a22770da64")
