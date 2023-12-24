@@ -2001,8 +2001,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/rustc-1.54.0-src.patch			\
   %D%/packages/patches/rust-1.64-fix-riscv64-bootstrap.patch	\
   %D%/packages/patches/rust-1.70-fix-rustix-build.patch	\
-  %D%/packages/patches/rust-ring-0.16-missing-files.patch	\
-  %D%/packages/patches/rust-ring-0.16-test-files.patch		\
   %D%/packages/patches/rust-ring-0.17-ring-core.patch		\
   %D%/packages/patches/i3status-rust-enable-unstable-features.patch	\
   %D%/packages/patches/rust-ndarray-remove-blas-src-dep.patch	\

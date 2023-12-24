@@ -114,8 +114,6 @@
         ("rust-tokio" ,rust-tokio-1)
         ("rust-tokio-rustls" ,rust-tokio-rustls-0.22)
         ("rust-url" ,rust-url-2))))
-    (native-inputs
-     (list perl))
     (home-page "https://github.com/mbrubeck/agate")
     (synopsis "Very simple server for the Gemini hypertext protocol")
     (description
@@ -192,7 +190,7 @@ low-end hardware and serving many concurrent requests.")
        (("rust-serde-bytes" ,rust-serde-bytes-0.11)
         ("rust-serde-derive" ,rust-serde-derive-1))))
     (native-inputs
-     (list perl pkg-config))
+     (list pkg-config))
     (inputs
      (list at-spi2-core
            gtk
@@ -1193,8 +1191,7 @@ on the terminal in a visually appealing way.")
      (list python-tomli))
     (inputs (list bzip2))
     (native-inputs
-     (list perl
-           python-wheel
+     (list python-wheel
            python-wrapper
            python-setuptools-rust))
     (home-page "https://github.com/pyo3/maturin")
@@ -1504,7 +1501,7 @@ browsers.")
              (substitute* "Cargo.toml"
                ((".*\"vendored-libgit2\".*") "")))))))
     (native-inputs
-     (list perl pkg-config))
+     (list pkg-config))
     (inputs
      (list libgit2-1.4
            libssh2
@@ -1695,8 +1692,6 @@ rebase.")
        (("rust-boxxy" ,rust-boxxy-0.12))))
     (inputs
      (list libpcap libseccomp))
-    (native-inputs
-     (list perl))
     (home-page "https://github.com/kpcyrd/sniffglue")
     (synopsis "Secure multithreaded packet sniffer")
     (description
@@ -2366,7 +2361,7 @@ consecutive lines and since program start.")
                         ;"dbus_mpris"   ; Conflicts with rust-chrono-0.4 version.
                         "pulseaudio_backend"
                         "rodio_backend")))
-    (native-inputs (list perl pkg-config))
+    (native-inputs (list pkg-config))
     (inputs (list alsa-lib dbus pulseaudio))
     (home-page "https://github.com/Spotifyd/spotifyd")
     (synopsis "Spotify streaming daemon with Spotify Connect support")
@@ -2543,7 +2538,7 @@ daemon which executes them.")
         ("rust-predicates" ,rust-predicates-2)
         ("rust-tempfile" ,rust-tempfile-3))))
     (native-inputs
-     (list perl pkg-config))
+     (list pkg-config))
     (inputs
      (list openssl))
     (home-page "https://github.com/dbrgn/tealdeer/")
