@@ -2003,6 +2003,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/rust-1.70-fix-rustix-build.patch	\
   %D%/packages/patches/rust-ring-0.16-missing-files.patch	\
   %D%/packages/patches/rust-ring-0.16-test-files.patch		\
+  %D%/packages/patches/rust-ring-0.17-ring-core.patch		\
   %D%/packages/patches/i3status-rust-enable-unstable-features.patch	\
   %D%/packages/patches/rust-ndarray-remove-blas-src-dep.patch	\
   %D%/packages/patches/rust-ndarray-0.13-remove-blas-src.patch	\

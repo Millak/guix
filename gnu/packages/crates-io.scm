@@ -61,9 +61,11 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages assembly)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages avahi)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages c)
   #:use-module (gnu packages cmake)
@@ -78,6 +80,7 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages jemalloc)
@@ -63978,8 +63981,218 @@ Usage of the @dfn{Digital Signature Algorithm} (DSA) and @dfn{Elliptic Curve
 Digital Signature Algorithm} (ECDSA).")
     (license (list license:asl2.0 license:expat))))
 
+(define computed-origin-method (@@ (guix packages) computed-origin-method))
+(define rust-ring-0.17-sources
+  (let* ((version "0.17.7")
+         (upstream-source
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                    (url "https://github.com/briansmith/ring")
+                    (commit "2be687bebdf76648ce85109d40c015412e14b0da")))
+             (file-name (git-file-name "rust-ring" version))
+             (sha256
+              (base32 "1i3b7sha8yj990v2s5yk2a5dx3v4x9b8ckzm6bgiyi6wk4vnid69"))
+             (patches (search-patches "rust-ring-0.17-ring-core.patch")))))
+    (origin
+      (method computed-origin-method)
+      (file-name (string-append "rust-ring-" version ".tar.gz"))
+      (sha256 #f)
+      (uri
+        (delay
+          (with-imported-modules '((guix build utils))
+            #~(begin
+                (use-modules (guix build utils))
+                (set-path-environment-variable
+                  "PATH" '("bin")
+                  (list #+(canonical-package gzip)
+                        #+(canonical-package tar)
+                        #+perl
+                        #+nasm
+                        #+go
+                        #+clang             ; clang-format
+                        #+python-minimal))
+                (setenv "HOME" (getcwd))
+                (copy-recursively #+upstream-source
+                                  (string-append "ring-" #$version))
+                (with-directory-excursion (string-append "ring-" #$version)
+                  (begin
+                    ;; It turns out Guix's nasm works just fine here.
+                    (substitute* "build.rs"
+                      (("./target/tools/windows/nasm/nasm") "nasm"))
+                    ;; Files which would be deleted in a snippet:
+                    (delete-file "crypto/curve25519/curve25519_tables.h")
+                    (delete-file "crypto/fipsmodule/ec/p256-nistz-table.h")
+                    (delete-file "crypto/fipsmodule/ec/p256_table.h")
+                    ;; This file causes problems during the 'package phase and
+                    ;; is not distributed with the packaged crate.
+                    (substitute* "Cargo.toml"
+                      (("\"bench\",") ""))
+                    (delete-file "bench/Cargo.toml")
+                    ;; Files to be generated in the sources:
+                    (format #t "Generating the missing files ...~%")
+                    (force-output)
+                    (with-directory-excursion "crypto/curve25519"
+                      (with-output-to-file "curve25519_tables.h"
+                        (lambda _ (invoke "python3" "make_curve25519_tables.py")))
+                      ;; As seen in git between 0.17.0 and 0.17.1.
+                      (substitute* "curve25519_tables.h"
+                        (("static const uint8_t k25519Precomp")
+                         "const uint8_t k25519Precomp")))
+                    (with-directory-excursion "crypto/fipsmodule/ec"
+                      (invoke "go" "run" "make_tables.go")
+                      (invoke "go" "run" "make_ec_scalar_base_mult_tests.go"))
+                    (format #t "Generating the pregenerated files ...~%")
+                    (force-output)
+                    (mkdir-p "pregenerated/tmp/ring_core_generated")
+
+                    ;; We generate all the files which upstream would normally be
+                    ;; generate by using 'RING_PREGENERATE_ASM=1 cargo build
+                    ;; --target-dir=target/pregenerate_asm' in order to not include
+                    ;; a dependency on cargo when generating the sources.
+                    (define (prefix script)
+                      (string-append
+                        "pregenerated/"
+                        (string-drop-right
+                          (string-drop script
+                                       (string-index-right script #\/)) 3)))
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "perl" script "ios64"
+                                (string-append (prefix script) "-ios64.S"))
+                        (invoke "perl" script "linux64"
+                                (string-append (prefix script) "-linux64.S"))
+                        (invoke "perl" script "win64"
+                                (string-append (prefix script) "-win64.S")))
+                      '("crypto/fipsmodule/aes/asm/aesv8-armx.pl"
+                        "crypto/fipsmodule/modes/asm/ghashv8-armx.pl"
+                        "crypto/chacha/asm/chacha-armv8.pl"
+                        "crypto/cipher_extra/asm/chacha20_poly1305_armv8.pl"
+                        "crypto/fipsmodule/aes/asm/vpaes-armv8.pl"
+                        "crypto/fipsmodule/bn/asm/armv8-mont.pl"
+                        "crypto/fipsmodule/ec/asm/p256-armv8-asm.pl"
+                        "crypto/fipsmodule/modes/asm/ghash-neon-armv8.pl"
+                        "crypto/fipsmodule/sha/asm/sha512-armv8.pl"))
+
+                    (for-each
+                      (lambda (arch)
+                        (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-armv8.pl"
+                                arch (string-append
+                                       "pregenerated/sha256-armv8-" arch ".S")))
+                      '("ios64" "linux64" "win64"))
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "perl" script "linux32"
+                                (string-append (prefix script) "-linux32.S")))
+                      '("crypto/fipsmodule/aes/asm/aesv8-armx.pl"
+                        "crypto/fipsmodule/modes/asm/ghashv8-armx.pl"
+                        "crypto/fipsmodule/aes/asm/bsaes-armv7.pl"
+                        "crypto/fipsmodule/aes/asm/vpaes-armv7.pl"
+                        "crypto/fipsmodule/bn/asm/armv4-mont.pl"
+                        "crypto/chacha/asm/chacha-armv4.pl"
+                        "crypto/fipsmodule/modes/asm/ghash-armv4.pl"
+                        "crypto/fipsmodule/sha/asm/sha256-armv4.pl"
+                        "crypto/fipsmodule/sha/asm/sha512-armv4.pl"))
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "perl" script "elf"
+                                "-fPIC" "-DOPENSSL_IA32_SSE2"
+                                (string-append (prefix script) "-elf.S"))
+                        (invoke "perl" script "win32n"
+                                "-fPIC" "-DOPENSSL_IA32_SSE2"
+                                (string-append
+                                  "pregenerated/tmp/"
+                                  (string-drop (prefix script) 13) "-win32n.asm")))
+                      '("crypto/fipsmodule/aes/asm/aesni-x86.pl"
+                        "crypto/fipsmodule/aes/asm/vpaes-x86.pl"
+                        "crypto/fipsmodule/bn/asm/x86-mont.pl"
+                        "crypto/chacha/asm/chacha-x86.pl"
+                        "crypto/fipsmodule/modes/asm/ghash-x86.pl"))
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "perl" script "elf"
+                                (string-append (prefix script) "-elf.S"))
+                        (invoke "perl" script "macosx"
+                                (string-append (prefix script) "-macosx.S"))
+                        (invoke "perl" script "nasm"
+                                (string-append
+                                  "pregenerated/tmp/"
+                                  (string-drop (prefix script) 13) "-nasm.asm")))
+                      '("crypto/chacha/asm/chacha-x86_64.pl"
+                        "crypto/fipsmodule/aes/asm/aesni-x86_64.pl"
+                        "crypto/fipsmodule/aes/asm/vpaes-x86_64.pl"
+                        "crypto/fipsmodule/bn/asm/x86_64-mont.pl"
+                        "crypto/fipsmodule/bn/asm/x86_64-mont5.pl"
+                        "crypto/fipsmodule/ec/asm/p256-x86_64-asm.pl"
+                        "crypto/fipsmodule/modes/asm/aesni-gcm-x86_64.pl"
+                        "crypto/fipsmodule/modes/asm/ghash-x86_64.pl"
+                        "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                        "crypto/cipher_extra/asm/chacha20_poly1305_x86_64.pl"))
+
+                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                            "elf" "pregenerated/sha256-x86_64-elf.S")
+
+                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                            "macosx" "pregenerated/sha256-x86_64-macosx.S")
+
+                    (invoke "perl" "crypto/fipsmodule/sha/asm/sha512-x86_64.pl"
+                            "nasm" "pregenerated/tmp/sha256-x86_64-nasm.asm")
+
+                    ;; TODO: Extract ring_core_generated/prefix_symbols_nasm.inc
+                    ;; and ring_core_generated/prefix_symbols_asm.h from build.rs.
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "nasm" "-o" (string-append (prefix script) "o")
+                                "-f" "win32" "-i" "include/" "-i" "pregenerated/tmp/"
+                                "-Xgnu" "-gcv8" script))
+                    (find-files "pregenerated/tmp" "win32n\\.asm"))
+
+                    (for-each
+                      (lambda (script)
+                        (invoke "nasm" "-o" (string-append (prefix script) "o")
+                                "-f" "win64" "-i" "include/" "-i" "pregenerated/tmp/"
+                                "-Xgnu" "-gcv8" script))
+                    (find-files "pregenerated/tmp" "nasm\\.asm"))
+
+                    (format #t "Creating the tarball ...~%")
+                    (force-output)
+                    ;; The other option is to use cargo package --allow-dirty
+                    (with-directory-excursion "../"
+                      (invoke "tar" "czf" #$output
+                              ;; avoid non-determinism in the archive
+                              "--sort=name" "--mtime=@0"
+                              "--owner=root:0" "--group=root:0"
+                              (string-append "ring-" #$version))))))))))))
+
+(define-public rust-ring-0.17
+  (package
+    (name "rust-ring")
+    (version "0.17.7")
+    (source rust-ring-0.17-sources)
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-getrandom" ,rust-getrandom-0.2)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-spin" ,rust-spin-0.9)
+                       ("rust-untrusted" ,rust-untrusted-0.9)
+                       ("rust-windows-sys" ,rust-windows-sys-0.48))
+       #:cargo-development-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
+    (home-page "https://github.com/briansmith/ring")
+    (synopsis "Safe, fast, small crypto using Rust")
+    (description "This package provided safe, fast, small crypto using Rust.")
+    (license (list license:isc license:openssl))))
+
 (define-public rust-ring-0.16
   (package
+    (inherit rust-ring-0.17)
     (name "rust-ring")
     (version "0.16.20")
     (source
@@ -64004,7 +64217,6 @@ Digital Signature Algorithm} (ECDSA).")
            (with-output-to-file ".git"
              (lambda _
                 (format #t "")))))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
@@ -64028,14 +64240,10 @@ Digital Signature Algorithm} (ECDSA).")
                    (invoke "python" "make_curve25519_tables.py")))))))))
     (native-inputs
      (list clang perl python-2))
-    (home-page "https://github.com/briansmith/ring")
-    (synopsis "Safe, fast, small crypto using Rust")
-    (description "This package provided safe, fast, small crypto using Rust.")
     ;; For a mostly complete list of supported systems see:
     ;; https://github.com/briansmith/ring/blob/main/.github/workflows/ci.yml#L170
     (supported-systems (list "aarch64-linux" "armhf-linux"
-                             "i686-linux" "x86_64-linux"))
-    (license (list license:isc license:openssl))))
+                             "i686-linux" "x86_64-linux"))))
 
 (define-public rust-ring-0.14
   (package
