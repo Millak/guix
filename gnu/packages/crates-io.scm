@@ -2613,14 +2613,14 @@ This package is deprecated and was replaced by the @code{aes} crate.")
 (define-public rust-ahash-0.8
   (package
     (name "rust-ahash")
-    (version "0.8.3")
+    (version "0.8.6")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "ahash" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0bzcsxdl2wd6j2p4214qh9sqkqn69gi7f9lk1xi8yj063r6zd69c"))))
+                "0yn9i8nc6mmv28ig9w3dga571q09vg9f1f650mi5z8phx42r6hli"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -2630,7 +2630,8 @@ This package is deprecated and was replaced by the @code{aes} crate.")
         ("rust-getrandom" ,rust-getrandom-0.2)
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-serde" ,rust-serde-1)
-        ("rust-version-check" ,rust-version-check-0.9))
+        ("rust-version-check" ,rust-version-check-0.9)
+        ("rust-zerocopy" ,rust-zerocopy-0.7))
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.3)
         ("rust-fnv" ,rust-fnv-1)
