@@ -87684,14 +87684,14 @@ comparable to calling @code{unwrap_err()}.")
 (define-public rust-ureq-2
   (package
     (name "rust-ureq")
-    (version "2.6.2")
+    (version "2.9.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "ureq" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0vf412wyfk1wpaknqiq2v7y5zy9djammgvgkmcx8zxhl2gfk32rk"))))
+                "15rz5g61fqbxh5w77mbinz4jhljfh58i9s2dzqlh284y6dfd5kgq"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
@@ -87699,30 +87699,30 @@ comparable to calling @code{unwrap_err()}.")
              ;; These tests want network access.
              "--skip=test::range::read_range_rustls"
              "--skip=tests::connect_http_google"
-             "--skip=tests::connect_https_google_rustls"
-             "--skip=tls_client_certificate"
-             "--skip=middleware::Middleware")
+             "--skip=tests::connect_https_google_rustls")
        #:cargo-inputs
-       (("rust-base64" ,rust-base64-0.13)
+       (("rust-base64" ,rust-base64-0.21)
         ("rust-brotli-decompressor" ,rust-brotli-decompressor-2)
-        ("rust-cookie" ,rust-cookie-0.16)
-        ("rust-cookie-store" ,rust-cookie-store-0.19)
+        ("rust-cookie" ,rust-cookie-0.17)
+        ("rust-cookie-store" ,rust-cookie-store-0.20)
         ("rust-encoding-rs" ,rust-encoding-rs-0.8)
         ("rust-flate2" ,rust-flate2-1)
+        ("rust-http" ,rust-http-0.2)
+        ("rust-http" ,rust-http-1)
         ("rust-log" ,rust-log-0.4)
         ("rust-native-tls" ,rust-native-tls-0.2)
         ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-rustls" ,rust-rustls-0.20)
+        ("rust-rustls" ,rust-rustls-0.21)
         ("rust-rustls-native-certs" ,rust-rustls-native-certs-0.6)
+        ("rust-rustls-webpki" ,rust-rustls-webpki-0.101)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-socks" ,rust-socks-0.3)
         ("rust-url" ,rust-url-2)
-        ("rust-webpki" ,rust-webpki-0.22)
-        ("rust-webpki-roots" ,rust-webpki-roots-0.22))
+        ("rust-webpki-roots" ,rust-webpki-roots-0.25))
        #:cargo-development-inputs
        (("rust-env-logger" ,rust-env-logger-0.10)
-        ("rust-rustls" ,rust-rustls-0.20)
+        ("rust-rustls" ,rust-rustls-0.21)
         ("rust-rustls-pemfile" ,rust-rustls-pemfile-1)
         ("rust-serde" ,rust-serde-1))))
     (native-inputs (list perl))
