@@ -2146,7 +2146,7 @@ powerful.")
     (description
      "This package provides a way to write bitstrings and matching over
 bitsrings in Erlang style as primitives to the language.")))
- 
+
 (define-public ocaml-result
   (package
     (name "ocaml-result")
@@ -2189,7 +2189,7 @@ defined in this library.")
      `(#:dune ,ocaml5.0-dune-bootstrap
        #:ocaml ,ocaml-5.0
        #:findlib ,ocaml5.0-findlib))))
- 
+
 (define-public ocaml-topkg
   (package
     (name "ocaml-topkg")
@@ -2219,7 +2219,7 @@ provides an API to describe the files a package installs in a given build
 configuration and to specify information about the package's distribution,
 creation and publication procedures.")
     (license license:isc)))
- 
+
 (define-public ocaml-rresult
   (package
     (name "ocaml-rresult")
@@ -3738,7 +3738,7 @@ without a complete in-memory representation.")
 the JSON data format.  It can process JSON text without blocking on IO and
 without a complete in-memory representation of the data.")
     (license license:isc)))
- 
+
 (define-public ocaml-ocp-indent
   (package
     (name "ocaml-ocp-indent")
@@ -3773,7 +3773,7 @@ This package includes:
       fault-tolerant and approximate parsing.
 @end itemize")
     (license license:lgpl2.1)))
- 
+
 (define-public ocaml-ocp-index
   (package
     (name "ocaml-ocp-index")
@@ -6108,7 +6108,7 @@ speedup, polymorphic variants and optional syntax for tuples and variants.
 yojson package.  The program @code{atdgen} can be used to derive OCaml-JSON
 serializers and deserializers from type definitions.")
     (license license:bsd-3)))
- 
+
 (define-public ocaml-merlin-lib
   (package
     (name "ocaml-merlin-lib")
@@ -6263,27 +6263,6 @@ Atom.")
      "GSL-OCaml is an interface to the @dfn{GNU scientific library} (GSL) for
 the OCaml language.")
     (license license:gpl3+)))
-
-(define-public ocaml4.07-gsl-1
-  (package-with-ocaml4.07
-    (package
-      (inherit ocaml-gsl)
-      (version "1.19.3")
-      (source (origin
-                (method url-fetch)
-                (uri (string-append "https://github.com/mmottl/gsl-ocaml"
-                                    "/releases/download/v"
-                                    version "/gsl-ocaml-" version ".tar.gz"))
-                (sha256
-                 (base32
-                  "0nzp43hp8pbjqkrxnwp5lgjrabxayf61h18fjaydi0s5faq6f3xh"))))
-      (build-system ocaml-build-system)
-      (inputs
-       `(("gsl" ,gsl-static)))
-      (native-inputs
-       `(("ocamlbuild" ,ocamlbuild)))
-      (arguments '())
-      (propagated-inputs '()))))
 
 (define-public cubicle
   (package
