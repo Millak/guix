@@ -57,6 +57,7 @@
   #:use-module (gnu packages xml)
   #:use-module (guix gexp)
   #:use-module (guix packages)
+  #:use-module (guix platform)
   #:use-module ((guix store) #:select (%store-monad))
   #:use-module (guix monads)
   #:use-module (guix download)
@@ -373,11 +374,12 @@ the way up: hex1, catm, hex2, M0, cc_x86, M1, M2, get_machine (that's all of
 MesCC-Tools), and finally M2-Planet.")
       (license license:gpl3+)))
 
+
 (define mes-boot
   (package
     (inherit mes)
     (name "mes-boot")
-    (version "0.24.2")
+    (version "0.25.1")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "mirror://gnu/mes/"
@@ -386,10 +388,10 @@ MesCC-Tools), and finally M2-Planet.")
                                         "mes-" version ".tar.gz")))
               (sha256
                (base32
-                "0vp8v88zszh1imm3dvdfi3m8cywshdj7xcrsq4cgmss69s2y1nkx"))))
+                "03np6h4qx94givjdvq2rmhvab38y5f91254n0avg4vq2j0cx78in"))))
     (inputs '())
     (propagated-inputs '())
-    (supported-systems '("i686-linux" "x86_64-linux"))
+    (supported-systems '("i686-linux" "x86_64-linux" "riscv64-linux"))
     (native-inputs
      `(("m2-planet" ,stage0-posix)
        ("nyacc-source" ,(bootstrap-origin
@@ -418,9 +420,17 @@ MesCC-Tools), and finally M2-Planet.")
                                            dir "/nyacc-1.00.2/module"))
                 (invoke "gash" "configure.sh"
                         (string-append "--prefix=" out)
-                        "--host=i686-linux-gnu"))))
+                        (string-append "--host="
+                          #$(cond
+                              ((target-x86-64?) "i686-linux-gnu")
+                              (#t (platform-system->target
+                                    (%current-system)))))))))
           (replace 'build
             (lambda _
+              ;; TODO: GUILE_LOAD_PATH is leaking. We need to clean it.
+              (substitute* "kaem.run"
+                (("cp bin/mes-m2 bin/mes" all)
+                 (string-append "GUILE_LOAD_PATH=/fubar\n" all)))
               (invoke "gash" "bootstrap.sh")))
           (delete 'check)
           (replace 'install
