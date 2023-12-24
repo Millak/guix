@@ -3549,31 +3549,10 @@ and consumable.")
            (sha256
             (base32
              "0gsb1jpj3mnqbjgbavi4l95gl6g4agq58j82km22fdfg63j3w3fk"))))))
-    (properties `((ocaml4.07-variant . ,(delay ocaml4.07-sedlex))))
     (home-page "https://www.cduce.org/download.html#side")
     (synopsis "Lexer generator for Unicode and OCaml")
     (description "Lexer generator for Unicode and OCaml.")
     (license license:expat)))
-
-(define-public ocaml4.07-sedlex
-  (package-with-ocaml4.07
-   (package
-     (inherit ocaml-sedlex)
-     (name "ocaml-sedlex")
-     (version "2.1")
-     (source (origin
-               (method git-fetch)
-               (uri (git-reference
-                     (url "https://github.com/ocaml-community/sedlex")
-                     (commit (string-append "v" version))))
-               (file-name (git-file-name name version))
-               (sha256
-                (base32
-                 "05f6qa8x3vhpdz1fcnpqk37fpnyyq13icqsk2gww5idjnh6kng26"))))
-     (propagated-inputs
-      `(("ocaml-ppx-tools-versioned" ,ocaml4.07-ppx-tools-versioned)
-        ,@(package-propagated-inputs ocaml-sedlex)))
-     (properties '()))))
 
 (define-public ocaml-uchar
   (package
