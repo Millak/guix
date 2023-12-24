@@ -971,7 +971,7 @@ EUI-64, also known as MAC-48 media access control addresses.")
     (source
      (origin
        (method url-fetch)
-       (uri (crate-uri "gl-generator" version))
+       (uri (crate-uri "gl_generator" version))
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
@@ -997,7 +997,7 @@ EUI-64, also known as MAC-48 media access control addresses.")
     (source
      (origin
        (method url-fetch)
-       (uri (crate-uri "gl-generator" version))
+       (uri (crate-uri "gl_generator" version))
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
@@ -1012,7 +1012,7 @@ EUI-64, also known as MAC-48 media access control addresses.")
    (source
     (origin
       (method url-fetch)
-      (uri (crate-uri "gl-generator" version))
+      (uri (crate-uri "gl_generator" version))
       (file-name
        (string-append name "-" version ".tar.gz"))
       (sha256
@@ -1228,7 +1228,7 @@ EUI-64, also known as MAC-48 media access control addresses.")
     (source
      (origin
        (method url-fetch)
-       (uri (crate-uri "glutin-egl-sys" version))
+       (uri (crate-uri "glutin_egl_sys" version))
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
@@ -1252,7 +1252,7 @@ EUI-64, also known as MAC-48 media access control addresses.")
     (source
      (origin
        (method url-fetch)
-       (uri (crate-uri "glutin-egl-sys" version))
+       (uri (crate-uri "glutin_egl_sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0g81bz7ppvaksvwcw1jg553g8b2shvmnfm9ms6hixwvinj20z438"))))
