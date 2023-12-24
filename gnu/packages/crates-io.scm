@@ -11719,24 +11719,22 @@ the library crate of Cargo.")
 (define-public rust-cargo-config2-0.1
   (package
     (name "rust-cargo-config2")
-    (version "0.1.8")
+    (version "0.1.17")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "cargo-config2" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1vxbyjd2zm75k5jx3hgqi9h5fj3j37ahrpyl1davsz5zzk1j5mj1"))))
+                "00klqbgizddfrv7c420s06zx2q9qpd1ir72l40p651ib8rz1z0ch"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f          ; Not all files included.
        #:cargo-inputs
-       (("rust-cfg-expr" ,rust-cfg-expr-0.15)
-        ("rust-home" ,rust-home-0.5)
-        ("rust-once-cell" ,rust-once-cell-1)
+       (("rust-home" ,rust-home-0.5)
         ("rust-serde" ,rust-serde-1)
-        ("rust-shell-escape" ,rust-shell-escape-0.1)
-        ("rust-toml" ,rust-toml-0.7))
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-toml-edit" ,rust-toml-edit-0.21))
        #:cargo-development-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-build-context" ,rust-build-context-0.1)
@@ -11746,10 +11744,11 @@ the library crate of Cargo.")
         ("rust-lexopt" ,rust-lexopt-0.3)
         ("rust-rustversion" ,rust-rustversion-1)
         ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-shell-escape" ,rust-shell-escape-0.1)
+        ("rust-similar-asserts" ,rust-similar-asserts-1)
         ("rust-static-assertions" ,rust-static-assertions-1)
         ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-toml" ,rust-toml-0.7)
-        ("rust-walkdir" ,rust-walkdir-2))))
+        ("rust-toml" ,rust-toml-0.8))))
     (home-page "https://github.com/taiki-e/cargo-config2")
     (synopsis "Load and resolve Cargo configuration")
     (description "Load and resolve Cargo configuration.")
