@@ -8092,8 +8092,6 @@ Configurator allows one to:
     (build-system dune-build-system)
     (propagated-inputs (list ocaml-odoc))
     (native-inputs (list ocaml-ppx-expect))
-    (properties
-     `((ocaml4.07-variant . ,(delay ocaml4.07-spawn))))
     (home-page "https://github.com/janestreet/spawn")
     (synopsis "Spawning sub-processes")
     (description
@@ -8114,35 +8112,6 @@ constant time.  In application using a lot of memory, vfork can be
 thousands of times faster than fork.
 @end itemize")
     (license license:asl2.0)))
-
-(define-public ocaml4.07-spawn
-  (package-with-ocaml4.07
-    (package
-      (inherit ocaml-spawn)
-      (version "0.13.0")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/janestreet/spawn")
-                       (commit (string-append "v" version))))
-                (file-name (git-file-name "ocaml4.07-spawn" version))
-                (sha256
-                 (base32
-                  "1w003k1kw1lmyiqlk58gkxx8rac7dchiqlz6ah7aj7bh49b36ppf"))))
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-before 'check 'fix-tests
-             (lambda _
-               (substitute* "test/tests.ml"
-                 (("/bin/pwd") (which "pwd"))
-                 (("/bin/echo") (which "echo")))
-               #t)))
-         #:ocaml ,ocaml-4.07
-         #:findlib ,ocaml4.07-findlib
-         #:dune ,ocaml4.07-dune))
-      (propagated-inputs '())
-      (properties '()))))
 
 (define-public ocaml-core
   (package
