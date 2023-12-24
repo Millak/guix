@@ -4096,6 +4096,32 @@ coverage-guided, mutation-based fuzzers.")
         ("rust-proptest" ,rust-proptest-0.9)
         ("rust-version-sync" ,rust-version-sync-0.9))))))
 
+(define-public rust-archery-1
+  (package
+    (name "rust-archery")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "archery" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lp7lq613dd21ay15gzbl8s5r91c96iia000rs358xk217v5aya8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-static-assertions" ,rust-static-assertions-1)
+                       ("rust-triomphe" ,rust-triomphe-0.1))
+       #:cargo-development-inputs
+       (("rust-compiletest-rs" ,rust-compiletest-rs-0.10)
+        ("rust-criterion" ,rust-criterion-0.5)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1))))
+    (home-page "https://github.com/orium/archery")
+    (synopsis "Abstract over the atomicity of reference-counting pointers")
+    (description "This package provides a way to abstract @code{Rc} and
+@code{Arc} smart pointers.  It can also create data structures where
+the pointer type is parameterizable.")
+    (license license:mpl2.0)))
+
 (define-public rust-arg-enum-proc-macro-0.3
   (package
     (name "rust-arg-enum-proc-macro")
