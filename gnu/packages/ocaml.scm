@@ -4901,45 +4901,7 @@ JSON.")
      (list ocaml-stringext ocaml-angstrom))
     (native-inputs
      (list ocaml-ounit ocaml-ppx-sexp-conv))
-    (properties `((upstream-name . "uri")
-                  (ocaml4.07-variant ,(delay ocaml4.07-uri))))
-    (synopsis "RFC3986 URI/URL parsing library")
-    (description "OCaml-uri is a library for parsing URI/URL in the RFC3986 format.")
-    (license license:isc)))
-
-(define-public ocaml4.07-uri
-  (package
-    (name "ocaml4.07-uri")
-    (version "2.2.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/mirage/ocaml-uri")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1ppbav41mszpjcl0zi3fyg958cxyfs57i7kvha4ds9ydn89bjmrh"))))
-    (build-system dune-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'update-deprecated
-           (lambda _
-             (substitute* "lib/uri.ml"
-               (("Re.get") "Re.Group.get")))))
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
-    (native-inputs
-     `(("ocaml-ounit" ,(package-with-ocaml4.07 ocaml-ounit))
-       ("ocaml-ppx-sexp-conv" ,(package-with-ocaml4.07 ocaml-ppx-sexp-conv))))
-    (propagated-inputs
-     `(("ocaml-re" ,(package-with-ocaml4.07 ocaml-re))
-       ("ocaml-sexplib0" ,(package-with-ocaml4.07 ocaml-sexplib0))
-       ("ocaml-stringext" ,(package-with-ocaml4.07 ocaml-stringext))))
     (properties `((upstream-name . "uri")))
-    (home-page "https://github.com/mirage/ocaml-uri")
     (synopsis "RFC3986 URI/URL parsing library")
     (description "OCaml-uri is a library for parsing URI/URL in the RFC3986 format.")
     (license license:isc)))
