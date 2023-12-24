@@ -67425,8 +67425,31 @@ native certificate store.")
         ("rust-webpki-roots" ,rust-webpki-roots-0.20))))
     (native-inputs (list perl))))
 
+(define-public rust-rustls-pemfile-2
+  (package
+    (name "rust-rustls-pemfile")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustls-pemfile" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1x34xidvzn4br2vl8f8xwmhgbjv4lmlb0ggv5whlnk4yl87rir1m"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-base64" ,rust-base64-0.21)
+                       ("rust-rustls-pki-types" ,rust-rustls-pki-types-1))
+       #:cargo-development-inputs (("rust-bencher" ,rust-bencher-0.1))))
+    (home-page "https://github.com/rustls/pemfile")
+    (synopsis "Basic parser for PEM formatted keys and certificates")
+    (description "This package provides a very basic parser for the
+PEM-encodings commonly used to store keys and certificates at rest.")
+    (license (list license:asl2.0 license:isc license:expat))))
+
 (define-public rust-rustls-pemfile-1
   (package
+    (inherit rust-rustls-pemfile-2)
     (name "rust-rustls-pemfile")
     (version "1.0.3")
     (source
@@ -67436,17 +67459,11 @@ native certificate store.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1cplx6hgkr32nq31p3613b2sj7csrrq3zp6znx9vc1qx9c4qff9d"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-base64" ,rust-base64-0.21))
        #:cargo-development-inputs
-       (("rust-bencher" ,rust-bencher-0.1))))
-    (home-page "https://github.com/rustls/pemfile")
-    (synopsis "Basic parser for PEM formatted keys and certificates")
-    (description "This package provides a very basic parser for the
-PEM-encodings commonly used to store keys and certificates at rest.")
-    (license (list license:asl2.0 license:isc license:expat))))
+       (("rust-bencher" ,rust-bencher-0.1))))))
 
 (define-public rust-rustls-pemfile-0.2
   (package
