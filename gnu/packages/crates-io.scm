@@ -93001,8 +93001,36 @@ for locating fonts.")
         ("rust-zerocopy-derive" ,rust-zerocopy-derive-0.2))))
     (license license:bsd-3)))
 
+(define-public rust-zerocopy-derive-0.7
+  (package
+    (name "rust-zerocopy-derive")
+    (version "0.7.32")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zerocopy-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19nj11md42aijyqnfx8pa647fjzhz537xyc624rajwwfrn6b3qcw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; unresolved import `zerocopy`
+       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs
+       (("rust-static-assertions" ,rust-static-assertions-1)
+        ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/google/zerocopy")
+    (synopsis "Custom derive for traits from the zerocopy Rust crate")
+    (description
+     "This package provides custom derive for traits from the zerocopy Rust
+crate.")
+    (license (list license:bsd-2 license:asl2.0 license:expat))))
+
 (define-public rust-zerocopy-derive-0.3
   (package
+    (inherit rust-zerocopy-derive-0.7)
     (name "rust-zerocopy-derive")
     (version "0.3.2")
     (source (origin
@@ -93012,19 +93040,12 @@ for locating fonts.")
               (sha256
                (base32
                 "18qr7dqlj89v1xl1g58l2xd6jidv0sbccscgl131gpppba0yc1b5"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-syn" ,rust-syn-1)
-        ("rust-synstructure" ,rust-synstructure-0.12))))
-    (home-page "https://github.com/google/zerocopy")
-    (synopsis "Custom derive for traits from the zerocopy Rust crate")
-    (description
-     "This package provides custom derive for traits from the zerocopy Rust
-crate.")
-    (license license:bsd-2)))
+        ("rust-synstructure" ,rust-synstructure-0.12))))))
 
 (define-public rust-zerocopy-derive-0.2
   (package
