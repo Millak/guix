@@ -186,7 +186,7 @@ engine with a Lua scripting interface.")
 (define-public xarcan
   (package
     (name "xarcan")
-    (version "0.6.1")
+    (version "0.6.3")
     (source
      (origin
        (method git-fetch)
@@ -195,7 +195,7 @@ engine with a Lua scripting interface.")
              (url "https://github.com/letoram/xarcan")
              (commit version)))
        (sha256
-        (base32 "1z4sf101i2y6rg2vcxfwmp1nkzfa3rw1pp48ym1ds1ka513vy128"))))
+        (base32 "1g24mmwnc45ig0x8jk0v91488k8933w07vxi4305sla56q4n82p4"))))
     (build-system meson-build-system)
     (arguments
      (list
