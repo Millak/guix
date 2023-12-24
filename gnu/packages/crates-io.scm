@@ -28322,18 +28322,19 @@ various platforms.")
 (define-public rust-fs-err-2
   (package
     (name "rust-fs-err")
-    (version "2.9.0")
+    (version "2.11.0")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "fs-err" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0ha5ysh5jz2hxlhmydc82pjcycps6ips4jyni41jy8cr48jzli88"))))
+                "0hdajzh5sjvvdjg0n15j91mv8ydvb7ff6m909frvdmg1bw81z948"))))
     (build-system cargo-build-system)
     (arguments
      (list #:cargo-inputs
-           `(("rust-tokio" ,rust-tokio-1))
+           `(("rust-autocfg" ,rust-autocfg-1)
+             ("rust-tokio" ,rust-tokio-1))
            #:cargo-development-inputs
            `(("rust-serde-json" ,rust-serde-json-1))))
     (home-page "https://github.com/andrewhickman/fs-err")
