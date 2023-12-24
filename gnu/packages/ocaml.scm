@@ -5262,7 +5262,6 @@ function that follows the prototype of POSIX's wcwidth.")
            ocaml-uucp
            ocaml-uuseg
            ocaml-odoc))
-    (properties `((ocaml4.07-variant . ,(delay ocaml4.07-zed))))
     (synopsis "Abstract engine for text edition in OCaml")
     (description
      "This module provides an abstract engine for text edition.  It can be
@@ -5273,26 +5272,6 @@ achieve efficient operations on large Unicode buffers.  Zed also features a
 regular expression search on ropes.  To support efficient text edition
 capabilities, Zed provides macro recording and cursor management facilities.")
     (license license:bsd-3)))
-
-(define-public ocaml4.07-zed
-  (package-with-ocaml4.07
-   (package
-     (inherit ocaml-zed)
-     (version "2.0.3")
-     (source (origin
-               (method git-fetch)
-               (uri (git-reference
-                     (url "https://github.com/ocaml-community/zed")
-                     (commit version)))
-               (file-name (git-file-name "ocaml4.07-zed" version))
-               (sha256
-                (base32
-                 "0pa9awinqr0plp4b2az78dwpvh01pwaljnn5ydg8mc6hi7rmir55"))))
-    (propagated-inputs
-     `(("ocaml-charInfo-width" ,ocaml-charinfo-width)
-       ("ocaml-camomile" ,ocaml-camomile)
-       ("ocaml-react" ,ocaml-react)))
-     (properties '()))))
 
 (define-public ocaml-lambda-term
   (package
