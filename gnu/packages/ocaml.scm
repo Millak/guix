@@ -2104,7 +2104,6 @@ to replace readline.")
            (lambda _
              (invoke "dune" "upgrade")
              #t)))))
-    (properties `((ocaml4.07-variant . ,(delay ocaml4.07-bitstring))))
     (home-page "https://github.com/xguerin/bitstring")
     (synopsis "Bitstrings and bitstring matching for OCaml")
     (description "Adds Erlang-style bitstrings and matching over bitstrings as
@@ -2113,23 +2112,6 @@ and generate binary formats, files and protocols.  Bitstring handling is added
 as primitives to the language, making it exceptionally simple to use and very
 powerful.")
     (license license:isc)))
-
-(define-public ocaml4.07-bitstring
-  (package-with-ocaml4.07
-    (package
-      (inherit ocaml-bitstring)
-      (version "3.1.0")
-      (source (origin
-                (method url-fetch)
-                (uri (string-append "https://bitbucket.org/thanatonauts/bitstring/"
-                                    "get/v" version ".tar.gz"))
-                (file-name (string-append "ocaml-bitsring-" version ".tar.gz"))
-                (sha256
-                 (base32
-                  "15jjk2pq1vx311gl49s5ag6x5y0654x35w75z07g7kr2q334hqps"))))
-      (propagated-inputs
-       `(("ocaml-ppx-tools-versioned" ,ocaml4.07-ppx-tools-versioned)))
-      (properties '()))))
 
 (define-public ocaml-ppx-bitstring
   (package
