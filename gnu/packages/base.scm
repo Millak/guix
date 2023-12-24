@@ -572,14 +572,14 @@ standard.")
 (define-public gnu-make
   (package
    (name "make")
-   (version "4.3")
+   (version "4.4.1")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/make/make-" version
                                 ".tar.gz"))
             (sha256
              (base32
-              "06cfqzpqsvdnsxbysl5p2fgdgxgl9y4p7scpnrfa8z2zgkjdspz0"))
+              "1cwgcmwdn7gqn5da2ia91gkyiqs9birr10sy5ykpkaxzcwfzn5nx"))
             (patches (search-patches "make-impure-dirs.patch"))))
    (build-system gnu-build-system)
    (native-inputs (list pkg-config))              ;to detect Guile
