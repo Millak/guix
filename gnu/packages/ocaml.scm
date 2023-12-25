@@ -7416,43 +7416,6 @@ Haskell's Quickcheck library, with support for built-in types as well as
 types provided by Base.")
     (license license:expat)))
 
-(define-public ocaml4.07-configurator
-  (package
-    (name "ocaml4.07-configurator")
-    (version "0.11.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
-                                  (version-major+minor version)
-                                  "/files/configurator-v" version ".tar.gz"))
-              (sha256
-               (base32
-                "0kwgi3sh92v4n242dk5hgpwd85zzgnczgbkqi0q0kr6m93zgbf7p"))))
-    (build-system dune-build-system)
-    (arguments
-     ;; No tests
-     `(#:tests? #f
-       #:ocaml ,ocaml-4.07
-       #:findlib ,ocaml4.07-findlib
-       #:dune ,ocaml4.07-dune))
-    (propagated-inputs
-      `(("ocaml-base" ,(package-with-ocaml4.07 ocaml-base))
-        ("ocaml-stdio" ,(package-with-ocaml4.07 ocaml-stdio))))
-    (home-page "https://github.com/janestreet/configurator")
-    (synopsis "Helper library for gathering system configuration")
-    (description "Configurator is a small library that helps writing OCaml
-scripts that test features available on the system, in order to generate config.h
-files for instance.
-
-Configurator allows one to:
-@itemize
-@item test if a C program compiles
-@item query pkg-config
-@item import #define from OCaml header files
-@item generate config.h file
-@end itemize")
-    (license license:asl2.0)))
-
 (define-public ocaml-spawn
   (package
     (name "ocaml-spawn")
