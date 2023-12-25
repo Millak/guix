@@ -7211,30 +7211,12 @@ context such as function arguments.")
     (build-system dune-build-system)
     (arguments `(#:tests? #f)); no tests
     (propagated-inputs (list ocaml-ppxlib))
-    (properties `((upstream-name . "ppx_pipebang")
-                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-pipebang))))
+    (properties `((upstream-name . "ppx_pipebang")))
     (home-page "https://github.com/janestreet/ppx_pipebang")
     (synopsis "Inline reverse application operators `|>` and `|!`")
     (description "A ppx rewriter that inlines reverse application operators
 @code{|>} and @code{|!}.")
     (license license:expat)))
-
-(define-public ocaml4.07-ppx-pipebang
-  (package-with-ocaml4.07
-    (package
-      (inherit ocaml-ppx-pipebang)
-      (version "0.11.0")
-      (source (origin
-                (method url-fetch)
-                (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
-                                    (version-major+minor version)
-                                    "/files/ppx_pipebang-v" version ".tar.gz"))
-                (sha256
-                 (base32
-                  "1wrrzlb4kdvkkcmzi01fw25jar38r2jlnyn0i6pn4z0lq4gpm9m0"))))
-      (propagated-inputs (list ocaml-migrate-parsetree ocaml-ppxlib))
-      (properties '())
-      (license license:asl2.0))))
 
 (define-public ocaml-ppx-module-timer
   (package
