@@ -161,6 +161,7 @@
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages uglifyjs)
+  #:use-module (gnu packages video)
   #:use-module (gnu packages vim)
   #:use-module (gnu packages web)
   #:use-module (gnu packages wget)
@@ -4286,6 +4287,76 @@ annotations of the genome.")
      "Cutadapt finds and removes adapter sequences, primers, poly-A tails and
 other types of unwanted sequence from high-throughput sequencing reads.")
     (license license:expat)))
+
+(define-public lammps
+  (let ((commit "stable_2Aug2023_update2"))
+    (package
+      (name "lammps")
+      (version (string-append "0." commit))
+      (source
+       (origin
+	 (method git-fetch)
+	 (uri (git-reference
+	       (url "https://github.com/lammps/lammps.git")
+	       (commit commit)))
+	 (file-name (git-file-name name version))
+	 (sha256
+	  (base32
+	   "11xagacgxgldkx34qdzyjrjvn8x3hpl0kgzhh9zh7skpq79pwycz"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ; no check target
+	#:make-flags
+        '(list "CC=mpicc" "mpi"
+	       "LMP_INC=-DLAMMPS_GZIP \
+-DLAMMPS_JPEG -DLAMMPS_PNG -DLAMMPS_FFMPEG -DLAMMPS_MEMALIGN=64"
+	       "LIB=-gz -ljpeg -lpng -lavcodec")
+	#:phases
+	#~(modify-phases %standard-phases
+            (add-after 'unpack 'chdir
+	      (lambda _ (chdir "src")))
+	    (replace 'configure
+	      (lambda _
+		(substitute* "MAKE/Makefile.mpi"
+		  (("SHELL =.*")
+		   (string-append "SHELL=" (which "bash") "\n"))
+		  (("cc ") "mpicc "))
+		(substitute* "Makefile"
+		  (("SHELL =.*")
+		   (string-append "SHELL=" (which "bash") "\n")))))
+	    (add-after 'configure 'configure-modules
+	      (lambda _
+		(invoke "make"
+			"yes-molecule"
+			"yes-misc"
+			"yes-granular"
+			(string-append "HDF5_PATH="
+				       #$(this-package-input "hdf5")))))
+	    (replace 'install
+	      (lambda _
+		(let ((bin (string-append #$output "/bin")))
+		  (mkdir-p bin)
+		  (install-file "lmp_mpi" bin)))))))
+      (inputs
+       (list ffmpeg
+	     gfortran
+	     gzip
+	     hdf5
+	     libjpeg-turbo
+	     libpng
+	     openmpi
+             python-wrapper))
+      (native-inputs (list bc))
+      (home-page "https://www.lammps.org/")
+      (synopsis "Classical molecular dynamics simulator")
+      (description "LAMMPS is a classical molecular dynamics simulator
+designed to run efficiently on parallel computers.  LAMMPS has potentials for
+solid-state materials (metals, semiconductors), soft matter (biomolecules,
+polymers), and coarse-grained or mesoscopic systems.  It can be used to model
+atoms or, more generically, as a parallel particle simulator at the atomic,
+meso, or continuum scale.")
+      (license license:gpl2+))))
 
 (define-public libbigwig
   (package
