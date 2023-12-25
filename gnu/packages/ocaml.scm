@@ -7330,7 +7330,6 @@ useful errors on failure.")
            ocaml-migrate-parsetree
            ocaml-re))
     (properties `((upstream-name . "ppx_expect")
-                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-expect))
                   (ocaml5.0-variant . ,(delay ocaml5.0-ppx-expect))))
     (home-page "https://github.com/janestreet/ppx_expect")
     (synopsis "Cram like framework for OCaml")
@@ -7362,30 +7361,6 @@ to denote the expected output.")
            (base32
             "05r7wlmrhb5biwyw6bjcpmr77srglijcbf7nm7h2hiil0d0i7bkz"))))
        (properties '())))))
-
-(define-public ocaml4.07-ppx-expect
-  (package-with-ocaml4.07
-   (package
-     (inherit ocaml-ppx-expect)
-     (version "0.12.0")
-     (source
-      (janestreet-origin "ppx_expect" version
-                         "1zpci8c49yn2ixchmwjx1kf9pwybv3dnn4l2dgnd6m36qnkralfk"))
-     (propagated-inputs
-      `(("ocaml-base" ,ocaml-base)
-        ("ocaml-ppx-assert" ,ocaml-ppx-assert)
-        ("ocaml-ppx-compare" ,ocaml-ppx-compare)
-        ("ocaml-ppx-custom-printf" ,ocaml-ppx-custom-printf)
-        ("ocaml-ppx-fields-conv" ,ocaml-ppx-fields-conv)
-        ("ocaml-ppx-here" ,ocaml-ppx-here)
-        ("ocaml-ppx-inline-test" ,ocaml-ppx-inline-test)
-        ("ocaml-ppx-sexp-conv" ,ocaml-ppx-sexp-conv)
-        ("ocaml-ppx-variants-conv" ,ocaml-ppx-variants-conv)
-        ("ocaml-stdio" ,ocaml-stdio)
-        ("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree)
-        ("ocaml-ppxlib" ,ocaml-ppxlib)
-        ("ocaml-re" ,ocaml-re)))
-     (properties `((upstream-name . "ppx_expect"))))))
 
 (define-public ocaml-ppx-js-style
   (package
