@@ -21,6 +21,7 @@
 ;;; Copyright © 2021 Alexander Krotov <krotov@iitp.ru>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Christopher Howard <christopher@librehacker.com>
+;;; Copyright © 2023 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -460,7 +461,7 @@ interface.")
 (define-public qutebrowser
   (package
     (name "qutebrowser")
-    (version "2.5.4")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
@@ -468,7 +469,7 @@ interface.")
                            "qutebrowser/releases/download/v" version "/"
                            "qutebrowser-" version ".tar.gz"))
        (sha256
-        (base32 "1c8skkc5vjbvbslz65hzrj9d05v4zbcjbli61ikjmr174lhb4q54"))))
+        (base32 "0prf9c7nx4aizfczjb0fpsn3alz210i6wc7s2jwb1mh8r8fcq3ah"))))
     (build-system python-build-system)
     (native-inputs
      (list python-attrs))               ; for tests
@@ -481,15 +482,13 @@ interface.")
            python-pynacl
            python-pypeg2
            python-pyyaml
-           ;; FIXME: python-pyqtwebengine needs to come before python-pyqt so
-           ;; that it's __init__.py is used first.
-           python-pyqtwebengine
-           python-pyqt
-           ;; While qtwebengine-5 is provided by python-pyqtwebengine, it's
+           python-pyqt-6
+           python-pyqtwebengine-6
+           ;; While qtwebengine is provided by python-pyqtwebengine-6, it's
            ;; included here so we can wrap QTWEBENGINEPROCESS_PATH.
-           qtwebengine-5))
+           qtwebengine))
     (arguments
-     `(;; FIXME: With the existance of qtwebengine-5, tests can now run.  But
+     `(;; FIXME: With the existence of qtwebengine, tests can now run.  But
        ;; they are still disabled because test phase hangs.  It's not readily
        ;; apparent as to why.
        #:tests? #f
@@ -539,13 +538,16 @@ interface.")
          (add-after 'wrap 'wrap-qt-process-path
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (wrap-program (search-input-file outputs "bin/qutebrowser")
+               `("QTWEBENGINE_RESOURCES_PATH" =
+                 (,(search-input-directory
+                    inputs "/share/qt6/resources")))
                `("QTWEBENGINEPROCESS_PATH" =
                  (,(search-input-file
-                    inputs "/lib/qt5/libexec/QtWebEngineProcess")))))))))
+                    inputs "/lib/qt6/libexec/QtWebEngineProcess")))))))))
     (home-page "https://qutebrowser.org/")
     (synopsis "Minimal, keyboard-focused, vim-like web browser")
     (description "qutebrowser is a keyboard-focused browser with a minimal
-GUI.  It is based on PyQt5 and QtWebEngine.")
+GUI.  It is based on PyQt6 and QtWebEngine.")
     (license license:gpl3+)))
 
 (define-public vimb
