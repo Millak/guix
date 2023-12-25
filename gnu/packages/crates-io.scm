@@ -15978,19 +15978,18 @@ encoding/decoding as well as heapless no_std (i.e., embedded) support.")
 (define-public rust-const-random-0.1
   (package
     (name "rust-const-random")
-    (version "0.1.13")
+    (version "0.1.17")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "const-random" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1i3pmhmmcdw3rr1pv1p9yhm4danm5r156cpy7w30pa0s05fxk47m"))))
+        (base32 "16i9r34f5lmvrmvm5nsssywyjbg3yrqf2hnhrw5h44n6qb4idbss"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-const-random-macro" ,rust-const-random-macro-0.1)
-        ("rust-proc-macro-hack" ,rust-proc-macro-hack-0.5))))
+       (("rust-const-random-macro" ,rust-const-random-macro-0.1))))
     (home-page "https://github.com/tkaitchuck/constrandom")
     (synopsis "Compile time random number generation")
     (description "This package provides compile time random number
