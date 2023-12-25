@@ -5849,25 +5849,12 @@ exclusion algorithms are typical examples of such systems.")
                 "05m93g4m4jhj1v8pazg3s2ydcfymr3h4476yjhdca5fm4sn35bg8"))))
     (build-system dune-build-system)
     (arguments `(#:tests? #f)) ;no tests
-    (properties `((ocaml4.07-variant . ,(delay ocaml4.07-sexplib0))))
     (synopsis "Library containing the definition of S-expressions and some
 base converters")
     (description "Part of Jane Street's Core library The Core suite of
 libraries is an industrial strength alternative to OCaml's standard library
 that was developed by Jane Street, the largest industrial user of OCaml.")
     (license license:expat)))
-
-(define-public ocaml4.07-sexplib0
-  (package-with-ocaml4.07
-   (package
-     (inherit ocaml-sexplib0)
-     (name "ocaml-sexplib0")
-     (version "0.11.0")
-     (source
-      (janestreet-origin "sexplib0" version
-                         "1p06p2s7p9xsjn0z9qicniv1ai54d8sj11k8j633di2mm7jzxpin"))
-     (arguments `(#:tests? #f))         ; no tests
-     (properties '()))))
 
 (define-public ocaml-parsexp
   (package
