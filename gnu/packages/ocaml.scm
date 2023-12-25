@@ -6476,29 +6476,12 @@ of a record and create new record values.")
      `(#:tests? #f))
     (propagated-inputs
      (list ocaml-base ocaml-migrate-parsetree ocaml-ppxlib))
-    (properties `((upstream-name . "variantslib")
-                  (ocaml4.07-variant . ,(delay ocaml4.07-variantslib))))
+    (properties `((upstream-name . "variantslib")))
     (home-page "https://github.com/janestreet/variantslib")
     (synopsis "OCaml variants as first class values")
     (description "The Core suite of libraries is an alternative to OCaml's
 standard library.")
     (license license:asl2.0)))
-
-(define-public ocaml4.07-variantslib
-  (package-with-ocaml4.07
-   (package
-     (inherit ocaml-variantslib)
-     (name "ocaml-variantslib")
-     (version "0.11.0")
-     (source (origin
-               (method url-fetch)
-               (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
-                                   (version-major+minor version)
-                                   "/files/variantslib-v" version ".tar.gz"))
-               (sha256
-                (base32
-                 "1hsdwmkslvk4cznqr4lyyiy7vvk5spil226k0z2in26fxq6y0hf3"))))
-     (properties `((upstream-name . "variantslib"))))))
 
 (define-public ocaml-ppx-fields-conv
   (package
