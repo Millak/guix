@@ -6084,32 +6084,12 @@ provided by companion libraries such as
          "00if2f7j9d8igdkj4rck3p74y17j6b233l91mq02drzrxj199qjv"))))
     (build-system dune-build-system)
     (arguments `(#:tests? #f)) ;no tests
-    (properties `((upstream-name . "ocaml-compiler-libs")
-                  (ocaml4.07-variant . ,(delay ocaml4.07-compiler-libs))))
+    (properties `((upstream-name . "ocaml-compiler-libs")))
     (synopsis "Compiler libraries repackaged")
     (description "This package simply repackages the OCaml compiler libraries
 so they don't expose everything at toplevel.  For instance, @code{Ast_helper}
 is now @code{Ocaml_common.Ast_helper}.")
     (license license:expat)))
-
-(define-public ocaml4.07-compiler-libs
-  (package-with-ocaml4.07
-   (package
-     (inherit ocaml-compiler-libs)
-     (name "ocaml-compiler-libs")
-     (version "0.11.0")
-     (home-page "https://github.com/janestreet/ocaml-compiler-libs")
-     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-              (url home-page)
-              (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "03jds7bszh8wwpfwxb3dg0gyr1j1872wxwx1xqhry5ir0i84bg0s"))))
-     (properties `((upstream-name . "ocaml-compiler-libs"))))))
 
 (define-public ocaml-stdio
   (package
