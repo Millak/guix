@@ -56,6 +56,7 @@
   #:use-module (guix svn-download)
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (guix build-system scons)
@@ -2609,6 +2610,30 @@ This version of the compiler has been modified slightly to work better when the
 Inform standard library is in a non-standard location.")
       (home-page "https://jxself.org/git/inform.git")
       (license license:gpl3+))))
+
+(define-public informlib
+  (package
+    (name "informlib")
+    (version "6.12.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://jxself.org/git/informlib.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fcnw4jjzln402qk097n2s8y24vw1p3mmlmh6k1mbr2zfajjcn5r"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      #~'(("." "lib"))))
+    (synopsis "Inform 6 standard library")
+    (description
+     "This package provides the standard library for Inform 6.")
+    (home-page "https://jxself.org/git/informlib.git")
+    (license license:agpl3+)))
 
 (define-public instead
   (package
