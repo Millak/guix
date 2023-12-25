@@ -2583,6 +2583,33 @@ added.  The permanent goal is to create a Quake 3 distribution upon which
 people base their games, ports to new platforms, and other projects.")
       (license license:gpl2))))
 
+(define-public inform
+  ;; The latest release does not yet have a build system.
+  ;; This commit is the earliest to have one.
+  (let ((commit "20cbfff96015938809d0e3da6cd0d83b76d27f14")
+        (revision "0"))
+    (package
+      (name "inform")
+      (version (git-version "6.41" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://jxself.org/git/inform.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "19z8pgrj1s2irany5s6xxwsm3bdnri1as46fdi16zdp4aah523jy"))))
+      (build-system gnu-build-system)
+      (native-inputs (list autoconf automake))
+      (synopsis "The Inform 6 compiler")
+      (description
+       "Inform 6 is a programming language designed for interactive fiction.
+This version of the compiler has been modified slightly to work better when the
+Inform standard library is in a non-standard location.")
+      (home-page "https://jxself.org/git/inform.git")
+      (license license:gpl3+))))
+
 (define-public instead
   (package
     (name "instead")
