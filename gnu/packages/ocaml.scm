@@ -2280,7 +2280,6 @@ dates and times.")
                (("Sys.readdir dir")
                 "let a = Sys.readdir dir in Array.sort String.compare a; a"))
              #t)))))
-    (properties `((ocaml4.07-variant . ,(delay ocaml4.07-cmdliner))))
     (home-page "https://erratique.ch/software/cmdliner")
     (synopsis "Declarative definition of command line interfaces for OCaml")
     (description "Cmdliner is a module for the declarative definition of command
@@ -2290,20 +2289,6 @@ module automatically handles syntax errors, help messages and UNIX man page
 generation. It supports programs with single or multiple commands and respects
 most of the POSIX and GNU conventions.")
     (license license:bsd-3)))
-
-(define-public ocaml4.07-cmdliner
-  (package-with-ocaml4.07
-    (package
-      (inherit ocaml-cmdliner)
-      (version "1.0.4")
-      (source (origin
-                (method url-fetch)
-                (uri (string-append "https://erratique.ch/software/cmdliner/releases/"
-                                    "cmdliner-" version ".tbz"))
-                (sha256
-                 (base32
-                  "1h04q0zkasd0mw64ggh4y58lgzkhg6yhzy60lab8k8zq9ba96ajw"))))
-      (properties '()))))
 
 (define-public ocaml-fmt
   (package
