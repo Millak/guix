@@ -5997,8 +5997,7 @@ rules than the default pretty printer in Sexplib.")
     (build-system dune-build-system)
     (propagated-inputs
      (list ocaml-sexplib0))
-    (properties `((ocaml4.07-variant . ,(delay ocaml4.07-base))
-                  (ocaml5.0-variant . ,(delay ocaml5.0-base))))
+    (properties `((ocaml5.0-variant . ,(delay ocaml5.0-base))))
     (synopsis
      "Full standard library replacement for OCaml")
     (description
@@ -6034,25 +6033,6 @@ provided by companion libraries such as
           (base32
            "15vsiv3q53l1bzrvqgspf3lp2104s9dzw62z3nl75f53jvjvsyf6"))))
       (properties '())))))
-
-(define-public ocaml4.07-base
-  (package-with-ocaml4.07
-   (package
-     (inherit ocaml-base)
-     (name "ocaml-base")
-     (version "0.11.1")
-     (source
-      (origin
-        ;; version 0.11.1 is not released on ocaml.janestreet.org.
-        (method git-fetch)
-        (uri (git-reference
-              (url "https://github.com/janestreet/base.git")
-              (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "0j6xb4265jr41vw4fjzak6yr8s30qrnzapnc6rl1dxy8bjai0nir"))))
-     (properties '()))))
 
 (define-public ocaml-compiler-libs
   (package
