@@ -1970,32 +1970,6 @@ functions to the next and/or previous version.")
            "16x8sxc4ygxrr1868qpzfqyrvjf3hfxvjzmxmf6ibgglq7ixa2nq"))))
       (properties '((upstream-name . "ocaml-migrate-parsetree"))))))
 
-(define-public ocaml4.07-ppx-tools-versioned
-  (package-with-ocaml4.07
-    (package
-      (name "ocaml-ppx-tools-versioned")
-      (version "5.4.0")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/ocaml-ppx/ppx_tools_versioned")
-                       (commit version)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "07lnj4yzwvwyh5fhpp1dxrys4ddih15jhgqjn59pmgxinbnddi66"))))
-      (build-system dune-build-system)
-      (arguments
-       `(#:package "ppx_tools_versioned"))
-      (propagated-inputs
-       (list ocaml-migrate-parsetree))
-      (properties `((upstream-name . "ppx_tools_versioned")))
-      (home-page "https://github.com/let-def/ppx_tools_versioned")
-      (synopsis "Variant of ppx_tools")
-      (description "This package is a variant of ppx_tools based on
-ocaml-migrate-parsetree")
-      (license license:expat))))
-
 (define-public ocaml-linenoise
   (package
     (name "ocaml-linenoise")
