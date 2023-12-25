@@ -6676,23 +6676,11 @@ variant types.")
     (propagated-inputs
      (list ocaml-base ocaml-ppx-sexp-conv ocaml-migrate-parsetree
            ocaml-ppxlib))
-    (properties `((upstream-name . "ppx_custom_printf")
-                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-custom-printf))))
+    (properties `((upstream-name . "ppx_custom_printf")))
     (synopsis "Printf-style format-strings for user-defined string conversion")
     (description "Extensions to printf-style format-strings for user-defined
 string conversion.")
     (license license:asl2.0)))
-
-(define-public ocaml4.07-ppx-custom-printf
-  (package-with-ocaml4.07
-   (package
-     (inherit ocaml-ppx-custom-printf)
-     (version "0.11.0")
-     (source
-      (janestreet-origin
-       "ppx_custom_printf" version
-       "11b73smf3g3bpd9lg014pr4rx285nk9mnk6g6464ph51jv0sqzhj"))
-     (properties `((upstream-name . "ppx_custom_printf"))))))
 
 (define-public ocaml-bin-prot
   (package
