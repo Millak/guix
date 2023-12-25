@@ -7257,25 +7257,13 @@ literal of the  form 1.0v to conversion functions currently in scope.")
     (arguments `(#:tests? #f)) ; No tests
     (propagated-inputs
      (list ocaml-base ocaml-migrate-parsetree ocaml-ppxlib))
-    (properties `((upstream-name . "ppx_optional")
-                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-optional))))
+    (properties `((upstream-name . "ppx_optional")))
     (home-page "https://github.com/janestreet/ppx_optional")
     (synopsis "Pattern matching on flat options")
     (description
       "A ppx rewriter that rewrites simple match statements with an if then
 else expression.")
     (license license:asl2.0)))
-
-(define-public ocaml4.07-ppx-optional
-  (package-with-ocaml4.07
-   (package
-     (inherit ocaml-ppx-optional)
-     (version "0.11.0")
-     (source
-      (janestreet-origin
-       "ppx_optional" version
-       "1z8z2bga95k2vksljljfglg10vygkjd24kn1b37sk4z3nmp47x0h"))
-     (properties `((upstream-name . "ppx_optional"))))))
 
 (define-public ocaml-ppx-optcomp
   (package
