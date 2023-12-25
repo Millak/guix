@@ -6433,8 +6433,7 @@ OCaml AST in the OCaml syntax;
      '(#:tests? #f))
     (propagated-inputs
      (list ocaml-base ocaml-migrate-parsetree ocaml-ppxlib))
-    (properties `((upstream-name . "ppx_compare")
-                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-compare))))
+    (properties `((upstream-name . "ppx_compare")))
     (home-page "https://github.com/janestreet/ppx_compare")
     (synopsis "Generation of comparison functions from types")
     (description "Generation of fast comparison functions from type expressions
@@ -6444,24 +6443,6 @@ than ocaml's Pervasives.compare.  Scaffolding functions also gives you more
 flexibility by allowing you to override them for a specific type and more safety
 by making sure that you only compare comparable values.")
     (license license:asl2.0)))
-
-(define-public ocaml4.07-ppx-compare
-  (package-with-ocaml4.07
-   (package
-     (inherit ocaml-ppx-compare)
-     (name "ocaml-ppx-compare")
-     (version "0.11.1")
-     (home-page "https://github.com/janestreet/ppx_compare")
-     (source (origin
-               (method git-fetch)
-               (uri (git-reference
-                     (url home-page)
-                     (commit (string-append "v" version))))
-               (file-name (git-file-name name version))
-               (sha256
-                (base32
-                 "06bq4m1bsm4jlx4g7wh5m99qky7xm4c2g52kaz6pv25hdn5agi2m"))))
-     (properties `((upstream-name . "ppx_compare"))))))
 
 (define-public ocaml-fieldslib
   (package
