@@ -6070,23 +6070,12 @@ parsexp_io.")
     (build-system dune-build-system)
     (propagated-inputs
      (list ocaml-base ocaml-num ocaml-parsexp ocaml-sexplib0))
-    (properties `((ocaml4.07-variant . ,(delay ocaml4.07-sexplib))))
     (synopsis
      "Library for serializing OCaml values to and from S-expressions")
     (description
      "This package is part of Jane Street's Core library.  Sexplib contains
 functionality for parsing and pretty-printing s-expressions.")
     (license license:expat)))
-
-(define-public ocaml4.07-sexplib
-  (package-with-ocaml4.07
-   (package
-     (inherit ocaml-sexplib)
-     (version "0.11.0")
-     (source
-      (janestreet-origin "sexplib" version
-                         "0ksx62zsxhz8xmdrsn41n2hbc2qbyh3bxxc6946xisvgwh42h3q3"))
-     (properties '()))))
 
 (define-public ocaml-sexp-pretty
   (package
