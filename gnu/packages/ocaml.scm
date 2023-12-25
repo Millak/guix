@@ -6924,23 +6924,12 @@ many values).")
      `(#:tests? #f))
     (propagated-inputs
      (list ocaml-base ocaml-migrate-parsetree ocaml-ppxlib))
-    (properties `((upstream-name . "ppx_here")
-                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-here))))
+    (properties `((upstream-name . "ppx_here")))
     (home-page "https://github.com/janestreet/ppx_here")
     (synopsis "Expands [%here] into its location")
     (description
       "Part of the Jane Street's PPX rewriters collection.")
     (license license:asl2.0)))
-
-(define-public ocaml4.07-ppx-here
-  (package-with-ocaml4.07
-   (package
-     (inherit ocaml-ppx-here)
-     (version "0.11.0")
-     (source
-      (janestreet-origin "ppx_here" version
-                         "0wxcak3ay4jpigm3pfdcpr65qw4hxfa8whhkryhcd8gy71x056z5"))
-     (properties `((upstream-name . "ppx_here"))))))
 
 (define-public ocaml-typerep
   (package
