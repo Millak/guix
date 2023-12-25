@@ -6556,29 +6556,11 @@ new record values.")
     (build-system dune-build-system)
     (propagated-inputs
      (list ocaml-base ocaml-ppxlib))
-    (properties `((upstream-name . "ppx_sexp_conv")
-                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-sexp-conv))))
+    (properties `((upstream-name . "ppx_sexp_conv")))
     (synopsis "Generation of S-expression conversion functions from type definitions")
     (description "This package generates S-expression conversion functions from type
 definitions.")
     (license license:asl2.0)))
-
-(define-public ocaml4.07-ppx-sexp-conv
-  (package-with-ocaml4.07
-   (package
-     (inherit ocaml-ppx-sexp-conv)
-     (name "ocaml-ppx-sexp-conv")
-     (version "0.11.2")
-     (source (origin
-               (method git-fetch)
-               (uri (git-reference
-                     (url "https://github.com/janestreet/ppx_sexp_conv")
-                     (commit (string-append "v" version))))
-               (file-name (git-file-name name version))
-               (sha256
-                (base32
-                 "0pqwnqy1xp309wvdcaax4lg02yk64lq2w03mbgfvf6ps5ry4gis9"))))
-     (properties `((upstream-name . "ppx_sexp_conv"))))))
 
 (define-public ocaml-ppx-variants-conv
   (package
