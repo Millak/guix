@@ -6530,24 +6530,13 @@ standard library.")
     (propagated-inputs
      (list ocaml-base ocaml-fieldslib ocaml-migrate-parsetree
            ocaml-ppxlib))
-    (properties `((upstream-name . "ppx_fields_conv")
-                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-fields-conv))))
+    (properties `((upstream-name . "ppx_fields_conv")))
     (synopsis "Generation of accessor and iteration functions for ocaml records")
     (description "Ppx_fields_conv is a ppx rewriter that can be used to define
 first class values representing record fields, and additional routines, to get
 and set record fields, iterate and fold over all fields of a record and create
 new record values.")
     (license license:asl2.0)))
-
-(define-public ocaml4.07-ppx-fields-conv
-  (package-with-ocaml4.07
-   (package
-     (inherit ocaml-ppx-fields-conv)
-    (version "0.11.0")
-    (source (janestreet-origin
-             "ppx_fields_conv" version
-             "07zrd3qky2ppbfl55gpm90rvqa5860xgwcsvihrjmkrw6d0jirkc"))
-    (properties `((upstream-name . "ppx_fields_conv"))))))
 
 (define-public ocaml-ppx-sexp-conv
   (package
