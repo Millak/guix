@@ -8472,7 +8472,6 @@ stream, and convert everything to UTF-8.")
     (native-inputs
      (list ocaml-alcotest))
     (arguments `(#:package "tyxml"))
-    (properties `((ocaml4.07-variant . ,(delay ocaml4.07-tyxml))))
     (home-page "https://github.com/ocsigen/tyxml/")
     (synopsis "TyXML is a library for building correct HTML and SVG documents")
     (description "TyXML provides a set of convenient combinators that uses the
@@ -8483,22 +8482,6 @@ directly by this package, or DOM trees (@code{js_of_ocaml-tyxml}) virtual DOM
 also create your own representation and use it to instantiate a new set of
 combinators.")
     (license license:lgpl2.1)))
-
-(define-public ocaml4.07-tyxml
-  (package-with-ocaml4.07
-    (package
-      (inherit ocaml-tyxml)
-      (version "4.4.0")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/ocsigen/tyxml")
-                       (commit version)))
-                (file-name (git-file-name "ocaml-tyxml" version))
-                (sha256
-                 (base32
-                  "1hw4phyadcfgywgh5sj87i76gp56qwxzwlcpfdwjbf6ggag9clmd"))))
-      (properties '()))))
 
 (define-public ocaml-bisect-ppx
   (package
