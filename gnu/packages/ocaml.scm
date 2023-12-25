@@ -5994,7 +5994,6 @@ that was developed by Jane Street, the largest industrial user of OCaml.")
     (build-system dune-build-system)
     (inputs
      (list ocaml-sexplib0 ocaml-base))
-    (properties `((ocaml4.07-variant . ,(delay ocaml4.07-parsexp))))
     (synopsis "S-expression parsing library")
     (description
      "This library provides generic parsers for parsing S-expressions from
@@ -6022,17 +6021,6 @@ This library is portable and doesn't provide IO functions.  To read
 s-expressions from files or other external sources, you should use
 parsexp_io.")
     (license license:expat)))
-
-(define-public ocaml4.07-parsexp
-  (package-with-ocaml4.07
-   (package
-     (inherit ocaml-parsexp)
-     (name "ocaml-parsexp")
-     (version "0.11.0")
-     (source
-      (janestreet-origin "parsexp" version
-                         "11a30zkfgbi6pb4whq22k1zc8ghdp9bwxl5s5cdlmx1z8s4yxsf0"))
-     (properties '()))))
 
 (define-public ocaml-sexplib
   (package
