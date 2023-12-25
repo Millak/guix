@@ -7117,35 +7117,12 @@ many values).")
     (build-system dune-build-system)
     (propagated-inputs
       (list ocaml-base ocaml-ppx-here ocaml-ppx-sexp-conv ocaml-ppxlib))
-    (properties `((upstream-name . "ppx_sexp_value")
-                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-sexp-value))))
+    (properties `((upstream-name . "ppx_sexp_value")))
     (home-page "https://github.com/janestreet/ppx_sexp_value")
     (synopsis "Simplify building s-expressions from ocaml values")
     (description "@samp{ppx-sexp-value} is a ppx rewriter that simplifies
 building s-expressions from ocaml values.")
     (license license:expat)))
-
-(define-public ocaml4.07-ppx-sexp-value
-  (package-with-ocaml4.07
-    (package
-      (inherit ocaml-ppx-sexp-value)
-      (version "0.11.0")
-      (source (origin
-                (method url-fetch)
-                (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
-                                    (version-major+minor version)
-                                    "/files/ppx_sexp_value-v" version ".tar.gz"))
-                (sha256
-                 (base32
-                  "1xnalfrln6k5khsyxvxkg6v32q8fpr4cqamsjqfih29jdv486xrs"))))
-      (propagated-inputs
-        (list ocaml-base
-              ocaml-ppx-here
-              ocaml-ppx-sexp-conv
-              ocaml-migrate-parsetree
-              ocaml-ppxlib))
-      (properties '())
-      (license license:asl2.0))))
 
 (define-public ocaml-ppx-sexp-message
   (package
