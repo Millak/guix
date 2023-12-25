@@ -6629,8 +6629,7 @@ definitions.")
      (list ocaml-base ocaml-variantslib ocaml-migrate-parsetree
            ocaml-ppxlib))
     (properties
-     `((upstream-name . "ppx_variants_conv")
-       (ocaml4.07-variant . ,(delay ocaml4.07-ppx-variants-conv))))
+     `((upstream-name . "ppx_variants_conv")))
     (home-page
      "https://github.com/janestreet/ppx_variants_conv")
     (synopsis "Generation of accessor and iteration functions for OCaml variant types")
@@ -6638,24 +6637,6 @@ definitions.")
      "This package generates accessors and iteration functions for OCaml
 variant types.")
     (license license:asl2.0)))
-
-(define-public ocaml4.07-ppx-variants-conv
-  (package-with-ocaml4.07
-   (package
-     (inherit ocaml-ppx-variants-conv)
-     (name "ocaml-ppx-variants-conv")
-     (version "0.11.1")
-     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-              (url "https://github.com/janestreet/ppx_variants_conv")
-              (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "1yc0gsds5m2nv39zga8nnrca2n75rkqy5dz4xj1635ybz20hhbjd"))))
-    (properties `((upstream-name . "ppx_variants_conv"))))))
 
 (define-public ocaml-ppx-custom-printf
   (package
