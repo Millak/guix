@@ -17291,8 +17291,57 @@ mile, ...).")
     (description "Execute child processes with ease.")
     (license license:cc0)))
 
+(define-public rust-crates-index-0.19
+  (package
+    (name "rust-crates-index")
+    (version "0.19.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "crates-index" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1v8x1yb8hx9p1n16p1nz7bmak9b3xj2cfh8dbfyshswx427b7jn3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; Tests need to have network access to the cargo repository.
+       #:cargo-test-flags
+       '("--release" "--"
+         ;; These tests want network access.
+         "--skip=bare_index::test::bare_iterator"
+         "--skip=bare_index::test::clones_bare_index"
+         "--skip=bare_index::test::opens_bare_index"
+         "--skip=bare_index::test::reads_replaced_source"
+         "--skip=bare_index::test::test_can_parse_all"
+         "--skip=bare_index::test::test_cargo_default_updates"
+         "--skip=bare_index::test::test_dependencies"
+         "--skip=mem_usage")
+       #:cargo-inputs (("rust-git2" ,rust-git2-0.17)
+                       ("rust-hex" ,rust-hex-0.4)
+                       ("rust-home" ,rust-home-0.5)
+                       ("rust-http" ,rust-http-0.2)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-rustc-hash" ,rust-rustc-hash-1)
+                       ("rust-semver" ,rust-semver-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-derive" ,rust-serde-derive-1)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-smol-str" ,rust-smol-str-0.2)
+                       ("rust-toml" ,rust-toml-0.7))
+       #:cargo-development-inputs (("rust-cap" ,rust-cap-0.1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs (list pkg-config))
+    (inputs (list openssl libgit2-1.6 zlib))
+    (home-page "https://crates.io/crates/crates-index")
+    (synopsis "Retrieving and interacting with the crates.io index")
+    (description
+     "Library for retrieving and interacting with the crates.io index.")
+    (license license:asl2.0)))
+
 (define-public rust-crates-index-0.18
   (package
+    (inherit rust-crates-index-0.19)
     (name "rust-crates-index")
     (version "0.18.10")
     (source (origin
@@ -17302,7 +17351,6 @@ mile, ...).")
               (sha256
                (base32
                 "1x7f7xfvqzlacji88iaz9n4k7wip72sk4gfvxvccli0cbf2yqirl"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -17317,12 +17365,7 @@ mile, ...).")
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-smartstring" ,rust-smartstring-1))))
-    (home-page "https://github.com/frewsxcv/rust-crates-index")
-    (synopsis "Retrieving and interacting with the crates.io index")
-    (description
-     "Library for retrieving and interacting with the crates.io index.")
-    (license license:asl2.0)))
+        ("rust-smartstring" ,rust-smartstring-1))))))
 
 (define-public rust-crates-index-0.17
   (package
