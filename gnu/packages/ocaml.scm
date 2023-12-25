@@ -6943,30 +6943,11 @@ many values).")
      ;; No tests
      `(#:tests? #f))
     (propagated-inputs (list ocaml-ppx-inline-test ocaml-ppxlib))
-    (properties `((upstream-name . "ppx_bench")
-                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-bench))))
+    (properties `((upstream-name . "ppx_bench")))
     (home-page "https://github.com/janestreet/ppx_bench")
     (synopsis "Syntax extension for writing in-line benchmarks in ocaml code")
     (description "Syntax extension for writing in-line benchmarks in ocaml code.")
     (license license:expat)))
-
-(define-public ocaml4.07-ppx-bench
-  (package-with-ocaml4.07
-    (package
-      (inherit ocaml-ppx-bench)
-      (version "0.11.0")
-      (source (origin
-                (method url-fetch)
-                (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
-                                    (version-major+minor version)
-                                    "/files/ppx_bench-v" version ".tar.gz"))
-                (sha256
-                 (base32
-                  "0ys4pblbcjbk9dn073rqiwm7r6rc7fah03j7riklkwnb5n44andl"))))
-      (propagated-inputs
-        (list ocaml-ppx-inline-test ocaml-migrate-parsetree ocaml-ppxlib))
-      (properties '())
-      (license license:asl2.0))))
 
 (define-public ocaml-ppx-here
   (package
