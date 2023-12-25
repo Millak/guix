@@ -23225,7 +23225,7 @@ Google's diff-match-patch.")
 (define-public rust-dlib-0.5
   (package
     (name "rust-dlib")
-    (version "0.5.0")
+    (version "0.5.2")
     (source
      (origin
        (method url-fetch)
@@ -23233,14 +23233,12 @@ Google's diff-match-patch.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1547hy7nrhkrb2i09va244c0h8mr845ccbs2d2mc414c68bpa6xc"))))
+         "04m4zzybx804394dnqs1blz241xcy480bdwf3w9p4k6c3l46031k"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f                      ;FIXME: Several macros are not found.
        #:cargo-inputs
-       (("rust-libloading" ,rust-libloading-0.7))))
-    (inputs
-     (list rust-libloading-0.7))
+       (("rust-libloading" ,rust-libloading-0.8))))
     (home-page "https://github.com/vberger/dlib")
     (synopsis "Helper macros for manually loading optional system libraries")
     (description
