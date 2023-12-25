@@ -6090,23 +6090,12 @@ is now @code{Ocaml_common.Ast_helper}.")
     (propagated-inputs
      (list ocaml-base ocaml-sexplib0))
     (arguments `(#:tests? #f)) ;no tests
-    (properties `((ocaml4.07-variant . ,(delay ocaml4.07-stdio))))
     (synopsis "Standard IO library for OCaml")
     (description
      "Stdio implements simple input/output functionalities for OCaml.  It
 re-exports the input/output functions of the OCaml standard libraries using
 a more consistent API.")
     (license license:expat)))
-
-(define-public ocaml4.07-stdio
-  (package-with-ocaml4.07
-   (package
-     (inherit ocaml-stdio)
-     (version "0.11.0")
-     (source
-      (janestreet-origin "stdio" version
-                         "0pqbp2wy5fgmc38irwvmj9nlcvclb1ix1mp4y7l39bgvvlz303h9"))
-     (properties '()))))
 
 (define-public ocaml-ppx-deriving
   (package
