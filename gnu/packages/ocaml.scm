@@ -7436,24 +7436,13 @@ to denote the expected output.")
     (arguments `(#:tests? #f)) ; No tests
     (propagated-inputs
      (list ocaml-base ocaml-migrate-parsetree ocaml-octavius ocaml-ppxlib))
-    (properties `((upstream-name . "ppx_js_style")
-                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-js-style))))
+    (properties `((upstream-name . "ppx_js_style")))
     (home-page "https://github.com/janestreet/ppx_js_style")
     (synopsis "Code style checker for Jane Street Packages")
     (description "This package is a no-op ppx rewriter.  It is used as a
 @code{lint} tool to enforce some coding conventions across all Jane Street
 packages.")
     (license license:asl2.0)))
-
-(define-public ocaml4.07-ppx-js-style
-  (package-with-ocaml4.07
-   (package
-     (inherit ocaml-ppx-js-style)
-     (version "0.11.0")
-     (source
-      (janestreet-origin "ppx_js_style" version
-                         "0z3fc55jdjhhsblla6z4fqc13kljpcz29q79rvs5h2vsraqrldr2"))
-     (properties `((upstream-name . "ppx_js_style"))))))
 
 (define-public ocaml-ppx-typerep-conv
   (package
