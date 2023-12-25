@@ -7632,8 +7632,7 @@ conversion functions between almost identical types.")
            ocaml-ppx-sexp-conv
            ocaml-migrate-parsetree
            ocaml-ppxlib))
-    (properties `((upstream-name . "ppx_base")
-                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-base))))
+    (properties `((upstream-name . "ppx_base")))
     (home-page "https://github.com/janestreet/ppx_base")
     (synopsis "Base set of ppx rewriters")
     (description "Ppx_base is the set of ppx rewriters used for Base.
@@ -7641,25 +7640,6 @@ conversion functions between almost identical types.")
 Note that Base doesn't need ppx to build, it is only used as a
 verification tool.")
     (license license:asl2.0)))
-
-(define-public ocaml4.07-ppx-base
-  (package-with-ocaml4.07
-   (package
-     (inherit ocaml-ppx-base)
-     (version "0.11.0")
-     (source
-      (janestreet-origin
-       "ppx_base" version
-       "0aq206pg330jmj7lhcagiiwm3a0b3gsqm801m8ajd4ysyw7idkym"))
-    (propagated-inputs
-     `(("ocaml-ppx-compare" ,ocaml-ppx-compare)
-       ("ocaml-ppx-enumerate" ,ocaml-ppx-enumerate)
-       ("ocaml-ppx-hash" ,ocaml-ppx-hash)
-       ("ocaml-ppx-js-style" ,ocaml-ppx-js-style)
-       ("ocaml-ppx-sexp-conv" ,ocaml-ppx-sexp-conv)
-       ("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree)
-       ("ocaml-ppxlib" ,ocaml-ppxlib)))
-    (properties `((upstream-name . "ppx_base"))))))
 
 (define-public ocaml-ppx-bin-prot
   (package
