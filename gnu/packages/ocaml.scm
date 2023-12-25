@@ -7260,24 +7260,12 @@ else expression.")
     (build-system dune-build-system)
     (propagated-inputs
      (list ocaml-base ocaml-stdio ocaml-ppxlib))
-    (properties `((upstream-name . "ppx_optcomp")
-                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-optcomp))))
+    (properties `((upstream-name . "ppx_optcomp")))
     (synopsis "Optional compilation for OCaml")
     (description "Ppx_optcomp stands for Optional Compilation.  It is a tool
 used to handle optional compilations of pieces of code depending of the word
 size, the version of the compiler, ...")
     (license license:asl2.0)))
-
-(define-public ocaml4.07-ppx-optcomp
-  (package-with-ocaml4.07
-   (package
-     (inherit ocaml-ppx-optcomp)
-     (version "0.11.0")
-     (source
-      (janestreet-origin
-       "ppx_optcomp" version
-       "1bb52p2j2h4s9f06vrcpla80rj93jinnzq6jzilapyx9q068929i"))
-     (properties `((upstream-name . "ppx_optcomp"))))))
 
 (define-public ocaml-ppx-let
   (package
