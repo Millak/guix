@@ -13479,6 +13479,27 @@ traits.")
         ("rust-libc" ,rust-libc-0.2)
         ("rust-libloading" ,rust-libloading-0.3))))))
 
+(define-public rust-clap-cargo-0.12
+  (package
+    (name "rust-clap-cargo")
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "clap-cargo" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1r2f4ad1vpaljrfbyfsv986qiwmll0iask4sdvwllka658s22grq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anstyle" ,rust-anstyle-1)
+                       ("rust-cargo-metadata" ,rust-cargo-metadata-0.17)
+                       ("rust-clap" ,rust-clap-4))))
+    (home-page "https://github.com/crate-ci/clap-cargo")
+    (synopsis "Re-usable CLI flags for `cargo` plugins")
+    (description "This package provides re-usable CLI flags for `cargo` plugins.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-clap-complete-command-0.5
   (package
     (name "rust-clap-complete-command")
