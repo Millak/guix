@@ -7213,24 +7213,12 @@ size, the version of the compiler, ...")
     (build-system dune-build-system)
     (propagated-inputs
      (list ocaml-base ocaml-migrate-parsetree ocaml-ppxlib ocaml-ppx-here))
-    (properties `((upstream-name . "ppx_let")
-                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-let))))
+    (properties `((upstream-name . "ppx_let")))
     (home-page "https://github.com/janestreet/ppx_let")
     (synopsis "Monadic let-bindings")
     (description "A ppx rewriter for monadic and applicative let bindings,
 match expressions, and if expressions.")
     (license license:asl2.0)))
-
-(define-public ocaml4.07-ppx-let
-  (package-with-ocaml4.07
-   (package
-     (inherit ocaml-ppx-let)
-     (version "0.11.0")
-     (source
-      (janestreet-origin "ppx_let" version
-                         "1wdfw6w4xbg97a35yg6bif9gggxniy9ddnrjfw1a0inkl2yamxkj"))
-
-     (properties `((upstream-name . "ppx_let"))))))
 
 (define-public ocaml-ppx-fail
   (package
