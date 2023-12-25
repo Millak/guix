@@ -74236,20 +74236,46 @@ monotone matrix.")
         ("rust-piper" ,rust-piper-0.1)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-smol-str-0.2
+  (package
+    (name "rust-smol-str")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "smol_str" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1779hpx5ipbcvkdj5zw8zqk3ynn160qvls1gkcr54hwsprmjw8bl"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=check_code_formatting")
+       #:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-proptest" ,rust-proptest-1)
+                                   ("rust-serde" ,rust-serde-1)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/rust-analyzer/smol_str")
+    (synopsis "Small-string optimized string type with O(1) clone")
+    (description
+     "This package provides a small-string optimized string type with O(1)
+clone.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-smol-str-0.1
   (package
+    (inherit rust-smol-str-0.2)
     (name "rust-smol-str")
     (version "0.1.21")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "smol_str" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1gb14a85k6mzpn6s78flwvfl5vy1czsrzlwcgidy7k00wf1mrlb1"))))
-    (build-system cargo-build-system)
+        (base32 "1gb14a85k6mzpn6s78flwvfl5vy1czsrzlwcgidy7k00wf1mrlb1"))))
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -74257,14 +74283,7 @@ monotone matrix.")
        #:cargo-development-inputs
        (("rust-proptest" ,rust-proptest-0.10)
         ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://github.com/rust-analyzer/smol_str")
-    (synopsis
-     "Small-string optimized string type with O(1) clone")
-    (description
-     "This package provides a small-string optimized string type with O(1)
-clone.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-snafu-derive-0.7
   (package
