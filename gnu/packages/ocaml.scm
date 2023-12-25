@@ -7163,8 +7163,7 @@ building s-expressions from ocaml values.")
     (build-system dune-build-system)
     (propagated-inputs
       (list ocaml-base ocaml-ppx-here ocaml-ppx-sexp-conv ocaml-ppxlib))
-    (properties `((upstream-name . "ppx_sexp_message")
-                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-sexp-message))))
+    (properties `((upstream-name . "ppx_sexp_message")))
     (home-page "https://github.com/janestreet/ppx_sexp_message")
     (synopsis "Ppx rewriter for easy construction of s-expressions")
     (description "Ppx_sexp_message aims to ease the creation of s-expressions
@@ -7172,28 +7171,6 @@ in OCaml.  This is mainly motivated by writing error and debugging messages,
 where one needs to construct a s-expression based on various element of the
 context such as function arguments.")
     (license license:expat)))
-
-(define-public ocaml4.07-ppx-sexp-message
-  (package-with-ocaml4.07
-    (package
-      (inherit ocaml-ppx-sexp-message)
-      (version "0.11.0")
-      (source (origin
-                (method url-fetch)
-                (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
-                                    (version-major+minor version)
-                                    "/files/ppx_sexp_message-v" version ".tar.gz"))
-                (sha256
-                 (base32
-                  "1yh440za0w9cvrbxbmqacir8715kdaw6sw24ys9xj80av9nqpiw7"))))
-      (propagated-inputs
-        (list ocaml-base
-              ocaml-ppx-here
-              ocaml-ppx-sexp-conv
-              ocaml-migrate-parsetree
-              ocaml-ppxlib))
-      (properties '())
-      (license license:asl2.0))))
 
 (define-public ocaml-ppx-pipebang
   (package
