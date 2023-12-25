@@ -6735,8 +6735,7 @@ string conversion.")
             ocaml-ppx-optcomp
             ocaml-ppx-sexp-conv
             ocaml-ppx-variants-conv))
-    (properties `((upstream-name . "bin_prot")
-                  (ocaml4.07-variant . ,(delay ocaml4.07-bin-prot))))
+    (properties `((upstream-name . "bin_prot")))
     (home-page "https://github.com/janestreet/bin_prot")
     (synopsis "Binary protocol generator")
     (description "This library contains functionality for reading and writing
@@ -6746,30 +6745,6 @@ structured values at speeds sufficient to saturate a gigabit connection.  The
 protocol is also heavily optimized for size, making it ideal for long-term
 storage of large amounts of data.")
     (license license:expat)))
-
-(define-public ocaml4.07-bin-prot
-  (package-with-ocaml4.07
-    (package
-      (inherit ocaml-bin-prot)
-      (version "0.11.0")
-      (source (origin
-                (method url-fetch)
-                (uri (string-append "https://ocaml.janestreet.com/ocaml-core/v"
-                                    (version-major+minor version)
-                                    "/files/bin_prot-v" version ".tar.gz"))
-                (sha256
-                 (base32
-                  "1rsd91gx36prj4whi76nsiz1bzpgal9nzyw3pxdz1alv4ilk2il6"))))
-      (propagated-inputs (list ocaml-base
-                               ocaml-ppx-compare
-                               ocaml-ppx-custom-printf
-                               ocaml-ppx-fields-conv
-                               ocaml-ppx-variants-conv
-                               ocaml-migrate-parsetree))
-      (properties '())
-      (license (list
-                 license:asl2.0
-                 license:bsd-3)))))
 
 (define-public ocaml-protocol-version-header
   (package
