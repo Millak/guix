@@ -6897,31 +6897,12 @@ currently provides SHA1, SHA256 and SHA512 hash functions.")
     (propagated-inputs
      (list ocaml-base ocaml-ppx-compare ocaml-ppx-sexp-conv
            ocaml-migrate-parsetree ocaml-ppxlib))
-    (properties `((upstream-name . "ppx_hash")
-                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-hash))))
+    (properties `((upstream-name . "ppx_hash")))
     (home-page "https://github.com/janestreet/ppx_hash")
     (synopsis "Generation of hash functions from type expressions and definitions")
     (description "This package is a collection of ppx rewriters that generate
 hash functions from type exrpessions and definitions.")
     (license license:asl2.0)))
-
-(define-public ocaml4.07-ppx-hash
-  (package-with-ocaml4.07
-   (package
-     (inherit ocaml-ppx-hash)
-     (name "ocaml-ppx-hash")
-     (home-page "https://github.com/janestreet/ppx_hash")
-     (version "0.11.1")
-     (source (origin
-               (method git-fetch)
-               (uri (git-reference
-                     (url home-page)
-                     (commit (string-append "v" version))))
-               (file-name (git-file-name name version))
-               (sha256
-                (base32
-                 "1p0ic6aijxlrdggpmycj12q3cy9xksbq2vq727215maz4snvlf5p"))))
-     (properties `((upstream-name . "ppx_hash"))))))
 
 (define-public ocaml-ppx-enumerate
   (package
