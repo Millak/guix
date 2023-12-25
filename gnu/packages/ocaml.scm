@@ -6917,32 +6917,13 @@ hash functions from type exrpessions and definitions.")
      `(#:tests? #f)) ; no test suite
     (propagated-inputs
      (list ocaml-base ocaml-migrate-parsetree ocaml-ppxlib))
-    (properties `((upstream-name . "ppx_enumerate")
-                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-enumerate))))
+    (properties `((upstream-name . "ppx_enumerate")))
     (home-page "https://github.com/janestreet/ppx_enumerate")
     (synopsis "Generate a list containing all values of a finite type")
     (description "Ppx_enumerate is a ppx rewriter which generates a definition
 for the list of all values of a type (for a type which only has finitely
 many values).")
     (license license:asl2.0)))
-
-(define-public ocaml4.07-ppx-enumerate
-  (package-with-ocaml4.07
-   (package
-     (inherit ocaml-ppx-enumerate)
-     (name "ocaml-ppx-enumerate")
-     (version "0.11.1")
-     (home-page "https://github.com/janestreet/ppx_enumerate")
-     (source (origin
-               (method git-fetch)
-               (uri (git-reference
-                     (url home-page)
-                     (commit (string-append "v" version))))
-               (file-name (git-file-name name version))
-               (sha256
-                (base32
-                 "0spx9k1v7vjjb6sigbfs69yndgq76v114jhxvzjmffw7q989cyhr"))))
-     (properties `((upstream-name . "ppx_enumerate"))))))
 
 (define-public ocaml-ppx-bench
   (package
