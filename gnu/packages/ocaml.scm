@@ -4829,27 +4829,12 @@ tool and piqi-ocaml.")
     (propagated-inputs
      `(("cmdliner" ,ocaml-cmdliner)
        ("topkg" ,ocaml-topkg)))
-    (properties `((ocaml4.07-variant . ,(delay ocaml4.07-uuidm))))
     (home-page "https://erratique.ch/software/uuidm")
     (synopsis "Universally unique identifiers for OCaml")
     (description "Uuidm is an OCaml module implementing 128 bits universally
 unique identifiers (UUIDs) version 3, 5 (named based with MD5, SHA-1 hashing)
 and 4 (random based) according to RFC 4122.")
     (license license:isc)))
-
-(define-public ocaml4.07-uuidm
-  (package-with-ocaml4.07
-    (package
-      (inherit ocaml-uuidm)
-      (version "0.9.7")
-      (source (origin
-                (method url-fetch)
-                (uri (string-append "http://erratique.ch/software/uuidm/"
-                                    "releases/uuidm-" version ".tbz"))
-                (sha256
-                 (base32
-                  "1ivxb3hxn9bk62rmixx6px4fvn52s4yr1bpla7rgkcn8981v45r8"))))
-      (properties '()))))
 
 (define-public ocaml-graph
   (package
