@@ -136,9 +136,9 @@
                                                (target-arm32?)
                                                (target-aarch64?))
                                          ;; protocol FAIL
-                                         (string-append "TFLAGS=\"~1474 "
-                                                        "~1477 "
-                                                        job-count "\"")
+                                         (string-append "TFLAGS=~1474 "
+                                                        "!1477 "
+                                                        job-count)
                                          (string-append "TFLAGS=\"~1477 "
                                                         job-count "\"")))))
                   ;; The top-level "make check" does "make -C tests quiet-test", which
