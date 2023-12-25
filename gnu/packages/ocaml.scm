@@ -5594,39 +5594,12 @@ since the start of the Unix epoch.")
            ocaml-stdio
            ocaml-ppxlib
            ocaml-time-now))
-    (properties `((upstream-name . "ppx_inline_test")
-                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-inline-test))))
+    (properties `((upstream-name . "ppx_inline_test")))
     (synopsis "Syntax extension for writing in-line tests in ocaml code")
     (description "This package contains a syntax extension for writing
 in-line tests in ocaml code.  It is part of Jane Street's PPX rewriters
 collection.")
     (license license:expat)))
-
-(define-public ocaml4.07-ppx-inline-test
-  (package-with-ocaml4.07
-   (package
-     (inherit ocaml-ppx-inline-test)
-     (name "ocaml-ppx-inline-test")
-     (version "0.12.0")
-     (home-page "https://github.com/janestreet/ppx_inline_test")
-     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-              (url (string-append home-page ".git"))
-              (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "0nyz411zim94pzbxm2l2v2l9jishcxwvxhh142792g2s18r4vn50"))))
-    (propagated-inputs
-     `(("ocaml-base" ,ocaml-base)
-       ("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree)
-       ("ocaml-compiler-libs" ,ocaml-compiler-libs)
-       ("ocaml-sexplib0" ,ocaml-sexplib0)
-       ("ocaml-stdio" ,ocaml-stdio)
-       ("ocaml-ppxlib" ,ocaml-ppxlib)))
-    (properties `((upstream-name . "ppx_inline_test"))))))
 
 (define-public ocaml-bindlib
   (package
