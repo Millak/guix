@@ -6313,7 +6313,6 @@ the OCaml code.")
      (list ocaml-stdio
            ocaml-cinaps
            ocaml-base))
-    (properties `((ocaml4.07-variant . ,(delay ocaml4.07-ppxlib))))
     (synopsis
      "Base library and tools for ppx rewriters")
     (description
@@ -6330,46 +6329,6 @@ OCaml AST in the OCaml syntax;
 @item a generator of open recursion classes from type definitions.
 @end itemize")
     (license license:expat)))
-
-(define-public ocaml4.07-ppxlib
-  (package-with-ocaml4.07
-   (package
-     (inherit ocaml-ppxlib)
-     (name "ocaml-ppxlib")
-     (version "0.6.0")
-     (home-page "https://github.com/ocaml-ppx/ppxlib")
-     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-              (url home-page)
-              (commit version)))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "0my9x7sxb329h0lzshppdaawiyfbaw6g5f41yiy7bhl071rnlvbv"))))
-     (build-system dune-build-system)
-     (arguments
-      `(#:phases
-        (modify-phases %standard-phases
-          (add-before 'check 'set-topfind
-            (lambda* (#:key inputs #:allow-other-keys)
-              ;; add the line #directory ".." at the top of each file
-              ;; using #use "topfind";; to be able to find topfind
-              (let* ((findlib-path (assoc-ref inputs "findlib"))
-                     (findlib-libdir
-                      (string-append findlib-path "/lib/ocaml/site-lib")))
-                (substitute* '("test/base/test.ml"
-                               "test/code_path/test.ml"
-                               "test/deriving/test.ml"
-                               "test/driver/attributes/test.ml"
-                               "test/driver/non-compressible-suffix/test.ml"
-                               "test/driver/transformations/test.ml")
-                  (("#use \"topfind\";;" all)
-                   (string-append "#directory \"" findlib-libdir "\"\n"
-                                  all))))
-              #t)))))
-     (properties '()))))
 
 (define-public ocaml-ppx-compare
   (package
