@@ -16000,20 +16000,19 @@ generation.")
 (define-public rust-const-random-macro-0.1
   (package
     (name "rust-const-random-macro")
-    (version "0.1.13")
+    (version "0.1.16")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "const-random-macro" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0h7vvskw1pw5x44sbl74gsi8ydvrj5kaixpjqzxvz8h0s0knwpv1"))))
+        (base32 "03iram4ijjjq9j5a7hbnmdngj8935wbsd0f5bm8yw2hblbr3kn7r"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-getrandom" ,rust-getrandom-0.2)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-proc-macro-hack" ,rust-proc-macro-hack-0.5)
+        ("rust-once-cell" ,rust-once-cell-1)
         ("rust-tiny-keccak" ,rust-tiny-keccak-2))))
     (home-page "https://github.com/tkaitchuck/constrandom")
     (synopsis "Procedural macro used by const-random")
