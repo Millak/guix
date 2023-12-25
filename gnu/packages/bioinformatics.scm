@@ -4358,6 +4358,37 @@ atoms or, more generically, as a parallel particle simulator at the atomic,
 meso, or continuum scale.")
       (license license:gpl2+))))
 
+(define-public lammps-serial
+  (package
+    (inherit lammps)
+    (name "lammps-serial")
+    (arguments
+     (substitute-keyword-arguments (package-arguments lammps)
+       ((#:make-flags flags)
+        '(list "CC=gcc" "serial"
+               "LMP_INC=-DLAMMPS_GZIP \
+-DLAMMPS_JPEG -DLAMMPS_PNG -DLAMMPS_FFMPEG -DLAMMPS_MEMALIGN=64"
+               "LIB=-gz -ljpeg -lpng -lavcodec"))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'configure
+              (lambda _
+                (substitute* "MAKE/Makefile.serial"
+                  (("SHELL =.*")
+                   (string-append "SHELL=" (which "bash") "\n"))
+                  (("cc ") "gcc "))
+                (substitute* "Makefile"
+                  (("SHELL =.*")
+                   (string-append "SHELL=" (which "bash") "\n")))))
+            (replace 'install
+	      (lambda _
+		(let ((bin (string-append #$output "/bin")))
+		  (mkdir-p bin)
+		  (install-file "lmp_serial" bin))))))))
+    (inputs
+     (modify-inputs (package-inputs lammps)
+       (delete "openmpi")))))
+
 (define-public libbigwig
   (package
     (name "libbigwig")
