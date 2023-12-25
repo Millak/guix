@@ -7232,30 +7232,12 @@ https://github.com/ocaml/ocaml/issues/8563.")
            ocaml-ppx-sexp-conv
            ocaml-migrate-parsetree
            ocaml-ppxlib))
-    (properties `((upstream-name . "ppx_assert")
-                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-assert))))
+    (properties `((upstream-name . "ppx_assert")))
     (home-page "https://github.com/janestreet/ppx_assert")
     (synopsis "Assert-like extension nodes that raise useful errors on failure")
     (description "This package contains assert-like extension nodes that raise
 useful errors on failure.")
     (license license:asl2.0)))
-
-(define-public ocaml4.07-ppx-assert
-  (package-with-ocaml4.07
-   (package
-     (inherit ocaml-ppx-assert)
-     (version "0.11.0")
-     (source
-      (janestreet-origin "ppx_assert" version
-                         "17kd311n0l9f72gblf9kv8i5rghr106w37x4f0m5qwh6nlgl0j9k"))
-     (propagated-inputs
-      `(("ocaml-base" ,ocaml-base)
-        ("ocaml-ppx-compare" ,ocaml-ppx-compare)
-        ("ocaml-ppx-here" ,ocaml-ppx-here)
-        ("ocaml-ppx-sexp-conv" ,ocaml-ppx-sexp-conv)
-        ("ocaml-migrate-parsetree" ,ocaml-migrate-parsetree)
-        ("ocaml-ppxlib" ,ocaml-ppxlib)))
-     (properties `((upstream-name . "ppx_assert"))))))
 
 (define-public ocaml-ppx-expect
   (package
