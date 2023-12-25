@@ -11391,6 +11391,27 @@ spreadsheet file.")
 canonical filesystem paths.")
     (license license:asl2.0)))
 
+(define-public rust-cap-0.1
+  (package
+    (name "rust-cap")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cap" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "00q00chl1y8j6p9f9rndnd9jyqyqklnd5l9fn0v4r8l4bfw5w4kg"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:tests? #f))    ; memory allocation of 48 bytes failed
+    (home-page "https://github.com/alecmocatta/cap")
+    (synopsis "Allocator that can track and limit memory usage")
+    (description
+     "This crate provides a generic allocator that wraps another allocator,
+tracking memory usage and enabling limits to be set.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-capnp-0.14
   (package
     (name "rust-capnp")
