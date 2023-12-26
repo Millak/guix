@@ -446,7 +446,12 @@ libskba (working with X.509 certificates and CMS data).")
       (sha256
        (base32 "17hfigfnq6xz45b5xrp299f68b5mwx0aysd51sx5v4nf8yp4w79n"))))
     (build-system gnu-build-system)
-    (native-inputs
+    (arguments
+     (list
+      #:configure-flags
+      #~(let ((gpg-bins (dirname (search-input-file %build-inputs "/bin/gpg"))))
+          (list (string-append "--enable-fixed-path=" gpg-bins)))))
+    (inputs
      (list gnupg))
     (propagated-inputs
      ;; As required by the pkg-config's Requires.private.
