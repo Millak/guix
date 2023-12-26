@@ -35687,7 +35687,7 @@ consistent, and reasonably well performing.")
   (package
     (inherit rust-heck-0.4)
     (name "rust-heck")
-    (version "0.3.2")
+    (version "0.3.3")
     (source
       (origin
         (method url-fetch)
@@ -35695,7 +35695,7 @@ consistent, and reasonably well performing.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1b56s2c1ymdd0qmy31bw0ndhm31hcdamnhg3npp7ssrmc1ag9jw7"))))
+          "0b0kkr790p66lvzn9nsmfjvydrbmh9z5gb664jchwgw64vxiwqkd"))))
     (arguments
      `(#:cargo-inputs
        (("rust-unicode-segmentation" ,rust-unicode-segmentation-1))))))
