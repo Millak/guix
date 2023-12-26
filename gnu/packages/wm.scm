@@ -65,6 +65,7 @@
 ;;; Copyright © 2023 Vessel Wave <vesselwave@disroot.org>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
+;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1853,7 +1854,7 @@ corners, shadows, inactive window dimming, etc.")
                                (list pkg-config-for-build wayland)
                                '())
                            (list pango pkg-config scdoc wayland-protocols)))
-    (home-page "https://github.com/swaywm/sway")
+    (home-page "https://github.com/swaywm/swaylock")
     (synopsis "Screen locking utility for Wayland compositors")
     (description "Swaylock is a screen locking utility for Wayland compositors.")
     (license license:expat))) ; MIT license
