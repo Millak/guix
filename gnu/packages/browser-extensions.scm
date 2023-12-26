@@ -194,7 +194,7 @@ properly.")
 (define passff
   (package
     (name "passff")
-    (version "1.15")
+    (version "1.16")
     (home-page "https://github.com/passff/passff")
     (source (origin
               (method git-fetch)
@@ -202,7 +202,7 @@ properly.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gymqyqppr8k9fqv5js7f6pk6hcc47qpf51x5cy6aahsk2v1qssj"))))
+                "0y3cbgy89lgvq6lfabp7mi1zhphdvihcccn3yw5mmaql9yrdm5kc"))))
     (propagated-inputs (list passff-host))
     (build-system copy-build-system)
     (properties '((addon-id . "passff@invicem.pro")))
