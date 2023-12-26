@@ -55,7 +55,7 @@
     file))
 
 (define (ensure-valid-store-file-name name)
-  "Replace any character not allowed in a stror name by an underscore."
+  "Replace any character not allowed in a store name by an underscore."
 
   (define valid
     ;; according to nix/libstore/store-api.cc
