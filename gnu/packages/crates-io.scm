@@ -91346,8 +91346,30 @@ if they were just another Rust module.")
         ("rust-windows-gen" ,rust-windows-gen-0.9)
         ("rust-windows-macros" ,rust-windows-macros-0.9))))))
 
+(define-public rust-windows-aarch64-gnullvm-0.52
+  (package
+    (name "rust-windows-aarch64-gnullvm")
+    (version "0.52.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "windows_aarch64_gnullvm" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1shmn1kbdc0bpphcxz0vlph96bxz0h1jlmh93s9agf2dbpin8xyb"))
+       (snippet
+        '(delete-file "lib/libwindows.0.52.0.a"))))
+    (build-system cargo-build-system)
+    (arguments (list #:skip-build? #t))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Code gen support for the windows crate")
+    (description
+     "This package provides code gen support for the windows crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-aarch64-gnullvm-0.48
   (package
+    (inherit rust-windows-aarch64-gnullvm-0.52)
     (name "rust-windows-aarch64-gnullvm")
     (version "0.48.0")
     (source (origin
@@ -91359,14 +91381,7 @@ if they were just another Rust module.")
                 "1g71yxi61c410pwzq05ld7si4p9hyx6lf5fkw21sinvr3cp5gbli"))
               (snippet
                '(delete-file "lib/libwindows.0.48.0.a"))))
-    (build-system cargo-build-system)
-    (arguments
-     (list #:skip-build? #t))
-    (home-page "https://github.com/microsoft/windows-rs")
-    (synopsis "Code gen support for the windows crate")
-    (description
-     "This package provides code gen support for the windows crate.")
-    (license (list license:expat license:asl2.0))))
+    (arguments (list #:skip-build? #t))))
 
 (define-public rust-windows-aarch64-gnullvm-0.42
   (package
