@@ -1837,7 +1837,7 @@ corners, shadows, inactive window dimming, etc.")
 (define-public swayidle
   (package
     (name "swayidle")
-    (version "1.7.1")
+    (version "1.8.0")
     (source
      (origin
        (method git-fetch)
@@ -1846,7 +1846,7 @@ corners, shadows, inactive window dimming, etc.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06iq12p4438d6bv3jlqsf01wjaxrzlnj1bnicn41kad563aq41xl"))))
+        (base32 "0y0qdqzx90kvk6l80darldvizr7p5g65bnblhxlq5a2rgvs9hkpx"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Dlogind-provider=elogind")))
