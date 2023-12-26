@@ -35697,8 +35697,7 @@ consistent, and reasonably well performing.")
          (base32
           "1b56s2c1ymdd0qmy31bw0ndhm31hcdamnhg3npp7ssrmc1ag9jw7"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-unicode-segmentation" ,rust-unicode-segmentation-1))))))
 
 (define-public rust-hermit-abi-0.3
