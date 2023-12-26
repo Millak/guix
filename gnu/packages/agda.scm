@@ -44,7 +44,7 @@
 (define-public agda
   (package
     (name "agda")
-    (version "2.6.4")
+    (version "2.7.0.1")
     (source
      (origin
        (method git-fetch)
@@ -53,7 +53,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0n4avd58j45rdcmnwgrmz5s0ril0z4n2z711mwwbahl50f7359ky"))
+        (base32 "1dh9fi8lwjv9rk6zik2bwjgqln0f0d36m3hm9m3zmmk4fby4rsi2"))
        (patches (search-patches "agda-libdirs-env-variable.patch"
                                 "agda-use-sphinx-5.patch"))))
     (build-system haskell-build-system)
@@ -76,6 +76,7 @@
            ghc-murmur-hash
            ghc-parallel
            ghc-peano
+           ghc-pqueue
            ghc-regex-tdfa
            ghc-split
            ghc-strict
