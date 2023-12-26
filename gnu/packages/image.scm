@@ -2606,7 +2606,16 @@ Format) file format decoder and encoder.")
              "-DJPEGXL_FORCE_SYSTEM_BROTLI=true"
              "-DJPEGXL_FORCE_SYSTEM_LCMS2=true"
              "-DJPEGXL_FORCE_SYSTEM_HWY=true"
-             "-DJPEGXL_BUNDLE_LIBPNG=false")))
+             "-DJPEGXL_BUNDLE_LIBPNG=false")
+       ,@(if (target-riscv64?)
+             '(#:phases
+               (modify-phases %standard-phases
+                 (add-after 'unpack 'fix-atomic
+                   (lambda _
+                     (substitute* "lib/jxl/enc_xyb.cc"
+                       (("#include \"lib/jxl/enc_xyb.h\"" a)
+                        (string-append a "\n#include <atomic>")))))))
+             '())))
     (native-inputs
      (list asciidoc doxygen googletest pkg-config python))
     (inputs
