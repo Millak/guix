@@ -65739,8 +65739,44 @@ contains the API endpoint response objects.")
                                    ("rust-rand-hc" ,rust-rand-hc-0.2)
                                    ("rust-serde-json" ,rust-serde-json-1))))))
 
+(define-public rust-rstest-0.18
+  (package
+    (name "rust-rstest")
+    (version "0.18.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rstest" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1681ncnlzhc8894idm3pqf40nndn4k4kcp0kpv29n68a7hpspvlp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; no method named `set_default_timeout`
+       #:cargo-inputs (("rust-futures" ,rust-futures-0.3)
+                       ("rust-futures-timer" ,rust-futures-timer-3)
+                       ("rust-rstest-macros" ,rust-rstest-macros-0.18)
+                       ("rust-rustc-version" ,rust-rustc-version-0.4))
+       #:cargo-development-inputs (("rust-actix-rt" ,rust-actix-rt-2)
+                                   ("rust-async-std" ,rust-async-std-1)
+                                   ("rust-lazy-static" ,rust-lazy-static-1)
+                                   ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+                                   ("rust-rstest" ,rust-rstest-0.18)
+                                   ("rust-rstest-reuse" ,rust-rstest-reuse-0.6)
+                                   ("rust-rstest-test" ,rust-rstest-test-0.11)
+                                   ("rust-temp-testdir" ,rust-temp-testdir-0.2)
+                                   ("rust-tokio" ,rust-tokio-1)
+                                   ("rust-unindent" ,rust-unindent-0.2))))
+    (home-page "https://github.com/la10736/rstest")
+    (synopsis "Rust fixture based test framework")
+    (description
+     "@code{rstest} uses procedural macros to help you write fixtures and
+table-based tests.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rstest-0.17
   (package
+    (inherit rust-rstest-0.18)
     (name "rust-rstest")
     (version "0.17.0")
     (source
@@ -65750,19 +65786,12 @@ contains the API endpoint response objects.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0qnrx40c05ziz2sxhrj0i4pamvlip8cx7w62439qr1wils3b86yy"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t ; requires rust-artix-rt@2.7.0
        #:cargo-inputs (("rust-futures" ,rust-futures-0.3)
                        ("rust-futures-timer" ,rust-futures-timer-3)
                        ("rust-rstest-macros" ,rust-rstest-macros-0.17)
-                       ("rust-rustc-version" ,rust-rustc-version-0.4))))
-    (home-page "https://github.com/la10736/rstest")
-    (synopsis "Rust fixture based test framework")
-    (description
-     "@code{rstest} uses procedural macros to help you write fixtures
-and table-based tests.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-rustc-version" ,rust-rustc-version-0.4))))))
 
 (define-public rust-rstest-0.16
   (package
