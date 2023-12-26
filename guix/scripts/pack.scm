@@ -9,6 +9,7 @@
 ;;; Copyright © 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2022 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2023 Graham James Addis <graham@addis.org.uk>
+;;; Copyright © 2023 Oleg Pykhalov <go.wigust@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -48,6 +49,7 @@
   #:use-module (guix scripts build)
   #:use-module (guix transformations)
   #:use-module ((guix self) #:select (make-config.scm))
+  #:use-module ((guix docker) #:select (%docker-image-max-layers))
   #:use-module (gnu compression)
   #:use-module (gnu packages)
   #:use-module (gnu packages bootstrap)
@@ -204,10 +206,10 @@ target the profile's @file{bin/env} file:
             arg))))
 
 (define (entry-point-argument-spec-option-parser opt name arg result)
-  "A SRFI-37 opion parser for the --entry-point-argument option. The spec
-takes multiple occurances. The entries are used in the exec form for the
-docker entry-point. The values are used as parameters in conjunction with
-the --entry-point option which is used as the first value in the exec form."
+  "A SRFI-37 option parser for the --entry-point-argument option. The spec
+takes multiple occurrences. The entries are used in the exec form for the
+docker entry-point. The values are used as parameters in conjunction with the
+--entry-point option which is used as the first value in the exec form."
   (let ((entry-point-argument (assoc-ref result 'entry-point-argument)))
     (alist-cons 'entry-point-argument
                 (append entry-point-argument (list arg))
@@ -517,12 +519,15 @@ added to the pack."
                        localstatedir?
                        (symlinks '())
                        (archiver tar)
-                       (extra-options '()))
-  "Return a derivation to construct a Docker image of PROFILE.  The
-image is a tarball conforming to the Docker Image Specification, compressed
-with COMPRESSOR.  It can be passed to 'docker load'.  If TARGET is true, it
-must a be a GNU triplet and it is used to derive the architecture metadata in
-the image.  EXTRA-OPTIONS may contain the IMAGE-TAG keyword argument."
+                       (extra-options '())
+                       max-layers)
+  "Return a derivation to construct a Docker image of PROFILE.  The image is a
+tarball conforming to the Docker Image Specification, compressed with
+COMPRESSOR.  It can be passed to 'docker load'.  If TARGET is true, it must a
+be a GNU triplet and it is used to derive the architecture metadata in the
+image.  EXTRA-OPTIONS may contain the IMAGE-TAG keyword argument.  If
+MAX-LAYERS is not false, the image will be splitted in up to MAX-LAYERS
+layers."
   (define database
     (and localstatedir?
          (file-append (store-database (list profile))
@@ -576,18 +581,24 @@ the image.  EXTRA-OPTIONS may contain the IMAGE-TAG keyword argument."
             (define (form-entry-point prefix entry-point entry-point-argument)
               ;; Construct entry-point parameter for build-docker-image.  The
               ;; first entry is constructed by prefixing the entry-point with
-              ;; the supplied index subsequent entries are taken from the
+              ;; the supplied index, subsequent entries are taken from the
               ;; --entry-point-argument options.
               (and=> entry-point
                      (lambda (entry-point)
                        (cons* (string-append prefix "/" entry-point)
-		              entry-point-argument))))
+                              entry-point-argument))))
 
-            (setenv "PATH" #+(file-append archiver "/bin"))
+            (setenv "PATH"
+                    (string-join `(#+(file-append archiver "/bin")
+                                   #+@(if max-layers
+                                          (list (file-append gzip "/bin"))
+                                          '()))
+                                 ":"))
 
             (let-keywords '#$extra-options #f
                           ((image-tag #f)
-                           (entry-point-argument #f))
+                           (entry-point-argument #f)
+                           (max-layers #f))
 
               (build-docker-image #$output
                                   (map store-info-item
@@ -609,7 +620,8 @@ the image.  EXTRA-OPTIONS may contain the IMAGE-TAG keyword argument."
                                   #:compressor
                                   #+(compressor-command compressor)
                                   #:creation-time
-                                  (make-time time-utc 0 1)))))))
+                                  (make-time time-utc 0 1)
+                                  #:max-layers max-layers))))))
 
   (gexp->derivation (string-append name ".tar"
                                    (compressor-extension compressor))
@@ -1287,6 +1299,7 @@ last resort for relocation."
     (verbosity . 1)
     (symlinks . ())
     (entry-point-argument . ())
+    (max-layers . ,%docker-image-max-layers)
     (compressor . ,(first %compressors))))
 
 (define %formats
@@ -1324,7 +1337,11 @@ last resort for relocation."
 (define %docker-format-options
   (list (required-option 'image-tag)
         (option '(#\A "entry-point-argument") #t #f
-                entry-point-argument-spec-option-parser)))
+                entry-point-argument-spec-option-parser)
+        (option '("max-layers") #t #f
+                (lambda (opt name arg result)
+                  (alist-cons 'max-layers (string->number* arg)
+                              result)))))
 
 (define (show-docker-format-options)
   (display (G_ "
@@ -1336,9 +1353,12 @@ last resort for relocation."
                          Use the given NAME for the Docker image repository
 
       -A, --entry-point-argument=COMMAND/PARAMETER
-                         Value(s) to use for the Docker EntryPoint arguments.
+                         Value(s) to use for the Docker ENTRYPOINT arguments.
                          Multiple instances are accepted. This is only valid
-                         in conjunction with the --entry-point option"))
+                         in conjunction with the --entry-point option
+
+      --max-layers=N
+                         Number of image layers"))
   (newline)
   (exit 0))
 
@@ -1651,7 +1671,9 @@ Create a bundle of PACKAGE.\n"))
                                      (list #:image-tag
                                            (assoc-ref opts 'image-tag)
                                            #:entry-point-argument
-                                           (assoc-ref opts 'entry-point-argument)))
+                                           (assoc-ref opts 'entry-point-argument)
+                                           #:max-layers
+                                           (assoc-ref opts 'max-layers)))
                                     ('deb
                                      (list #:control-file
                                            (process-file-arg opts 'control-file)

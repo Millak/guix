@@ -56,7 +56,7 @@ Copyright @copyright{} 2017 Andy Wingo@*
 Copyright @copyright{} 2017, 2018, 2019, 2020, 2023 Arun Isaac@*
 Copyright @copyright{} 2017 nee@*
 Copyright @copyright{} 2018 Rutger Helling@*
-Copyright @copyright{} 2018, 2021 Oleg Pykhalov@*
+Copyright @copyright{} 2018, 2021, 2023 Oleg Pykhalov@*
 Copyright @copyright{} 2018 Mike Gerwitz@*
 Copyright @copyright{} 2018 Pierre-Antoine Rouby@*
 Copyright @copyright{} 2018, 2019 Gábor Boskovits@*
@@ -7440,6 +7440,30 @@ appear multiple times on the command line.
 @example
 guix pack -f docker --entry-point=bin/guile --entry-point-argument="--help" guile
 @end example
+
+@cindex maximum layers argument, for docker images
+@item --max-layers=@code{n}
+Specifies the maximum number of Docker image layers allowed when
+building an image.
+
+@example
+guix pack -f docker --max-layers=100 guile
+@end example
+
+This option allows you to limit the number of layers in a Docker image.
+Docker images are comprised of multiple layers, and each layer adds to
+the overall size and complexity of the image.  By setting a maximum
+number of layers, you can control the following effects:
+
+@itemize
+@item Disk Usage:
+Increasing the number of layers can help optimize the disk space
+required to store multiple images built with a similar package graph.
+
+@item Pulling:
+When transferring images between different nodes or systems, having more
+layers can reduce the time required to pull the image.
+@end itemize
 
 @item --expression=@var{expr}
 @itemx -e @var{expr}
