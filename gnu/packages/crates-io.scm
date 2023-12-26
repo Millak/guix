@@ -66043,8 +66043,38 @@ and table-based tests.")
         ("rust-rustc-version" ,rust-rustc-version-0.4)
         ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-rstest-reuse-0.6
+  (package
+    (name "rust-rstest-reuse")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rstest_reuse" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "191l5gfwx9rmkqd48s85fkh21b73f38838fc896r4rxy39l0nlw8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Tests expect rustup
+       #:cargo-inputs (("rust-quote" ,rust-quote-1)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-rustc-version" ,rust-rustc-version-0.4)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs (("rust-lazy-static" ,rust-lazy-static-1)
+                                   ("rust-rstest" ,rust-rstest-0.18)
+                                   ("rust-rstest-test" ,rust-rstest-test-0.11)
+                                   ("rust-temp-testdir" ,rust-temp-testdir-0.2))))
+    (home-page "https://github.com/la10736/rstest")
+    (synopsis "Reuse rstest attributes")
+    (description
+     "This package provides a Rust library for reusing rstest attributes by
+creating a set of tests and applying it to every scenario you want to test.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rstest-reuse-0.4
   (package
+    (inherit rust-rstest-reuse-0.6)
     (name "rust-rstest-reuse")
     (version "0.4.0")
     (source (origin
@@ -66054,20 +66084,12 @@ and table-based tests.")
               (sha256
                (base32
                 "05zcs22fbvv7q50p2xs6w13lqbcklddnj2dm1mz1wi2pak9sxdgr"))))
-    (build-system cargo-build-system)
     (arguments
      (list #:skip-build? #t
            #:cargo-inputs
            `(("rust-quote" ,rust-quote-1)
              ("rust-rustc-version" ,rust-rustc-version-0.4)
-             ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/la10736/rstest")
-    (synopsis "Reuse rstest attributes")
-    (description
-     "This package provides a Rust library for reusing rstest
-attributes by creating a set of tests and applying it to every
-scenario you want to test.")
-    (license (list license:expat license:asl2.0))))
+             ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-rstest-reuse-0.3
   (package
