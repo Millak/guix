@@ -156,7 +156,7 @@ ungoogled-chromium.")
 (define-public passff-host
   (package
     (name "passff-host")
-    (version "1.2.3")
+    (version "1.2.4")
     (home-page "https://github.com/passff/passff-host")
     (source (origin
               (method git-fetch)
@@ -164,7 +164,7 @@ ungoogled-chromium.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1p18l1jh20x4v8dj64z9qjlp96fxsl5h069iynxfpbkzj6hd74yl"))))
+                "1lcwa1qzfxlifmj33qndp1wgi6yx6vj21ir0az79vhm5k03p961z"))))
     (build-system copy-build-system)
     (arguments
      (let ((native-manifests "lib/icecat/native-messaging-hosts"))
