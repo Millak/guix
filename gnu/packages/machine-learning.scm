@@ -3878,6 +3878,34 @@ high-level machine learning frameworks, such as TensorFlow Lite,
 TensorFlow.js, PyTorch, and MediaPipe.")
       (license license:bsd-3))))
 
+(define-public xnnpack-for-torch2
+  ;; There's currently no tag on this repo.
+  (let ((version "0.0")
+        (commit "51a987591a6fc9f0fc0707077f53d763ac132cbf")
+        (revision "3"))
+    (package
+      (inherit xnnpack)
+      (name "xnnpack")
+      (version (git-version version revision commit))
+      (home-page "https://github.com/google/XNNPACK") ;fork of QNNPACK
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference (url home-page) (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1rzby82xq8d0rl1d148yz88jh9cpsw5c8b2yw7yg39mi7qmr55rm"))
+                (patches (search-patches "xnnpack-for-torch2-system-libraries.patch"))))
+      (arguments
+       (list
+        #:tests? #false
+        #:configure-flags '(list "-DXNNPACK_USE_SYSTEM_LIBS=YES"
+                                 "-DBUILD_SHARED_LIBS=ON"
+                                 "-DCMAKE_POSITION_INDEPENDENT_CODE=ON"
+                                 "-DXNNPACK_LIBRARY_TYPE=shared"
+                                 "-DXNNPACK_BUILD_TESTS=FALSE" ;FIXME: see below
+                                 "-DXNNPACK_BUILD_BENCHMARKS=FALSE"))))))
+
 ;; Please also update python-torchvision when updating this package.
 (define-public python-pytorch
   (package
