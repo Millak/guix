@@ -6,6 +6,7 @@
 ;;; Copyright © 2022 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
 ;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2024 Luis Guilherme Coelho <lgcoelho@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -51,6 +52,7 @@
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages kde-frameworks)
+  #:use-module (gnu packages man)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
@@ -336,6 +338,54 @@ file system, and many more features.")
     (properties '((release-monitoring-url . "https://newsboat.org/news.atom")))
     (license (list license:gpl2+        ; filter/*
                    license:expat))))    ; everything else
+
+(define-public newsraft
+  (package
+    (name "newsraft")
+    (version "0.27")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/newsraft/newsraft")
+             (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "170dwv6v9755mdy4w91r4mk6r5d713rxi71hppqws3bsh2g4bmrj"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output)
+              "CFLAGS=-DCURL_WRITEFUNC_ERROR=0xFFFFFFFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)))) ; no configure
+    (native-inputs
+     (list pkg-config scdoc))
+    (inputs
+     (list curl expat gumbo-parser ncurses sqlite yajl))
+    (home-page "https://codeberg.org/grisha/newsraft")
+    (synopsis "Feed reader for termnial")
+    (description
+     "Newsraft is a feed reader with ncurses user interface.  It is greatly
+inspired by Newsboat and tries to be its lightweight counterpart.
+
+Features:
+@itemize
+@item parallel downloads
+@item section-based feeds grouping
+@item opening links in any program
+@item viewing news from all feeds with explore mode
+@item automatic updates for feeds and sections
+@item per-feed settings and key bindings
+@item assigning multiple actions to key bindings
+@item processing feeds from command output
+@item text searching by news titles and content
+@item interactive news content viewing
+@end itemize")
+    (license license:isc)))
 
 (define-public liferea
   (package
