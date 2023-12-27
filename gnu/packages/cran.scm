@@ -11627,44 +11627,35 @@ local smoothers and many more.")
 (define-public r-radiant-data
   (package
     (name "r-radiant-data")
-    (version "1.6.2")
+    (version "1.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "radiant.data" version))
        (sha256
         (base32
-         "0227ry366v9kmksa4vyjmhix0jbl894gdc6gckg209wna35fn20p"))
+         "1nwiw5dps0030f893gs0fixis6xigfr8y8rqhi3l505yx2bsrjbj"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           ;; Delete files that are under CC-NC-SA.
-           (delete-file-recursively "inst/app/tools/help")
-           (delete-file "inst/assets/html2canvas/html2canvas.min.js")))))
+        '(delete-file "inst/assets/html2canvas/html2canvas.min.js"))))
     (properties `((upstream-name . "radiant.data")))
     (build-system r-build-system)
     (arguments
      (list
-      #:modules '((guix build utils)
-                  (guix build r-build-system)
-                  (srfi srfi-1))
+      #:modules
+      '((guix build r-build-system)
+        (guix build minify-build-system)
+        (guix build utils))
+      #:imported-modules
+      `(,@%r-build-system-modules
+        (guix build minify-build-system))
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'process-javascript
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "inst/assets/html2canvas/"
-               (call-with-values
-                   (lambda ()
-                     (unzip2
-                      `((,(assoc-ref inputs "_")
-                         "html2canvas.min.js"))))
-                 (lambda (sources targets)
-                   (for-each (lambda (source target)
-                               (format #true "Processing ~a --> ~a~%"
-                                       source target)
-                               (invoke "esbuild" source "--minify"
-                                       (string-append "--outfile=" target)))
-                             sources targets)))))))))
+      #~(modify-phases (@ (guix build r-build-system) %standard-phases)
+          (add-after 'unpack 'process-javascript
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion "inst/assets/html2canvas/"
+                (minify (assoc-ref inputs "_")
+                        #:target "html2canvas.min.js")))))))
     (propagated-inputs
      (list r-arrow
            r-base64enc
