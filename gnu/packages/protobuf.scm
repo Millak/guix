@@ -429,14 +429,14 @@ from protobuf specification files.")
 (define-public python-protobuf
   (package
     (name "python-protobuf")
-    (version "3.20.1")
+    (version "3.20.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "protobuf" version))
        (sha256
         (base32
-         "1ja2vpk9nklllmsirmil2s4l7ni9yfqvbvj47zz5xx17s1k1bhxd"))))
+         "0l0p2lczs5iahgkhzm3298pjl49bk9iiwngkglg7ll7fkqqwlbbi"))))
     (build-system python-build-system)
     (inputs (list protobuf))
     (arguments
