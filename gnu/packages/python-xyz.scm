@@ -13081,13 +13081,13 @@ TODO notes checker plugin for flake8.")
 (define-public python-flake8-isort
   (package
     (name "python-flake8-isort")
-    (version "4.1.1")
+    (version "6.1.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "flake8-isort" version))
         (sha256
-          (base32 "05r7z0j9rqgy0a9261bhisairrz6w8hy5hy5kf2mhvhfnx53056q"))))
+          (base32 "0gk4q504v42hdzpkndczc0kkwnr85jn1h5pvb561jh65p91r6qyl"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -13096,8 +13096,8 @@ TODO notes checker plugin for flake8.")
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
-                (invoke "pytest" "-vv")))))))
-    (propagated-inputs (list python-flake8 python-isort python-testfixtures))
+                (invoke "pytest" "-vv" "run_tests.py")))))))
+    (propagated-inputs (list python-flake8 python-isort))
     (native-inputs (list python-pytest))
     (home-page "https://github.com/gforcada/flake8-isort")
     (synopsis "Flake8 plugin integrating isort")
