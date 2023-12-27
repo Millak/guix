@@ -439,6 +439,31 @@ IOCP and Async I/O abstractions.")
        #:cargo-development-inputs
        (("rust-rand" ,rust-rand-0.3))))))
 
+(define-public rust-output-vt100-0.1
+  (package
+    (name "rust-output-vt100")
+    (version "0.1.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "output_vt100" version))
+        (file-name
+         (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "1ygqplpxz4gg3i8f3rkan2q69pqll7gv65l2mmd8r9dphnvwbkak"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/Phundrak/output-vt100-rs")
+    (synopsis
+     "Utility to activate escape codes in Windows' CMD and PowerShell")
+    (description
+     "Utility to activate escape codes in Windows' CMD and PowerShell.")
+    (license license:expat)))
+
 (define-public rust-windows-0.48
   (package
     (name "rust-windows")
