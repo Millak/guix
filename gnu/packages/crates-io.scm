@@ -8210,8 +8210,67 @@ rust-bio and rust-htslib.")
         ("rust-strum-macros" ,rust-strum-macros-0.21)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-bio-1
+  (package
+    (name "rust-bio")
+    (version "1.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bio" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xdx5iih68lraiy6f8n200bgrdfl307dmgdmb984ynmzpb2wzp15"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-approx" ,rust-approx-0.5)
+                       ("rust-bio-types" ,rust-bio-types-1)
+                       ("rust-bit-set" ,rust-bit-set-0.5)
+                       ("rust-bv" ,rust-bv-0.11)
+                       ("rust-bytecount" ,rust-bytecount-0.6)
+                       ("rust-csv" ,rust-csv-1)
+                       ("rust-custom-derive" ,rust-custom-derive-0.1)
+                       ("rust-editdistancek" ,rust-editdistancek-1)
+                       ("rust-enum-map" ,rust-enum-map-0.6)
+                       ("rust-fxhash" ,rust-fxhash-0.2)
+                       ("rust-getset" ,rust-getset-0.1)
+                       ("rust-itertools" ,rust-itertools-0.11)
+                       ("rust-itertools-num" ,rust-itertools-num-0.1)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-multimap" ,rust-multimap-0.8)
+                       ("rust-ndarray" ,rust-ndarray-0.15)
+                       ("rust-newtype-derive" ,rust-newtype-derive-0.1)
+                       ("rust-num-integer" ,rust-num-integer-0.1)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-ordered-float" ,rust-ordered-float-3)
+                       ("rust-pest" ,rust-pest-2)
+                       ("rust-pest-derive" ,rust-pest-derive-2)
+                       ("rust-petgraph" ,rust-petgraph-0.6)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-serde-derive" ,rust-serde-derive-1)
+                       ("rust-statrs" ,rust-statrs-0.15)
+                       ("rust-strum" ,rust-strum-0.24)
+                       ("rust-strum-macros" ,rust-strum-macros-0.24)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-triple-accel" ,rust-triple-accel-0.4)
+                       ("rust-vec-map" ,rust-vec-map-0.8))
+       #:cargo-development-inputs (("rust-proptest" ,rust-proptest-1)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://rust-bio.github.io")
+    (synopsis "Bioinformatics library for Rust")
+    (description
+     "This package provides a bioinformatics library for Rust.  This library
+provides implementations of many algorithms and data structures that are
+useful for bioinformatics, but also in other fields.")
+    (license license:expat)))
+
 (define-public rust-bio-0.32
   (package
+    (inherit rust-bio-1)
     (name "rust-bio")
     (version "0.32.0")
     (source
@@ -8221,7 +8280,6 @@ rust-bio and rust-htslib.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1wj6s3hzpx5xhajcnvdabbgpalgghdni7gmlhjl6i9pfh1xiq5pi"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-approx" ,rust-approx-0.3)
@@ -8256,17 +8314,11 @@ rust-bio and rust-htslib.")
         ("rust-triple-accel" ,rust-triple-accel-0.3)
         ("rust-vec-map" ,rust-vec-map-0.8))
        #:cargo-development-inputs
-       (("rust-proptest" ,rust-proptest-0.10))))
-    (home-page "https://rust-bio.github.io")
-    (synopsis "Bioinformatics library for Rust")
-    (description
-     "This package provides a bioinformatics library for Rust.  This library
-provides implementations of many algorithms and data structures that are
-useful for bioinformatics, but also in other fields.")
-    (license license:expat)))
+       (("rust-proptest" ,rust-proptest-0.10))))))
 
 (define-public rust-bio-0.33
   (package
+    (inherit rust-bio-1)
     (name "rust-bio")
     (version "0.33.0")
     (source
@@ -8276,7 +8328,6 @@ useful for bioinformatics, but also in other fields.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1zaghvazh243x2pg866hjx1zwwpp9qzwkf45iz2fs9af5y661gz5"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
@@ -8314,17 +8365,11 @@ useful for bioinformatics, but also in other fields.")
         ("rust-vec-map" ,rust-vec-map-0.8))
        #:cargo-development-inputs
        (("rust-proptest" ,rust-proptest-0.10)
-        ("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://rust-bio.github.io")
-    (synopsis "Bioinformatics library for Rust")
-    (description
-     "This package provides a bioinformatics library for Rust.  This library
-provides implementations of many algorithms and data structures that are
-useful for bioinformatics, but also in other fields.")
-    (license license:expat)))
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-bio-0.39
   (package
+    (inherit rust-bio-1)
     (name "rust-bio")
     (version "0.39.2")
     (source (origin
@@ -8334,7 +8379,6 @@ useful for bioinformatics, but also in other fields.")
               (sha256
                (base32
                 "00k0zv4yyiipzg2arnkrplfi0digwnv89bczfzhyva68yfv8scvb"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
@@ -8369,14 +8413,7 @@ useful for bioinformatics, but also in other fields.")
         ("rust-strum-macros" ,rust-strum-macros-0.21)
         ("rust-thiserror" ,rust-thiserror-1)
         ("rust-triple-accel" ,rust-triple-accel-0.4)
-        ("rust-vec-map" ,rust-vec-map-0.8))))
-    (home-page "https://rust-bio.github.io")
-    (synopsis "Bioinformatics library for Rust")
-    (description
-     "This package provides a bioinformatics library for Rust.  This library
-provides implementations of many algorithms and data structures that are
-useful for bioinformatics, but also in other fields.")
-    (license license:expat)))
+        ("rust-vec-map" ,rust-vec-map-0.8))))))
 
 (define-public rust-bio-0.41
   (package
