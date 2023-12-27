@@ -1,8 +1,9 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2020 Valentin Ignatev <valentignatev@gmail.com>
 ;;; Copyright © 2020, 2023 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
@@ -32,7 +33,9 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-web)
-  #:use-module (gnu packages rust-apps))
+  #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages rust-apps)
+  #:use-module (gnu packages tls))
 
 (define-public rust-async-native-tls-0.3
   (package
@@ -86,6 +89,68 @@
     (description
      "This package provides asynchronous TLS/SSL streams using Rustls.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-native-tls-0.2
+  (package
+    (name "rust-native-tls")
+    (version "0.2.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "native-tls" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bmrlg0fmzxaycjpkgkchi93av07v2yf9k33gc12ca9gqdrn28h7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f                      ; tests require network access
+       #:cargo-inputs
+       (("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-openssl" ,rust-openssl-0.10)
+        ("rust-openssl-probe" ,rust-openssl-probe-0.1)
+        ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+        ("rust-schannel" ,rust-schannel-0.1)
+        ("rust-security-framework" ,rust-security-framework-2)
+        ("rust-security-framework-sys" ,rust-security-framework-sys-2)
+        ("rust-tempfile" ,rust-tempfile-3))
+       #:cargo-development-inputs
+       (("rust-tempfile" ,rust-tempfile-3)
+        ("rust-test-cert-gen" ,rust-test-cert-gen-0.7))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list openssl))
+    (home-page "https://github.com/sfackler/rust-native-tls")
+    (synopsis "Wrapper over a platform's native TLS implementation")
+    (description
+     "This package provides a wrapper over a platform's native TLS
+implementation.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-native-tls-0.1
+  (package
+    (inherit rust-native-tls-0.2)
+    (name "rust-native-tls")
+    (version "0.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "native-tls" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1h7v80nlskyr7b1gsg4ivlpm6pilj6ybgvcwadj7ips3igfblkgp"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-lazy-static" ,rust-lazy-static-0.2)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-openssl" ,rust-openssl-0.9)
+        ("rust-schannel" ,rust-schannel-0.1)
+        ("rust-security-framework" ,rust-security-framework-0.1)
+        ("rust-security-framework-sys" ,rust-security-framework-sys-0.1)
+        ("rust-tempdir" ,rust-tempdir-0.3))))))
 
 (define-public rust-rustls-0.21
   (package

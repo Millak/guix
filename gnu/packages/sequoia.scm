@@ -28,6 +28,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages base)  ; glibc
   #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-tls)
   #:use-module (gnu packages crates-web)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages multiprecision)
