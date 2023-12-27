@@ -4845,7 +4845,7 @@ previewing themes in real time.")
 (define-public r-shiny
   (package
     (name "r-shiny")
-    (version "1.7.4")
+    (version "1.8.0")
     (source
      (origin
        (method git-fetch)
@@ -4855,7 +4855,7 @@ previewing themes in real time.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0297sbrc7wfj0qfn63yrgs4xkxaxp95ppipdp9pqjg5qhm9k5wbi"))
+         "0rfrch2147yhp2vkr3198gn1ww00ckzcw4i6rywfl38c6fdw9vr1"))
        (snippet
         '(for-each delete-file
                    '("inst/www/shared/bootstrap/js/bootstrap.min.js"
@@ -4874,14 +4874,16 @@ previewing themes in real time.")
                      "inst/www/shared/strftime/strftime-min.js")))))
     (build-system r-build-system)
     (arguments
-     `(#:modules ((guix build r-build-system)
+     (list
+      #:modules '((guix build r-build-system)
                   (guix build minify-build-system)
                   (guix build utils)
                   (ice-9 match))
-       #:imported-modules (,@%r-build-system-modules
-                           (guix build minify-build-system))
-       #:phases
-       (modify-phases (@ (guix build r-build-system) %standard-phases)
+      #:imported-modules
+      `(,@%r-build-system-modules
+        (guix build minify-build-system))
+      #:phases
+      '(modify-phases (@ (guix build r-build-system) %standard-phases)
          (add-after 'unpack 'replace-bundled-minified-JavaScript
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((replace-file (lambda (old new)
