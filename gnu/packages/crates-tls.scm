@@ -33,6 +33,32 @@
   #:use-module (gnu packages crates-web)
   #:use-module (gnu packages rust-apps))
 
+(define-public rust-async-tls-0.10
+  (package
+    (name "rust-async-tls")
+    (version "0.10.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "async-tls" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "126by0la2wvfadazfnmw7b6ch07dk9ggny94a3vvzgk2qdpqn3fx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-futures-core" ,rust-futures-core-0.3)
+        ("rust-futures-io" ,rust-futures-io-0.3)
+        ("rust-rustls" ,rust-rustls-0.19)
+        ("rust-webpki" ,rust-webpki-0.21)
+        ("rust-webpki-roots" ,rust-webpki-roots-0.21))))
+    (home-page "https://github.com/async-std/async-tls")
+    (synopsis "Asynchronous TLS/SSL streams using Rustls")
+    (description
+     "This package provides asynchronous TLS/SSL streams using Rustls.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rustls-0.21
   (package
     (name "rust-rustls")
