@@ -8125,41 +8125,6 @@ bindings to C and C++ libraries.")
         ("rust-diff" ,rust-diff-0.1)
         ("rust-shlex" ,rust-shlex-0.1))))))
 
-(define-public rust-bindgen-0.37
-  (package
-    (inherit rust-bindgen-0.50)
-    (name "rust-bindgen")
-    (version "0.37.4")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "bindgen" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "08f2cyzr8fc027mzj2lhmn5j3w318g2ql7yfw5ngxa3yhy1an98v"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-cfg-if" ,rust-cfg-if-0.1)
-        ("rust-peeking-take-while"
-         ,rust-peeking-take-while-0.1)
-        ("rust-cexpr" ,rust-cexpr-0.2)
-        ("rust-clang-sys" ,rust-clang-sys-0.23)
-        ("rust-proc-macro2" ,rust-proc-macro2-0.3)  ; 0.3.5
-        ("rust-log" ,rust-log-0.4)
-        ("rust-env-logger" ,rust-env-logger-0.5)
-        ("rust-quote" ,rust-quote-0.5)
-        ("rust-which" ,rust-which-1)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-clap" ,rust-clap-2))
-       #:cargo-development-inputs
-       (("rust-clap" ,rust-clap-2)
-        ("rust-diff" ,rust-diff-0.1)
-        ("rust-shlex" ,rust-shlex-0.1))))))
-
 (define-public rust-bio-types-1
   (package
     (name "rust-bio-types")
