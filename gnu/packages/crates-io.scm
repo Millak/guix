@@ -30290,33 +30290,6 @@ debugging format.")
         ("rust-test-assembler" ,rust-test-assembler-0.1)
         ("rust-typed-arena" ,rust-typed-arena-2))))))
 
-(define-public rust-git-testament-0.2
-  (package
-    (name "rust-git-testament")
-    (version "0.2.4")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "git-testament" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1c9l10wpyz39vhb5cijvbym6gmpmw3y3nb35l2hg6w42h1ygaswq"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:tests? #f      ; Not all files included.
-       #:cargo-inputs
-       (("rust-git-testament-derive" ,rust-git-testament-derive-0.1)
-        ("rust-no-std-compat" ,rust-no-std-compat-0.4))
-       #:cargo-development-inputs
-       (("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-rand" ,rust-rand-0.8)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/kinnison/git-testament/")
-    (synopsis "Record git working tree status when compiling your crate")
-    (description "Record git working tree status when compiling your crate")
-    (license license:bsd-3)))
-
 (define-public rust-git-version-0.3
   (package
     (name "rust-git-version")
