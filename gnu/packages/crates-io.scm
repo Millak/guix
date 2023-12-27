@@ -8050,47 +8050,9 @@ bindings to C and C++ libraries.")
         ("rust-shlex" ,rust-shlex-0.1))))
     (inputs `())))
 
-(define-public rust-bindgen-0.50
-  (package
-    (inherit rust-bindgen-0.51)
-    (name "rust-bindgen")
-    (version "0.50.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "bindgen" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1fp98x0k4cawil3rqxsfrb58pq3mb5mn37rp745zxfmjfigml3nb"))))
-    (arguments
-     `(#:cargo-test-flags
-       '("--release" "--lib" "--bins" "--tests")
-       #:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1)
-        ("rust-cexpr" ,rust-cexpr-0.3)
-        ("rust-cfg-if" ,rust-cfg-if-0.1)
-        ("rust-clang-sys" ,rust-clang-sys-0.28)
-        ("rust-clap" ,rust-clap-2)
-        ("rust-env-logger" ,rust-env-logger-0.6)
-        ("rust-fxhash" ,rust-fxhash-0.2)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-peeking-take-while" ,rust-peeking-take-while-0.1)
-        ("rust-proc-macro2" ,rust-proc-macro2-0.4)
-        ("rust-quote" ,rust-quote-0.6)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-shlex" ,rust-shlex-0.1)
-        ("rust-which" ,rust-which-2))
-       #:cargo-development-inputs
-       (("rust-clap" ,rust-clap-2)
-        ("rust-diff" ,rust-diff-0.1)
-        ("rust-shlex" ,rust-shlex-0.1))))))
-
 (define-public rust-bindgen-0.48
   (package
-    (inherit rust-bindgen-0.50)
+    (inherit rust-bindgen-0.53)
     (name "rust-bindgen")
     (version "0.48.1")
     (source
@@ -8123,7 +8085,8 @@ bindings to C and C++ libraries.")
        #:cargo-development-inputs
        (("rust-clap" ,rust-clap-2)
         ("rust-diff" ,rust-diff-0.1)
-        ("rust-shlex" ,rust-shlex-0.1))))))
+        ("rust-shlex" ,rust-shlex-0.1))))
+    (inputs `())))
 
 (define-public rust-bio-types-1
   (package
