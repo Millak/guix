@@ -12625,27 +12625,6 @@ that need to represent UTF-16 data as 8-bit characters.")
        #:cargo-development-inputs
        (("rust-clang-sys" ,rust-clang-sys-0.28))))))
 
-(define-public rust-cexpr-0.2
-  (package
-    (inherit rust-cexpr-0.3)
-    (name "rust-cexpr")
-    (version "0.2.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "cexpr" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0v1xa3758czmj8h97gh548mr8g0v13ixxvrlm1s79nb7jmgc9aj2"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-nom" ,rust-nom-3))
-       #:cargo-development-inputs
-       (("rust-clang-sys" ,rust-clang-sys-0.11))))))
-
 (define-public rust-cfb-mode-0.8
   (package
     (name "rust-cfb-mode")
