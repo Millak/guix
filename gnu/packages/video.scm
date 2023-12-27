@@ -154,6 +154,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages iso-codes)
+  #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages libidn)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
@@ -2785,18 +2786,35 @@ images and image hosting sites.")
         (file-name (git-file-name name version))
         (sha256
          (base32 "1384y8n3l0xk8hbad1nsj9ljzb1h02g3ln3jysd8bd6shbl0x4mx"))))
-    (build-system copy-build-system)
+    (build-system gnu-build-system)
     (arguments
-     '(#:install-plan
-       '(("mpris.so" "lib/"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'install 'build
-           (lambda _
-             (setenv "CC" (which "gcc"))
-             (invoke "make"))))))
+     (list
+      #:make-flags
+      #~(list (string-append "SCRIPTS_DIR=" #$output "/lib")
+              (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'check
+            (lambda* (#:key inputs native-inputs tests? #:allow-other-keys)
+              (if tests?
+                  (begin
+                    (setenv
+                     "MPV_MPRIS_TEST_PLAY"
+                     (search-input-file
+                      (or native-inputs inputs)
+                      "share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga"))
+                    (invoke "make" "test"))
+                  (format #t "test suite not run~%")))))))
     (native-inputs
-     (list pkg-config))
+     (list dbus
+           jq
+           pkg-config
+           playerctl
+           socat
+           sound-theme-freedesktop
+           xorg-server-for-tests
+           xvfb-run))
     (inputs
      (list ffmpeg glib mpv))
     (home-page "https://github.com/hoyon/mpv-mpris")
