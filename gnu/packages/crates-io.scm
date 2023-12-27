@@ -85416,14 +85416,15 @@ be used directly.  See @code{rust-trackable} for more information.")
 (define-public rust-trash-2
   (package
     (name "rust-trash")
-    (version "2.1.3")
+    (version "2.1.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "trash" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "14ji8b84ghwkln01v90ahhl2jkxv2qxkm0afprzphf1ln41k6nqi"))))
+        (base32 "0djjjvvpxhx4li3y0jp1q48xabvazzif8g7z6110rm4chikh62gy"))
+       (patches (search-patches "rust-trash-2-update-windows.patch"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -85434,7 +85435,7 @@ be used directly.  See @code{rust-trackable} for more information.")
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-scopeguard" ,rust-scopeguard-1)
         ("rust-url" ,rust-url-2)
-        ("rust-windows" ,rust-windows-0.9))
+        ("rust-windows" ,rust-windows-0.44))
        #:cargo-development-inputs
        (("rust-chrono" ,rust-chrono-0.4)
         ("rust-env-logger" ,rust-env-logger-0.9)
