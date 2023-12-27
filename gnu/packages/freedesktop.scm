@@ -1474,7 +1474,7 @@ move and resize windows, etc.")
 (define-public exempi
   (package
     (name "exempi")
-    (version "2.5.2")
+    (version "2.6.5")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -1482,7 +1482,7 @@ move and resize windows, etc.")
                    name "-" version ".tar.bz2"))
              (sha256
               (base32
-               "1mdfxb36p8251n5m7l55gx3fcqpk46yz9v568xfr8igxmqa47xaj"))))
+               "1zhzwkfna14sy78llhfc94cy5hv3076j5v3p1zmvawzz5gaa7yg9"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list (string-append "--with-boost="
@@ -1496,8 +1496,7 @@ move and resize windows, etc.")
              ;; <https://gitlab.freedesktop.org/libopenraw/exempi/-/issues/17>.
              ;; Simply delete the static library instead to save ~4.3 MiB.
              (delete-file (string-append (assoc-ref outputs "out")
-                                         "/lib/libexempi.a"))
-             #t)))))
+                                         "/lib/libexempi.a")))))))
     (native-inputs
      (list boost)) ; tests
     (inputs
