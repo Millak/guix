@@ -22869,14 +22869,14 @@ high-performance functions are provided here.")
 (define-public r-s2
   (package
     (name "r-s2")
-    (version "1.1.5")
+    (version "1.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "s2" version))
        (sha256
         (base32
-         "07k9j3sqlqjmcgws2x7accnd5pbqcn8n2pwbviw00sg74sz3xz1v"))))
+         "0rm0jd5k5w725v1bnn6ix8vic40grdh61y6qdy8jy4lhg1mjx78x"))))
     (properties `((upstream-name . "s2")))
     (build-system r-build-system)
     (arguments
