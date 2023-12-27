@@ -24315,6 +24315,30 @@ signing, and verification in pure Rust.")
      "Levenshtein edit distance between strings, a measure for similarity.")
     (license license:asl2.0)))
 
+(define-public rust-editdistancek-1
+  (package
+    (name "rust-editdistancek")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "editdistancek" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "04r6lfq9sfz3wqhqm6fzfcqbj8w16y8bh0x6kzkgkimislixy0iy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5)
+                                   ("rust-levenshtein" ,rust-levenshtein-1)
+                                   ("rust-quickcheck" ,rust-quickcheck-1)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-triple-accel" ,rust-triple-accel-0.4))))
+    (home-page "https://github.com/nkkarpov/editdistancek")
+    (synopsis "Fast algorithm for computing edit distance")
+    (description
+     "This crate provides fast algorithm for computing edit distance.")
+    (license license:expat)))
+
 (define-public rust-ego-tree-0.6
   (package
     (name "rust-ego-tree")
