@@ -662,6 +662,33 @@ server functionality.")
 See winapi for types and constants.")
     (license license:expat)))
 
+(define-public rust-win-crypto-ng-0.5
+  (package
+    (name "rust-win-crypto-ng")
+    (version "0.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "win-crypto-ng" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0faf5bd4d5kaf642yw91lh0n2bfwnz0l70bm85ysmj3dsj4hg9mf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; Windows library
+       #:cargo-inputs
+       (("rust-cipher" ,rust-cipher-0.4)
+        ("rust-doc-comment" ,rust-doc-comment-0.3)
+        ("rust-rand-core" ,rust-rand-core-0.5)
+        ("rust-winapi" ,rust-winapi-0.3)
+        ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+       (("rust-doc-comment" ,rust-doc-comment-0.3))))
+    (home-page "https://github.com/emgre/win-crypto-ng")
+    (synopsis "Safe bindings to Windows Cryptography API: Next Generation")
+    (description "Safe bindings to Windows Cryptography API: Next Generation")
+    (license license:bsd-3)))
+
 (define-public rust-windows-0.48
   (package
     (name "rust-windows")
