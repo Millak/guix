@@ -21978,14 +21978,14 @@ probabilities from a standard bivariate normal CDF.")
 (define-public r-lavaan
   (package
     (name "r-lavaan")
-    (version "0.6-16")
+    (version "0.6-17")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lavaan" version))
        (sha256
         (base32
-         "150asz3k42ql6k2faldbbzvhnlq5zy94syznc451ns52jdrr5vqx"))))
+         "1bppbv17b35h48vfci6zplix9zb5isi210za52cs9yyc68g2acwj"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-mass r-mnormt r-numderiv r-pbivnorm r-quadprog))
