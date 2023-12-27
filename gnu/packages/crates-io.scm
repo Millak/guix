@@ -45500,21 +45500,6 @@ file IO.")
        #:cargo-inputs
        (("rust-libc" ,rust-libc-0.2))))))
 
-(define-public rust-memmap2-0.2
-  (package
-    (inherit rust-memmap2-0.3)
-    (name "rust-memmap2")
-    (version "0.2.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "memmap2" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1d26q3sh0z5dvwpilqqvq5bqi7vqfd2kc5gk3pdj7h65rnykwgkj"))))))
-
 (define-public rust-memmap2-0.1
   (package
     (inherit rust-memmap2-0.3)
