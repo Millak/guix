@@ -37117,13 +37117,13 @@ computational operations, add-on packages provide additional functionality.")
 (define-public r-mlr3learners
   (package
     (name "r-mlr3learners")
-    (version "0.5.7")
+    (version "0.5.8")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mlr3learners" version))
               (sha256
                (base32
-                "0l4f500qa2xfcwd4b81sxx9cvj9j349bl77c9vwi45sfsjk19w8g"))))
+                "0q44qmd9zfc68jl2zz684rx9744g83vd7z40dck8cdvnnrxcff5g"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-checkmate
