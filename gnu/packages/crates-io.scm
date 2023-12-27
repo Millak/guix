@@ -82494,30 +82494,6 @@ combinators library.")
 serialization.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-ws2-32-sys-0.2
-  (package
-    (name "rust-ws2-32-sys")
-    (version "0.2.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "ws2_32-sys" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0ppscg5qfqaw0gzwv2a4nhn5bn01ff9iwn6ysqnzm4n8s3myz76m"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-winapi" ,rust-winapi-0.2)
-        ("rust-winapi-build" ,rust-winapi-build-0.1))))
-    (home-page "https://github.com/retep998/winapi-rs")
-    (synopsis "Function definitions for the Windows API library ws2_32")
-    (description
-     "Contains function definitions for the Windows API library ws2_32.")
-    (license license:expat)))
-
 (define-public rust-wycheproof-0.5
   (package
     (name "rust-wycheproof")
