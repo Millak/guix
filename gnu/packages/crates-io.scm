@@ -2267,46 +2267,6 @@ text to a terminal.")
     (description "Look up colored console capabilities")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-anstyle-wincon-3
-  (package
-    (name "rust-anstyle-wincon")
-    (version "3.0.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "anstyle-wincon" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "19v0fv400bmp4niqpzxnhg83vz12mmqv7l2l8vi80qcdxj0lpm8w"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs (("rust-anstyle" ,rust-anstyle-1)
-                       ("rust-windows-sys" ,rust-windows-sys-0.52))
-       #:cargo-development-inputs (("rust-lexopt" ,rust-lexopt-0.3))))
-    (home-page "https://github.com/rust-cli/anstyle")
-    (synopsis "Styling legacy Windows terminals")
-    (description "Styling legacy Windows terminals.")
-    (license (list license:expat license:asl2.0))))
-
-(define-public rust-anstyle-wincon-1
-  (package
-    (inherit rust-anstyle-wincon-3)
-    (name "rust-anstyle-wincon")
-    (version "1.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "anstyle-wincon" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "12714vwjf4c1wm3qf49m5vmd93qvq2nav6zpjc0bxbh3ayjby2hq"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-anstyle" ,rust-anstyle-1)
-        ("rust-windows-sys" ,rust-windows-sys-0.48))
-       #:cargo-development-inputs
-       (("rust-lexopt" ,rust-lexopt-0.3))))))
-
 (define-public rust-antidote-1
   (package
     (name "rust-antidote")
