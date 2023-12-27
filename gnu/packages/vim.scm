@@ -470,7 +470,8 @@ trouble using them, because you do not have to remember each snippet name.")
                   "0av2m075n6z05ah9ndrgnp9s16yrz6n2lj0igd9fh3c5k41x5xks"))))
       (build-system vim-build-system)
       (arguments
-       '(#:plugin-name "coqtail"
+       `(#:plugin-name "coqtail"
+         #:vim ,vim-full ; Plugin needs Python 3.
          #:phases
          (modify-phases %standard-phases
            (add-before 'install 'check
@@ -491,9 +492,7 @@ trouble using them, because you do not have to remember each snippet name.")
                                       "/share/vim/vimfiles/pack/guix/start/vader")))
                    (with-directory-excursion "tests/vim"
                      (setenv "VADER_PATH" vader-path)
-                     (invoke (string-append
-                               (assoc-ref (or native-inputs inputs) "vim-full")
-                               "/bin/vim")
+                     (invoke "vim"
                              "-E" "-Nu" "vimrc"
                              "-c" "Vader! *.vader")))
 
@@ -501,10 +500,9 @@ trouble using them, because you do not have to remember each snippet name.")
                  ;; they don't get installed.
                  (delete-file-recursively "python/__pycache__")))))))
       (native-inputs
-       `(("coq-for-coqtail" ,coq-for-coqtail)
-         ("python-pytest" ,python-pytest)
-         ("vim-full" ,vim-full)         ; Plugin needs Python 3.
-         ("vim-vader" ,vim-vader)))
+       (list coq-for-coqtail
+             python-pytest
+             vim-vader))
       (propagated-inputs (list coq coq-ide-server))
       (synopsis "Interactive Coq proofs in Vim")
       (description "Coqtail enables interactive Coq proof development in Vim
