@@ -79786,22 +79786,19 @@ arithmetic.")
     (name "rust-ungrammar")
     (version "1.14.9")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "ungrammar" version))
-        (file-name
-          (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32
-            "1agx2hpp3sirknnx8j17mzcg222024s6vkx6s5v3s3l8zp15kgk6"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ungrammar" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1agx2hpp3sirknnx8j17mzcg222024s6vkx6s5v3s3l8zp15kgk6"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page
-      "https://github.com/matklad/ungrammar")
-    (synopsis
-      "DSL for describing concrete syntax trees")
+    (arguments
+     `(#:skip-build? #t))
+    (home-page "https://github.com/matklad/ungrammar")
+    (synopsis "DSL for describing concrete syntax trees")
     (description
-      "This package provides a DSL for describing concrete syntax trees.")
+     "This package provides a DSL for describing concrete syntax trees.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-unidecode-0.3
