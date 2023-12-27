@@ -59014,7 +59014,7 @@ using protobuf-parser.")
 (define-public rust-psl-2
   (package
     (name "rust-psl")
-    (version "2.0.48")
+    (version "2.1.13")
     (source
      (origin
        (method url-fetch)
@@ -59022,20 +59022,14 @@ using protobuf-parser.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0a2d3z6gi7bwsi4xr6m3kq44wxyr81yqr5z76afv8kfxsc8p1nxh"))))
+         "1g21gwhjzsz2jp2c4y6qg74p49vgiida98lg8yzqxdcx087rnnzy"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-psl-types" ,rust-psl-types-2))
        #:cargo-development-inputs
-       (("rust-rspec", rust-rspec-1))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-version-requirements
-           (lambda _
-             (substitute* "Cargo.toml"
-               (("1.0.0") ,(package-version rust-rspec-1))))))))
+       (("rust-rspec" ,rust-rspec-1))))
     (home-page "https://github.com/addr-rs/psl")
     (synopsis "Extract root domain and suffix")
     (description "This package extracts root domain and suffix from a domain
