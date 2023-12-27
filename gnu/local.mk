@@ -1777,6 +1777,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-random2-getrandbits-test.patch		\
   %D%/packages/patches/python-poppler-qt5-fix-build.patch	\
   %D%/packages/patches/python-pypdf-annotate-tests-appropriately.patch	\
+  %D%/packages/patches/python-pytorch2-system-libraries.patch	\
   %D%/packages/patches/python-sip-include-dirs.patch	\
   %D%/packages/patches/python-sgmllib3k-assertions.patch	\
   %D%/packages/patches/python-sphinx-prompt-docutils-0.19.patch	\
