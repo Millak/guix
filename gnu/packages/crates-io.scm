@@ -36,6 +36,7 @@
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;; Copyright © 2023 Sergio Pastor Pérez <sergio.pastorperez@outlook.es>
+;;; Copyright © 2023 VÖRÖSKŐI András <voroskoi@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29711,129 +29712,6 @@ of gzip files based on the gzip header implementation in the @code{flate2} crate
     (arguments
      `(#:cargo-inputs
        (("rust-crc32fast" ,rust-crc32fast-1))))))
-
-(define-public rust-h2-0.3
-  (package
-    (name "rust-h2")
-    (version "0.3.21")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "h2" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0cq8g5bgk3fihnqicy3g8gc3dpsalzqjg4bjyip9g4my26m27z4i"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:tests? #f      ; Not all files included.
-       #:cargo-inputs
-       (("rust-bytes" ,rust-bytes-1)
-        ("rust-fnv" ,rust-fnv-1)
-        ("rust-futures-core" ,rust-futures-core-0.3)
-        ("rust-futures-sink" ,rust-futures-sink-0.3)
-        ("rust-futures-util" ,rust-futures-util-0.3)
-        ("rust-http" ,rust-http-0.2)
-        ("rust-indexmap" ,rust-indexmap-1)
-        ("rust-slab" ,rust-slab-0.4)
-        ("rust-tokio" ,rust-tokio-1)
-        ("rust-tokio-util" ,rust-tokio-util-0.7)
-        ("rust-tracing" ,rust-tracing-0.1))
-       #:cargo-development-inputs
-       (("rust-env-logger" ,rust-env-logger-0.9)
-        ("rust-hex" ,rust-hex-0.4)
-        ("rust-quickcheck" ,rust-quickcheck-1)
-        ("rust-rand" ,rust-rand-0.8)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-tokio" ,rust-tokio-1)
-        ("rust-tokio-rustls" ,rust-tokio-rustls-0.23)
-        ("rust-walkdir" ,rust-walkdir-2)
-        ("rust-webpki-roots" ,rust-webpki-roots-0.22))))
-    (home-page "https://github.com/hyperium/h2")
-    (synopsis "HTTP/2.0 client and server")
-    (description "This package provides an HTTP/2.0 client and server.")
-    (license license:expat)))
-
-(define-public rust-h2-0.2
-  (package
-    (inherit rust-h2-0.3)
-    (name "rust-h2")
-    (version "0.2.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "h2" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0dd5jyxmmy88pdmvag7n41k9z1qs6sliagcyx4jss5292byjhisy"))))
-    (arguments
-     `(#:tests? #f      ; Not all files included.
-       #:cargo-inputs
-       (("rust-bytes" ,rust-bytes-0.5)
-        ("rust-fnv" ,rust-fnv-1)
-        ("rust-futures-core" ,rust-futures-core-0.3)
-        ("rust-futures-sink" ,rust-futures-sink-0.3)
-        ("rust-futures-util" ,rust-futures-util-0.3)
-        ("rust-http" ,rust-http-0.2)
-        ("rust-indexmap" ,rust-indexmap-1)
-        ("rust-slab" ,rust-slab-0.4)
-        ("rust-tokio" ,rust-tokio-0.2)
-        ("rust-tokio-util" ,rust-tokio-util-0.3)
-        ("rust-tracing" ,rust-tracing-0.1)
-        ("rust-tracing-futures" ,rust-tracing-futures-0.2))
-       #:cargo-development-inputs
-       (("rust-env-logger" ,rust-env-logger-0.5)
-        ("rust-hex" ,rust-hex-0.2)
-        ("rust-quickcheck" ,rust-quickcheck-0.4)
-        ("rust-rand" ,rust-rand-0.3)
-        ("rust-rustls" ,rust-rustls-0.16)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-tokio" ,rust-tokio-0.2)
-        ("rust-tokio-rustls" ,rust-tokio-rustls-0.12)
-        ("rust-walkdir" ,rust-walkdir-1)
-        ("rust-webpki" ,rust-webpki-0.21)
-        ("rust-webpki-roots" ,rust-webpki-roots-0.17))))))
-
-(define-public rust-h2-0.1
-  (package
-    (inherit rust-h2-0.2)
-    (name "rust-h2")
-    (version "0.1.26")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "h2" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0qn457y8xh03p7c7cpk76r22gqpyqxc58g5022j3iya7d0j4rcx5"))))
-    (arguments
-     `(#:skip-build? #t ;; TODO missing indirect dependency
-       #:cargo-inputs
-       (("rust-byteorder" ,rust-byteorder-1)
-        ("rust-bytes" ,rust-bytes-0.4)
-        ("rust-fnv" ,rust-fnv-1)
-        ("rust-futures" ,rust-futures-0.1)
-        ("rust-http" ,rust-http-0.1)
-        ("rust-indexmap" ,rust-indexmap-1)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-slab" ,rust-slab-0.4)
-        ("rust-string" ,rust-string-0.2)
-        ("rust-tokio-io" ,rust-tokio-io-0.1))
-       #:cargo-development-inputs
-       (("rust-env-logger" ,rust-env-logger-0.5)
-        ("rust-hex" ,rust-hex-0.2)
-        ("rust-quickcheck" ,rust-quickcheck-0.4)
-        ("rust-rand" ,rust-rand-0.3)
-        ;;("rust-rustls" ,rust-rustls-0.12) requires 0.5
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-tokio" ,rust-tokio-0.1)
-        ("rust-tokio-rustls" ,rust-tokio-rustls-0.12)
-        ("rust-walkdir" ,rust-walkdir-1)
-        ("rust-webpki" ,rust-webpki-0.21)
-        ("rust-webpki-roots" ,rust-webpki-roots-0.17))))))
 
 (define-public rust-h3-0.0.3
   (package
