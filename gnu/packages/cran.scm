@@ -15933,13 +15933,13 @@ multiple-imputation datasets.")
 (define-public r-mixsqp
   (package
    (name "r-mixsqp")
-   (version "0.3-48")
+   (version "0.3-54")
    (source (origin
             (method url-fetch)
             (uri (cran-uri "mixsqp" version))
             (sha256
              (base32
-              "02cjg33m5iqziyy0xi11wvbm5qnlgfy51r1dbpjzyhqsrv1dfx48"))))
+              "13pv3mmz514kl4svxqwyk5b241dy1q52khwdc6rmh712ia8xxl7p"))))
    (properties `((upstream-name . "mixsqp")))
    (build-system r-build-system)
    (propagated-inputs
