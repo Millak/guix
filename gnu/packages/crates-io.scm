@@ -29849,14 +29849,14 @@ suffering from the ABA problem by using generational indices.")
 (define-public rust-generator-0.7
   (package
     (name "rust-generator")
-    (version "0.7.1")
+    (version "0.7.5")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "generator" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1iwfjhlf76fl50hanfvglzwaq60gm0fwqwd48x837a6fw6n4q66c"))))
+                "0knp7cllkf90l4wmfbhmb3c0ha9xn9afrzmphain1d12zy26bhaw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -29864,7 +29864,7 @@ suffering from the ABA problem by using generational indices.")
         ("rust-libc" ,rust-libc-0.2)
         ("rust-log" ,rust-log-0.4)
         ("rust-rustversion" ,rust-rustversion-1)
-        ("rust-windows" ,rust-windows-0.32))))
+        ("rust-windows" ,rust-windows-0.48))))
     (home-page "https://github.com/Xudong-Huang/generator-rs.git")
     (synopsis "Stackfull Generator Library in Rust")
     (description "This package provides a stackfull generator library in
