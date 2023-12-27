@@ -185,6 +185,28 @@ Windows Credential Manager.")
      "This package provides a library which provides an interface for @code{ConPTY}.")
     (license license:expat)))
 
+(define-public rust-dunce-1
+  (package
+    (name "rust-dunce")
+    (version "1.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dunce" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0fqcbwfclldbknmawi69l6zyncaiqzxkpbybcb2cc7jmlxnqrkjn"))))
+    (build-system cargo-build-system)
+    (home-page "https://gitlab.com/kornelski/dunce")
+    (synopsis "Normalize Windows paths to the most compatible format")
+    (description
+     "This crate converts Windows UNC paths to the MS-DOS-compatible format
+whenever possible, but leaves UNC paths as-is when they can't be unambiguously
+expressed in a simpler way.  This allows legacy programs to access all paths
+they can possibly access, and doesn't break any paths for UNC-aware
+programs.")
+    (license (list license:cc0 license:expat-0 license:asl2.0))))
+
 (define-public rust-windows-0.48
   (package
     (name "rust-windows")
