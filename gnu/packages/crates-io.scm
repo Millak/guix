@@ -30707,37 +30707,6 @@ reading and writing git repositories.")
     (inputs
      (list libgit2 libssh2 openssl zlib))))
 
-(define-public rust-git2-0.14
-  (package
-    (inherit rust-git2-0.15)
-    (name "rust-git2")
-    (version "0.14.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "git2" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "074kqlmh7q39pqcj9rmrnmx4v5njh2j09dfxc1hsh45pm835a5fh"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-libgit2-sys" ,rust-libgit2-sys-0.13)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-openssl-probe" ,rust-openssl-probe-0.1)
-        ("rust-openssl-sys" ,rust-openssl-sys-0.9)
-        ("rust-url" ,rust-url-2))
-       #:cargo-development-inputs
-       (("rust-paste" ,rust-paste-1)
-        ("rust-structopt" ,rust-structopt-0.3)
-        ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-time" ,rust-time-0.1))))
-    (inputs
-     (list libgit2-1.4 libssh2 openssl zlib))))
-
 (define-public rust-git2-0.13
   (package
     (inherit rust-git2-0.15)
