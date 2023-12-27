@@ -5715,13 +5715,13 @@ coordinates.")
 (define-public r-gensa
   (package
     (name "r-gensa")
-    (version "1.1.10.1")
+    (version "1.1.12")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "GenSA" version))
               (sha256
                (base32
-                "16wla8k6ibxy58hhn7qd02k96lc7j6skaj6g5ap6lqmm854ki4wh"))))
+                "0m5y0hmhcc40d9a24pz5iqw5diip7sn7bih5s01x5dvqqasnx6vk"))))
     (properties `((upstream-name . "GenSA")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/package=GenSA")
