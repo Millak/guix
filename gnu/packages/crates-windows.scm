@@ -96,6 +96,30 @@
 Windows Credential Manager.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-conpty-0.5
+  (package
+    (name "rust-conpty")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "conpty" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1nmkhiysnssvbi4kqaq8cybb0ffngbl64kfpk8s86ihdg940caxp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; Specifically for Windows.
+       #:cargo-inputs
+       (("rust-windows" ,rust-windows-0.44))
+       #:cargo-development-inputs
+       (("rust-strip-ansi-escapes" ,rust-strip-ansi-escapes-0.1))))
+    (home-page "https://github.com/zhiburt/conpty")
+    (synopsis "Library which provides an interface for ConPTY")
+    (description
+     "This package provides a library which provides an interface for @code{ConPTY}.")
+    (license license:expat)))
+
 (define-public rust-windows-0.48
   (package
     (name "rust-windows")
