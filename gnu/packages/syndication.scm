@@ -223,14 +223,14 @@ cards.")
 (define-public newsboat
   (package
     (name "newsboat")
-    (version "2.33")
+    (version "2.34")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://newsboat.org/releases/" version
                            "/newsboat-" version ".tar.xz"))
        (sha256
-        (base32 "1yilrfa8h63x24mcl8a6a17fsaa12imhl337br7g2dw3c1g0v78p"))))
+        (base32 "0kj3qbm3881fkrplvgnng4747bh29a8f2hhm7a2gc1n9n0wvbmvk"))))
     (build-system cargo-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)
@@ -266,7 +266,6 @@ cards.")
         ("rust-md5" ,rust-md5-0.7)
         ("rust-natord" ,rust-natord-1)
         ("rust-nom" ,rust-nom-7)
-        ("rust-once-cell" ,rust-once-cell-1)
         ("rust-percent-encoding" ,rust-percent-encoding-2)
         ("rust-url" ,rust-url-2)
         ("rust-unicode-width" ,rust-unicode-width-0.1)
