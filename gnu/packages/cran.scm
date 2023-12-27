@@ -171,13 +171,13 @@ kinematics to varying flight conditions.")
 (define-public r-aod
   (package
     (name "r-aod")
-    (version "1.3.2")
+    (version "1.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "aod" version))
        (sha256
-        (base32 "0p2i536s0aa54rah1l465g77k2ldn6jm6s25y9vc06mk29xvx1cv"))))
+        (base32 "0zh8sjzbsq3sjzayv8wa0n1vh654g47xkxklgzxcsy3xpy55w95p"))))
     (properties `((upstream-name . "aod")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/package=aod")
