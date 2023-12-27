@@ -5190,13 +5190,13 @@ with alternating row colors) in LaTeX and HTML formats easily from
 (define-public r-vipor
   (package
     (name "r-vipor")
-    (version "0.4.5")
+    (version "0.4.7")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "vipor" version))
               (sha256
                (base32
-                "112gc0d7f8iavgf56pnzfxb7hy75yhd0zlyjzshdcfbnqcd2a6bx"))))
+                "17hb6y1i9bva0fr4k9m6wncmnzdjad1b7fhsvfhva4xavpll3bds"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/vipor")
     (synopsis "Plot categorical data using noise and density estimates")
