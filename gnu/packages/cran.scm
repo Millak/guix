@@ -37079,13 +37079,13 @@ implemented as @code{R6} classes.")
 (define-public r-mlr3
   (package
     (name "r-mlr3")
-    (version "0.17.0")
+    (version "0.17.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mlr3" version))
               (sha256
                (base32
-                "1gnn9i33sa2s0s35lhbbjqffjj9m7yhnhh7lyvp7jv9sncw123sa"))))
+                "0q6px0l0ab3xcrf6ylnw9a3i50mnks3hlgqj424d6bpqdjqyh5s4"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-backports
@@ -37102,6 +37102,7 @@ implemented as @code{R6} classes.")
            r-paradox
            r-parallelly
            r-r6
+           r-rhpcblasctl
            r-uuid))
     (home-page "https://mlr3.mlr-org.com/")
     (synopsis "Machine Learning in R - Next Generation")
