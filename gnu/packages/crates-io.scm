@@ -33420,52 +33420,6 @@ library.")
     (license (list license:asl2.0
                    license:expat))))
 
-(define-public rust-ipconfig-0.3
-  (package
-    (name "rust-ipconfig")
-    (version "0.3.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "ipconfig" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1gn5j5sp58mz0630dhs1b8by7j0jqagldbd5iyln690gp7qjlc5x"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-socket2" ,rust-socket2-0.4)
-        ("rust-widestring" ,rust-widestring-0.5)
-        ("rust-winapi" ,rust-winapi-0.3)
-        ("rust-winreg" ,rust-winreg-0.10))))
-    (home-page "https://github.com/liranringel/ipconfig")
-    (synopsis "Get network adapters and configuration information for Windows")
-    (description "This package lets you get network adapters information and
-network configuration for Windows.")
-    (license (list license:expat license:asl2.0))))
-
-(define-public rust-ipconfig-0.2
-  (package
-    (inherit rust-ipconfig-0.3)
-    (name "rust-ipconfig")
-    (version "0.2.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "ipconfig" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1mzsagc6bk3i3fpggqlq8am5rxn4hgs297rsaya90w79xj5g3qpp"))))
-    (arguments
-     `(#:tests? #f  ; failed to resolve: could not find `computer` in `ipconfig`
-       #:cargo-inputs
-       (("rust-socket2" ,rust-socket2-0.3)
-        ("rust-widestring" ,rust-widestring-0.4)
-        ("rust-winapi" ,rust-winapi-0.3)
-        ("rust-winreg" ,rust-winreg-0.6))))))
-
 (define-public rust-is-ci-1
   (package
     (name "rust-is-ci")
