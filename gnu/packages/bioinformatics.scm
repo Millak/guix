@@ -1070,6 +1070,42 @@ of single-cell data using Seurat, RcppML nmf, SingleCellExperiments and
 similar.")
       (license license:gpl2+))))
 
+(define-public r-stacas
+  (package
+    (name "r-stacas")
+    (version "2.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/carmonalab/STACAS")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13i0h5i6vlbrb8ndq9gr81560z9d74b2c7m3rjfzls01irjza9hm"))))
+    (properties `((upstream-name . "STACAS")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocneighbors
+           r-biocparallel
+           r-ggplot2
+           r-ggridges
+           r-pbapply
+           r-r-utils
+           r-seurat))
+    (home-page "https://github.com/carmonalab/STACAS")
+    (synopsis "Sub-type anchoring correction for alignment in Seurat")
+    (description
+     "This package implements methods for batch correction and integration of
+scRNA-seq datasets, based on the Seurat anchor-based integration framework.
+In particular, STACAS is optimized for the integration of heterogenous
+datasets with only limited overlap between cell sub-types (e.g. TIL sets of
+CD8 from tumor with CD8/CD4 T cells from lymphnode), for which the default
+Seurat alignment methods would tend to over-correct biological differences.
+The 2.0 version of the package allows the users to incorporate explicit
+information about cell-types in order to assist the integration process.")
+    (license license:gpl3)))
+
 (define-public r-stringendo
   (let ((commit "15594b1bba11048a812874bafec0eea1dcc8618a")
         (revision "1"))
