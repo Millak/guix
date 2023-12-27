@@ -5,6 +5,7 @@
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
@@ -688,6 +689,162 @@ See winapi for types and constants.")
     (synopsis "Safe bindings to Windows Cryptography API: Next Generation")
     (description "Safe bindings to Windows Cryptography API: Next Generation")
     (license license:bsd-3)))
+
+(define-public rust-winapi-0.3
+  (package
+    (name "rust-winapi")
+    (version "0.3.9")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "winapi" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "06gl025x418lchw1wxj64ycr7gha83m44cjr5sarhynd9xkrm0sw"))))
+    (build-system cargo-build-system)
+    ;; This package depends unconditionally on these two crates.
+    (arguments
+     `(#:cargo-inputs
+       (("winapi-i686-pc-windows-gnu" ,rust-winapi-i686-pc-windows-gnu-0.4)
+        ("winapi-x86-64-pc-windows-gnu" ,rust-winapi-x86-64-pc-windows-gnu-0.4))))
+    (inputs
+     (list rust-winapi-i686-pc-windows-gnu-0.4
+           rust-winapi-x86-64-pc-windows-gnu-0.4))
+    (home-page "https://github.com/retep998/winapi-rs")
+    (synopsis "Raw FFI bindings for all of Windows API")
+    (description
+     "Raw FFI bindings for all of Windows API.")
+    (license (list license:asl2.0
+                   license:expat))))
+
+(define-public rust-winapi-0.2
+  (package
+    (inherit rust-winapi-0.3)
+    (name "rust-winapi")
+    (version "0.2.8")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "winapi" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "0yh816lh6lf56dpsgxy189c2ai1z3j8mw9si6izqb6wsjkbcjz8n"))))
+    (arguments '(#:skip-build? #t))))
+
+(define-public rust-winapi-build-0.1
+  (package
+    (name "rust-winapi-build")
+    (version "0.1.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "winapi-build" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "1g4rqsgjky0a7530qajn2bbfcrl2v0zb39idgdws9b1l7gp5wc9d"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/retep998/winapi-rs")
+    (synopsis "Common code for build.rs in WinAPI -sys crates")
+    (description
+     "Common code for build.rs in WinAPI -sys crates.")
+    (license license:expat)))
+
+(define-public rust-winapi-i686-pc-windows-gnu-0.4
+  (package
+    (name "rust-winapi-i686-pc-windows-gnu")
+    (version "0.4.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "winapi-i686-pc-windows-gnu" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "1dmpa6mvcvzz16zg6d5vrfy4bxgg541wxrcip7cnshi06v38ffxc"))
+        (modules '((guix build utils)))
+        (snippet
+         '(begin
+            (for-each delete-file (find-files "." "\\.a$"))))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/retep998/winapi-rs")
+    (synopsis "Import libraries for the i686-pc-windows-gnu target")
+    (description "This crate provides import libraries for the
+i686-pc-windows-gnu target.  Please don't use this crate directly, depend on
+@code{winapi} instead.")
+    (license (list license:asl2.0
+                   license:expat))))
+
+(define-public rust-winapi-util-0.1
+  (package
+    (name "rust-winapi-util")
+    (version "0.1.6")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "winapi-util" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "15i5lm39wd44004i9d5qspry2cynkrpvwzghr6s2c3dsk28nz7pj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/BurntSushi/winapi-util")
+    (synopsis "Dumping ground for high level safe wrappers over winapi")
+    (description
+     "This package provides a dumping ground for high level safe wrappers over
+winapi.")
+    (license (list license:unlicense
+                   license:expat))))
+
+(define-public rust-winapi-wsapoll-0.1
+  (package
+    (name "rust-winapi-wsapoll")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "winapi-wsapoll" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vnzlcm6yrlx0xdx4g7zr41n84aj73h0p8fwh0m60mbiyl873ha4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/psychon/winapi-wsapoll")
+    (synopsis "Safe wrapper around WSAPoll")
+    (description "This package provides safe wrapper around WSAPoll.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-winapi-x86-64-pc-windows-gnu-0.4
+  (package
+    (name "rust-winapi-x86-64-pc-windows-gnu")
+    (version "0.4.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "winapi-x86_64-pc-windows-gnu" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "0gqq64czqb64kskjryj8isp62m2sgvx25yyj3kpc2myh85w24bki"))
+        (modules '((guix build utils)))
+        (snippet
+         '(begin
+            (for-each delete-file (find-files "." "\\.a$"))))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/retep998/winapi-rs")
+    (synopsis "Import libraries for the x86_64-pc-windows-gnu target")
+    (description "This package provides import libraries for the
+x86_64-pc-windows-gnu target.  Please don't use this crate directly, depend on
+@code{winapi} instead.")
+    (license (list license:asl2.0
+                   license:expat))))
 
 (define-public rust-windows-0.48
   (package
