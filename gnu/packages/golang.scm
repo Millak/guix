@@ -7283,6 +7283,29 @@ Go 1.20.")
     (home-page "https://github.com/quic-go/qtls-go1-20")
     (license license:expat)))
 
+(define-public go-github-com-gaukas-godicttls
+  (package
+    (name "go-github-com-gaukas-godicttls")
+    (version "0.0.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/gaukas/godicttls")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0n9i0b9nbwq7ms36r34kfc346prrif78hhp55gmbkvlgvsc3m2af"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/gaukas/godicttls"))
+    (home-page "https://github.com/gaukas/godicttls")
+    (synopsis "dictionary for TLS")
+    (description "This package provides a dictionary for TLS written in Go
+providing bidirectional mapping values to their names, plus enum convenience
+for values.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-quic-go-qpack
   (package
     (name "go-github-com-quic-go-qpack")
