@@ -32,6 +32,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages crates-windows)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages nettle)

@@ -63,6 +63,7 @@
   #:use-module (gnu packages crates-tls)
   #:use-module (gnu packages crates-vcs)
   #:use-module (gnu packages crates-web)
+  #:use-module (gnu packages crates-windows)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages fontutils)
