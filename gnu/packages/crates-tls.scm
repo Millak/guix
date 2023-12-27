@@ -33,6 +33,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-web)
+  #:use-module (gnu packages crates-windows)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages tls))

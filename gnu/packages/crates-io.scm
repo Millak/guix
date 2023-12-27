@@ -61895,30 +61895,6 @@ encodable types.")
 single-cell matrices.")
     (license license:bsd-3)))
 
-(define-public rust-schannel-0.1
-  (package
-    (name "rust-schannel")
-    (version "0.1.21")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "schannel" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1cxivcbczzfv4295pqi5s80kr7nhs7xc0i40zf43b7q5qw3gng3i"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-windows-sys" ,rust-windows-sys-0.42))))
-    (home-page "https://github.com/steffengy/schannel-rs")
-    (synopsis "Rust bindings to the Windows SChannel APIs")
-    (description
-     "Rust bindings to the Windows SChannel APIs providing TLS client and
-server functionality.")
-    (license license:expat)))
-
 (define-public rust-scheduled-thread-pool-0.2
   (package
     (name "rust-scheduled-thread-pool")
