@@ -22487,34 +22487,6 @@ transport methods, unicode support, secure delivery with SMTP using encryption
 and authentication, easy email builders, and async support.")
     (license license:expat)))
 
-(define-public rust-embed-resource-1
-  (package
-    (name "rust-embed-resource")
-    (version "1.8.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "embed-resource" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0piayd947h4dswbpwqs02zq42y4kfzxcl52wmr7pbr07dj3vnap6"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-cc" ,rust-cc-1)
-        ("rust-rustc-version" ,rust-rustc-version-0.4)
-        ("rust-toml" ,rust-toml-0.5)
-        ("rust-vswhom" ,rust-vswhom-0.1)
-        ("rust-winreg" ,rust-winreg-0.10))))
-    (home-page "https://github.com/nabijaczleweli/rust-embed-resource")
-    (synopsis
-     "Cargo library to handle compilation and inclusion of Windows resources")
-    (description
-     "This package provides a Cargo library to handle compilation and
-inclusion of Windows resources in the most resilient fashion imaginable.")
-    (license license:expat)))
-
 (define-public rust-embedded-hal-0.2
   (package
     (name "rust-embedded-hal")

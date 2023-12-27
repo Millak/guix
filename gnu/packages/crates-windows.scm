@@ -1,5 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2020 Valentin Ignatev <valentignatev@gmail.com>
 ;;; Copyright © 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
@@ -206,6 +208,33 @@ expressed in a simpler way.  This allows legacy programs to access all paths
 they can possibly access, and doesn't break any paths for UNC-aware
 programs.")
     (license (list license:cc0 license:expat-0 license:asl2.0))))
+
+(define-public rust-embed-resource-1
+  (package
+    (name "rust-embed-resource")
+    (version "1.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "embed-resource" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0piayd947h4dswbpwqs02zq42y4kfzxcl52wmr7pbr07dj3vnap6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cc" ,rust-cc-1)
+        ("rust-rustc-version" ,rust-rustc-version-0.4)
+        ("rust-toml" ,rust-toml-0.5)
+        ("rust-vswhom" ,rust-vswhom-0.1)
+        ("rust-winreg" ,rust-winreg-0.10))))
+    (home-page "https://github.com/nabijaczleweli/rust-embed-resource")
+    (synopsis
+     "Cargo library to handle compilation and inclusion of Windows resources")
+    (description
+     "This package provides a Cargo library to handle compilation and
+inclusion of Windows resources in the most resilient fashion imaginable.")
+    (license license:expat)))
 
 (define-public rust-windows-0.48
   (package
