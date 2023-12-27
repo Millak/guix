@@ -583,6 +583,38 @@ data arrays produced during tests, in particular in cases where the arrays
 are too large to conveniently hard-code them in the tests.")
     (license license:bsd-3)))
 
+(define-public python-pytest-cookies
+  (package
+    (name "python-pytest-cookies")
+    (version "0.7.0")
+    (source
+     (origin
+       ;; No tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hackebrot/pytest-cookies")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1x7ny6mx1siy9law1cv1i63nvv9ds2g1dlagm40l8qymxry43mjn"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "pytest" "-vv")))))))
+    (native-inputs (list python-pytest))
+    (propagated-inputs (list python-cookiecutter))
+    (home-page "https://github.com/hackebrot/pytest-cookies")
+    (synopsis "Pytest plugin for Cookiecutter templates")
+    (description
+     "This Pytest plugin adds a @code{cookies} fixture, which is a
+wrapper for the Cookiecutter API.  This fixture helps you verify that
+your template is working as expected and takes care of cleaning up after
+running the tests.")
+    (license license:expat)))
+
 (define-public python-pytest-doctestplus
   (package
     (name "python-pytest-doctestplus")
