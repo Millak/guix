@@ -14599,33 +14599,24 @@ based on color-backtrace.")
 (define-public rust-colored-2
   (package
     (name "rust-colored")
-    (version "2.0.0")
+    (version "2.1.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "colored" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1gbcijscmznzy42rn213yp9ima7210zakgaqibgg1n441dsnyqdk"))))
+          "1f4h9p64snrnz4x432iza15p4diqjcgpmpvhi956d6r1rq61bwnb"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f
        #:cargo-inputs
-       (("rust-atty" ,rust-atty-0.2)
-        ("rust-winapi" ,rust-winapi-0.3)
-        ("rust-lazy-static" ,rust-lazy-static-1))
+       (("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-windows-sys" ,rust-windows-sys-0.48))
        #:cargo-development-inputs
        (("rust-ansi-term" ,rust-ansi-term-0.12)
-        ("rust-rspec" ,rust-rspec-1))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-version-requirements
-           (lambda _
-             (substitute* "Cargo.toml"
-               (("1.0.0-beta.3") ,(package-version rust-rspec-1)))
-             #t)))))
+        ("rust-rspec" ,rust-rspec-1.0.0-beta.3))))
     (home-page "https://github.com/mackwic/colored")
     (synopsis "Add colors in your terminal")
     (description
