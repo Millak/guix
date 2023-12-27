@@ -41406,6 +41406,24 @@ requires non-const function calls to be computed.")
 sending emails from Rust applications.")
     (license license:expat)))
 
+(define-public rust-levenshtein-1
+  (package
+    (name "rust-levenshtein")
+    (version "1.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "levenshtein" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0q0pa1prsjk3v28xkas5rf30ng9816mxpr2n3xls65dmgawss4yv"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/wooorm/levenshtein-rs")
+    (synopsis "Levenshtein algorithm")
+    (description
+     "This crate provides an implementation of the levenshtein algorithm in rust.")
+    (license license:expat)))
+
 (define-public rust-lewton-0.10
   (package
     (name "rust-lewton")
