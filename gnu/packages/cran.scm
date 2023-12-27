@@ -29846,13 +29846,13 @@ Visualizations are also available for most of these settings.")
 (define-public r-torch
   (package
     (name "r-torch")
-    (version "0.11.0")
+    (version "0.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "torch" version))
        (sha256
-        (base32 "04hvr3f4rgnxxc42fiv58kpyld4aagj6ambhw769v3bfz7s2v879"))))
+        (base32 "024c8szg3xa2zrl5406jx3bmazbjwp2f07ja7m61ja0dr3z7lvbq"))))
     (properties `((upstream-name . "torch")))
     (build-system r-build-system)
     (arguments
@@ -29886,10 +29886,12 @@ Visualizations are also available for most of these settings.")
            r-desc
            r-ellipsis
            r-glue
+           r-jsonlite
            r-magrittr
            r-r6
            r-rcpp
            r-rlang
+           r-safetensors
            r-withr))
     (native-inputs (list r-knitr))
     (home-page "https://torch.mlverse.org/docs")
