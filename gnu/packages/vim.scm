@@ -475,7 +475,8 @@ trouble using them, because you do not have to remember each snippet name.")
          #:phases
          (modify-phases %standard-phases
            (add-before 'install 'check
-             (lambda* (#:key inputs native-inputs tests? #:allow-other-keys)
+             (lambda* (#:key inputs native-inputs tests? vim? neovim?
+                       #:allow-other-keys)
                (when tests?
                  (display "Running Python unit tests.\n")
                  (setenv "PYTHONPATH" (string-append (getcwd) "/python"))
@@ -489,12 +490,19 @@ trouble using them, because you do not have to remember each snippet name.")
                                               "vim-vader"))
                         (vader-path (string-append
                                       vim-vader
-                                      "/share/vim/vimfiles/pack/guix/start/vader")))
+                                      (if vim?
+                                        "/share/vim/vimfiles"
+                                        "/share/nvim/site")
+                                      "/pack/guix/start/vader"))
+                        (command `(,@(if vim? '("vim" "-E") '())
+                                   ,@(if neovim? '("nvim" "--headless") '())
+                                   "-Nu" "vimrc"
+                                   "-c" "Vader! *.vader")))
                    (with-directory-excursion "tests/vim"
+                     (when neovim?
+                       (setenv "HOME" (getcwd)))
                      (setenv "VADER_PATH" vader-path)
-                     (invoke "vim"
-                             "-E" "-Nu" "vimrc"
-                             "-c" "Vader! *.vader")))
+                     (apply invoke command)))
 
                  ;; Remove __pycache__ files generated during testing so that
                  ;; they don't get installed.
