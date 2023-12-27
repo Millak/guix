@@ -79784,17 +79784,15 @@ arithmetic.")
 (define-public rust-ungrammar-1
   (package
     (name "rust-ungrammar")
-    (version "1.14.9")
+    (version "1.16.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ungrammar" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1agx2hpp3sirknnx8j17mzcg222024s6vkx6s5v3s3l8zp15kgk6"))))
+        (base32 "13ynrv658ikr4lqi3lk1xbcrr1d1qsjnrb8acwfyrwqbgwsdzrd3"))))
     (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t))
     (home-page "https://github.com/matklad/ungrammar")
     (synopsis "DSL for describing concrete syntax trees")
     (description
