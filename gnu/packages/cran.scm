@@ -4670,6 +4670,29 @@ calculations, cut up and filter, change key names and values, perform
 conditionals and comparisons, and more.")
     (license license:expat)))
 
+(define-public r-safetensors
+  (package
+    (name "r-safetensors")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "safetensors" version))
+       (sha256
+        (base32 "0xvg5y2sd7gzcal0qqgxbx8vcvmy50jm0j2ajr8iw3wyy5qpyvkp"))))
+    (properties `((upstream-name . "safetensors")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cli r-jsonlite r-r6 r-rlang))
+    (home-page "https://github.com/mlverse/safetensors")
+    (synopsis "Safetensors file format")
+    (description
+     "This package provides a file format for storing tensors that is
+secure (doesn't allow for code execution), fast and simple to implement.
+@code{safetensors} also enables cross language and cross frameworks
+compatibility making it an ideal format for storing machine learning model
+weights.")
+    (license license:expat)))
+
 (define-public r-sass
   (package
     (name "r-sass")
