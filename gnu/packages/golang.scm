@@ -2583,6 +2583,54 @@ Go.")
 Go.")
     (license license:cc0)))
 
+(define-public go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird
+  (package
+    (name "go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird")
+    (version "0.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird")
+                    (commit (string-append "lyrebird-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0rifg5kgqp4c3b44j48fjmx00m00ai7fa4gaqrgphiqs1fc5586s"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:unpack-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird"
+       #:import-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird/cmd/lyrebird"
+       #:go ,go-1.20
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'substitutions
+           (lambda _
+             (with-directory-excursion
+                 "src/gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird"
+               (for-each
+                (lambda (file)
+                  (substitute* file
+                    (("edwards25519-extra.git") "edwards25519-extra")))
+                (list "common/ntor/ntor_test.go"
+                      "internal/x25519ell2/x25519ell2.go"))
+               (substitute* "internal/x25519ell2/x25519ell2.go"
+                 (("gitlab.com/yawning/obfs4.git")
+                  "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird"))))))))
+    (propagated-inputs
+     (list go-filippo-io-edwards25519
+           go-github-com-dchest-siphash
+           go-github-com-refraction-networking-utls
+           go-gitlab-com-yawning-edwards25519-extra
+           go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-goptlib
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-text))
+    (home-page "https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/lyrebird")
+    (synopsis "Look-like nothing obfuscation protocol")
+    (description "This is a look-like nothing obfuscation protocol that
+incorporates ideas and concepts from Philipp Winter's ScrambleSuit protocol.")
+    (license (list license:bsd-2 license:bsd-3))))
+
 (define-public go-github-com-sevlyar-go-daemon
   (package
     (name "go-github-com-sevlyar-go-daemon")
