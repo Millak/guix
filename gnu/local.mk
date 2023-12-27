@@ -1720,6 +1720,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/online-judge-tools.patch		\
   %D%/packages/patches/onnx-optimizer-system-library.patch	\
   %D%/packages/patches/onnx-use-system-googletest.patch	\
+  %D%/packages/patches/onnx-1.13.1-use-system-googletest.patch	\
   %D%/packages/patches/onnx-shared-libraries.patch	\
   %D%/packages/patches/onnx-skip-model-downloads.patch		\
   %D%/packages/patches/openbios-aarch64-riscv64-support.patch	\
