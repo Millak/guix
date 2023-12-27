@@ -22910,14 +22910,14 @@ information about geometries.")
 (define-public r-sf
   (package
     (name "r-sf")
-    (version "1.0-14")
+    (version "1.0-15")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sf" version))
        (sha256
         (base32
-         "1xrrqd91601lcd83zzwksb4ampy1j8vf8f6941csk89psm45clwb"))))
+         "0b9whfi709gjkzslkrkm8ki1yz5az6vrv5b1l2w712sjqy8r47f8"))))
     (build-system r-build-system)
     (inputs
      (list curl
