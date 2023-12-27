@@ -8160,8 +8160,37 @@ bindings to C and C++ libraries.")
         ("rust-diff" ,rust-diff-0.1)
         ("rust-shlex" ,rust-shlex-0.1))))))
 
+(define-public rust-bio-types-1
+  (package
+    (name "rust-bio-types")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bio-types" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jmad6knx576mmz9djnqz4kldzql9mqvzs95202hh67jhydp8icx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-clap" ,rust-clap-4)
+                       ("rust-derive-new" ,rust-derive-new-0.5)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-petgraph" ,rust-petgraph-0.6)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-strum-macros" ,rust-strum-macros-0.24)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://rust-bio.github.io")
+    (synopsis "Common biomedical types for use in rust-bio and rust-htslib")
+    (description
+     "This package provides a collection of common biomedical types for use in
+rust-bio and rust-htslib.")
+    (license license:expat)))
+
 (define-public rust-bio-types-0.12
   (package
+    (inherit rust-bio-types-1)
     (name "rust-bio-types")
     (version "0.12.1")
     (source
@@ -8171,7 +8200,6 @@ bindings to C and C++ libraries.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1dmcjwky9fszmwwg7ywv52xhz93zibsgl7nj9x7gadvz8yb45g0k"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-derive-new" ,rust-derive-new-0.5)
@@ -8180,13 +8208,7 @@ bindings to C and C++ libraries.")
         ("rust-regex" ,rust-regex-1)
         ("rust-serde" ,rust-serde-1)
         ("rust-strum-macros" ,rust-strum-macros-0.21)
-        ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://rust-bio.github.io")
-    (synopsis "Common biomedical types for use in rust-bio and rust-htslib")
-    (description
-     "This package provides a collection of common biomedical types for use in
-rust-bio and rust-htslib.")
-    (license license:expat)))
+        ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-bio-0.32
   (package
