@@ -44029,26 +44029,6 @@ key-value pairs.")
      "Colorize paths using the LS_COLORS environment variable.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-lscolors-0.7
-  (package
-    (inherit rust-lscolors-0.13)
-    (name "rust-lscolors")
-    (version "0.7.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "lscolors" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0vn1824lagf0xdv5rxyl7m9fbrcylyjibmnd4634dnn98m68jjyj"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-ansi-term" ,rust-ansi-term-0.12))
-       #:cargo-development-inputs
-       (("rust-tempfile" ,rust-tempfile-3))))))
-
 (define-public rust-lsp-types-0.91
   (package
     (name "rust-lsp-types")
