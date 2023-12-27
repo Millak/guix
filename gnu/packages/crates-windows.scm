@@ -7,6 +7,7 @@
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 ( <paren@disroot.org>
+;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
@@ -462,6 +463,28 @@ IOCP and Async I/O abstractions.")
      "Utility to activate escape codes in Windows' CMD and PowerShell")
     (description
      "Utility to activate escape codes in Windows' CMD and PowerShell.")
+    (license license:expat)))
+
+(define-public rust-python3-dll-a-0.2
+  (package
+    (name "rust-python3-dll-a")
+    (version "0.2.6")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "python3-dll-a" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1a676r8xlbkijdagywwz838rbdnc9h28lgmx1ccvyqj9h9rbs5d9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f                      ;Windows-like targets only
+       #:cargo-inputs (("rust-cc" ,rust-cc-1))))
+    (home-page "https://github.com/pyo3/python3-dll-a")
+    (synopsis "Python import library generator")
+    (description
+     "This crate generates import libraries for the Python shared library
+for MinGW-w64 and MSVC (cross-)compile targets.")
     (license license:expat)))
 
 (define-public rust-windows-0.48
