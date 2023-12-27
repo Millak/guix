@@ -846,6 +846,48 @@ x86_64-pc-windows-gnu target.  Please don't use this crate directly, depend on
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-wincolor-1
+  (package
+    (name "rust-wincolor")
+    (version "1.0.3")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "wincolor" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "017x33ljndwc76cp5z9llgndn0nh7v8jcjaykbizkawmwy9n3pyp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-winapi" ,rust-winapi-0.3)
+        ("rust-winapi-util" ,rust-winapi-util-0.1))))
+    (home-page "https://github.com/BurntSushi/termcolor/tree/master/wincolor")
+    (synopsis "Windows API for controlling text color in a Windows console")
+    (description
+     "This package provides a simple Windows specific API for controlling text
+color in a Windows console.")
+    (license (list license:unlicense
+                   license:expat))))
+
+(define-public rust-wincolor-0.1
+  (package
+    (inherit rust-wincolor-1)
+    (name "rust-wincolor")
+    (version "0.1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wincolor" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0rvpvv26a8c4dla5i5hsxlkvjcjjbl0dylhhg4147m54lfcn9c7f"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-winapi" ,rust-winapi-0.3))))))
+
 (define-public rust-windows-0.48
   (package
     (name "rust-windows")
