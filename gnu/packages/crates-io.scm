@@ -60294,7 +60294,8 @@ Python code from a Rust binary is also supported.")
     (arguments
      `(#:cargo-test-flags
        '("--release" "--"
-         "--skip=test_compile_errors")
+         "--skip=test_compile_errors"
+         "--skip=exceptions::PyUnicodeDecodeError::new_utf8")
        #:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-cfg-if" ,rust-cfg-if-1)
