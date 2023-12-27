@@ -67140,18 +67140,35 @@ the file-system during development.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "15acrj881y2g7cwsgf1nr22cixrknp8m4x08dkx1an6zf4q8bk37"))))
+          "15acrj881y2g7cwsgf1nr22cixrknp8m4x08dkx1an6zf4q8bk37"))
+        (snippet
+         #~(begin (use-modules (guix build utils))
+                  (delete-file "pregenerated_bindings.rs")
+                  ;; TODO: Unbundle hawktracer
+                  (substitute* "Cargo.toml"
+                    (("0\\.37\\.0") "0.56")
+                    ;; Generate the bindings by default since we delete the
+                    ;; pregenerated bindings.
+                    (("\\[features\\]")
+                     "[features]\ndefault = ['generate_bindings']"))
+                  (substitute* "build.rs"
+                    (("( +)\\.generate" _ space)
+                     (string-append space ".size_t_is_usize(true)\n"
+                                    space ".generate")))
+                  (substitute* "hawktracer/CMakeLists.txt"
+                    (("(ENABLE_DOC.*) ON" _ enable_doc)
+                     (string-append enable_doc " OFF")))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-cmake" ,rust-cmake-0.1)
         ("rust-pkg-config" ,rust-pkg-config-0.3)
-        ("rust-bindgen" ,rust-bindgen-0.37)
+        ("rust-bindgen" ,rust-bindgen-0.56)
         ("rust-itertools" ,rust-itertools-0.8))))
+    (native-inputs
+     (list clang cmake-minimal))
     (home-page "https://github.com/AlexEne/rust_hawktracer_sys")
-    (synopsis
-     "Sys crate for the rust_hawktracer library")
+    (synopsis "Sys crate for the rust_hawktracer library")
     (description
      "This package provides a sys crate for the rust_hawktracer library.")
     (license (list license:expat license:asl2.0))))
