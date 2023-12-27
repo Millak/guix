@@ -5860,6 +5860,35 @@ Architecture Processors\" by J. Guilford et al.")
       (description "Various cryptographic utilities used by IPFS")
       (license license:expat))))
 
+(define-public go-github-com-cloudflare-circl
+  (package
+    (name "go-github-com-cloudflare-circl")
+    (version "1.3.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/cloudflare/circl")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "05hk5svprcjrj6k4mg4kd732pnb658llqv04z6xrcl5v77jda2kd"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/cloudflare/circl"))
+    (propagated-inputs
+     (list go-github-com-bwesterb-go-ristretto
+           go-golang-org-x-crypto
+           go-golang-org-x-sys))
+    (home-page "https://blog.cloudflare.com/introducing-circl")
+    (synopsis "Cloudflare Interoperable Reusable Cryptographic Library")
+    (description "CIRCL (Cloudflare Interoperable, Reusable Cryptographic
+Library) is a collection of cryptographic primitives written in Go.  The goal
+of this library is to be used as a tool for experimental deployment of
+cryptographic algorithms targeting Post-Quantum (PQ) and Elliptic Curve
+Cryptography (ECC).")
+    (license license:bsd-3)))
+
 (define-public go-github-com-mr-tron-base58
   (let ((commit "d724c80ecac7b49e4e562d58b2b4f4ee4ed8c312")
         (revision "0"))
