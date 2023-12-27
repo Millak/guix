@@ -65243,6 +65243,24 @@ can handle huge texts and memory-incoherent edits with ease.")
 rust.")
     (license license:mpl2.0)))
 
+(define-public rust-rspec-1.0.0-beta.3
+  (package
+    (inherit rust-rspec-1)
+    (name "rust-rspec")
+    (version "1.0.0-beta.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rspec" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qkafvyg3r3h4ffhb7bhzq54mxxbirn2hk693wxdv5zhdjx68a99"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "Cargo.toml"
+                   (("clippy.*") ""))))))
+    (arguments `())))
+
 (define-public rust-rspotify-0.11
   (package
     (name "rust-rspotify")
