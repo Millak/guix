@@ -7221,20 +7221,24 @@ matrices.")
 (define-public r-rmpi
   (package
     (name "r-rmpi")
-    (version "0.7-1")
+    (version "0.7-2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "Rmpi" version))
               (sha256
                (base32
-                "1h9dvlh9mvbc4lhxbv9c8yak3yrq4p7xym92pk5al5wkx9yy5nhp"))))
-    (properties `((upstream-name . "Rmpi")))
+                "1vrf6bakx9i73sdgggpxzl1lxjn68b8pwvmk69d56lnya2gzm4c5"))))
+    (properties
+     `((upstream-name . "Rmpi")
+       (updater-extra-inputs . ("openmpi"))))
     (build-system r-build-system)
     (arguments
-     `(#:configure-flags '("--configure-args=\"--with-Rmpi-type=OPENMPI\"")
-       #:phases (modify-phases %standard-phases
-                  (add-before 'install 'mpi-setup
-                    ,%openmpi-setup))))
+     (list
+      #:configure-flags '(list "--configure-args=\"--with-Rmpi-type=OPENMPI\"")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'mpi-setup
+            #$%openmpi-setup))))
     (inputs
      (list openmpi))
     (native-inputs
