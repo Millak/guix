@@ -1,4 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2019, 2020, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020 Valentin Ignatev <valentignatev@gmail.com>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
@@ -308,6 +310,29 @@ network configuration for Windows.")
         ("rust-winapi" ,rust-winapi-0.3)
         ("rust-winreg" ,rust-winreg-0.6))))))
 
+(define-public rust-kernel32-sys-0.2
+  (package
+    (name "rust-kernel32-sys")
+    (version "0.2.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "kernel32-sys" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "1389av0601a9yz8dvx5zha9vmkd6ik7ax0idpb032d28555n41vm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-winapi" ,rust-winapi-0.2)
+        ("rust-winapi-build" ,rust-winapi-build-0.1))))
+    (home-page "https://github.com/retep998/winapi-rs")
+    (synopsis "Function definitions for the Windows API library kernel32")
+    (description "Contains function definitions for the Windows API library
+kernel32.")
+    (license license:expat)))
 
 (define-public rust-windows-0.48
   (package
