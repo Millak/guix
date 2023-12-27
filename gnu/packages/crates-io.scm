@@ -67066,8 +67066,7 @@ the file-system during development.")
           "1h9an3b73pmhhpzc2kk93nh93lplkvsffysj0rp6rxi7p4lhlj73"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-rust-hawktracer-normal-macro"
          ,rust-rust-hawktracer-normal-macro-0.4)
         ("rust-rust-hawktracer-proc-macro"
