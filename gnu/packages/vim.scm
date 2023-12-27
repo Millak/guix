@@ -1509,7 +1509,7 @@ operations are available for most filetypes.")
          #:phases
          (modify-phases %standard-phases
            (add-before 'install 'check
-             (lambda* (#:key tests? #:allow-other-keys)
+             (lambda* (#:key tests? vim? neovim? #:allow-other-keys)
                (when tests?
                  ;; FIXME: suite1.vader fails with an unknown reason,
                  ;; lang-if.vader requires Python and Ruby.
@@ -1519,9 +1519,11 @@ operations are available for most filetypes.")
 
                  (display "Running Vim tests\n")
                  (with-directory-excursion "test"
-                   (setenv "VADER_TEST_VIM" "vim -E")
+                   (when vim?
+                     (setenv "VADER_TEST_VIM" "vim -E"))
+                   (when neovim?
+                     (setenv "VADER_TEST_VIM" "nvim --headless"))
                    (invoke "bash" "./run-tests.sh"))))))))
-      (native-inputs (list vim))
       (home-page "https://github.com/junegunn/vader.vim")
       (synopsis "Test framework for Vimscript")
       (description "Vader is a test framework for Vimscript designed to
