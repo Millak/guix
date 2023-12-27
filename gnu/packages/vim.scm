@@ -1533,6 +1533,11 @@ be integrated with @acronym{CI, Continuous Integration} pipelines to
 automate testing and is compatible with Vim and Neovim.")
       (license license:expat)))) ;; Specified in README.md.
 
+(define-public neovim-vader
+  (package
+    (inherit vim-vader)
+    (name "neovim-vader")))
+
 (define-public vim-jedi-vim
   (package
     (name "vim-jedi-vim")
