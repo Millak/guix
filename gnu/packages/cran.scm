@@ -36594,17 +36594,15 @@ Maximum Parsimony, distance methods and Hadamard conjugation.")
 (define-public r-diversitree
   (package
     (name "r-diversitree")
-    (version "0.9-20")
+    (version "0.10-0")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "diversitree" version))
         (sha256
          (base32
-          "0lm098ysk6np4dy1cifbhd85jd1f1iz4bqhgzlcx7x8qnhh3zc1c"))))
+          "1xl2swbmgpni2y2divl29xh702b88kxgcswa47g62ny59gh2fdn1"))))
     (build-system r-build-system)
-    (native-inputs
-     (list gfortran))
     (inputs (list fftw gsl))
     (propagated-inputs
      (list r-ape r-desolve r-rcpp r-subplex))
