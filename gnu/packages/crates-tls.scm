@@ -27,6 +27,7 @@
   #:use-module (guix download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages crates-io)
@@ -545,3 +546,40 @@ PEM-encodings commonly used to store keys and certificates at rest.")
         ("rust-untrusted" ,rust-untrusted-0.7))
        #:cargo-development-inputs (("rust-base64" ,rust-base64-0.13))))))
 
+(define-public rust-tls-parser-0.11
+  (package
+    (name "rust-tls-parser")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tls-parser" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1q0vd41sjf6pbcygp5bqlpqrxbqdd0qsqi4sm5zbzvb4vvi0d4j0"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 ;; Accept newer versions of rust-clap.
+                 (substitute* "Cargo.toml"
+                   (("~2\\.33") "^2.33"))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f ;; requires assets not included in crates.io tarball
+       #:cargo-inputs
+       (("rust-cookie-factory" ,rust-cookie-factory-0.3)
+        ("rust-enum-primitive" ,rust-enum-primitive-0.1)
+        ("rust-nom" ,rust-nom-7)
+        ("rust-nom-derive" ,rust-nom-derive-0.10)
+        ("rust-phf" ,rust-phf-0.10)
+        ("rust-phf-codegen" ,rust-phf-codegen-0.10)
+        ("rust-rusticata-macros" ,rust-rusticata-macros-4))
+       #:cargo-development-inputs
+       (("rust-clap" ,rust-clap-2)
+        ("rust-hex-literal" ,rust-hex-literal-0.3)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-0.7))))
+    (home-page "https://github.com/rusticata/tls-parser")
+    (synopsis "Parser for the TLS protocol")
+    (description "This package provides a Rust parser for the TLS protocol.")
+    (license (list license:expat license:asl2.0))))
