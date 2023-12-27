@@ -12162,48 +12162,6 @@ stream of tokens.")
 colorization.")
     (license license:expat)))
 
-(define-public rust-clipboard-win-4
-  (package
-    (name "rust-clipboard-win")
-    (version "4.2.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "clipboard-win" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1a1cpp4yyizz41bkij5x85p220xxrlja6l6wwj9wkvwj364a2kjf"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-error-code" ,rust-error-code-2)
-        ("rust-str-buf" ,rust-str-buf-1)
-        ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/DoumanAsh/clipboard-win")
-    (synopsis "Simple way to interact with Windows clipboard")
-    (description
-     "This package provides simple way to interact with Windows clipboard.")
-    (license license:boost1.0)))
-
-(define-public rust-clipboard-win-3
-  (package
-    (inherit rust-clipboard-win-4)
-    (name "rust-clipboard-win")
-    (version "3.1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "clipboard-win" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0hh3npqfa1lfn62fwvkmjlpfnizq343a994b898ffsvb100mxpwz"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-lazy-bytes-cast" ,rust-lazy-bytes-cast-5)
-        ("rust-winapi" ,rust-winapi-0.3))))))
-
 (define-public rust-clippy-0.0
   (package
     (name "rust-clippy")
