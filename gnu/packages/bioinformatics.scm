@@ -10349,6 +10349,51 @@ data.  This package includes panel editing or renaming for FCS files,
 bead-based normalization and debarcoding.")
       (license license:gpl3))))
 
+(define-public r-projectils
+  (let ((commit "cc73b97471b4b6eea11ce779b5c4a7dc5c3e1709")
+        (revision "1"))
+    (package
+      (name "r-projectils")
+      (version (git-version "3.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/carmonalab/ProjecTILs")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0dpzvbhhb9andnj7angpj32cgkwd6rs6qgpl6i21pqzcn6vqqhqw"))))
+      (properties `((upstream-name . "ProjecTILs")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-biocneighbors
+             r-biocparallel
+             r-dplyr
+             r-ggplot2
+             r-matrix
+             r-patchwork
+             r-pheatmap
+             r-pracma
+             r-purrr
+             r-rcolorbrewer
+             r-reshape2
+             r-scales
+             r-scgate
+             r-seurat
+             r-seuratobject
+             r-stacas
+             r-ucell
+             r-umap
+             r-uwot))
+      (home-page "https://github.com/carmonalab/ProjecTILs")
+      (synopsis "Reference-based analysis of scRNA-seq data")
+      (description
+       "This package implements methods to project single-cell RNA-seq data
+onto a reference atlas, enabling interpretation of unknown cell transcriptomic
+states in the the context of known, reference states.")
+      (license license:gpl3))))
+
 (define-public r-presto
   (let ((commit "052085db9c88aa70a28d11cc58ebc807999bf0ad")
         (revision "0"))
