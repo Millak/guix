@@ -4252,13 +4252,13 @@ in systems and applications.")
 (define-public r-servr
   (package
     (name "r-servr")
-    (version "0.27")
+    (version "0.28")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "servr" version))
               (sha256
                (base32
-                "1iaqah3896660d609fb6960x3mg17jak3j5akmmli0z4pdb3rhh1"))))
+                "10nl6aal2kr0k1j7yfpggcxpjxby6z5hhc6wb4nkqhy2w5qi6g26"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-httpuv r-jsonlite r-mime r-xfun))
