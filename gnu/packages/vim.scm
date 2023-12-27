@@ -518,6 +518,18 @@ similar to CoqIDE or ProofGeneral.")
       (home-page "https://github.com/whonore/Coqtail")
       (license license:expat))))
 
+(define-public neovim-coqtail
+  (package
+    (inherit vim-coqtail)
+    (name "neovim-coqtail")
+    (synopsis "Interactive Coq proofs in Neovim")
+    (description "Coqtail enables interactive Coq proof development in Neovim
+similar to CoqIDE or ProofGeneral.")
+    (native-inputs
+     (modify-inputs (package-native-inputs vim-coqtail)
+       (replace "vim-vader" neovim-vader)
+       (append python-minimal python-pynvim)))))
+
 (define-public vim-fugitive
   (package
     (name "vim-fugitive")
