@@ -8912,14 +8912,14 @@ of the text.  All return names of the encodings are iconv-compatible.")
 (define-public r-ucminf
   (package
     (name "r-ucminf")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ucminf" version))
        (sha256
         (base32
-         "1x3d3l500kyqamzfjpz4qc38d6d3sha9av3rpxz0m4dhms28zpas"))))
+         "10ycpzxx73div9vpzmkhy524yd47kzmpl7ajpm248clsv6ivngpd"))))
     (build-system r-build-system)
     (native-inputs (list gfortran))
     (home-page "https://cran.r-project.org/web/packages/ucminf/")
