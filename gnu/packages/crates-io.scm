@@ -34057,25 +34057,6 @@ and loading crate.")
         ("rust-plain" ,rust-plain-0.2)
         ("rust-scroll" ,rust-scroll-0.11))))))
 
-(define-public rust-goblin-0.2
-  (package
-    (inherit rust-goblin-0.6)
-    (name "rust-goblin")
-    (version "0.2.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "goblin" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1j38fkqadbsjxawr3wnj9m0qaihcwp6pmfakmhsar881509y7mfx"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-scroll" ,rust-scroll-0.10)
-        ("rust-plain" ,rust-plain-0.2)
-        ("rust-log" ,rust-log-0.4))))))
-
 (define-public rust-greetd-ipc-0.9
   (package
     (name "rust-greetd-ipc")
