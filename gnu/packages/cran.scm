@@ -7693,14 +7693,16 @@ functions from LINPACK.")
 (define-public r-littler
   (package
     (name "r-littler")
-    (version "0.3.18")
+    (version "0.3.19")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "littler" version))
               (sha256
                (base32
-                "1lp6a62g3yhzr4pv9kynibv7k9pd546w6hifs1aficyxbyg4dgqq"))))
-    (properties `((upstream-name . "littler")))
+                "02b5lfdhajngs2l0fgy47zn7zn68qbx6m41cs5yzzi80qdfapkz1"))))
+    (properties
+     `((upstream-name . "littler")
+       (updater-extra-inputs . ("icu4c" "zlib"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -7712,7 +7714,7 @@ functions from LINPACK.")
                             (string-append #$output "/bin")))))))
     (inputs (list icu4c zlib))
     (native-inputs
-     (list r-simplermarkdown pkg-config))
+     (list r-simplermarkdown))
     (home-page "https://github.com/eddelbuettel/littler")
     (synopsis "R at the command-line via r")
     (description
