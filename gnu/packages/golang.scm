@@ -42,6 +42,7 @@
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2023 Clément Lassieur <clement@lassieur.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -9909,6 +9910,71 @@ composability.")
      "This package implements the edwards25519 elliptic curve in Go, exposing
 the necessary APIs to build a wide array of higher-level primitives.")
     (license license:bsd-3)))
+
+(define-public go-gitlab-com-yawning-edwards25519-extra
+  (let ((commit "2149dcafc266f66d2487f45b156f6397f9c4760b")
+        (revision "0"))
+    (package
+      (name "go-gitlab-com-yawning-edwards25519-extra")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/yawning/edwards25519-extra")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "08mz1qyi8ig515hh5blnzxhiwsav564ah7mzyhvmr6i48ndhhv98"))))
+      (build-system go-build-system)
+      (arguments
+       '(#:unpack-path "gitlab.com/yawning/edwards25519-extra"
+         #:phases
+         (modify-phases %standard-phases
+           (replace 'build
+             (lambda arguments
+               (for-each
+                (lambda (directory)
+                  (apply (assoc-ref %standard-phases 'build)
+                         `(,@arguments #:import-path ,directory)))
+                (list
+                 "gitlab.com/yawning/edwards25519-extra/elligator2"
+                 "gitlab.com/yawning/edwards25519-extra/h2c"
+                 "gitlab.com/yawning/edwards25519-extra/internal/montgomery"
+                 "gitlab.com/yawning/edwards25519-extra/vrf"))))
+           (replace 'check
+             (lambda arguments
+               (for-each
+                (lambda (directory)
+                  (apply (assoc-ref %standard-phases 'check)
+                         `(,@arguments #:import-path ,directory)))
+                (list
+                 "gitlab.com/yawning/edwards25519-extra/elligator2"
+                 "gitlab.com/yawning/edwards25519-extra/h2c"
+                 "gitlab.com/yawning/edwards25519-extra/internal/montgomery"
+                 "gitlab.com/yawning/edwards25519-extra/vrf"))))
+           (replace 'install
+             (lambda arguments
+               (for-each
+                (lambda (directory)
+                  (apply (assoc-ref %standard-phases 'install)
+                         `(,@arguments #:import-path ,directory)))
+                (list
+                 "gitlab.com/yawning/edwards25519-extra/elligator2"
+                 "gitlab.com/yawning/edwards25519-extra/h2c"
+                 "gitlab.com/yawning/edwards25519-extra/internal/montgomery"
+                 "gitlab.com/yawning/edwards25519-extra/vrf")))))))
+      (propagated-inputs (list go-golang-org-x-crypto
+                               go-filippo-io-edwards25519))
+      (home-page "https://gitlab.com/yawning/edwards25519-extra")
+      (synopsis "edwards25519-extra")
+      (description
+       "This package provides extensions to the Go standard library's Ed25519 and
+curve25519 implementations, primarily extracted from
+@@url{https://github.com/oasisprotocol/curve25519-voi,curve25519-voi}.  This
+package is intended for interoperability with the standard library and the
+@@url{https://filippo.io/edwards25519,edwards25519} package as much as possible.")
+      (license license:bsd-3))))
 
 (define-public go-github-com-rogpeppe-go-internal
   (package
