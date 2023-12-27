@@ -1,8 +1,8 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2019, 2020, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2020 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2019, 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
@@ -27,6 +27,7 @@
   #:use-module (guix download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages compression)
@@ -3005,6 +3006,210 @@ state.  Used by Gitoxide a pure Rust implementation of Git.")
     (description "This crate provides the ability to generate a byte-stream
 from a git-tree.  It's part of Gitoxide, a pure Rust implementation of Git.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-libgit2-sys-0.16
+  (package
+    (name "rust-libgit2-sys")
+    (version "0.16.1+1.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libgit2-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "030dnq7hz79qs4rxdllc3ailvqzc432jwwxk7g8av55hh0vbp8pj"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin (delete-file-recursively "libgit2")))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libssh2-sys" ,rust-libssh2-sys-0.3)
+                       ("rust-libz-sys" ,rust-libz-sys-1)
+                       ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (native-inputs (list pkg-config))
+    (inputs (list libgit2-1.7 openssl zlib))
+    (home-page "https://github.com/rust-lang/git2-rs")
+    (synopsis "Native bindings to the libgit2 library")
+    (description
+     "This package provides native Rust bindings to the @code{libgit2}
+library.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-libgit2-sys-0.15
+  (package
+    (inherit rust-libgit2-sys-0.16)
+    (name "rust-libgit2-sys")
+    (version "0.15.2+1.6.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libgit2-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1yllyq9wiryy257cfx8s7wadls24yzkxnhmbl95iz9ml3zhz43d8"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (delete-file-recursively "libgit2")))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cc" ,rust-cc-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-libssh2-sys" ,rust-libssh2-sys-0.3)
+        ("rust-libz-sys" ,rust-libz-sys-1)
+        ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+        ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (inputs (list libgit2-1.6 openssl zlib))))
+
+(define-public rust-libgit2-sys-0.14
+  (package
+    (inherit rust-libgit2-sys-0.15)
+    (name "rust-libgit2-sys")
+    (version "0.14.2+1.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libgit2-sys" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1926x5f84ykr8j2lsdmb0n0bj4jz173j5bm722cgwx8hnpv9agbz"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (delete-file-recursively "libgit2")))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cc" ,rust-cc-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-libssh2-sys" ,rust-libssh2-sys-0.2)
+        ("rust-libz-sys" ,rust-libz-sys-1)
+        ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+        ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (inputs
+     (list libgit2 openssl zlib))))
+
+(define-public rust-libgit2-sys-0.13
+  (package
+    (inherit rust-libgit2-sys-0.14)
+    (name "rust-libgit2-sys")
+    (version "0.13.5+1.4.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libgit2-sys" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1fkdgfqdkd38hfsyw3znq629gp7wdknzslym5l0g29k9q83fmrai"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (delete-file-recursively "libgit2")))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cc" ,rust-cc-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-libssh2-sys" ,rust-libssh2-sys-0.2)
+        ("rust-libz-sys" ,rust-libz-sys-1)
+        ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+        ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (inputs
+     (list libgit2-1.4 openssl zlib))))
+
+(define-public rust-libgit2-sys-0.12
+  (package
+    (inherit rust-libgit2-sys-0.14)
+    (name "rust-libgit2-sys")
+    (version "0.12.26+1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libgit2-sys" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "153l8nvz9p8vyd5840xi6fwblvhpn3c33jwdwsznyq4f4jcwiq8r"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (delete-file-recursively "libgit2")))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cc" ,rust-cc-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-libssh2-sys" ,rust-libssh2-sys-0.2)
+        ("rust-libz-sys" ,rust-libz-sys-1)
+        ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+        ("rust-pkg-config" ,rust-pkg-config-0.3))))))
+
+(define-public rust-libgit2-sys-0.10
+  (package
+    (inherit rust-libgit2-sys-0.12)
+    (name "rust-libgit2-sys")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libgit2-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0l9fvki7qxsl97vgzqwlv75nl213a5vxw7b1jaik97ala356pv6r"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (delete-file-recursively "libgit2") #t))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-libz-sys" ,rust-libz-sys-1)
+        ("rust-libssh2-sys" ,rust-libssh2-sys-0.2)
+        ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+        ;; Build dependencies:
+        ("rust-cc" ,rust-cc-1)
+        ("rust-pkg-config" ,rust-pkg-config-0.3))))))
+
+(define-public rust-libgit2-sys-0.8
+  (package
+    (inherit rust-libgit2-sys-0.10)
+    (name "rust-libgit2-sys")
+    (version "0.8.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "libgit2-sys" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "0y2mibmx7wy91s2kmb2gfb29mrqlqaxpy5wcwr8s1lwws7b9w5sc"))
+        (modules '((guix build utils)))
+        (snippet
+         '(begin (delete-file-recursively "libgit2") #t))))))
+
+(define-public rust-libgit2-sys-0.6
+  (package
+    (inherit rust-libgit2-sys-0.10)
+    (name "rust-libgit2-sys-6")
+    (version "0.6.19")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libgit2-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0myk79sxqj20bmj4ir3p81xnma9qnid5rrmlbkj5v68wgdpfdskf"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cc" ,rust-cc-1)
+        ("rust-cmake" ,rust-cmake-0.1)
+        ("rust-curl-sys" ,rust-curl-sys-0.4)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-libssh2-sys" ,rust-libssh2-sys-0.2)
+        ("rust-libz-sys" ,rust-libz-sys-1)
+        ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+        ("rust-pkg-config" ,rust-pkg-config-0.3))))))
 
 ;; Keep this package for future packaging of pijul.
 (define-public rust-libpijul-0.12
