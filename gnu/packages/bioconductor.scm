@@ -10315,6 +10315,49 @@ comprehensive scDblFinder method.")
     (license license:gpl3)))
 
 ;; This is a CRAN package, but it depends on packages from Bioconductor.
+(define-public r-scgate
+  (package
+    (name "r-scgate")
+    (version "1.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "scGate" version))
+       (sha256
+        (base32 "0h12d36zjc6fvxbhkxrzbpvw49z9fgyn1jc941q70ajw1yqi2hhh"))))
+    (properties `((upstream-name . "scGate")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocparallel
+           r-dplyr
+           r-ggplot2
+           r-ggridges
+           r-patchwork
+           r-reshape2
+           r-seurat
+           r-ucell))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/carmonalab/scGate")
+    (synopsis
+     "Marker-based cell type purification for single-cell sequencing data")
+    (description
+     "This package provides a method to purify a cell type or cell population
+of interest from heterogeneous datasets.  scGate package automatizes
+marker-based purification of specific cell populations, without requiring
+training data or reference gene expression profiles.  scGate takes as input a
+gene expression matrix stored in a Seurat object and a @acronym{GM, gating
+model}, consisting of a set of marker genes that define the cell population of
+interest.  It evaluates the strength of signature marker expression in each
+cell using the rank-based method UCell, and then performs @acronym{kNN,
+k-nearest neighbor} smoothing by calculating the mean UCell score across
+neighboring cells.  kNN-smoothing aims at compensating for the large degree of
+sparsity in scRNAseq data.  Finally, a universal threshold over kNN-smoothed
+signature scores is applied in binary decision trees generated from the
+user-provided gating model, to annotate cells as either “pure” or “impure”,
+with respect to the cell population of interest.")
+    (license license:gpl3)))
+
+;; This is a CRAN package, but it depends on packages from Bioconductor.
 (define-public r-scistreer
   (package
     (name "r-scistreer")
