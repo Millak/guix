@@ -54414,35 +54414,6 @@ in pure Rust.")
         ("rust-sha-1" ,rust-sha-1-0.9)
         ("rust-sha2" ,rust-sha2-0.9))))))
 
-(define-public rust-pbkdf2-0.4
-  (package
-    (inherit rust-pbkdf2-0.10)
-    (name "rust-pbkdf2")
-    (version "0.4.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "pbkdf2" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1g8cm3nwrsydazjc1gjs549hzafgxq8qb49gixrhl3qrd9calvi1"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-base64" ,rust-base64-0.12)
-        ("rust-crypto-mac" ,rust-crypto-mac-0.8)
-        ("rust-hmac" ,rust-hmac-0.8)
-        ("rust-rand" ,rust-rand-0.7)
-        ("rust-rand-core" ,rust-rand-core-0.5)
-        ("rust-rayon" ,rust-rayon-1)
-        ("rust-sha2" ,rust-sha2-0.9)
-        ("rust-subtle" ,rust-subtle-2))
-       #:cargo-development-inputs
-       (("rust-hmac" ,rust-hmac-0.8)
-        ("rust-sha-1" ,rust-sha-1-0.9)
-        ("rust-sha2" ,rust-sha2-0.9))))))
-
 (define-public rust-pcap-0.7
   (package
     (name "rust-pcap")
