@@ -1,0 +1,16 @@
+Remove the dependency on clippy
+
+diff --git a/Cargo.toml b/Cargo.toml
+index 177cb80..7260c34 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -39,9 +39,6 @@ version = "1.5"
+ 
+ [dependencies.time]
+ version = "0.2"
+-[build-dependencies.clippy]
+-version = "0.0.153"
+-optional = true
+ 
+ [features]
+ default = []

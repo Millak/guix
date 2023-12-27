@@ -65217,12 +65217,12 @@ can handle huge texts and memory-incoherent edits with ease.")
        (uri (crate-uri "rspec" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "02hfwxqjdc39ygnjysvn5qz343fahmwm16rxvxayh403d5y9wf49"))))
+        (base32 "02hfwxqjdc39ygnjysvn5qz343fahmwm16rxvxayh403d5y9wf49"))
+       (patches (search-patches "rust-rspec-1-remove-clippy.patch"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-clippy" ,rust-clippy-0.0.153)
-        ("rust-colored" ,rust-colored-2)
+       (("rust-colored" ,rust-colored-2)
         ("rust-derive-new" ,rust-derive-new-0.5)
         ("rust-derive-builder" ,rust-derive-builder-0.9)
         ("rust-expectest" ,rust-expectest-0.12)
