@@ -204,6 +204,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/crates-io.scm			\
   %D%/packages/crates-graphics.scm		\
   %D%/packages/crates-gtk.scm			\
+  %D%/packages/crates-tls.scm			\
   %D%/packages/crates-vcs.scm			\
   %D%/packages/crates-web.scm			\
   %D%/packages/cross-base.scm			\
