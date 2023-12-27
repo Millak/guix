@@ -72,6 +72,30 @@
        #:cargo-development-inputs
        (("rust-lexopt" ,rust-lexopt-0.3))))))
 
+(define-public rust-cargo-credential-wincred-0.3
+  (package
+    (name "rust-cargo-credential-wincred")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo-credential-wincred" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0w8ciyyrq0vp25bdpsmj8221xh09x4np80wrhc53br8gkldljdv6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cargo-credential" ,rust-cargo-credential-0.3)
+        ("rust-windows-sys" ,rust-windows-sys-0.48))))
+    (home-page "https://github.com/rust-lang/cargo")
+    (synopsis
+     "Cargo credential process that stores tokens with Windows Credential Manager")
+    (description
+     "This package provides a Cargo credential process that stores tokens with
+Windows Credential Manager.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-0.48
   (package
     (name "rust-windows")
