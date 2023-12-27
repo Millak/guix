@@ -13539,21 +13539,6 @@ traits.")
         ("rust-libc" ,rust-libc-0.2)
         ("rust-libloading" ,rust-libloading-0.5))))))
 
-(define-public rust-clang-sys-0.23
-  (package
-    (inherit rust-clang-sys-0.26)
-    (name "rust-clang-sys")
-    (version "0.23.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "clang-sys" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1hjr333izzhs6bic84qwnyzy5xzmvasib8f3zkzj4ln3a97c1xyp"))))))
-
 (define-public rust-clap-cargo-0.12
   (package
     (name "rust-clap-cargo")
