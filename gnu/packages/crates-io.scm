@@ -54307,18 +54307,17 @@ in pure Rust.")
   (package
     (inherit rust-pbkdf2-0.11)
     (name "rust-pbkdf2")
-    (version "0.10.0")
+    (version "0.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pbkdf2" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0d3l06x5mg96njxfsksjwl6440alf72qh4rwrpnq4fwmrz1qqqm4"))))
+        (base32 "1myz799hi58qxdxc9cch3q2sl0vs68vmgrd3j7dmc6aqbgrpj5r7"))))
     (arguments
      `(#:cargo-inputs
-       (("rust-base64ct" ,rust-base64ct-1.0.1)
-        ("rust-digest" ,rust-digest-0.10)
+       (("rust-digest" ,rust-digest-0.10)
         ("rust-hmac" ,rust-hmac-0.12)
         ("rust-password-hash" ,rust-password-hash-0.3)
         ("rust-rayon" ,rust-rayon-1)
