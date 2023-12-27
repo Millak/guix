@@ -2560,6 +2560,29 @@ translated keywords and acts.")
 Go.")
     (license license:cc0)))
 
+(define-public go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-goptlib
+  (package
+    (name "go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-goptlib")
+    (version "1.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/goptlib")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kmdpxrbnxnpsi7dkgk85z005vjyj74b3wxxqrf68wg3svy69620"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/goptlib"))
+    (home-page "https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/goptlib")
+    (synopsis "Go pluggable transports library")
+    (description "GoPtLib is a library for writing Tor pluggable transports in
+Go.")
+    (license license:cc0)))
+
 (define-public go-github-com-sevlyar-go-daemon
   (package
     (name "go-github-com-sevlyar-go-daemon")
