@@ -10307,6 +10307,28 @@ with data in place, which avoids another copy.")
         ("rust-flate2" ,rust-flate2-1)
         ("rust-libc" ,rust-libc-0.2))))))
 
+(define-public rust-buffer-redux-1
+  (package
+    (name "rust-buffer-redux")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "buffer-redux" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1j90lnf4iz50px57xpxc6bx8hnmb6fyjm50nq6m8qn892nh6x26j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-memchr" ,rust-memchr-2)
+                       ("rust-safemem" ,rust-safemem-0.3)
+                       ("rust-slice-deque" ,rust-slice-deque-0.3))))
+    (home-page "https://github.com/dignifiedquire/buffer-redux")
+    (synopsis "Replacements for buffered I/O in `std::io` with extra features")
+    (description "This crate provides a drop-in replacements for buffered I/O in
+@code{std::io} with extra features.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-buffering-0.4
   (package
     (name "rust-buffering")
