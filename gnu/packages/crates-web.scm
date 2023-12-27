@@ -1,9 +1,11 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2020 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
+;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;; Copyright © 2023 VÖRÖSKŐI András <voroskoi@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1779,6 +1781,467 @@ built on the Actix ecosystem.")
     (description
      "This package provides QUIC transport implementation based on Quinn.")
     (license license:expat)))
+
+(define-public rust-hyper-0.14
+  (package
+    (name "rust-hyper")
+    (version "0.14.27")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hyper" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0s2l74p3harvjgb0bvaxlxgxq71vpfrzv0cqz2p9w8d8akbczcgz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bytes" ,rust-bytes-1)
+        ("rust-futures-channel" ,rust-futures-channel-0.3)
+        ("rust-futures-core" ,rust-futures-core-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-h2" ,rust-h2-0.3)
+        ("rust-http" ,rust-http-0.2)
+        ("rust-http-body" ,rust-http-body-0.4)
+        ("rust-httparse" ,rust-httparse-1)
+        ("rust-httpdate" ,rust-httpdate-1)
+        ("rust-itoa" ,rust-itoa-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-pin-project" ,rust-pin-project-lite-0.2)
+        ("rust-socket2" ,rust-socket2-0.4)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tower-service" ,rust-tower-service-0.3)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-want" ,rust-want-0.3))
+       #:cargo-development-inputs
+       (("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-matches" ,rust-matches-0.1)
+        ("rust-num-cpus" ,rust-num-cpus-1)
+        ("rust-pnet-datalink" ,rust-pnet-datalink-0.27)
+        ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.4)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-spmc" ,rust-spmc-0.3)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-test" ,rust-tokio-test-0.4)
+        ("rust-tokio-util" ,rust-tokio-util-0.7)
+        ("rust-tower" ,rust-tower-0.4)
+        ("rust-url" ,rust-url-2))))
+    (home-page "https://hyper.rs")
+    (synopsis "Fast and correct HTTP library")
+    (description "This package provides a fast and correct HTTP library.")
+    (license license:expat)))
+
+(define-public rust-hyper-0.13
+  (package
+    (inherit rust-hyper-0.14)
+    (name "rust-hyper")
+    (version "0.13.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hyper" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1symcnba2y03b8lj6xp2wd994lk3xyk3wizacjg5s60njzfshs1y"))))
+    (arguments
+     `(#:tests? #f      ; Not all files included
+       #:cargo-inputs
+       (("rust-bytes" ,rust-bytes-0.5)
+        ("rust-futures-channel" ,rust-futures-channel-0.3)
+        ("rust-futures-core" ,rust-futures-core-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-h2" ,rust-h2-0.2)
+        ("rust-http" ,rust-http-0.2)
+        ("rust-http-body" ,rust-http-body-0.3)
+        ("rust-httparse" ,rust-httparse-1)
+        ("rust-itoa" ,rust-itoa-0.4)
+        ("rust-pin-project" ,rust-pin-project-0.4)
+        ("rust-socket2" ,rust-socket2-0.3)
+        ("rust-time" ,rust-time-0.1)
+        ("rust-tokio" ,rust-tokio-0.2)
+        ("rust-tower-service" ,rust-tower-service-0.3)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-want" ,rust-want-0.3))
+       #:cargo-development-inputs
+       (("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-matches" ,rust-matches-0.1)
+        ("rust-num-cpus" ,rust-num-cpus-1)
+        ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.4)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-spmc" ,rust-spmc-0.3)
+        ("rust-tokio" ,rust-tokio-0.2)
+        ("rust-tokio-test" ,rust-tokio-test-0.2)
+        ("rust-tokio-util" ,rust-tokio-util-0.3)
+        ("rust-tower-util" ,rust-tower-util-0.3)
+        ("rust-url" ,rust-url-1))))))
+
+(define-public rust-hyper-0.12
+  (package
+    (inherit rust-hyper-0.13)
+    (name "rust-hyper")
+    (version "0.12.35")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hyper" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xnm8zi4bdjqhlnx3238kx8yjf29jjd1ww54apcql7wf8g8nxglx"))))
+    (arguments
+     `(#:skip-build? #t ;; fails due to some missing example file
+       #:cargo-inputs
+       (("rust-bytes" ,rust-bytes-0.4)
+        ("rust-futures" ,rust-futures-0.1)
+        ("rust-futures-cpupool" ,rust-futures-cpupool-0.1)
+        ("rust-h2" ,rust-h2-0.1)
+        ("rust-http" ,rust-http-0.1)
+        ("rust-http-body" ,rust-http-body-0.1)
+        ("rust-httparse" ,rust-httparse-1)
+        ("rust-iovec" ,rust-iovec-0.1)
+        ("rust-itoa" ,rust-itoa-0.4)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-net2" ,rust-net2-0.2)
+        ("rust-time" ,rust-time-0.1)
+        ("rust-tokio" ,rust-tokio-0.1)
+        ("rust-tokio-buf" ,rust-tokio-buf-0.1)
+        ("rust-tokio-executor" ,rust-tokio-executor-0.1)
+        ("rust-tokio-io" ,rust-tokio-io-0.1)
+        ("rust-tokio-reactor" ,rust-tokio-reactor-0.1)
+        ("rust-tokio-tcp" ,rust-tokio-tcp-0.1)
+        ("rust-tokio-threadpool" ,rust-tokio-threadpool-0.1)
+        ("rust-tokio-timer" ,rust-tokio-timer-0.2)
+        ("rust-want" ,rust-want-0.2))
+       #:cargo-development-inputs
+       (("rust-futures-timer" ,rust-futures-timer-0.1)
+        ("rust-num-cpus" ,rust-num-cpus-1)
+        ("rust-rustc-version" ,rust-rustc-version-0.2)
+        ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.3)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-spmc" ,rust-spmc-0.3)
+        ("rust-tokio-fs" ,rust-tokio-fs-0.1)
+        ("rust-tokio-mockstream" ,rust-tokio-mockstream-1)
+        ("rust-url" ,rust-url-1))))))
+
+(define-public rust-hyper-0.10
+  (package
+    (inherit rust-hyper-0.13)
+    (name "rust-hyper")
+    (version "0.10.16")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hyper" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wwjh9p3mzvg3fss2lqz5r7ddcgl1fh9w6my2j69d6k0lbcm41ha"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-base64" ,rust-base64-0.9)
+        ("rust-httparse" ,rust-httparse-1)
+        ("rust-language-tags" ,rust-language-tags-0.2)
+        ("rust-log" ,rust-log-0.3)
+        ("rust-mime" ,rust-mime-0.2)
+        ("rust-num-cpus" ,rust-num-cpus-1)
+        ("rust-time" ,rust-time-0.1)
+        ("rust-traitobject" ,rust-traitobject-0.1)
+        ("rust-typeable" ,rust-typeable-0.1)
+        ("rust-unicase" ,rust-unicase-1)
+        ("rust-url" ,rust-url-1))))))
+
+(define-public rust-hyper-native-tls-0.3
+  (package
+    (name "rust-hyper-native-tls")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hyper-native-tls" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0s30y20qy0akzss91yxsq1x1q7rr04jy33i0cq72nx22yjc5advd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-antidote" ,rust-antidote-1)
+        ("rust-hyper" ,rust-hyper-0.10)
+        ("rust-native-tls" ,rust-native-tls-0.2))))
+    (home-page "https://github.com/sfackler/hyper-native-tls")
+    (synopsis "native-tls support for Hyper 0.10")
+    (description "This package provides native-tls support for Hyper 0.10.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-hyper-proxy-0.9
+  (package
+    (name "rust-hyper-proxy")
+    (version "0.9.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "hyper-proxy" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1k3mpq6d4rhz58dam1757sav14j32n39q8x37wjgpz943f4mm0fa"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+       #:cargo-inputs
+       `(("rust-bytes" ,rust-bytes-1)
+         ("rust-futures" ,rust-futures-0.3)
+         ("rust-headers" ,rust-headers-0.3)
+         ("rust-http" ,rust-http-0.2)
+         ("rust-hyper" ,rust-hyper-0.14)
+         ("rust-tokio" ,rust-tokio-1)
+         ("rust-tower-service" ,rust-tower-service-0.3)
+         ("rust-hyper-rustls" ,rust-hyper-rustls-0.22)
+         ("rust-hyper-tls" ,rust-hyper-tls-0.5)
+         ("rust-native-tls" ,rust-native-tls-0.2)
+         ("rust-openssl" ,rust-openssl-0.10)
+         ("rust-rustls-native-certs" ,rust-rustls-native-certs-0.5)
+         ("rust-tokio-native-tls" ,rust-tokio-native-tls-0.3)
+         ("rust-tokio-openssl" ,rust-tokio-openssl-0.6)
+         ("rust-tokio-rustls" ,rust-tokio-rustls-0.22)
+         ("rust-webpki" ,rust-webpki-0.21)
+         ("rust-webpki-roots" ,rust-webpki-roots-0.21))
+       #:cargo-development-inputs
+       `(("rust-hyper" ,rust-hyper-0.14)
+         ("rust-tokio" ,rust-tokio-1))))
+    (native-inputs (list pkg-config))
+    (inputs (list openssl))
+    (home-page "https://github.com/tafia/hyper-proxy")
+    (synopsis "Proxy connector for Hyper-based applications")
+    (description "Proxy connector for the Hyper HTTP library.")
+    (license license:expat)))
+
+(define-public rust-hyper-rustls-0.24
+  (package
+    (name "rust-hyper-rustls")
+    (version "0.24.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hyper-rustls" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1475j4a2nczz4aajzzsq3hpwg1zacmzbqg393a14j80ff8izsgpc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f              ; Not all files included.
+       #:cargo-inputs (("rust-futures-util" ,rust-futures-util-0.3)
+                       ("rust-http" ,rust-http-0.2)
+                       ("rust-hyper" ,rust-hyper-0.14)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-rustls" ,rust-rustls-0.21)
+                       ("rust-rustls-native-certs" ,rust-rustls-native-certs-0.6)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-tokio-rustls" ,rust-tokio-rustls-0.24)
+                       ("rust-webpki-roots" ,rust-webpki-roots-0.25))
+       #:cargo-development-inputs (("rust-hyper" ,rust-hyper-0.14)
+                                   ("rust-rustls" ,rust-rustls-0.21)
+                                   ("rust-rustls-pemfile" ,rust-rustls-pemfile-1)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/rustls/hyper-rustls")
+    (synopsis "Rustls+Hyper integration for pure Rust HTTPS")
+    (description
+     "This package provides Rustls+Hyper integration for pure Rust HTTPS.")
+    (license (list license:asl2.0 license:isc license:expat))))
+
+(define-public rust-hyper-rustls-0.23
+  (package
+    (inherit rust-hyper-rustls-0.24)
+    (name "rust-hyper-rustls")
+    (version "0.23.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hyper-rustls" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0736s6a32dqr107f943xaz1n05flbinq6l19lq1wsrxkc5g9d20p"))))
+    (arguments
+     `(#:tests? #f              ; Not all files included.
+       #:cargo-inputs
+       (("rust-http" ,rust-http-0.2)
+        ("rust-hyper" ,rust-hyper-0.14)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-rustls" ,rust-rustls-0.20)
+        ("rust-rustls-native-certs" ,rust-rustls-native-certs-0.6)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-rustls" ,rust-tokio-rustls-0.23)
+        ("rust-webpki-roots" ,rust-webpki-roots-0.22))
+       #:cargo-development-inputs
+       (("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-hyper" ,rust-hyper-0.14)
+        ("rust-rustls" ,rust-rustls-0.20)
+        ("rust-rustls-pemfile" ,rust-rustls-pemfile-1)
+        ("rust-tokio" ,rust-tokio-1))))))
+
+(define-public rust-hyper-rustls-0.22
+  (package
+    (inherit rust-hyper-rustls-0.23)
+    (name "rust-hyper-rustls")
+    (version "0.22.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hyper-rustls" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0r2szp06nzqx6gblcw69kwx8afjp218fc083kfpw0i3d66bpm7sz"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-ct-logs" ,rust-ct-logs-0.8)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-hyper" ,rust-hyper-0.14)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-rustls" ,rust-rustls-0.19)
+        ("rust-rustls-native-certs" ,rust-rustls-native-certs-0.5)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-rustls" ,rust-tokio-rustls-0.22)
+        ("rust-webpki" ,rust-webpki-0.21)
+        ("rust-webpki-roots" ,rust-webpki-roots-0.21))))))
+
+(define-public rust-hyper-rustls-0.21
+  (package
+    (inherit rust-hyper-rustls-0.22)
+    (name "rust-hyper-rustls")
+    (version "0.21.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hyper-rustls" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1dmbj15fx6qyg26hji2jm7q9y383090jy3z9zjn5xs4f7v43qx1p"))))
+    (arguments
+     `(#:tests? #f              ; Not all files included.
+       #:cargo-inputs
+       (("rust-bytes" ,rust-bytes-0.5)
+        ("rust-ct-logs" ,rust-ct-logs-0.7)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-hyper" ,rust-hyper-0.13)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-rustls" ,rust-rustls-0.18)
+        ("rust-rustls-native-certs" ,rust-rustls-native-certs-0.4)
+        ("rust-tokio" ,rust-tokio-0.2)
+        ("rust-tokio-rustls" ,rust-tokio-rustls-0.14)
+        ("rust-webpki" ,rust-webpki-0.21)
+        ("rust-webpki-roots" ,rust-webpki-roots-0.20))
+       #:cargo-development-inputs
+       (("rust-tokio" ,rust-tokio-0.2))))))
+
+(define-public rust-hyper-sync-rustls-0.3
+  (package
+    (name "rust-hyper-sync-rustls")
+    (version "0.3.0-rc.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hyper-sync-rustls" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "16zirxhsk26kz5jxxxs37wxsm02id97h57kkqs512fj1j0x486kd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-hyper" ,rust-hyper-0.10)
+        ("rust-rustls" ,rust-rustls-0.14)
+        ("rust-webpki" ,rust-webpki-0.18)
+        ("rust-webpki-roots" ,rust-webpki-roots-0.15))))
+    (home-page "https://github.com/SergioBenitez/hyper-sync-rustls")
+    (synopsis "Glue code for Rustls and synchronous Hyper")
+    (description
+     "This package provides glue code for Rustls and synchronous Hyper.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-hyper-timeout-0.4
+  (package
+    (name "rust-hyper-timeout")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hyper-timeout" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1c8k3g8k2yh1gxvsx9p7amkimgxhl9kafwpj7jyf8ywc5r45ifdv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-hyper" ,rust-hyper-0.14)
+        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-io-timeout" ,rust-tokio-io-timeout-1))))
+    (home-page "https://github.com/hjr3/hyper-timeout")
+    (synopsis "Connect, read and write timeout aware connector for Hyper")
+    (description
+     "This package provides a connect, read and write timeout aware connector
+to be used with Hyper client.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-hyper-tls-0.5
+  (package
+    (name "rust-hyper-tls")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hyper-tls" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "01crgy13102iagakf6q4mb75dprzr7ps1gj0l5hxm1cvm7gks66n"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-bytes" ,rust-bytes-1)
+        ("rust-hyper" ,rust-hyper-0.14)
+        ("rust-native-tls" ,rust-native-tls-0.2)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-native-tls" ,rust-tokio-native-tls-0.3))))
+    (home-page "https://hyper.rs")
+    (synopsis "Default TLS implementation for use with hyper")
+    (description "This package provides the default TLS implementation for use
+with hyper.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-hyper-tls-0.4
+  (package
+    (inherit rust-hyper-tls-0.5)
+    (name "rust-hyper-tls")
+    (version "0.4.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hyper-tls" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1vcfyz7dxavf4brns15afmj5fxz88lbn05rrpbfqsnybdp2sqyfr"))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list openssl))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bytes" ,rust-bytes-0.5)
+        ("rust-hyper" ,rust-hyper-0.13)
+        ("rust-native-tls" ,rust-native-tls-0.2)
+        ("rust-tokio" ,rust-tokio-0.2)
+        ("rust-tokio-tls" ,rust-tokio-tls-0.3))
+       #:cargo-development-inputs
+       (("rust-tokio" ,rust-tokio-0.2))))))
 
 (define-public rust-web-view-0.7
   (package
