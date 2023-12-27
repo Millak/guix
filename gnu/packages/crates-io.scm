@@ -47755,32 +47755,6 @@ linear algebra library.")
     (description "This package provides N-API bindings.")
     (license license:expat)))
 
-(define-public rust-napi-0.5
-  (package
-    (inherit rust-napi-2)
-    (name "rust-napi")
-    (version "0.5.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "napi" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0mp0di7zv1r9gn3r3pmqnyy6q94akd9d6bl1p7m76nm9hgj9rw56"))))
-    (arguments
-     `(#:skip-build? #t     ; Wants node for napi-build-0.2 and napi-sys-0.4
-       #:cargo-inputs
-       (("rust-encoding-rs" ,rust-encoding-rs-0.8)
-        ("rust-futures" ,rust-futures-0.3)
-        ("rust-napi-sys" ,rust-napi-sys-0.4)
-        ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-tokio" ,rust-tokio-0.2))
-       #:cargo-development-inputs
-       (("rust-napi-build" ,rust-napi-build-0.2))))))
-
 (define-public rust-napi-build-1
   (package
     (name "rust-napi-build")
