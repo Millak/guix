@@ -45,8 +45,7 @@
        (sha256
         (base32 "0nfvgg23sw50ksy0z0ml6lkdsvmd0278mq29m23dbb2jsirkhry7"))
        (patches (search-patches "zig-0.9-riscv-support.patch"
-                                "zig-use-system-paths.patch"
-                                "zig-do-not-link-against-librt.patch"))))
+                                "zig-use-system-paths.patch"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -148,8 +147,7 @@ toolchain.  Among other features it provides
        (file-name (git-file-name name version))
        (sha256
         (base32 "1sh5xjsksl52i4cfv1qj36sz5h0ln7cq4pdhgs3960mk8a90im7b"))
-       (patches (search-patches "zig-do-not-link-against-librt.patch"
-                                "zig-use-baseline-cpu-by-default.patch"))))
+       (patches (search-patches "zig-use-baseline-cpu-by-default.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments zig-0.9)
        ((#:configure-flags flags ''())
