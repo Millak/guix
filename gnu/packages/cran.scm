@@ -7530,6 +7530,32 @@ experiments\" (2011), Annals of Applied Statistics, Vol. 5, No. 3, 1752-1779,
 by Li, Brown, Huang, and Bickel")
     (license license:gpl2+)))
 
+(define-public r-inext
+  (package
+    (name "r-inext")
+    (version "3.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "iNEXT" version))
+       (sha256
+        (base32 "1yfvadvdwgby047svj9sjwkm7hhrni2ifn6d2g5bv9djcvi22msh"))))
+    (properties `((upstream-name . "iNEXT")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ggplot2 r-rcpp r-reshape2))
+    (native-inputs (list r-knitr))
+    (home-page "http://chao.stat.nthu.edu.tw/wordpress/software_download/")
+    (synopsis "Interpolation and extrapolation for species diversity")
+    (description
+     "This package provides simple functions to compute and plot two types
+(sample-size- and coverage-based) rarefaction and extrapolation curves for
+species diversity (Hill numbers) based on individual-based abundance data or
+sampling-unit- based incidence data; see Chao and others (2014, Ecological
+Monographs) for pertinent theory and methodologies, and Hsieh, Ma and Chao
+(2016, Methods in Ecology and Evolution) for an introduction of the R
+package.")
+    (license license:gpl3+)))
+
 (define-public r-inline
   (package
     (name "r-inline")
