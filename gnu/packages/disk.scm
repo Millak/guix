@@ -27,6 +27,7 @@
 ;;; Copyright © 2022 Disseminate Dissent <disseminatedissent@protonmail.com>
 ;;; Copyright © 2023 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2023 Morgan Smith <Morgan.J.Smith@outlook.com>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -843,18 +844,18 @@ systems.  Output format is completely customizable.")
        (base32 "17l5vspfcgfbkqg7bakp3gql29yb05gzawm8n3im30ilzdr53678"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no check target
-       #:make-flags (list (string-append "CC=" ,(cc-for-target))
-                          (string-append "PREFIX=" %output))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (add-after 'build 'build-extra
-           (lambda* (#:key make-flags #:allow-other-keys)
-             (apply invoke "make" "extra" make-flags)))
-         (add-after 'build 'install-extra
-           (lambda* (#:key make-flags #:allow-other-keys)
-             (apply invoke "make" "install-extra" make-flags))))))
+     (list #:tests? #f                      ; no check target
+           #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                                (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)            ; no configure script
+               (add-after 'build 'build-extra
+                 (lambda* (#:key make-flags #:allow-other-keys)
+                   (apply invoke "make" "extra" make-flags)))
+               (add-after 'build 'install-extra
+                 (lambda* (#:key make-flags #:allow-other-keys)
+                   (apply invoke "make" "install-extra" make-flags))))))
     (inputs
      (list eudev parted))
     (home-page "http://oss.digirati.com.br/f3/")
