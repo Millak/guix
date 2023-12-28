@@ -6795,15 +6795,15 @@ tools.")
 (define-public guile-eris
   (package
     (name "guile-eris")
-    (version "1.0.0")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://codeberg.org/eris/guile-eris.git")
-             (commit (string-append "v" version))))
+              (url "https://codeberg.org/eris/guile-eris.git")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
-       (sha256 (base32 "0d4wbjwwaxk0zn5gjhl86qhvk1aisgzp1vnvy4xbvrv5ydqpgyqm"))))
+       (sha256 (base32 "03z9dr725kdj57gmkwnx6v6p8nkf0xbn359q2dnn4b29x3dxf39x"))))
     (build-system gnu-build-system)
     (arguments '())
     (native-inputs
@@ -6816,8 +6816,14 @@ tools.")
            guile-quickcheck))
     (inputs (list guile-3.0))
     (propagated-inputs
-     (list guile-sodium))
-    (synopsis "Guile implementation of the Encoding for Robust Immutable Storage (ERIS)")
+     (list guile-sodium
+           guile-coap
+           guile-fibers
+           guile-sqlite3
+           guile-zstd
+           guile-cbor))
+    (synopsis "Guile implementation of the Encoding for Robust Immutable
+Storage (ERIS)")
     (description
      "Guile-ERIS is a Guile implementation of the @url{http://purl.org/eris,
 Encoding for Robust Immutable Storage (ERIS)}.  ERIS allows arbitrary content
