@@ -1995,6 +1995,36 @@ The bindings are written in GOOPS, and the user can extend the client class by
 inheritance.")
     (license license:lgpl3+)))
 
+(define-public guile-coap
+  (package
+    (name "guile-coap")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/eris/guile-coap.git")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "1k4si4jy1766a1srjxwfkql2gmwj11ybd1yxfmi1jzxwn4nvcz0z"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list autoconf
+           automake
+           pkg-config
+           texinfo))
+    (inputs (list guile-3.0))
+    (propagated-inputs (list guile-fibers))
+    (synopsis "Guile implementation of the Constrained Application Protocol (CoAP)")
+    (description "Gulie-CoAP is a Guile implementation of the Constrained
+Application Protocol (CoAP).  CoAP is a network transport protocol specialized
+for use with constrained nodes and constrained networks (e.g. low-power,
+lousy).  This library implements basic serialization of CoAP messages over UDP
+(RFC 7252) and TCP (RFC 8323) as well as an asynchronous TCP client (using
+@code{guile-fibers})." )
+    (home-page "https://codeberg.org/eris/guile-coap")
+    (license license:gpl3+)))
+
 (define-public guile-simple-zmq
   (let ((commit "d25d1865e3378d93c44e2b4f5246a70b078a489d")
         (revision "11"))
