@@ -18,6 +18,7 @@
 ;;; Copyright © 2021 Frank Pursel <frank.pursel@gmail.com>
 ;;; Copyright © 2022 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2023 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -7774,4 +7775,41 @@ weighting schemes.")
      "@code{Enumerable::Statistics} provides some methods to calculate
 statistical summary in arrays and enumerables.")
     (home-page "https://github.com/mrkn/enumerable-statistics")
+    (license license:expat)))
+
+(define-public python-pgmpy
+  (package
+    (name "python-pgmpy")
+    (version "0.1.24")
+    (source
+     (origin
+       (method git-fetch)  ;pypi package does not include test data
+       (uri (git-reference
+             (url "https://github.com/pgmpy/pgmpy")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0fvzh6v0yhgdryczamvzhfy2ymywkh0ssx4rl47xnfvi43hnij90"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-daft
+                             python-joblib
+                             python-networkx
+                             python-numpy
+                             python-opt-einsum
+                             python-pandas
+                             python-pyparsing
+                             python-pytorch
+                             python-scikit-learn
+                             python-scipy
+                             python-statsmodels
+                             python-tqdm))
+    (native-inputs (list python-mock
+                         python-pytest))
+    (home-page "https://github.com/pgmpy/pgmpy")
+    (synopsis "Probabilistic Graphical Models library")
+    (description "This package provides a library for Probabilistic
+Graphical Models.  It can be used for learning (Structure and Parameter),
+inference (Probabilistic and Causal), and simulations in Bayesian
+Networks.")
     (license license:expat)))
