@@ -18752,19 +18752,20 @@ attributes not supported by the Common Lisp standard functions.")
   (sbcl-package->cl-source-package sbcl-file-attributes))
 
 (define-public sbcl-filesystem-utils
-  (let ((commit "4455bb6c43f4433dd68a34ddad9ed5aa9b649243"))
+  (let ((commit "a07e8b61b89d4b46408fb9294d9b8130e8c8a02e")
+        (revision "2"))
     (package
       (name "sbcl-filesystem-utils")
-      (version (git-version "1.0.0" "1" commit))
+      (version (git-version "1.0.0" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/Shinmera/filesystem-utils/")
                (commit commit)))
-         (file-name (git-file-name "filesystem-utils" version))
+         (file-name (git-file-name "cl-filesystem-utils" version))
          (sha256
-          (base32 "0rww9r26zh44qwmj0b4sl95jngdn2h0239x5gjzak3gpdc3i3nbr"))))
+          (base32 "1zv2i2gndnbs7hz3bgkkq1qfx604wbndpc7qqlqvg23fssn9w59f"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-documentation-utils
