@@ -3284,8 +3284,8 @@ C, C++, Java, Python, Erlang, Haskell, Objective-C, Diff, Webkit.")
   (sbcl-package->ecl-package sbcl-colorize))
 
 (define-public sbcl-3bmd
-  (let ((commit "4e08d82d7c8fb1b8fc708c87f4d9d13a1ab490cb")
-        (revision "3"))
+  (let ((commit "e68b2d442f29b4534c1c8e2f2cdf7583643a2fc5")
+        (revision "4"))
     (package
       (name "sbcl-3bmd")
       (version (git-version "0.0.0" revision commit))
@@ -3296,7 +3296,7 @@ C, C++, Java, Python, Erlang, Haskell, Objective-C, Diff, Webkit.")
                (url "https://github.com/3b/3bmd")
                (commit commit)))
          (sha256
-          (base32 "1j885ykg2yds0l7dmw21lrhs7pd66lf541pf9lb677nkhc2f62jz"))
+          (base32 "12xqih1gnwsn1baqm7bq3kxss73phn06gvd0v1h1vwsjd1xgpq3g"))
          (file-name (git-file-name "cl-3bmd" version))))
       (build-system asdf-build-system/sbcl)
       (arguments
