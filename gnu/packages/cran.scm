@@ -36506,11 +36506,11 @@ discovery of differentially expressed genes and markers.")
                                r-uwot)))))
 
 (define-public r-seuratdisk
-  (let ((commit "163f1aade5bac38ed1e9e9c912283a7e74781610")
+  (let ((commit "877d4e18ab38c686f5db54f8cd290274ccdbe295")
         (revision "1"))
     (package
       (name "r-seuratdisk")
-      (version (git-version "0.0.0.9019" revision commit))
+      (version (git-version "0.0.0.9021" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -36519,7 +36519,7 @@ discovery of differentially expressed genes and markers.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1d1v8qi6kknzy5fj6bl8akwy74h5h143i00lyidsnqjbwp9n4qnw"))))
+          (base32 "0ma9qk95symk95slp8klriqg64d8klqf1634y93ml74icarxw1dm"))))
       (properties `((upstream-name . "SeuratDisk")))
       (build-system r-build-system)
       (propagated-inputs
