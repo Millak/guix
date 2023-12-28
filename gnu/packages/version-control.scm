@@ -1440,7 +1440,7 @@ management by roles and individual account maintenance.")
  (define-public shflags
    (package
      (name "shflags")
-    (version "1.2.3")
+    (version "1.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1449,7 +1449,7 @@ management by roles and individual account maintenance.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ydx0sb6vz9s2dgp5bd64y7fpzh9qvmlfjxrbmzac8saknijrlly"))))
+                "0jj0zkly8yg42b8jvih2cmmafv95vm8mv80n3dyalvr5i14lzqd8"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
