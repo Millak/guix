@@ -21332,13 +21332,13 @@ variable and significantly correlated genes.")
 (define-public r-sparsearray
   (package
     (name "r-sparsearray")
-    (version "1.2.2")
+    (version "1.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "SparseArray" version))
        (sha256
-        (base32 "1kjs3v2ycpcc0plr88af1661ngmclmalkiy6am7i4m75cpa3889p"))))
+        (base32 "19cy1nmmi65fxh012ymgp1kg112yl1m0khcs4y034p5iwlfv7fp6"))))
     (properties `((upstream-name . "SparseArray")))
     (build-system r-build-system)
     (propagated-inputs (list r-biocgenerics
