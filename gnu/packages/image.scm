@@ -1483,6 +1483,26 @@ channels.")
                (base32
                 "1lvxnpds0vcf0lil6ia2036ghqlbl740c4d2sz0q5g6l93fjyija"))))
     (build-system gnu-build-system)
+    (arguments
+     (if (and (target-riscv64?)
+              (%current-target-system))
+         (list #:phases
+               #~(modify-phases %standard-phases
+                   (add-after 'unpack 'update-config-scripts
+                     (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                       ;; Replace outdated config.guess and config.sub.
+                       (for-each (lambda (file)
+                                   (install-file
+                                    (search-input-file
+                                     (or native-inputs inputs)
+                                     (string-append "/bin/" file)) "."))
+                                 '("config.guess" "config.sub"))))))
+         '()))
+    (native-inputs
+     (if (and (target-riscv64?)
+              (%current-target-system))
+         (list config)
+         '()))
     (propagated-inputs
      ;; These are all in the 'Libs.private' field of libmng.pc.
      (list lcms libjpeg-turbo zlib))
