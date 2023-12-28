@@ -4596,6 +4596,53 @@ a certain expected condition.")
 Cython for speed.")
     (license license:expat)))
 
+(define-public python-daft
+  (package
+    (name "python-daft")
+    (version "0.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "daft" version))
+              (sha256
+               (base32
+                "1r8jsfavd624q2q61f863lk6has6mv5csswh39saafd5khwf0xry"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k"
+             (string-append
+               ;; The following tests compare matplotlib output with
+               ;; previously generated images.  They fail due to minor
+               ;; differences in where matplotlib places labels.
+               "not test_bca[png]"
+               " and not test_classic[png]"
+               " and not test_deconvolution[png]"
+               " and not test_exoplanets[png]"
+               " and not test_fixed[png]"
+               " and not test_gaia[png]"
+               " and not test_galex[png]"
+               " and not test_huey_p_newton[png]"
+               " and not test_logo[png]"
+               " and not test_no_circles[png]"
+               " and not test_no_gray[png]"
+               " and not test_recursive[png]"
+               " and not test_thick_lines[png]"
+               " and not test_weaklensing[png]"
+               " and not test_wordy[png]"))))
+    (propagated-inputs (list python-matplotlib python-numpy))
+    (native-inputs (list python-pytest))
+    (home-page "https://docs.daft-pgm.org/")
+    (synopsis "PGM rendering library")
+    (description "Daft is a Python package that uses matplotlib to
+render pixel-perfect probabilistic graphical models for publication in
+a journal or on the internet.  With a short Python script and an
+intuitive model-building syntax you can design directed (Bayesian
+Networks, directed acyclic graphs) and undirected (Markov random fields)
+models and save them in any formats that matplotlib supports (including
+PDF, PNG, EPS and SVG).")
+    (license license:expat)))
+
 (define-public python-portalocker
   (package
     (name "python-portalocker")
