@@ -19939,8 +19939,8 @@ lQuery.")
   (sbcl-package->cl-source-package sbcl-clip))
 
 (define-public sbcl-pathname-utils
-  (let ((commit "13189c08f2480802a6cba207304c2e0cfdc57f47")
-        (revision "2"))
+  (let ((commit "f28068a79825f37002e96d13dfd739172382bf94")
+        (revision "3"))
     (package
       (name "sbcl-pathname-utils")
       (version (git-version "1.1.0" revision commit))
@@ -19952,7 +19952,7 @@ lQuery.")
                (commit commit)))
          (file-name (git-file-name "cl-pathname-utils" version))
          (sha256
-          (base32 "0b5pjsrpfw0pmahi1zydzpaa5missg3cxqnyz4k6xwvk8fqscpha"))))
+          (base32 "10xs0wnnkbdiirr1cb7q7hzi2zmksfsrj0p7yws0j1l215vz8qs8"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-parachute))
