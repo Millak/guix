@@ -2329,7 +2329,7 @@ associated attribute file (@file{.dbf}).")
 (define-public spatialite-tools
   (package
     (name "spatialite-tools")
-    (version "5.1.0")
+    (version "5.1.0a")
     (source
      (origin
        (method url-fetch)
@@ -2337,7 +2337,7 @@ associated attribute file (@file{.dbf}).")
                            "spatialite-tools-sources/"
                            "spatialite-tools-" version ".tar.gz"))
        (sha256
-        (base32 "1dc3hnqa9ns0ycsac6wyl96pi052y7rrf233lq7sk708ghv30c6z"))))
+        (base32 "1kh1amab452m3801knmpn1jcg27axakb90gd8fxwv240irsk97hi"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
