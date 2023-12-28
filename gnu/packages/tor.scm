@@ -13,6 +13,7 @@
 ;;; Copyright © 2021-2023 Danial Behzadi <dani.behzi@ubuntu.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Jim Newsome <jnewsome@torproject.org>
+;;; Copyright © 2023 Clément Lassieur <clement@lassieur.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -489,12 +490,23 @@ the onion proxy and sets up proxy in user session, so you don't have to mess
 up with TOR on your system anymore.")
     (license license:gpl3+)))
 
+;; Must be of the form YYYYMMDDhhmmss as in `date +%Y%m%d%H%M%S`.
+(define %moz-build-date "20231219173144")
+
+;; To find the last version, look at https://www.torproject.org/download/.
+(define %torbrowser-version "13.0.8")
+
+;; To find the last Firefox version, browse
+;; https://archive.torproject.org/tor-package-archive/torbrowser/<%torbrowser-version>
+;; There should be only one archive that starts with
+;; "src-firefox-tor-browser-".
+(define %torbrowser-firefox-version "115.6.0esr-13.0-1-build2")
+
 (define torbrowser-assets
   ;; This is a prebuilt Torbrowser from which we take the assets we need.
   (package
     (name "torbrowser-assets")
-    ;; To find the last version, look at https://www.torproject.org/download/.
-    (version "13.0.8")
+    (version %torbrowser-version)
     (source
      (origin
        (method url-fetch)
@@ -519,26 +531,19 @@ up with TOR on your system anymore.")
 Browser.")
     (license license:silofl1.1)))
 
-;; Must be of the form YYYYMMDDhhmmss as in `date +%Y%m%d%H%M%S`.
-(define %moz-build-date "20231219173144")
-
 (define-public torbrowser
   (package
     (inherit icecat-minimal)
     (name "torbrowser")
-    ;; To find the last version, browse
-    ;; https://archive.torproject.org/tor-package-archive/torbrowser/<version>
-    ;; (<version> is the version of the `torbrowser-assets` package).  There
-    ;; should be only one archive that starts with "src-firefox-tor-browser-".
-    (version "115.6.0esr-13.0-1-build2")
+    (version %torbrowser-version)
     (source
      (origin
        (method url-fetch)
        (uri
         (string-append
          "https://archive.torproject.org/tor-package-archive/torbrowser/"
-         (package-version torbrowser-assets)
-         "/src-firefox-tor-browser-" version ".tar.xz"))
+         version "/src-firefox-tor-browser-" %torbrowser-firefox-version
+         ".tar.xz"))
        (sha256
         (base32
          "1c0p8aya7sh7nmawngkyzx2r02mvl9nd53hx2bl0jwvsj1vxxhca"))))
@@ -554,9 +559,7 @@ Browser.")
            "--with-user-appdir=.torbrowser"
            "--with-branding=browser/branding/tb-release"
            (string-append "--prefix=" #$output)
-           (string-append "--with-base-browser-version="
-                          #$(package-version
-                             (this-package-input "torbrowser-assets")))
+           (string-append "--with-base-browser-version=" #$version)
            #$flags))
        ((#:phases phases)
         #~(modify-phases #$phases
