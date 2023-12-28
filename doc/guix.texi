@@ -2936,7 +2936,7 @@ Boot the USB installation image in an VM:
 qemu-system-x86_64 -m 1024 -smp 1 -enable-kvm \
   -nic user,model=virtio-net-pci -boot menu=on,order=d \
   -drive file=guix-system.img \
-  -drive media=cdrom,file=guix-system-install-@value{VERSION}.@var{system}.iso
+  -drive media=cdrom,readonly=on,file=guix-system-install-@value{VERSION}.@var{system}.iso
 @end example
 
 @code{-enable-kvm} is optional, but significantly improves performance,
@@ -17610,7 +17610,7 @@ mounted.}.
 
 @findex file-system-label
 File system labels are created using the @code{file-system-label}
-procedure, UUIDs are created using @code{uuid}, and @file{/dev} node are
+procedure, UUIDs are created using @code{uuid}, and @file{/dev} nodes are
 plain strings.  Here's an example of a file system referred to by its
 label, as shown by the @command{e2label} command:
 
@@ -43511,7 +43511,7 @@ utilizing the configuration mechanism described in the previous chapter
 (@pxref{Defining Services}), but for user's dotfiles and packages.  It
 works both on Guix System and foreign distros and allows users to
 declare all the packages and services that should be installed and
-configured for the user.  Once a user has written a file containing
+configured for the user.  Once a user has written a file containing a
 @code{home-environment} record, such a configuration can be
 @dfn{instantiated} by an unprivileged user with the @command{guix home}
 command (@pxref{Invoking guix home}).
@@ -43834,8 +43834,8 @@ be used here, too.  Make sure that modules containing the specified
 packages are imported with @code{use-modules}.  To find a package or
 information about its module use @command{guix search} (@pxref{Invoking
 guix package}).  Alternatively, @code{specification->package} can be
-used to get the package record from string without importing related
-module.
+used to get the package record from a string without importing its
+related module.
 @end defvar
 
 There are few more essential services, but users are not expected to
