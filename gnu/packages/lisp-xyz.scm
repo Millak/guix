@@ -3666,11 +3666,11 @@ processes that doesn't run under Emacs.  Lisp processes created by
   (sbcl-package->ecl-package sbcl-slime-swank))
 
 (define-public sbcl-mgl-pax
-  (let ((commit "ed82a80207b70801fab061f6592cf7d7355294a6")
-        (revision "0"))
+  (let ((commit "6782eb041c152721972420dfafa192692d16b7ce")
+        (revision "1"))
     (package
       (name "sbcl-mgl-pax")
-      (version (git-version "0.1.0" revision commit))
+      (version (git-version "0.3.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -3678,7 +3678,7 @@ processes that doesn't run under Emacs.  Lisp processes created by
                (url "https://github.com/melisgl/mgl-pax")
                (commit commit)))
          (sha256
-          (base32 "008wfa70q68cj6npi4107mfjhjzfjmvrhm1x51jpndsn2165c5bx"))
+          (base32 "0fjbzc2fn17m80lfsc8121sa0bk7fg42fqlwhm01sk1fj4s48pma"))
          (file-name (git-file-name "cl-mgl-pax" version))))
       (build-system asdf-build-system/sbcl)
       ;; (native-inputs
@@ -3690,7 +3690,8 @@ processes that doesn't run under Emacs.  Lisp processes created by
              sbcl-md5
              sbcl-named-readtables
              sbcl-pythonic-string-reader
-             sbcl-slime-swank))
+             sbcl-slime-swank
+             sbcl-trivial-utf-8))
       (arguments
        `(#:asd-systems '("mgl-pax"
                          "mgl-pax/navigate"
