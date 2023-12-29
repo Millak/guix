@@ -1361,35 +1361,37 @@ thin compatibility layer for gray streams.")
   (sbcl-package->ecl-package sbcl-trivial-gray-streams))
 
 (define-public sbcl-flexi-streams
-  (package
-    (name "sbcl-flexi-streams")
-    (version "1.0.19")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/edicl/flexi-streams")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name "flexi-streams" version))
-       (sha256
-        (base32 "0v7lh4nrldzczd4mwylvmxfdxk7wfsli24iv1axd6mkb833llr70"))))
-    (build-system asdf-build-system/sbcl)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'make-git-checkout-writable
-           (lambda _
-             (for-each make-file-writable (find-files "."))
-             #t)))))
-    (inputs `(("trivial-gray-streams" ,sbcl-trivial-gray-streams)))
-    (synopsis "Implementation of virtual bivalent streams for Common Lisp")
-    (description "Flexi-streams is an implementation of \"virtual\" bivalent
+  (let ((commit "74a1027311371a57258eba1bc908e050f5702277")
+        (revision "0"))
+    (package
+      (name "sbcl-flexi-streams")
+      (version (git-version "1.0.19" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/edicl/flexi-streams")
+               (commit commit)))
+         (file-name (git-file-name "cl-flexi-streams" version))
+         (sha256
+          (base32 "04azqvz11s8dngy49bjl19hrfn0ip1b7m0szm4hlppq364msil7b"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'make-git-checkout-writable
+             (lambda _
+               (for-each make-file-writable (find-files "."))
+               #t)))))
+      (inputs `(("trivial-gray-streams" ,sbcl-trivial-gray-streams)))
+      (synopsis "Implementation of virtual bivalent streams for Common Lisp")
+      (description "Flexi-streams is an implementation of \"virtual\" bivalent
 streams that can be layered atop real binary or bivalent streams and that can
 be used to read and write character data in various single- or multi-octet
 encodings which can be changed on the fly.  It also supplies in-memory binary
 streams which are similar to string streams.")
-    (home-page "http://weitz.de/flexi-streams/")
-    (license license:bsd-3)))
+      (home-page "http://weitz.de/flexi-streams/")
+      (license license:bsd-3))))
 
 (define-public cl-flexi-streams
   (sbcl-package->cl-source-package sbcl-flexi-streams))
