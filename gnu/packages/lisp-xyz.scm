@@ -4844,27 +4844,29 @@ precisely controls the behavior of the parser via Common Lisp restarts.")
   (sbcl-package->ecl-package sbcl-unix-opts))
 
 (define-public sbcl-trivial-garbage
-  (package
-    (name "sbcl-trivial-garbage")
-    (version "0.21")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/trivial-garbage/trivial-garbage")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name "trivial-garbage" version))
-       (sha256
-        (base32 "0122jicfg7pca1wxw8zak1n92h5friqy60988ns0ysksj3fphw9n"))))
-    (build-system asdf-build-system/sbcl)
-    (native-inputs
-     (list sbcl-rt))
-    (home-page "https://common-lisp.net/project/trivial-garbage/")
-    (synopsis "Portable GC-related APIs for Common Lisp")
-    (description "@command{trivial-garbage} provides a portable API to
+  (let ((commit "3474f6414b73d4e3aa2d5c53080f4247a34f6380")
+        (revision "0"))
+    (package
+      (name "sbcl-trivial-garbage")
+      (version (git-version "0.21" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/trivial-garbage/trivial-garbage")
+               (commit commit)))
+         (file-name (git-file-name "cl-trivial-garbage" version))
+         (sha256
+          (base32 "0rfwxvwg0kpcaa0hsi035yrkfdfks4bq8d9azmrww2f0rmv9g6sd"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-rt))
+      (home-page "https://common-lisp.net/project/trivial-garbage/")
+      (synopsis "Portable GC-related APIs for Common Lisp")
+      (description "@command{trivial-garbage} provides a portable API to
 finalizers, weak hash-tables and weak pointers on all major implementations of
 the Common Lisp programming language.")
-    (license license:public-domain)))
+      (license license:public-domain))))
 
 (define-public cl-trivial-garbage
   (sbcl-package->cl-source-package sbcl-trivial-garbage))
