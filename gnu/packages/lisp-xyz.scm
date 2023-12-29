@@ -13990,8 +13990,8 @@ MOP easier to use.")
        '(#:tests? #f)))))
 
 (define-public sbcl-osicat
-  (let ((commit "a45eb3b5826e9175f7c94ba97a00d6b4932f3163")
-        (revision "3"))
+  (let ((commit "982327905b8980ff3173344ca87282e046565732")
+        (revision "4"))
     (package
       (name "sbcl-osicat")
       (version (git-version "0.7.0" revision commit))
@@ -14004,7 +14004,7 @@ MOP easier to use.")
                (commit commit)))
          (file-name (git-file-name "cl-osicat" version))
          (sha256
-          (base32 "1ilag0b0xn97acc0m1q93vwp2y3md9a586858zfx04d8wpbvk8sz"))
+          (base32 "10q1dfkhrvp5ia860q10y4wdm11fmxf7xv8zl4viz2np9xzf5v22"))
          (snippet
           '(begin
              ;; The useless release.sh drags `bash' into the closure.
