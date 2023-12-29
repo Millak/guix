@@ -1377,13 +1377,13 @@ thin compatibility layer for gray streams.")
           (base32 "04azqvz11s8dngy49bjl19hrfn0ip1b7m0szm4hlppq364msil7b"))))
       (build-system asdf-build-system/sbcl)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'make-git-checkout-writable
-             (lambda _
-               (for-each make-file-writable (find-files "."))
-               #t)))))
-      (inputs `(("trivial-gray-streams" ,sbcl-trivial-gray-streams)))
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'make-git-checkout-writable
+                   (lambda _
+                     (for-each make-file-writable (find-files ".")))))))
+      (inputs
+       (list sbcl-trivial-gray-streams))
       (synopsis "Implementation of virtual bivalent streams for Common Lisp")
       (description "Flexi-streams is an implementation of \"virtual\" bivalent
 streams that can be layered atop real binary or bivalent streams and that can
