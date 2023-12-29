@@ -8316,8 +8316,8 @@ cookie headers, cookie creation, cookie jar creation and more.")
   (sbcl-package->ecl-package sbcl-cl-cookie))
 
 (define-public sbcl-dexador
-  (let ((commit "74a233edb0ebf2b8c696fb8db984ac568fbcc4e5")
-        (revision "1"))
+  (let ((commit "051cbb784ea3015cef9731eb5a624f3122de84b5")
+        (revision "2"))
     (package
       (name "sbcl-dexador")
       (build-system asdf-build-system/sbcl)
@@ -8331,7 +8331,7 @@ cookie headers, cookie creation, cookie jar creation and more.")
                (commit commit)))
          (file-name (git-file-name "cl-dexador" version))
          (sha256
-          (base32 "14cbykd9j8klm8sz3siq5zk78a0ljd6rdwfq12fi4h1ih50apyfi"))))
+          (base32 "1sggpi43la8dai102fmkzysh7760hvk6q68f0pkbb9187vz8nd3y"))))
       (inputs
        (list sbcl-alexandria
              sbcl-babel
@@ -8342,22 +8342,19 @@ cookie headers, cookie creation, cookie jar creation and more.")
              sbcl-cl-base64
              sbcl-cl-cookie
              sbcl-cl-ppcre
-             sbcl-cl-reexport
              sbcl-fast-http
              sbcl-fast-io
              sbcl-quri
+             sbcl-trivial-garbage
              sbcl-trivial-gray-streams
              sbcl-trivial-mimes
              sbcl-usocket))
       ;; These native-inputs are for tests only, which are disabled.
       ;; Leave them commented since they add a lot to the closure size.
       ;; (native-inputs
-      ;;  (list sbcl-cl-ppcre
-      ;;        sbcl-clack
+      ;;  (list sbcl-clack
       ;;        sbcl-lack
-      ;;        sbcl-local-time
-      ;;        sbcl-prove
-      ;;        sbcl-trivial-features))
+      ;;        sbcl-rove))
       (arguments
        ;; TODO: Circular dependency: tests depend on clack-test which depends on dexador.
        `(#:tests? #f
