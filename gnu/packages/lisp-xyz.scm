@@ -17968,33 +17968,35 @@ standard library.")
          (sha256
           (base32 "03wbckzmz6pqdlz7pyar6nfg4vs4bl0b2np7n3kk3qhjbrdakc4m"))))
       (build-system asdf-build-system/sbcl)
-      (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("coreutils" ,coreutils)
-         ("procps" ,procps)
-         ("serapeum" ,sbcl-serapeum)
-         ("shlex" ,sbcl-shlex)
-         ("trivia" ,sbcl-trivia)))
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'fix-paths
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let ((bin (string-append (assoc-ref inputs "coreutils") "/bin"))
-                     (ps-bin (string-append (assoc-ref inputs "procps") "/bin")))
-                 (substitute* "cmd.lisp"
-                   (("\\(def \\+env\\+ \"env\"\\)")
-                    (format #f "(def +env+ \"~a/env\")" bin))
-                   (("\\(def \\+kill\\+ \"kill\"\\)")
-                    (format #f "(def +kill+ \"~a/kill\")" bin))
-                   (("\\(def \\+ps\\+ \"ps\"\\)")
-                    (format #f "(def +ps+ \"~a/ps\")" ps-bin))
-                   (("\\(def \\+pwd\\+ \"pwd\"\\)")
-                    (format #f "(def +pwd+ \"~a/pwd\")" bin))
-                   (("\\(def \\+sh\\+ \"/bin/sh\"\\)")
-                    (format #f "(def +sh+ \"~a\")" (which "sh")))
-                   (("\\(def \\+tr\\+ \"tr\"\\)")
-                    (format #f "(def +tr+ \"~a/tr\")" bin)))))))))
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-paths
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (let ((bin (string-append (assoc-ref inputs "coreutils")
+                                               "/bin"))
+                           (ps-bin (string-append (assoc-ref inputs "procps")
+                                                  "/bin")))
+                       (substitute* "cmd.lisp"
+                         (("\\(def \\+env\\+ \"env\"\\)")
+                          (format #f "(def +env+ \"~a/env\")" bin))
+                         (("\\(def \\+kill\\+ \"kill\"\\)")
+                          (format #f "(def +kill+ \"~a/kill\")" bin))
+                         (("\\(def \\+ps\\+ \"ps\"\\)")
+                          (format #f "(def +ps+ \"~a/ps\")" ps-bin))
+                         (("\\(def \\+pwd\\+ \"pwd\"\\)")
+                          (format #f "(def +pwd+ \"~a/pwd\")" bin))
+                         (("\\(def \\+sh\\+ \"/bin/sh\"\\)")
+                          (format #f "(def +sh+ \"~a\")" (which "sh")))
+                         (("\\(def \\+tr\\+ \"tr\"\\)")
+                          (format #f "(def +tr+ \"~a/tr\")" bin)))))))))
+      (inputs
+       (list coreutils
+             procps
+             sbcl-alexandria
+             sbcl-serapeum
+             sbcl-shlex
+             sbcl-trivia))
       (home-page "https://github.com/ruricolist/cmd")
       (synopsis "Conveniently run external programs from Common Lisp")
       (description
