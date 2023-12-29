@@ -3152,8 +3152,8 @@ Lisp.")
   (sbcl-package->ecl-package sbcl-calm))
 
 (define-public sbcl-esrap
-  (let ((commit "4c82a863871e117f0041b9ef37e61c0b62318aa7")
-        (revision "3"))
+  (let ((commit "d806138342a6b27327649fd5f36e0fe2e0966867")
+        (revision "4"))
     (package
       (name "sbcl-esrap")
       (version (git-version "0.18" revision commit))
@@ -3163,9 +3163,9 @@ Lisp.")
          (uri (git-reference
                (url "https://github.com/scymtym/esrap")
                (commit commit)))
+         (file-name (git-file-name "cl-esrap" version))
          (sha256
-          (base32 "16nc3rhxd61xabja1h9akqqva0cmz2gxk0bkaqy10h492wx93d81"))
-         (file-name (git-file-name "cl-esrap" version))))
+          (base32 "0gs0mfamldhaihnlk0qxg2q4bl8bamq68dif9js9fkl8apg3iykl"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-fiveam))
