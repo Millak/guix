@@ -170,10 +170,10 @@ Tested-by: Peter Robinson <pbrobinson@gmail.com>
  1 file changed, 21 insertions(+)
 
 diff --git a/drivers/phy/rockchip/phy-rockchip-inno-usb2.c b/drivers/phy/rockchip/phy-rockchip-inno-usb2.c
-index 62b8ba3a4a..be9cc99d90 100644
+index 70e61eccb7..ce36db94a7 100644
 --- a/drivers/phy/rockchip/phy-rockchip-inno-usb2.c
 +++ b/drivers/phy/rockchip/phy-rockchip-inno-usb2.c
-@@ -62,6 +62,8 @@ struct rockchip_usb2phy {
+@@ -64,6 +64,8 @@ struct rockchip_usb2phy {
  	void *reg_base;
  	struct clk phyclk;
  	const struct rockchip_usb2phy_cfg *phy_cfg;
@@ -182,7 +182,7 @@ index 62b8ba3a4a..be9cc99d90 100644
  };
  
  static inline int property_enable(void *reg_base,
-@@ -92,6 +94,10 @@ static int rockchip_usb2phy_power_on(struct phy *phy)
+@@ -106,6 +108,10 @@ static int rockchip_usb2phy_power_on(struct phy *phy)
  	struct rockchip_usb2phy *priv = dev_get_priv(parent);
  	const struct rockchip_usb2phy_port_cfg *port_cfg = us2phy_get_port(phy);
  
@@ -193,7 +193,7 @@ index 62b8ba3a4a..be9cc99d90 100644
  	property_enable(priv->reg_base, &port_cfg->phy_sus, false);
  
  	/* waiting for the utmi_clk to become stable */
-@@ -106,6 +112,10 @@ static int rockchip_usb2phy_power_off(struct phy *phy)
+@@ -120,6 +126,10 @@ static int rockchip_usb2phy_power_off(struct phy *phy)
  	struct rockchip_usb2phy *priv = dev_get_priv(parent);
  	const struct rockchip_usb2phy_port_cfg *port_cfg = us2phy_get_port(phy);
  
@@ -204,7 +204,7 @@ index 62b8ba3a4a..be9cc99d90 100644
  	property_enable(priv->reg_base, &port_cfg->phy_sus, true);
  
  	return 0;
-@@ -118,6 +128,10 @@ static int rockchip_usb2phy_init(struct phy *phy)
+@@ -132,6 +142,10 @@ static int rockchip_usb2phy_init(struct phy *phy)
  	const struct rockchip_usb2phy_port_cfg *port_cfg = us2phy_get_port(phy);
  	int ret;
  
@@ -213,9 +213,9 @@ index 62b8ba3a4a..be9cc99d90 100644
 +		return 0;
 +
  	ret = clk_enable(&priv->phyclk);
- 	if (ret) {
+ 	if (ret && ret != -ENOSYS) {
  		dev_err(phy->dev, "failed to enable phyclk (ret=%d)\n", ret);
-@@ -140,6 +154,10 @@ static int rockchip_usb2phy_exit(struct phy *phy)
+@@ -154,6 +168,10 @@ static int rockchip_usb2phy_exit(struct phy *phy)
  	struct udevice *parent = dev_get_parent(phy->dev);
  	struct rockchip_usb2phy *priv = dev_get_priv(parent);
  
@@ -226,7 +226,7 @@ index 62b8ba3a4a..be9cc99d90 100644
  	clk_disable(&priv->phyclk);
  
  	return 0;
-@@ -212,6 +230,9 @@ static int rockchip_usb2phy_probe(struct udevice *dev)
+@@ -294,6 +312,9 @@ static int rockchip_usb2phy_probe(struct udevice *dev)
  		return ret;
  	}
  

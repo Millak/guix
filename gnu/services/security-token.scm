@@ -50,22 +50,19 @@
 (define pcscd-shepherd-service
   (match-lambda
     (($ <pcscd-configuration> pcsc-lite)
-     (with-imported-modules (source-module-closure
-                             '((gnu build shepherd)))
-       (shepherd-service
-        (documentation "PC/SC Smart Card Daemon")
-        (provision '(pcscd))
-        (requirement '(syslogd))
-        (modules '((gnu build shepherd)))
-        (start #~(lambda _
-                   (let ((socket "/run/pcscd/pcscd.comm"))
-                     (when (file-exists? socket)
-                       (delete-file socket)))
-                   (fork+exec-command
-                    (list #$(file-append pcsc-lite "/sbin/pcscd")
-                          "--foreground")
-                    #:log-file "/var/log/pcscd.log")))
-        (stop #~(make-kill-destructor)))))))
+     (shepherd-service
+      (documentation "PC/SC Smart Card Daemon")
+      (provision '(pcscd))
+      (requirement '(syslogd))
+      (start #~(lambda _
+                 (let ((socket "/run/pcscd/pcscd.comm"))
+                   (when (file-exists? socket)
+                     (delete-file socket)))
+                 (fork+exec-command
+                  (list #$(file-append pcsc-lite "/sbin/pcscd")
+                        "--foreground")
+                  #:log-file "/var/log/pcscd.log")))
+      (stop #~(make-kill-destructor))))))
 
 (define pcscd-activation
   (match-lambda

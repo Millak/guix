@@ -849,56 +849,47 @@ string, you could instantiate a prosody service like this:
                                          (target conf)))
                        #:namespaces (delq 'net %namespaces))))
 
-       (with-imported-modules (source-module-closure
-                               '((gnu build shepherd)
-                                 (gnu system file-systems)))
-         (list (shepherd-service
-                (provision '(bitlbee))
+       (list (shepherd-service
+              (provision '(bitlbee))
 
-                ;; Note: If networking is not up, then /etc/resolv.conf
-                ;; doesn't get mapped in the container, hence the dependency
-                ;; on 'networking'.
-                (requirement '(user-processes networking))
+              ;; Note: If networking is not up, then /etc/resolv.conf
+              ;; doesn't get mapped in the container, hence the dependency
+              ;; on 'networking'.
+              (requirement '(user-processes networking))
 
-                (modules '((gnu build shepherd)
-                           (gnu system file-systems)))
-                (start #~(if (defined? 'make-inetd-constructor)
+              (start #~(if (defined? 'make-inetd-constructor)
 
-                             (make-inetd-constructor
-                              (list #$bitlbee* "-I" "-c" #$conf)
-                              (list (endpoint
-                                     (addrinfo:addr
-                                      (car (getaddrinfo #$interface
-                                                        #$(number->string port)
-                                                        (logior AI_NUMERICHOST
-                                                                AI_NUMERICSERV))))))
-                              #:requirements '#$requirement
-                              #:service-name-stem "bitlbee"
-                              #:user "bitlbee" #:group "bitlbee"
+                           (make-inetd-constructor
+                            (list #$bitlbee* "-I" "-c" #$conf)
+                            (list (endpoint
+                                   (addrinfo:addr
+                                    (car (getaddrinfo #$interface
+                                                      #$(number->string port)
+                                                      (logior AI_NUMERICHOST
+                                                              AI_NUMERICSERV))))))
+                            #:requirements '#$requirement
+                            #:service-name-stem "bitlbee"
+                            #:user "bitlbee" #:group "bitlbee"
 
-                              ;; Allow 'bitlbee-purple' to use libpurple plugins.
-                              #:environment-variables
-                              (list (string-append "PURPLE_PLUGIN_PATH="
-                                                   #$plugins "/lib/purple-2")
-                                    "GUIX_LOCPATH=/run/current-system/locale"))
+                            ;; Allow 'bitlbee-purple' to use libpurple plugins.
+                            #:environment-variables
+                            (list (string-append "PURPLE_PLUGIN_PATH="
+                                                 #$plugins "/lib/purple-2")
+                                  "GUIX_LOCPATH=/run/current-system/locale"))
 
-                             (make-forkexec-constructor/container
-                              (list #$(file-append bitlbee "/sbin/bitlbee")
-                                    "-n" "-F" "-u" "bitlbee" "-c" #$conf)
+                           (make-forkexec-constructor
+                            (list #$(file-append bitlbee "/sbin/bitlbee")
+                                  "-n" "-F" "-u" "bitlbee" "-c" #$conf)
 
-                              ;; Allow 'bitlbee-purple' to use libpurple plugins.
-                              #:environment-variables
-                              (list (string-append "PURPLE_PLUGIN_PATH="
-                                                   #$plugins "/lib/purple-2"))
+                            ;; Allow 'bitlbee-purple' to use libpurple plugins.
+                            #:environment-variables
+                            (list (string-append "PURPLE_PLUGIN_PATH="
+                                                 #$plugins "/lib/purple-2"))
 
-                              #:pid-file "/var/run/bitlbee.pid"
-                              #:mappings (list (file-system-mapping
-                                                (source "/var/lib/bitlbee")
-                                                (target source)
-                                                (writable? #t))))))
-                (stop  #~(if (defined? 'make-inetd-destructor)
-                             (make-inetd-destructor)
-                             (make-kill-destructor))))))))))
+                            #:pid-file "/var/run/bitlbee.pid")))
+              (stop  #~(if (defined? 'make-inetd-destructor)
+                           (make-inetd-destructor)
+                           (make-kill-destructor)))))))))
 
 (define %bitlbee-accounts
   ;; User group and account to run BitlBee.

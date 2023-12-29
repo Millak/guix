@@ -88,19 +88,6 @@
 
             guix-build-coordinator-agent-service-type
 
-            guix-build-coordinator-queue-builds-configuration
-            guix-build-coordinator-queue-builds-configuration?
-            guix-build-coordinator-queue-builds-configuration-package
-            guix-build-coordinator-queue-builds-configuration-user
-            guix-build-coordinator-queue-builds-coordinator
-            guix-build-coordinator-queue-builds-configuration-systems
-            guix-build-coordinator-queue-builds-configuration-system-and-targets
-            guix-build-coordinator-queue-builds-configuration-guix-data-service
-            guix-build-coordinator-queue-builds-configuration-guix-data-service-build-server-id
-            guix-build-coordinator-queue-builds-configuration-processed-commits-file
-
-            guix-build-coordinator-queue-builds-service-type
-
             <guix-data-service-configuration>
             guix-data-service-configuration
             guix-data-service-configuration?
@@ -250,31 +237,6 @@
   (agent-name      guix-build-coordinator-agent-dynamic-auth-with-file-agent-name)
   (token-file      guix-build-coordinator-agent-dynamic-auth-with-file-token-file))
 
-(define-record-type* <guix-build-coordinator-queue-builds-configuration>
-  guix-build-coordinator-queue-builds-configuration
-  make-guix-build-coordinator-queue-builds-configuration
-  guix-build-coordinator-queue-builds-configuration?
-  (package              guix-build-coordinator-queue-builds-configuration-package
-                        (default guix-build-coordinator))
-  (user                 guix-build-coordinator-queue-builds-configuration-user
-                        (default "guix-build-coordinator-queue-builds"))
-  (coordinator          guix-build-coordinator-queue-builds-coordinator
-                        (default "http://localhost:8746"))
-  (systems              guix-build-coordinator-queue-builds-configuration-systems
-                        (default #f))
-  (systems-and-targets
-   guix-build-coordinator-queue-builds-configuration-system-and-targets
-   (default #f))
-  (guix-data-service
-   guix-build-coordinator-queue-builds-configuration-guix-data-service
-   (default "https://data.guix.gnu.org"))
-  (guix-data-service-build-server-id
-   guix-build-coordinator-queue-builds-configuration-guix-data-service-build-server-id
-   (default #f))
-  (processed-commits-file
-   guix-build-coordinator-queue-builds-configuration-processed-commits-file
-   (default "/var/cache/guix-build-coordinator-queue-builds/processed-commits")))
-
 (define* (make-guix-build-coordinator-start-script database-uri-string
                                                    allocation-strategy
                                                    pid-file
@@ -380,10 +342,7 @@
                      ;; Allow time for migrations to run
                      #:pid-file-timeout 60
                      #:environment-variables
-                     `(,(string-append
-                         "GUIX_LOCPATH="
-                         #$(libc-utf8-locales-for-target) "/lib/locale")
-                       "LC_ALL=en_US.utf8"
+                     `("LC_ALL=en_US.utf8"
                        "PATH=/run/current-system/profile/bin" ; for hooks
                        #$@extra-environment-variables)
                      #:log-file "/var/log/guix-build-coordinator/coordinator.log")
@@ -508,10 +467,7 @@
                             (or systems '())))
               #:user #$user
               #:environment-variables
-              `(,(string-append
-                  "GUIX_LOCPATH="
-                  #$(libc-utf8-locales-for-target) "/lib/locale")
-                ;; XDG_CACHE_HOME is used by Guix when caching narinfo files
+              `(;; XDG_CACHE_HOME is used by Guix when caching narinfo files
                 "XDG_CACHE_HOME=/var/cache/guix-build-coordinator-agent"
                 "LC_ALL=en_US.utf8")
               #:log-file "/var/log/guix-build-coordinator/agent.log"))))
@@ -558,101 +514,6 @@
                         guix-build-coordinator-agent-account)))
    (description
     "Run a Guix Build Coordinator agent.")))
-
-(define (guix-build-coordinator-queue-builds-shepherd-services config)
-  (match-record config <guix-build-coordinator-queue-builds-configuration>
-    (package user coordinator systems systems-and-targets
-             guix-data-service
-             guix-data-service-build-server-id
-             processed-commits-file)
-    (list
-     (shepherd-service
-      (documentation "Guix Build Coordinator queue builds from Guix Data Service")
-      (provision '(guix-build-coordinator-queue-builds))
-      (requirement '(networking))
-      (start
-       #~(lambda _
-           (parameterize ((%current-logfile-date-format ""))
-             (fork+exec-command
-              (list
-               #$(file-append
-                  package
-                  "/bin/guix-build-coordinator-queue-builds-from-guix-data-service")
-               #$(string-append "--coordinator=" coordinator)
-               #$@(map (lambda (system)
-                         (string-append "--system=" system))
-                       (or systems '()))
-               #$@(map (match-lambda
-                         ((system . target)
-                          (string-append "--system-and-target=" system "=" target)))
-                       (or systems-and-targets '()))
-               #$@(if guix-data-service
-                      #~(#$(string-append "--guix-data-service=" guix-data-service))
-                      #~())
-               #$@(if guix-data-service-build-server-id
-                      #~(#$(simple-format
-                            #f
-                            "--guix-data-service-build-server-id=~A"
-                            guix-data-service-build-server-id))
-                      #~())
-               #$@(if processed-commits-file
-                      #~(#$(string-append "--processed-commits-file="
-                                          processed-commits-file))
-                      #~()))
-              #:user #$user
-              #:environment-variables
-              `(,(string-append
-                  "GUIX_LOCPATH="
-                  #$(libc-utf8-locales-for-target) "/lib/locale")
-                "LC_ALL=en_US.utf8")
-              #:log-file "/var/log/guix-build-coordinator/queue-builds.log"))))
-      (stop #~(make-kill-destructor))
-      (modules
-       `((shepherd comm)
-         ,@%default-modules))))))
-
-(define (guix-build-coordinator-queue-builds-activation config)
-  #~(begin
-      (use-modules (guix build utils))
-
-      (define %user
-        (getpw #$(guix-build-coordinator-queue-builds-configuration-user
-                  config)))
-
-      (mkdir-p "/var/log/guix-build-coordinator")
-
-      ;; Allow writing the processed commits file
-      (mkdir-p "/var/cache/guix-build-coordinator-queue-builds")
-      (chown "/var/cache/guix-build-coordinator-queue-builds"
-             (passwd:uid %user)
-             (passwd:gid %user))))
-
-(define (guix-build-coordinator-queue-builds-account config)
-  (list (user-account
-         (name (guix-build-coordinator-queue-builds-configuration-user config))
-         (group "nogroup")
-         (system? #t)
-         (comment "Guix Build Coordinator queue-builds user")
-         (home-directory "/var/empty")
-         (shell (file-append shadow "/sbin/nologin")))))
-
-(define guix-build-coordinator-queue-builds-service-type
-  (service-type
-   (name 'guix-build-coordinator-queue-builds)
-   (extensions
-    (list
-     (service-extension shepherd-root-service-type
-                        guix-build-coordinator-queue-builds-shepherd-services)
-     (service-extension activation-service-type
-                        guix-build-coordinator-queue-builds-activation)
-     (service-extension account-service-type
-                        guix-build-coordinator-queue-builds-account)))
-   (description
-    "Run the guix-build-coordinator-queue-builds-from-guix-data-service
-script.
-
-This is a script to assist in having the Guix Build Coordinator build
-derivations stored in an instance of the Guix Data Service.")))
 
 
 ;;;

@@ -738,14 +738,14 @@ source files.")
 (define-public node-lts
   (package
     (inherit node)
-    (version "18.18.2")
+    (version "18.19.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nodejs.org/dist/v" version
                                   "/node-v" version ".tar.gz"))
               (sha256
                (base32
-                "0ci1faxjsbp0lv05kskh5anfljn6zawqcf7dawiby5d5qg7x572h"))
+                "05qc1dgmrms73073n4l36jrcxf6ygqj959d3cngy5qclrg0isk6x"))
               (modules '((guix build utils)))
               (snippet
                '(begin

@@ -1,6 +1,10 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2012 Nikita Karetnikov <nikita@karetnikov.org>
+;;; Copyright © 2013, 2014 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 José Miguel Sánchez García <jmi2k@openmailbox.org>
 ;;; Copyright © 2016 Carlo Zancanaro <carlo@zancanaro.id.au>
+;;; Copyright © 2016 Rene Saavedra <rennes@openmailbox.org>
 ;;; Copyright © 2017, 2018, 2020, 2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2017 Feng Shu <tumashu@163.com>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
@@ -20,10 +24,12 @@
 ;;; Copyright © 2022 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
 ;;; Copyright © 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 zamfofex <zamfofex@twdb.moe>
+;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 Andy Tai <atai@atai.org>
 ;;; Copyright © 2023 Eidvilas Markevičius <markeviciuseidvilas@gmail.com>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -62,6 +68,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages code)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages curl)
@@ -101,6 +108,37 @@
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
+
+(define-public ed
+  (package
+    (name "ed")
+    (version "1.18")
+    (source (origin
+             (method url-fetch)
+             (uri (string-append "mirror://gnu/ed/ed-"
+                                 version ".tar.lz"))
+             (sha256
+              (base32
+               "0krb8rsb0cd8mgz0c5pqgnjbbrj7zjl7mf9099r8gi80k2nyza5c"))))
+    (build-system gnu-build-system)
+    (native-inputs (list lzip))
+    (arguments
+     `(#:configure-flags (list ,(string-append "CC=" (cc-for-target)))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'patch-source-shebangs 'patch-test-suite
+                     (lambda _
+                       (substitute* "testsuite/check.sh"
+                         (("/bin/sh") (which "sh"))))))))
+    (home-page "https://www.gnu.org/software/ed/")
+    (synopsis "Line-oriented text editor")
+    (description
+     "Ed is a line-oriented text editor: rather than offering an overview of
+a document, ed performs editing one line at a time.  It can be executed both
+interactively and via shell scripts.  Its method of command input allows
+complex tasks to be performed in an automated way.  GNU ed offers several
+extensions over the standard utility.")
+    (license license:gpl3+)))
 
 (define-public vis
   (package
@@ -561,6 +599,28 @@ Wordstar-, EMACS-, Pico, Nedit or vi-like key bindings.  e3 can be used on
 \"broadly\" compatible.  This is a portable version of the mg maintained by the
 OpenBSD team.")
     (license license:public-domain)))
+
+(define-public nano
+  (package
+    (name "nano")
+    (version "7.2")
+    (source
+     (origin
+      (method url-fetch)
+      (uri (string-append "mirror://gnu/nano/nano-" version ".tar.xz"))
+      (sha256
+       (base32 "09j5gb44yiv18fvn0iy17jnl9d5lh3gkry4kqv776a5xd0kl9ww6"))))
+    (build-system gnu-build-system)
+    (inputs
+     (list gettext-minimal ncurses))
+    (home-page "https://www.nano-editor.org/")
+    (synopsis "Small, user-friendly console text editor")
+    (description
+     "GNU nano is a small and simple text editor for use in a terminal.  Besides
+basic editing, it supports: undo/redo, syntax highlighting, spell checking,
+justifying, auto-indentation, bracket matching, interactive search-and-replace
+(with regular expressions), and the editing of multiple files.")
+    (license license:gpl3+))) ; some files are under GPLv2+
 
 (define-public qemacs
   (package

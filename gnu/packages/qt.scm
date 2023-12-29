@@ -29,6 +29,7 @@
 ;;; Copyright © 2022 Yash Tiwari <yasht@mailbox.org>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3674,6 +3675,50 @@ framework.  The bindings are implemented as a set of Python modules and
 contain over 620 classes.")
     (license license:gpl3)))
 
+(define-public python-pyqt-6
+  (package
+    (inherit python-pyqt)
+    (version "6.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "PyQt6" version))
+       (file-name (string-append "PyQt6-" version ".tar.gz"))
+       (sha256
+        (base32 "100jh1iiz5gx821qzgicfrqv7hjjj98pchdbc1nvdzzra1ryx1ql"))))
+    (inputs ;Qt5 dependencies only in python-pyqt:
+            ;; (qt)connectivity, location, sensors, serialport, x11extras, xmlpatterns.
+            (list python-wrapper
+                  qtbase
+                  qtdeclarative
+                  qtmultimedia
+                  qtpositioning
+                  qtsvg
+                  qttools
+                  qtwebchannel
+                  qtwebsockets))
+    (propagated-inputs (list python-sip python-pyqt6-sip))
+    (native-inputs (list python-pyqt-builder qtbase)) ;qtbase is required for qmake.
+    (arguments
+     (list
+      #:tests? #f ;No tests.
+      #:configure-flags #~`(@ ("--verbose" . "") ;Print commands run.
+                              ("--confirm-license" . "")
+                              ("--jobs" unquote
+                               (number->string (parallel-job-count))))
+      #:phases #~(modify-phases %standard-phases
+                   ;; When building python-pyqtwebengine, <qprinter.h> cannot be
+                   ;; included.  Here we substitute the full path to the header in the
+                   ;; store.
+                   (add-after 'unpack 'substitute-source
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (let* ((qprinter.h (search-input-file inputs
+                                           "/include/qt6/QtPrintSupport/qprinter.h")))
+                         (substitute* (list "sip/QtPrintSupport/qprinter.sip"
+                                       "sip/QtPrintSupport/qpyprintsupport_qlist.sip")
+                           (("qprinter.h")
+                            qprinter.h))))))))))
+
 (define-public python-pyqt5-sip
   (package
     (name "python-pyqt5-sip")
@@ -3692,6 +3737,22 @@ contain over 620 classes.")
     (synopsis "Sip module support for PyQt5")
     (description "Sip module support for PyQt5")
     (license license:lgpl2.1+)))
+
+(define-public python-pyqt6-sip
+  (package
+    (inherit python-pyqt5-sip)
+    (name "python-pyqt6-sip")
+    (version "13.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "PyQt6_sip" version))
+       (sha256
+        (base32 "0y2pgc1kzskq3q230b5d48izvzy9dl4hkfjpcr7kv53ih1cf31i4"))))
+    (synopsis "Sip module support for PyQt6")
+    (description
+     "SIP is used to write self contained extension modules, i.e. without a library
+to be wrapped. This SIP extension module provides support for the PyQt6 package.")))
 
 (define-public python-pyqtwebengine
   (package
@@ -3749,6 +3810,40 @@ WebEngine libraries.  The bindings sit on top of PyQt5 and are implemented as a
 set of three modules.  Prior to v5.12 these bindings were part of PyQt
 itself.")
     (license license:gpl3)))
+
+(define-public python-pyqtwebengine-6
+  (package
+    (inherit python-pyqtwebengine)
+    (version "6.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "PyQt6_WebEngine" version))
+       (sha256
+        (base32 "11wlnggs5vi7z465xhmnz664wbaj44ki6mmijbk0kr457x69h2ym"))))
+    (native-inputs (list python python-sip python-pyqt-builder
+                         ;; qtbase is required for qmake
+                         qtbase))
+    (inputs (list python-pyqt-6 qtbase qtdeclarative qtwebchannel qtwebengine))
+    (arguments
+     (list
+      #:tests? #f ;No tests.
+      #:configure-flags #~`(@ ("--verbose" . "") ;Print commands run.
+                              ("--jobs" unquote
+                               (number->string (parallel-job-count))))
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'set-include-dirs
+                     (lambda* (#:key inputs outputs #:allow-other-keys)
+                       (let* ((python (assoc-ref inputs "python"))
+                              (sip-include-dirs (search-input-directory inputs
+                                                 (string-append "/lib/python"
+                                                  (python-version python)
+                                                  "/site-packages/PyQt6/bindings"))))
+                         (setenv "SIP_INCLUDE_DIRS" sip-include-dirs)))))))
+    (description
+     "PyQtWebEngine is a set of Python bindings for The Qt Company's Qt
+WebEngine libraries.  The bindings sit on top of PyQt6 and are implemented as a
+set of three modules.")))
 
 (define-public python-pyqt-builder
   (package

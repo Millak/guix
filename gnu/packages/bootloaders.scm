@@ -18,6 +18,7 @@
 ;;; Copyright © 2022, 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2021 Stefan <stefan-guix@vodafonemail.de>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -692,34 +693,19 @@ tree binary files.  These are board description files used by Linux and BSD.")
   ;; and https://patchwork.ozlabs.org/project/uboot/patch/20210406151059.1187379-1-icenowy@aosc.io
   (search-patch "u-boot-rockchip-inno-usb.patch"))
 
-(define %u-boot-sifive-prevent-relocating-initrd-fdt
-  ;; Fix boot in 2021.07 on Hifive unmatched, see
-  ;; https://bugs.launchpad.net/ubuntu/+source/u-boot/+bug/1937246
-  (search-patch "u-boot-sifive-prevent-reloc-initrd-fdt.patch"))
-
 (define %u-boot-allow-disabling-openssl-patch
   ;; Fixes build of u-boot 2021.10 without openssl
   ;; https://lists.denx.de/pipermail/u-boot/2021-October/462728.html
   (search-patch "u-boot-allow-disabling-openssl.patch"))
 
-(define %u-boot-rk3399-enable-emmc-phy-patch
-  ;; Fix emmc boot on rockpro64 and pinebook-pro, this was a regression
-  ;; therefore should hopefully be fixed when updating u-boot.
-  ;; https://lists.denx.de/pipermail/u-boot/2021-November/466329.html
-  (search-patch "u-boot-rk3399-enable-emmc-phy.patch"))
-
 (define u-boot
   (package
     (name "u-boot")
-    (version "2023.07.02")
+    (version "2023.10")
     (source (origin
               (patches
                (list %u-boot-rockchip-inno-usb-patch
                      %u-boot-allow-disabling-openssl-patch
-                     %u-boot-sifive-prevent-relocating-initrd-fdt
-                     %u-boot-rk3399-enable-emmc-phy-patch
-                     (search-patch "u-boot-fix-build-python-3.10.patch")
-                     (search-patch "u-boot-fix-u-boot-lib-build.patch")
                      (search-patch "u-boot-patman-change-id.patch")))
               (method url-fetch)
               (uri (string-append
@@ -727,7 +713,7 @@ tree binary files.  These are board description files used by Linux and BSD.")
                     "u-boot-" version ".tar.bz2"))
               (sha256
                (base32
-                "1m91w3fpywllkwm000dqsw3294j0szs1lz6qbgwv1aql3ic4hskb"))))
+                "0039rravvjq9yi41645fynycw4c869px024xfc0n212f05pnq3p0"))))
     (build-system gnu-build-system)
     (native-inputs
      (list bison
@@ -778,6 +764,7 @@ also initializes the boards (RAM etc).")
      (modify-inputs (package-native-inputs u-boot)
        (append fontconfig
                python-sphinx
+               python-sphinx-prompt
                texinfo
                which)))
     (synopsis "U-Boot documentation")
@@ -1200,6 +1187,21 @@ device while it's being turned on (and a while longer).")))
    #:append-description "This U-Boot is built for Novena.  Be advised that this
 version, contrary to Novena upstream, does not load u-boot.img from the first
 partition."))
+
+(define-public u-boot-orangepi-r1-plus-lts-rk3328
+  (let ((base (make-u-boot-package "orangepi-r1-plus-lts-rk3328" "aarch64-linux-gnu")))
+    (package
+      (inherit base)
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'set-environment
+                (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                  (setenv "BL31" (search-input-file inputs "bl31.elf"))))))))
+      (inputs
+       (modify-inputs (package-inputs base)
+         (append arm-trusted-firmware-rk3328))))))
 
 (define-public u-boot-cubieboard
   (make-u-boot-package "Cubieboard" "arm-linux-gnueabihf"))

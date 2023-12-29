@@ -120,12 +120,7 @@ format."
 when installed, will make the extension contained in PKG available as a
 Chromium browser extension.  PKG-OUTPUT specifies which output of PKG to use."
   (let* ((name (package-name pkg))
-         (version (package-version pkg))
-         (private-key (make-signing-key name))
-         (public-key (signing-key->public-der private-key))
-         (checksum (file-sha256sum public-key))
-         (crx (make-crx private-key pkg pkg-output))
-         (json (crx->chromium-json crx version)))
+         (version (package-version pkg)))
     (package
       (inherit pkg)
       (name (string-append name "-chromium"))
@@ -138,18 +133,24 @@ Chromium browser extension.  PKG-OUTPUT specifies which output of PKG to use."
       (arguments
        (list #:modules '((guix build utils))
              #:builder
-             #~(begin
-                 (use-modules (guix build utils))
-                 (define (base16-char->chromium-base16 char)
-                   ;; Translate CHAR, a hexadecimal character, to a Chromium-style
-                   ;; representation using the letters a-p (where a=0, p=15).
-                   (string-ref "abcdefghijklmnop"
-                               (string-index "0123456789abcdef" char)))
-                 (let ((file-name (string-map base16-char->chromium-base16
-                                              (string-take #$checksum 32)))
-                       (extension-directory
-                        (string-append #$output
-                                       "/share/chromium/extensions")))
-                   (mkdir-p extension-directory)
-                   (symlink #$json (string-append extension-directory "/"
-                                                  file-name ".json")))))))))
+             (let*
+                 ((private-key (make-signing-key name))
+                  (public-key (signing-key->public-der private-key))
+                  (checksum (file-sha256sum public-key))
+                  (crx (make-crx private-key pkg pkg-output))
+                  (json (crx->chromium-json crx version)))
+               #~(begin
+                   (use-modules (guix build utils))
+                   (define (base16-char->chromium-base16 char)
+                     ;; Translate CHAR, a hexadecimal character, to a Chromium-style
+                     ;; representation using the letters a-p (where a=0, p=15).
+                     (string-ref "abcdefghijklmnop"
+                                 (string-index "0123456789abcdef" char)))
+                   (let ((file-name (string-map base16-char->chromium-base16
+                                                (string-take #$checksum 32)))
+                         (extension-directory
+                          (string-append #$output
+                                         "/share/chromium/extensions")))
+                     (mkdir-p extension-directory)
+                     (symlink #$json (string-append extension-directory "/"
+                                                    file-name ".json"))))))))))

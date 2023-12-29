@@ -393,6 +393,30 @@
                  (list item))
          (null? (lowered-gexp-inputs lexp)))))
 
+(test-equal "gexp references non-existent output"
+  "no-default-output"
+  (guard (c ((derivation-missing-output-error? c)
+             (derivation-name (derivation-error-derivation c))))
+    (let* ((obj  (computed-file "no-default-output"
+                                #~(mkdir #$output:bar)))
+           (exp  #~(symlink #$obj #$output))
+           (drv  (run-with-store %store (lower-gexp exp))))
+      (pk 'oops! drv #f))))
+
+(test-assert "gexp-input, as first-class input"
+  ;; Insert a <gexp-input> record in a gexp as a way to specify which output
+  ;; of OBJ should be used.
+  (let* ((obj  (computed-file "foo" #~(mkdir #$output:bar)))
+         (exp  #~(list #$(gexp-input obj "bar")))
+         (drv  (run-with-store %store (lower-object obj)))
+         (item (derivation->output-path drv "bar"))
+         (lexp (run-with-store %store (lower-gexp exp))))
+    (and (match (lowered-gexp-inputs lexp)
+           ((input)
+            (eq? (derivation-input-derivation input) drv)))
+         (equal? (lowered-gexp-sexp lexp)
+                 `(list ,item)))))
+
 (test-assertm "with-parameters for %current-system"
   (mlet* %store-monad ((system -> (match (%current-system)
                                     ("aarch64-linux" "x86_64-linux")
@@ -1627,6 +1651,36 @@ importing.* \\(guix config\\) from the host"
                          (call-with-input-file (derivation->output-path drv2)
                            read)
                          refs)))))))
+
+(test-assertm "references-file, non-default output"
+  (let* ((exp      #~(begin
+                       (mkdir #$output)
+                       (symlink #$%bootstrap-guile #$output:extra)))
+         (computed (computed-file "computed" exp
+                                  #:guile %bootstrap-guile))
+         (refs1    (references-file computed
+                                    #:guile %bootstrap-guile))
+         ;; Wrap COMPUTE in 'gexp-input' to get the "extra" output.
+         (refs2    (references-file (gexp-input computed "extra")
+                                    #:guile %bootstrap-guile)))
+    (mlet* %store-monad ((drv0 (lower-object %bootstrap-guile))
+                         (drv1 (lower-object computed))
+                         (drv2 (lower-object refs2))
+                         (drv3 (lower-object refs1)))
+      (mbegin %store-monad
+        (built-derivations (list drv2 drv3))
+        (mlet %store-monad ((refs ((store-lift requisites)
+                                   (list (derivation->output-path
+                                          drv1 "extra")))))
+          (return
+           (and (lset= string=?
+                       (call-with-input-file (derivation->output-path drv2)
+                         read)
+                       refs)
+                (lset= string=?
+                       (call-with-input-file (derivation->output-path drv3)
+                         read)
+                       (list (derivation->output-path drv1))))))))))
 
 (test-assert "lower-object & gexp-input-error?"
   (guard (c ((gexp-input-error? c)

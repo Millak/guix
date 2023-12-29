@@ -12197,6 +12197,11 @@ This is like the form above, but referring explicitly to the
 @var{output} of @var{obj}---this is useful when @var{obj} produces
 multiple outputs (@pxref{Packages with Multiple Outputs}).
 
+Sometimes a gexp unconditionally refers to the @code{"out"} output, but
+the user of that gexp would still like to insert a reference to another
+output.  The @code{gexp-input} procedure aims to address that.
+@xref{gexp-input}.
+
 @item #+@var{obj}
 @itemx #+@var{obj}:output
 @itemx (ungexp-native @var{obj})
@@ -12309,10 +12314,9 @@ When @var{references-graphs} is true, it must be a list of tuples of one of the
 following forms:
 
 @example
-(@var{file-name} @var{package})
-(@var{file-name} @var{package} @var{output})
-(@var{file-name} @var{derivation})
-(@var{file-name} @var{derivation} @var{output})
+(@var{file-name} @var{obj})
+(@var{file-name} @var{obj} @var{output})
+(@var{file-name} @var{gexp-input})
 (@var{file-name} @var{store-item})
 @end example
 
@@ -12590,6 +12594,39 @@ The example above returns an object that corresponds to the i686 build
 of Coreutils, regardless of the current value of @code{%current-system}.
 @end defmac
 
+@anchor{gexp-input}
+@deffn {Procedure} gexp-input @var{obj} [@var{output}] [#:native? #f]
+Return a @dfn{gexp input} record for the given @var{output} of file-like
+object @var{obj}, with @code{#:native?} determining whether this is a
+native reference (as with @code{ungexp-native}) or not.
+
+This procedure is helpful when you want to pass a reference to a
+specific output of an object to some procedure that may not know about
+that output.  For example, assume you have this procedure, which takes
+one file-like object:
+
+@lisp
+(define (make-symlink target)
+  (computed-file "the-symlink"
+                 #~(symlink #$target #$output)))
+@end lisp
+
+Here @code{make-symlink} can only ever refer to the default output of
+@var{target}---the @code{"out"} output (@pxref{Packages with Multiple
+Outputs}).  To have it refer to, say, the @code{"lib"} output of the
+@code{hwloc} package, you can call it like so:
+
+@lisp
+(make-symlink (gexp-input hwloc "lib"))
+@end lisp
+
+You can also compose it like any other file-like object:
+
+@lisp
+(make-symlink
+  (file-append (gexp-input hwloc "lib") "/lib/libhwloc.so"))
+@end lisp
+@end deffn
 
 Of course, in addition to gexps embedded in ``host'' code, there are
 also modules containing build tools.  To make it clear that they are
@@ -34126,6 +34163,9 @@ The Laminar package to use.
 @item @code{home-directory} (default: @code{"/var/lib/laminar"})
 The directory for job configurations and run directories.
 
+@item @code{supplementary-groups} (default: @code{()})
+Supplementary groups for the Laminar user account.
+
 @item @code{bind-http} (default: @code{"*:8080"})
 The interface/port or unix socket on which laminard should listen for
 incoming connections to the web frontend.
@@ -38722,58 +38762,6 @@ is automatically added.
 @item @code{token-file}
 File containing the dynamic auth token, this is created and stored in
 the coordinator database, and is used by the agent to authenticate.
-
-@end table
-@end deftp
-
-The Guix Build Coordinator package contains a script to query an
-instance of the Guix Data Service for derivations to build, and then
-submit builds for those derivations to the coordinator.  The service
-type below assists in running this script.  This is an additional tool
-that may be useful when building derivations contained within an
-instance of the Guix Data Service.
-
-@defvar guix-build-coordinator-queue-builds-service-type
-Service type for the
-guix-build-coordinator-queue-builds-from-guix-data-service script.  Its
-value must be a @code{guix-build-coordinator-queue-builds-configuration}
-object.
-@end defvar
-
-@deftp {Data Type} guix-build-coordinator-queue-builds-configuration
-Data type representing the options to the queue builds from guix data
-service script.
-
-@table @asis
-@item @code{package} (default: @code{guix-build-coordinator})
-The Guix Build Coordinator package to use.
-
-@item @code{user} (default: @code{"guix-build-coordinator-queue-builds"})
-The system user to run the service as.
-
-@item @code{coordinator} (default: @code{"http://localhost:8746"})
-The URI to use when connecting to the coordinator.
-
-@item @code{systems} (default: @code{#f})
-The systems for which to fetch derivations to build.
-
-@item @code{systems-and-targets} (default: @code{#f})
-An association list of system and target pairs for which to fetch
-derivations to build.
-
-@item @code{guix-data-service} (default: @code{"https://data.guix.gnu.org"})
-The Guix Data Service instance from which to query to find out about
-derivations to build.
-
-@item @code{guix-data-service-build-server-id} (default: @code{#f})
-The Guix Data Service build server ID corresponding to the builds being
-submitted.  Providing this speeds up the submitting of builds as
-derivations that have already been submitted can be skipped before
-asking the coordinator to build them.
-
-@item @code{processed-commits-file} (default: @code{"/var/cache/guix-build-coordinator-queue-builds/processed-commits"})
-A file to record which commits have been processed, to avoid needlessly
-processing them again if the service is restarted.
 
 @end table
 @end deftp
@@ -45084,6 +45072,7 @@ sound support.
 
 @cindex PulseAudio, home service
 @cindex RTP, for PulseAudio
+@subsubheading PulseAudio RTP Streaming Services
 
 The following services dynamically reconfigure the
 @uref{https://pulseaudio.org,PulseAudio sound server}: they let you
@@ -45170,6 +45159,77 @@ Stopping the Shepherd service turns off broadcasting.
 @defvar %pulseaudio-rtp-multicast-address
 This is the multicast address used by default by the two services above.
 @end defvar
+
+@cindex PipeWire, home service
+@subsubheading PipeWire Home Service
+
+@uref{https://pipewire.org, PipeWire} provides a low-latency,
+graph-based audio and video processing service.  In addition to its
+native protocol, it can also be used as a replacement for both JACK and
+PulseAudio.
+
+While PipeWire provides the media processing and API, it does not,
+directly, know about devices such as sound cards, nor how you might want
+to connect applications, hardware, and media processing filters.
+Instead, PipeWire relies on a @dfn{session manager} to specify all these
+relationships.  While you may use any session manager you wish, for most
+people the @url{https://pipewire.pages.freedesktop.org/wireplumber/,
+WirePlumber} session manager, a reference implementation provided by the
+PipeWire project itself, suffices, and that is the one
+@code{home-pipewire-service-type} uses.
+
+PipeWire can be used as a replacement for PulseAudio by setting
+@code{enable-pulseaudio?} to @code{#t} in
+@code{home-pipewire-configuration}, so that existing PulseAudio clients
+may use it without any further configuration.
+
+In addition, JACK clients may connect to PipeWire by using the
+@command{pw-jack} program, which comes with PipeWire.  Simply prefix the
+command with @command{pw-jack} when you run it, and audio data should go
+through PipeWire:
+
+@example
+pw-jack mpv -ao=jack sound-file.wav
+@end example
+
+For more information on PulseAudio emulation, see
+@uref{https://gitlab.freedesktop.org/pipewire/pipewire/-/wikis/Config-PulseAudio},
+for JACK, see
+@uref{https://gitlab.freedesktop.org/pipewire/pipewire/-/wikis/Config-JACK}.
+
+As PipeWire does not use @code{dbus} to start its services on demand
+(as PulseAudio does), @code{home-pipewire-service-type} uses Shepherd
+to start services when logged in, provisioning the @code{pipewire},
+@code{wireplumber}, and, if configured, @code{pipewire-pulseaudio}
+services.  @xref{Shepherd Home Service}.
+
+@defvar home-pipewire-service-type
+This provides the service definition for @command{pipewire}, which will
+run on login.  Its value is a @code{home-pipewire-configuration} object.
+
+To start the service, add it to the @code{service} field of your
+@code{home-environment}, such as:
+
+@lisp
+(service home-pipewire-service-type)
+@end lisp
+@end defvar
+
+@deftp {Data Type} home-pipewire-configuration
+Available @code{home-pipewire-configuration} fields are:
+
+@table @asis
+@item @code{pipewire} (default: @code{pipewire}) (type: file-like)
+The PipeWire package to use.
+
+@item @code{wireplumber} (default: @code{wireplumber}) (type: file-like)
+The WirePlumber package to use.
+
+@item @code{enable-pulseaudio?} (default: @code{#t}) (type: boolean)
+When true, enable PipeWire's PulseAudio emulation support, allowing
+PulseAudio clients to use PipeWire transparently.
+@end table
+@end deftp
 
 @node Mail Home Services
 @subsection Mail Home Services

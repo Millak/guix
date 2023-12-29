@@ -3109,7 +3109,7 @@ advanced research.")
 (define-public tensorflow-lite
   (package
     (name "tensorflow-lite")
-    (version "2.13.0")
+    (version "2.13.1")
     (source
      (origin
        (method git-fetch)
@@ -3119,7 +3119,7 @@ advanced research.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "07g6vlrs0aayrg2mfdl15gxg5dy103wx2xlqkran15dib40nkbj6"))
+         "09mfskmpvpbq919wibnw3bnhi1y3hkx3qrzm72gdr0gsivn1yb3w"))
        (patches (search-patches "tensorflow-lite-unbundle.patch"))))
     (build-system cmake-build-system)
     (arguments

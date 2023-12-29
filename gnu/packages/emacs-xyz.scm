@@ -10647,7 +10647,7 @@ sgml/html integration, and indentation (working with sgml).")
 (define-public emacs-jinx
   (package
     (name "emacs-jinx")
-    (version "0.9")
+    (version "1.0")
     (source
      (origin
        (method git-fetch)
@@ -10657,8 +10657,7 @@ sgml/html integration, and indentation (working with sgml).")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0xayrqnsws2n2p0qbdl291fva4ljp3kqrr591xbq1wr6n95hfyn5"))))
+        (base32 "00rlp7iby02zd3sqigpyskph4a26r0dgp53y17hm4xjr6zqifhz5"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -17616,7 +17615,7 @@ been adapted to also work with mu4e.")
 (define-public emacs-tempel
   (package
     (name "emacs-tempel")
-    (version "0.8")
+    (version "1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -17625,7 +17624,7 @@ been adapted to also work with mu4e.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10dcf56x74jrbdzaa9kphyzq2rz5alv800dnnzpbnvwzh29lfyka"))))
+                "0f1z5p6vbbjsh7cn7hqhv4c6h4awczpf14sbwpzsnwqsxsfjdh34"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-compat))
@@ -17637,8 +17636,8 @@ the Emacs Tempo library.  You may also write your templates in Lisp.")
     (license license:gpl3+)))
 
 (define-public emacs-tempel-collection
-  (let ((commit "cd9529b2a2fdfd49010117d2a1fc49adf9725051")
-        (revision "0"))
+  (let ((commit "4a1d717eb30a78680c8f4df2d71e395c846c5371")
+        (revision "1"))
     (package
       (name "emacs-tempel-collection")
       (version (git-version "0.1" revision commit))
@@ -17650,7 +17649,7 @@ the Emacs Tempo library.  You may also write your templates in Lisp.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "02x6jq5k7fa46ni64qf8wrmkay6zfbmkildb727zs6wchmyg2znn"))))
+                  "0ifmzn5d9mpsjwvg2ir0sy3r4czxa7d6j97l8rrp8ai7jqvydadm"))))
       (build-system emacs-build-system)
       (propagated-inputs (list emacs-tempel))
       (home-page "https://github.com/Crandel/tempel-collection")

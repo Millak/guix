@@ -18,6 +18,7 @@
 ;;; Copyright © 2021, 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -189,7 +190,7 @@ rendering modes are: Bitmaps, Anti-aliased pixmaps, Texture maps, Outlines,
 Polygon meshes, and Extruded polygon meshes.")
     (license license:x11)))
 
-(define-public glad
+(define-public glad-0.1
   (package
     (name "glad")
     (version "0.1.36")
@@ -208,18 +209,44 @@ Polygon meshes, and Extruded polygon meshes.")
          "0m55ya1zrmg6n2cljkajy80ilmi5sblln8742fm0k1sw9k7hzn8n"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-cmakelists.txt
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (share (string-append out "/share/" ,name)))
-               (install-file "CMakeLists.txt" share)))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'install-cmakelists.txt
+                 (lambda _
+                   (let ((share (string-append #$output "/share/"
+                                               #$(package-name this-package))))
+                     (install-file "CMakeLists.txt" share)))))))
     (home-page "https://github.com/Dav1dde/glad")
     (synopsis "Multi-language GL/GLES/EGL/GLX/WGL loader generator")
     (description "Glad uses the official Khronos XML specifications to
 generate a GL/GLES/EGL/GLX/WGL loader tailored for specific requirements.")
     (license license:expat)))
+
+(define-public glad
+  (package
+    (inherit glad-0.1)
+    (name "glad")
+    (version "2.0.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Dav1dde/glad")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1pam6imhcmcyqrqi6wzzxprb23y8x6zdbvsjavnz26k72i9dbbja"))))
+    (build-system python-build-system)
+    (arguments
+     (substitute-keyword-arguments (package-arguments glad-0.1)
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'install-cmakelists.txt
+              (lambda _
+                (let ((share (string-append #$output "/share/"
+                                            #$(package-name this-package))))
+                  (install-file "cmake/CMakeLists.txt" share))))))))
+    (propagated-inputs (list python-jinja2))))
 
 (define-public s2tc
   (package

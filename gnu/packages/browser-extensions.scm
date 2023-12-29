@@ -21,6 +21,7 @@
 (define-module (gnu packages browser-extensions)
   #:use-module (guix gexp)
   #:use-module (guix packages)
+  #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
@@ -155,7 +156,7 @@ ungoogled-chromium.")
 (define-public passff-host
   (package
     (name "passff-host")
-    (version "1.2.3")
+    (version "1.2.4")
     (home-page "https://github.com/passff/passff-host")
     (source (origin
               (method git-fetch)
@@ -163,7 +164,7 @@ ungoogled-chromium.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1p18l1jh20x4v8dj64z9qjlp96fxsl5h069iynxfpbkzj6hd74yl"))))
+                "1lcwa1qzfxlifmj33qndp1wgi6yx6vj21ir0az79vhm5k03p961z"))))
     (build-system copy-build-system)
     (arguments
      (let ((native-manifests "lib/icecat/native-messaging-hosts"))
@@ -193,7 +194,7 @@ properly.")
 (define passff
   (package
     (name "passff")
-    (version "1.15")
+    (version "1.16")
     (home-page "https://github.com/passff/passff")
     (source (origin
               (method git-fetch)
@@ -201,7 +202,7 @@ properly.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gymqyqppr8k9fqv5js7f6pk6hcc47qpf51x5cy6aahsk2v1qssj"))))
+                "0y3cbgy89lgvq6lfabp7mi1zhphdvihcccn3yw5mmaql9yrdm5kc"))))
     (propagated-inputs (list passff-host))
     (build-system copy-build-system)
     (properties '((addon-id . "passff@invicem.pro")))
@@ -251,3 +252,28 @@ with the @uref{https://keepassxc.org, KeePassXC} password manager.")
 
 (define-public keepassxc-browser/icecat
   (make-icecat-extension keepassxc-browser))
+
+(define noscript
+  (package
+    (name "noscript")
+    (version "11.4.29")
+    (source (origin
+              (method url-fetch/zipbomb)
+              (uri (string-append
+                    "https://noscript.net/download/releases/noscript-" version
+                    ".xpi"))
+              (sha256
+               (base32
+                "1k94zvv2ypmhc29f5d2zrvigwh1xgi5kwm1kqfxarwjyn108if85"))))
+    (build-system copy-build-system)
+    (properties '((addon-id . "{73a6fe31-595d-460b-a920-fcc0f8843232}")))
+    (arguments
+     `(#:install-plan '(("." ,(assq-ref properties 'addon-id)))))
+    (home-page "https://noscript.net")
+    (synopsis "Software providing extra protection for various browsers.")
+    (description "The NoScript Security Suite is a software providing extra
+protection for web browsers.")
+    (license license:gpl3+)))
+
+(define-public noscript/icecat
+  (make-icecat-extension noscript))

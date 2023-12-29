@@ -7,6 +7,7 @@
 ;;; Copyright © 2020 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Josselin Poiret <dev@jpoiret.xyz>
+;;; Copyright © 2023 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -69,6 +70,7 @@
             mx6cuboxi-installation-os
             nintendo-nes-classic-edition-installation-os
             novena-installation-os
+            orangepi-r1-plus-lts-rk3328-installation-os
             firefly-rk3399-installation-os
             pine64-plus-installation-os
             pinebook-installation-os
@@ -631,6 +633,11 @@ The bootloader BOOTLOADER is installed to BOOTLOADER-TARGET."
 (define nintendo-nes-classic-edition-installation-os
   (embedded-installation-os u-boot-nintendo-nes-classic-edition-bootloader
                             "/dev/mmcblk0" ; SD card (solder it yourself)
+                            "ttyS0"))
+
+(define orangepi-r1-plus-lts-rk3328-installation-os
+  (embedded-installation-os u-boot-orangepi-r1-plus-lts-rk3328-bootloader
+                            "/dev/mmcblk0" ; SD card storage
                             "ttyS0"))
 
 (define pine64-plus-installation-os

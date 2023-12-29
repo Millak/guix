@@ -67,6 +67,7 @@
 ;;; Copyright © 2023 Dominik Delgado Steuter <dds@disroot.org>
 ;;; Copyright © 2023 Saku Laesvuori <saku@laesvuori.fi>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1533,7 +1534,7 @@ libebml is a C++ library to read and write EBML files.")
 (define-public libplacebo
   (package
     (name "libplacebo")
-    (version "4.208.0")
+    (version "6.338.1")
     (source
      (origin
        (method git-fetch)
@@ -1542,16 +1543,16 @@ libebml is a C++ library to read and write EBML files.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "161dp5781s74ca3gglaxlmchx7glyshf0wg43w98pl22n1jcm5qk"))))
+        (base32 "1miqk3gfwah01xkf4a6grwq29im0lfh94gp92y7js855gx3v169m"))))
     (build-system meson-build-system)
     (arguments
-     `(#:configure-flags
-       `("-Dopengl=enabled"
-         ,(string-append "-Dvulkan-registry="
-                         (assoc-ref %build-inputs "vulkan-headers")
-                         "/share/vulkan/registry/vk.xml"))))
+     (list #:configure-flags
+           #~(list "-Dopengl=enabled"
+                   (string-append "-Dvulkan-registry="
+                                  #$(this-package-input "vulkan-headers")
+                                  "/share/vulkan/registry/vk.xml"))))
     (native-inputs
-     (list python python-mako pkg-config))
+     (list glad python python-mako pkg-config))
     (inputs
      (list lcms
            libepoxy
@@ -2338,7 +2339,7 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
 (define-public mpv
   (package
     (name "mpv")
-    (version "0.36.0")
+    (version "0.37.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2346,8 +2347,8 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1ri06h7pv6hrxmxxc618n9hymlgr0gfx38bqq5dcszdgnlashsgk"))))
-    (build-system waf-build-system)
+               (base32 "1xcyfpd543lbmg587wi0mahrz8vhyrlr4432054vp6wsi3s36c4b"))))
+    (build-system meson-build-system)
     (arguments
      (list
       #:phases
@@ -2364,21 +2365,15 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
               ;; and passed as linker flags, but the order in which they are added
               ;; varies.  See <https://github.com/mpv-player/mpv/issues/7855>.
               ;; Set PYTHONHASHSEED as a workaround for deterministic results.
-              (setenv "PYTHONHASHSEED" "1")))
-          (add-before 'configure 'set-up-waf
-            (lambda* (#:key inputs #:allow-other-keys)
-              (copy-file (search-input-file inputs "bin/waf") "waf")
-              (setenv "CC" #$(cc-for-target)))))
+              (setenv "PYTHONHASHSEED" "1"))))
       #:configure-flags
-      #~(list "--enable-libmpv-shared"
-              "--enable-cdda"
-              "--enable-dvdnav"
-              "--disable-build-date")
-      ;; No check function defined.
-      #:tests? #f))
+      #~(list "-Dlibmpv=true"
+              "-Dcdda=enabled"
+              "-Ddvdnav=enabled"
+              "-Dbuild-date=false")))
     (native-inputs
      (list perl ; for zsh completion file
-           pkg-config python-docutils))
+           pkg-config python-docutils python-wrapper))
     ;; Missing features: libguess, V4L2.
     (inputs
      (list alsa-lib
@@ -2395,6 +2390,7 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
            libdvdread
            libdvdnav
            libjpeg-turbo
+           libplacebo
            libva
            libvdpau
            libx11
@@ -2405,13 +2401,11 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
            libxrandr
            libxscrnsaver
            libxv
-           ;; XXX: lua > 5.2 is not currently supported; see
-           ;; waftools/checks/custom.py
+           ;; XXX: lua > 5.2 is not currently supported; see meson.build
            lua-5.2
            mesa
            mpg123
            pulseaudio
-           python-waf
            rsound
            shaderc
            vulkan-headers
@@ -2419,6 +2413,7 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
            wayland
            wayland-protocols
            yt-dlp
+           zimg
            zlib))
     (home-page "https://mpv.io/")
     (synopsis "Audio and video player")

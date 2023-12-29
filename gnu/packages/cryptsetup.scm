@@ -53,7 +53,11 @@
        ;; The default is OpenSSL which provides better PBKDF performance.
        "--with-crypto_backend=gcrypt"
        ;; GRUB 2.06 supports LUKS2, but does it reliably support all set-ups…?
-       "--with-default-luks-format=LUKS1")))
+       "--with-default-luks-format=LUKS1"
+       ;; libgcrypt is not found otherwise when cross-compiling.
+       ;; <https://issues.guix.gnu.org/63864>
+       (string-append "--with-libgcrypt-prefix="
+                      (assoc-ref %build-inputs "libgcrypt")))))
    (native-inputs
     (list pkg-config))
    (inputs
