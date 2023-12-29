@@ -41,7 +41,7 @@
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2020 Niklas Eklund <niklas.eklund@posteo.net>
 ;;; Copyright © 2020 Robert Smith <robertsmith@posteo.net>
-;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2021, 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 lasnesne <lasnesne@lagunposprasihopre.org>
@@ -1845,8 +1845,14 @@ corners, shadows, inactive window dimming, etc.")
        (sha256
         (base32 "03jrjwlwxkcyd6m9a1bbwapasnz7b7aws7h0y6jigjm4m478phv6"))))
     (build-system meson-build-system)
-    (inputs (list cairo gdk-pixbuf libxkbcommon linux-pam wayland))
-    (native-inputs (list pango pkg-config scdoc wayland-protocols))
+    (inputs (append (if (%current-target-system)
+                        (list wayland-protocols)
+                        '())
+                    (list cairo gdk-pixbuf libxkbcommon linux-pam wayland)))
+    (native-inputs (append (if (%current-target-system)
+                               (list pkg-config-for-build wayland)
+                               '())
+                           (list pango pkg-config scdoc wayland-protocols)))
     (home-page "https://github.com/swaywm/sway")
     (synopsis "Screen locking utility for Wayland compositors")
     (description "Swaylock is a screen locking utility for Wayland compositors.")
