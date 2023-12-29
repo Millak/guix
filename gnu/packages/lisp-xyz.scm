@@ -1510,8 +1510,8 @@ compatible with ANSI-compliant Common Lisp implementations.")
   (sbcl-package->ecl-package sbcl-cl-ppcre))
 
 (define-public sbcl-one-more-re-nightmare
-  (let ((commit "09c33feed35797512bf123ccca053cf8ba42bfbd")
-        (revision "0"))
+  (let ((commit "5b0b02e59f90964baf5737abd13300fa82f27667")
+        (revision "1"))
     (package
       (name "sbcl-one-more-re-nightmare")
       (version (git-version "0.0.0" revision commit))
@@ -1523,7 +1523,7 @@ compatible with ANSI-compliant Common Lisp implementations.")
                (commit commit)))
          (file-name (git-file-name "cl-one-more-re-nightmare" version))
          (sha256
-          (base32 "0vc0lxvn3anjb63hr26r1l18aw5nbj80w9ja3a32fip6nbwfsrfv"))))
+          (base32 "0mwgjgnp8dsf2zn0290px5q89z93zs0v4dhvs3rcir4mpiw8rbsn"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        '(#:asd-test-systems '("one-more-re-nightmare-tests")
