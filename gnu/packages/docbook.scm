@@ -923,11 +923,15 @@ Detect the differences in markup between two SGML files.
     (build-system gnu-build-system)
     (arguments
      (list
+      #:make-flags ''("AM_MAKEINFOHTMLFLAGS=\"--no-split\"")
       #:modules '((guix build gnu-build-system)
                   (guix build utils)
                   (srfi srfi-26))
       #:phases
       #~(modify-phases %standard-phases
+          (add-before 'build 'clean
+            (lambda _
+              (invoke "make" "clean")))
           (add-after 'install 'move-doc
             (lambda _
               (let* ((old (string-append #$output "/share/doc"))
