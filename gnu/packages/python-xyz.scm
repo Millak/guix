@@ -20288,6 +20288,31 @@ etc.")
      support.")
     (license license:bsd-3)))
 
+(define-public python-pymemcache
+  (package
+    (name "python-pymemcache")
+    (version "4.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pymemcache" version))
+       (sha256
+        (base32 "157z9blr8pjg9x84jph5hm0z2l6yaq6n421jcf1hzqn1pg8rpgr7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; We don't have the zstd module.
+     (list
+      #:test-flags
+      '(list "--ignore=pymemcache/test/test_compression.py")))
+    (native-inputs
+     (list python-faker python-pytest python-pytest-cov))
+    (home-page "https://github.com/pinterest/pymemcache")
+    (synopsis "Comprehensive, fast, pure Python memcached client")
+    (description
+     "This package provides a comprehensive, fast, pure Python memcached
+client.")
+    (license license:asl2.0)))
+
 (define-public python-pymodbus
   (package
     (name "python-pymodbus")
