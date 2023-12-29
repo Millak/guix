@@ -5935,7 +5935,6 @@ flexibility and power of the Python language.")
                       (string-append "-Wl," "-rpath=" python "/lib")
                       "-fno-semantic-interposition"
                       "build/temp/tree/tree.o"
-                      "-Wl,--whole-archive"
                       "-L" (string-append python "/lib")
                       (string-append abseil-cpp "/lib/libabsl_int128.a")
                       (string-append abseil-cpp "/lib/libabsl_raw_hash_set.a")
@@ -5943,7 +5942,6 @@ flexibility and power of the Python language.")
                       (string-append abseil-cpp "/lib/libabsl_strings.a")
                       (string-append abseil-cpp "/lib/libabsl_strings_internal.a")
                       (string-append abseil-cpp "/lib/libabsl_throw_delegate.a")
-                      "-Wl,--no-whole-archive"
                       "-o" "build/lib/tree/_tree.so")))))))
     (home-page "https://github.com/deepmind/tree")
     (synopsis "Work with nested data structures in Python")
