@@ -168,29 +168,30 @@
   (sbcl-package->ecl-package sbcl-alexandria-plus))
 
 (define-public sbcl-alexandria
-  (package
-   (name "sbcl-alexandria")
-   (version "1.4")
-   (source
-    (origin
-     (method git-fetch)
-     (uri (git-reference
-           (url "https://gitlab.common-lisp.net/alexandria/alexandria.git")
-           (commit (string-append "v" version))))
-     (sha256
-      (base32
-       "0r1adhvf98h0104vq14q7y99h0hsa8wqwqw92h7ghrjxmsvz2z6l"))
-     (file-name (git-file-name name version))))
-   (build-system asdf-build-system/sbcl)
-   (native-inputs
-    (list sbcl-rt))
-   (synopsis "Collection of portable utilities for Common Lisp")
-   (description
-    "Alexandria is a collection of portable utilities.  It does not contain
+  (let ((commit "009b7e532071d9777bdbd63b82d776555da95916")
+        (revision "0"))
+    (package
+      (name "sbcl-alexandria")
+      (version (git-version "1.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.common-lisp.net/alexandria/alexandria.git")
+               (commit commit)))
+         (file-name (git-file-name "cl-alexandria" version))
+         (sha256
+          (base32 "0pdj779j3nwzn8f1661vf00rrjrbks1xgiq0rvwjw6qyxsfqfnl9"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-rt))
+      (synopsis "Collection of portable utilities for Common Lisp")
+      (description
+       "Alexandria is a collection of portable utilities.  It does not contain
 conceptual extensions to Common Lisp.  It is conservative in scope, and
 portable between implementations.")
-   (home-page "https://common-lisp.net/project/alexandria/")
-   (license license:public-domain)))
+      (home-page "https://common-lisp.net/project/alexandria/")
+      (license license:public-domain))))
 
 (define-public cl-alexandria
   (sbcl-package->cl-source-package sbcl-alexandria))
