@@ -26754,7 +26754,13 @@ inspired by Haskell package @code{Data.List}.")
            sbcl-trivial-open-browser
            sbcl-websocket-driver))
     (arguments
-     '(#:asd-systems '("clog" "clog/docs" "clog/tools")))
+     '(#:asd-systems '("clog" "clog/docs" "clog/tools")
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'fix-symbol-name
+                    (lambda _
+                      (substitute* "source/clog-docs.lisp"
+                        (("clog:@CLOG-MANUAL")
+                         "clog::@CLOG_MANUAL")))))))
     (home-page "https://github.com/rabbibotton/clog")
     (synopsis "Common Lisp Omnificent GUI")
     (description
