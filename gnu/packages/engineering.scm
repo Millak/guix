@@ -19,7 +19,7 @@
 ;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
-;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023, 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021, 2023 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Gerd Heber <gerd.heber@gmail.com>
@@ -2006,7 +2006,7 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
   ;; See <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=27344#236>.
   (package
     (name "libngspice")
-    (version "41")
+    (version "42")
     (source
      (origin
        (method url-fetch)
@@ -2017,7 +2017,7 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
                             "old-releases/" version
                             "/ngspice-" version ".tar.gz")))
        (sha256
-        (base32 "1i78im03kx6vp5yml0fiwvqnic8qhczl1893n8zc6l1gblwikqhw"))))
+        (base32 "02p5ar1cqwn70dw5xzx5v3qhm1p1xgb1xpzs1ljklcxjda2f6zvk"))))
     (build-system gnu-build-system)
     (arguments
      `(;; No tests for libngspice exist.
