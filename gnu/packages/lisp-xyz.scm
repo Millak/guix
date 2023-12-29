@@ -17455,19 +17455,20 @@ the @command{flamegraph.pl} script, which is available in the Guix package
   (sbcl-package->cl-source-package sbcl-flamegraph))
 
 (define-public sbcl-trivial-benchmark
-  (let ((commit "42d76733dd2e873471c6f1e27d39113293f7dd5c"))
+  (let ((commit "1fbc8d15f09ed8aa426bc73956b8b7c9b2668802")
+        (revision "2"))
     (package
       (name "sbcl-trivial-benchmark")
-      (version (git-version "2.0.0" "1" commit))
+      (version (git-version "2.0.0" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/Shinmera/trivial-benchmark/")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-trivial-benchmark" version))
          (sha256
-          (base32 "0fbzqbpm2ixz85555krl36kbbbjyn699vdj6k383khi3g9y629fa"))))
+          (base32 "1p48wgpady0n8frdcgp7sbg93b0fbvpx1qk5valmanhwr9j3xh88"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria))
