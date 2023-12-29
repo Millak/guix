@@ -17953,19 +17953,20 @@ standard library.")
   (sbcl-package->cl-source-package sbcl-shlex))
 
 (define-public sbcl-cmd
-  (let ((commit "dda16c251992d2711dd98a073c436e73355cdb15"))
+  (let ((commit "0164d574ba236e2001ee1d9dba3f4774c7512a8c")
+        (revision "8"))
     (package
       (name "sbcl-cmd")
-      (version (git-version "0.0.1" "7" commit))
+      (version (git-version "0.0.1" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/ruricolist/cmd/")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-cmd" version))
          (sha256
-          (base32 "1m72vir64h21y3z1dmdywr0r3dl9lwawgd5p9g0cl3bgmz2wjgqr"))))
+          (base32 "03wbckzmz6pqdlz7pyar6nfg4vs4bl0b2np7n3kk3qhjbrdakc4m"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        `(("alexandria" ,sbcl-alexandria)
