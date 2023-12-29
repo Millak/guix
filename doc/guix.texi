@@ -39711,6 +39711,9 @@ This must be a list of strings where each string has the form
       "TMPDIR=/tmp/dockerd")
 @end lisp
 
+@item @code{config-file} (type: maybe-file-like)
+JSON configuration file pass to @command{dockerd}.
+
 @end table
 @end deftp
 

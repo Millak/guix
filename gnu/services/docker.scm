@@ -61,6 +61,8 @@
             oci-container-service-type
             oci-container-shepherd-service))
 
+(define-maybe file-like)
+
 (define-configuration docker-configuration
   (docker
    (file-like docker)
@@ -87,6 +89,9 @@ loop-back communications.")
   (environment-variables
    (list '())
    "Environment variables to set for dockerd")
+  (config-file
+   (maybe-file-like)
+   "JSON configuration file to pass to dockerd")
   (no-serialization))
 
 (define %docker-accounts
@@ -131,7 +136,8 @@ loop-back communications.")
          (enable-iptables? (docker-configuration-enable-iptables? config))
          (environment-variables (docker-configuration-environment-variables config))
          (proxy (docker-configuration-proxy config))
-         (debug? (docker-configuration-debug? config)))
+         (debug? (docker-configuration-debug? config))
+         (config-file (docker-configuration-config-file config)))
     (shepherd-service
            (documentation "Docker daemon.")
            (provision '(dockerd))
@@ -144,6 +150,10 @@ loop-back communications.")
            (start #~(make-forkexec-constructor
                      (list (string-append #$docker "/bin/dockerd")
                            "-p" "/var/run/docker.pid"
+                           #$@(if (not (eq? config-file %unset-value))
+                                  (list #~(string-append
+                                           "--config-file=" #$config-file))
+                                  '())
                            #$@(if debug?
                                   '("--debug" "--log-level=debug")
                                   '())
