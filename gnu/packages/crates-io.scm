@@ -24443,23 +24443,24 @@ provides implementations for @code{HashMap} and @code{HashSet}.")
     (description "Fallible streaming iteration")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-fancy-regex-0.7
+(define-public rust-fancy-regex-0.11
   (package
     (name "rust-fancy-regex")
-    (version "0.7.1")
+    (version "0.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "fancy-regex" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1krwc8mbj8zv4ahvh3lqkmfxf38cg79ya02by19fn4jil1h8aswx"))))
+        (base32 "18j0mmzfycibhxhhhfja00dxd1vf8x5c28lbry224574h037qpxr"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-bit-set" ,rust-bit-set-0.5)
-        ("rust-regex" ,rust-regex-1))))
+     `(#:cargo-inputs (("rust-bit-set" ,rust-bit-set-0.5)
+                       ("rust-regex" ,rust-regex-1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-matches" ,rust-matches-0.1)
+                                   ("rust-quickcheck" ,rust-quickcheck-1))))
     (home-page "https://github.com/fancy-regex/fancy-regex")
     (synopsis "Implementation of regexes with a rich set of features")
     (description
@@ -24469,6 +24470,24 @@ a relatively rich set of features.  In particular, it uses backtracking to
 implement features such as look-around and backtracking, which are not
 supported in purely NFA-based implementations.")
     (license license:expat)))
+
+(define-public rust-fancy-regex-0.7
+  (package
+    (inherit rust-fancy-regex-0.11)
+    (name "rust-fancy-regex")
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fancy-regex" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1krwc8mbj8zv4ahvh3lqkmfxf38cg79ya02by19fn4jil1h8aswx"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-bit-set" ,rust-bit-set-0.5)
+        ("rust-regex" ,rust-regex-1))))))
 
 (define-public rust-fast-chemail-0.9
   (package
