@@ -2259,7 +2259,11 @@ identical visual appearance.")
       (base32 "1i6g4dfiv2mwkjvvrx3wizb1n05xmd4j9nkhdii4klwd1gdrhjwd"))))
    (build-system meson-build-system)
    (native-inputs
-    (list pkg-config scdoc))
+    (append (if (%current-target-system)
+                ;; for wayland-scanner
+                (list wayland pkg-config-for-build)
+                '())
+            (list pkg-config scdoc)))
    (inputs
     (list cairo libxkbcommon wayland wayland-protocols))
    (home-page "https://github.com/emersion/slurp")
