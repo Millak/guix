@@ -2236,7 +2236,11 @@ identical visual appearance.")
      (sha256
       (base32 "1snp4qlj05d0nx4f0qr8kywv0i1xcw5i278ybng1rand2alhkjz5"))))
    (build-system meson-build-system)
-   (native-inputs (list pkg-config scdoc))
+   (native-inputs (append (if (%current-target-system)
+                              ;; for wayland-scanner
+                              (list pkg-config-for-build wayland)
+                              '())
+                          (list pkg-config scdoc)))
    (inputs (list pixman libpng libjpeg-turbo wayland wayland-protocols))
    (home-page "https://sr.ht/~emersion/grim/")
    (synopsis "Create screenshots from a Wayland compositor")
