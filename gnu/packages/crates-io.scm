@@ -12229,12 +12229,14 @@ or to a file as well.")
        (sha256
         (base32 "15p36klnsgjimfswi0mjc7wsh4b662v7gbfinh56ipk3bacbv2z6"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-serde" ,rust-serde-1)
-        ("rust-winapi" ,rust-winapi-0.3))))))
+        ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs
+       (("rust-nix" ,rust-nix-0.19)
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-cloudabi-0.1
   (package
