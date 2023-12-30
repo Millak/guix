@@ -32,7 +32,7 @@
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2021 Jacob MacDonald <jaccarmac@gmail.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
-;;; Copyright © 2022, 2023 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2022, 2023, 2024 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022 Trevor Richards <trev@trevdev.ca>
@@ -20564,6 +20564,44 @@ alternative 4x4 matrix representation.")
 
 (define-public cl-3d-transforms
   (sbcl-package->cl-source-package sbcl-3d-transforms))
+
+(define-public sbcl-type-templates
+  (let ((commit "5b389ebcff61b81585a64d0b899b69fa12aa5f96")
+        (revision "0"))
+    (package
+      (name "sbcl-type-templates")
+      (version (git-version "4.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/type-templates")
+               (commit commit)))
+         (file-name (git-file-name "cl-type-templates" version))
+         (sha256
+          (base32 "1zmz3bmwg8ncqbnjwimn8n7q9ik9arnhd5ijd22ap1nwhbnmk1rj"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       ;; No tests
+       (list #:tests? #f))
+      (inputs
+       (list sbcl-alexandria
+             sbcl-documentation-utils
+             sbcl-form-fiddle))
+      (home-page "https://shinmera.github.io/type-templates/")
+      (synopsis "Library for defining and expanding templated functions")
+      (description
+       "The Type-Templates library allows you to define types and “template
+functions” that can be expanded into various type-specialized versions to
+eliminate runtime dispatch overhead.  It was specifically designed to
+implement low-level numerical data types and functionality.")
+      (license license:zlib))))
+
+(define-public cl-type-templates
+  (sbcl-package->cl-source-package sbcl-type-templates))
+
+(define-public ecl-type-templates
+  (sbcl-package->ecl-package sbcl-type-templates))
 
 (define-public sbcl-glsl-toolkit
   (let ((commit "4c4889e75c635772c4df70b11d6f14e7a596da43")
