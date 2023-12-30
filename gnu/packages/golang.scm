@@ -12053,6 +12053,33 @@ using shell-style rules for quoting and commenting.")
 ordered, mutable data structure.")
     (license license:asl2.0)))
 
+(define-public go-github-com-peterbourgon-diskv
+  (package
+    (name "go-github-com-peterbourgon-diskv")
+    (version "3.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/peterbourgon/diskv")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pdy8f7bkm65gx4vknwcvfa619hknflqxkdlvmf427k2mzm91gmh"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/peterbourgon/diskv"
+       #:go ,go-1.18))
+    (propagated-inputs (list go-github-com-google-btree))
+    (home-page "https://github.com/peterbourgon/diskv")
+    (synopsis "Disk-backed key-value store")
+    (description
+     "Diskv (disk-vee) is a simple, persistent key-value store written in the Go
+language.  It starts with a simple API for storing arbitrary data on a filesystem by
+key, and builds several layers of performance-enhancing abstraction on top.  The end
+result is a conceptually simple, but highly performant, disk-backed storage system.")
+    (license license:expat)))
+
 (define-public go-github-com-disintegration-imaging
   (package
     (name "go-github-com-disintegration-imaging")
