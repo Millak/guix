@@ -6,6 +6,7 @@
 ;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2022 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;; Copyright © 2022 dan <i@dan.games>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -270,7 +271,9 @@ interpretation of the specifications for these languages.")
                              (dirname (dirname
                                        (search-input-directory
                                         %build-inputs "include/vulkan"))))
-              "-DBUILD_TESTS=ON")
+              #$@(if (%current-target-system)
+                     #~("-DBUILD_TESTS=OFF" "-DUSE_GAS=OFF")
+                     #~("-DBUILD_TESTS=ON")))
        #:phases
        #~(modify-phases %standard-phases
            (add-after 'unpack 'fix-pkg-config-file
@@ -299,7 +302,7 @@ interpretation of the specifications for these languages.")
            python
            wayland))
     (inputs
-     (list vulkan-headers))
+     (list vulkan-headers libxrandr))
     (home-page
      "https://github.com/KhronosGroup/Vulkan-Loader")
     (synopsis "Khronos official ICD loader and validation layers for Vulkan")
