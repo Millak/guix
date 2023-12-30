@@ -8553,8 +8553,37 @@ buffer operations.")
 half is separately buffered.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-bugreport-0.5
+  (package
+    (name "rust-bugreport")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bugreport" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jcq9ywxyd7fw1ing8ixna0cfcs5lrviyvx6h6080ir532w20lak"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-git-version" ,rust-git-version-0.3)
+        ("rust-shell-escape" ,rust-shell-escape-0.1)
+        ("rust-sys-info" ,rust-sys-info-0.9))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/sharkdp/bugreport")
+    (synopsis "Collect system and environment information for bug reports")
+    (description
+     "bugreport is a Rust library that helps application developers to
+automatically collect information about the system and the environment that
+users can send along with a bug report.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-bugreport-0.4
   (package
+    (inherit rust-bugreport-0.5)
     (name "rust-bugreport")
     (version "0.4.0")
     (source
@@ -8564,20 +8593,12 @@ half is separately buffered.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0gday6f2brqgzl12a0vf7fx1hh1mim6gdjxc6dfwk9v4i19pxsd0"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-git-version" ,rust-git-version-0.3)
         ("rust-shell-escape" ,rust-shell-escape-0.1)
-        ("rust-sys-info" ,rust-sys-info-0.9))))
-    (home-page "https://github.com/sharkdp/bugreport")
-    (synopsis "Collect system and environment information for bug reports")
-    (description
-     "bugreport is a Rust library that helps application developers to
-automatically collect information about the system and the environment that
-users can send along with a bug report.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-sys-info" ,rust-sys-info-0.9))))))
 
 (define-public rust-build-const-0.2
   (package
