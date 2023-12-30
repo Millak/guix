@@ -79,6 +79,7 @@
 ;;; Copyright © 2023 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2023 Ivana Drazovic <iv.dra@hotmail.com>
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -10114,6 +10115,36 @@ can be downloaded from @url{https://zero.sjeng.org/best-network}.")
 @end itemize")
    (home-page "https://github.com/bernds/q5Go")
    (license license:gpl2+)))
+
+(define-public qcheckers
+  (package
+    (name "qcheckers")
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/portnov/qcheckers")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05wzql6abzdf6l0vdzki4rfy2zn31mcplh1wkw3ddk8w81pvaymw"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (invoke "qmake"
+                      (string-append "PREFIX=" #$output)))))))
+    (inputs (list qtbase-5 qtsvg-5))
+    (home-page "https://portnov.github.io/qcheckers/")
+    (synopsis "Qt-based checkers boardgame")
+    (description "QCheckers, formely known as KCheckers, is a is a Qt version
+of the classic boardgame checkers (also known as draughts).")
+    (license license:gpl2+)))
 
 (define-public xmoto
   (package
