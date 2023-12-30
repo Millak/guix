@@ -8585,20 +8585,18 @@ users can send along with a bug report.")
   (package
     (inherit rust-bugreport-0.5)
     (name "rust-bugreport")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "bugreport" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0gday6f2brqgzl12a0vf7fx1hh1mim6gdjxc6dfwk9v4i19pxsd0"))))
+        (base32 "0k20nbl226kni905sy3rvizl7k4h28971143qdlzwfznnjrb8500"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-git-version" ,rust-git-version-0.3)
-        ("rust-shell-escape" ,rust-shell-escape-0.1)
-        ("rust-sys-info" ,rust-sys-info-0.9))))))
+     `(#:cargo-inputs (("rust-git-version" ,rust-git-version-0.3)
+                       ("rust-shell-escape" ,rust-shell-escape-0.1)
+                       ("rust-sys-info" ,rust-sys-info-0.9))))))
 
 (define-public rust-build-const-0.2
   (package
