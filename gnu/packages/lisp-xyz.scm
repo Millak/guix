@@ -20603,6 +20603,43 @@ implement low-level numerical data types and functionality.")
 (define-public ecl-type-templates
   (sbcl-package->ecl-package sbcl-type-templates))
 
+(define-public sbcl-3d-math
+  (let ((commit "3831b1706d225def95a7301ef48b393b563f0114")
+        (revision "0"))
+    (package
+      (name "sbcl-3d-math")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/3d-math")
+               (commit commit)))
+         (file-name (git-file-name "cl-3d-math" version))
+         (sha256
+          (base32 "052vzx5j7bag9dxvl0j0wrm244js1djldyn31rwxgkq7965rmi5r"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-parachute))
+      (inputs
+       (list sbcl-documentation-utils
+             sbcl-type-templates))
+      (home-page "https://shinmera.github.io/3d-math/")
+      (synopsis "Linear algebra for 2D and 3D computations")
+      (description
+       "The @code{3d-math} library implements types, operators, and algorithms
+commonly used in math for 2D and 3D graphics.  It supersedes and combines the
+prior libraries @code{3d-vectors}, @code{3d-matrices}, @code{3d-quaternions},
+and @code{3d-transforms}.  The new API is largely but not entirely backwards
+compatible, and adds new functionality.")
+      (license license:zlib))))
+
+(define-public cl-3d-math
+  (sbcl-package->cl-source-package sbcl-3d-math))
+
+(define-public ecl-3d-math
+  (sbcl-package->ecl-package sbcl-3d-math))
+
 (define-public sbcl-glsl-toolkit
   (let ((commit "4c4889e75c635772c4df70b11d6f14e7a596da43")
         (revision "2"))
