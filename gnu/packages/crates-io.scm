@@ -15565,8 +15565,27 @@ final xor value.  It has many built-in CRC functions.")
      "Fast, SIMD-accelerated CRC32 (IEEE) checksum computation.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-crc64-2
+  (package
+    (name "rust-crc64")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "crc64" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wwqdss36dmhz4fd0wynlaig463l4dwvr21db1fvf6aypapy61r7"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/badboy/crc64-rs")
+    (synopsis "Rust CRC64 checksum implementation")
+    (description
+     "This package provides a CRC64 checksum implementation in Rust.")
+    (license license:bsd-3)))
+
 (define-public rust-crc64-1
   (package
+    (inherit rust-crc64-2)
     (name "rust-crc64")
     (version "1.0.0")
     (source
@@ -15576,13 +15595,7 @@ final xor value.  It has many built-in CRC functions.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0469vp0q9431pqx1236g60if5q3xyxpv4h14smkd45dfzsa6aqjm"))))
-    (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page "https://github.com/badboy/crc64-rs")
-    (synopsis "Rust CRC64 checksum implementation")
-    (description "This package provides a CRC64 checksum implementation in
-Rust.")
-    (license license:bsd-3)))
+    (arguments `(#:skip-build? #t))))
 
 (define-public rust-crc-catalog-2
   (package
