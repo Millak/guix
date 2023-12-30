@@ -2250,24 +2250,21 @@ library.")
     (version "3.8.0")
     (source
      (origin
-      (method url-fetch)
-      (uri (pypi-uri "h5py" version))
-      (sha256
-       (base32
-        "0pyr6z4h2xqbp49yx2i1401gl6yqh03h771zslwcy0201hpxiskg"))))
+       (method url-fetch)
+       (uri (pypi-uri "h5py" version))
+       (sha256
+        (base32 "0pyr6z4h2xqbp49yx2i1401gl6yqh03h771zslwcy0201hpxiskg"))))
     (build-system python-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-hdf5-paths
-          (lambda* (#:key inputs #:allow-other-keys)
-            (setenv "HDF5_DIR" (assoc-ref inputs "hdf5")))))))
-    (propagated-inputs
-     (list python-six python-numpy))
-    (inputs
-     (list hdf5-1.10))
-    (native-inputs
-     (list python-cython python-ipython python-pkgconfig python-pytest pkg-config))
+     '(#:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'fix-hdf5-paths
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (setenv "HDF5_DIR"
+                              (assoc-ref inputs "hdf5")))))))
+    (propagated-inputs (list python-six python-numpy))
+    (inputs (list hdf5-1.10))
+    (native-inputs (list pkg-config python-cython python-ipython
+                         python-pkgconfig python-pytest))
     (home-page "https://www.h5py.org/")
     (synopsis "Read and write HDF5 files from Python")
     (description
