@@ -71325,8 +71325,51 @@ standard library.")
      "This package provides helper test traits for synstructure doctests.")
     (license license:expat)))
 
+(define-public rust-syntect-5
+  (package
+    (name "rust-syntect")
+    (version "5.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "syntect" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14cg314vzabi45cdbqgcpav0dlx3d18blp24n3z8pl7q7cq4naz0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f                      ;missing files
+       #:cargo-inputs
+       (("rust-bincode" ,rust-bincode-1)
+        ("rust-bitflags" ,rust-bitflags-1)
+        ("rust-fancy-regex" ,rust-fancy-regex-0.11)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-fnv" ,rust-fnv-1)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-onig" ,rust-onig-6)
+        ("rust-plist" ,rust-plist-1)
+        ("rust-regex-syntax" ,rust-regex-syntax-0.7)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-walkdir" ,rust-walkdir-2)
+        ("rust-yaml-rust" ,rust-yaml-rust-0.4))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-getopts" ,rust-getopts-0.2)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-0.6)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-regex" ,rust-regex-1))))
+    (home-page "https://github.com/trishume/syntect")
+    (synopsis "Library for syntax highlighting and code intelligence")
+    (description
+     "This package provides a library for syntax highlighting and code
+intelligence using Sublime Text's grammars.")
+    (license license:expat)))
+
 (define-public rust-syntect-4
   (package
+    (inherit rust-syntect-5)
     (name "rust-syntect")
     (version "4.6.0")
     (source
@@ -71337,7 +71380,6 @@ standard library.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0cd0rbi5r83p9pqph0gyj3vgr18ihh54amv9dvh0pvl0prdq284b"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f                      ;missing files
        #:cargo-inputs
@@ -71361,13 +71403,7 @@ standard library.")
         ("rust-getopts" ,rust-getopts-0.2)
         ("rust-pretty-assertions" ,rust-pretty-assertions-0.6)
         ("rust-rayon" ,rust-rayon-1)
-        ("rust-regex" ,rust-regex-1))))
-    (home-page "https://github.com/trishume/syntect")
-    (synopsis "Library for syntax highlighting and code intelligence")
-    (description
-     "This package provides a library for syntax highlighting and code
-intelligence using Sublime Text's grammars.")
-    (license license:expat)))
+        ("rust-regex" ,rust-regex-1))))))
 
 (define-public rust-syntex-errors-0.58
   (package
