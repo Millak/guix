@@ -23869,6 +23869,32 @@ decoding.")
        (("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1))))))
 
+(define-public rust-etcetera-0.8
+  (package
+    (name "rust-etcetera")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "etcetera" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hxrsn75dirbjhwgkdkh0pnpqrnq17ypyhjpjaypgax1hd91nv8k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-home" ,rust-home-0.5)
+                       ("rust-windows-sys" ,rust-windows-sys-0.48))))
+    (home-page "https://github.com/lunacookies/etcetera")
+    (synopsis
+     "Library for obtaining configuration, data, cache, & other directories")
+    (description
+     "This is a Rust library that allows you to determine the locations of
+configuration, data, cache & other files for your application.  Existing Rust
+libraries generally do not give you a choice in terms of which standards/conventions
+they follow.  Etcetera, on the other hand, gives you the choice.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ethbloom-0.11
   (package
     (name "rust-ethbloom")
