@@ -12030,6 +12030,29 @@ implementation.")
 using shell-style rules for quoting and commenting.")
     (license license:asl2.0)))
 
+(define-public go-github-com-google-btree
+  (package
+    (name "go-github-com-google-btree")
+    (version "1.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/btree")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cqa8ck26p3wqz877hcvmfss17xm8wcbwd68shxv795ppahpdd9b"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/google/btree"))
+    (home-page "https://github.com/google/btree")
+    (synopsis "Simple, ordered, in-memory data structure for Go programs")
+    (description
+     "This package provides an in-memory B-Tree implementation for Go, useful as an
+ordered, mutable data structure.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-disintegration-imaging
   (package
     (name "go-github-com-disintegration-imaging")
