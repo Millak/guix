@@ -51908,6 +51908,24 @@ provides a generic over field elements and curve equation coefficients.")
 losslessly as possible.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-print-bytes-0.7
+  (package
+    (inherit rust-print-bytes-1)
+    (name "rust-print-bytes")
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "print_bytes" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09qlcf6iiadg8snmpbv43h8471mmqx4nhyksnm6ci1p7ygv1ch19"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-print-bytes" ,rust-print-bytes-1))
+       #:cargo-development-inputs
+       (("rust-os-str-bytes" ,rust-os-str-bytes-6))))))
+
 (define-public rust-print-bytes-0.5
   (package
     (inherit rust-print-bytes-1)
