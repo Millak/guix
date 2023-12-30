@@ -2257,8 +2257,7 @@ library.")
         "0pyr6z4h2xqbp49yx2i1401gl6yqh03h771zslwcy0201hpxiskg"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f ; no test target
-       #:phases
+     '(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-hdf5-paths
           (lambda* (#:key inputs #:allow-other-keys)
@@ -2268,7 +2267,7 @@ library.")
     (inputs
      (list hdf5-1.10))
     (native-inputs
-     (list python-cython python-pkgconfig pkg-config))
+     (list python-cython python-ipython python-pkgconfig python-pytest pkg-config))
     (home-page "https://www.h5py.org/")
     (synopsis "Read and write HDF5 files from Python")
     (description
