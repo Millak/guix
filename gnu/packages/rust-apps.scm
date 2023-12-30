@@ -78,6 +78,7 @@
   #:use-module (gnu packages kde)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages networking)
+  #:use-module (gnu packages shells)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
@@ -213,57 +214,91 @@ alternative zones.")
 (define-public bat
   (package
     (name "bat")
-    (version "0.20.0")
+    (version "0.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "bat" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "05sj0chxpai26fhk1k7p5m54v3j7n1x64ayx53mcimsj1skdr77m"))))
+        (base32 "11nc2iv2qhd1bs16yijqq934864ybnmg485rny70scy26xb9xk4x"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"~([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-ansi-colours" ,rust-ansi-colours-1)
-        ("rust-ansi-term" ,rust-ansi-term-0.12)
-        ("rust-atty" ,rust-atty-0.2)
+     (list
+      #:install-source? #f
+      #:cargo-inputs
+      `(("rust-ansi-colours" ,rust-ansi-colours-1)
         ("rust-bincode" ,rust-bincode-1)
-        ("rust-bugreport" ,rust-bugreport-0.4)
+        ("rust-bugreport" ,rust-bugreport-0.5)
         ("rust-bytesize" ,rust-bytesize-1)
-        ("rust-clap" ,rust-clap-2)
-        ("rust-clap" ,rust-clap-2)
-        ("rust-clircle" ,rust-clircle-0.3)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-clircle" ,rust-clircle-0.4)
         ("rust-console" ,rust-console-0.15)
         ("rust-content-inspector" ,rust-content-inspector-0.2)
-        ("rust-dirs-next" ,rust-dirs-next-2)
-        ("rust-encoding" ,rust-encoding-0.2)
+        ("rust-encoding-rs" ,rust-encoding-rs-0.8)
+        ("rust-etcetera" ,rust-etcetera-0.8)
         ("rust-flate2" ,rust-flate2-1)
-        ("rust-git2" ,rust-git2-0.13)
+        ("rust-git2" ,rust-git2-0.18)
         ("rust-globset" ,rust-globset-0.4)
         ("rust-grep-cli" ,rust-grep-cli-0.1)
+        ("rust-home" ,rust-home-0.5)
+        ("rust-nu-ansi-term" ,rust-nu-ansi-term-0.49)
         ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-os-str-bytes" ,rust-os-str-bytes-6)
         ("rust-path-abs" ,rust-path-abs-0.5)
+        ("rust-plist" ,rust-plist-1)
         ("rust-regex" ,rust-regex-1)
+        ("rust-run-script" ,rust-run-script-0.10)
         ("rust-semver" ,rust-semver-1)
         ("rust-serde" ,rust-serde-1)
-        ("rust-serde-yaml" ,rust-serde-yaml-0.8)
+        ("rust-serde-yaml" ,rust-serde-yaml-0.9)
         ("rust-shell-words" ,rust-shell-words-1)
-        ("rust-syntect" ,rust-syntect-4)
+        ("rust-syntect" ,rust-syntect-5)
         ("rust-thiserror" ,rust-thiserror-1)
         ("rust-unicode-width" ,rust-unicode-width-0.1)
         ("rust-walkdir" ,rust-walkdir-2)
         ("rust-wild" ,rust-wild-2))
-       #:cargo-development-inputs
-       (("rust-assert-cmd" ,rust-assert-cmd-2)
-        ("rust-nix" ,rust-nix-0.23)
-        ("rust-predicates" ,rust-predicates-2)
-        ("rust-serial-test" ,rust-serial-test-0.5)
+      #:cargo-development-inputs
+      `(("rust-assert-cmd" ,rust-assert-cmd-2)
+        ("rust-expect-test" ,rust-expect-test-1)
+        ("rust-nix" ,rust-nix-0.26)
+        ("rust-predicates" ,rust-predicates-3)
+        ("rust-serial-test" ,rust-serial-test-2)
         ("rust-tempfile" ,rust-tempfile-3)
-        ("rust-wait-timeout" ,rust-wait-timeout-0.2))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list libgit2 zlib))
+        ("rust-wait-timeout" ,rust-wait-timeout-0.2))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'pre-build
+            (lambda _
+              (setenv "BAT_ASSETS_GEN_DIR" "target")))
+          (add-after 'install 'install-extras
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (share (string-append out "/share"))
+                     (bash-completions-dir
+                      (string-append share "/bash-completion/completions"))
+                     (zsh-completions-dir
+                      (string-append share "/zsh/site-functions"))
+                     (fish-completions-dir
+                      (string-append share "/fish/vendor_completions.d"))
+                     (man1 (string-append share "/man/man1")))
+                (mkdir-p bash-completions-dir)
+                (mkdir-p zsh-completions-dir)
+                (mkdir-p fish-completions-dir)
+                (copy-file "target/assets/completions/bat.bash"
+                           (string-append bash-completions-dir "/bat"))
+                (copy-file "target/assets/completions/bat.zsh"
+                           (string-append zsh-completions-dir "/_bat"))
+                (install-file "target/assets/completions/bat.fish"
+                              fish-completions-dir)
+                (install-file "target/assets/manual/bat.1" man1)))))))
+    (native-inputs (list pkg-config))
+    (inputs (list libgit2-1.7 zlib))
     (home-page "https://github.com/sharkdp/bat")
     (synopsis "@command{cat} clone with syntax highlighting and git integration")
     (description
