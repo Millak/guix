@@ -15594,8 +15594,7 @@ final xor value.  It has many built-in CRC functions.")
        (uri (crate-uri "crc64" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0469vp0q9431pqx1236g60if5q3xyxpv4h14smkd45dfzsa6aqjm"))))
-    (arguments `(#:skip-build? #t))))
+        (base32 "0469vp0q9431pqx1236g60if5q3xyxpv4h14smkd45dfzsa6aqjm"))))))
 
 (define-public rust-crc-catalog-2
   (package
