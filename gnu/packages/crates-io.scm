@@ -22554,19 +22554,25 @@ embedded systems.")
 (define-public rust-empfindung-0.2
   (package
     (name "rust-empfindung")
-    (version "0.2.4")
+    (version "0.2.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "empfindung" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1h68h3sxsa79a47jag3yim5jm63ffz72ifj46xkn12j2s5nss85l"))))
+        (base32 "1pxh4r196qfv1y1qlp9fn210sj75whaqa61fdasjd9ml6bn9bw4a"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-lab" ,rust-lab-0.11)
+        ("rust-rgb" ,rust-rgb-0.8))
+       #:cargo-development-inputs
+       (("rust-approx" ,rust-approx-0.5)
+        ("rust-criterion" ,rust-criterion-0.3)
+        ("rust-lab" ,rust-lab-0.11)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rand-xoshiro" ,rust-rand-xoshiro-0.6)
         ("rust-rgb" ,rust-rgb-0.8))))
     (home-page "https://github.com/mina86/empfindung")
     (synopsis "Rust implementation of the CIEDE2000 colour difference")
