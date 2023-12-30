@@ -26393,6 +26393,37 @@ more helpful error messages.")
 process and much more.")
     (license license:expat)))
 
+(define-public rust-fsio-0.4
+  (package
+    (name "rust-fsio")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fsio" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1l1nkb06s8xx84yrba5nj86wm80knv40bmy54nrl3i0cpqqcxl6s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-dunce" ,rust-dunce-1)
+        ("rust-rand" ,rust-rand-0.8))
+       #:cargo-development-inputs
+       (("rust-doc-comment" ,rust-doc-comment-0.3))))
+    (home-page "http://github.com/sagiegurari/fsio")
+    (synopsis "File System and Path utility functions in Rust")
+    (description
+     "This crate contains utility functions for path, file and directory handling.
+There are multiple main modules for fsio:
+
+@enumerate
+@item @code{fsio::path}: Holds path related functions and traits.
+@item @code{fsio::file}:  File utility functions such as read_file, write_file, etc.
+@item @code{fsio::directory}: Directory specific utility functions.
+@end enumerate")
+    (license license:asl2.0)))
+
 (define-public rust-fs-set-times-0.19
   (package
     (name "rust-fs-set-times")
