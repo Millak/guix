@@ -59592,6 +59592,31 @@ console applications.")
 structures with structural sharing.")
     (license license:mpl2.0)))
 
+(define-public rust-run-script-0.10
+  (package
+    (name "rust-run-script")
+    (version "0.10.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "run_script" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ix9kf1b3h5vmdadpv7rfxylmj8mphlbx0xgv6frhy4dqpyri7w2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-fsio" ,rust-fsio-0.4))
+       #:cargo-development-inputs
+       (("rust-doc-comment" ,rust-doc-comment-0.3))))
+    (home-page "http://github.com/sagiegurari/run_script")
+    (synopsis "Run shell scripts in Rust")
+    (description "This library enables to invoke shell scripts based on their
+content.  While @code{std::process::Command} works great to execute standalone
+command, you need more manual code to take a script text and execute it.  For
+this purpose, this library was created.")
+    (license license:asl2.0)))
+
 (define-public rust-runtime-0.3
   (package
     (name "rust-runtime")
