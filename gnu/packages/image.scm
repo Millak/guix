@@ -2247,7 +2247,7 @@ identical visual appearance.")
 (define-public slurp
   (package
    (name "slurp")
-   (version "1.4.0")
+   (version "1.5.0")
    (source
     (origin
      (method git-fetch)
@@ -2256,7 +2256,7 @@ identical visual appearance.")
            (commit (string-append "v" version))))
      (file-name (git-file-name name version))
      (sha256
-      (base32 "1i6g4dfiv2mwkjvvrx3wizb1n05xmd4j9nkhdii4klwd1gdrhjwd"))))
+      (base32 "0wlml42c3shma50bsvqzll7p3zn251jaf0jm59q2idks8gg1zkyq"))))
    (build-system meson-build-system)
    (native-inputs
     (append (if (%current-target-system)
