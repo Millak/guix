@@ -21734,8 +21734,8 @@ impossible to merge back upstream.")
 
 (define-public sbcl-atomics
   ;; No release in years.
-  (let ((commit "9ee0bdebcd2bb9b242671a75460db13fbf45454c")
-        (revision "1"))
+  (let ((commit "b7477024894e322bff9c85e6d81e5e8d1d4eae59")
+        (revision "2"))
     (package
       (name "sbcl-atomics")
       (version (git-version "1.0.0" revision commit))
@@ -21745,9 +21745,9 @@ impossible to merge back upstream.")
          (uri (git-reference
                (url "https://github.com/Shinmera/atomics")
                (commit commit)))
-         (file-name (git-file-name "atomics" version))
+         (file-name (git-file-name "cl-atomics" version))
          (sha256
-          (base32 "0mp5jdqq0aamdhgnvw149cqqi3zg7dkkibp25qi4rafw1fnpd40z"))))
+          (base32 "1ah6fgvfva0axnhj4sp1qy6gjyw41fkhpnv998di0wbp6hls8j39"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-documentation-utils))
