@@ -2225,20 +2225,20 @@ identical visual appearance.")
 (define-public grim
   (package
    (name "grim")
-   (version "1.4.0")
+   (version "1.4.1")
    (source
     (origin
      (method git-fetch)
      (uri (git-reference
-           (url "https://github.com/emersion/grim")
+           (url "https://git.sr.ht/~emersion/grim")
            (commit (string-append "v" version))))
      (file-name (git-file-name name version))
      (sha256
-      (base32 "1b1k5cmmk7gzis0rncyl98lnhdwpjkdsv9pada5mmgxcpka6f0lp"))))
+      (base32 "1snp4qlj05d0nx4f0qr8kywv0i1xcw5i278ybng1rand2alhkjz5"))))
    (build-system meson-build-system)
    (native-inputs (list pkg-config scdoc))
    (inputs (list pixman libpng libjpeg-turbo wayland wayland-protocols))
-   (home-page "https://github.com/emersion/grim")
+   (home-page "https://sr.ht/~emersion/grim/")
    (synopsis "Create screenshots from a Wayland compositor")
    (description "grim can create screenshots from a Wayland compositor.")
    ;; MIT license.
