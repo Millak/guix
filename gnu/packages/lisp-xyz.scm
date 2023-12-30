@@ -20640,6 +20640,43 @@ compatible, and adds new functionality.")
 (define-public ecl-3d-math
   (sbcl-package->ecl-package sbcl-3d-math))
 
+(define-public sbcl-3d-spaces
+  (let ((commit "a93f4915affcf65617366297ad8bd2ec77bae702")
+        (revision "0"))
+    (package
+      (name "sbcl-3d-spaces")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shirakumo/3d-spaces")
+               (commit commit)))
+         (file-name (git-file-name "cl-3d-spaces" version))
+         (sha256
+          (base32 "1m5cg5zy1731dcgkm1p4m53z1zsp387xligxh32pdrnrhc2lzhmf"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-parachute))
+      (inputs
+       (list sbcl-3d-math
+             sbcl-documentation-utils
+             sbcl-for
+             sbcl-trivial-extensible-sequences))
+      (home-page "https://shirakumo.github.io/3d-spaces/")
+      (synopsis "Implementations of various spatial query structures")
+      (description
+       "The 3D-Spaces library implements a number of spatial query data
+structures; structures that can answer spatial range queries for optimized
+lookup, particularly suited for games.")
+      (license license:zlib))))
+
+(define-public cl-3d-spaces
+  (sbcl-package->cl-source-package sbcl-3d-spaces))
+
+(define-public ecl-3d-spaces
+  (sbcl-package->ecl-package sbcl-3d-spaces))
+
 (define-public sbcl-glsl-toolkit
   (let ((commit "4c4889e75c635772c4df70b11d6f14e7a596da43")
         (revision "2"))
