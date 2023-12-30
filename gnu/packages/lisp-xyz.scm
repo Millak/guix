@@ -19196,8 +19196,8 @@ Lisp.")
   (sbcl-package->cl-source-package sbcl-percent-encoding))
 
 (define-public sbcl-machine-state
-  (let ((commit "afa7392bc5dcb689cd170bcca765fb6ce6e4efc5")
-        (revision "1"))
+  (let ((commit "3d258eea63942e7d2fd7212f1ad8bbcf505634a2")
+        (revision "2"))
     (package
       (name "sbcl-machine-state")
       (version (git-version "1.0.0" revision commit))
@@ -19207,9 +19207,9 @@ Lisp.")
          (uri (git-reference
                (url "https://github.com/Shinmera/machine-state")
                (commit commit)))
-         (file-name (git-file-name "machine-state" version))
+         (file-name (git-file-name "cl-machine-state" version))
          (sha256
-          (base32 "1b897wj06cnalzf5nl6rif1skpa79rzc9a562x1bdhvanhsp7hwa"))))
+          (base32 "1fjf2v8agx75qnna1n8fn54lvb01w1rk1vddi3p45a2xw1kwhzml"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-bordeaux-threads
@@ -19219,7 +19219,7 @@ Lisp.")
       (arguments
        '(#:tests? #f                    ; No tests.
          #:asd-systems '("machine-state" "machine-state/opengl")))
-      (home-page "https://notabug.org/cage/cl-mount-info.git")
+      (home-page "https://shinmera.github.io/machine-state/")
       (synopsis "Retrieve machine state information about CPU time, memory usage and more")
       (description
        "This library implements various functions to access status information
