@@ -7497,8 +7497,8 @@ port within a range.")
   (sbcl-package->ecl-package sbcl-find-port))
 
 (define-public sbcl-numpy-file-format
-  (let ((commit "e97aef6c592a412fdd1afa9a5f09d0b1ce134510")
-        (revision "1"))
+  (let ((commit "e440c7bbc0d86b9abf73acb0fa665b77b82a6c98")
+        (revision "2"))
     (package
       (name "sbcl-numpy-file-format")
       (version (git-version "0.0.0" revision commit))
@@ -7510,7 +7510,7 @@ port within a range.")
                (commit commit)))
          (file-name (git-file-name "cl-numpy-file-format" version))
          (sha256
-          (base32 "0j7jjcf6k3anvgpm4nf81g6gbhff44v0v9rai7kwm2bm3abzsjfd"))))
+          (base32 "1n0nixc44z1cymm20wif0l2100ydv0h69l6i6xz5bmwcb2zc4gqr"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-ieee-floats sbcl-trivial-features))
