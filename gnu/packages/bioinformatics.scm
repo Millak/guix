@@ -16790,7 +16790,16 @@ the HiCExplorer and pyGenomeTracks packages.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1yavgxry38g326z10bclvdf8glmma05fxj5m73h15m1r2l9xmw3v"))))
+         "1yavgxry38g326z10bclvdf8glmma05fxj5m73h15m1r2l9xmw3v"))
+       (modules '((guix build utils)))
+       ;; setup.py is malformed. The requirements are defined using a catchall
+       ;; pattern for the patch version number. This has been fixed in version
+       ;; 3.7.3, but we cannot upgrade to this version yet, since some Guix
+       ;; packages are not new enough. (See upstream commit
+       ;; 4845c715ec7b105e938d0c2426e27d0181690bfe for the fix).
+       (snippet '(substitute* "setup.py"
+                   (("\\.\\*")
+                    "")))))
     (build-system pyproject-build-system)
     (arguments
      (list
