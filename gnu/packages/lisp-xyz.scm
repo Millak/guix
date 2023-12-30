@@ -21609,11 +21609,11 @@ application development library.")
   (sbcl-package->cl-source-package sbcl-cl-glfw3))
 
 (define-public sbcl-cl-gltf
-  (let ((commit "7f9193acec80cad775b61b1c7a125c14a7b35a0c")
+  (let ((commit "dab186ebf9169926ccfcdec121a157162ad6ed83")
         (revision "0"))
     (package
       (name "sbcl-cl-gltf")
-      (version (git-version "1.0.0" revision commit))
+      (version (git-version "2.0.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -21622,7 +21622,7 @@ application development library.")
                (commit commit)))
          (file-name (git-file-name "cl-gltf" version))
          (sha256
-          (base32 "0ni42242a4x052dqlycwrg5j6piwm87s4wgbn2q0a9s3l9f811vk"))))
+          (base32 "0ijy0paph7w037a2k14pv8j44mnj4gwhddhxzyqsz3qwl6fpb7yb"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        ;; No tests provided.
