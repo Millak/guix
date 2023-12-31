@@ -414,6 +414,18 @@ Features include:
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-stretchr-testify-bootstrap
+  (hidden-package
+    (package
+      (inherit go-github-com-stretchr-testify)
+      (arguments
+       '(#:import-path "github.com/stretchr/testify"
+         #:tests? #f
+         #:phases (modify-phases %standard-phases
+                    (delete 'build))))
+      (propagated-inputs
+       (list go-gopkg-in-yaml-v3)))))
+
 (define-public go-github-com-tdewolff-test
   (package
     (name "go-github-com-tdewolff-test")
