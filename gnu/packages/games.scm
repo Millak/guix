@@ -10446,6 +10446,31 @@ sunfish, but is written in C rather than Python.  It also has TUI tools for
 using any UCI engine and also to connect UCI engines to Lichess.")
       (license license:agpl3+))))
 
+(define-public morris
+  (package
+    (name "morris")
+    (version "0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/farindk/morris")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kkcnpkzgybm7rqg7nafd7sqd5m4alns6l4j5zcf3p41jdc9s3iv"))))
+    (build-system glib-or-gtk-build-system)
+    (inputs (list automake autoconf pkg-config intltool
+		 gnu-gettext libtool glib gtk+-2 boost))
+    (arguments `(#:tests? #f))
+    (home-page "http://nine-mens-morris.net/downloads.html")
+    (synopsis "Morris is an implementation of the board game Nine Men's Morris")
+    (description "Morris is an implementation of the board game Nine Men's Morris.
+It supports not only the standard game, but also several rule-variants and different
+board layouts. You can play against the computer, or simply use the program to
+present the board, but play against another human opponent.")
+    (license license:gpl3)))
+
 (define-public barrage
   (package
     (name "barrage")
