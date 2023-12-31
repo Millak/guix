@@ -66,6 +66,7 @@
   #:export (%default-bashrc
             %default-bash-profile
             %default-zprofile
+            %default-xdefaults
             default-skeletons
             skeleton-directory
             %base-groups
@@ -182,6 +183,11 @@ eval \"$(guix package --search-paths \\
 export PATH=/run/setuid-programs:$PATH
 "))
 
+(define %default-xdefaults
+  (plain-file "Xdefaults" "\
+XTerm*utf8: always
+XTerm*metaSendsEscape: true\n"))
+
 (define (default-skeletons)
   "Return the default skeleton files for /etc/skel.  These files are copied by
 'useradd' in the home directory of newly created user accounts."
@@ -189,9 +195,7 @@ export PATH=/run/setuid-programs:$PATH
   (let ((profile   %default-bash-profile)
         (bashrc    %default-bashrc)
         (zprofile  %default-zprofile)
-        (xdefaults (plain-file "Xdefaults" "\
-XTerm*utf8: always
-XTerm*metaSendsEscape: true\n"))
+        (xdefaults %default-xdefaults)
         (gdbinit   (plain-file "gdbinit" "\
 # Tell GDB where to look for separate debugging files.
 guile
