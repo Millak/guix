@@ -3269,16 +3269,16 @@ progresses the level, or you may regenerate tiles as the world changes.")
 (define-public bbcsdl
   (package
     (name "bbcsdl")
-    (version "1.35a")
+    (version "1.39a")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/rtrussell/BBCSDL/")
-                    (commit "b9b2a3eb438cb799edb2766055b3c38e9518e3e3")))
+                    (commit "93b0ffae960f4c4f45fdc2202bc6e83ee5ca277c")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1d03xmhrl6ba6w0vwfk46mpyc9d0w3bixxj2d4irx7wl7bh3bfic"))))
+                "03ga14k2hbhflnaynbyx9lwlbxlzx3rv6zqq21yhl183s6d4c0wa"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -3318,6 +3318,7 @@ progresses the level, or you may regenerate tiles as the world changes.")
                      inputs (string-append "share/fonts/truetype/" font))
                     (string-append opt "/lib/" font)))
                  '("DejaVuSans.ttf" "DejaVuSansMono.ttf"
+                   "DejaVuSans-Oblique.ttf"
                    "FreeSans.ttf" "FreeMono.ttf" "FreeSerif.ttf"))
                 (mkdir bin)
                 (symlink (string-append opt "/bbcsdl")
