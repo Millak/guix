@@ -64,6 +64,7 @@
                user-group-system?)
 
   #:export (%default-bashrc
+            %default-bash-profile
             default-skeletons
             skeleton-directory
             %base-groups
@@ -147,11 +148,8 @@ alias ll='ls -l'
 alias grep='grep --color=auto'
 alias ip='ip -color=auto'\n"))
 
-(define (default-skeletons)
-  "Return the default skeleton files for /etc/skel.  These files are copied by
-'useradd' in the home directory of newly created user accounts."
-
-  (let ((profile (plain-file "bash_profile" "\
+(define %default-bash-profile
+  (plain-file "bash_profile" "\
 # Set up Guix Home profile
 if [ -f ~/.profile ]; then . ~/.profile; fi
 
@@ -167,6 +165,12 @@ eval \"$(guix package --search-paths \\
 # Prepend setuid programs.
 export PATH=/run/setuid-programs:$PATH
 "))
+
+(define (default-skeletons)
+  "Return the default skeleton files for /etc/skel.  These files are copied by
+'useradd' in the home directory of newly created user accounts."
+
+  (let ((profile %default-bash-profile)
         (bashrc  %default-bashrc)
         (zprofile    (plain-file "zprofile" "\
 # Honor system-wide environment variables
