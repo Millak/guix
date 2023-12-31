@@ -65,6 +65,7 @@
 
   #:export (%default-bashrc
             %default-bash-profile
+            %default-zprofile
             default-skeletons
             skeleton-directory
             %base-groups
@@ -166,13 +167,8 @@ eval \"$(guix package --search-paths \\
 export PATH=/run/setuid-programs:$PATH
 "))
 
-(define (default-skeletons)
-  "Return the default skeleton files for /etc/skel.  These files are copied by
-'useradd' in the home directory of newly created user accounts."
-
-  (let ((profile %default-bash-profile)
-        (bashrc  %default-bashrc)
-        (zprofile    (plain-file "zprofile" "\
+(define %default-zprofile
+  (plain-file "zprofile" "\
 # Honor system-wide environment variables
 source /etc/profile
 
@@ -185,6 +181,14 @@ eval \"$(guix package --search-paths \\
 # Prepend setuid programs.
 export PATH=/run/setuid-programs:$PATH
 "))
+
+(define (default-skeletons)
+  "Return the default skeleton files for /etc/skel.  These files are copied by
+'useradd' in the home directory of newly created user accounts."
+
+  (let ((profile   %default-bash-profile)
+        (bashrc    %default-bashrc)
+        (zprofile  %default-zprofile)
         (xdefaults (plain-file "Xdefaults" "\
 XTerm*utf8: always
 XTerm*metaSendsEscape: true\n"))
