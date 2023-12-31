@@ -73,8 +73,8 @@ reconstruct a Plan 9 terminal-like experience from a non-Plan 9 system.")
 
 (define-public plan9port
   ;; no releases
-  (let ((commit "cc4571fec67407652b03d6603ada6580de2194dc")
-        (revision "0"))
+  (let ((commit "f8681acb374fa0d5ed1568dbedb00a4abe1ca6f1")
+        (revision "1"))
     (package
       (name "plan9port")
       (version (git-version "0.1.0" revision commit))
@@ -86,7 +86,7 @@ reconstruct a Plan 9 terminal-like experience from a non-Plan 9 system.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1g2kzlghcghs560na6xalfsjq5zwp015wv9wk8wxn26981zs759x"))
+                  "01343jvn8kr63i78h8xlgscn6wihdsr44xzh1cylvhigjbqw8n2x"))
                 (modules '((guix build utils)))
                 (snippet #~(for-each delete-file-recursively
                                      '("font/luc" ;nonfree
