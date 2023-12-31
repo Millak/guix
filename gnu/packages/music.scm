@@ -1209,6 +1209,11 @@ MusePack, Monkey's Audio, and WavPack files.")
                 ("gl/glcore-directbind"   "libGL.so" "mesa")
                 ("gl/glcompat-directbind" "libGL.so" "mesa")))
              #t))
+         (add-after 'hardcode-external-lib-paths 'hardcode-contrib-lib-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "libs/contrib/rtmidi.xtm"
+                  (("librtmidic.so")
+                   (search-input-file inputs "lib/librtmidi.so")))))
          (add-after 'unpack 'use-own-llvm
            (lambda* (#:key inputs #:allow-other-keys)
              (setenv "EXT_LLVM_DIR" (assoc-ref inputs "llvm"))
@@ -1261,6 +1266,7 @@ MusePack, Monkey's Audio, and WavPack files.")
        ("libffi" ,libffi)
        ("jack" ,jack-1)
        ("libsndfile" ,libsndfile)
+       ("rtmidi" ,rtmidi-4.0)
        ("glfw" ,glfw)
        ("apr" ,apr)
        ("stb-image"
