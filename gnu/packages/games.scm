@@ -231,6 +231,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system scons)
   #:use-module (guix build-system trivial)
@@ -2367,6 +2368,55 @@ Every puzzle has a complete solution, although there may be more than one.")
    (description
     "PrBoom+ is a Doom source port developed from the original PrBoom project.")
    (license license:gpl2+)))
+
+(define-public redeal
+  (let ((commit "e2e81a477fd31ae548a340b5f0f380594d3d0ad6")
+        (revision "1"))
+    (package
+      (name "redeal")
+      (version (git-version "0.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/anntzer/redeal")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1vac36bg4ah9gs4hgmp745xq6nnmd7s71vsq99d72ng3sxap0wa3"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'unbundle-dds
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "setup.py"
+                  (("cmdclass=.*") ""))
+                (let ((libdds (search-input-file inputs "lib/libdds.so")))
+                  (substitute* "redeal/dds.py"
+                    ((" and os.path.exists\\(dll_path\\)") "")
+                    (("dll = DLL\\(dll_path\\)")
+                     (format #f "dll = DLL(~s)" libdds))))))
+            (add-after 'install 'install-examples
+              (lambda _
+                (let* ((doc (string-append #$output "/share/doc/"))
+                       (examples
+                        (string-append doc #$name "-" #$version "/examples")))
+                  (mkdir-p examples)
+                  (copy-recursively "examples" examples)))))))
+      (inputs (list dds `(,python "tk")))
+      (propagated-inputs (list python-colorama))
+      (home-page "https://github.com/anntzer/redeal")
+      (synopsis
+       "Deal generator for bridge card game, written in Python")
+      (description
+       "Redeal is a deal generator written in Python.  It outputs deals
+satisfying whatever conditions you specify --- deals with a double void, deals
+with a strong 2♣ opener opposite a yarborough, etc.  Using Bo Haglund's double
+dummy solver, it can even solve the hands it has generated for you.")
+      (license license:gpl3))))
 
 (define-public retux
   (let ((release "1.6.1")
