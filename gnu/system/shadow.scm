@@ -67,6 +67,7 @@
             %default-bash-profile
             %default-zprofile
             %default-xdefaults
+            %default-gdbinit
             default-skeletons
             skeleton-directory
             %base-groups
@@ -188,16 +189,9 @@ export PATH=/run/setuid-programs:$PATH
 XTerm*utf8: always
 XTerm*metaSendsEscape: true\n"))
 
-(define (default-skeletons)
-  "Return the default skeleton files for /etc/skel.  These files are copied by
-'useradd' in the home directory of newly created user accounts."
-
-  (let ((profile   %default-bash-profile)
-        (bashrc    %default-bashrc)
-        (zprofile  %default-zprofile)
-        (xdefaults %default-xdefaults)
-        (gdbinit   (plain-file "gdbinit" "\
-# Tell GDB where to look for separate debugging files.
+(define %default-gdbinit
+  (plain-file "gdbinit"
+              "# Tell GDB where to look for separate debugging files.
 guile
 (use-modules (gdb))
 (execute (string-append \"set debug-file-directory \"
@@ -215,7 +209,17 @@ end
 
 # Authorize extensions found in the store, such as the
 # pretty-printers of libstdc++.
-set auto-load safe-path /gnu/store/*/lib\n")))
+set auto-load safe-path /gnu/store/*/lib\n"))
+
+(define (default-skeletons)
+  "Return the default skeleton files for /etc/skel.  These files are copied by
+'useradd' in the home directory of newly created user accounts."
+
+  (let ((profile   %default-bash-profile)
+        (bashrc    %default-bashrc)
+        (zprofile  %default-zprofile)
+        (xdefaults %default-xdefaults)
+        (gdbinit   %default-gdbinit))
     `((".bash_profile" ,profile)
       (".bashrc" ,bashrc)
       ;; Zsh sources ~/.zprofile before ~/.zshrc, and it sources ~/.zlogin
