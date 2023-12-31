@@ -68,6 +68,7 @@
             %default-zprofile
             %default-xdefaults
             %default-gdbinit
+            %default-nanorc
             default-skeletons
             skeleton-directory
             %base-groups
@@ -211,6 +212,11 @@ end
 # pretty-printers of libstdc++.
 set auto-load safe-path /gnu/store/*/lib\n"))
 
+(define %default-nanorc
+  (plain-file "nanorc"
+              "# Include all the syntax highlighting modules.
+include /run/current-system/profile/share/nano/*.nanorc\n"))
+
 (define (default-skeletons)
   "Return the default skeleton files for /etc/skel.  These files are copied by
 'useradd' in the home directory of newly created user accounts."
@@ -226,9 +232,7 @@ set auto-load safe-path /gnu/store/*/lib\n"))
       ;; after ~/.zshrc.  To avoid interfering with any customizations a user
       ;; may have made in their ~/.zshrc, put this in .zprofile, not .zlogin.
       (".zprofile" ,zprofile)
-      (".nanorc" ,(plain-file "nanorc" "\
-# Include all the syntax highlighting modules.
-include /run/current-system/profile/share/nano/*.nanorc\n"))
+      (".nanorc" ,%default-nanorc)
       (".Xdefaults" ,xdefaults)
       (".guile" ,(plain-file "dot-guile"
                              "(cond ((false-if-exception (resolve-interface '(ice-9 readline)))
