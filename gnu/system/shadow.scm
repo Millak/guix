@@ -69,6 +69,7 @@
             %default-xdefaults
             %default-gdbinit
             %default-nanorc
+            %default-dotguile
             default-skeletons
             skeleton-directory
             %base-groups
@@ -217,25 +218,9 @@ set auto-load safe-path /gnu/store/*/lib\n"))
               "# Include all the syntax highlighting modules.
 include /run/current-system/profile/share/nano/*.nanorc\n"))
 
-(define (default-skeletons)
-  "Return the default skeleton files for /etc/skel.  These files are copied by
-'useradd' in the home directory of newly created user accounts."
-
-  (let ((profile   %default-bash-profile)
-        (bashrc    %default-bashrc)
-        (zprofile  %default-zprofile)
-        (xdefaults %default-xdefaults)
-        (gdbinit   %default-gdbinit))
-    `((".bash_profile" ,profile)
-      (".bashrc" ,bashrc)
-      ;; Zsh sources ~/.zprofile before ~/.zshrc, and it sources ~/.zlogin
-      ;; after ~/.zshrc.  To avoid interfering with any customizations a user
-      ;; may have made in their ~/.zshrc, put this in .zprofile, not .zlogin.
-      (".zprofile" ,zprofile)
-      (".nanorc" ,%default-nanorc)
-      (".Xdefaults" ,xdefaults)
-      (".guile" ,(plain-file "dot-guile"
-                             "(cond ((false-if-exception (resolve-interface '(ice-9 readline)))
+(define %default-dotguile
+  (plain-file "dot-guile"
+              "(cond ((false-if-exception (resolve-interface '(ice-9 readline)))
        =>
        (lambda (module)
          ;; Enable completion and input history at the REPL.
@@ -253,6 +238,25 @@ convenient interactive line editing and input history.\\n\\n\")))
               (else
                (display \"Consider installing the 'guile-colorized' package
 for a colorful Guile experience.\\n\\n\"))))\n"))
+
+(define (default-skeletons)
+  "Return the default skeleton files for /etc/skel.  These files are copied by
+'useradd' in the home directory of newly created user accounts."
+
+  (let ((profile   %default-bash-profile)
+        (bashrc    %default-bashrc)
+        (zprofile  %default-zprofile)
+        (xdefaults %default-xdefaults)
+        (gdbinit   %default-gdbinit))
+    `((".bash_profile" ,profile)
+      (".bashrc" ,bashrc)
+      ;; Zsh sources ~/.zprofile before ~/.zshrc, and it sources ~/.zlogin
+      ;; after ~/.zshrc.  To avoid interfering with any customizations a user
+      ;; may have made in their ~/.zshrc, put this in .zprofile, not .zlogin.
+      (".zprofile" ,zprofile)
+      (".nanorc" ,%default-nanorc)
+      (".Xdefaults" ,xdefaults)
+      (".guile" ,%default-dotguile)
       (".gdbinit" ,gdbinit))))
 
 (define (skeleton-directory skeletons)
