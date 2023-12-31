@@ -5731,32 +5731,36 @@ tool.")
       (license license:gpl2+))))
 
 (define-public emacs-ggtags
-  (package
-    (name "emacs-ggtags")
-    (version "0.9.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://elpa.gnu.org/packages/ggtags-"
-                           version ".tar"))
-       (sha256
-        (base32
-         "0p79x9g94jynl83ndvqp9349vhgkzxzhnc517r8hn44iqxqf6ghg"))))
-    (build-system emacs-build-system)
-    (inputs
-     (list global))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'configure
-           (lambda* (#:key inputs #:allow-other-keys)
-             (chmod "ggtags.el" #o644)
-             (emacs-substitute-variables "ggtags.el"
-               ("ggtags-executable-directory"
-                (dirname (search-input-file inputs "bin/global")))))))))
-    (home-page "https://github.com/leoliu/ggtags")
-    (synopsis "Frontend to the GNU Global source code tagging system")
-    (description "@code{ggtags} provides a frontend to the GNU Global source
+  (let ((commit "4e3630c30fb836872b5d8f2ae3e5d5ae003365d8")
+        (revision "0"))
+    (package
+      (name "emacs-ggtags")
+      (version (git-version "0.9.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/leoliu/ggtags")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1mgdli2kvsg3y6ynsl6547cwwg9f2q0s1cv4b74slpcvq5n1kb90"))))
+      (build-system emacs-build-system)
+      (inputs
+       (list global))
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'configure
+             (lambda* (#:key inputs #:allow-other-keys)
+               (chmod "ggtags.el" #o644)
+               (emacs-substitute-variables "ggtags.el"
+                 ("ggtags-executable-directory"
+                  (dirname (search-input-file inputs "bin/global")))))))))
+      (home-page "https://github.com/leoliu/ggtags")
+      (synopsis "Frontend to the GNU Global source code tagging system")
+      (description "@code{ggtags} provides a frontend to the GNU Global source
 code tagging system.
 
 Features:
@@ -5784,7 +5788,7 @@ current match, total matches and exit status.
 @item Support eldoc.
 @item Search @code{GTAGSLIBPATH} for references and symbols.
 @end itemize\n")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-go-mode
   ;; XXX: Upstream did not tag last release.  The commit below matches version
