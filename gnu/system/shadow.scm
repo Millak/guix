@@ -174,17 +174,10 @@ export PATH=/run/setuid-programs:$PATH
 
 (define %default-zprofile
   (plain-file "zprofile" "\
-# Honor system-wide environment variables
+# Set up the system, user profile, and related variables.
 source /etc/profile
-
-# Merge search-paths from multiple profiles, the order matters.
-eval \"$(guix package --search-paths \\
--p $HOME/.config/guix/current \\
--p $HOME/.guix-profile \\
--p /run/current-system/profile)\"
-
-# Prepend setuid programs.
-export PATH=/run/setuid-programs:$PATH
+# Set up the home environment profile.
+source ~/.profile
 "))
 
 (define %default-xdefaults
