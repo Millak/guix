@@ -94,73 +94,69 @@ reconstruct a Plan 9 terminal-like experience from a non-Plan 9 system.")
       (build-system gnu-build-system)
       (arguments
        (list #:tests? #f ;no tests
-             #:phases #~(modify-phases %standard-phases
-                          (add-after 'unpack 'setup
-                            (lambda _
-                              (delete-file "src/cmd/mk/mk.pdf")
-                              (substitute* "src/cmd/acme/acme.c"
-                                (("/lib/font/bit/lucsans/euro.8.font")
-                                 (string-append #$output
-                                  "/font/fixed/unicode.5x8.font"))
-                                (("/lib/font/bit/lucm/unicode.9.font")
-                                 (string-append #$output
-                                  "/font/fixed/unicode.6x9.font")))
-                              (substitute* (find-files "src")
-                                (("/lib/font/bit")
-                                 (string-append #$output "/font")))
-                              (substitute* "bin/9c"
-                                (("which")
-                                 (which "which")))
-                              (substitute* "src/cmd/fontsrv/freetyperules.sh"
-                                (("'\\$i'/freetype2")
-                                 (string-append "-I"
-                                                #$freetype
-                                                "/include/freetype2")))
-                              (with-output-to-file "LOCAL.config"
-                                (lambda _
-                                  (format #t "CC9=~a~%" #$(cc-for-target))
-                                  (format #t "FONTSRV=fontsrv~%")))
-                              (setenv "X11"
-                                      #$libx11)
-                              (setenv "PLAN9"
-                                      (getcwd))
-                              (setenv "PLAN9_TARGET"
-                                      #$output)))
-                          (delete 'configure) ;no configure
-                          (replace 'build
-                            (lambda _
-                              (invoke "./INSTALL" "-b")))
-                          (replace 'install
-                            (lambda _
-                              (for-each (lambda (x)
-                                          (let ((out (string-append #$output
-                                                                    "/" x)))
-                                            (mkdir-p out)
-                                            (copy-recursively x out)))
-                                        ;; TODO: use external sky and dict packages
-                                        '("bin" "face"
-                                          "font"
-                                          "include"
-                                          "lib"
-                                          "lp"
-                                          "mail"
-                                          "man"
-                                          "ndb"
-                                          "plumb"
-                                          "tmac"
-                                          "troff"
-                                          "postscript"))
-                              (install-file "rcmain" #$output)))
-                          (add-after 'install 'wrap-executables
-                            (lambda _
-                              (for-each (lambda (exe)
-                                          (wrap-program exe
-                                            `("PLAN9" ":" prefix
-                                              (,#$output))))
-                                        (find-files
-                                         (string-append #$output "/bin")))))
-                          ;; Plan9 doesn't compress man pages
-                          (delete 'compress-documentation))))
+             #:strip-directories #~'("plan9/bin")
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'setup
+                   (lambda _
+                     (let ((dest (string-append #$output "/plan9")))
+                       (delete-file "src/cmd/mk/mk.pdf")
+                       (substitute* "src/cmd/acme/acme.c"
+                         (("/lib/font/bit/lucsans/euro.8.font")
+                          (string-append dest
+                                         "/font/fixed/unicode.5x8.font"))
+                         (("/lib/font/bit/lucm/unicode.9.font")
+                          (string-append dest
+                                         "/font/fixed/unicode.6x9.font")))
+                       (substitute* (find-files "src")
+                         (("/lib/font/bit")
+                          (string-append dest "/font")))
+                       (substitute* "bin/9c"
+                         (("which")
+                          (which "which")))
+                       (substitute* "src/cmd/fontsrv/freetyperules.sh"
+                         (("'\\$i'/freetype2")
+                          (string-append "-I"
+                                         #$freetype
+                                         "/include/freetype2")))
+                       (with-output-to-file "LOCAL.config"
+                         (lambda _
+                           (format #t "CC9=~a~%" #$(cc-for-target))
+                           (format #t "FONTSRV=fontsrv~%")))
+                       (setenv "X11" #$libx11)
+                       (setenv "PLAN9" (getcwd))
+                       (setenv "PLAN9_TARGET" dest))))
+                 (delete 'configure)    ;no configure
+                 (replace 'build
+                   (lambda _
+                     (invoke "./INSTALL" "-b")))
+                 (replace 'install
+                   (lambda _
+                     (invoke "./INSTALL" "-c")
+                     (let ((dest (getenv "PLAN9_TARGET")))
+                       (for-each (lambda (x)
+                                   (let ((out (string-append dest "/" x)))
+                                     (mkdir-p out)
+                                     (copy-recursively x out)))
+                                 ;; TODO: use external sky and dict packages
+                                 '("bin" "face"
+                                   "font"
+                                   "include"
+                                   "lib"
+                                   "lp"
+                                   "mail"
+                                   "man"
+                                   "ndb"
+                                   "plumb"
+                                   "tmac"
+                                   "troff"
+                                   "postscript"))
+                       (install-file "rcmain" dest)
+                       (mkdir-p (string-append #$output "/bin"))
+                       (symlink (string-append dest "/bin/9")
+                                (string-append #$output "/bin/9")))))
+                 ;; Plan9 doesn't compress man pages
+                 (delete 'compress-documentation))))
       (native-inputs (list perl which))
       (inputs (list bash-minimal                  ;for 'wrap-program'
                     fontconfig libx11 libxext libxt))
