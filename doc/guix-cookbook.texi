@@ -3846,7 +3846,7 @@ COMMIT
 @end example
 
 @node Routed network for libvirt
-@section Rounted network for libvirt
+@section Routed network for libvirt
 @cindex Virtual network bridge interface
 @cindex networking, virtual bridge
 @cindex libvirt, virtual network bridge
