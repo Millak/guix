@@ -27112,37 +27112,6 @@ to start sxiv from a Dired buffer, allowing you to mark or unmark image files
 in said buffer using sxiv.")
     (license license:unlicense)))
 
-(define-public emacs-mu4e-conversation
-  (let ((commit "98110bb9c300fc9866dee8e0023355f9f79c9b96")
-        (revision "5"))
-    (package
-      (name "emacs-mu4e-conversation")
-      (version (git-version "0.0.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://gitlab.com/Ambrevar/mu4e-conversation.git")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "080s96jkcw2p288sp1vgds91rgl693iz6hi2dv56p2ih0nnivwlg"))))
-      (build-system emacs-build-system)
-      (propagated-inputs
-       (list mu))
-      (home-page
-       "https://gitlab.com/Ambrevar/mu4e-conversation")
-      (synopsis
-       "Show a complete thread in a single buffer")
-      (description
-       "This package offers an alternate view to mu4e's e-mail display.  It
-shows all e-mails of a thread in a single view, where each correspondent has
-their own face.  Threads can be displayed linearly (in which case e-mails are
-displayed in chronological order) or as an Org document where the node tree
-maps the thread tree.")
-      (license license:gpl3+))))
-
 ;; Package has no releases or tags.  Version is extracted from "Version:"
 ;; keyword in main file.
 (define-public emacs-mu4e-dashboard
