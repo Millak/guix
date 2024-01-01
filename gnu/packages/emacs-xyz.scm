@@ -19601,14 +19601,14 @@ more information.")
 (define-public emacs-eldoc
   (package
     (name "emacs-eldoc")
-    (version "1.14.0")
+    (version "1.15.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "https://elpa.gnu.org/packages/eldoc-" version ".tar"))
        (sha256
-        (base32 "15bg61nbfb6l51frlsn430ga3vscns2651wvi6377vlyra7kgn39"))))
+        (base32 "1wn7q2f19lfdc3b639ffhbmsglnm3zc6rvgyc6amqwnpc2n2gkdl"))))
     (build-system emacs-build-system)
     (home-page "https://elpa.gnu.org/packages/eldoc.html")
     (synopsis "Show function arglist or variable docstring in echo area")
