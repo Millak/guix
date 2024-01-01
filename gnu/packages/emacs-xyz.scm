@@ -17263,7 +17263,7 @@ using a convenient notation.")
 (define-public emacs-beframe
   (package
     (name "emacs-beframe")
-    (version "0.3.0")
+    (version "1.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -17272,7 +17272,7 @@ using a convenient notation.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1nblpac1pkhgwpbw0k0p9xx6yc5kiai4pznw39slx703mzzqzqyj"))))
+                "08k9lwfxfvpm50n1c0gcm07sicd6yw7dbyyvhp8lai6pfxl465v9"))))
     (build-system emacs-build-system)
     (arguments
      (list
