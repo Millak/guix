@@ -23,6 +23,7 @@
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -236,6 +237,12 @@ generation.")
        (base32
         "1r1lvcp67gn5lfrj1g388sd77ca6qwnmxndirdysd71gk362z34f"))))
     (build-system gnu-build-system)
+    (arguments (if (%current-target-system)
+                   (list #:configure-flags
+                         #~(list (string-append
+                                  "--with-libgpg-error-prefix="
+                                  #$(this-package-input "libgpg-error"))))
+                   '()))
     (propagated-inputs
      (list libgpg-error pth))
     (home-page "https://gnupg.org")
