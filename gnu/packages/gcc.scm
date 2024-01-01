@@ -1182,6 +1182,21 @@ provides the GNU compiler for the Go programming language.")
        (substitute-keyword-arguments (package-arguments gccgo)
          ((#:phases phases)
           #~(modify-phases #$phases
+              #$@(if (version>=? (package-version gccgo) "12.0")
+                     #~((add-after 'unpack 'adjust-libgo-dependencies
+                          (lambda _
+                            (substitute* "Makefile.in"
+                              ;; libgo.la depends on libbacktrace.la but the
+                              ;; current dependency rules don't have libbacktrace
+                              ;; building early enough for libgo.  When built
+                              ;; with more than 1 core this issue doesn't appear.
+                              ;; see commit 5fee5ec362f7a243f459e6378fd49dfc89dc9fb5.
+                              (("all-target-libgo: maybe-all-target-libffi")
+                               (string-append
+                                 "all-target-libgo: maybe-all-target-libbacktrace\n"
+                                 "all-target-libgo: maybe-all-target-libffi\n"
+                                 "all-target-libgo: maybe-all-target-libatomic"))))))
+                     #~())
               (add-after 'install 'wrap-go-with-tool-path
                 (lambda* (#:key outputs #:allow-other-keys)
                   (let* ((out (assoc-ref outputs "out"))
