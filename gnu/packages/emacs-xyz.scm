@@ -14979,7 +14979,7 @@ that uses the standard completion function completing-read.")
 (define-public emacs-yaml
   (package
     (name "emacs-yaml")
-    (version "0.5.4")
+    (version "0.5.5")
     (source
      (origin
        (method git-fetch)
@@ -14988,7 +14988,7 @@ that uses the standard completion function completing-read.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10sdcihgd8yvdf7yab5fsvq65amp25msjh7mbrxgk3w4zc96fxzi"))))
+        (base32 "0qq9jr1ihk1b5wfvppyvb8c2pq2gma9wysggd22iln4nqz2mjc81"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/zkry/yaml.el")
     (synopsis "YAML parser in Elisp")
