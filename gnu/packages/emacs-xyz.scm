@@ -4194,7 +4194,7 @@ while paused.")
   (package
     (name "emacs-async")
     (home-page "https://github.com/jwiegley/emacs-async")
-    (version "1.9.7")
+    (version "1.9.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4203,7 +4203,7 @@ while paused.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "18pysi1pf6hbv6w0nq50j5xclvgd006iqqijh44wck9hxhdwyfr1"))))
+                "191bjmwg5bgih1322n4q4i2jxx7aa3cb9lx0ymkwc3r2bdhkn0lp"))))
     (build-system emacs-build-system)
     (synopsis "Asynchronous processing in Emacs")
     (description
