@@ -11982,29 +11982,26 @@ call.")
       (license license:gpl3+))))
 
 (define-public emacs-consult-flycheck
-  ;; This particular commit introduces bug fixes above latest release.
-  (let ((commit "3f2a7c17cc2fe64e0c07e3bf90e33c885c0d7062")
-        (revision "0"))
-    (package
-      (name "emacs-consult-flycheck")
-      (version (git-version "0.9" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/minad/consult-flycheck")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0cvxl6ynbns3wlpzilhg4ldakb91ikpibbr9wpb2wkzbgi5c766c"))))
-      (build-system emacs-build-system)
-      (propagated-inputs (list emacs-consult emacs-flycheck))
-      (home-page "https://github.com/minad/consult-flycheck")
-      (synopsis "Consult integration for Flycheck")
-      (description
-       "This package provides the @code{consult-flycheck} command for Emacs,
+  (package
+    (name "emacs-consult-flycheck")
+    (version "1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/minad/consult-flycheck")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1yi2qa4gbxlyhwc4rj3iidgr1dpdij68gbkgkk55l53p3yl1p2ww"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-consult emacs-flycheck))
+    (home-page "https://github.com/minad/consult-flycheck")
+    (synopsis "Consult integration for Flycheck")
+    (description
+     "This package provides the @code{consult-flycheck} command for Emacs,
  which integrates @code{Consult} with @code{Flycheck}.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-eglot-tempel
   (let ((commit "e08b203d6a7c495d4b91ed4537506b5f1ea8a84f")
