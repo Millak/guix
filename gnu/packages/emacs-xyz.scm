@@ -28265,7 +28265,7 @@ This package also includes a @code{yt-dlp} front-end.")
 (define-public emacs-org-web-tools
   (package
     (name "emacs-org-web-tools")
-    (version "1.2")
+    (version "1.3")
     (source
      (origin
        (method git-fetch)
@@ -28275,7 +28275,7 @@ This package also includes a @code{yt-dlp} front-end.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1w24d1cxzgjqycqz894kg3707n3ckwpv5cmbywfaffsz1v5i2p3a"))))
+         "0x1j1y2pl6a8f97cw04nm0w6g4jh449cjfsr2aryn316ms4nj1a0"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-compat emacs-dash emacs-esxml emacs-request emacs-s))
