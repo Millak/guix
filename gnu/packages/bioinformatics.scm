@@ -17996,6 +17996,34 @@ The tool enables the de novo search for new structural elements and
 facilitates comparative analysis of known RNA families.")
     (license license:bsd-3)))
 
+(define-public r-databaselinke-r
+  (let ((commit "cf3d6cc3d36f2e1c9a557390232e9a8ed5abb7fd")
+        (revision "1"))
+    (package
+      (name "r-databaselinke-r")
+      (version (git-version "1.7.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/vertesy/DatabaseLinke.R")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0hk76sb3w1v8a7c1knpc572ypsbgqlrv0p49c9y55a0dr12n16s1"))))
+      (properties `((upstream-name . "DatabaseLinke.R")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-readwriter))
+      (home-page "https://github.com/vertesy/DatabaseLinke.R")
+      (synopsis
+       "Parse links to databases from your list of gene symbols")
+      (description
+       "This package provides a set of functions to parse and open (search
+query) links to genomics related and other websites for R.  Useful when you
+want to explore e.g.: the function of a set of differentially expressed
+genes.")
+      (license license:gpl3))))
+
 (define-public r-seurat-utils
   (let ((commit "0b6f5b548a49148cfbeaa654e8a618c0a020afa5")
         (revision "1"))
