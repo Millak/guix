@@ -23271,7 +23271,7 @@ files to be expanded upon opening them.")
 (define-public emacs-ebib
   (package
     (name "emacs-ebib")
-    (version "2.39.4")
+    (version "2.40.3")
     (source
      (origin
        (method git-fetch)
@@ -23280,10 +23280,10 @@ files to be expanded upon opening them.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08j6z4rpnvz7vhdrm7y3prf2jpxclqicid6as4qljysq3czzfhay"))))
+        (base32 "07pyb76impqpczx6hl6amfs4hfnszfwydp27az46dkqc17hy0fgy"))))
     (build-system emacs-build-system)
     (propagated-inputs
-     (list emacs-biblio emacs-ivy emacs-parsebib))
+     (list emacs-biblio emacs-compat emacs-ivy emacs-parsebib))
     (home-page "https://joostkremers.github.io/ebib/")
     (synopsis "BibTeX database manager for Emacs")
     (description
