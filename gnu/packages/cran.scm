@@ -4201,6 +4201,29 @@ performance evaluation of BSS algorithms, are given.  The package is described
 in Miettinen, Nordhausen and Taskinen (2017) <doi:10.18637/jss.v076.i02>.")
     (license license:gpl2+)))
 
+(define-public r-job
+  (package
+    (name "r-job")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "job" version))
+       (sha256
+        (base32 "0d7pw3q5lqlgmav1vx63y8l6gdav96656bg378wj001rx5gx052h"))))
+    (properties `((upstream-name . "job")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-digest r-rstudioapi))
+    (home-page "https://cran.r-project.org/package=job")
+    (synopsis "Run code as an RStudio job")
+    (description
+     "Call @code{job::job({<code here>})} to run R code as an RStudio job and
+keep your console free in the meantime.  This allows for a productive workflow
+while testing (multiple) long-running chunks of code.  It can also be used to
+organize results using the RStudio Jobs GUI or to test code in a clean
+environment.  Two RStudio Addins can be used to run selected code as a job.")
+    (license license:expat)))
+
 (define-public r-jsonify
   (package
     (name "r-jsonify")
