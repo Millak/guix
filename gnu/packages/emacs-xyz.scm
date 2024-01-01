@@ -2403,7 +2403,7 @@ replacement.")
 (define-public emacs-haskell-mode
   (package
     (name "emacs-haskell-mode")
-    (version "17.4")
+    (version "17.5")
     (source
      (origin
        (method git-fetch)
@@ -2412,9 +2412,7 @@ replacement.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03j94fgw1bljbjqmikbn9mnrfifxf7g9zrb727zmnnrjwyi0wd4n"))
-       (patches
-        (search-patches "emacs-haskell-mode-no-redefine-builtin.patch"))))
+        (base32 "0ndi986rxq9gz61ss2vazadn7rn0niv1gnpk9nfq9sw3m336glsf"))))
     (propagated-inputs
      (list emacs-dash))
     (native-inputs

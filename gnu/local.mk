@@ -1114,7 +1114,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/emacs-git-email-missing-parens.patch	\
   %D%/packages/patches/emacs-fix-scheme-indent-function.patch	\
   %D%/packages/patches/emacs-json-reformat-fix-tests.patch	\
-  %D%/packages/patches/emacs-haskell-mode-no-redefine-builtin.patch	\
   %D%/packages/patches/emacs-helpful-fix-tests.patch	\
   %D%/packages/patches/emacs-highlight-stages-add-gexp.patch	\
   %D%/packages/patches/emacs-lispy-fix-thread-last-test.patch   \
