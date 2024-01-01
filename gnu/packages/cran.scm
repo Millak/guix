@@ -23102,30 +23102,6 @@ population structure (Fst, Amova) and equilibrium (HWE), haplotype networks,
 minimum spanning tree and network, and median-joining networks.")
     (license license:gpl2+)))
 
-(define-public r-rmetasim
-  (package
-    (name "r-rmetasim")
-    (version "3.1.14")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "rmetasim" version))
-       (sha256
-        (base32
-         "0rdkhfgyr97r2d1kd9g8ipb2pn563qxm1y4m9z678q0kqan2ddl0"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-ade4 r-adegenet r-gtools r-pegas))
-    (home-page "https://cran.r-project.org/web/packages/rmetasim")
-    (synopsis "Individual-based population genetic simulation environment")
-    (description
-     "This package provides an interface between R and the metasim simulation
-engine.  The simulation environment is documented in: Strand, A.(2002),
-Metasim 1.0: an individual-based environment for simulating population
-genetics of complex population dynamics.")
-    ;; Any GPL version
-    (license license:gpl2+)))
-
 (define-public r-genetics
   (package
     (name "r-genetics")
