@@ -60,6 +60,7 @@
 ;;; Copyright © 2022 Baptiste Strazzulla <bstrazzull@hotmail.fr>
 ;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2594,6 +2595,32 @@ your Web app.")
       "WebOb provides wrappers around the WSGI request environment, and an
 object to help create WSGI responses.")
     (license license:expat)))
+
+(define-public python-zc-lockfile
+  (package
+    (name "python-zc-lockfile")
+    (version "3.0.post1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "zc.lockfile" version))
+       (sha256
+        (base32 "1v41irj7azaag3f14xyviv3l8mvap74v5p3q274k68vakrnyxcmd"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (if tests?
+                          (invoke "zope-testrunner" "--test-path=src")
+                          (format #t "test suite not run~%")))))))
+    (native-inputs (list python-zope-testing python-zope-testrunner))
+    (home-page "https://github.com/zopefoundation/zc.lockfile")
+    (synopsis "Interprocess locks using lock files")
+    (description
+     "This package provides an implementation of interprocess locks using lock
+files.  These locks can also be used to mediate access to other files.")
+    (license license:zpl2.1)))
 
 (define-public python-zope-event
   (package
