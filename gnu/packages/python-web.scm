@@ -202,6 +202,38 @@ scripting Launchpad via its the web service API.")
 reusable library for parsing, manipulating, and generating URIs.")
     (license license:lgpl3)))
 
+(define-public python-portend
+  (package
+    (name "python-portend")
+    (version "3.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "portend" version))
+       (sha256
+        (base32 "0wpvixicc3d0lack65554mvdrrckkn18p1xcgiv9v5cwq59a6l2j"))))
+    (build-system pyproject-build-system)
+    ;; Do not test pyproject.toml with python-pytest-checkdocs as it tries to
+    ;; download dependencies.
+    (arguments
+     '(#:test-flags '("-k" "not project")))
+    (propagated-inputs (list python-tempora))
+    ;; TODO: Add python-pytest-ruff to native-inputs once it has been packaged.
+    (native-inputs (list python-pytest
+                         python-pytest-black
+                         python-pytest-checkdocs
+                         python-pytest-cov
+                         python-pytest-enabler
+                         python-pytest-mypy))
+    (home-page "https://github.com/jaraco/portend")
+    (synopsis "Monitor TCP ports for bound or unbound states")
+    (description
+     "@code{python-portend} can be used to monitor TCP ports for bound or
+unbound states.  For example, waiting for a port to be occupied or freed
+within a set timeout.  @code{python-portend} can also be used directly from
+the command line.")
+    (license license:expat)))
+
 (define-public python-prawcore
   (package
     (name "python-prawcore")
