@@ -1939,7 +1939,7 @@ to the OSM opening hours specification.")
 (define-public josm
   (package
     (name "josm")
-    (version "18822")
+    (version "18907")
     (source (origin
               (method svn-fetch)
               (uri (svn-reference
@@ -1948,7 +1948,7 @@ to the OSM opening hours specification.")
                      (recursive? #f)))
               (sha256
                (base32
-                "0b4q6n3jbqrh7dsfmcf2g0xdd1wjj62sjq8lwvggvrpqlk1fyn1b"))
+                "0vkczijw537f4y1b7hfxa45k3ww6nf2cf485b19dnbgh9ab6mnjl"))
               (file-name (string-append name "-" version "-checkout"))
               (modules '((guix build utils)))
             (snippet
@@ -1962,6 +1962,7 @@ to the OSM opening hours specification.")
      (list java-commons-jcs
            java-commons-compress
            java-jmapviewer
+           java-jakarta-annotations-api
            java-jakarta-json
            java-jsr305
            java-metadata-extractor
@@ -2328,7 +2329,7 @@ associated attribute file (@file{.dbf}).")
 (define-public spatialite-tools
   (package
     (name "spatialite-tools")
-    (version "5.1.0")
+    (version "5.1.0a")
     (source
      (origin
        (method url-fetch)
@@ -2336,7 +2337,7 @@ associated attribute file (@file{.dbf}).")
                            "spatialite-tools-sources/"
                            "spatialite-tools-" version ".tar.gz"))
        (sha256
-        (base32 "1dc3hnqa9ns0ycsac6wyl96pi052y7rrf233lq7sk708ghv30c6z"))))
+        (base32 "1kh1amab452m3801knmpn1jcg27axakb90gd8fxwv240irsk97hi"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))

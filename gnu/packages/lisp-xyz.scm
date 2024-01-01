@@ -3284,8 +3284,8 @@ C, C++, Java, Python, Erlang, Haskell, Objective-C, Diff, Webkit.")
   (sbcl-package->ecl-package sbcl-colorize))
 
 (define-public sbcl-3bmd
-  (let ((commit "4e08d82d7c8fb1b8fc708c87f4d9d13a1ab490cb")
-        (revision "3"))
+  (let ((commit "e68b2d442f29b4534c1c8e2f2cdf7583643a2fc5")
+        (revision "4"))
     (package
       (name "sbcl-3bmd")
       (version (git-version "0.0.0" revision commit))
@@ -3296,7 +3296,7 @@ C, C++, Java, Python, Erlang, Haskell, Objective-C, Diff, Webkit.")
                (url "https://github.com/3b/3bmd")
                (commit commit)))
          (sha256
-          (base32 "1j885ykg2yds0l7dmw21lrhs7pd66lf541pf9lb677nkhc2f62jz"))
+          (base32 "12xqih1gnwsn1baqm7bq3kxss73phn06gvd0v1h1vwsjd1xgpq3g"))
          (file-name (git-file-name "cl-3bmd" version))))
       (build-system asdf-build-system/sbcl)
       (arguments
@@ -3666,11 +3666,11 @@ processes that doesn't run under Emacs.  Lisp processes created by
   (sbcl-package->ecl-package sbcl-slime-swank))
 
 (define-public sbcl-mgl-pax
-  (let ((commit "ed82a80207b70801fab061f6592cf7d7355294a6")
-        (revision "0"))
+  (let ((commit "6782eb041c152721972420dfafa192692d16b7ce")
+        (revision "1"))
     (package
       (name "sbcl-mgl-pax")
-      (version (git-version "0.1.0" revision commit))
+      (version (git-version "0.3.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -3678,7 +3678,7 @@ processes that doesn't run under Emacs.  Lisp processes created by
                (url "https://github.com/melisgl/mgl-pax")
                (commit commit)))
          (sha256
-          (base32 "008wfa70q68cj6npi4107mfjhjzfjmvrhm1x51jpndsn2165c5bx"))
+          (base32 "0fjbzc2fn17m80lfsc8121sa0bk7fg42fqlwhm01sk1fj4s48pma"))
          (file-name (git-file-name "cl-mgl-pax" version))))
       (build-system asdf-build-system/sbcl)
       ;; (native-inputs
@@ -3690,7 +3690,8 @@ processes that doesn't run under Emacs.  Lisp processes created by
              sbcl-md5
              sbcl-named-readtables
              sbcl-pythonic-string-reader
-             sbcl-slime-swank))
+             sbcl-slime-swank
+             sbcl-trivial-utf-8))
       (arguments
        `(#:asd-systems '("mgl-pax"
                          "mgl-pax/navigate"
@@ -18752,19 +18753,20 @@ attributes not supported by the Common Lisp standard functions.")
   (sbcl-package->cl-source-package sbcl-file-attributes))
 
 (define-public sbcl-filesystem-utils
-  (let ((commit "4455bb6c43f4433dd68a34ddad9ed5aa9b649243"))
+  (let ((commit "a07e8b61b89d4b46408fb9294d9b8130e8c8a02e")
+        (revision "2"))
     (package
       (name "sbcl-filesystem-utils")
-      (version (git-version "1.0.0" "1" commit))
+      (version (git-version "1.0.0" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/Shinmera/filesystem-utils/")
                (commit commit)))
-         (file-name (git-file-name "filesystem-utils" version))
+         (file-name (git-file-name "cl-filesystem-utils" version))
          (sha256
-          (base32 "0rww9r26zh44qwmj0b4sl95jngdn2h0239x5gjzak3gpdc3i3nbr"))))
+          (base32 "1zv2i2gndnbs7hz3bgkkq1qfx604wbndpc7qqlqvg23fssn9w59f"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-documentation-utils
@@ -19939,8 +19941,8 @@ lQuery.")
   (sbcl-package->cl-source-package sbcl-clip))
 
 (define-public sbcl-pathname-utils
-  (let ((commit "13189c08f2480802a6cba207304c2e0cfdc57f47")
-        (revision "2"))
+  (let ((commit "f28068a79825f37002e96d13dfd739172382bf94")
+        (revision "3"))
     (package
       (name "sbcl-pathname-utils")
       (version (git-version "1.1.0" revision commit))
@@ -19952,7 +19954,7 @@ lQuery.")
                (commit commit)))
          (file-name (git-file-name "cl-pathname-utils" version))
          (sha256
-          (base32 "0b5pjsrpfw0pmahi1zydzpaa5missg3cxqnyz4k6xwvk8fqscpha"))))
+          (base32 "10xs0wnnkbdiirr1cb7q7hzi2zmksfsrj0p7yws0j1l215vz8qs8"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-parachute))
@@ -26752,7 +26754,13 @@ inspired by Haskell package @code{Data.List}.")
            sbcl-trivial-open-browser
            sbcl-websocket-driver))
     (arguments
-     '(#:asd-systems '("clog" "clog/docs" "clog/tools")))
+     '(#:asd-systems '("clog" "clog/docs" "clog/tools")
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'fix-symbol-name
+                    (lambda _
+                      (substitute* "source/clog-docs.lisp"
+                        (("clog:@CLOG-MANUAL")
+                         "clog::@CLOG_MANUAL")))))))
     (home-page "https://github.com/rabbibotton/clog")
     (synopsis "Common Lisp Omnificent GUI")
     (description

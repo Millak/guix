@@ -17,6 +17,7 @@
 ;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;; Copyright © 2023 Camilo Q.S. (Distopico) <distopico@riseup.net>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -552,11 +553,12 @@ environment variables of the current shell.")
          "1gkzdvj73f71388jvym47075l9zw61v6l8wdv2lnc0mns6dxig0k"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:make-flags (list "CC=gcc"
-                          (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))
     (home-page "https://github.com/jhawthorn/fzy")
     (synopsis "Fast fuzzy text selector for the terminal with an advanced
 scoring algorithm")
@@ -791,3 +793,68 @@ source ${GUIX_ENVIRONMENT:-$HOME/.guix-profile}/etc/profile.d/grc.sh
 @end example
 ")
     (license license:gpl2)))
+
+(define-public liquidprompt
+  (package
+    (name "liquidprompt")
+    (version "2.1.2")
+    (home-page "https://github.com/liquidprompt/liquidprompt")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/liquidprompt/liquidprompt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ljlq97mh84d6g6r3abb254vrwrdan5v74b69fpd62d7p9ffnsgf"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan #~'(("liquidpromptrc-dist" "etc/liquidpromptrc")
+                         ("example.bashrc" "share/liquidprompt/examples/")
+                         ("liquid.ps1" "share/liquidprompt/examples/")
+                         ("liquidprompt" "share/liquidprompt/")
+                         ("contrib" "share/liquidprompt/")
+                         ("themes" "share/liquidprompt/")
+                         ("liquidprompt.plugin.zsh"
+                          "share/zsh/plugins/liquidprompt/")
+                         ("docs" #$(string-append "share/doc/" name "-"
+                                                  version "/")))
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'fix-plugin
+                     (lambda _
+                       (substitute* "liquidprompt.plugin.zsh"
+                         (("source(.*)$")
+                          (string-append "source "
+                                         #$output
+                                         "/share/liquidprompt/liquidprompt")))))
+		   (add-after 'fix-plugin 'fix-tput-path
+		     (lambda* (#:key inputs #:allow-other-keys)
+		       (substitute* "liquidprompt"
+			 (("([ (])tput " all beginning)
+                          (string-append beginning
+                                         (search-input-file inputs "bin/tput")
+                                         " "))))))))
+    (inputs (list ncurses))
+    (synopsis "Full-featured prompt for Bash & Zsh")
+    (description
+     "Liquidprompt is an adaptive prompt for Bash and Zsh that gives
+you a nicely displayed prompt with useful information when you need it. It
+does this with a powerful theming engine and a large array of data sources.
+
+In order to use liquidprompt with Zsh, you should use the following snippet
+with Guix Home:
+
+@example
+(service home-zsh-service-type
+         (home-zsh-configuration
+           (zshrc (list ;;...
+                    ;; This loads liquidprompt
+                    (mixed-text-file \"liquidprompt\"
+                                     \"[[ $- = *i* ]] && source \" liquidprompt \"/share/liquidprompt/liquidprompt\")
+                    ;; This loads the powerline theme available in liquidprompt
+                    (mixed-text-file \"powerline-theme\"
+                                     \"source \" liquidprompt \"/share/liquidprompt/themes/powerline/powerline.theme\"))))))
+@end example\n")
+    (license license:agpl3+)))

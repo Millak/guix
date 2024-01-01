@@ -59,7 +59,6 @@
   #:use-module (gnu packages less)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages man)
-  #:use-module (gnu packages nano)
   #:use-module (gnu packages nvi)
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages pciutils)

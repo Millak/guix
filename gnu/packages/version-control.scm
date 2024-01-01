@@ -97,7 +97,6 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages docbook)
-  #:use-module (gnu packages ed)
   #:use-module (gnu packages file)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages freedesktop)
@@ -117,7 +116,6 @@
   #:use-module (gnu packages mail)
   #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
-  #:use-module (gnu packages nano)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages web)
@@ -137,6 +135,7 @@
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages texinfo)
+  #:use-module (gnu packages text-editors)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages emacs)
@@ -1441,7 +1440,7 @@ management by roles and individual account maintenance.")
  (define-public shflags
    (package
      (name "shflags")
-    (version "1.2.3")
+    (version "1.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1450,7 +1449,7 @@ management by roles and individual account maintenance.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ydx0sb6vz9s2dgp5bd64y7fpzh9qvmlfjxrbmzac8saknijrlly"))))
+                "0jj0zkly8yg42b8jvih2cmmafv95vm8mv80n3dyalvr5i14lzqd8"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests

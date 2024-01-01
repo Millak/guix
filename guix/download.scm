@@ -117,11 +117,9 @@
        "http://internode.dl.sourceforge.net/project/"
        "http://jaist.dl.sourceforge.net/project/"
        "http://liquidtelecom.dl.sourceforge.net/project/"
-       ;; "http://nbtelecom.dl.sourceforge.net/project/"  ;never returns 404s
        "http://nchc.dl.sourceforge.net/project/"
        "http://netcologne.dl.sourceforge.net/project/"
        "http://netix.dl.sourceforge.net/project/"
-       "http://pilotfiber.dl.sourceforge.net/project/"
        "http://tenet.dl.sourceforge.net/project/")
       (netfilter.org ; https://www.netfilter.org/mirrors.html
        "http://ftp.netfilter.org/pub/"
@@ -133,19 +131,21 @@
        "http://ftp.be.debian.org/pub/"
        "https://mirrors.edge.kernel.org/pub/"
        "ftp://ftp.funet.fi/pub/mirrors/ftp.kernel.org/pub/")
-      (apache             ; from http://www.apache.org/mirrors/dist.html
-       "http://www.eu.apache.org/dist/"
-       "http://www.us.apache.org/dist/"
-       "https://ftp.nluug.nl/internet/apache/"
+      (apache
+       "https://dlcdn.apache.org/"
+       "https://downloads.apache.org/"
+       "https://mirrors.sonic.net/apache/"
+       "https://apache.osuosl.org/"
+       "https://mirrors.ircam.fr/pub/apache/"
+       "https://apache-mirror.rbc.ru/pub/apache/"
+       "https://mirrors.ibiblio.org/apache/"
+
+       ;; No HTTPS.
        "http://apache.mirror.iweb.ca/"
-       "http://mirrors.ircam.fr/pub/apache/"
        "http://apache.mirrors.ovh.net/ftp.apache.org/dist/"
-       "http://apache-mirror.rbc.ru/pub/apache/"
-       "ftp://ftp.osuosl.org/pub/apache/"
-       "http://mirrors.ibiblio.org/apache/"
 
        ;; As a last resort, try the archive.
-       "http://archive.apache.org/dist/")
+       "https://archive.apache.org/dist/")
       (xorg               ; from http://www.x.org/wiki/Releases/Download
        "http://www.x.org/releases/" ; main mirrors
        "http://mirror.csclub.uwaterloo.ca/x.org/" ; North America
@@ -271,7 +271,6 @@
        "https://mirror.kumi.systems/kde/ftp/"
        "https://mirrors.ircam.fr/pub/KDE/"
        "https://ftp.gwdg.de/pub/linux/kde/"
-       "https://mirrors.gethosted.online/kde/pub/kde/"
        "https://fr2.rpmfind.net/linux/KDE/"
        "https://mirror.faigner.de/kde/ftp/"
        "https://www.mirrorservice.org/sites/download.kde.org/"
@@ -288,7 +287,6 @@
        "https://mirrors.nav.ro/kde/"
        "https://mirrors.xtom.ee/kde/"
        "https://ftp.funet.fi/pub/mirrors/ftp.kde.org/pub/kde/"
-       "https://kde.ip-connect.vn.ua/"
        "https://mirrors.netix.net/kde/"
        "https://ftp.cc.uoc.gr/mirrors/kde/"
        ;; North America
@@ -307,7 +305,7 @@
        "https://mirrors.xtom.jp/kde/"
        "https://mirrors.xtom.hk/kde/"
        ;; Africa
-       "http://mirror.retentionrange.co.bw/kde/"
+       "https://mirror.dimensiondata.com/mirror/ftp.kde.org/"
        ;; Oceania
        "https://mirrors.xtom.au/kde/")
       (openbsd

@@ -1510,8 +1510,8 @@ environments.")
                   "0k9zkdyyzir3fvlbcfcqy17k28b51i20rpbjwlx2i1mwd2pw9cxc")))))))
 
 (define-public guix-build-coordinator
-  (let ((commit "78df0b3a9f4f27df8341da36d4dfa8e49dfad900")
-        (revision "92"))
+  (let ((commit "e4af682452580298b34681d37818a16771a17c66")
+        (revision "93"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
@@ -1522,7 +1522,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "06xp38k6yfvsvl20hrqvmarpysd07nkbj53an729lqr50qdd4jcq"))
+                  "1i8x9nfpvg832lxwbpjl1kadldpkcnjlxdxl4c5jqx2hz680ylf3"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1570,6 +1570,9 @@ environments.")
                             ,@(or (and=> (assoc-ref inputs "sqitch")
                                          list)
                                   '())))
+                         `("GUIX_LOCPATH" ":" prefix
+                           (,(string-append (assoc-ref inputs "glibc-utf8-locales")
+                                            "/lib/locale")))
                          `("GUILE_LOAD_PATH" ":" prefix
                            (,scm ,(string-join
                                    (map (lambda (input)
@@ -1608,6 +1611,7 @@ environments.")
        (list (first (assoc-ref (package-native-inputs guix) "guile"))
              sqlite
              bash-minimal
+             (libc-utf8-locales-for-target)
              sqitch))
       (propagated-inputs
        (list guile-prometheus
@@ -1647,7 +1651,8 @@ outputs of those builds.")
            (first (assoc-ref (package-native-inputs guix) "guile"))))
     (inputs
      (list (first (assoc-ref (package-native-inputs guix) "guile"))
-           bash-minimal))
+           bash-minimal
+           (libc-utf8-locales-for-target)))
     (propagated-inputs
      (list guile-prometheus
            guile-gcrypt

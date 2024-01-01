@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -775,6 +775,23 @@ x86_64-linux when COREUTILS is lowered."
 whether this should be considered a \"native\" input or not."
   (%gexp-input thing output native?))
 
+;; Allow <gexp-input>s to be used within gexps.  This is useful when willing
+;; to force a specific reference to an object, as in (gexp-input hwloc "bin"),
+;; which forces a reference to the "bin" output of 'hwloc' instead of leaving
+;; it up to the recipient to pick the right output.
+(define-gexp-compiler gexp-input-compiler <gexp-input>
+  compiler => (lambda (obj system target)
+                (match obj
+                  (($ <gexp-input> thing output native?)
+                   (lower-object thing system
+                                 #:target (and (not native?) target)))))
+  expander => (lambda (obj lowered output/ignored)
+                (match obj
+                  (($ <gexp-input> thing output native?)
+                   (let ((expand (or (lookup-expander thing)
+                                     (lookup-expander lowered))))
+                     (expand thing lowered output))))))
+
 ;; Reference to one of the derivation's outputs, for gexps used in
 ;; derivations.
 (define-record-type <gexp-output>
@@ -917,6 +934,11 @@ When TARGET is true, use it as the cross-compilation target triplet."
 corresponding <derivation-input> or store item."
   (define tuple->gexp-input
     (match-lambda
+      (((? gexp-input? input))
+       ;; This case lets users specify the output of interest more
+       ;; conveniently, for instance by passing (gexp-input hwloc "lib") to
+       ;; the 'references-file' procedure.
+       input)
       ((thing)
        (%gexp-input thing "out" (not target)))
       ((thing output)
@@ -1135,10 +1157,9 @@ applicable.
 When REFERENCES-GRAPHS is true, it must be a list of tuples of one of the
 following forms:
 
-  (FILE-NAME PACKAGE)
-  (FILE-NAME PACKAGE OUTPUT)
-  (FILE-NAME DERIVATION)
-  (FILE-NAME DERIVATION OUTPUT)
+  (FILE-NAME OBJ)
+  (FILE-NAME OBJ OUTPUT)
+  (FILE-NAME GEXP-INPUT)
   (FILE-NAME STORE-ITEM)
 
 The right-hand-side of each element of REFERENCES-GRAPHS is automatically made

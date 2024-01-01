@@ -1123,7 +1123,7 @@ It supports both vim-like keybindings and the mouse.")
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
-       #:make-flags (list "CC=gcc"
+       #:make-flags (list (string-append "CC=" ,(cc-for-target))
                           (string-append "PREFIX=" (assoc-ref %outputs "out"))
                           "LIBRARY_REL=lib"
                           (string-append "ARGON2_VERSION=" ,version)

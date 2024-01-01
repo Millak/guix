@@ -56,6 +56,7 @@
   #:use-module (guix svn-download)
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (guix build-system scons)
@@ -2582,6 +2583,57 @@ the original, ioquake3 has been cleaned up, bugs have been fixed and features
 added.  The permanent goal is to create a Quake 3 distribution upon which
 people base their games, ports to new platforms, and other projects.")
       (license license:gpl2))))
+
+(define-public inform
+  ;; The latest release does not yet have a build system.
+  ;; This commit is the earliest to have one.
+  (let ((commit "20cbfff96015938809d0e3da6cd0d83b76d27f14")
+        (revision "0"))
+    (package
+      (name "inform")
+      (version (git-version "6.41" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://jxself.org/git/inform.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "19z8pgrj1s2irany5s6xxwsm3bdnri1as46fdi16zdp4aah523jy"))))
+      (build-system gnu-build-system)
+      (native-inputs (list autoconf automake))
+      (synopsis "The Inform 6 compiler")
+      (description
+       "Inform 6 is a programming language designed for interactive fiction.
+This version of the compiler has been modified slightly to work better when the
+Inform standard library is in a non-standard location.")
+      (home-page "https://jxself.org/git/inform.git")
+      (license license:gpl3+))))
+
+(define-public informlib
+  (package
+    (name "informlib")
+    (version "6.12.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://jxself.org/git/informlib.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fcnw4jjzln402qk097n2s8y24vw1p3mmlmh6k1mbr2zfajjcn5r"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      #~'(("." "lib"))))
+    (synopsis "Inform 6 standard library")
+    (description
+     "This package provides the standard library for Inform 6.")
+    (home-page "https://jxself.org/git/informlib.git")
+    (license license:agpl3+)))
 
 (define-public instead
   (package

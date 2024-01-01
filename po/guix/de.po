@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: guix 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2023-06-19 03:18+0000\n"
-"PO-Revision-Date: 2023-07-31 12:09+0000\n"
+"PO-Revision-Date: 2023-12-31 16:35+0000\n"
 "Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: German <https://translate.fedoraproject.org/projects/guix/guix/de/>\n"
 "Language: de\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.18.2\n"
+"X-Generator: Weblate 5.3.1\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 #: gnu.scm:81
@@ -573,7 +573,7 @@ msgstr "Als Salt-Wert muss eine Zeichenkette mit ~d Zeichen verwendet werden"
 #: gnu/services/file-sharing.scm:670
 #, scheme-format
 msgid "Wait period expired; killing transmission-daemon (pid ~a).~%"
-msgstr "Wait-period abgelaufen; transmission-daemon wird abgewürgt (PID ~a).~%"
+msgstr "Wait-period abgelaufen; transmission-daemon wird erzwungen beendet (PID ~a).~%"
 
 #: gnu/services/file-sharing.scm:673
 msgid ""
@@ -783,7 +783,7 @@ msgstr ""
 "damit das Wurzeldateisystem ohne Schreibrechte erneut eingebunden werden\n"
 "kann („Remount“), bevor ein Neustart oder Anhalten des Systems durchgeführt\n"
 "wird. Prozesse, die ein paar Sekunden nach @code{SIGTERM} immer noch laufen,\n"
-"werden mit @code{SIGKILL} abgewürgt."
+"werden mit @code{SIGKILL} erzwungen beendet."
 
 #: gnu/services/samba.scm:161
 msgid ""
@@ -1851,7 +1851,7 @@ msgstr "Externer Befehl ~s fehlgeschlagen mit Exit-Code ~a."
 #: gnu/installer/newt.scm:134
 #, scheme-format
 msgid "External command ~s terminated by signal ~a"
-msgstr "Externer Befehl ~s abgewürgt durch Signal ~a"
+msgstr "Externer Befehl ~s erzwungen beendet durch Signal ~a"
 
 #: gnu/installer/newt.scm:137
 #, scheme-format
@@ -2807,7 +2807,7 @@ msgstr "Befehl ~s hat mit Exit-Code ~a geendet"
 #: gnu/installer/utils.scm:207
 #, scheme-format
 msgid "Command ~s killed by signal ~a"
-msgstr "Befehl ~s abgewürgt durch Signal ~a"
+msgstr "Befehl ~s erzwungen beendet durch Signal ~a"
 
 #: gnu/installer/utils.scm:213
 #, scheme-format
@@ -7594,7 +7594,7 @@ msgstr "~a: Befehl wurde durch Signal ~a angehalten~%"
 #: guix/scripts/deploy.scm:228
 #, scheme-format
 msgid "~a: command terminated with signal ~a~%"
-msgstr "~a: Befehl wurde durch Signal ~a abgewürgt~%"
+msgstr "~a: Befehl wurde durch Signal ~a erzwungen beendet~%"
 
 #: guix/scripts/deploy.scm:232
 #, scheme-format
@@ -7722,7 +7722,7 @@ msgstr "Kein solcher Prozess ~d~%"
 #: guix/scripts/container/exec.scm:108 guix/scripts/home.scm:463
 #, scheme-format
 msgid "process terminated with signal ~a~%"
-msgstr "Prozess wurde durch Signal ~a abgewürgt~%"
+msgstr "Prozess wurde durch Signal ~a erzwungen beendet~%"
 
 #: guix/scripts/container/exec.scm:110 guix/scripts/home.scm:465
 #, scheme-format

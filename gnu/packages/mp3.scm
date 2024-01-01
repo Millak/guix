@@ -12,6 +12,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Joeke de Graaf <joeke@posteo.net>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -162,7 +163,25 @@ This package contains the library.")
                            Version: ~a~@
                            Libs: -L${libdir} -lid3tag -lz~@
                            Cflags: -I${includedir}~%"
-                          out ,version)))))))))
+                          out ,version))))))
+        ,@(if (and (%current-target-system)
+                   (or (target-riscv64?)
+                       (target-aarch64?)))
+              `((add-after 'unpack 'update-config
+                  (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                    (for-each
+                     (lambda (file)
+                       (install-file
+                        (search-input-file (or native-inputs inputs)
+                                           (string-append "/bin/" file))
+                        "."))
+                     '("config.guess" "config.sub")))))
+              '()))))
+   (native-inputs (if (and (%current-target-system)
+                           (or (target-riscv64?)
+                               (target-aarch64?)))
+                      (list config)
+                      '()))
    (inputs (list zlib))
    (synopsis "Library for reading ID3 tags")
    (description

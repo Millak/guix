@@ -161,6 +161,7 @@
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages uglifyjs)
+  #:use-module (gnu packages video)
   #:use-module (gnu packages vim)
   #:use-module (gnu packages web)
   #:use-module (gnu packages wget)
@@ -4286,6 +4287,107 @@ annotations of the genome.")
      "Cutadapt finds and removes adapter sequences, primers, poly-A tails and
 other types of unwanted sequence from high-throughput sequencing reads.")
     (license license:expat)))
+
+(define-public lammps
+  (let ((commit "stable_2Aug2023_update2"))
+    (package
+      (name "lammps")
+      (version (string-append "0." commit))
+      (source
+       (origin
+	 (method git-fetch)
+	 (uri (git-reference
+	       (url "https://github.com/lammps/lammps.git")
+	       (commit commit)))
+	 (file-name (git-file-name name version))
+	 (sha256
+	  (base32
+	   "11xagacgxgldkx34qdzyjrjvn8x3hpl0kgzhh9zh7skpq79pwycz"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ; no check target
+	#:make-flags
+        '(list "CC=mpicc" "mpi"
+	       "LMP_INC=-DLAMMPS_GZIP \
+-DLAMMPS_JPEG -DLAMMPS_PNG -DLAMMPS_FFMPEG -DLAMMPS_MEMALIGN=64"
+	       "LIB=-gz -ljpeg -lpng -lavcodec")
+	#:phases
+	#~(modify-phases %standard-phases
+            (add-after 'unpack 'chdir
+	      (lambda _ (chdir "src")))
+	    (replace 'configure
+	      (lambda _
+		(substitute* "MAKE/Makefile.mpi"
+		  (("SHELL =.*")
+		   (string-append "SHELL=" (which "bash") "\n"))
+		  (("cc ") "mpicc "))
+		(substitute* "Makefile"
+		  (("SHELL =.*")
+		   (string-append "SHELL=" (which "bash") "\n")))))
+	    (add-after 'configure 'configure-modules
+	      (lambda _
+		(invoke "make"
+			"yes-molecule"
+			"yes-misc"
+			"yes-granular"
+			(string-append "HDF5_PATH="
+				       #$(this-package-input "hdf5")))))
+	    (replace 'install
+	      (lambda _
+		(let ((bin (string-append #$output "/bin")))
+		  (mkdir-p bin)
+		  (install-file "lmp_mpi" bin)))))))
+      (inputs
+       (list ffmpeg
+	     gfortran
+	     gzip
+	     hdf5
+	     libjpeg-turbo
+	     libpng
+	     openmpi
+             python-wrapper))
+      (native-inputs (list bc))
+      (home-page "https://www.lammps.org/")
+      (synopsis "Classical molecular dynamics simulator")
+      (description "LAMMPS is a classical molecular dynamics simulator
+designed to run efficiently on parallel computers.  LAMMPS has potentials for
+solid-state materials (metals, semiconductors), soft matter (biomolecules,
+polymers), and coarse-grained or mesoscopic systems.  It can be used to model
+atoms or, more generically, as a parallel particle simulator at the atomic,
+meso, or continuum scale.")
+      (license license:gpl2+))))
+
+(define-public lammps-serial
+  (package
+    (inherit lammps)
+    (name "lammps-serial")
+    (arguments
+     (substitute-keyword-arguments (package-arguments lammps)
+       ((#:make-flags flags)
+        '(list "CC=gcc" "serial"
+               "LMP_INC=-DLAMMPS_GZIP \
+-DLAMMPS_JPEG -DLAMMPS_PNG -DLAMMPS_FFMPEG -DLAMMPS_MEMALIGN=64"
+               "LIB=-gz -ljpeg -lpng -lavcodec"))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'configure
+              (lambda _
+                (substitute* "MAKE/Makefile.serial"
+                  (("SHELL =.*")
+                   (string-append "SHELL=" (which "bash") "\n"))
+                  (("cc ") "gcc "))
+                (substitute* "Makefile"
+                  (("SHELL =.*")
+                   (string-append "SHELL=" (which "bash") "\n")))))
+            (replace 'install
+	      (lambda _
+		(let ((bin (string-append #$output "/bin")))
+		  (mkdir-p bin)
+		  (install-file "lmp_serial" bin))))))))
+    (inputs
+     (modify-inputs (package-inputs lammps)
+       (delete "openmpi")))))
 
 (define-public libbigwig
   (package
@@ -17894,12 +17996,40 @@ The tool enables the de novo search for new structural elements and
 facilitates comparative analysis of known RNA families.")
     (license license:bsd-3)))
 
+(define-public r-databaselinke-r
+  (let ((commit "cf3d6cc3d36f2e1c9a557390232e9a8ed5abb7fd")
+        (revision "1"))
+    (package
+      (name "r-databaselinke-r")
+      (version (git-version "1.7.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/vertesy/DatabaseLinke.R")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0hk76sb3w1v8a7c1knpc572ypsbgqlrv0p49c9y55a0dr12n16s1"))))
+      (properties `((upstream-name . "DatabaseLinke.R")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-readwriter))
+      (home-page "https://github.com/vertesy/DatabaseLinke.R")
+      (synopsis
+       "Parse links to databases from your list of gene symbols")
+      (description
+       "This package provides a set of functions to parse and open (search
+query) links to genomics related and other websites for R.  Useful when you
+want to explore e.g.: the function of a set of differentially expressed
+genes.")
+      (license license:gpl3))))
+
 (define-public r-seurat-utils
-  (let ((commit "0b6f5b548a49148cfbeaa654e8a618c0a020afa5")
+  (let ((commit "c0374cc9e25ce391ba8013fda0f8c7babbb9201d")
         (revision "1"))
     (package
       (name "r-seurat-utils")
-      (version (git-version "1.6.5" revision commit))
+      (version (git-version "2.5.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -17908,12 +18038,15 @@ facilitates comparative analysis of known RNA families.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1mn64h375mkj6x4ix5493z32gqg96yc507j5jr0lx9g5wk1bf762"))))
+                  "15l86b43q245gzz7gsr5rhs4sir74lc14d64yqxfqcb0zrb2bzzd"))))
       (properties `((upstream-name . "Seurat.utils")))
       (build-system r-build-system)
       (propagated-inputs (list r-codeandroll2
                                r-cowplot
+                               r-databaselinke-r
                                r-dplyr
+                               r-enhancedvolcano
+                               r-foreach
                                r-ggcorrplot
                                r-ggexpress
                                r-ggplot2
@@ -17921,15 +18054,21 @@ facilitates comparative analysis of known RNA families.")
                                r-ggrepel
                                r-hgnchelper
                                r-htmlwidgets
+                               r-job
+                               r-magrittr
                                r-markdownhelpers
                                r-markdownreports
                                r-matrix
                                r-matrixstats
+                               r-pheatmap
+                               r-plotly
                                r-princurve
+                               r-qs
                                r-r-utils
                                r-readr
                                r-readwriter
                                r-reshape2
+                               r-rstudioapi
                                r-scales
                                r-seurat
                                r-soupx
@@ -17938,6 +18077,7 @@ facilitates comparative analysis of known RNA families.")
                                r-stringr
                                r-tibble
                                r-tictoc
+                               r-tidyverse
                                r-vroom))
       (home-page "https://github.com/vertesy/Seurat.utils")
       (synopsis "Collection of utility functions for Seurat")

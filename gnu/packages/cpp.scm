@@ -484,7 +484,7 @@ operating on batches.")
 (define-public google-highway
   (package
     (name "google-highway")
-    (version "1.0.5")
+    (version "1.0.7")
     (source
      (origin
        (method git-fetch)
@@ -493,10 +493,11 @@ operating on batches.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01ig4iqicm57nycl9q8mx1b22gvl4wj5j1vfp1jczhmrga4bca8v"))))
+        (base32 "0cx38hnislqyd4vd47mlpgjpr1zmpf1fms2bj6nb00fjv53q1sb7"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags (list "-DHWY_SYSTEM_GTEST=on")))
+     `(#:configure-flags (list "-DHWY_SYSTEM_GTEST=on"
+                               "-DBUILD_SHARED_LIBS=ON")))
     (native-inputs
      (list googletest))
     (home-page "https://github.com/google/highway")

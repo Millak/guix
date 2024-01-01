@@ -4475,7 +4475,7 @@ implemented in ANSI C, and MPI for communications.")
 (define-public scotch
   (package
     (name "scotch")
-    (version "7.0.1")
+    (version "7.0.4")
     (source
      (origin
        (method git-fetch)
@@ -4484,7 +4484,7 @@ implemented in ANSI C, and MPI for communications.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fvgxd3ipl5xswswyadvxvlcgv6an8c229ispnlksgnlwphg10ig"))))
+        (base32 "0rbc51albpd2923dkirpkj8rfkic6rsvwqqnv1mmsk391zhk3amr"))))
     (build-system cmake-build-system)
     (inputs
      (list zlib))

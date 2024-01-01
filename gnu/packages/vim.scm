@@ -470,11 +470,13 @@ trouble using them, because you do not have to remember each snippet name.")
                   "0av2m075n6z05ah9ndrgnp9s16yrz6n2lj0igd9fh3c5k41x5xks"))))
       (build-system vim-build-system)
       (arguments
-       '(#:plugin-name "coqtail"
+       `(#:plugin-name "coqtail"
+         #:vim ,vim-full ; Plugin needs Python 3.
          #:phases
          (modify-phases %standard-phases
            (add-before 'install 'check
-             (lambda* (#:key inputs native-inputs tests? #:allow-other-keys)
+             (lambda* (#:key inputs native-inputs tests? vim? neovim?
+                       #:allow-other-keys)
                (when tests?
                  (display "Running Python unit tests.\n")
                  (setenv "PYTHONPATH" (string-append (getcwd) "/python"))
@@ -488,29 +490,45 @@ trouble using them, because you do not have to remember each snippet name.")
                                               "vim-vader"))
                         (vader-path (string-append
                                       vim-vader
-                                      "/share/vim/vimfiles/pack/guix/start/vader")))
+                                      (if vim?
+                                        "/share/vim/vimfiles"
+                                        "/share/nvim/site")
+                                      "/pack/guix/start/vader"))
+                        (command `(,@(if vim? '("vim" "-E") '())
+                                   ,@(if neovim? '("nvim" "--headless") '())
+                                   "-Nu" "vimrc"
+                                   "-c" "Vader! *.vader")))
                    (with-directory-excursion "tests/vim"
+                     (when neovim?
+                       (setenv "HOME" (getcwd)))
                      (setenv "VADER_PATH" vader-path)
-                     (invoke (string-append
-                               (assoc-ref (or native-inputs inputs) "vim-full")
-                               "/bin/vim")
-                             "-E" "-Nu" "vimrc"
-                             "-c" "Vader! *.vader")))
+                     (apply invoke command)))
 
                  ;; Remove __pycache__ files generated during testing so that
                  ;; they don't get installed.
                  (delete-file-recursively "python/__pycache__")))))))
       (native-inputs
-       `(("coq-for-coqtail" ,coq-for-coqtail)
-         ("python-pytest" ,python-pytest)
-         ("vim-full" ,vim-full)         ; Plugin needs Python 3.
-         ("vim-vader" ,vim-vader)))
+       (list coq-for-coqtail
+             python-pytest
+             vim-vader))
       (propagated-inputs (list coq coq-ide-server))
       (synopsis "Interactive Coq proofs in Vim")
       (description "Coqtail enables interactive Coq proof development in Vim
 similar to CoqIDE or ProofGeneral.")
       (home-page "https://github.com/whonore/Coqtail")
       (license license:expat))))
+
+(define-public neovim-coqtail
+  (package
+    (inherit vim-coqtail)
+    (name "neovim-coqtail")
+    (synopsis "Interactive Coq proofs in Neovim")
+    (description "Coqtail enables interactive Coq proof development in Neovim
+similar to CoqIDE or ProofGeneral.")
+    (native-inputs
+     (modify-inputs (package-native-inputs vim-coqtail)
+       (replace "vim-vader" neovim-vader)
+       (append python-minimal python-pynvim)))))
 
 (define-public vim-fugitive
   (package
@@ -1509,7 +1527,7 @@ operations are available for most filetypes.")
          #:phases
          (modify-phases %standard-phases
            (add-before 'install 'check
-             (lambda* (#:key tests? #:allow-other-keys)
+             (lambda* (#:key tests? vim? neovim? #:allow-other-keys)
                (when tests?
                  ;; FIXME: suite1.vader fails with an unknown reason,
                  ;; lang-if.vader requires Python and Ruby.
@@ -1519,9 +1537,11 @@ operations are available for most filetypes.")
 
                  (display "Running Vim tests\n")
                  (with-directory-excursion "test"
-                   (setenv "VADER_TEST_VIM" "vim -E")
+                   (when vim?
+                     (setenv "VADER_TEST_VIM" "vim -E"))
+                   (when neovim?
+                     (setenv "VADER_TEST_VIM" "nvim --headless"))
                    (invoke "bash" "./run-tests.sh"))))))))
-      (native-inputs (list vim))
       (home-page "https://github.com/junegunn/vader.vim")
       (synopsis "Test framework for Vimscript")
       (description "Vader is a test framework for Vimscript designed to
@@ -1530,6 +1550,11 @@ intuitive test syntax for defining test cases and expectations, it also can
 be integrated with @acronym{CI, Continuous Integration} pipelines to
 automate testing and is compatible with Vim and Neovim.")
       (license license:expat)))) ;; Specified in README.md.
+
+(define-public neovim-vader
+  (package
+    (inherit vim-vader)
+    (name "neovim-vader")))
 
 (define-public vim-jedi-vim
   (package

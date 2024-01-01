@@ -62,6 +62,7 @@
 # Copyright © 2023 B. Wilson <elaexuotee@wilsonb.com>
 # Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 # Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
+# Copyright © 2023 Herman Rimm <herman@rimm.ee>
 #
 # This file is part of GNU Guix.
 #
@@ -240,7 +241,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/dvtm.scm				\
   %D%/packages/easyrpg.scm			\
   %D%/packages/ebook.scm			\
-  %D%/packages/ed.scm				\
   %D%/packages/education.scm			\
   %D%/packages/efi.scm				\
   %D%/packages/electronics.scm			\
@@ -456,7 +456,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/musl.scm				\
   %D%/packages/mtools.scm			\
   %D%/packages/myrddin.scm			\
-  %D%/packages/nano.scm				\
   %D%/packages/ncdu.scm				\
   %D%/packages/ncurses.scm			\
   %D%/packages/netpbm.scm			\
@@ -753,6 +752,7 @@ GNU_SYSTEM_MODULES =				\
 						\
   %D%/system/images/hurd.scm			\
   %D%/system/images/novena.scm			\
+  %D%/system/images/orangepi-r1-plus-lts-rk3328.scm	\
   %D%/system/images/pine64.scm			\
   %D%/system/images/pinebook-pro.scm		\
   %D%/system/images/rock64.scm			\
@@ -1071,6 +1071,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/cursynth-wave-rand.patch			\
   %D%/packages/patches/cvs-CVE-2017-12836.patch		\
   %D%/packages/patches/d-feet-drop-unused-meson-argument.patch	\
+  %D%/packages/patches/dante-non-darwin.patch			\
   %D%/packages/patches/date-output-pkg-config-files.patch	\
   %D%/packages/patches/datefudge-gettimeofday.patch		\
   %D%/packages/patches/dbacl-include-locale.h.patch		\
@@ -1726,6 +1727,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/online-judge-tools.patch		\
   %D%/packages/patches/onnx-optimizer-system-library.patch	\
   %D%/packages/patches/onnx-use-system-googletest.patch	\
+  %D%/packages/patches/onnx-1.13.1-use-system-googletest.patch	\
   %D%/packages/patches/onnx-shared-libraries.patch	\
   %D%/packages/patches/onnx-skip-model-downloads.patch		\
   %D%/packages/patches/openbios-aarch64-riscv64-support.patch	\
@@ -1782,6 +1784,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-random2-getrandbits-test.patch		\
   %D%/packages/patches/python-poppler-qt5-fix-build.patch	\
   %D%/packages/patches/python-pypdf-annotate-tests-appropriately.patch	\
+  %D%/packages/patches/python-pytorch2-system-libraries.patch	\
   %D%/packages/patches/python-sip-include-dirs.patch	\
   %D%/packages/patches/python-sgmllib3k-assertions.patch	\
   %D%/packages/patches/python-sphinx-prompt-docutils-0.19.patch	\
@@ -2009,10 +2012,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/shakespeare-spl-fix-grammar.patch		\
   %D%/packages/patches/shared-mime-info-xdgmime-path.patch	\
   %D%/packages/patches/sharutils-CVE-2018-1000097.patch		\
-  %D%/packages/patches/slim-session.patch			\
   %D%/packages/patches/slim-config.patch			\
-  %D%/packages/patches/slim-sigusr1.patch			\
-  %D%/packages/patches/slim-reset.patch				\
   %D%/packages/patches/slim-login.patch				\
   %D%/packages/patches/slim-display.patch			\
   %D%/packages/patches/stex-copy-from-immutable-store.patch	\
@@ -2069,6 +2069,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/tofi-32bit-compat.patch			\
   %D%/packages/patches/tpetra-remove-duplicate-using.patch	\
   %D%/packages/patches/transcode-ffmpeg.patch	\
+  %D%/packages/patches/transmission-4.0.5-fix-build.patch	\
   %D%/packages/patches/trytond-add-egg-modules-to-path.patch	\
   %D%/packages/patches/trytond-add-guix_trytond_path.patch	\
   %D%/packages/patches/ttf2eot-cstddef.patch			\
@@ -2078,13 +2079,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/tuxpaint-stamps-path.patch		\
   %D%/packages/patches/twinkle-bcg729.patch			\
   %D%/packages/patches/u-boot-allow-disabling-openssl.patch	\
-  %D%/packages/patches/u-boot-fix-build-python-3.10.patch	\
-  %D%/packages/patches/u-boot-fix-u-boot-lib-build.patch	\
   %D%/packages/patches/u-boot-nintendo-nes-serial.patch		\
   %D%/packages/patches/u-boot-patman-change-id.patch	\
   %D%/packages/patches/u-boot-rockchip-inno-usb.patch		\
-  %D%/packages/patches/u-boot-sifive-prevent-reloc-initrd-fdt.patch	\
-  %D%/packages/patches/u-boot-rk3399-enable-emmc-phy.patch	\
   %D%/packages/patches/ucx-tcp-iface-ioctl.patch		\
   %D%/packages/patches/ultrastar-deluxe-no-freesans.patch		\
   %D%/packages/patches/ungoogled-chromium-extension-search-path.patch	\
@@ -2174,6 +2171,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/xgboost-use-system-dmlc-core.patch       \
   %D%/packages/patches/xmonad-dynamic-linking.patch		\
   %D%/packages/patches/xnnpack-system-libraries.patch		\
+  %D%/packages/patches/xnnpack-for-torch2-system-libraries.patch	\
   %D%/packages/patches/xplanet-1.3.1-cxx11-eof.patch		\
   %D%/packages/patches/xplanet-1.3.1-libdisplay_DisplayOutput.cpp.patch	\
   %D%/packages/patches/xplanet-1.3.1-libimage_gif.c.patch	\

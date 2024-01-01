@@ -7557,7 +7557,7 @@ metadata in photo and video files of various formats.")
            libwebp
            libxml2
            sqlite
-           webkitgtk))
+           webkitgtk-for-gtk3))
     (home-page "https://wiki.gnome.org/Apps/Shotwell")
     (synopsis "Photo manager for GNOME 3")
     (description
@@ -11872,19 +11872,18 @@ functionality.")
                 "1s4lqy883s296mbh4fywd1l3z79811ia00xs57c316pb1an97mmd"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:configure-flags
-       ;; Ensure the RUNPATH contains all installed library locations.
-       (list (string-append "-Dc_link_args=-Wl,-rpath="
-                            (assoc-ref %outputs "out")
-                            "/lib/gthumb/extensions")
-             (string-append "-Dcpp_link_args=-Wl,-rpath="
-                            (assoc-ref %outputs "out")
-                            "/lib/gthumb/extensions"))))
+     (list
+      #:glib-or-gtk? #t
+      #:configure-flags
+      ;; Ensure the RUNPATH contains all installed library locations.
+      #~(list (string-append "-Dc_link_args=-Wl,-rpath=" #$output
+                             "/lib/gthumb/extensions")
+              (string-append "-Dcpp_link_args=-Wl,-rpath=" #$output
+                             "/lib/gthumb/extensions"))))
     (native-inputs
-     (list desktop-file-utils ; for update-desktop-database
-           `(,glib "bin") ; for glib-compile-resources
-           `(,gtk+ "bin") ; for gtk-update-icon-cache
+     (list desktop-file-utils   ; for update-desktop-database
+           `(,glib "bin")       ; for glib-compile-resources
+           `(,gtk+ "bin")       ; for gtk-update-icon-cache
            intltool
            itstool
            pkg-config

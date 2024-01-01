@@ -13,21 +13,23 @@
 # Hilton Chain <yareli@ultrarare.space>, 2023.
 # a x <meruarasu@email1.io>, 2023.
 # Sapphire RainSlide <RainSlide@outlook.com>, 2023.
+# Jingge Chen <mariocanfly@hotmail.com>, 2023.
+# Florian Pelz <pelzflorian@pelzflorian.de>, 2023.
 #: guix/diagnostics.scm:159
 msgid ""
 msgstr ""
 "Project-Id-Version: guix 0.14.0\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2023-06-19 03:18+0000\n"
-"PO-Revision-Date: 2023-11-16 19:01+0000\n"
-"Last-Translator: Sapphire RainSlide <RainSlide@outlook.com>\n"
+"PO-Revision-Date: 2023-12-08 17:44+0000\n"
+"Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: Chinese (Simplified) <https://translate.fedoraproject.org/projects/guix/guix/zh_CN/>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.2\n"
+"X-Generator: Weblate 5.2.1\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 #: gnu.scm:81
@@ -192,10 +194,13 @@ msgid ""
 msgstr "让固件文件可以被系统加载。这样固件可以被载入到这台机器的设备中，比如说无线网卡。"
 
 #: gnu/services.scm:973
+#, fuzzy
 msgid ""
 "Register garbage-collector roots---i.e., store items that\n"
 "will not be reclaimed by the garbage collector."
 msgstr ""
+"注册垃圾回收器的根——即存储垃圾回收器\n"
+"不会回收的项目。"
 
 #: gnu/services.scm:1031
 #, fuzzy
@@ -242,7 +247,7 @@ msgstr "有无法识别的 UUID ~a 在 '~a' 中~%"
 #: gnu/system.scm:485
 #, scheme-format
 msgid "unrecognized crypto-devices ~S at '~a'~%"
-msgstr ""
+msgstr "未识别的加密设备 ~S 位于 '~a'~%"
 
 #: gnu/system.scm:505
 #, fuzzy, scheme-format
@@ -269,27 +274,27 @@ msgstr ""
 #: gnu/system.scm:645
 #, scheme-format
 msgid "mapped device '~a' may be ignored by bootloader~%"
-msgstr ""
+msgstr "映射设备 '~a' 可能会被引导程序忽略 ~%"
 
 #: gnu/system.scm:665
 #, scheme-format
 msgid "List elements of the field 'swap-devices' should now use the <swap-space> record, as the old method is deprecated. See \"(guix) operating-system Reference\" for more details.~%"
-msgstr ""
+msgstr "字段“swap-devices”的列表元素现在应使用 <swap-space> 记录，因为旧方法已被淘汰。详情请参阅“(guix.zh_CN) 操作系统参考”。~%"
 
 #: gnu/system.scm:1155
 #, scheme-format
 msgid "using a string for file '~a' is deprecated; use 'plain-file' instead~%"
-msgstr ""
+msgstr "使用字符串表示文件‘~a' 已被弃用；请改用 'plain-file' ~%"
 
 #: gnu/system.scm:1171
 #, scheme-format
 msgid "using a monadic value for '~a' is deprecated; use 'plain-file' instead~%"
-msgstr ""
+msgstr "对 '~a' 使用一元值已被弃用；请改用 'plain-file' ~%"
 
 #: gnu/system.scm:1217
 #, scheme-format
 msgid "representing setuid programs with file-like objects is deprecated; use 'setuid-program' instead~%"
-msgstr ""
+msgstr "用类文件对象来表示setuid程序已被弃用；请改用 'setuid-program' ~%"
 
 #: gnu/system.scm:1319
 msgid "missing root file system"
@@ -305,18 +310,24 @@ msgid ""
 "Populate the @file{/etc/fstab} based on the given file\n"
 "system objects."
 msgstr ""
+"根据给定的文件系统对象\n"
+"填充 @file{/etc/fstab} 文件。"
 
 #: gnu/services/base.scm:357
 msgid ""
 "Take care of syncing the root file\n"
 "system and of remounting it read-only when the system shuts down."
 msgstr ""
+"注意同步根文件系统，\n"
+"并在系统关闭时以只读方式重新加载。"
 
 #: gnu/services/base.scm:551
 msgid ""
 "Provide Shepherd services to mount and unmount the given\n"
 "file systems, as well as corresponding @file{/etc/fstab} entries."
 msgstr ""
+"提供挂载和卸载给定文件系统的 Shepherd 服务，\n"
+"以及相应的 @file{/etc/fstab} 条目。"
 
 #: gnu/services/base.scm:649
 msgid ""
@@ -324,17 +335,21 @@ msgid ""
 "generator (RNG) with the value recorded when the system was last shut\n"
 "down."
 msgstr ""
+"为 @file{/dev/urandom} 伪随机数生成器(RNG)\n"
+"添加上次关闭系统时记录的数值用作种子。"
 
 #: gnu/services/base.scm:684
 msgid ""
 "Run the @command{rngd} random number generation daemon to\n"
 "supply entropy to the kernel's pool."
 msgstr ""
+"运行 @command{rngd} 随机数生成守护进程，\n"
+"为内核池提供熵。"
 
 #: gnu/services/base.scm:713
 #, scheme-format
 msgid "host name '~a' contains invalid characters"
-msgstr ""
+msgstr "主机名 '~a' 包含无效字符"
 
 #: gnu/services/base.scm:763
 #, fuzzy
@@ -344,11 +359,11 @@ msgstr "填充 @file{/etc} 目录。"
 
 #: gnu/services/base.scm:780
 msgid "Initialize the machine's host name."
-msgstr ""
+msgstr "初始化机器的主机名。"
 
 #: gnu/services/base.scm:811
 msgid "Ensure the Linux virtual terminals run in UTF-8 mode."
-msgstr ""
+msgstr "确保 Linux 虚拟终端以 UTF-8 模式运行。"
 
 #: gnu/services/base.scm:870
 msgid ""
@@ -367,24 +382,44 @@ msgid ""
 "                 \"/share/consolefonts/ter-132n\"))) ; for HDPI\n"
 "@end example\n"
 msgstr ""
+"在指定的 tty 上安装给定的字体（字体是GNU/Linux每个虚拟控制台的字体）。\n"
+"此服务的值是一个由 tty/font 对构成的列表。\n"
+"字体可以是 @code{kbd} 软件包提供的字体名称，也可以是\n"
+"@command{setfont} 的任何有效参数，如本例所示：\n"
+"\n"
+"@example\n"
+"`((\"tty1\" . \"LatGrkCyr-8x16\")\n"
+"  (\"tty2\" . ,(file-append\n"
+"                 font-tamzen\n"
+"                 \"/share/kbd/consolefonts/TamzenForPowerline10x20.psf\"))\n"
+"  (\"tty3\" . ,(file-append\n"
+"                 font-terminus\n"
+"                 \"/share/consolefonts/ter-132n\"))) ; for HDPI\n"
+"@end example\n"
 
 #: gnu/services/base.scm:914
 msgid ""
 "Provide a console log-in service as specified by its\n"
 "configuration value, a @code{login-configuration} object."
 msgstr ""
+"提供由 @code{login-configuration} 对象配置值\n"
+"指定的控制台登录服务。"
 
 #: gnu/services/base.scm:1197
 msgid ""
 "Provide console login using the @command{agetty}\n"
 "program."
 msgstr ""
+"使用 @command{agetty} 程序\n"
+"提供控制台登录功能。"
 
 #: gnu/services/base.scm:1263
 msgid ""
 "Provide console login using the @command{mingetty}\n"
 "program."
 msgstr ""
+"使用 @command{mingetty} 程序\n"
+"提供控制台登录功能。"
 
 #: gnu/services/base.scm:1494
 msgid ""
@@ -392,14 +427,17 @@ msgid ""
 "given configuration---an @code{<nscd-configuration>} object.  @xref{Name\n"
 "Service Switch}, for an example."
 msgstr ""
+"使用指定的配置 ，即一个 @code{<nscd-configuration>} 对象\n"
+"来运行libc的 @dfn{name service cache daemon} (nscd)。\n"
+"请参阅例子 @xref{Name Service Switch}。"
 
 #: gnu/services/base.scm:1572
 msgid "Service syslog has been asked to reload its settings file."
-msgstr ""
+msgstr "syslog 服务被要求重新加载其配置文件。"
 
 #: gnu/services/base.scm:1574
 msgid "Service syslog is not running."
-msgstr ""
+msgstr "syslog 服务未运行。"
 
 #: gnu/services/base.scm:1591
 msgid ""

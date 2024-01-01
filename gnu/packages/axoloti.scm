@@ -320,9 +320,9 @@ runtime.")
                             (toolchain (assoc-ref inputs "cross-toolchain"))
                             (includes  (string-append
                                         toolchain
-                                        "/arm-none-eabi/include:"
+                                        "/arm-none-eabi/include/c++:"
                                         toolchain
-                                        "/arm-none-eabi/include/arm-none-eabi/armv7e-m")))
+                                        "/arm-none-eabi/include/c++/arm-none-eabi/armv7e-m")))
                        (display
                         (string-append "#!" (which "sh") "\n"
                                        "export CROSS_CPATH=" includes "\n"
@@ -333,8 +333,7 @@ runtime.")
                                        " -Daxoloti_release=" runtime
                                        " -Daxoloti_runtime=" runtime
                                        " -jar " dir "/Axoloti.jar")))))
-                 (chmod target #o555))
-               #t)))
+                 (chmod target #o555)))))
          (add-after 'install 'strip-jar-timestamps
            (assoc-ref ant:%standard-phases 'strip-jar-timestamps)))))
     (inputs
