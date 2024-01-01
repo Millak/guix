@@ -145,7 +145,7 @@
 ;;; Copyright © c4droid <c4droid@foxmail.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023 Attila Lendvai <attila@lendvai.name>
-;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2023, 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -10560,6 +10560,41 @@ releases.")
     (home-page "https://github.com/jaraco/jaraco.test")
     (synopsis "Testing support by jaraco")
     (description "This package provides testing support by jaraco.")
+    (license license:expat)))
+
+(define-public python-jaraco-text
+  (package
+    (name "python-jaraco-text")
+    (version "3.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jaraco.text" version))
+       (sha256
+        (base32 "0b2rmx0sa61f75lkkr4nfaj3mkgmn3x9c1akpwarfbmksk42b7iq"))))
+    (build-system pyproject-build-system)
+    ;; Do not test pyproject.toml with python-pytest-checkdocs as it tries to
+    ;; download dependencies.
+    (arguments
+     '(#:test-flags '("-k" "not project")))
+    (propagated-inputs (list python-autocommand python-inflect
+                             python-jaraco-context python-jaraco-functools
+                             python-more-itertools))
+    ;; TODO: Add python-pytest-ruff to native-inputs once it has been
+    ;; packaged.
+    (native-inputs (list python-pytest
+                         python-pytest-black
+                         python-pytest-checkdocs
+                         python-pytest-cov
+                         python-pytest-enabler
+                         python-pytest-mypy))
+    (home-page "https://github.com/jaraco/jaraco.text")
+    (synopsis "Provides various routines for text manipulation")
+    (description
+     "This package provides handy routines for dealing with text,
+such as wrapping, substitution, trimming, stripping, prefix and suffix
+removal, line continuation, indentation, comment processing, identifier
+processing, values parsing, case insensitive comparison, and more.")
     (license license:expat)))
 
 (define-public python-simplegeneric
