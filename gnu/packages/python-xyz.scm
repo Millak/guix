@@ -10398,6 +10398,67 @@ finding unresolved symbols in Python code and their corresponding imports.")
 class constructs.")
     (license license:expat)))
 
+(define-public python-jaraco-collections
+  (package
+    (name "python-jaraco-collections")
+    (version "5.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jaraco.collections" version))
+       (sha256
+        (base32 "0s7y3jr7c173k38pck1b17kxnvx2fl0qh9m9gdf64pr9kz8fi00n"))))
+    (build-system pyproject-build-system)
+    ;; Do not test pyproject.toml with python-pytest-checkdocs as it tries to
+    ;; download dependencies.
+    (arguments
+     '(#:test-flags '("-k" "not project")))
+    (propagated-inputs (list python-jaraco-text))
+    ;; TODO: Add python-pytest-ruff to native-inputs once it has been
+    ;; packaged.
+    (native-inputs (list python-pytest
+                         python-pytest-black
+                         python-pytest-checkdocs
+                         python-pytest-cov
+                         python-pytest-enabler
+                         python-pytest-mypy))
+    (home-page "https://github.com/jaraco/jaraco.collections")
+    (synopsis "Provides various collection objects")
+    (description
+     "This package provides models and classes to supplement the
+standard library @code{collections} module.  Examples include
+@itemize
+@item
+RangeMap: A mapping that accepts a range of values for keys.
+@item
+Projection: A subset over an existing mapping.
+@item
+KeyTransformingDict: Generalized mapping with keys transformed by a function.
+@item
+FoldedCaseKeyedDict: A dict whose string keys are case-insensitive.
+@item
+BijectiveMap: A map where keys map to values and values back to their keys.
+@item
+ItemsAsAttributes: A mapping mix-in exposing items as attributes.
+@item
+IdentityOverrideMap: A map whose keys map by default to themselves unless overridden.
+@item
+FrozenDict: A hashable, immutable map.
+@item
+Enumeration: An object whose keys are enumerated.
+@item
+Everything: A container that contains all things.
+@item
+Least, Greatest: Objects that are always less than or greater than any other.
+@item
+pop_all: Return all items from the mutable sequence and remove them from that sequence.
+@item
+DictStack: A stack of dicts, great for sharing scopes.
+@item
+WeightedLookup: A specialized RangeMap for selecting an item by weights.
+@end itemize")
+    (license license:expat)))
+
 ;;; Variant used to break a cycle with python-pytest-enabler.
 (define-public python-jaraco-context-bootstrap
   (hidden-package
