@@ -18025,11 +18025,11 @@ genes.")
       (license license:gpl3))))
 
 (define-public r-seurat-utils
-  (let ((commit "0b6f5b548a49148cfbeaa654e8a618c0a020afa5")
+  (let ((commit "c0374cc9e25ce391ba8013fda0f8c7babbb9201d")
         (revision "1"))
     (package
       (name "r-seurat-utils")
-      (version (git-version "1.6.5" revision commit))
+      (version (git-version "2.5.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -18038,12 +18038,15 @@ genes.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1mn64h375mkj6x4ix5493z32gqg96yc507j5jr0lx9g5wk1bf762"))))
+                  "15l86b43q245gzz7gsr5rhs4sir74lc14d64yqxfqcb0zrb2bzzd"))))
       (properties `((upstream-name . "Seurat.utils")))
       (build-system r-build-system)
       (propagated-inputs (list r-codeandroll2
                                r-cowplot
+                               r-databaselinke-r
                                r-dplyr
+                               r-enhancedvolcano
+                               r-foreach
                                r-ggcorrplot
                                r-ggexpress
                                r-ggplot2
@@ -18051,15 +18054,21 @@ genes.")
                                r-ggrepel
                                r-hgnchelper
                                r-htmlwidgets
+                               r-job
+                               r-magrittr
                                r-markdownhelpers
                                r-markdownreports
                                r-matrix
                                r-matrixstats
+                               r-pheatmap
+                               r-plotly
                                r-princurve
+                               r-qs
                                r-r-utils
                                r-readr
                                r-readwriter
                                r-reshape2
+                               r-rstudioapi
                                r-scales
                                r-seurat
                                r-soupx
@@ -18068,6 +18077,7 @@ genes.")
                                r-stringr
                                r-tibble
                                r-tictoc
+                               r-tidyverse
                                r-vroom))
       (home-page "https://github.com/vertesy/Seurat.utils")
       (synopsis "Collection of utility functions for Seurat")
