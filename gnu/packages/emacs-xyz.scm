@@ -14990,6 +14990,13 @@ that uses the standard completion function completing-read.")
        (sha256
         (base32 "0qq9jr1ihk1b5wfvppyvb8c2pq2gma9wysggd22iln4nqz2mjc81"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #true
+      #:test-command #~(list "emacs" "--batch" "-Q"
+                             "-l" "yaml.el"
+                             "-l" "yaml-tests.el"
+                             "-f" "ert-run-tests-batch-and-exit")))
     (home-page "https://github.com/zkry/yaml.el")
     (synopsis "YAML parser in Elisp")
     (description
