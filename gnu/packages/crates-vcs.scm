@@ -688,8 +688,39 @@ and correct.  Interact with Git repositories just like Git would.")
         ("rust-serial-test" ,rust-serial-test-2)
         ("rust-walkdir" ,rust-walkdir-2))))))
 
+(define-public rust-gix-actor-0.28
+  (package
+    (name "rust-gix-actor")
+    (version "0.28.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-actor" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05xldn3aq58kjx2i87xsb2gdw7qhxvvikyvsiwvv85ppkq1cmb9f"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; use of undeclared crate or module `gix_testtools`
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-btoi" ,rust-btoi-0.4)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-date" ,rust-gix-date-0.8)
+                       ("rust-gix-features" ,rust-gix-features-0.36)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-winnow" ,rust-winnow-0.5))
+       #:cargo-development-inputs (("rust-pretty-assertions" ,rust-pretty-assertions-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Part of Gitoxide, a way to identify Git actors")
+    (description "Part of Gitoxide, a pure Rust implementation of Git.  This
+package provides a way to identify Git actors.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-actor-0.27
   (package
+    (inherit rust-gix-actor-0.28)
     (name "rust-gix-actor")
     (version "0.27.0")
     (source
@@ -699,7 +730,6 @@ and correct.  Interact with Git repositories just like Git would.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "09sychqipf8bsmrwn62svpda457h8wj65qnl49qqk42j5jc0xih8"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; use of undeclared crate or module `gix_testtools`
        #:cargo-inputs
@@ -713,12 +743,7 @@ and correct.  Interact with Git repositories just like Git would.")
         ("rust-thiserror" ,rust-thiserror-1)
         ("rust-winnow" ,rust-winnow-0.5))
        #:cargo-development-inputs
-       (("rust-pretty-assertions" ,rust-pretty-assertions-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Part of Gitoxide, a way to identify Git actors")
-    (description "Part of Gitoxide, a pure Rust implementation of Git.  This
-package provides a way to identify Git actors.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
 
 (define-public rust-gix-actor-0.21
   (package
