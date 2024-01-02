@@ -34685,16 +34685,15 @@ the jni-bindgen code generator for binding to JVM APIs from Rust.")
 (define-public rust-jobserver-0.1
   (package
     (name "rust-jobserver")
-    (version "0.1.26")
+    (version "0.1.27")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "jobserver" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1hkprvh1zp5s3qwjjwwhw7rcpivczcbf6q60rcxr0m8158hzsv4k"))))
+         "0z9w6vfqwbr6hfk9yaw7kydlh6f7k39xdlszxlh39in4acwzcdwc"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
