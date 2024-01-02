@@ -23687,20 +23687,19 @@ deserialized from environment variables.")
 (define-public rust-errno-0.3
   (package
     (name "rust-errno")
-    (version "0.3.1")
+    (version "0.3.8")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "errno" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0fp7qy6fwagrnmi45msqnl01vksqwdb2qbbv60n9cz7rf0xfrksb"))))
+                "0ia28ylfsp36i27g1qih875cyyy4by2grf80ki8vhgh6vinf8n52"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-errno-dragonfly" ,rust-errno-dragonfly-0.1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-windows-sys" ,rust-windows-sys-0.48))))
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-windows-sys" ,rust-windows-sys-0.52))))
     (home-page "https://github.com/lambda-fairy/rust-errno")
     (synopsis "Cross-platform interface to the @code{errno} variable")
     (description
