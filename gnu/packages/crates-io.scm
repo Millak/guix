@@ -79630,20 +79630,18 @@ Unicode and Internationalization Crates (UNIC) project.")
 (define-public rust-unicase-2
   (package
     (name "rust-unicase")
-    (version "2.6.0")
+    (version "2.7.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "unicase" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1xmlbink4ycgxrkjspp0mf7pghcx4m7vxq7fpfm04ikr2zk7pwsh"))))
+          "12gd74j79f94k4clxpf06l99wiv4p30wjr0qm04ihqk9zgdd9lpp"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-version-check" ,rust-version-check-0.9))))
     (home-page "https://github.com/seanmonstar/unicase")
     (synopsis "Case-insensitive wrapper around strings")
