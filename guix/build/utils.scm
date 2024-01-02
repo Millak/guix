@@ -177,6 +177,7 @@ decompress FILE-NAME, based on its file extension, else false."
         ((string-suffix? "lz"  file-name)  "lzip")
         ((string-suffix? "zip" file-name)  "unzip")
         ((string-suffix? "xz"  file-name)  "xz")
+        ((string-suffix? "zst" file-name)  "zstd")
         (else #f)))                ;no compression used/unknown file extension
 
 (define (tarball? file-name)

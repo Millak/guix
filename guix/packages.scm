@@ -5,7 +5,7 @@
 ;;; Copyright © 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2017, 2019, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
@@ -912,6 +912,7 @@ identifiers.  The result is inferred from the file names of patches."
                          (module-ref (resolve-interface module) var))))))
     `(("tar"   ,(ref '(gnu packages base) 'tar))
       ("xz"    ,(ref '(gnu packages compression) 'xz))
+      ("zstd"  ,(ref '(gnu packages compression) 'zstd))
       ("bzip2" ,(ref '(gnu packages compression) 'bzip2))
       ("gzip"  ,(ref '(gnu packages compression) 'gzip))
       ("lzip"  ,(ref '(gnu packages compression) 'lzip))
@@ -974,31 +975,35 @@ specifies modules in scope when evaluating SNIPPET."
     ;; Return true if DIRECTORY is a checkout (git, svn, etc).
     (string-suffix? "-checkout" directory))
 
-  (define (tarxz-name file-name)
-    ;; Return a '.tar.xz' file name based on FILE-NAME.
+  (define (tar-file-name file-name ext)
+    ;; Return a '$filename.tar.$ext' file name based on FILE-NAME and EXT.
     (let ((base (if (numeric-extension? file-name)
                     original-file-name
                     (file-sans-extension file-name))))
       (string-append base
                      (if (equal? (file-extension base) "tar")
-                         ".xz"
-                         ".tar.xz"))))
+                         (string-append "." ext)
+                         (string-append ".tar." ext)))))
 
   (define instantiate-patch
     (match-lambda
-      ((? string? patch)                          ;deprecated
+      ((? string? patch)                ;deprecated
        (local-file patch #:recursive? #t))
-      ((? struct? patch)                          ;origin, local-file, etc.
+      ((? struct? patch)                ;origin, local-file, etc.
        patch)))
 
-  (let ((tar     (lookup-input "tar"))
-        (gzip    (lookup-input "gzip"))
-        (bzip2   (lookup-input "bzip2"))
-        (lzip    (lookup-input "lzip"))
-        (xz      (lookup-input "xz"))
-        (patch   (lookup-input "patch"))
-        (comp    (and=> (compressor source-file-name) lookup-input))
-        (patches (map instantiate-patch patches)))
+  (let* ((tar     (lookup-input "tar"))
+         (gzip    (lookup-input "gzip"))
+         (bzip2   (lookup-input "bzip2"))
+         (lzip    (lookup-input "lzip"))
+         (xz      (lookup-input "xz"))
+         (zstd    (or (lookup-input "zstd")
+                      ;; Fallback to xz in case zstd is not available, such as
+                      ;; for bootstrap packages.
+                      xz))
+         (patch   (lookup-input "patch"))
+         (comp    (and=> (compressor source-file-name) lookup-input))
+         (patches (map instantiate-patch patches)))
     (define build
       (with-imported-modules '((guix build utils))
         #~(begin
@@ -1076,12 +1081,12 @@ specifies modules in scope when evaluating SNIPPET."
                           locale (system-error-errno args)))))
 
             (setenv "PATH"
-                    (string-append #+xz "/bin"
+                    (string-append #+zstd "/bin"
                                    (if #+comp
                                        (string-append ":" #+comp "/bin")
                                        "")))
 
-            (setenv "XZ_DEFAULTS" (string-join (%xz-parallel-args)))
+            (setenv "ZSTD_NBTHREADS" (number->string (parallel-job-count)))
 
             ;; SOURCE may be either a directory, a tarball or a simple file.
             (let ((name (strip-store-file-name #+source))
@@ -1136,10 +1141,13 @@ specifies modules in scope when evaluating SNIPPET."
                (else                    ;single uncompressed file
                 (copy-file file #$output)))))))
 
-    (let ((name (if (or (checkout? original-file-name)
-                        (not (compressor original-file-name)))
-                    original-file-name
-                    (tarxz-name original-file-name))))
+    (let* ((ext (if zstd
+                    "zst"               ;usual case
+                    "xz"))              ;zstd-less bootstrap-origin
+           (name (if (or (checkout? original-file-name)
+                         (not (compressor original-file-name)))
+                     original-file-name
+                     (tar-file-name original-file-name ext))))
       (gexp->derivation name build
                         #:graft? #f
                         #:system system
