@@ -52297,7 +52297,7 @@ in your code.")
 (define-public rust-proc-macro2-1
   (package
     (name "rust-proc-macro2")
-    (version "1.0.67")
+    (version "1.0.74")
     (source
      (origin
        (method url-fetch)
@@ -52305,7 +52305,7 @@ in your code.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0a0k7adv0yswsgzsqkd7r6ng8rpcdyqrhra5v5ii531y3agkshrx"))))
+         "1nynw3s8in1pz5l0mfk4bgbvszlxyk85nc5vs2lcxkqjy818bs9d"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags '("--lib")
@@ -52314,8 +52314,6 @@ in your code.")
        #:cargo-development-inputs
        (("rust-quote" ,rust-quote-1)
         ("rust-rustversion" ,rust-rustversion-1))))
-    ;; This is necessary for downstream packages such as rust-wayland-scanner
-    (inputs (list rust-unicode-ident-1))
     (home-page "https://github.com/dtolnay/proc-macro2")
     (synopsis "Stable implementation of the upcoming new `proc_macro` API")
     (description "This package provides a stable implementation of the upcoming new
