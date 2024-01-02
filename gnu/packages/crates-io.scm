@@ -10379,14 +10379,14 @@ supported by Cargo.")
 (define-public rust-cargo-util-0.2
   (package
     (name "rust-cargo-util")
-    (version "0.2.6")
+    (version "0.2.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "cargo-util" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0p94sivg6svbj0sy5k4dpkphr6rbq3mi4ssbzcf1yw2zb1djn13p"))))
+        (base32 "1yv3s2ycvr7hp5qx5y8gxvgg2lybc2xfm09qfvfksddji8fxsaxv"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
