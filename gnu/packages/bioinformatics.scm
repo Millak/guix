@@ -1192,6 +1192,32 @@ shape.  This package provides an @code{htmlwidget} for building streamgraph
 visualizations.")
       (license license:expat))))
 
+(define-public r-wasabi
+  (let ((commit "8c33cabde8d18c2657cd6e38e7cb834f87cf9846")
+        (revision "1"))
+    (package
+      (name "r-wasabi")
+      (version (git-version "1.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/COMBINE-lab/wasabi")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0rpdj6n4cnx8n2zl60dzgl638474sg49dknwi9x3qb4g56dpphfa"))))
+      (properties `((upstream-name . "wasabi")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-data-table r-rhdf5 r-rjson))
+      (home-page "https://github.com/COMBINE-lab/wasabi")
+      (synopsis "Use Sailfish and Salmon with Sleuth")
+      (description
+       "This package converts the output of the Sailfish and Salmon RNA-seq
+quantification tools so that it can be used with the Sleuth differential
+analysis package.")
+      (license license:bsd-3))))
+
 (define-public pbbam
   (package
     (name "pbbam")
