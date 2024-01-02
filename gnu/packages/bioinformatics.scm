@@ -10634,6 +10634,43 @@ analysis of cell types, subtypes, transcriptional gradients,cell-cycle
 variation, gene modules and their regulatory models and more.")
       (license license:expat))))
 
+(define-public r-sleuth
+  (package
+    (name "r-sleuth")
+    (version "0.30.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pachterlab/sleuth")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09xgc7r6iisjkk0c0wn0q56zy0aph386kphwixfzq4422y7vlqci"))))
+    (properties `((upstream-name . "sleuth")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-aggregation
+                             r-data-table
+                             r-dplyr
+                             r-ggplot2
+                             r-lazyeval
+                             r-matrixstats
+                             r-pheatmap
+                             r-reshape2
+                             r-rhdf5
+                             r-shiny
+                             r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/pachterlab/sleuth")
+    (synopsis "Tools for investigating RNA-Seq")
+    (description
+     "Sleuth is a program for differential analysis of RNA-Seq data.
+It makes use of quantification uncertainty estimates obtained via Kallisto for
+accurate differential analysis of isoforms or genes, allows testing in the
+context of experiments with complex designs, and supports interactive
+exploratory data analysis via sleuth live.")
+    (license license:gpl3)))
+
 (define-public r-snapatac
   (package
     (name "r-snapatac")
