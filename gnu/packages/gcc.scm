@@ -3,7 +3,7 @@
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2023 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2015-2018, 2020-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2018, 2020-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Carlos Sánchez de La Lama <csanchezdll@gmail.com>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2020, 2022 Marius Bakke <marius@gnu.org>
@@ -74,6 +74,9 @@ where the OS part is overloaded to denote a specific ABI---into GCC
            "--with-float=hard"
            "--with-mode=thumb"
            "--with-fpu=neon"))
+
+        ((string-match "x86_64-linux-gnux32" target)
+         '("--with-abi=mx32"))
 
         ((and (string-suffix? "-gnu" target)
               (not (string-contains target "-linux")))
