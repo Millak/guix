@@ -204,7 +204,10 @@ a server that supports the SSH-2 protocol.")
       (method url-fetch)
       (uri (string-append "mirror://openbsd/OpenSSH/portable/"
                           "openssh-" version ".tar.gz"))
-      (patches (search-patches "openssh-trust-guix-store-directory.patch"))
+      (patches (search-patches "openssh-trust-guix-store-directory.patch"
+                               ;; Can be removed with next openssh update
+                               ;; https://issues.guix.gnu.org/67948#2
+                               "openssh-gcc-13-ppc64le-fzero-call-used-regs.patch"))
       (sha256
        (base32 "0z3pgam8b4z05lvdb78iv06p204qwl7b94a3cnnwba2mfb0120li"))))
    (build-system gnu-build-system)
