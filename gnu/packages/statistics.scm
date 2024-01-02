@@ -6448,7 +6448,7 @@ can load multiple parameters to the current environment.")
       (license license:gpl3+))))
 
 (define-public r-tgutil
-  (let ((commit "0e4a2e84e5cf1f74bc66df0a3d8eac89633fd7b1")
+  (let ((commit "db4ff8b98082f8e4dbdeacb452641d215fd3c7ff")
         (revision "1"))
     (package
       (name "r-tgutil")
@@ -6461,7 +6461,7 @@ can load multiple parameters to the current environment.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0pmacpzhrigprlpl8b5j4xz7l110ifw98017xwk569dghbf8zrq1"))))
+          (base32 "00rsqs7f896piywh84jr8fkphbbx4jb7radf6znhhj6fip63yn91"))))
       (properties `((upstream-name . "tgutil")))
       (build-system r-build-system)
       (propagated-inputs (list r-broom
@@ -6481,7 +6481,9 @@ can load multiple parameters to the current environment.")
                                r-tidyr))
       (home-page "https://github.com/tanaylab/tgutil")
       (synopsis "Simple utility functions for Tanay lab code")
-      (description "Shared utility functions for multiple Tanay lab packages.")
+      (description
+       "This package provides simple utility functions that are shared
+across several packages maintained by the Tanay lab.")
       (license license:gpl3))))
 
 (define-public r-catterplots
