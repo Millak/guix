@@ -617,6 +617,50 @@ Compared to cellSNP, this package is more efficient with higher speed and less
 memory usage.")
       (license license:asl2.0))))
 
+(define-public cpat
+  (package
+    (name "cpat")
+    (version "3.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "CPAT" version))
+              (sha256
+               (base32
+                "0dfrwwbhv1n4nh2a903d1qfb30fgxgya89sa70aci3wzf8h2z0vd"))
+              (modules '((guix build utils)))
+              (snippet
+               '(for-each delete-file-recursively
+                          (list ".eggs"
+                                "lib/__pycache__/"
+                                "lib/cpmodule/__pycache__/")))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (with-directory-excursion "test"
+                 ;; There is no test4.fa
+                 (substitute* "test.sh"
+                   ((".*-g test4.fa.*") ""))
+                 (invoke "bash" "test.sh"))))))))
+    (propagated-inputs
+     (list python-numpy python-pysam))
+    (inputs
+     (list r-minimal))
+    (home-page "https://wlcb.oit.uci.edu/cpat/")
+    (synopsis "Alignment-free distinction between coding and noncoding RNA")
+    (description
+     "CPAT is a method to distinguish coding and noncoding RNA by using a
+logistic regression model based on four pure sequence-based, linguistic
+features: ORF size, ORF coverage, Ficket TESTCODE, and Hexamer usage bias.
+Linguistic features based method does not require other genomes or protein
+databases to perform alignment and is more robust.  Because it is
+alignment-free, it runs much faster and also easier to use.")
+    (license license:gpl2+)))
+
 (define-public pbcopper
   (package
     (name "pbcopper")
