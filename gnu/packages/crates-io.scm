@@ -63517,7 +63517,7 @@ fragment of code.")
 (define-public rust-serde-1
   (package
     (name "rust-serde")
-    (version "1.0.193")
+    (version "1.0.194")
     (source
      (origin
        (method url-fetch)
@@ -63525,7 +63525,7 @@ fragment of code.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "129b0j67594f8qg5cbyi3nyk31y97wrqihi026mba34dwrsrkp95"))))
+         "0wxplk1ayrsb81bdwh8zmkldw1b0xigs3qc90r5ck6374nc4848b"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
