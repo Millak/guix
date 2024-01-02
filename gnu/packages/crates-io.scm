@@ -73000,22 +73000,22 @@ deleting all contents when it's dropped.")
 (define-public rust-tempfile-3
   (package
     (name "rust-tempfile")
-    (version "3.8.0")
+    (version "3.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tempfile" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1vsl2193w3gpx3mwj36fwx3v6q2qyvmzrdn6m8fgfsjkrkrx556b"))))
+        (base32 "1ypkl7rvv57n16q28psxpb61rnyhmfaif12ascdnsyljm90l3kh1"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-fastrand" ,rust-fastrand-2)
-        ("rust-redox-syscall" ,rust-redox-syscall-0.3)
+        ("rust-redox-syscall" ,rust-redox-syscall-0.4)
         ("rust-rustix" ,rust-rustix-0.38)
-        ("rust-windows-sys" ,rust-windows-sys-0.48))
+        ("rust-windows-sys" ,rust-windows-sys-0.52))
        #:cargo-development-inputs
        (("rust-doc-comment" ,rust-doc-comment-0.3))))
     (home-page "https://stebalien.com/projects/tempfile-rs")
