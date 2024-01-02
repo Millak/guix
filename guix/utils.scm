@@ -97,6 +97,7 @@
             target-x86-32?
             target-x86-64?
             target-x86?
+            target-x32?
             target-arm32?
             target-aarch64?
             target-arm?
@@ -711,6 +712,13 @@ a character other than '@'."
   "Is the architecture of TARGET a variant of Intel/AMD's 64-bit
 architecture (x86_64)?"
   (string-prefix? "x86_64-" target))
+
+(define* (target-x32? #:optional (target (or (%current-target-system)
+                                             (%current-system))))
+  "Is the architecture of TARGET a variant of Intel/AMD's 64-bit
+architecture (x86_64) using 32-bit data types?"
+  (and (target-x86-64? target)
+       (string-suffix? "gnux32" target)))
 
 (define* (target-x86? #:optional (target (or (%current-target-system)
                                              (%current-system))))
