@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019, 2020, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019, 2020, 2022-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2020 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2019, 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -398,8 +398,33 @@ reading and writing git repositories.")
      (modify-inputs (package-inputs rust-git2-0.11)
        (prepend curl)))))
 
+(define-public rust-git2-curl-0.19
+  (package
+    (name "rust-git2-curl")
+    (version "0.19.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "git2-curl" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1hzp64h1x8kr2vvf3bx195s1999sh8d0cygw4vykymwcc1hnpqkq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t                 ;need rust-civet and others
+       #:cargo-inputs (("rust-curl" ,rust-curl-0.4)
+                       ("rust-git2" ,rust-git2-0.18)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-url" ,rust-url-2))))
+    (home-page "https://github.com/rust-lang/git2-rs")
+    (synopsis "Libgit2 HTTP transport backend powered by @code{libcurl}")
+    (description "Backend for an HTTP transport in @code{libgit2}, powered by
+libcurl, which is intended to be used with the @code{git2} crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-git2-curl-0.18
   (package
+    (inherit rust-git2-curl-0.19)
     (name "rust-git2-curl")
     (version "0.18.0")
     (source
@@ -409,19 +434,13 @@ reading and writing git repositories.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "132zzrrfw3cnfh9ffc9pfr94my97agnmk7pnfvzqr4kj5d1vgy7q"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t                 ;need rust-civet and others
        #:cargo-inputs
        (("rust-curl" ,rust-curl-0.4)
         ("rust-git2" ,rust-git2-0.17)
         ("rust-log" ,rust-log-0.4)
-        ("rust-url" ,rust-url-2))))
-    (home-page "https://github.com/rust-lang/git2-rs")
-    (synopsis "Libgit2 HTTP transport backend powered by @code{libcurl}")
-    (description "Backend for an HTTP transport in @code{libgit2}, powered by
-libcurl, which is intended to be used with the @code{git2} crate.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-url" ,rust-url-2))))))
 
 (define-public rust-git2-curl-0.17
   (package
