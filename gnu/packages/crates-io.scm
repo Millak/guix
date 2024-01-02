@@ -64331,6 +64331,30 @@ by dynamically growing the stack.")
                ((", path = \"../serde\"") ""))
              #t)))))))
 
+(define-public rust-serde-untagged-0.1
+  (package
+    (name "rust-serde-untagged")
+    (version "0.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serde-untagged" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1b2x30zczv16q6xakjlh1mhn6y1m2ww994szxfhlnryqfc1y13jc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-erased-serde" ,rust-erased-serde-0.4)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-serde-derive" ,rust-serde-derive-1)
+                                   ("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-toml" ,rust-toml-0.8))))
+    (home-page "https://github.com/dtolnay/serde-untagged")
+    (synopsis "Serde `Visitor` implementation for deserializing untagged enums")
+    (description "This package is a Serde `Visitor` implementation for
+deserializing untagged enums.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-serde-urlencoded-0.7
   (package
     (name "rust-serde-urlencoded")
