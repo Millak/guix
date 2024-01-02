@@ -24617,8 +24617,35 @@ is defined in the HTML specification.")
 floats.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-faster-hex-0.9
+  (package
+    (name "rust-faster-hex")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "faster-hex" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10wi4vqbdpkamw4qvra1ijp4as2j7j1zc66g4rdr6h0xv8gb38m2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-bytes" ,rust-bytes-1)
+                                   ("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-hex" ,rust-hex-0.3)
+                                   ("rust-proptest" ,rust-proptest-1)
+                                   ("rust-rustc-hex" ,rust-rustc-hex-1)
+                                   ("rust-serde" ,rust-serde-1)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/NervosFoundation/faster-hex")
+    (synopsis "Fast hex encoding")
+    (description "Fast hex encoding.")
+    (license license:expat)))
+
 (define-public rust-faster-hex-0.8
   (package
+    (inherit rust-faster-hex-0.9)
     (name "rust-faster-hex")
     (version "0.8.1")
     (source
@@ -24628,7 +24655,6 @@ floats.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "12ikld53h5d682rn1j85d77n90pq4vy5mncwdaqhm0hgjgxpp7r3"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-serde" ,rust-serde-1))
@@ -24639,11 +24665,7 @@ floats.")
         ("rust-proptest" ,rust-proptest-1)
         ("rust-rustc-hex" ,rust-rustc-hex-1)
         ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://github.com/nervosnetwork/faster-hex")
-    (synopsis "Fast hex encoding")
-    (description "Fast hex encoding.")
-    (license license:expat)))
+        ("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-fastq-0.6
   (package
