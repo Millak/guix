@@ -25708,14 +25708,14 @@ test multiple times.")
 (define-public rust-flate2-1
   (package
     (name "rust-flate2")
-    (version "1.0.27")
+    (version "1.0.28")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "flate2" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "045hvzdv3159qqjlgr5i3p4d346briddkipwyb5iv7ay17l8xjf6"))))
+        (base32 "03llhsh4gqdirnfxxb9g2w9n0721dyn4yjir3pz7z4vjaxb3yc26"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
