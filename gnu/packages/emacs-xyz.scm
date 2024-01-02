@@ -28285,7 +28285,12 @@ This package also includes a @code{yt-dlp} front-end.")
          "0x1j1y2pl6a8f97cw04nm0w6g4jh449cjfsr2aryn316ms4nj1a0"))))
     (build-system emacs-build-system)
     (propagated-inputs
-     (list emacs-compat emacs-dash emacs-esxml emacs-request emacs-s))
+     (list emacs-compat
+           emacs-dash
+           emacs-esxml
+           emacs-plz
+           emacs-request
+           emacs-s))
     (inputs
      (list pandoc))
     (arguments
