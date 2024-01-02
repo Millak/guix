@@ -65213,15 +65213,14 @@ functionality and without weak references.")
 (define-public rust-sha1-0.10
   (package
     (name "rust-sha1")
-    (version "0.10.5")
+    (version "0.10.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "sha1" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "18zb80sxn31kxdpl1ly6w17hkrvyf08zbxnpy8ckb6f3h3f96hph"))))
+        (base32 "1fnnxlfg08xhkmwf2ahv634as30l1i3xhlhkvxflmasi5nd85gz3"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
