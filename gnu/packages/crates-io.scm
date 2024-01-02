@@ -61002,31 +61002,30 @@ rustc compiler.")
 (define-public rust-rustix-0.38
   (package
     (name "rust-rustix")
-    (version "0.38.15")
+    (version "0.38.28")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rustix" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0cg5jsfx8lf5npjf2v5ac8fca5443hq8iqqlg2gg1yc8pl6dmyfj"))
+        (base32 "05m3vacvbqbg6r6ksmx9k5afpi0lppjdv712crrpsrfax2jp5rbj"))
        (snippet
-               #~(begin
-                   (use-modules (guix build utils))
-                   (for-each delete-file (find-files "." "\\.a$"))
-                   (delete-file "Cargo.toml")
-                   (substitute* "Cargo.toml.orig"
-                     ;; Depend unconditionally on the cc crate
-                     (("(cc = .*), optional = true.*" _ cc)
-                      (string-append cc " }\n"))
-                     ;; Disable using the linux_raw backend
-                     (("not\\(rustic_use_libc\\)") "miri"))
-                   (substitute* "build.rs"
-                     ;; Always use the 'feature = "cc"' path
-                     (("not\\(feature = \"cc\"\\)") "feature = \"foobar\"")
-                     (("#\\[cfg\\(feature = \"cc\"\\)\\]" all)
-                      (string-append "//" all)))
-                   (copy-file "Cargo.toml.orig" "Cargo.toml")))))
+        #~(begin (use-modules (guix build utils))
+                 (for-each delete-file (find-files "." "\\.a$"))
+                 (delete-file "Cargo.toml")
+                 (substitute* "Cargo.toml.orig"
+                   ;; Depend unconditionally on the cc crate
+                   (("(cc = .*), optional = true.*" _ cc)
+                    (string-append cc " }\n"))
+                   ;; Disable using the linux_raw backend
+                   (("not\\(rustic_use_libc\\)") "miri"))
+                 (substitute* "build.rs"
+                   ;; Always use the 'feature = "cc"' path
+                   (("not\\(feature = \"cc\"\\)") "feature = \"foobar\"")
+                   (("#\\[cfg\\(feature = \"cc\"\\)\\]" all)
+                    (string-append "//" all)))
+                 (copy-file "Cargo.toml.orig" "Cargo.toml")))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -61039,7 +61038,7 @@ rustc compiler.")
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
         ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
-        ("rust-windows-sys" ,rust-windows-sys-0.48))
+        ("rust-windows-sys" ,rust-windows-sys-0.52))
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.4)
         ("rust-ctor" ,rust-ctor-0.2)
