@@ -10867,6 +10867,44 @@ identifier translation via the GDC API.")
      "This package implements widgets to provide user interfaces.")
     (license license:artistic2.0)))
 
+(define-public r-toast
+  (package
+    (name "r-toast")
+    (version "1.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "TOAST" version))
+       (sha256
+        (base32 "00wpgs2zdrgrh9xmp6m5h9xgv85mhdi36qvwg9gwbz9i7cfabmy1"))))
+    (properties `((upstream-name . "TOAST")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-corpcor
+                             r-doparallel
+                             r-epidish
+                             r-ggally
+                             r-ggplot2
+                             r-limma
+                             r-nnls
+                             r-quadprog
+                             r-summarizedexperiment
+                             r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/TOAST")
+    (synopsis "Tools for the analysis of heterogeneous tissues")
+    (description
+     "This package is devoted to analyzing high-throughput data (e.g. gene
+expression microarray, DNA methylation microarray, RNA-seq) from complex
+tissues.  Current functionalities include
+
+@enumerate
+@item detect cell-type specific or cross-cell type differential signals
+@item tree-based differential analysis
+@item improve variable selection in reference-free deconvolution
+@item partial reference-free deconvolution with prior knowledge.
+@end enumerate")
+    (license license:gpl2)))
+
 ;; TODO: check javascript
 (define-public r-trackviewer
   (package
