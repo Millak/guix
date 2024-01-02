@@ -186,7 +186,7 @@ decompress FILE-NAME, based on its file extension, else false."
 (define (%xz-parallel-args)
   "The xz arguments required to enable bit-reproducible, multi-threaded
 compression."
-  (list "--memlimit=50%"
+  (list "--memlimit=20%"
         (format #f "--threads=~a" (max 2 (parallel-job-count)))))
 
 
