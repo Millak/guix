@@ -82700,14 +82700,14 @@ command-line, uniformly on all platforms")
 (define-public rust-winnow-0.5
   (package
     (name "rust-winnow")
-    (version "0.5.17")
+    (version "0.5.31")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "winnow" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0p7n0rp982pjpscq6dnvbalz6lm45lb60zr0rivn8wm6w3803f53"))))
+        (base32 "0734xa05a1x1wg2kcphdhfb39pdcy5qpaf1sjll6qk8kdcp8i94p"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t     ; Cut the dependency graph.
