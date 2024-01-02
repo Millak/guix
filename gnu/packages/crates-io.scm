@@ -23655,20 +23655,44 @@ variables.")
 deserialized from environment variables.")
      (license license:expat)))
 
+(define-public rust-erased-serde-0.4
+  (package
+    (name "rust-erased-serde")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "erased-serde" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02kwm9a115ivksjsgv4l17mryf626yk7g14wq6jx6sz07ycg1nsa"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-rustversion" ,rust-rustversion-1)
+                                   ("rust-serde-cbor" ,rust-serde-cbor-0.11)
+                                   ("rust-serde-derive" ,rust-serde-derive-1)
+                                   ("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/dtolnay/erased-serde")
+    (synopsis "Type-erased Serialize and Serializer traits")
+    (description
+     "Type-erased Serialize and Serializer traits.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-erased-serde-0.3
   (package
+    (inherit rust-erased-serde-0.4)
     (name "rust-erased-serde")
     (version "0.3.24")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "erased-serde" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
          "0zdaj96bf39h75rkdxkd1znik97s3j7m8ppgbxxfq5y0h59n1jp4"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-serde" ,rust-serde-1))
@@ -23677,12 +23701,7 @@ deserialized from environment variables.")
         ("rust-serde-cbor" ,rust-serde-cbor-0.11)
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-trybuild" ,rust-trybuild-1))))
-    (home-page "https://github.com/dtolnay/erased-serde")
-    (synopsis "Type-erased Serialize and Serializer traits")
-    (description
-     "Type-erased Serialize and Serializer traits.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-trybuild" ,rust-trybuild-1))))))
 
 (define-public rust-errno-0.3
   (package
