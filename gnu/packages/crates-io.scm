@@ -56420,8 +56420,32 @@ currently pressed on macOS.")
 owned memory.")
     (license license:expat)))
 
+(define-public rust-redox-syscall-0.4
+  (package
+    (name "rust-redox-syscall")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "redox_syscall" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1aiifyz5dnybfvkk4cdab9p2kmphag1yad6iknc7aszlxxldf8j7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; could not find `CloneFlags` in the crate root
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))))
+    (home-page "https://gitlab.redox-os.org/redox-os/syscall")
+    (synopsis "Rust library to access raw Redox system calls")
+    (description
+     "This package provides a Rust library to access raw Redox system calls.")
+    (license license:expat)))
+
 (define-public rust-redox-syscall-0.3
   (package
+    (inherit rust-redox-syscall-0.4)
     (name "rust-redox-syscall")
     (version "0.3.5")
     (source (origin
@@ -56431,17 +56455,11 @@ owned memory.")
               (sha256
                (base32
                 "0acgiy2lc1m2vr8cr33l5s7k9wzby8dybyab1a9p753hcbr68xjn"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
-        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))))
-    (home-page "https://gitlab.redox-os.org/redox-os/syscall")
-    (synopsis "Rust library to access raw Redox system calls")
-    (description
-     "This package provides a Rust library to access raw Redox system calls.")
-    (license license:expat)))
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))))))
 
 (define-public rust-redox-syscall-0.2
   (package
