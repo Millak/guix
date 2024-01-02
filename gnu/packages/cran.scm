@@ -9498,14 +9498,14 @@ modeling for empirical income distributions.")
 (define-public r-vcd
   (package
     (name "r-vcd")
-    (version "1.4-11")
+    (version "1.4-12")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "vcd" version))
        (sha256
         (base32
-         "0ch9ks25ab4h4fh4y267s0psvc4ndyaplk8ddva2j54yd1ayhm3s"))))
+         "127dkln826ah5ydp3pmd5bqyns9m9m6yrjnmn7fir4r9al8yycf9"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-colorspace r-lmtest r-mass))
