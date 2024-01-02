@@ -37307,14 +37307,14 @@ user-space programs to perform key manipulation.")
 (define-public rust-linux-raw-sys-0.4
   (package
     (name "rust-linux-raw-sys")
-    (version "0.4.8")
+    (version "0.4.12")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "linux-raw-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1nw8dqdhai0c7r701bicj3y6vrwc7dgbx9lbcw29ijnr7d562liq"))))
+        (base32 "0mhlla3gk1jgn6mrq9s255rvvq8a1w3yk2vpjiwsd6hmmy1imkf4"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
