@@ -2827,6 +2827,7 @@ memoized as a function of '%current-system'."
     ;; pthreads, which is missing on non-x86 platforms at this stage.
     ;; Python 3.6 technically supports being built without threading
     ;; support, but requires additional patches.
+    (name "python-boot0")
     (version "3.5.9")
     (source (bootstrap-origin
              (origin
