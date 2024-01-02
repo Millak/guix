@@ -7462,6 +7462,37 @@ chromosome region or transcript models of lincRNA genes.")
     ;; No version specified
     (license license:lgpl3+)))
 
+(define-public r-epidish
+  (package
+    (name "r-epidish")
+    (version "2.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "EpiDISH" version))
+       (sha256
+        (base32 "170ym3y6gd1kxghz2g5ynvgi1wrxx87b568cjcvzidpqkrkg87s6"))))
+    (properties `((upstream-name . "EpiDISH")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-e1071
+                             r-locfdr
+                             r-mass
+                             r-matrix
+                             r-matrixstats
+                             r-quadprog
+                             r-stringr))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/sjczheng/EpiDISH")
+    (synopsis "Epigenetic dissection of intra-sample-heterogeneity")
+    (description
+     "@code{EpiDISH} is a R package to infer the proportions of a priori known
+cell-types present in a sample representing a mixture of such cell-types.
+Right now, the package can be used on DNAm data of whole blood, generic
+epithelial tissue and breast tissue.  Besides, the package provides a function
+that allows the identification of differentially methylated cell-types and
+their directionality of change in Epigenome-Wide Association Studies.")
+    (license license:gpl2)))
+
 (define-public r-fastseg
   (package
     (name "r-fastseg")
