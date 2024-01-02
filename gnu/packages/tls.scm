@@ -5,7 +5,7 @@
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2016, 2017, 2019, 2021-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019, 2021-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2018 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
@@ -429,6 +429,8 @@ OpenSSL for TARGET."
              (cond
               ((target-x86-32? target)
                "x86")
+              ((target-x32? target)
+               "x32")
               ((target-x86-64? target)
                "x86_64")
               ((target-mips64el? target)
