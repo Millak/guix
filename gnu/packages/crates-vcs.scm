@@ -2941,14 +2941,14 @@ provides a crate for parsing and serialization of gix-url's.")
 (define-public rust-gix-utils-0.1
   (package
     (name "rust-gix-utils")
-    (version "0.1.5")
+    (version "0.1.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-utils" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "03rgnpcgy968sqqamm7w8197ykklhfas2lnr1rpf44w6fbf8jpdq"))))
+        (base32 "0kz9sf2pwvinxv7dvarwzgqcw3v4653wrwfrlayfkdihvvi2aqny"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-fastrand" ,rust-fastrand-2))))
