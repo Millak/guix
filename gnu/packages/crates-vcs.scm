@@ -2514,14 +2514,14 @@ duplicate of @code{gix-packetline} with the @code{blocking-io} feature pre-selec
 (define-public rust-gix-path-0.10
   (package
     (name "rust-gix-path")
-    (version "0.10.0")
+    (version "0.10.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-path" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0fx71d9p7iq4szgrijyw1nj82abg15ylyvaw7kh3l7hp2l0kf7ba"))))
+        (base32 "1dlz2y6z4v1l4ccw87dxbqc59zj2smc7w9m21ka36pr4mfc0kpdq"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
