@@ -2736,14 +2736,14 @@ tempfile capability with a global registry to assure clean-up.")
 (define-public rust-gix-trace-0.1
   (package
     (name "rust-gix-trace")
-    (version "0.1.3")
+    (version "0.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-trace" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0dmqswxz228in9p7vwhc0cq83r6sxkidcrwhnyn3yb0ml4ixddln"))))
+        (base32 "129xhqmn7j07sg697g8bz4mas2xvv6hamh799y7vax84vrz15qg8"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
