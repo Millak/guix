@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019, 2020 John Soo <jsoo1@asu.edu>
-;;; Copyright © 2019-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
@@ -2101,25 +2101,25 @@ background agent taking care of maintaining the necessary state.")
 (define-public rust-cargo-c
   (package
     (name "rust-cargo-c")
-    (version "0.9.27+cargo-0.74.0")
+    (version "0.9.29+cargo-0.76.0")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "cargo-c" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "1xsw17zcxzlg7d7pg40anm9w8g95kvnxfp7ln9sbgv3zhsc9wggq"))))
+         (base32 "03ks9rl2skvf5j93sbmbz6l72k5cgvf4hc0nhnp7aadrvb05v5sr"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-cargo" ,rust-cargo-0.74)
+        ("rust-cargo" ,rust-cargo-0.76)
         ("rust-cargo-util" ,rust-cargo-util-0.2)
         ("rust-cbindgen" ,rust-cbindgen-0.26)
         ("rust-cc" ,rust-cc-1)
         ("rust-clap" ,rust-clap-4)
         ("rust-glob" ,rust-glob-0.3)
-        ("rust-itertools" ,rust-itertools-0.11)
+        ("rust-itertools" ,rust-itertools-0.12)
         ("rust-log" ,rust-log-0.4)
         ("rust-regex" ,rust-regex-1)
         ("rust-semver" ,rust-semver-1)
@@ -2127,11 +2127,11 @@ background agent taking care of maintaining the necessary state.")
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
         ("rust-toml" ,rust-toml-0.7)
-        ("rust-windows-sys" ,rust-windows-sys-0.48))))
+        ("rust-windows-sys" ,rust-windows-sys-0.52))))
     (native-inputs
      (list pkg-config))
     (inputs
-     (list curl libgit2-1.6 libssh2 openssl zlib))
+     (list curl libgit2-1.7 libssh2 openssl zlib))
     (home-page "https://github.com/lu-zero/cargo-c")
     (synopsis "Build and install C-compatible libraries")
     (description
