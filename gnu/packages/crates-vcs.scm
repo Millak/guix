@@ -1586,8 +1586,43 @@ compile-time feature flags.")
        #:cargo-development-inputs
        (("rust-bstr" ,rust-bstr-1))))))
 
+(define-public rust-gix-filter-0.6
+  (package
+    (name "rust-gix-filter")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-filter" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zs288v2l7n8qcbvsjrc3xkm11mynyjwj7jj0ixricdnzp9p9xlj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; use of undeclared crate gix_testtools
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-encoding-rs" ,rust-encoding-rs-0.8)
+                       ("rust-gix-attributes" ,rust-gix-attributes-0.20)
+                       ("rust-gix-command" ,rust-gix-command-0.2)
+                       ("rust-gix-hash" ,rust-gix-hash-0.13)
+                       ("rust-gix-object" ,rust-gix-object-0.38)
+                       ("rust-gix-packetline-blocking" ,rust-gix-packetline-blocking-0.16)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-quote" ,rust-gix-quote-0.4)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-once-cell" ,rust-once-cell-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Part of Gitoxide, this package implements Git filters in Rust")
+    (description
+     "This package provides a crate from the Gitoxide project implementing
+Git filters in Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-filter-0.5
   (package
+    (inherit rust-gix-filter-0.6)
     (name "rust-gix-filter")
     (version "0.5.0")
     (source
@@ -1597,7 +1632,6 @@ compile-time feature flags.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "024bv38s7q59wsp3whzpcra0x40mv53xii2jrnv5ni21rll0vr0v"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; use of undeclared crate gix_testtools
        #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
@@ -1612,13 +1646,7 @@ compile-time feature flags.")
                        ("rust-gix-trace" ,rust-gix-trace-0.1)
                        ("rust-smallvec" ,rust-smallvec-1)
                        ("rust-thiserror" ,rust-thiserror-1))
-       #:cargo-development-inputs (("rust-once-cell" ,rust-once-cell-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Part of Gitoxide, this package implements Git filters in Rust")
-    (description
-     "This package provides a crate from the Gitoxide project implementing
-Git filters in Rust.")
-    (license (list license:expat license:asl2.0))))
+       #:cargo-development-inputs (("rust-once-cell" ,rust-once-cell-1))))))
 
 (define-public rust-gix-fs-0.7
   (package
