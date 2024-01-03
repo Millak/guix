@@ -1607,8 +1607,35 @@ file system utilities for Gitoxide.")
      `(#:cargo-inputs (("rust-gix-features" ,rust-gix-features-0.30))
        #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-gix-glob-0.14
+  (package
+    (name "rust-gix-glob")
+    (version "0.14.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-glob" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06gz18spc8p4b3rbbbh2i2dz1ld2cw3ikgxkwmhjkspfqnc95cax"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-features" ,rust-gix-features-0.36)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Gitoxide project crate dealing with pattern matching")
+    (description
+     "This package provides a crate of the gitoxide project dealing with pattern
+matching.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-glob-0.13
   (package
+    (inherit rust-gix-glob-0.14)
     (name "rust-gix-glob")
     (version "0.13.0")
     (source
@@ -1618,7 +1645,6 @@ file system utilities for Gitoxide.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "17dix59mc93m8z97ywkgpssjsmjgl4cfkifja7vxql8jy62nxmx9"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; no method named `trim_start` found for reference `&BStr`
        #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
@@ -1626,13 +1652,7 @@ file system utilities for Gitoxide.")
                        ("rust-document-features" ,rust-document-features-0.2)
                        ("rust-gix-features" ,rust-gix-features-0.35)
                        ("rust-gix-path" ,rust-gix-path-0.10)
-                       ("rust-serde" ,rust-serde-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Gitoxide project crate dealing with pattern matching")
-    (description
-     "This package provides a crate of the gitoxide project dealing with pattern
-matching.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-serde" ,rust-serde-1))))))
 
 (define-public rust-gix-glob-0.8
   (package
