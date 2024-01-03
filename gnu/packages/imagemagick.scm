@@ -65,70 +65,73 @@
      ;; The 7 release series has an incompatible API, while the 6 series is still
      ;; maintained. Don't update to 7 until we've made sure that the ImageMagick
      ;; users are ready for the 7-series API.
-     (version "6.9.11-48")
+     (version "6.9.12-4")
      (source (origin
-               (method url-fetch)
-               (uri (string-append "mirror://imagemagick/ImageMagick-"
-                                   version ".tar.xz"))
-               (sha256
-                (base32
-                 "0m8nkmywkqwyrr01q7aiakj6mi4rb2psjgzv8n0x82x3s1rpfyql"))))
+              (method url-fetch)
+              (uri (string-append "mirror://imagemagick/ImageMagick-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "1pkwij76yz7vd5grl6520pgpa912qb6kh34qamx4zfndwcx6cf6b"))
+              (patches
+               (search-patches "imagemagick-ReadDCMImage-fix.patch"
+                               "imagemagick-ReadDCMPixels-fix.patch"
+                               "imagemagick-WriteTHUMBNAILImage-fix.patch"
+                               "imagemagick-CVE-2020-27829.patch"))))
      (build-system gnu-build-system)
      (arguments
-      `(#:configure-flags '("--with-frozenpaths" "--without-gcc-arch"
+      (list
+       #:configure-flags #~(list "--with-frozenpaths" "--without-gcc-arch"
 
-                            ;; Do not embed the build date in binaries.
-                            "--enable-reproducible-build")
+                                 ;; Do not embed the build date in binaries.
+                                 "--enable-reproducible-build")
 
-        ;; FIXME: The test suite succeeded before version 6.9.6-2.
-        ;; Try enabling it again with newer releases.
-        #:tests? #f
-        #:phases (modify-phases %standard-phases
-                   (add-before
-                       'build 'pre-build
-                     (lambda* (#:key outputs #:allow-other-keys)
-                       (substitute* "Makefile"
-                         ;; Clear the `LIBRARY_PATH' setting, which otherwise
-                         ;; interferes with our own use.
-                         (("^LIBRARY_PATH[[:blank:]]*=.*$")
-                          "")
+       ;; FIXME: The test suite succeeded before version 6.9.6-2.
+       ;; Try enabling it again with newer releases.
+       #:tests? #f
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-before 'build 'pre-build
+             (lambda _
+               (substitute* "Makefile"
+                 ;; Clear the `LIBRARY_PATH' setting, which otherwise
+                 ;; interferes with our own use.
+                 (("^LIBRARY_PATH[[:blank:]]*=.*$")
+                  "")
 
-                         ;; Since the Makefile overrides $docdir, modify it to
-                         ;; refer to what we want.
-                         (("^DOCUMENTATION_PATH[[:blank:]]*=.*$")
-                          (let ((doc (assoc-ref outputs "doc")))
-                            (string-append "DOCUMENTATION_PATH = "
-                                           doc "/share/doc/"
-                                           ,name "-"
-                                           ,(package-version this-package) "\n"))))
-                       #t))
-                   (add-before
-                       'configure 'strip-configure-xml
-                     (lambda _
-                       (substitute* "config/configure.xml.in"
-                         ;; Do not record 'configure' arguments in the
-                         ;; configure.xml file that gets installed: That would
-                         ;; include --docdir, and thus retain a reference to the
-                         ;; 'doc' output.
-                         (("@CONFIGURE_ARGS@")
-                          "not recorded"))
-                       #t)))))
+                 ;; Since the Makefile overrides $docdir, modify it to
+                 ;; refer to what we want.
+                 (("^DOCUMENTATION_PATH[[:blank:]]*=.*$")
+                  (string-append "DOCUMENTATION_PATH = "
+                                 #$output:doc "/share/doc/"
+                                 ,name "-"
+                                 #$(package-version this-package) "\n")))))
+           (add-before 'configure 'strip-configure-xml
+             (lambda _
+               (substitute* "config/configure.xml.in"
+                 ;; Do not record 'configure' arguments in the
+                 ;; configure.xml file that gets installed: That would
+                 ;; include --docdir, and thus retain a reference to the
+                 ;; 'doc' output.
+                 (("@CONFIGURE_ARGS@")
+                  "not recorded")))))))
      ;; TODO: Add Jasper etc.
-     (inputs `(("fftw" ,fftw)
-               ("graphviz" ,graphviz)
-               ("ghostscript" ,ghostscript)
-               ("lcms" ,lcms)
-               ("libx11" ,libx11)
-               ("zlib" ,zlib)
-               ("libxml2" ,libxml2)
-               ("libtiff" ,libtiff)
-               ("libpng" ,libpng)
-               ("libjpeg" ,libjpeg-turbo)
-               ("libwebp" ,libwebp)
-               ("pango" ,pango)
-               ("freetype" ,freetype)
-               ("bzip2" ,bzip2)
-               ("xz" ,xz)))
+     (inputs
+      (list bzip2
+            fftw
+            freetype
+            ghostscript
+            graphviz
+            lcms
+            libjpeg-turbo
+            libpng
+            libtiff
+            libwebp
+            libx11
+            libxml2
+            pango
+            xz
+            zlib))
      (native-inputs (list pkg-config))
      (outputs '("out"
                 "doc"))                 ; 26 MiB of HTML documentation
