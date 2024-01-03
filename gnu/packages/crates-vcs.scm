@@ -772,8 +772,40 @@ package provides a way to identify Git actors.")
        #:cargo-development-inputs
        (("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
 
+(define-public rust-gix-archive-0.6
+  (package
+    (name "rust-gix-archive")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-archive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17gh1wzs1jrmywbchrqdmkma2c0saik7k52fralfdfkf6hbq97wh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; use of undeclared crate or module `gix_attributes`
+       #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-flate2" ,rust-flate2-1)
+                       ("rust-gix-date" ,rust-gix-date-0.8)
+                       ("rust-gix-object" ,rust-gix-object-0.38)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-worktree-stream" ,rust-gix-worktree-stream-0.6)
+                       ("rust-tar" ,rust-tar-0.4)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-zip" ,rust-zip-0.6))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Archive generation of a Git worktree")
+    (description "Archive generation of a worktree.  Part of Gitoxide a pure
+Rust implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-archive-0.5
   (package
+    (inherit rust-gix-archive-0.6)
     (name "rust-gix-archive")
     (version "0.5.0")
     (source
@@ -783,7 +815,6 @@ package provides a way to identify Git actors.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1izajfmninmjg7mvcp6y0mdy641hkvvqmsd7gp6d92mkgxgn6wdb"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; undeclared crate gix_worktree, gix_filter, gix_odb
        #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
@@ -796,12 +827,7 @@ package provides a way to identify Git actors.")
                        ("rust-tar" ,rust-tar-0.4)
                        ("rust-thiserror" ,rust-thiserror-1)
                        ("rust-time" ,rust-time-0.3)
-                       ("rust-zip" ,rust-zip-0.6))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Archive generation of a Git worktree")
-    (description "Archive generation of a worktree.  Part of Gitoxide a pure
-Rust implementation of Git.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-zip" ,rust-zip-0.6))))))
 
 (define-public rust-gix-attributes-0.19
   (package
