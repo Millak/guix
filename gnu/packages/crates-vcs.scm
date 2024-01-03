@@ -2159,25 +2159,25 @@ Git's negotiation algorithms.")
         ("rust-smallvec" ,rust-smallvec-1)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
-(define-public rust-gix-object-0.37
+(define-public rust-gix-object-0.38
   (package
     (name "rust-gix-object")
-    (version "0.37.0")
+    (version "0.38.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-object" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0vzxayiss5k7pmlm0q4axaliidg9a3lq7bkv2ds775k7dihijzhy"))))
+        (base32 "0lbaz0mzsg5vvm5qvi1nf6f0hyz62hfx18xk3h57fn3z4r22l3vl"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
                        ("rust-btoi" ,rust-btoi-0.4)
                        ("rust-document-features" ,rust-document-features-0.2)
-                       ("rust-gix-actor" ,rust-gix-actor-0.27)
+                       ("rust-gix-actor" ,rust-gix-actor-0.28)
                        ("rust-gix-date" ,rust-gix-date-0.8)
-                       ("rust-gix-features" ,rust-gix-features-0.35)
+                       ("rust-gix-features" ,rust-gix-features-0.36)
                        ("rust-gix-hash" ,rust-gix-hash-0.13)
                        ("rust-gix-validate" ,rust-gix-validate-0.8)
                        ("rust-itoa" ,rust-itoa-1)
@@ -2196,6 +2196,36 @@ Git's negotiation algorithms.")
 functions to handle immutable and mutable git objects with decoding and encoding
 support.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-gix-object-0.37
+  (package
+    (inherit rust-gix-object-0.38)
+    (name "rust-gix-object")
+    (version "0.37.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-object" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vzxayiss5k7pmlm0q4axaliidg9a3lq7bkv2ds775k7dihijzhy"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-btoi" ,rust-btoi-0.4)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-actor" ,rust-gix-actor-0.27)
+                       ("rust-gix-date" ,rust-gix-date-0.8)
+                       ("rust-gix-features" ,rust-gix-features-0.35)
+                       ("rust-gix-hash" ,rust-gix-hash-0.13)
+                       ("rust-gix-validate" ,rust-gix-validate-0.8)
+                       ("rust-itoa" ,rust-itoa-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-winnow" ,rust-winnow-0.5))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.5)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1))))))
 
 (define-public rust-gix-object-0.30
   (package
