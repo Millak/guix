@@ -3353,22 +3353,22 @@ implementation of Git.")
                        ("rust-gix-url" ,rust-gix-url-0.24)
                        ("rust-thiserror" ,rust-thiserror-1))))))
 
-(define-public rust-gix-tempfile-10
+(define-public rust-gix-tempfile-11
   (package
     (name "rust-gix-tempfile")
-    (version "10.0.0")
+    (version "11.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-tempfile" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0kdc21s0dnqnbzfdazpsw8fclnw1gi3w4np71qlmgp0i7s7rgq2s"))))
+        (base32 "08vykvfdgxvqqm63zav1rw730qm6cdnnvqni52dwcvm82j8x539q"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-dashmap" ,rust-dashmap-5)
                        ("rust-document-features" ,rust-document-features-0.2)
-                       ("rust-gix-fs" ,rust-gix-fs-0.7)
+                       ("rust-gix-fs" ,rust-gix-fs-0.8)
                        ("rust-libc" ,rust-libc-0.2)
                        ("rust-once-cell" ,rust-once-cell-1)
                        ("rust-parking-lot" ,rust-parking-lot-0.12)
@@ -3381,6 +3381,29 @@ implementation of Git.")
      "Part of Gitoxide a Rust implementation of Git.  This package provides a
 tempfile capability with a global registry to assure clean-up.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-gix-tempfile-10
+  (package
+    (inherit rust-gix-tempfile-11)
+    (name "rust-gix-tempfile")
+    (version "10.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-tempfile" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0kdc21s0dnqnbzfdazpsw8fclnw1gi3w4np71qlmgp0i7s7rgq2s"))))
+    (arguments
+     `(#:cargo-inputs (("rust-dashmap" ,rust-dashmap-5)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-fs" ,rust-gix-fs-0.7)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-signal-hook" ,rust-signal-hook-0.3)
+                       ("rust-signal-hook-registry" ,rust-signal-hook-registry-1)
+                       ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-gix-tempfile-6
   (package
