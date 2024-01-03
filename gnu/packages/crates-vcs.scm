@@ -1679,18 +1679,18 @@ matching.")
 (define-public rust-gix-hash-0.13
   (package
     (name "rust-gix-hash")
-    (version "0.13.1")
+    (version "0.13.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-hash" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0q6c3jjp6q17w7879lwi7r1xw2zr489yk75yq4bm51x03sscg10q"))))
+        (base32 "1q1xcp8f5prpyr4x62jixrlgm99snscnf87bny1faqvg4v1gi30z"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-document-features" ,rust-document-features-0.2)
-                       ("rust-faster-hex" ,rust-faster-hex-0.8)
+                       ("rust-faster-hex" ,rust-faster-hex-0.9)
                        ("rust-serde" ,rust-serde-1)
                        ("rust-thiserror" ,rust-thiserror-1))))
     (home-page "https://github.com/Byron/gitoxide")
