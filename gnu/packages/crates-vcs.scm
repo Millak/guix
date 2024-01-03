@@ -884,14 +884,14 @@ implementing the standard git bitmap format.")
 (define-public rust-gix-chunk-0.4
   (package
     (name "rust-gix-chunk")
-    (version "0.4.4")
+    (version "0.4.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-chunk" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "14s4f3g8n6yk6q28f60528wzcf10g8y8ycih04098y8g89jflhjv"))))
+        (base32 "0y2wp3clilp5rdl727x4q4qw1chbgq91l9spq6h7d07nmkgccgh0"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-thiserror" ,rust-thiserror-1))))
