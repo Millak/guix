@@ -2885,22 +2885,22 @@ Part of Gitoxide, a project to create a pure Rust Git implementation.")
        #:cargo-development-inputs
        (("rust-tempfile" ,rust-tempfile-3))))))
 
-(define-public rust-gix-refspec-0.18
+(define-public rust-gix-refspec-0.19
   (package
     (name "rust-gix-refspec")
-    (version "0.18.0")
+    (version "0.19.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-refspec" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "07pniqh74kkm0n727m7wjxgrgwnaypljkhsh8nyw7wvh3rxwp588"))))
+        (base32 "1rx6q4k13zciaajz9a6g1wb1w70y92m6fzqc30xb9g8xqi69gc6c"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
                        ("rust-gix-hash" ,rust-gix-hash-0.13)
-                       ("rust-gix-revision" ,rust-gix-revision-0.22)
+                       ("rust-gix-revision" ,rust-gix-revision-0.23)
                        ("rust-gix-validate" ,rust-gix-validate-0.8)
                        ("rust-smallvec" ,rust-smallvec-1)
                        ("rust-thiserror" ,rust-thiserror-1))))
@@ -2910,6 +2910,26 @@ Part of Gitoxide, a project to create a pure Rust Git implementation.")
      "This package parses and represents Git refspecs.  It's part of Gitoxide
 a pure Rust implementation of Git.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-gix-refspec-0.18
+  (package
+    (inherit rust-gix-refspec-0.19)
+    (name "rust-gix-refspec")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-refspec" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "07pniqh74kkm0n727m7wjxgrgwnaypljkhsh8nyw7wvh3rxwp588"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-gix-hash" ,rust-gix-hash-0.13)
+                       ("rust-gix-revision" ,rust-gix-revision-0.22)
+                       ("rust-gix-validate" ,rust-gix-validate-0.8)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-refspec-0.11
   (package
