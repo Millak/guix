@@ -10059,8 +10059,32 @@ the library crate of Cargo.")
        #:cargo-development-inputs
        (("rust-snapbox" ,rust-snapbox-0.4))))))
 
+(define-public rust-cargo-credential-libsecret-0.4
+  (package
+    (name "rust-cargo-credential-libsecret")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo-credential-libsecret" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02dwjklxslbyp7y0kw4la05wn39l2pyim4vkqxid5kjzhlkzarhy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-cargo-credential" ,rust-cargo-credential-0.4)
+                       ("rust-libloading" ,rust-libloading-0.8))))
+    (home-page "https://github.com/rust-lang/cargo")
+    (synopsis "Cargo credential process that stores tokens with GNOME libsecret")
+    (description
+     "This package provides a Cargo credential process that stores tokens with
+GNOME libsecret.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-cargo-credential-libsecret-0.3
   (package
+    (inherit rust-cargo-credential-libsecret-0.4)
     (name "rust-cargo-credential-libsecret")
     (version "0.3.1")
     (source
@@ -10070,18 +10094,11 @@ the library crate of Cargo.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1r1fahmdf1ihp7mfql443mwsa1byiyksfcm5pdh90rjynir97fzv"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-cargo-credential" ,rust-cargo-credential-0.3)
-        ("rust-libloading" ,rust-libloading-0.8))))
-    (home-page "https://github.com/rust-lang/cargo")
-    (synopsis "Cargo credential process that stores tokens with GNOME libsecret")
-    (description
-     "This package provides a Cargo credential process that stores tokens with
-GNOME libsecret.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-libloading" ,rust-libloading-0.8))))))
 
 (define-public rust-cargo-credential-macos-keychain-0.3
   (package
