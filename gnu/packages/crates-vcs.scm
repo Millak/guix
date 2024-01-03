@@ -2525,8 +2525,36 @@ handles finding names and parsing specifications.")
         ("rust-serde" ,rust-serde-1)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-revwalk-0.9
+  (package
+    (name "rust-gix-revwalk")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-revwalk" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1q7sgvkm0zdpp09v51jgv7c77zff82fvyr82dzc7dmjc5s4qqvd1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-gix-commitgraph" ,rust-gix-commitgraph-0.22)
+                       ("rust-gix-date" ,rust-gix-date-0.8)
+                       ("rust-gix-hash" ,rust-gix-hash-0.13)
+                       ("rust-gix-hashtable" ,rust-gix-hashtable-0.4)
+                       ("rust-gix-object" ,rust-gix-object-0.38)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Utilities for walking the Git's revision graph")
+    (description
+     "Utilities for walking Git's revision graph.  This crate is part of
+Gitoxide, a pure Rust implementation of Git.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-revwalk-0.8
   (package
+    (inherit rust-gix-revwalk-0.9)
     (name "rust-gix-revwalk")
     (version "0.8.0")
     (source
@@ -2536,7 +2564,6 @@ handles finding names and parsing specifications.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0yd27ip3xhxplsw6cmyjz1vk6q5c0qhkn33icx2hiwij21mhr1z9"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-gix-commitgraph" ,rust-gix-commitgraph-0.21)
                        ("rust-gix-date" ,rust-gix-date-0.8)
@@ -2544,13 +2571,7 @@ handles finding names and parsing specifications.")
                        ("rust-gix-hashtable" ,rust-gix-hashtable-0.4)
                        ("rust-gix-object" ,rust-gix-object-0.37)
                        ("rust-smallvec" ,rust-smallvec-1)
-                       ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Utilities for walking the Git's revision graph")
-    (description
-     "Utilities for walking Git's revision graph.  This crate is part of
-Gitoxide, a pure Rust implementation of Git.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-gix-revwalk-0.1
   (package
