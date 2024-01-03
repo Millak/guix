@@ -2884,8 +2884,39 @@ package is used to traverse Git commit graphs and trees.")
         ("rust-gix-object" ,rust-gix-object-0.30)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-url-0.25
+  (package
+    (name "rust-gix-url")
+    (version "0.25.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-url" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "01a0phpk3f0lrhavqm51cgpdwh925i2djiyslaj57ync24d7lhhc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-features" ,rust-gix-features-0.36)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-home" ,rust-home-0.5)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-url" ,rust-url-2))
+       #:cargo-development-inputs (("rust-assert-matches" ,rust-assert-matches-1))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis
+     "This crate implements parsing and serialization of gix-url for Gitoxide")
+    (description
+     "This package is part of Gitoxide a Rust implementation of Git.  It
+provides a crate for parsing and serialization of gix-url's.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-url-0.24
   (package
+    (inherit rust-gix-url-0.25)
     (name "rust-gix-url")
     (version "0.24.0")
     (source
@@ -2895,7 +2926,6 @@ package is used to traverse Git commit graphs and trees.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "03s2ds2z6whd44qapyvz4kqfpniik0issv6s09rbys4cdvsfq9b1"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f ; undeclared crate gix_testtools
        #:cargo-inputs (("rust-bstr" ,rust-bstr-1)
@@ -2906,14 +2936,8 @@ package is used to traverse Git commit graphs and trees.")
                        ("rust-serde" ,rust-serde-1)
                        ("rust-thiserror" ,rust-thiserror-1)
                        ("rust-url" ,rust-url-2))
-       #:cargo-development-inputs (("rust-libtest-mimic" ,rust-libtest-mimic-0.6))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis
-     "This crate implements parsing and serialization of gix-url for Gitoxide")
-    (description
-     "This package is part of Gitoxide a Rust implementation of Git.  It
-provides a crate for parsing and serialization of gix-url's.")
-    (license (list license:expat license:asl2.0))))
+       #:cargo-development-inputs
+       (("rust-libtest-mimic" ,rust-libtest-mimic-0.6))))))
 
 (define-public rust-gix-url-0.19
   (package
