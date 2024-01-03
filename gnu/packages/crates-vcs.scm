@@ -829,8 +829,40 @@ Rust implementation of Git.")
                        ("rust-time" ,rust-time-0.3)
                        ("rust-zip" ,rust-zip-0.6))))))
 
+(define-public rust-gix-attributes-0.20
+  (package
+    (name "rust-gix-attributes")
+    (version "0.20.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-attributes" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "109kciz3cssfbx9zgslngdrkzwf3zd9mlv0srm3yqxlcsdlm8f8g"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
+                       ("rust-document-features" ,rust-document-features-0.2)
+                       ("rust-gix-glob" ,rust-gix-glob-0.14)
+                       ("rust-gix-path" ,rust-gix-path-0.10)
+                       ("rust-gix-quote" ,rust-gix-quote-0.4)
+                       ("rust-gix-trace" ,rust-gix-trace-0.1)
+                       ("rust-kstring" ,rust-kstring-2)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-unicode-bom" ,rust-unicode-bom-2))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Part of Gitoxide, this crates deals with .gitattributes")
+    (description
+     "This package provides a crate from the Gitoxide project dealing with
+@code{.gitattributes} files.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-attributes-0.19
   (package
+    (inherit rust-gix-attributes-0.20)
     (name "rust-gix-attributes")
     (version "0.19.0")
     (source
@@ -840,7 +872,6 @@ Rust implementation of Git.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "086qgrh8srr5vyswbchn72kw967f25szjgk27dss96vhf1g6cl94"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
                        ("rust-byteyarn" ,rust-byteyarn-0.2)
@@ -852,13 +883,7 @@ Rust implementation of Git.")
                        ("rust-serde" ,rust-serde-1)
                        ("rust-smallvec" ,rust-smallvec-1)
                        ("rust-thiserror" ,rust-thiserror-1)
-                       ("rust-unicode-bom" ,rust-unicode-bom-2))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Part of Gitoxide, this crates deals with .gitattributes")
-    (description
-     "This package provides a crate from the Gitoxide project dealing with
-.gitattributes files.")
-    (license (list license:expat license:asl2.0))))
+                       ("rust-unicode-bom" ,rust-unicode-bom-2))))))
 
 (define-public rust-gix-attributes-0.13
   (package
