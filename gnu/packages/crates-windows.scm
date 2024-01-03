@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020, 2021 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020 Valentin Ignatev <valentignatev@gmail.com>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
@@ -79,8 +79,32 @@
        #:cargo-development-inputs
        (("rust-lexopt" ,rust-lexopt-0.3))))))
 
+(define-public rust-cargo-credential-wincred-0.4
+  (package
+    (name "rust-cargo-credential-wincred")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo-credential-wincred" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1d3h1y0f42xv2sjvn2bmyib4pdimpxjmsi17npx0bd6wlsn568xs"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cargo-credential" ,rust-cargo-credential-0.4)
+                       ("rust-windows-sys" ,rust-windows-sys-0.48))))
+    (home-page "https://github.com/rust-lang/cargo")
+    (synopsis
+     "Cargo credential process that stores tokens with Windows Credential Manager")
+    (description
+     "This package provides a Cargo credential process that stores tokens with
+Windows Credential Manager.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-cargo-credential-wincred-0.3
   (package
+    (inherit rust-cargo-credential-wincred-0.4)
     (name "rust-cargo-credential-wincred")
     (version "0.3.0")
     (source
@@ -90,18 +114,10 @@
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0w8ciyyrq0vp25bdpsmj8221xh09x4np80wrhc53br8gkldljdv6"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-cargo-credential" ,rust-cargo-credential-0.3)
-        ("rust-windows-sys" ,rust-windows-sys-0.48))))
-    (home-page "https://github.com/rust-lang/cargo")
-    (synopsis
-     "Cargo credential process that stores tokens with Windows Credential Manager")
-    (description
-     "This package provides a Cargo credential process that stores tokens with
-Windows Credential Manager.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-windows-sys" ,rust-windows-sys-0.48))))))
 
 (define-public rust-clipboard-win-4
   (package
