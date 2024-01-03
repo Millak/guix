@@ -1932,8 +1932,32 @@ crate implements the Git index file.")
         ("rust-smallvec" ,rust-smallvec-1)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
+(define-public rust-gix-lock-11
+  (package
+    (name "rust-gix-lock")
+    (version "11.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gix-lock" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0drgl9qhkvlhjl0jc0lh2h7h3by1yg9wx4a8cqss8c4qlbk6ap3y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-gix-tempfile" ,rust-gix-tempfile-11)
+                       ("rust-gix-utils" ,rust-gix-utils-0.1)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/Byron/gitoxide")
+    (synopsis "Git style lock files implemented in Rust")
+    (description "Part of Gitoxide, a pure rust implementation of Git.  This
+package provides git style lock files.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gix-lock-10
   (package
+    (inherit rust-gix-lock-11)
     (name "rust-gix-lock")
     (version "10.0.0")
     (source
@@ -1943,17 +1967,11 @@ crate implements the Git index file.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "15dazvw49bdx60366vngmrfn69rvxf0pr411a1ak6vbbigx9dz27"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-gix-tempfile" ,rust-gix-tempfile-10)
                        ("rust-gix-utils" ,rust-gix-utils-0.1)
                        ("rust-thiserror" ,rust-thiserror-1))
-       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/Byron/gitoxide")
-    (synopsis "Git style lock files implemented in Rust")
-    (description "Part of Gitoxide, a pure rust implementation of Git.  This
-package provides git style lock files.")
-    (license (list license:expat license:asl2.0))))
+       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-gix-lock-6
   (package
