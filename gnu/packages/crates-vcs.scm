@@ -1231,14 +1231,14 @@ to interact with Git credentials.")
 (define-public rust-gix-date-0.8
   (package
     (name "rust-gix-date")
-    (version "0.8.0")
+    (version "0.8.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "gix-date" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "038yapmv9mm7d2xclhg18iakpc4hd3vl4xkk09ydr0lmcdlzczgw"))))
+        (base32 "0zh6yjxvzxbw92gz3f6846cbxk66wdjbwhp6nm4k9gmyfbxkszzv"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-bstr" ,rust-bstr-1)
