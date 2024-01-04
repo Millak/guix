@@ -1149,8 +1149,33 @@ EUI-64, also known as MAC-48 media access control addresses.")
     (description "This package is a core library of Gfx-rs.")
     (license license:asl2.0)))
 
+(define-public rust-gif-0.12
+  (package
+    (name "rust-gif")
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gif" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ibhjyrslfv9qm400gp4hd50v9ibva01j4ab9bwiq1aycy9jayc0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs (("rust-color-quant" ,rust-color-quant-1)
+                       ("rust-weezl" ,rust-weezl-0.1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3)
+                                   ("rust-glob" ,rust-glob-0.3)
+                                   ("rust-png" ,rust-png-0.17))))
+    (home-page "https://github.com/image-rs/image-gif")
+    (synopsis "GIF decoder and encoder")
+    (description "This package provides a GIF decoder and encoder in Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gif-0.11
   (package
+    (inherit rust-gif-0.12)
     (name "rust-gif")
     (version "0.11.3")
     (source
@@ -1160,16 +1185,11 @@ EUI-64, also known as MAC-48 media access control addresses.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0nsfd5qvp69z8kn17ziiq8zv4mclfycyxppf5k9fm2h8g1z1i9y3"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-color-quant" ,rust-color-quant-1)
-        ("rust-weezl" ,rust-weezl-0.1))))
-    (home-page "https://github.com/image-rs/image-gif")
-    (synopsis "GIF decoder and encoder")
-    (description "This package provides a GIF decoder and encoder in Rust.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-weezl" ,rust-weezl-0.1))))))
 
 (define-public rust-gif-0.10
   (package
