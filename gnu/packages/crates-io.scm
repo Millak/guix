@@ -63370,6 +63370,25 @@ Pwrite traits from the scroll crate.")
         ("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.16)
         ("rust-tiny-skia" ,rust-tiny-skia-0.8))))))
 
+(define-public rust-sctk-adwaita-0.4
+  (package
+    (inherit rust-sctk-adwaita-0.5)
+    (name "rust-sctk-adwaita")
+    (version "0.4.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sctk-adwaita" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0f93q74iv1qsk0hkcx0jqh2a9qf2slri1nq737n7fkbbrhlhc9v1"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-crossfont" ,rust-crossfont-0.5)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.16)
+        ("rust-tiny-skia" ,rust-tiny-skia-0.7))))))
+
 (define-public rust-seahash-3
   (package
     (name "rust-seahash")
