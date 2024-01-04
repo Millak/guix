@@ -42372,8 +42372,40 @@ general elements and for numerics.")
         ("rust-quickcheck" ,rust-quickcheck-0.7)
         ("rust-rawpointer" ,rust-rawpointer-0.1))))))
 
+(define-public rust-ndk-0.8
+  (package
+    (name "rust-ndk")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ndk" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dx5yyqh32bi161mipg4br4i33syjidw81qrq0w7mc8hf0ds6xi0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; ndk-sys only supports compiling for Android
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-jni" ,rust-jni-0.21)
+                       ("rust-jni-sys" ,rust-jni-sys-0.3)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-ndk-sys" ,rust-ndk-sys-0.5)
+                       ("rust-num-enum" ,rust-num-enum-0.7)
+                       ("rust-raw-window-handle" ,rust-raw-window-handle-0.6)
+                       ("rust-raw-window-handle" ,rust-raw-window-handle-0.4)
+                       ("rust-raw-window-handle" ,rust-raw-window-handle-0.5)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-libc" ,rust-libc-0.2))))
+    (home-page "https://github.com/rust-mobile/ndk")
+    (synopsis "Safe Rust bindings to the Android NDK")
+    (description
+     "This package provides safe Rust bindings to the Android NDK.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ndk-0.7
   (package
+    (inherit rust-ndk-0.8)
     (name "rust-ndk")
     (version "0.7.0")
     (source
@@ -42383,7 +42415,6 @@ general elements and for numerics.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "180sjpyf1ylqgqw4ni8jcg3kv96vvrddzamknp4730kiwjvj4525"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #true              ;XXX: Android only
        #:cargo-inputs
@@ -42394,12 +42425,7 @@ general elements and for numerics.")
         ("rust-ndk-sys" ,rust-ndk-sys-0.4)
         ("rust-num-enum" ,rust-num-enum-0.5)
         ("rust-raw-window-handle" ,rust-raw-window-handle-0.5)
-        ("rust-thiserror" ,rust-thiserror-1))))
-    (home-page "https://github.com/rust-windowing/android-ndk-rs")
-    (synopsis "Safe Rust bindings to the Android NDK")
-    (description
-     "This package provides safe Rust bindings to the Android NDK.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-thiserror" ,rust-thiserror-1))))))
 
 (define-public rust-ndk-0.6
   (package
