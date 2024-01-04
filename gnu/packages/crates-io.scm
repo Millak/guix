@@ -21099,41 +21099,6 @@ memory but not other memory.  This package provides a discard trait which allows
 for intentionally leaking memory")
     (license license:expat)))
 
-(define-public rust-dispatch-0.2
-  (package
-    (name "rust-dispatch")
-    (version "0.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "dispatch" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0fwjr9b7582ic5689zxj8lf7zl94iklhlns3yivrnv8c9fxr635x"))))
-    (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page "https://github.com/SSheldon/rust-dispatch")
-    (synopsis "Rust wrapper for Apple's Grand Central Dispatch")
-    (description "This package provides a Rust wrapper for Apple's Grand
-Central Dispatch.")
-    (license license:expat)))
-
-(define-public rust-dispatch-0.1
-  (package
-    (inherit rust-dispatch-0.2)
-    (name "rust-dispatch")
-    (version "0.1.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "dispatch" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "019nzy993hxaiazcdnayx3csv2iki34i535asw11ki96hakkrs84"))))
-    (arguments '(#:tests? #f))))  ; Tests only run on Mac.
-
 (define-public rust-displaydoc-0.2
   (package
     (name "rust-displaydoc")
