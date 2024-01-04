@@ -66755,6 +66755,35 @@ facilitate the use of SIMD-based @dfn{Array of Struct of Array} (AoSoA) storage
 pattern in Rust.")
     (license license:asl2.0)))
 
+(define-public rust-simba-0.7
+  (package
+    (inherit rust-simba-0.8)
+    (name "rust-simba")
+    (version "0.7.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "simba" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xl1c5cn3k5mg0m81i381jkn7wxz3gpjprja4b7cllwcqhhdfgrg"))))
+    (arguments
+     `(#:cargo-inputs (("rust-approx" ,rust-approx-0.5)
+                       ("rust-cordic" ,rust-cordic-0.1)
+                       ("rust-cuda-std" ,rust-cuda-std-0.2)
+                       ("rust-cust-core" ,rust-cust-core-0.1)
+                       ("rust-decimal" ,rust-decimal-2)
+                       ("rust-fixed" ,rust-fixed-1)
+                       ("rust-libm" ,rust-libm-0.2)
+                       ("rust-num-complex" ,rust-num-complex-0.4)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-packed-simd-2" ,rust-packed-simd-2-0.3)
+                       ("rust-paste" ,rust-paste-1)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-rkyv" ,rust-rkyv-0.7)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-wide" ,rust-wide-0.7))))))
+
 (define-public rust-simba-0.6
   (package
     (inherit rust-simba-0.8)
