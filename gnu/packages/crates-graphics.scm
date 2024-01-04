@@ -596,8 +596,34 @@ for computer graphics.")
 @code{ratatui::style::Colors}.")
     (license license:expat)))
 
+(define-public rust-core-graphics-0.23
+  (package
+    (name "rust-core-graphics")
+    (version "0.23.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "core-graphics" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "04m2hpzrkzkkxmvlak20ivlgf8rcsh3j3y67vgz2c30iyjx2j2lp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-core-foundation" ,rust-core-foundation-0.9)
+                       ("rust-core-graphics-types" ,rust-core-graphics-types-0.1)
+                       ("rust-foreign-types" ,rust-foreign-types-0.5)
+                       ("rust-libc" ,rust-libc-0.2))))
+    (home-page "https://github.com/servo/core-foundation-rs")
+    (synopsis "Bindings to Core Graphics for macOS")
+    (description
+     "This package provides bindings to Core Graphics for @code{macOS}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-core-graphics-0.22
   (package
+    (inherit rust-core-graphics-0.23)
     (name "rust-core-graphics")
     (version "0.22.3")
     (source
@@ -607,7 +633,6 @@ for computer graphics.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1yz4xzbz36vbmlra0viazzlicp8kap1ldgshsp5nzz4g7fmvp095"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -615,12 +640,7 @@ for computer graphics.")
         ("rust-core-foundation" ,rust-core-foundation-0.9)
         ("rust-core-graphics-types" ,rust-core-graphics-types-0.1)
         ("rust-foreign-types" ,rust-foreign-types-0.3)
-        ("rust-libc" ,rust-libc-0.2))))
-    (home-page "https://github.com/servo/core-graphics-rs")
-    (synopsis "Bindings to Core Graphics for macOS")
-    (description
-     "This package provides bindings to Core Graphics for macOS.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-libc" ,rust-libc-0.2))))))
 
 (define-public rust-core-graphics-0.21
   (package
