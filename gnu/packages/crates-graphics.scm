@@ -2351,6 +2351,30 @@ on correctness, flexibility and ease of use.")
 @code{palette} crate.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-pbr-1
+  (package
+    (name "rust-pbr")
+    (version "1.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pbr" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "056mqvw168ziig1dgl2kq4vmkamv6gk3hv1x9696r6ynl3gjfn7d"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=tty::unix::compare_with_stty")
+       #:cargo-inputs (("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs (("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/a8m/pb")
+    (synopsis "Console progress bar for Rust")
+    (description "This package provides a console progress bar for Rust.")
+    (license license:expat)))
+
 (define-public rust-piston-float-1
   (package
     (name "rust-piston-float")
