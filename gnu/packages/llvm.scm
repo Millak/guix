@@ -27,6 +27,7 @@
 ;;; Copyright © 2022 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
+;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2169,20 +2170,31 @@ using @code{clang-rename}.")))
               ;; AMDGPU is needed by the vulkan drivers.
               #$(string-append "-DLLVM_TARGETS_TO_BUILD="
                                (system->llvm-target) ";AMDGPU")
+              #$@(if (%current-target-system)
+                     '("-DBUILD_SHARED_LIBS:BOOL=TRUE"
+                       "-DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE")
+                    '())
               ;; Skipping tools and utils decreases the output by ~100 MiB.
               "-DLLVM_BUILD_TOOLS=NO"
-              (remove (cut string-match
-                           "-DLLVM_(TARGETS_TO_BUILD|INSTALL_UTILS).*" <>)
+              (remove
+               (cut string-match
+                    #$(if (%current-target-system)
+                          "-DLLVM_(LINK_LLVM_DYLIB|TARGETS_TO_BUILD|INSTALL_UTILS).*"
+                          "-DLLVM_(TARGETS_TO_BUILD|INSTALL_UTILS).*") <>)
                       #$cf)))
          ((#:phases phases '%standard-phases)
           #~(modify-phases #$phases
-              (add-after 'install 'delete-static-libraries
-                ;; If these are just relocated then llvm-config can't find them.
-                (lambda* (#:key outputs #:allow-other-keys)
-                  (for-each delete-file
-                            (find-files (string-append
-                                          (assoc-ref outputs "out") "/lib")
-                                        "\\.a$"))))
+              #$@(if (%current-target-system)
+                     '()
+                     #~((add-after 'install 'delete-static-libraries
+                          ;; If these are just relocated then llvm-config
+                          ;; can't find them.
+                          (lambda* (#:key outputs #:allow-other-keys)
+                            (for-each delete-file
+                                      (find-files
+                                       (string-append
+                                        (assoc-ref outputs "out") "/lib")
+                                       "\\.a$"))))))
               ;; llvm-config is how mesa and others find the various
               ;; libraries and headers they use.
               (add-after 'install 'build-and-install-llvm-config

@@ -18,7 +18,7 @@
 ;;; Copyright © 2021, 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
-;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -62,6 +62,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix hg-download)
+  #:use-module (gnu packages cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system meson)
@@ -338,7 +339,8 @@ also known as DXTn or DXTC) for Mesa.")
             python-wrapper
             (@ (gnu packages base) which)
             (if (%current-target-system)
-              (list pkg-config-for-build
+              (list cmake-minimal-cross
+                    pkg-config-for-build
                     wayland
                     wayland-protocols)
               '())))
@@ -415,10 +417,13 @@ svga,swrast,virgl,zink")))
        #~(modify-phases %standard-phases
          #$@(if (%current-target-system)
               #~((add-after 'unpack 'fix-cross-compiling
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     ;; It isn't a problem to use the host's llvm-config.
-                     (setenv "LLVM_CONFIG"
-                             (search-input-file inputs "/bin/llvm-config")))))
+                   (lambda* (#:key native-inputs #:allow-other-keys)
+                     ;; When cross compiling, we use cmake to find llvm, not
+                     ;; llvm-config, because llvm-config cannot be executed
+                     ;; see https://github.com/llvm/llvm-project/issues/58984
+                     (setenv "CMAKE"
+                             (search-input-file
+                              native-inputs "/bin/cmake")))))
               #~())
          (add-after 'unpack 'disable-failing-test
            (lambda _
