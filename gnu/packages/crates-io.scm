@@ -1746,32 +1746,6 @@ the code to interact with the underlying operating system ALSA interface.")
      "Rust bindings for OpenAL 1.1 and extensions (including EFX).")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-always-assert-0.1
-  (package
-    (name "rust-always-assert")
-    (version "0.1.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "always-assert" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "04ad9wbh70nii1ilcd1mxv85yqx18jf9vsmh3ddps886bmi8ixpv"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-log" ,rust-log-0.4))))
-    (home-page
-     "https://github.com/matklad/always-assert")
-    (synopsis
-     "Recoverable assertions for long-running robust applications")
-    (description
-     "This package provides a recoverable assertions for long-running robust
-applications.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-android-activity-0.5
   (package
     (name "rust-android-activity")
