@@ -62242,7 +62242,7 @@ sub-processes using a fork-like interface.")
         ("rust-unicode-width" ,rust-unicode-width-0.1)
         ("rust-utf8parse" ,rust-utf8parse-0.2)
         ("rust-winapi" ,rust-winapi-0.3)
-        ("skim" ,skim))))))
+        ("rust-skim" ,rust-skim-0.9))))))
 
 (define-public rust-rustyline-8
   (package
@@ -62275,7 +62275,7 @@ sub-processes using a fork-like interface.")
         ("rust-unicode-width" ,rust-unicode-width-0.1)
         ("rust-utf8parse" ,rust-utf8parse-0.2)
         ("rust-winapi" ,rust-winapi-0.3)
-        ("skim" ,skim))))))
+        ("rust-skim" ,rust-skim-0.9))))))
 
 (define-public rust-rustyline-7
   (package
@@ -67572,6 +67572,43 @@ designed for @code{immutable.rs}.")
     (synopsis "Fuzzy Finder in rust")
     (description "This package provides a fuzzy finder in Rust.")
     (license license:expat)))
+
+(define-public rust-skim-0.9
+  (package
+    (inherit rust-skim-0.10)
+    (name "rust-skim")
+    (version "0.9.4")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "skim" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "1d5v9vq8frkdjm7bnw3455h6xf3c277d51il2qasn7r20kwik7ab"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-atty-0.2" ,rust-atty-0.2)
+        ("rust-beef" ,rust-beef-0.5)
+        ("rust-bitflags" ,rust-bitflags-1)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-clap" ,rust-clap-2)
+        ("rust-crossbeam" ,rust-crossbeam-0.8)
+        ("rust-defer-drop" ,rust-defer-drop-1)
+        ("rust-derive-builder" ,rust-derive-builder-0.9)
+        ("rust-env-logger" ,rust-env-logger-0.8)
+        ("rust-fuzzy-matcher" ,rust-fuzzy-matcher-0.3)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-nix" ,rust-nix-0.19)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-shlex" ,rust-shlex-0.1)
+        ("rust-time" ,rust-time-0.2)
+        ("rust-timer" ,rust-timer-0.2)
+        ("rust-tuikit" ,rust-tuikit-0.4)
+        ("rust-unicode-width" ,rust-unicode-width-0.1)
+        ("rust-vte" ,rust-vte-0.9))))))
 
 (define-public rust-skim-0.7
   (package
