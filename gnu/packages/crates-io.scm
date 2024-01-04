@@ -5982,8 +5982,46 @@ and no more (caveat: black_box is still missing!).")
 that uses Serde for transforming structs into bytes and vice versa!")
     (license license:expat)))
 
+(define-public rust-bindgen-0.66
+  (package
+    (name "rust-bindgen")
+    (version "0.66.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bindgen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19yj6fsb08x0l1pg871vvfvlx1mglamz8hyjpazhfc90zh34xf7j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-annotate-snippets" ,rust-annotate-snippets-0.9)
+                       ("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-cexpr" ,rust-cexpr-0.6)
+                       ("rust-clang-sys" ,rust-clang-sys-1)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-lazycell" ,rust-lazycell-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-peeking-take-while" ,rust-peeking-take-while-0.1)
+                       ("rust-prettyplease" ,rust-prettyplease-0.2)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-rustc-hash" ,rust-rustc-hash-1)
+                       ("rust-shlex" ,rust-shlex-1)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-which" ,rust-which-4))))
+    (inputs
+     (list clang))
+    (home-page "https://rust-lang.github.io/rust-bindgen/")
+    (synopsis "Generate Rust FFI bindings to C and C++ libraries")
+    (description "This package can be used to automatically generate Rust FFI
+bindings to C and C++ libraries.")
+    (license license:bsd-3)))
+
 (define-public rust-bindgen-0.64
   (package
+    (inherit rust-bindgen-0.66)
     (name "rust-bindgen")
     (version "0.64.0")
     (source
@@ -5993,7 +6031,6 @@ that uses Serde for transforming structs into bytes and vice versa!")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1d0zmfc5swjgaydbamxb4xm687ahgv18dbcpvrzbf39665h3w964"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -6010,14 +6047,7 @@ that uses Serde for transforming structs into bytes and vice versa!")
         ("rust-rustc-hash" ,rust-rustc-hash-1)
         ("rust-shlex" ,rust-shlex-1)
         ("rust-syn" ,rust-syn-1)
-        ("rust-which" ,rust-which-4))))
-    (inputs
-     (list clang))
-    (home-page "https://rust-lang.github.io/rust-bindgen/")
-    (synopsis "Generate Rust FFI bindings to C and C++ libraries")
-    (description "This package can be used to automatically generate Rust FFI
-bindings to C and C++ libraries.")
-    (license license:bsd-3)))
+        ("rust-which" ,rust-which-4))))))
 
 (define-public rust-bindgen-0.63
   (package
