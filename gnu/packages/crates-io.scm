@@ -25722,6 +25722,25 @@ implementation.")
 @code{Cargo.toml}.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-find-cuda-helper-0.2
+  (package
+    (name "rust-find-cuda-helper")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "find_cuda_helper" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1bdxg8bmcqvnxb43y6bn2xnhszyi9bm0kndagp3iml1xb5ffdygr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-glob" ,rust-glob-0.3))))
+    (home-page "https://github.com/Rust-GPU/Rust-CUDA")
+    (synopsis "Helper crate for searching for CUDA libraries")
+    (description "Helper crate for searching for CUDA libraries.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-findshlibs-0.10
   (package
     (name "rust-findshlibs")
