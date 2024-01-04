@@ -33629,20 +33629,18 @@ over in-place and buffer-to-buffer modes of operation.")
 (define-public rust-instant-0.1
   (package
     (name "rust-instant")
-    (version "0.1.9")
+    (version "0.1.12")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "instant" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1v659qqm55misvjijfbl1p7azjp4yynjbwldan8836ynpgp4w4k1"))))
+         "0b2bx5qdlwayriidhrag8vhy10kdfimfhmb3jnjmsz2h9j1bwnvs"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f  ; Issue during the wasm test.
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-js-sys" ,rust-js-sys-0.3)
         ("rust-stdweb" ,rust-stdweb-0.4)
