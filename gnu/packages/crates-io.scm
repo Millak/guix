@@ -39629,32 +39629,6 @@ non-interactive protocols can be implemented as if they were interactive.")
     (description "Run pkg-config from declarative dependencies in Cargo.toml.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-metal-0.18
-  (package
-    (name "rust-metal")
-    (version "0.18.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "metal" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "08n3kfv78jm3pf7fafwfv67n40lgcdg7w9lqn9g4sdvfwdk90vrf"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1)
-        ("rust-block" ,rust-block-0.1)
-        ("rust-cocoa" ,rust-cocoa-0.22)
-        ("rust-foreign-types" ,rust-foreign-types-0.3)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-objc" ,rust-objc-0.2))))
-    (home-page "https://github.com/gfx-rs/metal-rs")
-    (synopsis "Rust bindings for Metal")
-    (description "This package provides Rust bindings for Metal.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-thousands-0.2
   (package
     (name "rust-thousands")
