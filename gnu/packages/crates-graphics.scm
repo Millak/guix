@@ -4536,8 +4536,86 @@ crate @code{rust-wayland-client} for usable bindings.")
     (description "This package procides a WebP conversion library.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-winit-0.29
+  (package
+    (name "rust-winit")
+    (version "0.29.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "winit" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "001wz677w71vsg18m1mqnypgkfmfn8sylwfxqw0hg2bn22pagh8d"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ahash" ,rust-ahash-0.8)
+        ("rust-android-activity" ,rust-android-activity-0.5)
+        ("rust-atomic-waker" ,rust-atomic-waker-1)
+        ("rust-bitflags" ,rust-bitflags-2)
+        ("rust-bytemuck" ,rust-bytemuck-1)
+        ("rust-calloop" ,rust-calloop-0.12)
+        ("rust-cfg-aliases" ,rust-cfg-aliases-0.1)
+        ("rust-core-foundation" ,rust-core-foundation-0.9)
+        ("rust-core-graphics" ,rust-core-graphics-0.23)
+        ("rust-cursor-icon" ,rust-cursor-icon-1)
+        ("rust-icrate" ,rust-icrate-0.0.4)
+        ("rust-js-sys" ,rust-js-sys-0.3)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-memmap2" ,rust-memmap2-0.9)
+        ("rust-mint" ,rust-mint-0.5)
+        ("rust-ndk" ,rust-ndk-0.8)
+        ("rust-ndk-sys" ,rust-ndk-sys-0.5)
+        ("rust-objc2" ,rust-objc2-0.4)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-orbclient" ,rust-orbclient-0.3)
+        ("rust-percent-encoding" ,rust-percent-encoding-2)
+        ("rust-raw-window-handle" ,rust-raw-window-handle-0.6)
+        ("rust-raw-window-handle" ,rust-raw-window-handle-0.4)
+        ("rust-raw-window-handle" ,rust-raw-window-handle-0.5)
+        ("rust-redox-syscall" ,rust-redox-syscall-0.3)
+        ("rust-rustix" ,rust-rustix-0.38)
+        ("rust-sctk-adwaita" ,rust-sctk-adwaita-0.8)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.18)
+        ("rust-smol-str" ,rust-smol-str-0.2)
+        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
+        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+        ("rust-wasm-bindgen-futures" ,rust-wasm-bindgen-futures-0.4)
+        ("rust-wayland-backend" ,rust-wayland-backend-0.3)
+        ("rust-wayland-client" ,rust-wayland-client-0.31)
+        ("rust-wayland-protocols" ,rust-wayland-protocols-0.31)
+        ("rust-wayland-protocols-plasma" ,rust-wayland-protocols-plasma-0.2)
+        ("rust-web-sys" ,rust-web-sys-0.3)
+        ("rust-web-time" ,rust-web-time-0.2)
+        ("rust-windows-sys" ,rust-windows-sys-0.48)
+        ("rust-x11-dl" ,rust-x11-dl-2)
+        ("rust-x11rb" ,rust-x11rb-0.13)
+        ("rust-xkbcommon-dl" ,rust-xkbcommon-dl-0.4))
+       #:cargo-development-inputs
+       (("rust-console-log" ,rust-console-log-1)
+        ("rust-image" ,rust-image-0.24)
+        ("rust-simple-logger" ,rust-simple-logger-4)
+        ("rust-softbuffer" ,rust-softbuffer-0.3)
+        ("rust-web-sys" ,rust-web-sys-0.3))))
+    (home-page "https://github.com/rust-windowing/winit")
+    (synopsis "Window creation library")
+    (description
+     "Winit is a window creation and management library. It can create
+windows and lets you handle events (for example: the window being
+resized, a key being pressed, a mouse movement, etc.) produced by
+window.
+
+Winit is designed to be a low-level brick in a hierarchy of libraries.
+Consequently, in order to show something on the window you need to use
+the platform-specific getters provided by winit, or another library.")
+    (license license:asl2.0)))
+
 (define-public rust-winit-0.28
   (package
+    (inherit rust-winit-0.29)
     (name "rust-winit")
     (version "0.28.7")
     (source
@@ -4547,7 +4625,6 @@ crate @code{rust-wayland-client} for usable bindings.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "152bi6lrmnasg6dnsdjqgnzyis3n90i09cja720m4krq8l5xk5lm"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-android-activity" ,rust-android-activity-0.4)
@@ -4583,19 +4660,7 @@ crate @code{rust-wayland-client} for usable bindings.")
        (("rust-console-log" ,rust-console-log-0.2)
         ("rust-image" ,rust-image-0.24)
         ("rust-simple-logger" ,rust-simple-logger-2)
-        ("rust-web-sys" ,rust-web-sys-0.3))))
-    (home-page "https://github.com/rust-windowing/winit")
-    (synopsis "Window creation library")
-    (description
-     "Winit is a window creation and management library. It can create
-windows and lets you handle events (for example: the window being
-resized, a key being pressed, a mouse movement, etc.) produced by
-window.
-
-Winit is designed to be a low-level brick in a hierarchy of libraries.
-Consequently, in order to show something on the window you need to use
-the platform-specific getters provided by winit, or another library.")
-    (license license:asl2.0)))
+        ("rust-web-sys" ,rust-web-sys-0.3))))))
 
 (define-public rust-winit-0.26
   (package
