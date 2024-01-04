@@ -1748,6 +1748,25 @@ EUI-64, also known as MAC-48 media access control addresses.")
        #:cargo-inputs
        (("rust-gl-generator" ,rust-gl-generator-0.14))))))
 
+(define-public rust-gpu-alloc-types-0.3
+  (package
+    (name "rust-gpu-alloc-types")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gpu-alloc-types" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "190wxsp9q8c59xybkfrlzqqyrxj6z39zamadk1q7v0xad2s07zwq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2))))
+    (home-page "https://github.com/zakarumych/gpu-alloc")
+    (synopsis "Core types of gpu-alloc crate")
+    (description "Core types of gpu-alloc crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ical-0.7
   (package
     (name "rust-ical")
