@@ -18095,6 +18095,31 @@ ristretto255 and Curve25519.")
 ristretto255 and Curve25519.")
     (license license:bsd-3)))
 
+(define-public rust-cust-0.2
+  (package
+    (name "rust-cust")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cust" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jb7l9qq65jc9rqwwygaxg4b304nn3i8igic905cbbrnw1ns8iz9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ; Could not find a cuda installation
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-cust-derive" ,rust-cust-derive-0.1)
+                       ("rust-cust-raw" ,rust-cust-raw-0.11)
+                       ("rust-find-cuda-helper" ,rust-find-cuda-helper-0.2)
+                       ("rust-vek" ,rust-vek-0.15))
+       #:cargo-development-inputs (("rust-image" ,rust-image-0.23))))
+    (home-page "https://github.com/Rust-GPU/Rust-CUDA")
+    (synopsis "High level bindings to the CUDA Driver API")
+    (description "High level bindings to the CUDA Driver API.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-cust-core-0.1
   (package
     (name "rust-cust-core")
