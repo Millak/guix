@@ -5135,6 +5135,29 @@ the platform-specific getters provided by winit, or another library.")
     (description "This package provides X11 library bindings for Rust.")
     (license license:expat)))
 
+(define-public rust-xkeysym-0.2
+  (package
+    (name "rust-xkeysym")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "xkeysym" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0886dn1rlkiazcp5n6ayqfg0ibpiny62dlbiyr9v4l32nxl8wjh5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bytemuck" ,rust-bytemuck-1)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-bytemuck" ,rust-bytemuck-1)
+                                   ("rust-x11rb" ,rust-x11rb-0.11))))
+    (home-page "https://github.com/notgull/xkeysym")
+    (synopsis "Rust library for working with X11 keysyms")
+    (description
+     "This package provides a library for working with X11 keysyms.")
+    (license (list license:expat license:asl2.0 license:zlib))))
+
 (define-public rust-y4m-0.8
   (package
     (name "rust-y4m")
