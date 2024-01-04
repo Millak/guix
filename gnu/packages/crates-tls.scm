@@ -131,29 +131,6 @@
 implementation.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-native-tls-0.1
-  (package
-    (inherit rust-native-tls-0.2)
-    (name "rust-native-tls")
-    (version "0.1.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "native-tls" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1h7v80nlskyr7b1gsg4ivlpm6pilj6ybgvcwadj7ips3igfblkgp"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-lazy-static" ,rust-lazy-static-0.2)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-openssl" ,rust-openssl-0.9)
-        ("rust-schannel" ,rust-schannel-0.1)
-        ("rust-security-framework" ,rust-security-framework-0.1)
-        ("rust-security-framework-sys" ,rust-security-framework-sys-0.1)
-        ("rust-tempdir" ,rust-tempdir-0.3))))))
-
 (define-public rust-rustls-0.21
   (package
     (name "rust-rustls")
