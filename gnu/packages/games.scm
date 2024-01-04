@@ -4454,7 +4454,9 @@ also available.")
               (sha256
                (base32
                 "1n747p7h0qp48szgp262swg0xh8kxy1bw8ag1qczs4i26hyzs5x4"))
-              (patches (search-patches "unknown-horizons-python-3.8-distro.patch"))))
+              (patches (search-patches "unknown-horizons-python-3.8-distro.patch"
+                                       "unknown-horizons-python-3.9.patch"
+                                       "unknown-horizons-python-3.10.patch"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
