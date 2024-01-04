@@ -67095,8 +67095,33 @@ small to medium sized project")
         ("rust-paris" ,rust-paris-1)
         ("rust-termcolor" ,rust-termcolor-1))))))
 
+(define-public rust-simple-logger-4
+  (package
+    (name "rust-simple-logger")
+    (version "4.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "simple_logger" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1w9ypyn5n7bxw6aylbkwz3hfsjpvkx0qm2xj11yx8l82r744czlf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-colored" ,rust-colored-2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-time" ,rust-time-0.3)
+                       ("rust-windows-sys" ,rust-windows-sys-0.48))))
+    (home-page "https://github.com/borntyping/rust-simple_logger")
+    (synopsis "Logger with a readable output format")
+    (description
+     "This package provides a logger that prints all messages with
+a readable output format.")
+    (license license:expat)))
+
 (define-public rust-simple-logger-2
   (package
+    (inherit rust-simple-logger-4)
     (name "rust-simple-logger")
     (version "2.3.0")
     (source (origin
@@ -67106,20 +67131,13 @@ small to medium sized project")
               (sha256
                (base32
                 "1ivdlw45f07byxgl43l2pa0dlnclbw1aj40shjpil598nmvpw128"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-atty" ,rust-atty-0.2)
         ("rust-colored" ,rust-colored-2)
         ("rust-log" ,rust-log-0.4)
         ("rust-time" ,rust-time-0.3)
-        ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/borntyping/rust-simple_logger")
-    (synopsis "Logger with a readable output format")
-    (description
-     "This package provides a logger that prints all messages with
-a readable output format.")
-    (license license:expat)))
+        ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-simple-logger-1
   (package
