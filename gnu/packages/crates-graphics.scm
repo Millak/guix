@@ -759,6 +759,28 @@ types.")
 and iOS.")
     (license license:expat)))
 
+(define-public rust-d3d12-0.7
+  (package
+    (name "rust-d3d12")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "d3d12" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "084z4nz0ddmsjn6qbrgxygr55pvpi3yjrrkvmzyxs79b56ml8vp1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ; unresolved imports `winapi::shared`, `winapi::um`
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-libloading" ,rust-libloading-0.8)
+                       ("rust-winapi" ,rust-winapi-0.3))))
+    (home-page "https://github.com/gfx-rs/d3d12-rs")
+    (synopsis "Low level D3D12 API wrapper")
+    (description "Low level D3D12 API wrapper.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-dav1d-0.6
   (package
     (name "rust-dav1d")
