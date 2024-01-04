@@ -2319,14 +2319,14 @@ text to a terminal.")
 (define-public rust-anyhow-1
   (package
     (name "rust-anyhow")
-    (version "1.0.75")
+    (version "1.0.79")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "anyhow" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1rmcjkim91c5mw7h9wn8nv0k6x118yz0xg0z1q18svgn42mqqrm4"))))
+        (base32 "1ji5irqiwr8yprgqj8zvnli7zd7fz9kzaiddq44jnrl2l289h3h8"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
