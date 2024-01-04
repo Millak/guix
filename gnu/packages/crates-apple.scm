@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Valentin Ignatev <valentignatev@gmail.com>
 ;;; Copyright © 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -126,3 +127,47 @@ extension of blocks.")
      `(#:tests? #f  ; Tests require gcc-objc.
        #:cargo-inputs
        (("rust-objc-sys" ,rust-objc-sys-0.2))))))
+
+(define-public rust-coreaudio-rs-0.10
+  (package
+    (name "rust-coreaudio-rs")
+    (version "0.10.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "coreaudio-rs" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "125d4zr3n363ybga4629p41ym7iqjfb2alnwrc1zj7zyxch4p28i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ; Only builds for macos or ios.
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-coreaudio-sys" ,rust-coreaudio-sys-0.2))))
+    (home-page "https://github.com/RustAudio/coreaudio-rs")
+    (synopsis "Rust interface for Apple's CoreAudio API")
+    (description
+     "This package provides a rust interface for Apple's CoreAudio API.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-coreaudio-sys-0.2
+  (package
+    (name "rust-coreaudio-sys")
+    (version "0.2.12")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "coreaudio-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "091b4sq3kl8n4dy86l4mxq9vjzsn8w8b51xzfcpxwjkciqjv4d7h"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ; Only builds for macos or ios.
+       #:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.64))))
+    (home-page "https://github.com/RustAudio/coreaudio-sys")
+    (synopsis
+     "Bindings for Apple's CoreAudio frameworks generated via rust-bindgen")
+    (description
+     "Bindings for Apple's CoreAudio frameworks generated via rust-bindgen.")
+    (license license:expat)))
