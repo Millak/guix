@@ -8102,7 +8102,7 @@ It is not intended as a user interface.")
 (define-public emacs-sqlite3-api
   (package
     (name "emacs-sqlite3-api")
-    (version "0.17")
+    (version "0.18")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8111,7 +8111,7 @@ It is not intended as a user interface.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1y36818nd47mzfi3xcp31nr8n0izzmdyiqfx9hgp7ag98rbm7wlx"))))
+                "1d1r65ybcf5idbs8sv0l3dna4l1wy3jba9dvv1kkz7zj6qhr48fs"))))
     (build-system emacs-build-system)
     (arguments
      (list
