@@ -908,6 +908,33 @@ and iOS.")
      "This package provides a library to perform image color model conversion.")
     (license license:expat-0)))
 
+(define-public rust-drm-0.10
+  (package
+    (name "rust-drm")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "drm" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "11xyv3l03a3zxsrfr02mwnn5d6h4100919zb2v9fpizv7xq1pywp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-bytemuck" ,rust-bytemuck-1)
+                       ("rust-drm-ffi" ,rust-drm-ffi-0.6)
+                       ("rust-drm-fourcc" ,rust-drm-fourcc-2)
+                       ("rust-nix" ,rust-nix-0.27))
+       #:cargo-development-inputs (("rust-image" ,rust-image-0.24)
+                                   ("rust-nix" ,rust-nix-0.27)
+                                   ("rust-rustyline" ,rust-rustyline-12))))
+    (home-page "https://github.com/Smithay/drm-rs")
+    (synopsis "Safe, low-level bindings to the Direct Rendering Manager API")
+    (description
+     "Safe, low-level bindings to the Direct Rendering Manager API.")
+    (license license:expat)))
+
 (define-public rust-drm-ffi-0.6
   (package
     (name "rust-drm-ffi")
