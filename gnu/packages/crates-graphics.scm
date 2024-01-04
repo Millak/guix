@@ -1545,8 +1545,29 @@ EUI-64, also known as MAC-48 media access control addresses.")
         ("rust-winapi" ,rust-winapi-0.3)
         ("rust-winit" ,rust-winit-0.19))))))
 
+(define-public rust-glutin-egl-sys-0.6
+  (package
+    (name "rust-glutin-egl-sys")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "glutin_egl_sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1kcv5pdpdsyhzpiahga15kk7yd4m64ia2k6xqcrz97ihylimdk3p"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-gl-generator" ,rust-gl-generator-0.14)
+                       ("rust-windows-sys" ,rust-windows-sys-0.48))))
+    (home-page "https://github.com/rust-windowing/glutin")
+    (synopsis "Egl bindings for glutin")
+    (description "The egl bindings for glutin.")
+    (license license:asl2.0)))
+
 (define-public rust-glutin-egl-sys-0.4
   (package
+    (inherit rust-glutin-egl-sys-0.6)
     (name "rust-glutin-egl-sys")
     (version "0.4.0")
     (source
@@ -1558,15 +1579,10 @@ EUI-64, also known as MAC-48 media access control addresses.")
        (sha256
         (base32
          "0z9nm3d6qcgqg7f6qkbnsfs4cy90d8raw09inf2qc564nnmz1ap5"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-gl-generator" ,rust-gl-generator-0.14)
-        ("rust-windows-sys" ,rust-windows-sys-0.45))))
-    (home-page "https://github.com/rust-windowing/glutin")
-    (synopsis "Egl bindings for glutin")
-    (description "The egl bindings for glutin.")
-    (license license:asl2.0)))
+        ("rust-windows-sys" ,rust-windows-sys-0.45))))))
 
 (define-public rust-glutin-egl-sys-0.1
   (package
