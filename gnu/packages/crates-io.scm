@@ -38055,61 +38055,6 @@ lexer.")
      "This package provides a collection of great and ubiqutitous macros.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-mach-0.3
-  (package
-    (name "rust-mach")
-    (version "0.3.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "mach" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1yksa8lwzqh150gr4417rls1wk20asy9vhp8kq5g9n7z58xyh8xq"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))))
-    (home-page "https://github.com/fitzgen/mach")
-    (synopsis "Rust interface to the Mach 3.0 kernel that underlies OSX")
-    (description
-     "This package provides a Rust interface to the user-space API of the
-Mach 3.0 kernel that underlies OSX.")
-    (license (list license:asl2.0 license:expat license:bsd-2))))
-
-(define-public rust-mach-0.2
-  (package
-    (inherit rust-mach-0.3)
-    (name "rust-mach")
-    (version "0.2.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "mach" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1qdhs16cl1j3w7kvy6ak7h8lbyqmr6i3i15qfzpnv9gyrn3j9pc6"))))))
-
-(define-public rust-mach-o-sys-0.1
-  (package
-    (name "rust-mach-o-sys")
-    (version "0.1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "mach_o_sys" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "09l8p7nmzq37450x2h6nb7dzg1sk6dk36a5rkcrcy81zm21lb19y"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/fitzgen/mach_o_sys")
-    (synopsis "Bindings to the OSX mach-o system library")
-    (description "This package provides bindings to the OSX mach-o system
-library")
-  (license (list license:asl2.0 license:expat))))
-
 (define-public rust-macrotest-1
   (package
     (name "rust-macrotest")

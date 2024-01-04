@@ -2,11 +2,14 @@
 ;;; Copyright © 2019, 2020, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Valentin Ignatev <valentignatev@gmail.com>
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021, 2022 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
+;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -797,6 +800,61 @@ macOS API for file changes notifications")
     (synopsis "Bindings to Apple's frameworks")
     (description "This package provides bindings to Apple's frameworks.")
     (license license:expat)))
+
+(define-public rust-mach-0.3
+  (package
+    (name "rust-mach")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mach" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1yksa8lwzqh150gr4417rls1wk20asy9vhp8kq5g9n7z58xyh8xq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))))
+    (home-page "https://github.com/fitzgen/mach")
+    (synopsis "Rust interface to the Mach 3.0 kernel that underlies OSX")
+    (description
+     "This package provides a Rust interface to the user-space API of the
+Mach 3.0 kernel that underlies OSX.")
+    (license (list license:asl2.0 license:expat license:bsd-2))))
+
+(define-public rust-mach-0.2
+  (package
+    (inherit rust-mach-0.3)
+    (name "rust-mach")
+    (version "0.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mach" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qdhs16cl1j3w7kvy6ak7h8lbyqmr6i3i15qfzpnv9gyrn3j9pc6"))))))
+
+(define-public rust-mach-o-sys-0.1
+  (package
+    (name "rust-mach-o-sys")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mach_o_sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09l8p7nmzq37450x2h6nb7dzg1sk6dk36a5rkcrcy81zm21lb19y"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/fitzgen/mach_o_sys")
+    (synopsis "Bindings to the OSX mach-o system library")
+    (description "This package provides bindings to the OSX mach-o system
+library")
+  (license (list license:asl2.0 license:expat))))
 
 (define-public rust-metal-0.18
   (package
