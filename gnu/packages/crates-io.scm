@@ -7677,8 +7677,30 @@ and block modes.")
      `(#:cargo-inputs
        (("rust-byte-tools" ,rust-byte-tools-0.3))))))
 
+(define-public rust-block-sys-0.2
+  (package
+    (name "rust-block-sys")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "block-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14pddxc4rma833prvlbh5a22q6qwx32hhz7aqmnw1p9cj58czmrd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; Needs to bind to MacOS libraries.
+       #:cargo-inputs (("rust-objc-sys" ,rust-objc-sys-0.3))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Raw bindings to Apple's C language extension of blocks")
+    (description "This package contains raw bindings to Apple's C language
+extension of blocks.")
+    (license license:expat)))
+
 (define-public rust-block-sys-0.1
   (package
+    (inherit rust-block-sys-0.2)
     (name "rust-block-sys")
     (version "0.1.0-beta.1")
     (source (origin
@@ -7688,16 +7710,10 @@ and block modes.")
               (sha256
                (base32
                 "0ihiar08hk0das4q0ii1gsmql975z3rslli1h13jb44hxr0mg98g"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; Tests require gcc-objc.
        #:cargo-inputs
-       (("rust-objc-sys" ,rust-objc-sys-0.2))))
-    (home-page "https://github.com/madsmtm/objc2")
-    (synopsis "Raw bindings to Apple's C language extension of blocks")
-    (description "This package contains raw bindings to Apple's C language
-extension of blocks.")
-    (license license:expat)))
+       (("rust-objc-sys" ,rust-objc-sys-0.2))))))
 
 (define-public rust-blocking-1
   (package
