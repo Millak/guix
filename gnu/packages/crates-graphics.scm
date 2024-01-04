@@ -2176,8 +2176,39 @@ graphics and video games.")
     (description "This package provides SVG helpers for the lyon crates.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-mp4parse-0.17
+  (package
+    (name "rust-mp4parse")
+    (version "0.17.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mp4parse" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0w654hv04w1zi2m9b1kji2610mrfrc554xqw4par5kn6sc1m58v3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            "--skip=overflow_protection"
+                            "--skip=public")
+       #:cargo-inputs (("rust-bitreader" ,rust-bitreader-0.3)
+                       ("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-fallible-collections" ,rust-fallible-collections-0.4)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-static-assertions" ,rust-static-assertions-1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.4)
+                                   ("rust-test-assembler" ,rust-test-assembler-0.1)
+                                   ("rust-walkdir" ,rust-walkdir-2))))
+    (home-page "https://github.com/mozilla/mp4parse-rust")
+    (synopsis "Parser for ISO base media file format (mp4)")
+    (description "Parser for ISO base media file format (mp4).")
+    (license license:mpl2.0)))
+
 (define-public rust-mp4parse-0.12
   (package
+    (inherit rust-mp4parse-0.17)
     (name "rust-mp4parse")
     (version "0.12.1")
     (source (origin
@@ -2186,7 +2217,6 @@ graphics and video games.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32 "1scynvlmiy6xv2rrzzpijd812amh6a863na8i0xrcw5d9d08kl8h"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f              ; Not all files included.
        #:cargo-inputs
@@ -2200,11 +2230,7 @@ graphics and video games.")
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.3)
         ("rust-test-assembler" ,rust-test-assembler-0.1)
-        ("rust-walkdir" ,rust-walkdir-2))))
-    (home-page "https://github.com/mozilla/mp4parse-rust")
-    (synopsis "Parser for ISO base media file format (mp4)")
-    (description "Parser for ISO base media file format (mp4)")
-    (license license:mpl2.0)))
+        ("rust-walkdir" ,rust-walkdir-2))))))
 
 (define-public rust-osmesa-sys-0.1
   (package
