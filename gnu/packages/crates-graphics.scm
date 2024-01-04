@@ -2708,6 +2708,32 @@ interactive applications.")
         ("rust-glob" ,rust-glob-0.2)
         ("rust-term" ,rust-term-0.4))))))
 
+(define-public rust-qoi-0.4
+  (package
+    (name "rust-qoi")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "qoi" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "00c0wkb112annn2wl72ixyd78mf56p4lxkhlmsggx65l3v3n8vbz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; unresolved import `libqoi`
+       #:cargo-inputs (("rust-bytemuck" ,rust-bytemuck-1))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-cfg-if" ,rust-cfg-if-1)
+                                   ("rust-png" ,rust-png-0.17)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-walkdir" ,rust-walkdir-2))))
+    (home-page "https://github.com/aldanor/qoi-rust")
+    (synopsis "Encoder/decoder for QOI (Quite Okay Image) format")
+    (description
+     "VERY fast encoder/decoder for the @acronym{QOI, Quite Okay Image} format.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ravif-0.11
   (package
     (name "rust-ravif")
