@@ -4340,8 +4340,47 @@ the wayland protocol, server side.")
         ("rust-wayland-sys" ,rust-wayland-sys-0.21)
         ("rust-wayland-scanner" ,rust-wayland-scanner-0.21))))))
 
+(define-public rust-wayland-sys-0.31
+  (package
+    (name "rust-wayland-sys")
+    (version "0.31.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wayland-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1bxpwamgagpxa8p9m798gd3g6rwj2m4sbdvc49zx05jjzzmci80m"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-dlib" ,rust-dlib-0.5)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-memoffset" ,rust-memoffset-0.9)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-libraries
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((libwayland (dirname (search-input-file
+                                         inputs "lib/libwayland-client.so"))))
+               (substitute* (find-files "src" "\\.rs$")
+                 (("libwayland.*\\.so" shared-lib)
+                  (string-append libwayland "/" shared-lib)))))))))
+    (inputs (list wayland))
+    (home-page "https://github.com/smithay/wayland-rs")
+    (synopsis "FFI bindings to the various @file{libwayland-*.so} libraries")
+    (description
+     "This package provides FFI bindings to the various
+@file{libwayland-*.so} libraries.  You should only need this crate if
+you are working on custom Wayland protocol extensions.  Look at the
+crate @code{rust-wayland-client} for usable bindings.")
+    (license license:expat)))
+
 (define-public rust-wayland-sys-0.30
   (package
+    (inherit rust-wayland-sys-0.31)
     (name "rust-wayland-sys")
     (version "0.30.1")
     (source
@@ -4351,7 +4390,6 @@ the wayland protocol, server side.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "01man4ll2kyxp9x2934rhnf98522pzwsd2c6jwr73q08qqma1cln"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-dlib" ,rust-dlib-0.5)
@@ -4368,17 +4406,7 @@ the wayland protocol, server side.")
                                          inputs "lib/libwayland-client.so"))))
                (substitute* (find-files "src" "\\.rs$")
                  (("libwayland.*\\.so" shared-lib)
-                  (string-append libwayland "/" shared-lib)))))))))
-    (propagated-inputs
-     (list wayland))
-    (home-page "https://github.com/smithay/wayland-rs")
-    (synopsis "FFI bindings to the various @file{libwayland-*.so} libraries")
-    (description
-     "This package provides FFI bindings to the various
-@file{libwayland-*.so} libraries.  You should only need this crate if
-you are working on custom Wayland protocol extensions.  Look at the
-crate @code{rust-wayland-client} for usable bindings.")
-    (license license:expat)))
+                  (string-append libwayland "/" shared-lib)))))))))))
 
 (define-public rust-wayland-sys-0.29
   (package
