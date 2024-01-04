@@ -1,6 +1,9 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2019, 2020, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Valentin Ignatev <valentignatev@gmail.com>
-;;; Copyright © 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020 John Soo <jsoo1@asu.edu>
+;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -171,3 +174,151 @@ extension of blocks.")
     (description
      "Bindings for Apple's CoreAudio frameworks generated via rust-bindgen.")
     (license license:expat)))
+
+(define-public rust-core-foundation-0.9
+  (package
+    (name "rust-core-foundation")
+    (version "0.9.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "core-foundation" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ii1ihpjb30fk38gdikm5wqlkmyr8k46fh4k2r8sagz5dng7ljhr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f             ;tests fail with a lot of "undefined reference"
+       #:cargo-inputs
+       (("rust-chrono" ,rust-chrono-0.4)
+        ("rust-core-foundation-sys" ,rust-core-foundation-sys-0.8)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-uuid" ,rust-uuid-0.5))))
+    (home-page "https://github.com/servo/core-foundation-rs")
+    (synopsis "Bindings to Core Foundation for macOS")
+    (description "This package provides bindings to Core Foundation for macOS.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-core-foundation-0.7
+  (package
+    (inherit rust-core-foundation-0.9)
+    (name "rust-core-foundation")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "core-foundation" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wbias8f0m5kyn2pcksi0h58fdslams6nmf16w78fgn42dx4rljp"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-chrono" ,rust-chrono-0.4)
+        ("rust-core-foundation-sys" ,rust-core-foundation-sys-0.7)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-uuid" ,rust-uuid-0.5))))))
+
+(define-public rust-core-foundation-0.6
+  (package
+    (inherit rust-core-foundation-0.7)
+    (name "rust-core-foundation")
+    (version "0.6.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "core-foundation" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0va97wf49c8dzm9c8pgyk1jn7z21rl0bj1syf2zz5m2z2hzy1f95"))))
+    (arguments
+     `(#:tests? #f
+       #:cargo-inputs
+       (("rust-chrono" ,rust-chrono-0.4)
+        ("rust-core-foundation-sys" ,rust-core-foundation-sys-0.6)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-uuid" ,rust-uuid-0.5))))))
+
+(define-public rust-core-foundation-0.2
+  (package
+    (inherit rust-core-foundation-0.6)
+    (name "rust-core-foundation")
+    (version "0.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "core-foundation" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0rvcn7ab5r69wvn7gby745jlpy8pirfywcdxbiypy083s93dggr5"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-core-foundation-sys" ,rust-core-foundation-sys-0.2)
+        ("rust-libc" ,rust-libc-0.2))))))
+
+(define-public rust-core-foundation-sys-0.8
+  (package
+    (name "rust-core-foundation-sys")
+    (version "0.8.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "core-foundation-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13w6sdf06r0hn7bx2b45zxsg1mm2phz34jikm6xc5qrbr6djpsh6"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/servo/core-foundation-rs")
+    (synopsis "Bindings to Core Foundation for macOS")
+    (description "This package provides bindings to Core Foundation for macOS.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-core-foundation-sys-0.7
+  (package
+    (inherit rust-core-foundation-sys-0.8)
+    (name "rust-core-foundation-sys")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "core-foundation-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1b5qfnnmg49sawwfsb0c0wbj81bqi7h7lh68pmhbidf0jjs1m9xk"))))))
+
+(define-public rust-core-foundation-sys-0.6
+  (package
+    (inherit rust-core-foundation-sys-0.7)
+    (name "rust-core-foundation-sys")
+    (version "0.6.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "core-foundation-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0fzsw1j9g1x598yhwklg59l15hwzc0pyvs01w9fg2kin4598mjp7"))))))
+
+(define-public rust-core-foundation-sys-0.2
+  (package
+    (inherit rust-core-foundation-sys-0.6)
+    (name "rust-core-foundation-sys")
+    (version "0.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "core-foundation-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "13f7f3kblyj6yxcxm74yg84vj9ahaprlc1vgblagmj6bzmzmsnh6"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2))))))

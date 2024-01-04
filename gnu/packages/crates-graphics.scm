@@ -38,6 +38,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages crates-apple)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-windows)
   #:use-module (gnu packages fontutils)
