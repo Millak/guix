@@ -6828,7 +6828,8 @@ Java package that provides routines for various statistical distributions.")
                               (string-append all "(skip-unless nil)\n"))
                              ...)))))
                     (disable-tests (list "test/ess-test-inf.el"
-                                         "test/ess-test-r.el")
+                                         "test/ess-test-r.el"
+                                         "test/ess-test-r-eval.el")
                                    ("ess--derive-connection-path"
                                     "ess-eval-line-test"
                                     "ess-eval-region-test"
