@@ -4925,6 +4925,33 @@ the platform-specific getters provided by winit, or another library.")
     (description "This package provides Rust bindings to X11.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-x11rb-0.12
+  (package
+    (inherit rust-x11rb-0.13)
+    (name "rust-x11rb")
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "x11rb" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02h492k920mb1733cdmly138zfiwkspil6ssqcvi7inyshk1nr5i"))))
+    (arguments
+     `(#:cargo-inputs (("rust-as-raw-xcb-connection" ,rust-as-raw-xcb-connection-1)
+                       ("rust-gethostname" ,rust-gethostname-0.3)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libloading" ,rust-libloading-0.7)
+                       ("rust-nix" ,rust-nix-0.26)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-winapi" ,rust-winapi-0.3)
+                       ("rust-winapi-wsapoll" ,rust-winapi-wsapoll-0.1)
+                       ("rust-x11rb-protocol" ,rust-x11rb-protocol-0.12))
+       #:cargo-development-inputs
+       (("rust-polling" ,rust-polling-2)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))))
+
 (define-public rust-x11rb-0.11
   (package
     (inherit rust-x11rb-0.13)
@@ -5012,6 +5039,23 @@ the platform-specific getters provided by winit, or another library.")
     (synopsis "Rust bindings to X11")
     (description "Rust bindings to X11.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-x11rb-protocol-0.12
+  (package
+    (inherit rust-x11rb-protocol-0.13)
+    (name "rust-x11rb-protocol")
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "x11rb-protocol" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1g24qdvq0mbyl2npz7zqy5v6hpdxq2qakkpnp3x02rzvl3ww7ml2"))))
+    (arguments
+     `(#:cargo-inputs (("rust-nix" ,rust-nix-0.26)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.4))))))
 
 (define-public rust-x11rb-protocol-0.11
   (package
