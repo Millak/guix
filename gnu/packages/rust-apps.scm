@@ -2165,37 +2165,39 @@ consecutive lines and since program start.")
 (define-public skim
   (package
     (name "skim")
-    (version "0.9.4")
+    (version "0.10.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "skim" version))
-       (file-name (string-append name "-" version ".tar.gz"))
+       ;; Keep the same file name as the crate in crates-io
+       (file-name (string-append "rust-skim-" version ".tar.gz"))
        (sha256
-        (base32 "1d5v9vq8frkdjm7bnw3455h6xf3c277d51il2qasn7r20kwik7ab"))))
+        (base32 "0chgv9nr8cmlf2mg2k94igh3m5svjsfxxwbnl21xsb6blvh8vlp5"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-atty-0.2" ,rust-atty-0.2)
+     `(#:install-source? #f
+       #:cargo-inputs (("rust-atty" ,rust-atty-0.2)
                        ("rust-beef" ,rust-beef-0.5)
                        ("rust-bitflags" ,rust-bitflags-1)
                        ("rust-chrono" ,rust-chrono-0.4)
-                       ("rust-clap" ,rust-clap-2)
+                       ("rust-clap" ,rust-clap-3)
                        ("rust-crossbeam" ,rust-crossbeam-0.8)
                        ("rust-defer-drop" ,rust-defer-drop-1)
-                       ("rust-derive-builder" ,rust-derive-builder-0.9)
-                       ("rust-env-logger" ,rust-env-logger-0.8)
+                       ("rust-derive-builder" ,rust-derive-builder-0.11)
+                       ("rust-env-logger" ,rust-env-logger-0.9)
                        ("rust-fuzzy-matcher" ,rust-fuzzy-matcher-0.3)
                        ("rust-lazy-static" ,rust-lazy-static-1)
                        ("rust-log" ,rust-log-0.4)
-                       ("rust-nix" ,rust-nix-0.19)
+                       ("rust-nix" ,rust-nix-0.25)
                        ("rust-rayon" ,rust-rayon-1)
                        ("rust-regex" ,rust-regex-1)
-                       ("rust-shlex" ,rust-shlex-0.1)
-                       ("rust-time" ,rust-time-0.2)
+                       ("rust-shlex" ,rust-shlex-1)
+                       ("rust-time" ,rust-time-0.3)
                        ("rust-timer" ,rust-timer-0.2)
-                       ("rust-tuikit" ,rust-tuikit-0.4)
+                       ("rust-tuikit" ,rust-tuikit-0.5)
                        ("rust-unicode-width" ,rust-unicode-width-0.1)
-                       ("rust-vte" ,rust-vte-0.9))
+                       ("rust-vte" ,rust-vte-0.11))
        #:phases (modify-phases %standard-phases
                   (add-after 'install 'install-extras
                     (lambda* (#:key outputs #:allow-other-keys)
