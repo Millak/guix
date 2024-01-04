@@ -31378,10 +31378,16 @@ keypresses mapped in firefox to the action described in the function name.")
           (base32 "1x9hc94a5wygyw714q98jbk4kjvys2ra94qdc2cbgkm6iq982rvq"))))
       (build-system emacs-build-system)
       (arguments
-       (list #:phases
-             #~(modify-phases %standard-phases
-                 (add-after 'unpack 'chdir
-                   (lambda _ (chdir "lisp"))))))
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'chdir
+              (lambda _ (chdir "lisp"))))
+        #:tests? #true
+        #:test-command #~(list "emacs" "-Q" "--batch"
+                               "-l" "../test/exwm-firefox--tests.el"
+                               "-l" "exwm-firefox.el"
+                               "-f" "ert-run-tests-batch-and-exit")))
       (inputs (list emacs-exwm emacs-exwm-firefox-core emacs-s))
       (home-page "https://codeberg.org/emacs-weirdware/exwm-firefox")
       (synopsis "Enhanced support for Firefox under EXWM")
