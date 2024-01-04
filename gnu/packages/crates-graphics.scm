@@ -2861,6 +2861,28 @@ in AVIF format (powers the @code{cavif} tool).")
     (arguments
      `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))))
 
+(define-public rust-raw-window-metal-0.3
+  (package
+    (name "rust-raw-window-metal")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "raw-window-metal" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xlfy69chky5gxk67p9h7zmf4n4y15fk9abani6c4m4d4n9s8kmc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cocoa" ,rust-cocoa-0.25)
+                       ("rust-core-graphics" ,rust-core-graphics-0.23)
+                       ("rust-objc" ,rust-objc-0.2)
+                       ("rust-raw-window-handle" ,rust-raw-window-handle-0.5))))
+    (home-page "https://github.com/norse-rs/raw-window-metal")
+    (synopsis "Interop library between Metal and raw-window-handle")
+    (description "Interop library between Metal and raw-window-handle.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-resize-0.4
   (package
     (name "rust-resize")
