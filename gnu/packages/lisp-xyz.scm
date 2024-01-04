@@ -5113,39 +5113,40 @@ WebKit browsing engine.")
   (sbcl-package->ecl-package sbcl-cl-webkit))
 
 (define-public sbcl-lparallel
-  (package
-    (name "sbcl-lparallel")
-    (version "2.8.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/lmj/lparallel/")
-             (commit (string-append "lparallel-" version))))
-       (file-name (git-file-name "lparallel" version))
-       (sha256
-        (base32
-         "0g0aylrbbrqsz0ahmwhvnk4cmc2931fllbpcfgzsprwnqqd7vwq9"))))
-    (build-system asdf-build-system/sbcl)
-    (inputs
-     `(("alexandria" ,sbcl-alexandria)
-       ("bordeaux-threads" ,sbcl-bordeaux-threads)
-       ("trivial-garbage" ,sbcl-trivial-garbage)))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-dependency
-           ;; lparallel loads a SBCL specific system in its asd file. This is
-           ;; not carried over into the fasl which is generated. In order for
-           ;; it to be carried over, it needs to be listed as a dependency.
-           (lambda _
-             (substitute* "lparallel.asd"
-               ((":depends-on \\(:alexandria" all)
-                (string-append all " #+sbcl :sb-cltl2"))))))))
-    (home-page "https://lparallel.org/")
-    (synopsis "Parallelism for Common Lisp")
-    (description
-     "@command{lparallel} is a library for parallel programming in Common
+  (let ((commit "80fc2952a074776abd343d6b5d3ab157f0e1df7a")
+        (revision "1"))
+    (package
+      (name "sbcl-lparallel")
+      (version (git-version "2.8.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sharplispers/lparallel/")
+               (commit commit)))
+         (file-name (git-file-name "cl-lparallel" version))
+         (sha256
+          (base32 "0nv2dx8cl25g68icqhw95yr5mygm86lcjzmzijql51na1p60g6y9"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-bordeaux-threads
+             sbcl-trivial-garbage))
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-dependency
+             ;; lparallel loads a SBCL specific system in its asd file. This is
+             ;; not carried over into the fasl which is generated. In order for
+             ;; it to be carried over, it needs to be listed as a dependency.
+             (lambda _
+               (substitute* "lparallel.asd"
+                 ((":depends-on \\(:alexandria" all)
+                  (string-append all " #+sbcl :sb-cltl2"))))))))
+      (home-page "https://lparallel.org/")
+      (synopsis "Parallelism for Common Lisp")
+      (description
+       "@command{lparallel} is a library for parallel programming in Common
 Lisp, featuring:
 
 @itemize
@@ -5160,7 +5161,7 @@ Lisp, featuring:
 @item task killing by category,
 @item integrated timeouts.
 @end itemize\n")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public cl-lparallel
   (sbcl-package->cl-source-package sbcl-lparallel))
