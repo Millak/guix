@@ -3384,8 +3384,39 @@ protocol.")
        (("rust-concat-idents" ,rust-concat-idents-1)
         ("rust-env-logger" ,rust-env-logger-0.10))))))
 
+(define-public rust-wayland-client-0.31
+  (package
+    (name "rust-wayland-client")
+    (version "0.31.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wayland-client" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lryhibzmi4hb3jpbraj623l110f6rgp0migpxrm8vrl8wixb9qw"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `wayland_protocols`
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-nix" ,rust-nix-0.26)
+                       ("rust-wayland-backend" ,rust-wayland-backend-0.3)
+                       ("rust-wayland-scanner" ,rust-wayland-scanner-0.31))
+       #:cargo-development-inputs (("rust-futures-channel" ,rust-futures-channel-0.3)
+                                   ("rust-futures-util" ,rust-futures-util-0.3)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/smithay/wayland-rs")
+    (synopsis
+     "Rust bindings to the standard C implementation of the wayland protocol")
+    (description
+     "This package provides Rust bindings to the standard C implementation of
+the wayland protocol, client side.")
+    (license license:expat)))
+
 (define-public rust-wayland-client-0.30
   (package
+    (inherit rust-wayland-client-0.31)
     (name "rust-wayland-client")
     (version "0.30.2")
     (source
@@ -3396,7 +3427,6 @@ protocol.")
        (sha256
         (base32
          "1j3as2g1znrs2lpkksqcvx8pag85yiwwbcv6wb3lyrqgfxa9d728"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; use of undeclared crate or module `wayland_protocols`
        #:cargo-inputs
@@ -3409,14 +3439,7 @@ protocol.")
        #:cargo-development-inputs
        (("rust-futures-channel" ,rust-futures-channel-0.3)
         ("rust-futures-util" ,rust-futures-util-0.3)
-        ("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://github.com/smithay/wayland-rs")
-    (synopsis
-     "Rust bindings to the standard C implementation of the wayland protocol")
-    (description
-     "This package provides Rust bindings to the standard C implementation of
-the wayland protocol, client side.")
-    (license license:expat)))
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-wayland-client-0.29
   (package
