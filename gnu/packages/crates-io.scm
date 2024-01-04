@@ -1404,34 +1404,6 @@ using AES-NI for high performance.")
     (description "Rust bindings for OpenAL, this crate contains FFI elements.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-alacritty-config-derive-0.2
-  (package
-    (name "rust-alacritty-config-derive")
-    (version "0.2.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "alacritty_config_derive" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1vasc1fagkih5zcdyi9lwc9bprmr0zq0zyyakfqsm9pnr9x60lyp"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))
-       #:cargo-development-inputs
-       (("rust-alacritty-config" ,rust-alacritty-config-0.1)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-yaml" ,rust-serde-yaml-0.8))))
-    (home-page "https://github.com/alacritty/alacritty")
-    (synopsis "Failure resistant deserialization derive")
-    (description
-     "This package provides a failure resistant deserialization derive.")
-    (license (list license:expat license:asl2.0))))
-
 (define-public rust-alacritty-terminal-0.19
   (package
     (name "rust-alacritty-terminal")
