@@ -64,7 +64,7 @@
                     ,@native-inputs
                     ,@(if implicit-inputs?
                           (map (cute assoc <> (standard-packages))
-                               '("tar" "gzip" "bzip2" "xz" "locales"))
+                               '("tar" "gzip" "bzip2" "xz"))
                           '())))
     (outputs outputs)
     (build (if target guile-cross-build guile-build))
