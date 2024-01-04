@@ -3197,8 +3197,33 @@ applications.")
        #:cargo-development-inputs
        (("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.16))))))
 
+(define-public rust-tiff-0.9
+  (package
+    (name "rust-tiff")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tiff" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "04b2fd3clxm0pmdlfip8xj594zyrsfwmh641i6x1gfiz9l7jn5vd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs (("rust-flate2" ,rust-flate2-1)
+                       ("rust-jpeg-decoder" ,rust-jpeg-decoder-0.3)
+                       ("rust-weezl" ,rust-weezl-0.1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3))))
+    (home-page "https://github.com/image-rs/image-tiff")
+    (synopsis "TIFF decoding and encoding library in pure Rust")
+    (description
+     "This package provides TIFF decoding and encoding library in pure Rust.")
+    (license license:expat)))
+
 (define-public rust-tiff-0.8
   (package
+    (inherit rust-tiff-0.9)
     (name "rust-tiff")
     (version "0.8.1")
     (source (origin
