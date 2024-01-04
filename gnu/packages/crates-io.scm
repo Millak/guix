@@ -39890,6 +39890,24 @@ file IO.")
      "This package provides a Rust API for memory-mapped file IO.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-memmap2-0.8
+  (package
+    (inherit rust-memmap2-0.9)
+    (name "rust-memmap2")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "memmap2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1vf3djv9s917fbvw5vclllpl22g12iph6cz11gn57ndhxwya19a3"))))
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-stable-deref-trait" ,rust-stable-deref-trait-1))
+       #:cargo-development-inputs (("rust-owning-ref" ,rust-owning-ref-0.4)
+                                   ("rust-tempfile" ,rust-tempfile-3))))))
+
 (define-public rust-memmap2-0.7
   (package
     (inherit rust-memmap2-0.9)
