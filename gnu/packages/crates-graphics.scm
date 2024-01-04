@@ -878,6 +878,28 @@ and iOS.")
      "This package provides a library to perform image color model conversion.")
     (license license:expat-0)))
 
+(define-public rust-drm-fourcc-2
+  (package
+    (name "rust-drm-fourcc")
+    (version "2.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "drm-fourcc" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1x76v9a0pkgym4n6cah4barnai9gsssm7gjzxskw2agwibdvrbqa"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.57)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/danielzfranklin/drm-fourcc-rs")
+    (synopsis "Enum with every valid Direct Rendering Manager format fourcc")
+    (description "This package provides an enum with every valid @acronym{DRM,
+Direct Rendering Manager} format fourcc.")
+    (license license:expat)))
+
 (define-public rust-drm-sys-0.5
   (package
     (name "rust-drm-sys")
