@@ -62165,28 +62165,43 @@ sub-processes using a fork-like interface.")
         ("rust-rustyline-derive" ,rust-rustyline-derive-0.3)
         ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-rustyline-derive-0.9
+  (package
+    (name "rust-rustyline-derive")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustyline-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hvaj1n0k7ys8iqfxvymmakv9aqqpvm53hagw55jw7954xaaycjs"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/kkawakam/rustyline")
+    (synopsis "Rustyline macros implementation in Rust")
+    (description "This package provides Rustyline macros implementation in Rust.")
+    (license license:expat)))
+
 (define-public rust-rustyline-derive-0.3
   (package
+    (inherit rust-rustyline-derive-0.9)
     (name "rust-rustyline-derive")
     (version "0.3.1")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "rustyline-derive" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "0daj9szvfi442vj2fhm7qb92wmzv7g75qsjq9a6ycnqac4lhx9al"))))
-    (build-system cargo-build-system)
+         (base32 "0daj9szvfi442vj2fhm7qb92wmzv7g75qsjq9a6ycnqac4lhx9al"))))
     (arguments
      `(#:cargo-inputs
        (("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/kkawakam/rustyline")
-    (synopsis "Rustyline macros implementation in Rust")
-    (description "This package provides Rustyline macros implementation in Rust.")
-    (license license:expat)))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-rkyv-0.7
   (package
