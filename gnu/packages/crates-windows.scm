@@ -122,17 +122,17 @@ Windows Credential Manager.")
 (define-public rust-clipboard-win-4
   (package
     (name "rust-clipboard-win")
-    (version "4.2.1")
+    (version "4.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "clipboard-win" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1a1cpp4yyizz41bkij5x85p220xxrlja6l6wwj9wkvwj364a2kjf"))))
+        (base32 "0qh3rypkf1lazniq4nr04hxsck0d55rigb5sjvpvgnap4dyc54bi"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f  ; unresolved import `clipboard_win::raw`
        #:cargo-inputs
        (("rust-error-code" ,rust-error-code-2)
         ("rust-str-buf" ,rust-str-buf-1)
