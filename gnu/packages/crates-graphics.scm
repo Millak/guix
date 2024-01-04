@@ -626,6 +626,28 @@ for computer graphics.")
 @code{ratatui::style::Colors}.")
     (license license:expat)))
 
+(define-public rust-colorous-1
+  (package
+    (name "rust-colorous")
+    (version "1.0.12")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "colorous" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1crqxkhpvwjcnjggp2qjs2mzyd1xrv3drgqq4bzlhi9ggj687c3y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-dejavu" ,rust-dejavu-2)
+                                   ("rust-image" ,rust-image-0.24)
+                                   ("rust-imageproc" ,rust-imageproc-0.23)
+                                   ("rust-rusttype" ,rust-rusttype-0.9))))
+    (home-page "https://github.com/dtolnay/colorous")
+    (synopsis "Professional color schemes ported from d3-scale-chromatic")
+    (description "Professional color schemes ported from d3-scale-chromatic.")
+    (license license:asl2.0)))
+
 (define-public rust-core-graphics-0.23
   (package
     (name "rust-core-graphics")
