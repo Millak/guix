@@ -29612,10 +29612,11 @@ shell integration.")
     (license license:gpl3+)))
 
 (define-public emacs-vterm
-  (let ((commit "e19dc2bb9859a75616bf068c341a540d0d329e4d"))
+  (let ((commit "c3a3a23a5eace137947524c93644204bf6b56cff")
+        (revision "1"))
     (package
       (name "emacs-vterm")
-      (version "0.0.2")
+      (version (git-version "0.0.2" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -29624,7 +29625,7 @@ shell integration.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0iqlzpy83ra6xz406fmddfj72bmkdb5b1j59m1dbxf3wxn55320d"))))
+                  "0a3akvqmwh3frgbk1rgmi4b2gwdnpa3fymg7prin3k3jgqih1piv"))))
       (build-system emacs-build-system)
       (arguments
        `(#:modules ((guix build emacs-build-system)
