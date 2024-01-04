@@ -61811,6 +61811,28 @@ rustc compiler.")
              ("rust-serial-test" ,rust-serial-test-0.6)
              ("rust-tempfile" ,rust-tempfile-3))))))
 
+(define-public rust-rustix-openpty-0.1
+  (package
+    (name "rust-rustix-openpty")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustix-openpty" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "04pw7k8z1fk3642f9wr4jy1f2f6rly4pf2485jw4whn1kynklp52"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-errno" ,rust-errno-0.3)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-rustix" ,rust-rustix-0.38))
+       #:cargo-development-inputs (("rust-rustix" ,rust-rustix-0.38))))
+    (home-page "https://github.com/sunfishcode/rustix-openpty")
+    (synopsis "Safe Rust bindings to `openpty` and related functions")
+    (description "Safe Rust bindings to `openpty` and related functions.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-rusttype-0.9
   (package
     (name "rust-rusttype")
