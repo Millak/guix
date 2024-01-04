@@ -1404,48 +1404,6 @@ using AES-NI for high performance.")
     (description "Rust bindings for OpenAL, this crate contains FFI elements.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-alacritty-terminal-0.19
-  (package
-    (name "rust-alacritty-terminal")
-    (version "0.19.1")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "alacritty_terminal" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "19gypy8xhkm3icmc4js2jhh0nnw0ciag3qkxb55bw2mg3j61l01m"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-alacritty-config" ,rust-alacritty-config-0.1)
-        ("rust-alacritty-config-derive" ,rust-alacritty-config-derive-0.2)
-        ("rust-base64" ,rust-base64-0.13)
-        ("rust-bitflags" ,rust-bitflags-1)
-        ("rust-dirs" ,rust-dirs-4)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-mio" ,rust-mio-0.6)
-        ("rust-mio-anonymous-pipes" ,rust-mio-anonymous-pipes-0.2)
-        ("rust-mio-extras" ,rust-mio-extras-2)
-        ("rust-miow" ,rust-miow-0.3)
-        ("rust-nix" ,rust-nix-0.24)
-        ("rust-parking-lot" ,rust-parking-lot-0.12)
-        ("rust-regex-automata" ,rust-regex-automata-0.1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-yaml" ,rust-serde-yaml-0.8)
-        ("rust-signal-hook" ,rust-signal-hook-0.3)
-        ("rust-signal-hook-mio" ,rust-signal-hook-mio-0.2)
-        ("rust-unicode-width" ,rust-unicode-width-0.1)
-        ("rust-vte" ,rust-vte-0.10)
-        ("rust-windows-sys" ,rust-windows-sys-0.36))
-       #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://github.com/alacritty/alacritty")
-    (synopsis "Library for writing terminal emulators")
-    (description
-     "This package provides a library for writing terminal emulators.")
-    (license license:asl2.0)))
-
 (define-public rust-alga-0.9
   (package
     (name "rust-alga")
