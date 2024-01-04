@@ -878,6 +878,27 @@ and iOS.")
      "This package provides a library to perform image color model conversion.")
     (license license:expat-0)))
 
+(define-public rust-drm-ffi-0.6
+  (package
+    (name "rust-drm-ffi")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "drm-ffi" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0par8xcrpnz1h53yam4ai9jpqc9as337vclzsn4hw9xnqhciqzds"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-drm-sys" ,rust-drm-sys-0.5)
+                       ("rust-nix" ,rust-nix-0.27))))
+    (home-page "https://github.com/Smithay/drm-rs")
+    (synopsis "Safe, low-level bindings to the Direct Rendering Manager API")
+    (description
+     "Safe, low-level bindings to the Direct Rendering Manager API.")
+    (license license:expat)))
+
 (define-public rust-drm-fourcc-2
   (package
     (name "rust-drm-fourcc")
