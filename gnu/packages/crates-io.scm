@@ -33843,8 +33843,38 @@ versions < 0.2.")
 @code{BufWriter}.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-io-lifetimes-2
+  (package
+    (name "rust-io-lifetimes")
+    (version "2.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "io-lifetimes" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1373iwawish51r5dbd7fav1hp89idk30wkmbphyrg60y8xqi6qas"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-async-std" ,rust-async-std-1)
+                       ("rust-hermit-abi" ,rust-hermit-abi-0.3)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-mio" ,rust-mio-0.8)
+                       ("rust-os-pipe" ,rust-os-pipe-1)
+                       ("rust-socket2" ,rust-socket2-0.5)
+                       ("rust-tokio" ,rust-tokio-1)
+                       ("rust-windows-sys" ,rust-windows-sys-0.52))))
+    (home-page "https://github.com/sunfishcode/io-lifetimes")
+    (synopsis "Low-level I/O ownership and borrowing library")
+    (description
+     "This package provides a low-level I/O ownership and borrowing
+library.")
+    ;; The user can choose either license.
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-io-lifetimes-1
   (package
+    (inherit rust-io-lifetimes-2)
     (name "rust-io-lifetimes")
     (version "1.0.10")
     (source (origin
@@ -33854,7 +33884,6 @@ versions < 0.2.")
               (sha256
                (base32
                 "08625nsz0lgbd7c9lly6b6l45viqpsnj9jbsixd9mrz7596wfrlw"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-async-std" ,rust-async-std-1)
                        ("rust-fs-err" ,rust-fs-err-2)
@@ -33864,14 +33893,7 @@ versions < 0.2.")
                        ("rust-os-pipe" ,rust-os-pipe-1)
                        ("rust-socket2" ,rust-socket2-0.4)
                        ("rust-tokio" ,rust-tokio-1)
-                       ("rust-windows-sys" ,rust-windows-sys-0.48))))
-    (home-page "https://github.com/sunfishcode/io-lifetimes")
-    (synopsis "Low-level I/O ownership and borrowing library")
-    (description
-     "This package provides a low-level I/O ownership and borrowing
-library.")
-    ;; The user can choose either license.
-    (license (list license:asl2.0 license:expat))))
+                       ("rust-windows-sys" ,rust-windows-sys-0.48))))))
 
 (define-public rust-io-lifetimes-0.7
   (package
