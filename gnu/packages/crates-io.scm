@@ -5846,19 +5846,20 @@ paging.")
 (define-public rust-beef-0.5
   (package
     (name "rust-beef")
-    (version "0.5.0")
+    (version "0.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "beef" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "02blba0j192l0374kqwn8rjsc8aifj43xi26v142ijpjim1f4dk7"))))
+        (base32 "1c95lbnhld96iwwbyh5kzykbpysq0fnjfhwxa1mhap5qxgrl30is"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-serde" ,rust-serde-1))))
+     `(#:tests? #f      ; Doc tests segfault.
+       #:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-serde-derive" ,rust-serde-derive-1)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
     (home-page "https://github.com/maciejhirsz/beef")
     (synopsis "Faster, more compact implementation of Cow")
     (description "This package provides faster, more compact implementation of
