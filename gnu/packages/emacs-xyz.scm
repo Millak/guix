@@ -31382,7 +31382,7 @@ keypresses mapped in firefox to the action described in the function name.")
              #~(modify-phases %standard-phases
                  (add-after 'unpack 'chdir
                    (lambda _ (chdir "lisp"))))))
-      (inputs (list emacs-exwm-firefox-core emacs-s emacs-exwm))
+      (inputs (list emacs-exwm emacs-exwm-firefox-core emacs-s))
       (home-page "https://codeberg.org/emacs-weirdware/exwm-firefox")
       (synopsis "Enhanced support for Firefox under EXWM")
       (description
