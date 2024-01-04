@@ -4895,8 +4895,39 @@ the platform-specific getters provided by winit, or another library.")
     (description "This crate provides X11 library bindings for Rust.")
     (license license:expat)))
 
+(define-public rust-x11rb-0.13
+  (package
+    (name "rust-x11rb")
+    (version "0.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "x11rb" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06lzpmb67sfw37m0i9zz786hx6fklmykd9j3689blk3yijnmxwpq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-as-raw-xcb-connection" ,rust-as-raw-xcb-connection-1)
+                       ("rust-gethostname" ,rust-gethostname-0.4)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libloading" ,rust-libloading-0.8)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-x11rb-protocol" ,rust-x11rb-protocol-0.13))
+       #:cargo-development-inputs
+       (("rust-gethostname" ,rust-gethostname-0.4)
+        ("rust-polling" ,rust-polling-3)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3))))
+    (home-page "https://github.com/psychon/x11rb")
+    (synopsis "Rust bindings to X11")
+    (description "This package provides Rust bindings to X11.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-x11rb-0.10
   (package
+    (inherit rust-x11rb-0.13)
     (name "rust-x11rb")
     (version "0.10.1")
     (source (origin
@@ -4906,7 +4937,6 @@ the platform-specific getters provided by winit, or another library.")
               (sha256
                (base32
                 "01ympxagdl0qs35k1ww712shpnpbahkcc29j5dqmwd4z461lhasr"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-gethostname" ,rust-gethostname-0.2)
@@ -4916,11 +4946,7 @@ the platform-specific getters provided by winit, or another library.")
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-winapi" ,rust-winapi-0.3)
         ("rust-winapi-wsapoll" ,rust-winapi-wsapoll-0.1)
-        ("rust-x11rb-protocol" ,rust-x11rb-protocol-0.10))))
-    (home-page "https://github.com/psychon/x11rb")
-    (synopsis "Rust bindings to X11")
-    (description "This package provides Rust bindings to X11")
-    (license (list license:expat license:asl2.0))))
+        ("rust-x11rb-protocol" ,rust-x11rb-protocol-0.10))))))
 
 (define-public rust-x11rb-0.8
   (package
