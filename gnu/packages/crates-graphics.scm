@@ -2968,8 +2968,50 @@ using Rust.")
 internally rust-sdl2.")
     (license license:expat)))
 
+(define-public rust-smithay-client-toolkit-0.18
+  (package
+    (name "rust-smithay-client-toolkit")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "smithay-client-toolkit" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "03v0h71qzg5iw5nd2k15a50ic55a9wq6bc7l5dyczfm33yadkqv0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; Cut the dependency chain
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-2)
+        ("rust-bytemuck" ,rust-bytemuck-1)
+        ("rust-calloop" ,rust-calloop-0.12)
+        ("rust-calloop-wayland-source" ,rust-calloop-wayland-source-0.2)
+        ("rust-cursor-icon" ,rust-cursor-icon-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-memmap2" ,rust-memmap2-0.9)
+        ("rust-pkg-config" ,rust-pkg-config-0.3)
+        ("rust-rustix" ,rust-rustix-0.38)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-wayland-backend" ,rust-wayland-backend-0.3)
+        ("rust-wayland-client" ,rust-wayland-client-0.31)
+        ("rust-wayland-csd-frame" ,rust-wayland-csd-frame-0.3)
+        ("rust-wayland-cursor" ,rust-wayland-cursor-0.31)
+        ("rust-wayland-protocols" ,rust-wayland-protocols-0.31)
+        ("rust-wayland-protocols-wlr" ,rust-wayland-protocols-wlr-0.2)
+        ("rust-wayland-scanner" ,rust-wayland-scanner-0.31)
+        ("rust-xkbcommon" ,rust-xkbcommon-0.7)
+        ("rust-xkeysym" ,rust-xkeysym-0.2))))
+    (home-page "https://github.com/smithay/client-toolkit")
+    (synopsis "Toolkit for making client Wayland applications")
+    (description
+     "This package provides a toolkit for making client Wayland applications.")
+    (license license:expat)))
+
 (define-public rust-smithay-client-toolkit-0.16
   (package
+    (inherit rust-smithay-client-toolkit-0.18)
     (name "rust-smithay-client-toolkit")
     (version "0.16.0")
     (source (origin
@@ -2979,7 +3021,6 @@ internally rust-sdl2.")
               (sha256
                (base32
                 "0m7l0zhl9s3321yj8z6hf1g0w3l2ay85irgcw2r5wwfj69yw81zk"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
@@ -2993,12 +3034,7 @@ internally rust-sdl2.")
         ("rust-wayland-client" ,rust-wayland-client-0.29)
         ("rust-wayland-cursor" ,rust-wayland-cursor-0.29)
         ("rust-wayland-protocols" ,rust-wayland-protocols-0.29))
-       #:cargo-development-inputs (("rust-image" ,rust-image-0.24))))
-    (home-page "https://github.com/smithay/client-toolkit")
-    (synopsis "Toolkit for making client Wayland applications")
-    (description
-     "This package provides a toolkit for making client Wayland applications.")
-    (license license:expat)))
+       #:cargo-development-inputs (("rust-image" ,rust-image-0.24))))))
 
 (define-public rust-smithay-client-toolkit-0.15
   (package
