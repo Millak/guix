@@ -84472,6 +84472,30 @@ Read/Write streams as well as low-level in-memory encoding and decoding.")
 library.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-yansi-term-0.1
+  (package
+    (name "rust-yansi-term")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "yansi-term" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1w8vjlvxba6yvidqdvxddx3crl6z66h39qxj8xi6aqayw2nk0p7y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1)
+                       ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs (("rust-doc-comment" ,rust-doc-comment-0.3)
+                                   ("rust-regex" ,rust-regex-1)
+                                   ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/botika/yansi-term")
+    (synopsis "Library for ANSI terminal colours and styles (bold, underline)")
+    (description
+     "Library for ANSI terminal colours and styles (bold, underline).")
+    (license license:expat)))
+
 (define-public rust-yasna-0.5
   (package
     (name "rust-yasna")
