@@ -9572,8 +9572,39 @@ cached data.")
 spreadsheet file.")
     (license license:expat)))
 
+(define-public rust-calloop-0.12
+  (package
+    (name "rust-calloop")
+    (version "0.12.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "calloop" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gxd20zpys0q4v9fg3nrkyhrnjgpkgriidgfm5aqraar9njbal3v"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-async-task" ,rust-async-task-4)
+                       ("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-futures-io" ,rust-futures-io-0.3)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-nix" ,rust-nix-0.26)
+                       ("rust-pin-utils" ,rust-pin-utils-0.1)
+                       ("rust-polling" ,rust-polling-3)
+                       ("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-slab" ,rust-slab-0.4)
+                       ("rust-thiserror" ,rust-thiserror-1))
+       #:cargo-development-inputs (("rust-futures" ,rust-futures-0.3)
+                                   ("rust-rustix" ,rust-rustix-0.38))))
+    (home-page "https://github.com/Smithay/calloop")
+    (synopsis "Callback-based event loop")
+    (description "This package provides a callback-based event loop.")
+    (license license:expat)))
+
 (define-public rust-calloop-0.10
   (package
+    (inherit rust-calloop-0.12)
     (name "rust-calloop")
     (version "0.10.5")
     (source (origin
@@ -9583,7 +9614,6 @@ spreadsheet file.")
               (sha256
                (base32
                 "14h1yjksd8kakbd4xqz9xjc2gsa97rsdj5g05ivqsisswidj4n8s"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
        (list "--release" "--"
@@ -9597,11 +9627,7 @@ spreadsheet file.")
         ("rust-slotmap" ,rust-slotmap-1)
         ("rust-thiserror" ,rust-thiserror-1)
         ("rust-vec-map" ,rust-vec-map-0.8))
-       #:cargo-development-inputs (("rust-futures" ,rust-futures-0.3))))
-    (home-page "https://github.com/Smithay/calloop")
-    (synopsis "Callback-based event loop")
-    (description "This package provides a callback-based event loop.")
-    (license license:expat)))
+       #:cargo-development-inputs (("rust-futures" ,rust-futures-0.3))))))
 
 (define-public rust-calloop-0.9
   (package
