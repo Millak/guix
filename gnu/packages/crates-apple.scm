@@ -4,6 +4,7 @@
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2021, 2022 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -606,6 +607,121 @@ Central Dispatch.")
         (base32
          "019nzy993hxaiazcdnayx3csv2iki34i535asw11ki96hakkrs84"))))
     (arguments '(#:tests? #f))))  ; Tests only run on Mac.
+
+(define-public rust-fsevent-2
+  (package
+    (name "rust-fsevent")
+    (version "2.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fsevent" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0qsylfbhgha319q6a8yvkznbm3hf47gy3y8nq82qijcm5hh4gwwp"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-fsevent-sys" ,rust-fsevent-sys-3))
+       #:cargo-development-inputs
+       (("rust-tempfile" ,rust-tempfile-3)
+        ("rust-time" ,rust-time-0.2))))
+    (home-page "https://github.com/octplane/fsevent-rust")
+    (synopsis "Rust bindings to the fsevent-sys macOS API")
+    (description
+     "This package provides Rust bindings to the @code{fsevent-sys} macOS API
+for file changes notifications")
+    (license license:expat)))
+
+(define-public rust-fsevent-0.4
+  (package
+    (inherit rust-fsevent-2)
+    (name "rust-fsevent")
+    (version "0.4.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "fsevent" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "1djxnc2fmv265xqf1iyfz56smh13v9r1p0w9125wjg6k3fyx3dss"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; only available on macOS
+       #:cargo-inputs
+        (("rust-bitflags" ,rust-bitflags-1)
+         ("rust-fsevent-sys" ,rust-fsevent-sys-2))
+        #:cargo-development-inputs
+        (("rust-tempdir" ,rust-tempdir-0.3)
+         ("rust-time" ,rust-time-0.1))))))
+
+(define-public rust-fsevent-sys-4
+  (package
+    (name "rust-fsevent-sys")
+    (version "4.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fsevent-sys" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1liz67v8b0gcs8r31vxkvm2jzgl9p14i78yfqx81c8sdv817mvkn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2))))
+    (home-page "https://github.com/octplane/fsevent-rust/tree/master/fsevent-sys")
+    (synopsis "Rust bindings to the fsevent macOS API")
+    (description "This package provides Rust bindings to the @code{fsevent}
+macOS API for file changes notifications")
+    (license license:expat)))
+
+(define-public rust-fsevent-sys-3
+  (package
+    (inherit rust-fsevent-sys-4)
+    (name "rust-fsevent-sys")
+    (version "3.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "fsevent-sys" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1mav57d1zcp4x17h0wprcr188d8yvxfz1c0f1z0p31q52xl5wvya"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2))))))
+
+(define-public rust-fsevent-sys-2
+  (package
+    (inherit rust-fsevent-sys-3)
+    (name "rust-fsevent-sys")
+    (version "2.0.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "fsevent-sys" version))
+        (file-name
+         (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "18246vxk7rqn52m0sfrhivxq802i34p2wqqx5zsa0pamjj5086zl"))))
+    (arguments
+     `(#:skip-build? #t     ; only available on macOS
+       #:cargo-inputs (("rust-libc" ,rust-libc-0.2))))))
 
 (define-public rust-objc-0.2
   (package
