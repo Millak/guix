@@ -38991,27 +38991,40 @@ algorithms.  It supports CBC block cipher mode, PKCS5 padding and 64, 128,
         ("rust-charset" ,rust-charset-0.1)
         ("rust-quoted-printable" ,rust-quoted-printable-0.4))))))
 
+(define-public rust-malloc-buf-1
+  (package
+    (name "rust-malloc-buf")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "malloc_buf" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zap9m0xmd5sdsxil7v2rgb1dzlq0308f826pwvqdvjyaz0chciz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))
+    (home-page "https://github.com/SSheldon/malloc_buf")
+    (synopsis "Structs for handling malloc'd memory passed to Rust")
+    (description
+     "This package provides structs for handling malloc'd memory passed to Rust.")
+    (license license:expat)))
+
 (define-public rust-malloc-buf-0.0
- (package
-   (name "rust-malloc-buf")
-   (version "0.0.6")
-   (source
-    (origin
-      (method url-fetch)
-      (uri (crate-uri "malloc_buf" version))
-      (file-name
-       (string-append name "-" version ".tar.gz"))
-      (sha256
-       (base32
-        "1jqr77j89pwszv51fmnknzvd53i1nkmcr8rjrvcxhm4dx1zr1fv2"))))
-   (build-system cargo-build-system)
-   (arguments
-    `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))
-   (home-page "https://github.com/SSheldon/malloc_buf")
-   (synopsis "Structs for handling malloc'd memory passed to Rust")
-   (description
-    "This package provides structs for handling malloc'd memory passed to Rust.")
-   (license license:expat)))
+  (package
+    (inherit rust-malloc-buf-1)
+    (name "rust-malloc-buf")
+    (version "0.0.6")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "malloc_buf" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32 "1jqr77j89pwszv51fmnknzvd53i1nkmcr8rjrvcxhm4dx1zr1fv2"))))
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))))
 
 (define-public rust-maplit-1
   (package
