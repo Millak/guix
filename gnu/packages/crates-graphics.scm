@@ -4688,6 +4688,53 @@ the platform-specific getters provided by winit, or another library.")
         ("rust-simple-logger" ,rust-simple-logger-2)
         ("rust-web-sys" ,rust-web-sys-0.3))))))
 
+(define-public rust-winit-0.27
+  (package
+    (inherit rust-winit-0.28)
+    (name "rust-winit")
+    (version "0.27.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "winit" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0z35jymza04gjniq0mmydq3m1mrr9pqfcwcldj4zvcl6pmpnsydv"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-cocoa" ,rust-cocoa-0.24)
+        ("rust-core-foundation" ,rust-core-foundation-0.9)
+        ("rust-core-graphics" ,rust-core-graphics-0.22)
+        ("rust-dispatch" ,rust-dispatch-0.2)
+        ("rust-instant" ,rust-instant-0.1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-mint" ,rust-mint-0.5)
+        ("rust-mio" ,rust-mio-0.8)
+        ("rust-ndk" ,rust-ndk-0.7)
+        ("rust-ndk-glue" ,rust-ndk-glue-0.7)
+        ("rust-objc" ,rust-objc-0.2)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-parking-lot" ,rust-parking-lot-0.12)
+        ("rust-percent-encoding" ,rust-percent-encoding-2)
+        ("rust-raw-window-handle" ,rust-raw-window-handle-0.4)
+        ("rust-raw-window-handle" ,rust-raw-window-handle-0.5)
+        ("rust-sctk-adwaita" ,rust-sctk-adwaita-0.4)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.16)
+        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+        ("rust-wayland-client" ,rust-wayland-client-0.29)
+        ("rust-wayland-protocols" ,rust-wayland-protocols-0.29)
+        ("rust-web-sys" ,rust-web-sys-0.3)
+        ("rust-windows-sys" ,rust-windows-sys-0.36)
+        ("rust-x11-dl" ,rust-x11-dl-2))
+       #:cargo-development-inputs (("rust-console-log" ,rust-console-log-0.2)
+                                   ("rust-image" ,rust-image-0.24)
+                                   ("rust-simple-logger" ,rust-simple-logger-2))))
+    (native-inputs (list pkg-config))
+    (inputs (list expat fontconfig freetype))))
+
 (define-public rust-winit-0.26
   (package
     (inherit rust-winit-0.28)
