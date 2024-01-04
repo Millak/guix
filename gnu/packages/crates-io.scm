@@ -12566,8 +12566,36 @@ CMAKE environmental variable is set.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-cocoa-0.25
+  (package
+    (name "rust-cocoa")
+    (version "0.25.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cocoa" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0g1pl5hq28arqmvsswf2ib7smj445miwa58qa7wrfvksz54h857n"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-block" ,rust-block-0.1)
+                       ("rust-cocoa-foundation" ,rust-cocoa-foundation-0.1)
+                       ("rust-core-foundation" ,rust-core-foundation-0.9)
+                       ("rust-core-graphics" ,rust-core-graphics-0.23)
+                       ("rust-foreign-types" ,rust-foreign-types-0.5)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-objc" ,rust-objc-0.2))))
+    (home-page "https://github.com/servo/core-foundation-rs")
+    (synopsis "Bindings to Cocoa for macOS")
+    (description "This package provides bindings to Cocoa for macOS.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-cocoa-0.24
   (package
+    (inherit rust-cocoa-0.25)
     (name "rust-cocoa")
     (version "0.24.0")
     (source
@@ -12577,7 +12605,6 @@ CMAKE environmental variable is set.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0cp8hsajmi7gini22bmlsf9dac7cap7x1k169vxhwlr3j8p90qvg"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -12588,11 +12615,7 @@ CMAKE environmental variable is set.")
         ("rust-core-graphics" ,rust-core-graphics-0.22)
         ("rust-foreign-types" ,rust-foreign-types-0.3)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-objc" ,rust-objc-0.2))))
-    (home-page "https://github.com/servo/core-foundation-rs")
-    (synopsis "Bindings to Cocoa for macOS")
-    (description "This package provides bindings to Cocoa for macOS.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-objc" ,rust-objc-0.2))))))
 
 (define-public rust-cocoa-0.23
   (package
