@@ -4925,6 +4925,28 @@ the platform-specific getters provided by winit, or another library.")
     (description "This package provides Rust bindings to X11.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-x11rb-0.11
+  (package
+    (inherit rust-x11rb-0.13)
+    (name "rust-x11rb")
+    (version "0.11.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "x11rb" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05wn86brwm1cd8xgrbs9s1fy71asav8qlsrnlzkvm4fx2aacgwyd"))))
+    (arguments
+     `(#:cargo-inputs (("rust-gethostname" ,rust-gethostname-0.2)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-libloading" ,rust-libloading-0.7)
+                       ("rust-nix" ,rust-nix-0.25)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-winapi" ,rust-winapi-0.3)
+                       ("rust-winapi-wsapoll" ,rust-winapi-wsapoll-0.1)
+                       ("rust-x11rb-protocol" ,rust-x11rb-protocol-0.11))))))
+
 (define-public rust-x11rb-0.10
   (package
     (inherit rust-x11rb-0.13)
