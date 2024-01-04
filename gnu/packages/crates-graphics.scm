@@ -2678,8 +2678,41 @@ interactive applications.")
         ("rust-glob" ,rust-glob-0.2)
         ("rust-term" ,rust-term-0.4))))))
 
+(define-public rust-ravif-0.11
+  (package
+    (name "rust-ravif")
+    (version "0.11.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ravif" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1vhn2p31z31c01j6i28slgbi01wq1hmyqjidwfkqy430hh16kp5s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-avif-serialize" ,rust-avif-serialize-0.8)
+                       ("rust-imgref" ,rust-imgref-1)
+                       ("rust-loop9" ,rust-loop9-0.1)
+                       ("rust-quick-error" ,rust-quick-error-2)
+                       ("rust-rav1e" ,rav1e)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-rgb" ,rust-rgb-0.8))
+       #:cargo-development-inputs (("rust-avif-parse" ,rust-avif-parse-1))))
+    (native-inputs
+     (list nasm pkg-config))
+    (inputs
+     (list libgit2 zlib))
+    (home-page "https://lib.rs/ravif")
+    (synopsis "Rust library for encoding images in AVIF format")
+    (description
+     "This package provides a rav1e-based pure Rust library for encoding images
+in AVIF format (powers the @code{cavif} tool).")
+    (license license:bsd-3)))
+
 (define-public rust-ravif-0.8
   (package
+    (inherit rust-ravif-0.11)
     (name "rust-ravif")
     (version "0.8.10+rust-1.67.0")
     (source (origin
@@ -2688,7 +2721,6 @@ interactive applications.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32 "1r3s78781kb9lwysdvpdc80gavly33dcs4inhhp2dawml9g3rjss"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-avif-serialize" ,rust-avif-serialize-0.7)
@@ -2700,17 +2732,7 @@ interactive applications.")
         ("rust-rayon" ,rust-rayon-1)
         ("rust-rgb" ,rust-rgb-0.8))
        #:cargo-development-inputs
-       (("rust-avif-parse" ,rust-avif-parse-1))))
-    (native-inputs
-     (list nasm pkg-config))
-    (inputs
-     (list libgit2 zlib))
-    (home-page "https://lib.rs/ravif")
-    (synopsis "Rust library for encoding images in AVIF format")
-    (description
-     "This package provides a rav1e-based pure Rust library for encoding images in
-AVIF format (powers the `cavif` tool).")
-    (license license:bsd-3)))
+       (("rust-avif-parse" ,rust-avif-parse-1))))))
 
 (define-public rust-ravif-0.6
   (package
