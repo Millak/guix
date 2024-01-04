@@ -1073,6 +1073,35 @@ EUI-64, also known as MAC-48 media access control addresses.")
        (("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
         ("rust-serde" ,rust-serde-1))))))
 
+(define-public rust-evdev-0.11
+  (package
+    (name "rust-evdev")
+    (version "0.11.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "evdev" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1zknxkgkyh9fx3mq4div9kcgvgsiy91vzd5sq7bdinsn467sfx65"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitvec" ,rust-bitvec-1)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-futures-core" ,rust-futures-core-0.3)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-nix" ,rust-nix-0.23)
+                       ("rust-paste" ,rust-paste-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs (("rust-itertools" ,rust-itertools-0.10)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/cmr/evdev")
+    (synopsis "Evdev interface for Linux")
+    (description "This package provides an evdev interface for Linux.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-exr-1
   (package
     (name "rust-exr")
