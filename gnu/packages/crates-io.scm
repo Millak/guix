@@ -52500,8 +52500,34 @@ replacements, adding colorful diffs.")
         ("rust-chrono" ,rust-chrono-0.4)
         ("rust-env-logger" ,rust-env-logger-0.6))))))
 
+(define-public rust-prettyplease-0.2
+  (package
+    (name "rust-prettyplease")
+    (version "0.2.16")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "prettyplease" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1dfbq98rkq86l9g8w1l81bdvrz4spcfl48929n0pyz79clhzc754"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs (("rust-indoc" ,rust-indoc-2)
+                                   ("rust-proc-macro2" ,rust-proc-macro2-1)
+                                   ("rust-quote" ,rust-quote-1)
+                                   ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/dtolnay/prettyplease")
+    (synopsis "Minimal `syn` syntax tree pretty-printer")
+    (description
+     "This package provides a minimal `syn` syntax tree pretty-printer.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-prettyplease-0.1
   (package
+    (inherit rust-prettyplease-0.2)
     (name "rust-prettyplease")
     (version "0.1.23")
     (source (origin
@@ -52510,18 +52536,12 @@ replacements, adding colorful diffs.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32 "0y2wbmflbkgp13ywd7qyq7hyi59x5zazmljnw8gg09wnfwak4zp9"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-syn" ,rust-syn-1))
        #:cargo-development-inputs
-       (("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/dtolnay/prettyplease")
-    (synopsis "Minimal `syn` syntax tree pretty-printer")
-    (description
-     "This package provides a minimal `syn` syntax tree pretty-printer.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-pretty-hex-0.3
   (package
