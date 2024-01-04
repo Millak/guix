@@ -5016,8 +5016,39 @@ the platform-specific getters provided by winit, or another library.")
     (description "Rust bindings to X11")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-x11-clipboard-0.8
+  (package
+    (name "rust-x11-clipboard")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "x11-clipboard" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ps0fk1912vzy382fc8l926q8w1l8bxmw72l3kr9bwdi2l8wl6ml"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-x11rb" ,rust-x11rb-0.12))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'pre-check
+           (lambda* (#:key native-inputs inputs #:allow-other-keys)
+             ;; Most tests require an X server.
+             (let ((xvfb (search-input-file (or native-inputs inputs)
+                                            "bin/Xvfb"))
+                   (display ":1"))
+               (setenv "DISPLAY" display)
+               (system (string-append xvfb " " display " &"))))))))
+    (native-inputs (list xorg-server-for-tests))
+    (home-page "https://github.com/quininer/x11-clipboard")
+    (synopsis "x11 clipboard support for Rust")
+    (description "This package provides x11 clipboard support for Rust.")
+    (license license:expat)))
+
 (define-public rust-x11-clipboard-0.7
   (package
+    (inherit rust-x11-clipboard-0.8)
     (name "rust-x11-clipboard")
     (version "0.7.1")
     (source (origin
@@ -5027,14 +5058,9 @@ the platform-specific getters provided by winit, or another library.")
               (sha256
                (base32
                 "0r3lgslbbdf0mb914n0f9q2pqci407r1pcddwbl7sfvc4alrl2wq"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Wants a running X server.
-       #:cargo-inputs (("rust-x11rb" ,rust-x11rb-0.10))))
-    (home-page "https://github.com/quininer/x11-clipboard")
-    (synopsis "x11 clipboard support for Rust")
-    (description "This package provides x11 clipboard support for Rust.")
-    (license license:expat)))
+       #:cargo-inputs (("rust-x11rb" ,rust-x11rb-0.10))))))
 
 (define-public rust-x11-clipboard-0.5
   (package
