@@ -1988,6 +1988,42 @@ filters and decoders for the most common image formats.")
         ("rust-num-complex" ,rust-num-complex-0.2)
         ("rust-quickcheck" ,rust-quickcheck-0.6))))))
 
+(define-public rust-imageproc-0.23
+  (package
+    (name "rust-imageproc")
+    (version "0.23.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "imageproc" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1mszh0jz8208r9h62aq61mda7xf6pwldcmcnl80n6ihx6n9ykbmn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included
+       #:cargo-inputs (("rust-approx" ,rust-approx-0.5)
+                       ("rust-conv" ,rust-conv-0.3)
+                       ("rust-image" ,rust-image-0.24)
+                       ("rust-itertools" ,rust-itertools-0.10)
+                       ("rust-nalgebra" ,rust-nalgebra-0.30)
+                       ("rust-num" ,rust-num-0.4)
+                       ("rust-quickcheck" ,rust-quickcheck-0.9)
+                       ("rust-rand" ,rust-rand-0.7)
+                       ("rust-rand-distr" ,rust-rand-distr-0.2)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-rusttype" ,rust-rusttype-0.9)
+                       ("rust-sdl2" ,rust-sdl2-0.35))
+       #:cargo-development-inputs
+       (("rust-assert-approx-eq" ,rust-assert-approx-eq-1)
+        ("rust-image" ,rust-image-0.24)
+        ("rust-quickcheck" ,rust-quickcheck-0.9)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
+    (home-page "https://github.com/image-rs/imageproc")
+    (synopsis "Image processing operations")
+    (description "Image processing operations.")
+    (license license:expat)))
+
 (define-public rust-imgref-1
   (package
     (name "rust-imgref")
