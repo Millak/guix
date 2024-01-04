@@ -80930,18 +80930,17 @@ clear display in the output.")
 (define-public rust-unsafe-libyaml-0.2
   (package
     (name "rust-unsafe-libyaml")
-    (version "0.2.8")
+    (version "0.2.10")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "unsafe-libyaml" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "19l0v20x83dvxbr68rqvs9hvawaqd929hia1nldfahlhamm80r8q"))))
+                "0jsyc1kqc536wpgx1js61lwj86crniqw16lyvh02va4m1f9r0k5b"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f  ; use of undeclared crate or module `unsafe_libyaml_test_suite`
-       #:cargo-development-inputs
+     `(#:cargo-development-inputs
        (("rust-pretty-assertions" ,rust-pretty-assertions-1))))
     (home-page "https://github.com/dtolnay/unsafe-libyaml")
     (synopsis "Libyaml in rust")
