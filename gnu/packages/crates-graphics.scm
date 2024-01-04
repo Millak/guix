@@ -40,6 +40,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-windows)
+  #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages llvm)
@@ -336,6 +337,31 @@ Mac, and Unix.")
     (home-page "https://github.com/MaikKlein/ash")
     (synopsis "Vulkan bindings for Rust")
     (description "Vulkan bindings for Rust.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-ash-window-0.12
+  (package
+    (name "rust-ash-window")
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ash-window" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1armbqzr0x905yypvh9ywgjj91kn93y5mxd6gkwaiwr9gid2h4mr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-ash" ,rust-ash-0.37)
+                       ("rust-raw-window-handle" ,rust-raw-window-handle-0.5)
+                       ("rust-raw-window-metal" ,rust-raw-window-metal-0.3))
+       #:cargo-development-inputs (("rust-ash" ,rust-ash-0.37)
+                                   ("rust-winit" ,rust-winit-0.27))))
+    (native-inputs (list pkg-config vulkan-loader))
+    (inputs (list expat fontconfig freetype))
+    (home-page "https://github.com/MaikKlein/ash")
+    (synopsis "Interop library between ash and raw-window-handle")
+    (description "Interop library between ash and raw-window-handle.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-avif-parse-1
