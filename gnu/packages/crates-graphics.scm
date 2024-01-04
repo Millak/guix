@@ -1778,6 +1778,29 @@ EUI-64, also known as MAC-48 media access control addresses.")
        #:cargo-inputs
        (("rust-gl-generator" ,rust-gl-generator-0.14))))))
 
+(define-public rust-gpu-alloc-0.6
+  (package
+    (name "rust-gpu-alloc")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "gpu-alloc" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wd1wq7qs8ja0cp37ajm9p1r526sp6w0kvjp3xx24jsrjfx2vkgv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-gpu-alloc-types" ,rust-gpu-alloc-types-0.3)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-tracing" ,rust-tracing-0.1))))
+    (home-page "https://github.com/zakarumych/gpu-alloc")
+    (synopsis "Implementation agnostic memory allocator for Vulkan like APIs")
+    (description
+     "Implementation agnostic memory allocator for Vulkan like APIs.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-gpu-alloc-types-0.3
   (package
     (name "rust-gpu-alloc-types")
