@@ -1281,14 +1281,14 @@ timeouts.")
 (define-public sbcl-bordeaux-threads
   (package
     (name "sbcl-bordeaux-threads")
-    (version "0.9.2")
+    (version "0.9.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/sionescu/bordeaux-threads")
                     (commit (string-append "v" version))))
               (sha256
-               (base32 "0d9sd7pm91yhln95z8nclhn6n4l5b2cp3pxpggpmpv7rsq84ssmh"))
+               (base32 "0pp3w5hsph47sqagr4j2pbg3ddb29jx93zg8kvxsp2c4flp0qz0f"))
               (file-name (git-file-name "cl-bordeaux-threads" version))))
     (inputs (list sbcl-alexandria
                   sbcl-global-vars
@@ -1300,16 +1300,6 @@ timeouts.")
      (list
        #:phases
        #~(modify-phases %standard-phases
-           (add-after 'unpack 'silence-deprecation-warning
-             (lambda _
-               ;; The deprecation warning for APIv1 makes the build of some
-               ;; of the dependents of bordeaux-threads fail because they
-               ;; interpret it as an error instead of a simple indication.
-               ;; Let's silence this warning for now.
-               (substitute* (cons* "apiv1/default-implementations.lisp"
-                                   (find-files "apiv1" "impl-.*\\.lisp"))
-                 (("\\(warn \"Bordeaux-Threads APIv1 is deprecated\\. Please migrate to APIv2\\.\"\\)")
-                  ""))))
            (add-after 'unpack 'adjust-test-sleep
              (lambda _
                ;; 0.001 is too short for some slower machines.
