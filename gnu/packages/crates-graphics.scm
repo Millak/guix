@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Valentin Ignatev <valentignatev@gmail.com>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2020, 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
@@ -310,6 +310,29 @@ to draw lines and colored text and then write them to the terminal.  It uses
 the term library to handle the ANSI nonsense and hence it works on Windows,
 Mac, and Unix.")
     (license (list license:asl2.0 license:expat))))
+
+(define-public rust-ash-0.37
+  (package
+    (name "rust-ash")
+    (version "0.37.3+1.3.251")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ash" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jndbsi5c8xifh4fdp378xpbyzdhs7y38hmbhih0lsv8bn1w7s9r"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=entry::Entry::try_enumerate_instance_version"
+         "--skip=src/lib.rs")
+       #:cargo-inputs (("rust-libloading" ,rust-libloading-0.7))))
+    (home-page "https://github.com/MaikKlein/ash")
+    (synopsis "Vulkan bindings for Rust")
+    (description "Vulkan bindings for Rust.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-avif-parse-1
   (package
