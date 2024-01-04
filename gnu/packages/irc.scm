@@ -15,6 +15,7 @@
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024 Christian Miller <christian.miller@dadoes.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -62,6 +63,8 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages documentation)
+  #:use-module (gnu packages enchant)
   #:use-module (gnu packages file)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages geo)
@@ -73,6 +76,7 @@
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
+  #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages guile-xyz)
@@ -640,6 +644,48 @@ client-to-client (CTCP) protocol, simple chat history logging, synchronous
 message handling, multi-channel joining at server connection, full support for
 all RFC 2812 commands, and customized color scheme definitions.")
     (license license:expat)))
+
+(define-public kvirc
+  (package
+    (name "kvirc")
+    (version "5.2.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kvirc/KVIrc")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0i3gkjv8l7w3smz6dv1734ja91y281bmfr5sajyzcclyc7yq7w24"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f)) ;no tests
+    (native-inputs
+     (list doxygen
+           graphviz
+           pkg-config))
+    (inputs
+     (list enchant
+           gettext-minimal
+           openssl
+           perl
+           python
+           qtbase-5
+           qtmultimedia-5
+           qtsvg-5
+           qtwebengine-5
+           qtx11extras
+           zlib))
+    (home-page "https://www.kvirc.net/")
+    (synopsis "IRC client based on QT GUI toolkit")
+    (description
+     "KVIrc is a IRC client based on the Qt GUI toolkit.")
+    ;; doc/LICENSE-OPENSSL
+    ;; doc/LICENSE-AMIP
+    ;; GPL2+ mentioned in README
+    (license (list license:gpl2+ license:openssl))))
 
 (define-public limnoria
   (package
