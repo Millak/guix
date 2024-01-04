@@ -31363,11 +31363,10 @@ keypresses mapped in firefox to the action described in the function name.")
       (license (list license:gpl3+)))))
 
 (define-public emacs-exwm-firefox
-  (let ((commit "7390c3bc425894aeda3c12c23f61a234bb71a2d9")
-        (revision "1"))
+  (let ((commit "ba4044cf57f99656bbe1974278336b6abcb15497")) ;version bump
     (package
       (name "emacs-exwm-firefox")
-      (version (git-version "0.4" revision commit))
+      (version "1.2")
       (source
        (origin
          (method git-fetch)
@@ -31376,8 +31375,13 @@ keypresses mapped in firefox to the action described in the function name.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0xmgij04h4cbcgqafyyf9qajf0wp6mxpfpwjm6gi1jgisrql882d"))))
+          (base32 "1x9hc94a5wygyw714q98jbk4kjvys2ra94qdc2cbgkm6iq982rvq"))))
       (build-system emacs-build-system)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'chdir
+                   (lambda _ (chdir "lisp"))))))
       (inputs (list emacs-exwm-firefox-core emacs-s emacs-exwm))
       (home-page "https://codeberg.org/emacs-weirdware/exwm-firefox")
       (synopsis "Enhanced support for Firefox under EXWM")
