@@ -33595,7 +33595,7 @@ passphrase until the first time you push to a remote.")
 (define-public emacs-super-save
   (package
     (name "emacs-super-save")
-    (version "0.3.0")
+    (version "0.4.0")
     (source
      (origin
        (method git-fetch)
@@ -33605,7 +33605,7 @@ passphrase until the first time you push to a remote.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "066fyg4r4pksyandpd7s53hagpvm2rw90q5ks4jlpgy7x00hw09l"))))
+         "1nypbklgfxyrp55f0dazg9hm7gkqibijd6k4nlb0b0f1rhcm989b"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/bbatsov/super-save")
     (synopsis "Auto-save buffers, based on your activity")
