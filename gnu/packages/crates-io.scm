@@ -61989,8 +61989,53 @@ sub-processes using a fork-like interface.")
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-wait-timeout" ,rust-wait-timeout-0.2))))))
 
+(define-public rust-rustyline-12
+  (package
+    (name "rust-rustyline")
+    (version "12.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rustyline" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1fcxgkz6hia74wnwnf1b92s69gnij5xgr42xw637xj05r95wlklr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-clipboard-win" ,rust-clipboard-win-4)
+                       ("rust-fd-lock" ,rust-fd-lock-3)
+                       ("rust-home" ,rust-home-0.5)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-nix" ,rust-nix-0.26)
+                       ("rust-radix-trie" ,rust-radix-trie-0.2)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-rusqlite" ,rust-rusqlite-0.29)
+                       ("rust-rustyline-derive" ,rust-rustyline-derive-0.9)
+                       ("rust-scopeguard" ,rust-scopeguard-1)
+                       ("rust-signal-hook" ,rust-signal-hook-0.3)
+                       ("rust-skim" ,rust-skim-0.10)
+                       ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1)
+                       ("rust-utf8parse" ,rust-utf8parse-0.2)
+                       ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs (("rust-assert-matches" ,rust-assert-matches-1)
+                                   ("rust-doc-comment" ,rust-doc-comment-0.3)
+                                   ("rust-env-logger" ,rust-env-logger-0.10)
+                                   ("rust-rand" ,rust-rand-0.8)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/kkawakam/rustyline")
+    (synopsis "Readline implementation in Rust")
+    (description
+     "Rustyline is a readline implementation based on the linenoise package.")
+    (license license:expat)))
+
 (define-public rust-rustyline-9
   (package
+    (inherit rust-rustyline-12)
     (name "rust-rustyline")
     (version "9.0.0")
     (source
@@ -62000,7 +62045,6 @@ sub-processes using a fork-like interface.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1mj0cgdyw6gaadsg7yxsnb9n4bdl91qga9kiwyd4hqqsi31qf13r"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -62021,12 +62065,7 @@ sub-processes using a fork-like interface.")
         ("rust-unicode-width" ,rust-unicode-width-0.1)
         ("rust-utf8parse" ,rust-utf8parse-0.2)
         ("rust-winapi" ,rust-winapi-0.3)
-        ("skim" ,skim))))
-    (home-page "https://github.com/kkawakam/rustyline")
-    (synopsis "Readline implementation in Rust")
-    (description
-     "Rustyline is a readline implementation based on the linenoise package.")
-    (license license:expat)))
+        ("skim" ,skim))))))
 
 (define-public rust-rustyline-8
   (package
