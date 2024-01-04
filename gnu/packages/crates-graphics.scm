@@ -3746,8 +3746,33 @@ and wayland-server.")
        (("rust-nix" ,rust-nix-0.14)
         ("rust-wayland-sys" ,rust-wayland-sys-0.21))))))
 
+(define-public rust-wayland-cursor-0.31
+  (package
+    (name "rust-wayland-cursor")
+    (version "0.31.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wayland-cursor" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0nxdyyg3a3649n316fbnm8rak5k90j580kfnfxn9src6x45a4jm4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-nix" ,rust-nix-0.26)
+                       ("rust-wayland-client" ,rust-wayland-client-0.31)
+                       ("rust-xcursor" ,rust-xcursor-0.3))))
+    (home-page "https://github.com/smithay/wayland-rs")
+    (synopsis "Bindings to libwayland-cursor")
+    (description
+     "This crate provides helpers to load the system provided cursor images
+and load them into WlBuffers as well as obtain the necessary metadata to
+properly display animated cursors.")
+    (license license:expat)))
+
 (define-public rust-wayland-cursor-0.29
   (package
+    (inherit rust-wayland-cursor-0.31)
     (name "rust-wayland-cursor")
     (version "0.29.5")
     (source
@@ -3757,21 +3782,13 @@ and wayland-server.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0qbn6wqmjibkx3lb3ggbp07iabzgx2zhrm0wxxxjbmhkdyvccrb8"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-nix" ,rust-nix-0.24)
         ("rust-wayland-client" ,rust-wayland-client-0.29)
         ("rust-xcursor" ,rust-xcursor-0.3))))
     (inputs
-     (list rust-nix-0.24 rust-wayland-client-0.29 rust-xcursor-0.3))
-    (home-page "https://github.com/smithay/wayland-rs")
-    (synopsis "Bindings to libwayland-cursor")
-    (description
-     "This crate provides helpers to load the system provided cursor images
-and load them into WlBuffers as well as obtain the necessary metadata to
-properly display animated cursors.")
-    (license license:expat)))
+     (list rust-nix-0.24 rust-wayland-client-0.29 rust-xcursor-0.3))))
 
 (define-public rust-wayland-cursor-0.28
   (package
