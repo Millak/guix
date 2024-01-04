@@ -2083,8 +2083,32 @@ pixel buffers with width, height and stride.")
 graphics and video games.")
     (license license:expat)))
 
+(define-public rust-lyon-geom-1
+  (package
+    (name "rust-lyon-geom")
+    (version "1.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lyon_geom" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ydzjz8lh2jlg9gjcpmkix0yxfgkv76yn0mb67h0nasa4f6zpv7d"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arrayvec" ,rust-arrayvec-0.7)
+                       ("rust-euclid" ,rust-euclid-0.22)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/nical/lyon")
+    (synopsis "2D graphics rendering on the GPU using tessellation")
+    (description
+     "This package provides 2D graphics rendering on the GPU using tessellation.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-lyon-geom-0.17
   (package
+    (inherit rust-lyon-geom-1)
     (name "rust-lyon-geom")
     (version "0.17.6")
     (source
@@ -2096,19 +2120,13 @@ graphics and video games.")
         (sha256
          (base32
           "12al92qsh0f8ci3qf3533r4y5hxzzyfp972vm4wqzz9bq9vwx6ff"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
         (("rust-arrayvec" ,rust-arrayvec-0.5)
          ("rust-euclid" ,rust-euclid-0.22)
          ("rust-num-traits" ,rust-num-traits-0.2)
-         ("rust-serde" ,rust-serde-1))))
-    (home-page "https://github.com/nical/lyon")
-    (synopsis "2D graphics rendering on the GPU using tessellation")
-    (description
-     "This package provides 2D graphics rendering on the GPU using tessellation.")
-    (license (list license:expat license:asl2.0))))
+         ("rust-serde" ,rust-serde-1))))))
 
 (define-public rust-lyon-path-0.17
   (package
