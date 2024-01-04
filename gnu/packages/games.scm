@@ -4118,7 +4118,8 @@ Widgets, and allows users to create more.")
                                   "fifengine/tar.gz/" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (patches (search-patches "fifengine-swig-compat.patch"
-                                       "fifengine-boost-compat.patch"))
+                                       "fifengine-boost-compat.patch"
+                                       "fifengine-python-3.9-compat.patch"))
               (sha256
                (base32
                 "1y4grw25cq5iqlg05rnbyxw1njl11ypidnlsm3qy4sm3xxdvb0p8"))))

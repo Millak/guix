@@ -1175,6 +1175,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ffmpeg-jami-remove-mjpeg-log.patch	\
   %D%/packages/patches/ffmpeg-jami-screen-sharing-x11-fix.patch	\
   %D%/packages/patches/fifengine-boost-compat.patch		\
+  %D%/packages/patches/fifengine-python-3.9-compat.patch	\
   %D%/packages/patches/fifengine-swig-compat.patch		\
   %D%/packages/patches/fifo-map-fix-flags-for-gcc.patch		\
   %D%/packages/patches/fifo-map-remove-catch.hpp.patch		\
