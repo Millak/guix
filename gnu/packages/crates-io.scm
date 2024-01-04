@@ -75726,8 +75726,32 @@ specified in FIPS-202, SP800-185 and KangarooTwelve.")
     (description "This package provides a tiny Skia subset ported to Rust.")
     (license license:bsd-3)))
 
+(define-public rust-tiny-skia-path-0.11
+  (package
+    (name "rust-tiny-skia-path")
+    (version "0.11.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tiny-skia-path" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0hg5a0i7f505l3ix5a9ywjhjbsgqq856hwgic6pslaq5j255xqsx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arrayref" ,rust-arrayref-0.3)
+                       ("rust-bytemuck" ,rust-bytemuck-1)
+                       ("rust-libm" ,rust-libm-0.2)
+                       ("rust-strict-num" ,rust-strict-num-0.1))))
+    (home-page "https://github.com/RazrFalcon/tiny-skia/tree/master/path")
+    (synopsis "Tiny-skia Bezier path implementation")
+    (description
+     "This package provides a tiny-skia Bezier path implementation.")
+    (license license:bsd-3)))
+
 (define-public rust-tiny-skia-path-0.8
   (package
+    (inherit rust-tiny-skia-path-0.11)
     (name "rust-tiny-skia-path")
     (version "0.8.4")
     (source (origin
@@ -75737,18 +75761,12 @@ specified in FIPS-202, SP800-185 and KangarooTwelve.")
               (sha256
                (base32
                 "0z37bzd222q3dlahmaxp2mf1pg5v9qyz3x0j3phs0myxyg9vbgxd"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-arrayref" ,rust-arrayref-0.3)
         ("rust-bytemuck" ,rust-bytemuck-1)
         ("rust-libm" ,rust-libm-0.2)
-        ("rust-strict-num" ,rust-strict-num-0.1))))
-    (home-page "https://github.com/RazrFalcon/tiny-skia/path")
-    (synopsis "Tiny-skia Bezier path implementation")
-    (description
-     "This package provides a tiny-skia Bezier path implementation.")
-    (license license:bsd-3)))
+        ("rust-strict-num" ,rust-strict-num-0.1))))))
 
 (define-public rust-tinyfiledialogs-3
   (package
