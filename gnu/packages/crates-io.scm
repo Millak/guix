@@ -18144,6 +18144,26 @@ shared across CPU and GPU.")
     (description "This package provices macros for cust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-cust-raw-0.11
+  (package
+    (name "rust-cust-raw")
+    (version "0.11.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cust_raw" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1y1b82gf0fmaqxhvzjd3cxgd54vvbj3vji68pcl9ijqjvrm0vx7v"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ; Could not find a cuda installation
+       #:cargo-inputs (("rust-find-cuda-helper" ,rust-find-cuda-helper-0.2))))
+    (home-page "https://github.com/Rust-GPU/Rust-CUDA")
+    (synopsis "Low level bindings to the CUDA Driver API")
+    (description "Low level bindings to the CUDA Driver API.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-custom-derive-0.1
   (package
     (name "rust-custom-derive")
