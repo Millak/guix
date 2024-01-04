@@ -51595,8 +51595,39 @@ applications.")
 library.")
     (license license:expat)))
 
+(define-public rust-polling-3
+  (package
+    (name "rust-polling")
+    (version "3.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "polling" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17hwk4g8qbdsyr0kqjddhw0l2v64pxhakkdlaqbc24xk99iglqyg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-concurrent-queue" ,rust-concurrent-queue-2)
+                       ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+                       ("rust-rustix" ,rust-rustix-0.38)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-windows-sys" ,rust-windows-sys-0.52))
+       #:cargo-development-inputs (("rust-easy-parallel" ,rust-easy-parallel-3)
+                                   ("rust-fastrand" ,rust-fastrand-2)
+                                   ("rust-libc" ,rust-libc-0.2)
+                                   ("rust-signal-hook" ,rust-signal-hook-0.3))))
+    (home-page "https://github.com/smol-rs/polling")
+    (synopsis "Portable interface to epoll, kqueue, event ports, and IOCP")
+    (description
+     "This package provides a portable interface to @code{epoll},
+@code{kqueue}, @code{event ports}, and @code{IOCP}.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-polling-2
   (package
+    (inherit rust-polling-3)
     (name "rust-polling")
     (version "2.8.0")
     (source
@@ -51606,7 +51637,6 @@ library.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1kixxfq1af1k7gkmmk9yv4j2krpp4fji2r8j4cz6p6d7ihz34bab"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-autocfg" ,rust-autocfg-1)
@@ -51620,12 +51650,10 @@ library.")
        #:cargo-development-inputs
        (("rust-easy-parallel" ,rust-easy-parallel-3)
         ("rust-fastrand" ,rust-fastrand-1))))
-    (home-page "https://github.com/smol-rs/polling")
     (synopsis "Portable interface to epoll, kqueue, event ports, and wepoll")
     (description
      "This package provides a portable interface to @code{epoll},
-@code{kqueue}, @code{event ports}, and @code{wepoll}.")
-    (license (list license:asl2.0 license:expat))))
+@code{kqueue}, @code{event ports}, and @code{wepoll}.")))
 
 (define-public rust-pollster-macro-0.1
   (package
