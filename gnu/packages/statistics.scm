@@ -6774,77 +6774,77 @@ Java package that provides routines for various statistical distributions.")
          (file-name (git-file-name name version))
          (modules '((guix build utils)))
          (snippet
-          '(begin
-             ;; Stop ESS from trying to bundle an external julia-mode.el.
-             (substitute* "lisp/Makefile"
-               ((" \\$\\(JULIAS)") "")
-               (("\ttest.*julia-mode.*\\.el") ""))
-             ;; Only build docs in info format.
-             (substitute* "doc/Makefile"
-               (("all  : info text")
-                "all  : info")
-               (("install: install-info install-other-docs")
-                "install: install-info"))
-             ;; Stop install-info from trying to update the info directory.
-             (substitute* "doc/Makefile"
-               ((".*/dir.*") ""))
-             ;; Fix r-help-mode test.
-             (substitute* "test/ess-test-r.el"
-               (("\\(equal ess-help-object \"plot.default\")") "t"))
-             ;; Avoid generating ess-autoloads.el twice.
-             (substitute* "Makefile"
-               (("all: lisp doc etc autoloads")
-                "all: lisp doc etc"))
-             ;; Install to correct directories.
-             (substitute* "Makefile"
-               (("mkdir -p \\$\\(ESSDESTDIR)")
-                "$(MAKE) -C lisp install; $(MAKE) -C doc install")
-               (("\\$\\(INSTALL) -R \\./\\* \\$\\(ESSDESTDIR)/")
-                "$(MAKE) -C etc install"))
-             #t))))
+          #~(begin
+              ;; Stop ESS from trying to bundle an external julia-mode.el.
+              (substitute* "lisp/Makefile"
+                ((" \\$\\(JULIAS)") "")
+                (("\ttest.*julia-mode.*\\.el") ""))
+              ;; Only build docs in info format.
+              (substitute* "doc/Makefile"
+                (("all  : info text")
+                 "all  : info")
+                (("install: install-info install-other-docs")
+                 "install: install-info"))
+              ;; Stop install-info from trying to update the info directory.
+              (substitute* "doc/Makefile"
+                ((".*/dir.*") ""))
+              ;; Fix r-help-mode test.
+              (substitute* "test/ess-test-r.el"
+                (("\\(equal ess-help-object \"plot.default\")") "t"))
+              ;; Avoid generating ess-autoloads.el twice.
+              (substitute* "Makefile"
+                (("all: lisp doc etc autoloads")
+                 "all: lisp doc etc"))
+              ;; Install to correct directories.
+              (substitute* "Makefile"
+                (("mkdir -p \\$\\(ESSDESTDIR)")
+                 "$(MAKE) -C lisp install; $(MAKE) -C doc install")
+                (("\\$\\(INSTALL) -R \\./\\* \\$\\(ESSDESTDIR)/")
+                 "$(MAKE) -C etc install"))))))
       (build-system gnu-build-system)
       (arguments
        (let ((base-directory "/share/emacs/site-lisp"))
-         `(#:make-flags (list (string-append "PREFIX=" %output)
-                              (string-append "ETCDIR=" %output
-                                             ,base-directory "/etc")
-                              (string-append "LISPDIR=" %output
-                                             ,base-directory)
-                              (string-append "INFODIR=" %output
-                                             "/share/info"))
-           #:phases
-           (modify-phases %standard-phases
-             (delete 'configure)
-             (add-before 'check 'skip-failing-tests
-               ;; XXX: Skip 10 failing tests (out of 187).
-               (lambda _
-                 (let-syntax
-                     ((disable-tests
-                       (syntax-rules ()
-                         ((_ file ())
-                          (syntax-error "test names list must not be empty"))
-                         ((_ file (test-name ...))
-                          (substitute* file
-                            (((string-append "^\\(ert-deftest " test-name ".*") all)
-                             (string-append all "(skip-unless nil)\n")) ...)))))
-                   (disable-tests (list "test/ess-test-inf.el" "test/ess-test-r.el")
-                                  ("ess--derive-connection-path"
-                                   "ess-eval-line-test"
-                                   "ess-eval-region-test"
-                                   "ess-mock-remote-process"
-                                   "ess-r-load-ESSR-github-fetch-no"
-                                   "ess-r-load-ESSR-github-fetch-yes"
-                                   "ess-r-eval-ns-env-roxy-tracebug-test"
-                                   "ess-r-eval-sink-freeze-test"
-                                   "ess-set-working-directory-test"
-                                   "ess-test-r-startup-directory")))))
-             (replace 'check
-               (lambda _ (invoke "make" "test")))))))
+         (list
+          #:make-flags
+          #~(list (string-append "PREFIX=" #$output)
+                  (string-append "ETCDIR=" #$output #$base-directory "/etc")
+                  (string-append "LISPDIR=" #$output #$base-directory)
+                  (string-append "INFODIR=" #$output "/share/info"))
+          #:phases
+          #~(modify-phases %standard-phases
+              (delete 'configure)
+              (add-before 'check 'skip-failing-tests
+                ;; XXX: Skip 10 failing tests (out of 187).
+                (lambda _
+                  (let-syntax
+                      ((disable-tests
+                        (syntax-rules ()
+                          ((_ file ())
+                           (syntax-error "test names list must not be empty"))
+                          ((_ file (test-name ...))
+                           (substitute* file
+                             (((string-append "^\\(ert-deftest " test-name ".*")
+                               all)
+                              (string-append all "(skip-unless nil)\n"))
+                             ...)))))
+                    (disable-tests (list "test/ess-test-inf.el"
+                                         "test/ess-test-r.el")
+                                   ("ess--derive-connection-path"
+                                    "ess-eval-line-test"
+                                    "ess-eval-region-test"
+                                    "ess-mock-remote-process"
+                                    "ess-r-load-ESSR-github-fetch-no"
+                                    "ess-r-load-ESSR-github-fetch-yes"
+                                    "ess-r-eval-ns-env-roxy-tracebug-test"
+                                    "ess-r-eval-sink-freeze-test"
+                                    "ess-set-working-directory-test"
+                                    "ess-test-r-startup-directory")))))
+              (replace 'check
+                (lambda _ (invoke "make" "test")))))))
       (native-inputs
        (list perl r-roxygen2 texinfo))
       (inputs
-       `(("emacs" ,emacs-minimal)
-         ("r-minimal" ,r-minimal)))
+       (list emacs-minimal r-minimal))
       (propagated-inputs
        (list emacs-julia-mode))
       (home-page "https://ess.r-project.org/")
