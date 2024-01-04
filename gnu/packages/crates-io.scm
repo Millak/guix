@@ -75747,6 +75747,27 @@ specified in FIPS-202, SP800-185 and KangarooTwelve.")
         ("rust-png" ,rust-png-0.17)
         ("rust-tiny-skia-path" ,rust-tiny-skia-path-0.8))))))
 
+(define-public rust-tiny-skia-0.7
+  (package
+    (inherit rust-tiny-skia-0.11)
+    (name "rust-tiny-skia")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tiny-skia" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10mzi6x57w6s0k812zww1kx3dl8yprh1q64x9dpb35dqkdb809k4"))))
+    (arguments
+     `(#:cargo-inputs (("rust-arrayref" ,rust-arrayref-0.3)
+                       ("rust-arrayvec" ,rust-arrayvec-0.5)
+                       ("rust-bytemuck" ,rust-bytemuck-1)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-png" ,rust-png-0.17)
+                       ("rust-safe-arch" ,rust-safe-arch-0.5)
+                       ("rust-tiny-skia-path" ,rust-tiny-skia-path-0.7))))))
+
 (define-public rust-tiny-skia-path-0.11
   (package
     (name "rust-tiny-skia-path")
