@@ -3326,8 +3326,39 @@ applications.")
         ("rust-num-derive" ,rust-num-derive-0.2)
         ("rust-num-traits" ,rust-num-traits-0.2))))))
 
+(define-public rust-wayland-backend-0.3
+  (package
+    (name "rust-wayland-backend")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wayland-backend" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1r7vz56z6ixfbljraxl4q59g43jfb6i9qkaksi704pzlfgfjs58r"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `wayland_scanner`
+       #:cargo-inputs (("rust-cc" ,rust-cc-1)
+                       ("rust-downcast-rs" ,rust-downcast-rs-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-nix" ,rust-nix-0.26)
+                       ("rust-raw-window-handle" ,rust-raw-window-handle-0.5)
+                       ("rust-scoped-tls" ,rust-scoped-tls-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-wayland-sys" ,rust-wayland-sys-0.31))
+       #:cargo-development-inputs (("rust-concat-idents" ,rust-concat-idents-1)
+                                   ("rust-env-logger" ,rust-env-logger-0.10))))
+    (home-page "https://github.com/smithay/wayland-rs")
+    (synopsis "Low-level bindings to the Wayland protocol")
+    (description "This package provides low-level bindings to the Wayland
+protocol.")
+    (license license:expat)))
+
 (define-public rust-wayland-backend-0.1
   (package
+    (inherit rust-wayland-backend-0.3)
     (name "rust-wayland-backend")
     (version "0.1.2")
     (source
@@ -3337,7 +3368,6 @@ applications.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1n1yi6vna23wfkrpk1j46sx5qbsijh50viha4sra73by8lkqxd21"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Use of undeclared dependencies
        #:cargo-inputs
@@ -3352,12 +3382,7 @@ applications.")
         ("rust-wayland-sys" ,rust-wayland-sys-0.30))
        #:cargo-development-inputs
        (("rust-concat-idents" ,rust-concat-idents-1)
-        ("rust-env-logger" ,rust-env-logger-0.10))))
-    (home-page "https://github.com/smithay/wayland-rs")
-    (synopsis "Backend API for wayland crates")
-    (description "This package provides low-level bindings to the Wayland
-protocol.")
-    (license license:expat)))
+        ("rust-env-logger" ,rust-env-logger-0.10))))))
 
 (define-public rust-wayland-client-0.30
   (package
