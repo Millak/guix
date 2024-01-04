@@ -51655,6 +51655,27 @@ library.")
      "This package provides a portable interface to @code{epoll},
 @code{kqueue}, @code{event ports}, and @code{wepoll}.")))
 
+(define-public rust-pollster-0.3
+  (package
+    (name "rust-pollster")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pollster" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1wn73ljx1pcb4p69jyiz206idj7nkfqknfvdhp64yaphhm3nys12"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-pollster-macro" ,rust-pollster-macro-0.1))
+       #:cargo-development-inputs (("rust-futures-timer" ,rust-futures-timer-3)
+                                   ("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/zesterer/pollster")
+    (synopsis "Synchronously block the thread until a future completes")
+    (description "Synchronously block the thread until a future completes.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-pollster-macro-0.1
   (package
     (name "rust-pollster-macro")
