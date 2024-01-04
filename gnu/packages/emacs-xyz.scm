@@ -4771,20 +4771,18 @@ that the binary uses instead of the actual binary contents.")
     (license license:gpl3+)))
 
 (define-public emacs-org-fc
-  (let ((commit "f64b5336485a42be91cfe77850c02a41575f5984")
-        (revision "0"))
-    (package
+  (package
       (name "emacs-org-fc")
-      (version (git-version "0.1.0" revision commit))
+      (version "0.3.0")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://git.sr.ht/~l3kn/org-fc")
-               (commit commit)))
+               (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1d0a3vr09zkplclypcgpfbfd6r0h0i3g3zsqb4pcz6x239d59gd5"))))
+          (base32 "17cdn4sdyb9fs9w725l155lb74inzdn86m8y62m6hn4dgb5l4spm"))))
       (build-system emacs-build-system)
       (arguments
        (list
@@ -4819,7 +4817,7 @@ It allows you to mark headlines in a file as flashcards, turning pieces of
 knowledge you want to learn into a question-answer test.  These cards are
 reviewed at regular interval.  After each review, the next review interval is
 calculated based on how well you remembered the contents of the card.")
-      (license license:gpl3+))))
+      (license license:gpl3+)))
 
 (define-public emacs-font-lock+
   (let ((commit "aa1c82d05c9222b09099a0ccd7468e955497940c")
