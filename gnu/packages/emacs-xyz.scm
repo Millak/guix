@@ -11143,7 +11143,10 @@ started with 20 minutes.  All values are customizable.")
         (base32 "1gccih9wgi31m59flljw4cphfyhlfcqbjih91gkcnldq5z7n83nj"))))
     (build-system emacs-build-system)
     (propagated-inputs
-     (list emacs-dash emacs-org-super-agenda emacs-org emacs-org-ql
+     (list emacs-dash
+           emacs-org
+           emacs-org-ql
+           emacs-org-super-agenda
            emacs-s))
     (home-page "https://github.com/alphapapa/org-sidebar")
     (synopsis "Helpful sidebar for Org buffers")
