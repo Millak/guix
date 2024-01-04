@@ -885,21 +885,22 @@ library")
 (define-public rust-metal-0.18
   (package
     (name "rust-metal")
-    (version "0.18.1")
+    (version "0.18.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "metal" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "08n3kfv78jm3pf7fafwfv67n40lgcdg7w9lqn9g4sdvfwdk90vrf"))))
+        (base32 "1h1dx42sdkn4jl1rnjisv687vd5jyck982wxq3r9xgmx8bpa1671"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-block" ,rust-block-0.1)
-        ("rust-cocoa" ,rust-cocoa-0.22)
+        ("rust-cocoa" ,rust-cocoa-0.20)
+        ("rust-core-graphics" ,rust-core-graphics-0.19)
         ("rust-foreign-types" ,rust-foreign-types-0.3)
         ("rust-log" ,rust-log-0.4)
         ("rust-objc" ,rust-objc-0.2))))
