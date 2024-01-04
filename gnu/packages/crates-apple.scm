@@ -131,6 +131,45 @@ extension of blocks.")
        #:cargo-inputs
        (("rust-objc-sys" ,rust-objc-sys-0.2))))))
 
+(define-public rust-cargo-credential-macos-keychain-0.4
+  (package
+    (name "rust-cargo-credential-macos-keychain")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo-credential-macos-keychain" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1df098axn8pab6l2mljbkxg3bw1v4mcr4k42x6xy6j15854nsz70"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cargo-credential" ,rust-cargo-credential-0.4)
+                       ("rust-security-framework" ,rust-security-framework-2))))
+    (home-page "https://github.com/rust-lang/cargo")
+    (synopsis "Cargo credential process that stores tokens in a macOS keychain")
+    (description
+     "This package provides a Cargo credential process that stores tokens in a
+@code{macOS} keychain.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-cargo-credential-macos-keychain-0.3
+  (package
+    (inherit rust-cargo-credential-macos-keychain-0.4)
+    (name "rust-cargo-credential-macos-keychain")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo-credential-macos-keychain" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "15i7gq5z6a3896aq2bci9mc9h77g91ziij87c2zhhd91g1pf41rs"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cargo-credential" ,rust-cargo-credential-0.3)
+        ("rust-security-framework" ,rust-security-framework-2))))))
+
 (define-public rust-coreaudio-rs-0.10
   (package
     (name "rust-coreaudio-rs")
