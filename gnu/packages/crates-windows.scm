@@ -923,17 +923,17 @@ color in a Windows console.")
        #:cargo-inputs
        (("rust-winapi" ,rust-winapi-0.3))))))
 
-(define-public rust-winreg-0.50
+(define-public rust-winreg-0.51
   (package
     (name "rust-winreg")
-    (version "0.50.0")
+    (version "0.51.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "winreg" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1cddmp929k882mdh6i9f2as848f13qqna6czwsqzkh1pqnr5fkjj"))
+        (base32 "1z48nmaskwsiyyq9576sgf8ya3fvf1xg3kma8q7n8ml1jkvkszwk"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (substitute* "Cargo.toml"
@@ -955,6 +955,34 @@ color in a Windows console.")
     (description
      "This package provides Rust bindings to MS Windows Registry API.")
     (license license:expat)))
+
+(define-public rust-winreg-0.50
+  (package
+    (inherit rust-winreg-0.51)
+    (name "rust-winreg")
+    (version "0.50.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "winreg" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cddmp929k882mdh6i9f2as848f13qqna6czwsqzkh1pqnr5fkjj"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (substitute* "Cargo.toml"
+                   (("\"~([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                    (string-append "\"^" version)))))))
+    (arguments
+     `(#:skip-build? #t ; OS not supported
+       #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-windows-sys" ,rust-windows-sys-0.48))
+       #:cargo-development-inputs (("rust-rand" ,rust-rand-0.3)
+                                   ("rust-serde-bytes" ,rust-serde-bytes-0.11)
+                                   ("rust-serde-derive" ,rust-serde-derive-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-winreg-0.10
   (package
