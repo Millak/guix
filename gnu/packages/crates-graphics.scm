@@ -3772,6 +3772,28 @@ and wayland-server.")
        (("rust-nix" ,rust-nix-0.14)
         ("rust-wayland-sys" ,rust-wayland-sys-0.21))))))
 
+(define-public rust-wayland-csd-frame-0.3
+  (package
+    (name "rust-wayland-csd-frame")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wayland-csd-frame" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0zjcmcqprfzx57hlm741n89ssp4sha5yh5cnmbk2agflvclm0p32"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-cursor-icon" ,rust-cursor-icon-1)
+                       ("rust-wayland-backend" ,rust-wayland-backend-0.3))))
+    (home-page "https://github.com/rust-windowing/wayland-csd-frame")
+    (synopsis "Common trait and types for wayland CSD interop")
+    (description "This package provides common trait and types for wayland
+@acronym{CSD, Client Side Decorations} interop.")
+    (license license:expat)))
+
 (define-public rust-wayland-cursor-0.31
   (package
     (name "rust-wayland-cursor")
