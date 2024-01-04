@@ -1774,7 +1774,7 @@ ca495991b7852b855"))
                     (format #t
                             "[Desktop Entry]~@
                             Name=Icedove~@
-                            Exec=~a/bin/icedove~@
+                            Exec=~a/bin/icedove %u~@
                             Icon=icedove~@
                             GenericName=Mail/News Client~@
                             Categories=Network;Email;~@

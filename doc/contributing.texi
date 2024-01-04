@@ -457,7 +457,7 @@ configuration file:
           (group-n 3 (one-or-more digit))
           line-end))
 
-;; Reduce the number of prompts with 'M-x debbugs-gnu'.
+;; Change the default when run as 'M-x debbugs-gnu'.
 (setq debbugs-gnu-default-packages '("guix" "guix-patches"))
 
 ;; Show feature requests.

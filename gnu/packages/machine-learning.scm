@@ -1214,6 +1214,29 @@ an extensible computation graph model, as well as definitions of built-in
 operators and standard data types.")
     (license license:expat)))
 
+(define-public onnx-for-torch2
+  (package
+    (inherit onnx)
+    (name "onnx")
+    (version "1.13.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/onnx/onnx")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "16967dbq2j40diqd0s37r19llsab8q8vbxkg1ppgy0p9fpdhfhyp"))
+              (file-name (git-file-name name version))
+              (patches (search-patches "onnx-1.13.1-use-system-googletest.patch"
+                                       "onnx-shared-libraries.patch"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (delete-file-recursively "third_party")
+                  (substitute* "onnx/backend/test/runner/__init__.py"
+                    (("urlretrieve\\(.*") "raise unittest.SkipTest('Skipping download')\n"))))))))
+
 (define-public python-onnx
   ;; This used to be called "python-onnx" because it provided nothing but
   ;; Python bindings.  The package now provides shared libraries and C++
@@ -1258,6 +1281,13 @@ some will need additional backend-specific information---but many can, and the
 aim is to provide all such passes along with ONNX so that they can be re-used
 with a single function call.")
     (license license:expat)))
+
+(define-public onnx-optimizer-for-torch2
+  (package
+    (inherit onnx-optimizer)
+    (inputs
+     (modify-inputs (package-inputs onnx-optimizer)
+       (replace "onnx" onnx-for-torch2)))))
 
 (define-public rxcpp
   (package
@@ -3878,6 +3908,34 @@ high-level machine learning frameworks, such as TensorFlow Lite,
 TensorFlow.js, PyTorch, and MediaPipe.")
       (license license:bsd-3))))
 
+(define-public xnnpack-for-torch2
+  ;; There's currently no tag on this repo.
+  (let ((version "0.0")
+        (commit "51a987591a6fc9f0fc0707077f53d763ac132cbf")
+        (revision "3"))
+    (package
+      (inherit xnnpack)
+      (name "xnnpack")
+      (version (git-version version revision commit))
+      (home-page "https://github.com/google/XNNPACK") ;fork of QNNPACK
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference (url home-page) (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1rzby82xq8d0rl1d148yz88jh9cpsw5c8b2yw7yg39mi7qmr55rm"))
+                (patches (search-patches "xnnpack-for-torch2-system-libraries.patch"))))
+      (arguments
+       (list
+        #:tests? #false
+        #:configure-flags '(list "-DXNNPACK_USE_SYSTEM_LIBS=YES"
+                                 "-DBUILD_SHARED_LIBS=ON"
+                                 "-DCMAKE_POSITION_INDEPENDENT_CODE=ON"
+                                 "-DXNNPACK_LIBRARY_TYPE=shared"
+                                 "-DXNNPACK_BUILD_TESTS=FALSE" ;FIXME: see below
+                                 "-DXNNPACK_BUILD_BENCHMARKS=FALSE"))))))
+
 ;; Please also update python-torchvision when updating this package.
 (define-public python-pytorch
   (package
@@ -4027,7 +4085,59 @@ PyTorch when needed.
 Note: currently this package does not provide GPU support.")
     (license license:bsd-3)))
 
-(define-public python-pytorch-for-r-torch python-pytorch)
+(define-public python-pytorch-for-r-torch
+  (package
+    (inherit python-pytorch)
+    (name "python-pytorch")
+    (version "2.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pytorch/pytorch")
+                    (commit (string-append "v" version))
+                    (recursive? #t)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "14m7v54zyd2qg2xk9mqdpbf4ps7091mdzinzh4vq9p5k4bpznj65"))
+              (patches (search-patches "python-pytorch2-system-libraries.patch"
+                                       "python-pytorch-runpath.patch"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; XXX: Let's be clear: this package is a bundling fest.  We
+                  ;; delete as much as we can, but there's still a lot left.
+                  (for-each (lambda (directory)
+                              (delete-file-recursively
+                               (string-append "third_party/" directory)))
+                            '("benchmark" "cpuinfo" "eigen"
+
+                              ;; FIXME: QNNPACK (of which XNNPACK is a fork)
+                              ;; needs these.
+                              ;; "FP16" "FXdiv" "gemmlowp" "psimd"
+
+                              "gloo" "googletest" "ios-cmake" "NNPACK"
+                              "onnx" "protobuf" "pthreadpool"
+                              "pybind11" "python-enum" "python-peachpy"
+                              "python-six" "tbb" "XNNPACK" "zstd"))
+                  (substitute* "caffe2/CMakeLists.txt"
+                    (("target_link_libraries\\(\\$\\{test_name\\}_\\$\\{CPU_CAPABILITY\\} c10 sleef gtest_main\\)")
+                     "target_link_libraries(${test_name}_${CPU_CAPABILITY} c10 sleef gtest gtest_main)"))
+                  (substitute* "functorch/CMakeLists.txt"
+                    (("\\$\\{_rpath_portable_origin\\}/../torch/lib")
+                     "$ORIGIN/../torch/lib"))))))
+    (inputs
+     (modify-inputs (package-inputs python-pytorch)
+       (replace "xnnpack" xnnpack-for-torch2)))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs python-pytorch)
+       (append python-filelock
+               python-jinja2
+               python-networkx
+               python-opt-einsum
+               python-sympy)
+       (replace "onnx" onnx-for-torch2)
+       (replace "onnx-optimizer" onnx-optimizer-for-torch2)))))
 
 (define-public python-lightning-cloud
   (package
@@ -4440,70 +4550,74 @@ of Hidden Markov Models.")
 
 ;; Keep this in sync with the r-torch package.
 (define-public liblantern
-  (package
-    (name "liblantern")
-    (version "0.10.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/mlverse/torch")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "12480fac9xq7rgw0q5f2cnvmakhakjsnq1gvh2ncjfwxz34n8fl7"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list
-      #:tests? #false                   ;no test target
-      #:phases
-      (let ((python-version (version-major+minor (package-version python))))
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'chdir
-              (lambda _ (chdir "src/lantern")))
-            (add-after 'chdir 'do-not-download-binaries
-              (lambda* (#:key inputs #:allow-other-keys)
-                (substitute* "CMakeLists.txt"
-                  (("find_package\\(Torch.*") "set(TORCH_CXX_FLAGS \"-ltorch\")\n")
-                  (("retrieve_lib\\(.*") ""))
-                (let ((site-packages (string-append "/lib/python"
-                                                    #$python-version
-                                                    "/site-packages")))
-                  (setenv "LIBRARY_PATH"
-                          (string-append
-                           (search-input-directory
-                            inputs (string-append site-packages "/torch/lib"))
-                           ":" (or (getenv "LIBRARY_PATH") "")))
-                  (setenv "CPLUS_INCLUDE_PATH"
-                          (string-append
-                           (search-input-directory
-                            inputs (string-append
-                                    site-packages "/torch/include/torch/csrc/api/include/"))
-                           ":"
-                           (search-input-directory
-                            inputs (string-append site-packages "/torch/include/"))
-                           ":"
-                           (or (getenv "CPLUS_INCLUDE_PATH") "")))
-                  (setenv "C_INCLUDE_PATH"
-                          (string-append
-                           (search-input-directory
-                            inputs (string-append site-packages "/torch/include/"))
-                           ":"
-                           (or (getenv "C_INCLUDE_PATH") ""))))))
-            (replace 'install
-              (lambda _
-                (install-file
-                 "../build/liblantern.so"
-                 (string-append #$output "/lib"))
-                (copy-recursively
-                 "../lantern/include"
-                 (string-append #$output "/include"))))))))
-    (inputs (list python-pytorch-for-r-torch))
-    (home-page "https://github.com/mlverse/torch/")
-    (synopsis "C API to libtorch")
-    (description
-     "Lantern provides a C API to the libtorch machine learning library.")
-    (license license:expat)))
+  ;; There has been no release or tagged commit for r-torch 0.12.0.  The
+  ;; selected commit corresponds to the 0.12.0 release.
+  (let ((commit "4d83bd087be581f7db321c27f55897ff021d2537")
+        (revision "1"))
+    (package
+      (name "liblantern")
+      (version (git-version "0.11.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mlverse/torch")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1xxc6vr7sr2mg0va0hc2fs4f6v5b78mx43dp2shzzbcgw90mgpvk"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:tests? #false                 ;no test target
+        #:phases
+        (let ((python-version (version-major+minor (package-version python))))
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'chdir
+                (lambda _ (chdir "src/lantern")))
+              (add-after 'chdir 'do-not-download-binaries
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (substitute* "CMakeLists.txt"
+                    (("find_package\\(Torch.*") "set(TORCH_CXX_FLAGS \"-ltorch\")\n")
+                    (("retrieve_lib\\(.*") ""))
+                  (let ((site-packages (string-append "/lib/python"
+                                                      #$python-version
+                                                      "/site-packages")))
+                    (setenv "LIBRARY_PATH"
+                            (string-append
+                             (search-input-directory
+                              inputs (string-append site-packages "/torch/lib"))
+                             ":" (or (getenv "LIBRARY_PATH") "")))
+                    (setenv "CPLUS_INCLUDE_PATH"
+                            (string-append
+                             (search-input-directory
+                              inputs (string-append
+                                      site-packages "/torch/include/torch/csrc/api/include/"))
+                             ":"
+                             (search-input-directory
+                              inputs (string-append site-packages "/torch/include/"))
+                             ":"
+                             (or (getenv "CPLUS_INCLUDE_PATH") "")))
+                    (setenv "C_INCLUDE_PATH"
+                            (string-append
+                             (search-input-directory
+                              inputs (string-append site-packages "/torch/include/"))
+                             ":"
+                             (or (getenv "C_INCLUDE_PATH") ""))))))
+              (replace 'install
+                (lambda _
+                  (install-file
+                   "../build/liblantern.so"
+                   (string-append #$output "/lib"))
+                  (copy-recursively
+                   "../lantern/include"
+                   (string-append #$output "/include"))))))))
+      (inputs (list python-pytorch-for-r-torch))
+      (home-page "https://github.com/mlverse/torch/")
+      (synopsis "C API to libtorch")
+      (description
+       "Lantern provides a C API to the libtorch machine learning library.")
+      (license license:expat))))
 
 (define-public python-lap
   (package

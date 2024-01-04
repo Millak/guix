@@ -5677,11 +5677,29 @@ The XCB util-keysyms module provides the following library:
                "0nza1csdvvxbmk8vgv8vpmq7q8h05xrw3cfx9lwxd1hjzd47xsf6"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--disable-static")))
+     `(#:configure-flags '("--disable-static")
+       ,@(if (and (%current-target-system)
+                  (target-riscv64?))
+             `(#:phases
+               (modify-phases %standard-phases
+                 (add-after 'unpack 'update-config-scripts
+                   (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                     ;; Replace outdated config.guess and config.sub.
+                     (for-each (lambda (file)
+                                 (install-file
+                                  (search-input-file
+                                   (or native-inputs inputs)
+                                   (string-append "/bin/" file)) "."))
+                               '("config.guess" "config.sub"))))))
+             '())))
     (propagated-inputs
      (list libxcb))
     (native-inputs
-     (list pkg-config))
+     (append (if (and (%current-target-system)
+                      (target-riscv64?))
+                 (list config)
+                 '())
+             (list pkg-config)))
     (home-page "https://cgit.freedesktop.org/xcb/util-renderutil/")
     (synopsis "Convenience functions for the Render extension")
     (description

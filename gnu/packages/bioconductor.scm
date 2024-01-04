@@ -7462,6 +7462,37 @@ chromosome region or transcript models of lincRNA genes.")
     ;; No version specified
     (license license:lgpl3+)))
 
+(define-public r-epidish
+  (package
+    (name "r-epidish")
+    (version "2.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "EpiDISH" version))
+       (sha256
+        (base32 "170ym3y6gd1kxghz2g5ynvgi1wrxx87b568cjcvzidpqkrkg87s6"))))
+    (properties `((upstream-name . "EpiDISH")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-e1071
+                             r-locfdr
+                             r-mass
+                             r-matrix
+                             r-matrixstats
+                             r-quadprog
+                             r-stringr))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/sjczheng/EpiDISH")
+    (synopsis "Epigenetic dissection of intra-sample-heterogeneity")
+    (description
+     "@code{EpiDISH} is a R package to infer the proportions of a priori known
+cell-types present in a sample representing a mixture of such cell-types.
+Right now, the package can be used on DNAm data of whole blood, generic
+epithelial tissue and breast tissue.  Besides, the package provides a function
+that allows the identification of differentially methylated cell-types and
+their directionality of change in Epigenome-Wide Association Studies.")
+    (license license:gpl2)))
+
 (define-public r-fastseg
   (package
     (name "r-fastseg")
@@ -7611,13 +7642,13 @@ genomic intervals.  In addition, it can use BAM or BigWig files as input.")
 (define-public r-genomeinfodb
   (package
     (name "r-genomeinfodb")
-    (version "1.38.2")
+    (version "1.38.5")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GenomeInfoDb" version))
               (sha256
                (base32
-                "07xncxak8yjy04m7zh779jfjbsdmdbk8a5xs4rbajx4zp3hm4wb7"))))
+                "17w5zrvpk2x0sc55xfkbn9krphg4aszmvwmj1qfsf1bdrazfpwic"))))
     (properties
      `((upstream-name . "GenomeInfoDb")))
     (build-system r-build-system)
@@ -10315,6 +10346,49 @@ comprehensive scDblFinder method.")
     (license license:gpl3)))
 
 ;; This is a CRAN package, but it depends on packages from Bioconductor.
+(define-public r-scgate
+  (package
+    (name "r-scgate")
+    (version "1.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "scGate" version))
+       (sha256
+        (base32 "0h12d36zjc6fvxbhkxrzbpvw49z9fgyn1jc941q70ajw1yqi2hhh"))))
+    (properties `((upstream-name . "scGate")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocparallel
+           r-dplyr
+           r-ggplot2
+           r-ggridges
+           r-patchwork
+           r-reshape2
+           r-seurat
+           r-ucell))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/carmonalab/scGate")
+    (synopsis
+     "Marker-based cell type purification for single-cell sequencing data")
+    (description
+     "This package provides a method to purify a cell type or cell population
+of interest from heterogeneous datasets.  scGate package automatizes
+marker-based purification of specific cell populations, without requiring
+training data or reference gene expression profiles.  scGate takes as input a
+gene expression matrix stored in a Seurat object and a @acronym{GM, gating
+model}, consisting of a set of marker genes that define the cell population of
+interest.  It evaluates the strength of signature marker expression in each
+cell using the rank-based method UCell, and then performs @acronym{kNN,
+k-nearest neighbor} smoothing by calculating the mean UCell score across
+neighboring cells.  kNN-smoothing aims at compensating for the large degree of
+sparsity in scRNAseq data.  Finally, a universal threshold over kNN-smoothed
+signature scores is applied in binary decision trees generated from the
+user-provided gating model, to annotate cells as either “pure” or “impure”,
+with respect to the cell population of interest.")
+    (license license:gpl3)))
+
+;; This is a CRAN package, but it depends on packages from Bioconductor.
 (define-public r-scistreer
   (package
     (name "r-scistreer")
@@ -10792,6 +10866,44 @@ identifier translation via the GDC API.")
     (description
      "This package implements widgets to provide user interfaces.")
     (license license:artistic2.0)))
+
+(define-public r-toast
+  (package
+    (name "r-toast")
+    (version "1.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "TOAST" version))
+       (sha256
+        (base32 "00wpgs2zdrgrh9xmp6m5h9xgv85mhdi36qvwg9gwbz9i7cfabmy1"))))
+    (properties `((upstream-name . "TOAST")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-corpcor
+                             r-doparallel
+                             r-epidish
+                             r-ggally
+                             r-ggplot2
+                             r-limma
+                             r-nnls
+                             r-quadprog
+                             r-summarizedexperiment
+                             r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/TOAST")
+    (synopsis "Tools for the analysis of heterogeneous tissues")
+    (description
+     "This package is devoted to analyzing high-throughput data (e.g. gene
+expression microarray, DNA methylation microarray, RNA-seq) from complex
+tissues.  Current functionalities include
+
+@enumerate
+@item detect cell-type specific or cross-cell type differential signals
+@item tree-based differential analysis
+@item improve variable selection in reference-free deconvolution
+@item partial reference-free deconvolution with prior knowledge.
+@end enumerate")
+    (license license:gpl2)))
 
 ;; TODO: check javascript
 (define-public r-trackviewer
@@ -13085,14 +13197,14 @@ samples.")
 (define-public r-biocneighbors
   (package
     (name "r-biocneighbors")
-    (version "1.20.0")
+    (version "1.20.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiocNeighbors" version))
        (sha256
         (base32
-         "0a5wg099fgwjbzd6r3mr4l02rcmjqlkdcz1w97qzwx1mir41fmas"))))
+         "0w7hd6w0lmj1jaaq9zd5gwnnpkzcr0byqm5q584wjg4xgvsb981j"))))
     (properties `((upstream-name . "BiocNeighbors")))
     (build-system r-build-system)
     (propagated-inputs
@@ -13242,14 +13354,14 @@ data.")
 (define-public r-metapod
   (package
     (name "r-metapod")
-    (version "1.10.0")
+    (version "1.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "metapod" version))
        (sha256
         (base32
-         "1nhxwj6gwc3hqji7icp1q6n0hj1gnvv1y5zhd2myhm7kj3sic2qc"))))
+         "05cy3xvj78n2p9l2pxfys7aczr51gm2ywprn4qmzr7ppb6rq5f66"))))
     (properties `((upstream-name . "metapod")))
     (build-system r-build-system)
     (propagated-inputs
@@ -13728,14 +13840,14 @@ multiplication and calculation of row/column sums or means.")
 (define-public r-batchelor
   (package
     (name "r-batchelor")
-    (version "1.18.0")
+    (version "1.18.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "batchelor" version))
        (sha256
         (base32
-         "1d5zik3bhz26ky2kpxd9kdzs9ff696qqys5gl8qwmmp8qym520l2"))))
+         "1z4ddkdd3mzqg0c6l94qmrdwrm7427k5xiwzgkzx43gh1j4911d5"))))
     (properties `((upstream-name . "batchelor")))
     (build-system r-build-system)
     (propagated-inputs
@@ -15821,14 +15933,14 @@ type and symbol colors.")
 (define-public r-genomicscores
   (package
     (name "r-genomicscores")
-    (version "2.14.2")
+    (version "2.14.3")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "GenomicScores" version))
        (sha256
         (base32
-         "1wjq6lb2x7vazlr838hlh1ar5pis2bgzya9lm8ki30d1m0hpk66k"))))
+         "0rhyfbm5whz4jygar9cqcrfy92h1lyam5wd8d9svhh80f15v53m9"))))
     (properties `((upstream-name . "GenomicScores")))
     (build-system r-build-system)
     (propagated-inputs
@@ -21332,13 +21444,13 @@ variable and significantly correlated genes.")
 (define-public r-sparsearray
   (package
     (name "r-sparsearray")
-    (version "1.2.2")
+    (version "1.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "SparseArray" version))
        (sha256
-        (base32 "1kjs3v2ycpcc0plr88af1661ngmclmalkiy6am7i4m75cpa3889p"))))
+        (base32 "19cy1nmmi65fxh012ymgp1kg112yl1m0khcs4y034p5iwlfv7fp6"))))
     (properties `((upstream-name . "SparseArray")))
     (build-system r-build-system)
     (propagated-inputs (list r-biocgenerics

@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the GNU guix package.
 # ROCKTAKEY <rocktakey@gmail.com>, 2022, 2023.
 # Florian Pelz <pelzflorian@pelzflorian.de>, 2023.
+# Yūtenji <yuta@59ry.jp>, 2023.
 #: guix/diagnostics.scm:159
 msgid ""
 msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2023-06-19 03:18+0000\n"
-"PO-Revision-Date: 2023-08-04 09:21+0000\n"
+"PO-Revision-Date: 2023-12-22 13:52+0000\n"
 "Last-Translator: ROCKTAKEY <rocktakey@gmail.com>\n"
 "Language-Team: Japanese <https://translate.fedoraproject.org/projects/guix/guix/ja/>\n"
 "Language: ja\n"
@@ -17,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.18.2\n"
+"X-Generator: Weblate 5.3\n"
 
 #: gnu.scm:81
 #, scheme-format
@@ -252,7 +253,7 @@ msgstr "サービス型'~a'のサービスがみつかりません"
 #: gnu/system.scm:217
 #, scheme-format
 msgid "the 'hosts-file' field is deprecated, please use 'hosts-service-type' instead~%"
-msgstr ""
+msgstr "'hosts-file'フィールドは非推奨です。代わりに'hosts-service-type'を使ってください~%"
 
 #: gnu/system.scm:397
 #, scheme-format
@@ -367,13 +368,11 @@ msgstr ""
 #: gnu/services/base.scm:713
 #, scheme-format
 msgid "host name '~a' contains invalid characters"
-msgstr ""
+msgstr "ホスト名 '~a' に無効な文字が含まれています"
 
 #: gnu/services/base.scm:763
-#, fuzzy
-#| msgid "Populate the @file{/etc} directory."
 msgid "Populate the @file{/etc/hosts} file."
-msgstr "@file{/etc}ディレクトリを追加します。"
+msgstr "@file{/etc/hosts}ファイルを追加します。"
 
 #: gnu/services/base.scm:780
 msgid "Initialize the machine's host name."
@@ -627,9 +626,8 @@ msgstr ""
 "サービス設定の'stop-wait-period'の値を増やす必要があるかもしれません。)\n"
 
 #: gnu/services/file-sharing.scm:687
-#, fuzzy
 msgid "Service transmission-daemon has been asked to reload its settings file."
-msgstr "transmission-daemonサービスは設定ファイルをリロードするよう要求されています"
+msgstr "transmission-daemonサービスは設定ファイルをリロードするよう要求されています。"
 
 #: gnu/services/file-sharing.scm:689
 msgid "Service transmission-daemon is not running."
@@ -641,7 +639,7 @@ msgstr "BitTorrentプロトコルを利用してファイルを共有します�
 
 #: gnu/services/networking.scm:297
 msgid "Add a list of known Facebook hosts to @file{/etc/hosts}"
-msgstr ""
+msgstr "既知のFacebookのホストのリストを@file{/etc/hosts}に追加します"
 
 #: gnu/services/networking.scm:359
 #, scheme-format
@@ -729,7 +727,7 @@ msgstr "@uref{https://torproject.org, Tor}匿名ネットワークデーモン�
 #: gnu/services/networking.scm:1164
 #, scheme-format
 msgid "the 'iwd?' field is deprecated, please use 'shepherd-requirement' field instead~%"
-msgstr ""
+msgstr "'iwd?'フィールドは非推奨です。代わりに'shepherd-requirement'フィールドを使ってください~%"
 
 #: gnu/services/networking.scm:1312
 msgid ""
@@ -2339,7 +2337,7 @@ msgstr ""
 
 #: gnu/installer/newt/partition.scm:394
 msgid "Please enter the desired mounting point for this partition. Leave this field empty if you don't want to set a mounting point."
-msgstr ""
+msgstr "このパーティションに必要なマウントポイントを入力してください。マウントポイントを設定したくない場合は、このフィールドを空のままにしてください。"
 
 #: gnu/installer/newt/partition.scm:396
 msgid "Mounting point"
@@ -2366,7 +2364,7 @@ msgstr ""
 #: gnu/installer/newt/partition.scm:647
 #, scheme-format
 msgid "Are you sure you want to delete everything on disk ~a?"
-msgstr ""
+msgstr "本当にディスク ~a をすべて削除してもよろしいですか？"
 
 #: gnu/installer/newt/partition.scm:649
 msgid "Delete disk"
@@ -2391,11 +2389,14 @@ msgid ""
 "\n"
 "At least one partition must have its mounting point set to '/'."
 msgstr ""
+"ディスクを選択して ENTER を押すと、ディスクのパーティションテーブルを変更できます。また、パーティションを選択して ENTER を押すことで編集したり、DELETE を押すことで削除することもできます。新しいパーティションを作成するには、空き領域を選択して ENTER を押します。\n"
+"\n"
+"少なくとも1つのパーティションのマウントポイントを '/' に設定する必要があります。"
 
 #: gnu/installer/newt/partition.scm:693
 #, scheme-format
 msgid "This is the proposed partitioning. It is still possible to edit it or to go back to install menu by pressing the Exit button.~%~%"
-msgstr ""
+msgstr "これが提案されたパーティション分割です。編集することも、終了ボタンを押してインストールメニューに戻ることも可能です。~%~%"
 
 #: gnu/installer/newt/partition.scm:703
 msgid "Guided partitioning"
@@ -2444,11 +2445,11 @@ msgstr ""
 
 #: gnu/installer/newt/services.scm:39
 msgid "Please select the desktop environment(s) you wish to install.  If you select multiple desktop environments here, you will be able to choose from them later when you log in."
-msgstr ""
+msgstr "インストールするデスクトップ環境を選択してください。  ここで複数のデスクトップ環境を選択した場合、後でログインする際に選択できるようになります。"
 
 #: gnu/installer/newt/services.scm:42
 msgid "Desktop environment"
-msgstr ""
+msgstr "デスクトップ環境"
 
 #: gnu/installer/newt/services.scm:57
 msgid "You can now select networking services to run on your system."
@@ -2487,11 +2488,11 @@ msgstr ""
 
 #: gnu/installer/newt/substitutes.scm:32
 msgid "Enable"
-msgstr ""
+msgstr "有効にする"
 
 #: gnu/installer/newt/substitutes.scm:32
 msgid "Disable"
-msgstr ""
+msgstr "無効にする"
 
 #: gnu/installer/newt/substitutes.scm:33
 msgid ""
@@ -2499,6 +2500,9 @@ msgid ""
 "\n"
 " There are no security risks: only genuine substitutes may be retrieved from those servers.  However, eavesdroppers on your LAN may be able to see what software you are installing."
 msgstr ""
+" このオプションをオンにすると、Guixのインストール中に、公式サーバに加えて、ローカルエリアネットワーク (LAN) 上で発見されたサーバから代理生成物(ビルド済みバイナリ)を取得することを許可します。  これにより、ダウンロードのスループットが向上します。\n"
+"\n"
+" セキュリティ上のリスクはありません: これらのサーバから取得できるのは、本物の代理生成物だけです。  しかし、LAN上の盗聴者は、あなたがインストールしているソフトウェアを見ることができるかもしれません。"
 
 #: gnu/installer/newt/timezone.scm:59
 msgid "Please select a timezone."
@@ -2518,7 +2522,7 @@ msgstr ""
 
 #: gnu/installer/newt/user.scm:53
 msgid "Password"
-msgstr ""
+msgstr "パスワード"
 
 #: gnu/installer/newt/user.scm:124
 msgid "Empty inputs are not allowed."
@@ -2552,11 +2556,11 @@ msgstr ""
 
 #: gnu/installer/newt/user.scm:206
 msgid "Add"
-msgstr ""
+msgstr "追加"
 
 #: gnu/installer/newt/user.scm:207
 msgid "Delete"
-msgstr ""
+msgstr "削除"
 
 #: gnu/installer/newt/user.scm:267
 msgid "Please create at least one user."
@@ -3122,57 +3126,73 @@ msgid ""
 "\n"
 "      --rounds=N         build N times in a row to detect non-determinism"
 msgstr ""
+"\n"
+"      --rounds=N         非決定性を検知するため、N回連続で構築します"
 
 #: guix/scripts/build.scm:182
 msgid ""
 "\n"
 "  -c, --cores=N          allow the use of up to N CPU cores for the build"
 msgstr ""
+"\n"
+"  -c, --cores=N          構築の際に、最大N個のCPUコアの使用を許可します"
 
 #: guix/scripts/build.scm:184
 msgid ""
 "\n"
 "  -M, --max-jobs=N       allow at most N build jobs"
 msgstr ""
+"\n"
+"  -M, --max-jobs=N       最大でN個の構築ジョブが存在することを許可します"
 
 #: guix/scripts/build.scm:186
 msgid ""
 "\n"
 "      --debug=LEVEL      produce debugging output at LEVEL"
 msgstr ""
+"\n"
+"      --debug=LEVEL      LEVELで指定されたレベルのデバッグ出力を生成します"
 
 #: guix/scripts/build.scm:190
 msgid ""
 "\n"
 "      --list-targets     list available targets"
 msgstr ""
+"\n"
+"      --list-targets     利用可能な対象を列挙します"
 
 #: guix/scripts/build.scm:192
 msgid ""
 "\n"
 "      --target=TRIPLET   cross-build for TRIPLET--e.g., \"aarch64-linux-gnu\""
 msgstr ""
+"\n"
+"      --target=TRIPLET   TRIPLETに指定された環境を対象に、クロスビルドを行います。TRIPLETには、\"aarch64-linux-gnu\"なような三つ組を指定します"
 
 #: guix/scripts/build.scm:196
 msgid ""
 "\n"
 "      --list-systems     list available systems"
 msgstr ""
+"\n"
+"      --list-systems     利用可能なシステムを列挙します"
 
 #: guix/scripts/build.scm:198
 msgid ""
 "\n"
 "  -s, --system=SYSTEM    attempt to build for SYSTEM--e.g., \"i686-linux\""
 msgstr ""
+"\n"
+"  -s, --system=SYSTEM    SYSTEMに指定されたシステム用に構築を試みます。SYSTEMには \"i686-linux\" のような文字列を指定します"
 
 #: guix/scripts/build.scm:215
 msgid "'--keep-failed' ignored since you are talking to a remote daemon\n"
-msgstr ""
+msgstr "遠隔のデーモンとやりとりしているため、'--keep-failed' は無視されます\n"
 
 #: guix/scripts/build.scm:296
 #, scheme-format
 msgid "'--no-build-hook' is deprecated; use '--no-offload' instead~%"
-msgstr ""
+msgstr "'--no-build-hook' は非推奨です。代わりに '--no-offload' を利用してください~%"
 
 #: guix/scripts/build.scm:326 guix/scripts/build.scm:333
 #, scheme-format
@@ -3198,11 +3218,13 @@ msgid ""
 "Did you mean @code{~a}?\n"
 "Try @option{--list-targets} to view available targets.~%"
 msgstr ""
+"@code{~a}の間違いではないでしょうか？\n"
+"利用可能な対象を見るには、@option{--list-targets}を試してみてください。~%"
 
 #: guix/scripts/build.scm:381
 #, scheme-format
 msgid "Try @option{--list-targets} to view available targets.~%"
-msgstr ""
+msgstr "利用可能な対象を見るには、@option{--list-targets}を試してみてください。~%"
 
 #: guix/scripts/build.scm:400
 #, scheme-format
@@ -4645,7 +4667,7 @@ msgstr ""
 
 #: guix/scripts/git/authenticate.scm:138
 msgid "Authenticating commits ~a to ~a (~h new commits)...~%"
-msgstr ""
+msgstr "~aから~aまでのコミット(~h個の新規コミット)を認証しています…~%"
 
 #: guix/scripts/git/authenticate.scm:178
 #, scheme-format
@@ -5073,7 +5095,7 @@ msgstr[0] "次のチャンネルを元に構築します:~%"
 #: guix/scripts/substitute.scm:83
 #, scheme-format
 msgid "authentication and authorization of substitutes disabled!~%"
-msgstr ""
+msgstr "代理生成物の認証と認可が無効になっています！~%"
 
 #: guix/scripts/substitute.scm:225
 #, scheme-format
@@ -5109,7 +5131,7 @@ msgstr ""
 #: guix/scripts/substitute.scm:326
 #, scheme-format
 msgid "updating substitutes from '~a'... ~5,1f%"
-msgstr ""
+msgstr "'~a'に基づいて代理生成物を更新しています…~5,1f%"
 
 #: guix/scripts/substitute.scm:482
 #, scheme-format
@@ -8259,7 +8281,7 @@ msgstr ""
 
 #: guix/channels.scm:365
 msgid "Authenticating channel '~a', commits ~a to ~a (~h new commits)...~%"
-msgstr ""
+msgstr "チャンネル'~a'の、~aから~aまでのコミット(~h個の新規コミット)を認証しています…~%"
 
 #: guix/channels.scm:430
 #, scheme-format
@@ -8282,7 +8304,7 @@ msgstr ""
 #: guix/channels.scm:447
 #, scheme-format
 msgid "channel authentication disabled~%"
-msgstr ""
+msgstr "チャンネルの認証が無効になっています~%"
 
 #: guix/channels.scm:472
 #, scheme-format
@@ -8897,7 +8919,7 @@ msgstr ""
 #: guix/scripts/environment.scm:524
 #, scheme-format
 msgid "~a: command not found~%"
-msgstr ""
+msgstr "~a: コマンドが見つかりません~%"
 
 #: guix/scripts/environment.scm:602
 #, scheme-format
@@ -9009,7 +9031,7 @@ msgstr ""
 
 #: guix/scripts/environment.scm:1037
 msgid "cannot create container: /proc/self/setgroups does not exist\n"
-msgstr ""
+msgstr "コンテナを作成できません: /proc/self/setgroups が見つかりません\n"
 
 #: guix/scripts/environment.scm:1038
 msgid "is your kernel version < 3.19?\n"

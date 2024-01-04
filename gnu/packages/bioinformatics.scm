@@ -617,6 +617,50 @@ Compared to cellSNP, this package is more efficient with higher speed and less
 memory usage.")
       (license license:asl2.0))))
 
+(define-public cpat
+  (package
+    (name "cpat")
+    (version "3.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "CPAT" version))
+              (sha256
+               (base32
+                "0dfrwwbhv1n4nh2a903d1qfb30fgxgya89sa70aci3wzf8h2z0vd"))
+              (modules '((guix build utils)))
+              (snippet
+               '(for-each delete-file-recursively
+                          (list ".eggs"
+                                "lib/__pycache__/"
+                                "lib/cpmodule/__pycache__/")))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (with-directory-excursion "test"
+                 ;; There is no test4.fa
+                 (substitute* "test.sh"
+                   ((".*-g test4.fa.*") ""))
+                 (invoke "bash" "test.sh"))))))))
+    (propagated-inputs
+     (list python-numpy python-pysam))
+    (inputs
+     (list r-minimal))
+    (home-page "https://wlcb.oit.uci.edu/cpat/")
+    (synopsis "Alignment-free distinction between coding and noncoding RNA")
+    (description
+     "CPAT is a method to distinguish coding and noncoding RNA by using a
+logistic regression model based on four pure sequence-based, linguistic
+features: ORF size, ORF coverage, Ficket TESTCODE, and Hexamer usage bias.
+Linguistic features based method does not require other genomes or protein
+databases to perform alignment and is more robust.  Because it is
+alignment-free, it runs much faster and also easier to use.")
+    (license license:gpl2+)))
+
 (define-public pbcopper
   (package
     (name "pbcopper")
@@ -1070,6 +1114,42 @@ of single-cell data using Seurat, RcppML nmf, SingleCellExperiments and
 similar.")
       (license license:gpl2+))))
 
+(define-public r-stacas
+  (package
+    (name "r-stacas")
+    (version "2.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/carmonalab/STACAS")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13i0h5i6vlbrb8ndq9gr81560z9d74b2c7m3rjfzls01irjza9hm"))))
+    (properties `((upstream-name . "STACAS")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocneighbors
+           r-biocparallel
+           r-ggplot2
+           r-ggridges
+           r-pbapply
+           r-r-utils
+           r-seurat))
+    (home-page "https://github.com/carmonalab/STACAS")
+    (synopsis "Sub-type anchoring correction for alignment in Seurat")
+    (description
+     "This package implements methods for batch correction and integration of
+scRNA-seq datasets, based on the Seurat anchor-based integration framework.
+In particular, STACAS is optimized for the integration of heterogenous
+datasets with only limited overlap between cell sub-types (e.g. TIL sets of
+CD8 from tumor with CD8/CD4 T cells from lymphnode), for which the default
+Seurat alignment methods would tend to over-correct biological differences.
+The 2.0 version of the package allows the users to incorporate explicit
+information about cell-types in order to assist the integration process.")
+    (license license:gpl3)))
+
 (define-public r-stringendo
   (let ((commit "15594b1bba11048a812874bafec0eea1dcc8618a")
         (revision "1"))
@@ -1155,6 +1235,32 @@ displayed around a central axis, and edges are rounded to give a flowing
 shape.  This package provides an @code{htmlwidget} for building streamgraph
 visualizations.")
       (license license:expat))))
+
+(define-public r-wasabi
+  (let ((commit "8c33cabde8d18c2657cd6e38e7cb834f87cf9846")
+        (revision "1"))
+    (package
+      (name "r-wasabi")
+      (version (git-version "1.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/COMBINE-lab/wasabi")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0rpdj6n4cnx8n2zl60dzgl638474sg49dknwi9x3qb4g56dpphfa"))))
+      (properties `((upstream-name . "wasabi")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-data-table r-rhdf5 r-rjson))
+      (home-page "https://github.com/COMBINE-lab/wasabi")
+      (synopsis "Use Sailfish and Salmon with Sleuth")
+      (description
+       "This package converts the output of the Sailfish and Salmon RNA-seq
+quantification tools so that it can be used with the Sleuth differential
+analysis package.")
+      (license license:bsd-3))))
 
 (define-public pbbam
   (package
@@ -10313,6 +10419,51 @@ data.  This package includes panel editing or renaming for FCS files,
 bead-based normalization and debarcoding.")
       (license license:gpl3))))
 
+(define-public r-projectils
+  (let ((commit "cc73b97471b4b6eea11ce779b5c4a7dc5c3e1709")
+        (revision "1"))
+    (package
+      (name "r-projectils")
+      (version (git-version "3.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/carmonalab/ProjecTILs")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0dpzvbhhb9andnj7angpj32cgkwd6rs6qgpl6i21pqzcn6vqqhqw"))))
+      (properties `((upstream-name . "ProjecTILs")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-biocneighbors
+             r-biocparallel
+             r-dplyr
+             r-ggplot2
+             r-matrix
+             r-patchwork
+             r-pheatmap
+             r-pracma
+             r-purrr
+             r-rcolorbrewer
+             r-reshape2
+             r-scales
+             r-scgate
+             r-seurat
+             r-seuratobject
+             r-stacas
+             r-ucell
+             r-umap
+             r-uwot))
+      (home-page "https://github.com/carmonalab/ProjecTILs")
+      (synopsis "Reference-based analysis of scRNA-seq data")
+      (description
+       "This package implements methods to project single-cell RNA-seq data
+onto a reference atlas, enabling interpretation of unknown cell transcriptomic
+states in the the context of known, reference states.")
+      (license license:gpl3))))
+
 (define-public r-presto
   (let ((commit "052085db9c88aa70a28d11cc58ebc807999bf0ad")
         (revision "0"))
@@ -10526,6 +10677,43 @@ the data, allowing matrix or 2D graph visualization forming a basis for
 analysis of cell types, subtypes, transcriptional gradients,cell-cycle
 variation, gene modules and their regulatory models and more.")
       (license license:expat))))
+
+(define-public r-sleuth
+  (package
+    (name "r-sleuth")
+    (version "0.30.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pachterlab/sleuth")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09xgc7r6iisjkk0c0wn0q56zy0aph386kphwixfzq4422y7vlqci"))))
+    (properties `((upstream-name . "sleuth")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-aggregation
+                             r-data-table
+                             r-dplyr
+                             r-ggplot2
+                             r-lazyeval
+                             r-matrixstats
+                             r-pheatmap
+                             r-reshape2
+                             r-rhdf5
+                             r-shiny
+                             r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/pachterlab/sleuth")
+    (synopsis "Tools for investigating RNA-Seq")
+    (description
+     "Sleuth is a program for differential analysis of RNA-Seq data.
+It makes use of quantification uncertainty estimates obtained via Kallisto for
+accurate differential analysis of isoforms or genes, allows testing in the
+context of experiments with complex designs, and supports interactive
+exploratory data analysis via sleuth live.")
+    (license license:gpl3)))
 
 (define-public r-snapatac
   (package
@@ -17996,12 +18184,40 @@ The tool enables the de novo search for new structural elements and
 facilitates comparative analysis of known RNA families.")
     (license license:bsd-3)))
 
+(define-public r-databaselinke-r
+  (let ((commit "cf3d6cc3d36f2e1c9a557390232e9a8ed5abb7fd")
+        (revision "1"))
+    (package
+      (name "r-databaselinke-r")
+      (version (git-version "1.7.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/vertesy/DatabaseLinke.R")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0hk76sb3w1v8a7c1knpc572ypsbgqlrv0p49c9y55a0dr12n16s1"))))
+      (properties `((upstream-name . "DatabaseLinke.R")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-readwriter))
+      (home-page "https://github.com/vertesy/DatabaseLinke.R")
+      (synopsis
+       "Parse links to databases from your list of gene symbols")
+      (description
+       "This package provides a set of functions to parse and open (search
+query) links to genomics related and other websites for R.  Useful when you
+want to explore e.g.: the function of a set of differentially expressed
+genes.")
+      (license license:gpl3))))
+
 (define-public r-seurat-utils
-  (let ((commit "0b6f5b548a49148cfbeaa654e8a618c0a020afa5")
+  (let ((commit "c0374cc9e25ce391ba8013fda0f8c7babbb9201d")
         (revision "1"))
     (package
       (name "r-seurat-utils")
-      (version (git-version "1.6.5" revision commit))
+      (version (git-version "2.5.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -18010,12 +18226,15 @@ facilitates comparative analysis of known RNA families.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1mn64h375mkj6x4ix5493z32gqg96yc507j5jr0lx9g5wk1bf762"))))
+                  "15l86b43q245gzz7gsr5rhs4sir74lc14d64yqxfqcb0zrb2bzzd"))))
       (properties `((upstream-name . "Seurat.utils")))
       (build-system r-build-system)
       (propagated-inputs (list r-codeandroll2
                                r-cowplot
+                               r-databaselinke-r
                                r-dplyr
+                               r-enhancedvolcano
+                               r-foreach
                                r-ggcorrplot
                                r-ggexpress
                                r-ggplot2
@@ -18023,15 +18242,21 @@ facilitates comparative analysis of known RNA families.")
                                r-ggrepel
                                r-hgnchelper
                                r-htmlwidgets
+                               r-job
+                               r-magrittr
                                r-markdownhelpers
                                r-markdownreports
                                r-matrix
                                r-matrixstats
+                               r-pheatmap
+                               r-plotly
                                r-princurve
+                               r-qs
                                r-r-utils
                                r-readr
                                r-readwriter
                                r-reshape2
+                               r-rstudioapi
                                r-scales
                                r-seurat
                                r-soupx
@@ -18040,6 +18265,7 @@ facilitates comparative analysis of known RNA families.")
                                r-stringr
                                r-tibble
                                r-tictoc
+                               r-tidyverse
                                r-vroom))
       (home-page "https://github.com/vertesy/Seurat.utils")
       (synopsis "Collection of utility functions for Seurat")

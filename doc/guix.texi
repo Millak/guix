@@ -35174,17 +35174,24 @@ services.
 @subsubheading Libvirt daemon
 
 @code{libvirtd} is the server side daemon component of the libvirt
-virtualization management system.  This daemon runs on host servers
-and performs required management tasks for virtualized guests.
+virtualization management system.  This daemon runs on host servers and
+performs required management tasks for virtualized guests.  To connect
+to the libvirt daemon as an unprivileged user, it must be added to the
+@samp{libvirt} group, as shown in the example below.
 
 @defvar libvirt-service-type
 This is the type of the @uref{https://libvirt.org, libvirt daemon}.
 Its value must be a @code{libvirt-configuration}.
 
 @lisp
+(users (cons (user-account
+              (name "user")
+              (group "users")
+              (supplementary-groups '("libvirt"
+                                      "audio" "video" "wheel")))
+             %base-user-accounts))
 (service libvirt-service-type
          (libvirt-configuration
-          (unix-sock-group "libvirt")
           (tls-port "16555")))
 @end lisp
 @end defvar
@@ -35266,7 +35273,7 @@ UNIX domain socket group ownership.  This can be used to allow a
 'trusted' set of users access to management capabilities without
 becoming root.
 
-Defaults to @samp{"root"}.
+Defaults to @samp{"libvirt"}.
 
 @end deftypevr
 
@@ -39703,6 +39710,9 @@ This must be a list of strings where each string has the form
 (list "LANGUAGE=eo:ca:eu"
       "TMPDIR=/tmp/dockerd")
 @end lisp
+
+@item @code{config-file} (type: maybe-file-like)
+JSON configuration file pass to @command{dockerd}.
 
 @end table
 @end deftp

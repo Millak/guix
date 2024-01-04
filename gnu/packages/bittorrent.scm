@@ -87,15 +87,16 @@
 (define-public transmission
   (package
     (name "transmission")
-    (version "4.0.4")
+    (version "4.0.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/transmission/transmission"
                                   "/releases/download/" version "/transmission-"
                                   version ".tar.xz"))
+              (patches (search-patches "transmission-4.0.5-fix-build.patch"))
               (sha256
                (base32
-                "19nm7f4x3zq610da5fl63vpycj4kv07np6ldm8czpgyziwqv9xqm"))))
+                "0mv3ds3bbp1fbmdlrjinmzvk46acpafydirh7h2014j7988zys7x"))))
     (build-system cmake-build-system)
     (outputs '("out"                      ; library and command-line interface
                "gui"))                    ; graphical user interface
@@ -253,8 +254,8 @@ XML-RPC over SCGI.")
     (license l:gpl2+)))
 
 (define-public tremc
-  (let ((commit "6c15e3f5637c8f3641473328bd8c5b0cc122d930")
-        (revision "0"))
+  (let ((commit "d8deaa5ac25bb45a2ca3a930309d6ecc74836a54")
+        (revision "1"))
   (package
     (name "tremc")
     (version (git-version "0.9.3" revision commit))
@@ -267,7 +268,7 @@ XML-RPC over SCGI.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1anlqzbwgmhrxlh20pfzf4iyw5l2w227h95rq6xf29ai7vddr82k"))))
+         "08kpqmgisja98918f2hlmdrld5662dqlkssp0pqlki38l6fvbj7r"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no test suite

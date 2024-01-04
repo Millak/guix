@@ -1483,6 +1483,26 @@ channels.")
                (base32
                 "1lvxnpds0vcf0lil6ia2036ghqlbl740c4d2sz0q5g6l93fjyija"))))
     (build-system gnu-build-system)
+    (arguments
+     (if (and (target-riscv64?)
+              (%current-target-system))
+         (list #:phases
+               #~(modify-phases %standard-phases
+                   (add-after 'unpack 'update-config-scripts
+                     (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                       ;; Replace outdated config.guess and config.sub.
+                       (for-each (lambda (file)
+                                   (install-file
+                                    (search-input-file
+                                     (or native-inputs inputs)
+                                     (string-append "/bin/" file)) "."))
+                                 '("config.guess" "config.sub"))))))
+         '()))
+    (native-inputs
+     (if (and (target-riscv64?)
+              (%current-target-system))
+         (list config)
+         '()))
     (propagated-inputs
      ;; These are all in the 'Libs.private' field of libmng.pc.
      (list lcms libjpeg-turbo zlib))
@@ -2205,20 +2225,24 @@ identical visual appearance.")
 (define-public grim
   (package
    (name "grim")
-   (version "1.4.0")
+   (version "1.4.1")
    (source
     (origin
      (method git-fetch)
      (uri (git-reference
-           (url "https://github.com/emersion/grim")
+           (url "https://git.sr.ht/~emersion/grim")
            (commit (string-append "v" version))))
      (file-name (git-file-name name version))
      (sha256
-      (base32 "1b1k5cmmk7gzis0rncyl98lnhdwpjkdsv9pada5mmgxcpka6f0lp"))))
+      (base32 "1snp4qlj05d0nx4f0qr8kywv0i1xcw5i278ybng1rand2alhkjz5"))))
    (build-system meson-build-system)
-   (native-inputs (list pkg-config scdoc))
+   (native-inputs (append (if (%current-target-system)
+                              ;; for wayland-scanner
+                              (list pkg-config-for-build wayland)
+                              '())
+                          (list pkg-config scdoc)))
    (inputs (list pixman libpng libjpeg-turbo wayland wayland-protocols))
-   (home-page "https://github.com/emersion/grim")
+   (home-page "https://sr.ht/~emersion/grim/")
    (synopsis "Create screenshots from a Wayland compositor")
    (description "grim can create screenshots from a Wayland compositor.")
    ;; MIT license.
@@ -2227,7 +2251,7 @@ identical visual appearance.")
 (define-public slurp
   (package
    (name "slurp")
-   (version "1.4.0")
+   (version "1.5.0")
    (source
     (origin
      (method git-fetch)
@@ -2236,10 +2260,14 @@ identical visual appearance.")
            (commit (string-append "v" version))))
      (file-name (git-file-name name version))
      (sha256
-      (base32 "1i6g4dfiv2mwkjvvrx3wizb1n05xmd4j9nkhdii4klwd1gdrhjwd"))))
+      (base32 "0wlml42c3shma50bsvqzll7p3zn251jaf0jm59q2idks8gg1zkyq"))))
    (build-system meson-build-system)
    (native-inputs
-    (list pkg-config scdoc))
+    (append (if (%current-target-system)
+                ;; for wayland-scanner
+                (list wayland pkg-config-for-build)
+                '())
+            (list pkg-config scdoc)))
    (inputs
     (list cairo libxkbcommon wayland wayland-protocols))
    (home-page "https://github.com/emersion/slurp")

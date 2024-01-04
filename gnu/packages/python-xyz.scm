@@ -5935,7 +5935,6 @@ flexibility and power of the Python language.")
                       (string-append "-Wl," "-rpath=" python "/lib")
                       "-fno-semantic-interposition"
                       "build/temp/tree/tree.o"
-                      "-Wl,--whole-archive"
                       "-L" (string-append python "/lib")
                       (string-append abseil-cpp "/lib/libabsl_int128.a")
                       (string-append abseil-cpp "/lib/libabsl_raw_hash_set.a")
@@ -5943,7 +5942,6 @@ flexibility and power of the Python language.")
                       (string-append abseil-cpp "/lib/libabsl_strings.a")
                       (string-append abseil-cpp "/lib/libabsl_strings_internal.a")
                       (string-append abseil-cpp "/lib/libabsl_throw_delegate.a")
-                      "-Wl,--no-whole-archive"
                       "-o" "build/lib/tree/_tree.so")))))))
     (home-page "https://github.com/deepmind/tree")
     (synopsis "Work with nested data structures in Python")
@@ -20287,6 +20285,31 @@ etc.")
     (description "This package extends Pyserial with asynchronous I/O
      support.")
     (license license:bsd-3)))
+
+(define-public python-pymemcache
+  (package
+    (name "python-pymemcache")
+    (version "4.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pymemcache" version))
+       (sha256
+        (base32 "157z9blr8pjg9x84jph5hm0z2l6yaq6n421jcf1hzqn1pg8rpgr7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; We don't have the zstd module.
+     (list
+      #:test-flags
+      '(list "--ignore=pymemcache/test/test_compression.py")))
+    (native-inputs
+     (list python-faker python-pytest python-pytest-cov))
+    (home-page "https://github.com/pinterest/pymemcache")
+    (synopsis "Comprehensive, fast, pure Python memcached client")
+    (description
+     "This package provides a comprehensive, fast, pure Python memcached
+client.")
+    (license license:asl2.0)))
 
 (define-public python-pymodbus
   (package

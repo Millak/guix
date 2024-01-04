@@ -142,6 +142,7 @@
   #:use-module (gnu packages gnunet)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-web)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
@@ -5159,7 +5160,7 @@ It uses the uwsgi protocol for all the networking/interprocess communications.")
 (define-public jq
   (package
     (name "jq")
-    (version "1.7")
+    (version "1.7.1")
     (source
      (origin
        (method url-fetch)
@@ -5167,7 +5168,7 @@ It uses the uwsgi protocol for all the networking/interprocess communications.")
                            "/releases/download/jq-" version
                            "/jq-" version ".tar.gz"))
        (sha256
-        (base32 "0qnv8k9x8i6i24n9vx3cxgw0yjj1411silc4wksfcinrfmlhsaj0"))
+        (base32 "1hl0wppdwwrqf3gzg3xwc260s7i1br2lnc97zr1k8bpx56hrr327"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled onigurama.

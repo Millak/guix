@@ -11,6 +11,7 @@
 ;;; Copyright © 2021 Noisytoot <noisytoot@disroot.org>
 ;;; Copyright © 2021, 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;; Copyright © 2022 Brian Cully <bjc@spork.org>
+;;; Copyright © 2023 Aaron Covrig <aaron.covrig.us@ieee.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -64,8 +65,10 @@
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-check)
@@ -81,6 +84,7 @@
   #:use-module (gnu packages nfs)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages openldap)
+  #:use-module (gnu packages password-utils)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages photo)
@@ -91,6 +95,7 @@
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages rsync)
   #:use-module (gnu packages sssd)
@@ -2112,3 +2117,29 @@ filtering and ordering functionality.
 
 @end itemize\n")
     (license license:gpl3)))
+
+(define-public sirikali
+  (package
+    (name "sirikali")
+    (version "1.5.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mhogomchungu/sirikali")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1l52s8rxkfcxcx3s2fnsh08wy6hhjjvp7gcggdi84aqc4dq3rdnm"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:tests? #f ;No tests
+       #:configure-flags '("-DQT5=true")))
+    (inputs (list xdg-utils libpwquality libgcrypt libsecret qtbase-5))
+    (native-inputs (list pkg-config))
+    (home-page "https://mhogomchungu.github.io/sirikali/")
+    (synopsis "Graphical program for managing encrypted file-systems")
+    (description "@dfn{SiriKali} is a Qt / C++ @acronym{GUI, graphical user
+interface} application that manages ecryptfs, cryfs, encfs, gocryptfs, fscrypt
+and securefs based encrypted folders.")
+    (license license:gpl2+)))

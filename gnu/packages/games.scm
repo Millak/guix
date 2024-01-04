@@ -10939,6 +10939,80 @@ implemented using ncurses user interface.  An SDL graphical version is also
 available.")
     (license license:gpl3+)))
 
+(define-public devours
+  (let ((commit "d50e745aa14aa48f7555ae12eb3d1000de1cc150")
+        (revision "0"))
+  (package
+    (name "devours")
+    (version (git-version "3" revision commit))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://jxself.org/git/devours.git")
+             (commit commit)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ksl6mh76jfx64rmasz2571f88ws45vby2977srhgkh355zp3lzn"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure) ; no configure
+          (replace 'build
+            (lambda _
+              (invoke "inform"
+                      (string-append "+include_path="
+                                     #$(this-package-native-input "informlib")
+                                     "/lib")
+                      "devours.inf")))
+          (replace 'install
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Create standalone executable.
+              (let* ((bash (search-input-file inputs "/bin/bash"))
+                     (share (string-append #$output "/share"))
+                     (scummvm (search-input-file inputs "/bin/scummvm"))
+                     (bin (string-append #$output "/bin"))
+                     (executable (string-append bin "/devours")))
+                (mkdir-p share)
+                (copy-file "devours.z5" (string-append share "/devours.z5"))
+                (mkdir-p bin)
+                (with-output-to-file executable
+                  (lambda ()
+                    (format #t "#!~a~%" bash)
+                    (format #t
+                            "exec ~a --path=~a glk:zcode~%"
+                            scummvm share)))
+                (chmod executable #o755))))
+          (add-after 'install-executable 'install-desktop-file
+            (lambda _
+              (let* ((apps (string-append #$output "/share/applications"))
+                     (share (string-append #$output "")))
+                (mkdir-p apps)
+                (make-desktop-entry-file
+                 (string-append apps "/devours.desktop")
+                 #:name "All Things Devours"
+                 #:generic-name "All Things Devours"
+                 #:exec (string-append #$output "/bin/devours")
+                 #:categories '("AdventureGame" "Game" "RolePlaying")
+                 #:keywords '("game" "adventure" "sci-fi")
+                 #:comment '((#f "Sci-fi text adventure game")))))))))
+    (inputs
+     (list bash scummvm))
+    (native-inputs
+     (list inform informlib))
+    (synopsis "All Things Devours")
+    (description
+     "All Things Devours is a short piece of sci-fi interactive fiction,
+leaning strongly towards the text-adventure end of the spectrum.
+Any move you make may put things into an unwinnable state.  You are therefore
+encouraged to save frequently, and also to realise that you will probably have
+to start over several times to find the most satisfactory ending.")
+    (home-page "https://jxself.org/git/devours.git")
+    (license license:agpl3+))))
+
 (define-public schiffbruch
   ;; There haven't been any releases for several years, so I've taken the most
   ;; recent commit from the master branch that didn't fail to build (the last

@@ -13719,6 +13719,34 @@ Processing specification.")
     ;; with classpath exception
     (license license:epl2.0)))
 
+(define-public java-jakarta-annotations-api
+  (package
+    (name "java-jakarta-annotations-api")
+    (version "2.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/jakartaee/common-annotations-api")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0xq2n2pijal5p75vl9dz10i6hhdmaxw5q8j3aza717xkpxxby9p6"))))
+    (build-system ant-build-system)
+    (arguments
+     `(#:jar-name "jakarta-annotations-api.jar"
+       #:source-dir "api/src/main/java"
+       #:tests? #f; no tests
+       #:jdk ,openjdk11))
+    (home-page "https://github.com/jakartaee/common-annotations-api")
+    (synopsis "Collection of Java annotations")
+    (description "Jakarta Annotations defines a collection of annotations
+representing common semantic concepts that enable a declarative style of
+programming that applies across a variety of Java technologies.")
+    ;; with classpath exception
+    (license (list license:epl2.0
+                   license:gpl2))))
+
 (define-public java-xmp
   (package
     (name "java-xmp")
