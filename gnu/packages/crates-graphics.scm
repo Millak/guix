@@ -4871,6 +4871,65 @@ the platform-specific getters provided by winit, or another library.")
         ("rust-winapi" ,rust-winapi-0.3)
         ("rust-x11-dl" ,rust-x11-dl-2))))))
 
+(define-public rust-winit-test-0.1
+  (package
+    (name "rust-winit-test")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "winit-test" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1czdg3zvwazng2gwlda1nb26hklk1qizz84h97bk9mv2jf52yjx3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-owo-colors" ,rust-owo-colors-3)
+                       ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3)
+                       ("rust-web-time" ,rust-web-time-0.2)
+                       ("rust-winit" ,rust-winit-0.28))
+       #:cargo-development-inputs (("rust-winit" ,rust-winit-0.28))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'configure 'add-absolute-library-references
+           (lambda* (#:key inputs vendor-dir #:allow-other-keys)
+             (substitute* (find-files vendor-dir "\\.rs$")
+               (("libX11\\.so")
+                (search-input-file inputs "lib/libX11.so"))
+               (("libX11-xcb\\.so")
+                (search-input-file inputs "lib/libX11-xcb.so"))
+               ;; Lots of libraries from rust-x11-dl and others.
+               (("libX[[:alpha:]]*\\.so" all)
+                (search-input-file inputs (string-append "lib/" all))))))
+         (add-before 'check 'pre-check
+           (lambda* (#:key native-inputs inputs #:allow-other-keys)
+             ;; Tests do not expect XDG_RUNTIME_DIR to be empty.
+             (setenv "XDG_RUNTIME_DIR" "/tmp")
+
+             ;; Most tests require an X server.
+             (let ((xvfb (search-input-file (or native-inputs inputs)
+                                            "bin/Xvfb"))
+                   (display ":1"))
+               (setenv "DISPLAY" display)
+               (system (string-append xvfb " " display " &"))))))))
+    (inputs (list libx11
+                  libxcursor
+                  libxext
+                  libxft
+                  libxi
+                  libxinerama
+                  libxmu
+                  libxpresent
+                  libxrandr
+                  libxscrnsaver
+                  libxt
+                  libxtst))
+    (native-inputs (list xorg-server-for-tests))
+    (home-page "https://github.com/notgull/winit-test")
+    (synopsis "Run tests using the winit event loop")
+    (description "Run tests using the winit event loop.")
+    (license (list license:expat license:asl2.0 license:zlib))))
+
 (define-public rust-x11-2
   (package
     (name "rust-x11")
