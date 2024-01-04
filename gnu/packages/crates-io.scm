@@ -75701,8 +75701,34 @@ specified in FIPS-202, SP800-185 and KangarooTwelve.")
      `(#:cargo-inputs
        (("rust-crunchy" ,rust-crunchy-0.2))))))
 
+(define-public rust-tiny-skia-0.11
+  (package
+    (name "rust-tiny-skia")
+    (version "0.11.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tiny-skia" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "03g8qyv5bdi0dbgbmkz68z46kzshb0lcym52wvy96s2716w6g85n"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-arrayref" ,rust-arrayref-0.3)
+                       ("rust-arrayvec" ,rust-arrayvec-0.7)
+                       ("rust-bytemuck" ,rust-bytemuck-1)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-png" ,rust-png-0.17)
+                       ("rust-tiny-skia-path" ,rust-tiny-skia-path-0.11))))
+    (home-page "https://github.com/RazrFalcon/tiny-skia")
+    (synopsis "Skia subset ported to Rust")
+    (description "This package provides a tiny Skia subset ported to Rust.")
+    (license license:bsd-3)))
+
 (define-public rust-tiny-skia-0.8
   (package
+    (inherit rust-tiny-skia-0.11)
     (name "rust-tiny-skia")
     (version "0.8.4")
     (source (origin
@@ -75712,7 +75738,6 @@ specified in FIPS-202, SP800-185 and KangarooTwelve.")
               (sha256
                (base32
                 "0rvapxnksdjy1rnzjlvi6dqijz843y9m2dv107ln24230fi9716z"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-arrayref" ,rust-arrayref-0.3)
@@ -75720,11 +75745,7 @@ specified in FIPS-202, SP800-185 and KangarooTwelve.")
         ("rust-bytemuck" ,rust-bytemuck-1)
         ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-png" ,rust-png-0.17)
-        ("rust-tiny-skia-path" ,rust-tiny-skia-path-0.8))))
-    (home-page "https://github.com/RazrFalcon/tiny-skia")
-    (synopsis "Skia subset ported to Rust")
-    (description "This package provides a tiny Skia subset ported to Rust.")
-    (license license:bsd-3)))
+        ("rust-tiny-skia-path" ,rust-tiny-skia-path-0.8))))))
 
 (define-public rust-tiny-skia-path-0.11
   (package
