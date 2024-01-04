@@ -45728,8 +45728,37 @@ Foundation framework.")
      "This package provides utilities for testing Objective-C interop.")
     (license license:expat)))
 
+(define-public rust-objc2-0.4
+  (package
+    (name "rust-objc2")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "objc2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13gr3zqv8gzlylff5d4za91f50asb7vsrkpv8kiva3nkzm05m72m"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ; link kind `framework` is only supported on Apple targets
+       #:cargo-inputs (("rust-malloc-buf" ,rust-malloc-buf-1)
+                       ("rust-objc-sys" ,rust-objc-sys-0.3)
+                       ("rust-objc2-encode" ,rust-objc2-encode-3)
+                       ("rust-objc2-proc-macros" ,rust-objc2-proc-macros-0.1))
+       #:cargo-development-inputs
+       (("rust-iai" ,rust-iai-0.1)
+        ("rust-static-assertions" ,rust-static-assertions-1))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis
+     "Objective-C interface and bindings to the Cocoa Foundation framework")
+    (description "This package provides Objective-C interface and bindings to
+the Cocoa Foundation framework.")
+    (license license:expat)))
+
 (define-public rust-objc2-0.3
   (package
+    (inherit rust-objc2-0.4)
     (name "rust-objc2")
     (version "0.3.0-beta.3")
     (source (origin
@@ -45739,7 +45768,6 @@ Foundation framework.")
               (sha256
                (base32
                 "0jfnrwmp6n2d6snlpcyfk9l41nhm50wj9h42b6hqj2rxbm1facgy"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -45747,13 +45775,7 @@ Foundation framework.")
         ("rust-objc-sys" ,rust-objc-sys-0.2)        ; 0.2.0-beta.2
         ("rust-objc2-encode" ,rust-objc2-encode-2)  ; 2.0.0-pre.2
         ("rust-objc2-proc-macros" ,rust-objc2-proc-macros-0.1)
-        ("rust-uuid" ,rust-uuid-1))))
-    (home-page "https://github.com/madsmtm/objc2")
-    (synopsis
-     "Objective-C interface and bindings to the Cocoa Foundation framework")
-    (description "This package provides Objective-C interface and bindings to
-the Cocoa Foundation framework.")
-    (license license:expat)))
+        ("rust-uuid" ,rust-uuid-1))))))
 
 (define-public rust-objc2-encode-3
   (package
