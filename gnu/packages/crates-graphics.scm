@@ -789,6 +789,28 @@ types.")
 and iOS.")
     (license license:expat)))
 
+(define-public rust-cursor-icon-1
+  (package
+    (name "rust-cursor-icon")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cursor-icon" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14brf4vd6az9hnszwzqj7xyfaymqx9806d4i7xmwlaja3wjsr9ln"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-wayland-client" ,rust-wayland-client-0.31)
+        ("rust-wayland-cursor" ,rust-wayland-cursor-0.31))))
+    (home-page "https://github.com/rust-windowing/cursor-icon")
+    (synopsis "Cross platform cursor icon type")
+    (description "This package provides a cross platform cursor icon type.")
+    (license (list license:expat license:asl2.0 license:zlib))))
+
 (define-public rust-d3d12-0.7
   (package
     (name "rust-d3d12")
