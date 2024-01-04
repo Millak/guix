@@ -65308,18 +65308,18 @@ Rust's serde.")
 (define-public rust-serde-yaml-0.9
   (package
     (name "rust-serde-yaml")
-    (version "0.9.21")
+    (version "0.9.30")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "serde_yaml" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1714w6f5b2g4svha9r96cirz05mc0d9xfaxkcrabzqvxxkiq9mnr"))))
+                "0f4xkmbjgq452ynh3nkz84c0dryjfp410gfqy7hhxxwrkb3jigxi"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-indexmap" ,rust-indexmap-1)
+       (("rust-indexmap" ,rust-indexmap-2)
         ("rust-itoa" ,rust-itoa-1)
         ("rust-ryu" ,rust-ryu-1)
         ("rust-serde" ,rust-serde-1)
