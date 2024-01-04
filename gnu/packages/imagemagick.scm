@@ -104,7 +104,7 @@
                  (("^DOCUMENTATION_PATH[[:blank:]]*=.*$")
                   (string-append "DOCUMENTATION_PATH = "
                                  #$output:doc "/share/doc/"
-                                 ,name "-"
+                                 #$name "-"
                                  #$(package-version this-package) "\n")))))
            (add-before 'configure 'strip-configure-xml
              (lambda _
