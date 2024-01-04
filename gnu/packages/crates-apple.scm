@@ -31,6 +31,7 @@
   #:use-module (guix download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages crates-graphics)
@@ -662,6 +663,31 @@ Central Dispatch.")
         (base32
          "019nzy993hxaiazcdnayx3csv2iki34i535asw11ki96hakkrs84"))))
     (arguments '(#:tests? #f))))  ; Tests only run on Mac.
+
+(define-public rust-fat-macho-0.4
+  (package
+    (name "rust-fat-macho")
+    (version "0.4.7")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "fat-macho" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0ywr3xqi884i12d5mfidbma1hrd4rxj9f8jw7p4bignagmy13yk3"))
+              (snippet
+               #~(begin (use-modules (guix build utils))
+                        (delete-file-recursively "tests/fixtures")))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Test files removed.
+       #:cargo-inputs
+       (("rust-goblin" ,rust-goblin-0.7)
+        ("rust-llvm-bitcode" ,rust-llvm-bitcode-0.1))))
+    (home-page "https://github.com/messense/fat-macho-rs.git")
+    (synopsis "Mach-O Fat Binary Reader and Writer")
+    (description "This package provides a Mach-O Fat Binary Reader and Writer.")
+    (license license:expat)))
 
 (define-public rust-fsevent-2
   (package
