@@ -63324,8 +63324,34 @@ Pwrite traits from the scroll crate.")
        (("rust-ring" ,rust-ring-0.13)
         ("rust-untrusted" ,rust-untrusted-0.6))))))
 
+(define-public rust-sctk-adwaita-0.8
+  (package
+    (name "rust-sctk-adwaita")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sctk-adwaita" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0l35njnl25axhkg2r5jg1iqdyhp788qfgcl8p4hsar5jlprymcl2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ab-glyph" ,rust-ab-glyph-0.2)
+        ("rust-crossfont" ,rust-crossfont-0.7)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-memmap2" ,rust-memmap2-0.9)
+        ("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.18)
+        ("rust-tiny-skia" ,rust-tiny-skia-0.11))))
+    (home-page "https://github.com/PolyMeilex/sctk-adwaita")
+    (synopsis "Adwaita-like SCTK Frame")
+    (description "Adwaita-like SCTK Frame.")
+    (license license:expat)))
+
 (define-public rust-sctk-adwaita-0.5
   (package
+    (inherit rust-sctk-adwaita-0.8)
     (name "rust-sctk-adwaita")
     (version "0.5.4")
     (source (origin
@@ -63335,7 +63361,6 @@ Pwrite traits from the scroll crate.")
               (sha256
                (base32
                 "02gdwfc0dmx9azqd13sfnfczl0z8jjvci0df5b64q5zxw5xyk96d"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-ab-glyph" ,rust-ab-glyph-0.2)
@@ -63343,11 +63368,7 @@ Pwrite traits from the scroll crate.")
         ("rust-log" ,rust-log-0.4)
         ("rust-memmap2" ,rust-memmap2-0.5)
         ("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.16)
-        ("rust-tiny-skia" ,rust-tiny-skia-0.8))))
-    (home-page "https://github.com/PolyMeilex/sctk-adwaita")
-    (synopsis "Adwaita-like SCTK Frame")
-    (description "Adwaita-like SCTK Frame")
-    (license license:expat)))
+        ("rust-tiny-skia" ,rust-tiny-skia-0.8))))))
 
 (define-public rust-seahash-3
   (package
