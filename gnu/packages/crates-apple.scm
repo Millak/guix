@@ -275,6 +275,28 @@ extension of blocks.")
         ("rust-libc" ,rust-libc-0.2)
         ("rust-objc" ,rust-objc-0.2))))))
 
+(define-public rust-cocoa-0.20
+  (package
+    (inherit rust-cocoa-0.25)
+    (name "rust-cocoa")
+    (version "0.20.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cocoa" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1y0wd1lyiz8cgbsf0fwyw06gb1akg6rvg5jr3wah8mvdqdpyhj8c"))))
+    (arguments
+     `(#:skip-build? #t     ; only for macOS
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-block" ,rust-block-0.1)
+                       ("rust-core-foundation" ,rust-core-foundation-0.7)
+                       ("rust-core-graphics" ,rust-core-graphics-0.19)
+                       ("rust-foreign-types" ,rust-foreign-types-0.3)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-objc" ,rust-objc-0.2))))))
+
 (define-public rust-cocoa-0.19
   (package
     (inherit rust-cocoa-0.22)
