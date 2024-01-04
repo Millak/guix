@@ -19438,20 +19438,20 @@ verifying the contents.")
 (define-public rust-defer-drop-1
   (package
     (name "rust-defer-drop")
-    (version "1.0.1")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "defer-drop" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1d3pmmn5k2ir3yv8z8fnv4jprs5aijkz5pbdyl8x8kp18m90bbhq"))))
+        (base32 "0mswjjksrr6fvsgxvp64mzwkjkzjmpwjfaw4n76jhsvalsgyq4zn"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-crossbeam-channel" ,rust-crossbeam-channel-0.4)
-        ("rust-once-cell" ,rust-once-cell-1))))
+     `(#:cargo-inputs
+       (("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-serde" ,rust-serde-1))))
     (home-page "https://github.com/Lucretiel/defer-drop")
     (synopsis "Defer dropping large types to a background thread")
     (description
