@@ -15169,8 +15169,32 @@ intrinsics.")
        #:cargo-inputs
        (("rust-libc" ,rust-libc-0.2))))))
 
+(define-public rust-core-text-20
+  (package
+    (name "rust-core-text")
+    (version "20.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "core-text" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1mffma8w0ic11ydv6zclamw4dslzmsych1fwz14msih8bh5pkln9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ; link kind `framework` is only supported on Apple targets
+       #:cargo-inputs (("rust-core-foundation" ,rust-core-foundation-0.9)
+                       ("rust-core-graphics" ,rust-core-graphics-0.23)
+                       ("rust-foreign-types" ,rust-foreign-types-0.5)
+                       ("rust-libc" ,rust-libc-0.2))))
+    (home-page "https://github.com/servo/core-foundation-rs")
+    (synopsis "Bindings to the Core Text framework")
+    (description "This package provides bindings to the Core Text framework.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-core-text-19
   (package
+    (inherit rust-core-text-20)
     (name "rust-core-text")
     (version "19.1.0")
     (source
@@ -15180,18 +15204,13 @@ intrinsics.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0q1sr55v8zq82y0dwnwwksz1radh515i0a45nbsda3w2idpg9iyj"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-core-foundation" ,rust-core-foundation-0.9)
         ("rust-core-graphics" ,rust-core-graphics-0.22)
         ("rust-foreign-types" ,rust-foreign-types-0.3)
-        ("rust-libc" ,rust-libc-0.2))))
-    (home-page "https://github.com/servo/core-foundation-rs")
-    (synopsis "Bindings to the Core Text framework")
-    (description "This package provides bindings to the Core Text framework.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-libc" ,rust-libc-0.2))))))
 
 (define-public rust-cov-mark-2
   (package
