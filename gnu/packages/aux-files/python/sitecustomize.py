@@ -37,7 +37,7 @@ import sys
 major_minor = '{}.{}'.format(*sys.version_info)
 site_packages_prefix = os.path.join(
     'lib', 'python' + major_minor, 'site-packages')
-python_site = os.path.join(sys.prefix, site_packages_prefix)
+python_site = os.path.normpath(os.path.join(sys.prefix, site_packages_prefix))
 
 try:
     all_sites_raw = os.environ['GUIX_PYTHONPATH'].split(os.path.pathsep)
