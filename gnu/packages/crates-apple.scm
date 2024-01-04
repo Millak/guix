@@ -28,6 +28,7 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages crates-graphics)
   #:use-module (gnu packages crates-io))
 
 (define-public rust-block-0.1
@@ -169,6 +170,172 @@ extension of blocks.")
      `(#:cargo-inputs
        (("rust-cargo-credential" ,rust-cargo-credential-0.3)
         ("rust-security-framework" ,rust-security-framework-2))))))
+
+(define-public rust-cocoa-0.25
+  (package
+    (name "rust-cocoa")
+    (version "0.25.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cocoa" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0g1pl5hq28arqmvsswf2ib7smj445miwa58qa7wrfvksz54h857n"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-block" ,rust-block-0.1)
+                       ("rust-cocoa-foundation" ,rust-cocoa-foundation-0.1)
+                       ("rust-core-foundation" ,rust-core-foundation-0.9)
+                       ("rust-core-graphics" ,rust-core-graphics-0.23)
+                       ("rust-foreign-types" ,rust-foreign-types-0.5)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-objc" ,rust-objc-0.2))))
+    (home-page "https://github.com/servo/core-foundation-rs")
+    (synopsis "Bindings to Cocoa for macOS")
+    (description "This package provides bindings to Cocoa for macOS.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-cocoa-0.24
+  (package
+    (inherit rust-cocoa-0.25)
+    (name "rust-cocoa")
+    (version "0.24.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cocoa" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0cp8hsajmi7gini22bmlsf9dac7cap7x1k169vxhwlr3j8p90qvg"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-block" ,rust-block-0.1)
+        ("rust-cocoa-foundation" ,rust-cocoa-foundation-0.1)
+        ("rust-core-foundation" ,rust-core-foundation-0.9)
+        ("rust-core-graphics" ,rust-core-graphics-0.22)
+        ("rust-foreign-types" ,rust-foreign-types-0.3)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-objc" ,rust-objc-0.2))))))
+
+(define-public rust-cocoa-0.23
+  (package
+    (inherit rust-cocoa-0.24)
+    (name "rust-cocoa")
+    (version "0.23.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cocoa" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1cj4c2axmg7aiid2786mpzj7wxpd582biv7c7yimqfnggp002hn5"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-block" ,rust-block-0.1)
+        ("rust-cocoa-foundation" ,rust-cocoa-foundation-0.1)
+        ("rust-core-foundation" ,rust-core-foundation-0.9)
+        ("rust-core-graphics" ,rust-core-graphics-0.22)
+        ("rust-foreign-types" ,rust-foreign-types-0.3)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-objc" ,rust-objc-0.2))))))
+
+(define-public rust-cocoa-0.22
+  (package
+    (inherit rust-cocoa-0.23)
+    (name "rust-cocoa")
+    (version "0.22.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cocoa" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19qyyv01yzrm6aahn6cdxvb4jhl6v4fj0cgqkxmq38i7hq3dqzv6"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-block" ,rust-block-0.1)
+        ("rust-core-foundation" ,rust-core-foundation-0.9)
+        ("rust-core-graphics" ,rust-core-graphics-0.21)
+        ("rust-foreign-types" ,rust-foreign-types-0.3)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-objc" ,rust-objc-0.2))))))
+
+(define-public rust-cocoa-0.19
+  (package
+    (inherit rust-cocoa-0.22)
+    (name "rust-cocoa")
+    (version "0.19.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cocoa" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0034vahbfv574q4b63rj241b8rnka5cjiqsqc6wiggnin9l7g7zj"))))
+    (arguments
+     `(#:skip-build? #t     ; only for macOS
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-block" ,rust-block-0.1)
+        ("rust-core-foundation" ,rust-core-foundation-0.6)
+        ("rust-core-graphics" ,rust-core-graphics-0.17)
+        ("rust-foreign-types" ,rust-foreign-types-0.3)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-objc" ,rust-objc-0.2))))))
+
+(define-public rust-cocoa-0.18
+  (package
+    (inherit rust-cocoa-0.19)
+    (name "rust-cocoa")
+    (version "0.18.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cocoa" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0m6fgdr4d2fp8jhkqvwr23hrqqqjv72g0j9vdgijc58k05j9j1hp"))))))
+
+(define-public rust-cocoa-foundation-0.1
+  (package
+    (name "rust-cocoa-foundation")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cocoa-foundation" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0633ipbd28z35rsdmsl505f1aasrjsrrnirs826aa32nbnv4kpks"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-block" ,rust-block-0.1)
+        ("rust-core-foundation" ,rust-core-foundation-0.9)
+        ("rust-core-graphics-types" ,rust-core-graphics-types-0.1)
+        ("rust-foreign-types" ,rust-foreign-types-0.3)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-objc" ,rust-objc-0.2))))
+    (home-page "https://github.com/servo/core-foundation-rs")
+    (synopsis "Bindings to Cocoa Foundation for macOS")
+    (description
+     "This package provides bindings to Cocoa Foundation for macOS.")
+    (license (list license:expat license:asl2.0))))
 
 (define-public rust-coreaudio-rs-0.10
   (package
