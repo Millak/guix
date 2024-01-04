@@ -79505,8 +79505,40 @@ or dashboards.")
 render properties.")
     (license license:expat)))
 
+(define-public rust-tuikit-0.5
+  (package
+    (name "rust-tuikit")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tuikit" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1n2kiq6kjl1g89v8f9v2dwcv5g8hp7w2zhf8a0yyxawb0fmwc6ay"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-1)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-nix" ,rust-nix-0.24)
+                       ("rust-term" ,rust-term-0.7)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.6))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'pre-check
+           (lambda _
+             (setenv "TERM" "xterm"))))))
+    (home-page "https://github.com/lotabout/tuikit")
+    (synopsis "Toolkit for writing TUI applications")
+    (description
+     "This package provides a toolkit for writing TUI applications in Rust.")
+    (license license:expat)))
+
 (define-public rust-tuikit-0.4
   (package
+    (inherit rust-tuikit-0.5)
     (name "rust-tuikit")
     (version "0.4.5")
     (source
@@ -79516,7 +79548,6 @@ render properties.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "07x5218f9da6cbvmwpfyfymqyl7nksvkxxycxcrll9ajazy8qqlc"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -79527,12 +79558,7 @@ render properties.")
         ("rust-term" ,rust-term-0.6)
         ("rust-unicode-width" ,rust-unicode-width-0.1))
        #:cargo-development-inputs
-       (("rust-env-logger" ,rust-env-logger-0.6))))
-    (home-page "https://github.com/lotabout/tuikit")
-    (synopsis "Toolkit for writing TUI applications")
-    (description
-     "This package provides a toolkit for writing TUI applications in Rust.")
-    (license license:expat)))
+       (("rust-env-logger" ,rust-env-logger-0.6))))))
 
 (define-public rust-tuikit-0.2
   (package
