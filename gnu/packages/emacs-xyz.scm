@@ -7841,16 +7841,16 @@ method and constant name completion.")
 (define-public emacs-robot-mode
   (package
     (name "emacs-robot-mode")
-    (version "0.7.0")
+    (version "0.8.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/kopoli/robot-mode")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10i4lwjf60ms3dj8s7k9c0vb24rhszskhciz9lijphcdh8k622hz"))))
+        (base32 "1a377lws4f0az2y1r3z2i3mghvg7a4094wkchvjvsl1nd6yxdxwa"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/kopoli/robot-mode")
     (synopsis "Emacs mode for Robot Framework")
