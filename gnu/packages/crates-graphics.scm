@@ -388,19 +388,20 @@ untrusted data.")
        (("rust-env-logger" ,rust-env-logger-0.8)
         ("rust-walkdir" ,rust-walkdir-2))))))
 
-(define-public rust-avif-serialize-0.7
+(define-public rust-avif-serialize-0.8
   (package
     (name "rust-avif-serialize")
-    (version "0.7.7")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "avif-serialize" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32 "0d2makdw756978i8s3qhlhh1h91y5maxriay6r4kmsmk8pky2qfc"))))
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "avif-serialize" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1llnwlj11wcifdlny8x8yksl3zmz8i6a35il0cd4ar335yj7av47"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f              ; Undeclared dependencies
+     `(#:tests? #f  ; use of undeclared crate or module `mp4parse`
        #:cargo-inputs (("rust-arrayvec" ,rust-arrayvec-0.7))
        #:cargo-development-inputs (("rust-avif-parse" ,rust-avif-parse-1))))
     (home-page "https://lib.rs/avif-serialize")
@@ -411,6 +412,22 @@ is a tiny alternative to @code{libavif}.  It creates the jungle of
 MPEG/HEIF/MIAF/ISO-BMFF ``boxes'' as appropriate for AVIF files.  It supports
 alpha channel embedding.")
     (license license:bsd-3)))
+
+(define-public rust-avif-serialize-0.7
+  (package
+    (inherit rust-avif-serialize-0.8)
+    (name "rust-avif-serialize")
+    (version "0.7.7")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "avif-serialize" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0d2makdw756978i8s3qhlhh1h91y5maxriay6r4kmsmk8pky2qfc"))))
+    (arguments
+     `(#:tests? #f              ; Undeclared dependencies
+       #:cargo-inputs (("rust-arrayvec" ,rust-arrayvec-0.7))
+       #:cargo-development-inputs (("rust-avif-parse" ,rust-avif-parse-1))))))
 
 (define-public rust-avif-serialize-0.6
   (package
