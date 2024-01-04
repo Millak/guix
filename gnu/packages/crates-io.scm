@@ -45669,14 +45669,14 @@ Foundation framework.")
 (define-public rust-objc-sys-0.3
   (package
     (name "rust-objc-sys")
-    (version "0.3.0")
+    (version "0.3.2")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "objc-sys" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "18qqjf2qwlhzzzlf8d5zisn0m92607kyp17kqk31v07njc5gyc6s"))))
+                "0nbl4p4dmajhm0ji1z09jrlrxhqs4jfkvj1zjschh38qwhj17iy7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t         ; Needs gcc-objc
