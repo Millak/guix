@@ -3150,8 +3150,37 @@ internally rust-sdl2.")
         ("rust-image" ,rust-image-0.20)
         ("rust-wayland-client" ,rust-wayland-client-0.21))))))
 
+(define-public rust-smithay-clipboard-0.7
+  (package
+    (name "rust-smithay-clipboard")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "smithay-clipboard" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "19m1rqw4fsp9x92cji9qz169004djjh376b68ylcp9g51hl2pdhb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.18)
+        ("rust-wayland-backend" ,rust-wayland-backend-0.3))
+       #:cargo-development-inputs
+       (("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.18))))
+    (native-inputs (list pkg-config))
+    (inputs (list libxkbcommon))
+    (home-page "https://github.com/smithay/smithay-clipboard")
+    (synopsis "Access to the Wayland clipboard for client applications")
+    (description
+     "This package provides access to the Wayland clipboard for client
+applications.")
+    (license license:expat)))
+
 (define-public rust-smithay-clipboard-0.6
   (package
+    (inherit rust-smithay-clipboard-0.7)
     (name "rust-smithay-clipboard")
     (version "0.6.6")
     (source
@@ -3161,19 +3190,12 @@ internally rust-sdl2.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1s5hyhbmnk75i0sm14wy4dy7c576a4dyi1chfwdhpbhz1a3mqd0a"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.16)
         ("rust-wayland-client" ,rust-wayland-client-0.29))
        #:cargo-development-inputs
-       (("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.16))))
-    (home-page "https://github.com/smithay/smithay-clipboard")
-    (synopsis "Access to the Wayland clipboard for client applications")
-    (description
-     "This package provides access to the Wayland clipboard for client
-applications.")
-    (license license:expat)))
+       (("rust-smithay-client-toolkit" ,rust-smithay-client-toolkit-0.16))))))
 
 (define-public rust-tiff-0.8
   (package
@@ -3185,7 +3207,6 @@ applications.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32 "0wg4a6w8sakyy0mggblg340mx8bgglx9hwsxsn8g5fpjkx7k6jbl"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f              ; Not all files included
        #:cargo-inputs
@@ -3193,12 +3214,7 @@ applications.")
         ("rust-jpeg-decoder" ,rust-jpeg-decoder-0.3)
         ("rust-weezl" ,rust-weezl-0.1))
        #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.3))))
-    (home-page "https://github.com/image-rs/image-tiff")
-    (synopsis "TIFF decoding and encoding library in pure Rust")
-    (description
-     "This package provides TIFF decoding and encoding library in pure Rust.")
-    (license license:expat)))
+       (("rust-criterion" ,rust-criterion-0.3))))))
 
 (define-public rust-tiff-0.6
   (package
