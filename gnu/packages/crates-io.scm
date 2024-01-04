@@ -19672,6 +19672,25 @@ resource-constrained devices, like micro-controllers.")
 strings.")
     (license (list license:expat license:asl2.0))))
 
+;; TODO: Unbundle dejavu font
+(define-public rust-dejavu-2
+  (package
+    (name "rust-dejavu")
+    (version "2.37.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dejavu" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1hgv2cc9gnk8q8j2zl4hk2vf2jhf9mfcqsm31m4nv065zfspayq1"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/brayniac/dejavu")
+    (synopsis "Provides the DejaVu font family for embedding")
+    (description
+     "This package provides the @code{DejaVu} font family for embedding.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-demo-hack-0.0
   (package
     (name "rust-demo-hack")
