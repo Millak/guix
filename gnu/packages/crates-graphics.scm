@@ -1366,6 +1366,31 @@ EUI-64, also known as MAC-48 media access control addresses.")
      "Generated OpenGL bindings and wrapper for Servo.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-glow-0.12
+  (package
+    (name "rust-glow")
+    (version "0.12.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "glow" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0a1p6c9nff09m4gn0xnnschcpjq35y7c12w69ar8l2mnwj0fa3ya"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-js-sys" ,rust-js-sys-0.3)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-slotmap" ,rust-slotmap-1)
+                       ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+                       ("rust-web-sys" ,rust-web-sys-0.3))))
+    (home-page "https://github.com/grovesNL/glow.git")
+    (synopsis "Bindings to run GL anywhere")
+    (description
+     "GL on Whatever: a set of bindings to run GL (Open GL, @code{OpenGL} ES, and
+@code{WebGL}) anywhere, and avoid target-specific code.")
+    (license (list license:expat license:asl2.0 license:zlib))))
+
 (define-public rust-glutin-0.31
   (package
     (name "rust-glutin")
