@@ -1376,6 +1376,30 @@ some utility functions, and commands using that infrastructure.")
 its mode line.")
       (license license:gpl3+))))
 
+(define-public emacs-golden-ratio
+  (let ((commit "375c9f287dfad68829582c1e0a67d0c18119dab9")
+        (revision "0"))
+    (package
+      (name "emacs-golden-ratio")
+      (version (git-version "1.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/roman/golden-ratio.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0a635a3h6jx0clgwmhwc48i14y3xy5q29y37lp2sjnbxx1hlmkli"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/roman/golden-ratio.el")
+      (synopsis "Automatic resizing of Emacs windows to the golden ratio")
+      (description "This package provides an Emacs mode for automatically
+resizing the window that has main focus to be more convenient for editing,
+while the ones that are not being actively edited will be reduced to a smaller
+size.")
+      (license license:expat))))
+
 (define-public emacs-git-modes
   (package
     (name "emacs-git-modes")
