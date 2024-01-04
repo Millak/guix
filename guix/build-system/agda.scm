@@ -69,7 +69,6 @@
                                 (list "ghc" (default-haskell))
                                 (standard-packages))
                                '())
-                         ,(assoc "locales" (standard-packages))
                          ,@native-inputs))
          (outputs outputs)
          (build agda-build)
