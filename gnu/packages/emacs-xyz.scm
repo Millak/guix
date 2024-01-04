@@ -11131,7 +11131,7 @@ started with 20 minutes.  All values are customizable.")
 (define-public emacs-org-sidebar
   (package
     (name "emacs-org-sidebar")
-    (version "0.3.2")
+    (version "0.4")
     (source
      (origin
        (method git-fetch)
@@ -11140,7 +11140,7 @@ started with 20 minutes.  All values are customizable.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1r8kp954ciin4j7j7j8ihdkryf5x09s3ryl7bi9h2j6xqc1ij4wq"))))
+        (base32 "1gccih9wgi31m59flljw4cphfyhlfcqbjih91gkcnldq5z7n83nj"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-dash emacs-org-super-agenda emacs-org emacs-org-ql
