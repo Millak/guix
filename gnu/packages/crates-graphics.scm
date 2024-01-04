@@ -5013,6 +5013,23 @@ the platform-specific getters provided by winit, or another library.")
     (description "Rust bindings to X11.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-x11rb-protocol-0.11
+  (package
+    (inherit rust-x11rb-protocol-0.13)
+    (name "rust-x11rb-protocol")
+    (version "0.11.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "x11rb-protocol" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0mlwsfb4w8dic0hf0qdxix81f7w07z9v2nsdwly0f8qi2hxm3cg0"))))
+    (arguments
+     `(#:cargo-inputs (("rust-nix" ,rust-nix-0.25)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.3))))))
+
 (define-public rust-x11rb-protocol-0.10
   (package
     (inherit rust-x11rb-protocol-0.13)
