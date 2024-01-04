@@ -3996,8 +3996,34 @@ extensions.")
         ("rust-wayland-sys" ,rust-wayland-sys-0.21)
         ("rust-wayland-scanner" ,rust-wayland-scanner-0.21))))))
 
+(define-public rust-wayland-protocols-wlr-0.2
+  (package
+    (name "rust-wayland-protocols-wlr")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wayland-protocols-wlr" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1mjww9psk2nc5hm2q4s3qas30rbzfg1sb6qgw518fbbcdfvn27xd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-wayland-backend" ,rust-wayland-backend-0.3)
+                       ("rust-wayland-client" ,rust-wayland-client-0.31)
+                       ("rust-wayland-protocols" ,rust-wayland-protocols-0.31)
+                       ("rust-wayland-scanner" ,rust-wayland-scanner-0.31)
+                       ("rust-wayland-server" ,rust-wayland-server-0.31))))
+    (home-page "https://github.com/smithay/wayland-rs")
+    (synopsis "Generated API for the WLR wayland protocol extensions")
+    (description "This package provides generated API for the WLR wayland
+protocol extensions.")
+    (license license:expat)))
+
 (define-public rust-wayland-protocols-wlr-0.1
   (package
+    (inherit rust-wayland-protocols-wlr-0.2)
     (name "rust-wayland-protocols-wlr")
     (version "0.1.0")
     (source
@@ -4008,7 +4034,6 @@ extensions.")
        (sha256
         (base32
          "12jqi7n77l8a13hc5w5fkdgs4kdjk9i6nvl74njsdr106c4r3sgw"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
@@ -4016,12 +4041,7 @@ extensions.")
         ("rust-wayland-client" ,rust-wayland-client-0.30)
         ("rust-wayland-protocols" ,rust-wayland-protocols-0.30)
         ("rust-wayland-scanner" ,rust-wayland-scanner-0.30)
-        ("rust-wayland-server" ,rust-wayland-server-0.30))))
-    (home-page "https://github.com/smithay/wayland-rs")
-    (synopsis "Generated API for the WLR wayland protocol extensions")
-    (description "This package provides generated API for the WLR wayland
-protocol extensions")
-    (license license:expat)))
+        ("rust-wayland-server" ,rust-wayland-server-0.30))))))
 
 (define-public rust-wayland-scanner-0.31
   (package
