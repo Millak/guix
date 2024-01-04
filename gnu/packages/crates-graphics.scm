@@ -5135,6 +5135,30 @@ the platform-specific getters provided by winit, or another library.")
     (description "This package provides X11 library bindings for Rust.")
     (license license:expat)))
 
+(define-public rust-xkbcommon-dl-0.4
+  (package
+    (name "rust-xkbcommon-dl")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "xkbcommon-dl" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "16c6kmgqbffdsnw5w9q97p55d824ss3fqzif2lrh33648j2nc939"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bitflags" ,rust-bitflags-2)
+                       ("rust-dlib" ,rust-dlib-0.5)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-xkeysym" ,rust-xkeysym-0.2))))
+    (home-page "https://github.com/rust-windowing/xkbcommon-dl")
+    (synopsis "Dynamically loaded xkbcommon and xkbcommon-x11 Rust bindings")
+    (description
+     "Dynamically loaded xkbcommon and xkbcommon-x11 Rust bindings.")
+    (license license:expat)))
+
 (define-public rust-xkeysym-0.2
   (package
     (name "rust-xkeysym")
