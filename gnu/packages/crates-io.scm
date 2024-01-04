@@ -26346,8 +26346,68 @@ implementation that is more efficient for smaller hash keys.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-font-kit-0.11
+  (package
+    (name "rust-font-kit")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "font-kit" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1rbcgpjvjs7vlfx5g3kww1qsp2djy1838ymcx7x8a41p9m82izi1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; Not all files included.
+         "--skip=loaders::freetype::test::get_pcf_postscript_name"
+         "--skip=analyze_bytes"
+         "--skip=analyze_file"
+         "--skip=get_empty_glyph_outline"
+         "--skip=get_fully_hinted_glyph_outline"
+         "--skip=get_glyph_count"
+         "--skip=get_glyph_outline_eb_garamond_exclam"
+         "--skip=get_glyph_outline_inconsolata_J"
+         "--skip=get_glyph_raster_bounds"
+         "--skip=load_font_from_file"
+         "--skip=load_font_from_memory"
+         "--skip=load_fonts_from_opentype_collection"
+         "--skip=rasterize_empty_glyph"
+         "--skip=rasterize_empty_glyph_on_empty_canvas")
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-byteorder" ,rust-byteorder-1)
+        ("rust-core-foundation" ,rust-core-foundation-0.9)
+        ("rust-core-graphics" ,rust-core-graphics-0.22)
+        ("rust-core-text" ,rust-core-text-19)
+        ("rust-dirs-next" ,rust-dirs-next-2)
+        ("rust-dwrote" ,rust-dwrote-0.11)
+        ("rust-float-ord" ,rust-float-ord-0.2)
+        ("rust-freetype" ,rust-freetype-0.7)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-pathfinder-geometry" ,rust-pathfinder-geometry-0.5)
+        ("rust-pathfinder-simd" ,rust-pathfinder-simd-0.5)
+        ("rust-walkdir" ,rust-walkdir-2)
+        ("rust-winapi" ,rust-winapi-0.3)
+        ("rust-yeslogic-fontconfig-sys" ,rust-yeslogic-fontconfig-sys-3))
+       #:cargo-development-inputs (("rust-clap" ,rust-clap-2)
+                                   ("rust-colored" ,rust-colored-1)
+                                   ("rust-pbr" ,rust-pbr-1)
+                                   ("rust-prettytable-rs" ,rust-prettytable-rs-0.8))))
+    (native-inputs (list pkg-config))
+    (inputs (list fontconfig))
+    (home-page "https://github.com/servo/font-kit")
+    (synopsis "Font loading library")
+    (description "This package provides a font loading library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-font-kit-0.10
   (package
+    (inherit rust-font-kit-0.11)
     (name "rust-font-kit")
     (version "0.10.1")
     (source
@@ -26357,7 +26417,6 @@ implementation that is more efficient for smaller hash keys.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0a7fm757af2s9sk2i02plpa280mmygjmchcwpjclk1iqxiba3ja6"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -26377,11 +26436,7 @@ implementation that is more efficient for smaller hash keys.")
         ("rust-pathfinder-simd" ,rust-pathfinder-simd-0.5)
         ("rust-servo-fontconfig" ,rust-servo-fontconfig-0.5)
         ("rust-walkdir" ,rust-walkdir-2)
-        ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/servo/font-kit")
-    (synopsis "Font loading library")
-    (description "This package provides a font loading library.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-foreign-types-0.5
   (package
