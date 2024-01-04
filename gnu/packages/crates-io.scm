@@ -32339,6 +32339,29 @@ SystemTime}}.")
      "This package provides the IANA time zone for the current system.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-icrate-0.0.4
+  (package
+    (name "rust-icrate")
+    (version "0.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "icrate" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06d3g8n6xw3f0ai84mya0dlknp2n33zqdxpxp8272mslibzsmlwr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-block2" ,rust-block2-0.3)
+                       ("rust-dispatch" ,rust-dispatch-0.2)
+                       ("rust-objc2" ,rust-objc2-0.4))
+       #:cargo-development-inputs
+       (("rust-static-assertions" ,rust-static-assertions-1))))
+    (home-page "https://github.com/madsmtm/objc2")
+    (synopsis "Bindings to Apple's frameworks")
+    (description "This package provides bindings to Apple's frameworks.")
+    (license license:expat)))
+
 (define-public rust-idea-0.5
   (package
     (name "rust-idea")
