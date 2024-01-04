@@ -45046,8 +45046,36 @@ Rust.")
     (description "Numeric syntax extensions in Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-num-enum-0.7
+  (package
+    (name "rust-num-enum")
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "num_enum" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1h1pncbi7zviymadn521ycj7gdq84q1x3c4zqc015n76j7am2dv8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; unresolved import `num_enum`
+       #:cargo-inputs (("rust-num-enum-derive" ,rust-num-enum-derive-0.7))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-paste" ,rust-paste-1)
+                                   ("rust-rustversion" ,rust-rustversion-1)
+                                   ("rust-trybuild" ,rust-trybuild-1)
+                                   ("rust-walkdir" ,rust-walkdir-2))))
+    (home-page "https://github.com/illicitonion/num_enum")
+    (synopsis "Macros easing inter-operation between primitives and enums")
+    (description
+     "This library provides procedural macros to make inter-operation between
+primitives and enums easier.")
+    (license (list license:bsd-3 license:expat license:asl2.0))))
+
 (define-public rust-num-enum-0.5
   (package
+    (inherit rust-num-enum-0.7)
     (name "rust-num-enum")
     (version "0.5.11")
     (source
@@ -45057,7 +45085,6 @@ Rust.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1japmqhcxwn1d3k7q8jw58y7xfby51s16nzd6dkj483cj2pnqr0z"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #false                  ;missing files
        #:cargo-inputs
@@ -45066,13 +45093,7 @@ Rust.")
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-rustversion" ,rust-rustversion-1)
         ("rust-trybuild" ,rust-trybuild-1)
-        ("rust-walkdir" ,rust-walkdir-2))))
-    (home-page "https://github.com/illicitonion/num_enum")
-    (synopsis "Macros easing inter-operation between primitives and enums")
-    (description
-     "This library provides procedural macros to make inter-operation between
-primitives and enums easier.")
-    (license (list license:bsd-3 license:expat license:asl2.0))))
+        ("rust-walkdir" ,rust-walkdir-2))))))
 
 (define-public rust-num-enum-0.4
   (package
