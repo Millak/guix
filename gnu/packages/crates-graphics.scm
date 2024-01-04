@@ -878,6 +878,26 @@ and iOS.")
      "This package provides a library to perform image color model conversion.")
     (license license:expat-0)))
 
+(define-public rust-drm-sys-0.5
+  (package
+    (name "rust-drm-sys")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "drm-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1bhmwzbraxclivn2h83ab7aqdcly82sy7w85az6mcah6d021qkrs"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.66)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (home-page "https://github.com/Smithay/drm-rs")
+    (synopsis "Bindings to the Direct Rendering Manager API")
+    (description "Bindings to the Direct Rendering Manager API.")
+    (license license:expat)))
+
 (define-public rust-enterpolation-0.2
   (package
     (name "rust-enterpolation")
