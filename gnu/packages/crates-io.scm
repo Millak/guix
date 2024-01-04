@@ -18144,6 +18144,23 @@ shared across CPU and GPU.")
     (description "This package provices macros for cust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-cust-derive-0.1
+  (package
+    (inherit rust-cust-derive-0.2)
+    (name "rust-cust-derive")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cust_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ckxjfdlwhmdyf5s2v10cslpb6wri9xl8nk3qirz8rsn5x1hn61v"))))
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))))
+
 (define-public rust-cust-raw-0.11
   (package
     (name "rust-cust-raw")
