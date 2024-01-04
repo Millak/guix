@@ -4539,14 +4539,14 @@ crate @code{rust-wayland-client} for usable bindings.")
 (define-public rust-winit-0.28
   (package
     (name "rust-winit")
-    (version "0.28.3")
+    (version "0.28.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "winit" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0x1q4nxlr5sg0sf0fhdwg6jgb0a7rmc8skvp33v1b43v2664wl2g"))))
+        (base32 "152bi6lrmnasg6dnsdjqgnzyis3n90i09cja720m4krq8l5xk5lm"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
