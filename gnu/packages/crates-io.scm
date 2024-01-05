@@ -50660,7 +50660,8 @@ library.")
         (base32 "00fk326pj6pam402ygh2srs13bbjnnyfck41155ml1ck87pz0y7a"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+     `(#:tests? #f  ; use of undeclared crate or module `pollster`
+       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-quote" ,rust-quote-1)
                        ("rust-syn" ,rust-syn-1))))
     (home-page "https://github.com/zesterer/pollster")
