@@ -575,6 +575,30 @@ BED, GFF/GTF, VCF.")
 whole-genome bisulfite sequencing (WGBS) reads from directional protocol.")
     (license license:asl2.0)))
 
+(define-public bustools
+  (package
+    (name "bustools")
+    (version "0.43.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/BUStools/bustools")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "068kjlc4d528269nl5mc3j8h2c95r1v545d3fi1iw1ckg8rba0hg"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f))          ;no test target
+    (inputs (list zlib))
+    (home-page "https://bustools.github.io")
+    (synopsis "Tools for working with BUS files")
+    (description "bustools is a program for manipulating BUS files for single
+cell RNA-Seq datasets.  It can be used to error correct barcodes, collapse
+UMIs, produce gene count or transcript compatibility count matrices, and is useful
+for many other tasks.")
+    (license license:bsd-2)))
+
 (define-public cellsnp-lite
   ;; Last release is from November 2021 and does not contain fixes.
   (let ((commit "0885d746b0b1ea65c8ef92f8943ca7669ca9734a")
