@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2019, 2022, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2019, 2022-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2016 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
@@ -592,7 +592,10 @@ of user-name/file-like tuples."
 
   (list (shepherd-service
          (documentation "OpenSSH server.")
-         (requirement '(pam syslogd loopback))
+
+         ;; On the Hurd, this can only be started after pfinet is up, hence
+         ;; the dependency on 'networking'.
+         (requirement '(pam syslogd loopback networking))
          (provision '(ssh-daemon ssh sshd))
 
          (start #~(if #$inetd-style?
