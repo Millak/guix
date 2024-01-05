@@ -106,42 +106,6 @@
                             (string-append patches-directory "/" f ".patch")))
                   patches))))
 
-(define-public pjproject-jami
-  (let ((commit "e4b83585a0bdf1523e808a4fc1946ec82ac733d0")
-        (revision "3"))
-    (package
-      (inherit pjproject)
-      (name "pjproject-jami")
-      (version (git-version "2.12" revision commit))
-      (source (origin
-                (inherit (package-source pjproject))
-                ;; The Jami development team regularly issues patches to
-                ;; pjproject to extend the its functionality and fix bugs;
-                ;; they are submitted for inclusion upstream but larger
-                ;; patches take time to be reviewed and merged, hence this
-                ;; forked repository.
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/savoirfairelinux/pjproject")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0gky5idyyqxhqk959lzys5l7x1i925db773lfdpvxxmkmfizdq21"))))
-      (arguments
-       (substitute-keyword-arguments (package-arguments pjproject)
-         ((#:phases phases '%standard-phases)
-          #~(modify-phases #$phases
-              (add-after 'unpack 'apply-patches
-                (lambda _
-                  (#$jami-apply-custom-patches
-                   #:dep-name "pjproject"
-                   #:patches
-                   ;; This adds a config_site.h configuration file that sets
-                   ;; constants such as PJ_ICE_MAX_CAND that cannot be
-                   ;; configured at build time.
-                   '("0009-add-config-site")))))))))))
-
 ;; The following variables are configure flags used by ffmpeg-jami.  They're
 ;; from the jami/daemon/contrib/src/ffmpeg/rules.mak file.  We try to keep it
 ;; as close to the official Jami package as possible, to provide all the
