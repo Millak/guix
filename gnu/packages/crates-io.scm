@@ -79863,7 +79863,8 @@ clear display in the output.")
                 "0jsyc1kqc536wpgx1js61lwj86crniqw16lyvh02va4m1f9r0k5b"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-development-inputs
+     `(#:tests? #f  ; use of undeclared crate or module `unsafe_libyaml_test_suite`
+       #:cargo-development-inputs
        (("rust-pretty-assertions" ,rust-pretty-assertions-1))))
     (home-page "https://github.com/dtolnay/unsafe-libyaml")
     (synopsis "Libyaml in rust")
