@@ -15,7 +15,7 @@
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2020, 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
@@ -200,7 +200,7 @@ living in the same process.")
   (package
     (name "gnutls")
     (version "3.7.7")
-    (replacement gnutls-3.8.1)
+    (replacement gnutls-3.8.2)
     (source (origin
               (method url-fetch)
               ;; Note: Releases are no longer on ftp.gnu.org since the
@@ -305,11 +305,11 @@ required structures.")
 (define-deprecated/public-alias gnutls-latest gnutls)
 
 ;; Replacement for gnutls@3.7.7 to address GNUTLS-SA-2020-07-14 /
-;; CVE-2023-0361
-(define-public gnutls-3.8.1
+;; CVE-2023-0361 and GNUTLS-SA-2023-10-23 / CVE-2023-5981.
+(define gnutls-3.8.2
   (package
     (inherit gnutls)
-    (version "3.8.1")
+    (version "3.8.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnupg/gnutls/v"
@@ -318,20 +318,7 @@ required structures.")
               (patches (search-patches "gnutls-skip-trust-store-test.patch"))
               (sha256
                (base32
-                "1742jiigwsfhx7nj5rz7dwqr8d46npsph6b68j7siar0mqarx2xs"))))
-    (arguments
-     (if (target-hurd?)
-         ;; Fix reference to undefined 'PATH_MAX'.  This is fixed in GnuTLS
-         ;; commit 3b6ec1e01de4e96d36276dfe34ee9e183f285264.
-         (substitute-keyword-arguments (package-arguments gnutls)
-           ((#:phases phases #~%standard-phases)
-            #~(modify-phases #$phases
-                (add-after 'unpack 'set-path-max
-                  (lambda _
-                    (substitute* "lib/pathbuf.h"
-                      (("^#define GNUTLS_PATH_MAX PATH_MAX")
-                       "#define GNUTLS_PATH_MAX 8192\n")))))))
-         (package-arguments gnutls)))))
+                "0xzgmp1ck5ifvdki4jg29r278w2p1m3a0qz38g99v6zsdw0yarg7"))))))
 
 (define-public gnutls/dane
   ;; GnuTLS with build libgnutls-dane, implementing DNS-based
