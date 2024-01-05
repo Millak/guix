@@ -22,6 +22,7 @@
 ;;; Copyright © 2022 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 David Pflug <david@pflug.io>
+;;; Copyright © 2024 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -273,16 +274,16 @@ and syntax highlighting.")
 (define-public fish-foreign-env
   (package
     (name "fish-foreign-env")
-    (version "0.20190116")
+    (version "0.20230823")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/oh-my-fish/plugin-foreign-env")
-             (commit "dddd9213272a0ab848d474d0cbde12ad034e65bc")))
+             (commit "7f0cf099ae1e1e4ab38f46350ed6757d54471de7")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00xqlyl3lffc5l0viin1nyp819wf81fncqyz87jx8ljjdhilmgbs"))))
+        (base32 "0d16mdgjdwln41zk44qa5vcilmlia4w15r8z2rc3p49i5ankksg3"))))
     (build-system trivial-build-system)
     (arguments
      '(#:modules ((guix build utils))
@@ -298,7 +299,6 @@ and syntax highlighting.")
 
            ;; Embed absolute paths.
            (substitute* `(,(string-append func-path "/fenv.fish")
-                          ,(string-append func-path "/fenv.apply.fish")
                           ,(string-append func-path "/fenv.main.fish"))
              (("bash")
               (search-input-file %build-inputs "/bin/bash"))
