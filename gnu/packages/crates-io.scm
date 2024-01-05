@@ -26541,19 +26541,18 @@ stabilized, and eventually removed.  This library reïnstates these traits.")
 (define-public rust-futures-0.3
   (package
     (name "rust-futures")
-    (version "0.3.28")
+    (version "0.3.30")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "futures" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0h7c1xvxk751c7xlnph6fh3rb77z4lig4qif7f8q79db2az2ld13"))))
+         "1c04g14bccmprwsvx2j9m2blhwrynq7vhl151lsvcv4gi0b6jp34"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f
+     `(#:tests? #f      ; use of undeclared crate or module `futures_test`
        #:cargo-inputs
        (("rust-futures-channel" ,rust-futures-channel-0.3)
         ("rust-futures-core" ,rust-futures-core-0.3)
