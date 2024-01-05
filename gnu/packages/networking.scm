@@ -4459,7 +4459,6 @@ QUIC protocol.")
                         go-github-com-gologme-log
                         go-github-com-hashicorp-go-syslog
                         go-github-com-hjson-hjson-go
-                        go-github-com-hjson-hjson-go
                         go-github-com-kardianos-minwinsvc
                         go-github-com-mattn-go-colorable
                         go-github-com-mattn-go-isatty
