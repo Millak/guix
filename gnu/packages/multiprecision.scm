@@ -8,7 +8,7 @@
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2018, 2019, 2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
@@ -45,63 +45,46 @@
 
 (define-public gmp
   (package
-   (name "gmp")
-   (version "6.2.1")
-   (source (origin
-            (method url-fetch)
-            (uri
-             (string-append "mirror://gnu/gmp/gmp-"
-                            version ".tar.xz"))
-            (sha256
-             (base32
-              "1wml97fdmpcynsbw9yl77rj29qibfp652d0w3222zlfx5j8jjj7x"))
-            (patches (search-patches "gmp-faulty-test.patch"))))
-   (build-system gnu-build-system)
-   (native-inputs (list m4))
-   (outputs '("out" "debug"))
-   (arguments
-    `(#:parallel-tests? #f ; mpz/reuse fails otherwise
+    (name "gmp")
+    (version "6.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri
+               (string-append "mirror://gnu/gmp/gmp-"
+                              version ".tar.xz"))
+              (sha256
+               (base32
+                "1648ad1mr7c1r8lkkqshrv1jfjgfdb30plsadxhni7mq041bihm3"))
+              (patches (search-patches "gmp-faulty-test.patch"))))
+    (build-system gnu-build-system)
+    (native-inputs (list m4))
+    (outputs '("out" "debug"))
+    (arguments
+     (list
+      #:parallel-tests? #f              ; mpz/reuse fails otherwise
       #:configure-flags
-      '(;; Build a "fat binary", with routines for several
-        ;; sub-architectures.
-        "--enable-fat"
-        "--enable-cxx"
-        ,@(cond ((target-mingw?)
-                 ;; Static and shared cannot be built in one go:
-                 ;; they produce different headers.  We need shared.
-                 `("--disable-static"
-                   "--enable-shared"))
-                ((target-x32?)
-                 `("ABI=x32"))
-                (else '())))
-      ;; Remove after core-updates merge.
-      ;; Workaround for gcc-7 transition breakage, -system and cross-build,
-      ;; Note: See <http://bugs.gnu.org/22186> for why not 'CPATH'.
-      ;; Note: See <http://bugs.gnu.org/30756> for why not 'C_INCLUDE_PATH' & co.
-      ,@(if (target-mingw?)
-            `(#:phases
-              (modify-phases %standard-phases
-                (add-before 'configure 'setenv
-                  (lambda _
-                    (let ((gcc (assoc-ref %build-inputs "cross-gcc"))
-                          (libc (assoc-ref %build-inputs "cross-libc")))
-                      (setenv "CROSS_CPLUS_INCLUDE_PATH"
-                              (string-append gcc "/include/c++"
-                                             ":" gcc "/include"
-                                             ":" libc "/include"))
-                      (format #t "environment variable `CROSS_CPLUS_INCLUDE_PATH' set to `~a'\n"
-                              (getenv "CROSS_CPLUS_INCLUDE_PATH"))
-                      #t)))))
-            '())))
-   (synopsis "Multiple-precision arithmetic library")
-   (description
-    "The @acronym{GMP, the GNU Multiple Precision Arithmetic} library performs
+      #~(list
+         ;; Build a "fat binary", with routines for several sub-architectures.
+         "--enable-fat"
+         "--enable-cxx"
+         $#@(cond
+             ((target-mingw?)
+              ;; Static and shared cannot be built in one go: they produce
+              ;; different headers.  We need shared.
+              '("--disable-static"
+                "--enable-shared"))
+             ((target-x32?)
+              `("ABI=x32"))
+             (else '())))))
+    (synopsis "Multiple-precision arithmetic library")
+    (description
+     "The @acronym{GMP, the GNU Multiple Precision Arithmetic} library performs
 arbitrary-precision arithmetic on signed integers, rational numbers and floating
 point numbers.  The precision is only limited by the available memory.
 The library is highly optimized, with a design focus on execution speed.
 It is aimed at use in, for example, cryptography and computational algebra.")
-   (license lgpl3+)
-   (home-page "https://gmplib.org/")))
+    (license lgpl3+)
+    (home-page "https://gmplib.org/")))
 
 (define-public gmp-6.0
   ;; We keep this one around to bootstrap GCC, to work around a compilation
