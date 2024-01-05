@@ -130,6 +130,7 @@
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages perl-check)
+  #:use-module (gnu packages perl-web)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages protobuf)
@@ -4998,6 +4999,126 @@ two files: a repeat table file and an alignment file.  Submitted sequences may
 be of arbitrary length. Repeats with pattern size in the range from 1 to 2000
 bases are detected.")
     (license license:agpl3+)))
+
+(define-public trinityrnaseq
+  (package
+    (name "trinityrnaseq")
+    (version "2.13.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/trinityrnaseq/trinityrnaseq.git")
+                    (commit (string-append "Trinity-v" version))
+                    (recursive? #true)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1qszrxqbx4q5pavpgm4rkrh1z1v1mf7qx83vv3fnlqdmncnsf1gv"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:test-target "test"
+      #:modules
+      '((guix build gnu-build-system)
+        (guix build utils)
+        (ice-9 match)
+        (srfi srfi-1))
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (setenv "SHELL" (which "sh"))
+              (setenv "CONFIG_SHELL" (which "sh"))
+              ;; Do not require version.h, which triggers a local build of a
+              ;; vendored htslib.
+              (substitute* "trinity-plugins/bamsifter/Makefile"
+                (("sift_bam_max_cov.cpp htslib/version.h")
+                 "sift_bam_max_cov.cpp"))))
+          (add-after 'build 'build-plugins
+            (lambda _
+              ;; Run this in the subdirectory to avoid running the
+              ;; tests right here.
+              (with-directory-excursion "trinity-plugins"
+                (invoke "make" "plugins"))))
+          ;; The install script uses rsync, provides no overrides for the
+          ;; default location at /usr/local/bin, and patching it would change
+          ;; all lines that do something.
+          (replace 'install
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((share (string-append #$output "/share/trinity/"))
+                    (bin   (string-append #$output "/bin/")))
+                (mkdir-p bin)
+                (copy-recursively "." share)
+                (delete-file (string-append share "/Chrysalis/build/CMakeFiles/CMakeOutput.log"))
+                (delete-file (string-append share "/Inchworm/build/CMakeFiles/CMakeOutput.log"))
+
+                (wrap-program (string-append share "Trinity")
+                  `("R_LIBS_SITE" ":" = (,(getenv "R_LIBS_SITE")))
+                  `("PERL5LIB"    ":" = (,(getenv "PERL5LIB")))
+                  `("PYTHONPATH"  ":" = (,(getenv "GUIX_PYTHONPATH")))
+                  `("PATH"        ":" =
+                    ,(cons (string-append share "/trinity-plugins/BIN")
+                           (filter-map (match-lambda
+                                         ((name . dir)
+                                          (string-append dir "/bin")))
+                                       inputs))))
+                (symlink (string-append share "Trinity")
+                         (string-append bin "Trinity"))))))))
+    (inputs
+     (list blast+
+           bowtie
+           fastqc
+           hisat
+           htslib
+           icedtea-8
+           jellyfish
+           kallisto
+           multiqc
+           perl
+           perl-uri-escape
+           python-numpy
+           python-wrapper
+           r-ape
+           r-argparse
+           r-biobase
+           r-ctc
+           r-deseq2
+           r-edger
+           r-fastcluster
+           r-glimma
+           r-goplot
+           r-goseq
+           r-gplots
+           r-minimal
+           r-qvalue
+           r-rots
+           r-sm
+           r-tidyverse
+           rsem
+           salmon
+           samtools
+           sra-tools
+           star
+           zlib))
+    (propagated-inputs
+     (list coreutils
+           gzip
+           which))
+    (native-inputs (list cmake))
+    (home-page "https://github.com/trinityrnaseq/trinityrnaseq/wiki")
+    (synopsis "Trinity RNA-Seq de novo transcriptome assembly")
+    (description "Trinity assembles transcript sequences from Illumina RNA-Seq
+data.  Trinity represents a novel method for the efficient and robust de novo
+reconstruction of transcriptomes from RNA-seq data.  Trinity combines three
+independent software modules: Inchworm, Chrysalis, and Butterfly, applied
+sequentially to process large volumes of RNA-seq reads.  Trinity partitions
+the sequence data into many individual de Bruijn graphs, each representing the
+transcriptional complexity at a given gene or locus, and then processes each
+graph independently to extract full-length splicing isoforms and to tease
+apart transcripts derived from paralogous genes.")
+    (license license:bsd-3)))
 
 (define-public repeat-masker
   (package
