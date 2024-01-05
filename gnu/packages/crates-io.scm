@@ -26921,14 +26921,14 @@ and removes almost all unsafe code from it.")
 (define-public rust-futures-macro-0.3
   (package
     (name "rust-futures-macro")
-    (version "0.3.28")
+    (version "0.3.30")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "futures-macro" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0wpfsqxwqk5k569xl0jzz4zxy85x695mndf7y9jn66q6jid59jl9"))))
+        (base32 "1b49qh9d402y8nka4q6wvvj0c88qq91wbr192mdn5h54nzs0qxc7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
