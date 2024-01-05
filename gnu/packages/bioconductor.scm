@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017, 2018, 2020, 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
@@ -10509,6 +10509,38 @@ general analysis of single-cell clonotype information without the use of
 expression information.  The package functions as a wrapper for Startrac and
 powerTCR R packages.")
     (license license:gpl2)))
+
+(define-public r-scrnaseq
+  (package
+    (name "r-scrnaseq")
+    (version "2.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "scRNAseq" version
+                              'experiment))
+       (sha256
+        (base32 "0dbh3sqq7lkkdf7vls5qg7fbn6y74c7hsigb4d69pvk934ll88aw"))))
+    (properties `((upstream-name . "scRNAseq")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationdbi
+                             r-annotationhub
+                             r-biocgenerics
+                             r-ensembldb
+                             r-experimenthub
+                             r-genomicfeatures
+                             r-genomicranges
+                             r-s4vectors
+                             r-singlecellexperiment
+                             r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/scRNAseq")
+    (synopsis "Collection of public single-cell RNA-seq datasets")
+    (description
+     "This package contains gene-level counts for a collection of public
+@code{scRNA-seq} datasets, provided as @code{SingleCellExperiment} objects
+with cell- and gene-level metadata.")
+    (license license:cc0)))
 
 (define-public r-scry
   (package
