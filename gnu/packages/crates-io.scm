@@ -26801,16 +26801,15 @@ intrusive collections.")
 (define-public rust-futures-io-0.3
   (package
     (name "rust-futures-io")
-    (version "0.3.28")
+    (version "0.3.30")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "futures-io" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0r4rhkdhq1my4fahlhz59barqa511bylq813w3w4gvbidq4p9zsg"))))
+         "1hgh25isvsr4ybibywhr4dpys8mjnscw4wfxxwca70cn1gi26im4"))))
     (build-system cargo-build-system)
     (home-page "https://rust-lang.github.io/futures-rs")
     (synopsis
