@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2018, 2019, 2020, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018, 2020, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
@@ -426,6 +426,48 @@ algorithm for community detection in large networks.")
 large networks.")
     (license license:gpl3+)))
 
+(define-public python-louvain-igraph
+  (package
+    (name "python-louvain-igraph")
+    (version "0.8.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vtraag/louvain-igraph")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1j2ybihvvzggwjb9zvm829aqb5b94q10h8bw6v0h42xd9w75z9sv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'find-igraph
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
+              (substitute* "setup.py"
+                (("/usr/include/igraph")
+                 (string-append #$(this-package-input "igraph")
+                                "/include/igraph"))))))))
+    (propagated-inputs (list python-igraph))
+    (inputs (list igraph))
+    (native-inputs
+     (list python-ddt
+           python-setuptools-scm
+           pkg-config))
+    (home-page "https://github.com/vtraag/louvain-igraph")
+    (synopsis "Implementation of the Louvain algorithm")
+    (description "This package implements the Louvain algorithm for community
+detection in C++ and exposes it to Python.  Besides the relative flexibility
+of the implementation, it also scales well, and can be run on graphs of
+millions of nodes (as long as they can fit in memory).  The core function is
+@code{find_partition} which finds the optimal partition using the louvain
+algorithm for a number of different methods.")
+    (license license:gpl3+)))
+
 (define-public faiss
   (package
     (name "faiss")
@@ -449,8 +491,8 @@ large networks.")
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
-       (list "-DBUILD_WITH_GPU=OFF"  ; thanks, but no thanks, CUDA.
-             "-DBUILD_TUTORIAL=OFF") ; we don't need those
+       (list "-DBUILD_WITH_GPU=OFF"     ; thanks, but no thanks, CUDA.
+             "-DBUILD_TUTORIAL=OFF")    ; we don't need those
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'prepare-build
@@ -466,7 +508,7 @@ large networks.")
                                          '()))))))
                (substitute* "CMakeLists.txt"
                  (("-m64") "")
-                 (("-mpopcnt") "") ; only some architectures
+                 (("-mpopcnt") "")      ; only some architectures
                  (("-msse4")
                   (string-append
                    (string-join features)
