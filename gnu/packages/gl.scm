@@ -354,7 +354,10 @@ also known as DXTn or DXTC) for Mesa.")
       #:configure-flags
       #~(list
          #$@(cond
-             ((or (target-aarch64?) (target-arm32?))
+             ((target-aarch64?)
+              '("-Dgallium-drivers=asahi,etnaviv,freedreno,kmsro,lima,\
+nouveau,panfrost,r300,r600,svga,swrast,tegra,v3d,vc4,virgl,zink"))
+             ((target-arm32?)
               '("-Dgallium-drivers=etnaviv,freedreno,kmsro,lima,nouveau,\
 panfrost,r300,r600,svga,swrast,tegra,v3d,vc4,virgl,zink"))
              ((or (target-ppc64le?) (target-ppc32?) (target-riscv64?))
