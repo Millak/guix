@@ -6805,6 +6805,12 @@ Java package that provides routines for various statistical distributions.")
       (arguments
        (let ((base-directory "/share/emacs/site-lisp"))
          (list
+          #:modules '((guix build gnu-build-system)
+                      (guix build utils)
+                      (guix build emacs-utils))
+          #:imported-modules `(,@%gnu-build-system-modules
+                               (guix build emacs-build-system)
+                               (guix build emacs-utils))
           #:make-flags
           #~(list (string-append "PREFIX=" #$output)
                   (string-append "ETCDIR=" #$output #$base-directory "/etc")
@@ -6828,18 +6834,26 @@ Java package that provides routines for various statistical distributions.")
                               (string-append all "(skip-unless nil)\n"))
                              ...)))))
                     (disable-tests (list "test/ess-test-inf.el"
-                                         "test/ess-test-r.el"
-                                         "test/ess-test-r-eval.el")
+                                         "test/ess-test-r.el")
                                    ("ess--derive-connection-path"
                                     "ess-eval-line-test"
                                     "ess-eval-region-test"
                                     "ess-mock-remote-process"
                                     "ess-r-load-ESSR-github-fetch-no"
                                     "ess-r-load-ESSR-github-fetch-yes"
-                                    "ess-r-eval-ns-env-roxy-tracebug-test"
-                                    "ess-r-eval-sink-freeze-test"
                                     "ess-set-working-directory-test"
-                                    "ess-test-r-startup-directory")))))
+                                    "ess-test-r-startup-directory")))
+                  ;; The two tests below use a different syntax.
+                  (emacs-batch-edit-file "test/ess-test-r-eval.el"
+                    '(progn
+                      (mapc (lambda (test)
+                              (goto-char (point-min))
+                              (search-forward (format "etest-deftest %s " test))
+                              (beginning-of-line)
+                              (kill-sexp))
+                            '("ess-r-eval-ns-env-roxy-tracebug-test"
+                              "ess-r-eval-sink-freeze-test"))
+                      (basic-save-buffer)))))
               (replace 'check
                 (lambda _ (invoke "make" "test")))))))
       (native-inputs
