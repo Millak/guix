@@ -12654,16 +12654,21 @@ based on color-backtrace.")
   (package
     (inherit rust-colored-2)
     (name "rust-colored")
-    (version "1.9.3")
+    (version "1.9.4")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "colored" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "0nbc1czs512h1k696y7glv1kjrb2b914zpxraic6q5fgv80wizzl"))))))
+         (base32 "0mc302pm2x0vpmc3ni35w0666858pmqlqzbipyz42cw2j4f78pss"))))
+    (arguments
+     `(#:tests? #f      ; Tests expect a real terminal.
+       #:cargo-inputs (("rust-is-terminal" ,rust-is-terminal-0.4)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs (("rust-ansi-term" ,rust-ansi-term-0.12)
+                                   ("rust-rspec" ,rust-rspec-1.0.0-beta.3))))))
 
 (define-public rust-combine-4
   (package
