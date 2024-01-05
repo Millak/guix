@@ -210,9 +210,9 @@ includes the @code{etc/dbus-1/system.d} directories of each package listed in
                           (begin
                             (rename-file (string-append "/var/run/dbus/" next)
                                          (string-append "/run/dbus/" next))
-                            (loop (readdir dir))))))))
-                      (rmdir "/var/run/dbus")
-                      (symlink "/run/dbus" "/var/run/dbus")))
+                            (loop (readdir dir)))))))
+                    (rmdir "/var/run/dbus")
+                    (symlink "/run/dbus" "/var/run/dbus"))))
                (else
                 (format (current-error-port)
                         "Failed to symlink /run/dbus to /var/run/dbus: ~s~%"
