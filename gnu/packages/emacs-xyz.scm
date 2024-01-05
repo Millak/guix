@@ -10113,12 +10113,12 @@ constants and units into an Emacs buffer.")
                    (substitute* "tagedit.el"
                      (("\\(require 'assoc\\)") "")))))))
     (propagated-inputs
-     (list emacs-s emacs-dash))
+     (list emacs-dash emacs-s))
     (home-page "https://github.com/magnars/tagedit")
-    (synopsis "Some paredit-like features for html-mode")
+    (synopsis "Some Paredit-like features for HTML mode")
     (description
-     "This package provides a collection of paredit-like functions for editing
-in @code{html-mode}.")
+     "This package provides a collection of Paredit-like functions for editing
+in HTML mode.")
     (license license:gpl3+)))
 
 (define-public emacs-slime
