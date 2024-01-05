@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2022, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
@@ -51,31 +51,31 @@
      `(#:configure-flags
        '(,@(if (or (target-riscv64?)
                    (target-ppc32?))
-            '("-DTBB_TEST_LINK_FLAGS=-latomic")
-            `())
+               '("-DTBB_TEST_LINK_FLAGS=-latomic")
+               `())
          ,@(if (or (target-arm32?)
                    (target-ppc32?))
-             '("-DTBB_TEST_COMPILE_FLAGS=-DTBB_TEST_LOW_WORKLOAD")
-             `())
-         "-DTBB_STRICT=OFF")   ;; Don't fail on warnings
+               '("-DTBB_TEST_COMPILE_FLAGS=-DTBB_TEST_LOW_WORKLOAD")
+               `())
+         "-DTBB_STRICT=OFF") ;; Don't fail on warnings
        #:phases
        (modify-phases %standard-phases
          ,@(cond
-             ((target-arm32?)
-              `((add-after 'unpack 'adjust-test-suite
-                  (lambda _
-                    (substitute* "test/CMakeLists.txt"
-                      ;; Bus error, skipped on mips.
-                      ((".*test_malloc_pools.*") ""))))))
-             ((target-ppc32?)
-              `((add-after 'unpack 'adjust-test-suite
-                  (lambda _
-                      (substitute* "test/CMakeLists.txt"
-                        ;; These tests hang forever.
-                        ((".*test_function_node.*") "")
-                        ((".*test_multifunction_node.*") "")
-                        ((".*test_async_node.*") ""))))))
-             (else '())))))
+            ((target-arm32?)
+             `((add-after 'unpack 'adjust-test-suite
+                 (lambda _
+                   (substitute* "test/CMakeLists.txt"
+                     ;; Bus error, skipped on mips.
+                     ((".*test_malloc_pools.*") ""))))))
+            ((target-ppc32?)
+             `((add-after 'unpack 'adjust-test-suite
+                 (lambda _
+                   (substitute* "test/CMakeLists.txt"
+                     ;; These tests hang forever.
+                     ((".*test_function_node.*") "")
+                     ((".*test_multifunction_node.*") "")
+                     ((".*test_async_node.*") ""))))))
+            (else '())))))
     (home-page "https://www.threadingbuildingblocks.org")
     (synopsis "C++ library for parallel programming")
     (description
@@ -101,7 +101,9 @@ tasks, synchronization primitives, atomic operations, and more.")
             (lambda _
               (substitute* "python/CMakeLists.txt"
                 (("\\$\\{PYTHON_BUILD_WORK_DIR\\}/build")
-                 #$output))
+                 #$output)
+                (("install --prefix.*-f" m)
+                 (string-append m " --root=/")))
               (substitute* "python/setup.py"
                 (("extra_link_args=tbb_flag,")
                  (string-append "extra_link_args=['-Wl,-rpath="
