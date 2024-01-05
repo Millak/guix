@@ -1657,14 +1657,14 @@ operate properly.")
 (define-public ffmpeg
   (package
     (name "ffmpeg")
-    (version "6.0")
+    (version "6.1.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "10kh2f4y4isfqj4xpcqqnzk611jh89ywcjyjnq9c2jcv5p18ggjp"))))
+                "0s7r2qv8gh2a3w568n9xxgcz0q8j5ww1jdsci1hm9f4l1yqg9146"))))
     (outputs '("out" "debug"))
     (build-system gnu-build-system)
     (inputs
