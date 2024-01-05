@@ -26648,19 +26648,18 @@ featuring zero allocations, composability, and iterator-like interfaces.")
 (define-public rust-futures-core-0.3
   (package
     (name "rust-futures-core")
-    (version "0.3.28")
+    (version "0.3.30")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "futures-core" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "137fdxy5amg9zkpa1kqnj7bnha6b94fmddz59w973x96gqxmijjb"))))
+         "07aslayrn3lbggj54kci0ishmd1pr367fp7iks7adia1p05miinz"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f
+     `(#:tests? #f      ; use of undeclared crate or module `futures`
        #:cargo-inputs
        (("rust-portable-atomic" ,rust-portable-atomic-1))))
     (home-page "https://rust-lang.github.io/futures-rs")
