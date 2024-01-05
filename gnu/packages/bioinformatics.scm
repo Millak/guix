@@ -2366,6 +2366,40 @@ sequencing data and the end result are tables of UMI-unique DamID and CEL-Seq
 counts.")
     (license license:expat)))
 
+(define-public python-snaptools
+  (package
+    (name "python-snaptools")
+    (version "1.4.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "snaptools" version))
+       (sha256
+        (base32
+         "1s5373g5jjbshh3q39zy7dlxr7nda6ksxq9d1gw46h82c4fsmfbn"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-future
+           python-h5py
+           python-louvain
+           python-numpy
+           python-pybedtools
+           python-pysam))
+    (home-page "https://github.com/r3fang/SnapTools")
+    (synopsis "Tools for processing snap files" )
+    (description
+     "@code{SnapTools} can operate on snap files the following types of
+operations:
+
+@itemize
+@item index the reference genome before alignment;
+@item align reads to the corresponding reference genome;
+@item pre-process by convert pair-end reads into fragments, checking the
+  mapping quality score, alingment and filtration;
+@item create the cell-by-bin matrix.
+@end itemize")
+    (license license:asl2.0)))
+
 (define-public python-bioframe
   (package
     (name "python-bioframe")
