@@ -119,7 +119,7 @@ libraries or executables."
       (error "Possible pre-generated files found:" pregenerated-files))))
 
 (define* (configure #:key inputs
-                    target
+                    target system
                     (vendor-dir "guix-vendor")
                     #:allow-other-keys)
   "Vendor Cargo.toml dependencies as guix inputs."
@@ -178,6 +178,10 @@ libraries or executables."
 
     ;; Prevent targeting the build machine.
     (setenv "CRATE_CC_NO_DEFAULTS" "1"))
+
+  ;; Support 16k kernel page sizes on aarch64 with jemalloc.
+  (when (string-prefix? "aarch64" (or target system))
+    (setenv "JEMALLOC_SYS_WITH_LG_PAGE" "14"))
 
   ;; Configure cargo to actually use this new directory with all the crates.
   (setenv "CARGO_HOME" (string-append (getcwd) "/.cargo"))
