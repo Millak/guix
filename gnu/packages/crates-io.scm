@@ -27089,7 +27089,7 @@ futures-rs library.")
 (define-public rust-futures-test-0.3
   (package
     (name "rust-futures-test")
-    (version "0.3.28")
+    (version "0.3.30")
     (source
      (origin
        (method url-fetch)
@@ -27097,10 +27097,10 @@ futures-rs library.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0j83960iv317xj8bfq5jay4s1yqdjidfcb1lz8js793h91s2gbw4"))))
+         "1jcaj9ibj2mjq3dvbm6p0pqfm95x7gnmbfpi1p52xi1ancvq4f6f"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f          ; Doc tests fail.
+     `(#:tests? #f      ; use of undeclared crate or module `futures`
        #:cargo-inputs
        (("rust-futures-core" ,rust-futures-core-0.3)
         ("rust-futures-executor" ,rust-futures-executor-0.3)
