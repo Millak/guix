@@ -247,6 +247,18 @@
     "--enable-encoder=pcm_s32le"
     "--enable-encoder=pcm_s64le"
 
+    "--enable-decoder=pcm_s16be"
+    "--enable-decoder=pcm_s16be_planar"
+    "--enable-decoder=pcm_s16le_planar"
+    "--enable-decoder=pcm_s24be"
+    "--enable-decoder=pcm_s24le_planar"
+    "--enable-decoder=pcm_s32be"
+    "--enable-decoder=pcm_s32le_planar"
+    "--enable-decoder=pcm_s64be"
+    "--enable-decoder=pcm_s8"
+    "--enable-decoder=pcm_s8_planar"
+    "--enable-decoder=pcm_u16be"
+
     ;; Encoders/decoders for images.
     "--enable-encoder=gif"
     "--enable-decoder=gif"
@@ -271,7 +283,22 @@
     "--enable-filter=aformat"
     "--enable-filter=fps"
     "--enable-filter=transpose"
-    "--enable-filter=pad"))
+    "--enable-filter=pad"
+
+    "--enable-filter=afir"
+    "--enable-filter=split"
+    "--enable-filter=drawbox"
+    "--enable-filter=drawtext"
+    "--enable-filter=rotate"
+    "--enable-filter=loop"
+    "--enable-filter=setpts"
+    "--enable-filter=movie"
+    "--enable-filter=alphamerge"
+    "--enable-filter=boxblur"
+    "--enable-filter=lut"
+    "--enable-filter=negate"
+    "--enable-filter=colorkey"
+    "--enable-filter=transpose"))
 
 (define %ffmpeg-linux-configure-flags
   '("--enable-pic"
