@@ -1127,6 +1127,46 @@ Ensembl.")
 Ensembl.")
     (license license:artistic2.0)))
 
+(define-public r-escape
+  (package
+    (name "r-escape")
+    (version "1.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "escape" version))
+       (sha256
+        (base32 "0bmin69ax7l5x3a0k9mv183277a0hl4znx02y79v2ilkgqkdm7fn"))))
+    (properties `((upstream-name . "escape")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocparallel
+                             r-broom
+                             r-data-table
+                             r-dplyr
+                             r-ggplot2
+                             r-ggridges
+                             r-gseabase
+                             r-gsva
+                             r-matrix
+                             r-matrixgenerics
+                             r-msigdbr
+                             r-patchwork
+                             r-reshape2
+                             r-rlang
+                             r-singlecellexperiment
+                             r-stringr
+                             r-summarizedexperiment
+                             r-ucell))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/escape")
+    (synopsis "Single cell analysis platform for enrichment")
+    (description
+     "R-escape streamlines gene set enrichment analysis for single-cell RNA
+sequencing.  Using raw count information, Seurat objects, or
+@code{SingleCellExperiment} format, users can perform and visualize GSEA
+across individual cells.")
+    (license license:gpl2)))
+
 (define-public r-snplocs-hsapiens-dbsnp144-grch37
   (package
     (name "r-snplocs-hsapiens-dbsnp144-grch37")
