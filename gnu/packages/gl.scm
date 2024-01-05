@@ -350,7 +350,7 @@ also known as DXTn or DXTC) for Mesa.")
          #$@(cond
              ((target-aarch64?)
               ;; TODO: Fix svga driver for non-Intel architectures.
-              '("-Dgallium-drivers=etnaviv,freedreno,kmsro,lima,nouveau,\
+              '("-Dgallium-drivers=asahi,etnaviv,freedreno,kmsro,lima,nouveau,\
 panfrost,r300,r600,swrast,tegra,v3d,vc4,virgl"))
              ((target-arm32?)
               ;; Freedreno FTBFS when built on a 64-bit machine.
