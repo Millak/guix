@@ -10105,6 +10105,13 @@ constants and units into an Emacs buffer.")
        (sha256
         (base32 "0kq40g46s8kgiafrhdq99h79rz9h5fvgz59k7ralmf86bl4sdmdb"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'remove-spurious-require
+                 (lambda _
+                   (substitute* "tagedit.el"
+                     (("\\(require 'assoc\\)") "")))))))
     (propagated-inputs
      (list emacs-s emacs-dash))
     (home-page "https://github.com/magnars/tagedit")
