@@ -25,7 +25,7 @@
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2023 Arnav Andrew Jose <arnav.jose@gmail.com>
 ;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
-;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
+;;; Copyright © 2023, 2024 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -2531,6 +2531,90 @@ current branch.  @code{git absorb} will automatically identify which commits
 are safe to modify, and which staged changes belong to each of those commits.
 It will then write @code{fixup!} commits for each of those changes.")
     (license license:bsd-3)))
+
+(define-public git-delta
+  (package
+    (name "git-delta")
+    (version "0.16.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "git-delta" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1pvy5jcpj3xzf2b8k9d5xwwamwlv9pzsx6p2yq61am38igafg9qb"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:cargo-inputs
+      `(("rust-ansi-colours" ,rust-ansi-colours-1)
+        ("rust-ansi-term" ,rust-ansi-term-0.12)
+        ("rust-anyhow" ,rust-anyhow-1)
+        ("rust-atty" ,rust-atty-0.2)
+        ("rust-bat" ,rust-bat-0.22)
+        ("rust-bitflags" ,rust-bitflags-2)
+        ("rust-box-drawing" ,rust-box-drawing-0.1)
+        ("rust-bytelines" ,rust-bytelines-2)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-chrono-humanize" ,rust-chrono-humanize-0.2)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-console" ,rust-console-0.15)
+        ("rust-ctrlc" ,rust-ctrlc-3)
+        ("rust-dirs" ,rust-dirs-4)
+        ("rust-git2" ,rust-git2-0.16)
+        ("rust-grep-cli" ,rust-grep-cli-0.1)
+        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-palette" ,rust-palette-0.6)
+        ("rust-pathdiff" ,rust-pathdiff-0.2)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-shell-words" ,rust-shell-words-1)
+        ("rust-smol-str" ,rust-smol-str-0.1)
+        ("rust-syntect" ,rust-syntect-5)
+        ("rust-sysinfo" ,rust-sysinfo-0.28)
+        ("rust-unicode-segmentation" ,rust-unicode-segmentation-1)
+        ("rust-unicode-width" ,rust-unicode-width-0.1)
+        ("rust-vte" ,rust-vte-0.11)
+        ("rust-xdg" ,rust-xdg-2))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-extras
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (share (string-append out "/share"))
+                     (bash-completions-dir
+                      (string-append share "/bash-completion/completions"))
+                     (zsh-completions-dir
+                      (string-append share "/zsh/site-functions"))
+                     (fish-completions-dir
+                      (string-append share "/fish/vendor_completions.d")))
+                (mkdir-p bash-completions-dir)
+                (mkdir-p zsh-completions-dir)
+                (mkdir-p fish-completions-dir)
+                (copy-file "etc/completion/completion.bash"
+                           (string-append bash-completions-dir "/delta"))
+                (copy-file "etc/completion/completion.zsh"
+                           (string-append zsh-completions-dir "/_delta"))
+                (copy-file "etc/completion/completion.fish"
+                           (string-append fish-completions-dir "/delta.fish"))))))))
+    (native-inputs (list git-minimal pkg-config))
+    (inputs (list libgit2 openssl zlib))
+    (home-page "https://github.com/dandavison/delta")
+    (synopsis "Syntax-highlighting pager for git")
+    (description
+     "This package provides a syntax-highlighting pager for @command{git}.  It
+uses @command{bat} for syntax highlighting and provides many features such as
+advanced keybindings, word-level diff highlighting, syntax highlighting for
+@command{grep} and a stylized box presentation.")
+    (license license:expat)))
 
 (define-public rust-xremap
   (package
