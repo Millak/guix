@@ -4076,37 +4076,37 @@ powerful route filtering syntax and an easy-to-use configuration interface.")
            python-docutils
            openssl))
     (arguments
-     `(#:configure-flags
-       ,#~(list "--disable-systemd-service"
-                "--enable-external-ell"
-                "--enable-hwsim"
-                "--enable-tools"
-                "--enable-wired"
-                "--localstatedir=/var"
-                (string-append "--with-dbus-datadir=" #$output "/share/")
-                (string-append "--with-dbus-busdir="
-                               #$output "/share/dbus-1/system-services"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'copy-ell-header-files
-           ;; Copy into the source tree two of ell's private header files that
-           ;; it shares with iwd, as is required to build with the
-           ;; "--enable-external-ell" configure option.
-           ;; See the definition of "ell_shared" in iwd's Makefile.am.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((ell-header-dir (search-input-directory inputs "/ell"))
-                   (target-dir "ell"))
-               (mkdir target-dir)
-               (for-each
-                (lambda (file-name)
-                  (copy-file (string-append ell-header-dir "/" file-name)
-                             (string-append target-dir "/" file-name)))
-                '("asn1-private.h" "useful.h")))))
-         (add-after 'configure 'patch-Makefile
-           (lambda _
-             (substitute* "Makefile"
-               ;; Don't try to 'mkdir /var'.
-               (("\\$\\(MKDIR_P\\) -m 700") "true")))))))
+     (list #:configure-flags
+           #~(list "--disable-systemd-service"
+                   "--enable-external-ell"
+                   "--enable-hwsim"
+                   "--enable-tools"
+                   "--enable-wired"
+                   "--localstatedir=/var"
+                   (string-append "--with-dbus-datadir=" #$output "/share/")
+                   (string-append "--with-dbus-busdir="
+                                  #$output "/share/dbus-1/system-services"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'copy-ell-header-files
+                 ;; Copy into the source tree two of ell's private header files
+                 ;; that it shares with iwd, as is required to build with the
+                 ;; "--enable-external-ell" configure option.  See the
+                 ;; definition of "ell_shared" in iwd's Makefile.am.
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((ell-header-dir (search-input-directory inputs "/ell"))
+                         (target-dir "ell"))
+                     (mkdir target-dir)
+                     (for-each
+                      (lambda (file-name)
+                        (copy-file (string-append ell-header-dir "/" file-name)
+                                   (string-append target-dir "/" file-name)))
+                      '("asn1-private.h" "useful.h")))))
+               (add-after 'configure 'patch-Makefile
+                 (lambda _
+                   (substitute* "Makefile"
+                     ;; Don't try to 'mkdir /var'.
+                     (("\\$\\(MKDIR_P\\) -m 700") "true")))))))
     (home-page "https://iwd.wiki.kernel.org/")
     (synopsis "iNet Wireless Daemon")
     (description "iwd is a wireless daemon for Linux that aims to replace WPA
