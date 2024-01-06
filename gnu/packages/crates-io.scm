@@ -8971,6 +8971,31 @@ in a byte slice, fast.")
         ("rust-quickcheck" ,rust-quickcheck-0.6)
         ("rust-rand" ,rust-rand-0.4))))))
 
+(define-public rust-bytelines-2
+  (package
+    (name "rust-bytelines")
+    (version "2.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bytelines" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jxacxpb7v0qgh325s5b7mfk90fr63jpr90dar8m47r27imnb5qj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-tokio" ,rust-tokio-1))
+       #:cargo-development-inputs
+       (("rust-tokio" ,rust-tokio-1))))
+    (home-page "https://github.com/whitfin/bytelines")
+    (synopsis "Read input lines as byte slices for high efficiency")
+    (description
+     "This library provides an easy way to read in input lines as byte slices for
+high efficiency.")
+    (license license:expat)))
+
 (define-public rust-bytemuck-1
   (package
     (name "rust-bytemuck")
