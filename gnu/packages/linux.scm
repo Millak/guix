@@ -8799,7 +8799,7 @@ framebuffer dump file (copy) to a PNG image.")
 (define-public libcgroup
   (package
     (name "libcgroup")
-    (version "2.0.2")
+    (version "3.1.0")
     (home-page "https://github.com/libcgroup/libcgroup")
     (source
      (origin
@@ -8808,14 +8808,16 @@ framebuffer dump file (copy) to a PNG image.")
              "https://github.com/libcgroup/libcgroup/releases/download/v"
              version "/" name "-" version ".tar.gz"))
        (sha256
-        (base32 "1y0c9ncsawamj77raiw6qkbm5cdsyvhjb2mvgma1kxmgw0r3pxlf"))))
+        (base32 "0n0jkvmagw14vgwx3j5b6vv5h25lasrg2a7xihq9h11ww2qw8vlp"))))
     (build-system gnu-build-system)
     (arguments
      ;; Tests are virtualized with lxc, it is not very feasible
      ;; to make them executable under guix build. Also, note that
      ;; origin is using source tarball release which is prepared
      ;; after testing.
-     `(#:tests? #f))
+     (list #:tests? #f
+           #:configure-flags
+           #~'("--disable-systemd")))
     (native-inputs
      (list bison flex))
     (inputs
