@@ -67,7 +67,7 @@
          ;; Build a "fat binary", with routines for several sub-architectures.
          "--enable-fat"
          "--enable-cxx"
-         $#@(cond
+         #$@(cond
              ((target-mingw?)
               ;; Static and shared cannot be built in one go: they produce
               ;; different headers.  We need shared.
