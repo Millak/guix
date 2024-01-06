@@ -32983,14 +32983,14 @@ bytestring representations.")
 (define-public rust-inventory-0.3
   (package
     (name "rust-inventory")
-    (version "0.3.8")
+    (version "0.3.14")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "inventory" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1yd0qljqk29vkgpgac1vnigs44li8sd029jbrlrj8xg2w2hqg2n3"))))
+                "1iyckc52afd5d1ni819kxzz7g1l8bzdg88rvqxra6hxn3wmknmy8"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
