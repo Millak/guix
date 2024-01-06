@@ -8804,8 +8804,9 @@ framebuffer dump file (copy) to a PNG image.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append home-page "/releases/download/v"
-                           version "/" name "-" version ".tar.gz"))
+       (uri (string-append
+             "https://github.com/libcgroup/libcgroup/releases/download/v"
+             version "/" name "-" version ".tar.gz"))
        (sha256
         (base32 "1y0c9ncsawamj77raiw6qkbm5cdsyvhjb2mvgma1kxmgw0r3pxlf"))))
     (build-system gnu-build-system)
