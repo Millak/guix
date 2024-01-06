@@ -996,13 +996,13 @@ and Cython.")
 (define-public txt2tags
   (package
     (name "txt2tags")
-    (version "3.7")
+    (version "3.9")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "txt2tags" version))
               (sha256
                (base32
-                "12hpnvdy7dgarq6ini9jp7dp2zcmvpax04zbl3jb84kd423r75i7"))))
+                "0ik7gpr3gymgxnj0p86k8768kyxncbncv93zq67sbak3dbdl8hky"))))
     (build-system python-build-system)
     (native-inputs (list python-tox))
     (home-page "https://txt2tags.org")
