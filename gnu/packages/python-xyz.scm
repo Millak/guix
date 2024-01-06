@@ -7,7 +7,7 @@
 ;;; Copyright © 2014, 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2015 Omar Radwan <toxemicsquire4@gmail.com>
 ;;; Copyright © 2015 Pierre-Antoine Rault <par@rigelk.eu>
-;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2015, 2016 David Thompson <davet@gnu.org>
@@ -7537,6 +7537,20 @@ provides additional functionality on the produced Mallard documents.")
 programming language and the extended Cython programming language.  It makes
 writing C extensions for Python as easy as Python itself.")
     (license license:asl2.0)))
+
+;; Needed for scipy
+(define-public python-cython-0.29.35
+  (package
+    (inherit python-cython)
+    (name "python-cython")
+    (version "0.29.35")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "Cython" version))
+              (sha256
+               (base32
+                "09y5r22nyswqpwc02agla1bnzh2jx2db25pnq9pc5cq8pyh1yf3f"))))
+    (properties '())))
 
 (define-public python-cython-3
   (package
