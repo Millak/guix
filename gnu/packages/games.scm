@@ -194,6 +194,7 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -3436,15 +3437,15 @@ a C library, so they can easily be integrated into other programs.")
 (define-public taisei
   (package
     (name "taisei")
-    (version "1.3.2")
+    (version "1.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/taisei-project/"
                            "taisei/releases/download/v" version
-                           "/taisei-v" version ".tar.xz"))
+                           "/taisei-" version ".tar.xz"))
        (sha256
-        (base32 "1g53fcyrlzmvlsb40pw90gaglysv6n1w42hk263iv61ibhdmzh6v"))))
+        (base32 "1glrr99xiyz674d1izgvmk9w1zxanc94d34pacd0wya66bbml0nc"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -3454,7 +3455,11 @@ a C library, so they can easily be integrated into other programs.")
                                 "-Dr_gles30=true"
                                 "-Dshader_transpiler=true")))
     (native-inputs
-     (list pkg-config python python-docutils python-pygments))
+     (list pkg-config
+           python
+           python-docutils
+           python-pygments
+           python-zstandard))
     (inputs
      (list cglm
            freetype
@@ -3468,7 +3473,8 @@ a C library, so they can easily be integrated into other programs.")
            sdl2-mixer
            shaderc
            spirv-cross
-           zlib))
+           zlib
+           (list zstd "lib")))
     (home-page "https://taisei-project.org/")
     (synopsis "Shoot'em up fangame and libre clone of Touhou Project")
     (description
