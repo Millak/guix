@@ -33073,6 +33073,26 @@ to:
      "This package provides a port of the serialize and unserialize functions of PHP for Python")
     (license license:bsd-3)))
 
+(define-public python-pydevtool
+  (package
+    (name "python-pydevtool")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pydevtool" version))
+       (sha256
+        (base32 "12pwhvvm4pgvfxj18ylb66drxm28b2cpb5rbxqrsrk1k7m7vmqr5"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #false)) ;no tests
+    (propagated-inputs (list python-doit python-rich-click))
+    (home-page "https://github.com/pydoit/pydevtool")
+    (synopsis "CLI dev tools powered by pydoit")
+    (description "This package provides command line tools, powered by pydoit.
+It offers integration with @code{click} and @code{rich} for custom CLI and
+these linters: @code{pycodestlye}, @code{pyflakes}")
+    (license license:expat)))
+
 (define-public nikola
   (package
     (name "nikola")
