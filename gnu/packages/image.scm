@@ -200,7 +200,7 @@ code is Valgrind-clean and unit tested.")
 (define-public libpng
   (package
    (name "libpng")
-   (version "1.6.37")  ; Remember to also update libpng-apng if possible!
+   (version "1.6.39")  ; Remember to also update libpng-apng if possible!
    (source (origin
             (method url-fetch)
             (uri (list (string-append "mirror://sourceforge/libpng/libpng16/"
@@ -213,7 +213,7 @@ code is Valgrind-clean and unit tested.")
                         "/libpng16/libpng-" version ".tar.xz")))
             (sha256
              (base32
-              "1jl8in381z0128vgxnvn33nln6hzckl7l7j9nqvkaf1m9n1p0pjh"))))
+              "0dv90dxvmqpk7mbywyjbz8lh08cv4b0ksqp1y62mzvmlf379cihz"))))
    (build-system gnu-build-system)
    (arguments
     `(#:configure-flags '("--disable-static")))
