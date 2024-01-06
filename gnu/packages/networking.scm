@@ -3695,56 +3695,98 @@ communication over HTTP.")
     (license license:agpl3+)))
 
 (define-public restinio
-  ;; Temporarily use an unreleased commit, which includes fixes to be able to
-  ;; run the test suite in the resolver-less Guix build environment.
-  (let ((revision "0")
-        (commit "eda471ec3a2815965ca02ec93a1124a342b7601d"))
-    (package
-      (name "restinio")
-      (version (git-version "0.6.18" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/Stiffstream/restinio")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0f4w7714r0ic7csgxydw2vzfh35ssk34pns9jycmc08dzc3r7whb"))))
-      (build-system cmake-build-system)
-      (arguments
-       (list
-        #:configure-flags #~(list "-DRESTINIO_FIND_DEPS=ON"
-                                  "-DRESTINIO_INSTALL=ON"
-                                  "-DRESTINIO_TEST=ON"
-                                  "-DRESTINIO_USE_EXTERNAL_HTTP_PARSER=ON"
-                                  "-DRESTINIO_USE_EXTERNAL_SOBJECTIZER=ON")
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'change-directory
-              (lambda _
-                (chdir "dev"))))))
-      (native-inputs
-       (list catch2
-             clara
-             json-dto))
-      (inputs
-       (list openssl
-             sobjectizer))
-      (propagated-inputs
-       ;; These are all #include'd by restinio's .hpp header files.
-       (list asio
-             fmt
-             http-parser
-             pcre
-             pcre2
-             zlib))
-      (home-page "https://stiffstream.com/en/products/restinio.html")
-      (synopsis "C++14 library that gives you an embedded HTTP/Websocket server")
-      (description "RESTinio is a header-only C++14 library that gives you an embedded
+  (package
+    (name "restinio")
+    (version "0.7.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Stiffstream/restinio")
+                    (commit (string-append "v." version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "06p9gcnzgynsgfxxa1lk58pq5755px7sn00x2xh21qjnspwld1sy"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DRESTINIO_INSTALL=ON"
+              "-DRESTINIO_TEST=ON"
+              "-DRESTINIO_DEP_LLHTTP=system"
+              "-DRESTINIO_DEP_FMT=system"
+              "-DRESTINIO_DEP_EXPECTED_LITE=system"
+              "-DRESTINIO_DEP_CATCH2=system"
+              ;; No support to use a system provided so_5
+              ;; (see:
+              ;; https://github.com/Stiffstream/restinio/issues/207).
+              "-DRESTINIO_WITH_SOBJECTIZER=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'change-directory
+            (lambda _
+              (chdir "dev")))
+          (add-after 'change-directory 'use-system-catch2
+            ;; It's not currently possible to select a system-provided catch2,
+            ;; so patch the build system (see:
+            ;; https://github.com/Stiffstream/restinio/issues/208).
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("add_subdirectory\\(catch2\\)")
+                 "find_package(Catch2 REQUIRED)")))))))
+    (native-inputs
+     (list catch2-3
+           expected-lite
+           json-dto))
+    (inputs
+     (list openssl
+           sobjectizer))
+    (propagated-inputs
+     ;; These are all #include'd by restinio's .hpp header files.
+     (list asio
+           fmt
+           llhttp
+           pcre
+           pcre2
+           zlib))
+    (home-page "https://stiffstream.com/en/products/restinio.html")
+    (synopsis "C++14 library that gives you an embedded HTTP/Websocket server")
+    (description "RESTinio is a header-only C++14 library that gives you an embedded
 HTTP/Websocket server.  It is based on standalone version of ASIO
 and targeted primarily for asynchronous processing of HTTP-requests.")
-      (license license:bsd-3))))
+    (license license:bsd-3)))
+
+(define-public restinio-0.6
+  (package
+    (inherit restinio)
+    (name "restinio")
+    (version "0.6.19")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Stiffstream/restinio")
+                    (commit (string-append "v." version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1qrb1qr075r5059w984c4slgpsiwv94j6fmi9naa5l48dbi1p7jz"))))
+    (arguments
+     (list
+      #:configure-flags #~(list "-DRESTINIO_FIND_DEPS=ON"
+                                "-DRESTINIO_INSTALL=ON"
+                                "-DRESTINIO_TEST=ON"
+                                "-DRESTINIO_USE_EXTERNAL_HTTP_PARSER=ON"
+                                "-DRESTINIO_USE_EXTERNAL_SOBJECTIZER=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'change-directory
+            (lambda _
+              (chdir "dev"))))))
+    (native-inputs (list catch2 clara json-dto))
+    ;; These are all #include'd by restinio's .hpp header files.
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs restinio)
+       (replace "llhttp" http-parser)))))
 
 (define-public opendht
   (package
@@ -3830,7 +3872,7 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
            readline))
     (propagated-inputs
      (list msgpack                      ;included in several installed headers
-           restinio                     ;included in opendht/http.h
+           restinio-0.6                 ;included in opendht/http.h
            ;; The following are listed in the 'Requires.private' field of
            ;; opendht.pc:
            argon2
