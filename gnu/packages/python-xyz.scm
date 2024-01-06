@@ -13262,6 +13262,22 @@ validate this input and generate a PEP 643-compliant metadata
 file (e.g. @file{PKG-INFO}).")
     (license license:expat)))
 
+(define-public python-pyproject-metadata-0.7
+  (package
+    (inherit python-pyproject-metadata)
+    (name "python-pyproject-metadata")
+    (version "0.7.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/FFY00/python-pyproject-metadata")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0yvs59ymz5gdix34a95wxlxvk9bnvjgrzsnmnc3ws7whpfv3yasm"))))))
+
 ;; pep621 was renamed to pyproject-metadata.
 (define-public python-pep621
   (deprecated-package "python-pep621" python-pyproject-metadata))
