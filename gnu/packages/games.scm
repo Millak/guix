@@ -78,7 +78,7 @@
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2023 Ivana Drazovic <iv.dra@hotmail.com>
-;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2023, 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -3447,12 +3447,12 @@ a C library, so they can easily be integrated into other programs.")
         (base32 "1g53fcyrlzmvlsb40pw90gaglysv6n1w42hk263iv61ibhdmzh6v"))))
     (build-system meson-build-system)
     (arguments
-     `(#:build-type "release"      ;comment out for bug-reporting (and cheats)
-       #:configure-flags
-       (list "-Dr_default=gles30"
-             "-Dr_gles20=true"
-             "-Dr_gles30=true"
-             "-Dshader_transpiler=true")))
+     (list
+      #:build-type "release" ;comment out for bug-reporting (and cheats)
+      #:configure-flags #~(list "-Dr_default=gles30"
+                                "-Dr_gles20=true"
+                                "-Dr_gles30=true"
+                                "-Dshader_transpiler=true")))
     (native-inputs
      (list pkg-config python python-docutils python-pygments))
     (inputs
@@ -3475,14 +3475,15 @@ a C library, so they can easily be integrated into other programs.")
      "The player controls a character (one of three: Good, Bad, and Dead),
 dodges the missiles (lots of it cover the screen, but the character's hitbox
 is very small), and shoot at the adversaries that keep appear on the screen.")
-    (license (list ;;game
-                   license:expat
-                   ;;resources/00-taisei.pkgdir/bgm/
-                   ;;atlas/portraits/
-                   license:cc-by4.0
-                   ;;miscellaneous
-                   license:cc0
-                   license:public-domain))))
+    (license (list
+              ;; game
+              license:expat
+              ;; resources/00-taisei.pkgdir/bgm/
+              ;; atlas/portraits/
+              license:cc-by4.0
+              ;; miscellaneous
+              license:cc0
+              license:public-domain))))
 
 (define-public cmatrix
   (package
