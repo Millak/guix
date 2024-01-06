@@ -84,21 +84,16 @@
 (define-public python-scipy
   (package
     (name "python-scipy")
-    (version "1.10.1")
+    (version "1.11.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "scipy" version))
        (sha256
-        (base32 "19gk88nvrxl050nasz25qpmmqvbdk247bkj09jx8jibv1awdzy9c"))))
+        (base32 "1amfxpnni0cagwjpb0i1kdgnh4sh484ryn4gfkgbjcspgy7bg8lh"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; FIXME: The default 'mesonpy' build system doesn't seem to work with
-      ;; our pyproject-build-system, errors with: AttributeError: 'list'
-      ;; object has no attribute 'items' (see:
-      ;; https://issues.guix.gnu.org/62781).
-      #:build-backend "setuptools.build_meta"
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
@@ -141,7 +136,7 @@
                     (format #t "sphinx-build not found, skipping~%"))))))))
     (propagated-inputs
      (list python-numpy python-matplotlib python-pyparsing python-pythran))
-    (inputs (list openblas pybind11))
+    (inputs (list openblas pybind11-2.10))
     (native-inputs
      (list gfortran
            ;; XXX: Adding gfortran shadows GCC headers, causing a compilation
@@ -149,7 +144,11 @@
            gcc
            meson-python
            pkg-config
-           python-cython
+           python-click
+           python-cython-0.29.35
+           python-doit
+           python-pooch
+           python-pydevtool
            python-pytest
            python-pytest-xdist
            python-threadpoolctl))
