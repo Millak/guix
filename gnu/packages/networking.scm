@@ -4054,7 +4054,7 @@ powerful route filtering syntax and an easy-to-use configuration interface.")
 (define-public iwd
   (package
     (name "iwd")
-    (version "2.8")
+    (version "2.12")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4063,7 +4063,7 @@ powerful route filtering syntax and an easy-to-use configuration interface.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0bpksqyaqr624bj7zm9hi22rnp6wnjbngx4q08l7lbd0r7r93vcb"))))
+                "199pcs20054xhp5c0dnxf9ny5cf5cynkqpx68dpn46nq8ly76n2y"))))
     (build-system gnu-build-system)
     (inputs
      (list dbus ell (package-source ell) readline))
@@ -4107,7 +4107,7 @@ powerful route filtering syntax and an easy-to-use configuration interface.")
              (substitute* "Makefile"
                ;; Don't try to 'mkdir /var'.
                (("\\$\\(MKDIR_P\\) -m 700") "true")))))))
-    (home-page "https://git.kernel.org/pub/scm/network/wireless/iwd.git/")
+    (home-page "https://iwd.wiki.kernel.org/")
     (synopsis "iNet Wireless Daemon")
     (description "iwd is a wireless daemon for Linux that aims to replace WPA
 Supplicant.  It optimizes resource utilization by not depending on any external
