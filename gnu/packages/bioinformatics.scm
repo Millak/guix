@@ -2110,6 +2110,29 @@ matplotlib Axes objects, making them easy to style and incorporate into
 multi-panel figures.")
     (license license:expat)))
 
+(define-public python-parabam
+  (package
+    (name "python-parabam")
+    (version "3.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "parabam" version))
+       (sha256
+        (base32 "1cy9q3gzdawi1kilycpd7waymjmrwsg8czwycfp13g301ir9xyp3"))
+       (modules '((guix build utils)))
+       (snippet
+        '(substitute* "setup.py"
+           (("'argparse',") "")))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy python-pysam))
+    (home-page "https://github.com/cancerit/parabam")
+    (synopsis "Parallel BAM File Analysis")
+    (description "Parabam is a tool for processing sequencing files in
+parallel.  It uses Python's native multiprocessing framework to apply a user
+defined rule on an input file.")
+    (license license:gpl3)))
+
 (define-public python-peaks2utr
   (package
     (name "python-peaks2utr")
