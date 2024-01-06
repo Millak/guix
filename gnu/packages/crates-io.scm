@@ -67625,22 +67625,23 @@ clone.")
   (package
     (inherit rust-smol-str-0.2)
     (name "rust-smol-str")
-    (version "0.1.21")
+    (version "0.1.24")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "smol_str" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1gb14a85k6mzpn6s78flwvfl5vy1czsrzlwcgidy7k00wf1mrlb1"))))
+        (base32 "1j891lgnflvnzgbs7fhwd6sxrrx47ii5mj0yy3f2f9mbrdbwimps"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-serde" ,rust-serde-1))
-       #:cargo-development-inputs
-       (("rust-proptest" ,rust-proptest-0.10)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-json" ,rust-serde-json-1))))))
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=check_code_formatting")
+       #:cargo-inputs (("rust-arbitrary" ,rust-arbitrary-1)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-proptest" ,rust-proptest-1)
+                                   ("rust-serde" ,rust-serde-1)
+                                   ("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-snafu-derive-0.7
   (package
