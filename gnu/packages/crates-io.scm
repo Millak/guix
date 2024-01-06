@@ -11218,25 +11218,23 @@ Encoding Standard.")
 (define-public rust-chrono-humanize-0.2
   (package
     (name "rust-chrono-humanize")
-    (version "0.2.1")
+    (version "0.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "chrono-humanize" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1jvm6fcs3zvz4kcqkp9q5hjy0i2zc17194nb63ckyn0xa0cw3p9f"))))
+        (base32 "0fq25fcdqd7s39dx81hq123210q4lpcbjdz82jl2fy6jnkk2g5kr"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-chrono" ,rust-chrono-0.4))))
     (home-page "https://gitlab.com/imp/chrono-humanize-rs")
     (synopsis "Human-friendly time expressions")
     (description
      "Chrono-Humanize provides human-friendly time expressions, similar to
-Python arrow.humanize.")
+Python @code{arrow.humanize}.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-chrono-tz-0.6
