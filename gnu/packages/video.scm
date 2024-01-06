@@ -3642,7 +3642,10 @@ be used for realtime video capture via Linux-specific APIs.")
              (lambda* _
                (let ((plugin-path (getenv "QT_PLUGIN_PATH")))
                  (wrap-program (string-append #$output "/bin/obs")
-                   `("QT_PLUGIN_PATH" ":" prefix (,plugin-path)))))))))
+                   `("QT_PLUGIN_PATH" ":" prefix (,plugin-path))
+                   `("LD_LIBRARY_PATH" ":" prefix
+                     (,(string-append #$(this-package-input "vlc")
+                                      "/lib"))))))))))
     (native-search-paths
      (list (search-path-specification
             (variable "OBS_PLUGINS_DIRECTORY")
