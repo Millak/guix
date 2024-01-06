@@ -2538,6 +2538,38 @@ graphics and video games.")
 on correctness, flexibility and ease of use.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-palette-0.6
+  (package
+    (inherit rust-palette-0.7)
+    (name "rust-palette")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "palette" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jay4zbxfnz6hj9f78inb3n3hmaamivnrrapy4ri0n0jf67xd74g"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-approx" ,rust-approx-0.5)
+        ("rust-bytemuck" ,rust-bytemuck-1)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-palette-derive" ,rust-palette-derive-0.6)
+        ("rust-phf" ,rust-phf-0.11)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-clap" ,rust-clap-2)
+        ("rust-criterion" ,rust-criterion-0.3)
+        ("rust-csv" ,rust-csv-1)
+        ("rust-image" ,rust-image-0.23)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-rand-mt" ,rust-rand-mt-4)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1))))))
+
 (define-public rust-palette-derive-0.7
   (package
     (name "rust-palette-derive")
