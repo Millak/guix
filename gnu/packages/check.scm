@@ -603,10 +603,10 @@ It allows the specification of behaviour scenarios using a given-when-then
 pattern.")
       (license license:apsl2))))
 
-(define-public catch2-3.3
+(define-public catch2-3
   (package
     (name "catch2")
-    (version "3.4.0")
+    (version "3.5.1")
     (home-page "https://github.com/catchorg/Catch2")
     (source (origin
               (method git-fetch)
@@ -616,7 +616,7 @@ pattern.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gdfsva6mnd66px85fmm3s65h8qzqnmgbmws2i3nygfav1y8d88f"))))
+                "0p7rk01n4qfnnm1bgakllyqi83n1kbpz11gh65z1vspfz58hs9iv"))))
     (build-system cmake-build-system)
     (arguments
      (list
