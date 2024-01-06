@@ -5826,7 +5826,8 @@ use for syntax highlighting in other crates.")
 
 (define-public rust-bat-0.18
   (package
-    (name "bat")
+    (inherit rust-bat-0.22)
+    (name "rust-bat")
     (version "0.18.3")
     (source
      (origin
@@ -5835,10 +5836,8 @@ use for syntax highlighting in other crates.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0qlk032dd6zxda1v7clah33nafxygaw3x7f73ajwlvk956nrn1js"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-ansi-colours" ,rust-ansi-colours-1)
         ("rust-ansi-term" ,rust-ansi-term-0.12)
         ("rust-atty" ,rust-atty-0.2)
@@ -5869,17 +5868,8 @@ use for syntax highlighting in other crates.")
         ("rust-serial-test" ,rust-serial-test-0.5)
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-wait-timeout" ,rust-wait-timeout-0.2))))
-    (native-inputs
-     (list pkg-config))
     (inputs
-     (list libgit2 zlib))
-    (home-page "https://github.com/sharkdp/bat")
-    (synopsis "@command{cat} clone with syntax highlighting and git integration")
-    (description
-     "@command{bat} is a drop-in @command{cat} replacement featuring syntax
-highlighting for a large number of languages, git integration, and automatic
-paging.")
-    (license (list license:expat license:asl2.0))))
+     (list libgit2 zlib))))
 
 (define-public rust-beef-0.5
   (package
