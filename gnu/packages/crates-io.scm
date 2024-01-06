@@ -33,7 +33,7 @@
 ;;; Copyright © 2022 Paul Alesius <paul@unnservice.com>
 ;;; Copyright © 2023 Arnav Andrew Jose <arnav.jose@gmail.com>
 ;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
-;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
+;;; Copyright © 2023, 2024 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;; Copyright © 2023 Sergio Pastor Pérez <sergio.pastorperez@outlook.es>
 ;;; Copyright © 2023 VÖRÖSKŐI András <voroskoi@gmail.com>
@@ -72083,17 +72083,17 @@ no_std compatible by default, only relying on alloc.")
         ("rust-errno" ,rust-errno-0.2)
         ("rust-libc" ,rust-libc-0.2))))))
 
-(define-public rust-sysinfo-0.27
+(define-public rust-sysinfo-0.28
   (package
     (name "rust-sysinfo")
-    (version "0.27.8")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "sysinfo" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0cqy39g76298pqfr8jv30j6cxl9bpnd7c2smfxl5s2na1w2yj0m9"))))
+    (version "0.28.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sysinfo" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06zk8awy8gjrk3w68wpkqyprm3j82vq1cibji6db5zlkcv5g7hml"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-test-flags
@@ -72111,14 +72111,49 @@ no_std compatible by default, only relying on alloc.")
         ("rust-ntapi" ,rust-ntapi-0.4)
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-rayon" ,rust-rayon-1)
+        ("rust-serde" ,rust-serde-1)
         ("rust-winapi" ,rust-winapi-0.3))
-       #:cargo-development-inputs (("rust-tempfile" ,rust-tempfile-3))))
+       #:cargo-development-inputs
+       (("rust-serde-json" ,rust-serde-json-1)
+        ("rust-tempfile" ,rust-tempfile-3))))
     (home-page "https://github.com/GuillaumeGomez/sysinfo")
     (synopsis "System handler to interact with processes")
     (description
      "This package is a library to get system information such as processes,
 processors, disks, components and networks.")
     (license license:expat)))
+
+(define-public rust-sysinfo-0.27
+  (package
+    (inherit rust-sysinfo-0.28)
+    (name "rust-sysinfo")
+    (version "0.27.8")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "sysinfo" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0cqy39g76298pqfr8jv30j6cxl9bpnd7c2smfxl5s2na1w2yj0m9"))))
+    (arguments
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             ;; These files aren't available in the build environment.
+             "--skip=test::check_system_info"
+             "--skip=test::check_uid_gid"
+             "--skip=test_networks"
+             "--skip=test_wait_non_child"
+             "--skip=test_process_disk_usage")
+       #:cargo-inputs
+       (("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-core-foundation-sys" ,rust-core-foundation-sys-0.8)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-ntapi" ,rust-ntapi-0.4)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs
+       (("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-sysinfo-0.15
   (package
