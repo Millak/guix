@@ -1072,115 +1072,118 @@ collaboration using typical untrusted file hosts or services.")
    (license license:gpl3+)))
 
 (define-public cgit
-  (package
-    (name "cgit")
-    ;; Update the ‘git-source’ input as well.
-    (version "1.2.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://git.zx2c4.com/cgit/snapshot/cgit-"
-                    version ".tar.xz"))
-              (sha256
-               (base32
-                "193d990ym10qlslk0p8mjwp2j6rhqa7fq0y1iff65lvbyv914pss"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:tests? #f ; XXX: fail to build the in-source git.
-      #:test-target "test"
-      #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
-                           "SHELL_PATH=sh")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'unpack-git
-            (lambda* (#:key inputs #:allow-other-keys)
-              ;; Unpack the source of git into the 'git' directory.
-              (invoke "tar" "--strip-components=1" "-C" "git" "-xf"
-                      (assoc-ref inputs "git-source"))))
-          (add-after 'unpack 'patch-absolute-file-names
-            (lambda* (#:key inputs #:allow-other-keys)
-              (define (quoted-file-name input path)
-                (string-append "\"" input path "\""))
-              (substitute* "ui-snapshot.c"
-                (("\"gzip\"")
-                 (quoted-file-name (assoc-ref inputs "gzip") "/bin/gzip"))
-                (("\"bzip2\"")
-                 (quoted-file-name (assoc-ref inputs "bzip2") "/bin/bzip2"))
-                (("\"xz\"")
-                 (quoted-file-name (assoc-ref inputs "xz") "/bin/xz")))
+  (let ((commit "793c420897e18eb3474c751d54cf4e0983f85433")
+        (rev "1"))
+    (package
+      (name "cgit")
+      ;; Update the ‘git-source’ input as well.
+      (version (git-version "1.2.3" rev commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.zx2c4.com/cgit")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "1mhrm14wpqvralf9j33ih5ai6naiq3g2jg2z91gnw9dhh8f9ilwz"))
+                (file-name (git-file-name name version))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f                    ; XXX: fail to build the in-source git.
+        #:test-target "test"
+        #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                             "SHELL_PATH=sh")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'unpack-git
+              (lambda* (#:key inputs #:allow-other-keys)
+                ;; Unpack the source of git into the 'git' directory.
+                (invoke "tar" "--strip-components=1" "-C" "git" "-xf"
+                        (assoc-ref inputs "git-source"))))
+            (add-after 'unpack 'patch-absolute-file-names
+              (lambda* (#:key inputs #:allow-other-keys)
+                (define (quoted-file-name input path)
+                  (string-append "\"" input path "\""))
+                (substitute* "ui-snapshot.c"
+                  (("\"gzip\"")
+                   (quoted-file-name (assoc-ref inputs "gzip") "/bin/gzip"))
+                  (("\"bzip2\"")
+                   (quoted-file-name (assoc-ref inputs "bzip2") "/bin/bzip2"))
+                  (("\"xz\"")
+                   (quoted-file-name (assoc-ref inputs "xz") "/bin/xz")))
 
-              (substitute* "filters/about-formatting.sh"
-                (("$\\(dirname $0\\)") (string-append (assoc-ref outputs "out")
-                                                      "/lib/cgit/filters"))
-                (("\\| tr") (string-append "| " (which "tr"))))
+                (substitute* "filters/about-formatting.sh"
+                  (("$\\(dirname $0\\)") (string-append (assoc-ref outputs "out")
+                                                        "/lib/cgit/filters"))
+                  (("\\| tr") (string-append "| " (which "tr"))))
 
-              (substitute* "filters/html-converters/txt2html"
-                (("sed") (which "sed")))
+                (substitute* "filters/html-converters/txt2html"
+                  (("sed") (which "sed")))
 
-              (substitute* "filters/html-converters/man2html"
-                (("groff") (which "groff")))
+                (substitute* "filters/html-converters/man2html"
+                  (("groff") (which "groff")))
 
-              (substitute* "filters/html-converters/rst2html"
-                (("rst2html\\.py") (which "rst2html.py")))))
-          (delete 'configure) ; no configure script
-          (add-after 'build 'build-man
-            (lambda* (#:key make-flags #:allow-other-keys)
-              (apply invoke "make" "doc-man" make-flags)))
-          (replace 'install
-            (lambda* (#:key make-flags outputs #:allow-other-keys)
-              (let ((out (assoc-ref outputs "out")))
-                (apply invoke
-                       "make" "install" "install-man"
-                       (string-append "prefix=" out)
-                       (string-append "CGIT_SCRIPT_PATH=" out "/share/cgit")
-                       make-flags)
-                ;; Move the platform-dependent 'cgit.cgi' into lib to get it
-                ;; stripped.
-                (rename-file (string-append out "/share/cgit/cgit.cgi")
-                             (string-append out "/lib/cgit/cgit.cgi")))))
-          (add-after 'install 'wrap-python-scripts
-            (lambda* (#:key outputs #:allow-other-keys)
-              (for-each
-               (lambda (file)
-                 (wrap-program (string-append (assoc-ref outputs "out")
-                                              "/lib/cgit/filters/" file)
-                   `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))))
-               '("syntax-highlighting.py"
-                 "html-converters/md2html")))))))
-    (native-inputs
-     ;; For building manpage.
-     (list asciidoc))
-    (inputs
-     `(;; Building cgit requires a Git source tree.
-       ("git-source"
-        ,(origin
-           (method url-fetch)
-           ;; cgit is tightly bound to git.  Use GIT_VER from the Makefile,
-           ;; which may not match the current (package-version git).
-           (uri "mirror://kernel.org/software/scm/git/git-2.25.4.tar.xz")
-           (sha256
-            (base32 "11am6s46wmn1yll5614smjhzlghbqq6gysgcs64igjr9y5wzpdxq"))))
-       ("bash-minimal" ,bash-minimal)
-       ("openssl" ,openssl)
-       ("python" ,python)
-       ("python-docutils" ,python-docutils)
-       ("python-markdown" ,python-markdown)
-       ("python-pygments" ,python-pygments)
-       ("zlib" ,zlib)
-       ;; bzip2, groff, gzip and xz are inputs (not native inputs)
-       ;; since they are actually substituted into cgit source and
-       ;; referenced by the built package output.
-       ("bzip2" ,bzip2)
-       ("groff" ,groff)
-       ("gzip" ,gzip)
-       ("xz" ,xz)))
-    (home-page "https://git.zx2c4.com/cgit/")
-    (synopsis "Web frontend for git repositories")
-    (description
-     "CGit is an attempt to create a fast web interface for the Git SCM, using
+                (substitute* "filters/html-converters/rst2html"
+                  (("rst2html\\.py") (which "rst2html.py")))))
+            (delete 'configure)         ; no configure script
+            (add-after 'build 'build-man
+              (lambda* (#:key make-flags #:allow-other-keys)
+                (apply invoke "make" "doc-man" make-flags)))
+            (replace 'install
+              (lambda* (#:key make-flags outputs #:allow-other-keys)
+                (let ((out (assoc-ref outputs "out")))
+                  (apply invoke
+                         "make" "install" "install-man"
+                         (string-append "prefix=" out)
+                         (string-append "CGIT_SCRIPT_PATH=" out "/share/cgit")
+                         make-flags)
+                  ;; Move the platform-dependent 'cgit.cgi' into lib to get it
+                  ;; stripped.
+                  (rename-file (string-append out "/share/cgit/cgit.cgi")
+                               (string-append out "/lib/cgit/cgit.cgi")))))
+            (add-after 'install 'wrap-python-scripts
+              (lambda* (#:key outputs #:allow-other-keys)
+                (for-each
+                 (lambda (file)
+                   (wrap-program (string-append (assoc-ref outputs "out")
+                                                "/lib/cgit/filters/" file)
+                     `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))))
+                 '("syntax-highlighting.py"
+                   "html-converters/md2html")))))))
+      (native-inputs
+       ;; For building manpage.
+       (list asciidoc))
+      (inputs
+       `( ;; Building cgit requires a Git source tree.
+         ("git-source"
+          ,(origin
+             (method url-fetch)
+             ;; cgit is tightly bound to git.  Use GIT_VER from the Makefile,
+             ;; which may not match the current (package-version git).
+             (uri "mirror://kernel.org/software/scm/git/git-2.43.0.tar.xz")
+             (sha256
+              (base32 "1v3nkfm3gw8wr7595qy86qla8xyjvi85fmly4lfph4frfcz60ijl"))))
+         ("bash-minimal" ,bash-minimal)
+         ("openssl" ,openssl)
+         ("python" ,python)
+         ("python-docutils" ,python-docutils)
+         ("python-markdown" ,python-markdown)
+         ("python-pygments" ,python-pygments)
+         ("zlib" ,zlib)
+         ;; bzip2, groff, gzip and xz are inputs (not native inputs)
+         ;; since they are actually substituted into cgit source and
+         ;; referenced by the built package output.
+         ("bzip2" ,bzip2)
+         ("groff" ,groff)
+         ("gzip" ,gzip)
+         ("xz" ,xz)))
+      (home-page "https://git.zx2c4.com/cgit/")
+      (synopsis "Web frontend for git repositories")
+      (description
+       "CGit is an attempt to create a fast web interface for the Git SCM, using
 a built-in cache to decrease server I/O pressure.")
-    (license license:gpl2)))
+      (license license:gpl2))))
 
 (define-public cgit-pink
   (package
