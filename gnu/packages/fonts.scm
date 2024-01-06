@@ -123,6 +123,29 @@
 titling.")
     (license license:silofl1.1)))
 
+(define-public font-cardo
+  (package
+    (name "font-cardo")
+    (version "1.04")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://scholarsfonts.net/cardo"
+                                  (string-delete #\. version) ".zip"))
+              (sha256
+               (base32
+                "0ps55zjva4fzmg47w2i8srrh8sqxz1wkcclihwgzlwfbaxixn0cl"))))
+    (build-system font-build-system)
+    (home-page "https://scholarsfonts.net/cardofnt.html")
+    (synopsis "Unicode font for classical scholarship")
+    (description
+     "Cardo is a large unicode font specifically designed for the needs of
+classicists, biblical scholars, medievalists, and linguists.  Since it may be
+used to prepare materials for publication, it also contains features that are
+required for high-quality typography, such as ligatures, text figures (also
+known as old style numerals), true small capitals and a variety of punctuation
+and space characters.")
+    (license license:silofl1.1)))
+
 (define-public font-chivo
   (let ((commit "dc61c468d79781eb5183426e88e844af16cdc3e5")
         (revision "0"))
