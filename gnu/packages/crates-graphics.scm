@@ -13,7 +13,7 @@
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
+;;; Copyright © 2023, 2024 Jaeme Sifat <jaeme@runbox.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2560,6 +2560,25 @@ on correctness, flexibility and ease of use.")
     (description "This package allows automatically implements traits from the
 @code{palette} crate.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-palette-derive-0.6
+  (package
+    (inherit rust-palette-derive-0.7)
+    (name "rust-palette-derive")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "palette_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "09z4nd4sbmzqd1pqr48vrdca3v2c03dzr70cmxs7zhp7m13dzvh5"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-find-crate" ,rust-find-crate-0.6)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-pbr-1
   (package
