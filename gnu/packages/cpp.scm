@@ -31,7 +31,7 @@
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022, 2023 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2022, 2023 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2023 Sughosha <Sughosha@proton.me>
 ;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
@@ -326,6 +326,28 @@ Objective C headers for use with foreign function call interfaces.  It uses
 the @code{Clang/LLVM} infrastructure to extract the data, and emits it in
 various formats, including @code{json}.")
     (license license:gpl2+)))
+
+(define-public expected-lite
+  (package
+    (name "expected-lite")
+    (version "0.6.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/martinmoene/expected-lite")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0d58nqh2fwdzdpln2wlnf898wyfxdnskq6ff33azbg92d5ibzys2"))))
+    (build-system cmake-build-system)
+    (home-page "https://github.com/martinmoene/expected-lite")
+    (synopsis "Expected objects in C++11 and later")
+    (description "@i{expected lite} is a single-file header-only library for
+objects that either represent a valid value or an error that can be passed by
+value.  It is intended for use with C++11 and later.  The library is based on
+the @code{std::expected} proposal (@url{http://wg21.link/p0323}).")
+    (license license:boost1.0)))
 
 (define-public libzen
   (package
