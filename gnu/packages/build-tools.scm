@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2018 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2018, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Corentin Bocquillon <corentin@nybble.fr>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Fis Trivial <ybbs.daans@hotmail.com>
@@ -346,13 +346,13 @@ resembles Python.")
 (define-public meson-python
   (package
     (name "meson-python")
-    (version "0.12.1")
+    (version "0.15.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "meson_python" version))
               (sha256
                (base32
-                "1hpjw9qj6ff8ixjs0pz7qysc8v57jxgaf5n1p6bqm9bh3mc3wnrx"))))
+                "0vyjhjabvm41hqijifk33idbdl62i76kfyf884f9rs29rpp77nzx"))))
     (build-system pyproject-build-system)
     (arguments
      ;; The project is configured to use itself to build ('mesonpy') and fails;
@@ -361,13 +361,22 @@ resembles Python.")
            #:test-flags #~(list "tests"
                                 ;; The test_pep518 tries to install
                                 ;; dependencies from the network using pip.
-                                "-k" "not test_pep518")))
+                                "-k" "not test_pep518")
+           #:phases
+           '(modify-phases %standard-phases
+              ;; This additional top directory confuses setuptools.  We could
+              ;; work around this by overriding the detection of the project
+              ;; directory, but deleting this directory is easier.
+              (add-after 'unpack 'delete-directory
+                (lambda _ (delete-file-recursively "LICENSES"))))))
     (propagated-inputs
      (list meson
            ninja
            python-colorama
-           python-pyproject-metadata
+           python-cython
+           python-pyproject-metadata-0.7
            python-tomli
+           python-typing-extensions
            python-wheel))
     (native-inputs
      (list python-pypa-build
@@ -380,6 +389,7 @@ resembles Python.")
            python-cython
            python-gitpython
            python-pytest
+           python-pytest-cov
            python-pytest-mock))
     (home-page "https://github.com/mesonbuild/meson-python")
     (synopsis "Meson-based build backend for Python")
