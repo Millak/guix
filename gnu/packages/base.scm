@@ -466,10 +466,6 @@ used to apply commands with arbitrarily long arguments.")
                                    " test-renameatu"
                                    " test-utimensat")))
             '())
-      ,@(if (not (target-64bit?))
-          ;; Not all software is ready for 64bit time_t.
-          '(#:configure-flags (list "--disable-year2038"))
-          '())
       #:phases (modify-phases %standard-phases
                  (add-before 'build 'patch-shell-references
                    (lambda _
