@@ -1839,6 +1839,33 @@ written in pure Scheme by using Guile's foreign function interface.")
 library}.")
     (license license:gpl3+)))
 
+(define-public guile-yamlpp
+  (package
+    (name "guile-yamlpp")
+    (version "0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/yorgath/guile-yamlpp")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14mlqi7hw7pi9scwk1g432issnqcn185pd8na2plijxq55cy0iq7"))))
+    (build-system gnu-build-system)
+    (native-inputs (list autoconf automake libtool pkg-config))
+    (inputs (list guile-3.0 yaml-cpp))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "GUILE_EXTENSIONS_PATH")
+            (files (list "lib/guile/3.0")))))
+    (home-page "https://gitlab.com/yorgath/guile-yamlpp")
+    (synopsis "Guile YAML reader/writer based on @code{yaml-cpp}")
+    (description
+     "A module for GNU Guile to read and write YAML files.  It works using
+bindings to the @code{yaml-cpp} C++ library.")
+    (license license:gpl3+)))
+
 (define-public guile-dbi
   (package
     (name "guile-dbi")
