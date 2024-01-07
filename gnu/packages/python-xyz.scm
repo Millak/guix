@@ -31744,6 +31744,30 @@ graph can be output for rendering by GraphViz or yEd.")
 function implementations based on the types of the arguments.")
     (license license:bsd-3)))
 
+(define-public python-multimethod
+  (package
+    (name "python-multimethod")
+    (version "1.10")
+    (source
+     (origin
+       ;; No tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/coady/multimethod")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07xv92q7f4bkp6dzkqvcv0zxr11729qdak4s3ldmbhdwgsf44g5h"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/coady/multimethod")
+    (synopsis "Python support for multiple argument dispatching")
+    (description
+     "This package provides a decorator for adding multiple argument
+dispatching to functions.  The decorator creates a multimethod object as
+needed and registers the function with its annotations.")
+    (license license:asl2.0)))
+
 (define-public python-logical-unification
   (package
     (name "python-logical-unification")
