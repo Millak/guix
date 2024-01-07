@@ -52208,6 +52208,27 @@ and possibly blocking tasks.")
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-rand" ,rust-rand-0.8))))))
 
+(define-public rust-profiling-procmacros-1
+  (package
+    (name "rust-profiling-procmacros")
+    (version "1.0.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "profiling-procmacros" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "01gbxcn06a6xlbdpjpfh1lnhkqdn1nyzr468wfdl9ay1cmyjscjb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/aclysma/profiling")
+    (synopsis "Abstraction over other profiler crates.")
+    (description
+     "This crate provides a very thin abstraction over other profiler crates.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-progress-0.2
   (package
     (name "rust-progress")
