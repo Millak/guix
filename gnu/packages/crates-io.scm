@@ -72080,14 +72080,14 @@ memory all at once.")
 (define-public rust-target-lexicon-0.12
   (package
     (name "rust-target-lexicon")
-    (version "0.12.9")
+    (version "0.12.13")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "target-lexicon" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "180iwqwvdk586b1b27anfddq5zbfckisgi3yjhdzaqbsfp5pg3nz"))))
+        (base32 "1bmgpdq766zn61f16py0x9139fv314d054xkrkj9iw3q5vd8nxb9"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
