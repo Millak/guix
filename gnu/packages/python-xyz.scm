@@ -9717,14 +9717,14 @@ from FFMPEG, reliably terminating the process when done.")
 (define-public python-imageio
   (package
     (name "python-imageio")
-    (version "2.26.0")
+    (version "2.33.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "imageio" version))
        (sha256
         (base32
-         "0dgddhi5dlpry5j4d3256v09pcziyj3ii47yx0zi68xprm11d7qn"))))
+         "1kn1gj9vc1mkirs39x3nkw2d56paiagi24kkxksrig9pn502swkq"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -9751,9 +9751,10 @@ from FFMPEG, reliably terminating the process when done.")
               (delete-file "tests/test_freeimage.py"))))))
     (inputs (list freeimage))
     (propagated-inputs
-     (list python-imageio-ffmpeg python-numpy python-pillow python-psutil))
+     (list python-imageio-ffmpeg python-numpy python-pillow python-tifffile))
     (native-inputs
-     (list python-pytest))
+     (list python-black python-flake8 python-fsspec python-pytest
+           python-pytest-cov))
     (home-page "https://imageio.github.io/")
     (synopsis "Library for reading and writing a wide range of image data")
     (description
