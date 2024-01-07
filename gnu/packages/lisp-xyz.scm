@@ -16328,8 +16328,8 @@ directly.")
   (sbcl-package->ecl-package sbcl-custom-hash-table))
 
 (define-public sbcl-concurrent-hash-tables
-  (let ((commit "1b9f0b5da54fece4f42296e1bdacfcec0c370a5a")
-        (revision "0"))
+  (let ((commit "6ad539b8970ff94b1e1369b59065ed7d0660904c")
+        (revision "1"))
     (package
       (name "sbcl-concurrent-hash-tables")
       (version (git-version "0.0.0" revision commit))
@@ -16341,7 +16341,7 @@ directly.")
                (commit commit)))
          (file-name (git-file-name "cl-concurrent-hash-tables" version))
          (sha256
-          (base32 "03g24ycr1ngzg8bv10iwp1bmnldz5bxbfdqrzhfxhicpibh49r96"))))
+          (base32 "0wgbv3wl33rlfbywmjag0gk7igzfksmib30r8cbnd5n47ic09iip"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-atomics sbcl-bordeaux-threads))
