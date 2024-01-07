@@ -5945,7 +5945,10 @@ result in several formats:
                        "--library-type" "cdylib"
                        (string-append "--prefix=" out))))))))
     (native-inputs
-     (list nasm pkg-config rust-cargo-c))
+     (append (if (target-x86?)
+                 (list nasm)
+                 '())
+             (list pkg-config rust-cargo-c)))
     (inputs
      (list libgit2 zlib))
     (home-page "https://github.com/xiph/rav1e/")
