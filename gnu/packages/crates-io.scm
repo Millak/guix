@@ -37275,7 +37275,10 @@ harness used by @code{rustc --test}.")
                (base32
                 "1v103c90ibs35ffr9mww9h5la3b7xxvil32v6x0szxcqq9wr8lkr"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=terse_output")
+       #:cargo-inputs
        (("rust-clap" ,rust-clap-3)
         ("rust-termcolor" ,rust-termcolor-1)
         ("rust-threadpool" ,rust-threadpool-1))
