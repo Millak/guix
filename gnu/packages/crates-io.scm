@@ -70171,6 +70171,27 @@ alike.  It's completely modular, and built directly for @code{async/await}.")
 values without proliferating generics.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-superluminal-perf-sys-0.1
+  (package
+    (name "rust-superluminal-perf-sys")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "superluminal-perf-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05pz0yybf4y2iw3rvqf2crk04zv7610jjm3glhi8hlv2rhms0hh3"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 ;; TODO: Replace superluminal headers.
+                 (delete-file-recursively "external")))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/EmbarkStudios/superluminal-perf-rs")
+    (synopsis "Superluminal Performance C API bindings")
+    (description "Superluminal Performance C API bindings.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-supports-color-2
   (package
     (name "rust-supports-color")
