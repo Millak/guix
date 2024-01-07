@@ -33,6 +33,7 @@
 (define-module (gnu packages crates-graphics)
   #:use-module (guix build-system cargo)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (gnu packages)
@@ -2242,6 +2243,37 @@ pixel buffers with width, height and stride.")
        (("rust-criterion" ,rust-criterion-0.3)
         ("rust-png" ,rust-png-0.14)
         ("rust-walkdir" ,rust-walkdir-2))))))
+
+(define-public rust-libdav1d-sys-0.6
+  (package
+    (name "rust-libdav1d-sys")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libdav1d-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wh5jgdm33ld6djxsc7cmwd1ifqys145zlbsf8516n625lscrj8j"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "vendor")
+                 ;; Force linking to our packaged dav1d.
+                 (delete-file "build.rs")
+                 (with-output-to-file "build.rs"
+                   (lambda _
+                     (format #t "fn main() {~@
+                             println!(\"cargo:rustc-link-lib=dav1d\");~@
+                             }~%")))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))
+    (inputs (list dav1d))
+    (home-page "https://github.com/njaard/libavif-rs")
+    (synopsis "Link to dav1d AV1 decoder")
+    (description
+     "This package builds and links to the dav1d AV1 decoder.")
+    (license license:bsd-2)))
 
 (define-public rust-libwebp-sys-0.4
   (package
