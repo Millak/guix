@@ -108,6 +108,7 @@
   #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages sequoia)
   #:use-module (gnu packages serialization)
+  #:use-module (gnu packages shells)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages tls)
@@ -44068,33 +44069,6 @@ macros used in ntest.")
     (home-page "https://github.com/ntex-rs")
     (synopsis "Types and traits for working with bytes (bytes crate fork)")
     (description "Types and traits for working with bytes (bytes crate fork)")
-    (license license:expat)))
-
-(define-public rust-nu-ansi-term-0.46
-  (package
-    (name "rust-nu-ansi-term")
-    (version "0.46.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "nu-ansi-term" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32 "115sywxh53p190lyw97alm14nc004qj5jm5lvdj608z84rbida3p"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-overload" ,rust-overload-0.1)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-winapi" ,rust-winapi-0.3))
-       #:cargo-development-inputs
-       (("rust-doc-comment" ,rust-doc-comment-0.3)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://github.com/nushell/nu-ansi-term")
-    (synopsis "Library for ANSI terminal colors and styles (bold, underline)")
-    (description
-     "This package provides a library for ANSI terminal colors and styles (bold,
-underline) in rust.")
     (license license:expat)))
 
 (define-public rust-num-0.4
