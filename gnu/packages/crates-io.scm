@@ -52243,6 +52243,39 @@ and possibly blocking tasks.")
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-rand" ,rust-rand-0.8))))))
 
+(define-public rust-profiling-1
+  (package
+    (name "rust-profiling")
+    (version "1.0.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "profiling" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "03nwj6y7v4dfjz14vs8sq64bg40n3s84hhd6nxp3gxhwhblfsdfi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs (("rust-optick" ,rust-optick-1)
+                       ("rust-profiling-procmacros" ,rust-profiling-procmacros-1)
+                       ("rust-puffin" ,rust-puffin-0.18)
+                       ("rust-superluminal-perf" ,rust-superluminal-perf-0.1)
+                       ("rust-tracing" ,rust-tracing-0.1)
+                       ("rust-tracy-client" ,rust-tracy-client-0.16))
+       #:cargo-development-inputs
+       (("rust-bincode" ,rust-bincode-1)
+        ("rust-env-logger" ,rust-env-logger-0.6)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.2)
+        ("rust-tracing-tracy" ,rust-tracing-tracy-0.4))))
+    (home-page "https://github.com/aclysma/profiling")
+    (synopsis "Abstraction over other profiler crates")
+    (description
+     "This crate provides a very thin abstraction over other profiler crates.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-profiling-procmacros-1
   (package
     (name "rust-profiling-procmacros")
