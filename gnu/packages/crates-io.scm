@@ -5187,19 +5187,18 @@ audio/video metrics.")
 (define-public rust-av1-grain-0.2
   (package
     (name "rust-av1-grain")
-    (version "0.2.2")
+    (version "0.2.3")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "av1-grain" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "07kzx7qma0msfla0z66mys2s7f5fp18zb78izkxw40lcq7qacv3g"))))
+               (base32 "1gvqdh21bm1cfqiwyiinbqi0mg7x2lg2fwgmphma8ijxijfr0y36"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-arrayvec" ,rust-arrayvec-0.7)
-        ("rust-itertools" ,rust-itertools-0.10)
         ("rust-log" ,rust-log-0.4)
         ("rust-nom" ,rust-nom-7)
         ("rust-num-rational" ,rust-num-rational-0.4)
