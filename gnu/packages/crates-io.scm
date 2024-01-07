@@ -78007,6 +78007,33 @@ application authors using tracing to instrument their applications.")
         ("rust-tracing-futures" ,rust-tracing-futures-0.2)
         ("rust-tracing-log" ,rust-tracing-log-0.1))))))
 
+(define-public rust-tracing-tracy-0.4
+  (package
+    (name "rust-tracing-tracy")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tracing-tracy" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02j8rrxkk9js8bvjsxlcadi30fm0vcbk7hrwjww2m119izha0s5n"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-tracing-core" ,rust-tracing-core-0.1)
+                       ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.2)
+                       ("rust-tracy-client" ,rust-tracy-client-0.10))
+       #:cargo-development-inputs
+       (("rust-futures" ,rust-futures-0.3)
+        ("rust-tokio" ,rust-tokio-0.2)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-tracing-attributes" ,rust-tracing-attributes-0.1)
+        ("rust-tracing-futures" ,rust-tracing-futures-0.2))))
+    (home-page "https://github.com/nagisa/rust_tracy_client")
+    (synopsis "Inspect tracing-enabled Rust applications with Tracy")
+    (description "Inspect tracing-enabled Rust applications with Tracy.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-tracing-tree-0.2
   (package
     (name "rust-tracing-tree")
