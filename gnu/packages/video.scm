@@ -1090,81 +1090,90 @@ H.264 (MPEG-4 AVC) video streams.")
            utfcpp
            zlib))
     (native-inputs
-     `(("docbook-xsl" ,docbook-xsl)
-       ("gettext" ,gettext-minimal)
-       ("googletest" ,googletest)
-       ("libxslt" ,libxslt)
-       ("nlohmann-json" ,nlohmann-json)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("po4a" ,po4a)
-       ("qttools" ,qttools)
-       ("ruby" ,ruby-3.2)))
+     (list docbook-xsl
+           gettext-minimal
+           googletest
+           libxslt
+           nlohmann-json
+           perl
+           pkg-config
+           po4a
+           qttools
+           ruby-3.2))
     (arguments
-     `(#:configure-flags
-       (list (string-append "--with-boost="
-                            (assoc-ref %build-inputs "boost"))
-             (string-append "--with-docbook-xsl-root="
-                            (assoc-ref %build-inputs "docbook-xsl")
-                            "/xml/xsl/docbook-xsl-"
-                            ,(package-version docbook-xsl))
-             "--enable-update-check=no"
-             "--enable-precompiled-headers=no")
-        #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-utfcpp-include
-           (lambda _
-             (substitute* "src/common/strings/utf8.cpp"
-               (("<utf8.h>")
-                "<utf8cpp/utf8.h>"))))
-         (add-after 'unpack 'patch-relative-file-names
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-             (substitute* "src/mkvtoolnix-gui/util/settings.cpp"
-               (("mkvmerge" match)
-                (string-append out "/bin/" match)))
-             #t)))
-         (add-before 'configure 'add-googletest
-           (lambda* (#:key inputs #:allow-other-keys)
-             (symlink (search-input-directory inputs "/include/gtest")
-                      "lib/gtest")))
-         (replace 'build
-           (lambda _
-             (let ((-j (list "-j" (number->string (parallel-job-count)))))
-               (apply invoke "rake" -j))))
-         (replace 'check
-           (lambda _
-             (invoke "rake" "tests/unit")))
-         (replace 'install
-           (lambda _
-             (invoke "rake" "install")))
-         (add-after 'install 'post-install
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Move the Qt interface to "gui".
-             (let* ((out (assoc-ref outputs "out"))
-                    (gui (assoc-ref outputs "gui"))
-                    (strip-store-dir (lambda (path)
-                                       (substring path (string-prefix-length out path)))))
-               (for-each
-                (lambda (file)
-                  (mkdir-p (string-append gui (dirname file)))
-                  (rename-file (string-append out file)
-                               (string-append gui file)))
-                (append '("/bin/mkvtoolnix-gui"
-                          "/share/applications/org.bunkus.mkvtoolnix-gui.desktop"
-                          "/share/metainfo/org.bunkus.mkvtoolnix-gui.appdata.xml"
-                          "/share/mime/packages/org.bunkus.mkvtoolnix-gui.xml")
-                        (map strip-store-dir (find-files out "\\.ogg$"))
-                        (map strip-store-dir (find-files out "mkvtoolnix-gui\\.png$"))
-                        (map strip-store-dir (find-files out "mkvtoolnix-gui\\.1"))))
-               (for-each
-                (lambda (file)
-                  (delete-file-recursively (string-append out file)))
-                '("/share/applications"
-                  "/share/metainfo"
-                  "/share/mime"
-                  "/share/mkvtoolnix")))
-             #t)))))
+     (list
+      #:configure-flags
+      #~(list (string-append "--with-boost="
+                             #$(this-package-input "boost"))
+              (string-append "--with-docbook-xsl-root="
+                             #$(this-package-native-input "docbook-xsl")
+                             "/xml/xsl/docbook-xsl-"
+                             #$(package-version
+                                (this-package-native-input "docbook-xsl")))
+              "--enable-update-check=no"
+              "--enable-precompiled-headers=no")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-utfcpp-include
+            (lambda _
+              (substitute* "src/common/strings/utf8.cpp"
+                (("<utf8.h>")
+                 "<utf8cpp/utf8.h>"))))
+          (add-after 'unpack 'patch-relative-file-names
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out")))
+                (substitute* "src/mkvtoolnix-gui/util/settings.cpp"
+                  (("mkvmerge" match)
+                   (string-append out "/bin/" match))) #t)))
+          (add-before 'configure 'add-googletest
+            (lambda* (#:key inputs #:allow-other-keys)
+              (symlink (search-input-directory inputs
+                                               "/include/gtest")
+                       "lib/gtest")))
+          (replace 'build
+            (lambda _
+              (let ((-j (list "-j"
+                              (number->string (parallel-job-count)))))
+                (apply invoke "rake" -j))))
+          (replace 'check
+            (lambda _
+              (invoke "rake" "tests/unit")))
+          (replace 'install
+            (lambda _
+              (invoke "rake" "install")))
+          (add-after 'install 'post-install
+            (lambda* (#:key outputs #:allow-other-keys)
+              ;; Move the Qt interface to "gui".
+              (let* ((out (assoc-ref outputs "out"))
+                     (gui (assoc-ref outputs "gui"))
+                     (strip-store-dir (lambda (path)
+                                        (substring path
+                                                   (string-prefix-length
+                                                    out path)))))
+                (for-each (lambda (file)
+                            (mkdir-p (string-append gui
+                                                    (dirname
+                                                     file)))
+                            (rename-file (string-append out file)
+                                         (string-append gui file)))
+                          (append '("/bin/mkvtoolnix-gui"
+                                    "/share/applications/org.bunkus.mkvtoolnix-gui.desktop"
+                                    "/share/metainfo/org.bunkus.mkvtoolnix-gui.appdata.xml"
+                                    "/share/mime/packages/org.bunkus.mkvtoolnix-gui.xml")
+                                  (map strip-store-dir
+                                       (find-files out "\\.ogg$"))
+                                  (map strip-store-dir
+                                       (find-files out
+                                                   "mkvtoolnix-gui\\.png$"))
+                                  (map strip-store-dir
+                                       (find-files out
+                                                   "mkvtoolnix-gui\\.1"))))
+                (for-each (lambda (file)
+                            (delete-file-recursively
+                             (string-append out file)))
+                          '("/share/applications"
+                            "/share/metainfo" "/share/mime"
+                            "/share/mkvtoolnix"))))))))
     (home-page "https://mkvtoolnix.download")
     (synopsis "Tools to create, alter and inspect Matroska files")
     (description
