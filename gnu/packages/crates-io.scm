@@ -52894,6 +52894,37 @@ compliant email address validation.")
         ("rust-regex" ,rust-regex-1)
         ("rust-url" ,rust-url-2))))))
 
+(define-public rust-puffin-0.18
+  (package
+    (name "rust-puffin")
+    (version "0.18.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "puffin" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0ip8dgmqc6sb6kzpfz09qfw17a0aq4j2cx0ga43j1z5abiwhycq2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-bincode" ,rust-bincode-1)
+                       ("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-js-sys" ,rust-js-sys-0.3)
+                       ("rust-lz4-flex" ,rust-lz4-flex-0.11)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-parking-lot" ,rust-parking-lot-0.12)
+                       ("rust-ruzstd" ,rust-ruzstd-0.4)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-web-time" ,rust-web-time-0.2)
+                       ("rust-zstd" ,rust-zstd-0.12))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5))))
+    (home-page "https://github.com/EmbarkStudios/puffin")
+    (synopsis "Simple instrumentation profiler for games")
+    (description "Simple instrumentation profiler for games.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pulldown-cmark-0.9
   (package
     (name "rust-pulldown-cmark")
