@@ -13261,8 +13261,29 @@ everywhere.")
     (description "Global override of color control.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-concolor-query-0.3
+  (package
+    (name "rust-concolor-query")
+    (version "0.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "concolor-query" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ks4g514kx31nnv3bxa7cj5xgg6vwkljn8a001njxjnpqd91vlc8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-windows-sys" ,rust-windows-sys-0.45))))
+    (home-page "https://github.com/rust-cli/concolor")
+    (synopsis "Look up colored console capabilities")
+    (description "@code{concolor-query} can be used to query a terminal
+capabilities, for example to find out about its colored console abilities.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-concolor-query-0.1
   (package
+    (inherit rust-concolor-query-0.3)
     (name "rust-concolor-query")
     (version "0.1.0")
     (source
@@ -13272,12 +13293,7 @@ everywhere.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "05ykng7pqhm7840yh07r27p90flwrrmwlk32wxbgdp6mncs0gac2"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/rust-cli/concolor")
-    (synopsis "Look up colored console capabilities")
-    (description "@code{concolor-query} can be used to query a terminal
-capabilities, for example to find out about its colored console abilities.")
-    (license (list license:expat license:asl2.0))))
+    (arguments '())))
 
 (define-public rust-concolor-query-0.0.5
   (package
