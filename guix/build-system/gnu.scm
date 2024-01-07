@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2024 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -57,7 +57,7 @@
     (guix build gremlin)
     (guix elf)))
 
-(define-deprecated/alias %gnu-build-system-modules
+(define-deprecated/public-alias %gnu-build-system-modules
   %default-gnu-imported-modules)
 
 (define %default-gnu-modules
