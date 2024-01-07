@@ -13242,6 +13242,25 @@ everywhere.")
         ("rust-bitflags" ,rust-bitflags-1)
         ("rust-concolor-query" ,rust-concolor-query-0.0.4))))))
 
+(define-public rust-concolor-override-1
+  (package
+    (name "rust-concolor-override")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "concolor-override" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "140yb63zrbdvxvy3zaqvldgrjh5rm9qijy14w0imk7g3i1995920"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-colorchoice" ,rust-colorchoice-1))))
+    (home-page "https://github.com/rust-cli/concolor")
+    (synopsis "Global override of color control")
+    (description "Global override of color control.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-concolor-query-0.1
   (package
     (name "rust-concolor-query")
