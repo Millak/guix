@@ -70171,6 +70171,28 @@ alike.  It's completely modular, and built directly for @code{async/await}.")
 values without proliferating generics.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-superluminal-perf-0.1
+  (package
+    (name "rust-superluminal-perf")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "superluminal-perf" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0q0ykfn04i2qg5zfizp75y4dn2klpvhb6xfwlygq8jiabpgqvvc0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+      (("rust-superluminal-perf-sys" ,rust-superluminal-perf-sys-0.1))))
+    (home-page "https://github.com/EmbarkStudios/superluminal-perf-rs")
+    (synopsis
+     "Superluminal Performance API for adding user events to profiler captures")
+    (description
+     "Superluminal Performance API for adding user events to profiler captures.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-superluminal-perf-sys-0.1
   (package
     (name "rust-superluminal-perf-sys")
