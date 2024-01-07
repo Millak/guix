@@ -73948,6 +73948,30 @@ handle Unicode characters correctly.")
     (description "This package provides @code{derive(Error)} in Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-thiserror-core-1
+  (package
+    (name "rust-thiserror-core")
+    (version "1.0.50")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "thiserror-core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "16g9j00g7bn8q1wk2i5p5f88vrhr04igxisqpwngdqz5nwcfw0f0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; use of undeclared crate or module `thiserror`
+       #:cargo-inputs (("rust-thiserror-core-impl" ,rust-thiserror-core-impl-1))
+       #:cargo-development-inputs (("rust-anyhow" ,rust-anyhow-1)
+                                   ("rust-ref-cast" ,rust-ref-cast-1)
+                                   ("rust-rustversion" ,rust-rustversion-1)
+                                   ("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/FlorianUekermann/thiserror")
+    (synopsis "derive(Error)")
+    (description "This package provides @code{derive(Error)} in Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-thiserror-core-impl-1
   (package
     (name "rust-thiserror-core-impl")
