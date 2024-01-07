@@ -888,7 +888,8 @@ and iOS.")
                (base32 "13z5qvf35lkda67l6l1bkdp1gmqg75cqfblldxh4n8rbmn4zsj9s"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:skip-build? #t     ; Expects 1.0.0 <= dav1d < 1.3.0
+       #:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
         ("rust-system-deps" ,rust-system-deps-6))))
     (native-inputs

@@ -5575,7 +5575,7 @@ and audio capture, network stream playback, and many more.")
 (define-public dav1d
   (package
     (name "dav1d")
-    (version "1.0.0")
+    (version "1.3.0")
     (source
       (origin
         (method git-fetch)
@@ -5584,9 +5584,12 @@ and audio capture, network stream playback, and many more.")
                (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0jkvb5as7danpalzlwd0w1dc9i2vijvmf39z0j6fwqvialsgnnj5"))))
+         (base32 "17r6qdijdnqfciqa0ia2y4gyhaav6y5gc4d9xj4dg9h7xnpyxc3k"))))
     (build-system meson-build-system)
-    (native-inputs (list nasm))
+    (native-inputs
+     (if (target-x86?)
+         (list nasm)
+         '()))
     (home-page "https://code.videolan.org/videolan/dav1d")
     (synopsis "AV1 decoder")
     (description "dav1d is a new AV1 cross-platform decoder, and focused on
