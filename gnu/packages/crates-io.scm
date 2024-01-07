@@ -44291,8 +44291,32 @@ Rust.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-num-derive-0.4
+  (package
+    (name "rust-num-derive")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "num-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "04j7mndk9p6nzl9j6zrf49r2cq3250h4ldcx40jv3y48mxwpddyg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs (("rust-num" ,rust-num-0.4)
+                                   ("rust-num-traits" ,rust-num-traits-0.2))))
+    (home-page "https://github.com/rust-num/num-derive")
+    (synopsis "Numeric syntax extensions")
+    (description "This package provides numeric syntax extensions.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-num-derive-0.3
   (package
+    (inherit rust-num-derive-0.4)
     (name "rust-num-derive")
     (version "0.3.3")
     (source
@@ -44303,7 +44327,6 @@ Rust.")
         (sha256
          (base32
           "0gbl94ckzqjdzy4j8b1p55mz01g6n1l9bckllqvaj0wfz7zm6sl7"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
@@ -44311,11 +44334,7 @@ Rust.")
         ("rust-quote" ,rust-quote-1))
        #:cargo-development-inputs
        (("rust-num" ,rust-num-0.3)
-        ("rust-num-traits" ,rust-num-traits-0.2))))
-    (home-page "https://github.com/rust-num/num-derive")
-    (synopsis "Numeric syntax extensions")
-    (description "This package provides numeric syntax extensions.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-num-traits" ,rust-num-traits-0.2))))))
 
 (define-public rust-num-derive-0.2
   (package
