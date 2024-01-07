@@ -269,24 +269,20 @@ styles (bold, underline).")
 (define-public rust-aom-sys-0.3
   (package
     (name "rust-aom-sys")
-    (version "0.3.2")
+    (version "0.3.3")
     (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "aom-sys" version))
-        (file-name
-          (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32 "0swg90iwypakh7vq77zwh34238c1r7vd5smj0vza7dv7xa22wh0g"))))
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "aom-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0bc1dzl3c95s44q7c1i0vnj7fhiqf44in8w22nw5vmp1vgbpadk2"))))
     (build-system cargo-build-system)
     (arguments
-      `(#:cargo-inputs
-        (("rust-bindgen" ,rust-bindgen-0.61)
-         ("rust-system-deps" ,rust-system-deps-6))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list clang libaom llvm))
+     `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
+                       ("rust-system-deps" ,rust-system-deps-6))))
+    (native-inputs (list pkg-config))
+    (inputs (list clang libaom llvm))
     (home-page "https://github.com/rust-av/aom-rs")
     (synopsis "FFI bindings to aom")
     (description "This package provides FFI bindings to aom.")
