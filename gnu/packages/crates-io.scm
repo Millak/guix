@@ -24015,7 +24015,7 @@ ecosystem.")
        #:cargo-development-inputs
        (("rust-itertools" ,rust-itertools-0.10)
         ("rust-tokio" ,rust-tokio-1))))
-    (home-page "https://github.com/cmr/evdev")
+    (home-page "https://github.com/emberian/evdev")
     (synopsis "Rust interface to Linux event devices")
     (description "This package provides evdev interface for Linux.")
     (license (list license:asl2.0 license:expat))))
