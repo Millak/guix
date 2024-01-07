@@ -2140,6 +2140,21 @@ text to a terminal.")
     (description "This package provides ANSI text styling.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-anstyle-0.3
+  (package
+    (inherit rust-anstyle-1)
+    (name "rust-anstyle")
+    (version "0.3.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "anstyle" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ll42s5ch4ldp0fw8laidqji540p7higd06h2v111qq2pn0rxsi3"))))
+    (arguments
+     `(#:cargo-development-inputs (("rust-lexopt" ,rust-lexopt-0.3))))))
+
 (define-public rust-anstyle-0.2
   (package
     (inherit rust-anstyle-1)
