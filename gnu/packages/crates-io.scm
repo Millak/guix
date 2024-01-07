@@ -82722,22 +82722,21 @@ combinators library.")
   (package
     (inherit rust-winnow-0.5)
     (name "rust-winnow")
-    (version "0.4.1")
+    (version "0.4.11")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "winnow" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0a2b9f0n6fpn2a88jfbp1kdjj6xrhvf8arnny67qsjb6djrp12df"))))
+                "0jzbp2dkiiz51qzql7y9xja4946ih54p6q4x2z41xyyb5fr56sb5"))))
     (arguments
      `(#:skip-build? #t     ; Cut the dependency graph.
-       #:cargo-inputs
-       (("rust-anstyle" ,rust-anstyle-0.2)
-        ("rust-concolor" ,rust-concolor-0.0.8)
-        ("rust-is-terminal" ,rust-is-terminal-0.4)
-        ("rust-memchr" ,rust-memchr-2)
-        ("rust-terminal-size" ,rust-terminal-size-0.2))))))
+       #:cargo-inputs (("rust-anstyle" ,rust-anstyle-0.3)
+                       ("rust-anstyle-stream" ,rust-anstyle-stream-0.2)
+                       ("rust-is-terminal" ,rust-is-terminal-0.4)
+                       ("rust-memchr" ,rust-memchr-2)
+                       ("rust-terminal-size" ,rust-terminal-size-0.2))))))
 
 (define-public rust-write-json-0.1
   (package
