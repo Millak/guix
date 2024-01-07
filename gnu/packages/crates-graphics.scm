@@ -879,13 +879,13 @@ and iOS.")
 (define-public rust-dav1d-sys-0.7
   (package
     (name "rust-dav1d-sys")
-    (version "0.7.0")
+    (version "0.7.3")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "dav1d-sys" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
-               (base32 "16gzjsfnvfd5zr8mrx5n9mdd4vjvwfwpk9hfscgz7sjyzjdjzcm0"))))
+               (base32 "13z5qvf35lkda67l6l1bkdp1gmqg75cqfblldxh4n8rbmn4zsj9s"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
