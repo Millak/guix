@@ -78088,6 +78088,28 @@ to mechanisms like backtracing.")
 be used directly.  See @code{rust-trackable} for more information.")
     (license license:expat)))
 
+;; TODO: Unbundle tracy-0.10
+(define-public rust-tracy-client-sys-0.22
+  (package
+    (name "rust-tracy-client-sys")
+    (version "0.22.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tracy-client-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17bc4zbsvix9vim2kw1vfn6y3zzc1spzg9vijqvf9c2147bpx307"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1))))
+    (home-page "https://github.com/nagisa/rust_tracy_client")
+    (synopsis
+     "Low level bindings to the client libraries for the Tracy profiler")
+    (description
+     "Low level bindings to the client libraries for the Tracy profiler.")
+    (license (list license:expat license:asl2.0 license:bsd-3))))
+
 (define-public rust-traitobject-0.1
   (package
     (name "rust-traitobject")
