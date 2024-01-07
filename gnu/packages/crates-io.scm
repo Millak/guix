@@ -80671,25 +80671,26 @@ and groups.  A more maintained fork of the @code{rust-users} crate.")
 (define-public rust-v-frame-0.3
   (package
     (name "rust-v-frame")
-    (version "0.3.3")
+    (version "0.3.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "v_frame" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0n03akfyk7a0an2d1mg06ghk2pma9qk1rfhwj5i5bbld7k72730l"))))
+        (base32 "1c26k38sf405s07bi0wqndh8b52qn8hn1nkgp1gpjafizbkf8wn3"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-new-debug-unreachable" ,rust-new-debug-unreachable-1)
         ("rust-noop-proc-macro" ,rust-noop-proc-macro-0.3)
-        ("rust-num-derive" ,rust-num-derive-0.3)
+        ("rust-num-derive" ,rust-num-derive-0.4)
         ("rust-num-traits" ,rust-num-traits-0.2)
-        ("rust-rust-hawktracer" ,rust-rust-hawktracer-0.7)
+        ("rust-profiling" ,rust-profiling-1)
         ("rust-serde" ,rust-serde-1)
-        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2))))
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.5))))
     (home-page "https://github.com/xiph/rav1e")
     (synopsis "Video Frame data structures, part of rav1e")
     (description "This package provides @code{Video Frame} data structures, as
