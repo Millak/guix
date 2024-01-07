@@ -84372,6 +84372,22 @@ implementation that works everywhere, even WASM!")
 library.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-zstd-safe-6
+  (package
+    (inherit rust-zstd-safe-7)
+    (name "rust-zstd-safe")
+    (version "6.0.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zstd-safe" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10cm0v8sw3jz3pi0wlwx9mbb2l25lm28w638a5n5xscfnk8gz67f"))))
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2)
+                       ("rust-zstd-sys" ,rust-zstd-sys-2))))))
+
 (define-public rust-zstd-safe-5
   (package
     (inherit rust-zstd-safe-7)
