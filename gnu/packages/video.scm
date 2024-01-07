@@ -3,7 +3,7 @@
 ;;; Copyright © 2014, 2015, 2016 David Thompson <davet@gnu.org>
 ;;; Copyright © 2014, 2015, 2016, 2018, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
-;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2016 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;; Copyright © 2015, 2018, 2019, 2020, 2021, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019 Alex Vong <alexvong1995@gmail.com>
@@ -915,7 +915,7 @@ television and DVD.  It is also known as AC-3.")
 (define-public libaom
   (package
     (name "libaom")
-    (version "3.5.0")
+    (version "3.8.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -924,10 +924,10 @@ television and DVD.  It is also known as AC-3.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0arn8a88jz4mj69n8cs4qmrdjwhbvzsqgnx20wr9mq01b06kqich"))))
+                "04zfgvzi4h4ybvjc4zfpfsmldz8w6vasjlrry7j4p6g3g7wk64r7"))))
     (build-system cmake-build-system)
     (native-inputs
-     (list perl pkg-config python)) ; to detect the version
+     (list perl pkg-config python))     ; to detect the version
     (arguments
      `(#:tests? #f                      ; downloads many video clips
        #:configure-flags
