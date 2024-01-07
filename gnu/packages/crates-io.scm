@@ -84299,6 +84299,26 @@ implementation that works everywhere, even WASM!")
      "This package provides a binding to the Zstd compression library.")
     (license license:expat)))
 
+(define-public rust-zstd-0.12
+  (package
+    (inherit rust-zstd-0.13)
+    (name "rust-zstd")
+    (version "0.12.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zstd" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0g654jj8z25rvzli2b1231pcp9y7n6vk44jaqwgifh9n2xg5j9qs"))))
+    (arguments
+     `(#:tests? #f      ; Not all files included.
+       #:cargo-inputs (("rust-zstd-safe" ,rust-zstd-safe-6))
+       #:cargo-development-inputs (("rust-clap" ,rust-clap-4)
+                                   ("rust-humansize" ,rust-humansize-2)
+                                   ("rust-partial-io" ,rust-partial-io-0.5)
+                                   ("rust-walkdir" ,rust-walkdir-2))))))
+
 (define-public rust-zstd-0.11
   (package
     (inherit rust-zstd-0.13)
