@@ -41,7 +41,7 @@
 ;;; Copyright © 2022 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
-;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -9004,7 +9004,20 @@ size of the terminal.")
                 "1idq8d13rp1hx2a1xak31fwl9fmi09p2x4ymvzl7aj850saw5w0z"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "github.com/charmbracelet/glamour"))
+     (list #:import-path "github.com/charmbracelet/glamour"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-tests
+                 (lambda _
+                   ;; Some tests fail due to different number of '^[0m' symbols at
+                   ;; the beginning and the end of paragraphs.  To fix that we
+                   ;; re-generate 'readme.test' so the test output will match the
+                   ;; 'readme.test' contents.
+                   (chmod "src/github.com/charmbracelet/glamour/testdata/readme.test"
+                          #o644)
+                   (substitute* "src/github.com/charmbracelet/glamour/glamour_test.go"
+                     (("	generate = false")
+                      "	generate = true")))))))
     (native-inputs
      (list go-github-com-alecthomas-chroma
            go-github-com-danwakefield-fnmatch
