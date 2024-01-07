@@ -62,6 +62,7 @@
 # Copyright © 2023 B. Wilson <elaexuotee@wilsonb.com>
 # Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 # Copyright © 2023 Herman Rimm <herman@rimm.ee>
+# Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
 #
 # This file is part of GNU Guix.
 #
@@ -1777,6 +1778,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-louvain-fix-test.patch		\
   %D%/packages/patches/python-random2-getrandbits-test.patch		\
   %D%/packages/patches/python-poppler-qt5-fix-build.patch	\
+  %D%/packages/patches/python-pyreadstat-link-libiconv.patch	\
   %D%/packages/patches/python-pypdf-annotate-tests-appropriately.patch	\
   %D%/packages/patches/python-pytorch2-system-libraries.patch	\
   %D%/packages/patches/python-sip-include-dirs.patch	\

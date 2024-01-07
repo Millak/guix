@@ -18,6 +18,7 @@
 ;;; Copyright © 2021 Frank Pursel <frank.pursel@gmail.com>
 ;;; Copyright © 2022 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -6918,6 +6919,50 @@ files, including Rmarkdown files.")
     (description "Command-line tool and C library for reading files from
 popular stats packages like SAS, Stata and SPSS.")
     (license license:expat)))
+
+(define-public python-pyreadstat
+  (package
+    (name "python-pyreadstat")
+    (version "1.2.4")
+    ;; No tests in the PyPI tarball.
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Roche/pyreadstat")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zysrzixvqw2lwwykxqg5yj8a0zyv5s2bmk22x30f4rj2hgvq1pv"))
+       (patches (search-patches "python-pyreadstat-link-libiconv.patch"))))
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (add-before 'check 'change-home-dir
+                    (lambda _
+                      ;; test_sav_expand and test_sav_write_basic_expanduser need a
+                      ;; home directory with write permissions.
+                      (setenv "HOME" "/tmp")))
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        ;; The source also contains tests/test_version.py
+                        ;; which checks the version in __init__.py against the
+                        ;; one in setup.py. Since this requires texlive
+                        ;; dependencies to run and is also not mentioned in
+                        ;; how_to_test.md, this test is skipped.
+                        (invoke "python" "tests/test_basic.py")))))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-pandas))
+    (inputs (list libiconv zlib))
+    (native-inputs (list python-cython-3))
+    (home-page "https://github.com/Roche/pyreadstat")
+    (synopsis
+     "Read and write SAS, SPSS and Stata files into/from Pandas DataFrames")
+    (description
+     "This Python package can be used to read and write SAS, SPSS and Stata
+files into/from Pandas DataFrames.  It is a wrapper around the C library
+@code{readstat}.")
+    (license license:asl2.0)))
 
 (define-public r-quantpsyc
   (package
