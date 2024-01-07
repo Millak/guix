@@ -40605,6 +40605,25 @@ select the mock struct at compile time.  Used with the Mockall crate.")
       "Chaining APIs for both self -> Self and &mut self methods.")
     (license license:expat)))
 
+(define-public rust-more-asserts-0.3
+  (package
+    (name "rust-more-asserts")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "more-asserts" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0zj0f9z73nsn1zxk2y21f0mmafvz7dz5v93prlxwdndb3jbadbqz"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/thomcc/rust-more-asserts")
+    (synopsis "Library providing additional assert_* and debug_assert_* macros")
+    (description
+     "This package provides a small library providing additional assert_* and
+debug_assert_* macros.")
+    (license (list license:unlicense license:expat license:asl2.0 license:cc0))))
+
 (define-public rust-mp4-0.9
   (package
     (name "rust-mp4")
