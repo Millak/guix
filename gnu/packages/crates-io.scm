@@ -37978,6 +37978,31 @@ server (LSP).")
      "Pure Rust implementation of raw LZ4 compression/decompression.")
     (license license:expat)))
 
+(define-public rust-lz4-flex-0.11
+  (package
+    (name "rust-lz4-flex")
+    (version "0.11.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lz4_flex" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1n290fjvfi8jg20n6i0q77g8pqi5srnpgg7zhw1ppnlyd5bb5a9y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-twox-hash" ,rust-twox-hash-1))
+       #:cargo-development-inputs (("rust-lz4-compress" ,rust-lz4-compress-0.1)
+                                   ("rust-lzzzz" ,rust-lzzzz-1)
+                                   ("rust-more-asserts" ,rust-more-asserts-0.3)
+                                   ("rust-proptest" ,rust-proptest-1)
+                                   ("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-snap" ,rust-snap-1))))
+    (home-page "https://github.com/pseitz/lz4_flex")
+    (synopsis "LZ4 implementation in Rust, no unsafe by default")
+    (description "LZ4 implementation in Rust, no unsafe by default.")
+    (license license:expat)))
+
 (define-public rust-lz4-sys-1
   (package
     (name "rust-lz4-sys")
