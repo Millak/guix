@@ -33807,21 +33807,18 @@ format.")
 (define-public rust-ivf-0.1
   (package
     (name "rust-ivf")
-    (version "0.1.0")
+    (version "0.1.1")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "ivf" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "1wfjf3rilqavrhvwagzinvng9dg28wcjk3c6c6p5qmc1xy65qfh1"))))
+         (base32 "1qmpqnwlcvp7xpi1f6l63icaafpsak6hv7s326snffhs6rj1rc0g"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-bitstream-io" ,rust-bitstream-io-0.8))))
+     `(#:cargo-inputs
+       (("rust-bitstream-io" ,rust-bitstream-io-1))))
     (home-page "https://github.com/xiph/rav1e")
     (synopsis "Simple ivf muxer")
     (description "This package provides a simple ivf muxer.")
