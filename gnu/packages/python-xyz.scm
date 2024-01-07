@@ -9239,6 +9239,105 @@ converting, and viewing many of the proprietary file formats used to store
 experimental data and metadata at the Laboratory for Fluorescence Dynamics.")
     (license license:bsd-3)))
 
+(define-public python-av
+  (package
+    (name "python-av")
+    (version "10.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "av" version))
+       (sha256
+        (base32 "01byqsjclkg65mhr6b4i2r2n4y7af9kdd2c35lxny27121b3vzca"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         ;; Tests require outbound access to download data samples from
+         ;; http://fate.ffmpeg.org/fate-suite:
+         ;;
+         ;; E urllib.error.URLError: <urlopen error [Errno -3]
+         ;; Temporary failure in name resolution>
+         ;;
+         "--ignore=tests/test_doctests.py"
+         "--ignore=tests/test_timeout.py"
+         "-k"
+         (string-append
+          "not test_data"
+          " and not test_container_probing"
+          " and not test_stream_probing"
+          " and not test_transcode"
+          " and not test_codec_tag"
+          " and not test_parse"
+          " and not test_decode_audio_sample_count"
+          " and not test_decoded_motion_vectors"
+          " and not test_decoded_motion_vectors_no_flag"
+          " and not test_decoded_time_base"
+          " and not test_decoded_video_frame_count"
+          " and not test_encoding_aac"
+          " and not test_encoding_dnxhd"
+          " and not test_encoding_dvvideo"
+          " and not test_encoding_h264"
+          " and not test_encoding_mjpeg"
+          " and not test_encoding_mp2"
+          " and not test_encoding_mpeg1video"
+          " and not test_encoding_mpeg4"
+          " and not test_encoding_pcm_s24le"
+          " and not test_encoding_png"
+          " and not test_encoding_tiff"
+          " and not test_encoding_xvid"
+          " and not test_reading_from_buffer"
+          " and not test_reading_from_buffer_no_seek"
+          " and not test_reading_from_file"
+          " and not test_reading_from_pipe_readonly"
+          " and not test_reading_from_write_readonly"
+          " and not test_writing_to_custom_io_dash"
+          " and not test_writing_to_custom_io_image2"
+          " and not test_decode_half"
+          " and not test_seek_end"
+          " and not test_seek_float"
+          " and not test_seek_int64"
+          " and not test_seek_middle"
+          " and not test_seek_start"
+          " and not test_stream_seek"
+          " and not test_selection"
+          " and not test_stream_tuples"
+          " and not test_movtext"
+          " and not test_vobsub"
+          " and not test_roundtrip"
+          " and not test_stream_probing"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'build-extensions
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (native-inputs
+     (list pkg-config
+           python-cython
+           python-editorconfig
+           python-numpy
+           python-pillow
+           python-pytest))
+    (inputs
+     ;; XXX: Build is failing with FFmpeg 6.0, unresolved upstream.
+     ;; See https://github.com/PyAV-Org/PyAV/issues/1106
+     (list ffmpeg-5))
+    (home-page "https://github.com/PyAV-Org/PyAV")
+    (synopsis "Pythonic bindings for FFmpeg's libraries")
+    (description
+     "PyAV is a Python library that allows for direct and precise manipulation
+of media through containers, streams, packets, codecs, and frames.  It provides
+access to the powerful FFmpeg libraries while managing the complex details as
+much as possible.
+PyAV also facilitates data transformation and integration with
+other packages such as Numpy and Pillow.  However, working with media is a
+challenging task and PyAV cannot abstract it away or make all the best decisions
+for you.  If you can accomplish your tasks with the ffmpeg command, PyAV may not
+be necessary.  Nonetheless, PyAV is an essential tool when working with media
+that requires its specific capabilities.")
+    (license license:bsd-3)))
+
 (define-public python-ffmpeg-python
   ;; The latest release (0.2.0) is old and its test suite crashs on Python 3.10.
   (let ((commit "df129c7ba30aaa9ffffb81a48f53aa7253b0b4e6") (revision "0"))
@@ -30242,6 +30341,45 @@ Thus applications written with PP will parallelize efficiently even on
 heterogeneous and multi-platform clusters (including clusters running other
 applications with variable CPU loads).")
     (license license:bsd-3)))
+
+(define-public python-djitellopy
+  (package
+    (name "python-djitellopy")
+    (version "2.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "djitellopy" version))
+       (sha256
+        (base32 "1kc0syb4hpn7fay0rxpazmczag6jw3pncrrc6v762jj0afiwkrps"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; OpenCV does not ship metadata files for its Python library, which
+          ;; makes it invisible to the sanity_check script (see:
+          ;; https://github.com/opencv/opencv/issues/24810).
+          (delete 'sanity-check))))
+    (propagated-inputs
+     (list opencv                       ;for opencv-python
+           python-av
+           python-numpy
+           python-pillow))
+    (home-page "https://github.com/damiafuentes/DJITelloPy")
+    (synopsis
+     "DJI Tello drone video streaming, swarms and state packets library")
+    (description
+     "DJI Tello drone Python interface using the official Tello SDK and Tello
+EDU SDK.  This library has the following features:
+@itemize
+@item Implementation of all tello commands
+@item Retrieve a video stream easily
+@item Receive and parse state packets
+@item Control a swarm of drones.
+@end itemize")
+    (license license:expat)))
 
 (define-public python-djvulibre
   (package

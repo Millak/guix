@@ -307,6 +307,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/gobby.scm			\
   %D%/packages/golang.scm			\
   %D%/packages/golang-check.scm		\
+  %D%/packages/golang-web.scm	        	\
   %D%/packages/gperf.scm			\
   %D%/packages/gpodder.scm			\
   %D%/packages/gps.scm				\
@@ -1115,11 +1116,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/emacs-deferred-fix-number-of-arguments.patch	\
   %D%/packages/patches/emacs-elpy-dup-test-name.patch		\
   %D%/packages/patches/emacs-exec-path.patch			\
-  %D%/packages/patches/emacs-ess-fix-obsolete-function-alias.patch	\
   %D%/packages/patches/emacs-git-email-missing-parens.patch	\
   %D%/packages/patches/emacs-fix-scheme-indent-function.patch	\
   %D%/packages/patches/emacs-json-reformat-fix-tests.patch	\
-  %D%/packages/patches/emacs-haskell-mode-no-redefine-builtin.patch	\
   %D%/packages/patches/emacs-helpful-fix-tests.patch	\
   %D%/packages/patches/emacs-highlight-stages-add-gexp.patch	\
   %D%/packages/patches/emacs-lispy-fix-thread-last-test.patch   \

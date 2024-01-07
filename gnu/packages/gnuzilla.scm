@@ -1035,6 +1035,9 @@ variable defined below.  It requires guile-json to be installed."
                 (setenv "MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE" "system")
                 (setenv "MOZ_BUILD_DATE" #$%icecat-build-id) ; avoid timestamp
 
+                ;; WM_CLASS (default is "$MOZ_APP_NAME-$MOZ_UPDATE_CHANNEL").
+                (setenv "MOZ_APP_REMOTINGNAME" "Icecat")
+
                 ;; XXX TODO: Fix this to work on systems other than x86_64-linux.
                 (setenv "GUIX_PYTHONPATH"
                         (string-append (getcwd)
@@ -1092,18 +1095,22 @@ variable defined below.  It requires guile-json to be installed."
               (let* ((lib (string-append #$output "/lib"))
                      (gtk #$(this-package-input "gtk+"))
                      (gtk-share (string-append gtk "/share"))
-                     (ld-libs '#$(map (lambda (label)
-                                        (file-append (this-package-input label) "/lib"))
-                                      '("libpng-apng"
-                                        "libxscrnsaver"
-                                        "mesa"
-                                        "pciutils"
-                                        "mit-krb5"
-                                        "eudev"
-                                        "pulseaudio"
-                                        ;; For the integration of native notifications
-                                        ;; (same reason as icedove)
-                                        "libnotify"))))
+                     (ld-libs '#$(cons
+                                  (file-append
+                                   (this-package-input "libcanberra")
+                                   "/lib/gtk-3.0/modules")
+                                  (map (lambda (label)
+                                         (file-append (this-package-input label) "/lib"))
+                                       '("libpng-apng"
+                                         "libxscrnsaver"
+                                         "mesa"
+                                         "pciutils"
+                                         "mit-krb5"
+                                         "eudev"
+                                         "pulseaudio"
+                                         ;; For the integration of native notifications
+                                         ;; (same reason as icedove)
+                                         "libnotify")))))
                 (wrap-program (car (find-files lib "^icecat$"))
                   `("XDG_DATA_DIRS" prefix (,gtk-share))
                   ;; The following line is commented out because the icecat
@@ -1123,7 +1130,7 @@ variable defined below.  It requires guile-json to be installed."
                   (("NewWindow")        "new-window")
                   (("NewPrivateWindow") "new-private-window")
                   (("StartupNotify=true")
-                   "StartupNotify=true\nStartupWMClass=Navigator"))
+                   "StartupNotify=true\nStartupWMClass=Icecat"))
                 (install-file desktop-file applications))))
           (add-after 'install-desktop-entry 'install-icons
             (lambda _
@@ -1775,7 +1782,7 @@ ca495991b7852b855"))
                     (format #t
                             "[Desktop Entry]~@
                             Name=Icedove~@
-                            Exec=~a/bin/icedove~@
+                            Exec=~a/bin/icedove %u~@
                             Icon=icedove~@
                             GenericName=Mail/News Client~@
                             Categories=Network;Email;~@

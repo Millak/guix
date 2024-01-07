@@ -52,7 +52,7 @@
 (define-public minetest
   (package
     (name "minetest")
-    (version "5.7.0")
+    (version "5.8.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -61,7 +61,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "008l44zwwsarwk4hn7wx2nj2m21b1iqsphl7g69rrlxj760zl0pl"))
+                "1sww17h8z77w38jk19nsqxn8xcj27msq0glbil7pyj4i0ffprjrr"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -166,7 +166,7 @@ in different ways.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02kbj1h6jsq6k8x4v2ir0njczdz7nyx6dbym85ixxp3mrqxiws61"))))
+                "1pq4rm15lzwcqv6npgyz6v89hi3zj8zybw25n9i0d27qj786xc4z"))))
     (build-system copy-build-system)
     (arguments
      (list #:install-plan

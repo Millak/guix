@@ -123,6 +123,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-web)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
@@ -4449,31 +4450,30 @@ QUIC protocol.")
                #:deep? #true)))
        (cons go-golang-org-x-sys-0.8
              (map p
-                  (list go-golang-zx2c4-com-wireguard
-                        go-golang-org-x-text
-                        go-golang-org-x-net
-                        go-golang-org-x-crypto
-                        go-golang-org-x-tools
-                        go-netns
-                        go-netlink
+                  (list go-github-com-arceliar-ironwood
+                        go-github-com-arceliar-phony
                         go-github-com-bits-and-blooms-bitset
                         go-github-com-bits-and-blooms-bloom
-                        go-github-com-quic-go-quic-go
-                        go-github-com-hjson-hjson-go
-                        go-github-com-olekukonko-tablewriter
-                        go-github-com-mitchellh-mapstructure
-                        go-github-com-mattn-go-runewidth
-                        go-github-com-mattn-go-isatty
-                        go-github-com-mattn-go-colorable
-                        go-github-com-kardianos-minwinsvc
-                        go-github-com-hjson-hjson-go
-                        go-github-com-hashicorp-go-syslog
-                        go-github-com-gologme-log
-                        go-github-com-fatih-color
                         go-github-com-cheggaaa-pb-v3
+                        go-github-com-fatih-color
+                        go-github-com-gologme-log
+                        go-github-com-hashicorp-go-syslog
+                        go-github-com-hjson-hjson-go
+                        go-github-com-kardianos-minwinsvc
+                        go-github-com-mattn-go-colorable
+                        go-github-com-mattn-go-isatty
+                        go-github-com-mattn-go-runewidth
+                        go-github-com-mitchellh-mapstructure
+                        go-github-com-olekukonko-tablewriter
+                        go-github-com-quic-go-quic-go
                         go-github-com-vividcortex-ewma
-                        go-github-com-arceliar-phony
-                        go-github-com-arceliar-ironwood)))))
+                        go-golang-org-x-crypto
+                        go-golang-org-x-net
+                        go-golang-org-x-text
+                        go-golang-org-x-tools
+                        go-golang-zx2c4-com-wireguard
+                        go-netlink
+                        go-netns)))))
     (home-page "https://yggdrasil-network.github.io/blog.html")
     (synopsis
      "Experiment in scalable routing as an encrypted IPv6 overlay network")

@@ -69,25 +69,16 @@
 (define-public sddm
   (package
     (name "sddm")
-    (version "0.19.0")
+    (version "0.20.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/sddm/sddm"
-                    "/releases/download/v" version "/"
-                    "sddm-" version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/sddm/sddm")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0hcdysw8ibr66vk8i7v56l0v5ijvhlq67v4460mc2xf2910g2m72"))
-              (snippet
-               #~(begin
-                   ;; https://github.com/sddm/sddm/issues/1536
-                   ;; https://github.com/sddm/sddm/commit/e93bf95c54ad8c2a1604f8d7be05339164b19308
-                   ;; Commit comes shortly after the 0.19.0 release.
-                   (use-modules ((guix build utils)))
-                   (substitute* "src/daemon/XorgDisplayServer.cpp"
-                     (("m_cookie\\[i\\] = digits\\[dis\\(gen\\)\\]")
-                      "m_cookie[i] = QLatin1Char(digits[dis(gen)])"))))))
+                "1450zv03d3mbid27986p4mdshw9qf3ar8crl4idybf7khxgan22y"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config qttools-5))
@@ -109,36 +100,39 @@
            shadow
            wayland))
     (arguments
-     `(#:configure-flags
-       ,#~(list
-            ;; This option currently does nothing, but will presumably be enabled
-            ;; if/when <https://github.com/sddm/sddm/pull/616> is merged.
-            "-DENABLE_WAYLAND=ON"
-            "-DENABLE_PAM=ON"
-            ;; Both flags are required for elogind support.
-            "-DNO_SYSTEMD=ON" "-DUSE_ELOGIND=ON"
-            "-DCONFIG_FILE=/etc/sddm.conf"
-            ;; Set path to /etc/login.defs.
-            ;; An alternative would be to use -DUID_MIN and -DUID_MAX.
-            (string-append "-DLOGIN_DEFS_PATH="
-                           #$(this-package-input "shadow")
-                           "/etc/login.defs")
-            (string-append "-DQT_IMPORTS_DIR="
-                           #$output "/lib/qt5/qml")
-            (string-append "-DCMAKE_INSTALL_SYSCONFDIR="
-                           #$output "/etc"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'embed-loginctl-reference
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("/usr/bin/loginctl") (which "loginctl")))
-               #t)))))
+     (list
+      #:configure-flags
+      #~(list
+         "-DENABLE_WAYLAND=ON"
+         "-DENABLE_PAM=ON"
+         ;; Both flags are required for elogind support.
+         "-DNO_SYSTEMD=ON"
+         "-DUSE_ELOGIND=ON"
+         "-DCONFIG_FILE=/etc/sddm.conf"
+         ;; Set path to /etc/login.defs.
+         ;; An alternative would be to use -DUID_MIN and -DUID_MAX.
+         (string-append "-DLOGIN_DEFS_PATH="
+                        #$(this-package-input "shadow")
+                        "/etc/login.defs")
+         (string-append "-DCMAKE_CXX_FLAGS=-I"
+                        #$(this-package-input
+                           "qtdeclarative") "/include/qt5")
+         (string-append "-DQT_IMPORTS_DIR="
+                        #$output "/lib/qt5/qml")
+         (string-append "-DCMAKE_INSTALL_SYSCONFDIR="
+                        #$output "/etc"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'embed-loginctl-reference
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("/usr/bin/loginctl")
+                 (which "loginctl"))))))))
     (synopsis "QML based X11 and Wayland display manager")
     (description "SDDM is a display manager for X11 and Wayland aiming to be
 fast, simple and beautiful.  SDDM is themeable and puts no restrictions on the
-user interface design.  It uses QtQuick which gives the designer the ability to
-create smooth, animated user interfaces.")
+user interface design.  It uses QtQuick which gives the designer the ability
+to create smooth, animated user interfaces.")
     (home-page "https://github.com/sddm/sddm")
     ;; QML files are MIT licensed and images are CC BY 3.0.
     (license (list license:gpl2+ license:expat license:cc-by3.0))))

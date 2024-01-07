@@ -7437,6 +7437,10 @@ consistency with the base functions in the evd package is provided, so that user
 can safely interchange most code.")
     (license license:gpl3)))
 
+;; This package contains minified JavaScript: jExcel CE Spreadsheet,
+;; version 3.9.1.  It is not clear how to obtain this particular
+;; version as there is no tag for 3.9.1.  There only is 3.6.1 and
+;; 4.2.0 at https://github.com/jspreadsheet/ce.
 (define-public r-excelr
   (package
     (name "r-excelr")
@@ -7452,37 +7456,44 @@ can safely interchange most code.")
     (properties `((upstream-name . "excelR")))
     (build-system r-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'process-javascript
-           (lambda* (#:key inputs #:allow-other-keys)
-             (with-directory-excursion "inst/htmlwidgets/lib/jexcel/js/"
-               (let ((source (assoc-ref inputs "js-jexcel"))
-                     (target "jexcel.min.js"))
-                 (format #true "Processing ~a --> ~a~%"
-                         source target)
-                 (invoke "esbuild" source "--minify"
-                         (string-append "--outfile=" target)))))))))
-    (native-inputs
-     `(("esbuild" ,esbuild)
-       ;; There is no tag for this particular commit, but comparison of the
-       ;; contents of the JavaScript files point to this commit as the most
-       ;; likely source.
-       ("js-jexcel"
-        ,(origin
-           (method url-fetch)
-           (uri (string-append "https://raw.githubusercontent.com/jspreadsheet/ce/"
-                               "8af1960f76e6803bebc5750013d2ebe95354e88a/dist/jexcel.js"))
-           (sha256
-            (base32
-             "0y88hsr9d8cpnvdmbm17m328pc4kc5wbcv02kzmhm0bryzhviw7h"))))))
+     (list
+      #:modules
+      '((guix build r-build-system)
+        (guix build minify-build-system)
+        (guix build utils))
+      #:imported-modules
+      `(,@%r-build-system-modules
+        (guix build minify-build-system))
+      #:phases
+      #~(modify-phases (@ (guix build r-build-system) %standard-phases)
+          (add-after 'unpack 'process-javascript
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion "inst/htmlwidgets/lib/jexcel/js"
+                (minify (search-input-file inputs "/dist/jexcel.js")
+                        #:target "jexcel.min.js")))))))
     (propagated-inputs (list r-htmlwidgets r-jsonlite))
+    (native-inputs
+     (list esbuild
+           ;; There is no tag for this particular commit, but comparison of
+           ;; the contents of the JavaScript files point to this commit as the
+           ;; most likely source.
+           (let* ((commit "8af1960f76e6803bebc5750013d2ebe95354e88a")
+                  (version (git-version "3.9.1" "0" commit)))
+             (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/jspreadsheet/ce")
+                     (commit commit)))
+               (file-name (git-file-name "jexcel" version))
+               (sha256
+                (base32
+                 "1zk0wc4h0vax7zgimhwqq2icrvjr84agm3qv42l16gim7gq7fqfq"))))))
     (home-page "https://github.com/Swechhya/excelR")
     (synopsis "Wrapper of the JavaScript library jExcel")
     (description
-     "This package provides an R interface to the jExcel library to
-create web-based interactive tables and spreadsheets compatible with
-spreadsheet software.")
+     "This package provides an R interface to the jExcel library to create
+web-based interactive tables and spreadsheets compatible with spreadsheet
+software.")
     (license license:expat)))
 
 (define-public r-extremes
@@ -9498,14 +9509,14 @@ modeling for empirical income distributions.")
 (define-public r-vcd
   (package
     (name "r-vcd")
-    (version "1.4-11")
+    (version "1.4-12")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "vcd" version))
        (sha256
         (base32
-         "0ch9ks25ab4h4fh4y267s0psvc4ndyaplk8ddva2j54yd1ayhm3s"))))
+         "127dkln826ah5ydp3pmd5bqyns9m9m6yrjnmn7fir4r9al8yycf9"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-colorspace r-lmtest r-mass))

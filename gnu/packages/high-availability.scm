@@ -35,6 +35,7 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-web)
   #:use-module (gnu packages hardware)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)

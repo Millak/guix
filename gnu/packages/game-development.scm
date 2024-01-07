@@ -196,69 +196,71 @@ is used in some video games and movies.")
     (license license:zlib)))
 
 (define-public dds
-  (package
-    (name "dds")
-    (version "2.9.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/dds-bridge/dds")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1iv09qic43nvla02lm8zgnkqpjgnc95p8zh3wyifmnmlh1rz02yj"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'chdir
-                 (lambda _
-                   (chdir "src")))
-               (replace 'configure
-                 ;; Configuration is done by copying the appropriate
-                 ;; make file in the working directory.  There is no
-                 ;; configure script.
-                 (lambda _
-                   (copy-file "Makefiles/Makefile_linux_shared"
-                              "Makefile")))
-               (replace 'check
-                 ;; There is no "check" traget.  We must compile
-                 ;; a "dtest" program and apply it on a data set.
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (install-file "libdds.so" "../test")
-                     (with-directory-excursion "../test"
-                       (copy-file "Makefiles/Makefile_linux"
-                                  "Makefile")
-                       (substitute* "Makefile"
-                         (("-Werror") ""))
-                       (invoke "make")
-                       (invoke "./dtest" "-f" "../hands/list100.txt")))))
-               (replace 'install
-                 ;; "install" target merely moves ".so" file around
-                 ;; the source directory.  We install it in the store,
-                 ;; along with all shipped documentation (which cannot
-                 ;; be built from source unfortunately).
-                 (lambda _
-                   (install-file "libdds.so"
-                                 (string-append #$output "/lib"))
-                   (let ((doc (string-append #$output
-                                             "/share/doc/"
-                                             #$name "-" #$version)))
-                     (install-file "../LICENSE" doc)
-                     (copy-recursively "../doc" doc)))))))
-    (native-inputs
-     (list gawk procps))
-    (inputs
-     (list boost))
-    (home-page "https://privat.bahnhof.se/wb758135/")
-    (synopsis "Double dummy solver for the bridge card game")
-    (description "DDS is a double-dummy solver of bridge hands.  It supports
+  (let ((commit "d2bc4c2c703941664fc1d73e69caa5233cdeac18")
+        (revision "1"))
+    (package
+      (name "dds")
+      (version (git-version "2.9.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/dds-bridge/dds")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1ishbb69cvyv96xdxshnly0m5ydwljgdf8fwa1cr9rj2qj40q4rm"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'chdir
+                   (lambda _
+                     (chdir "src")))
+                 (replace 'configure
+                   ;; Configuration is done by copying the appropriate
+                   ;; make file in the working directory.  There is no
+                   ;; configure script.
+                   (lambda _
+                     (copy-file "Makefiles/Makefile_linux_shared"
+                                "Makefile")))
+                 (replace 'check
+                   ;; There is no "check" traget.  We must compile
+                   ;; a "dtest" program and apply it on a data set.
+                   (lambda* (#:key tests? #:allow-other-keys)
+                     (when tests?
+                       (install-file "libdds.so" "../test")
+                       (with-directory-excursion "../test"
+                         (copy-file "Makefiles/Makefile_linux"
+                                    "Makefile")
+                         (substitute* "Makefile"
+                           (("-Werror") ""))
+                         (invoke "make")
+                         (invoke "./dtest" "-f" "../hands/list100.txt")))))
+                 (replace 'install
+                   ;; "install" target merely moves ".so" file around
+                   ;; the source directory.  We install it in the store,
+                   ;; along with all shipped documentation (which cannot
+                   ;; be built from source unfortunately).
+                   (lambda _
+                     (install-file "libdds.so"
+                                   (string-append #$output "/lib"))
+                     (let ((doc (string-append #$output
+                                               "/share/doc/"
+                                               #$name "-" #$version)))
+                       (install-file "../LICENSE" doc)
+                       (copy-recursively "../doc" doc)))))))
+      (native-inputs
+       (list gawk procps))
+      (inputs
+       (list boost))
+      (home-page "https://privat.bahnhof.se/wb758135/")
+      (synopsis "Double dummy solver for the bridge card game")
+      (description "DDS is a double-dummy solver of bridge hands.  It supports
 single-threading and multi-threading for improved performance.  DDS
 offers a wide range of functions, including par-score calculations.")
-    (license license:asl2.0)))
+      (license license:asl2.0))))
 
 (define-public deutex
   (package
@@ -3269,16 +3271,16 @@ progresses the level, or you may regenerate tiles as the world changes.")
 (define-public bbcsdl
   (package
     (name "bbcsdl")
-    (version "1.35a")
+    (version "1.39a")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/rtrussell/BBCSDL/")
-                    (commit "b9b2a3eb438cb799edb2766055b3c38e9518e3e3")))
+                    (commit "93b0ffae960f4c4f45fdc2202bc6e83ee5ca277c")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1d03xmhrl6ba6w0vwfk46mpyc9d0w3bixxj2d4irx7wl7bh3bfic"))))
+                "03ga14k2hbhflnaynbyx9lwlbxlzx3rv6zqq21yhl183s6d4c0wa"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -3318,6 +3320,7 @@ progresses the level, or you may regenerate tiles as the world changes.")
                      inputs (string-append "share/fonts/truetype/" font))
                     (string-append opt "/lib/" font)))
                  '("DejaVuSans.ttf" "DejaVuSansMono.ttf"
+                   "DejaVuSans-Oblique.ttf"
                    "FreeSans.ttf" "FreeMono.ttf" "FreeSerif.ttf"))
                 (mkdir bin)
                 (symlink (string-append opt "/bbcsdl")

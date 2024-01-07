@@ -310,7 +310,8 @@ asdf-build-system."
 (define-team bootstrap
   (team 'bootstrap
         #:name "Bootstrap"
-        #:scope (list "gnu/packages/mes.scm")))
+        #:scope (list "gnu/packages/commencement.scm"
+                      "gnu/packages/mes.scm")))
 
 (define-team embedded
   (team 'embedded
@@ -423,6 +424,21 @@ asdf-build-system."
               (make-regexp* "^guix/platforms/")
               (make-regexp* "^guix/scripts/")
               (make-regexp* "^guix/store/"))))
+
+(define-team core-packages
+  (team 'core-packages
+        #:name "Core packages"
+        #:description "Core packages: the GNU tool chain, Guile, Coreutils, etc."
+        #:scope (list "gnu/packages/base.scm"
+                      "gnu/packages/bootstrap.scm"
+                      "gnu/packages/commencement.scm"
+                      "gnu/packages/cross-base.scm"
+                      "gnu/packages/gcc.scm"
+                      "gnu/packages/guile.scm"
+                      "gnu/packages/make-bootstrap.scm"
+                      "guix/build/gnu-build-system.scm"
+                      "guix/build/utils.scm"
+                      "guix/build-system/gnu.scm")))
 
 (define-team games
   (team 'games
@@ -556,7 +572,7 @@ GLib/GIO, GTK, GStreamer and Webkit."
 
 (define-member (person "Ludovic Courtès"
                        "ludo@gnu.org")
-  core home bootstrap installer mentors)
+  core home bootstrap core-packages installer mentors)
 
 (define-member (person "Andreas Enge"
                        "andreas@enge.fr")

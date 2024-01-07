@@ -690,7 +690,12 @@ glxdemo, glxgears, glxheads, and glxinfo.")
                   #t))))
     (build-system gnu-build-system)
     (arguments
-     (list #:make-flags #~(list (string-append "GLEW_PREFIX=" #$output)
+     (list #:make-flags #~(list #$@(if (%current-target-system)
+                                       #~((string-append "CC=" #$(cc-for-target))
+                                          (string-append "LD=" #$(cc-for-target))
+                                          (string-append "STRIP=" #$(strip-for-target)))
+                                       #~())
+                                (string-append "GLEW_PREFIX=" #$output)
                                 (string-append "GLEW_DEST=" #$output))
            #:phases
            #~(modify-phases %standard-phases

@@ -93,6 +93,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
+  #:use-module (gnu packages golang-web)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages groff)
   #:use-module (gnu packages gsasl)
@@ -2299,7 +2300,7 @@ mining.")
 (define-public p2pool
   (package
     (name "p2pool")
-    (version "3.7")
+    (version "3.10")
     (source
      (origin
        (method git-fetch)
@@ -2308,7 +2309,7 @@ mining.")
              (commit (string-append "v" version))
              (recursive? #t)))
        (file-name (git-file-name name version))
-       (sha256 (base32 "1sghdk8yq8si0bq0z83fji48q8yrq0ymvsxbbh5mscw6223syrjq"))
+       (sha256 (base32 "0lp9slfwaq3wp4x6xpsiazam5lv6dz57m20adzlzzk0anb1ascr0"))
        (modules '((guix build utils)))
        (snippet
         #~(for-each delete-file-recursively

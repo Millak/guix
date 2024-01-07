@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017, 2018, 2020, 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
@@ -7324,13 +7324,13 @@ global-scaling and full-quantile normalization.")
 (define-public r-edger
   (package
     (name "r-edger")
-    (version "4.0.3")
+    (version "4.0.5")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "edgeR" version))
               (sha256
                (base32
-                "0sz46pwa1bsqrff2igswfhhj1fcwzn34zrlawy4fnb58z48kccb0"))))
+                "16cghh83v14jdq5n6xkm3jxj87n6l6zrxjgqdwb2ffgc26vkpb7w"))))
     (properties `((upstream-name . "edgeR")))
     (build-system r-build-system)
     (propagated-inputs
@@ -7461,6 +7461,37 @@ allowing to retrieve annotations for specific entries like genes encoded on a
 chromosome region or transcript models of lincRNA genes.")
     ;; No version specified
     (license license:lgpl3+)))
+
+(define-public r-epidish
+  (package
+    (name "r-epidish")
+    (version "2.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "EpiDISH" version))
+       (sha256
+        (base32 "170ym3y6gd1kxghz2g5ynvgi1wrxx87b568cjcvzidpqkrkg87s6"))))
+    (properties `((upstream-name . "EpiDISH")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-e1071
+                             r-locfdr
+                             r-mass
+                             r-matrix
+                             r-matrixstats
+                             r-quadprog
+                             r-stringr))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/sjczheng/EpiDISH")
+    (synopsis "Epigenetic dissection of intra-sample-heterogeneity")
+    (description
+     "@code{EpiDISH} is a R package to infer the proportions of a priori known
+cell-types present in a sample representing a mixture of such cell-types.
+Right now, the package can be used on DNAm data of whole blood, generic
+epithelial tissue and breast tissue.  Besides, the package provides a function
+that allows the identification of differentially methylated cell-types and
+their directionality of change in Epigenome-Wide Association Studies.")
+    (license license:gpl2)))
 
 (define-public r-fastseg
   (package
@@ -10315,6 +10346,49 @@ comprehensive scDblFinder method.")
     (license license:gpl3)))
 
 ;; This is a CRAN package, but it depends on packages from Bioconductor.
+(define-public r-scgate
+  (package
+    (name "r-scgate")
+    (version "1.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "scGate" version))
+       (sha256
+        (base32 "0h12d36zjc6fvxbhkxrzbpvw49z9fgyn1jc941q70ajw1yqi2hhh"))))
+    (properties `((upstream-name . "scGate")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocparallel
+           r-dplyr
+           r-ggplot2
+           r-ggridges
+           r-patchwork
+           r-reshape2
+           r-seurat
+           r-ucell))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/carmonalab/scGate")
+    (synopsis
+     "Marker-based cell type purification for single-cell sequencing data")
+    (description
+     "This package provides a method to purify a cell type or cell population
+of interest from heterogeneous datasets.  scGate package automatizes
+marker-based purification of specific cell populations, without requiring
+training data or reference gene expression profiles.  scGate takes as input a
+gene expression matrix stored in a Seurat object and a @acronym{GM, gating
+model}, consisting of a set of marker genes that define the cell population of
+interest.  It evaluates the strength of signature marker expression in each
+cell using the rank-based method UCell, and then performs @acronym{kNN,
+k-nearest neighbor} smoothing by calculating the mean UCell score across
+neighboring cells.  kNN-smoothing aims at compensating for the large degree of
+sparsity in scRNAseq data.  Finally, a universal threshold over kNN-smoothed
+signature scores is applied in binary decision trees generated from the
+user-provided gating model, to annotate cells as either “pure” or “impure”,
+with respect to the cell population of interest.")
+    (license license:gpl3)))
+
+;; This is a CRAN package, but it depends on packages from Bioconductor.
 (define-public r-scistreer
   (package
     (name "r-scistreer")
@@ -10435,6 +10509,38 @@ general analysis of single-cell clonotype information without the use of
 expression information.  The package functions as a wrapper for Startrac and
 powerTCR R packages.")
     (license license:gpl2)))
+
+(define-public r-scrnaseq
+  (package
+    (name "r-scrnaseq")
+    (version "2.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "scRNAseq" version
+                              'experiment))
+       (sha256
+        (base32 "0dbh3sqq7lkkdf7vls5qg7fbn6y74c7hsigb4d69pvk934ll88aw"))))
+    (properties `((upstream-name . "scRNAseq")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-annotationdbi
+                             r-annotationhub
+                             r-biocgenerics
+                             r-ensembldb
+                             r-experimenthub
+                             r-genomicfeatures
+                             r-genomicranges
+                             r-s4vectors
+                             r-singlecellexperiment
+                             r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/scRNAseq")
+    (synopsis "Collection of public single-cell RNA-seq datasets")
+    (description
+     "This package contains gene-level counts for a collection of public
+@code{scRNA-seq} datasets, provided as @code{SingleCellExperiment} objects
+with cell- and gene-level metadata.")
+    (license license:cc0)))
 
 (define-public r-scry
   (package
@@ -10792,6 +10898,44 @@ identifier translation via the GDC API.")
     (description
      "This package implements widgets to provide user interfaces.")
     (license license:artistic2.0)))
+
+(define-public r-toast
+  (package
+    (name "r-toast")
+    (version "1.16.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "TOAST" version))
+       (sha256
+        (base32 "00wpgs2zdrgrh9xmp6m5h9xgv85mhdi36qvwg9gwbz9i7cfabmy1"))))
+    (properties `((upstream-name . "TOAST")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-corpcor
+                             r-doparallel
+                             r-epidish
+                             r-ggally
+                             r-ggplot2
+                             r-limma
+                             r-nnls
+                             r-quadprog
+                             r-summarizedexperiment
+                             r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/TOAST")
+    (synopsis "Tools for the analysis of heterogeneous tissues")
+    (description
+     "This package is devoted to analyzing high-throughput data (e.g. gene
+expression microarray, DNA methylation microarray, RNA-seq) from complex
+tissues.  Current functionalities include
+
+@enumerate
+@item detect cell-type specific or cross-cell type differential signals
+@item tree-based differential analysis
+@item improve variable selection in reference-free deconvolution
+@item partial reference-free deconvolution with prior knowledge.
+@end enumerate")
+    (license license:gpl2)))
 
 ;; TODO: check javascript
 (define-public r-trackviewer

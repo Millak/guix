@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2020-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -1151,6 +1151,11 @@ in terms of new algorithms.")
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'relax-requirements
+                    (lambda _
+                      ;; Does this difference really matter?
+                      (substitute* "requirements.txt"
+                        (("3.20.1") "3.20.2"))))
                   (add-before 'build 'pass-cmake-arguments
                     (lambda* (#:key outputs #:allow-other-keys)
                       ;; Pass options to the CMake-based build process.
@@ -1235,7 +1240,13 @@ operators and standard data types.")
                '(begin
                   (delete-file-recursively "third_party")
                   (substitute* "onnx/backend/test/runner/__init__.py"
-                    (("urlretrieve\\(.*") "raise unittest.SkipTest('Skipping download')\n"))))))))
+                    (("urlretrieve\\(.*") "raise unittest.SkipTest('Skipping download')\n"))))))
+    (arguments
+     ;; reuse build system tweaks
+     (substitute-keyword-arguments (package-arguments onnx)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'relax-requirements)))))))
 
 (define-public python-onnx
   ;; This used to be called "python-onnx" because it provided nothing but
@@ -1262,7 +1273,12 @@ operators and standard data types.")
               (modules '((guix build utils)))
               (snippet '(delete-file-recursively "third_party"))))
     (build-system python-build-system)
-    (arguments (package-arguments onnx))          ;reuse build system tweaks
+    (arguments
+     ;; reuse build system tweaks
+     (substitute-keyword-arguments (package-arguments onnx)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'relax-requirements)))))
     (native-inputs
      (list cmake python-pytest python-pytest-runner python-nbval
            python-coverage))

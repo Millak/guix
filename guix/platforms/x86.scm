@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
+;;; Copyright © 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,6 +22,7 @@
   #:use-module (guix records)
   #:export (i686-linux
             x86_64-linux
+            x86_64-linux-x32
             i686-mingw
             x86_64-mingw
             i586-gnu))
@@ -40,6 +42,14 @@
    (linux-architecture "x86_64")
    (rust-target "x86_64-unknown-linux-gnu")
    (glibc-dynamic-linker "/lib/ld-linux-x86-64.so.2")))
+
+(define x86_64-linux-x32
+  (platform
+   (target "x86_64-linux-gnux32")
+   (system #f)
+   (linux-architecture "x86_64")
+   (rust-target "x86_64-unknown-linux-gnux32")
+   (glibc-dynamic-linker "/lib/ld-linux-x32.so.2")))
 
 (define i686-mingw
   (platform

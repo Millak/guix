@@ -1803,9 +1803,9 @@ archive' public keys, with GUIX."
   (chroot-directories guix-configuration-chroot-directories ;list of file-like/strings
                       (default '()))
   (max-silent-time  guix-configuration-max-silent-time ;integer
-                    (default 0))
+                    (default 3600))
   (timeout          guix-configuration-timeout    ;integer
-                    (default 0))
+                    (default (* 3600 24)))
   (log-compression  guix-configuration-log-compression
                     (default 'gzip))
   (discover?        guix-configuration-discover?
