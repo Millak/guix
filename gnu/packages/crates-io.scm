@@ -2184,6 +2184,32 @@ text to a terminal.")
     (description "Parse ANSI Style Escapes")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-anstyle-parse-0.1
+  (package
+    (inherit rust-anstyle-parse-0.2)
+    (name "rust-anstyle-parse")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "anstyle-parse" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05h1zy6y2ha2k8cnah9s0a296w2g3bfyfi2z7r7x3zly9r9vpld7"))))
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; not all files included
+         "--skip=state::codegen::table")
+       #:cargo-inputs (("rust-arrayvec" ,rust-arrayvec-0.7)
+                       ("rust-utf8parse" ,rust-utf8parse-0.2))
+       #:cargo-development-inputs
+       (("rust-codegenrs" ,rust-codegenrs-2)
+        ("rust-criterion" ,rust-criterion-0.4)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-snapbox" ,rust-snapbox-0.4)
+        ("rust-vte-generate-state-changes" ,rust-vte-generate-state-changes-0.1))))))
+
 (define-public rust-anstyle-query-1
   (package
     (name "rust-anstyle-query")
