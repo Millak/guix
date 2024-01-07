@@ -14,6 +14,7 @@
 ;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2023, 2024 Jaeme Sifat <jaeme@runbox.com>
+;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5671,8 +5672,27 @@ the platform-specific getters provided by winit, or another library.")
     (inputs (list libxkbcommon))
     (home-page "https://github.com/rust-x-bindings/xkbcommon-rs")
     (synopsis "Rust bindings and wrappers for libxkbcommon")
-    (description "Rust bindings and wrappers for libxkbcommon.")
+    (description "This package provides a set of bindings and safe wrappers
+for @code{libxkbcommon}.")
     (license license:expat)))
+
+(define-public rust-xkbcommon-0.5
+  (package
+    (inherit rust-xkbcommon-0.7)
+    (name "rust-xkbcommon")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "xkbcommon" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "123b96fbp693z43z2f2gbadb9dzf523n2d21j3izcaz9k6sjbnsj"))))
+    (arguments
+     `(#:cargo-inputs (("rust-as-raw-xcb-connection" ,rust-as-raw-xcb-connection-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-memmap2" ,rust-memmap2-0.7))
+       #:cargo-development-inputs (("rust-evdev" ,rust-evdev-0.11))))))
 
 (define-public rust-xkbcommon-dl-0.4
   (package
