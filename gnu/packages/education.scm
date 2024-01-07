@@ -4,7 +4,7 @@
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2017-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2018-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Robert Smith <robertsmith@posteo.net>
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
@@ -564,7 +564,7 @@ a pen-tablet display and a beamer.")
 (define-public fet
   (package
     (name "fet")
-    (version "6.9.0")
+    (version "6.15.0")
     (source
      (origin
        (method url-fetch)
@@ -573,7 +573,7 @@ a pen-tablet display and a beamer.")
               (list (string-append directory base)
                     (string-append directory "old/" base))))
        (sha256
-        (base32 "1lnw58ga1ldhqfznclmk9l21698pg152w3slq2cwmr69ywqr5wys"))))
+        (base32 "0mmk9f0b23lmmk40mv25wf9vgb7wdgfn5zsa1qrkvkh7dh1hjpax"))))
     (build-system gnu-build-system)
     (arguments
      (list
