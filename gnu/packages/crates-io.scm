@@ -71809,14 +71809,14 @@ processors, disks, components and networks.")
 (define-public rust-system-deps-6
   (package
     (name "rust-system-deps")
-    (version "6.1.2")
+    (version "6.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "system-deps" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1mlpx2vzgcp39lfgr7ndwsf8vgjr6fs1h9cajk2am51g83wm5bwl"))
+        (base32 "0c836abhh3k8yn5ymg8wx383ay7n731gkrbbp3gma352yq7mhb9a"))
        (snippet
         #~(begin (delete-file "src/tests/lib/libteststatic.a")))))
     (build-system cargo-build-system)
