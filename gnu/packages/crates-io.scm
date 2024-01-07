@@ -2203,6 +2203,37 @@ text to a terminal.")
     (description "Look up colored console capabilities")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-anstyle-stream-0.2
+  (package
+    (name "rust-anstyle-stream")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "anstyle-stream" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1l695l55mwxfz3iaw524cy89j57bm5y9y8xv63z5bldslmmrd0qk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-anstyle" ,rust-anstyle-0.3)
+                       ("rust-anstyle-parse" ,rust-anstyle-parse-0.1)
+                       ("rust-anstyle-wincon" ,rust-anstyle-wincon-0.2)
+                       ("rust-concolor-override" ,rust-concolor-override-1)
+                       ("rust-concolor-query" ,rust-concolor-query-0.3)
+                       ("rust-is-terminal" ,rust-is-terminal-0.4)
+                       ("rust-utf8parse" ,rust-utf8parse-0.2))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4)
+        ("rust-owo-colors" ,rust-owo-colors-3)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-strip-ansi-escapes" ,rust-strip-ansi-escapes-0.1))))
+    (home-page "https://github.com/rust-cli/anstyle")
+    (synopsis "Library for writing colored text to a terminal.")
+    (description "This package provides a simple cross platform library for
+writing colored text to a terminal.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-antidote-1
   (package
     (name "rust-antidote")
