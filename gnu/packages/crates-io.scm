@@ -67321,24 +67321,20 @@ package provides derive macros.")
 (define-public rust-snap-1
   (package
     (name "rust-snap")
-    (version "1.0.5")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "snap" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0l8llidvm7dlwfw2ql6hk4b4byl9677fppwgl7i2wglqs6a60ia5"))))
+        (base32 "0fxw80m831l76a5zxcwmz2aq7mcwc1pp345pnljl4cv1kbxnfsqv"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
        (("rust-doc-comment" ,rust-doc-comment-0.3))))
-    (home-page
-     "https://github.com/BurntSushi/rust-snappy")
-    (synopsis
-     "Pure Rust implementation of the Snappy compression algorithm")
+    (home-page "https://github.com/BurntSushi/rust-snappy")
+    (synopsis "Pure Rust implementation of the Snappy compression algorithm")
     (description
      "This package provides a pure Rust implementation of the Snappy compression
 algorithm.  Includes streaming compression and decompression.")
