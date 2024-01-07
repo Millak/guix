@@ -37922,6 +37922,27 @@ server (LSP).")
     (description "This crate provides Rust LZ4 bindings.")
     (license license:expat)))
 
+(define-public rust-lz4-compress-0.1
+  (package
+    (name "rust-lz4-compress")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "lz4-compress" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14cb8rpdfk6q3bjkf7mirpyzb6rvvcglqnayx6lvpa92m4rnb5hg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-byteorder" ,rust-byteorder-0.5)
+                       ("rust-quick-error" ,rust-quick-error-1))))
+    (home-page "https://github.com/ticki/tfs")
+    (synopsis "Pure Rust implementation of raw LZ4 compression/decompression")
+    (description
+     "Pure Rust implementation of raw LZ4 compression/decompression.")
+    (license license:expat)))
+
 (define-public rust-lz4-sys-1
   (package
     (name "rust-lz4-sys")
