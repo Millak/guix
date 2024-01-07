@@ -79,6 +79,23 @@
        #:cargo-development-inputs
        (("rust-lexopt" ,rust-lexopt-0.3))))))
 
+(define-public rust-anstyle-wincon-0.2
+  (package
+    (inherit rust-anstyle-wincon-3)
+    (name "rust-anstyle-wincon")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "anstyle-wincon" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1yil703c9gp5hn1d8fn5m3dr4mlwml80v6mvhwr9y52v2kv7l4n3"))))
+    (arguments
+     `(#:cargo-inputs (("rust-anstyle" ,rust-anstyle-0.3)
+                       ("rust-windows-sys" ,rust-windows-sys-0.45))
+       #:cargo-development-inputs (("rust-lexopt" ,rust-lexopt-0.3))))))
+
 (define-public rust-cargo-credential-wincred-0.4
   (package
     (name "rust-cargo-credential-wincred")
