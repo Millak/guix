@@ -78134,6 +78134,22 @@ be used directly.  See @code{rust-trackable} for more information.")
      "Low level bindings to the client libraries for the Tracy profiler.")
     (license (list license:expat license:asl2.0 license:bsd-3))))
 
+;; TODO: Unbundle tracy-0.7
+(define-public rust-tracy-client-sys-0.11
+  (package
+    (inherit rust-tracy-client-sys-0.22)
+    (name "rust-tracy-client-sys")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tracy-client-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18l67jx96m5bd3gq6inl59q5fhzcj9maiaxm588bcmc1hzvz1rhy"))))
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1))))))
+
 (define-public rust-traitobject-0.1
   (package
     (name "rust-traitobject")
