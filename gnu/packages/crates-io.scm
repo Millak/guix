@@ -45754,6 +45754,28 @@ system for OpenSSL.")
     (description "This package provides an OPML parser for Rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-optick-1
+  (package
+    (name "rust-optick")
+    (version "1.3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "optick" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0j35dj8ggfpcc399h1ljm6xfz8kszqc4nrw3vcl9kfndd1hapryp"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "external")))))
+    (build-system cargo-build-system)
+    (arguments
+     '(#:tests? #f))        ; Needs optick library
+    (home-page "https://github.com/bombomby/optick-rs")
+    (synopsis "Lightweight Performance Profiler")
+    (description "Super Lightweight Performance Profiler.")
+    (license license:expat)))
+
 (define-public rust-option-ext-0.2
   (package
     (name "rust-option-ext")
