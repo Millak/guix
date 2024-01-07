@@ -26,7 +26,7 @@
 ;;; Copyright © 2018, 2020-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018, 2020, 2021, 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2019, 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Vasile Dumitrascu <va511e@yahoo.com>
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2019 Timotej Lazar <timotej.lazar@araneo.si>
@@ -164,8 +164,10 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages tcl)
+  #:use-module (gnu packages telephony)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages upnp)
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages web)
   #:use-module (gnu packages wxwidgets)
@@ -3940,6 +3942,60 @@ library (get, put, etc.) with text values.
 A very simple IM client working over the DHT.
 @end table")
     (license license:gpl3+)))
+
+(define-public dhtnet
+  ;; There is no tag nor release; use the latest available commit.
+  (let ((revision "0")
+        (commit "8b6e99fd34f150fde5f21f3a57e0e9f28174c70c"))
+    (package
+      (name "dhtnet")
+      ;; The base version is taken from the CMakeLists.txt file.
+      (version (git-version "0.0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/savoirfairelinux/dhtnet")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1yhygsimcl9j6hbww1b77am1kgbcriczslcrfb838nbfh18n1780"))))
+      (outputs (list "out" "debug"))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:configure-flags #~(list "-DBUILD_DEPENDENCIES=OFF"
+                                  "-DBUILD_SHARED_LIBS=ON"
+                                  "-DBUILD_TESTING=ON")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'delete-problematic-tests
+              (lambda _
+                (substitute* "CMakeLists.txt"
+                  ;; The connectionManager test currently segfaults (see:
+                  ;; https://git.jami.net/savoirfairelinux/dhtnet/-/issues/18).
+                  ((".*tests_connectionManager.*") "")
+                  ;; The fileutils test fail, asserting an unexpected returned
+                  ;; value for the removeAll call when the directory to be
+                  ;; removed is missing (see:
+                  ;; https://git.jami.net/savoirfairelinux/dhtnet/-/issues/17).
+                  ((".*tests_fileutils.*") "")))))))
+      (native-inputs (list cppunit pkg-config))
+      ;; This library depends on the Jami fork of pjproject that adds ICE
+      ;; support.
+      (inputs
+       (list asio
+             fmt
+             msgpack-cxx
+             opendht
+             libupnp
+             pjproject-jami
+             readline))
+      (home-page "https://github.com/savoirfairelinux/dhtnet/")
+      (synopsis "OpenDHT network library for C++")
+      (description "The @code{dhtnet} is a C++ library providing abstractions
+for interacting with an OpenDHT distributed network.")
+      (license license:gpl3+))))
 
 (define-public frrouting
   (package
