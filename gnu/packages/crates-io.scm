@@ -64187,6 +64187,29 @@ Cryptography encoding formats including ASN.1 DER-serialized private keys as
 well as the Elliptic-Curve-Point-to-Octet-String encoding.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-sec1-0.3
+  (package
+    (inherit rust-sec1-0.7)
+    (name "rust-sec1")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sec1" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0a09lk5w3nyggpyz54m10nnlg9v8qbh6kw3v1bgla31988c4rqiv"))))
+    (arguments
+     `(#:cargo-inputs (("rust-base16ct" ,rust-base16ct-0.1)
+                       ("rust-der" ,rust-der-0.6)
+                       ("rust-generic-array" ,rust-generic-array-0.14)
+                       ("rust-pkcs8" ,rust-pkcs8-0.9)
+                       ("rust-serdect" ,rust-serdect-0.1)
+                       ("rust-subtle" ,rust-subtle-2)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.3)
+                                   ("rust-tempfile" ,rust-tempfile-3))))))
+
 (define-public rust-seccomp-sys-0.1
   (package
     (name "rust-seccomp-sys")
