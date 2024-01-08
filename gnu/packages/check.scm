@@ -24,7 +24,7 @@
 ;;; Copyright © 2017, 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017, 2019 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2015, 2017, 2018, 2020, 2021, 2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2018, 2020, 2021, 2023, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017, 2018, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Fis Trivial <ybbs.daans@hotmail.com>
@@ -1478,6 +1478,27 @@ from a .env file before running tests.")
     (synopsis "HTTP server for pytest")
     (description "Pytest plugin library to test http clients without
 contacting the real http server.")
+    (license license:expat)))
+
+(define-public python-pytest-nunit
+  (package
+    (name "python-pytest-nunit")
+    (version "1.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-nunit" version))
+       (sha256
+        (base32 "1gw3a33myq9yncjixs3kkcrr1xkjzvvf3xk6x955p3i79wlwkswx"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #false)) ;no tests included
+    (propagated-inputs (list python-attrs python-pytest))
+    (native-inputs (list python-pytest python-pytest-cov python-xmlschema))
+    (home-page "https://github.com/pytest-dev/pytest-nunit")
+    (synopsis "Pytest plugin for generating NUnit3 test result XML output")
+    (description
+     "This package provides a pytest plugin for generating NUnit3 test result
+XML output")
     (license license:expat)))
 
 (define-public python-pytest-param-files
