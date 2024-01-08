@@ -79228,6 +79228,35 @@ recycle bin.")
 tree_magic_mini.")
     (license license:gpl2+)))
 
+(define-public rust-tree-magic-mini-3
+  (package
+    (name "rust-tree-magic-mini")
+    (version "3.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tree_magic_mini" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vdazv3y1iggriwx5ksin72c2ds0xjdhx1yvmd5nxkya0w3gvbci"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; Not all files included
+       #:cargo-inputs (("rust-bytecount" ,rust-bytecount-0.6)
+                       ("rust-fnv" ,rust-fnv-1)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-petgraph" ,rust-petgraph-0.6)
+                       ("rust-tree-magic-db" ,rust-tree-magic-db-3))
+       #:cargo-development-inputs (("rust-bencher" ,rust-bencher-0.1))))
+    (home-page "https://github.com/mbrubeck/tree_magic/")
+    (synopsis
+     "Determines the MIME type of a file by traversing a filetype tree")
+    (description
+     "Determines the MIME type of a file by traversing a filetype tree.")
+    (license license:expat)))
+
 (define-public rust-tree-magic-0.2
   (package
     (name "rust-tree-magic")
