@@ -23,7 +23,7 @@
 ;;; Copyright © 2020-2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021, 2022 Aurora <rind38@disroot.org>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
-;;; Copyright © 2021, 2022, 2023 André A. Gomes <andremegafone@gmail.com>
+;;; Copyright © 2021-2024 André A. Gomes <andremegafone@gmail.com>
 ;;; Copyright © 2021, 2022, 2023 Cage <cage-dev@twistfold.it>
 ;;; Copyright © 2021 Cameron Chaparro <cameron@cameronchaparro.com>
 ;;; Copyright © 2021 Charles Jackson <charles.b.jackson@protonmail.com>
@@ -26292,43 +26292,45 @@ extra features like type inference.")
   (sbcl-package->cl-source-package sbcl-nclasses))
 
 (define-public sbcl-prompter
-  (package
-    (name "sbcl-prompter")
-    (version "0.1.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/atlas-engineer/prompter")
-             (commit version)))
-       (file-name (git-file-name "cl-prompter" version))
-       (sha256
-        (base32
-         "008bq36siza9qwmz6b1pvpm53lxmzryahnhy372l18gl3180in03"))))
-    (build-system asdf-build-system/sbcl)
-    (inputs
-     (list
-      sbcl-alexandria
-      sbcl-calispel
-      sbcl-cl-containers
-      sbcl-cl-str
-      sbcl-closer-mop
-      sbcl-lparallel
-      sbcl-moptilities
-      sbcl-nclasses
-      sbcl-serapeum
-      sbcl-trivial-package-local-nicknames))
-    (native-inputs
-     (list sbcl-lisp-unit2))
-    (home-page "https://github.com/atlas-engineer/prompter")
-    (synopsis "Live-narrowing, fuzzy-matching, extensible prompt framework")
-    (description
-     "This prompter library is heavily inspired by Emacs' minibuffer and
+  (let ((commit "7890ed5d02e70aba01ceb964c6ee4f40776e7dc0")
+        (revision "0"))
+    (package
+      (name "sbcl-prompter")
+      (version (git-version "0.1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/atlas-engineer/prompter")
+               (commit commit)))
+         (file-name (git-file-name "cl-prompter" version))
+         (sha256
+          (base32
+           "0r15a6cagyp5x8aqx92ln2anni737h73bdshkvpzrac04ajss4md"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list
+        sbcl-alexandria
+        sbcl-calispel
+        sbcl-cl-containers
+        sbcl-cl-str
+        sbcl-closer-mop
+        sbcl-lparallel
+        sbcl-moptilities
+        sbcl-nclasses
+        sbcl-serapeum
+        sbcl-trivial-package-local-nicknames))
+      (native-inputs
+       (list sbcl-lisp-unit2))
+      (home-page "https://github.com/atlas-engineer/prompter")
+      (synopsis "Live-narrowing, fuzzy-matching, extensible prompt framework")
+      (description
+       "This prompter library is heavily inspired by Emacs' minibuffer and
 Helm (@url{https://emacs-helm.github.io/helm/}).  It only deals with the
 backend side of things, it does not handle any display.  Features include
 asynchronous suggestion computation, multiple sources, actions and resumable
 prompters.")
-    (license license:bsd-3)))
+      (license license:bsd-3))))
 
 (define-public cl-prompter
   (sbcl-package->cl-source-package sbcl-prompter))
