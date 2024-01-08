@@ -65,6 +65,7 @@
 ;;; Copyright © 2023 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
 ;;; Copyright © 2023 Evgeny Pisemsky <evgeny@pisemsky.com>
+;;; Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -8158,6 +8159,41 @@ compressed JSON header blocks.
                    ;; Convert to tuples for a more reliable check.
                    (("print \\(ver >= '3\\.8'\\)")
                     "print (tuple(map(int, ver.split('.'))) >= (3,8))")))))))))))
+
+(define-public nghttp3
+  (package
+    (name "nghttp3")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/ngtcp2/nghttp3/"
+                           "releases/download/v" version "/"
+                           "nghttp3-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1fzvadnwb03jlm180313gg5m4fg09qdcc67fwcfrv9zs22anaa55"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list pkg-config
+           ;; Required by tests.
+           cunit))
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "--enable-lib-only")))
+    (home-page "https://nghttp2.org/nghttp3/")
+    (synopsis "HTTP/3 protocol library")
+    (description
+     "nghttp3 is an implementation of RFC 9114 HTTP/3 mapping over QUIC and
+RFC 9204 QPACK in C.  It does not depend on any particular QUIC transport
+implementation.
+
+It implements extensions specified in RFC 9218 and RFC 9220.  It supports
+SETTINGS_H3_DATAGRAM from RFC 9297.
+
+It does not support server push.")
+    (license license:expat)))
 
 (define-public hpcguix-web
   (package
