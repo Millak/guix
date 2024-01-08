@@ -4001,9 +4001,6 @@ the wayland protocol, client side.")
         ("rust-once-cell" ,rust-once-cell-1)
         ("rust-smallvec" ,rust-smallvec-1)
         ("rust-wayland-sys" ,rust-wayland-sys-0.29))))
-    (inputs
-     (list rust-nix-0.24 rust-once-cell-1 rust-smallvec-1
-           rust-wayland-sys-0.29))
     (home-page "https://github.com/smithay/wayland-rs")
     (synopsis "Types and structures used by wayland-client and wayland-server")
     (description
