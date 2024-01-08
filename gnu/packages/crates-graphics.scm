@@ -4601,34 +4601,26 @@ the wayland protocol, server side.")
   (package
     (inherit rust-wayland-server-0.29)
     (name "rust-wayland-server")
-    (version "0.28.3")
+    (version "0.28.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayland-server" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "09jfdjfqhjfcpiz4csgh60ymfkmz1cl3jmxyzq9hzcp0kyyxix93"))))
+        (base32 "0f2lclv6x794a48m3anqgx7qzz5s5dvbsj3xahnmz5izk1bhq7qb"))))
     (arguments
      `(#:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-downcast-rs" ,rust-downcast-rs-1)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-nix" ,rust-nix-0.18)
+        ("rust-nix" ,rust-nix-0.20)
         ("rust-parking-lot" ,rust-parking-lot-0.11)
-        ("rust-scoped-tls" ,rust-scoped-tls-1))))
-    (inputs
-     (list rust-bitflags-1
-           rust-downcast-rs-1
-           rust-lazy-static-1
-           rust-libc-0.2
-           rust-nix-0.18
-           rust-parking-lot-0.11
-           rust-scoped-tls-1
-           rust-wayland-commons-0.28
-           rust-wayland-scanner-0.28
-           rust-wayland-sys-0.28))))
+        ("rust-scoped-tls" ,rust-scoped-tls-1)
+        ("rust-wayland-commons" ,rust-wayland-commons-0.28)
+        ("rust-wayland-scanner" ,rust-wayland-scanner-0.28)
+        ("rust-wayland-sys" ,rust-wayland-sys-0.28))))))
 
 (define-public rust-wayland-server-0.23
   (package
@@ -4655,8 +4647,7 @@ the wayland protocol, server side.")
         ("rust-nix" ,rust-nix-0.14)
         ("rust-wayland-commons" ,rust-wayland-commons-0.23)
         ("rust-wayland-sys" ,rust-wayland-sys-0.23)
-        ("rust-wayland-scanner" ,rust-wayland-scanner-0.23))))
-    (inputs `())))
+        ("rust-wayland-scanner" ,rust-wayland-scanner-0.23))))))
 
 (define-public rust-wayland-server-0.21
   (package
