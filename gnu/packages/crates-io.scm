@@ -5591,6 +5591,19 @@ and thereby provides portable \"best effort\" constant-time operation and
 embedded-friendly no_std support.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-base16ct-0.1
+  (package
+    (inherit rust-base16ct-0.2)
+    (name "rust-base16ct")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "base16ct" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1klccxr7igf73wpi0x3asjd8n0xjg0v6a7vxgvfk5ybvgh1hd6il"))))))
+
 (define-public rust-base32-0.4
   (package
     (name "rust-base32")
