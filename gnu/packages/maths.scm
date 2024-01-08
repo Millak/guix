@@ -5,7 +5,7 @@
 ;;; Copyright © 2014-2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2014 Mathieu Lirzin <mathieu.lirzin@openmailbox.org>
-;;; Copyright © 2015–2023 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015–2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
@@ -3636,14 +3636,16 @@ bindings to almost all functions of PETSc.")
 (define-public python-kiwisolver
   (package
     (name "python-kiwisolver")
-    (version "1.0.1")
+    (version "1.4.5")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "kiwisolver" version))
               (sha256
                (base32
-                "0y22ci86znwwwfhbmvbgdfnbi6lv5gv2xkdlxvjw7lml43ayafyf"))))
-    (build-system python-build-system)
+                "1v6nc0z9dg4am0bibji9pijci9f15z68mwrlv91a28pvawx5czp5"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-typing-extensions))
+    (native-inputs (list python-cppy python-pytest python-setuptools-scm))
     (home-page "https://github.com/nucleic/kiwi")
     (synopsis "Fast implementation of the Cassowary constraint solver")
     (description
