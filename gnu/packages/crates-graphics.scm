@@ -4258,11 +4258,7 @@ extensions.")
         ("rust-wayland-client" ,rust-wayland-client-0.29)
         ("rust-wayland-commons" ,rust-wayland-commons-0.29)
         ("rust-wayland-scanner" ,rust-wayland-scanner-0.29)
-        ("rust-wayland-server" ,rust-wayland-server-0.29))))
-    (inputs
-     (list rust-bitflags-1 rust-wayland-client-0.29
-           rust-wayland-commons-0.29 rust-wayland-scanner-0.29
-           rust-wayland-server-0.29))))
+        ("rust-wayland-server" ,rust-wayland-server-0.29))))))
 
 (define-public rust-wayland-protocols-0.28
   (package
