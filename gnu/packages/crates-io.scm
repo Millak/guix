@@ -11093,8 +11093,37 @@ chain, the first matching branch is the item that gets emitted.")
     (description "DEPRECATED. Use crossbeam-channel instead.")
     (license (list license:unlicense license:expat))))
 
+(define-public rust-chacha20-0.9
+  (package
+    (name "rust-chacha20")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "chacha20" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0678wipx6kghp71hpzhl2qvx80q7caz3vm8vsvd07b1fpms3yqf3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-cipher" ,rust-cipher-0.4)
+                       ("rust-cpufeatures" ,rust-cpufeatures-0.2))
+       #:cargo-development-inputs (("rust-cipher" ,rust-cipher-0.4)
+                                   ("rust-hex-literal" ,rust-hex-literal-0.3))))
+    (home-page "https://github.com/RustCrypto/stream-ciphers")
+    (synopsis "ChaCha20 stream cipher implemented in pure Rust")
+    (description
+     "The ChaCha20 stream cipher (RFC 8439) implemented in pure Rust using traits
+from the RustCrypto @code{cipher} crate, with optional architecture-specific
+hardware acceleration (AVX2, SSE2).  Additionally provides the ChaCha8, ChaCha12,
+XChaCha20, XChaCha12 and XChaCha8 stream ciphers, and also optional
+@code{rand_core-compatible} RNGs based on those ciphers.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-chacha20-0.8
   (package
+    (inherit rust-chacha20-0.9)
     (name "rust-chacha20")
     (version "0.8.1")
     (source
@@ -11109,7 +11138,6 @@ chain, the first matching branch is the item that gets emitted.")
         '(begin
            (substitute* "Cargo.toml"
              (("version = \">=1, <1.5\"") "version = \"^1\""))))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
@@ -11119,16 +11147,7 @@ chain, the first matching branch is the item that gets emitted.")
         ("rust-zeroize" ,rust-zeroize-1))
        #:cargo-development-inputs
        (("rust-cipher" ,rust-cipher-0.3)
-        ("rust-hex-literal" ,rust-hex-literal-0.2))))
-    (home-page "https://github.com/RustCrypto/stream-ciphers")
-    (synopsis "ChaCha20 stream cipher implemented in pure Rust")
-    (description
-     "The ChaCha20 stream cipher (RFC 8439) implemented in pure Rust using traits
-from the RustCrypto @code{cipher} crate, with optional architecture-specific
-hardware acceleration (AVX2, SSE2).  Additionally provides the ChaCha8, ChaCha12,
-XChaCha20, XChaCha12 and XChaCha8 stream ciphers, and also optional
-@code{rand_core-compatible} RNGs based on those ciphers.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-hex-literal" ,rust-hex-literal-0.2))))))
 
 (define-public rust-chacha20poly1305-0.9
   (package
