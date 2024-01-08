@@ -446,7 +446,7 @@ safety and thread safety guarantees.")
            (lambda _
              (substitute* (find-files "." "^linker.rs$")
                (("linker.env\\(\"LC_ALL\", \"C\"\\);")
-                "linker.env(\"LC_ALL\", \"en_US.UTF-8\");"))))
+                "linker.env(\"LC_ALL\", \"C.UTF-8\");"))))
          (add-after 'unpack 'add-cc-shim-to-path
            (lambda _
              (mkdir-p "/tmp/bin")
