@@ -80995,14 +80995,18 @@ clear display in the output.")
 (define-public rust-universal-hash-0.5
   (package
     (name "rust-universal-hash")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "universal-hash" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1dfqh2jnf4pz2cr9v4adpyxinz658vadlbwsjgigf6cs7jvn0cbx"))))
+        (base32 "1sh79x677zkncasa95wz05b36134822w6qxmi1ck05fwi33f47gw"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+           (substitute* "Cargo.toml"
+             (("=2\\.4\\.1") "^2.4.1"))))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
