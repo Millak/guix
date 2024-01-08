@@ -36931,8 +36931,36 @@ library for Spotify.")
 This package contains the protobuf logic.")
     (license license:expat)))
 
+(define-public rust-libsqlite3-sys-0.27
+  (package
+    (name "rust-libsqlite3-sys")
+    (version "0.27.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "libsqlite3-sys" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05pp60ncrmyjlxxjj187808jkvpxm06w5lvvdwwvxd2qrmnj4kng"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bindgen" ,rust-bindgen-0.69)
+                       ("rust-cc" ,rust-cc-1)
+                       ("rust-openssl-sys" ,rust-openssl-sys-0.9)
+                       ("rust-pkg-config" ,rust-pkg-config-0.3)
+                       ("rust-prettyplease" ,rust-prettyplease-0.2)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-vcpkg" ,rust-vcpkg-0.2))))
+    (inputs (list sqlite))
+    (home-page "https://github.com/rusqlite/rusqlite")
+    (synopsis "Native bindings to the libsqlite3 library")
+    (description "Native bindings to the libsqlite3 library.")
+    (license license:expat)))
+
 (define-public rust-libsqlite3-sys-0.26
   (package
+    (inherit rust-libsqlite3-sys-0.27)
     (name "rust-libsqlite3-sys")
     (version "0.26.0")
     (source (origin
@@ -36942,20 +36970,13 @@ This package contains the protobuf logic.")
               (sha256
                (base32
                 "09j3v5nhgvjdyskgwajhg9g6v3b2ij0lxiz8qqav2cxic7zjxhmg"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bindgen" ,rust-bindgen-0.64)
         ("rust-cc" ,rust-cc-1)
         ("rust-openssl-sys" ,rust-openssl-sys-0.9)
         ("rust-pkg-config" ,rust-pkg-config-0.3)
-        ("rust-vcpkg" ,rust-vcpkg-0.2))))
-    (inputs
-     (list sqlite))
-    (home-page "https://github.com/rusqlite/rusqlite")
-    (synopsis "Native bindings to the libsqlite3 library")
-    (description "Native bindings to the libsqlite3 library")
-    (license license:expat)))
+        ("rust-vcpkg" ,rust-vcpkg-0.2))))))
 
 (define-public rust-libsqlite3-sys-0.23
   (package
