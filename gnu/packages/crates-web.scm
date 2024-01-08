@@ -7,6 +7,7 @@
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;; Copyright © 2023 VÖRÖSKŐI András <voroskoi@gmail.com>
+;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3650,6 +3651,21 @@ Verification.")
     (description "This package provides Mozilla's CA root certificates for use
 with webpki.")
     (license license:mpl2.0)))
+
+(define-public rust-webpki-roots-0.24
+  (package
+    (inherit rust-webpki-roots-0.25)
+    (name "rust-webpki-roots")
+    (version "0.24.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "webpki-roots" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "120q85pvzpckvvrg085a5jhh91fby94pgiv9y1san7lxbmnm94dj"))))
+    (arguments
+     `(#:cargo-inputs (("rust-rustls-webpki" ,rust-rustls-webpki-0.101))))))
 
 (define-public rust-webpki-roots-0.23
   (package
