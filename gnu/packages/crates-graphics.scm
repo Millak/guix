@@ -4166,11 +4166,8 @@ properly display animated cursors.")
      `(#:cargo-inputs
        (("rust-wayland-client" ,rust-wayland-client-0.29)
         ("rust-wayland-sys" ,rust-wayland-sys-0.29))))
-    (inputs
-     (list rust-wayland-client-0.29 rust-wayland-sys-0.29))
-    ;; For the PKG_CONFIG_PATH environment variable.
-    (native-inputs
-     (list pkg-config))
+    (native-inputs (list pkg-config))
+    (inputs (list wayland))
     (home-page "https://github.com/smithay/wayland-rs")
     (synopsis "Bindings to libwayland-egl")
     (description
