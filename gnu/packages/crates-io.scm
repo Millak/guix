@@ -20657,8 +20657,31 @@ ciphers implementations.")
 intelligently transliterating them.  It supports Emoji and Chinese.")
     (license license:bsd-3)))
 
+(define-public rust-devise-0.4
+  (package
+    (name "rust-devise")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "devise" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1y45iag4hyvspkdsf6d856hf0ihf9vjnaga3c7y6c72l7zywxsnn"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-devise-codegen" ,rust-devise-codegen-0.4)
+                       ("rust-devise-core" ,rust-devise-core-0.4))))
+    (home-page "https://github.com/SergioBenitez/Devise")
+    (synopsis "Library for devising derives and other procedural macros")
+    (description
+     "This package provides a library for devising derives and other
+procedural macros.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-devise-0.2
   (package
+    (inherit rust-devise-0.4)
     (name "rust-devise")
     (version "0.2.1")
     (source
@@ -20668,12 +20691,11 @@ intelligently transliterating them.  It supports Emoji and Chinese.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "09p52f54givb0g9l7clj11z755vldk8758y2lwm5mp3sa156qwfx"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-devise-codegen" ,rust-devise-codegen-0.2)
-        ("rust-devise-core" ,rust-devise-core-0.2))))
+        ("rust-devise-core" ,rust-devise-core-0.2))))))
     (home-page "https://github.com/SergioBenitez/Devise")
     (synopsis "Library for devising derives and other procedural macros")
     (description
