@@ -84574,8 +84574,30 @@ Read/Write streams as well as low-level in-memory encoding and decoding.")
        (("rust-clippy" ,rust-clippy-0.0)
         ("rust-linked-hash-map" ,rust-linked-hash-map-0.3))))))
 
+(define-public rust-yansi-1
+  (package
+    (name "rust-yansi")
+    (version "1.0.0-rc.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "yansi" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xr3n41j5v00scfkac2d6vhkxiq9nz3l5j6vw8f3g3bqixdjjrqk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-is-terminal" ,rust-is-terminal-0.4))))
+    (home-page "https://github.com/SergioBenitez/yansi")
+    (synopsis "Simple ANSI terminal color painting library")
+    (description
+     "This package provides a dead simple ANSI terminal color painting
+library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-yansi-0.5
   (package
+    (inherit rust-yansi-1)
     (name "rust-yansi")
     (version "0.5.1")
     (source
@@ -84585,15 +84607,8 @@ Read/Write streams as well as low-level in-memory encoding and decoding.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1v4qljgzh73knr7291cgwrf56zrvhmpn837n5n5pypzq1kciq109"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:cargo-development-inputs (("rust-serial-test" ,rust-serial-test-0.6))))
-    (home-page "https://github.com/SergioBenitez/yansi")
-    (synopsis "Simple ANSI terminal color painting library")
-    (description
-     "This package provides a dead simple ANSI terminal color painting
-library.")
-    (license (list license:expat license:asl2.0))))
+     `(#:cargo-development-inputs (("rust-serial-test" ,rust-serial-test-0.6))))))
 
 (define-public rust-yansi-term-0.1
   (package
