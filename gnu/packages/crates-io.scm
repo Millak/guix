@@ -45622,9 +45622,24 @@ OID objects.  These objects are intended for use when manipulating ASN.1
 grammars and BER/DER encodings, for example.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-oid-registry-0.2
+(define-public rust-oid-registry-0.4
   (package
     (inherit rust-oid-registry-0.6)
+    (name "rust-oid-registry")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "oid-registry" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0akbah3j8231ayrp2l1y5d9zmvbvqcsj0sa6s6dz6h85z8bhgqiq"))))
+    (arguments
+     `(#:cargo-inputs (("rust-asn1-rs" ,rust-asn1-rs-0.3))))))
+
+(define-public rust-oid-registry-0.2
+  (package
+    (inherit rust-oid-registry-0.4)
     (name "rust-oid-registry")
     (version "0.2.0")
     (source (origin
