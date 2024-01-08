@@ -80551,6 +80551,29 @@ implementation is incomplete.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-ubyte-0.10
+  (package
+    (name "rust-ubyte")
+    (version "0.10.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ubyte" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1spj3k9sx6xvfn7am9vm1b463hsr79nyvj8asi2grqhyrvvdw87p"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-serde-test" ,rust-serde-test-1))))
+    (home-page "https://github.com/SergioBenitez/ubyte")
+    (synopsis "no_std library for byte units")
+    (description
+     "This package provides a simple, complete, const-everything, saturating,
+human-friendly, no_std library for byte units.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ucd-parse-0.1
   (package
     (name "rust-ucd-parse")
