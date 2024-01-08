@@ -62862,8 +62862,7 @@ Pwrite traits from the scroll crate.")
        (sha256
         (base32 "0nkl03nqfczz0784sg3bf2j08qq350yh9063f4m0dpgawvwn33yb"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-ring" ,rust-ring-0.13)
         ("rust-untrusted" ,rust-untrusted-0.6))))))
 
