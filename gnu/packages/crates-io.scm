@@ -58714,6 +58714,24 @@ Usage of the @dfn{Digital Signature Algorithm} (DSA) and @dfn{Elliptic Curve
 Digital Signature Algorithm} (ECDSA).")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-rfc6979-0.3
+  (package
+    (inherit rust-rfc6979-0.4)
+    (name "rust-rfc6979")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "rfc6979" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1fzsp705b5lhwd2r9il9grc3lj6rm3b2r89vh0xv181gy5xg2hvp"))))
+    (arguments
+     `(#:cargo-inputs (("rust-crypto-bigint" ,rust-crypto-bigint-0.4)
+                       ("rust-hmac" ,rust-hmac-0.12)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-sha2" ,rust-sha2-0.10))))))
+
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 (define rust-ring-0.17-sources
   (let* ((version "0.17.7")
