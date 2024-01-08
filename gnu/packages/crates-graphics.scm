@@ -4777,20 +4777,21 @@ crate @code{rust-wayland-client} for usable bindings.")
   (package
     (inherit rust-wayland-sys-0.29)
     (name "rust-wayland-sys")
-    (version "0.28.3")
+    (version "0.28.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayland-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "16f03jsy7q6p2wpaazc4w4kycyyk0fz7lacpdbcizl9m1i7874v7"))))
+        (base32 "1f7yy3c6h270xd4wk2nsrr9433gmkg29d5rfxndvzznpmslzqhfq"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-dlib" ,rust-dlib-0.4)
+       (("rust-dlib" ,rust-dlib-0.5)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-libc" ,rust-libc-0.2)
+        ("rust-memoffset" ,rust-memoffset-0.6)
         ("rust-pkg-config" ,rust-pkg-config-0.3))
        #:phases
        (modify-phases %standard-phases
@@ -4799,13 +4800,8 @@ crate @code{rust-wayland-client} for usable bindings.")
              (let ((libwayland (assoc-ref inputs "wayland")))
                (substitute* (find-files "src" "\\.rs$")
                  (("libwayland.*\\.so" shared-lib)
-                  (string-append libwayland "/lib/" shared-lib)))
-               #t))))))
-    (inputs
-     (list rust-dlib-0.4 rust-lazy-static-1 rust-libc-0.2
-           rust-pkg-config-0.3))
-    (propagated-inputs
-     (list wayland))))
+                  (string-append libwayland "/lib/" shared-lib)))))))))
+    (inputs (list wayland))))
 
 (define-public rust-wayland-sys-0.23
   (package
@@ -4826,9 +4822,7 @@ crate @code{rust-wayland-client} for usable bindings.")
        #:cargo-inputs
        (("rust-dlib" ,rust-dlib-0.4)
         ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-libc" ,rust-libc-0.2))))
-    (inputs `())
-    (propagated-inputs `())))
+        ("rust-libc" ,rust-libc-0.2))))))
 
 (define-public rust-wayland-sys-0.21
   (package
