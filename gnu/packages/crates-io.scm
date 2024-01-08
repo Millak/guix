@@ -67319,14 +67319,14 @@ for additional details.")
   (package
     (inherit rust-signature-derive-2)
     (name "rust-signature-derive")
-    (version "1.0.0-pre.4")
+    (version "1.0.0-pre.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "signature_derive" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0p1x0wv6grrgdn226m9rsqpcnpfwkpji7rjpalkbk1ynv0xpvf57"))))
+        (base32 "03wj342zvljknqwg3qbc9acrcsrzhdp1d2d6pfrh4p1b087k3rln"))))
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
