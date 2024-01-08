@@ -3480,6 +3480,36 @@ library for Rust.")
     (description "Parser/encoder for ASN.1 BER/DER data")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-asn1-rs-0.3
+  (package
+    (inherit rust-asn1-rs-0.5)
+    (name "rust-asn1-rs")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "asn1-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0czsk1nd4dx2k83f7jzkn8klx05wbmblkx1jh51i4c170akhbzrh"))))
+    (arguments
+     `(#:cargo-inputs (("rust-asn1-rs-derive" ,rust-asn1-rs-derive-0.1)
+                       ("rust-asn1-rs-impl" ,rust-asn1-rs-impl-0.1)
+                       ("rust-bitvec" ,rust-bitvec-1)
+                       ("rust-cookie-factory" ,rust-cookie-factory-0.3)
+                       ("rust-displaydoc" ,rust-displaydoc-0.2)
+                       ("rust-nom" ,rust-nom-7)
+                       ("rust-num-bigint" ,rust-num-bigint-0.4)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-rusticata-macros" ,rust-rusticata-macros-4)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-time" ,rust-time-0.3))
+       #:cargo-development-inputs (("rust-colored" ,rust-colored-2)
+                                   ("rust-hex-literal" ,rust-hex-literal-0.3)
+                                   ("rust-oid-registry" ,rust-oid-registry-0.3)
+                                   ("rust-pem" ,rust-pem-1)
+                                   ("rust-trybuild" ,rust-trybuild-1))))))
+
 (define-public rust-asn1-rs-derive-0.4
   (package
     (name "rust-asn1-rs-derive")
