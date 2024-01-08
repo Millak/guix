@@ -31175,6 +31175,25 @@ compile time.")
      `(#:cargo-inputs
        (("rust-proc-macro-hack" ,rust-proc-macro-hack-0.4))))))
 
+(define-public rust-hexf-parse-0.2
+  (package
+    (name "rust-hexf-parse")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hexf-parse" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1pr3a3sk66ddxdyxdxac7q6qaqjcn28v0njy22ghdpfn78l8d9nz"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/lifthrasiir/hexf")
+    (synopsis "Hexadecimal float support for Rust")
+    (description "This library provides parsing functionality for hexadecimal
+float literals.  Two functions @code{parse_hexf32} and @code{parse_hexf64} are
+provided for each type.")
+    (license license:cc0)))
+
 (define-public rust-hkdf-0.12
   (package
     (name "rust-hkdf")
