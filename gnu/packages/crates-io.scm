@@ -83174,8 +83174,42 @@ WebAssembly binary files.")
 modifications.")
     (license license:asl2.0)))
 
+(define-public rust-wl-clipboard-rs-0.7
+  (package
+    (name "rust-wl-clipboard-rs")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "wl-clipboard-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1n8sg981h3d08hnnlrsgs81w2qz3n8a5ml0jcsgnapdpzcyk06lq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; Failed to create a server socket.
+       #:cargo-inputs (("rust-derive-new" ,rust-derive-new-0.5)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-nix" ,rust-nix-0.24)
+                       ("rust-os-pipe" ,rust-os-pipe-1)
+                       ("rust-tempfile" ,rust-tempfile-3)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-tree-magic-mini" ,rust-tree-magic-mini-3)
+                       ("rust-wayland-client" ,rust-wayland-client-0.29)
+                       ("rust-wayland-protocols" ,rust-wayland-protocols-0.29))
+       #:cargo-development-inputs
+       (("rust-wayland-protocols" ,rust-wayland-protocols-0.29)
+        ("rust-wayland-server" ,rust-wayland-server-0.29))))
+    (home-page "https://github.com/YaLTeR/wl-clipboard-rs")
+    (synopsis "Access to the Wayland clipboard")
+    (description "This package provides access to the Wayland clipboard
+for terminal and other window-less applications.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-wl-clipboard-rs-0.4
   (package
+    (inherit rust-wl-clipboard-rs-0.7)
     (name "rust-wl-clipboard-rs")
     (version "0.4.1")
     (source
@@ -83186,7 +83220,6 @@ modifications.")
         (patches (search-patches "rust-wl-clipboard-rs-newer-wl.patch"))
         (sha256
           (base32 "1252cm67pkrr6ik5ys2cdyfr2zzw6ds7v351i1cmyi94yiv01l13"))))
-    (build-system cargo-build-system)
     (arguments
       `(#:skip-build? #t
         #:cargo-inputs
@@ -83205,12 +83238,7 @@ modifications.")
          ("rust-tree-magic" ,rust-tree-magic-0.2)
          ("rust-wayland-client" ,rust-wayland-client-0.28)
          ("rust-wayland-commons" ,rust-wayland-commons-0.28)
-         ("rust-wayland-protocols" ,rust-wayland-protocols-0.28))))
-    (home-page "https://github.com/YaLTeR/wl-clipboard-rs")
-    (synopsis "Access to the Wayland clipboard")
-    (description "This package provides access to the Wayland clipboard
-for terminal and other window-less applications.")
-    (license (list license:expat license:asl2.0))))
+         ("rust-wayland-protocols" ,rust-wayland-protocols-0.28))))))
 
 (define-public rust-web-sys-0.3
   (package
