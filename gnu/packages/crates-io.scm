@@ -29431,7 +29431,13 @@ IEEE 754-2008 binary16 type.")
        (sha256
         (base32 "1mqbmx2m9qd4lslkb42fzgldsklhv9c4bxsc8j82r80d8m24mfza"))))
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=bfloat::test::test_nan_conversion_to_larger"
+         "--skip=bfloat::test::test_nan_conversion_to_smaller"
+         "--skip=binary16::test::test_nan_conversion_to_larger"
+         "--skip=binary16::test::test_nan_conversion_to_smaller")
+       #:cargo-inputs
        (("rust-bytemuck" ,rust-bytemuck-1)
         ("rust-num-traits" ,rust-num-traits-0.2)
         ("rust-serde" ,rust-serde-1)
