@@ -72418,6 +72418,28 @@ a syntax tree of Rust source code.")
         ("rust-tempdir" ,rust-tempdir-0.3)
         ("rust-walkdir" ,rust-walkdir-1))))))
 
+(define-public rust-syn-derive-0.1
+  (package
+    (name "rust-syn-derive")
+    (version "0.1.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "syn_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0yxydi22apcisjg0hff6dfm5x8hd6cqicav56sblx67z0af1ha8k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro-error" ,rust-proc-macro-error-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/Kyuuhachi/syn_derive")
+    (synopsis "Derive macros for `syn::Parse` and `quote::ToTokens`")
+    (description "Derive macros for `syn::Parse` and `quote::@code{ToTokens`}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-syn-test-suite-0.0.0
   (package
     (name "rust-syn-test-suite")
