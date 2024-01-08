@@ -3901,33 +3901,28 @@ the wayland protocol, client side.")
   (package
     (inherit rust-wayland-client-0.29)
     (name "rust-wayland-client")
-    (version "0.28.3")
+    (version "0.28.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayland-client" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1mxnflzv9s3qpcp0z7kqvrzki5bknfar9n9yky06f8ivs00vxgdx"))))
+        (base32 "0m831sj4w5k0j9167f2dy3815k73g153j09271cz20p5a0ik7az3"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f      ; use of undeclared crate or module `wayland_protocols`
+       #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-downcast-rs" ,rust-downcast-rs-1)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-nix" ,rust-nix-0.18)
-        ("rust-scoped-tls" ,rust-scoped-tls-1))
+        ("rust-nix" ,rust-nix-0.20)
+        ("rust-scoped-tls" ,rust-scoped-tls-1)
+        ("rust-wayland-commons" ,rust-wayland-commons-0.28)
+        ("rust-wayland-scanner" ,rust-wayland-scanner-0.28)
+        ("rust-wayland-sys" ,rust-wayland-sys-0.28))
        #:cargo-development-inputs
-       (("rust-tempfile" ,rust-tempfile-3))))
-    (inputs
-     (list rust-bitflags-1
-           rust-downcast-rs-1
-           rust-libc-0.2
-           rust-nix-0.18
-           rust-scoped-tls-1
-           rust-wayland-commons-0.28
-           rust-wayland-scanner-0.28
-           rust-wayland-sys-0.28))))
+       (("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-wayland-client-0.23
   (package
@@ -3957,8 +3952,7 @@ the wayland protocol, client side.")
         ("rust-wayland-scanner" ,rust-wayland-scanner-0.23))
        #:cargo-development-inputs
        (("rust-byteorder" ,rust-byteorder-1)
-        ("rust-tempfile" ,rust-tempfile-3))))
-    (inputs `())))
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-wayland-client-0.21
   (package
