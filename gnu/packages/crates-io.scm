@@ -52480,6 +52480,31 @@ in terms of the upstream unstable API.")
 macro use case.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-proc-macro2-diagnostics-0.10
+  (package
+    (name "rust-proc-macro2-diagnostics")
+    (version "0.10.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "proc-macro2-diagnostics" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1j48ipc80pykvhx6yhndfa774s58ax1h6sm6mlhf09ls76f6l1mg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; cannot determine resolution for the macro `diagnostic_item`
+       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-version-check" ,rust-version-check-0.9)
+                       ("rust-yansi" ,rust-yansi-1))
+       #:cargo-development-inputs (("rust-trybuild" ,rust-trybuild-1))))
+    (home-page "https://github.com/SergioBenitez/proc-macro2-diagnostics")
+    (synopsis "Diagnostics for proc-macro2")
+    (description "Diagnostics for proc-macro2.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-proc-mounts-0.3
   (package
     (name "rust-proc-mounts")
