@@ -20737,6 +20737,26 @@ procedural macros.")
        #:cargo-inputs
        (("rust-devise-core" ,rust-devise-core-0.2)
         ("rust-quote" ,rust-quote-0.6))))))
+
+(define-public rust-devise-core-0.4
+  (package
+    (name "rust-devise-core")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "devise_core" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0sp5idq0idng9i5kwjd8slvc724s97r28arrhyqq1jpx1ax0vd9m"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-2)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-proc-macro2-diagnostics" ,rust-proc-macro2-diagnostics-0.10)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-2))))
     (home-page "https://github.com/SergioBenitez/Devise")
     (synopsis "Library for devising derives and other procedural macros")
     (description
@@ -20746,6 +20766,7 @@ procedural macros.")
 
 (define-public rust-devise-core-0.2
   (package
+    (inherit rust-devise-core-0.4)
     (name "rust-devise-core")
     (version "0.2.1")
     (source
@@ -20755,20 +20776,13 @@ procedural macros.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0wr3jdzzibpafz73hcca83wnzdgjinvm7axmxnyfkbasbnfkw1fi"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-proc-macro2" ,rust-proc-macro2-0.4)
         ("rust-quote" ,rust-quote-0.6)
-        ("rust-syn" ,rust-syn-0.15))))
-    (home-page "https://github.com/SergioBenitez/Devise")
-    (synopsis "Library for devising derives and other procedural macros")
-    (description
-     "This package provides a library for devising derives and other
-procedural macros.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-syn" ,rust-syn-0.15))))))
 
 (define-public rust-dhcp4r-0.2
   (package
