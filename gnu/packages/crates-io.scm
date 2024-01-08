@@ -32,7 +32,7 @@
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Paul Alesius <paul@unnservice.com>
 ;;; Copyright © 2023 Arnav Andrew Jose <arnav.jose@gmail.com>
-;;; Copyright © 2023 Wilko Meyer <w@wmeyer.eu>
+;;; Copyright © 2023, 2024 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2023, 2024 Jaeme Sifat <jaeme@runbox.com>
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;; Copyright © 2023 Sergio Pastor Pérez <sergio.pastorperez@outlook.es>
@@ -5983,6 +5983,26 @@ and no more (caveat: black_box is still missing!).")
          ("rust-serde" ,rust-serde-1))
         #:cargo-development-inputs
         (("rust-serde-json" ,rust-serde-json-1))))))
+
+(define-public rust-binascii-0.1
+  (package
+    (name "rust-binascii")
+    (version "0.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "binascii" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wnaglgl72pn5ilv61q6y34w76gbg7crb8ifqk6lsxnq2gajjg9q"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/naim94a/binascii-rs")
+    (synopsis
+     "No-std binascii operations including base64, base32 and base16 (hex)")
+    (description
+     "This package contains useful no-std binascii operations including base64,
+base32 and base16 (hex)")
+    (license license:expat)))
 
 (define-public rust-bincode-1
   (package
