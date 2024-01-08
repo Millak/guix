@@ -7965,8 +7965,37 @@ comes with a strict specification.")
        #:cargo-development-inputs
        (("rust-bytes" ,rust-bytes-1))))))
 
+(define-public rust-borsh-derive-1
+  (package
+    (name "rust-borsh-derive")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "borsh-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1q0h8y7xpilasaqc3s7drjh3qzxk7k83wc5ns9x7gpf4kiq1hjdz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Tests aren't setup correctly.
+       #:cargo-inputs (("rust-once-cell" ,rust-once-cell-1)
+                       ("rust-proc-macro-crate" ,rust-proc-macro-crate-2)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2)
+                       ("rust-syn-derive" ,rust-syn-derive-0.1))
+       #:cargo-development-inputs (("rust-insta" ,rust-insta-1)
+                                   ("rust-prettyplease" ,rust-prettyplease-0.2)
+                                   ("rust-syn" ,rust-syn-2))))
+    (home-page "https://borsh.io")
+    (synopsis "Derive proc-macros for @code{borsh}")
+    (description "This crate implements derive proc-macros for @code{borsh}.")
+    (license license:asl2.0)))
+
 (define-public rust-borsh-derive-0.10
   (package
+    (inherit rust-borsh-derive-1)
     (name "rust-borsh-derive")
     (version "0.10.3")
     (source
@@ -7976,18 +8005,13 @@ comes with a strict specification.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1xslbx3qj531aq8ny1bkr45ibjmpsx0szsfc57rm33akj4v62m07"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-borsh-derive-internal" ,rust-borsh-derive-internal-0.10)
         ("rust-borsh-schema-derive-internal" ,rust-borsh-schema-derive-internal-0.10)
         ("rust-proc-macro-crate" ,rust-proc-macro-crate-0.1)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://borsh.io")
-    (synopsis "Derive proc-macros for @code{borsh}")
-    (description "This crate implements derive proc-macros for @code{borsh}.")
-    (license license:asl2.0)))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-borsh-derive-internal-0.10
   (package
