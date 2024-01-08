@@ -38645,6 +38645,30 @@ lexer.")
      "This package provides a collection of great and ubiqutitous macros.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-mac-address-1
+  (package
+    (name "rust-mac-address")
+    (version "1.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mac_address" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0miqmn1768vxr5f3gbsnr1dlnzc5ilrrj0n07fziblwyy6afwqs8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-nix" ,rust-nix-0.23)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs (("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-serde-test" ,rust-serde-test-1))))
+    (home-page "https://github.com/rep-nop/mac_address")
+    (synopsis "Cross-platform retrieval of a network interface MAC address")
+    (description
+     "Cross-platform retrieval of a network interface MAC address.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-macrotest-1
   (package
     (name "rust-macrotest")
