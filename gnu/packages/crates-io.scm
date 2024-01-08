@@ -9756,6 +9756,30 @@ CachePadded to ensure updating one piece of data doesn't invalidate other
 cached data.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-cachedir-0.3
+  (package
+    (name "rust-cachedir")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cachedir" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0wyqx30crm2qsq4ny57hhljyq6iw6j4qfg7fbfiqznvpf29z60s7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/jstasiak/cachedir")
+    (synopsis "Interact with cache directories and @file{CACHEDIR.TAG} files")
+    (description
+     "This package provides a library to help interacting with cache
+directories and @file{CACHEDIR.TAG} files as defined by the Cache Directory
+Tagging Specification.  This library comes with functionality to, among
+others, add a tag, ensure/check a tag exists and get the state of a tag.")
+    (license license:expat)))
+
 (define-public rust-calamine-0.18
   (package
     (name "rust-calamine")
