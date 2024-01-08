@@ -245,14 +245,14 @@ which can be read by any architecture.")
 (define-public xorgproto
   (package
     (name "xorgproto")
-    (version "2022.2")
+    (version "2023.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://xorg/individual/proto"
                                   "/xorgproto-" version ".tar.xz"))
               (sha256
                (base32
-                "17kbq1x68jl9mz69ays5c0w72lpkqi937raxk0im7y88pvrdn4sx"))))
+                "0b4c27aq25w1fccks49p020avf9jzh75kaq5qwnww51bp1yvq7xn"))))
     (build-system gnu-build-system)
     (propagated-inputs
      ;; To get util-macros in (almost?) all package inputs.
@@ -5250,7 +5250,7 @@ EGLStream families of extensions.")
 (define-public xorg-server-xwayland
   (package
     (name "xorg-server-xwayland")
-    (version "21.1.3")
+    (version "23.2.3")
     (source
      (origin
        (method url-fetch)
@@ -5258,7 +5258,7 @@ EGLStream families of extensions.")
                            "/xserver/xwayland-" version ".tar.xz"))
        (sha256
         (base32
-         "18pqvg76grbsyxa3mm3j06i1l8cwb28nbn2gcnqpsk7x75zpbhpb"))))
+         "00p30yyikh7h9xsqgir66xb06pspgjlibv1mi0n42irc4fkrm7gb"))))
     (inputs (list font-dejavu
                   dbus
                   egl-wayland
@@ -5268,6 +5268,7 @@ EGLStream families of extensions.")
                   libepoxy
                   libgcrypt
                   libtirpc
+                  libxcvt
                   libxfont2
                   libxkbfile
                   pixman
@@ -5283,6 +5284,7 @@ EGLStream families of extensions.")
                                  wayland
                                  wayland-protocols)
                            '())))
+    (properties '((upstream-name . "xwayland")))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags

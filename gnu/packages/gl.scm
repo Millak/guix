@@ -294,7 +294,7 @@ also known as DXTn or DXTC) for Mesa.")
 (define-public mesa
   (package
     (name "mesa")
-    (version "23.2.1")
+    (version "23.3.2")
     (source
       (origin
         (method url-fetch)
@@ -304,7 +304,7 @@ also known as DXTn or DXTC) for Mesa.")
                                   "mesa-" version ".tar.xz")))
         (sha256
          (base32
-          "1k61pgw0vcjrlb4299q98cy7iqmk2r7jmb5ika91z01dzhb0dpk4"))))
+          "1p4swrbmz3kb1805kdj973hf8virgmix4m9qprmcb2bgl4gviz1w"))))
     (build-system meson-build-system)
     (propagated-inputs
      ;; The following are in the Requires.private field of gl.pc.
@@ -351,16 +351,16 @@ also known as DXTn or DXTC) for Mesa.")
              ((target-aarch64?)
               ;; TODO: Fix svga driver for non-Intel architectures.
               '("-Dgallium-drivers=etnaviv,freedreno,kmsro,lima,nouveau,\
-panfrost,r300,r600,swrast,tegra,v3d,vc4,virgl"))
+panfrost,r300,r600,swrast,tegra,v3d,vc4,virgl,zink"))
              ((target-arm32?)
               ;; Freedreno FTBFS when built on a 64-bit machine.
               '("-Dgallium-drivers=etnaviv,kmsro,lima,nouveau,panfrost,\
-r300,r600,swrast,tegra,v3d,vc4,virgl"))
+r300,r600,swrast,tegra,v3d,vc4,virgl,zink"))
              ((or (target-ppc64le?) (target-ppc32?) (target-riscv64?))
-              '("-Dgallium-drivers=nouveau,r300,r600,radeonsi,swrast,virgl"))
+              '("-Dgallium-drivers=nouveau,r300,r600,radeonsi,swrast,virgl,zink"))
              (else
               '("-Dgallium-drivers=crocus,iris,nouveau,r300,r600,radeonsi,\
-svga,swrast,virgl")))
+svga,swrast,virgl,zink")))
          ;; Enable various optional features.  TODO: opencl requires libclc,
          ;; omx requires libomxil-bellagio
          "-Dplatforms=x11,wayland"
