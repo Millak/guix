@@ -52163,8 +52163,42 @@ losslessly as possible.")
 priority of an object.")
     (license license:expat)))
 
+(define-public rust-proc-macro-crate-2
+  (package
+    (name "rust-proc-macro-crate")
+    (version "2.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "proc-macro-crate" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "06jbv5w6s04dbjbwq0iv7zil12ildf3w8dvvb4pqvhig4gm5zp4p"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("\"=([[:digit:]]+(\\.[[:digit:]]+)*)" _ version)
+                   (string-append "\"^" version)))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags '("--release" "--"
+                            ;; Not all files included.
+                            "--skip=workspace_deps_working")
+       #:cargo-inputs (("rust-toml-datetime" ,rust-toml-datetime-0.6)
+                       ("rust-toml-edit" ,rust-toml-edit-0.20))
+       #:cargo-development-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                                   ("rust-quote" ,rust-quote-1)
+                                   ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/bkchr/proc-macro-crate")
+    (synopsis "Support for @code{$crate} in procedural macros")
+    (description
+     "This crate provides a way to get the name of a crate, even if it
+renamed in @file{Cargo.toml}.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-proc-macro-crate-1
   (package
+    (inherit rust-proc-macro-crate-2)
     (name "rust-proc-macro-crate")
     (version "1.3.0")
     (source
@@ -52174,7 +52208,6 @@ priority of an object.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0d1zq41h7aymny4p87nmz20688zr9zrrn6nmczz7l77cwj4q6qb6"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-once-cell" ,rust-once-cell-1)
@@ -52182,13 +52215,7 @@ priority of an object.")
        #:cargo-development-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/bkchr/proc-macro-crate")
-    (synopsis "Support for @code{$crate} in procedural macros")
-    (description
-     "This crate provides a way to get the name of a crate, even if it
-renamed in @file{Cargo.toml}.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-proc-macro-crate-0.1
   (package
