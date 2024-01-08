@@ -48655,8 +48655,34 @@ pdqsort.")
     (description "This package provides a pear is a fruit.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-pear-codegen-0.2
+  (package
+    (name "rust-pear-codegen")
+    (version "0.2.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pear_codegen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xrwnlncg7l64gfy82vf6kq55ww7p6krq6bc3pqwymxpiq76f8if"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; use of undeclared crate or module `pear`
+       #:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-proc-macro2-diagnostics" ,rust-proc-macro2-diagnostics-0.10)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-2))))
+    (home-page "https://crates.io/crates/pear_codegen")
+    (synopsis "Codegen for pear")
+    (description
+     "This package provides a (codegen) pear is a fruit.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-pear-codegen-0.1
   (package
+    (inherit rust-pear-codegen-0.2)
     (name "rust-pear-codegen")
     (version "0.1.5")
     (source
@@ -48666,7 +48692,6 @@ pdqsort.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "19lcpkfspizd4ywwvca6rxgc311m070k3ndvwa9vrbw1snjqna60"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -48674,12 +48699,7 @@ pdqsort.")
         ("rust-quote" ,rust-quote-0.6)
         ("rust-syn" ,rust-syn-0.15)
         ("rust-version-check" ,rust-version-check-0.9)
-        ("rust-yansi" ,rust-yansi-0.5))))
-    (home-page "https://crates.io/crates/pear_codegen")
-    (synopsis "Codegen for pear")
-    (description
-     "This package provides a (codegen) pear is a fruit.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-yansi" ,rust-yansi-0.5))))))
 
 (define-public rust-peeking-take-while-0.1
   (package
