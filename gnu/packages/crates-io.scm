@@ -38079,6 +38079,25 @@ network interfaces/adapters.")
 consumption.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-logos-derive-0.13
+  (package
+    (name "rust-logos-derive")
+    (version "0.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "logos-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0zi6s400yfw1ma7wnawyjjgbq1nqmx0xjdh18j8dfhhzkwi0vz6v"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-logos-codegen" ,rust-logos-codegen-0.13))))
+    (home-page "https://github.com/maciejhirsz/logos")
+    (synopsis "Create ridiculously fast Lexers")
+    (description "Create ridiculously fast Lexers.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-loom-0.7
   (package
     (name "rust-loom")
