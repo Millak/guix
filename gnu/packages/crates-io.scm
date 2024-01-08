@@ -38051,6 +38051,26 @@ network interfaces/adapters.")
      `(#:cargo-inputs
        (("rust-log" ,rust-log-0.4))))))
 
+(define-public rust-logos-0.13
+  (package
+    (name "rust-logos")
+    (version "0.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "logos" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1hfjqmmcq6fbfwpca6874b1k3lsqi75n584kkg4qmwcgj16wl060"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Not all files included
+       #:cargo-inputs (("rust-logos-derive" ,rust-logos-derive-0.13))))
+    (home-page "https://github.com/maciejhirsz/logos")
+    (synopsis "Create ridiculously fast Lexers")
+    (description "Create ridiculously fast Lexers.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-logos-codegen-0.13
   (package
     (name "rust-logos-codegen")
