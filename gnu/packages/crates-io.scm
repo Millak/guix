@@ -40181,15 +40181,14 @@ drop-in allocator.")
 (define-public rust-mime-0.3
   (package
     (name "rust-mime")
-    (version "0.3.16")
+    (version "0.3.17")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "mime" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "13dcm9lh01hdwfjcg74ppljyjfj1c6w3a3cwkhxf0w8wa37cfq1a"))))
+        (base32 "16hkibgvb9klh0w0jk5crr5xv90l3wlf77ggymzjmvl1818vnxv8"))))
     (build-system cargo-build-system)
     (arguments '(#:skip-build? #t))
     (home-page "https://github.com/hyperium/mime")
