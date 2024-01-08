@@ -3534,6 +3534,24 @@ library for Rust.")
      "This package provides derive macros for the @code{asn1-rs} crate.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-asn1-rs-derive-0.1
+  (package
+    (inherit rust-asn1-rs-derive-0.4)
+    (name "rust-asn1-rs-derive")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "asn1-rs-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1gzf9vab06lk0zjvbr07axx64fndkng2s28bnj27fnwd548pb2yv"))))
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1)
+                       ("rust-synstructure" ,rust-synstructure-0.12))))))
+
 (define-public rust-asn1-rs-impl-0.1
   (package
     (name "rust-asn1-rs-impl")
