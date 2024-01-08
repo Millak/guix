@@ -67273,14 +67273,14 @@ for generating and verifying digital signatures.")
   (package
     (inherit rust-signature-2)
     (name "rust-signature")
-    (version "1.5.0")
+    (version "1.6.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "signature" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1r4x94n6ibdd1f85cwmvi29jvyyf1l379n9yybb7jlg9lv0wcm7h"))))
+        (base32 "0z3xg405pg827g6hfdprnszsdqkkbrsfx7f1dl04nv9g7cxks8vl"))))
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
