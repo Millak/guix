@@ -83350,6 +83350,35 @@ hardware registers.")
      "This package provides a pure FFI to Jon Blow's VS discovery script.")
     (license license:expat)))
 
+(define-public rust-vt100-0.15
+  (package
+    (name "rust-vt100")
+    (version "0.15.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "vt100" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1pklc8y984axmxr0cd363srr2d27wd5rj15xlcmkjznvy0xqdkc4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-itoa" ,rust-itoa-1)
+                       ("rust-log" ,rust-log-0.4)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1)
+                       ("rust-vte" ,rust-vte-0.11))
+       #:cargo-development-inputs (("rust-nix" ,rust-nix-0.26)
+                                   ("rust-quickcheck" ,rust-quickcheck-0.9)
+                                   ("rust-rand" ,rust-rand-0.7)
+                                   ("rust-serde" ,rust-serde-1)
+                                   ("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-terminal-size" ,rust-terminal-size-0.2)
+                                   ("rust-vte" ,rust-vte-0.11))))
+    (home-page "https://github.com/doy/vt100-rust")
+    (synopsis "Library for parsing terminal data")
+    (description "Library for parsing terminal data.")
+    (license license:expat)))
+
 (define-public rust-vte-0.13
   (package
     (name "rust-vte")
