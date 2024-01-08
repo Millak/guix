@@ -4012,23 +4012,21 @@ and wayland-server.")
   (package
     (inherit rust-wayland-commons-0.29)
     (name "rust-wayland-commons")
-    (version "0.28.3")
+    (version "0.28.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayland-commons" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0mid1sgy3bmiywnrhsr31b8w6zvk1ll2ci2as15ddv8pczvm0128"))))
+        (base32 "1npvcrwh8chjcji73c24hlp05zbv6dxv24bylb8bn4bhgja1f652"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-nix" ,rust-nix-0.18)
+       (("rust-nix" ,rust-nix-0.20)
         ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-smallvec" ,rust-smallvec-1))))
-    (inputs
-     (list rust-nix-0.18 rust-once-cell-1 rust-smallvec-1
-           rust-wayland-sys-0.28))))
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-wayland-sys" ,rust-wayland-sys-0.28))))))
 
 (define-public rust-wayland-commons-0.23
   (package
@@ -4048,8 +4046,7 @@ and wayland-server.")
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-nix" ,rust-nix-0.14)
-        ("rust-wayland-sys" ,rust-wayland-sys-0.23))))
-    (inputs `())))
+        ("rust-wayland-sys" ,rust-wayland-sys-0.23))))))
 
 (define-public rust-wayland-commons-0.21
   (package
