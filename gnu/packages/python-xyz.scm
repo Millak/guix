@@ -28937,14 +28937,24 @@ lowercase.")
 (define-public python-pypng
   (package
     (name "python-pypng")
-    (version "0.0.20")
+    (version "0.20220715.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pypng" version))
        (sha256
-        (base32 "02qpa22ls41vwsrzw9r9qhj1nhq05p03hb5473pay6y980s86chh"))))
-    (build-system python-build-system)
+        (base32 "1hg24zja235bkbny82hx7sy7qlzfbabxph2lvqaq61vgm4xl773k"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'pre-check
+           (lambda _
+             (setenv "PYTHONPATH"
+                     (string-append (getcwd) "/code:"
+                                    (getenv "GUIX_PYTHONPATH"))))))))
+    (native-inputs (list python-pytest))
     (home-page "https://github.com/drj11/pypng")
     (synopsis "Pure Python PNG image encoder/decoder")
     (description
