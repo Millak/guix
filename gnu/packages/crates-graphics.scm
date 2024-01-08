@@ -4135,21 +4135,20 @@ properly display animated cursors.")
   (package
     (inherit rust-wayland-cursor-0.29)
     (name "rust-wayland-cursor")
-    (version "0.28.3")
+    (version "0.28.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayland-cursor" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0pvf96a9hg7b40vyvamcg491sa0006fr9bzf1xkaf8q22qn15syn"))))
+        (base32 "0nm61zkxwddq9x64dalcb5rihz2w6kz7blmxwx2nsn6ixn200qdy"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-nix" ,rust-nix-0.18)
-        ("rust-xcursor" ,rust-xcursor-0.3))))
-    (inputs
-     (list rust-nix-0.18 rust-wayland-client-0.28 rust-xcursor-0.3))))
+       (("rust-nix" ,rust-nix-0.20)
+        ("rust-wayland-client" ,rust-wayland-client-0.28)
+        ("rust-xcursor" ,rust-xcursor-0.3))))))
 
 (define-public rust-wayland-egl-0.29
   (package
