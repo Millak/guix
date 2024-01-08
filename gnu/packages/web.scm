@@ -1481,7 +1481,7 @@ efficiently.  It gives the application developer no more than 4 methods.")
                   "ImportTaxonomy"
                   "ImportText"
                   "ImportXML"))
-               (for-each 
+               (for-each
                 (lambda (directory)
                   (copy-recursively directory
                                     (string-append perl "/../" directory)))
