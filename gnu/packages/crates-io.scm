@@ -79209,6 +79209,25 @@ be used directly.  See @code{rust-trackable} for more information.")
 recycle bin.")
     (license license:expat)))
 
+(define-public rust-tree-magic-db-3
+  (package
+    (name "rust-tree-magic-db")
+    (version "3.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tree_magic_db" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "00kzsn98cv0r7yzwi2dcm0fzpbxmc7pxijhb5dgb3cr7ai5c4gz7"))))
+    (build-system cargo-build-system)
+    (home-page "https://docs.rs/tree_magic_db")
+    (synopsis "Packages the FreeDesktop.org shared MIME database")
+    (description
+     "Packages the @code{FreeDesktop.org} shared MIME database for optional use with
+tree_magic_mini.")
+    (license license:gpl2+)))
+
 (define-public rust-tree-magic-0.2
   (package
     (name "rust-tree-magic")
