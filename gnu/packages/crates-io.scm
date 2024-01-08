@@ -22725,6 +22725,41 @@ signing, and verification in pure Rust.")
 curve forms, scalars, points, and public/secret keys composed thereof.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-elliptic-curve-0.12
+  (package
+    (inherit rust-elliptic-curve-0.13)
+    (name "rust-elliptic-curve")
+    (version "0.12.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "elliptic-curve" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1lwi108mh6drw5nzqzlz7ighdba5qxdg5vmwwnw1j2ihnn58ifz7"))))
+    (arguments
+     `(#:cargo-inputs (("rust-base16ct" ,rust-base16ct-0.1)
+                       ("rust-base64ct" ,rust-base64ct-1)
+                       ("rust-crypto-bigint" ,rust-crypto-bigint-0.4)
+                       ("rust-der" ,rust-der-0.6)
+                       ("rust-digest" ,rust-digest-0.10)
+                       ("rust-ff" ,rust-ff-0.12)
+                       ("rust-generic-array" ,rust-generic-array-0.14)
+                       ("rust-group" ,rust-group-0.12)
+                       ("rust-hex-literal" ,rust-hex-literal-0.3)
+                       ("rust-hkdf" ,rust-hkdf-0.12)
+                       ("rust-pem-rfc7468" ,rust-pem-rfc7468-0.6)
+                       ("rust-pkcs8" ,rust-pkcs8-0.9)
+                       ("rust-rand-core" ,rust-rand-core-0.6)
+                       ("rust-sec1" ,rust-sec1-0.3)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-serdect" ,rust-serdect-0.1)
+                       ("rust-subtle" ,rust-subtle-2)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.3)
+                                   ("rust-sha2" ,rust-sha2-0.10)
+                                   ("rust-sha3" ,rust-sha3-0.10))))))
+
 (define-public rust-emacs-0.18
   (package
     (name "rust-emacs")
