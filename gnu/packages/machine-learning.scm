@@ -3787,46 +3787,26 @@ methodxs at scale on CPU or GPU.")
 (define-public python-umap-learn
   (package
     (name "python-umap-learn")
-    (version "0.5.3")
+    (version "0.5.5")
     (source
      (origin
        (method git-fetch)               ;no tests in pypi release
        (uri (git-reference
              (url "https://github.com/lmcinnes/umap")
-             (commit version)))
+             (commit (string-append "release-" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1315jkb0h1b579y9m59632f0nnpksilm01nxx46in0rq8zna8vsb"))))
-    (build-system python-build-system)
+         "0ijyiaqycynwj1383cxp519c765gjbg1f6fjwbvqj1gims710w3d"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'numpy-compatibility
-            (lambda _
-              (substitute* "umap/tests/test_umap_metrics.py"
-                ;; See commit a714b59bd9e2ca2e63312bc3491b2b037a42f2f2
-                (("sparse_binary_data.todense\\(\\),")
-                 "np.asarray(sparse_binary_data.todense()),")
-                ;; See commit c7d05683325589ad432a55e109cacb9d631cfaa9
-                (("sparse_spatial_data.todense\\(\\),")
-                 "np.asarray(sparse_spatial_data.todense()),"))
-              ;; See commit 949abd082524fce8c45dfb147bcd8e8ef49eade3
-              (substitute* "umap/tests/test_umap_ops.py"
-                (("np.random,") "None,"))))
           ;; Numba needs a writable dir to cache functions.
           (add-before 'check 'set-numba-cache-dir
             (lambda _
-              (setenv "NUMBA_CACHE_DIR" "/tmp")))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (setenv "HOME" "/tmp")
-                (invoke "pytest" "-vv" "umap"
-                        ;; This test can fail because trust may only be
-                        ;; 0.9679405204460967 >= 0.97
-                        "-k" "not test_densmap_trustworthiness_on_iris_supervised")))))))
+              (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
     (native-inputs (list python-pytest))
     (propagated-inputs
      (list python-numba
