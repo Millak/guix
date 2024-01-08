@@ -64365,14 +64365,14 @@ data.  This crate provides a wrapper that works with any existing Serde
 (define-public rust-serde-json-1
   (package
     (name "rust-serde-json")
-    (version "1.0.110")
+    (version "1.0.111")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "serde_json" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0mrjhgqrzl0gc4lnqp4d2lcs5vrfbhv0r3k1pg49knms6199ggbg"))))
+        (base32 "1x441azvvdy6x8am4bvkxhswhzw5cr8ml0cqspnihvri8bx4cvhp"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; could not find `RandomState` in `hash`
