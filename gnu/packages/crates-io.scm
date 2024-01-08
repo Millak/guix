@@ -31488,6 +31488,29 @@ HTTP request or response body.")
     (description "This package provides types and traits for HTTP clients.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-http-range-header-0.3
+  (package
+    (name "rust-http-range-header")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "http-range-header" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "13vm511vq3bhschkw2xi9nhxzkw53m55gn9vxg7qigfxc29spl5d"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.5)
+        ("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-quickcheck-macros" ,rust-quickcheck-macros-1)
+        ("rust-regex" ,rust-regex-1))))
+    (home-page "https://github.com/MarcusGrass/parse-range-headers")
+    (synopsis "No-dep range header parser")
+    (description "This crate provides a no-dep range header parser.")
+    (license license:expat)))
+
 (define-public rust-http-types-2
   (package
     (name "rust-http-types")
