@@ -1613,7 +1613,7 @@ computing environments.")
 (define-public python-scikit-learn
   (package
     (name "python-scikit-learn")
-    (version "1.2.2")
+    (version "1.3.2")
     (source
      (origin
        (method git-fetch)
@@ -1623,20 +1623,25 @@ computing environments.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0x7gfzvcdadf8jnvpz8m373bi37bc6sndfbjh9lzmn3p39pwm2hl"))))
-    (build-system python-build-system)
+         "1hr024vcilbjwlwn32ppadri0ypnzjmkfxhkkw8gih0qjvcvjbs7"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:test-flags
+      '(list "-m" "not network"
+             ;; This test tries to access the internet.
+             "-k" "not test_load_boston_alternative")
+      #:phases
+      '(modify-phases %standard-phases
          (add-before 'build 'configure
            (lambda _
              (setenv "SKLEARN_BUILD_PARALLEL"
                      (number->string (parallel-job-count)))))
          (add-after 'build 'build-ext
            (lambda _ (invoke "python" "setup.py" "build_ext" "--inplace"
-                             "-j" (number->string (parallel-job-count)))))
+                        "-j" (number->string (parallel-job-count)))))
          (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
+           (lambda* (#:key tests? test-flags #:allow-other-keys)
              (when tests?
                ;; Restrict OpenBLAS threads to prevent segfaults while testing!
                (setenv "OPENBLAS_NUM_THREADS" "1")
@@ -1647,14 +1652,11 @@ computing environments.")
                ;; Step out of the source directory to avoid interference;
                ;; we want to run the installed code with extensions etc.
                (with-directory-excursion "/tmp"
-                 (invoke "pytest" "-vv" "--pyargs" "sklearn"
-                         "-m" "not network"
-                         "-n" (number->string (parallel-job-count))
-                         ;; This test tries to access the internet.
-                         "-k" "not test_load_boston_alternative"))))))))
+                 (apply invoke "pytest" "--pyargs" "sklearn"
+                        test-flags))))))))
     (inputs (list openblas))
     (native-inputs
-     (list python-cython
+     (list python-cython-0.29.35
            python-pandas
            python-pytest
            python-pytest-xdist))
