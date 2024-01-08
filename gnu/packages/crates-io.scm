@@ -20787,14 +20787,14 @@ functions.")
 (define-public rust-directories-5
   (package
     (name "rust-directories")
-    (version "5.0.0")
+    (version "5.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "directories" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1acv0z7vi7b8z0qn2xd8zirw8axva9351p1vwjfhi3n117l3pgkl"))))
+        (base32 "0dba6xzk79s1clqzxh2qlgzk3lmvvks1lzzjhhi3hd70hhxifjcs"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
