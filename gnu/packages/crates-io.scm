@@ -83506,6 +83506,26 @@ hardware registers.")
      "This package provides a proc macro for generating VTE state changes.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-vtparse-0.6
+  (package
+    (name "rust-vtparse")
+    (version "0.6.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "vtparse" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1l5yz9650zhkaffxn28cvfys7plcw2wd6drajyf41pshn37jm6vd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-utf8parse" ,rust-utf8parse-0.2))
+       #:cargo-development-inputs (("rust-k9" ,rust-k9-0.11))))
+    (home-page "https://github.com/wez/wezterm")
+    (synopsis "Low level escape sequence parser")
+    (description "Low level escape sequence parser.")
+    (license license:expat)))
+
 (define-public rust-wait-timeout-0.2
   (package
     (name "rust-wait-timeout")
