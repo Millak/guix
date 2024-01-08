@@ -1618,9 +1618,7 @@ EUI-64, also known as MAC-48 media access control addresses.")
         ("rust-parking-lot" ,rust-parking-lot-0.11)
         ("rust-wayland-egl" ,rust-wayland-egl-0.28)
         ("rust-winapi" ,rust-winapi-0.3)
-        ("rust-winit" ,rust-winit-0.24))))
-    (inputs
-     (list rust-wayland-client-0.28 rust-wayland-egl-0.28))))
+        ("rust-winit" ,rust-winit-0.24))))))
 
 (define-public rust-glutin-0.22
   (package
