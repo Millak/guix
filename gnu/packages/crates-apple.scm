@@ -10,6 +10,7 @@
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
 ;;; Copyright © 2023 Jaeme Sifat <jaeme@runbox.com>
+;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -903,6 +904,28 @@ Mach 3.0 kernel that underlies OSX.")
     (description "This package provides bindings to the OSX mach-o system
 library")
   (license (list license:asl2.0 license:expat))))
+
+(define-public rust-mach2-0.4
+  (package
+    (name "rust-mach2")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "mach2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "02gpyq89rcrqdbz4hgp5bpjas21dllxfc70jgw8vj0iaxg6mbf8r"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t ; compile_error!("mach requires macOS or iOS");
+       #:cargo-inputs (("rust-libc" ,rust-libc-0.2))))
+    (home-page "https://github.com/JohnTitor/mach2")
+    (synopsis "Rust interface to the user-space API of the Mach 3.0 kernel")
+    (description
+     "This package provides a Rust interface to the user-space API of the Mach
+3.0 kernel that underlies OSX.")
+    (license (list license:bsd-2 license:expat license:asl2.0))))
 
 (define-public rust-metal-0.18
   (package
