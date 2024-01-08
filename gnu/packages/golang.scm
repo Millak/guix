@@ -11390,7 +11390,7 @@ dependencies and a simple API.")
 (define-public go-github-com-arceliar-ironwood
   (package
     (name "go-github-com-arceliar-ironwood")
-    (version "v0.0.0-20231028101932-ceac99571f43")
+    (version "v0.0.0-20231127131626-465b82dfb5bd")
     (source
      (origin
        (method git-fetch)
@@ -11400,7 +11400,7 @@ dependencies and a simple API.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1shxpmi847jf7rfa5mb0m4nflwmlg65hjgjm9v7ynjvcp0licsi4"))))
+         "0sywrcvrpkkzi1jxfz2ahqs855h4bmdn1l79q5sdgqiaczr7q4b7"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/Arceliar/ironwood"
