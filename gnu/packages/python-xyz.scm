@@ -8687,6 +8687,25 @@ clean plots with a minimalistic style.")
 complex-valued functions.")
     (license license:gpl3+)))
 
+(define-public python-cppy
+  (package
+    (name "python-cppy")
+    (version "1.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cppy" version))
+       (sha256
+        (base32 "06zysv86j7wqb1rl88ab4clbjf7iahhv9gfyqlasr18hggqkpd43"))))
+    (build-system pyproject-build-system)
+    (home-page "https://github.com/nucleic/cppy")
+    (synopsis "C++ header library for Python extension modules")
+    (description "This package is a small C++ header library which makes it
+easier to write Python extension modules.  The primary feature is a
+@code{PyObject} smart pointer which automatically handles reference counting
+and provides convenience methods for performing common object operations.")
+    (license license:bsd-3)))
+
 (define-public python-perfplot
   (package
     (name "python-perfplot")
