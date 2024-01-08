@@ -40030,6 +40030,25 @@ file IO.")
        (sha256
         (base32 "0nmymqy9q62x577ydja0ysfyir7h5qa0n5fwcnvchfhhlsi0rdyr"))))))
 
+(define-public rust-memmem-0.1
+  (package
+    (name "rust-memmem")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "memmem" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05ccifqgxdfxk6yls41ljabcccsz3jz6549l1h3cwi17kr494jm6"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-quickcheck" ,rust-quickcheck-0.2))))
+    (home-page "http://github.com/jneem/memmem")
+    (synopsis "Substring searching")
+    (description "This package provides substring searching.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-memo-map-0.3
   (package
     (name "rust-memo-map")
