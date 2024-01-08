@@ -38051,6 +38051,34 @@ network interfaces/adapters.")
      `(#:cargo-inputs
        (("rust-log" ,rust-log-0.4))))))
 
+(define-public rust-logos-codegen-0.13
+  (package
+    (name "rust-logos-codegen")
+    (version "0.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "logos-codegen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0s7drl8vfp9viw9mfyz8dll1gfvp1dc6np82abj0402y548p6j6w"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-beef" ,rust-beef-0.5)
+                       ("rust-fnv" ,rust-fnv-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-regex-syntax" ,rust-regex-syntax-0.6)
+                       ("rust-syn" ,rust-syn-2))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-0.6))))
+    (home-page "https://github.com/maciejhirsz/logos")
+    (synopsis "Implementation details for logos-codegen and logos-derive")
+    (description
+     "Implementation details for logos-codegen and logos-derive.  Not for public
+consumption.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-loom-0.7
   (package
     (name "rust-loom")
