@@ -1038,8 +1038,8 @@ interactive development.")
   (sbcl-package->ecl-package sbcl-stefil))
 
 (define-public sbcl-try
-  (let ((commit "a1fffad2ca328b3855f629b633ab1daaeec929c2")
-        (revision "1"))
+  (let ((commit "cf2a8887d091bf297b72ef69e15012e7e849ba3b")
+        (revision "2"))
     (package
       (name "sbcl-try")
       (version (git-version "0.0.1" revision commit))
@@ -1051,7 +1051,7 @@ interactive development.")
                (commit commit)))
          (file-name (git-file-name "cl-try" version))
          (sha256
-          (base32 "03dm2i2y4wiyzz9d25zdxm6gdglnvwali0ylp0rfwpk6wf29sj09"))))
+          (base32 "166i3fqwxfv9skz6yf95c95nx0jjqy1ak1131bd0sqmd582gi9mg"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-cl-ppcre))

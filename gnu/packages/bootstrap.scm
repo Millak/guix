@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2018, 2019 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2017, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2020, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2020, 2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019 Carl Dong <contact@carldong.me>
 ;;; Copyright © 2019 Léo Le Bouter <lle-bout@zaclys.net>
@@ -322,6 +322,9 @@ or false to signal an error."
      ((string=? system "i686-gnu") "/lib/ld.so.1")
      ((string=? system "powerpc64-linux") "/lib/ld64.so.1")
      ((string=? system "alpha-linux") "/lib/ld-linux.so.2")
+
+     ;; TODO: Differentiate between x86_64-linux-gnu and x86_64-linux-gnux32.
+     ((string=? system "x86_64-linux-gnux32") "/lib/ld-linux-x32.so.2")
 
      ;; XXX: This one is used bare-bones, without a libc, so add a case
      ;; here just so we can keep going.

@@ -1047,14 +1047,14 @@ H.264 (MPEG-4 AVC) video streams.")
 (define-public mkvtoolnix
   (package
     (name "mkvtoolnix")
-    (version "52.0.0")
+    (version "80.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://mkvtoolnix.download/sources/"
                            "mkvtoolnix-" version ".tar.xz"))
        (sha256
-        (base32 "15y7ahlifsclnkl70wn5w34dil8nwcwcjnw3k2ydqc6dz4vb0j5s"))
+        (base32 "1x9k9pmw7mzm2amvm251a45dlj9p9iqfank5p4w2fizxkapws25v"))
        (modules '((guix build utils)))
        (snippet '(begin
                    ;; Delete bundled libraries.
@@ -1070,6 +1070,7 @@ H.264 (MPEG-4 AVC) video streams.")
     (outputs '("out" "gui")) ; "mkvtoolnix-gui" brings the closure size from ~300 MB to 1.5+ GB.
     (inputs
      (list boost
+           gmp
            bzip2
            cmark
            libebml
@@ -1083,86 +1084,96 @@ H.264 (MPEG-4 AVC) video streams.")
            lzo
            pcre2
            pugixml
-           qtbase-5
-           qtmultimedia-5
+           qtbase
+           qtmultimedia
+           qtsvg
            utfcpp
            zlib))
     (native-inputs
-     `(("docbook-xsl" ,docbook-xsl)
-       ("gettext" ,gettext-minimal)
-       ("googletest" ,googletest)
-       ("libxslt" ,libxslt)
-       ("nlohmann-json" ,nlohmann-json)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("po4a" ,po4a)
-       ("qttools-5" ,qttools-5)
-       ("ruby" ,ruby-2.7)))
+     (list docbook-xsl
+           gettext-minimal
+           googletest
+           libxslt
+           nlohmann-json
+           perl
+           pkg-config
+           po4a
+           qttools
+           ruby-3.2))
     (arguments
-     `(#:configure-flags
-       (list (string-append "--with-boost="
-                            (assoc-ref %build-inputs "boost"))
-             (string-append "--with-docbook-xsl-root="
-                            (assoc-ref %build-inputs "docbook-xsl")
-                            "/xml/xsl/docbook-xsl-"
-                            ,(package-version docbook-xsl))
-             "--enable-update-check=no"
-             "--enable-precompiled-headers=no")
-        #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-utfcpp-include
-           (lambda _
-             (substitute* "src/common/strings/utf8.cpp"
-               (("<utf8.h>")
-                "<utf8cpp/utf8.h>"))))
-         (add-after 'unpack 'patch-relative-file-names
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-             (substitute* "src/mkvtoolnix-gui/util/settings.cpp"
-               (("mkvmerge" match)
-                (string-append out "/bin/" match)))
-             #t)))
-         (add-before 'configure 'add-googletest
-           (lambda* (#:key inputs #:allow-other-keys)
-             (symlink (search-input-directory inputs "/include/gtest")
-                      "lib/gtest")))
-         (replace 'build
-           (lambda _
-             (let ((-j (list "-j" (number->string (parallel-job-count)))))
-               (apply invoke "rake" -j))))
-         (replace 'check
-           (lambda _
-             (invoke "rake" "tests/unit")))
-         (replace 'install
-           (lambda _
-             (invoke "rake" "install")))
-         (add-after 'install 'post-install
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Move the Qt interface to "gui".
-             (let* ((out (assoc-ref outputs "out"))
-                    (gui (assoc-ref outputs "gui"))
-                    (strip-store-dir (lambda (path)
-                                       (substring path (string-prefix-length out path)))))
-               (for-each
-                (lambda (file)
-                  (mkdir-p (string-append gui (dirname file)))
-                  (rename-file (string-append out file)
-                               (string-append gui file)))
-                (append '("/bin/mkvtoolnix-gui"
-                          "/share/applications/org.bunkus.mkvtoolnix-gui.desktop"
-                          "/share/metainfo/org.bunkus.mkvtoolnix-gui.appdata.xml"
-                          "/share/mime/packages/org.bunkus.mkvtoolnix-gui.xml")
-                        (map strip-store-dir (find-files out "\\.ogg$"))
-                        (map strip-store-dir (find-files out "mkvtoolnix-gui\\.png$"))
-                        (map strip-store-dir (find-files out "mkvtoolnix-gui\\.1"))))
-               (for-each
-                (lambda (file)
-                  (delete-file-recursively (string-append out file)))
-                '("/share/applications"
-                  "/share/metainfo"
-                  "/share/mime"
-                  "/share/mkvtoolnix")))
-             #t)))))
+     (list
+      #:configure-flags
+      #~(list (string-append "--with-boost="
+                             #$(this-package-input "boost"))
+              (string-append "--with-docbook-xsl-root="
+                             #$(this-package-native-input "docbook-xsl")
+                             "/xml/xsl/docbook-xsl-"
+                             #$(package-version
+                                (this-package-native-input "docbook-xsl")))
+              "--enable-update-check=no"
+              "--enable-precompiled-headers=no")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-utfcpp-include
+            (lambda _
+              (substitute* "src/common/strings/utf8.cpp"
+                (("<utf8.h>")
+                 "<utf8cpp/utf8.h>"))))
+          (add-after 'unpack 'patch-relative-file-names
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out")))
+                (substitute* "src/mkvtoolnix-gui/util/settings.cpp"
+                  (("mkvmerge" match)
+                   (string-append out "/bin/" match))) #t)))
+          (add-before 'configure 'add-googletest
+            (lambda* (#:key inputs #:allow-other-keys)
+              (symlink (search-input-directory inputs
+                                               "/include/gtest")
+                       "lib/gtest")))
+          (replace 'build
+            (lambda _
+              (let ((-j (list "-j"
+                              (number->string (parallel-job-count)))))
+                (apply invoke "rake" -j))))
+          (replace 'check
+            (lambda _
+              (invoke "rake" "tests/unit")))
+          (replace 'install
+            (lambda _
+              (invoke "rake" "install")))
+          (add-after 'install 'post-install
+            (lambda* (#:key outputs #:allow-other-keys)
+              ;; Move the Qt interface to "gui".
+              (let* ((out (assoc-ref outputs "out"))
+                     (gui (assoc-ref outputs "gui"))
+                     (strip-store-dir (lambda (path)
+                                        (substring path
+                                                   (string-prefix-length
+                                                    out path)))))
+                (for-each (lambda (file)
+                            (mkdir-p (string-append gui
+                                                    (dirname
+                                                     file)))
+                            (rename-file (string-append out file)
+                                         (string-append gui file)))
+                          (append '("/bin/mkvtoolnix-gui"
+                                    "/share/applications/org.bunkus.mkvtoolnix-gui.desktop"
+                                    "/share/metainfo/org.bunkus.mkvtoolnix-gui.appdata.xml"
+                                    "/share/mime/packages/org.bunkus.mkvtoolnix-gui.xml")
+                                  (map strip-store-dir
+                                       (find-files out "\\.ogg$"))
+                                  (map strip-store-dir
+                                       (find-files out
+                                                   "mkvtoolnix-gui\\.png$"))
+                                  (map strip-store-dir
+                                       (find-files out
+                                                   "mkvtoolnix-gui\\.1"))))
+                (for-each (lambda (file)
+                            (delete-file-recursively
+                             (string-append out file)))
+                          '("/share/applications"
+                            "/share/metainfo" "/share/mime"
+                            "/share/mkvtoolnix"))))))))
     (home-page "https://mkvtoolnix.download")
     (synopsis "Tools to create, alter and inspect Matroska files")
     (description
@@ -1505,14 +1516,14 @@ SMPTE 314M.")
 (define-public libmatroska
   (package
     (name "libmatroska")
-    (version "1.6.3")
+    (version "1.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://dl.matroska.org/downloads/"
                            "libmatroska/libmatroska-" version ".tar.xz"))
        (sha256
-        (base32 "06h81sxyz2riic0gpzik6ffcnq32wrqphi8c6k55glcdymiimyfs"))))
+        (base32 "1cqq61qgv6x3xjzjrw71dya7lbsbrsmi9raqm2k4hgfrp0rk0ajp"))))
     (build-system cmake-build-system)
     (inputs
      (list libebml))
@@ -1657,14 +1668,14 @@ operate properly.")
 (define-public ffmpeg
   (package
     (name "ffmpeg")
-    (version "6.0")
+    (version "6.1.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "10kh2f4y4isfqj4xpcqqnzk611jh89ywcjyjnq9c2jcv5p18ggjp"))))
+                "0s7r2qv8gh2a3w568n9xxgcz0q8j5ww1jdsci1hm9f4l1yqg9146"))))
     (outputs '("out" "debug"))
     (build-system gnu-build-system)
     (inputs

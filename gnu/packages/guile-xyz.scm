@@ -1839,6 +1839,33 @@ written in pure Scheme by using Guile's foreign function interface.")
 library}.")
     (license license:gpl3+)))
 
+(define-public guile-yamlpp
+  (package
+    (name "guile-yamlpp")
+    (version "0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/yorgath/guile-yamlpp")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14mlqi7hw7pi9scwk1g432issnqcn185pd8na2plijxq55cy0iq7"))))
+    (build-system gnu-build-system)
+    (native-inputs (list autoconf automake libtool pkg-config))
+    (inputs (list guile-3.0 yaml-cpp))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "GUILE_EXTENSIONS_PATH")
+            (files (list "lib/guile/3.0")))))
+    (home-page "https://gitlab.com/yorgath/guile-yamlpp")
+    (synopsis "Guile YAML reader/writer based on @code{yaml-cpp}")
+    (description
+     "A module for GNU Guile to read and write YAML files.  It works using
+bindings to the @code{yaml-cpp} C++ library.")
+    (license license:gpl3+)))
+
 (define-public guile-dbi
   (package
     (name "guile-dbi")
@@ -3565,6 +3592,80 @@ structures.  This package re-uses the SRFI sample implementation.")
            ;; contains ISC code from the SRFI sample implementation
            license:isc))))
 
+(define-public guile-srfi-133
+  (package
+    (name "guile-srfi-133")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/scheme-requests-for-implementation/srfi-133")
+             (commit "db81a114cd3e23375f024baec15482614ec90453")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0a7srl72291yah0aj6rwddhj041v2spximhknjj7hczlparsrm7f"))))
+    (build-system guile-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'move-create-and-delete-files
+            (lambda _
+              (rename-file "vectors" "srfi")
+              (rename-file "srfi/vectors-test.scm" "srfi/srfi-test.scm")
+              (rename-file "srfi/vectors-impl.scm" "srfi/srfi-impl.scm")
+              (with-output-to-file "srfi/srfi-133.scm"
+                (lambda ()
+                  (display "(define-module (srfi srfi-133)
+  #:replace (;; Constructors
+             vector-copy
+
+             ;; Mutators
+             vector-fill! vector-copy!
+
+             ;; Conversion
+             vector->list list->vector)
+  #:export (;; Constructors
+            vector-unfold vector-unfold-right vector-reverse-copy
+            vector-append vector-concatenate vector-append-subvectors
+
+            ;; Predicates
+            vector-empty? vector=
+
+            ;; Iteration
+            vector-fold vector-fold-right vector-map vector-map!
+            vector-for-each vector-count vector-cumulate
+
+            ;; Searching
+            vector-index vector-index-right vector-skip vector-skip-right
+            vector-binary-search vector-any vector-every vector-partition
+
+            ;; Mutators
+            vector-swap! vector-reverse!
+            vector-reverse-copy! vector-unfold! vector-unfold-right!
+
+            ;; Conversion
+            reverse-vector->list reverse-list->vector
+            vector->string string->vector))
+
+(include \"srfi-impl.scm\")")))
+              (for-each (lambda (filename)
+                          (delete-file filename))
+                        '("tests/run.scm"
+                          "srfi/vectors.sld"
+                          "srfi/vectors.scm")))))))
+    (native-inputs
+     (list guile-3.0))
+    (home-page "https://github.com/scheme-requests-for-implementation/srfi-133")
+    (synopsis "R7RS-compatible vector library for Guile")
+    (description
+     "This package provides a Guile implementation of
+@uref{https://srfi.schemers.org/srfi-133/srfi-133.html, SRFI-133}, a
+comprehensive library of vector operations.")
+    (license license:expat)))
+
 (define-public guile-srfi-145
   (package
     (name "guile-srfi-145")
@@ -3765,6 +3866,56 @@ object or a Left object.  Maybe represents the concept of optional values;
 Either represents the concept of values which are either correct (Right)
 or errors (Left).")
       (license license:expat))))
+
+(define-public guile-srfi-232
+  (package
+    (name "guile-srfi-232")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/scheme-requests-for-implementation/srfi-232")
+             (commit "c3f580d220778cd71492aba4fdd0c7040968e705")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0lp4zcqjjj6hwfh3ix71wak1nffgg4npzsg7cdxfn9hf6iwf9xby"))))
+    (build-system guile-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'move-and-delete-things
+            (lambda _
+              (let* ((srfi-directory (string-append #$output "/srfi")))
+                (mkdir-p "srfi")
+                (with-output-to-file "srfi/srfi-232.scm"
+                  (lambda ()
+                    (display "(define-library (srfi srfi-232)
+ (export curried define-curried)
+ (import (only (guile) import)
+         (scheme base))
+ (include \"../srfi-232.scm\"))")))
+                (for-each (lambda (filename)
+                            (delete-file filename))
+                          '("test-body.scm"
+                            "test-chibi.scm"
+                            "test-srfi-64.scm"))))))))
+    (native-inputs
+     (list guile-3.0))
+    (home-page "https://github.com/scheme-requests-for-implementation/srfi-232")
+    (synopsis "Flexible curried procedures")
+    (description
+     " This package provides an implementation of
+@uref{https://srfi.schemers.org/srfi-232/srfi-232.html, SRFI-232}, which
+describes @code{curried}, a variant of @code{lambda} that creates true curried
+procedures which also behave just like ordinary Scheme procedures.  They can
+be applied to their arguments one by one, all at once, or anywhere in between,
+without any novel syntax.  @code{curried} also supports nullary and variadic
+procedures, and procedures created with it have predictable behavior when
+applied to surplus arguments.")
+    (license license:expat)))
 
 (define-public emacsy
   (package

@@ -7,7 +7,7 @@
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2018, 2020 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2021, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
@@ -97,6 +97,7 @@
             target-x86-32?
             target-x86-64?
             target-x86?
+            target-x32?
             target-arm32?
             target-aarch64?
             target-arm?
@@ -634,6 +635,8 @@ returned by `config.guess'."
                        (else triplet))))
     (cond ((string-match "^arm[^-]*-([^-]+-)?linux-gnueabihf" triplet)
            "armhf-linux")
+          ;; Otherwise it will show up as x86_64-linux... which isn't wrong.
+          ((string-match "x86_64-linux-gnux32" triplet) "x86_64-linux-gnux32")
           ((string-match "^([^-]+)-([^-]+-)?linux-gnu.*" triplet)
            =>
            (lambda (m)
@@ -709,6 +712,13 @@ a character other than '@'."
   "Is the architecture of TARGET a variant of Intel/AMD's 64-bit
 architecture (x86_64)?"
   (string-prefix? "x86_64-" target))
+
+(define* (target-x32? #:optional (target (or (%current-target-system)
+                                             (%current-system))))
+  "Is the architecture of TARGET a variant of Intel/AMD's 64-bit
+architecture (x86_64) using 32-bit data types?"
+  (and (target-x86-64? target)
+       (string-suffix? "gnux32" target)))
 
 (define* (target-x86? #:optional (target (or (%current-target-system)
                                              (%current-system))))

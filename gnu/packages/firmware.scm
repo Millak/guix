@@ -875,7 +875,7 @@ Executables included are:
   (let ((toolchain-ver "GCC5"))
     (package
       (name "ovmf")
-      (version "202308")
+      (version "202311")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -886,7 +886,7 @@ Executables included are:
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "04rnfnaqr2c7ayplj7ib730zp1snw157zx5rmykz5hz1zz2vb20j"))))
+                  "136dl5cxpjpg37whzlqq7jrrjsgybmwrgkbbmks8xaixqmzwhbw0"))))
       (build-system gnu-build-system)
       (arguments
        (list

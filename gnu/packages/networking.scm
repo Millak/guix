@@ -4445,36 +4445,32 @@ QUIC protocol.")
                             "github.com/yggdrasil-network/yggdrasil-go/cmd/yggdrasilctl"
                             "github.com/yggdrasil-network/yggdrasil-go/cmd/genkeys"))))))))
     (propagated-inputs
-     (let ((p (package-input-rewriting
-               `((,go-golang-org-x-sys . ,go-golang-org-x-sys-0.8))
-               #:deep? #true)))
-       (cons go-golang-org-x-sys-0.8
-             (map p
-                  (list go-golang-zx2c4-com-wireguard
-                        go-golang-org-x-text
-                        go-golang-org-x-net
-                        go-golang-org-x-crypto
-                        go-golang-org-x-tools
-                        go-netns
-                        go-netlink
-                        go-github-com-bits-and-blooms-bitset
-                        go-github-com-bits-and-blooms-bloom
-                        go-github-com-quic-go-quic-go
-                        go-github-com-hjson-hjson-go
-                        go-github-com-olekukonko-tablewriter
-                        go-github-com-mitchellh-mapstructure
-                        go-github-com-mattn-go-runewidth
-                        go-github-com-mattn-go-isatty
-                        go-github-com-mattn-go-colorable
-                        go-github-com-kardianos-minwinsvc
-                        go-github-com-hjson-hjson-go
-                        go-github-com-hashicorp-go-syslog
-                        go-github-com-gologme-log
-                        go-github-com-fatih-color
-                        go-github-com-cheggaaa-pb-v3
-                        go-github-com-vividcortex-ewma
-                        go-github-com-arceliar-phony
-                        go-github-com-arceliar-ironwood)))))
+     (list go-golang-zx2c4-com-wireguard
+           go-golang-org-x-text
+           go-golang-org-x-net
+           go-golang-org-x-crypto
+           go-golang-org-x-tools
+           go-golang-org-x-sys
+           go-netns
+           go-netlink
+           go-github-com-bits-and-blooms-bitset
+           go-github-com-bits-and-blooms-bloom
+           go-github-com-quic-go-quic-go
+           go-github-com-hjson-hjson-go
+           go-github-com-olekukonko-tablewriter
+           go-github-com-mitchellh-mapstructure
+           go-github-com-mattn-go-runewidth
+           go-github-com-mattn-go-isatty
+           go-github-com-mattn-go-colorable
+           go-github-com-kardianos-minwinsvc
+           go-github-com-hjson-hjson-go
+           go-github-com-hashicorp-go-syslog
+           go-github-com-gologme-log
+           go-github-com-fatih-color
+           go-github-com-cheggaaa-pb-v3
+           go-github-com-vividcortex-ewma
+           go-github-com-arceliar-phony
+           go-github-com-arceliar-ironwood))
     (home-page "https://yggdrasil-network.github.io/blog.html")
     (synopsis
      "Experiment in scalable routing as an encrypted IPv6 overlay network")
