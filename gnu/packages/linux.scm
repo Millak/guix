@@ -491,6 +491,23 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                         "linux-" version ".tar.xz"))
     (sha256 hash)))
 
+;; The current "mainline" kernel.
+
+(define-public linux-libre-6.7-version "6.7")
+(define-public linux-libre-6.7-gnu-revision "gnu")
+(define deblob-scripts-6.7
+  (linux-libre-deblob-scripts
+   linux-libre-6.7-version
+   linux-libre-6.7-gnu-revision
+   (base32 "0hwashmml56r74kgjb637b3ln2d7f9vgfl18sxvczyl84xlbcncj")
+   (base32 "0pivh1hjc5ylgcyjx0z7x1dqax614pai502idzil98j35pwa24za")))
+(define-public linux-libre-6.7-pristine-source
+  (let ((version linux-libre-6.7-version)
+        (hash (base32 "0s8hbcsg7fdvspqam8kzcxygjsznr4zfi60nqgc81l3n4m518cgg")))
+   (make-linux-libre-source version
+                            (%upstream-linux-source version hash)
+                            deblob-scripts-6.7)))
+
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
@@ -630,6 +647,11 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
     (patches (append (origin-patches source)
                      patches))))
 
+(define-public linux-libre-6.7-source
+  (source-with-patches linux-libre-6.7-pristine-source
+                       (list %boot-logo-patch
+                             %linux-libre-arm-export-__sync_icache_dcache-patch)))
+
 (define-public linux-libre-6.6-source
   (source-with-patches linux-libre-6.6-pristine-source
                        (list %boot-logo-patch
@@ -748,6 +770,11 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
     (synopsis "GNU Linux-Libre kernel headers")
     (description "Headers of the Linux-Libre kernel.")
     (license license:gpl2)))
+
+(define-public linux-libre-headers-6.7
+  (make-linux-libre-headers* linux-libre-6.7-version
+                             linux-libre-6.7-gnu-revision
+                             linux-libre-6.7-source))
 
 (define-public linux-libre-headers-6.6
   (make-linux-libre-headers* linux-libre-6.6-version
@@ -1106,6 +1133,14 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
 (define-public linux-libre-pristine-source linux-libre-6.6-pristine-source)
 (define-public linux-libre-source          linux-libre-6.6-source)
 (define-public linux-libre                 linux-libre-6.6)
+
+(define-public linux-libre-6.7
+  (make-linux-libre* linux-libre-6.7-version
+                     linux-libre-6.7-gnu-revision
+                     linux-libre-6.7-source
+                     '("x86_64-linux" "i686-linux" "armhf-linux"
+                       "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
+                     #:configuration-file kernel-config))
 
 (define-public linux-libre-6.1
   (make-linux-libre* linux-libre-6.1-version
