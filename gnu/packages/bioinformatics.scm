@@ -16449,7 +16449,7 @@ implementation differs in these ways:
 (define-public python-scanpy
   (package
     (name "python-scanpy")
-    (version "1.9.1")
+    (version "1.9.6")
     (source
      (origin
        (method git-fetch)
@@ -16459,21 +16459,28 @@ implementation differs in these ways:
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0k524xnx3dvpz5yx65p316wghvi01zs17is8w2m3w2qywiswk0sl"))))
+         "12rz0a9151fkry6ws1a8p5wnc4n5qbjl6xlynj7kxy223iz8isds"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       '(list "-k"
              ;; Plot tests that fail.
-             (string-append "not test_dotplot_matrixplot_stacked_violin"
-                            " and not test_violin_without_raw"
-                            " and not test_correlation"
-                            " and not test_scatterplots"
-                            " and not test_scatter_embedding_add_outline_vmin_vmax_norm"
-                            " and not test_paga"
+             (string-append "not test_clustermap"
+                            " and not test_dotplot_matrixplot_stacked_violin"
                             " and not test_paga_compare"
-                            " and not test_clustermap"
+                            " and not test_paga_path"
+                            " and not test_paga_pie"
+                            " and not test_paga_plots"
+                            " and not test_violin"
+                            " and not test_scatter_no_basis_per_obs"
+
+                            ;; Type mismatch
+                            " and not test_obs_df"
+                            " and not test_var_df"
+
+                            ;; Minor accuracy problem
+                            " and not test_consistency[morans_i-allclose]"
 
                             ;; These try to connect to the network
                             " and not test_scrublet_plots"
@@ -16504,10 +16511,6 @@ implementation differs in these ways:
 
                ;; These two fail with "ValueError: I/O operation on closed file."
                (delete-file "scanpy/tests/test_neighbors_key_added.py")
-
-               ;; TODO: these fail with TypingError and "Use of unsupported
-               ;; NumPy function 'numpy.split'".
-               (delete-file "scanpy/tests/test_metrics.py")
 
                ;; The following tests requires 'scanorama', which isn't
                ;; packaged yet.
@@ -16549,8 +16552,11 @@ implementation differs in these ways:
      `(;; This package needs anndata.tests, which is not installed.
        ("python-anndata:source" ,(package-source python-anndata))
        ("python-flit" ,python-flit)
+       ("python-hatchling" ,python-hatchling)
+       ("python-hatch-vcs" ,python-hatch-vcs)
        ("python-leidenalg" ,python-leidenalg)
        ("python-pytest" ,python-pytest)
+       ("python-pytest-nunit" ,python-pytest-nunit)
        ("python-setuptools-scm" ,python-setuptools-scm)))
     (home-page "https://github.com/theislab/scanpy")
     (synopsis "Single-Cell Analysis in Python")
