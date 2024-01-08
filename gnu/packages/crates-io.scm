@@ -81553,8 +81553,27 @@ comparable to calling @code{unwrap_err()}.")
         ("rust-rustc-test" ,rust-rustc-test-0.3)
         ("rust-serde-json" ,rust-serde-json-1))))))
 
+(define-public rust-urlencoding-2
+  (package
+    (name "rust-urlencoding")
+    (version "2.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "urlencoding" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1nj99jp37k47n0hvaz5fvz7z6jd0sb4ppvfy3nphr1zbnyixpy6s"))))
+    (build-system cargo-build-system)
+    (home-page "https://lib.rs/urlencoding")
+    (synopsis "A Rust library for doing URL percentage encoding.")
+    (description
+     "This package provides a Rust library for doing URL percentage encoding.")
+    (license license:expat)))
+
 (define-public rust-urlencoding-1
   (package
+    (inherit rust-urlencoding-2)
     (name "rust-urlencoding")
     (version "1.1.1")
     (source
@@ -81564,14 +81583,7 @@ comparable to calling @code{unwrap_err()}.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "14sm5c8idb5jzib8dwf85p5yhd65vxjh946p80p49d2j6fsjw8y9"))))
-    (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page "https://lib.rs/urlencoding")
-    (synopsis "Rust library for doing URL percentage encoding")
-    (description
-     "This package provides a Rust library for doing URL percentage
-encoding.")
-    (license license:expat)))
+    (arguments `(#:skip-build? #t))))
 
 (define-public rust-users-0.11
   (package
