@@ -2154,12 +2154,17 @@ built on the Actix ecosystem.")
         (base32 "16zirxhsk26kz5jxxxs37wxsm02id97h57kkqs512fj1j0x486kd"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; not all files included
+         "--skip=client"
+         "--skip=server")
        #:cargo-inputs
        (("rust-hyper" ,rust-hyper-0.10)
         ("rust-rustls" ,rust-rustls-0.14)
         ("rust-webpki" ,rust-webpki-0.18)
-        ("rust-webpki-roots" ,rust-webpki-roots-0.15))))
+        ("rust-webpki-roots" ,rust-webpki-roots-0.15))
+       #:cargo-development-inputs (("rust-env-logger" ,rust-env-logger-0.5))))
     (home-page "https://github.com/SergioBenitez/hyper-sync-rustls")
     (synopsis "Glue code for Rustls and synchronous Hyper")
     (description
