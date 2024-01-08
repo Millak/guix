@@ -2,7 +2,7 @@
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 John Soo <jsoo1@asu.edu>
-;;; Copyright © 2020, 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2023 Steve George <steve@futurile.net>
@@ -29,6 +29,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
+  #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-gtk)
@@ -3596,24 +3597,20 @@ Verification.")
        (uri (crate-uri "webpki" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0zx1v8afa4ig97dyqfrnlj5i7pib6dnfw88qn2iiqhfq2rrrdmqp"))))
+        (base32 "0zx1v8afa4ig97dyqfrnlj5i7pib6dnfw88qn2iiqhfq2rrrdmqp"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 ;; Fix doctest errors
+                 ;; `...` range patterns are deprecated
+                 (substitute* "src/name.rs"
+                   (("'\\.\\.\\.") "'..="))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t     ; TODO: Fix building rust-ring-0.13
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-ring" ,rust-ring-0.13)
         ("rust-untrusted" ,rust-untrusted-0.6))
        #:cargo-development-inputs
-       (("rust-base64" ,rust-base64-0.9))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'build-curve25519-tables
-           (lambda* (#:key vendor-dir #:allow-other-keys)
-             (with-directory-excursion
-               (dirname (car (find-files vendor-dir "make_curve25519_tables.py")))
-               (with-output-to-file "curve25519_tables.h"
-                 (lambda _
-                   (invoke "python" "make_curve25519_tables.py")))))))))))
+       (("rust-base64" ,rust-base64-0.9))))))
 
 (define-public rust-webpki-roots-0.25
   (package
