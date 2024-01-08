@@ -2652,6 +2652,35 @@ the pointer type is parameterizable.")
 @code{arg_enum}.")
     (license license:expat)))
 
+(define-public rust-argfile-0.1
+  (package
+    (name "rust-argfile")
+    (version "0.1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "argfile" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xm5yq9r04k9zf0hlx47a4yv86np6iwpqczfcmg0iia15bwc91qj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-fs-err" ,rust-fs-err-2)
+        ("rust-os-str-bytes" ,rust-os-str-bytes-6)
+        ("rust-shlex" ,rust-shlex-1))
+       #:cargo-development-inputs
+       (("rust-clap" ,rust-clap-4)
+        ("rust-wild" ,rust-wild-2))))
+    (home-page "https://github.com/rust-cli/argfile")
+    (synopsis "Load additional CLI arguments from a file")
+    (description
+     "This library enables loading additional @acronym{CLI,
+Command-Line Interface} arguments from a file.  This is meant to work with any
+CLI parser, like @code{rust-clap}, by pre-processing the arguments, like
+@code{rust-wild}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-argh-shared-0.1
   (package
     (name "rust-argh-shared")
