@@ -16989,6 +16989,38 @@ character.")
     (arguments
      `(#:cargo-inputs (("rust-nom" ,rust-nom-6))))))
 
+(define-public rust-crypto-secretbox-0.1
+  (package
+    (name "rust-crypto-secretbox")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "crypto_secretbox" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qa1w5s8dbyb88269zrmvbnillqahz394pl07bsds6gpmn3wzmmr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-aead" ,rust-aead-0.5)
+                       ("rust-chacha20" ,rust-chacha20-0.9)
+                       ("rust-cipher" ,rust-cipher-0.4)
+                       ("rust-generic-array" ,rust-generic-array-0.14)
+                       ("rust-poly1305" ,rust-poly1305-0.8)
+                       ("rust-salsa20" ,rust-salsa20-0.10)
+                       ("rust-subtle" ,rust-subtle-2)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-hex-literal" ,rust-hex-literal-0.4))))
+    (home-page
+     "https://github.com/RustCrypto/nacl-compat/tree/master/crypto_secretbox")
+    (synopsis
+     "Pure Rust implementation of the XSalsa20Poly1305")
+    (description
+     "Pure Rust implementation of the XSalsa20Poly1305 (a.k.a. @code{NaCl}
+crypto_secretbox) authenticated encryption cipher as well as the libsodium
+variant of X@code{ChaCha20Poly1305}.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-crypto-bigint-0.5
   (package
     (name "rust-crypto-bigint")
