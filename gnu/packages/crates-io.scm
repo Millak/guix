@@ -20158,14 +20158,14 @@ traits for both structs and enums.")
 (define-public rust-derive-new-0.5
   (package
     (name "rust-derive-new")
-    (version "0.5.8")
+    (version "0.5.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "derive-new" version))
-      (file-name (string-append name "-" version ".tar.gz"))
-      (sha256
-       (base32 "1ncibp4jhpkym7namg3viqyw8hljd32n6abg64af8qjwrn91iwvi"))))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0d9m5kcj1rdmdjqfgj7rxxhdzx0as7p4rp1mjx5j6w5dl2f3461l"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
