@@ -503,6 +503,36 @@ up with TOR on your system anymore.")
 ;; "src-firefox-tor-browser-".
 (define %torbrowser-firefox-version "115.6.0esr-13.0-1-build2")
 
+;; Use the list in tor-browser-build/rbm.conf.
+(define %torbrowser-locales
+  '("ar" "ca" "cs" "da" "de" "el" "es-ES" "fa" "fi" "fr" "ga-IE" "he" "hu"
+    "id" "is" "it" "ja" "ka" "ko" "lt" "mk" "ms" "my" "nb-NO" "nl" "pl"
+    "pt-BR" "ro" "ru" "sq" "sv-SE" "th" "tr" "uk" "vi" "zh-CN" "zh-TW"))
+
+;; See tor-browser-build/projects/translation/config.
+(define translation-base-browser
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://gitlab.torproject.org/tpo/translation.git")
+          (commit "5490489a8d356a44d792300b4dfddba792d10f2e")))
+    (file-name "translation-base-browser")
+    (sha256
+     (base32
+      "1knxary2zp2705xzzs76gpy37ri69yp32ajpmpxki3z5hp7mla7q"))))
+
+;; See tor-browser-build/projects/translation/config.
+(define translation-tor-browser
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://gitlab.torproject.org/tpo/translation.git")
+          (commit "273592eca488ca3bf535d3789b1130fd1970f09a")))
+    (file-name "translation-tor-browser")
+    (sha256
+     (base32
+      "1mjqk4ljsjlwpqz29dnkhcvj24b75k2waicp0h07sll8qzv3rzz6"))))
+
 (define torbrowser-assets
   ;; This is a prebuilt Torbrowser from which we take the assets we need.
   (package
@@ -581,6 +611,8 @@ Browser.")
                 ;; $HOME/.mozbuild).
                 (setenv "MOZBUILD_STATE_PATH"
                         (in-vicinity (getcwd) ".mozbuild"))
+                (setenv "MOZ_CHROME_MULTILOCALE"
+                        (string-join '#$%torbrowser-locales))
                 ;; Make build reproducible.
                 (setenv "MOZ_BUILD_DATE" #$%moz-build-date)))
             (add-before 'configure 'mozconfig
@@ -594,6 +626,79 @@ Browser.")
             (replace 'configure
               (lambda _
                 (invoke "./mach" "configure")))
+            ;; See tor-browser-build/projects/firefox/build.
+            (add-before 'configure 'copy-firefox-locales
+              (lambda _
+                (let ((l10ncentral ".mozbuild/l10n-central"))
+                  (mkdir-p l10ncentral)
+                  (for-each
+                   (lambda (lang)
+                     (copy-recursively (find (lambda (path)
+                                               (string-suffix? lang path))
+                                             '#$all-mozilla-locales)
+                                       (in-vicinity l10ncentral lang)))
+                   '#$%torbrowser-locales))))
+            (add-after 'copy-firefox-locales 'copy-basebrowser-locales
+              (lambda _
+                (let ((l10ncentral ".mozbuild/l10n-central"))
+                  ;; Temporary copy so that we can use ‘mv’ to mimic
+                  ;; tor-browser-build/projects/firefox/build.
+                  (copy-recursively #$translation-base-browser
+                                    "translation-base-browser")
+                  (for-each
+                   (lambda (lang)
+                     (system
+                      (format
+                       #f (string-join
+                           '("mv"
+                             "translation-base-browser/~a/base-browser.ftl"
+                             "~a/~a/browser/browser/"))
+                       lang l10ncentral lang))
+                     (system
+                      (format
+                       #f (string-join
+                           '("mv"
+                             "translation-base-browser/~a/*"
+                             "~a/~a/browser/chrome/browser/"))
+                       lang l10ncentral lang)))
+                   '#$%torbrowser-locales))))
+            (add-after 'copy-basebrowser-locales 'copy-torbrowser-locales
+              (lambda _
+                (let ((l10ncentral ".mozbuild/l10n-central"))
+                  ;; Temporary copy so that we can use ‘mv’ to mimic
+                  ;; tor-browser-build/projects/firefox/build.
+                  (copy-recursively #$translation-tor-browser
+                                    "translation-tor-browser")
+                  (for-each
+                   (lambda (lang)
+                     (system
+                      (format
+                       #f (string-join
+                           '("mv"
+                             "translation-tor-browser/~a/tor-browser.ftl"
+                             "~a/~a/browser/browser/"))
+                       lang l10ncentral lang))
+                     (system
+                      (format
+                       #f (string-join
+                           '("mv"
+                             "translation-tor-browser/~a/cryptoSafetyPrompt.properties"
+                             "~a/~a/browser/chrome/browser/"))
+                       lang l10ncentral lang))
+                     (system
+                      (format
+                       #f (string-join
+                           '("mv"
+                             "translation-tor-browser/~a"
+                             "toolkit/torbutton/chrome/locale/"))
+                       lang))
+                     (let ((port (open-file "toolkit/torbutton/jar.mn" "a")))
+                       (format port "% locale torbutton ~a %locale/~a/~%"
+                               lang lang)
+                       (format port "  locale/~a/ (chrome/locale/~a/*)~%"
+                               lang lang)
+                       (close port)))
+                   '#$%torbrowser-locales))))
             (add-before 'build 'fix-addons-placeholder
               (lambda _
                 (substitute*
@@ -607,6 +712,11 @@ Browser.")
                    "#include ../../../tools/torbrowser/bridges.js" port)
                   (newline port)
                   (close port))))
+            ;; See tor-browser-build/projects/firefox/build.
+            (add-after 'build 'build-locales
+              (lambda _
+                (system (string-join '("./mach package-multi-locale --locales"
+                                       "en-US $MOZ_CHROME_MULTILOCALE")))))
             (add-after 'install 'deploy-assets
               (lambda* (#:key inputs #:allow-other-keys)
                 (let ((lib (in-vicinity #$output "lib/torbrowser"))
