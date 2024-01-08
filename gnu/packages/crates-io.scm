@@ -20696,6 +20696,22 @@ procedural macros.")
        #:cargo-inputs
        (("rust-devise-codegen" ,rust-devise-codegen-0.2)
         ("rust-devise-core" ,rust-devise-core-0.2))))))
+
+(define-public rust-devise-codegen-0.4
+  (package
+    (name "rust-devise-codegen")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "devise_codegen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1mpy5mmsigkj5f72gby82yk4advcqj97am2wzn0dwkj8vnwg934w"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-devise-core" ,rust-devise-core-0.4)
+                       ("rust-quote" ,rust-quote-1))))
     (home-page "https://github.com/SergioBenitez/Devise")
     (synopsis "Library for devising derives and other procedural macros")
     (description
@@ -20703,8 +20719,10 @@ procedural macros.")
 procedural macros.")
     (license (list license:expat license:asl2.0))))
 
+
 (define-public rust-devise-codegen-0.2
   (package
+    (inherit rust-devise-codegen-0.4)
     (name "rust-devise-codegen")
     (version "0.2.1")
     (source
@@ -20714,12 +20732,11 @@ procedural macros.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0lxbixni2v6snx2mkgi0kyq5dv8v6c5s57b6wc47q4hqs6884yza"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-devise-core" ,rust-devise-core-0.2)
-        ("rust-quote" ,rust-quote-0.6))))
+        ("rust-quote" ,rust-quote-0.6))))))
     (home-page "https://github.com/SergioBenitez/Devise")
     (synopsis "Library for devising derives and other procedural macros")
     (description
