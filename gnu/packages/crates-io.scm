@@ -38025,14 +38025,14 @@ image together with its neighboring pixels.")
   (package
     (inherit rust-lru-0.9)
     (name "rust-lru")
-    (version "0.7.2")
+    (version "0.7.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "lru" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "07sdl7gpg30hbz7cgph75n2xl8915rshi90c7jqr5j9mi62m6hr7"))))
+        (base32 "0yp4ai5rpr2czxklzxxx98p6l2aqv4g1906j3dr4b0vfgfxbx6g9"))))
     (arguments
      `(#:cargo-inputs
        (("rust-hashbrown" ,rust-hashbrown-0.11))
