@@ -174,6 +174,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bdw-gc)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
@@ -1003,6 +1004,46 @@ as functions or string constants to form colored terminal output.")
     (description "This package provides a parser to parse binary structs
 into dataclasses.")
     (license license:expat)))
+
+(define-public python-contourpy
+  (package
+    (name "python-contourpy")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "contourpy" version))
+       (sha256
+        (base32 "088bhyh6m6q0h637wiq2paqhwn76hqvvbhqwacfx4a1qhv1lcc75"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; All these tests require matplotlib, but matplotlib requires contourpy
+      ;; now.
+      '(list "-k" "not test_mypy"
+             "--ignore=tests/test_config.py"
+             "--ignore=tests/test_filled.py"
+             "--ignore=tests/test_lines.py"
+             "--ignore=tests/test_renderer.py")))
+    (propagated-inputs (list python-mypy
+                             python-numpy
+                             python-pillow
+                             python-pytest
+                             python-pytest-cov
+                             python-pytest-xdist
+                             python-selenium
+                             python-sphinx
+                             python-sphinx-copybutton
+                             python-wurlitzer))
+    (native-inputs (list meson-python pybind11-2.10 pkg-config))
+    (home-page "https://contourpy.readthedocs.io/")
+    (synopsis
+     "Python library for calculating contours of 2D quadrilateral grids")
+    (description
+     "ContourPy is a Python library for calculating contours of 2D
+quadrilateral grids.  It is written in C++11 and wrapped using pybind11.")
+    (license license:bsd-3)))
 
 (define-public python-yaspin
   (package
