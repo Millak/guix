@@ -5005,6 +5005,26 @@ they're not available.")
 they're not available.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-atomic-write-file-0.1
+  (package
+    (name "rust-atomic-write-file")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "atomic-write-file" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0dl4x0srdwjxm3zz3fj1c7m44i3b7mjiad550fqklj1n4bfbxkgd"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-nix" ,rust-nix-0.27)
+                       ("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/andreacorbellini/rust-atomic-write-file")
+    (synopsis "Write files atomically to a file system")
+    (description "Write files atomically to a file system.")
+    (license license:bsd-3)))
+
 (define-public rust-atomic-waker-1
   (package
     (name "rust-atomic-waker")
