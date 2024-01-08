@@ -3895,16 +3895,7 @@ the wayland protocol, client side.")
         ("rust-wayland-scanner" ,rust-wayland-scanner-0.29)
         ("rust-wayland-sys" ,rust-wayland-sys-0.29))
        #:cargo-development-inputs
-       (("rust-tempfile" ,rust-tempfile-3))))
-    (inputs
-     (list rust-bitflags-1
-           rust-downcast-rs-1
-           rust-libc-0.2
-           rust-nix-0.24
-           rust-scoped-tls-1
-           rust-wayland-commons-0.29
-           rust-wayland-scanner-0.29
-           rust-wayland-sys-0.29))))
+       (("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-wayland-client-0.28
   (package
