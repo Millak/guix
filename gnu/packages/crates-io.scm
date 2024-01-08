@@ -80862,6 +80862,27 @@ strings.")
      "This package provides compile-time type-checked builder derive.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-typed-builder-macro-0.18
+  (package
+    (name "rust-typed-builder-macro")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "typed-builder-macro" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "14mlf9733bmdf6bqzmhrzc1hbxfazp0mxvs751wckdaifccy8blq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-2))))
+    (home-page "https://github.com/idanarye/rust-typed-builder")
+    (synopsis "Compile-time type-checked builder derive")
+    (description "Compile-time type-checked builder derive.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-typed-headers-0.2
   (package
     (name "rust-typed-headers")
