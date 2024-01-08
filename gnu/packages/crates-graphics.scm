@@ -4181,19 +4181,18 @@ initializing an OpenGL or Vulkan context.")
   (package
     (inherit rust-wayland-egl-0.29)
     (name "rust-wayland-egl")
-    (version "0.28.3")
+    (version "0.28.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayland-egl" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1xd7iap0x4sidmy9dv02cdnxjhnbk9li7r7f39x9cg0i8xs50ly6"))))
+        (base32 "0mk9yv9b5w64syi09x0ma3s7s7ajdn2hhvykh8wv4ml7w6qimflr"))))
     (build-system cargo-build-system)
-    (inputs
-     (list rust-wayland-client-0.28 rust-wayland-sys-0.28))
-    (native-inputs
-     (list pkg-config))))
+    (arguments
+     `(#:cargo-inputs (("rust-wayland-client" ,rust-wayland-client-0.28)
+                       ("rust-wayland-sys" ,rust-wayland-sys-0.28))))))
 
 (define-public rust-wayland-protocols-0.31
   (package
