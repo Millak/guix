@@ -4129,9 +4129,7 @@ properly display animated cursors.")
      `(#:cargo-inputs
        (("rust-nix" ,rust-nix-0.24)
         ("rust-wayland-client" ,rust-wayland-client-0.29)
-        ("rust-xcursor" ,rust-xcursor-0.3))))
-    (inputs
-     (list rust-nix-0.24 rust-wayland-client-0.29 rust-xcursor-0.3))))
+        ("rust-xcursor" ,rust-xcursor-0.3))))))
 
 (define-public rust-wayland-cursor-0.28
   (package
