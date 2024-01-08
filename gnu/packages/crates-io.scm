@@ -6019,8 +6019,36 @@ and no more (caveat: black_box is still missing!).")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-bigdecimal-0.4
+  (package
+    (name "rust-bigdecimal")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bigdecimal" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1jcbzgna6292vgq0slw5iah929wl0xbps22zr63bp99y8az1jrn0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-autocfg" ,rust-autocfg-1)
+                       ("rust-libm" ,rust-libm-0.2)
+                       ("rust-num-bigint" ,rust-num-bigint-0.4)
+                       ("rust-num-integer" ,rust-num-integer-0.1)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs (("rust-paste" ,rust-paste-1)
+                                   ("rust-serde-json" ,rust-serde-json-0.9)
+                                   ("rust-siphasher" ,rust-siphasher-0.3))))
+    (home-page "https://github.com/akubera/bigdecimal-rs")
+    (synopsis "Arbitrary precision decimal numbers")
+    (description "This package provides arbitrary precision decimal numbers.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-bigdecimal-0.3
   (package
+    (inherit rust-bigdecimal-0.4)
     (name "rust-bigdecimal")
     (version "0.3.0")
     (source
@@ -6030,18 +6058,13 @@ and no more (caveat: black_box is still missing!).")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0i1px8hk4l71n307c7h7igrdy37pzpm7dcni269gwab438ak7bva"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-num-bigint" ,rust-num-bigint-0.4)
         ("rust-num-integer" ,rust-num-integer-0.1)
         ("rust-num-traits" ,rust-num-traits-0.2)
-        ("rust-serde" ,rust-serde-1))))
-    (home-page "https://github.com/akubera/bigdecimal-rs")
-    (synopsis "Arbitrary precision decimal numbers")
-    (description "This package provides arbitrary precision decimal numbers.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-serde" ,rust-serde-1))))))
 
 (define-public rust-bigdecimal-0.2
   (package
