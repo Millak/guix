@@ -12319,6 +12319,34 @@ stream of tokens.")
      "This crate provides cross-platform terminal screen clearing.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-cli-clipboard-0.4
+  (package
+    (name "rust-cli-clipboard")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cli-clipboard" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0g9y1w3ln5wn202mwxwhsilhifwww2p34fan99w5k8ia98fpq204"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; Not all files included
+       #:cargo-inputs (("rust-clipboard-win" ,rust-clipboard-win-4)
+                       ("rust-objc" ,rust-objc-0.2)
+                       ("rust-objc-foundation" ,rust-objc-foundation-0.1)
+                       ("rust-objc-id" ,rust-objc-id-0.1)
+                       ("rust-wl-clipboard-rs" ,rust-wl-clipboard-rs-0.7)
+                       ("rust-x11-clipboard" ,rust-x11-clipboard-0.7))))
+    (home-page "https://github.com/actuallyallie/cli-clipboard")
+    (synopsis
+     "Library for getting and setting the contents of the OS-level clipboard")
+    (description
+     "@code{cli-clipboard} is a library for getting and setting the contents of
+the OS-level clipboard.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-clicolors-control-1
   (package
     (name "rust-clicolors-control")
