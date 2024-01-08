@@ -7913,8 +7913,40 @@ programs.")
     (description "Blowfish block cipher")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-borsh-1
+  (package
+    (name "rust-borsh")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "borsh" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0a1hic4kj1rcy86qkmappi4ckch7iwap52akhx3bafqszkdddm16"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f      ; Tests aren't setup correctly.
+       #:cargo-inputs (("rust-ascii" ,rust-ascii-1)
+                       ("rust-borsh-derive" ,rust-borsh-derive-1)
+                       ("rust-bson" ,rust-bson-2)
+                       ("rust-bytes" ,rust-bytes-1)
+                       ("rust-cfg-aliases" ,rust-cfg-aliases-0.1)
+                       ("rust-hashbrown" ,rust-hashbrown-0.14))
+       #:cargo-development-inputs (("rust-bson" ,rust-bson-2)
+                                   ("rust-bytes" ,rust-bytes-1)
+                                   ("rust-insta" ,rust-insta-1))))
+    (home-page "https://borsh.io")
+    (synopsis "Borsch is the binary object representation serializer for hashing")
+    (description "This crate implements @code{borsh}, the binary object
+representation serializer for hasing.  It is meant to be used in
+security-critical projects as it prioritizes consistency, safety, speed, and
+comes with a strict specification.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-borsh-0.10
   (package
+    (inherit rust-borsh-1)
     (name "rust-borsh")
     (version "0.10.3")
     (source
@@ -7924,7 +7956,6 @@ programs.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0sq4l9jfik5dmpy1islcj40bing1jkji2q1qbrkvq1d02n92f521"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; the trait bound `BytesMut: BorshSerialize` is not satisfied
        #:cargo-inputs
@@ -7932,14 +7963,7 @@ programs.")
         ("rust-bytes" ,rust-bytes-1)
         ("rust-hashbrown" ,rust-hashbrown-0.13))
        #:cargo-development-inputs
-       (("rust-bytes" ,rust-bytes-1))))
-    (home-page "https://borsh.io")
-    (synopsis "Borsch is the binary object representation serializer for hashing")
-    (description "This crate implements @code{borsh}, the binary object
-representation serializer for hasing.  It is meant to be used in
-security-critical projects as it prioritizes consistency, safety, speed, and
-comes with a strict specification.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-bytes" ,rust-bytes-1))))))
 
 (define-public rust-borsh-derive-0.10
   (package
