@@ -11744,6 +11744,29 @@ usage.")
      "This package provides low-level primitives for parsing the CBOR codec.")
     (license license:asl2.0)))
 
+(define-public rust-cint-0.3
+  (package
+    (name "rust-cint")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cint" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "16l9glvaxshbp3awcga3s8cdfv00gb1n2s7ixzxxjwc5yz6qf3ks"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f  ; use of undeclared type `ColorCrate2`
+       #:cargo-inputs (("rust-bytemuck" ,rust-bytemuck-1))))
+    (home-page "https://github.com/termhn/cint")
+    (synopsis
+     "Stable set of types for color interoperation between crates in Rust")
+    (description
+     "This package provides a lean, minimal, and stable set of types for color
+interoperation between crates in Rust.")
+    (license (list license:expat license:asl2.0 license:zlib))))
+
 (define-public rust-ci-info-0.3
   (package
     (name "rust-ci-info")
