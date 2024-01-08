@@ -25624,6 +25624,26 @@ Atom, RSS 2.0, RSS 1.0, RSS 0.x and JSON Feed")
 interfacing with finite fields.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ff-0.12
+  (package
+    (inherit rust-ff-0.13)
+    (name "rust-ff")
+    (version "0.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ff" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0q3imz4m3dj2cy182i20wa8kbclgj13ddfngqb2miicc6cjzq4yh"))))
+    (arguments
+     `(#:cargo-inputs (("rust-bitvec" ,rust-bitvec-1)
+                       ("rust-byteorder" ,rust-byteorder-1)
+                       ("rust-ff-derive" ,rust-ff-derive-0.12)
+                       ("rust-rand-core" ,rust-rand-core-0.6)
+                       ("rust-subtle" ,rust-subtle-2))
+       #:cargo-development-inputs (("rust-rand" ,rust-rand-0.8))))))
+
 (define-public rust-ff-derive-0.13
   (package
     (name "rust-ff-derive")
