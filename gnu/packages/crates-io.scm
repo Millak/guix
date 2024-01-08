@@ -22403,6 +22403,28 @@ Signature Standard), providing RFC6979 deterministic signatures as well as
 support for added entropy.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-ecdsa-0.14
+  (package
+    (inherit rust-ecdsa-0.16)
+    (name "rust-ecdsa")
+    (version "0.14.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ecdsa" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0p1wxap2s6jm06y2w3cal8dkz6p9223ir9wws70rgx8h929h2cs1"))))
+    (arguments
+     `(#:cargo-inputs (("rust-der" ,rust-der-0.6)
+                       ("rust-elliptic-curve" ,rust-elliptic-curve-0.12)
+                       ("rust-rfc6979" ,rust-rfc6979-0.3)
+                       ("rust-serdect" ,rust-serdect-0.1)
+                       ("rust-signature" ,rust-signature-1))
+       #:cargo-development-inputs (("rust-elliptic-curve" ,rust-elliptic-curve-0.12)
+                                   ("rust-hex-literal" ,rust-hex-literal-0.3)
+                                   ("rust-sha2" ,rust-sha2-0.10))))))
+
 (define-public rust-ecies-ed25519-0.5
   (package
     (name "rust-ecies-ed25519")
