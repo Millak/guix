@@ -80838,8 +80838,29 @@ strings.")
     (build-system cargo-build-system)
     (arguments `(#:skip-build? #t))))
 
+(define-public rust-typed-builder-0.18
+  (package
+    (name "rust-typed-builder")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "typed-builder" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "12pkf3h3hahfqm8g6k3kl2qicl346szqq24qa74vfqcq2jb08z74"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-typed-builder-macro" ,rust-typed-builder-macro-0.18))))
+    (home-page "https://github.com/idanarye/rust-typed-builder")
+    (synopsis "Compile-time type-checked builder derive")
+    (description
+     "This package provides compile-time type-checked builder derive.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-typed-builder-0.5
   (package
+    (inherit rust-typed-builder-0.18)
     (name "rust-typed-builder")
     (version "0.5.1")
     (source
@@ -80849,18 +80870,12 @@ strings.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1zi9mmkz2vwg5cn8x9738vli42h21jyspvfi83y2sa6lvlja5kkq"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/idanarye/rust-typed-builder")
-    (synopsis "Compile-time type-checked builder derive")
-    (description
-     "This package provides compile-time type-checked builder derive.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-typed-builder-macro-0.18
   (package
