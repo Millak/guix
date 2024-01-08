@@ -4771,11 +4771,7 @@ crate @code{rust-wayland-client} for usable bindings.")
                (substitute* (find-files "src" "\\.rs$")
                  (("libwayland.*\\.so" shared-lib)
                   (string-append libwayland "/" shared-lib)))))))))
-    (inputs
-     (list rust-dlib-0.5 rust-lazy-static-1 rust-libc-0.2
-           rust-pkg-config-0.3))
-    (propagated-inputs
-     (list wayland))))
+    (inputs (list wayland))))
 
 (define-public rust-wayland-sys-0.28
   (package
