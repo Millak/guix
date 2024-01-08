@@ -4264,22 +4264,22 @@ extensions.")
   (package
     (inherit rust-wayland-protocols-0.29)
     (name "rust-wayland-protocols")
-    (version "0.28.3")
+    (version "0.28.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayland-protocols" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0c0sw13qssrvf3jgygwqpiimpaagz3haxn9jridd4k85sfs856ii"))))
+        (base32 "07w6kyr05fmajq3i8npfk4q6j5p35qja91x03zvaqfw09pm20ri8"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1))))
-    (inputs
-     (list rust-bitflags-1 rust-wayland-client-0.28
-           rust-wayland-commons-0.28 rust-wayland-scanner-0.28
-           rust-wayland-server-0.28))))
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-wayland-client" ,rust-wayland-client-0.28)
+        ("rust-wayland-commons" ,rust-wayland-commons-0.28)
+        ("rust-wayland-scanner" ,rust-wayland-scanner-0.28)
+        ("rust-wayland-server" ,rust-wayland-server-0.28))))))
 
 (define-public rust-wayland-protocols-0.23
   (package
@@ -4302,8 +4302,7 @@ extensions.")
         ("rust-wayland-client" ,rust-wayland-client-0.23)
         ("rust-wayland-commons" ,rust-wayland-commons-0.23)
         ("rust-wayland-server" ,rust-wayland-server-0.23)
-        ("rust-wayland-scanner" ,rust-wayland-scanner-0.23))))
-    (inputs `())))
+        ("rust-wayland-scanner" ,rust-wayland-scanner-0.23))))))
 
 (define-public rust-wayland-protocols-0.21
   (package
