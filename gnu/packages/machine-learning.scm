@@ -1824,27 +1824,18 @@ It is compatible with @code{scikit-learn}.")
 (define-public python-pynndescent
   (package
     (name "python-pynndescent")
-    (version "0.5.10")
+    (version "0.5.11")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pynndescent" version))
        (sha256
-        (base32 "1bc8aa6jfw28y6sb0nvfdrfgh66a42bqb4znvpimzx9yq21wcpax"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "pytest" "--pyargs" "pynndescent"
-                       ;; wminkowski no longer exists in scipy 1.8.0 (see:
-                       ;; https://github.com/lmcinnes/pynndescent/issues/177)
-                       "-k" "not test_weighted_minkowski")))))))
+        (base32 "0l5dpdsk5vg7rpay81bncp04119hnl5z7zxjv63jrnm9spcwwi3g"))))
+    (build-system pyproject-build-system)
     (native-inputs (list python-pytest))
     (propagated-inputs
-     (list python-joblib
+     (list python-importlib-metadata
+           python-joblib
            python-llvmlite
            python-numba
            python-scikit-learn
