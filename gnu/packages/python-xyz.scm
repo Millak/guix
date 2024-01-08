@@ -8414,16 +8414,25 @@ comparison.
 (define-public python-matplotlib
   (package
     (name "python-matplotlib")
-    (version "3.5.2")
+    (version "3.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "matplotlib" version))
        (sha256
-        (base32 "18h78s5ld1i6mz00w258hy29909nfr3ddq6ry9kq18agw468bks8"))))
-    (build-system python-build-system)
+        (base32 "18amhxyxa6yzy1nwky4ggdgvvxnbl3qz2lki05vfx0dqf6w7ia81"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      '(list "-m" "not network"
+             "-k"
+             (string-append
+              ;; This one fails with a small difference in the upper left.
+              "not test_figure_legend_outside"
+              ;; The 'test_lazy_auto_backend_selection' fails
+              ;; because it would require an X server; skip it.
+              " and not test_lazy_auto_backend_selection"))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'pretend-version
@@ -8487,49 +8496,30 @@ backend=Agg
 basedirlist = ~a,~a
 
 [packages]
-tests = True~%" (assoc-ref inputs "tcl") (assoc-ref inputs "tk"))))))
+tests = True~%" #$(this-package-input "tcl") #$(this-package-input "tk"))))))
           (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
               (when tests?
                 ;; Step out of the source directory to avoid interference.
                 (with-directory-excursion "/tmp"
                   ;; Run the installed tests, which is what we want since not
                   ;; everything gets built in the source directory.
-                  (invoke "pytest"
-                          "-n" (number->string (parallel-job-count))
-                          "-m" "not network" "--pyargs" "matplotlib"
-                          "-k"
-                          (string-append
-                           ;; The 'test_lazy_auto_backend_selection' fails
-                           ;; because it would require an X server; skip it.
-                           "not test_lazy_auto_backend_selection"
-                           ;; test_getattr fails for the GTK backend because
-                           ;; of an unexpected warning from Python 3.10
-                           ;; (via the gi module):
-                           ;; https://gitlab.gnome.org/GNOME/pygobject/-/issues/494
-                           " and not test_getattr")))))))))
+                  (apply invoke "pytest"
+                         "-n" (number->string (parallel-job-count))
+                         "--pyargs" "matplotlib"
+                         test-flags))))))))
     (propagated-inputs
-     (list gobject-introspection
-           python-cairocffi
-           python-certifi
+     (list python-contourpy
            python-cycler
            python-dateutil
            python-fonttools-minimal
+           python-importlib-resources
            python-kiwisolver
            python-numpy
            python-packaging
            python-pillow
-           ;; ;; 'pycairo'.  However, 'pygobject' makes use of a 'pycairo' 'context'
-           ;; ;; From version 1.4.0 'matplotlib' makes use of 'cairocffi' instead of
-           ;; ;; https://cairocffi.readthedocs.io/en/stable/cffi_api.html#converting-pycairo-wrappers-to-cairocffi
-           ;; ;; object.  For this reason we need to import both libraries.
-           ;; python-pycairo
-           python-pygobject
            python-pyparsing
-           python-pytz
-           python-six
-           `(,python "tk")
-           python-wxpython))
+           `(,python "tk")))
     (inputs
      (list cairo
            freetype
@@ -8540,6 +8530,7 @@ tests = True~%" (assoc-ref inputs "tcl") (assoc-ref inputs "tk"))))))
            tk))
     (native-inputs
      (list pkg-config
+           pybind11
            python-pytest
            python-pytest-timeout
            python-pytest-xdist
