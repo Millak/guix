@@ -29932,6 +29932,26 @@ provides standard printing of search results, similar to grep itself.")
     (description "Elliptic curve group traits and utilities.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-group-0.12
+  (package
+    (inherit rust-group-0.13)
+    (name "rust-group")
+    (version "0.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "group" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1ixspxqdpq0hxg0hd9s6rngrp6rll21v4jjnr7ar1lzvdhxgpysx"))))
+    (arguments
+     `(#:cargo-inputs (("rust-ff" ,rust-ff-0.12)
+                       ("rust-memuse" ,rust-memuse-0.2)
+                       ("rust-rand" ,rust-rand-0.8)
+                       ("rust-rand-core" ,rust-rand-core-0.6)
+                       ("rust-rand-xorshift" ,rust-rand-xorshift-0.3)
+                       ("rust-subtle" ,rust-subtle-2))))))
+
 (define-public rust-groupable-0.2
   (package
     (name "rust-groupable")
