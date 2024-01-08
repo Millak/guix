@@ -5121,9 +5121,7 @@ the platform-specific getters provided by winit, or another library.")
         ("rust-x11-dl" ,rust-x11-dl-2))
        #:cargo-development-inputs
        (("rust-console-log" ,rust-console-log-0.2)
-        ("rust-simple-logger" ,rust-simple-logger-1))))
-    (inputs
-     (list rust-wayland-client-0.28))))
+        ("rust-simple-logger" ,rust-simple-logger-1))))))
 
 (define-public rust-winit-0.20
   (package
