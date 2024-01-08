@@ -4472,16 +4472,18 @@ wayland-client crate for usable bindings.")
   (package
     (inherit rust-wayland-scanner-0.29)
     (name "rust-wayland-scanner")
-    (version "0.28.3")
+    (version "0.28.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wayland-scanner" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0g8ky63qk27in7zajycj3fyydsxlj19hanfcvr8d7z5kcxbvl43h"))))
-    (inputs
-     (list rust-proc-macro2-1 rust-quote-1 rust-xml-rs-0.8))))
+        (base32 "1w839jsh7nrni4f2x5bkapf98w7kddxyqmpks4rf67dnvsr3x4nf"))))
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-xml-rs" ,rust-xml-rs-0.8))))))
 
 (define-public rust-wayland-scanner-0.23
   (package
