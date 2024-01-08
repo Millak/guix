@@ -257,6 +257,7 @@
   #:use-module (gnu packages shells)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages ssh)
+  #:use-module (gnu packages statistics)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages terminals)
@@ -12576,17 +12577,32 @@ SVG, EPS, PNG and terminal output.")
 (define-public python-seaborn
   (package
     (name "python-seaborn")
-    (version "0.12.0")
+    (version "0.13.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "seaborn" version))
               (sha256
                (base32
-                "08vvnp4ps86857imxz2l5xi2vir5xdcdp3apq4badb4b5llifgw9"))))
+                "0ycibcs6kvd3xi4zsxna81claqifyb9dn6z6jwc5x7lqqplnbbdz"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-pandas python-matplotlib python-numpy
-                             python-scipy))
-    (native-inputs (list python-flit-core python-pypa-build python-pytest))
+    (propagated-inputs
+     (list python-ipykernel
+           python-matplotlib
+           python-mypy
+           python-nbconvert
+           python-numpy
+           python-numpydoc
+           python-pandas
+           python-pyyaml
+           python-scipy
+           python-statsmodels))
+    (native-inputs
+     (list python-flake8
+           python-flit-core
+           python-pre-commit
+           python-pytest
+           python-pytest-cov
+           python-pytest-xdist))
     (home-page "https://seaborn.pydata.org/")
     (synopsis "Statistical data visualization")
     (description
