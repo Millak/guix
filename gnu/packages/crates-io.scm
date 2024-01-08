@@ -31391,14 +31391,14 @@ extended with server support and additional auth schemes.")
 (define-public rust-http-body-0.4
   (package
     (name "rust-http-body")
-    (version "0.4.4")
+    (version "0.4.6")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "http-body" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1imjszmk34603m7chfnhd3rq263bxbdlaxhlbzd06wv7354zix0z"))))
+        (base32 "1lmyjfk6bqk6k9gkn1dxq770sb78pqbqshga241hr5p995bb5skw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
