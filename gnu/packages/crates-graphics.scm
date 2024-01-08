@@ -4466,9 +4466,7 @@ wayland-client crate for usable bindings.")
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-xml-rs" ,rust-xml-rs-0.8))))
-    (inputs
-     (list rust-proc-macro2-1 rust-quote-1 rust-xml-rs-0.8))))
+        ("rust-xml-rs" ,rust-xml-rs-0.8))))))
 
 (define-public rust-wayland-scanner-0.28
   (package
