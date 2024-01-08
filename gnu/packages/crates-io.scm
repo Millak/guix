@@ -25654,6 +25654,28 @@ interfacing with finite fields.")
 prime field implementations in rust.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-ff-derive-0.12
+  (package
+    (inherit rust-ff-derive-0.13)
+    (name "rust-ff-derive")
+    (version "0.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ff_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0jvqilpzzbw3j3sh1sf0914n2l4v020iifmgvglnc7wgfjh6znqp"))))
+    (arguments
+     `(#:cargo-inputs (("rust-addchain" ,rust-addchain-0.2)
+                       ("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-num-bigint" ,rust-num-bigint-0.3)
+                       ("rust-num-integer" ,rust-num-integer-0.1)
+                       ("rust-num-traits" ,rust-num-traits-0.2)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))))
+
 (define-public rust-fiat-crypto-0.1
   (package
     (name "rust-fiat-crypto")
