@@ -4886,6 +4886,26 @@ crate.")
 methods.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-atoi-2
+  (package
+    (name "rust-atoi")
+    (version "2.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "atoi" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0a05h42fggmy7h0ajjv6m7z72l924i7igbx13hk9d8pyign9k3gj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-num-traits" ,rust-num-traits-0.2))
+       #:cargo-development-inputs (("rust-criterion" ,rust-criterion-0.4))))
+    (home-page "https://github.com/pacman82/atoi-rs")
+    (synopsis "Parse integers directly from `[u8]` slices in safe code")
+    (description "Parse integers directly from `[u8]` slices in safe code.")
+    (license license:expat)))
+
 (define-public rust-atom-0.3
   (package
     (name "rust-atom")
