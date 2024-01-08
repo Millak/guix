@@ -65735,6 +65735,37 @@ Rust's serde.")
 for data that potentially contains secrets (e.g. cryptographic keys).")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-serdect-0.1
+  (package
+    (name "rust-serdect")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "serdect" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0b6krqs77vzwzdjcrcywlmlwd3msfpgmkkbxx8q9njypyhdwx3q3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-base16ct" ,rust-base16ct-0.1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs (("rust-bincode" ,rust-bincode-1)
+                                   ("rust-ciborium" ,rust-ciborium-0.2)
+                                   ("rust-hex-literal" ,rust-hex-literal-0.3)
+                                   ("rust-proptest" ,rust-proptest-1)
+                                   ("rust-serde" ,rust-serde-1)
+                                   ("rust-serde-json-core" ,rust-serde-json-core-0.4)
+                                   ("rust-serde-json" ,rust-serde-json-1)
+                                   ("rust-toml" ,rust-toml-0.5))))
+    (home-page "https://github.com/RustCrypto/formats/tree/master/serdect")
+    (synopsis "Constant-time serde serializer/deserializer helpers")
+    (description
+     "Constant-time serde serializer/deserializer helpers for data that potentially
+contains secrets (e.g. cryptographic keys).")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-serial-test-2
   (package
     (name "rust-serial-test")
