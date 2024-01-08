@@ -11406,14 +11406,14 @@ transfer coding.")
 (define-public rust-ciborium-io-0.2
   (package
     (name "rust-ciborium-io")
-    (version "0.2.0")
+    (version "0.2.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "ciborium-io" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0sdkk7l7pqi2nsbm9c6g8im1gb1qdd83l25ja9xwhg07mx9yfv9l"))))
+                "0mi6ci27lpz3azksxrvgzl9jc4a3dfr20pjx7y2nkcrjalbikyfd"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/enarx/ciborium")
     (synopsis "Simplified Read/Write traits")
