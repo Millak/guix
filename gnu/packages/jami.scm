@@ -172,6 +172,45 @@ service definitions.")
     (home-page "https://jami.net/")
     (license license:gpl3+)))
 
+;;; Private package; this is used in source form: the project build system has
+;;; no install target.
+(define sortfilterproxymodel
+  ;; Use the latest commit available from the 'qt-6' branch.
+  (let ((commit "6cc21205dbf36640613f0e6e67b2b13b1855c377")
+        (revision "0"))
+    (package
+      (name "sortfilterproxymodel")
+      ;; There are no recent release tag; the module version defined in the
+      ;; source is used (see:
+      ;; https://github.com/oKcerG/SortFilterProxyModel/blob/
+      ;; 5a930885b7ea99f7f41c25fce08bf8006ee54e3f/
+      ;; qqmlsortfilterproxymodel.cpp#L574C15-L574C15).
+      (version (git-version "0.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      ;; The upstream is
+                      ;; https://github.com/oKcerG/SortFilterProxyModel, but
+                      ;; it lacks Qt 6 support, so use this fork, which is the
+                      ;; one used by Jami.
+                      (url "https://github.com/atraczyk/SortFilterProxyModel")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1n54jkimr3a818i3w7w3lnbqn47x72nnr5xi9vk0mdnbwri3viwy"))))
+      (build-system qt-build-system)
+      (arguments
+       (list #:qtbase qtbase            ;use Qt 6
+             #:tests? #f                ;no test suite
+             #:configure-flags #~(list "BUILD_SFPM_PIC=ON")))
+      (inputs (list qtdeclarative))
+      (home-page "https://github.com/oKcerG/SortFilterProxyModel")
+      (synopsis "Improved QSortFilterProxyModel implementation for QML")
+      (description "SortFilterProxyModel is an implementation of
+QSortFilterProxyModel conveniently exposed for QML.")
+      (license license:expat))))
+
 (define-public jami
   (package
     (name "jami")
