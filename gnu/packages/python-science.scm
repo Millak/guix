@@ -263,31 +263,31 @@ logic, also known as grey logic.")
 (define-public python-scikit-image
   (package
     (name "python-scikit-image")
-    (version "0.19.3")
+    (version "0.22.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "scikit-image" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/scikit-image/scikit-image")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0l645smf7w1kail70z8d9r3xmvz7qh6g7n3d2bpacbbnw5ykdd94"))))
-    (build-system python-build-system)
+        (base32 "10fzyq2w1ldvfkmj374l375yrx33xrlw39xc9kmk8fxfi77jpykd"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'change-home-dir
-           (lambda _
-             ;; Change from /homeless-shelter to /tmp for write permission.
-             (setenv "HOME" "/tmp")
-             #t))
-         (replace 'build
-           (lambda _
-             (invoke "make")))
-         (replace 'check
-           (lambda _
-             ;; The following tests require online data.
-             (invoke "python" "-m" "pytest" "skimage" "--doctest-modules" "-k"
-                     (string-append "not test_ndim"
-                                    " and not test_skin")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'change-home-dir
+            (lambda _
+              ;; Change from /homeless-shelter to /tmp for write permission.
+              (setenv "HOME" "/tmp")))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "/tmp"
+                  (apply invoke "pytest" "-v" "--doctest-modules"
+                         (append test-flags (list #$output))))))))))
     ;; See requirements/ for the list of build and run time requirements.
     ;; NOTE: scikit-image has an optional dependency on python-pooch, however
     ;; propagating it would enable many more tests that require online data.
@@ -295,6 +295,7 @@ logic, also known as grey logic.")
      (list python-cloudpickle
            python-dask
            python-imageio
+           python-lazy-loader
            python-matplotlib
            python-networkx
            python-numpy
@@ -304,9 +305,13 @@ logic, also known as grey logic.")
            python-scipy
            python-tifffile))
     (native-inputs
-     (list python-cython
+     (list meson-python
+           python-cython
+           python-numpydoc
+           python-packaging
            python-pytest
-           python-pytest-localserver))
+           python-pytest-localserver
+           python-wheel))
     (home-page "https://scikit-image.org/")
     (synopsis "Image processing in Python")
     (description
