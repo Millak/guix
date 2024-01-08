@@ -3588,7 +3588,7 @@ traits.")
 (define-public rust-ascii-1
   (package
     (name "rust-ascii")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
       (origin
         (method url-fetch)
@@ -3596,8 +3596,7 @@ traits.")
         (file-name
          (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "0281gc828q4j692gb66jfdr5k16gyszgqflylh0pp30rllv63xdv"))))
+         (base32 "05nyyp39x4wzc1959kv7ckwqpkdzjd9dw4slzyjh73qbhjcfqayr"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
