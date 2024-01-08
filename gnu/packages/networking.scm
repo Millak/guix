@@ -4510,7 +4510,7 @@ network.")
 (define-public ngtcp2
   (package
     (name "ngtcp2")
-    (version "1.0.1")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
@@ -4518,7 +4518,7 @@ network.")
                            "releases/download/v" version "/"
                            "ngtcp2-" version ".tar.xz"))
        (sha256
-        (base32 "0l84hnj9n4bfxjizgmqsqbz71jx7m00a7l1z43fg5ls3apx9ij11"))))
+        (base32 "1pppl6s25hz91w6321g1q7dqvfy4vccz9mmc5r8sfdvdc95fngl0"))))
     (build-system gnu-build-system)
     (native-inputs (list cunit))
     (home-page "https://nghttp2.org/ngtcp2/")
