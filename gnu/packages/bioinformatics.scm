@@ -2180,6 +2180,8 @@ three prime UTR.")
                (base32
                 "0gqygspdy398vjymdy6756jmk99s7fhwav9rivdx59kpqjcdxaz9"))))
     (build-system pyproject-build-system)
+    ;; There are no tests.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list python-anndata
            python-docopt
